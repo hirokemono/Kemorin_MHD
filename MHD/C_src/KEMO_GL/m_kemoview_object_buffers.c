@@ -7,7 +7,7 @@
 
 #include "m_kemoview_object_buffers.h"
 
-#define NTHREADS 12
+#define NTHREADS 24
 
 struct kemoview_buffers * init_kemoview_buffers(void)
 {

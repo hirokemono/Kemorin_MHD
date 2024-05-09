@@ -25,9 +25,9 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
                                      struct gl_strided_buffer *mesh_buf,
                                      struct gl_local_buffer_address *point_buf){
 	double f_color[4];
-	double xyz_patch[180], norm_patch[180];
+	double xyzw_patch[240], norm_patch[240];
     int ip, inod, inum, ist, ied;
-    long ico, nd;
+    long icou, nd;
     long inum_tri, num_ico;
 	
 	set_node_color_mode_c(node_color, color_mode, color_loop,
@@ -46,14 +46,16 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 			for(inum = ist; inum < ied; inum++){
 				inod = item_grp[inum]-1;
 				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xyzw_draw[4*inod  ],
-												 xyz_patch, norm_patch);
-				for (ico=0; ico<num_ico; ico++) {
-                    set_node_stride_buffer((inum_tri+ico), mesh_buf, point_buf);
-					for(nd=0;nd<3;nd++){mesh_buf->x_draw[nd] =  xyz_patch[3*ico+nd];};
-					for(nd=0;nd<3;nd++){mesh_buf->n_draw[nd] = norm_patch[3*ico+nd];};
-					for(nd=0;nd<4;nd++){mesh_buf->c_draw[nd] = f_color[nd];};
-				};
-				
+                                                xyzw_patch, norm_patch);
+
+                for (icou=0; icou<num_ico; icou++) {
+                    set_node_stride_buffer((inum_tri+icou), mesh_buf, point_buf);
+                    for(nd=0;nd<4;nd++){
+                        mesh_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw_patch[4*icou+nd];
+                        mesh_buf->v_buf[nd+point_buf->igl_norm] = norm_patch[4*icou+nd];
+                        mesh_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+                    };
+                };
 				inum_tri = inum_tri + num_ico;
 			};
 		}

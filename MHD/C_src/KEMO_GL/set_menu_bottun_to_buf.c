@@ -141,14 +141,22 @@ static long set_menu_to_buf(unsigned char *menubottun_bits,
 		for(i=0;i<MENU_WIDTH;i++){
 			idx = i + j * MENU_WIDTH;
             set_node_stride_buffer(idx, strided_buf, point_buf);
-			strided_buf->x_draw[0] =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
-			strided_buf->x_draw[1] =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
-			strided_buf->x_draw[2] = 0.0;
+            
+			strided_buf->v_buf[point_buf->igl_xyzw  ]
+                =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
+			strided_buf->v_buf[point_buf->igl_xyzw+1] 
+                =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
+			strided_buf->v_buf[point_buf->igl_xyzw+2] 
+                = 0.0;
+            strided_buf->v_buf[point_buf->igl_xyzw+3] = 1.0;
 			
-			strided_buf->c_draw[0] =  (float) ((int) menubottun_bits[3*idx  ]) / 256.0;
-			strided_buf->c_draw[1] =  (float) ((int) menubottun_bits[3*idx+1]) / 256.0;
-			strided_buf->c_draw[2] =  (float) ((int) menubottun_bits[3*idx+2]) / 256.0;
-			strided_buf->c_draw[3] = 1.0;
+			strided_buf->v_buf[point_buf->igl_color  ] 
+                =  (float) ((int) menubottun_bits[3*idx  ]) / 256.0;
+			strided_buf->v_buf[point_buf->igl_color+1]
+                =  (float) ((int) menubottun_bits[3*idx+1]) / 256.0;
+			strided_buf->v_buf[point_buf->igl_color+2] 
+                =  (float) ((int) menubottun_bits[3*idx+2]) / 256.0;
+			strided_buf->v_buf[point_buf->igl_color+3] = 1.0;
 		}
 	}
 	icou = MENU_HEIGHT * MENU_WIDTH;

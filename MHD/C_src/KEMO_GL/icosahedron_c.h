@@ -12,7 +12,7 @@
 /* prototypes */
 void init_icosahedron_c(void);
 long set_icosahedron_patch(double size, double x_draw[3], 
-                           double *xyz_draw, double *norm_draw);
+                           double *xyzw_draw, double *norm_draw);
 
 void find_normal_of_line(double norm_line[6], 
 			const double x_line[6], const double dir_line[6]);

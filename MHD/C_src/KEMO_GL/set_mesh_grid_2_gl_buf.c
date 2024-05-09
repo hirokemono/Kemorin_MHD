@@ -3,10 +3,12 @@
 
 #include "set_mesh_grid_2_gl_buf.h"
 
+
 static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s,
                                double f_color[4], long inum_buf,
                                struct gl_strided_buffer *strided_buf,
                                struct gl_local_buffer_address *point_buf){
+    const float z_norm[4] = {0.0, 0.0, 1.0, 1.0};
 	int i1, i2, k1, nd, inum;
 	
 	for(k1=0;k1<(mesh_s->nnod_4_edge-1);k1++){
@@ -15,15 +17,19 @@ static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s,
         i2 = mesh_s->ie_edge_viewer[inum+1] - 1;
         
         set_node_stride_buffer((ITWO*inum_buf), strided_buf, point_buf);
-		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xyzw_draw[4*i1+nd];};
-		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
+        for(nd=0;nd<4;nd++) {
+            strided_buf->v_buf[nd+point_buf->igl_xyzw] =  mesh_s->xyzw_draw[4*i1+nd];
+            strided_buf->v_buf[nd+point_buf->igl_norm] =  z_norm[nd];
+            strided_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+        };
 		
         set_node_stride_buffer((ITWO*inum_buf+1), strided_buf, point_buf);
-		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xyzw_draw[4*i2+nd];};
-		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
-		
+		for(nd=0;nd<4;nd++) {
+            strided_buf->v_buf[nd+point_buf->igl_xyzw] =  mesh_s->xyzw_draw[4*i2+nd];
+            strided_buf->v_buf[nd+point_buf->igl_norm] =  z_norm[nd];
+            strided_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+        };
+
 		inum_buf = inum_buf + 1;
 	};
 	

@@ -66,8 +66,14 @@ long set_fieldlines_to_buf(struct psf_data *fline_s,
 		for(k=0;k<ITWO;k++){
 			inod =fline_s->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITWO*iele+k), strided_buf, point_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xyzw_viz[inod*IFOUR + nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod*IFOUR + nd];};
+			for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_xyzw] 
+                    = fline_s->xyzw_viz[4*inod + nd];
+            };
+			for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_color]
+                    = fline_s->color_nod[4*inod + nd];
+            };
 		};
 	};
 	
