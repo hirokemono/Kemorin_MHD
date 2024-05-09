@@ -13,28 +13,28 @@ static void set_one_quad_to_buf(long i_quad,
 	int nd;
 	
     set_node_stride_buffer(6*i_quad, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x1[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
+    for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x1[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c1[nd];};
 	
     set_node_stride_buffer(6*i_quad+1, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x2[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c2[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x2[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c2[nd];};
 		
     set_node_stride_buffer(6*i_quad+2, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x3[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c3[nd];};
 		
     set_node_stride_buffer(6*i_quad+3, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x3[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c3[nd];};
 		
     set_node_stride_buffer(6*i_quad+4, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x4[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c4[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x4[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c4[nd];};
 	
     set_node_stride_buffer(6*i_quad+5, strided_buf, point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x1[nd];};
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_xyzw] =  x1[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf->igl_color] = c1[nd];};
 	return;
 };
 

@@ -19,7 +19,7 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 	int num_wall;
 	int iele, nd;
     long inod;
-	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
+	double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
 	double x_line[6], dir_line[6], color_line[8];
 	double norm_line[6];
 	
@@ -38,13 +38,15 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 		find_normal_of_line(norm_line, x_line, dir_line);
 		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, 
 								   x_line, dir_line, norm_line, color_line,
-								   xyz, nor, col);
+                                   xyzw, norm, col);
 		
 		for (k=0; k<3*num_wall; k++) {
             set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf, point_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
-			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
+            for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw[4*k+nd];
+                strided_buf->v_buf[nd+point_buf->igl_norm] = norm[4*k+nd];
+                strided_buf->v_buf[nd+point_buf->igl_color] = col[4*k+nd];
+            };
 		};
 		inum_patch = inum_patch + num_wall; 
 	};

@@ -180,7 +180,7 @@ void find_normal_of_line(double norm_line[6],
 };
 int set_tube_vertex(int ncorner, double radius, 
 					double x_line[6], double dir_line[6], double norm_line[6],
-					double color_line[8], double *xyz, double *nor, double *col) {
+					double color_line[8], double *xyzw, double *norm, double *col) {
 	double xx_w1[3*ncorner], norm_w1[3*ncorner];
 	double xx_w2[3*ncorner], norm_w2[3*ncorner];
 	int npatch_wall = 0;
@@ -193,37 +193,43 @@ int set_tube_vertex(int ncorner, double radius,
 	
 	for(k=0;k<ncorner-1;k++){
 		for (nd=0; nd<3; nd++) {
-			xyz[3*(6*k)+  nd] = xx_w1[3*k+  nd];
-			xyz[3*(6*k+1)+nd] = xx_w1[3*k+3+nd];
-			xyz[3*(6*k+2)+nd] = xx_w2[3*k+3+nd];
-			nor[3*(6*k)+  nd] = norm_w1[3*k+  nd];
-			nor[3*(6*k+1)+nd] = norm_w1[3*k+3+nd];
-			nor[3*(6*k+2)+nd] = norm_w2[3*k+3+nd];
+            xyzw[4*(6*k)+  nd] = xx_w1[3*k+  nd];
+            xyzw[4*(6*k+1)+nd] = xx_w1[3*k+3+nd];
+            xyzw[4*(6*k+2)+nd] = xx_w2[3*k+3+nd];
+            norm[4*(6*k)+  nd] = norm_w1[3*k+  nd];
+            norm[4*(6*k+1)+nd] = norm_w1[3*k+3+nd];
+            norm[4*(6*k+2)+nd] = norm_w2[3*k+3+nd];
 			
-			xyz[3*(6*k+3)+nd] = xx_w2[3*k+3+nd];
-			xyz[3*(6*k+4)+nd] = xx_w2[3*k+nd];
-			xyz[3*(6*k+5)+nd] = xx_w1[3*k+nd];
-			nor[3*(6*k+3)+nd] = norm_w2[3*k+3+nd];
-			nor[3*(6*k+4)+nd] = norm_w2[3*k+nd];
-			nor[3*(6*k+5)+nd] = norm_w1[3*k+nd];
+            xyzw[4*(6*k+3)+nd] = xx_w2[3*k+3+nd];
+            xyzw[4*(6*k+4)+nd] = xx_w2[3*k+nd];
+            xyzw[4*(6*k+5)+nd] = xx_w1[3*k+nd];
+            norm[4*(6*k+3)+nd] = norm_w2[3*k+3+nd];
+            norm[4*(6*k+4)+nd] = norm_w2[3*k+nd];
+            norm[4*(6*k+5)+nd] = norm_w1[3*k+nd];
 		};
 	};
 	
 	for (nd=0; nd<3; nd++) {
-		xyz[3*(6*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
-		xyz[3*(6*(ncorner-1)+1)+nd] = xx_w1[nd];
-		xyz[3*(6*(ncorner-1)+2)+nd] = xx_w2[nd];
-		nor[3*(6*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
-		nor[3*(6*(ncorner-1)+1)+nd] = norm_w1[nd];
-		nor[3*(6*(ncorner-1)+2)+nd] = norm_w2[nd];
+        xyzw[4*(6*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+1)+nd] = xx_w1[nd];
+        xyzw[4*(6*(ncorner-1)+2)+nd] = xx_w2[nd];
+        norm[4*(6*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
+        norm[4*(6*(ncorner-1)+1)+nd] = norm_w1[nd];
+        norm[4*(6*(ncorner-1)+2)+nd] = norm_w2[nd];
 		
-		xyz[3*(6*(ncorner-1)+3)+nd] = xx_w2[nd];
-		xyz[3*(6*(ncorner-1)+4)+nd] = xx_w2[3*(ncorner-1)+nd];
-		xyz[3*(6*(ncorner-1)+5)+nd] = xx_w1[3*(ncorner-1)+nd];
-		nor[3*(6*(ncorner-1)+3)+nd] = norm_w2[nd];
-		nor[3*(6*(ncorner-1)+4)+nd] = norm_w2[3*(ncorner-1)+nd];
-		nor[3*(6*(ncorner-1)+5)+nd] = norm_w1[3*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+3)+nd] = xx_w2[nd];
+        xyzw[4*(6*(ncorner-1)+4)+nd] = xx_w2[3*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+5)+nd] = xx_w1[3*(ncorner-1)+nd];
+        norm[4*(6*(ncorner-1)+3)+nd] = norm_w2[nd];
+        norm[4*(6*(ncorner-1)+4)+nd] = norm_w2[3*(ncorner-1)+nd];
+        norm[4*(6*(ncorner-1)+5)+nd] = norm_w1[3*(ncorner-1)+nd];
 	};
+
+    for(k=0;k<6*ncorner-1;k++){
+        xyzw[4*k+3] = 1.0;
+        norm[4*k+3] = 1.0;
+    };
+    
 	for(k=0;k<ncorner;k++){
 		for (nd=0; nd<4; nd++) {
 			col[4*(6*k)+  nd] = color_line[  nd];
@@ -297,19 +303,19 @@ long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
                              double norm_line[6], double color_line[8],
                              struct gl_strided_buffer *strided_buf,
                              struct gl_local_buffer_address *point_buf){
-	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
+	double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
 	long npatch_wall = 0;
 	long k, nd;
 	
 	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, norm_line, color_line,
-								   xyz, nor, col);
+                                  xyzw, norm, col);
 	for (k=0; k<3*npatch_wall; k++) {
         set_node_stride_buffer((ITHREE*ist_patch+k), strided_buf, point_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
-        strided_buf->x_draw[3] = 1.0;
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
-        strided_buf->n_draw[3] = 1.0;
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
+        for(nd=0;nd<4;nd++){
+            strided_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw[4*k+nd];
+            strided_buf->v_buf[nd+point_buf->igl_norm] = norm[4*k+nd];
+            strided_buf->v_buf[nd+point_buf->igl_color] = col[4*k+nd];
+        };
 	};
 	
 	npatch_wall = ist_patch + 2*ncorner;
