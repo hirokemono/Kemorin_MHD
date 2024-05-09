@@ -208,7 +208,9 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf,
 }
 
 
-long count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m){
+long add_num_psf_arrows(long inum_buf, const int nthreads, int ncorner,
+                        struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                        long *istack_smp_psf_arrow);
 	int inod;
 	
 	long inum_buf = 0;
@@ -225,8 +227,8 @@ long count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_men
 	return inum_buf;
 }
 
-long set_psf_arrows_to_buf(long ist_patch, int ncorner, 
-                           struct psf_data *psf_s, struct psf_menu_val *psf_m, 
+long set_psf_arrows_to_buf(long ist_patch, const int nthreads, long *istack_smp_psf_arrow, 
+                           int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf){
 	double x_line[6], dir_line[6], color_line[8];
