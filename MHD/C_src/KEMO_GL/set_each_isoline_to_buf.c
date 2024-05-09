@@ -216,15 +216,15 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
                                      long icomp, double *f_color,
                                      struct psf_data *psf_s,
                                      struct gl_strided_buffer *strided_buf,
-                                     struct gl_local_buffer_address *point_buf){
-/* Allocate thread arguments.
+                                     struct gl_local_buffer_address **para_point_buf){
+/* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
             = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
     if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Isoline.\n"); exit(1);}
         
     float *rmax = (float *) malloc (nthreads * sizeof(float));
     if (!rmax) {fprintf (stderr, "Malloc failed for rmax.\n"); exit(1);}
-/* Initialize thread handles and barrier.
+/* Initialize thread handles and barrier. */
     pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
     if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
     
@@ -235,7 +235,7 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
         
         args[ip].strided_buf = strided_buf;
-        args[ip].point_buf = point_buf[ip];
+        args[ip].point_buf = para_point_buf[ip];
         args[ip].psf_s = psf_s;
 
         args[ip].icomp = icomp;
@@ -257,10 +257,11 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
     free(thread_handles);
     free(args);
 //    printf("Parallel count %ld\n", inum_patch);
- */
+/*
     return set_each_isoline_to_buf(ist_patch, IZERO, psf_s->nele_viz,
                                    width, v_line, icomp, f_color, psf_s,
                                    strided_buf, point_buf);
+ */
 };
 
 

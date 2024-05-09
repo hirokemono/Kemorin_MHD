@@ -67,33 +67,32 @@ static void const_PSF_isoline_buffer(const int nthreads,
                                      struct view_element *view_s, struct psf_data **psf_s,
                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                      struct gl_strided_buffer *psf_buf,
-                                     struct gl_local_buffer_address *point_buf){
-    long *istack_smp_psf_iso_n = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_psf_iso_n == NULL) {
-        printf("malloc error for istack_smp_psf_iso_n\n");
+                                     struct gl_local_buffer_address *point_buf,
+                                     struct gl_local_buffer_address **para_point_buf){
+    int i, iflag;
+    long **istack_smp_psf_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
+    if(istack_smp_psf_iso == NULL) {
+        printf("malloc error for istack_smp_psf_iso\n");
         exit(0);
     }
-    long *istack_smp_psf_iso_p = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_psf_iso_p == NULL) {
-        printf("malloc error for istack_smp_psf_iso_p\n");
-        exit(0);
-    }
-    long *istack_smp_psf_iso_0 = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_psf_iso_0 == NULL) {
-        printf("malloc error for istack_smp_psf_iso_0\n");
-        exit(0);
-    }
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        int ntot = (psf_m[i]->n_isoline + 1) * nthreads;
+        istack_smp_psf_iso[i] = (long *) calloc(ntot+1, sizeof(long));
+        if(istack_smp_psf_iso[i] == NULL) {
+            printf("malloc error for istack_smp_psf_iso[i] for %d\n", i);
+            exit(0);
+        }
+    };
+
 
     double ref_width = 1.5;
-	int i, iflag;
-	
 	long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
+		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			num_patch = add_PSF_all_isolines_num(num_patch, nthreads, psf_s[i], psf_m[i],
-                                                 istack_smp_psf_iso_n, istack_smp_psf_iso_p,
-                                                 istack_smp_psf_iso_0);
+			num_patch = add_PSF_all_isolines_num(num_patch, nthreads,
+                                                 psf_s[i], psf_m[i],
+                                                 istack_smp_psf_iso[i]);
 		};
 	};
     set_buffer_address_4_patch((ITHREE*num_patch), psf_buf);
@@ -103,18 +102,18 @@ static void const_PSF_isoline_buffer(const int nthreads,
 	
 	long inum_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
+		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
         if(iflag != 0){
 			if(psf_m[i]->isoline_width <= 0.0){
 				psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
 			};
-			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, nthreads,
-                                                     istack_smp_psf_iso_n, istack_smp_psf_iso_p,
-                                                     istack_smp_psf_iso_0,
-                                                     psf_s[i], psf_m[i],
-                                                     psf_buf, point_buf);
+			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, nthreads, istack_smp_psf_iso[i],
+                                                     psf_s[i], psf_m[i], psf_buf, para_point_buf);
 		};
 	};
+    
+    for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_psf_iso[i]);};
+    free(istack_smp_psf_iso);
 	return;
 }
 
@@ -134,7 +133,8 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
                                     struct gl_strided_buffer *PSF_arrow_buf,
-                                    struct gl_local_buffer_address *point_buf){
+                                    struct gl_local_buffer_address *point_buf,
+                                    struct gl_local_buffer_address **para_point_buf){
     const_PSF_texture_buffer(view_s->shading_mode,
                              IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a,
@@ -143,7 +143,7 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                            psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
                            psf_s, psf_m, psf_a, PSF_solid_buf, point_buf);
     const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
-                             PSF_isoline_buf, point_buf);
+                             PSF_isoline_buf, point_buf, para_point_buf);
     const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf, point_buf);
     return;
 }

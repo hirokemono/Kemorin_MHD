@@ -34,31 +34,29 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
                                  struct gl_strided_buffer *mline_buf,
                                  struct gl_local_buffer_address *point_buf){
-    long *istack_smp_map_iso_n = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_map_iso_n == NULL) {
-        printf("malloc error for istack_smp_map_iso_n\n");
+    int i, iflag;
+    long **istack_smp_map_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
+    if(istack_smp_map_iso == NULL) {
+        printf("malloc error for istack_smp_map_iso\n");
         exit(0);
     }
-    long *istack_smp_map_iso_p = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_map_iso_p == NULL) {
-        printf("malloc error for istack_smp_map_iso_p\n");
-        exit(0);
-    }
-    long *istack_smp_map_iso_0 = (long *) calloc(nthreads+1, sizeof(long));
-    if(istack_smp_map_iso_0 == NULL) {
-        printf("malloc error for istack_smp_map_iso_0\n");
-        exit(0);
-    }
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        int ntot = (psf_m[i]->n_isoline + 1) * nthreads;
+        istack_smp_map_iso[i] = (long *) calloc(ntot+1, sizeof(long));
+        if(istack_smp_map_iso[i] == NULL) {
+            printf("malloc error for istack_smp_map_iso[i] for %d\n", i);
+            exit(0);
+        }
+    };
 
 	double ref_width = 1.5;
-	int i, iflag;
 	long num_patch = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			num_patch = count_map_PSF_isoline(num_patch, nthreads, psf_s[i], psf_m[i],
-                                              istack_smp_map_iso_n, istack_smp_map_iso_p,
-                                              istack_smp_map_iso_0);
+			num_patch = count_map_PSF_isoline(num_patch, nthreads,
+                                              psf_s[i], psf_m[i],
+                                              istack_smp_map_iso[i]);
 		};
 	};
     
@@ -80,8 +78,8 @@ void set_map_PSF_isolines_buffer(const int nthreads,
             };
         };
     }
-    free(istack_smp_map_iso_n);
-    free(istack_smp_map_iso_p);
-    free(istack_smp_map_iso_0);
+    
+    for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_map_iso[i]);};
+    free(istack_smp_map_iso);
     return;
 }

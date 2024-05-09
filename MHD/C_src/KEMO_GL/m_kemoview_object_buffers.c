@@ -12,7 +12,8 @@
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
-
+    int i;
+    
     struct kemoview_buffers *kemo_buffers = (struct kemoview_buffers *) malloc(sizeof(struct kemoview_buffers));
     if(kemo_buffers == NULL){
         printf("malloc error for kemoview_buffers\n");
@@ -24,11 +25,26 @@ struct kemoview_buffers * init_kemoview_buffers(void)
         printf("malloc error in phong_lights \n");
         exit(0);
     };
+    
     kemo_buffers->point_buf = (struct gl_local_buffer_address *) malloc(sizeof(struct gl_local_buffer_address));
     if(kemo_buffers->point_buf == NULL){
         printf("malloc error in point_buf \n");
         exit(0);
     };
+    kemo_buffers->para_point_buf
+        = (struct gl_local_buffer_address **) malloc(NTHREADS*sizeof(struct gl_local_buffer_address *));
+    if(kemo_buffers->para_point_buf == NULL){
+        printf("malloc error in para_point_buf \n");
+        exit(0);
+    };
+    for(i=0;i<NTHREADS;i++){
+        kemo_buffers->para_point_buf[i]
+            = (struct gl_local_buffer_address *) malloc(sizeof(struct gl_local_buffer_address));
+        if(kemo_buffers->para_point_buf == NULL){
+            printf("malloc error in para_point_buf[i] at %d \n", i);
+            exit(0);
+        };
+    }
 
     kemo_buffers->cube_buf =        init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
@@ -74,6 +90,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
+    int i;
+    
     dealloc_line_text_image(kemo_buffers->message_buf);
     dealloc_line_text_image(kemo_buffers->timelabel_buf);
     dealloc_line_text_image(kemo_buffers->cbar_zero_buf);
@@ -110,6 +128,10 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 
     dealloc_strided_buffer(kemo_buffers->axis_buf);
 
+    for(i=0;i<NTHREADS;i++){
+        free(kemo_buffers->para_point_buf[i]);
+    }
+    free(kemo_buffers->para_point_buf);
     free(kemo_buffers->point_buf);
     free(kemo_buffers->kemo_lights);
     free(kemo_buffers);
@@ -159,7 +181,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_stxur_buf,
                                        kemo_buffers->PSF_isoline_buf,
                                        kemo_buffers->PSF_arrow_buf,
-                                       kemo_buffers->point_buf);
+                                       kemo_buffers->point_buf,
+                                       kemo_buffers->para_point_buf);
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_trns_buf,

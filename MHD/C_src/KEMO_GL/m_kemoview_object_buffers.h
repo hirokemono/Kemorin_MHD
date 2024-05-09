@@ -30,6 +30,7 @@ struct kemoview_buffers{
     struct phong_lights *kemo_lights;
     
     struct gl_local_buffer_address *point_buf;
+    struct gl_local_buffer_address **para_point_buf;
 
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
