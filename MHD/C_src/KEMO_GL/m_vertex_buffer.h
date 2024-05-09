@@ -13,6 +13,15 @@
 
 #include "skip_comment_c.h"
 
+struct gl_buffer_work{
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
+    float *d_draw;
+};
+
+
 struct gl_strided_buffer{
     long nsize_buf;
     int istride;
@@ -34,6 +43,12 @@ struct gl_strided_buffer{
     float *n_draw;
     float *c_draw;
     float *d_draw;
+    
+    int igl_xyzw;
+    int igl_txur;
+    int igl_norm;
+    int igl_color;
+    int igl_data;
 };
 
 struct gl_index_buffer{
