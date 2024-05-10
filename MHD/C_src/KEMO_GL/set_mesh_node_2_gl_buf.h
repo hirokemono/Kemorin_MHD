@@ -14,8 +14,12 @@
 #include "rainbow_color_code_c.h"
 
 /* prototypes */
-long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
-long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
+long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                            long *istack_node_domain_patch,  long *istack_node_nod_grp_patch,
+                            long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch);
+long set_mesh_node_to_buf(long *istack_node_domain_patch,  long *istack_node_nod_grp_patch,
+                          long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch,
+                          struct viewer_mesh *mesh_s,
                           struct mesh_menu_val *mesh_m,
                           struct gl_strided_buffer *mesh_buf,
                           struct gl_local_buffer_address *point_buf);

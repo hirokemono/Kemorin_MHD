@@ -138,12 +138,36 @@ static void const_mesh_grids_buffer(struct viewer_mesh *mesh_s, struct mesh_menu
 static void const_mesh_nodes_ico_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                         struct gl_strided_buffer *mesh_buf,
                                         struct gl_local_buffer_address *point_buf){
-	long num_patch = count_mesh_node_to_buf(mesh_s, mesh_m);
+    long num;
+    num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_node_domain_patch =   (long *) calloc(num, sizeof(long));
+    num = mesh_s->ngrp_nod_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_node_nod_grp_patch =  (long *) calloc(num, sizeof(long));
+    num = mesh_s->ngrp_ele_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_node_ele_grp_patch =  (long *) calloc(num, sizeof(long));
+    num = mesh_s->ngrp_surf_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_node_surf_grp_patch = (long *) calloc(num, sizeof(long));
+    
+	long num_patch = count_mesh_node_to_buf(mesh_s, mesh_m,
+                                            istack_node_domain_patch,
+                                            istack_node_nod_grp_patch,
+                                            istack_node_ele_grp_patch,
+                                            istack_node_surf_grp_patch);
+    
     set_buffer_address_4_patch((ITHREE*num_patch), mesh_buf);
-	if(mesh_buf->num_nod_buf <= 0) return;
-	
-	resize_strided_buffer(mesh_buf);
-	set_mesh_node_to_buf(mesh_s, mesh_m, mesh_buf, point_buf);
+    if(mesh_buf->num_nod_buf > 0){
+        resize_strided_buffer(mesh_buf);
+        
+        set_mesh_node_to_buf(istack_node_domain_patch,
+                             istack_node_nod_grp_patch,
+                             istack_node_ele_grp_patch,
+                             istack_node_surf_grp_patch,
+                             mesh_s, mesh_m, mesh_buf, point_buf);
+    };
+    free(istack_node_domain_patch);
+    free(istack_node_nod_grp_patch);
+    free(istack_node_ele_grp_patch);
+    free(istack_node_surf_grp_patch);
     return;
 }
 

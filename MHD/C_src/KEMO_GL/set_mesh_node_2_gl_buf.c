@@ -9,15 +9,15 @@ const long count_each_grp_node_ico_to_buf(int iflag_domain, int *istack_grp){
     return num_patch;
 }
 
-const long count_mesh_node_ico_to_buf(int *istack_grp, int num_pe_sf,
-                                      int *iflag_domain){
+const long add_mesh_node_ico_to_buf(long ist_patch, int *istack_grp, int num_pe_sf,
+                                    int *iflag_domain, long *istack_patch_pe){
 	int ip;
-	long num_patch = 0;
+    istack_patch_pe[0] = ist_patch;
 	for(ip = 0; ip < num_pe_sf; ip++){
-        num_patch = num_patch 
-                + count_each_grp_node_ico_to_buf(iflag_domain[ip], &istack_grp[ip]);
+        istack_patch_pe[ip+1] = istack_patch_pe[ip]
+            + count_each_grp_node_ico_to_buf(iflag_domain[ip], &istack_grp[ip]);
 	};
-	return num_patch;
+	return istack_patch_pe[num_pe_sf];
 }
 
 static long set_each_group_node_ico_to_buf(const long ist_tri, 
@@ -50,7 +50,8 @@ static long set_each_group_node_ico_to_buf(const long ist_tri,
     return inum_tri;
 }
 
-static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
+static long set_mesh_node_ico_to_buf(long *istack_patch_pe,
+                                     int num_grp, int igrp,
                                      int *istack_grp, int *item_grp,
                                      struct viewer_mesh *mesh_s, double node_diam,
                                      int node_color, int color_mode,
@@ -65,7 +66,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 	set_node_color_mode_c(node_color, color_mode, color_loop,
                           igrp, num_grp, single_color);
 	
-	inum_tri = ist_tri;
+	inum_tri = istack_patch_pe[0];
     for(ip = 0; ip<mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
 			set_patch_color_mode_c(node_color, color_mode, color_loop,
@@ -83,57 +84,68 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 }
 
 
-long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
+long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                            long *istack_node_domain_patch,  long *istack_node_nod_grp_patch,
+                            long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch){
 	int i, ip_st;
-	long num_patch = count_mesh_node_ico_to_buf(mesh_s->nod_stack_domain_sf,
-                                                mesh_s->num_pe_sf,
-                                                mesh_m->draw_domains_nod);
+    long num_patch = 0;
+    num_patch = add_mesh_node_ico_to_buf(num_patch, mesh_s->nod_stack_domain_sf,
+                                                            mesh_s->num_pe_sf,
+                                                            mesh_m->draw_domains_nod,
+                                                            &istack_node_domain_patch[0]);
 	
 	/* ! draw node group */
 	
-	for (i = 0; i < mesh_s->ngrp_nod_sf; i++){
+    istack_node_nod_grp_patch[0] = num_patch;
+	for(i = 0; i < mesh_s->ngrp_nod_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
-		if( mesh_m->draw_nodgrp_nod[i] ){
-			num_patch = num_patch + count_mesh_node_ico_to_buf(&mesh_s->nod_stack_sf[ip_st],
-                                                               mesh_s->num_pe_sf,
-                                                               mesh_m->always_draw_domains);
+		if(mesh_m->draw_nodgrp_nod[i]){
+			num_patch = add_mesh_node_ico_to_buf(num_patch, &mesh_s->nod_stack_sf[ip_st],
+                                                 mesh_s->num_pe_sf,
+                                                 mesh_m->always_draw_domains,
+                                                 &istack_node_nod_grp_patch[ip_st]);
 		};
 	};
-	
+
 	/* ! draw element group */
-	
+    istack_node_ele_grp_patch[0] = num_patch;
 	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		if( mesh_m->draw_elegrp_nod[i] ){
-			num_patch = num_patch + count_mesh_node_ico_to_buf(&mesh_s->ele_nod_stack_sf[ip_st],
-                                                               mesh_s->num_pe_sf,
-                                                               mesh_m->always_draw_domains);
+			num_patch = add_mesh_node_ico_to_buf(num_patch, &mesh_s->ele_nod_stack_sf[ip_st],
+                                                 mesh_s->num_pe_sf,
+                                                 mesh_m->always_draw_domains,
+                                                 &istack_node_ele_grp_patch[ip_st]);
 		};
 	};
-	
+
 	/* ! draw surface group */
-	
+    istack_node_surf_grp_patch[0] = num_patch;
 	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_surfgrp_nod[i] ){
-			num_patch = num_patch + count_mesh_node_ico_to_buf(&mesh_s->surf_nod_stack_sf[ip_st],
-                                                               mesh_s->num_pe_sf,
-                                                               mesh_m->always_draw_domains);
+			num_patch = add_mesh_node_ico_to_buf(num_patch, &mesh_s->surf_nod_stack_sf[ip_st],
+                                                 mesh_s->num_pe_sf,
+                                                 mesh_m->always_draw_domains,
+                                                 &istack_node_surf_grp_patch[ip_st]);
 		};
 	};
 	return num_patch;
 }
 
 
-long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
+long set_mesh_node_to_buf(long *istack_node_domain_patch,  long *istack_node_nod_grp_patch,
+                          long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch,
+                          struct viewer_mesh *mesh_s,
                           struct mesh_menu_val *mesh_m,
                           struct gl_strided_buffer *mesh_buf,
                           struct gl_local_buffer_address *point_buf){
 	int i, ip_st;
-	long ist_tri = 0;
+	long num_tri = 0;
 	
-	ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->num_pe_sf, IZERO,
+    num_tri = set_mesh_node_ico_to_buf(istack_node_domain_patch,
+                                       mesh_s->num_pe_sf, IZERO,
                                        mesh_s->nod_stack_domain_sf,
                                        mesh_s->nod_item_domain_sf, mesh_s,
                                        mesh_m->node_diam, mesh_m->domain_node_color,
@@ -146,12 +158,13 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
 	for (i = 0; i < mesh_s->ngrp_nod_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		if( mesh_m->draw_nodgrp_nod[i] ){
-			ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->ngrp_nod_sf, i, &mesh_s->nod_stack_sf[ip_st],
-						mesh_s->nod_item_sf, mesh_s,
-						mesh_m->node_diam, mesh_m->node_node_color,
-						mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
-						mesh_m->node_node_color_code, mesh_m->always_draw_domains, 
-						mesh_buf, point_buf);
+            num_tri = set_mesh_node_ico_to_buf(&istack_node_nod_grp_patch[ip_st],
+                                               mesh_s->ngrp_nod_sf, i, &mesh_s->nod_stack_sf[ip_st],
+                                               mesh_s->nod_item_sf, mesh_s,
+                                               mesh_m->node_diam, mesh_m->node_node_color,
+                                               mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
+                                               mesh_m->node_node_color_code, mesh_m->always_draw_domains,
+                                               mesh_buf, point_buf);
 	
 		};
 	};
@@ -161,7 +174,8 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
 	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		if( mesh_m->draw_elegrp_nod[i] ){
-			ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->ngrp_ele_sf, i,
+            num_tri = set_mesh_node_ico_to_buf(&istack_node_ele_grp_patch[ip_st],
+                                               mesh_s->ngrp_ele_sf, i,
                                                &mesh_s->ele_nod_stack_sf[ip_st],
                                                mesh_s->ele_nod_item_sf, mesh_s,
                                                mesh_m->node_diam, mesh_m->ele_node_color,
@@ -178,7 +192,8 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
 	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		if( mesh_m->draw_surfgrp_nod[i] ){
-			ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->ngrp_surf_sf, i,
+            num_tri = set_mesh_node_ico_to_buf(&istack_node_surf_grp_patch[ip_st],
+                                               mesh_s->ngrp_surf_sf, i,
                                                &mesh_s->surf_nod_stack_sf[ip_st],
                                                mesh_s->surf_nod_item_sf, mesh_s,
                                                mesh_m->node_diam, mesh_m->surf_node_color,
@@ -189,5 +204,5 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
 	
 		};
 	};
-	return ist_tri;
+	return num_tri;
 }
