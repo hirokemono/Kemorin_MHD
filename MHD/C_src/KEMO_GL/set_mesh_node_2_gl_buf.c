@@ -163,7 +163,6 @@ static long set_mesh_node_ico_to_buf(int nthreads, long *istack_patch_pe,
 	double f_color[4];
     int ip;
     long inum_tri;
-    long inum_tri2;
 
 	set_node_color_mode_c(node_color, color_mode, color_loop,
                           igrp, num_grp, single_color);

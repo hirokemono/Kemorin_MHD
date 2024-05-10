@@ -147,13 +147,31 @@ static void const_mesh_grids_buffer(int nthread,
                                     struct viewer_mesh *mesh_s,
                                     struct mesh_menu_val *mesh_m,
                                     struct gl_strided_buffer *mesh_buf,
-                                    struct gl_local_buffer_address *point_buf){
-	long num_edge = count_mesh_grid_to_buf(mesh_s, mesh_m);
+                                    struct gl_local_buffer_address **para_point_buf){
+    long num;
+    num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_edge_domain_edge =   (long *) calloc(num, sizeof(long));
+    num = mesh_s->ngrp_ele_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_ele_grp_edge =  (long *) calloc(num, sizeof(long));
+    num = mesh_s->ngrp_surf_sf*mesh_s->ngrp_nod_sf+1;
+    long *istack_surf_grp_edge = (long *) calloc(num, sizeof(long));
+
+    long num_edge = count_mesh_grid_to_buf(mesh_s, mesh_m,
+                                           istack_edge_domain_edge,
+                                           istack_ele_grp_edge,
+                                           istack_surf_grp_edge);
+    
     set_buffer_address_4_patch(ITWO*num_edge, mesh_buf);
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(mesh_buf);
-	set_mesh_grid_to_buf(mesh_s, mesh_m, mesh_buf, point_buf);
+	set_mesh_grid_to_buf(nthread, istack_edge_domain_edge,
+                         istack_ele_grp_edge,
+                         istack_surf_grp_edge,
+                         mesh_s, mesh_m, mesh_buf, para_point_buf);
+    free(istack_edge_domain_edge);
+    free(istack_ele_grp_edge);
+    free(istack_surf_grp_edge);
 	return;
 }
 
@@ -207,7 +225,7 @@ void const_solid_mesh_buffer(int nthread,
     mesh_node_buf->num_nod_buf = 0;
     if(mesh_m->iflag_draw_mesh == 0) return;
         
-    const_mesh_grids_buffer(nthread, mesh_s, mesh_m, mesh_grid_buf, para_point_buf[0]);
+    const_mesh_grids_buffer(nthread, mesh_s, mesh_m, mesh_grid_buf, para_point_buf);
     const_mesh_nodes_ico_buffer(nthread, mesh_s, mesh_m, mesh_node_buf, para_point_buf);
     const_solid_mesh_patch_bufffer(nthread, view_s->shading_mode, mesh_s, mesh_m,
                                    mesh_solid_buf, para_point_buf);

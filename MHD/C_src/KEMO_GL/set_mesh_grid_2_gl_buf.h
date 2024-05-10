@@ -13,9 +13,14 @@
 
 /* prototypes */
 
-long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
-long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                            long *istack_edge_domain_edge,
+                            long *istack_ele_grp_edge,
+                            long *istack_surf_grp_edge);
+long set_mesh_grid_to_buf(int nthread, long *istack_edge_domain_edge,
+                          long *istack_ele_grp_edge, long *istack_surf_grp_edge,
+                          struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                           struct gl_strided_buffer *mesh_buf,
-                          struct gl_local_buffer_address *point_buf);
+                          struct gl_local_buffer_address **para_point_buf);
 
 #endif
