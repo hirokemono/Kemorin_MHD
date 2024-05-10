@@ -195,10 +195,11 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                              kemo_buffers->sph_grid_buf,
                              kemo_buffers->point_buf);
         
-        const_fieldlines_buffer(kemo_fline->fline_d, kemo_fline->fline_m,
+        const_fieldlines_buffer(NTHREADS, 
+                                kemo_fline->fline_d, kemo_fline->fline_m,
                                 kemo_buffers->FLINE_tube_buf,
                                 kemo_buffers->FLINE_line_buf,
-                                kemo_buffers->point_buf);
+                                kemo_buffers->para_point_buf);
         
         const_solid_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,

@@ -3,10 +3,11 @@
 
 #include "draw_fieldlines.h"
 
-void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fline_m,
+void const_fieldlines_buffer(const int nthreads, 
+                             struct psf_data *fline_s, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
                              struct gl_strided_buffer *FLINE_line_buf,
-                             struct gl_local_buffer_address *point_buf){
+                             struct gl_local_buffer_address **para_point_buf){
     int ncorner = ISIX;
 
     FLINE_tube_buf->num_nod_buf = 0;
@@ -17,11 +18,21 @@ void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fl
 
     if(fline_m->fieldline_type == IFLAG_PIPE){
         long num_patch = count_fieldtubes_to_buf(ncorner, fline_s);
+        
         set_buffer_address_4_patch(ITHREE*num_patch, FLINE_tube_buf);
         if(FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(FLINE_tube_buf);
-            set_fieldtubes_to_buf(ncorner, fline_s, fline_m,
-                                  FLINE_tube_buf, point_buf);
+            
+            if(nthreads > 1){
+                num_patch = set_fieldtubes_to_buf_pthread(IZERO, nthreads, ncorner, 
+                                                          fline_s, fline_m,
+                                                          FLINE_tube_buf, 
+                                                          para_point_buf);
+            }else{
+                num_patch = set_fieldtubes_to_buf(IZERO, IZERO, fline_s->nele_viz,
+                                                  ncorner, fline_s, fline_m,
+                                                  FLINE_tube_buf, para_point_buf[0]);
+            };
         };
     };
 
@@ -29,8 +40,18 @@ void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fl
     set_buffer_address_4_patch(ITWO*num_edge, FLINE_line_buf);
     if(FLINE_line_buf->num_nod_buf>0){
         resize_strided_buffer(FLINE_line_buf);
-        set_fieldlines_to_buf(fline_s, fline_m,
-                              FLINE_line_buf, point_buf);
+        
+        if(nthreads > 1){
+            set_fieldlines_to_buf_pthread(IZERO, nthreads,
+                                          fline_s, fline_m,
+                                          FLINE_line_buf,
+                                          para_point_buf);
+        }else{
+            set_fieldlines_to_buf(IZERO, IZERO, fline_s->nele_viz,
+                                  fline_s, fline_m,
+                                  FLINE_line_buf, para_point_buf[0]);
+        };
+ 
     };
 	return;
 }
