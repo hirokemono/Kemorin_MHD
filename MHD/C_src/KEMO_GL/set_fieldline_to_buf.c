@@ -2,7 +2,6 @@
 /* set_fieldline_to_buf.c */
 
 #include "set_fieldline_to_buf.h"
-#include <pthread.h>
 
 long count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
     long num_patch = 2 * fline_s->nele_viz * ncorner; 
@@ -54,24 +53,6 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	};
 	return inum_patch;
 };
-
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
-
-    int ncorner;
-    struct psf_data       *fline_s;
-    struct fline_menu_val *fline_m;
-    
-    long *num_patch;
-} args_pthread_fieldline;
-
-
-
 
 static void * set_fieldtubes_to_buf_1thread(void *args){
     args_pthread_fieldline * p = (args_pthread_fieldline *) args;

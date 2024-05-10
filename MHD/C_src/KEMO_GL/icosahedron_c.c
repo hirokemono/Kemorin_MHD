@@ -77,7 +77,7 @@ long set_icosahedron_patch(double size, double x_draw[3],
 	int i, j;
     int ie1;
 /*    int ie2, ie3; */
-    long icou, nd;
+    long icou_tri, icou, nd;
 	
 	for (i = 0; i < 12; i++) {
 		xyz_plot[i][0]=  x_draw[0] + (float) xyz_ico[i][0] * size;
@@ -86,7 +86,7 @@ long set_icosahedron_patch(double size, double x_draw[3],
 	};
 	
 /* add a points to the display list */
-	icou = 0;
+    icou_tri = 0;
 	for (i = 0; i < 20; i++){
 /*
 		ie1 = ifac_poi[i][0];
@@ -94,6 +94,7 @@ long set_icosahedron_patch(double size, double x_draw[3],
 		ie3 = ifac_poi[i][2];
 */
 		for (j = 0; j < 3; j++) {
+            icou = 3*icou_tri + j;
 			for (nd = 0; nd < 3; nd++) {
 				ie1 = ifac_poi[i][j];
                 xyzw_draw[4*icou+nd] = (float) xyz_plot[ie1][nd];
@@ -101,10 +102,10 @@ long set_icosahedron_patch(double size, double x_draw[3],
 			};
             xyzw_draw[4*icou+3] =  1.0;
             norm_draw[4*icou+3] =  1.0;
-			icou = icou + 1;
 		};
+        icou_tri = icou_tri + 1;
 	};
-	return icou;
+	return icou_tri;
 }
 
 static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
