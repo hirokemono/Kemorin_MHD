@@ -73,13 +73,13 @@ static int read_gz_kemoview_connect_data(void *FP_gzip, struct psf_data *viz_s){
 	}
 	
 	else if(viz_s->nnod_4_ele_viz == 2){
-		sscanf(buf, "%d %d line %ld %ld %ld", &itmp, &itmp,
-				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
+		sscanf(buf, "%d %d line %ld %ld", &itmp, &itmp,
+				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
-			sscanf(buf, "%d %d line %ld %ld %ld", &itmp, &itmp, 
-					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
+			sscanf(buf, "%d %d line %ld %ld", &itmp, &itmp, 
+					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
 		};
 	}
 	
