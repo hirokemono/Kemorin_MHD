@@ -36,9 +36,10 @@ void const_solid_mesh_buffer(int nthread,
                              struct gl_strided_buffer *mesh_grid_buf,
                              struct gl_strided_buffer *mesh_node_buf,
                              struct gl_local_buffer_address **para_point_buf);
-void const_trans_mesh_buffer(struct viewer_mesh *mesh_s,
+void const_trans_mesh_buffer(int nthreads,
+                             struct viewer_mesh *mesh_s,
                              struct mesh_menu_val *mesh_m,
                              struct view_element *view_s,
                              struct gl_strided_buffer *mesh_trns_buf,
-                             struct gl_local_buffer_address *point_buf);
+                             struct gl_local_buffer_address **para_point_buf);
 #endif

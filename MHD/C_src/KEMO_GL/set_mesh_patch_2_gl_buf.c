@@ -1,6 +1,7 @@
 
 /* set_mesh_patch_2_gl_buf.c */
 
+#include <pthread.h>
 #include "set_mesh_patch_2_gl_buf.h"
 
 static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
@@ -108,17 +109,17 @@ void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
 }
 
 
-void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
-                              struct viewer_mesh *mesh_s,
-                              long ntot_patch, long *iele_patch,
+long add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
+                              struct viewer_mesh *mesh_s, long ist_tri,
+                              long ist_ele, long ied_ele, long *iele_patch,
                               struct gl_strided_buffer *mesh_buf,
                               struct gl_local_buffer_address *point_buf){
 	int j, icolor;
     long inum, icou, jnum, item;
 	
-	long inum_tri = 0;
+	long inum_tri = ist_tri;
 	
-    for (inum =0;inum<ntot_patch; inum++) {
+    for (inum =ist_ele;inum<ied_ele; inum++) {
         icou = iele_patch[inum] / mesh_s->nsurf_each_tri;
         j =    iele_patch[inum] % mesh_s->nsurf_each_tri;
         
@@ -133,8 +134,96 @@ void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                                            &mesh_s->mesh_color[4*icolor], inum_tri,
                                            mesh_buf, point_buf);
     };
-	return;
+	return inum_tri;
 }
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+    struct gl_local_buffer_address  *point_buf;
+
+    struct viewer_mesh *mesh_s;
+    int shading_mode;
+    int polygon_mode;
+    
+    long nsurf_viz;
+    long *iele_patch;
+    
+    long *num_patch;
+} args_pthread_mesh_patch;
+
+static void * add_mesh_patch_to_buffer_1thread(void *arg){
+    args_pthread_mesh_patch * p = (args_pthread_mesh_patch *) arg;
+    int id =       p->id;
+    int nthreads = p->nthreads;
+    
+    struct gl_strided_buffer *strided_buf = p->strided_buf;
+    struct gl_local_buffer_address *point_buf = p->point_buf;
+    
+    struct viewer_mesh *mesh_s = p->mesh_s;
+    int shading_mode =  p->shading_mode;
+    int polygon_mode =  p->polygon_mode;
+    long nsurf_viz =  p->nsurf_viz;
+    long *iele_patch = p->iele_patch;;
+
+    long *num_patch =  p->num_patch;
+    
+    long lo = nsurf_viz * id /     nthreads;
+    long hi = nsurf_viz * (id+1) / nthreads;
+    long ist_patch = lo;
+
+    num_patch[id] = add_mesh_patch_to_buffer(shading_mode, polygon_mode, mesh_s,
+                                             ist_patch, lo, hi, iele_patch,
+                                             strided_buf, point_buf);
+    return 0;
+}
+
+long add_mesh_patch_to_buffer_pthread(int shading_mode, int polygon_mode,
+                                      struct viewer_mesh *mesh_s,
+                                      int nthreads, long ist_tri,
+                                      long ntot_patch, long *iele_patch,
+                                      struct gl_strided_buffer *mesh_buf,
+                                      struct gl_local_buffer_address **para_point_buf){
+/* Allocate thread arguments. */
+    args_pthread_mesh_patch *args
+                    = (args_pthread_mesh_patch *) malloc (nthreads * sizeof(args_pthread_mesh_patch));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_mesh_patch.\n"); exit(1);}
+/* Initialize thread handles and barrier. */
+    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
+    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
+        
+    int ip;
+    long *num_each = (long *) malloc (nthreads * sizeof(long));
+    for(ip=0;ip<nthreads;ip++) {
+        args[ip].id = ip;
+        args[ip].nthreads = nthreads;
+
+        args[ip].strided_buf = mesh_buf;
+        args[ip].point_buf = para_point_buf[ip];
+        
+        args[ip].mesh_s =    mesh_s;
+        args[ip].shading_mode =  shading_mode;
+        args[ip].polygon_mode =  polygon_mode;
+
+        args[ip].nsurf_viz =  ntot_patch;
+        args[ip].iele_patch = iele_patch;
+
+        args[ip].num_patch = num_each;
+            
+        pthread_create(&thread_handles[ip], NULL, add_mesh_patch_to_buffer_1thread, &args[ip]);
+    }
+    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
+    long num_patch = num_each[ip];
+    free(num_each);
+    free(thread_handles);
+    free(args);
+    return num_patch;
+}
+
+
+
 
 
 long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
