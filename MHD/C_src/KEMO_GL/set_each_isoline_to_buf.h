@@ -21,7 +21,6 @@ typedef struct{
     int nthreads;
     
     struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
     struct psf_data *psf_s;
 
     long icomp;
@@ -43,15 +42,13 @@ long set_each_isoline_to_buf(const long ist_patch,
                              double width, double v_line,
                              long icomp, double *f_color,
                              struct psf_data *psf_s,
-                             struct gl_strided_buffer *strided_buf,
-                             struct gl_local_buffer_address *point_buf);
+                             struct gl_strided_buffer *strided_buf);
 long set_each_map_isoline_to_buf(const long ist_patch,
                                  const long ist, const long ied,
                                  double width, double v_line,
                                  long icomp, double *f_color,
                                  struct psf_data *psf_s,
-                                 struct gl_strided_buffer *strided_buf,
-                                 struct gl_local_buffer_address *point_buf);
+                                 struct gl_strided_buffer *strided_buf);
 
 
 long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
@@ -63,16 +60,14 @@ long set_each_isoline_to_buf_pthread(const long ist_patch,
                                      double width, double v_line,
                                      long icomp, double *f_color,
                                      struct psf_data *psf_s,
-                                     struct gl_strided_buffer *strided_buf,
-                                     struct gl_local_buffer_address **para_point_buf);
+                                     struct gl_strided_buffer *strided_buf);
 
 long set_each_map_isoline_to_buf_pthread(const long ist_patch,
                                          const int nthreads, long *istack_threads,
                                          double width, double v_line,
                                          long icomp, double *f_color,
                                          struct psf_data *psf_s,
-                                         struct gl_strided_buffer *strided_buf,
-                                         struct gl_local_buffer_address **para_point_buf);
+                                         struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif
 

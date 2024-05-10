@@ -349,8 +349,8 @@ long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
 
 long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                           struct gl_strided_buffer *strided_buf,
-                           struct gl_local_buffer_address *point_buf){
+                           struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	double x_line[6], dir_line[6], color_line[8];
 	double xyzw[24*ncorner], norm[24*ncorner], col[24*ncorner];
 	double dcolor[4];
@@ -419,11 +419,11 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
                                            xyzw, norm, col);
 				
 				for (i=0; i<3*num_wall; i++) {
-                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, point_buf);
+                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, &point_buf);
 					for(nd=0;nd<4;nd++){
-                        strided_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw[4*i+nd];
-                        strided_buf->v_buf[nd+point_buf->igl_norm] = norm[4*i+nd];
-                        strided_buf->v_buf[nd+point_buf->igl_color] = col[4*i+nd];
+                        strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*i+nd];
+                        strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*i+nd];
+                        strided_buf->v_buf[nd+point_buf.igl_color] = col[4*i+nd];
                     };
 				};
 				inum_buf = inum_buf + num_wall;
@@ -460,7 +460,6 @@ static void *  set_psf_arrows_to_buf_1thread(void *args){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct gl_local_buffer_address *point_buf = p->point_buf;
     
     struct psf_data     *psf_s = p->psf_s;
     struct psf_menu_val *psf_m = p->psf_m;
@@ -474,8 +473,7 @@ static void *  set_psf_arrows_to_buf_1thread(void *args){
     long hi = nnod_viz * (id+1) / nthreads;
     
     num_patch[id] = set_psf_arrows_to_buf(istack_smp_arrow[id], lo, hi, 
-                                          ncorner, psf_s, psf_m,
-                                          strided_buf, point_buf);
+                                          ncorner, psf_s, psf_m, strided_buf);
     return 0;
 }
 
@@ -521,8 +519,7 @@ long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
 long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
                                    long *istack_smp_arrow, int ncorner, 
                                    struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                   struct gl_strided_buffer *strided_buf,
-                                   struct gl_local_buffer_address **para_point_buf){
+                                   struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_PSF_Arrow *args
                 = (args_pthread_PSF_Arrow *) malloc (nthreads * sizeof(args_pthread_PSF_Arrow));
@@ -538,7 +535,6 @@ long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = strided_buf;
-        args[ip].point_buf = para_point_buf[ip];
         args[ip].psf_s = psf_s;
         args[ip].psf_m = psf_m;
         args[ip].ncorner = ncorner;

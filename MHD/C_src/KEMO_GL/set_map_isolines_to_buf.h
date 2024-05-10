@@ -30,7 +30,6 @@ long add_map_PSF_isoline(const long ist_patch, const int nthreads,
 long set_map_PSF_isoline_to_buf(const long ist_patch,
                                 const int nthreads, long *istack_smp_psf_iso,
                                 struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                struct gl_strided_buffer *psf_buf,
-                                struct gl_local_buffer_address **para_point_buf);
+                                struct gl_strided_buffer *psf_buf);
 
 #endif

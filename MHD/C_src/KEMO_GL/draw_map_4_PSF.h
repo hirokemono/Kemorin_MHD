@@ -27,8 +27,7 @@ int check_draw_map(struct kemo_array_control *psf_a);
 void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
-                                 struct gl_strided_buffer *mline_buf,
-                                 struct gl_local_buffer_address **para_point_buf);
+                                 struct gl_strided_buffer *mline_buf);
 void set_map_patch_buffer(const int nthreads, long ist_psf, long ied_psf,
                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,

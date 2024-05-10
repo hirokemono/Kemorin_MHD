@@ -253,8 +253,8 @@ long append_line_tube_to_buf(const long ipatch_in,
                              int hex_tube[12][3], double radius, 
 							 double color_edge[8], double xyzw_edge[8], 
 							 double dir_edge[8], double norm_edge[8], 
-							 struct gl_strided_buffer *strided_buf,
-                             struct gl_local_buffer_address *point_buf){
+                             struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	long ipatch = ipatch_in;
 	long i, k, nd;
 	double xyzw_tube[24];
@@ -268,11 +268,11 @@ long append_line_tube_to_buf(const long ipatch_in,
 		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
 		for(k=0;k<6;k++){
-            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, point_buf);
+            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, &point_buf);
 			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xyzw_tube[4*k+nd];
-                strided_buf->v_buf[nd+point_buf->igl_color] = (float) color_tube[4*k+nd];
-                strided_buf->v_buf[nd+point_buf->igl_norm] =  (float) norm_tube[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_tube[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_tube[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_tube[4*k+nd];
             };
 		};
 	};
