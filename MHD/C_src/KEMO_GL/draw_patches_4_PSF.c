@@ -32,7 +32,15 @@ static void const_PSF_texture_buffer(int shading_mode, const int nthreads,
                                      struct gl_strided_buffer *psf_buf){
     const_PSF_patch_buffer(shading_mode, nthreads, ist_psf, ied_psf,
                            psf_s, psf_m, psf_a, psf_buf);
-    if(psf_buf->num_nod_buf > 0) set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
+    if(psf_buf->num_nod_buf > 0){
+        if(nthreads > 1){
+            set_psf_textures_to_buf_pthread(nthreads, ist_psf, ied_psf,
+                                            psf_s, psf_a, psf_buf);
+        }else{
+            set_psf_textures_to_buf(0, ist_psf, ied_psf,
+                                    psf_s, psf_a, psf_buf);
+        };
+    };
     return;
 }
 
