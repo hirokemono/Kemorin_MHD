@@ -14,8 +14,8 @@ long count_fieldlines_to_buf(struct psf_data *fline_s){
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            int ncorner, struct psf_data *fline_s, 
                            struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf,
-                           struct gl_local_buffer_address *point_buf){
+                           struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
     long inum_patch, k;
 	int num_wall;
 	int nd;
@@ -42,11 +42,11 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                                    xyzw, norm, col);
 		
 		for (k=0; k<3*num_wall; k++) {
-            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf, point_buf);
+            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf, &point_buf);
             for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw[4*k+nd];
-                strided_buf->v_buf[nd+point_buf->igl_norm] = norm[4*k+nd];
-                strided_buf->v_buf[nd+point_buf->igl_color] = col[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
+                strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
             };
 		};
 		inum_patch = inum_patch + num_wall; 
@@ -60,7 +60,6 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct gl_local_buffer_address *point_buf = p->point_buf;
     
     int ncorner = p->ncorner;
     struct psf_data       *fline_s = p->fline_s;
@@ -72,8 +71,8 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
     long hi = fline_s->nele_viz * (id+1) / nthreads;
     long ist_patch = 2 * ncorner * lo;
         
-    num_patch[id] = set_fieldtubes_to_buf(ist_patch, lo, hi, ncorner, fline_s, fline_m,
-                                          strided_buf, point_buf);
+    num_patch[id] = set_fieldtubes_to_buf(ist_patch, lo, hi, ncorner,
+                                          fline_s, fline_m, strided_buf);
     return 0;
 }
 
@@ -81,8 +80,7 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
 long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads, 
                                    int ncorner, struct psf_data *fline_s, 
                                    struct fline_menu_val *fline_m,
-                                   struct gl_strided_buffer *strided_buf,
-                                   struct gl_local_buffer_address **para_point_buf){
+                                   struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_fieldline *args
                 = (args_pthread_fieldline *) malloc (nthreads * sizeof(args_pthread_fieldline));
@@ -98,7 +96,6 @@ long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = strided_buf;
-        args[ip].point_buf = para_point_buf[ip];
         
         args[ip].fline_s = fline_s;
         args[ip].fline_m = fline_m;
@@ -121,8 +118,8 @@ long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
 long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct psf_data *fline_s,
                            struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf,
-                           struct gl_local_buffer_address *point_buf){
+                           struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	long iele, k, nd, inod;
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
@@ -130,13 +127,13 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
 			inod =fline_s->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITWO*iele+k), strided_buf, point_buf);
+            set_node_stride_buffer((ITWO*iele+k), strided_buf, &point_buf);
 			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf->igl_xyzw] 
+                strided_buf->v_buf[nd+point_buf.igl_xyzw]
                     = fline_s->xyzw_viz[4*inod + nd];
             };
 			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf->igl_color]
+                strided_buf->v_buf[nd+point_buf.igl_color]
                     = fline_s->color_nod[4*inod + nd];
             };
 		};
@@ -151,7 +148,6 @@ static void * set_fieldlines_to_buf_1thread(void *args){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct gl_local_buffer_address *point_buf = p->point_buf;
     
     struct psf_data       *fline_s = p->fline_s;
     struct fline_menu_val *fline_m = p->fline_m;
@@ -161,16 +157,14 @@ static void * set_fieldlines_to_buf_1thread(void *args){
     long lo = fline_s->nele_viz * id /     nthreads;
     long hi = fline_s->nele_viz * (id+1) / nthreads;
         
-    num_patch[id] = set_fieldlines_to_buf(lo, lo, hi, fline_s, fline_m,
-                                          strided_buf, point_buf);
+    num_patch[id] = set_fieldlines_to_buf(lo, lo, hi, fline_s, fline_m, strided_buf);
     return 0;
 }
 
 long set_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
                                    struct psf_data *fline_s, 
                                    struct fline_menu_val *fline_m,
-                                   struct gl_strided_buffer *strided_buf,
-                                   struct gl_local_buffer_address **para_point_buf){
+                                   struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_fieldline *args
                 = (args_pthread_fieldline *) malloc (nthreads * sizeof(args_pthread_fieldline));
@@ -186,7 +180,6 @@ long set_fieldlines_to_buf_pthread(long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = strided_buf;
-        args[ip].point_buf = para_point_buf[ip];
         
         args[ip].fline_s = fline_s;
         args[ip].fline_m = fline_m;

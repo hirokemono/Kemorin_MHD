@@ -16,6 +16,5 @@
 void const_fieldlines_buffer(const int nthreads, 
                              struct psf_data *fline_s, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
-                             struct gl_strided_buffer *FLINE_line_buf,
-                             struct gl_local_buffer_address **para_point_buf);
+                             struct gl_strided_buffer *FLINE_line_buf);
 #endif

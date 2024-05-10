@@ -6,8 +6,7 @@
 void const_fieldlines_buffer(const int nthreads, 
                              struct psf_data *fline_s, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
-                             struct gl_strided_buffer *FLINE_line_buf,
-                             struct gl_local_buffer_address **para_point_buf){
+                             struct gl_strided_buffer *FLINE_line_buf){
     int ncorner = ISIX;
 
     FLINE_tube_buf->num_nod_buf = 0;
@@ -26,12 +25,10 @@ void const_fieldlines_buffer(const int nthreads,
             if(nthreads > 1){
                 num_patch = set_fieldtubes_to_buf_pthread(IZERO, nthreads, ncorner, 
                                                           fline_s, fline_m,
-                                                          FLINE_tube_buf, 
-                                                          para_point_buf);
+                                                          FLINE_tube_buf);
             }else{
                 num_patch = set_fieldtubes_to_buf(IZERO, IZERO, fline_s->nele_viz,
-                                                  ncorner, fline_s, fline_m,
-                                                  FLINE_tube_buf, para_point_buf[0]);
+                                                  ncorner, fline_s, fline_m, FLINE_tube_buf);
             };
         };
     };
@@ -44,12 +41,10 @@ void const_fieldlines_buffer(const int nthreads,
         if(nthreads > 1){
             set_fieldlines_to_buf_pthread(IZERO, nthreads,
                                           fline_s, fline_m,
-                                          FLINE_line_buf,
-                                          para_point_buf);
+                                          FLINE_line_buf);
         }else{
             set_fieldlines_to_buf(IZERO, IZERO, fline_s->nele_viz,
-                                  fline_s, fline_m,
-                                  FLINE_line_buf, para_point_buf[0]);
+                                  fline_s, fline_m, FLINE_line_buf);
         };
  
     };
