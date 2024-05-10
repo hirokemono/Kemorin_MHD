@@ -29,7 +29,7 @@ struct mesh_sorting_work{
 
 
 /* prototypes */
-void const_solid_mesh_buffer(int nthread,
+void const_solid_mesh_buffer(int nthreads,
                              struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                              struct view_element *view_s,
                              struct gl_strided_buffer *mesh_solid_buf,

@@ -4,8 +4,6 @@
 #include "draw_patch_4_mesh_c.h"
 
 #define NPAGE 4096
-#define NTHREADS 32
-
 
 struct mesh_sorting_work * alloc_mesh_sorting_work(long ntot_trans_patch, struct viewer_mesh *mesh_s){
     struct mesh_sorting_work * mesh_sort = (struct mesh_sorting_work *) malloc(sizeof(struct mesh_sorting_work));
@@ -75,21 +73,23 @@ static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
 	return;
 }
 
-void sort_transparent_mesh_patches(struct viewer_mesh *mesh_s,
+void sort_transparent_mesh_patches(int nthreads, struct viewer_mesh *mesh_s,
                                    struct mesh_sorting_work *mesh_sort){
     long i;
-    float rmax = max_Float_Array_pthreads(NTHREADS, mesh_s->ntot_trans_patch, mesh_sort->z_trans_patch);
+    float rmax = max_Float_Array_pthreads(nthreads, mesh_s->ntot_trans_patch, mesh_sort->z_trans_patch);
     for(i=mesh_s->ntot_trans_patch;i<mesh_sort->ntotP2_trans_patch;i++){
         mesh_sort->z_trans_patch[i] = rmax + 10000.0;
         mesh_sort->index_trans_patch[i] = -1;
     }
 
-    /*
-    quicksort_real_c(mesh_sort->z_trans_patch, mesh_sort->index_trans_patch,
-                     IZERO, mesh_sort->ntotP2_trans_patch-1);
-     */
-    bitonicsort_Float_Pthread(NTHREADS, mesh_sort->ntotP2_trans_patch,
-                              mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
+    if(nthreads > 1){
+        bitonicsort_Float_Pthread(nthreads, mesh_sort->ntotP2_trans_patch,
+                                  mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
+    }else{
+        quicksort_real_c(mesh_sort->z_trans_patch, mesh_sort->index_trans_patch,
+                         IZERO, mesh_sort->ntotP2_trans_patch-1);
+    };
+    
     for(i=0;i<mesh_s->ntot_trans_patch;i++){
         mesh_s->iele_trans_patch[i] = mesh_sort->index_trans_patch[i];
     }
@@ -118,7 +118,7 @@ void const_trans_mesh_buffer(int nthreads,
                                             mesh_s->iele_trans_patch);
         set_trans_mesh_patch_for_sort(mesh_s, mesh_s->iele_trans_patch, mesh_sort->z_ele_view,
                                       mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
-        sort_transparent_mesh_patches(mesh_s, mesh_sort);
+        sort_transparent_mesh_patches(nthreads, mesh_s, mesh_sort);
         dealloc_mesh_sorting_work(mesh_sort);
     };
     
@@ -143,7 +143,7 @@ void const_trans_mesh_buffer(int nthreads,
 };
 
 
-static void const_mesh_grids_buffer(int nthread,
+static void const_mesh_grids_buffer(int nthreads,
                                     struct viewer_mesh *mesh_s,
                                     struct mesh_menu_val *mesh_m,
                                     struct gl_strided_buffer *mesh_buf,
@@ -165,7 +165,7 @@ static void const_mesh_grids_buffer(int nthread,
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(mesh_buf);
-	set_mesh_grid_to_buf(nthread, istack_edge_domain_edge,
+	set_mesh_grid_to_buf(nthreads, istack_edge_domain_edge,
                          istack_ele_grp_edge,
                          istack_surf_grp_edge,
                          mesh_s, mesh_m, mesh_buf, para_point_buf);
@@ -176,7 +176,7 @@ static void const_mesh_grids_buffer(int nthread,
 }
 
 
-static void const_mesh_nodes_ico_buffer(int nthread,
+static void const_mesh_nodes_ico_buffer(int nthreads,
                                         struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                         struct gl_strided_buffer *mesh_buf,
                                         struct gl_local_buffer_address **para_point_buf){
@@ -200,7 +200,7 @@ static void const_mesh_nodes_ico_buffer(int nthread,
     if(mesh_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_buf);
         
-        set_mesh_node_to_buf(nthread, istack_node_domain_patch,
+        set_mesh_node_to_buf(nthreads, istack_node_domain_patch,
                              istack_node_nod_grp_patch,
                              istack_node_ele_grp_patch,
                              istack_node_surf_grp_patch,
@@ -213,7 +213,7 @@ static void const_mesh_nodes_ico_buffer(int nthread,
     return;
 }
 
-void const_solid_mesh_buffer(int nthread,
+void const_solid_mesh_buffer(int nthreads,
                              struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                              struct view_element *view_s,
                              struct gl_strided_buffer *mesh_solid_buf,
@@ -225,9 +225,9 @@ void const_solid_mesh_buffer(int nthread,
     mesh_node_buf->num_nod_buf = 0;
     if(mesh_m->iflag_draw_mesh == 0) return;
         
-    const_mesh_grids_buffer(nthread, mesh_s, mesh_m, mesh_grid_buf, para_point_buf);
-    const_mesh_nodes_ico_buffer(nthread, mesh_s, mesh_m, mesh_node_buf, para_point_buf);
-    const_solid_mesh_patch_bufffer(nthread, view_s->shading_mode, mesh_s, mesh_m,
+    const_mesh_grids_buffer(nthreads, mesh_s, mesh_m, mesh_grid_buf, para_point_buf);
+    const_mesh_nodes_ico_buffer(nthreads, mesh_s, mesh_m, mesh_node_buf, para_point_buf);
+    const_solid_mesh_patch_bufffer(nthreads, view_s->shading_mode, mesh_s, mesh_m,
                                    mesh_solid_buf, para_point_buf);
     return;
 };
