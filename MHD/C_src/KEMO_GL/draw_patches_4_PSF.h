@@ -34,6 +34,5 @@ void const_PSF_trans_objects_buffer(const int nthreads,
                                     struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_trns_buf,
-                                    struct gl_strided_buffer *PSF_ttxur_buf,
-                                    struct gl_local_buffer_address **para_point_buf);
+                                    struct gl_strided_buffer *PSF_ttxur_buf);
 #endif
