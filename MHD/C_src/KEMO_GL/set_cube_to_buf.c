@@ -97,7 +97,6 @@ int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
     float *x_txur;
     float *n_draw;
     float *c_draw;
-    float *d_draw;
 	int i, j, k;
 	
 	for(j=0;j<12;j++){
