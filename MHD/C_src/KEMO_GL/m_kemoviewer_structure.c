@@ -69,15 +69,24 @@ void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstri
 	return;
 };
 
-
 /* Routines for Kemoviewer arrays */
-
 
 void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array){
     if(id_window > kemoview_array->num_window){printf("Something wrong in window ID \n");};
 	kemoview_array->id_current = id_window;
 	return;
 }
+
+/*  Routines for threads setting */
+
+void kemoview_set_number_of_threads(int input, struct kemoviewer_type *kemoviewer){
+    set_number_of_threads(input, kemoviewer->kemo_buffers);
+}
+int kemoview_get_number_of_threads(struct kemoviewer_type *kemoviewer){
+    return send_number_of_threads(kemoviewer->kemo_buffers);
+}
+
+
 /* Routines for draw by OpenGL */
 
 void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){

@@ -26,11 +26,12 @@
 @synthesize globeGridDrawFlag;
 @synthesize axisDrawFlag;
 @synthesize axisDrawAccess;
+@synthesize ThreadsCount;
 - (id)init
 {
 	NodeSizeFactor =  1;
 	NodeSizedigits = -2;
-	ColorLoopCount =  6;
+	self.ColorLoopCount =  6;
     
     self.timeDisplayAccess =     0;
     self.fileStepDisplayAccess = 0;
@@ -58,6 +59,14 @@
                                        (int) self.fileStepDisplayAccess, kemo_sgl);
     kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
                                        (int) self.fileStepDisplayFlag, kemo_sgl);
+    
+    NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
+    self.ThreadsCount = [[defaults stringForKey:@"ThreadsCountNum"] intValue];
+    if(self.ThreadsCount < 0){
+        self.ThreadsCount = kemoview_get_number_of_threads(kemo_sgl);
+    }else{
+        kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
+    }
     return;
 }
 
@@ -170,7 +179,7 @@
 
 - (IBAction)SetColorLoopCount:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_num_of_color_loop((int) ColorLoopCount, kemo_sgl);
+	kemoview_set_num_of_color_loop((int) self.ColorLoopCount, kemo_sgl);
 
 	[_metalView UpdateImage:kemo_sgl];
 }
@@ -266,6 +275,16 @@
     };
     [_metalView UpdateImage:kemo_sgl];
 };
+
+- (IBAction)SetNnumberOfThreads:(id)pSender {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
+
+    NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
+    [defaults setInteger:self.ThreadsCount forKey:@"ThreadsCountNum"];
+
+    [_metalView UpdateImage:kemo_sgl];
+}
 
 
 @end

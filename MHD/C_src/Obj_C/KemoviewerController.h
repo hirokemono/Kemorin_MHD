@@ -34,6 +34,8 @@
 	CGFloat ColorLoopCount;
 	CGFloat NodeSizeFactor;
 	CGFloat NodeSizedigits;
+    
+    CGFloat ThreadsCount;
 
 	// Viewer type handling
 	IBOutlet id _viewtypeItem;
@@ -81,6 +83,7 @@
 @property NSInteger globeGridDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
+@property CGFloat ThreadsCount;
 
 
 - (id)init;
@@ -116,5 +119,7 @@
 
 - (IBAction)TimeLabelSwitchAction:(id)sender;
 - (IBAction)FileStepLabelSwitchAction:(id)sender;
+
+- (IBAction)SetNnumberOfThreads:(id)pSender;
 
 @end

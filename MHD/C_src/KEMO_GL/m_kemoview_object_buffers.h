@@ -27,10 +27,10 @@
 #include "sort_by_patch_distance.h"
 
 struct kemoview_buffers{
+    int nthreads;
+    
     struct phong_lights *kemo_lights;
     
-    struct gl_local_buffer_address *point_buf;
-
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
     
@@ -75,6 +75,10 @@ struct kemoview_buffers{
 
 struct kemoview_buffers * init_kemoview_buffers(void);
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
+
+void set_number_of_threads(int input, struct kemoview_buffers *kemo_buffers);
+int send_number_of_threads(struct kemoview_buffers *kemo_buffers);
+
 void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers);

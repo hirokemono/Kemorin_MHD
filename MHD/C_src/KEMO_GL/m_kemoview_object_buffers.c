@@ -7,8 +7,6 @@
 
 #include "m_kemoview_object_buffers.h"
 
-#define NTHREADS 24
-
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
@@ -25,12 +23,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
         exit(0);
     };
     
-    kemo_buffers->point_buf = (struct gl_local_buffer_address *) malloc(sizeof(struct gl_local_buffer_address));
-    if(kemo_buffers->point_buf == NULL){
-        printf("malloc error in point_buf \n");
-        exit(0);
-    };
-
+    kemo_buffers->nthreads = 8;
+    
     kemo_buffers->cube_buf =        init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
 
@@ -111,11 +105,17 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 
     dealloc_strided_buffer(kemo_buffers->axis_buf);
 
-    free(kemo_buffers->point_buf);
     free(kemo_buffers->kemo_lights);
     free(kemo_buffers);
     return;
 };
+
+void set_number_of_threads(int input, struct kemoview_buffers *kemo_buffers){
+    if(0 < input  && input < 256){kemo_buffers->nthreads = input;};
+}
+int send_number_of_threads(struct kemoview_buffers *kemo_buffers){
+    return kemo_buffers->nthreads;
+}
 
 void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
@@ -128,10 +128,12 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
-        set_map_patch_buffer(NTHREADS, IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+        set_map_patch_buffer(kemo_buffers->nthreads,
+                             IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                              kemo_buffers->MAP_solid_buf);
-        set_map_PSF_isolines_buffer(NTHREADS, kemo_psf->psf_d, kemo_psf->psf_m,
+        set_map_PSF_isolines_buffer(kemo_buffers->nthreads,
+                                    kemo_psf->psf_d, kemo_psf->psf_m,
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf);
         
@@ -150,13 +152,15 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
         set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
         
-        const_PSF_solid_objects_buffer(NTHREADS, view_s, kemo_psf->psf_d,
+        const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
+                                       view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_solid_buf,
                                        kemo_buffers->PSF_stxur_buf,
                                        kemo_buffers->PSF_isoline_buf,
                                        kemo_buffers->PSF_arrow_buf);
-        const_PSF_trans_objects_buffer(NTHREADS, view_s, kemo_psf->psf_d,
+        const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
+                                       view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_trns_buf,
                                        kemo_buffers->PSF_ttxur_buf);
@@ -166,17 +170,17 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         set_sph_flame_buffer(kemo_mesh->mesh_m,
                              kemo_buffers->sph_grid_buf);
         
-        const_fieldlines_buffer(NTHREADS, 
+        const_fieldlines_buffer(kemo_buffers->nthreads,
                                 kemo_fline->fline_d, kemo_fline->fline_m,
                                 kemo_buffers->FLINE_tube_buf,
                                 kemo_buffers->FLINE_line_buf);
         
-        const_solid_mesh_buffer(NTHREADS,
+        const_solid_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->mesh_solid_buf,
                                 kemo_buffers->mesh_grid_buf,
                                 kemo_buffers->mesh_node_buf);
-        const_trans_mesh_buffer(NTHREADS,
+        const_trans_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->mesh_trns_buf);
         
@@ -224,12 +228,13 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
                                                 kemo_psf->psf_a, view_s);
     iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
     
-    const_PSF_trans_objects_buffer(NTHREADS, view_s, kemo_psf->psf_d,
+    const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
+                                   view_s, kemo_psf->psf_d,
                                    kemo_psf->psf_m, kemo_psf->psf_a,
                                    kemo_buffers->PSF_trns_buf,
                                    kemo_buffers->PSF_ttxur_buf);
-    const_trans_mesh_buffer(NTHREADS, kemo_mesh->mesh_d,
-                            kemo_mesh->mesh_m, view_s,
+    const_trans_mesh_buffer(kemo_buffers->nthreads,
+                            kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                             kemo_buffers->mesh_trns_buf);
     return;
 };

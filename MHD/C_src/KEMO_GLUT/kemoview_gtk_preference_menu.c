@@ -38,7 +38,15 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	return;
 }
 
-static void AmbientChange(GtkWidget *entry, gpointer data)
+static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
+{
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+    kemoview_set_number_of_threads(ivalue, kemo_sgl);
+    draw_full(kemo_sgl);
+    return;
+}
+static void AmbientChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -46,7 +54,7 @@ static void AmbientChange(GtkWidget *entry, gpointer data)
     draw_full(kemo_sgl);
 	return;
 }
-static void DiffuseChange(GtkWidget *entry, gpointer data)
+static void DiffuseChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -54,7 +62,7 @@ static void DiffuseChange(GtkWidget *entry, gpointer data)
     draw_full(kemo_sgl);
 	return;
 }
-static void SpecularChange(GtkWidget *entry, gpointer data)
+static void SpecularChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -62,7 +70,7 @@ static void SpecularChange(GtkWidget *entry, gpointer data)
     draw_full(kemo_sgl);
 	return;
 }
-static void ShinenessChange(GtkWidget *entry, gpointer data)
+static void ShinenessChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -98,11 +106,18 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 	g_signal_connect(G_OBJECT(pref_gmenu->BGselButton), "clicked",
                      G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)window);
 
+    
+    int current_int = kemoview_get_number_of_threads(kemoviewer_data);
+    GtkAdjustment *adj_t = gtk_adjustment_new(current_int, 1, 256, 1, 1, 0.0);
+    pref_gmenu->spin_threads = gtk_spin_button_new(GTK_ADJUSTMENT(adj_t),0,2);
+    g_signal_connect(pref_gmenu->spin_threads, "value-changed",
+                     G_CALLBACK(NumThreadsChange_CB), (gpointer) kemoviewer_data);
+
+    
+    
     pref_gmenu->Frame_BGsel = init_light_list_frame(kemoviewer_data,
                                                     pref_gmenu->lightparams_vws);
-	
-	
-    float current_value = 0.0;
+	float current_value = 0.0;
 	GtkAdjustment *adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	pref_gmenu->spin_ambient = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
 	
@@ -116,13 +131,13 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 	pref_gmenu->spin_shineness = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
 	
 	g_signal_connect(pref_gmenu->spin_ambient, "value-changed",
-                     G_CALLBACK(AmbientChange), (gpointer) kemoviewer_data);
+                     G_CALLBACK(AmbientChange_CB), (gpointer) kemoviewer_data);
 	g_signal_connect(pref_gmenu->spin_diffuse, "value-changed",
-                     G_CALLBACK(DiffuseChange), (gpointer) kemoviewer_data);
+                     G_CALLBACK(DiffuseChange_CB), (gpointer) kemoviewer_data);
 	g_signal_connect(pref_gmenu->spin_specular, "value-changed",
-                     G_CALLBACK(SpecularChange), (gpointer) kemoviewer_data);
+                     G_CALLBACK(SpecularChange_CB), (gpointer) kemoviewer_data);
 	g_signal_connect(pref_gmenu->spin_shineness, "value-changed",
-                     G_CALLBACK(ShinenessChange), (gpointer) kemoviewer_data);
+                     G_CALLBACK(ShinenessChange_CB), (gpointer) kemoviewer_data);
 	
 	set_GTK_preference_menu(kemoviewer_data, pref_gmenu);
 	
@@ -144,6 +159,7 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 		
     pref_gmenu->pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->BGselButton, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->spin_threads, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->Frame_BGsel, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[0], FALSE, FALSE, 0);
