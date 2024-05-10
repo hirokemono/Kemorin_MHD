@@ -149,10 +149,9 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
-        set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+        set_map_patch_buffer(NTHREADS, IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                             kemo_buffers->MAP_solid_buf,
-                             kemo_buffers->point_buf);
+                             kemo_buffers->MAP_solid_buf);
         set_map_PSF_isolines_buffer(NTHREADS, kemo_psf->psf_d, kemo_psf->psf_m,
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf,
