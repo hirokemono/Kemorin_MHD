@@ -134,37 +134,36 @@ static long count_menu_to_buf(void){
 };
 
 static long set_menu_to_buf(unsigned char *menubottun_bits,
-                            struct gl_strided_buffer *strided_buf,
-                            struct gl_local_buffer_address *point_buf){
+                            struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	long i, j, idx, icou;
 	for(j=0;j<MENU_HEIGHT;j++){
 		for(i=0;i<MENU_WIDTH;i++){
 			idx = i + j * MENU_WIDTH;
-            set_node_stride_buffer(idx, strided_buf, point_buf);
+            set_node_stride_buffer(idx, strided_buf, &point_buf);
             
-			strided_buf->v_buf[point_buf->igl_xyzw  ]
+			strided_buf->v_buf[point_buf.igl_xyzw  ]
                 =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
-			strided_buf->v_buf[point_buf->igl_xyzw+1] 
+			strided_buf->v_buf[point_buf.igl_xyzw+1]
                 =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
-			strided_buf->v_buf[point_buf->igl_xyzw+2] 
+			strided_buf->v_buf[point_buf.igl_xyzw+2]
                 = 0.0;
-            strided_buf->v_buf[point_buf->igl_xyzw+3] = 1.0;
+            strided_buf->v_buf[point_buf.igl_xyzw+3] = 1.0;
 			
-			strided_buf->v_buf[point_buf->igl_color  ] 
+			strided_buf->v_buf[point_buf.igl_color  ]
                 =  (float) ((int) menubottun_bits[3*idx  ]) / 256.0;
-			strided_buf->v_buf[point_buf->igl_color+1]
+			strided_buf->v_buf[point_buf.igl_color+1]
                 =  (float) ((int) menubottun_bits[3*idx+1]) / 256.0;
-			strided_buf->v_buf[point_buf->igl_color+2] 
+			strided_buf->v_buf[point_buf.igl_color+2]
                 =  (float) ((int) menubottun_bits[3*idx+2]) / 256.0;
-			strided_buf->v_buf[point_buf->igl_color+3] = 1.0;
+			strided_buf->v_buf[point_buf.igl_color+3] = 1.0;
 		}
 	}
 	icou = MENU_HEIGHT * MENU_WIDTH;
 	return icou;
 };
 
-void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf,
-                              struct gl_local_buffer_address *point_buf){
+void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
     unsigned char menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 	long num_dot = count_menu_to_buf();
 	
@@ -172,6 +171,6 @@ void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf,
 	resize_strided_buffer(strided_buf);
 	
 	menubottun_bitmap(menubottun_bits);
-	set_menu_to_buf(menubottun_bits, strided_buf, point_buf);
+	set_menu_to_buf(menubottun_bits, strided_buf);
 	return;
 };

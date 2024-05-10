@@ -18,7 +18,6 @@
 /* prototypes */
 void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
                      double dist, int ncorner, double radius,
-                     struct gl_strided_buffer *strided_buf,
-                     struct gl_local_buffer_address *point_buf);
+                     struct gl_strided_buffer *strided_buf);
 	
 #endif

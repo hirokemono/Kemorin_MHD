@@ -16,8 +16,7 @@
 
 void menubottun_bitmap(unsigned char *menu_bitmap);
 
-void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf,
-                              struct gl_local_buffer_address *point_buf);
+void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf);
 
 #endif
 
