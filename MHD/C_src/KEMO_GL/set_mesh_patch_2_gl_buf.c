@@ -9,9 +9,9 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
                                     int *node_quad_2_linear_tri,
                                     double normal_ele[4], double normal_nod[12],
                                     double f_color[4], const long inum_tri,
-                                    struct gl_strided_buffer *strided_buf,
-                                    struct gl_local_buffer_address *point_buf){
-	int inod, inum, k1, nd;
+                                    struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
+    int inod, inum, k1, nd;
     long k, kr;
     
 	for (k=0; k<ITHREE; k++) {
@@ -21,27 +21,27 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
         inum = k1-1 + nnod_4_sf * (abs(iele)-1);
 		inod = ie_sf_viewer[inum]-1;
 		
-        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf, point_buf);
+        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf, &point_buf);
 		
 		for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf->igl_xyzw] =  xyzw_draw[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_draw[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
         };
 		
 		if (shading_mode == SMOOTH_SHADE) {
 			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf->igl_norm] = normal_nod[4*kr+nd];
+                strided_buf->v_buf[nd+point_buf.igl_norm] = normal_nod[4*kr+nd];
             };
 		} else {
 			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf->igl_norm] = normal_ele[nd];
+                strided_buf->v_buf[nd+point_buf.igl_norm] = normal_ele[nd];
             };
 		};
 		
 		if(polygon_mode == REVERSE_POLYGON){
 			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf->igl_norm] = 
-                    - strided_buf->v_buf[nd+point_buf->igl_norm];
+                strided_buf->v_buf[nd+point_buf.igl_norm] =
+                    - strided_buf->v_buf[nd+point_buf.igl_norm];
             };
 		};
 	};
@@ -112,9 +112,8 @@ void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
 long add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                               struct viewer_mesh *mesh_s, long ist_tri,
                               long ist_ele, long ied_ele, long *iele_patch,
-                              struct gl_strided_buffer *mesh_buf,
-                              struct gl_local_buffer_address *point_buf){
-	int j, icolor;
+                              struct gl_strided_buffer *mesh_buf){
+    int j, icolor;
     long inum, icou, jnum, item;
 	
 	long inum_tri = ist_tri;
@@ -131,8 +130,8 @@ long add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                                            mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
                                            &mesh_s->normal_mesh_patch[4*jnum],
                                            &mesh_s->normal_nod_mesh_patch[12*jnum],
-                                           &mesh_s->mesh_color[4*icolor], inum_tri,
-                                           mesh_buf, point_buf);
+                                           &mesh_s->mesh_color[4*icolor],
+                                           inum_tri, mesh_buf);
     };
 	return inum_tri;
 }
@@ -142,7 +141,6 @@ typedef struct{
     int nthreads;
     
     struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
 
     struct viewer_mesh *mesh_s;
     int shading_mode;
@@ -160,7 +158,6 @@ static void * add_mesh_patch_to_buffer_1thread(void *arg){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct gl_local_buffer_address *point_buf = p->point_buf;
     
     struct viewer_mesh *mesh_s = p->mesh_s;
     int shading_mode =  p->shading_mode;
@@ -176,7 +173,7 @@ static void * add_mesh_patch_to_buffer_1thread(void *arg){
 
     num_patch[id] = add_mesh_patch_to_buffer(shading_mode, polygon_mode, mesh_s,
                                              ist_patch, lo, hi, iele_patch,
-                                             strided_buf, point_buf);
+                                             strided_buf);
     return 0;
 }
 
@@ -184,8 +181,7 @@ long add_mesh_patch_to_buffer_pthread(int shading_mode, int polygon_mode,
                                       struct viewer_mesh *mesh_s,
                                       int nthreads, long ist_tri,
                                       long ntot_patch, long *iele_patch,
-                                      struct gl_strided_buffer *mesh_buf,
-                                      struct gl_local_buffer_address **para_point_buf){
+                                      struct gl_strided_buffer *mesh_buf){
 /* Allocate thread arguments. */
     args_pthread_mesh_patch *args
                     = (args_pthread_mesh_patch *) malloc (nthreads * sizeof(args_pthread_mesh_patch));
@@ -201,7 +197,6 @@ long add_mesh_patch_to_buffer_pthread(int shading_mode, int polygon_mode,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = mesh_buf;
-        args[ip].point_buf = para_point_buf[ip];
         
         args[ip].mesh_s =    mesh_s;
         args[ip].shading_mode =  shading_mode;

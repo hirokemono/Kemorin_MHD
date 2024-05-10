@@ -28,8 +28,8 @@ static long set_each_group_node_ico_to_buf(const long ist_tri,
                                            long ist_grp, long ied_grp, int *item_grp,
                                            struct viewer_mesh *mesh_s, double node_diam,
                                            double f_color[4], 
-                                           struct gl_strided_buffer *mesh_buf,
-                                           struct gl_local_buffer_address *point_buf){
+                                           struct gl_strided_buffer *mesh_buf){
+    struct gl_local_buffer_address point_buf;
     double xyzw_patch[240], norm_patch[240];
     int inod;
     long inum, icou, nd;
@@ -42,11 +42,11 @@ static long set_each_group_node_ico_to_buf(const long ist_tri,
                                          xyzw_patch, norm_patch);
 
         for (icou=0; icou<3*icou_tri; icou++) {
-            set_node_stride_buffer((3*inum_tri+icou), mesh_buf, point_buf);
+            set_node_stride_buffer((3*inum_tri+icou), mesh_buf, &point_buf);
             for(nd=0;nd<4;nd++){
-                mesh_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw_patch[4*icou+nd];
-                mesh_buf->v_buf[nd+point_buf->igl_norm] = norm_patch[4*icou+nd];
-                mesh_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+                mesh_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw_patch[4*icou+nd];
+                mesh_buf->v_buf[nd+point_buf.igl_norm] = norm_patch[4*icou+nd];
+                mesh_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
             };
         };
         inum_tri = inum_tri + icou_tri;
@@ -59,7 +59,6 @@ typedef struct{
     int nthreads;
     
     struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
 
     struct viewer_mesh *mesh_s;
     int ist_grp;
@@ -78,7 +77,6 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct gl_local_buffer_address *point_buf = p->point_buf;
     
     struct viewer_mesh *mesh_s = p->mesh_s;
     int ist_grp =  p->ist_grp;
@@ -96,8 +94,7 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
         
     num_patch[id] = set_each_group_node_ico_to_buf(ist_patch,
                                                    (lo+ist_grp), (hi+ist_grp), item_grp,
-                                                   mesh_s, node_diam, f_color,
-                                                   strided_buf, point_buf);
+                                                   mesh_s, node_diam, f_color, strided_buf);
 
     return 0;
 }
@@ -106,8 +103,7 @@ long each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
                                      int ist_grp, int ied_grp, int *item_grp,
                                      struct viewer_mesh *mesh_s, double node_diam,
                                      double f_color[4],
-                                     struct gl_strided_buffer *mesh_buf,
-                                     struct gl_local_buffer_address **para_point_buf){
+                                     struct gl_strided_buffer *mesh_buf){
 /* Allocate thread arguments. */
     args_pthread_mesh_node *args
                 = (args_pthread_mesh_node *) malloc (nthreads * sizeof(args_pthread_mesh_node));
@@ -123,7 +119,6 @@ long each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = mesh_buf;
-        args[ip].point_buf = para_point_buf[ip];
         
         args[ip].mesh_s =    mesh_s;
         args[ip].ist_grp =  ist_grp;
@@ -158,8 +153,7 @@ static long set_mesh_node_ico_to_buf(int nthreads, long *istack_patch_pe,
                                      int node_color, int color_mode,
                                      int color_loop, float single_color[4],
                                      int *iflag_domain,
-                                     struct gl_strided_buffer *mesh_buf,
-                                     struct gl_local_buffer_address **para_point_buf){
+                                     struct gl_strided_buffer *mesh_buf){
 	double f_color[4];
     int ip;
     long inum_tri;
@@ -179,12 +173,12 @@ static long set_mesh_node_ico_to_buf(int nthreads, long *istack_patch_pe,
                 inum_tri = each_grp_nod_ico_to_buf_pthread(istack_patch_pe[ip], nthreads,
                                                            istack_grp[ip], istack_grp[ip+1],
                                                            item_grp, mesh_s, node_diam, f_color,
-                                                           mesh_buf, para_point_buf);
+                                                           mesh_buf);
             }else{
                 inum_tri = set_each_group_node_ico_to_buf(istack_patch_pe[ip],
                                                           istack_grp[ip], istack_grp[ip+1],
                                                           item_grp, mesh_s, node_diam, f_color,
-                                                          mesh_buf, para_point_buf[0]);
+                                                          mesh_buf);
             };
 		}
 	};
@@ -249,8 +243,7 @@ long set_mesh_node_to_buf(const int nthreads,
                           long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch,
                           struct viewer_mesh *mesh_s,
                           struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf,
-                          struct gl_local_buffer_address **para_point_buf){
+                          struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
 	long num_tri = 0;
 	
@@ -261,7 +254,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                        mesh_m->node_diam, mesh_m->domain_node_color,
                                        mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                        mesh_m->domain_node_color_code, mesh_m->draw_domains_nod,
-                                       mesh_buf, para_point_buf);
+                                       mesh_buf);
 	
 	/* ! draw node group */
 	
@@ -274,7 +267,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                mesh_m->node_diam, mesh_m->node_node_color,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->node_node_color_code, mesh_m->always_draw_domains,
-                                               mesh_buf, para_point_buf);
+                                               mesh_buf);
 	
 		};
 	};
@@ -292,7 +285,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->ele_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf, para_point_buf);
+                                               mesh_buf);
 	
 		};
 	};
@@ -310,7 +303,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->surf_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf, para_point_buf);
+                                               mesh_buf);
 	
 		};
 	};

@@ -46,8 +46,7 @@ void dealloc_mesh_sorting_work(struct mesh_sorting_work *mesh_sort){
 static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
                                            struct viewer_mesh *mesh_s,
                                            struct mesh_menu_val *mesh_m,
-                                           struct gl_strided_buffer *mesh_solid_buf,
-                                           struct gl_local_buffer_address **para_point_buf){
+                                           struct gl_strided_buffer *mesh_solid_buf){
 	mesh_s->ntot_solid_patch = count_solid_mesh_patches(mesh_s, mesh_m);
     if(mesh_s->ntot_solid_patch > 0){
         set_mesh_patch_colors(mesh_m, mesh_s);
@@ -63,12 +62,11 @@ static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
         num_tri = add_mesh_patch_to_buffer_pthread(shading_mode, mesh_m->polygon_mode,
                                                    mesh_s, nthreads, IZERO,
                                                    mesh_s->ntot_solid_patch, mesh_s->iele_solid_patch,
-                                                   mesh_solid_buf, para_point_buf);
+                                                   mesh_solid_buf);
     }else{
         num_tri = add_mesh_patch_to_buffer(shading_mode, mesh_m->polygon_mode, mesh_s,
                                            IZERO, IZERO, mesh_s->ntot_solid_patch,
-                                           mesh_s->iele_solid_patch,
-                                           mesh_solid_buf, para_point_buf[0]);
+                                           mesh_s->iele_solid_patch, mesh_solid_buf);
     };
 	return;
 }
@@ -101,8 +99,7 @@ void const_trans_mesh_buffer(int nthreads,
                              struct viewer_mesh *mesh_s,
                              struct mesh_menu_val *mesh_m,
                              struct view_element *view_s,
-                             struct gl_strided_buffer *mesh_trns_buf,
-                             struct gl_local_buffer_address **para_point_buf){
+                             struct gl_strided_buffer *mesh_trns_buf){
     mesh_trns_buf->num_nod_buf = 0;
     if(mesh_m->iflag_draw_mesh == 0) return;
 
@@ -131,12 +128,11 @@ void const_trans_mesh_buffer(int nthreads,
                                                        mesh_s, nthreads, IZERO,
                                                        mesh_s->ntot_trans_patch,
                                                        mesh_s->iele_trans_patch,
-                                                       mesh_trns_buf, para_point_buf);
+                                                       mesh_trns_buf);
         }else{
             num_tri = add_mesh_patch_to_buffer(view_s->shading_mode, mesh_m->polygon_mode, mesh_s,
                                                IZERO, IZERO, mesh_s->ntot_trans_patch,
-                                               mesh_s->iele_trans_patch, mesh_trns_buf,
-                                               para_point_buf[0]);
+                                               mesh_s->iele_trans_patch, mesh_trns_buf);
         }
     };
     return;
@@ -146,8 +142,7 @@ void const_trans_mesh_buffer(int nthreads,
 static void const_mesh_grids_buffer(int nthreads,
                                     struct viewer_mesh *mesh_s,
                                     struct mesh_menu_val *mesh_m,
-                                    struct gl_strided_buffer *mesh_buf,
-                                    struct gl_local_buffer_address **para_point_buf){
+                                    struct gl_strided_buffer *mesh_buf){
     long num;
     num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_edge_domain_edge =   (long *) calloc(num, sizeof(long));
@@ -168,7 +163,7 @@ static void const_mesh_grids_buffer(int nthreads,
 	set_mesh_grid_to_buf(nthreads, istack_edge_domain_edge,
                          istack_ele_grp_edge,
                          istack_surf_grp_edge,
-                         mesh_s, mesh_m, mesh_buf, para_point_buf);
+                         mesh_s, mesh_m, mesh_buf);
     free(istack_edge_domain_edge);
     free(istack_ele_grp_edge);
     free(istack_surf_grp_edge);
@@ -178,8 +173,7 @@ static void const_mesh_grids_buffer(int nthreads,
 
 static void const_mesh_nodes_ico_buffer(int nthreads,
                                         struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                                        struct gl_strided_buffer *mesh_buf,
-                                        struct gl_local_buffer_address **para_point_buf){
+                                        struct gl_strided_buffer *mesh_buf){
     long num;
     num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_node_domain_patch =   (long *) calloc(num, sizeof(long));
@@ -204,7 +198,7 @@ static void const_mesh_nodes_ico_buffer(int nthreads,
                              istack_node_nod_grp_patch,
                              istack_node_ele_grp_patch,
                              istack_node_surf_grp_patch,
-                             mesh_s, mesh_m, mesh_buf, para_point_buf);
+                             mesh_s, mesh_m, mesh_buf);
     };
     free(istack_node_domain_patch);
     free(istack_node_nod_grp_patch);
@@ -218,16 +212,15 @@ void const_solid_mesh_buffer(int nthreads,
                              struct view_element *view_s,
                              struct gl_strided_buffer *mesh_solid_buf,
                              struct gl_strided_buffer *mesh_grid_buf,
-                             struct gl_strided_buffer *mesh_node_buf,
-                             struct gl_local_buffer_address **para_point_buf){
+                             struct gl_strided_buffer *mesh_node_buf){
     mesh_solid_buf->num_nod_buf = 0;
     mesh_grid_buf->num_nod_buf = 0;
     mesh_node_buf->num_nod_buf = 0;
     if(mesh_m->iflag_draw_mesh == 0) return;
         
-    const_mesh_grids_buffer(nthreads, mesh_s, mesh_m, mesh_grid_buf, para_point_buf);
-    const_mesh_nodes_ico_buffer(nthreads, mesh_s, mesh_m, mesh_node_buf, para_point_buf);
+    const_mesh_grids_buffer(nthreads, mesh_s, mesh_m, mesh_grid_buf);
+    const_mesh_nodes_ico_buffer(nthreads, mesh_s, mesh_m, mesh_node_buf);
     const_solid_mesh_patch_bufffer(nthreads, view_s->shading_mode, mesh_s, mesh_m,
-                                   mesh_solid_buf, para_point_buf);
+                                   mesh_solid_buf);
     return;
 };

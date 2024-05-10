@@ -203,12 +203,12 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         
         const_solid_mesh_buffer(NTHREADS,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
-                                kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,
-                                kemo_buffers->mesh_node_buf, kemo_buffers->para_point_buf);
+                                kemo_buffers->mesh_solid_buf,
+                                kemo_buffers->mesh_grid_buf,
+                                kemo_buffers->mesh_node_buf);
         const_trans_mesh_buffer(NTHREADS,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
-                                kemo_buffers->mesh_trns_buf,
-                                kemo_buffers->para_point_buf);
+                                kemo_buffers->mesh_trns_buf);
         
     };
     const_timelabel_buffer(view_s->iflag_retina,
@@ -263,8 +263,7 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
                                    kemo_buffers->para_point_buf);
     const_trans_mesh_buffer(NTHREADS, kemo_mesh->mesh_d,
                             kemo_mesh->mesh_m, view_s,
-                            kemo_buffers->mesh_trns_buf,
-                            kemo_buffers->para_point_buf);
+                            kemo_buffers->mesh_trns_buf);
     return;
 };
 
