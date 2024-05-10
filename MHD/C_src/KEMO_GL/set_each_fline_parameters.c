@@ -74,6 +74,10 @@ double get_fline_data_max(struct psf_data *fline_d, int i){
 	return fline_d->d_max[i];
 };
 
+int send_coordinate_id_fline(struct psf_data *fline_d, struct fline_menu_val *fline_m){
+    long id_current = fline_m->if_draw_fline;
+    return fline_d->id_coord[id_current];
+};
 
 void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
 							   struct fline_menu_val *fline_m){

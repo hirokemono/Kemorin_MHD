@@ -106,8 +106,8 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-    int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
-    kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
+    int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
+    kemoview_set_fline_field_param(LINETYPE_FLAG, itoggle, kemo_sgl);
     draw_full(kemo_sgl);
 	return;
 };
@@ -249,14 +249,12 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) kemo_sgl);
     
-    add_fline_draw_field_box(kemo_sgl, 
-                             fline_menu->combobox_field, 
-                             fline_menu->label_tree_field,
-                             fline_menu->renderer_field);
-    fline_draw_component_combobox(kemo_sgl, 
-                                  fline_menu->combobox_comp, 
-                                  fline_menu->label_tree_comp,
-                                  fline_menu->renderer_comp);
+    fline_menu->combobox_field = fline_draw_field_box(kemo_sgl,
+                                                      fline_menu->label_tree_field,
+                                                      fline_menu->renderer_field);
+    fline_menu->combobox_comp = fline_draw_component_combobox(kemo_sgl,
+                                                              fline_menu->label_tree_comp,
+                                                              fline_menu->renderer_comp);
     return;
 }
 

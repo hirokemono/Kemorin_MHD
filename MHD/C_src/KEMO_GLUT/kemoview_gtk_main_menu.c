@@ -554,9 +554,7 @@ void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
     g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(fline_menu->closeButton), "clicked",
                      G_CALLBACK(close_fline_CB), (gpointer) window);
-	
-	fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
-    
+	    
 	init_fieldline_menu_hbox(kemo_sgl, fline_menu);
     set_gtk_fieldline_menu(kemo_sgl, fline_menu);
 	return;

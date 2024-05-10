@@ -101,6 +101,9 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 		output = get_fline_color_data_adress(kemo_fline->fline_m);
 	} else if(selected == LINETYPE_FLAG){
 		output = get_fline_type(kemo_fline->fline_m);
+    } else if(selected == COORDINATE_FLAG){
+        output = send_coordinate_id_fline(kemo_fline->fline_d,
+                                          kemo_fline->fline_m);
 	};
 	return output;
 };
