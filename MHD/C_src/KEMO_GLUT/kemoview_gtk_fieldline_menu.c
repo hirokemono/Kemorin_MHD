@@ -218,7 +218,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     
     
     fline_menu->switch_tube = gtk_switch_new();
-    int iflag = get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
+    int iflag = get_fline_field_param(LINETYPE_FLAG, kemo_sgl);
     gtk_switch_set_state(GTK_SWITCH(fline_menu->switch_tube), iflag);
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
