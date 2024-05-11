@@ -18,7 +18,27 @@
  http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm 
  */
 
+#include <pthread.h>
+
 #include "bitonic_sort_long_pthread.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    long lo;
+    long hi;
+    int iflag_ascend;
+    int maxlayers;
+    int layer;
+    
+    long  *lres;
+    long  *lmax;
+    
+    long *idx;
+} args_pthread_long_sort;
+
+
 
 static void * max_Long_Array_each_thread(void *args)
 {

@@ -19,15 +19,34 @@
  http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm 
  */
 
+#include <pthread.h>
+
 #include "bitonic_sort_pthread.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    long lo;
+    long hi;
+    int iflag_ascend;
+    int maxlayers;
+    int layer;
+    
+    double *dres;
+    double *dmax;
+    
+    long *idx;
+} args_pthread_double_sort;
+
 
 static void * max_Double_Array_each_thread(void *args)
 {
-    int id =  ((args_pthread *) args)->id;
-    long lo = ((args_pthread *) args)->lo;
-    long hi = ((args_pthread *) args)->hi;
-    double *dres = ((args_pthread *) args)->dres;
-    double *dmax = ((args_pthread *) args)->dmax;
+    int id =  ((args_pthread_double_sort *) args)->id;
+    long lo = ((args_pthread_double_sort *) args)->lo;
+    long hi = ((args_pthread_double_sort *) args)->hi;
+    double *dres = ((args_pthread_double_sort *) args)->dres;
+    double *dmax = ((args_pthread_double_sort *) args)->dmax;
     
     dmax[id] = dres[lo];
     for(long i=lo+1;i<hi;i++){
@@ -36,11 +55,23 @@ static void * max_Double_Array_each_thread(void *args)
     return 0;
 }
 
+
+static void * flip_sign_Double_each_thread(void *args)
+{
+    long lo =      ((args_pthread_double_sort *) args)->lo;
+    long hi =      ((args_pthread_double_sort *) args)->hi;
+    double *dres = ((args_pthread_double_sort *) args)->dres;
+    
+    for(long i=lo;i<hi;i++){dres[i] = -dres[i];};
+    return 0;
+}
+
+
 double max_Double_Array_pthreads(int nthreads, long num, double *dres){
     int i;
     /* Allocate thread arguments. */
-    args_pthread *args = (args_pthread *) malloc (nthreads * sizeof(args_pthread));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread.\n"); exit(1);}
+    args_pthread_double_sort *args = (args_pthread_double_sort *) malloc (nthreads * sizeof(args_pthread_double_sort));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_double_sort.\n"); exit(1);}
     double *dmax = (double *) malloc (nthreads * sizeof(double));
     if (!dmax) {fprintf (stderr, "Malloc failed for dmax.\n"); exit(1);}
     
@@ -65,22 +96,11 @@ double max_Double_Array_pthreads(int nthreads, long num, double *dres){
     return max_double_array((long) nthreads, dmax);
 }
 
-
-static void * flip_sign_Double_each_thread(void *args)
-{
-    long lo =      ((args_pthread *) args)->lo;
-    long hi =      ((args_pthread *) args)->hi;
-    double *dres = ((args_pthread *) args)->dres;
-    
-    for(long i=lo;i<hi;i++){dres[i] = -dres[i];};
-    return 0;
-}
-
 void flip_sign_Double_pthreads(int nthreads, long num, double *dres){
     int i;
     /* Allocate thread arguments. */
-    args_pthread *args = (args_pthread *) malloc (nthreads * sizeof(args_pthread));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread.\n"); exit(1);}
+    args_pthread_double_sort *args = (args_pthread_double_sort *) malloc (nthreads * sizeof(args_pthread_double_sort));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_double_sort.\n"); exit(1);}
 /* Initialize thread handles and barrier. */
     pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
     if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
@@ -109,13 +129,13 @@ void flip_sign_Double_pthreads(int nthreads, long num, double *dres){
 static void * bitonicMerge_Double_pthread(void *arg){
     long i;
     
-    long lo = ((args_pthread *) arg)->lo;
-    long hi = ((args_pthread *) arg)->hi;
-    int iflag_ascend = ((args_pthread *) arg)->iflag_ascend;
-    int maxlayers =    ((args_pthread *) arg)->maxlayers;
-    int layer =  ((args_pthread *) arg)->layer;
-    double *dres = ((args_pthread *) arg)->dres;
-    long *idx =  ((args_pthread *) arg)->idx;
+    long lo = ((args_pthread_double_sort *) arg)->lo;
+    long hi = ((args_pthread_double_sort *) arg)->hi;
+    int iflag_ascend = ((args_pthread_double_sort *) arg)->iflag_ascend;
+    int maxlayers =    ((args_pthread_double_sort *) arg)->maxlayers;
+    int layer =  ((args_pthread_double_sort *) arg)->layer;
+    double *dres = ((args_pthread_double_sort *) arg)->dres;
+    long *idx =  ((args_pthread_double_sort *) arg)->idx;
     
     if( hi > 1 ){
         long k = hi / 2;
@@ -132,7 +152,7 @@ static void * bitonicMerge_Double_pthread(void *arg){
         }
         
         pthread_t thread1;
-        args_pthread arg1;
+        args_pthread_double_sort arg1;
         arg1.lo = lo;
         arg1.hi = k;
         arg1.iflag_ascend = iflag_ascend;
@@ -142,7 +162,7 @@ static void * bitonicMerge_Double_pthread(void *arg){
         arg1.idx =  idx;
         
         pthread_t thread2;
-        args_pthread arg2;
+        args_pthread_double_sort arg2;
         arg2.lo = lo + k;
         arg2.hi = k;
         arg2.iflag_ascend = iflag_ascend;
@@ -169,13 +189,13 @@ static void * bitonicMerge_Double_pthread(void *arg){
     Uses pthreads
  **/
 static void * rec_Double_BitonicSort_pthread(void *arg){
-    long lo = ((args_pthread *) arg)->lo;
-    long hi = ((args_pthread *) arg)->hi;
-    int iflag_ascend = ((args_pthread *) arg)->iflag_ascend;
-    int maxlayers =    ((args_pthread *) arg)->maxlayers;
-    int layer = ((args_pthread *) arg)->layer;
-    double *dres = ((args_pthread *) arg)->dres;
-    long *idx =  ((args_pthread *) arg)->idx;
+    long lo = ((args_pthread_double_sort *) arg)->lo;
+    long hi = ((args_pthread_double_sort *) arg)->hi;
+    int iflag_ascend = ((args_pthread_double_sort *) arg)->iflag_ascend;
+    int maxlayers =    ((args_pthread_double_sort *) arg)->maxlayers;
+    int layer = ((args_pthread_double_sort *) arg)->layer;
+    double *dres = ((args_pthread_double_sort *) arg)->dres;
+    long *idx =  ((args_pthread_double_sort *) arg)->idx;
     if ( hi > 1 ) {
         long k = hi / 2;
         if(layer >= maxlayers) {
@@ -186,7 +206,7 @@ static void * rec_Double_BitonicSort_pthread(void *arg){
             flip_double_sign(k, &dres[lo+k]);
         }
         else{
-            args_pthread arg1;
+            args_pthread_double_sort arg1;
             pthread_t thread1;
             arg1.lo = lo;
             arg1.hi = k;
@@ -196,7 +216,7 @@ static void * rec_Double_BitonicSort_pthread(void *arg){
             arg1.dres = dres;
             arg1.idx =  idx;
             
-            args_pthread arg2;
+            args_pthread_double_sort arg2;
             pthread_t thread2;
             arg2.lo = lo + k;
             arg2.hi = k;
@@ -212,7 +232,7 @@ static void * rec_Double_BitonicSort_pthread(void *arg){
             pthread_join(thread1, NULL);
             pthread_join(thread2, NULL);
         }
-        args_pthread arg3;
+        args_pthread_double_sort arg3;
         arg3.lo = lo;
         arg3.hi = hi;
         arg3.iflag_ascend = iflag_ascend;
@@ -236,7 +256,7 @@ void bitonicsort_Double_Pthread(int nthreads, long num, double *dres, long *idx)
         threadlayers = 1 + (int) log2((double) (nthreads-1));
     }
     
-    args_pthread arg;
+    args_pthread_double_sort arg;
     arg.lo = 0;
     arg.hi = (int) num;
     arg.iflag_ascend = ASCENDING;

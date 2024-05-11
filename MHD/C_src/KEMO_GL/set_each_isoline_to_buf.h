@@ -10,27 +10,10 @@
 #ifndef SET_EACH_ISOLINE_TO_BUF_
 #define SET_EACH_ISOLINE_TO_BUF_
 
-#include <pthread.h>
 #include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "set_hex_tube_to_buf.h"
 #include "set_new_patch_4_map_c.h"
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-    struct psf_data *psf_s;
-
-    long icomp;
-    double width;
-    double v_line;
-    double *f_color;
-
-    long ist_patch;
-    long *num_line;
-} args_pthread_PSF_Isoline;
 
 
 /* prototypes */

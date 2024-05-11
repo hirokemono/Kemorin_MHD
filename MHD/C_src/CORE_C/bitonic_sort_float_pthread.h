@@ -24,26 +24,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <pthread.h>
 
 #include "quicksort_c.h"
 #include "bitonic_sort_c.h"
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    long lo;
-    long hi;
-    int iflag_ascend;
-    int maxlayers;
-    int layer;
-    
-    float  *res;
-    float  *rmax;
-    
-    long *idx;
-} args_pthread_float_sort;
 
 /* prototypes */
 

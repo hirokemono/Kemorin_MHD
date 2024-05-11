@@ -19,7 +19,26 @@
  http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm 
  */
 
+#include <pthread.h>
+
 #include "bitonic_sort_float_pthread.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    long lo;
+    long hi;
+    int iflag_ascend;
+    int maxlayers;
+    int layer;
+    
+    float  *res;
+    float  *rmax;
+    
+    long *idx;
+} args_pthread_float_sort;
+
 
 /** Procedure bitonic_Int_Merge
  *  Same as serial, but uses pthreads.

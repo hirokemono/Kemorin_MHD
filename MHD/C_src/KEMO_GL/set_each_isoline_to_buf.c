@@ -7,7 +7,27 @@
  *
  */
 
+#include <pthread.h>
+
 #include "set_each_isoline_to_buf.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+    struct psf_data *psf_s;
+
+    long icomp;
+    double width;
+    double v_line;
+    double *f_color;
+
+    long ist_patch;
+    long *num_line;
+} args_pthread_PSF_Isoline;
+
+
 
 static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
                                        double *d_nod, long icomp,

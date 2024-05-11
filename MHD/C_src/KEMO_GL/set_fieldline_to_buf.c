@@ -1,7 +1,22 @@
 
 /* set_fieldline_to_buf.c */
 
+#include <pthread.h>
+
 #include "set_fieldline_to_buf.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+
+    struct psf_data       *fline_s;
+    struct fline_menu_val *fline_m;
+    
+    long *num_patch;
+} args_pthread_fieldline;
+
 
 long count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
     long num_patch = 2 * fline_s->nele_viz * ncorner; 

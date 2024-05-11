@@ -1,9 +1,43 @@
 
 /* set_PSF_patches_to_buf.c */
 
+#include <pthread.h>
+
 #include "set_PSF_patches_to_buf.h"
 
 #define ARCPI 0.318309886
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+
+    struct psf_data     **psf_s;
+    struct psf_menu_val **psf_m;
+    struct kemo_array_control *psf_a;
+    int shading_mode;
+    
+    long ist_psf;
+    long ied_psf;
+    long *num_patch;
+} args_pthread_PSF_Patch;
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+
+    struct psf_data     *psf_s;
+    struct psf_menu_val *psf_m;
+    int ncorner;
+    
+    long *istack_smp_arrow;
+    long nnod_viz;
+    long *num_patch;
+} args_pthread_PSF_Arrow;
+
 
 static float arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
 
