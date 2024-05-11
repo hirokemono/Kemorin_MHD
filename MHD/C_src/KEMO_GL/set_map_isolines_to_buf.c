@@ -22,14 +22,9 @@ static long add_map_isoline_num(long num_patch, const int nthreads,
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m->n_isoline, 
 								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
-        if(nthreads > 1){
-            num_patch = add_each_isoline_npatch_pthread(num_patch, nthreads, v_line,
+        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, v_line,
                                                         psf_m->icomp_draw_psf, psf_s,
                                                         &istack_smp_map_iso[j*nthreads]);
-        }else{
-            num_patch = add_each_isoline_npatch(num_patch, IZERO, psf_s->nele_viz,
-                                                v_line, psf_m->icomp_draw_psf, psf_s);
-        };
 	};
 	return num_patch;
 }
@@ -55,24 +50,15 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m->n_isoline, 
 								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
-		
 		if (psf_m->isoline_color == RAINBOW_LINE){	
 			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
                                    v_line, f_color);
 		};
-        
-        if(nthreads > 1){
-            inum_patch = set_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
-                                                             &istack_smp_map_iso[j*nthreads],
-                                                             psf_m->isoline_width,
-                                                             v_line, psf_m->icomp_draw_psf,
-                                                             f_color, psf_s, psf_buf);
-        }else{
-            inum_patch = set_each_map_isoline_to_buf(inum_patch, IZERO, psf_s->nele_viz,
-                                                     psf_m->isoline_width,
-                                                     v_line, psf_m->icomp_draw_psf,
-                                                     f_color, psf_s, psf_buf);
-        };
+        inum_patch = sel_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
+                                                         &istack_smp_map_iso[j*nthreads],
+                                                         psf_m->isoline_width,
+                                                         v_line, psf_m->icomp_draw_psf,
+                                                         f_color, psf_s, psf_buf);
 	};
     dealloc_colormap_array(omap_array);
     dealloc_colormap_array(cmap_array);
@@ -100,14 +86,9 @@ long add_map_PSF_isoline(const long ist_patch, const int nthreads,
 		};
 	};
     if(psf_m->draw_psf_zero  != 0){
-        if(nthreads > 1){
-            num_patch = add_each_isoline_npatch_pthread(num_patch, nthreads, ZERO,
+        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, ZERO,
                                                         psf_m->icomp_draw_psf, psf_s,
                                                         &istack_smp_map_iso[psf_m->n_isoline*nthreads]);
-       }else{
-            num_patch = add_each_isoline_npatch(num_patch, IZERO, psf_s->nele_viz,
-                                                ZERO, psf_m->icomp_draw_psf, psf_s);
-        };
 	};
 	return num_patch;
 }
@@ -138,16 +119,10 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
 	};
 	if(psf_m->draw_psf_zero  != 0){
 		dub_r = 2.0 * psf_m->isoline_width;
-        if(nthreads > 1){
-            inum_patch = set_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
-                                                             &istack_smp_map_iso[psf_m->n_isoline*nthreads],
-                                                             dub_r, ZERO, psf_m->icomp_draw_psf,
-                                                             black, psf_s, psf_buf);
-        }else{
-            inum_patch = set_each_map_isoline_to_buf(inum_patch, IZERO, psf_s->nele_viz,
-                                                     dub_r, ZERO, psf_m->icomp_draw_psf,
-                                                     black, psf_s, psf_buf);
-        };
+        inum_patch = sel_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
+                                                         &istack_smp_map_iso[psf_m->n_isoline*nthreads],
+                                                         dub_r, ZERO, psf_m->icomp_draw_psf,
+                                                         black, psf_s, psf_buf);
 	};
 	return inum_patch;
 }

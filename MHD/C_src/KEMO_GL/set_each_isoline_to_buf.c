@@ -93,8 +93,8 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
     return;
 };
 
-long add_each_isoline_npatch(const long ist_patch, const long ist, const long ied,
-                             const double v_line, long icomp, struct psf_data *psf_s){
+static long add_each_isoline_npatch(const long ist_patch, const long ist, const long ied,
+                                    const double v_line, long icomp, struct psf_data *psf_s){
     double d_tri[3];
     long iele;
     int idraw;
@@ -111,12 +111,12 @@ long add_each_isoline_npatch(const long ist_patch, const long ist, const long ie
     return inum_patch;
 };
 
-long set_each_isoline_to_buf(const long ist_patch,
-                             const long ist, const long ied,
-                             double width, double v_line,
-                             long icomp, double *f_color,
-                             struct psf_data *psf_s,
-                             struct gl_strided_buffer *strided_buf){
+static long set_each_isoline_to_buf(const long ist_patch,
+                                    const long ist, const long ied,
+                                    double width, double v_line,
+                                    long icomp, double *f_color,
+                                    struct psf_data *psf_s,
+                                    struct gl_strided_buffer *strided_buf){
 	double d_tri[3];
     double xyzw_tri[12], norm_tri[12];
 	double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
@@ -147,12 +147,12 @@ long set_each_isoline_to_buf(const long ist_patch,
 	return inum_patch;
 };
 
-long set_each_map_isoline_to_buf(const long ist_patch,
-                                 const long ist, const long ied,
-                                 double width, double v_line,
-                                 long icomp, double *f_color,
-                                 struct psf_data *psf_s,
-                                 struct gl_strided_buffer *strided_buf){
+static long set_each_map_isoline_to_buf(const long ist_patch,
+                                        const long ist, const long ied,
+                                        double width, double v_line,
+                                        long icomp, double *f_color,
+                                        struct psf_data *psf_s,
+                                        struct gl_strided_buffer *strided_buf){
     double d_tri[3];
     double xyzw_map[12], norm_tri[12];
     double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
@@ -253,9 +253,9 @@ static void * set_each_map_isoline_to_buf_each(void *args)
     return 0;
 }
 
-long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
-                                     double v_line, long icomp, struct psf_data *psf_s,
-                                     long *istack_threads){
+static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
+                                            double v_line, long icomp, struct psf_data *psf_s,
+                                            long *istack_threads){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
             = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
@@ -290,12 +290,12 @@ long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
     return istack_threads[nthreads];
 };
 
-long set_each_isoline_to_buf_pthread(const long ist_patch,
-                                     const int nthreads, long *istack_threads,
-                                     double width, double v_line,
-                                     long icomp, double *f_color,
-                                     struct psf_data *psf_s,
-                                     struct gl_strided_buffer *strided_buf){
+static long set_each_isoline_to_buf_pthread(const long ist_patch,
+                                            const int nthreads, long *istack_threads,
+                                            double width, double v_line,
+                                            long icomp, double *f_color,
+                                            struct psf_data *psf_s,
+                                            struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
             = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
@@ -334,12 +334,12 @@ long set_each_isoline_to_buf_pthread(const long ist_patch,
     return num_patch;
 };
 
-long set_each_map_isoline_to_buf_pthread(const long ist_patch,
-                                         const int nthreads, long *istack_threads,
-                                         double width, double v_line,
-                                         long icomp, double *f_color,
-                                         struct psf_data *psf_s,
-                                         struct gl_strided_buffer *strided_buf){
+static long set_each_map_isoline_to_buf_pthread(const long ist_patch,
+                                                const int nthreads, long *istack_threads,
+                                                double width, double v_line,
+                                                long icomp, double *f_color,
+                                                struct psf_data *psf_s,
+                                                struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
             = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
@@ -375,5 +375,60 @@ long set_each_map_isoline_to_buf_pthread(const long ist_patch,
     free(num_line);
     free(thread_handles);
     free(args);
+    return num_patch;
+};
+
+
+long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
+                                         double v_line, long icomp, struct psf_data *psf_s,
+                                         long *istack_threads){
+    long num_patch = ist_patch;
+    if(nthreads > 1){
+        num_patch = add_each_isoline_npatch_pthread(num_patch, nthreads,
+                                                    v_line, icomp, psf_s, istack_threads);
+    }else{
+        num_patch = add_each_isoline_npatch(num_patch, IZERO, psf_s->nele_viz,
+                                            v_line, icomp, psf_s);
+    }
+    return num_patch;
+};
+
+
+
+long sel_each_isoline_to_buf_pthread(const long ist_patch,
+                                     const int nthreads, long *istack_threads,
+                                     double width, double v_line,
+                                     long icomp, double *f_color,
+                                     struct psf_data *psf_s,
+                                     struct gl_strided_buffer *strided_buf){
+    long num_patch = ist_patch;
+    if(nthreads > 1){
+        num_patch = set_each_isoline_to_buf_pthread(num_patch, nthreads, istack_threads,
+                                                        width, v_line, icomp, f_color,
+                                                        psf_s, strided_buf);
+    }else{
+        num_patch = set_each_isoline_to_buf(num_patch, IZERO, psf_s->nele_viz,
+                                                width, v_line, icomp, f_color,
+                                                psf_s, strided_buf);
+    }
+    return num_patch;
+};
+
+long sel_each_map_isoline_to_buf_pthread(const long ist_patch,
+                                         const int nthreads, long *istack_threads,
+                                         double width, double v_line,
+                                         long icomp, double *f_color,
+                                         struct psf_data *psf_s,
+                                         struct gl_strided_buffer *strided_buf){
+    long num_patch = ist_patch;
+    if(nthreads > 1){
+        num_patch = set_each_map_isoline_to_buf_pthread(num_patch, nthreads, istack_threads,
+                                                        width, v_line, icomp, f_color,
+                                                        psf_s, strided_buf);
+    }else{
+        num_patch = set_each_map_isoline_to_buf(num_patch, IZERO, psf_s->nele_viz,
+                                                width, v_line, icomp, f_color,
+                                                psf_s, strided_buf);
+    }
     return num_patch;
 };
