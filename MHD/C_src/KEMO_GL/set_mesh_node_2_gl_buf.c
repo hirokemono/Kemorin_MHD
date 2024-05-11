@@ -94,7 +94,8 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
         
     num_patch[id] = set_each_group_node_ico_to_buf(ist_patch,
                                                    (lo+ist_grp), (hi+ist_grp), item_grp,
-                                                   mesh_s, node_diam, f_color, strided_buf);
+                                                   mesh_s, node_diam, f_color,
+                                                   strided_buf);
 
     return 0;
 }

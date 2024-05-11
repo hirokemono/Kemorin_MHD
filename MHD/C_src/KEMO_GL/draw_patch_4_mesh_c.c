@@ -61,7 +61,8 @@ static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
     if(nthreads > 1){
         num_tri = add_mesh_patch_to_buffer_pthread(shading_mode, mesh_m->polygon_mode,
                                                    mesh_s, nthreads, IZERO,
-                                                   mesh_s->ntot_solid_patch, mesh_s->iele_solid_patch,
+                                                   mesh_s->ntot_solid_patch,
+                                                   mesh_s->iele_solid_patch,
                                                    mesh_solid_buf);
     }else{
         num_tri = add_mesh_patch_to_buffer(shading_mode, mesh_m->polygon_mode, mesh_s,
@@ -124,7 +125,8 @@ void const_trans_mesh_buffer(int nthreads,
         resize_strided_buffer(mesh_trns_buf);
         long num_tri;
         if(nthreads > 1){
-            num_tri = add_mesh_patch_to_buffer_pthread(view_s->shading_mode, mesh_m->polygon_mode,
+            num_tri = add_mesh_patch_to_buffer_pthread(view_s->shading_mode,
+                                                       mesh_m->polygon_mode,
                                                        mesh_s, nthreads, IZERO,
                                                        mesh_s->ntot_trans_patch,
                                                        mesh_s->iele_trans_patch,
