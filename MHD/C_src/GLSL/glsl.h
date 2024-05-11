@@ -5,6 +5,12 @@
 #ifndef GLSL__
 #define GLSL__
 
+#ifdef __APPLE__
+#include<OpenGL/gl3.h>
+#else
+#include<GL/gl.h>
+#endif
+
 #include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_phong_light_table_c.h"
