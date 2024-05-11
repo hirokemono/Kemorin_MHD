@@ -203,6 +203,22 @@ int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 	return toggle;
 }
 
+void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_psf *kemo_psf){
+    int i_current = kemo_psf->psf_a->id_current;
+    if      (selected == PSFSOLID_TOGGLE){
+        set_draw_psf_solid(iflag, kemo_psf->psf_m[i_current]);
+    } else if (selected == PSFGRID_TOGGLE){
+        set_draw_psf_grid(iflag, kemo_psf->psf_m[i_current]);
+    } else if (selected == ZEROGRID_TOGGLE){
+        set_draw_psf_zero(iflag, kemo_psf->psf_m[i_current]);
+    } else if (selected == COLORBAR_TOGGLE){
+        set_draw_psf_cbar(iflag, kemo_psf->psf_m[i_current]);
+    } else if (selected == PSFVECT_TOGGLE){
+        set_draw_psf_vect(iflag, kemo_psf->psf_m[i_current]);
+    }
+    return;
+}
+
 int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 	int i_current = kemo_psf->psf_a->id_current;
 	int iflag = 0;

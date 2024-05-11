@@ -11,21 +11,24 @@
 
 static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_object_property_flags(AXIS_TOGGLE, iflag, kemo_sgl);
 	
 	draw_full(kemo_sgl);
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_object_property_flags(COASTLINE_SWITCH, iflag, kemo_sgl);
 	
     draw_full(kemo_sgl);
 	return;
 };
 static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_object_property_flags(SPHEREGRID_SWITCH, iflag, kemo_sgl);
 	
     draw_full(kemo_sgl);
 	return;

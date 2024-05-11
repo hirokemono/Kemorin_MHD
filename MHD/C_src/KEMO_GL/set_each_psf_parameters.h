@@ -51,18 +51,23 @@ void set_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag);
 int send_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 
+void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_solid(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_solid(struct psf_menu_val *psf_menu);
 
+void set_draw_psf_grid(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_grid(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_grid(struct psf_menu_val *psf_menu);
 
+void set_draw_psf_zero(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_zero(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_zero(struct psf_menu_val *psf_menu);
 
+void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_cbar(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_cbar(struct psf_menu_val *psf_menu);
 
+void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_vect(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 

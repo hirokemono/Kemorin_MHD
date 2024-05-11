@@ -106,8 +106,8 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-    int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
-    kemoview_set_fline_field_param(LINETYPE_FLAG, itoggle, kemo_sgl);
+    int istate = gtk_switch_get_state(GTK_SWITCH(switch_1));
+    kemoview_set_fline_field_param(LINETYPE_FLAG, istate, kemo_sgl);
     draw_full(kemo_sgl);
 	return;
 };
@@ -218,6 +218,8 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     
     
     fline_menu->switch_tube = gtk_switch_new();
+    int iflag = get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
+    gtk_switch_set_state(GTK_SWITCH(fline_menu->switch_tube), iflag);
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
                      G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_sgl);

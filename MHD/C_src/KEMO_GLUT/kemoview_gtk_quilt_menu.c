@@ -49,8 +49,8 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
     struct view_widgets *view_menu = (struct view_widgets *) data;
     
     
-    int itgl = 1 - kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
-    kemoview_set_quilt_nums(ISET_QUILT_MODE, itgl, kemo_sgl);
+    int istate = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_quilt_nums(ISET_QUILT_MODE, istate, kemo_sgl);
 	int iflag_quilt = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
     if(iflag_quilt > 0){
         quilt_gmenu->num_column = 9;
@@ -135,8 +135,11 @@ GtkWidget * init_quilt_menu_expander(struct kemoviewer_type *kemo_sgl,
 
     
 	quilt_gmenu->quiltOn_Switch = gtk_switch_new();
+    int iflag = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
+    gtk_switch_set_state(GTK_SWITCH(quilt_gmenu->quiltOn_Switch), iflag);
 	g_signal_connect(G_OBJECT(quilt_gmenu->quiltOn_Switch), "notify::active",
 					 G_CALLBACK(quilt_switch_CB), (gpointer) quilt_gmenu->entry_quilt_menu);
+    
 	quilt_gmenu->quiltView_Button = gtk_button_new_with_label("Preview");
 	g_signal_connect(G_OBJECT(quilt_gmenu->quiltView_Button), "clicked", 
 					 G_CALLBACK(quilt_preview_CB), (gpointer)quilt_gmenu->entry_quilt_menu);

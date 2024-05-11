@@ -143,22 +143,22 @@
 - (IBAction)AxisSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
+    kemoview_set_object_property_flags(AXIS_TOGGLE, self.axisDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.coastLineDrawFlag
-        = kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
+    kemoview_set_object_property_flags(COASTLINE_SWITCH,
+                                       self.coastLineDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.globeGridDrawFlag
-        = kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
+    kemoview_set_object_property_flags(SPHEREGRID_SWITCH,
+                                       self.globeGridDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphRadiusAction:(id)sender;
@@ -254,8 +254,8 @@
 
 - (IBAction)TimeLabelSwitchAction:(id)sender{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.timeDisplayFlag
-        = kemoview_toggle_object_properties(TIME_LABEL_SWITCH, kemo_sgl);
+    kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
+                                       self.timeDisplayFlag, kemo_sgl);
     if(self.timeDisplayFlag > 0){
         self.fileStepDisplayFlag = 0;
         kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
@@ -266,8 +266,8 @@
 
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.fileStepDisplayFlag
-        = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
+                                       self.fileStepDisplayFlag, kemo_sgl);
     if(self.fileStepDisplayFlag > 0){
         self.timeDisplayFlag = 0;
         kemoview_set_object_property_flags(TIME_LABEL_SWITCH,

@@ -587,6 +587,12 @@ int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
                                     int selected){
 	return toggle_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
 }
+
+void kemoview_set_PSF_draw_flags(int selected, int iflag,
+                                 struct kemoviewer_type *kemoviewer){
+    
+    set_each_PSF_draw_switch(selected, iflag, kemoviewer->kemo_psf);
+}
 int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                 int selected){
 	return get_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
