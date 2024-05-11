@@ -235,7 +235,8 @@
 #define NTOT_COMPONENT_FLAG  3
 #define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
-#define LINETYPE_FLAG       46
+#define LINETYPE_FLAG          46
+#define NUM_TUBE_CORNERS_FLAG  47
 
 #define EPSILON  1.e-9
 

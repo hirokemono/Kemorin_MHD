@@ -62,6 +62,7 @@
 	
 	CGFloat FlineThickFactor;
 	CGFloat FlineThickDigit;
+    CGFloat FlineNumCorners;
 
 	IBOutlet id FieldlineColorItem;
 }
@@ -80,9 +81,11 @@
 @property NSInteger Flinetype;
 @property CGFloat FlineThickFactor;
 @property CGFloat FlineThickDigit;
+@property CGFloat FlineNumCorners;
 
 - (id)init;
 - (id)dealloc;
+-(void) awakeFromNib;
 
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
                   kemoview:(struct kemoviewer_type *) kemo_sgl;
@@ -102,5 +105,6 @@
 - (IBAction)ShowFlineRange:(id)pSender;
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
+- (IBAction)SetFieldTubeCornersAction:(id)sender;
 
 @end

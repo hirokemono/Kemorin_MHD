@@ -16,8 +16,13 @@ struct kemoview_fline * init_kemoview_fline(void){
 		exit(0);
 	}
 	
-	kemo_fline->fline_d =  (struct psf_data *)     malloc(NMAX_PSF*sizeof(struct psf_data));
-	kemo_fline->fline_m =  (struct fline_menu_val *) malloc(NMAX_PSF*sizeof(struct fline_menu_val));
+	kemo_fline->fline_d =  (struct psf_data *) malloc(sizeof(struct psf_data));
+    if(kemo_fline->fline_d == NULL){
+        printf("malloc error for kemo_fline->fline_d\n");
+        exit(0);
+    }
+
+    kemo_fline->fline_m = init_fline_menu_val();
 	return kemo_fline;
 };
 
@@ -80,8 +85,10 @@ void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_
 		set_fline_color_field(input, kemo_fline->fline_d, kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
 		set_fline_color_component(input, kemo_fline->fline_d, kemo_fline->fline_m);
-	} else if(selected == LINETYPE_FLAG){
+	}else if(selected == LINETYPE_FLAG){
 		set_fline_type(kemo_fline->fline_m, (long) input);
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        set_fline_corners(kemo_fline->fline_m, input);
 	};
 	return;
 };
@@ -91,17 +98,19 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 	
 	if(selected == NUM_FIELD_FLAG){
 		output = get_fline_color_num_field(kemo_fline->fline_d);
-	} else if(selected == NTOT_COMPONENT_FLAG){
+	}else if(selected == NTOT_COMPONENT_FLAG){
 		output = get_fline_color_ncomptot(kemo_fline->fline_d);
-	} else if(selected == FIELD_SEL_FLAG){
+	}else if(selected == FIELD_SEL_FLAG){
 		output = get_fline_color_field(kemo_fline->fline_m);
-	} else if(selected == COMPONENT_SEL_FLAG){
+	}else if(selected == COMPONENT_SEL_FLAG){
 		output = get_fline_color_component(kemo_fline->fline_m);
-	} else if(selected == DRAW_ADDRESS_FLAG){
+	}else if(selected == DRAW_ADDRESS_FLAG){
 		output = get_fline_color_data_adress(kemo_fline->fline_m);
-	} else if(selected == LINETYPE_FLAG){
+	}else if(selected == LINETYPE_FLAG){
 		output = get_fline_type(kemo_fline->fline_m);
-    } else if(selected == COORDINATE_FLAG){
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        output = get_fline_corners(kemo_fline->fline_m);
+    }else if(selected == COORDINATE_FLAG){
         output = send_coordinate_id_fline(kemo_fline->fline_d,
                                           kemo_fline->fline_m);
 	};

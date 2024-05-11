@@ -46,6 +46,16 @@ static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
     draw_full(kemo_sgl);
     return;
 }
+
+static void nTubeCornerChange_CB(GtkWidget *entry, gpointer data)
+{
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+    kemoview_set_fline_field_param(NUM_TUBE_CORNERS_FLAG, ivalue, kemo_sgl);
+    draw_full(kemo_sgl);
+    return;
+}
+
 static void AmbientChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
@@ -113,7 +123,22 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
     g_signal_connect(pref_gmenu->spin_threads, "value-changed",
                      G_CALLBACK(NumThreadsChange_CB), (gpointer) kemoviewer_data);
 
+    pref_gmenu->nthread_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->nthread_hbox), gtk_label_new("# of threads:  "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->nthread_hbox), pref_gmenu->spin_threads, FALSE, FALSE, 0);
+
     
+    int ncorner = kemoview_get_fline_field_param(kemoviewer_data, NUM_TUBE_CORNERS_FLAG);
+    GtkAdjustment *adj_c = gtk_adjustment_new(ncorner, 1, 24, 1, 1, 0.0);
+    pref_gmenu->spin_nTubeCorner = gtk_spin_button_new(GTK_ADJUSTMENT(adj_c),0,2);
+    g_signal_connect(pref_gmenu->spin_nTubeCorner, "value-changed",
+                     G_CALLBACK(nTubeCornerChange_CB), (gpointer) kemoviewer_data);
+
+    pref_gmenu->nTubeCorner_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), gtk_label_new("# of tube corners:  "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), pref_gmenu->spin_nTubeCorner, FALSE, FALSE, 0);
+    
+
     
     pref_gmenu->Frame_BGsel = init_light_list_frame(kemoviewer_data,
                                                     pref_gmenu->lightparams_vws);
@@ -159,7 +184,7 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 		
     pref_gmenu->pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->BGselButton, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->spin_threads, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->nthread_hbox, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->Frame_BGsel, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[0], FALSE, FALSE, 0);
@@ -167,6 +192,7 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[2], FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[3], FALSE, FALSE, 0);
 
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->nTubeCorner_hbox, FALSE, FALSE, 0);
     return;
 }
 

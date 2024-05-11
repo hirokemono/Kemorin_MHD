@@ -34,9 +34,12 @@ struct fline_menu_val{
 	struct colormap_params *cmap_fline;
 	struct colormap_params **cmap_fline_comp;
 	struct colormap_params **cmap_fline_fld;
+    
+    int ncorner;
 };
 
 /* Prototypes */
+struct fline_menu_val * init_fline_menu_val(void);
 
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);
 void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);

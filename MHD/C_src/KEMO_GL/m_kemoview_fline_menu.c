@@ -5,6 +5,18 @@
 #include "m_kemoview_fline_menu.h"
 
 
+struct fline_menu_val * init_fline_menu_val(void){
+    struct fline_menu_val *fline_m
+            = (struct fline_menu_val *) malloc(sizeof(struct fline_menu_val));
+    if(fline_m == NULL){
+        printf("malloc error for fline_menu_val\n");
+        exit(0);
+    }
+    
+    fline_m->ncorner = ISIX;
+    return fline_m;
+};
+
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m){
 	int i;
 	fline_m->cmap_fline_comp
