@@ -12,7 +12,7 @@
 #include "set_color_code_on_nodes.h"
 #include "rainbow_color_code_c.h"
 #include "icosahedron_c.h"
-#include "set_each_isoline_to_buf.h"
+#include "pthread_each_isoline_to_buf.h"
 
 /* prptotypes */
 

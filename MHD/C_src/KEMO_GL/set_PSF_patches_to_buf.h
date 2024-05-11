@@ -4,8 +4,6 @@
 #ifndef SET_PSF_PATCHES_TO_BUF_
 #define SET_PSF_PATCHES_TO_BUF_
 
-#include <pthread.h>
-
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
@@ -38,27 +36,4 @@ long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
 long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf);
-
-
-long set_psf_nodes_to_buf_pthread(long ipatch_in, int nthreads,
-                                  long ist_psf, long ied_psf, int shading_mode, 
-                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                                  struct kemo_array_control *psf_a,
-                                  struct gl_strided_buffer *strided_buf);
-long set_psf_textures_to_buf_pthread(int nthreads, long ist_psf, long ied_psf,
-                                     struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *strided_buf);
-long set_psf_map_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
-                                struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                struct gl_strided_buffer *strided_buf);
-
-
-long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
-                                long *istack_arrow, int ncorner, 
-                                struct psf_data *psf_s, struct psf_menu_val *psf_m);
-long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
-                                   long *istack_smp_arrow, int ncorner, 
-                                   struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                   struct gl_strided_buffer *strided_buf);
-
 #endif

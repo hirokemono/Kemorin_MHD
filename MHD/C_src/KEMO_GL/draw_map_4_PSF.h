@@ -15,7 +15,7 @@
 #include "set_color_code_on_nodes.h"
 #include "draw_coastline.h"
 #include "rainbow_color_code_c.h"
-#include "set_PSF_patches_to_buf.h"
+#include "pthread_PSF_patches_to_buf.h"
 #include "set_map_isolines_to_buf.h"
 #include "modify_object_4_viewer_c.h"
 

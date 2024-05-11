@@ -22,14 +22,8 @@ void set_map_patch_buffer(const int nthreads, long ist_psf, long ied_psf,
     set_buffer_address_4_patch((ITHREE * num_patch), map_buf);
     if(map_buf->num_nod_buf > 0){
         resize_strided_buffer(map_buf);
-        long num_patch = 0;
-        if(nthreads > 1){
-            num_patch = set_psf_map_to_buf_pthread(0, nthreads, ist_psf, ied_psf,
+        long num_patch = sel_psf_map_to_buf_pthread(0, nthreads, ist_psf, ied_psf,
                                                    psf_s, psf_a, map_buf);
-        }else{
-            num_patch = set_psf_map_to_buf(0, ist_psf, ied_psf,
-                                           psf_s, psf_a, map_buf);
-        };
     }
 	return;
 }

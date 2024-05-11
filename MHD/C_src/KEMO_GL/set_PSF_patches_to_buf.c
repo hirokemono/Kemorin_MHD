@@ -1,43 +1,9 @@
 
 /* set_PSF_patches_to_buf.c */
 
-#include <pthread.h>
-
 #include "set_PSF_patches_to_buf.h"
 
 #define ARCPI 0.318309886
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-
-    struct psf_data     **psf_s;
-    struct psf_menu_val **psf_m;
-    struct kemo_array_control *psf_a;
-    int shading_mode;
-    
-    long ist_psf;
-    long ied_psf;
-    long *num_patch;
-} args_pthread_PSF_Patch;
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-
-    struct psf_data     *psf_s;
-    struct psf_menu_val *psf_m;
-    int ncorner;
-    
-    long *istack_smp_arrow;
-    long nnod_viz;
-    long *num_patch;
-} args_pthread_PSF_Arrow;
-
 
 static float arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
 
@@ -87,77 +53,6 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shadin
     return ipatch;
 }
 
-static void * set_psf_nodes_to_buf_1thread(void *args)
-{
-    args_pthread_PSF_Patch * p = (args_pthread_PSF_Patch *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data     **psf_s =       p->psf_s;
-    struct psf_menu_val **psf_m =       p->psf_m;
-    struct kemo_array_control *psf_a = p->psf_a;
-   
-    int shading_mode = p->shading_mode;
-    
-    long ist_psf = p->ist_psf;
-    long ied_psf = p->ied_psf;
-    long *num_patch =  p->num_patch;
-    
-    long lo = ist_psf + (ied_psf-ist_psf) * id /     nthreads;
-    long hi = ist_psf + (ied_psf-ist_psf) * (id+1) / nthreads;
-    num_patch[id] = set_psf_nodes_to_buf(lo, lo, hi, shading_mode, 
-                                         psf_s, psf_m, psf_a,
-                                         strided_buf);
-    return 0;
-}
-
-long set_psf_nodes_to_buf_pthread(long ipatch_in, int nthreads,
-                                  long ist_psf, long ied_psf, int shading_mode, 
-                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                                  struct kemo_array_control *psf_a,
-                                  struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_PSF_Patch *args
-            = (args_pthread_PSF_Patch *) malloc (nthreads * sizeof(args_pthread_PSF_Patch));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Patch.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-    
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-        
-        args[ip].strided_buf = strided_buf;
-        args[ip].psf_s = psf_s;
-        args[ip].psf_m = psf_m;
-        args[ip].psf_a = psf_a;
-        args[ip].shading_mode = shading_mode;
-
-        args[ip].ist_psf = ist_psf;
-        args[ip].ied_psf = ied_psf;
-        args[ip].num_patch = num_each;
-        
-        pthread_create(&thread_handles[ip], NULL, set_psf_nodes_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = ipatch_in;
-    for(ip=0;ip<nthreads;ip++){
-        num_patch = num_patch + num_each[ip];
-    }
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-};
-
-
-
-
 long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
                              struct psf_data **psf_s,
                              struct kemo_array_control *psf_a,
@@ -191,80 +86,13 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
 	return ipatch;
 }
 
-static void * set_psf_textures_to_buf_1thread(void *args)
-{
-    args_pthread_PSF_Patch * p = (args_pthread_PSF_Patch *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data     **psf_s =       p->psf_s;
-    struct kemo_array_control *psf_a = p->psf_a;
-
-    long ist_psf = p->ist_psf;
-    long ied_psf = p->ied_psf;
-    long *num_patch =  p->num_patch;
-
-    long lo = (ied_psf-ist_psf) * id /     nthreads;
-    long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
-    num_patch[id] = set_psf_textures_to_buf(lo, (lo+ist_psf), (hi+ist_psf), psf_s, psf_a,
-                                            strided_buf);
-    return 0;
-}
-
-long set_psf_textures_to_buf_pthread(int nthreads, long ist_psf, long ied_psf,
-                                     struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_PSF_Patch *args
-            = (args_pthread_PSF_Patch *) malloc (nthreads * sizeof(args_pthread_PSF_Patch));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Patch.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-    
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-        
-        args[ip].strided_buf = strided_buf;
-        args[ip].psf_s = psf_s;
-        args[ip].psf_a = psf_a;
-
-        args[ip].ist_psf = ist_psf;
-        args[ip].ied_psf = ied_psf;
-        args[ip].num_patch = num_each;
-        
-        pthread_create(&thread_handles[ip], NULL, set_psf_textures_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = 0;
-    for(ip=0;ip<nthreads;ip++){
-        num_patch = num_patch + num_each[ip];
-    }
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-};
-
-
-
-
-
-
-
-
 long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
                         struct psf_data **psf_s,
                         struct kemo_array_control *psf_a,
                         struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
     long inum, iele, inod, k;
-    int ipsf, nd;
+    int ipsf;
 	double xx_tri[9], xyz_map[9];
 	
     long ipatch = ist_patch;
@@ -296,71 +124,6 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
 	};
 	return ipatch;
 }
-
-static void * set_psf_map_to_buf_1thread(void *args)
-{
-    args_pthread_PSF_Patch * p = (args_pthread_PSF_Patch *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data     **psf_s =       p->psf_s;
-    struct kemo_array_control *psf_a = p->psf_a;
-       
-    long ist_psf = p->ist_psf;
-    long ied_psf = p->ied_psf;
-    long *num_patch =  p->num_patch;
-    
-    long lo = (ied_psf-ist_psf) * id /     nthreads;
-    long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
-    num_patch[id] = set_psf_map_to_buf(lo, (lo+ist_psf), (hi+ist_psf),
-                                       psf_s, psf_a, strided_buf);
-    return 0;
-}
-
-long set_psf_map_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
-                                  struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                  struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_PSF_Patch *args
-            = (args_pthread_PSF_Patch *) malloc (nthreads * sizeof(args_pthread_PSF_Patch));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Patch.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-    
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-        
-        args[ip].strided_buf = strided_buf;
-        args[ip].psf_s = psf_s;
-        args[ip].psf_a = psf_a;
-
-        args[ip].ist_psf = ist_psf;
-        args[ip].ied_psf = ied_psf;
-        args[ip].num_patch = num_each;
-        
-        pthread_create(&thread_handles[ip], NULL, set_psf_map_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = ipatch_in;
-    for(ip=0;ip<nthreads;ip++){
-        num_patch = num_patch + num_each[ip];
-    }
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-};
-
-
-
-
-
 
 
 long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
@@ -470,122 +233,3 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
 	return inum_buf;
 }
 
-static void * add_num_psf_arrows_1thread(void *args){
-    args_pthread_PSF_Arrow * p = (args_pthread_PSF_Arrow *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct psf_data     *psf_s = p->psf_s;
-    struct psf_menu_val *psf_m = p->psf_m;
-    int ncorner = p->ncorner;
-    long nnod_viz = p->nnod_viz;
-    
-    long *num_patch =  p->num_patch;
-    
-    long lo = nnod_viz * id /     nthreads;
-    long hi = nnod_viz * (id+1) / nthreads;
-    num_patch[id] = add_num_psf_arrows(0, lo, hi, ncorner, psf_s, psf_m);
-    return 0;
-}
-
-static void *  set_psf_arrows_to_buf_1thread(void *args){
-    args_pthread_PSF_Arrow * p = (args_pthread_PSF_Arrow *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data     *psf_s = p->psf_s;
-    struct psf_menu_val *psf_m = p->psf_m;
-    int ncorner = p->ncorner;
-    
-    long *istack_smp_arrow =  p->istack_smp_arrow;
-    long nnod_viz = p->nnod_viz;
-    long *num_patch =  p->num_patch;
-    
-    long lo = nnod_viz * id /     nthreads;
-    long hi = nnod_viz * (id+1) / nthreads;
-    
-    num_patch[id] = set_psf_arrows_to_buf(istack_smp_arrow[id], lo, hi, 
-                                          ncorner, psf_s, psf_m, strided_buf);
-    return 0;
-}
-
-long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
-                                long *istack_arrow, int ncorner, 
-                                struct psf_data *psf_s, struct psf_menu_val *psf_m){
-/* Allocate thread arguments. */
-    args_pthread_PSF_Arrow *args
-                = (args_pthread_PSF_Arrow *) malloc (nthreads * sizeof(args_pthread_PSF_Arrow));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Arrow.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-            
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-
-        args[ip].psf_s = psf_s;
-        args[ip].psf_m = psf_m;
-        args[ip].ncorner = ncorner;
-
-        args[ip].nnod_viz = psf_s->nnod_viz;
-        args[ip].num_patch = num_each;
-                
-        pthread_create(&thread_handles[ip], NULL, add_num_psf_arrows_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
- 
-    istack_arrow[0] = ist_patch;
-    for(ip=0;ip<nthreads;ip++){
-        istack_arrow[ip+1] = istack_arrow[ip] + num_each[ip];
-    }
-    long inum_buf = istack_arrow[nthreads];
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return inum_buf;
-}
-
-long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
-                                   long *istack_smp_arrow, int ncorner, 
-                                   struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                   struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_PSF_Arrow *args
-                = (args_pthread_PSF_Arrow *) malloc (nthreads * sizeof(args_pthread_PSF_Arrow));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Arrow.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-        
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-
-        args[ip].strided_buf = strided_buf;
-        args[ip].psf_s = psf_s;
-        args[ip].psf_m = psf_m;
-        args[ip].ncorner = ncorner;
-
-        args[ip].istack_smp_arrow = istack_smp_arrow;
-        args[ip].nnod_viz = psf_s->nnod_viz;
-        args[ip].num_patch = num_each;
-            
-        pthread_create(&thread_handles[ip], NULL, set_psf_arrows_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = ist_patch;
-    for(ip=0;ip<nthreads;ip++){
-        num_patch = num_patch + num_each[ip];
-    }
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-}

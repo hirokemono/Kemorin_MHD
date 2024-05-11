@@ -19,7 +19,7 @@
 #include "rainbow_color_code_c.h"
 #include "coordinate_converter_c.h"
 #include "set_PSF_isolines_to_buf.h"
-#include "set_each_isoline_to_buf.h"
+#include "pthread_each_isoline_to_buf.h"
 #include "icosahedron_c.h"
 
 /* prototypes */

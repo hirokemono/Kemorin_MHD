@@ -15,13 +15,8 @@ static void const_PSF_patch_buffer(int shading_mode, const int nthreads,
 	if(psf_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(psf_buf);
-    if(nthreads > 1){
-        num_patch = set_psf_nodes_to_buf_pthread(0, nthreads, ist_psf, ied_psf, shading_mode,
-                                                 psf_s, psf_m, psf_a, psf_buf);
-    }else{
-        num_patch = set_psf_nodes_to_buf(0, ist_psf, ied_psf, shading_mode,
-                                         psf_s, psf_m, psf_a, psf_buf);
-    };
+    num_patch = sel_psf_nodes_to_buf_pthread(0, nthreads, ist_psf, ied_psf, shading_mode,
+                                             psf_s, psf_m, psf_a, psf_buf);
 	return;
 }
 
@@ -33,13 +28,8 @@ static void const_PSF_texture_buffer(int shading_mode, const int nthreads,
     const_PSF_patch_buffer(shading_mode, nthreads, ist_psf, ied_psf,
                            psf_s, psf_m, psf_a, psf_buf);
     if(psf_buf->num_nod_buf > 0){
-        if(nthreads > 1){
-            set_psf_textures_to_buf_pthread(nthreads, ist_psf, ied_psf,
-                                            psf_s, psf_a, psf_buf);
-        }else{
-            set_psf_textures_to_buf(0, ist_psf, ied_psf,
-                                    psf_s, psf_a, psf_buf);
-        };
+        sel_psf_textures_to_buf_pthread(nthreads, ist_psf, ied_psf,
+                                        psf_s, psf_a, psf_buf);
     };
     return;
 }
@@ -67,14 +57,9 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            if(nthreads > 1){
-                num_patch = add_num_psf_arrows_pthread(num_patch,
-                                                       nthreads, istack_smp_arrow[i],
-                                                       ncorner, psf_s[i], psf_m[i]);
-            }else{
-                num_patch = add_num_psf_arrows(num_patch, 0, psf_s[i]->nnod_viz,
-                                               ncorner, psf_s[i], psf_m[i]);
-            };
+            num_patch = sel_add_num_psf_arrows_pthread(num_patch,
+                                                   nthreads, istack_smp_arrow[i],
+                                                   ncorner, psf_s[i], psf_m[i]);
         };
     };
     
@@ -86,14 +71,9 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long inum_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            if(nthreads > 1){
-                inum_buf = set_psf_arrows_to_buf_pthread(inum_buf, nthreads,
-                                                         istack_smp_arrow[i], ncorner,
-                                                         psf_s[i], psf_m[i], psf_buf);
-            }else{
-                inum_buf = set_psf_arrows_to_buf(inum_buf, 0, psf_s[i]->nnod_viz,
-                                                 ncorner, psf_s[i], psf_m[i], psf_buf);
-            }
+            inum_buf = sel_psf_arrows_to_buf_pthread(inum_buf, nthreads,
+                                                     istack_smp_arrow[i], ncorner,
+                                                     psf_s[i], psf_m[i], psf_buf);
         };
     };
 

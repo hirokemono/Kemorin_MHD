@@ -13,7 +13,8 @@
 #include "icosahedron_c.h"
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
-#include "set_PSF_patches_to_buf.h"
+#include "pthread_PSF_patches_to_buf.h"
+#include "pthread_PSF_arrows_to_buf.h"
 #include "set_PSF_isolines_to_buf.h"
 #include "modify_object_4_viewer_c.h"
 

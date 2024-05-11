@@ -110,6 +110,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/find_isoline_on_patch_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
