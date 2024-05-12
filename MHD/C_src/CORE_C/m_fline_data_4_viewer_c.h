@@ -18,7 +18,8 @@
 struct fline_data{
     long nedge_fline;
     long nnod_4_edge_fline;
-    
+    long **iedge_fline;
+
     
     double *xyzw_edge_fline;
     double *dir_edge;
@@ -62,6 +63,9 @@ struct fline_data{
 struct fline_data * init_fline_data(void);
 
 void alloc_fline_node_s(long nnod, struct fline_data *fline_d);
+
+void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
+                       struct fline_data *fline_d);
 
 void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
 void alloc_fline_field_data_c(struct fline_data *fline_d);

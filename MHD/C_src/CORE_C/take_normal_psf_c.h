@@ -18,9 +18,7 @@ void easy_normal_nod_psf(struct psf_data *viz_s);
 void take_normal_psf(struct psf_data *viz_s);
 void take_minmax_psf(struct psf_data *viz_s);
 
-void take_length_fline(struct psf_data *viz_s,
-                       struct fline_data *fline_d);
-void take_minmax_fline(struct psf_data *viz_s,
-                       struct fline_data *fline_d);
+void take_length_fline(struct fline_data *fline_d);
+void take_minmax_fline(struct fline_data *fline_d);
 
 #endif

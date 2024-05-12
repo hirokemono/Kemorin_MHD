@@ -271,12 +271,12 @@ void copy_viewer_udt_node(struct psf_data *viz_org, long *inod_copied, double *x
 	return;
 }
 
-void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org){
+void copy_viewer_udt_connect(struct psf_data *viz_org, long **ie_copied){
 	int i, j;
     
 	for (i = 0; i < viz_org->nele_viz; i++) {
-		for(j=0;j<viz_copied->nnod_4_ele_viz;j++){
-			viz_copied->ie_viz[i][j] = viz_org->ie_viz[i][j];
+		for(j=0;j<viz_org->nnod_4_ele_viz;j++){
+            ie_copied[i][j] = viz_org->ie_viz[i][j];
 		};
 	};
 	return;

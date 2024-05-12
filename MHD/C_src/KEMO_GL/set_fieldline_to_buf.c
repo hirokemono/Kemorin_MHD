@@ -32,7 +32,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	inum_patch = ist_patch;
 	for (iele=ist_line; iele<ied_line; iele++) {
 		for (k = 0; k < 2; k++) {
-			inod = fline_s->ie_viz[iele][k] - 1;
+			inod = fline_d->iedge_fline[iele][k] - 1;
 			for (nd=0; nd<3; nd++) {
 				x_line[3*k+nd] =   (float) fline_d->xyzw_fline[inod*IFOUR + nd];
 				dir_line[3*k+nd] = (float) fline_d->dir_nod[inod*IFOUR + nd];
@@ -68,7 +68,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
 	
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
-			inod =fline_s->ie_viz[iele][k] - 1;
+			inod = fline_d->iedge_fline[iele][k] - 1;
             set_node_stride_buffer((ITWO*iele+k), strided_buf, &point_buf);
 			for(nd=0;nd<4;nd++){
                 strided_buf->v_buf[nd+point_buf.igl_xyzw]

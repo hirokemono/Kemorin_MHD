@@ -35,10 +35,38 @@ void alloc_fline_node_s(long nnod, struct fline_data *fline_d){
     return;
 };
 
-void dealloc_fline_node_s(struct fline_data *fline_d){
+static void dealloc_fline_node_s(struct fline_data *fline_d){
     free(fline_d->inod_fline);
     free(fline_d->xyzw_fline);
 }
+
+void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
+                       struct fline_data *fline_d){
+    int i;
+    
+    fline_d->nedge_fline =       n_ele;
+    fline_d->nnod_4_edge_fline = nnod_4_ele;
+    /* allocate memory  ie_viz[patch #][connection]*/
+    fline_d->iedge_fline = (long **) malloc(fline_d->nedge_fline*sizeof(long *));
+    if(fline_d->iedge_fline  == NULL){
+        printf("malloc error for fline_d->iedge_fline \n");
+        exit(0);
+    }
+
+    for (i = 0; i < fline_d->nedge_fline; i++){
+        fline_d->iedge_fline[i] = (long *)calloc(fline_d->nnod_4_edge_fline,sizeof(long));
+        if(fline_d->iedge_fline[i]  == NULL){
+            printf("malloc error for fline_d->iedge_fline[i], %d \n", i);
+            exit(0);
+        }
+    };
+    return;
+};
+
+void dealloc_fline_ele_s(struct fline_data *fline_d){
+    free(fline_d->iedge_fline);
+};
+
 
 void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d){
     int i;
@@ -201,6 +229,7 @@ void deallc_all_fline_data(struct fline_data *fline_d){
     dealloc_fline_ave_data(fline_d);
     dealloc_fline_data(fline_d);
     
+    dealloc_fline_ele_s(fline_d);
     dealloc_fline_field_data_c(fline_d);
     dealloc_fline_node_s(fline_d);
     return;

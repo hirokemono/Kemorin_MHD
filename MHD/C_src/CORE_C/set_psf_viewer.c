@@ -280,6 +280,7 @@ void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_
                                                    fline_d->id_coord, fline_d->data_name);
 
     alloc_fline_node_s(viz_tmp->nnod_viz, fline_d);
+    alloc_fline_ele_s(viz_tmp->nele_viz, viz_s->nnod_4_ele_viz, fline_d);
 
 	viz_s->nnod_viz = viz_tmp->nnod_viz;
     viz_s->nele_viz = viz_tmp->nele_viz;
@@ -292,7 +293,7 @@ void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_
 	copy_viewer_udt_node(viz_tmp, fline_d->inod_fline, fline_d->xyzw_fline);
 	copy_viewer_udt_data(viz_tmp, fline_d->nnod_fline, fline_d->ncomptot, fline_d->d_nod);
 
-    copy_viewer_udt_connect(viz_s, viz_tmp);
+    copy_viewer_udt_connect(viz_tmp, fline_d->iedge_fline);
 
 	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
@@ -328,7 +329,7 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
 		set_viewer_udt_quad(viz_s, viz_tmp);
 		cut_patches_for_map_quad(viz_tmp->nele_viz, viz_s, map_itp);
 	} else {
-		copy_viewer_udt_connect(viz_s, viz_tmp);
+        copy_viewer_udt_connect(viz_tmp, viz_s->ie_viz);
 		cut_patches_for_map_tri(viz_tmp->nele_viz, viz_s, map_itp);
 	};
 	set_new_node_for_mapping(map_itp, viz_s);

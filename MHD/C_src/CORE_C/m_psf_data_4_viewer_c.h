@@ -104,7 +104,7 @@ void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list);
 
 
 void copy_viewer_udt_node(struct psf_data *viz_org, long *inod_copied, double *xyzw_copied);
-void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org);
+void copy_viewer_udt_connect(struct psf_data *viz_org, long **ie_copied);
 long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
                                 long *ncomp, long *istack_comp,
                                 int *id_coord, char **data_name);
