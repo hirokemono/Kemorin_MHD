@@ -133,32 +133,10 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
 	return;
 };
 
-void alloc_psf_length_s(struct psf_data *psf_s){
-/* allocate memory  dir_ele[patch #][component]*/
-	psf_s->dir_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
-    if(psf_s->dir_ele  == NULL){
-        printf("malloc error for psf_s->dir_ele \n");
-        exit(0);
-    }
-
-	psf_s->length_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
-    if(psf_s->length_ele  == NULL){
-        printf("malloc error for psf_s->length_ele \n");
-        exit(0);
-    }
-	return;
-};
-
 static void dealloc_psf_norm_s(struct psf_data *psf_s){
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
 	free(psf_s->area_viz);
-	return;
-};
-
-static void dealloc_psf_length_s(struct psf_data *psf_s){
-	free(psf_s->dir_ele);
-	free(psf_s->length_ele);
 	return;
 };
 
@@ -217,7 +195,6 @@ void deallc_all_psf_data(struct psf_data *psf_s){
 
 void deallc_all_fline_data(struct psf_data *psf_s){
 	dealloc_psf_norm_s(psf_s);
-	dealloc_psf_length_s(psf_s);
 	dealloc_psf_data_s(psf_s);
 	dealloc_psf_mesh_c(psf_s);
 	return;

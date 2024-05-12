@@ -51,11 +51,7 @@ struct psf_data{
 	double *norm_nod;
 	double *area_viz;
 	double area_total;
-	
-	double *dir_ele;
-	double *length_ele;
-	double length_total;
-    
+	    
     double center_psf[3];
     double xmin_psf[3];
     double xmax_psf[3];
@@ -94,7 +90,6 @@ void alloc_psf_data_s(struct psf_data *psf_s);
 void alloc_psf_field_data_c(struct psf_data *psf_s);
 
 void alloc_psf_norm_s(struct psf_data *psf_s);
-void alloc_psf_length_s(struct psf_data *psf_s);
 
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);

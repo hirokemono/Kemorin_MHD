@@ -87,12 +87,14 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s,
                                   struct psf_data *ucd_tmp){
 	set_viewer_ucd_data(fline_s, ucd_tmp);
     
-	take_length_fline(fline_s, fline_d);
-	take_minmax_fline(fline_s);
+    alloc_fline_work_data(fline_s->nele_viz, fline_d);
+    take_length_fline(fline_s, fline_d);
+	take_minmax_fline(fline_s, fline_d);
 	/*
      check_psf_ave_rms_c(fline_s);
      check_psf_min_max_c(fline_s);
      */
+    dealloc_fline_work_data(fline_d);
 	return;
 };
 
