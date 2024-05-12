@@ -808,7 +808,7 @@ void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
 
 void kemoview_set_fline_constant_opacity(double opacity,
                                          struct kemoviewer_type *kemoviewer){
-	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_s, 
+	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_s, kemoviewer->kemo_fline->fline_d, 
                                kemoviewer->kemo_fline->fline_m, opacity);
 }
 

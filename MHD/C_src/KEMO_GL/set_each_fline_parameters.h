@@ -13,6 +13,7 @@
 
 #include "kemoviewer.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_fline_data_4_viewer_c.h"
 #include "m_kemoview_fline_menu.h"
 #include "skip_comment_c.h"
 #include "kemoviewer_base.h"
@@ -55,15 +56,15 @@ int get_fline_corners(struct fline_menu_val *fline_m);
 void set_fline_thickness(double value, struct fline_menu_val *fline_m);
 double get_fline_thickness(struct fline_menu_val *fline_m);
 
-double get_fline_data_min(struct psf_data *fline_s, int i);
-double get_fline_data_max(struct psf_data *fline_s, int i);
+double get_fline_data_min(struct fline_data *fline_s, int i);
+double get_fline_data_max(struct fline_data *fline_s, int i);
 
 int send_coordinate_id_fline(struct psf_data *fline_s, struct fline_menu_val *fline_m);
 
 void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
 							   struct fline_menu_val *fline_m);
-void set_fline_constant_opacity(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			double opacity);
+void set_fline_constant_opacity(struct psf_data *fline_s, struct fline_data *fline_d,
+                                struct fline_menu_val *fline_m, double opacity);
 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value);
 void set_fline_color_data(struct fline_menu_val *fline_m, 

@@ -163,7 +163,7 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
 	return;
 };
 
-static void dealloc_psf_norm_s(struct psf_data *psf_s){
+void dealloc_psf_norm_s(struct psf_data *psf_s){
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
 	free(psf_s->area_viz);
@@ -217,13 +217,6 @@ void deallc_all_psf_data(struct psf_data *psf_s){
     /*
     dealloc_edge_data_4_psf(psf_s->nele_viz, psf_s->psf_edge);
     */
-	dealloc_psf_norm_s(psf_s);
-	dealloc_psf_data_s(psf_s);
-	dealloc_psf_mesh_c(psf_s);
-	return;
-};
-
-void deallc_all_fline_data(struct psf_data *psf_s){
 	dealloc_psf_norm_s(psf_s);
 	dealloc_psf_data_s(psf_s);
 	dealloc_psf_mesh_c(psf_s);

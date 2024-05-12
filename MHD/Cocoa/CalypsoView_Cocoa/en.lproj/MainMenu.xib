@@ -2605,6 +2605,7 @@
                                                                 <constraint firstAttribute="trailing" secondItem="JEO-wB-XDf" secondAttribute="trailing" constant="6" id="6tb-XQ-fty"/>
                                                                 <constraint firstItem="JDI-yl-bkO" firstAttribute="top" secondItem="1067" secondAttribute="bottom" constant="14" id="7n1-2s-089"/>
                                                                 <constraint firstAttribute="trailing" secondItem="1067" secondAttribute="trailing" constant="11" id="7sM-Vb-wVL"/>
+                                                                <constraint firstItem="1067" firstAttribute="centerY" secondItem="1066" secondAttribute="centerY" id="8ed-fK-1eg"/>
                                                                 <constraint firstItem="v5r-sW-X2f" firstAttribute="centerY" secondItem="V8x-AS-8sv" secondAttribute="centerY" id="AB3-sA-4Ta"/>
                                                                 <constraint firstItem="kB6-ei-zkU" firstAttribute="leading" secondItem="GWh-uY-e4i" secondAttribute="trailing" id="AE3-yP-Hll"/>
                                                                 <constraint firstItem="2497" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qff-HL-V5e" secondAttribute="leading" constant="20" symbolic="YES" id="ATa-Nq-s0N"/>
@@ -2692,8 +2693,8 @@
                                                                     </buttonCell>
                                                                     <connections>
                                                                         <action selector="DrawPSFVectorAction:" target="1157" id="3061"/>
-                                                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3089"/>
                                                                         <binding destination="1157" name="value" keyPath="self.DrawPSFVectorFlag" id="HHm-6u-Kpa"/>
+                                                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3089"/>
                                                                     </connections>
                                                                 </button>
                                                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3006">
@@ -4596,7 +4597,7 @@
                                         <constraint firstAttribute="height" constant="22" id="so2-8F-zUA"/>
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2009">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2010"/>
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="scientific" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2010"/>
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -4612,7 +4613,7 @@
                                         <constraint firstAttribute="height" constant="22" id="XCP-pX-6Kz"/>
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2011">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2012"/>
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="scientific" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2012"/>
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

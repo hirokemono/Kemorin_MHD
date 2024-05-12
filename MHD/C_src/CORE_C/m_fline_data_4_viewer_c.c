@@ -44,8 +44,34 @@ void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d){
     return;
 };
 
-void alloc_fline_ave_data(long ncomptot, struct fline_data *fline_d){
+void alloc_fline_ave_data(long nfield, long ncomptot,
+                          struct fline_data *fline_d){
+    fline_d->nfield = nfield;
+    fline_d->amp_min = (double *)calloc(fline_d->nfield,sizeof(double));
+    if(fline_d->amp_min  == NULL){
+        printf("malloc error for fline_d->amp_min \n");
+        exit(0);
+    }
+
+    fline_d->amp_max = (double *)calloc(fline_d->nfield,sizeof(double));
+    if(fline_d->amp_max  == NULL){
+        printf("malloc error for fline_d->amp_max \n");
+        exit(0);
+    }
+
     fline_d->ncomptot = ncomptot;
+    fline_d->d_min = (double *)calloc(fline_d->ncomptot,sizeof(double));
+    if(fline_d->d_min  == NULL){
+        printf("malloc error for fline_d->d_min \n");
+        exit(0);
+    }
+
+    fline_d->d_max = (double *)calloc(fline_d->ncomptot,sizeof(double));
+    if(fline_d->d_max  == NULL){
+        printf("malloc error for fline_d->d_max \n");
+        exit(0);
+    }
+
     fline_d->d_ave = (double *)calloc(fline_d->ncomptot,sizeof(double));
     if(fline_d->d_ave  == NULL){
         printf("malloc error for fline_d->d_ave \n");
@@ -60,19 +86,35 @@ void alloc_fline_ave_data(long ncomptot, struct fline_data *fline_d){
     return;
 };
 
-void dealloc_fline_data(struct fline_data *fline_d){
-    free(fline_d->dir_nod);
-    return;
-}
-
 void dealloc_fline_work_data(struct fline_data *fline_d){
     free(fline_d->dir_edge);
     free(fline_d->length_edge);
     return;
 }
 
-void dealloc_fline_ave_data(struct fline_data *fline_d){
+static void dealloc_fline_data(struct fline_data *fline_d){
+    free(fline_d->dir_nod);
+    return;
+}
+
+static void dealloc_fline_ave_data(struct fline_data *fline_d){
+    free(fline_d->amp_min);
+    free(fline_d->amp_min);
+    free(fline_d->d_min);
+    free(fline_d->d_max);
     free(fline_d->d_rms);
     free(fline_d->d_ave);
     return;
 }
+
+void deallc_all_fline_data(struct psf_data *psf_s,
+                           struct fline_data *fline_d){
+    dealloc_fline_ave_data(fline_d);
+    dealloc_fline_data(fline_d);
+
+    dealloc_psf_norm_s(psf_s);
+    dealloc_psf_data_s(psf_s);
+    dealloc_psf_mesh_c(psf_s);
+    return;
+};
+

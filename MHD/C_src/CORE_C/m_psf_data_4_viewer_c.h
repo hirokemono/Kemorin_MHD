@@ -94,8 +94,8 @@ void alloc_psf_norm_s(struct psf_data *psf_s);
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);
 void dealloc_psf_data_s(struct psf_data *psf_s);
+void dealloc_psf_norm_s(struct psf_data *psf_s);
 void deallc_all_psf_data(struct psf_data *psf_s);
-void deallc_all_fline_data(struct psf_data *psf_s);
 
 struct vtk_field *alloc_vtk_fields_list_c(void);
 void alloc_vtk_field_data_c(vtk_fields_t *vtk_s);

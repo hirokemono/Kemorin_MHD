@@ -38,9 +38,9 @@ void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
 void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_fline = IZERO;
 	dealloc_draw_fline_flags(kemo_fline->fline_s, kemo_fline->fline_m);
-	deallc_all_fline_data(kemo_fline->fline_s);
-    dealloc_fline_data(kemo_fline->fline_d);
-	return;
+    
+	deallc_all_fline_data(kemo_fline->fline_s, kemo_fline->fline_d);
+    return;
 }
 
 void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp,
@@ -170,9 +170,9 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		value = get_fline_data_min(kemo_fline->fline_s, icomp);
+		value = get_fline_data_min(kemo_fline->fline_d, icomp);
 	}else if(selected == ISET_COLOR_MAX){
-		value = get_fline_data_max(kemo_fline->fline_s, icomp);
+		value = get_fline_data_max(kemo_fline->fline_d, icomp);
 	};
 	return value;
 }

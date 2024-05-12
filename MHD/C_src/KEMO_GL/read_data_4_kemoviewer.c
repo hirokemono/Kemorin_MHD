@@ -90,14 +90,13 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s,
     alloc_fline_work_data(fline_s->nele_viz, fline_d);
     take_length_fline(fline_s, fline_d);
     
-    alloc_fline_ave_data(fline_s->ncomptot, fline_d);
+    alloc_fline_ave_data(fline_s->nfield, fline_s->ncomptot, fline_d);
 	take_minmax_fline(fline_s, fline_d);
 	/*
      check_psf_ave_rms_c(fline_s);
-     check_psf_min_max_c(fline_s);
+     check_fline_min_max_c(fline_s, fline_d);
      */
     dealloc_fline_work_data(fline_d);
-    dealloc_fline_ave_data(fline_d);
 	return;
 };
 
@@ -144,8 +143,7 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct fline_data *fline_d,
 		return iflag_datatype;
 	}
     
-	deallc_all_fline_data(fline_s);
-    dealloc_fline_data(fline_d);
+	deallc_all_fline_data(fline_s, fline_d);
 	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
 	return 0;
 }
@@ -196,14 +194,14 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct fline_data *fline_
 	
 	fline_m->iflag_draw_fline = IONE;
 	
-	for (i=0;i<fline_s->nfield;i++){
-		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_s->amp_min[i], fline_s->amp_max[i]);
-		set_full_opacitymap(fline_m->cmap_fline_fld[i], fline_s->amp_min[i], fline_s->amp_max[i]);
+	for (i=0;i<fline_d->nfield;i++){
+		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
+		set_full_opacitymap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
 	};
 	
-	for (i=0;i<fline_s->ncomptot;i++){
-		set_linear_colormap(fline_m->cmap_fline_comp[i], fline_s->d_min[i], fline_s->d_max[i]);
-		set_full_opacitymap(fline_m->cmap_fline_comp[i], fline_s->d_min[i], fline_s->d_max[i]);
+	for (i=0;i<fline_d->ncomptot;i++){
+		set_linear_colormap(fline_m->cmap_fline_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
+		set_full_opacitymap(fline_m->cmap_fline_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
 	};
 	
 	return;
