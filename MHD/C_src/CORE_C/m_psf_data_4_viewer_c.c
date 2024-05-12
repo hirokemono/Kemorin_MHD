@@ -301,17 +301,19 @@ void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *vi
 	return;
 }
 
-void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org){
+void copy_viewer_udt_data(struct psf_data *viz_org,
+                          long nnod_copied, long ncomptot_copied,
+                          double *d_copied){
     long i, j, imin_comp, imin_nod;
 	
     imin_nod = viz_org->nnod_viz;
     imin_comp = viz_org->ncomptot;
-    if (viz_copied->nnod_viz < imin_nod)  imin_nod =  viz_copied->nnod_viz;
-    if (viz_copied->ncomptot < imin_comp) imin_comp = viz_copied->ncomptot;
+    if (nnod_copied < imin_nod)  imin_nod =  nnod_copied;
+    if (ncomptot_copied < imin_comp) imin_comp = ncomptot_copied;
     
 	for (i = 0; i < imin_nod; i++) {
 		for (j = 0; j < imin_comp; j++){
-			viz_copied->d_nod[i*viz_copied->ncomptot + j]
+            d_copied[i*ncomptot_copied + j]
                 = viz_org->d_nod[i*viz_org->ncomptot + j];
 		};
 	};

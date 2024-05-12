@@ -66,8 +66,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
-    /*	set_viewer_ucd_data(psf_s, ucd_tmp);*/
-	set_ucd_with_mapping(psf_s, ucd_tmp);
+    set_viewer_data_with_mapping(psf_s, ucd_tmp);
     
 	take_normal_psf(psf_s);
 	take_minmax_psf(psf_s);
@@ -85,12 +84,12 @@ static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp
 static void set_fline_data_by_UCD(struct psf_data *fline_s,
                                   struct fline_data *fline_d,
                                   struct psf_data *ucd_tmp){
-	set_viewer_ucd_data(fline_s, ucd_tmp);
+    set_viewer_fieldline_data(fline_s, fline_d, ucd_tmp);
     
     alloc_fline_work_data(fline_s->nele_viz, fline_d);
     take_length_fline(fline_s, fline_d);
     
-    alloc_fline_ave_data(fline_s->nfield, fline_s->ncomptot, fline_d);
+    alloc_fline_ave_data(fline_d);
 	take_minmax_fline(fline_s, fline_d);
 	/*
      check_psf_ave_rms_c(fline_s);

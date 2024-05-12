@@ -22,6 +22,8 @@ struct fline_data{
     double length_total;
 
     long nnod_fline;
+    double *d_nod;
+    double *d_amp;
     double *color_nod;
 
     double *dir_nod;
@@ -40,10 +42,13 @@ struct fline_data{
 /* prototypes */
 
 struct fline_data * init_fline_data(void);
-void alloc_fline_data(long nnod_fline, struct fline_data *fline_d);
+
+void alloc_fline_field_data_c(long nnod_fline, long nfield, long ncomptot,
+                              struct fline_data *fline_d);
+
+void alloc_fline_data(struct fline_data *fline_d);
 void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d);
-void alloc_fline_ave_data(long nfield, long ncomptot,
-                          struct fline_data *fline_d);
+void alloc_fline_ave_data(struct fline_data *fline_d);
 
 void dealloc_fline_work_data(struct fline_data *fline_d);
 void deallc_all_fline_data(struct psf_data *psf_s,

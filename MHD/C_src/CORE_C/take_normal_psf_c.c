@@ -352,8 +352,8 @@ static void sum_rms_ave_fline(long ist, long ied,
         for (i = 0; i < fline_d->nedge_fline; i++){
             i1 = viz_s->ie_viz[i][0] - 1;
             i2 = viz_s->ie_viz[i][1] - 1;
-            d = (  viz_s->d_nod[i1*fline_d->ncomptot + icomp]
-                 + viz_s->d_nod[i2*fline_d->ncomptot + icomp]) / 2.0;
+            d = (  fline_d->d_nod[i1*fline_d->ncomptot + icomp]
+                 + fline_d->d_nod[i2*fline_d->ncomptot + icomp]) / 2.0;
             
             fline_d->d_rms[icomp] = fline_d->d_rms[icomp]
                 + d * d * fline_d->length_edge[i];
@@ -389,34 +389,35 @@ static void take_rms_ave_fline(struct psf_data *viz_s,
 }
 
 static void take_minmax_psf_each_component(struct psf_data *viz_s,
+                                           double *d_nod, double *d_amp,
                                            double *d_min, double *d_max){
     int ifld, n;
     long icomp;
     
     for (ifld = 0; ifld < viz_s->nfield; ifld++){
-        for(n = 0; n < viz_s->nnod_viz; n++) viz_s->d_amp[n*viz_s->nfield + ifld] = 0.0;
+        for(n = 0; n < viz_s->nnod_viz; n++) d_amp[n*viz_s->nfield + ifld] = 0.0;
         for (icomp = viz_s->istack_comp[ifld]; icomp < viz_s->istack_comp[ifld+1]; icomp++){
             for (n = 0; n < viz_s->nnod_viz; n++){
-                viz_s->d_amp[n*viz_s->nfield + ifld] = viz_s->d_amp[n*viz_s->nfield + ifld]
-                + viz_s->d_nod[n*viz_s->ncomptot + icomp] * viz_s->d_nod[n*viz_s->ncomptot + icomp];
+                d_amp[n*viz_s->nfield + ifld] = d_amp[n*viz_s->nfield + ifld]
+                + d_nod[n*viz_s->ncomptot + icomp] * d_nod[n*viz_s->ncomptot + icomp];
             };
         };
         for (n = 0; n < viz_s->nnod_viz; n++){
-            viz_s->d_amp[n*viz_s->nfield + ifld] = sqrt(viz_s->d_amp[n*viz_s->nfield + ifld]);
+            d_amp[n*viz_s->nfield + ifld] = sqrt(d_amp[n*viz_s->nfield + ifld]);
         };
     };
     
     for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
-        d_min[icomp] = viz_s->d_nod[icomp];
-        d_max[icomp] = viz_s->d_nod[icomp];
+        d_min[icomp] = d_nod[icomp];
+        d_max[icomp] = d_nod[icomp];
         for (n = 1; n < viz_s->nnod_viz; n++){
-            if ( viz_s->d_nod[n*viz_s->ncomptot + icomp] < d_min[icomp] )
+            if ( d_nod[n*viz_s->ncomptot + icomp] < d_min[icomp] )
             {
-                d_min[icomp] = viz_s->d_nod[n*viz_s->ncomptot + icomp];
+                d_min[icomp] = d_nod[n*viz_s->ncomptot + icomp];
             };
-            if ( viz_s->d_nod[n*viz_s->ncomptot + icomp] > d_max[icomp] )
+            if ( d_nod[n*viz_s->ncomptot + icomp] > d_max[icomp] )
             {
-                d_max[icomp] = viz_s->d_nod[n*viz_s->ncomptot + icomp];
+                d_max[icomp] = d_nod[n*viz_s->ncomptot + icomp];
             };
         };
         
@@ -460,14 +461,15 @@ void take_length_fline(struct psf_data *viz_s,
                        struct fline_data *fline_d){
     cal_psf_grid_range(viz_s);
     
-    alloc_fline_data(viz_s->nnod_viz, fline_d);
+    alloc_fline_data(fline_d);
 	take_length_ele_fline(viz_s, fline_d);
 	return;
 }
 
 void take_minmax_psf(struct psf_data *viz_s){
 	take_rms_ave_psf(viz_s);
-    take_minmax_psf_each_component(viz_s, viz_s->d_min, viz_s->d_max);
+    take_minmax_psf_each_component(viz_s, viz_s->d_nod, viz_s->d_amp,
+                                   viz_s->d_min, viz_s->d_max);
     take_minmax_viz_fields(viz_s->nfield, viz_s->istack_comp,
                            viz_s->d_min, viz_s->d_max,
                            viz_s->amp_min, viz_s->amp_max);
@@ -477,7 +479,8 @@ void take_minmax_psf(struct psf_data *viz_s){
 void take_minmax_fline(struct psf_data *viz_s,
                        struct fline_data *fline_d){
 	take_rms_ave_fline(viz_s, fline_d);
-    take_minmax_psf_each_component(viz_s, fline_d->d_min, fline_d->d_max);
+    take_minmax_psf_each_component(viz_s, fline_d->d_nod, fline_d->d_amp,
+                                   fline_d->d_min, fline_d->d_max);
     take_minmax_viz_fields(viz_s->nfield, viz_s->istack_comp,
                            fline_d->d_min, fline_d->d_max,
                            fline_d->amp_min, fline_d->amp_max);

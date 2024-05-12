@@ -12,7 +12,7 @@ void const_fieldlines_buffer(const int nthreads,
     FLINE_line_buf->num_nod_buf = 0;
     if(fline_m->iflag_draw_fline <= 0) return;
         
-    set_color_code_for_fieldlines(fline_s, fline_d, fline_m);
+    set_color_code_for_fieldlines(fline_d, fline_m);
 
     if(fline_m->fieldline_type == IFLAG_PIPE){
         long num_patch = count_fieldtubes_to_buf(fline_m->ncorner, fline_s);

@@ -27,7 +27,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	double x_line[6], dir_line[6], color_line[8];
 	double norm_line[6];
 	
-	set_color_code_for_fieldlines(fline_s, fline_d, fline_m);
+	set_color_code_for_fieldlines(fline_d, fline_m);
 	
 	inum_patch = ist_patch;
 	for (iele=ist_line; iele<ied_line; iele++) {
@@ -64,7 +64,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
     struct gl_local_buffer_address point_buf;
 	long iele, k, nd, inod;
 	
-	set_color_code_for_fieldlines(fline_s, fline_d, fline_m);
+	set_color_code_for_fieldlines(fline_d, fline_m);
 	
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){

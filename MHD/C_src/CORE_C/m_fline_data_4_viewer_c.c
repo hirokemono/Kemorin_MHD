@@ -18,8 +18,24 @@ struct fline_data * init_fline_data(void){
     return fline_d;
 };
 
-void alloc_fline_data(long nnod_fline, struct fline_data *fline_d){
+void alloc_fline_field_data_c(long nnod_fline, long nfield, long ncomptot,
+                              struct fline_data *fline_d){
     fline_d->nnod_fline = nnod_fline;
+    fline_d->nfield = nfield;
+    fline_d->ncomptot = ncomptot;
+    /* allocate memory  d_nod[node #][component]*/
+    long num = fline_d->ncomptot * fline_d->nnod_fline;
+    fline_d->d_nod = (double *)malloc(num*sizeof(double));
+    if(fline_d->d_nod  == NULL){
+        printf("malloc error for fline_d->d_nod \n");
+        exit(0);
+    }
+};
+void dealloc_fline_field_data_c(struct fline_data *fline_d){
+    free(fline_d->d_nod);
+};
+
+void alloc_fline_data(struct fline_data *fline_d){
 
     fline_d->color_nod = (double *)malloc(4*fline_d->nnod_fline*sizeof(double));
     if(fline_d->color_nod  == NULL){
@@ -51,9 +67,18 @@ void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d){
     return;
 };
 
-void alloc_fline_ave_data(long nfield, long ncomptot,
-                          struct fline_data *fline_d){
-    fline_d->nfield = nfield;
+void alloc_fline_ave_data(struct fline_data *fline_d){
+    long num;
+
+    /* allocate memory  d_amp[node #][field]*/
+    num = fline_d->nfield * fline_d->nnod_fline;
+    fline_d->d_amp = (double *)malloc(num*sizeof(double));
+    if(fline_d->d_amp  == NULL){
+        printf("malloc error for psf_s->d_amp \n");
+        exit(0);
+    }
+
+    
     fline_d->amp_min = (double *)calloc(fline_d->nfield,sizeof(double));
     if(fline_d->amp_min  == NULL){
         printf("malloc error for fline_d->amp_min \n");
@@ -66,7 +91,6 @@ void alloc_fline_ave_data(long nfield, long ncomptot,
         exit(0);
     }
 
-    fline_d->ncomptot = ncomptot;
     fline_d->d_min = (double *)calloc(fline_d->ncomptot,sizeof(double));
     if(fline_d->d_min  == NULL){
         printf("malloc error for fline_d->d_min \n");
@@ -106,6 +130,8 @@ static void dealloc_fline_data(struct fline_data *fline_d){
 }
 
 static void dealloc_fline_ave_data(struct fline_data *fline_d){
+    free(fline_d->d_amp);
+    
     free(fline_d->amp_min);
     free(fline_d->amp_min);
     free(fline_d->d_min);
@@ -119,6 +145,8 @@ void deallc_all_fline_data(struct psf_data *psf_s,
                            struct fline_data *fline_d){
     dealloc_fline_ave_data(fline_d);
     dealloc_fline_data(fline_d);
+    
+    dealloc_fline_field_data_c(fline_d);
 
     dealloc_psf_data_s(psf_s);
     dealloc_psf_mesh_c(psf_s);

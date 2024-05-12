@@ -271,40 +271,35 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp, struct psf
 };
 
 
-void set_viewer_ucd_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	
+void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_d,
+                               struct psf_data *viz_tmp){
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);
     copy_viewer_udt_field_name(viz_s, viz_tmp);
 
 	viz_s->nnod_viz = viz_tmp->nnod_viz;
-	if (viz_tmp->nnod_4_ele_viz == 4) {
-		viz_s->nele_viz = 2*viz_tmp->nele_viz;
-		viz_s->nnod_4_ele_viz = ITHREE;
-	} else {
-		viz_s->nele_viz = viz_tmp->nele_viz;
-		viz_s->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
-	};
-		
+    viz_s->nele_viz = viz_tmp->nele_viz;
+    viz_s->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
+
 	alloc_viz_node_s(viz_s);
 	alloc_viz_ele_s(viz_s);
-    alloc_psf_field_data_c(viz_s);
+    alloc_fline_field_data_c(viz_tmp->nnod_viz,
+                             viz_tmp->nfield, viz_tmp->ncomptot,
+                             fline_d);
 	alloc_psf_data_s(viz_s);
 
 	copy_viewer_udt_node(viz_s, viz_tmp);
-	copy_viewer_udt_data(viz_s, viz_tmp);
+	copy_viewer_udt_data(viz_tmp, viz_s->nnod_viz, viz_s->ncomptot,
+                         fline_d->d_nod);
 
-	if (viz_tmp->nnod_4_ele_viz == 4) {
-		set_viewer_udt_quad(viz_s, viz_tmp);
-	} else {
-		copy_viewer_udt_connect(viz_s, viz_tmp);
-	};
+    copy_viewer_udt_connect(viz_s, viz_tmp);
 
 	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
+    return;
 }
 
-void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
+void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);
@@ -325,7 +320,8 @@ void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
     alloc_psf_cutting_4_map_item(map_itp);
 	
 	copy_viewer_udt_node(viz_s, viz_tmp);
-	copy_viewer_udt_data(viz_s, viz_tmp);
+	copy_viewer_udt_data(viz_tmp, viz_s->nnod_viz, viz_s->ncomptot,
+                         viz_s->d_nod);
 	if (viz_tmp->nnod_4_ele_viz == 4) {
 		set_viewer_udt_quad(viz_s, viz_tmp);
 		cut_patches_for_map_quad(viz_tmp->nele_viz, viz_s, map_itp);
