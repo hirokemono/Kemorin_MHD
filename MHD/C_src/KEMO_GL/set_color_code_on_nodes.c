@@ -94,7 +94,7 @@ void set_color_code_for_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_
 }
 
 
-void set_color_code_for_fieldlines(struct psf_data *fline_s,
+void set_color_code_for_fieldlines(struct psf_data *fline_s, struct fline_data *fline_d,
 								   struct fline_menu_val *fline_m){
 	int inod, nd;
 	double d_edge;
@@ -103,36 +103,36 @@ void set_color_code_for_fieldlines(struct psf_data *fline_s,
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
 	struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if (fline_m->fieldline_color == WHITE_LINE) {
-		for (inod=0; inod< fline_s->nnod_viz; inod++){
-			for(nd=0;nd<4;nd++){fline_s->color_nod[4*inod+nd] = white[nd];};
+		for (inod=0; inod< fline_d->nnod_fline; inod++){
+			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = white[nd];};
 		};
 	}
 	else if (fline_m->fieldline_color == BLACK_LINE) {
-		for (inod=0; inod< fline_s->nnod_viz; inod++){
-			for(nd=0;nd<4;nd++){fline_s->color_nod[4*inod+nd] = black[nd];};
+		for (inod=0; inod< fline_d->nnod_fline; inod++){
+			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = black[nd];};
 		};
 	}
 	else if (fline_m->fieldline_color == RAINBOW_LINE) {
-		for (inod=0; inod< fline_s->nnod_viz; inod++){
-			d_edge =  fline_s->d_nod[inod*fline_s->ncomptot + fline_m->icomp_draw_fline];
+		for (inod=0; inod< fline_d->nnod_fline; inod++){
+			d_edge =  fline_s->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_fline];
 			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
-                                   d_edge, &fline_s->color_nod[4*inod]);
+                                   d_edge, &fline_d->color_nod[4*inod]);
 		};
 	}
 	else if (fline_m->fieldline_color == TWO_COLOR_LINE) {
-		for (inod=0; inod< fline_s->nnod_viz; inod++){
-			d_edge =  fline_s->d_nod[inod*fline_s->ncomptot + fline_m->icomp_draw_fline];
-			set_two_color_scale_c(d_edge, &fline_s->color_nod[4*inod]);
+		for (inod=0; inod< fline_d->nnod_fline; inod++){
+			d_edge =  fline_s->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_fline];
+			set_two_color_scale_c(d_edge, &fline_d->color_nod[4*inod]);
             
-			fline_s->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);
+            fline_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);
 		};
 	}
 	else if (fline_m->fieldline_color == TWO_GRAY_LINE) {
-		for (inod=0; inod< fline_s->nnod_viz; inod++){
-			d_edge =  fline_s->d_nod[inod*fline_s->ncomptot + fline_m->icomp_draw_fline];
-			set_two_color_scale_g(d_edge, &fline_s->color_nod[4*inod]);
+		for (inod=0; inod< fline_d->nnod_fline; inod++){
+			d_edge =  fline_s->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_fline];
+			set_two_color_scale_g(d_edge, &fline_d->color_nod[4*inod]);
             
-			fline_s->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);
+            fline_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);
 		};
 	};
     dealloc_colormap_array(omap_array);

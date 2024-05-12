@@ -27,7 +27,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	double x_line[6], dir_line[6], color_line[8];
 	double norm_line[6];
 	
-	set_color_code_for_fieldlines(fline_s, fline_m);
+	set_color_code_for_fieldlines(fline_s, fline_d, fline_m);
 	
 	inum_patch = ist_patch;
 	for (iele=ist_line; iele<ied_line; iele++) {
@@ -37,7 +37,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 				x_line[3*k+nd] =   (float) fline_s->xyzw_viz[inod*IFOUR + nd];
 				dir_line[3*k+nd] = (float) fline_d->dir_nod[inod*IFOUR + nd];
 			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[4*inod+nd];};
+			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
 		find_normal_of_line(norm_line, x_line, dir_line);
 		num_wall = set_tube_vertex(fline_m->ncorner, fline_m->fieldline_thick,
@@ -58,13 +58,13 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 };
 
 long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
-                           struct psf_data *fline_s,
+                           struct psf_data *fline_s, struct fline_data *fline_d,
                            struct fline_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
 	long iele, k, nd, inod;
 	
-	set_color_code_for_fieldlines(fline_s, fline_m);
+	set_color_code_for_fieldlines(fline_s, fline_d, fline_m);
 	
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
@@ -76,7 +76,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
             };
 			for(nd=0;nd<4;nd++){
                 strided_buf->v_buf[nd+point_buf.igl_color]
-                    = fline_s->color_nod[4*inod + nd];
+                    = fline_d->color_nod[4*inod + nd];
             };
 		};
 	};

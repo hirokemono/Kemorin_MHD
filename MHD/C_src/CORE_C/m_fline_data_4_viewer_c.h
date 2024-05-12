@@ -22,7 +22,9 @@ struct fline_data{
     double length_total;
 
     long nnod_fline;
-	double *dir_nod;
+    double *color_nod;
+
+    double *dir_nod;
     
     long ncomptot;
     double *d_min;

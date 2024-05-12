@@ -20,6 +20,13 @@ struct fline_data * init_fline_data(void){
 
 void alloc_fline_data(long nnod_fline, struct fline_data *fline_d){
     fline_d->nnod_fline = nnod_fline;
+
+    fline_d->color_nod = (double *)malloc(4*fline_d->nnod_fline*sizeof(double));
+    if(fline_d->color_nod  == NULL){
+        printf("malloc error for fline_d->color_nod \n");
+        exit(0);
+    }
+
     fline_d->dir_nod = (double *)malloc(4*fline_d->nnod_fline*sizeof(double));
     if(fline_d->dir_nod  == NULL){
         printf("malloc error for fline_d->dir_nod \n");
@@ -93,6 +100,7 @@ void dealloc_fline_work_data(struct fline_data *fline_d){
 }
 
 static void dealloc_fline_data(struct fline_data *fline_d){
+    free(fline_d->color_nod);
     free(fline_d->dir_nod);
     return;
 }
