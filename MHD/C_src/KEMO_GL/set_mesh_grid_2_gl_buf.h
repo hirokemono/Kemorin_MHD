@@ -10,6 +10,7 @@
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_vertex_buffer.h"
 #include "rainbow_color_code_c.h"
+#include "pthread_mesh_patch_to_buf.h"
 
 /* prototypes */
 

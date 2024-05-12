@@ -15,7 +15,9 @@
 #include "set_mesh_patch_2_gl_buf.h"
 #include "set_mesh_grid_2_gl_buf.h"
 #include "set_mesh_node_2_gl_buf.h"
+#include "pthread_mesh_patch_to_buf.h"
 #include "bitonic_sort_float_pthread.h"
+#include "const_mesh_patch_table_for_gl.h"
 
 struct mesh_sorting_work{
     long nextP2_trans_patch;

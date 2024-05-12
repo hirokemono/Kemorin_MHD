@@ -1,21 +1,7 @@
 
 /* set_fieldline_to_buf.c */
 
-#include <pthread.h>
-
 #include "set_fieldline_to_buf.h"
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-
-    struct psf_data       *fline_s;
-    struct fline_menu_val *fline_m;
-    
-    long *num_patch;
-} args_pthread_fieldline;
 
 
 long count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
@@ -70,65 +56,6 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	return inum_patch;
 };
 
-static void * set_fieldtubes_to_buf_1thread(void *args){
-    args_pthread_fieldline * p = (args_pthread_fieldline *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data       *fline_s = p->fline_s;
-    struct fline_menu_val *fline_m = p->fline_m;
-    
-    long *num_patch =  p->num_patch;
-    
-    long lo = fline_s->nele_viz * id /     nthreads;
-    long hi = fline_s->nele_viz * (id+1) / nthreads;
-    long ist_patch = 2 * fline_m->ncorner * lo;
-        
-    num_patch[id] = set_fieldtubes_to_buf(ist_patch, lo, hi,
-                                          fline_s, fline_m,
-                                          strided_buf);
-    return 0;
-}
-
-
-long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads, 
-                                   struct psf_data *fline_s, struct fline_menu_val *fline_m,
-                                   struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_fieldline *args
-                = (args_pthread_fieldline *) malloc (nthreads * sizeof(args_pthread_fieldline));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_fieldline.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-        
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-
-        args[ip].strided_buf = strided_buf;
-        
-        args[ip].fline_s = fline_s;
-        args[ip].fline_m = fline_m;
-
-        args[ip].num_patch = num_each;
-            
-        pthread_create(&thread_handles[ip], NULL, set_fieldtubes_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = num_each[ip];
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-}
-
-
-
 long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct psf_data *fline_s,
                            struct fline_menu_val *fline_m,
@@ -155,58 +82,3 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
 	
 	return fline_s->nele_viz;
 }
-
-static void * set_fieldlines_to_buf_1thread(void *args){
-    args_pthread_fieldline * p = (args_pthread_fieldline *) args;
-    int id =       p->id;
-    int nthreads = p->nthreads;
-    
-    struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
-    struct psf_data       *fline_s = p->fline_s;
-    struct fline_menu_val *fline_m = p->fline_m;
-    
-    long *num_patch =  p->num_patch;
-    
-    long lo = fline_s->nele_viz * id /     nthreads;
-    long hi = fline_s->nele_viz * (id+1) / nthreads;
-        
-    num_patch[id] = set_fieldlines_to_buf(lo, lo, hi, fline_s, fline_m, strided_buf);
-    return 0;
-}
-
-long set_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
-                                   struct psf_data *fline_s, 
-                                   struct fline_menu_val *fline_m,
-                                   struct gl_strided_buffer *strided_buf){
-/* Allocate thread arguments. */
-    args_pthread_fieldline *args
-                = (args_pthread_fieldline *) malloc (nthreads * sizeof(args_pthread_fieldline));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_fieldline.\n"); exit(1);}
-/* Initialize thread handles and barrier. */
-    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
-    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
-        
-    int ip;
-    long *num_each = (long *) malloc (nthreads * sizeof(long));
-    for(ip=0;ip<nthreads;ip++) {
-        args[ip].id = ip;
-        args[ip].nthreads = nthreads;
-
-        args[ip].strided_buf = strided_buf;
-        
-        args[ip].fline_s = fline_s;
-        args[ip].fline_m = fline_m;
-
-        args[ip].num_patch = num_each;
-            
-        pthread_create(&thread_handles[ip], NULL, set_fieldlines_to_buf_1thread, &args[ip]);
-    }
-    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = num_each[ip];
-    free(num_each);
-    free(thread_handles);
-    free(args);
-    return num_patch;
-}
-

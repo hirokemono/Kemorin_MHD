@@ -11,6 +11,7 @@
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"
 #include "set_fieldline_to_buf.h"
+#include "pthread_fieldline_to_buf.h"
 
 /* prototypes */
 void const_fieldlines_buffer(const int nthreads, 

@@ -19,14 +19,8 @@ void const_fieldlines_buffer(const int nthreads,
         set_buffer_address_4_patch(ITHREE*num_patch, FLINE_tube_buf);
         if(FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(FLINE_tube_buf);
-            
-            if(nthreads > 1){
-                num_patch = set_fieldtubes_to_buf_pthread(IZERO, nthreads, fline_s, fline_m,
-                                                          FLINE_tube_buf);
-            }else{
-                num_patch = set_fieldtubes_to_buf(IZERO, IZERO, fline_s->nele_viz,
-                                                  fline_s, fline_m, FLINE_tube_buf);
-            };
+            num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads, fline_s, fline_m,
+                                                      FLINE_tube_buf);
         };
     };
 
@@ -34,16 +28,8 @@ void const_fieldlines_buffer(const int nthreads,
     set_buffer_address_4_patch(ITWO*num_edge, FLINE_line_buf);
     if(FLINE_line_buf->num_nod_buf>0){
         resize_strided_buffer(FLINE_line_buf);
-        
-        if(nthreads > 1){
-            set_fieldlines_to_buf_pthread(IZERO, nthreads,
-                                          fline_s, fline_m,
-                                          FLINE_line_buf);
-        }else{
-            set_fieldlines_to_buf(IZERO, IZERO, fline_s->nele_viz,
-                                  fline_s, fline_m, FLINE_line_buf);
-        };
- 
+        sel_fieldlines_to_buf_pthread(IZERO, nthreads, fline_s, fline_m,
+                                      FLINE_line_buf);
     };
 	return;
 }

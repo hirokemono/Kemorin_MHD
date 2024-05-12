@@ -57,18 +57,11 @@ static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
 	if(mesh_solid_buf->num_nod_buf <= 0) return;
     resize_strided_buffer(mesh_solid_buf);
     
-    long num_tri;
-    if(nthreads > 1){
-        num_tri = add_mesh_patch_to_buffer_pthread(shading_mode, mesh_m->polygon_mode,
-                                                   mesh_s, nthreads, IZERO,
-                                                   mesh_s->ntot_solid_patch,
-                                                   mesh_s->iele_solid_patch,
-                                                   mesh_solid_buf);
-    }else{
-        num_tri = add_mesh_patch_to_buffer(shading_mode, mesh_m->polygon_mode, mesh_s,
-                                           IZERO, IZERO, mesh_s->ntot_solid_patch,
-                                           mesh_s->iele_solid_patch, mesh_solid_buf);
-    };
+    long num_tri = sel_mesh_patch_to_buffer_pthread(shading_mode, mesh_m->polygon_mode,
+                                                    mesh_s, nthreads, IZERO,
+                                                    mesh_s->ntot_solid_patch,
+                                                    mesh_s->iele_solid_patch,
+                                                    mesh_solid_buf);
 	return;
 }
 
@@ -123,19 +116,12 @@ void const_trans_mesh_buffer(int nthreads,
     set_buffer_address_4_patch(ITHREE*mesh_s->ntot_trans_patch, mesh_trns_buf);
     if(mesh_trns_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_trns_buf);
-        long num_tri;
-        if(nthreads > 1){
-            num_tri = add_mesh_patch_to_buffer_pthread(view_s->shading_mode,
-                                                       mesh_m->polygon_mode,
-                                                       mesh_s, nthreads, IZERO,
-                                                       mesh_s->ntot_trans_patch,
-                                                       mesh_s->iele_trans_patch,
-                                                       mesh_trns_buf);
-        }else{
-            num_tri = add_mesh_patch_to_buffer(view_s->shading_mode, mesh_m->polygon_mode, mesh_s,
-                                               IZERO, IZERO, mesh_s->ntot_trans_patch,
-                                               mesh_s->iele_trans_patch, mesh_trns_buf);
-        }
+        long num_tri = sel_mesh_patch_to_buffer_pthread(view_s->shading_mode,
+                                                        mesh_m->polygon_mode,
+                                                        mesh_s, nthreads, IZERO,
+                                                        mesh_s->ntot_trans_patch,
+                                                        mesh_s->iele_trans_patch,
+                                                        mesh_trns_buf);
     };
     return;
 };

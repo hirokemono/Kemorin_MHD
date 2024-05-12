@@ -1,40 +1,40 @@
-
-/* set_mesh_patch_2_gl_buf.h */
+/*
+ *  set_mesh_patch_2_gl_buf.h
+ *  Kemoview_Cocoa
+ *
+ *  Created by Hiroaki Matsui on 08/12/20.
+ *  Copyright 2020 Dept. of Earth and Planetary Sciences, UC Davis. All rights reserved.
+ *
+ */
 
 #ifndef SET_MESH_PATCH_2_GL_BUF_
 #define SET_MESH_PATCH_2_GL_BUF_
 
-#include "kemoviewer_param_c.h"
+#include "calypso_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_vertex_buffer.h"
-#include "rainbow_color_code_c.h"
+#include "icosahedron_c.h"
 
-/* prototypes */
+long num_icosahedron_patch(void);
+long add_mesh_node_ico_to_buf(long ist_patch, int *istack_grp, int num_pe_sf,
+                              int *iflag_domain, long *istack_patch_pe);
+long set_each_group_node_ico_to_buf(const long ist_tri, 
+                                    long ist_grp, long ied_grp, int *item_grp,
+                                    struct viewer_mesh *mesh_s, double node_diam,
+                                    double f_color[4], 
+                                    struct gl_strided_buffer *mesh_buf);
 
-long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
-long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
+long count_mesh_edge_buf(long ist_edge, int *iflag_domain, int *istack_grp,
+                         struct viewer_mesh *mesh_s, long *istack_edge_pe);
+long set_each_mesh_grid_to_buf(int ist, int ied, int *item_grp,
+                               struct viewer_mesh *mesh_s,
+                               double f_color[4], long ist_edge,
+                               struct gl_strided_buffer *strided_buf);
 
-long add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
-                              struct viewer_mesh *mesh_s, long ist_tri, 
+long set_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
+                              struct viewer_mesh *mesh_s, long ist_tri,
                               long ist_ele, long ied_ele, long *iele_patch,
                               struct gl_strided_buffer *mesh_buf);
-long add_mesh_patch_to_buffer_pthread(int shading_mode, int polygon_mode,
-                                      struct viewer_mesh *mesh_s,
-                                      int nthreads, long ist_tri,
-                                      long ntot_patch, long *iele_patch,
-                                      struct gl_strided_buffer *mesh_buf);
 
-long set_solid_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
-                                   struct viewer_mesh *mesh_s,
-                                   long *iele_solid_patch);
-long set_transparent_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
-                                         struct viewer_mesh *mesh_s,
-                                         long *iele_trans_patch);
-
-void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
-                                   const long *iele_trans_patch, const double *z_ele_view,
-                                   float *z_trans_patch, long *index_trans_patch);
-
-void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mesh_s);
-#endif
+#endif /* SET_MESH_PATCH_2_GL_BUF_*/
