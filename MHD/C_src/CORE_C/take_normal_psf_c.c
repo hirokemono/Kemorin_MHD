@@ -8,33 +8,38 @@
 #include "take_normal_psf_c.h"
 
 
-static void cal_psf_grid_range(struct psf_data *viz_s){
+static double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
+                                 double *xmin_psf, double *xmax_psf,
+                                 double *center_psf){
+    double rmax_psf;
+    
 	int i, nd;
     double r_tmp;
 	
 	for (nd = 0; nd < 3; nd++) {
-		viz_s->xmin_psf[nd] = viz_s->xyzw_viz[nd];
-		viz_s->xmax_psf[nd] = viz_s->xyzw_viz[nd];
+		xmin_psf[nd] = xyzw_viz[nd];
+		xmax_psf[nd] = xyzw_viz[nd];
 	};
-	for (i = 1; i < viz_s->nnod_viz; i++) {
+	for (i = 1; i < nnod_viz; i++) {
 		for (nd = 0; nd < 3; nd++) {
-			if ( viz_s->xmin_psf[nd] > viz_s->xyzw_viz[i*IFOUR + nd]) {
-				viz_s->xmin_psf[nd] = viz_s->xyzw_viz[i*IFOUR + nd];
+			if ( xmin_psf[nd] > xyzw_viz[i*IFOUR + nd]) {
+				xmin_psf[nd] = xyzw_viz[i*IFOUR + nd];
             }
-			if ( viz_s->xmax_psf[nd] < viz_s->xyzw_viz[i*IFOUR + nd]) {
-				viz_s->xmax_psf[nd] = viz_s->xyzw_viz[i*IFOUR + nd];
+			if ( xmax_psf[nd] < xyzw_viz[i*IFOUR + nd]) {
+				xmax_psf[nd] = xyzw_viz[i*IFOUR + nd];
             }
 		}
 	};
-    viz_s->rmax_psf = 0.5*(viz_s->xmax_psf[0]-viz_s->xmin_psf[0]);
+    
+    rmax_psf = 0.5*(xmax_psf[0]-xmin_psf[0]);
 	for (nd = 1; nd < 3; nd++) {
-        r_tmp = 0.5*(viz_s->xmax_psf[nd]-viz_s->xmin_psf[nd]);
-        if(viz_s->rmax_psf < r_tmp) viz_s->rmax_psf = r_tmp;
+        r_tmp = 0.5*(xmax_psf[nd]-xmin_psf[nd]);
+        if(rmax_psf < r_tmp) rmax_psf = r_tmp;
 	};
 	for (nd = 0; nd < 3; nd++){
-        viz_s->center_psf[nd] = 0.5 * (viz_s->xmax_psf[nd]+viz_s->xmin_psf[nd]);
+        center_psf[nd] = 0.5 * (xmax_psf[nd]+xmin_psf[nd]);
     };
-	return;
+	return rmax_psf;
 }
 
 static void take_normal_ele_psf(struct psf_data *viz_s){
@@ -451,7 +456,9 @@ static void take_minmax_viz_fields(long nfield, long *istack_comp,
 
 void take_normal_psf(struct psf_data *viz_s){
 	alloc_psf_norm_s(viz_s);
-    cal_psf_grid_range(viz_s);
+    viz_s->rmax_psf = cal_psf_grid_range(viz_s->nnod_viz, viz_s->xyzw_viz,
+                                         viz_s->xmin_psf, viz_s->xmax_psf,
+                                         viz_s->center_psf);
 	take_normal_ele_psf(viz_s);
 	take_normal_nod_psf(viz_s);
 	return;
@@ -459,7 +466,9 @@ void take_normal_psf(struct psf_data *viz_s){
 
 void take_length_fline(struct psf_data *viz_s,
                        struct fline_data *fline_d){
-    cal_psf_grid_range(viz_s);
+    fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_fline, viz_s->xyzw_viz,
+                                           fline_d->xmin_psf, fline_d->xmax_psf,
+                                           fline_d->center_psf);
     
     alloc_fline_data(fline_d);
 	take_length_ele_fline(viz_s, fline_d);

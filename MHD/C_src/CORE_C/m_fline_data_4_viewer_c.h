@@ -17,23 +17,26 @@
 
 struct fline_data{
     long nedge_fline;
+    long nnod_4_edge_fline;
+    
+    
     double *dir_edge;
     double *length_edge;
     double length_total;
-
+    
     long nnod_fline;
     long nfield;
     long *ncomp;
     long *istack_comp;
     int *id_coord;
     char **data_name;
-
+    
     long ncomptot;
     double *d_nod;
     
     double *d_amp;
     double *color_nod;
-
+    
     double *dir_nod;
     
     double *d_min;
@@ -43,6 +46,11 @@ struct fline_data{
     
     double *amp_min;
     double *amp_max;
+    
+    double center_psf[3];
+    double xmin_psf[3];
+    double xmax_psf[3];
+    double rmax_psf;
 };
 
 /* prototypes */
