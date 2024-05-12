@@ -99,13 +99,43 @@ void alloc_psf_data_s(struct psf_data *psf_s){
     }
 
 	psf_s->d_min = (double *)calloc(psf_s->ncomptot,sizeof(double));
+    if(psf_s->d_min  == NULL){
+        printf("malloc error for psf_s->d_min \n");
+        exit(0);
+    }
+
 	psf_s->d_max = (double *)calloc(psf_s->ncomptot,sizeof(double));
+    if(psf_s->d_max  == NULL){
+        printf("malloc error for psf_s->d_max \n");
+        exit(0);
+    }
+
 	psf_s->d_ave = (double *)calloc(psf_s->ncomptot,sizeof(double));
+    if(psf_s->d_ave  == NULL){
+        printf("malloc error for psf_s->d_ave \n");
+        exit(0);
+    }
+
 	psf_s->d_rms = (double *)calloc(psf_s->ncomptot,sizeof(double));
-	
+    if(psf_s->d_rms  == NULL){
+        printf("malloc error for psf_s->d_rms \n");
+        exit(0);
+    }
+
+
 	psf_s->amp_min = (double *)calloc(psf_s->nfield,sizeof(double));
+    if(psf_s->amp_min  == NULL){
+        printf("malloc error for psf_s->amp_min \n");
+        exit(0);
+    }
+
 	psf_s->amp_max = (double *)calloc(psf_s->nfield,sizeof(double));
-	
+    if(psf_s->amp_max  == NULL){
+        printf("malloc error for psf_s->amp_max \n");
+        exit(0);
+    }
+
+
 	return;
 };
 

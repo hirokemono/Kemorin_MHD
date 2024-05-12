@@ -44,6 +44,22 @@ void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d){
     return;
 };
 
+void alloc_fline_ave_data(long ncomptot, struct fline_data *fline_d){
+    fline_d->ncomptot = ncomptot;
+    fline_d->d_ave = (double *)calloc(fline_d->ncomptot,sizeof(double));
+    if(fline_d->d_ave  == NULL){
+        printf("malloc error for fline_d->d_ave \n");
+        exit(0);
+    }
+
+    fline_d->d_rms = (double *)calloc(fline_d->ncomptot,sizeof(double));
+    if(fline_d->d_rms  == NULL){
+        printf("malloc error for fline_d->d_rms \n");
+        exit(0);
+    }
+    return;
+};
+
 void dealloc_fline_data(struct fline_data *fline_d){
     free(fline_d->dir_nod);
     return;
@@ -52,5 +68,11 @@ void dealloc_fline_data(struct fline_data *fline_d){
 void dealloc_fline_work_data(struct fline_data *fline_d){
     free(fline_d->dir_edge);
     free(fline_d->length_edge);
+    return;
+}
+
+void dealloc_fline_ave_data(struct fline_data *fline_d){
+    free(fline_d->d_rms);
+    free(fline_d->d_ave);
     return;
 }

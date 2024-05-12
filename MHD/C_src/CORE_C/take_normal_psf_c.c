@@ -331,28 +331,63 @@ static void take_length_ele_fline(struct psf_data *viz_s,
 };
 
 
+static void sum_rms_ave_psf(long ist, long ied,
+                            struct psf_data *viz_s){
+    int icomp;
+    long i, i1, i2, i3;
+    double d;
+    
+    for(icomp = 0; icomp < viz_s->ncomptot; icomp++){
+        viz_s->d_rms[icomp] = 0.0;
+        viz_s->d_ave[icomp] = 0.0;
+        for (i = ist; i < ied; i++){
+            i1 = viz_s->ie_viz[i][0] - 1;
+            i2 = viz_s->ie_viz[i][1] - 1;
+            i3 = viz_s->ie_viz[i][2] - 1;
+            d = (  viz_s->d_nod[i1*viz_s->ncomptot + icomp]
+                 + viz_s->d_nod[i2*viz_s->ncomptot + icomp]
+                 + viz_s->d_nod[i3*viz_s->ncomptot + icomp] ) / 3.0;
+            
+            viz_s->d_rms[icomp] = viz_s->d_rms[icomp]
+            + d * d * viz_s->area_viz[i];
+            viz_s->d_ave[icomp] = viz_s->d_ave[icomp]
+            + d * viz_s->area_viz[i];
+        }
+    }
+    return;
+}
+
+static void sum_rms_ave_fline(long ist, long ied,
+                              struct psf_data *viz_s,
+                              struct fline_data *fline_d){
+    int icomp;
+    long i, i1, i2;
+    double d;
+    
+    for (icomp = 0; icomp < fline_d->ncomptot; icomp++){
+        fline_d->d_rms[icomp] = 0.0;
+        fline_d->d_ave[icomp] = 0.0;
+        for (i = 0; i < fline_d->nedge_fline; i++){
+            i1 = viz_s->ie_viz[i][0] - 1;
+            i2 = viz_s->ie_viz[i][1] - 1;
+            d = (  viz_s->d_nod[i1*fline_d->ncomptot + icomp]
+                 + viz_s->d_nod[i2*fline_d->ncomptot + icomp]) / 2.0;
+            
+            fline_d->d_rms[icomp] = fline_d->d_rms[icomp]
+                + d * d * fline_d->length_edge[i];
+            fline_d->d_ave[icomp] = fline_d->d_ave[icomp]
+                + d * fline_d->length_edge[i];
+        }
+    }
+    return;
+}
 
 static void take_rms_ave_psf(struct psf_data *viz_s){
     int icomp;
-    long i, i1, i2, i3;
-	double d;
 	
-	for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
-		viz_s->d_rms[icomp] = 0.0;
-		viz_s->d_ave[icomp] = 0.0;
-		for (i = 0; i < viz_s->nele_viz; i++){
-			i1 = viz_s->ie_viz[i][0] - 1;
-			i2 = viz_s->ie_viz[i][1] - 1;
-			i3 = viz_s->ie_viz[i][2] - 1;
-			d = (  viz_s->d_nod[i1*viz_s->ncomptot + icomp]
-                 + viz_s->d_nod[i2*viz_s->ncomptot + icomp]
-                 + viz_s->d_nod[i3*viz_s->ncomptot + icomp] ) / 3.0;
-			
-			viz_s->d_rms[icomp] = viz_s->d_rms[icomp]
-            + d * d * viz_s->area_viz[i];
-			viz_s->d_ave[icomp] = viz_s->d_ave[icomp]
-            + d * viz_s->area_viz[i];
-		}
+    sum_rms_ave_psf(IZERO, viz_s->nele_viz, viz_s);
+    
+    for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
 		viz_s->d_rms[icomp] = sqrt(viz_s->d_rms[icomp] / viz_s->area_total );
 		viz_s->d_ave[icomp] = viz_s->d_ave[icomp] / viz_s->area_total;
 	}
@@ -362,25 +397,11 @@ static void take_rms_ave_psf(struct psf_data *viz_s){
 static void take_rms_ave_fline(struct psf_data *viz_s,
                                struct fline_data *fline_d){
     int icomp;
-    long i, i1, i2;
-	double d;
-	
-	for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
-		viz_s->d_rms[icomp] = 0.0;
-		viz_s->d_ave[icomp] = 0.0;
-		for (i = 0; i < viz_s->nele_viz; i++){
-			i1 = viz_s->ie_viz[i][0] - 1;
-			i2 = viz_s->ie_viz[i][1] - 1;
-			d = (  viz_s->d_nod[i1*viz_s->ncomptot + icomp]
-                 + viz_s->d_nod[i2*viz_s->ncomptot + icomp]) / 2.0;
-			
-			viz_s->d_rms[icomp] = viz_s->d_rms[icomp]
-                + d * d * fline_d->length_edge[i];
-			viz_s->d_ave[icomp] = viz_s->d_ave[icomp]
-                + d * fline_d->length_edge[i];
-		}
-		viz_s->d_rms[icomp] = sqrt(viz_s->d_rms[icomp] / fline_d->length_total );
-		viz_s->d_ave[icomp] = viz_s->d_ave[icomp] / fline_d->length_total;
+    sum_rms_ave_fline(IZERO, viz_s->nele_viz, viz_s, fline_d);
+
+    for (icomp = 0; icomp < fline_d->ncomptot; icomp++){
+        fline_d->d_rms[icomp] = sqrt(fline_d->d_rms[icomp] / fline_d->length_total );
+        fline_d->d_ave[icomp] = fline_d->d_ave[icomp] / fline_d->length_total;
 	}
 	return;
 }

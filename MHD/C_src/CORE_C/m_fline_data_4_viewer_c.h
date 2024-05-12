@@ -22,6 +22,10 @@ struct fline_data{
 
     long nnod_fline;
 	double *dir_nod;
+    
+    long ncomptot;
+    double *d_ave;
+    double *d_rms;
 };
 
 /* prototypes */
@@ -29,8 +33,10 @@ struct fline_data{
 struct fline_data * init_fline_data(void);
 void alloc_fline_data(long nnod_fline, struct fline_data *fline_d);
 void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d);
+void alloc_fline_ave_data(long ncomptot, struct fline_data *fline_d);
 
 void dealloc_fline_data(struct fline_data *fline_d);
 void dealloc_fline_work_data(struct fline_data *fline_d);
+void dealloc_fline_ave_data(struct fline_data *fline_d);
 
 #endif  /* M_FLINE_DATA_4_VIEWER_C_ */
