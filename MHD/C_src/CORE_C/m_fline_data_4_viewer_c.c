@@ -96,6 +96,13 @@ void alloc_fline_data(struct fline_data *fline_d){
         printf("malloc error for fline_d->dir_nod \n");
         exit(0);
     }
+
+    /* allocate memory  xyzw_ele_viz[patch #][direction]*/
+    fline_d->xyzw_edge_fline = (double *) malloc(4*fline_d->nedge_fline*sizeof(double));
+    if(fline_d->xyzw_edge_fline  == NULL){
+        printf("malloc error for fline_d->xyzw_edge_fline \n");
+        exit(0);
+    }
     return;
 };
 
@@ -174,6 +181,7 @@ void dealloc_fline_work_data(struct fline_data *fline_d){
 static void dealloc_fline_data(struct fline_data *fline_d){
     free(fline_d->color_nod);
     free(fline_d->dir_nod);
+    free(fline_d->xyzw_edge_fline);
     return;
 }
 

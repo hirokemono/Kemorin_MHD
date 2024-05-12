@@ -298,7 +298,7 @@ long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
 		id_coord[i] = viz_org->id_coord[i];
 		strngcopy(data_name[i], viz_org->data_name[i]);
 	};	
-    return istack_comp[imin_fld];;
+    return istack_comp[imin_fld];
 }
 
 void copy_viewer_udt_data(struct psf_data *viz_org,

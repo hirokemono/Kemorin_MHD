@@ -246,7 +246,7 @@ static void take_length_ele_fline(struct psf_data *viz_s,
                                   struct fline_data *fline_d){
     long i, i1, i2;
     int nd;
-	double len, len2;
+	double len2;
 	
 	viz_s->area_total = 0.0;
     
@@ -296,8 +296,8 @@ static void take_length_ele_fline(struct psf_data *viz_s,
 		i1 = viz_s->ie_viz[i][0] - 1;
 		i2 = viz_s->ie_viz[i][1] - 1;
 		for (nd=0; nd<3; nd++) {
-			viz_s->xyzw_ele_viz[4*i+nd] = (fline_d->xyzw_fline[i1*IFOUR + nd]
-                                           + fline_d->xyzw_fline[i2*IFOUR + nd])*HALF;
+            fline_d->xyzw_edge_fline[4*i+nd] = (fline_d->xyzw_fline[i1*IFOUR + nd]
+                                                + fline_d->xyzw_fline[i2*IFOUR + nd])*HALF;
             
             fline_d->dir_nod[4*i1+nd] = fline_d->dir_nod[4*i1+nd] + fline_d->dir_edge[4*i+nd];
             fline_d->dir_nod[4*i2+nd] = fline_d->dir_nod[4*i2+nd] + fline_d->dir_edge[4*i+nd];

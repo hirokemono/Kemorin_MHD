@@ -20,6 +20,7 @@ struct fline_data{
     long nnod_4_edge_fline;
     
     
+    double *xyzw_edge_fline;
     double *dir_edge;
     double *length_edge;
     double length_total;
