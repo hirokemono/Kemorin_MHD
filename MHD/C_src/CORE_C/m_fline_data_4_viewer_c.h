@@ -25,6 +25,9 @@ struct fline_data{
     double length_total;
     
     long nnod_fline;
+    long *inod_fline;
+    double *xyzw_fline;
+
     long nfield;
     long *ncomp;
     long *istack_comp;
@@ -57,6 +60,8 @@ struct fline_data{
 
 struct fline_data * init_fline_data(void);
 
+void alloc_fline_node_s(long nnod, struct fline_data *fline_d);
+
 void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
 void alloc_fline_field_data_c(struct fline_data *fline_d);
 
@@ -65,7 +70,6 @@ void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d);
 void alloc_fline_ave_data(struct fline_data *fline_d);
 
 void dealloc_fline_work_data(struct fline_data *fline_d);
-void deallc_all_fline_data(struct psf_data *psf_s,
-                           struct fline_data *fline_d);
+void deallc_all_fline_data(struct fline_data *fline_d);
 
 #endif  /* M_FLINE_DATA_4_VIEWER_C_ */

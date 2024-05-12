@@ -142,7 +142,7 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct fline_data *fline_d,
 		return iflag_datatype;
 	}
     
-	deallc_all_fline_data(fline_s, fline_d);
+	deallc_all_fline_data(fline_d);
 	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
 	return 0;
 }

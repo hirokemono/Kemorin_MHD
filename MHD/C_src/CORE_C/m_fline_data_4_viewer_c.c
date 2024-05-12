@@ -18,6 +18,28 @@ struct fline_data * init_fline_data(void){
     return fline_d;
 };
 
+void alloc_fline_node_s(long nnod, struct fline_data *fline_d){
+    fline_d->nnod_fline = nnod;
+    /* allocate memory  xyzw_fline[node #][direction]*/
+    fline_d->xyzw_fline = (double *)malloc(IFOUR*fline_d->nnod_fline*sizeof(double));
+    if(fline_d->xyzw_fline  == NULL){
+        printf("malloc error for fline_d->xyzw_viz \n");
+        exit(0);
+    }
+    
+    fline_d->inod_fline = (long *)calloc(fline_d->nnod_fline,sizeof(long));
+    if(fline_d->inod_fline  == NULL){
+        printf("malloc error for fline_d->inod_fline \n");
+        exit(0);
+    }
+    return;
+};
+
+void dealloc_fline_node_s(struct fline_data *fline_d){
+    free(fline_d->inod_fline);
+    free(fline_d->xyzw_fline);
+}
+
 void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d){
     int i;
     
@@ -167,15 +189,12 @@ static void dealloc_fline_ave_data(struct fline_data *fline_d){
     return;
 }
 
-void deallc_all_fline_data(struct psf_data *psf_s,
-                           struct fline_data *fline_d){
+void deallc_all_fline_data(struct fline_data *fline_d){
     dealloc_fline_ave_data(fline_d);
     dealloc_fline_data(fline_d);
     
     dealloc_fline_field_data_c(fline_d);
-
-    dealloc_psf_data_s(psf_s);
-    dealloc_psf_mesh_c(psf_s);
+    dealloc_fline_node_s(fline_d);
     return;
 };
 

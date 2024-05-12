@@ -259,13 +259,13 @@ void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list){
 }
 
 
-void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org){
+void copy_viewer_udt_node(struct psf_data *viz_org, long *inod_copied, double *xyzw_copied){
 	int i, j;
 	
 	for (i = 0; i < viz_org->nnod_viz; i++) {
-		viz_copied->inod_viz[i] = viz_org->inod_viz[i];
+        inod_copied[i] = viz_org->inod_viz[i];
         for(j = 0; j < 4; j++){
-            viz_copied->xyzw_viz[i*IFOUR + j] = viz_org->xyzw_viz[i*IFOUR + j];
+            xyzw_copied[i*IFOUR + j] = viz_org->xyzw_viz[i*IFOUR + j];
         };
 	};
 	return;

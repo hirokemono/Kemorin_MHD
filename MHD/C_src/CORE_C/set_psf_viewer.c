@@ -279,7 +279,8 @@ void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_
                                                    fline_d->ncomp,  fline_d->istack_comp,
                                                    fline_d->id_coord, fline_d->data_name);
 
-    fline_d->nnod_fline = viz_tmp->nnod_viz;
+    alloc_fline_node_s(viz_tmp->nnod_viz, fline_d);
+
 	viz_s->nnod_viz = viz_tmp->nnod_viz;
     viz_s->nele_viz = viz_tmp->nele_viz;
     viz_s->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
@@ -288,9 +289,8 @@ void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_
 	alloc_viz_ele_s(viz_s);
     alloc_fline_field_data_c(fline_d);
 
-	copy_viewer_udt_node(viz_s, viz_tmp);
-	copy_viewer_udt_data(viz_tmp, viz_s->nnod_viz, viz_s->ncomptot,
-                         fline_d->d_nod);
+	copy_viewer_udt_node(viz_tmp, fline_d->inod_fline, fline_d->xyzw_fline);
+	copy_viewer_udt_data(viz_tmp, fline_d->nnod_fline, fline_d->ncomptot, fline_d->d_nod);
 
     copy_viewer_udt_connect(viz_s, viz_tmp);
 
@@ -321,7 +321,7 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
     
     alloc_psf_cutting_4_map_item(map_itp);
 	
-	copy_viewer_udt_node(viz_s, viz_tmp);
+	copy_viewer_udt_node(viz_tmp, viz_s->inod_viz, viz_s->xyzw_viz);
 	copy_viewer_udt_data(viz_tmp, viz_s->nnod_viz, viz_s->ncomptot,
                          viz_s->d_nod);
 	if (viz_tmp->nnod_4_ele_viz == 4) {

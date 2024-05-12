@@ -39,7 +39,7 @@ void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_fline = IZERO;
 	dealloc_draw_fline_flags(kemo_fline->fline_d, kemo_fline->fline_m);
     
-	deallc_all_fline_data(kemo_fline->fline_s, kemo_fline->fline_d);
+	deallc_all_fline_data(kemo_fline->fline_d);
     return;
 }
 
