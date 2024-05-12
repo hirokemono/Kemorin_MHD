@@ -274,19 +274,19 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp, struct psf
 void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_d,
                                struct psf_data *viz_tmp){
 	viz_s->nfield = viz_tmp->nfield;
-	alloc_psf_field_name_c(viz_s);
-    copy_viewer_udt_field_name(viz_s, viz_tmp);
+	alloc_fline_field_name_c(viz_tmp->nfield, fline_d);
+    fline_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, fline_d->nfield,
+                                                   fline_d->ncomp,  fline_d->istack_comp,
+                                                   fline_d->id_coord, fline_d->data_name);
 
+    fline_d->nnod_fline = viz_tmp->nnod_viz;
 	viz_s->nnod_viz = viz_tmp->nnod_viz;
     viz_s->nele_viz = viz_tmp->nele_viz;
     viz_s->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
 
 	alloc_viz_node_s(viz_s);
 	alloc_viz_ele_s(viz_s);
-    alloc_fline_field_data_c(viz_tmp->nnod_viz,
-                             viz_tmp->nfield, viz_tmp->ncomptot,
-                             fline_d);
-	alloc_psf_data_s(viz_s);
+    alloc_fline_field_data_c(fline_d);
 
 	copy_viewer_udt_node(viz_s, viz_tmp);
 	copy_viewer_udt_data(viz_tmp, viz_s->nnod_viz, viz_s->ncomptot,
@@ -303,7 +303,9 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
 	
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);
-	copy_viewer_udt_field_name(viz_s, viz_tmp);
+    viz_s->ncomptot = copy_viewer_udt_field_name(viz_tmp, viz_s->nfield,
+                                                 viz_s->ncomp,  viz_s->istack_comp,
+                                                 viz_s->id_coord, viz_s->data_name);
 
     struct map_interpolate *map_itp = alloc_psf_cutting_4_map();
 	if (viz_tmp->nnod_4_ele_viz == 4) {

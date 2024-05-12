@@ -22,19 +22,25 @@ struct fline_data{
     double length_total;
 
     long nnod_fline;
+    long nfield;
+    long *ncomp;
+    long *istack_comp;
+    int *id_coord;
+    char **data_name;
+
+    long ncomptot;
     double *d_nod;
+    
     double *d_amp;
     double *color_nod;
 
     double *dir_nod;
     
-    long ncomptot;
     double *d_min;
     double *d_max;
     double *d_ave;
     double *d_rms;
     
-    long nfield;
     double *amp_min;
     double *amp_max;
 };
@@ -43,8 +49,8 @@ struct fline_data{
 
 struct fline_data * init_fline_data(void);
 
-void alloc_fline_field_data_c(long nnod_fline, long nfield, long ncomptot,
-                              struct fline_data *fline_d);
+void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
+void alloc_fline_field_data_c(struct fline_data *fline_d);
 
 void alloc_fline_data(struct fline_data *fline_d);
 void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d);

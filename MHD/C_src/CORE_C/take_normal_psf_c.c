@@ -388,36 +388,36 @@ static void take_rms_ave_fline(struct psf_data *viz_s,
 	return;
 }
 
-static void take_minmax_psf_each_component(struct psf_data *viz_s,
-                                           double *d_nod, double *d_amp,
+static void take_minmax_psf_each_component(long nnod_viz, long nfield, long ncomptot,
+                                           long *istack_comp, double *d_nod, double *d_amp,
                                            double *d_min, double *d_max){
     int ifld, n;
     long icomp;
     
-    for (ifld = 0; ifld < viz_s->nfield; ifld++){
-        for(n = 0; n < viz_s->nnod_viz; n++) d_amp[n*viz_s->nfield + ifld] = 0.0;
-        for (icomp = viz_s->istack_comp[ifld]; icomp < viz_s->istack_comp[ifld+1]; icomp++){
-            for (n = 0; n < viz_s->nnod_viz; n++){
-                d_amp[n*viz_s->nfield + ifld] = d_amp[n*viz_s->nfield + ifld]
-                + d_nod[n*viz_s->ncomptot + icomp] * d_nod[n*viz_s->ncomptot + icomp];
+    for (ifld = 0; ifld < nfield; ifld++){
+        for(n = 0; n < nnod_viz; n++) d_amp[n*nfield + ifld] = 0.0;
+        for (icomp = istack_comp[ifld]; icomp < istack_comp[ifld+1]; icomp++){
+            for (n = 0; n < nnod_viz; n++){
+                d_amp[n*nfield + ifld] = d_amp[n*nfield + ifld]
+                + d_nod[n*ncomptot + icomp] * d_nod[n*ncomptot + icomp];
             };
         };
-        for (n = 0; n < viz_s->nnod_viz; n++){
-            d_amp[n*viz_s->nfield + ifld] = sqrt(d_amp[n*viz_s->nfield + ifld]);
+        for (n = 0; n < nnod_viz; n++){
+            d_amp[n*nfield + ifld] = sqrt(d_amp[n*nfield + ifld]);
         };
     };
     
-    for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
+    for (icomp = 0; icomp < ncomptot; icomp++){
         d_min[icomp] = d_nod[icomp];
         d_max[icomp] = d_nod[icomp];
-        for (n = 1; n < viz_s->nnod_viz; n++){
-            if ( d_nod[n*viz_s->ncomptot + icomp] < d_min[icomp] )
+        for (n = 1; n < nnod_viz; n++){
+            if ( d_nod[n*ncomptot + icomp] < d_min[icomp] )
             {
-                d_min[icomp] = d_nod[n*viz_s->ncomptot + icomp];
+                d_min[icomp] = d_nod[n*ncomptot + icomp];
             };
-            if ( d_nod[n*viz_s->ncomptot + icomp] > d_max[icomp] )
+            if ( d_nod[n*ncomptot + icomp] > d_max[icomp] )
             {
-                d_max[icomp] = d_nod[n*viz_s->ncomptot + icomp];
+                d_max[icomp] = d_nod[n*ncomptot + icomp];
             };
         };
         
@@ -468,7 +468,10 @@ void take_length_fline(struct psf_data *viz_s,
 
 void take_minmax_psf(struct psf_data *viz_s){
 	take_rms_ave_psf(viz_s);
-    take_minmax_psf_each_component(viz_s, viz_s->d_nod, viz_s->d_amp,
+    take_minmax_psf_each_component(viz_s->nnod_viz,
+                                   viz_s->nfield, viz_s->ncomptot,
+                                   viz_s->istack_comp,
+                                   viz_s->d_nod, viz_s->d_amp,
                                    viz_s->d_min, viz_s->d_max);
     take_minmax_viz_fields(viz_s->nfield, viz_s->istack_comp,
                            viz_s->d_min, viz_s->d_max,
@@ -479,9 +482,12 @@ void take_minmax_psf(struct psf_data *viz_s){
 void take_minmax_fline(struct psf_data *viz_s,
                        struct fline_data *fline_d){
 	take_rms_ave_fline(viz_s, fline_d);
-    take_minmax_psf_each_component(viz_s, fline_d->d_nod, fline_d->d_amp,
+    take_minmax_psf_each_component(fline_d->nnod_fline,
+                                   fline_d->nfield, fline_d->ncomptot,
+                                   fline_d->istack_comp,
+                                   fline_d->d_nod, fline_d->d_amp,
                                    fline_d->d_min, fline_d->d_max);
-    take_minmax_viz_fields(viz_s->nfield, viz_s->istack_comp,
+    take_minmax_viz_fields(viz_s->nfield, fline_d->istack_comp,
                            fline_d->d_min, fline_d->d_max,
                            fline_d->amp_min, fline_d->amp_max);
 	return;

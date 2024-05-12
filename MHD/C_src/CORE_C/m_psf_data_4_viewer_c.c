@@ -174,6 +174,7 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	free(psf_s->d_nod);
 	free(psf_s->ncomp);
 	free(psf_s->istack_comp);
+    free(psf_s->id_coord);
 	
 	for(int i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
 	free(psf_s->data_name);
@@ -192,9 +193,7 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	
 	free(psf_s->color_nod);
 	free(psf_s->d_amp);
-	
-	free(psf_s->id_coord);
-	
+		
     dealloc_psf_field_data_c(psf_s);
 		
 	psf_s->ncomptot = 0;
@@ -283,22 +282,23 @@ void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_o
 	return;
 }
 
-void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org){
+long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
+                                long *ncomp, long *istack_comp,
+                                int *id_coord, char **data_name){
 	long i, imin_fld;
 	
     imin_fld = viz_org->nfield;
-    if (viz_copied->nfield < imin_fld) imin_fld = viz_copied->nfield;
+    if (nfield < imin_fld) imin_fld = nfield;
     
-	viz_copied->istack_comp[0] = viz_org->istack_comp[0];
+	istack_comp[0] = viz_org->istack_comp[0];
 	for (i = 0; i < imin_fld; i++) {
-		viz_copied->ncomp[i] = viz_org->ncomp[i];
-		viz_copied->istack_comp[i+1] = viz_org->istack_comp[i+1];
-		viz_copied->id_coord[i] = viz_org->id_coord[i];
-		strngcopy(viz_copied->data_name[i], viz_org->data_name[i]);
-	};
-	viz_copied->ncomptot = viz_copied->istack_comp[imin_fld];
-	
-	return;
+		ncomp[i] = viz_org->ncomp[i];
+		istack_comp[i+1] = viz_org->istack_comp[i+1];
+        printf("istack_comp[i+1]  %d %d ", i, istack_comp[i+1]);
+		id_coord[i] = viz_org->id_coord[i];
+		strngcopy(data_name[i], viz_org->data_name[i]);
+	};	
+    return istack_comp[imin_fld];;
 }
 
 void copy_viewer_udt_data(struct psf_data *viz_org,

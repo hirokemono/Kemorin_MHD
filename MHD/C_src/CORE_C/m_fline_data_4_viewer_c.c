@@ -18,11 +18,31 @@ struct fline_data * init_fline_data(void){
     return fline_d;
 };
 
-void alloc_fline_field_data_c(long nnod_fline, long nfield, long ncomptot,
-                              struct fline_data *fline_d){
-    fline_d->nnod_fline = nnod_fline;
+void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d){
+    int i;
+    
     fline_d->nfield = nfield;
-    fline_d->ncomptot = ncomptot;
+    fline_d->ncomp =       (long *)calloc(fline_d->nfield,sizeof(long));
+    fline_d->istack_comp = (long *)calloc(fline_d->nfield+1,sizeof(long));
+
+    fline_d->id_coord =    (int *)calloc(fline_d->nfield,sizeof(int));
+    
+    fline_d->data_name = (char **)malloc(fline_d->nfield*sizeof(char *));
+    if(fline_d->data_name  == NULL){
+        printf("malloc error for fline_d->data_name \n");
+        exit(0);
+    }
+
+    for (i = 0; i < fline_d->nfield; i++) {
+        fline_d->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
+        if(fline_d->data_name[i]  == NULL){
+            printf("malloc error for fline_d->data_name[i], %d \n", i);
+            exit(0);
+        }
+    };
+};
+
+void alloc_fline_field_data_c(struct fline_data *fline_d){
     /* allocate memory  d_nod[node #][component]*/
     long num = fline_d->ncomptot * fline_d->nnod_fline;
     fline_d->d_nod = (double *)malloc(num*sizeof(double));
@@ -33,6 +53,12 @@ void alloc_fline_field_data_c(long nnod_fline, long nfield, long ncomptot,
 };
 void dealloc_fline_field_data_c(struct fline_data *fline_d){
     free(fline_d->d_nod);
+    free(fline_d->ncomp);
+    free(fline_d->istack_comp);
+    free(fline_d->id_coord);
+
+    for(int i = 0; i < fline_d->nfield; i++) free(fline_d->data_name[i]);
+    free(fline_d->data_name);
 };
 
 void alloc_fline_data(struct fline_data *fline_d){

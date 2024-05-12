@@ -189,7 +189,7 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct fline_data *fline_
 	int i;
 	
 	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
-	alloc_draw_fline_flags(fline_s, fline_m);
+	alloc_draw_fline_flags(fline_d, fline_m);
 	
 	fline_m->iflag_draw_fline = IONE;
 	
