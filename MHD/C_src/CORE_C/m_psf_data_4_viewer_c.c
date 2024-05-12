@@ -146,12 +146,6 @@ void alloc_psf_length_s(struct psf_data *psf_s){
         printf("malloc error for psf_s->length_ele \n");
         exit(0);
     }
-
-	psf_s->dir_nod = (double *)malloc(4*psf_s->nnod_viz*sizeof(double));
-    if(psf_s->dir_nod  == NULL){
-        printf("malloc error for psf_s->dir_nod \n");
-        exit(0);
-    }
 	return;
 };
 
@@ -163,7 +157,6 @@ static void dealloc_psf_norm_s(struct psf_data *psf_s){
 };
 
 static void dealloc_psf_length_s(struct psf_data *psf_s){
-	free(psf_s->dir_nod);
 	free(psf_s->dir_ele);
 	free(psf_s->length_ele);
 	return;

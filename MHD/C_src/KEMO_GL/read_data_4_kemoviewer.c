@@ -82,10 +82,12 @@ static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp
 	return;
 }
 
-static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd_tmp) {
+static void set_fline_data_by_UCD(struct psf_data *fline_s,
+                                  struct fline_data *fline_d,
+                                  struct psf_data *ucd_tmp){
 	set_viewer_ucd_data(fline_s, ucd_tmp);
     
-	take_length_fline(fline_s);
+	take_length_fline(fline_s, fline_d);
 	take_minmax_fline(fline_s);
 	/*
      check_psf_ave_rms_c(fline_s);
@@ -124,7 +126,8 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
     return;
 }
 
-int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
+int refresh_FLINE_data(struct psf_data *fline_s, struct fline_data *fline_d,
+                       struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
@@ -137,7 +140,8 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struc
 	}
     
 	deallc_all_fline_data(fline_s);
-	set_fline_data_by_UCD(fline_s, ucd_tmp);
+    dealloc_fline_data(fline_d);
+	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
 	return 0;
 }
 
@@ -178,11 +182,11 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 	return;
 }
 
-void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
-                             struct fline_menu_val *fline_m){
+void set_kemoview_fline_data(struct psf_data *fline_s, struct fline_data *fline_d,
+                             struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
 	int i;
 	
-	set_fline_data_by_UCD(fline_s, ucd_tmp);
+	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
 	alloc_draw_fline_flags(fline_s, fline_m);
 	
 	fline_m->iflag_draw_fline = IONE;

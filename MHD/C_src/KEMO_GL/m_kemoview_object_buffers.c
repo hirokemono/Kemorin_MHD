@@ -171,7 +171,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                              kemo_buffers->sph_grid_buf);
         
         const_fieldlines_buffer(kemo_buffers->nthreads,
-                                kemo_fline->fline_s, kemo_fline->fline_m,
+                                kemo_fline->fline_s, kemo_fline->fline_d,
+                                kemo_fline->fline_m,
                                 kemo_buffers->FLINE_tube_buf,
                                 kemo_buffers->FLINE_line_buf);
         

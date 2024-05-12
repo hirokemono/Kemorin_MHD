@@ -4,7 +4,8 @@
 #include "draw_fieldlines.h"
 
 void const_fieldlines_buffer(const int nthreads, 
-                             struct psf_data *fline_s, struct fline_menu_val *fline_m,
+                             struct psf_data *fline_s, struct fline_data *fline_d,
+                             struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
                              struct gl_strided_buffer *FLINE_line_buf){
     FLINE_tube_buf->num_nod_buf = 0;
@@ -19,7 +20,8 @@ void const_fieldlines_buffer(const int nthreads,
         set_buffer_address_4_patch(ITHREE*num_patch, FLINE_tube_buf);
         if(FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(FLINE_tube_buf);
-            num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads, fline_s, fline_m,
+            num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads,
+                                                      fline_s, fline_d, fline_m,
                                                       FLINE_tube_buf);
         };
     };
