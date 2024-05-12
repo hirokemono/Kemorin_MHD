@@ -94,7 +94,6 @@ A class to manage all of the Metal objects this app creates.
                   sortArray:(float *) result
                  indexArray:(int *) index
 {
-    long i;
     long narrayP2 = 1 << nArrayPower;
 
     _sortFBuffer = [_mDevice newBufferWithBytesNoCopy:result
