@@ -773,11 +773,11 @@ int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
 
 
 int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i){
-	return (int) fline_color_num_comps(kemoviewer->kemo_fline->fline_d, i);
+	return (int) fline_color_num_comps(kemoviewer->kemo_fline->fline_s, i);
 };
 void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
                                         struct kv_string *colorname, int i){
-	get_fline_color_data_name(kemoviewer->kemo_fline->fline_d,
+	get_fline_color_data_name(kemoviewer->kemo_fline->fline_s,
                               colorname, i);
 };
 
@@ -808,7 +808,7 @@ void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
 
 void kemoview_set_fline_constant_opacity(double opacity,
                                          struct kemoviewer_type *kemoviewer){
-	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_d, 
+	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_s, 
                                kemoviewer->kemo_fline->fline_m, opacity);
 }
 

@@ -34,11 +34,11 @@ void set_fline_switch(struct fline_menu_val *fline_m, int iflag);
 void set_fline_color_type(struct fline_menu_val *fline_m, int iflag);
 
 int get_fline_switch(struct fline_menu_val *fline_m);
-long get_fline_color_num_field(struct psf_data *fline_d);
-long get_fline_color_ncomptot(struct psf_data *fline_d);
-long fline_color_num_comps(struct psf_data *fline_d, int i);
-long get_fline_color_istack(struct psf_data *fline_d, int i);
-void get_fline_color_data_name(struct psf_data *fline_d, 
+long get_fline_color_num_field(struct psf_data *fline_s);
+long get_fline_color_ncomptot(struct psf_data *fline_s);
+long fline_color_num_comps(struct psf_data *fline_s, int i);
+long get_fline_color_istack(struct psf_data *fline_s, int i);
+void get_fline_color_data_name(struct psf_data *fline_s,
 			struct kv_string *colorname, int i);
 long get_fline_color_field(struct fline_menu_val *fline_m);
 long get_fline_color_component(struct fline_menu_val *fline_m);
@@ -55,14 +55,14 @@ int get_fline_corners(struct fline_menu_val *fline_m);
 void set_fline_thickness(double value, struct fline_menu_val *fline_m);
 double get_fline_thickness(struct fline_menu_val *fline_m);
 
-double get_fline_data_min(struct psf_data *fline_d, int i);
-double get_fline_data_max(struct psf_data *fline_d, int i);
+double get_fline_data_min(struct psf_data *fline_s, int i);
+double get_fline_data_max(struct psf_data *fline_s, int i);
 
-int send_coordinate_id_fline(struct psf_data *fline_d, struct fline_menu_val *fline_m);
+int send_coordinate_id_fline(struct psf_data *fline_s, struct fline_menu_val *fline_m);
 
 void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
 							   struct fline_menu_val *fline_m);
-void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
+void set_fline_constant_opacity(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			double opacity);
 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value);

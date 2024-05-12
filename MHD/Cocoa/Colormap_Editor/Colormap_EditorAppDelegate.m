@@ -11,7 +11,7 @@
 
 struct viewer_mesh       *vmesh;
 struct psf_data          *psf_d;
-struct psf_data          *fline_d;
+struct psf_data          *fline_s;
 struct mesh_menu_val     *mesh_menu;
 struct psf_menu_val      *psf_menu;
 struct fline_menu_val    *fline_menu;

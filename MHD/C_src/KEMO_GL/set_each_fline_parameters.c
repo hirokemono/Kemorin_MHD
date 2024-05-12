@@ -32,17 +32,17 @@ void set_fline_color_type(struct fline_menu_val *fline_m, int iflag) {
 
 
 int get_fline_switch(struct fline_menu_val *fline_m){return fline_m->iflag_draw_fline;};
-long get_fline_color_num_field(struct psf_data *fline_d){return fline_d->nfield;};
-long get_fline_color_ncomptot(struct psf_data *fline_d){return fline_d->ncomptot;};
-long fline_color_num_comps(struct psf_data *fline_d, int i){
-	return fline_d->ncomp[i];
+long get_fline_color_num_field(struct psf_data *fline_s){return fline_s->nfield;};
+long get_fline_color_ncomptot(struct psf_data *fline_s){return fline_s->ncomptot;};
+long fline_color_num_comps(struct psf_data *fline_s, int i){
+	return fline_s->ncomp[i];
 };
-long get_fline_color_istack(struct psf_data *fline_d, int i){
-	return fline_d->istack_comp[i];
+long get_fline_color_istack(struct psf_data *fline_s, int i){
+	return fline_s->istack_comp[i];
 };
-void get_fline_color_data_name(struct psf_data *fline_d, 
+void get_fline_color_data_name(struct psf_data *fline_s,
 			struct kv_string *colorname, int i){
-    alloc_copy_string(fline_d->data_name[i], colorname);
+    alloc_copy_string(fline_s->data_name[i], colorname);
 };
 long get_fline_color_field(struct fline_menu_val *fline_m){
 	return fline_m->if_draw_fline;
@@ -70,16 +70,16 @@ int get_fline_corners(struct fline_menu_val *fline_m) {return fline_m->ncorner;}
 void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->fieldline_thick = value;};
 double get_fline_thickness(struct fline_menu_val *fline_m){return fline_m->fieldline_thick;};
 
-double get_fline_data_min(struct psf_data *fline_d, int i){
-	return fline_d->d_min[i];
+double get_fline_data_min(struct psf_data *fline_s, int i){
+	return fline_s->d_min[i];
 };
-double get_fline_data_max(struct psf_data *fline_d, int i){
-	return fline_d->d_max[i];
+double get_fline_data_max(struct psf_data *fline_s, int i){
+	return fline_s->d_max[i];
 };
 
-int send_coordinate_id_fline(struct psf_data *fline_d, struct fline_menu_val *fline_m){
+int send_coordinate_id_fline(struct psf_data *fline_s, struct fline_menu_val *fline_m){
     long id_current = fline_m->if_draw_fline;
-    return fline_d->id_coord[id_current];
+    return fline_s->id_coord[id_current];
 };
 
 void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
@@ -88,11 +88,11 @@ void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue
 	double range_max = const_from_digit_order(maxvalue, i_max_digit);
 	set_linear_colormap(fline_m->cmap_fline, range_min, range_max);
 }
-void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
+void set_fline_constant_opacity(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			double opacity){
 	set_constant_opacitymap(fline_m->cmap_fline,
-                            fline_d->d_min[fline_m->icomp_draw_fline],
-                            fline_d->d_max[fline_m->icomp_draw_fline], opacity);
+                            fline_s->d_min[fline_m->icomp_draw_fline],
+                            fline_s->d_max[fline_m->icomp_draw_fline], opacity);
 }
 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){

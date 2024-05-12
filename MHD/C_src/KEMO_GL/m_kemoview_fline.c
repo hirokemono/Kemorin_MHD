@@ -16,9 +16,9 @@ struct kemoview_fline * init_kemoview_fline(void){
 		exit(0);
 	}
 	
-	kemo_fline->fline_d =  (struct psf_data *) malloc(sizeof(struct psf_data));
-    if(kemo_fline->fline_d == NULL){
-        printf("malloc error for kemo_fline->fline_d\n");
+	kemo_fline->fline_s =  (struct psf_data *) malloc(sizeof(struct psf_data));
+    if(kemo_fline->fline_s == NULL){
+        printf("malloc error for kemo_fline->fline_s\n");
         exit(0);
     }
 
@@ -27,7 +27,7 @@ struct kemoview_fline * init_kemoview_fline(void){
 };
 
 void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
-	free(kemo_fline->fline_d);
+	free(kemo_fline->fline_s);
 	free(kemo_fline->fline_m);
 	free(kemo_fline);
 	return;
@@ -35,8 +35,8 @@ void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
 
 void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_fline = IZERO;
-	dealloc_draw_fline_flags(kemo_fline->fline_d, kemo_fline->fline_m);
-	deallc_all_fline_data(kemo_fline->fline_d);
+	dealloc_draw_fline_flags(kemo_fline->fline_s, kemo_fline->fline_m);
+	deallc_all_fline_data(kemo_fline->fline_s);
 	return;
 }
 
@@ -48,7 +48,7 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
 	kemo_fline->fline_m->iformat_fline_file = iformat_ucd_file;
     
 	if(kemo_fline->fline_m->iflag_draw_fline > 0) close_fieldline_view(kemo_fline);
-	set_kemoview_fline_data(kemo_fline->fline_d, ucd_tmp, kemo_fline->fline_m);
+	set_kemoview_fline_data(kemo_fline->fline_s, ucd_tmp, kemo_fline->fline_m);
     return;
 };
 
@@ -58,7 +58,7 @@ int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 	int ierr = 0;
 	if (kemo_fline->fline_m->iflag_draw_fline > 0) {
 		kemo_fline->fline_m->fline_step = istep_sync;
-		ierr = refresh_FLINE_data(kemo_fline->fline_d, 
+		ierr = refresh_FLINE_data(kemo_fline->fline_s,
 					psf_ucd_tmp, kemo_fline->fline_m);
 	}
 	return ierr;
@@ -82,9 +82,9 @@ int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected){
 
 void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_fline){
 	if(selected == FIELD_SEL_FLAG){
-		set_fline_color_field(input, kemo_fline->fline_d, kemo_fline->fline_m);
+		set_fline_color_field(input, kemo_fline->fline_s, kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
-		set_fline_color_component(input, kemo_fline->fline_d, kemo_fline->fline_m);
+		set_fline_color_component(input, kemo_fline->fline_s, kemo_fline->fline_m);
 	}else if(selected == LINETYPE_FLAG){
 		set_fline_type(kemo_fline->fline_m, (long) input);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
@@ -97,9 +97,9 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
     long output = 0;
 	
 	if(selected == NUM_FIELD_FLAG){
-		output = get_fline_color_num_field(kemo_fline->fline_d);
+		output = get_fline_color_num_field(kemo_fline->fline_s);
 	}else if(selected == NTOT_COMPONENT_FLAG){
-		output = get_fline_color_ncomptot(kemo_fline->fline_d);
+		output = get_fline_color_ncomptot(kemo_fline->fline_s);
 	}else if(selected == FIELD_SEL_FLAG){
 		output = get_fline_color_field(kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
@@ -111,7 +111,7 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
         output = get_fline_corners(kemo_fline->fline_m);
     }else if(selected == COORDINATE_FLAG){
-        output = send_coordinate_id_fline(kemo_fline->fline_d,
+        output = send_coordinate_id_fline(kemo_fline->fline_s,
                                           kemo_fline->fline_m);
 	};
 	return output;
@@ -166,9 +166,9 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		value = get_fline_data_min(kemo_fline->fline_d, icomp);
+		value = get_fline_data_min(kemo_fline->fline_s, icomp);
 	}else if(selected == ISET_COLOR_MAX){
-		value = get_fline_data_max(kemo_fline->fline_d, icomp);
+		value = get_fline_data_max(kemo_fline->fline_s, icomp);
 	};
 	return value;
 }
