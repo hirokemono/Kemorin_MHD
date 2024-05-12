@@ -271,23 +271,16 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp, struct psf
 };
 
 
-void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_d,
+void set_viewer_fieldline_data(struct fline_data *fline_d,
                                struct psf_data *viz_tmp){
-	viz_s->nfield = viz_tmp->nfield;
 	alloc_fline_field_name_c(viz_tmp->nfield, fline_d);
     fline_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, fline_d->nfield,
                                                    fline_d->ncomp,  fline_d->istack_comp,
                                                    fline_d->id_coord, fline_d->data_name);
 
     alloc_fline_node_s(viz_tmp->nnod_viz, fline_d);
-    alloc_fline_ele_s(viz_tmp->nele_viz, viz_s->nnod_4_ele_viz, fline_d);
+    alloc_fline_ele_s(viz_tmp->nele_viz, viz_tmp->nnod_4_ele_viz, fline_d);
 
-	viz_s->nnod_viz = viz_tmp->nnod_viz;
-    viz_s->nele_viz = viz_tmp->nele_viz;
-    viz_s->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
-
-	alloc_viz_node_s(viz_s);
-	alloc_viz_ele_s(viz_s);
     alloc_fline_field_data_c(fline_d);
 
 	copy_viewer_udt_node(viz_tmp, fline_d->inod_fline, fline_d->xyzw_fline);

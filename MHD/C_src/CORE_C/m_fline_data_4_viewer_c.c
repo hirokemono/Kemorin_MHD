@@ -134,9 +134,8 @@ void alloc_fline_data(struct fline_data *fline_d){
     return;
 };
 
-void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d){
+void alloc_fline_work_data(struct fline_data *fline_d){
     /* allocate memory  dir_edge[patch #][component]*/
-    fline_d->nedge_fline = nedge_fline;
     fline_d->length_edge = (double *)calloc(fline_d->nedge_fline,sizeof(double));
     if(fline_d->length_edge  == NULL){
         printf("malloc error for fline_d->length_edge \n");

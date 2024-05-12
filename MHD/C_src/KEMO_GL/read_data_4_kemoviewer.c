@@ -81,20 +81,15 @@ static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp
 	return;
 }
 
-static void set_fline_data_by_UCD(struct psf_data *fline_s,
-                                  struct fline_data *fline_d,
+static void set_fline_data_by_UCD(struct fline_data *fline_d,
                                   struct psf_data *ucd_tmp){
-    set_viewer_fieldline_data(fline_s, fline_d, ucd_tmp);
+    set_viewer_fieldline_data(fline_d, ucd_tmp);
     
-    alloc_fline_work_data(fline_s->nele_viz, fline_d);
+    alloc_fline_work_data(fline_d);
     take_length_fline(fline_d);
     
     alloc_fline_ave_data(fline_d);
 	take_minmax_fline(fline_d);
-	/*
-     check_psf_ave_rms_c(fline_s);
-     check_fline_min_max_c(fline_s, fline_d);
-     */
     dealloc_fline_work_data(fline_d);
 	return;
 };
@@ -129,8 +124,9 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
     return;
 }
 
-int refresh_FLINE_data(struct psf_data *fline_s, struct fline_data *fline_d,
-                       struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
+int refresh_FLINE_data(struct psf_data *ucd_tmp,
+                       struct fline_data *fline_d,
+                       struct fline_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
@@ -143,7 +139,7 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct fline_data *fline_d,
 	}
     
 	deallc_all_fline_data(fline_d);
-	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
+	set_fline_data_by_UCD(fline_d, ucd_tmp);
 	return 0;
 }
 
@@ -184,11 +180,12 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 	return;
 }
 
-void set_kemoview_fline_data(struct psf_data *fline_s, struct fline_data *fline_d,
-                             struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
+void set_kemoview_fline_data(struct psf_data *ucd_tmp,
+                             struct fline_data *fline_d,
+                             struct fline_menu_val *fline_m){
 	int i;
 	
-	set_fline_data_by_UCD(fline_s, fline_d, ucd_tmp);
+	set_fline_data_by_UCD(fline_d, ucd_tmp);
 	alloc_draw_fline_flags(fline_d, fline_m);
 	
 	fline_m->iflag_draw_fline = IONE;

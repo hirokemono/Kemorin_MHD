@@ -24,7 +24,7 @@ struct map_interpolate{
 
 
 /* prototypes */
-void set_viewer_fieldline_data(struct psf_data *viz_s, struct fline_data *fline_d,
+void set_viewer_fieldline_data(struct fline_data *fline_d,
                                struct psf_data *viz_tmp);
 void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp);
 

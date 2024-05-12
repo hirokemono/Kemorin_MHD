@@ -71,7 +71,7 @@ void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
 void alloc_fline_field_data_c(struct fline_data *fline_d);
 
 void alloc_fline_data(struct fline_data *fline_d);
-void alloc_fline_work_data(long nedge_fline, struct fline_data *fline_d);
+void alloc_fline_work_data(struct fline_data *fline_d);
 void alloc_fline_ave_data(struct fline_data *fline_d);
 
 void dealloc_fline_work_data(struct fline_data *fline_d);

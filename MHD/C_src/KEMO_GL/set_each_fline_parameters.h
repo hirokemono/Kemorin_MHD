@@ -55,8 +55,8 @@ int get_fline_corners(struct fline_menu_val *fline_m);
 void set_fline_thickness(double value, struct fline_menu_val *fline_m);
 double get_fline_thickness(struct fline_menu_val *fline_m);
 
-double get_fline_data_min(struct fline_data *fline_s, int i);
-double get_fline_data_max(struct fline_data *fline_s, int i);
+double get_fline_data_min(struct fline_data *fline_d, int i);
+double get_fline_data_max(struct fline_data *fline_d, int i);
 
 int send_coordinate_id_fline(struct fline_data *fline_d, struct fline_menu_val *fline_m);
 
