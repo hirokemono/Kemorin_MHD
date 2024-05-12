@@ -112,7 +112,6 @@ void deallc_all_fline_data(struct psf_data *psf_s,
     dealloc_fline_ave_data(fline_d);
     dealloc_fline_data(fline_d);
 
-    dealloc_psf_norm_s(psf_s);
     dealloc_psf_data_s(psf_s);
     dealloc_psf_mesh_c(psf_s);
     return;
