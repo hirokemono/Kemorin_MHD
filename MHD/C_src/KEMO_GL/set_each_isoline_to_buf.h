@@ -47,8 +47,8 @@ long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
                              double width, double *f_color,
                              struct psf_data *psf_s,
-                             long *iedge_itp, double *xyzw_edge,
-                              double *dir_edge, double *norm_ed,
+                             long *iedge_itp, double *xyzw_line,
+                              double *dir_line, double *norm_line,
                              struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif

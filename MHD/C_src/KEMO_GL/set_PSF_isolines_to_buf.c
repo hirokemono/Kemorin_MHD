@@ -219,14 +219,11 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             ineib1 = ineib_edge[2*iedge  ];
             k1 = inum_line[2*ineib1  ];
             
-            ineib2 = ineib_edge[2*iedge+1];
-            k2 = inum_line[2*ineib2  ];
-            
-            in1 = psf_s->psf_edge->ie_edge[iedge][0] - 1;
-            in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
-            
             j2 = inum_line[2*iedge+1];
             if(j2 >= 0){
+                in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
+                ineib2 = ineib_edge[2*iedge+1];
+                k2 = inum_line[2*ineib2  ];
                 dir_edge[4*iedge  ] = xyzw_line[4*k2  ] - xyzw_line[4*k1  ];
                 dir_edge[4*iedge+1] = xyzw_line[4*k2+1] - xyzw_line[4*k1+1];
                 dir_edge[4*iedge+2] = xyzw_line[4*k2+2] - xyzw_line[4*k1+2];
@@ -244,63 +241,43 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             norm_ed[4*iedge+3] = 1.0;
         }
         
-/*
-        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
+        double *dir_line = (double *) calloc(8*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(double));
+        double *norm_line = (double *) calloc(8*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(double));
+        for(j=0;j<2*(nend-ntmp);j++){
+            iedge = labs(iedge_itp[j]) - 1;
             j1 = inum_line[2*iedge  ];
             if(j1 < 0) continue;
+            
             ineib1 = ineib_edge[2*iedge  ];
             k1 = inum_line[2*ineib1  ];
             
-            ineib2 = ineib_edge[2*iedge+1];
-            k2 = inum_line[2*ineib2  ];
-            
             j2 = inum_line[2*iedge+1];
             if(j2 >= 0){
-                cal_normal_4_quad_c(&xyzw_line[4*k2  ], &zero_v[0],
-                                    &xyzw_line[4*k1  ], &z_v[0],
-                                    &norm_ed[4*iedge]);
-                if(len < dir_edge[4*iedge+2]){
-                    dir_edge[4*iedge  ] = -dir_edge[4*iedge  ];
-                    dir_edge[4*iedge+1] = -dir_edge[4*iedge+1];
-                    dir_edge[4*iedge+2] = -dir_edge[4*iedge+2];
-                }
-                
-                len = sqrt(  (dir_edge[4*iedge  ]) * dir_edge[4*iedge  ]
-                           + (dir_edge[4*iedge+1]) * dir_edge[4*iedge+1]
-                           + (dir_edge[4*iedge+2]) * dir_edge[4*iedge+2]);
-                if(len > 0.0){
-                    dir_edge[4*iedge  ] = dir_edge[4*iedge  ] / len;
-                    dir_edge[4*iedge+1] = dir_edge[4*iedge+1] / len;
-                    dir_edge[4*iedge+2] = dir_edge[4*iedge+2] / len;
-                }
+                in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
+                ineib2 = ineib_edge[2*iedge+1];
+                k2 = inum_line[2*ineib2  ];
+                dir_line[4*j  ] = xyzw_line[4*k2  ] - xyzw_line[4*k1  ];
+                dir_line[4*j+1] = xyzw_line[4*k2+1] - xyzw_line[4*k1+1];
+                dir_line[4*j+2] = xyzw_line[4*k2+2] - xyzw_line[4*k1+2];
+                cal_normal_4_quad_c(&xyzw_line[4*k2  ], &xyzw_edge[4*iedge],
+                                    &xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in2],
+                                    &norm_line[4*j]);
             }else if(j1 >= 0){
-                if(dir_edge[4*iedge+2] < 0.0){
-                    dir_edge[4*iedge  ] = - dir_edge[4*iedge  ];
-                    dir_edge[4*iedge+1] = - dir_edge[4*iedge+1];
-                    dir_edge[4*iedge+2] = - dir_edge[4*iedge+2];
-                }
-                len = sqrt(  (dir_edge[4*iedge  ]) * dir_edge[4*iedge  ]
-                           + (dir_edge[4*iedge+1]) * dir_edge[4*iedge+1]
-                           + (dir_edge[4*iedge+2]) * dir_edge[4*iedge+2]);
-                if(len > 0.0){
-                    dir_edge[4*iedge  ] = dir_edge[4*iedge  ] / len;
-                    dir_edge[4*iedge+1] = dir_edge[4*iedge+1] / len;
-                    dir_edge[4*iedge+2] = dir_edge[4*iedge+2] / len;
-                }
+                dir_line[4*j  ] = xyzw_line[4*k1  ] - xyzw_line[4*j1  ];
+                dir_line[4*j+1] = xyzw_line[4*k1+1] - xyzw_line[4*j1+1];
+                dir_line[4*j+2] = xyzw_line[4*k1+2] - xyzw_line[4*j1+2];
+                cal_normal_4_quad_c(&xyzw_line[4*k1  ], &xyzw_edge[4*iedge],
+                                    &xyzw_line[4*j1  ], &psf_s->xyzw_viz[4*in2],
+                                    &norm_line[4*j]);
             }
-            norm_ed[4*iedge+3] = 1.0;
+            norm_line[4*j+3] = 1.0;
         }
-*/
-        
         
         free(iedge_itp);
         
-        
-        
-        
         inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend,
                                               dub_r, black,
-                                              psf_s, iedge_itp, xyzw_edge, dir_edge, norm_ed,
+                                              psf_s, iedge_itp, xyzw_line, dir_line, norm_line,
                                               psf_buf);
 	};
 	
