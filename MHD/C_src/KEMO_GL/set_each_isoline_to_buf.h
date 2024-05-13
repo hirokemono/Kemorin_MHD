@@ -16,6 +16,22 @@
 #include "set_new_patch_4_map_c.h"
 
 
+struct isoline_mesh_work{
+    long num_edge;
+    long *inum_line;
+    long *ineib_edge;
+    double *xyzw_edge;
+};
+    
+struct isoline_line_work{
+    long num_line;
+    long *iedge_itp;
+    double *xyzw_line;
+    double *dir_line;
+    double *norm_line;
+    double *color_line;
+};
+
 /* prototypes */
 
 long add_each_isoline_npatch(const long ist_patch,
@@ -47,9 +63,7 @@ long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
                              double width,
                              struct psf_data *psf_s,
-                              double *xyzw_line,
-                              double *dir_line, double *norm_line,
-                              double *color_line,
+                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif

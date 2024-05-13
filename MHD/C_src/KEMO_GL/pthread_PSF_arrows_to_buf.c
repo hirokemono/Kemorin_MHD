@@ -162,6 +162,7 @@ long sel_add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
     }else{
         num_patch = add_num_psf_arrows(num_patch, 0, psf_s->nnod_viz,
                                        ncorner, psf_s, psf_m);
+        istack_arrow[1] = istack_arrow[0] + num_patch;
     };
     return num_patch;
 }
