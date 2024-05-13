@@ -96,7 +96,6 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
                                                      psf_m->icomp_draw_psf, f_color,
                                                      psf_s, psf_buf);
         
-        printf("inum_patch-ist_patch: %d %d\n", j, inum_patch-ist_patch);
 	};
     dealloc_colormap_array(omap_array);
     dealloc_colormap_array(cmap_array);
