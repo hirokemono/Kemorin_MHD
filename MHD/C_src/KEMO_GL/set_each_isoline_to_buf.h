@@ -55,11 +55,9 @@ long set_each_map_isoline_to_buf(const long ist_patch,
 
 long set_each_isoline_test(const long ist_line,
                              const long ist, const long ied,
-                             double width, double v_line,
-                             long icomp, double *f_color,
+                             double v_line, long icomp,
                              struct psf_data *psf_s,
-                            long *iedge_itp,
-                           double *xyzw_line);
+                           struct isoline_line_work *wk_iso_line);
 long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
                              struct psf_data *psf_s,

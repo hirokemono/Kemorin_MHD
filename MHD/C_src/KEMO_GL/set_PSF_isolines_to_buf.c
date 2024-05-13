@@ -211,10 +211,15 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         
         long ntmp = 0;
         long nend;
+        nend = sel_each_isoline_test_pthread(nthreads,
+                                             &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
+                                             ZERO, psf_m->icomp_draw_psf,
+                                             psf_s, wk_iso_line);
+        /*
         nend = set_each_isoline_test(ntmp, IZERO, psf_s->nele_viz,
-                                     dub_r, ZERO, psf_m->icomp_draw_psf, black,
-                                     psf_s, wk_iso_line->iedge_itp, wk_iso_line->xyzw_line);
-        
+                                     ZERO, psf_m->icomp_draw_psf,
+                                     psf_s, wk_iso_line);
+        */
 
         long j;
         long iedge;
@@ -223,7 +228,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             wk_iso_mesh->ineib_edge[j] = -1;
         }
         long iedge1, iedge2;
-        for(j=0;j<(nend-ntmp);j++){
+        for(j=0;j<wk_iso_line->num_line;j++){
             iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
             iedge2 = labs(wk_iso_line->iedge_itp[2*j+1]) - 1;
             if(wk_iso_mesh->inum_line[2*iedge1] < 0){
@@ -259,7 +264,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             wk_iso_mesh->xyzw_edge[4*iedge+2] = wk_iso_line->xyzw_line[4*j1+2];
         };
         
-        for(j=0;j<2*(nend-ntmp);j++){
+        for(j=0;j<2*wk_iso_line->num_line;j++){
             iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
             j1 = wk_iso_mesh->inum_line[2*iedge  ];
             if(j1 < 0) continue;
@@ -332,7 +337,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         }
     
         
-        for(j=0;j<2*(nend-ntmp);j++){
+        for(j=0;j<2*wk_iso_line->num_line;j++){
             iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
             j1 = wk_iso_mesh->inum_line[2*iedge  ];
             if(j1 < 0) continue;
@@ -400,7 +405,6 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
     
         
         
-        for(j=0;j<nend-ntmp;j++){
                 wk_iso_line->f_color[0] = black[0];
                 wk_iso_line->f_color[1] = black[1];
                 wk_iso_line->f_color[2] = black[2];
@@ -409,7 +413,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
                 wk_iso_line->f_color[5] = 0.8;
                 wk_iso_line->f_color[6] = 0.8;
                 wk_iso_line->f_color[7] = 1.0;
-        }
+        
         wk_iso_line->width =  dub_r;
         
         free(wk_iso_mesh->inum_line);
@@ -418,16 +422,10 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         free(wk_iso_mesh);
         
         
-        inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, nend, nthreads,
-                                                          &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                                          psf_s, wk_iso_line, psf_buf);
-        /*
-        inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, nthreads,
-                                                     &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                                     dub_r, ZERO,
-                                                     psf_m->icomp_draw_psf, black,
-                                                     psf_s, psf_buf);
-        */
+        inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, wk_iso_line->num_line, nthreads,
+                                                    &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
+                                                    psf_s, wk_iso_line, psf_buf);
+        
         free(wk_iso_line->iedge_itp);
         free(wk_iso_line->xyzw_line);
         free(wk_iso_line->dir_line);
