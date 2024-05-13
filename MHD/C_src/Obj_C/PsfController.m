@@ -698,7 +698,7 @@
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE, self.PSFColorbarSwitch, kemo_sgl);
+    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE, self.PSFColorbarSwitch, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 

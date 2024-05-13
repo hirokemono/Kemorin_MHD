@@ -283,18 +283,18 @@ long append_line_tube_to_buf(const long ipatch_in,
 	double color_tube[24];
 	
 	double norms_hex[48];
-	
+    double norm2[8];
+
+    const double zero_v[3] = {0., 0., 0.};
+    
+    
+    cal_normal_4_triangle_c(zero_v, &dir_edge[0], &norm_edge[0], &norm2[0]);
+    cal_normal_4_triangle_c(zero_v, &dir_edge[4], &norm_edge[4], &norm2[4]);
+    
     hex_ring(&dir_edge[0], &norm_edge[0], &norms_hex[ 0]);
     hex_ring(&dir_edge[4], &norm_edge[4], &norms_hex[24]);
-    /*
-    set_circle_of_line(ncorner, radius, &xyzw_edge[0],
-                       &norm_edge[0], &dir_edge[4],
-                       xx_w1, norm_w1);
-    set_circle_of_line(ncorner, radius, &xyzw_edge[4],
-                       &norm_edge[4], &dir_edge[4],
-                       xx_w2, norm_w2);
-     */
-	for(i=0;i<6;i++){
+
+    for(i=0;i<6;i++){
 		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
 		for(k=0;k<6;k++){

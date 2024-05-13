@@ -2320,6 +2320,7 @@
                                                                     </buttonCell>
                                                                     <connections>
                                                                         <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="2856"/>
+                                                                        <binding destination="1157" name="value" keyPath="self.PSFColorbarSwitch" id="bio-PX-EIg"/>
                                                                     </connections>
                                                                 </button>
                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2799">

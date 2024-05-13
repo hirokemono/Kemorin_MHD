@@ -14,6 +14,7 @@
 #include "calypso_param_c.h"
 #include "m_vertex_buffer.h"
 #include "t_psf_edge_connect_c.h"
+#include "cal_surface_center_normal_c.h"
 
 /* prototypes */
 

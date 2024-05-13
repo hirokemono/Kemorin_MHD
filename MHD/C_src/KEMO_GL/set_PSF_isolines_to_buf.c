@@ -147,19 +147,19 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
                                                  psf_s, psf_m, psf_buf);
         };
     };
+    
+    
+    dub_r = 2.0 * psf_m->isoline_width;
 	if(psf_m->draw_psf_zero  != 0){
         
         long ntmp = inum_patch / 12;
         long nend;
-        long *inod_itp_psf = (long *) calloc(4*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(long));
         long *iedge_itp = (long *) calloc(2*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(long));
-        long *ineib_itp = (long *) calloc(istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(long));
         double *xyzw_line = (double *) calloc(8*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(double));
         nend = set_each_isoline_test(ntmp, IZERO, psf_s->nele_viz,
                                      dub_r, ZERO, psf_m->icomp_draw_psf, black,
-                                     psf_s, inod_itp_psf, iedge_itp,
-                                     xyzw_line);
-        long j, jj;
+                                     psf_s, iedge_itp, xyzw_line);
+        long j;
         long iedge;
         long *inum_line = (long *) calloc(2*psf_s->psf_edge->nedge_viewer, sizeof(long));
         long *ineib_edge = (long *) calloc(2*psf_s->psf_edge->nedge_viewer, sizeof(long));
@@ -191,40 +191,9 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             }
 
         }
-/*
-        long icou = 0;
-        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
-            if(inum_line[2*iedge+1] > 0){
-                icou = icou+2;
-                printf("count %d %d  %d %d   %d %d\n", iedge, icou_lone[iedge],
-                       inum_line[2*iedge  ], inum_line[2*iedge+1],
-                       ineib_edge[2*iedge  ], ineib_edge[2*iedge+1]);
-            }else if(inum_line[2*iedge  ]  > 0){
-                icou = icou + 1;
-                printf("count %d %d  %d %d   %d %d\n", iedge, icou_lone[iedge],
-                       inum_line[2*iedge  ], inum_line[2*iedge+1],
-                       ineib_edge[2*iedge  ], ineib_edge[2*iedge+1]);
-            };
-        }
-        printf("todal %d %d\n", icou/2, (nend-ntmp));
-
-    /*
-        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
-            j1 = inum_line[2*iedge  ];
-            j2 = inum_line[2*iedge+1];
-            ineib1 = ineib_edge[2*iedge  ];
-            ineib2 = ineib_edge[2*iedge+1];
-            k1 = inum_line[2*ineib1  ];
-            k2 = inum_line[2*ineib2  ];
-            if(j2 >= 0){
-                printf("edges %d    %d %d %d\n", iedge, j1, k1, k2);
-            }else if(j1 >= 0){
-                printf("ohpaned edges %d    %d %d   %d  %d  %d\n", iedge,
-                       ineib1 , ineib2, j1, k1, k2);
-            }
-        }
-        printf("todal %d %d\n", icou/2, (nend-ntmp));
-*/
+        
+        const double zero_v[3] = {0.,0.,0.};
+        const double z_v[3] = {0.,0.,1.};
         double len;
         long j1, j2, j3, j4;
         long i11, i12, i21, i22;
@@ -234,47 +203,68 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         double *dir_edge = (double *) calloc(4*psf_s->psf_edge->nedge_viewer, sizeof(double));
         double *norm_ed = (double *) calloc(4*psf_s->psf_edge->nedge_viewer, sizeof(double));
         long in1, in2;
+        
         for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
             j1 = inum_line[2*iedge  ];
-            j2 = inum_line[2*iedge+1];
+            if(j1 < 0) continue;
+            
+            xyzw_edge[4*iedge  ] = xyzw_line[4*j1  ];
+            xyzw_edge[4*iedge+1] = xyzw_line[4*j1+1];
+            xyzw_edge[4*iedge+2] = xyzw_line[4*j1+2];
+        };
+        
+        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
+            j1 = inum_line[2*iedge  ];
+            if(j1 < 0) continue;
             ineib1 = ineib_edge[2*iedge  ];
-            ineib2 = ineib_edge[2*iedge+1];
             k1 = inum_line[2*ineib1  ];
+            
+            ineib2 = ineib_edge[2*iedge+1];
             k2 = inum_line[2*ineib2  ];
+            
             in1 = psf_s->psf_edge->ie_edge[iedge][0] - 1;
             in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
+            
+            j2 = inum_line[2*iedge+1];
             if(j2 >= 0){
-                xyzw_edge[4*iedge  ] = xyzw_line[4*k1  ];
-                xyzw_edge[4*iedge+1] = xyzw_line[4*k1+1];
-                xyzw_edge[4*iedge+2] = xyzw_line[4*k1+2];
-
                 dir_edge[4*iedge  ] = xyzw_line[4*k2  ] - xyzw_line[4*k1  ];
                 dir_edge[4*iedge+1] = xyzw_line[4*k2+1] - xyzw_line[4*k1+1];
                 dir_edge[4*iedge+2] = xyzw_line[4*k2+2] - xyzw_line[4*k1+2];
-
-                len = sqrt(  (dir_edge[4*iedge  ]) * dir_edge[4*iedge  ]
-                           + (dir_edge[4*iedge+1]) * dir_edge[4*iedge+1]
-                           + (dir_edge[4*iedge+2]) * dir_edge[4*iedge+2]);
-                /*
-                if(len > 0.0){
-                    dir_edge[4*iedge  ] = dir_edge[4*iedge  ] / len;
-                    dir_edge[4*iedge+1] = dir_edge[4*iedge+1] / len;
-                    dir_edge[4*iedge+2] = dir_edge[4*iedge+2] / len;
-                }
-*/
-
                 cal_normal_4_quad_c(&xyzw_line[4*k2  ], &xyzw_edge[4*iedge],
                                     &xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in2],
                                     &norm_ed[4*iedge]);
             }else if(j1 >= 0){
-                xyzw_edge[4*iedge  ] = xyzw_line[4*k1  ];
-                xyzw_edge[4*iedge+1] = xyzw_line[4*k1+1];
-                xyzw_edge[4*iedge+2] = xyzw_line[4*k1+2];
-
                 dir_edge[4*iedge  ] = xyzw_line[4*k1  ] - xyzw_line[4*j1  ];
                 dir_edge[4*iedge+1] = xyzw_line[4*k1+1] - xyzw_line[4*j1+1];
                 dir_edge[4*iedge+2] = xyzw_line[4*k1+2] - xyzw_line[4*j1+2];
-
+                cal_normal_4_quad_c(&xyzw_line[4*k1  ], &xyzw_edge[4*iedge],
+                                    &xyzw_line[4*j1  ], &psf_s->xyzw_viz[4*in2],
+                                    &norm_ed[4*iedge]);
+            }
+            norm_ed[4*iedge+3] = 1.0;
+        }
+        
+/*
+        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
+            j1 = inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            ineib1 = ineib_edge[2*iedge  ];
+            k1 = inum_line[2*ineib1  ];
+            
+            ineib2 = ineib_edge[2*iedge+1];
+            k2 = inum_line[2*ineib2  ];
+            
+            j2 = inum_line[2*iedge+1];
+            if(j2 >= 0){
+                cal_normal_4_quad_c(&xyzw_line[4*k2  ], &zero_v[0],
+                                    &xyzw_line[4*k1  ], &z_v[0],
+                                    &norm_ed[4*iedge]);
+                if(len < dir_edge[4*iedge+2]){
+                    dir_edge[4*iedge  ] = -dir_edge[4*iedge  ];
+                    dir_edge[4*iedge+1] = -dir_edge[4*iedge+1];
+                    dir_edge[4*iedge+2] = -dir_edge[4*iedge+2];
+                }
+                
                 len = sqrt(  (dir_edge[4*iedge  ]) * dir_edge[4*iedge  ]
                            + (dir_edge[4*iedge+1]) * dir_edge[4*iedge+1]
                            + (dir_edge[4*iedge+2]) * dir_edge[4*iedge+2]);
@@ -283,88 +273,35 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
                     dir_edge[4*iedge+1] = dir_edge[4*iedge+1] / len;
                     dir_edge[4*iedge+2] = dir_edge[4*iedge+2] / len;
                 }
-
-                cal_normal_4_quad_c(&xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in1],
-                                    &xyzw_line[4*j1  ], &psf_s->xyzw_viz[4*in2],
-                                    &norm_ed[4*iedge]);
-            /*
-                printf("ohpaned edges %d %d  %d      %lf %lf %lf     %lf  %lf  %lf\n",
-                       iedge, k1, j1,
-                       xyzw_line[4*k1  ],
-                       xyzw_line[4*k1+1],
-                       xyzw_line[4*k1+2],
-                       xyzw_line[4*j1  ],
-                       xyzw_line[4*j1+1],
-                       xyzw_line[4*j1+2]);
-             */
+            }else if(j1 >= 0){
+                if(dir_edge[4*iedge+2] < 0.0){
+                    dir_edge[4*iedge  ] = - dir_edge[4*iedge  ];
+                    dir_edge[4*iedge+1] = - dir_edge[4*iedge+1];
+                    dir_edge[4*iedge+2] = - dir_edge[4*iedge+2];
+                }
+                len = sqrt(  (dir_edge[4*iedge  ]) * dir_edge[4*iedge  ]
+                           + (dir_edge[4*iedge+1]) * dir_edge[4*iedge+1]
+                           + (dir_edge[4*iedge+2]) * dir_edge[4*iedge+2]);
+                if(len > 0.0){
+                    dir_edge[4*iedge  ] = dir_edge[4*iedge  ] / len;
+                    dir_edge[4*iedge+1] = dir_edge[4*iedge+1] / len;
+                    dir_edge[4*iedge+2] = dir_edge[4*iedge+2] / len;
+                }
             }
             norm_ed[4*iedge+3] = 1.0;
         }
-
-        for(iedge=0;iedge<psf_s->psf_edge->nedge_viewer;iedge++){
-            in1 = psf_s->psf_edge->ie_edge[iedge][0] - 1;
-            in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
-            j1 = inum_line[2*iedge  ];
-            j2 = inum_line[2*iedge+1];
-            ineib1 = ineib_edge[2*iedge  ];
-            ineib2 = ineib_edge[2*iedge+1];
-            k1 = inum_line[2*ineib1  ];
-            k2 = inum_line[2*ineib2  ];
-            if(j2 >= 0){
-                /*
-                printf("edges %d    %lf %lf %lf     %lf  %lf  %lf         %lf\n", iedge,
-                       dir_edge[4*iedge  ],
-                       dir_edge[4*iedge+1],
-                       dir_edge[4*iedge+2],
-                       norm_ed[4*iedge  ],
-                       norm_ed[4*iedge+1],
-                       norm_ed[4*iedge+2],
-                       (  (dir_edge[4*iedge  ]) * norm_ed[4*iedge  ]
-                        + (dir_edge[4*iedge+1]) * norm_ed[4*iedge+1]
-                        + (dir_edge[4*iedge+2]) * norm_ed[4*iedge+2]));
-                (  (psf_s->xyzw_viz[4*in2  ]-psf_s->xyzw_viz[4*in1  ]) * norm_ed[4*iedge  ]
-                 + (psf_s->xyzw_viz[4*in2+1]-psf_s->xyzw_viz[4*in1+1]) * norm_ed[4*iedge+1]
-                 + (psf_s->xyzw_viz[4*in2+2]-psf_s->xyzw_viz[4*in1+2]) * norm_ed[4*iedge+2]));
 */
-            }else if(j1 >= 0){
-            /*
-                printf("ohpaned edges %d     %lf %lf %lf     %lf  %lf %lf     %lf\n", iedge,
-                       dir_edge[4*iedge  ],
-                       dir_edge[4*iedge+1],
-                       dir_edge[4*iedge+2],
-                       norm_ed[4*iedge  ],
-                       norm_ed[4*iedge+1],
-                       norm_ed[4*iedge+2],
-                       (  (psf_s->xyzw_viz[4*in2+1]-psf_s->xyzw_viz[4*in1  ]) * norm_ed[4*iedge  ]
-                        + (psf_s->xyzw_viz[4*in2+1]-psf_s->xyzw_viz[4*in1+1]) * norm_ed[4*iedge+1]
-                        + (psf_s->xyzw_viz[4*in2+2]-psf_s->xyzw_viz[4*in1+2]) * norm_ed[4*iedge+2]));
-             */
-            }
-        }
-
+        
+        
         free(iedge_itp);
-        free(inod_itp_psf);
-
         
         
         
-		dub_r = 2.0 * psf_m->isoline_width;
-
-
-
+        
         inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend,
-                                              dub_r, ZERO, psf_m->icomp_draw_psf, black,
+                                              dub_r, black,
                                               psf_s, iedge_itp, xyzw_edge, dir_edge, norm_ed,
                                               psf_buf);
-
-
-/*
-        inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, nthreads,
-                                                     &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                                     dub_r, ZERO, psf_m->icomp_draw_psf, black,
-                                                     psf_s, psf_buf);
- */
- 
 	};
 	
 	return inum_patch;
