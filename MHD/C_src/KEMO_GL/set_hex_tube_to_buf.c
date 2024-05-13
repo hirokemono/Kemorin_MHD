@@ -294,8 +294,7 @@ long append_line_tube_to_buf(const long ipatch_in,
     hex_ring(&norm2[0], &norm_edge[0], &norms_hex[ 0]);
     hex_ring(&norm2[4], &norm_edge[4], &norms_hex[24]);
 
-    i = 0;
-//    for(i=0;i<6;i++){
+    for(i=0;i<6;i++){
 		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
 		for(k=0;k<6;k++){
@@ -305,7 +304,7 @@ long append_line_tube_to_buf(const long ipatch_in,
                 strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_tube[4*k+nd];
                 strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_tube[4*k+nd];
             };
-//		};
+		};
 	};
 	return ipatch + 12;
 };

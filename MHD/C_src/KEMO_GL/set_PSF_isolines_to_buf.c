@@ -275,7 +275,14 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             k1 = wk_iso_mesh->inum_line[2*ineib1  ];
             
             j2 = wk_iso_mesh->inum_line[2*iedge+1];
-            if(j2 >= 0){
+            if(j2 < 0){
+                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k1  ]
+                                                - wk_iso_line->xyzw_line[4*j1  ];
+                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k1+1]
+                                                - wk_iso_line->xyzw_line[4*j1+1];
+                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k1+2]
+                                                - wk_iso_line->xyzw_line[4*j1+2];
+            }else{
                 in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
                 ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
                 k2 = wk_iso_mesh->inum_line[2*ineib2  ];
@@ -285,28 +292,108 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
                                                 - wk_iso_line->xyzw_line[4*k1+1];
                 wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k2+2]
                                                 - wk_iso_line->xyzw_line[4*k1+2];
-                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k2  ], &wk_iso_mesh->xyzw_edge[4*iedge],
-                                    &wk_iso_line->xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in2],
-                                    &wk_iso_line->norm_line[4*j]);
-            }else if(j1 >= 0){
-                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k1  ]
-                                                - wk_iso_line->xyzw_line[4*j1  ];
-                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k1+1]
-                                                - wk_iso_line->xyzw_line[4*j1+1];
-                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k1+2]
-                                                - wk_iso_line->xyzw_line[4*j1+2];
+            }
+        }
+        
+        double def;
+        for(j=0;j<2*(nend-ntmp);j++){
+            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+            if(iedge > ineib1){
+                def = wk_iso_line->dir_line[4*j  ] * wk_iso_line->dir_line[4*k1  ]
+                     + wk_iso_line->dir_line[4*j+1] * wk_iso_line->dir_line[4*k1+1]
+                     + wk_iso_line->dir_line[4*j+2] * wk_iso_line->dir_line[4*k1+2];
+                if(def < 0.0){
+                    wk_iso_line->dir_line[4*j  ] = -wk_iso_line->dir_line[4*j  ];
+                    wk_iso_line->dir_line[4*j+1] = -wk_iso_line->dir_line[4*j+1];
+                    wk_iso_line->dir_line[4*j+2] = -wk_iso_line->dir_line[4*j+2];
+                }
+            }
+            
+            j2 = wk_iso_mesh->inum_line[2*iedge+1];
+            if(j2 < 0) continue;
+            ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+            k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+            if(iedge > ineib2){
+                def = wk_iso_line->dir_line[4*j  ] * wk_iso_line->dir_line[4*k2  ]
+                        + wk_iso_line->dir_line[4*j+1] * wk_iso_line->dir_line[4*k2+1]
+                        + wk_iso_line->dir_line[4*j+2] * wk_iso_line->dir_line[4*k2+2];
+                if(def < 0.0){
+                    wk_iso_line->dir_line[4*j  ] = -wk_iso_line->dir_line[4*j  ];
+                    wk_iso_line->dir_line[4*j+1] = -wk_iso_line->dir_line[4*j+1];
+                    wk_iso_line->dir_line[4*j+2] = -wk_iso_line->dir_line[4*j+2];
+                }
+            }
+        }
+        
+        for(j=0;j<2*(nend-ntmp);j++){
+            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+            
+            j2 = wk_iso_mesh->inum_line[2*iedge+1];
+            if(j2 < 0){
                 cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k1  ], &wk_iso_mesh->xyzw_edge[4*iedge],
                                     &wk_iso_line->xyzw_line[4*j1  ], &psf_s->xyzw_viz[4*in2],
+                                    &wk_iso_line->norm_line[4*j]);
+            }else{
+                in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
+                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k2  ], &wk_iso_mesh->xyzw_edge[4*iedge],
+                                    &wk_iso_line->xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in2],
                                     &wk_iso_line->norm_line[4*j]);
             }
             wk_iso_line->norm_line[4*j+3] = 1.0;
         }
         
+        for(j=0;j<2*(nend-ntmp);j++){
+            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+            if(iedge > ineib1){
+                def = wk_iso_line->norm_line[4*j  ] * wk_iso_line->norm_line[4*k1  ]
+                     + wk_iso_line->norm_line[4*j+1] * wk_iso_line->norm_line[4*k1+1]
+                     + wk_iso_line->norm_line[4*j+2] * wk_iso_line->norm_line[4*k1+2];
+                if(def < 0.0){
+                    wk_iso_line->norm_line[4*j  ] = -wk_iso_line->norm_line[4*j  ];
+                    wk_iso_line->norm_line[4*j+1] = -wk_iso_line->norm_line[4*j+1];
+                    wk_iso_line->norm_line[4*j+2] = -wk_iso_line->norm_line[4*j+2];
+                }
+                continue;
+            }
+            j2 = wk_iso_mesh->inum_line[2*iedge+1];
+            if(j2 < 0) continue;
+            ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+            k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+            if(iedge > ineib2){
+                def = wk_iso_line->norm_line[4*j  ] * wk_iso_line->norm_line[4*k2  ]
+                        + wk_iso_line->norm_line[4*j+1] * wk_iso_line->norm_line[4*k2+1]
+                        + wk_iso_line->norm_line[4*j+2] * wk_iso_line->norm_line[4*k2+2];
+                if(def < 0.0){
+                    wk_iso_line->norm_line[4*j  ] = -wk_iso_line->norm_line[4*j  ];
+                    wk_iso_line->norm_line[4*j+1] = -wk_iso_line->norm_line[4*j+1];
+                    wk_iso_line->norm_line[4*j+2] = -wk_iso_line->norm_line[4*j+2];
+                }
+            }
+        }
+        
+        
         for(j=0;j<nend-ntmp;j++){
                 wk_iso_line->color_line[8*j  ] = black[0];
                 wk_iso_line->color_line[8*j+1] = black[1];
                 wk_iso_line->color_line[8*j+2] = black[2];
-                wk_iso_line->color_line[8*j+3] = black[3];
+                wk_iso_line->color_line[8*j+3] = 0.0;
                 wk_iso_line->color_line[8*j+4] = 0.05;
                 wk_iso_line->color_line[8*j+5] = 0.8;
                 wk_iso_line->color_line[8*j+6] = 0.8;
