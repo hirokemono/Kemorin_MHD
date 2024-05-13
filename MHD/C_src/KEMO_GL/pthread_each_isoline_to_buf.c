@@ -347,7 +347,7 @@ long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthread
     }else{
         num_patch = add_each_isoline_npatch(num_patch, IZERO, psf_s->nele_viz,
                                             v_line, icomp, psf_s);
-        istack_threads[1] = istack_threads[0] + num_patch;
+        istack_threads[1] = num_patch;
     }
     return num_patch;
 };

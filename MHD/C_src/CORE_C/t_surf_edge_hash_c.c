@@ -103,7 +103,7 @@ void set_edge_hash_4_triangle(const int nedge_4_surf, const long numsurf,
 	
 	/* ! Set stacks */
 	for(ihash=0;ihash<=h_tbl->ntot_id;ihash++){h_tbl->istack_hash[ihash] = 0;};
-	for(ihash=0;ihash<=h_tbl->ntot_id;ihash++){
+	for(ihash=1;ihash<=h_tbl->ntot_id;ihash++){
 		h_tbl->istack_hash[ihash] = h_tbl->istack_hash[ihash-1] + num_edge_hash[ihash];
 		if(h_tbl->istack_hash[ihash] <= (nedge_4_surf*numsurf)){
 			h_tbl->iend_hash = ihash+1;

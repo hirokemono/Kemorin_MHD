@@ -217,7 +217,6 @@ long set_each_isoline_test(const long ist_line,
 	
 	int idraw, nd;
 	long iele;
-    long i, iedge;
     
 	long num_line = ist_line;
 	copy_hex_tube_pp(hex_tube);

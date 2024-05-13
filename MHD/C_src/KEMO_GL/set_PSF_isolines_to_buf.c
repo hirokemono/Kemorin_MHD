@@ -4,6 +4,262 @@
 
 #include "set_PSF_isolines_to_buf.h"
 
+void dealloc_isoline_mesh_work(struct isoline_mesh_work *wk_iso_mesh){
+        free(wk_iso_mesh->inum_line);
+        free(wk_iso_mesh->ineib_edge);
+        free(wk_iso_mesh->xyzw_edge);
+        free(wk_iso_mesh);
+    return;
+}
+
+void dealloc_isoline_line_work(struct isoline_line_work *wk_iso_line){
+        free(wk_iso_line->iedge_itp);
+        free(wk_iso_line->xyzw_line);
+        free(wk_iso_line->dir_line);
+        free(wk_iso_line->norm_line);
+        free(wk_iso_line);
+    return;
+}
+
+struct isoline_mesh_work * init_isoline_mesh_work(struct psf_edge_data_c *psf_edge){
+        struct isoline_mesh_work *wk_iso_mesh
+                = (struct isoline_mesh_work *) malloc(sizeof(struct isoline_mesh_work));
+        if(wk_iso_mesh == NULL){
+            printf("failed allocation for isoline_mesh_work\n");
+            exit(1);
+        }
+        wk_iso_mesh->num_edge = psf_edge->nedge_viewer;
+        wk_iso_mesh->inum_line =  (long *) malloc(2*wk_iso_mesh->num_edge * sizeof(long));
+        if(wk_iso_mesh->inum_line == NULL){
+            printf("failed allocation for wk_iso_mesh->inum_line\n");
+            exit(1);
+        }
+        wk_iso_mesh->ineib_edge = (long *) malloc(2*wk_iso_mesh->num_edge * sizeof(long));
+        if(wk_iso_mesh->ineib_edge == NULL){
+            printf("failed allocation for wk_iso_mesh->ineib_edge\n");
+            exit(1);
+        }
+        wk_iso_mesh->xyzw_edge = (double *) calloc(4*wk_iso_mesh->num_edge, sizeof(double));
+        if(wk_iso_mesh->xyzw_edge == NULL){
+            printf("failed allocation for wk_iso_mesh->xyzw_edge\n");
+            exit(1);
+        }
+    return wk_iso_mesh;
+}
+
+struct isoline_line_work * init_isoline_line_work(int nthreads, int id_line, 
+                                                  long *istack_smp_psf_iso){
+        struct isoline_line_work *wk_iso_line
+                = (struct isoline_line_work *) malloc(sizeof(struct isoline_line_work));
+        if(wk_iso_line == NULL){
+            printf("failed allocation for isoline_line_work\n");
+            exit(1);
+        }
+        wk_iso_line->num_line = istack_smp_psf_iso[(id_line+1)*nthreads]
+                                - istack_smp_psf_iso[id_line*nthreads];
+        wk_iso_line->num_line = wk_iso_line->num_line / 12;
+        
+        wk_iso_line->iedge_itp = (long *) calloc(2*wk_iso_line->num_line, sizeof(long));
+        if(wk_iso_line->iedge_itp == NULL){
+            printf("failed allocation for wk_iso_line->iedge_itp\n");
+            exit(1);
+        }
+        wk_iso_line->xyzw_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
+        if(wk_iso_line->xyzw_line == NULL){
+            printf("failed allocation for wk_iso_line->xyzw_line\n");
+            exit(1);
+        }
+        wk_iso_line->dir_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
+        if(wk_iso_line->dir_line == NULL){
+            printf("failed allocation for wk_iso_line->dir_line\n");
+            exit(1);
+        }
+        wk_iso_line->norm_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
+        if(wk_iso_line->norm_line == NULL){
+            printf("failed allocation for wk_iso_line->norm_line\n");
+            exit(1);
+        }
+    return wk_iso_line;
+}
+
+void set_isoline_color_in_wk(double color[4],
+                             struct isoline_line_work *wk_iso_line){
+    for(int nd=0;nd<4;nd++){
+        wk_iso_line->f_color[nd] = color[nd];
+        wk_iso_line->f_color[nd+4] = color[nd];
+    };
+    return;
+}
+
+void set_isoline_edge_list(struct isoline_line_work *wk_iso_line, 
+                           struct isoline_mesh_work *wk_iso_mesh){
+        long j;
+        long iedge;
+        for(j=0;j<2*wk_iso_mesh->num_edge;j++){
+            wk_iso_mesh->inum_line[j] = -1;
+            wk_iso_mesh->ineib_edge[j] = -1;
+        }
+        long iedge1, iedge2;
+        for(j=0;j<wk_iso_line->num_line;j++){
+            iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
+            iedge2 = labs(wk_iso_line->iedge_itp[2*j+1]) - 1;
+            if(wk_iso_mesh->inum_line[2*iedge1] < 0){
+                wk_iso_mesh->inum_line[2*iedge1] = 2*j;
+                wk_iso_mesh->ineib_edge[2*iedge1] = iedge2;
+            }else if(wk_iso_mesh->inum_line[2*iedge1] >= 0){
+                wk_iso_mesh->inum_line[2*iedge1+1] = 2*j;
+                wk_iso_mesh->ineib_edge[2*iedge1+1] = iedge2;
+            }
+
+            if(wk_iso_mesh->inum_line[2*iedge2] < 0){
+                wk_iso_mesh->inum_line[2*iedge2] = 2*j+1;
+                wk_iso_mesh->ineib_edge[2*iedge2] = iedge1;
+            }else if(wk_iso_mesh->inum_line[2*iedge2] >= 0){
+                wk_iso_mesh->inum_line[2*iedge2+1] = 2*j+1;
+                wk_iso_mesh->ineib_edge[2*iedge2+1] = iedge1;
+            }
+        }
+    return;
+}
+
+void set_isoline_position_on_edge(struct isoline_line_work *wk_iso_line, 
+                                  struct isoline_mesh_work *wk_iso_mesh){
+    long iedge;
+    long j1;
+    
+        for(iedge=0;iedge<wk_iso_mesh->num_edge;iedge++){
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            wk_iso_mesh->xyzw_edge[4*iedge  ] = wk_iso_line->xyzw_line[4*j1  ];
+            wk_iso_mesh->xyzw_edge[4*iedge+1] = wk_iso_line->xyzw_line[4*j1+1];
+            wk_iso_mesh->xyzw_edge[4*iedge+2] = wk_iso_line->xyzw_line[4*j1+2];
+        };
+        
+    return;
+}
+
+void set_direction_for_isoline(struct psf_edge_data_c *psf_edge,
+                               struct isoline_mesh_work *wk_iso_mesh, 
+                               struct isoline_line_work *wk_iso_line){
+    long iedge, ineib1, ineib2;
+    long j, j1, j2, k1, k2;
+    
+        for(j=0;j<2*(wk_iso_line->num_line);j++){
+            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+            
+            j2 = wk_iso_mesh->inum_line[2*iedge+1];
+            if(j2 < 0){
+                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k1  ]
+                                                - wk_iso_line->xyzw_line[4*j1  ];
+                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k1+1]
+                                                - wk_iso_line->xyzw_line[4*j1+1];
+                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k1+2]
+                                                - wk_iso_line->xyzw_line[4*j1+2];
+            }else{
+                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k2  ]
+                                                - wk_iso_line->xyzw_line[4*k1  ];
+                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k2+1]
+                                                - wk_iso_line->xyzw_line[4*k1+1];
+                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k2+2]
+                                                - wk_iso_line->xyzw_line[4*k1+2];
+            }
+        }
+    return;
+}
+
+void set_normal_for_isoline(double *xyzw_psf,
+                            struct psf_edge_data_c *psf_edge,
+                            struct isoline_mesh_work *wk_iso_mesh, 
+                            struct isoline_line_work *wk_iso_line){
+    long iedge, ineib1, ineib2;
+    long j, j1, j2, k1, k2, in2;
+    
+        for(j=0;j<2*(wk_iso_line->num_line);j++){
+            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+            
+            j2 = wk_iso_mesh->inum_line[2*iedge+1];
+            in2 = psf_edge->ie_edge[iedge][1] - 1;
+            if(j2 < 0){
+                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k1  ], &wk_iso_mesh->xyzw_edge[4*iedge],
+                                    &wk_iso_line->xyzw_line[4*j1  ], &xyzw_psf[4*in2],
+                                    &wk_iso_line->norm_line[4*j]);
+            }else{
+                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k2  ], &wk_iso_mesh->xyzw_edge[4*iedge],
+                                    &wk_iso_line->xyzw_line[4*k1  ], &xyzw_psf[4*in2],
+                                    &wk_iso_line->norm_line[4*j]);
+            }
+            wk_iso_line->norm_line[4*j+3] = 1.0;
+        }
+    return;
+}
+
+void adjust_direction_by_neighbor(struct isoline_mesh_work *wk_iso_mesh, 
+                                  double *vect_line){
+    long iedge, ineib1, ineib2;
+    long j1, j2, k1, k2;
+    
+        double def;
+        for(iedge=0;iedge<wk_iso_mesh->num_edge;iedge++){
+            j1 = wk_iso_mesh->inum_line[2*iedge  ];
+            if(j1 < 0) continue;
+            
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+            ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+            if(iedge > ineib1){
+                k1 = wk_iso_mesh->inum_line[2*ineib1  ];
+                def =  vect_line[4*j1  ] * vect_line[4*k1  ]
+                     + vect_line[4*j1+1] * vect_line[4*k1+1]
+                     + vect_line[4*j1+2] * vect_line[4*k1+2];
+                if(def < 0.0){
+                    vect_line[4*j1  ] = -vect_line[4*j1  ];
+                    vect_line[4*j1+1] = -vect_line[4*j1+1];
+                    vect_line[4*j1+2] = -vect_line[4*j1+2];
+                }
+                j2 = wk_iso_mesh->inum_line[2*iedge+1];
+                if(j2 > 0){
+                    vect_line[4*j2  ] = vect_line[4*j1  ];
+                    vect_line[4*j2+1] = vect_line[4*j1+1];
+                    vect_line[4*j2+2] = vect_line[4*j1+2];
+                };
+                continue;
+            }
+            if(ineib2 < 0) continue;
+            if(iedge > ineib2){
+                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
+                def =  vect_line[4*j1  ] * vect_line[4*k2  ]
+                     + vect_line[4*j1+1] * vect_line[4*k2+1]
+                     + vect_line[4*j1+2] * vect_line[4*k2+2];
+                if(def < 0.0){
+                    vect_line[4*j1  ] = -vect_line[4*j1  ];
+                    vect_line[4*j1+1] = -vect_line[4*j1+1];
+                    vect_line[4*j1+2] = -vect_line[4*j1+2];
+                }
+                j2 = wk_iso_mesh->inum_line[2*iedge+1];
+                if(j2 > 0){
+                    vect_line[4*j2  ] = vect_line[4*j1  ];
+                    vect_line[4*j2+1] = vect_line[4*j1+1];
+                    vect_line[4*j2+2] = vect_line[4*j1+2];
+                };
+            }
+        }
+    return;
+}
+
 static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
@@ -151,287 +407,52 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
     
     
 	if(psf_m->draw_psf_zero  != 0){
-        dub_r = 2.0 * psf_m->isoline_width;
-        
-        struct isoline_mesh_work *wk_iso_mesh
-                = (struct isoline_mesh_work *) malloc(sizeof(struct isoline_mesh_work));
-        if(wk_iso_mesh == NULL){
-            printf("failed allocation for isoline_mesh_work\n");
-            exit(1);
+        long i1 = istack_smp_psf_iso[psf_m->n_isoline*nthreads];
+        long i2 = istack_smp_psf_iso[(psf_m->n_isoline+1)*nthreads];
+        for(int ip=0;ip<psf_m->n_isoline+1;ip++){
+            printf("stack %d %d %d %d \n", ip,
+                   istack_smp_psf_iso[(ip+1)*nthreads],
+                   istack_smp_psf_iso[ip*nthreads],
+                   istack_smp_psf_iso[(ip+1)*nthreads]
+                     - istack_smp_psf_iso[ip*nthreads]);
         }
-        wk_iso_mesh->num_edge = psf_s->psf_edge->nedge_viewer;
-        wk_iso_mesh->inum_line =  (long *) malloc(2*wk_iso_mesh->num_edge * sizeof(long));
-        if(wk_iso_mesh->inum_line == NULL){
-            printf("failed allocation for wk_iso_mesh->inum_line\n");
-            exit(1);
-        }
-        wk_iso_mesh->ineib_edge = (long *) malloc(2*wk_iso_mesh->num_edge * sizeof(long));
-        if(wk_iso_mesh->ineib_edge == NULL){
-            printf("failed allocation for wk_iso_mesh->ineib_edge\n");
-            exit(1);
-        }
-        wk_iso_mesh->xyzw_edge = (double *) calloc(4*wk_iso_mesh->num_edge, sizeof(double));
-        if(wk_iso_mesh->xyzw_edge == NULL){
-            printf("failed allocation for wk_iso_mesh->xyzw_edge\n");
-            exit(1);
-        }
+        printf("stack last %d %d %d \n", i2, i1, i2-i1);
         
-        struct isoline_line_work *wk_iso_line
-                = (struct isoline_line_work *) malloc(sizeof(struct isoline_line_work));
-        if(wk_iso_line == NULL){
-            printf("failed allocation for isoline_line_work\n");
-            exit(1);
-        }
-        wk_iso_line->num_line = istack_smp_psf_iso[(psf_m->n_isoline+1)*nthreads]
-                                - istack_smp_psf_iso[psf_m->n_isoline*nthreads];
-        wk_iso_line->num_line = wk_iso_line->num_line / 12;
+        struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_s->psf_edge);
+        struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads, psf_m->n_isoline, 
+                                                                       istack_smp_psf_iso);
         
-        wk_iso_line->iedge_itp = (long *) calloc(2*wk_iso_line->num_line, sizeof(long));
-        if(wk_iso_line->iedge_itp == NULL){
-            printf("failed allocation for wk_iso_line->iedge_itp\n");
-            exit(1);
-        }
-        wk_iso_line->xyzw_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->xyzw_line == NULL){
-            printf("failed allocation for wk_iso_line->xyzw_line\n");
-            exit(1);
-        }
-        wk_iso_line->dir_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->dir_line == NULL){
-            printf("failed allocation for wk_iso_line->dir_line\n");
-            exit(1);
-        }
-        wk_iso_line->norm_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->norm_line == NULL){
-            printf("failed allocation for wk_iso_line->norm_line\n");
-            exit(1);
-        }
+        long num = sel_each_isoline_test_pthread(nthreads,
+                                      &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
+                                      ZERO, psf_m->icomp_draw_psf,
+                                      psf_s, wk_iso_line);
         
+        set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
         
+        set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
+        printf(" test a %d %d %d\n",  wk_iso_line->iedge_itp[0], num, 2*num);
+        set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
+        printf(" test a %d %d \n",  wk_iso_line->iedge_itp[0], wk_iso_line->iedge_itp[1]);
+        adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
+        printf(" test a %d %d \n",  wk_iso_line->iedge_itp[0], wk_iso_line->iedge_itp[1]);
+        set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
+                               wk_iso_mesh, wk_iso_line);
+        adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->norm_line);
         
-        long ntmp = 0;
-        long nend;
-        nend = sel_each_isoline_test_pthread(nthreads,
-                                             &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                             ZERO, psf_m->icomp_draw_psf,
-                                             psf_s, wk_iso_line);
-        /*
-        nend = set_each_isoline_test(ntmp, IZERO, psf_s->nele_viz,
-                                     ZERO, psf_m->icomp_draw_psf,
-                                     psf_s, wk_iso_line);
-        */
-
-        long j;
-        long iedge;
-        for(j=0;j<2*wk_iso_mesh->num_edge;j++){
-            wk_iso_mesh->inum_line[j] = -1;
-            wk_iso_mesh->ineib_edge[j] = -1;
-        }
-        long iedge1, iedge2;
-        for(j=0;j<wk_iso_line->num_line;j++){
-            iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
-            iedge2 = labs(wk_iso_line->iedge_itp[2*j+1]) - 1;
-            if(wk_iso_mesh->inum_line[2*iedge1] < 0){
-                wk_iso_mesh->inum_line[2*iedge1] = 2*j;
-                wk_iso_mesh->ineib_edge[2*iedge1] = iedge2;
-            }else if(wk_iso_mesh->inum_line[2*iedge1] >= 0){
-                wk_iso_mesh->inum_line[2*iedge1+1] = 2*j;
-                wk_iso_mesh->ineib_edge[2*iedge1+1] = iedge2;
-            }
-
-            if(wk_iso_mesh->inum_line[2*iedge2] < 0){
-                wk_iso_mesh->inum_line[2*iedge2] = 2*j+1;
-                wk_iso_mesh->ineib_edge[2*iedge2] = iedge1;
-            }else if(wk_iso_mesh->inum_line[2*iedge2] >= 0){
-                wk_iso_mesh->inum_line[2*iedge2+1] = 2*j+1;
-                wk_iso_mesh->ineib_edge[2*iedge2+1] = iedge1;
-            }
-
-        }
-        
-        
-        long j1, j2;
-        long ineib1, ineib2;
-        long k1, k2;
-        long in2;
-        
-        for(iedge=0;iedge<wk_iso_mesh->num_edge;iedge++){
-            j1 = wk_iso_mesh->inum_line[2*iedge  ];
-            if(j1 < 0) continue;
-            
-            wk_iso_mesh->xyzw_edge[4*iedge  ] = wk_iso_line->xyzw_line[4*j1  ];
-            wk_iso_mesh->xyzw_edge[4*iedge+1] = wk_iso_line->xyzw_line[4*j1+1];
-            wk_iso_mesh->xyzw_edge[4*iedge+2] = wk_iso_line->xyzw_line[4*j1+2];
-        };
-        
-        for(j=0;j<2*wk_iso_line->num_line;j++){
-            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
-            j1 = wk_iso_mesh->inum_line[2*iedge  ];
-            if(j1 < 0) continue;
-            
-            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
-            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
-            
-            j2 = wk_iso_mesh->inum_line[2*iedge+1];
-            if(j2 < 0){
-                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k1  ]
-                                                - wk_iso_line->xyzw_line[4*j1  ];
-                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k1+1]
-                                                - wk_iso_line->xyzw_line[4*j1+1];
-                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k1+2]
-                                                - wk_iso_line->xyzw_line[4*j1+2];
-            }else{
-                in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
-                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
-                wk_iso_line->dir_line[4*j  ] = wk_iso_line->xyzw_line[4*k2  ]
-                                                - wk_iso_line->xyzw_line[4*k1  ];
-                wk_iso_line->dir_line[4*j+1] = wk_iso_line->xyzw_line[4*k2+1]
-                                                - wk_iso_line->xyzw_line[4*k1+1];
-                wk_iso_line->dir_line[4*j+2] = wk_iso_line->xyzw_line[4*k2+2]
-                                                - wk_iso_line->xyzw_line[4*k1+2];
-            }
-        }
-        
-        double def;
-        for(iedge=0;iedge<wk_iso_mesh->num_edge;iedge++){
-            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
-            ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-            if(iedge > ineib1){
-                j1 = wk_iso_mesh->inum_line[2*iedge  ];
-                k1 = wk_iso_mesh->inum_line[2*ineib1  ];
-                def =  wk_iso_line->dir_line[4*j1  ] * wk_iso_line->dir_line[4*k1  ]
-                     + wk_iso_line->dir_line[4*j1+1] * wk_iso_line->dir_line[4*k1+1]
-                     + wk_iso_line->dir_line[4*j1+2] * wk_iso_line->dir_line[4*k1+2];
-                if(def < 0.0){
-                    wk_iso_line->dir_line[4*j1  ] = -wk_iso_line->dir_line[4*j1  ];
-                    wk_iso_line->dir_line[4*j1+1] = -wk_iso_line->dir_line[4*j1+1];
-                    wk_iso_line->dir_line[4*j1+2] = -wk_iso_line->dir_line[4*j1+2];
-                }
-                j2 = wk_iso_mesh->inum_line[2*iedge+1];
-                if(j2 > 0){
-                    wk_iso_line->dir_line[4*j2  ] = wk_iso_line->dir_line[4*j1  ];
-                    wk_iso_line->dir_line[4*j2+1] = wk_iso_line->dir_line[4*j1+1];
-                    wk_iso_line->dir_line[4*j2+2] = wk_iso_line->dir_line[4*j1+2];
-                };
-                continue;
-            }
-            if(ineib2 < 0) continue;
-            if(iedge > ineib2){
-                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
-                def =  wk_iso_line->dir_line[4*j1  ] * wk_iso_line->dir_line[4*k2  ]
-                     + wk_iso_line->dir_line[4*j1+1] * wk_iso_line->dir_line[4*k2+1]
-                     + wk_iso_line->dir_line[4*j1+2] * wk_iso_line->dir_line[4*k2+2];
-                if(def < 0.0){
-                    wk_iso_line->dir_line[4*j1  ] = -wk_iso_line->dir_line[4*j1  ];
-                    wk_iso_line->dir_line[4*j1+1] = -wk_iso_line->dir_line[4*j1+1];
-                    wk_iso_line->dir_line[4*j1+2] = -wk_iso_line->dir_line[4*j1+2];
-                }
-                j2 = wk_iso_mesh->inum_line[2*iedge+1];
-                if(j2 > 0){
-                    wk_iso_line->dir_line[4*j2  ] = wk_iso_line->dir_line[4*j1  ];
-                    wk_iso_line->dir_line[4*j2+1] = wk_iso_line->dir_line[4*j1+1];
-                    wk_iso_line->dir_line[4*j2+2] = wk_iso_line->dir_line[4*j1+2];
-                };
-            }
-        }
-    
-        
-        for(j=0;j<2*wk_iso_line->num_line;j++){
-            iedge = labs(wk_iso_line->iedge_itp[j]) - 1;
-            j1 = wk_iso_mesh->inum_line[2*iedge  ];
-            if(j1 < 0) continue;
-            
-            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
-            k1 = wk_iso_mesh->inum_line[2*ineib1  ];
-            
-            j2 = wk_iso_mesh->inum_line[2*iedge+1];
-            if(j2 < 0){
-                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k1  ], &wk_iso_mesh->xyzw_edge[4*iedge],
-                                    &wk_iso_line->xyzw_line[4*j1  ], &psf_s->xyzw_viz[4*in2],
-                                    &wk_iso_line->norm_line[4*j]);
-            }else{
-                in2 = psf_s->psf_edge->ie_edge[iedge][1] - 1;
-                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
-                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k2  ], &wk_iso_mesh->xyzw_edge[4*iedge],
-                                    &wk_iso_line->xyzw_line[4*k1  ], &psf_s->xyzw_viz[4*in2],
-                                    &wk_iso_line->norm_line[4*j]);
-            }
-            wk_iso_line->norm_line[4*j+3] = 1.0;
-        }
-        
-        for(iedge=0;iedge<wk_iso_mesh->num_edge;iedge++){
-            ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
-            ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-            if(iedge > ineib1){
-                j1 = wk_iso_mesh->inum_line[2*iedge  ];
-                k1 = wk_iso_mesh->inum_line[2*ineib1  ];
-                def =  wk_iso_line->norm_line[4*j1  ] * wk_iso_line->norm_line[4*k1  ]
-                     + wk_iso_line->norm_line[4*j1+1] * wk_iso_line->norm_line[4*k1+1]
-                     + wk_iso_line->norm_line[4*j1+2] * wk_iso_line->norm_line[4*k1+2];
-                if(def < 0.0){
-                    wk_iso_line->norm_line[4*j1  ] = -wk_iso_line->norm_line[4*j1  ];
-                    wk_iso_line->norm_line[4*j1+1] = -wk_iso_line->norm_line[4*j1+1];
-                    wk_iso_line->norm_line[4*j1+2] = -wk_iso_line->norm_line[4*j1+2];
-                }
-                j2 = wk_iso_mesh->inum_line[2*iedge+1];
-                if(j2 > 0){
-                    wk_iso_line->norm_line[4*j2  ] = wk_iso_line->norm_line[4*j1  ];
-                    wk_iso_line->norm_line[4*j2+1] = wk_iso_line->norm_line[4*j1+1];
-                    wk_iso_line->norm_line[4*j2+2] = wk_iso_line->norm_line[4*j1+2];
-                };
-                continue;
-            }
-            if(ineib2 < 0) continue;
-            if(iedge > ineib2){
-                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
-                def =  wk_iso_line->norm_line[4*j1  ] * wk_iso_line->norm_line[4*k2  ]
-                     + wk_iso_line->norm_line[4*j1+1] * wk_iso_line->norm_line[4*k2+1]
-                     + wk_iso_line->norm_line[4*j1+2] * wk_iso_line->norm_line[4*k2+2];
-                if(def < 0.0){
-                    wk_iso_line->norm_line[4*j1  ] = -wk_iso_line->norm_line[4*j1  ];
-                    wk_iso_line->norm_line[4*j1+1] = -wk_iso_line->norm_line[4*j1+1];
-                    wk_iso_line->norm_line[4*j1+2] = -wk_iso_line->norm_line[4*j1+2];
-                }
-                j2 = wk_iso_mesh->inum_line[2*iedge+1];
-                if(j2 > 0){
-                    wk_iso_line->norm_line[4*j2  ] = wk_iso_line->norm_line[4*j1  ];
-                    wk_iso_line->norm_line[4*j2+1] = wk_iso_line->norm_line[4*j1+1];
-                    wk_iso_line->norm_line[4*j2+2] = wk_iso_line->norm_line[4*j1+2];
-                };
-            }
-        }
-    
-        
-        
-                wk_iso_line->f_color[0] = black[0];
-                wk_iso_line->f_color[1] = black[1];
-                wk_iso_line->f_color[2] = black[2];
-                wk_iso_line->f_color[3] = black[3];
+        wk_iso_line->width = 2.0 * psf_m->isoline_width;
+        set_isoline_color_in_wk(black, wk_iso_line);
                 wk_iso_line->f_color[4] = 0.05;
                 wk_iso_line->f_color[5] = 0.8;
                 wk_iso_line->f_color[6] = 0.8;
                 wk_iso_line->f_color[7] = 1.0;
-        
-        wk_iso_line->width =  dub_r;
-        
-        free(wk_iso_mesh->inum_line);
-        free(wk_iso_mesh->ineib_edge);
-        free(wk_iso_mesh->xyzw_edge);
-        free(wk_iso_mesh);
-        
+        dealloc_isoline_mesh_work(wk_iso_mesh);
         
         inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, wk_iso_line->num_line, nthreads,
                                                     &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
                                                     psf_s, wk_iso_line, psf_buf);
-        
-        free(wk_iso_line->iedge_itp);
-        free(wk_iso_line->xyzw_line);
-        free(wk_iso_line->dir_line);
-        free(wk_iso_line->norm_line);
-        free(wk_iso_line);
-	};
+        dealloc_isoline_line_work(wk_iso_line);
+    };
     
 	return inum_patch;
 }
+
