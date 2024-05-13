@@ -216,7 +216,7 @@ static void dealloc_fline_ave_data(struct fline_data *fline_d){
     free(fline_d->d_amp);
     
     free(fline_d->amp_min);
-    free(fline_d->amp_min);
+    free(fline_d->amp_max);
     free(fline_d->d_min);
     free(fline_d->d_max);
     free(fline_d->d_rms);

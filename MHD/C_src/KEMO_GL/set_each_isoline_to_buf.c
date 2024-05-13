@@ -23,12 +23,14 @@ static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
 static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3], 
                                             double *xyzw_viz, double *norm_nod,
 											double *d_nod, long icomp,
-											double xyzw_tri[12], double norm_tri[12], double d_tri[3]){
+                                            long inod_tri[3], double xyzw_tri[12], 
+                                            double norm_tri[12], double d_tri[3]){
 	int k;
 	long inod;
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
-		
+        
+        inod_tri[k] =  ie_viz[k];
 		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
         xyzw_tri[4*k  ] = xyzw_viz[inod*IFOUR + 0];
         xyzw_tri[4*k+1] = xyzw_viz[inod*IFOUR + 1];
@@ -44,7 +46,8 @@ static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3],
 
 static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], double *xyzw_viz,
                                            double *d_nod, long icomp,
-                                           double xyzw_map[12], double norm_tri[12], double d_tri[3]){
+                                           long inod_tri[3], double xyzw_map[12],
+                                           double norm_tri[12], double d_tri[3]){
     double xyz_tri[9];
     double xyz_map[9];
 	long inod;
@@ -52,6 +55,7 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
 		
+        inod_tri[k] =  ie_viz[k];
 		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
 		xyz_tri[3*k  ] = xyzw_viz[inod*IFOUR + 0];
 		xyz_tri[3*k+1] = xyzw_viz[inod*IFOUR + 1];
@@ -99,9 +103,11 @@ long set_each_isoline_to_buf(const long ist_patch,
                              long icomp, double *f_color,
                              struct psf_data *psf_s,
                              struct gl_strided_buffer *strided_buf){
+    long inod_tri[3], iedge_itp[2];
+    long inod_itp_psf[4], inod_itp_edge[4];
 	double d_tri[3];
     double xyzw_tri[12], norm_tri[12];
-	double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
+    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
 	int hex_tube[12][3];
 	
 	int idraw, nd;
@@ -112,12 +118,16 @@ long set_each_isoline_to_buf(const long ist_patch,
 	for (iele = ist; iele < ied; iele++) {
 		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                         psf_s->xyzw_viz, psf_s->norm_nod,
-										psf_s->d_nod, icomp, xyzw_tri, norm_tri, d_tri);
+										psf_s->d_nod, icomp,
+                                        inod_tri, xyzw_tri, norm_tri, d_tri);
 		/*  find isoline */
-		idraw = set_isoline_on_triangle(xyzw_line, dir_line, norm_line, 
-                                        xyzw_tri, norm_tri, d_tri, v_line);
+		idraw = set_isoline_on_triangle(iedge_itp, inod_itp_edge, inod_itp_psf, 
+                                        xyzw_line, dir_line, norm_line,
+                                        iele, inod_tri, xyzw_tri, norm_tri, d_tri,
+                                        v_line, psf_s->psf_edge);
+        
 		/* draw isoline */
-		if(idraw == 1){
+        if(idraw == 1){
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line, 
@@ -135,6 +145,8 @@ long set_each_map_isoline_to_buf(const long ist_patch,
                                  long icomp, double *f_color,
                                  struct psf_data *psf_s,
                                  struct gl_strided_buffer *strided_buf){
+    long inod_tri[3], iedge_itp[2];
+    long inod_itp_psf[4], inod_itp_edge[4];
     double d_tri[3];
     double xyzw_map[12], norm_tri[12];
     double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
@@ -148,9 +160,11 @@ long set_each_map_isoline_to_buf(const long ist_patch,
     for (iele = ist; iele < ied; iele++) {
         copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                        psf_s->xyzw_viz, psf_s->d_nod, icomp,
-                                       xyzw_map, norm_tri, d_tri);
-        idraw = set_isoline_on_triangle(xyzw_line, dir_line, norm_line,
-                                        xyzw_map, norm_tri, d_tri, v_line);
+                                       inod_tri, xyzw_map, norm_tri, d_tri);
+        idraw = set_isoline_on_triangle(iedge_itp, inod_itp_edge, inod_itp_psf, 
+                                        xyzw_line, dir_line, norm_line, 
+                                        iele, inod_tri, xyzw_map, norm_tri, d_tri, 
+                                        v_line, psf_s->psf_edge);
         /*  draw isoline */
         if(idraw == 1){
             for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
@@ -160,5 +174,97 @@ long set_each_map_isoline_to_buf(const long ist_patch,
                                                  strided_buf);
         };
     };
+    return inum_patch;
+};
+
+
+long set_each_isoline_test(const long ist_line,
+                             const long ist, const long ied,
+                             double width, double v_line,
+                             long icomp, double *f_color,
+                             struct psf_data *psf_s,
+                           long *inod_itp_psf, long *iedge_itp,
+                           double *xyzw_line){
+    long inod_tri[3];
+    long inod_itp_edge[4];
+	double d_tri[3];
+    double xyzw_tri[12], norm_tri[12];
+    double norm_line[8], color_line[8], dir_line[8];
+	int hex_tube[12][3];
+	
+	int idraw, nd;
+	long iele;
+    long i, iedge;
+    
+	long num_line = ist_line;
+	copy_hex_tube_pp(hex_tube);
+	for (iele = ist; iele < ied; iele++) {
+		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
+                                        psf_s->xyzw_viz, psf_s->norm_nod,
+										psf_s->d_nod, icomp,
+                                        inod_tri, xyzw_tri, norm_tri, d_tri);
+		/*  find isoline */
+		idraw = set_isoline_on_triangle(&iedge_itp[2*(num_line-ist_line)],
+                                        inod_itp_edge,
+                                        &inod_itp_psf[4*(num_line-ist_line)],
+                                        &xyzw_line[8*(num_line-ist_line)],
+                                        dir_line, norm_line,
+                                        iele, inod_tri, xyzw_tri, norm_tri, d_tri,
+                                        v_line, psf_s->psf_edge);
+        
+		/* draw isoline */
+        if(idraw == 1){
+			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
+			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
+			num_line = num_line + 1;
+		};
+	};
+
+	return num_line;
+};
+
+long set_each_isoline_to_buf2(const long ist_patch,
+                             const long ist, const long ied,
+                             double width, double v_line,
+                             long icomp, double *f_color,
+                             struct psf_data *psf_s,
+                              long *iedge_itp, double *xyzw_edge,
+                               double *dir_edge, double *norm_ed,
+                             struct gl_strided_buffer *strided_buf){
+    long inod_tri[3];
+    long inod_itp_psf[4], inod_itp_edge[4];
+    double d_tri[3];
+    double xyzw_tri[12], norm_tri[12];
+    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
+    int hex_tube[12][3];
+    
+    int idraw, nd;
+    long iele, iedge1, iedge2;
+    
+    long inum_patch = ist_patch;
+    copy_hex_tube_pp(hex_tube);
+    long icou = 0;
+    for (icou = ist; icou < ied; icou++){
+        /* draw isoline */
+            iedge1 = labs(iedge_itp[2*(icou-ist)  ]) - 1;
+            iedge2 = labs(iedge_itp[2*(icou-ist)+1]) - 1;
+
+            for(nd=0;nd<4;nd++){
+                color_line[  nd] = f_color[nd];
+                xyzw_line[  nd] = xyzw_edge[4*iedge1+nd];
+                dir_line[  nd] =  dir_edge[4*iedge1+nd];
+                norm_line[  nd] = norm_ed[4*iedge1+nd];
+            };
+            for(nd=0;nd<4;nd++){
+                color_line[4+nd] = f_color[nd];
+                xyzw_line[4+nd] = xyzw_edge[4*iedge2+nd];
+                dir_line[4+nd] = dir_edge[4*iedge2+nd];
+                norm_line[4+nd] = norm_ed[4*iedge2+nd];
+            };
+            inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
+                                                 xyzw_line, dir_line, norm_line,
+                                                 strided_buf);
+    };
+
     return inum_patch;
 };

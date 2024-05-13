@@ -98,12 +98,6 @@ void hex_ring(double edge_dir[4], double edge_norm[4], double norm_hex[24]){
 	return;
 }
 
-void hex_ring_4_edge(double norms_hex[48], double dir_edge[8], double norm_edge[8]){
-	hex_ring(&dir_edge[0], &norm_edge[0], &norms_hex[ 0]);
-	hex_ring(&dir_edge[4], &norm_edge[4], &norms_hex[24]);
-	return;
-}
-
 void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[48], double radius,
 						double xyzw_edge[8], double color_edge[8]){
@@ -192,9 +186,14 @@ int find_isoline_on_triangle(const double d_tri[3], const double v_line){
 	return idraw;
 };
 
-int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
-							const double xyzw_tri[12], const double norm_tri[12],
-							const double d_tri[3], const double v_line){
+int set_isoline_on_triangle(long iedge_itp[2], long inod_itp_edge[4],
+                            long inod_itp_psf[4], double xyzw_line[8],
+                            double dir_line[8], double norm_line[8], 
+                            long iele, long inod_tri[3], 
+                            const double xyzw_tri[12], 
+                            const double norm_tri[12],
+                            const double d_tri[3], const double v_line,
+                            struct psf_edge_data_c *psf_edge){
 	double sig[3];
 	int k1, nd, i1, i2, i3;
 	
@@ -212,13 +211,24 @@ int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm
 			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
 								&xyzw_tri[4*i1], &xyzw_tri[4*i2], 
 								&norm_tri[4*i1], &norm_tri[4*i2],
-								d_tri[i1], d_tri[i2], v_line);
+                                d_tri[i1], d_tri[i2], v_line);
 			for(nd=0; nd<3; nd++){
                 xyzw_line[4+nd] = xyzw_tri[4*i3+nd];
 				dir_line[4+nd] = -dir_line[nd];
                 norm_line[4+nd] = xyzw_tri[4*i3+nd];
 			};
-			idraw = 1;
+            iedge_itp[0] = psf_edge->iedge_4_sf[iele][i1];
+            iedge_itp[1] = psf_edge->iedge_4_sf[iele][i3];
+            inod_itp_edge[0] = psf_edge->ie_edge[labs(iedge_itp[0])-1][0];
+            inod_itp_edge[1] = psf_edge->ie_edge[labs(iedge_itp[0])-1][1];
+            inod_itp_edge[2] = psf_edge->ie_edge[labs(iedge_itp[1])-1][0];
+            inod_itp_edge[3] = psf_edge->ie_edge[labs(iedge_itp[1])-1][1];
+            
+            inod_itp_psf[0] = inod_tri[i1];
+            inod_itp_psf[1] = inod_tri[i2];
+            inod_itp_psf[2] = inod_tri[i3];
+            inod_itp_psf[3] = inod_tri[i3];
+            idraw = 1;
 			break;
 		}
 		else if ( (sig[0]<ZERO) && (sig[2]<ZERO) ){
@@ -230,14 +240,25 @@ int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm
 								&xyzw_tri[4*i3], &xyzw_tri[4*i2], 
 								&norm_tri[4*i3], &norm_tri[4*i2],
 								d_tri[i3], d_tri[i2], v_line);
-			idraw = 1;
+            iedge_itp[0] = psf_edge->iedge_4_sf[iele][i1];
+            iedge_itp[1] = psf_edge->iedge_4_sf[iele][i2];
+            inod_itp_edge[0] = psf_edge->ie_edge[labs(iedge_itp[0])-1][0];
+            inod_itp_edge[1] = psf_edge->ie_edge[labs(iedge_itp[0])-1][1];
+            inod_itp_edge[2] = psf_edge->ie_edge[labs(iedge_itp[1])-1][0];
+            inod_itp_edge[3] = psf_edge->ie_edge[labs(iedge_itp[1])-1][1];
+            
+            inod_itp_psf[0] = inod_tri[i1];
+            inod_itp_psf[1] = inod_tri[i2];
+            inod_itp_psf[2] = inod_tri[i2];
+            inod_itp_psf[3] = inod_tri[i3];
+            idraw = 1;
 			break;
 		}
 	}
     xyzw_line[ 3] = 1.0;
     xyzw_line[ 7] = 1.0;
 	if(idraw == 0) return idraw;
-	
+    
 	if(v_line < 0.0){
 		for(nd=0; nd<4; nd++){
             xyzw_line[ 4+nd] =   0.5*(xyzw_line[  nd] + xyzw_line[4+nd]);
@@ -263,7 +284,16 @@ long append_line_tube_to_buf(const long ipatch_in,
 	
 	double norms_hex[48];
 	
-	hex_ring_4_edge(norms_hex, dir_edge, norm_edge);
+    hex_ring(&dir_edge[0], &norm_edge[0], &norms_hex[ 0]);
+    hex_ring(&dir_edge[4], &norm_edge[4], &norms_hex[24]);
+    /*
+    set_circle_of_line(ncorner, radius, &xyzw_edge[0],
+                       &norm_edge[0], &dir_edge[4],
+                       xx_w1, norm_w1);
+    set_circle_of_line(ncorner, radius, &xyzw_edge[4],
+                       &norm_edge[4], &dir_edge[4],
+                       xx_w2, norm_w2);
+     */
 	for(i=0;i<6;i++){
 		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);

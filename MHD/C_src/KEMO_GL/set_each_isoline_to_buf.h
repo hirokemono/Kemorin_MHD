@@ -34,6 +34,23 @@ long set_each_map_isoline_to_buf(const long ist_patch,
                                  long icomp, double *f_color,
                                  struct psf_data *psf_s,
                                  struct gl_strided_buffer *strided_buf);
+
+
+long set_each_isoline_test(const long ist_line,
+                             const long ist, const long ied,
+                             double width, double v_line,
+                             long icomp, double *f_color,
+                             struct psf_data *psf_s,
+                           long *inod_itp_psf, long *iedge_itp,
+                           double *xyzw_line);
+long set_each_isoline_to_buf2(const long ist_patch,
+                             const long ist, const long ied,
+                             double width, double v_line,
+                             long icomp, double *f_color,
+                             struct psf_data *psf_s,
+                             long *iedge_itp, double *xyzw_edge,
+                              double *dir_edge, double *norm_ed,
+                             struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif
 

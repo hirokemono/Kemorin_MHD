@@ -13,6 +13,7 @@
 #include <math.h>
 #include "calypso_param_c.h"
 #include "m_vertex_buffer.h"
+#include "t_psf_edge_connect_c.h"
 
 /* prototypes */
 
@@ -22,7 +23,6 @@ void copy_hex_tube_np(int hex_tube[12][3]);
 void copy_hex_tube_nn(int hex_tube[12][3]);
 
 void hex_ring(double edge_dir[4], double edge_norm[4], double norm_hex[24]);
-void hex_ring_4_edge(double norms_hex[48], double dir_edge[8], double norm_edge[8]);
 
 void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[48], double radius,
@@ -33,9 +33,14 @@ void interpolate_on_edge(double xyzw_mid[4], double dir_mid[4], double norm_mid[
                          const double norm1[4], const double norm2[4],
 						 const double dat1, const double dat2, const double v_line);
 int find_isoline_on_triangle(const double d_tri[3], const double v_line);
-int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
-                            const double xyzw_tri[12], const double norm_tri[12],
-							const double d_tri[3], const double v_line);
+int set_isoline_on_triangle(long iedge_itp[2], long inod_itp_edge[4],
+                            long inod_itp_psf[4], double xyzw_line[8],
+                            double dir_line[8], double norm_line[8], 
+                            long iele, long inod_tri[3], 
+                            const double xyzw_tri[12], 
+                            const double norm_tri[12],
+                            const double d_tri[3], const double v_line,
+                            struct psf_edge_data_c *psf_edge);
 
 int add_line_tube_patch_num(int ipatch_in);
 long append_line_tube_to_buf(const long ipatch_in, 

@@ -140,7 +140,7 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 }
 
 static void set_circle_of_line(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
-					  double dir_nod[3], double *xx_wall, double *norm_wall) {
+                               double dir_nod[3], double *xx_wall, double *norm_wall) {
 	int k, nd;
 	double norm_2nd[3], angle, len, nrm1, nrm2, r_mod, pi;
 	
