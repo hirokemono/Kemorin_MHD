@@ -249,7 +249,7 @@ long set_each_isoline_to_buf2(const long ist_patch,
                               long *iedge_itp, double *xyzw_line,
                                double *dir_line, double *norm_line,
                              struct gl_strided_buffer *strided_buf){
-    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
+    double  color_line[8];
     int hex_tube[12][3];
     
     int idraw, nd;
@@ -259,25 +259,12 @@ long set_each_isoline_to_buf2(const long ist_patch,
     copy_hex_tube_pp(hex_tube);
     long icou = 0;
     for (icou = 0; icou < ied-ist; icou++){
-        /* draw isoline */
-        /*
-            iedge1 = labs(iedge_itp[2*icou  ]) - 1;
-            iedge2 = labs(iedge_itp[2*icou+1]) - 1;
-            for(nd=0;nd<4;nd++){
-                color_line[  nd] = f_color[nd];
-                xyzw_line[  nd] = xyzw_line[4*(icou-ist)+nd];
-                dir_line[  nd] =  dir_line[4*iedge1+nd];
-                norm_line[  nd] = norm_line[4*iedge1+nd];
-            };
-            for(nd=0;nd<4;nd++){
-                color_line[4+nd] = f_color[nd];
-                xyzw_line[4+nd] = xyzw_line[4*iedge2+nd];
-                dir_line[4+nd] = dir_line[4*iedge2+nd];
-                norm_line[4+nd] = norm_line[4*iedge2+nd];
-            };
- */
-            inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
-                                                 &xyzw_line(8*icou), &dir_line(8*icou), &norm_line(8*icou),
+        for(nd=0;nd<4;nd++){
+            color_line[  nd] = f_color[nd];
+            color_line[4+nd] = f_color[nd];
+        };
+           inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
+                                                 &xyzw_line[8*icou], &dir_line[8*icou], &norm_line[8*icou],
                                                  strided_buf);
     };
 
