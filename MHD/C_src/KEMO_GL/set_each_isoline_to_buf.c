@@ -244,12 +244,12 @@ long set_each_isoline_test(const long ist_line,
 
 long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
-                             double width, double *f_color,
+                             double width,
                              struct psf_data *psf_s,
-                              long *iedge_itp, double *xyzw_line,
+                            double *xyzw_line,
                                double *dir_line, double *norm_line,
+                              double *color_line,
                              struct gl_strided_buffer *strided_buf){
-    double  color_line[8];
     int hex_tube[12][3];
     
     int idraw, nd;
@@ -259,11 +259,7 @@ long set_each_isoline_to_buf2(const long ist_patch,
     copy_hex_tube_pp(hex_tube);
     long icou = 0;
     for (icou = 0; icou < ied-ist; icou++){
-        for(nd=0;nd<4;nd++){
-            color_line[  nd] = f_color[nd];
-            color_line[4+nd] = f_color[nd];
-        };
-           inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
+           inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, &color_line[8*icou],
                                                  &xyzw_line[8*icou], &dir_line[8*icou], &norm_line[8*icou],
                                                  strided_buf);
     };

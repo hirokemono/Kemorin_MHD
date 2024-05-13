@@ -192,6 +192,8 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
 
         }
         
+        printf ("count: %d %d \n", nend-ntmp, psf_s->psf_edge->nedge_viewer);
+        
         long j1, j2;
         long ineib1, ineib2;
         long k1, k2;
@@ -239,11 +241,18 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             norm_line[4*j+3] = 1.0;
         }
         
+        double *color_line = (double *) calloc(8*istack_smp_psf_iso[1+psf_m->n_isoline*nthreads], sizeof(double));
+        for(j=0;j<2*(nend-ntmp);j++){
+                color_line[4*j  ] = black[0];
+                color_line[4*j+1] = black[1];
+                color_line[4*j+2] = black[2];
+                color_line[4*j+3] = black[3];
+        }
         free(iedge_itp);
         
-        inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend,
-                                              dub_r, black,
-                                              psf_s, iedge_itp, xyzw_line, dir_line, norm_line,
+        inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend, dub_r,
+                                              psf_s, xyzw_line, 
+                                              dir_line, norm_line, color_line,
                                               psf_buf);
 	};
 	

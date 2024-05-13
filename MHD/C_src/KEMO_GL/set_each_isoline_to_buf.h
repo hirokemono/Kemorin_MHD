@@ -45,10 +45,11 @@ long set_each_isoline_test(const long ist_line,
                            double *xyzw_line);
 long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
-                             double width, double *f_color,
+                             double width,
                              struct psf_data *psf_s,
-                             long *iedge_itp, double *xyzw_line,
+                              double *xyzw_line,
                               double *dir_line, double *norm_line,
+                              double *color_line,
                              struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif
