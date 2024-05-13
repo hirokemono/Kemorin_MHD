@@ -29,7 +29,8 @@ struct isoline_line_work{
     double *xyzw_line;
     double *dir_line;
     double *norm_line;
-    double *color_line;
+    double f_color[8];
+    double width;
 };
 
 /* prototypes */
@@ -61,7 +62,6 @@ long set_each_isoline_test(const long ist_line,
                            double *xyzw_line);
 long set_each_isoline_to_buf2(const long ist_patch,
                              const long ist, const long ied,
-                             double width,
                              struct psf_data *psf_s,
                               struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf);

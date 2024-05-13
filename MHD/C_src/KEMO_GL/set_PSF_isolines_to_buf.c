@@ -58,7 +58,6 @@ static long add_num_PSF_isolines(long ist_patch, const int nthreads, int ist, in
         num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, v_line,
                                                         psf_m->icomp_draw_psf, psf_s,
                                                         &istack_smp_psf_iso[j*nthreads]);
-        printf("count num_patch-ist_patch: %d %d\n", j, num_patch-ist_patch);
 	};
 	return num_patch;
 }
@@ -407,15 +406,16 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         
         
         for(j=0;j<nend-ntmp;j++){
-                wk_iso_line->color_line[8*j  ] = black[0];
-                wk_iso_line->color_line[8*j+1] = black[1];
-                wk_iso_line->color_line[8*j+2] = black[2];
-                wk_iso_line->color_line[8*j+3] = black[3];
-                wk_iso_line->color_line[8*j+4] = 0.05;
-                wk_iso_line->color_line[8*j+5] = 0.8;
-                wk_iso_line->color_line[8*j+6] = 0.8;
-                wk_iso_line->color_line[8*j+7] = 1.0;
+                wk_iso_line->color_line[0] = black[0];
+                wk_iso_line->color_line[1] = black[1];
+                wk_iso_line->color_line[2] = black[2];
+                wk_iso_line->color_line[3] = black[3];
+                wk_iso_line->color_line[4] = 0.05;
+                wk_iso_line->color_line[5] = 0.8;
+                wk_iso_line->color_line[6] = 0.8;
+                wk_iso_line->color_line[7] = 1.0;
         }
+        wk_iso_line->width =  dub_r;
         
         free(wk_iso_mesh->inum_line);
         free(wk_iso_mesh->ineib_edge);
@@ -423,7 +423,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         free(wk_iso_mesh);
         
         
-        inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend, dub_r,
+        inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend,
                                               psf_s, wk_iso_line, psf_buf);
         /*
         inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, nthreads,
