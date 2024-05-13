@@ -206,11 +206,6 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
             printf("failed allocation for wk_iso_line->norm_line\n");
             exit(1);
         }
-        wk_iso_line->color_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->color_line == NULL){
-            printf("failed allocation for wk_iso_line->color_line\n");
-            exit(1);
-        }
         
         
         
@@ -406,14 +401,14 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         
         
         for(j=0;j<nend-ntmp;j++){
-                wk_iso_line->color_line[0] = black[0];
-                wk_iso_line->color_line[1] = black[1];
-                wk_iso_line->color_line[2] = black[2];
-                wk_iso_line->color_line[3] = black[3];
-                wk_iso_line->color_line[4] = 0.05;
-                wk_iso_line->color_line[5] = 0.8;
-                wk_iso_line->color_line[6] = 0.8;
-                wk_iso_line->color_line[7] = 1.0;
+                wk_iso_line->f_color[0] = black[0];
+                wk_iso_line->f_color[1] = black[1];
+                wk_iso_line->f_color[2] = black[2];
+                wk_iso_line->f_color[3] = black[3];
+                wk_iso_line->f_color[4] = 0.05;
+                wk_iso_line->f_color[5] = 0.8;
+                wk_iso_line->f_color[6] = 0.8;
+                wk_iso_line->f_color[7] = 1.0;
         }
         wk_iso_line->width =  dub_r;
         
@@ -423,8 +418,9 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         free(wk_iso_mesh);
         
         
-        inum_patch = set_each_isoline_to_buf2(inum_patch, ntmp, nend,
-                                              psf_s, wk_iso_line, psf_buf);
+        inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, nend, nthreads,
+                                                          &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
+                                                          psf_s, wk_iso_line, psf_buf);
         /*
         inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, nthreads,
                                                      &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
@@ -436,7 +432,6 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         free(wk_iso_line->xyzw_line);
         free(wk_iso_line->dir_line);
         free(wk_iso_line->norm_line);
-        free(wk_iso_line->color_line);
         free(wk_iso_line);
 	};
     

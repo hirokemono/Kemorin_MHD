@@ -255,7 +255,7 @@ long set_each_isoline_to_buf2(const long ist_patch,
     long inum_patch = ist_patch;
     copy_hex_tube_pp(hex_tube);
     long icou = 0;
-    for (icou = 0; icou < ied-ist; icou++){
+    for (icou=ist; icou<ied; icou++){
            inum_patch = append_line_tube_to_buf(inum_patch, hex_tube,
                                                 wk_iso_line->width,
                                                 wk_iso_line->f_color,
