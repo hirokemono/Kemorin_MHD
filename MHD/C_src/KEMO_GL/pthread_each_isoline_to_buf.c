@@ -25,6 +25,8 @@ typedef struct{
     double *f_color;
 
     long ist_patch;
+    long ist;
+    long ied;
     long *num_line;
 } args_pthread_PSF_Isoline;
 
@@ -107,11 +109,12 @@ static void * set_each_isoline_to_buf2_each(void *args)
     struct psf_data          *psf_s = p->psf_s;
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
     
-    long lo = p->ist_patch;
-    long hi = p->icomp;
+    long ist = p->ist_patch;
+    long lo = p->ist;
+    long hi = p->ied;
     long *num_line =  p->num_line;
     
-    num_line[id] = set_each_isoline_to_buf2(lo*12, lo, hi,
+    num_line[id] = set_each_isoline_to_buf2(ist, lo, hi,
                                             psf_s, wk_iso_line, strided_buf);
     return 0;
 }
@@ -280,8 +283,9 @@ static long set_each_isoline_to_buf2_pthread(const long ist_patch, long ntot_lin
         args[ip].psf_s = psf_s;
         args[ip].wk_iso_line = wk_iso_line;
 
-        args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]) / 12;
-        args[ip].icomp = (istack_threads[ip+1] - istack_threads[0]) / 12;
+        args[ip].ist_patch = istack_threads[ip];
+        args[ip].ist = (istack_threads[ip  ] - istack_threads[0]) / 12;
+        args[ip].ied = (istack_threads[ip+1] - istack_threads[0]) / 12;
         
         args[ip].num_line = num_line;
         
@@ -341,7 +345,7 @@ long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthread
                                          double v_line, long icomp, struct psf_data *psf_s,
                                          long *istack_threads){
     long num_patch = ist_patch;
-    if(nthreads > 1){
+    if(nthreads >1){
         num_patch = add_each_isoline_npatch_pthread(num_patch, nthreads,
                                                     v_line, icomp, psf_s, istack_threads);
     }else{
@@ -359,7 +363,7 @@ long sel_each_isoline_to_buf_pthread(const long ist_patch,
                                      struct psf_data *psf_s,
                                      struct gl_strided_buffer *strided_buf){
     long num_patch = ist_patch;
-    if(nthreads > 1){
+    if(nthreads < 1){
         num_patch = set_each_isoline_to_buf_pthread(num_patch, nthreads, istack_threads,
                                                         width, v_line, icomp, f_color,
                                                         psf_s, strided_buf);
@@ -396,7 +400,7 @@ long sel_each_isoline_test_pthread(const int nthreads, long *istack_threads,
                                          struct psf_data *psf_s,
                                              struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
-    if(nthreads > 1){
+    if(nthreads < 1){
         num_patch = set_each_isoline_test_pthread(nthreads, istack_threads,
                                                   v_line, icomp, psf_s, wk_iso_line);
     }else{

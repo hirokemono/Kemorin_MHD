@@ -430,11 +430,8 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
         
         set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
-        printf(" test a %d %d %d\n",  wk_iso_line->iedge_itp[0], num, 2*num);
         set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
-        printf(" test a %d %d \n",  wk_iso_line->iedge_itp[0], wk_iso_line->iedge_itp[1]);
         adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
-        printf(" test a %d %d \n",  wk_iso_line->iedge_itp[0], wk_iso_line->iedge_itp[1]);
         set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
                                wk_iso_mesh, wk_iso_line);
         adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->norm_line);
@@ -450,6 +447,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
         inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, wk_iso_line->num_line, nthreads,
                                                     &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
                                                     psf_s, wk_iso_line, psf_buf);
+        
         dealloc_isoline_line_work(wk_iso_line);
     };
     
