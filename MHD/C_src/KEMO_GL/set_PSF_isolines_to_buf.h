@@ -7,6 +7,7 @@
 
 #include "kemoviewer_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "t_PSF_each_isoline_edge_list.h"
 #include "set_new_patch_4_map_c.h"
 #include "find_isoline_on_patch_c.h"
 #include "set_color_code_on_nodes.h"

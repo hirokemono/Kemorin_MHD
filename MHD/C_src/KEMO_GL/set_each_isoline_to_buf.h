@@ -12,26 +12,10 @@
 
 #include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "t_PSF_each_isoline_edge_list.h"
 #include "set_hex_tube_to_buf.h"
 #include "set_new_patch_4_map_c.h"
 
-
-struct isoline_mesh_work{
-    long num_edge;
-    long *inum_line;
-    long *ineib_edge;
-    double *xyzw_edge;
-};
-    
-struct isoline_line_work{
-    long num_line;
-    long *iedge_itp;
-    double *xyzw_line;
-    double *dir_line;
-    double *norm_line;
-    double f_color[8];
-    double width;
-};
 
 /* prototypes */
 
