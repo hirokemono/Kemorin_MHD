@@ -21,8 +21,8 @@ static void read_viz_node_data(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nnod_viz; i++) {
 		fgets(buf, LENGTHBUF, fp_psf);
 		sscanf(buf, "%ld %lf %lf %lf",
-			&viz_s->inod_viz[i], &viz_s->xx_viz[i][0], 
-			&viz_s->xx_viz[i][1], &viz_s->xx_viz[i][2]);
+			&viz_s->inod_viz[i], &viz_s->xyzw_viz[i*IFOUR + 0],
+			&viz_s->xyzw_viz[i*IFOUR + 1], &viz_s->xyzw_viz[i*IFOUR + 2]);
 	};
 	return;
 };
@@ -156,7 +156,7 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nnod_viz; i++) {
 		fscanf(fp_psf, "%d", &itmp); 
 		for (j = 0; j < viz_s->ncomptot; j++){
-			fscanf(fp_psf, "%lf", &viz_s->d_nod[i][j]); 
+			fscanf(fp_psf, "%lf", &viz_s->d_nod[i*viz_s->ncomptot + j]);
 		};
 	};
 	return;

@@ -15,11 +15,31 @@
 #include "set_mesh_patch_2_gl_buf.h"
 #include "set_mesh_grid_2_gl_buf.h"
 #include "set_mesh_node_2_gl_buf.h"
+#include "pthread_mesh_patch_to_buf.h"
+#include "bitonic_sort_float_pthread.h"
+#include "const_mesh_patch_table_for_gl.h"
+
+struct mesh_sorting_work{
+    long nextP2_trans_patch;
+    long ntotP2_trans_patch;
+
+    long *index_trans_patch;
+    float *z_trans_patch;
+    
+    double *z_ele_view;
+};
+
 
 /* prototypes */
-void const_solid_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m, struct view_element *view_s,
-                             struct gl_strided_buffer *mesh_solid_buf, struct gl_strided_buffer *mesh_grid_buf,
+void const_solid_mesh_buffer(int nthreads,
+                             struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                             struct view_element *view_s,
+                             struct gl_strided_buffer *mesh_solid_buf,
+                             struct gl_strided_buffer *mesh_grid_buf,
                              struct gl_strided_buffer *mesh_node_buf);
-void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                             struct view_element *view_s, struct gl_strided_buffer *mesh_trns_buf);
+void const_trans_mesh_buffer(int nthreads,
+                             struct viewer_mesh *mesh_s,
+                             struct mesh_menu_val *mesh_m,
+                             struct view_element *view_s,
+                             struct gl_strided_buffer *mesh_trns_buf);
 #endif

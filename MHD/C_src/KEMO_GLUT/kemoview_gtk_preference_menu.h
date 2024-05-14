@@ -30,6 +30,9 @@
 struct preference_gtk_menu{
 	struct lightparams_view *lightparams_vws;
 	
+    GtkWidget *spin_threads;
+    GtkWidget *spin_nTubeCorner;
+
     GtkWidget *BGselButton;
     GtkWidget *spin_ambient;
 	GtkWidget *spin_diffuse;
@@ -37,8 +40,10 @@ struct preference_gtk_menu{
 	GtkWidget *spin_shineness;
 
     GtkWidget *Frame_BGsel;
+    GtkWidget *nthread_hbox;
     GtkWidget *pref_hbox[4];
     GtkWidget *pref_vbox;
+    GtkWidget *nTubeCorner_hbox;
 
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
@@ -50,8 +55,9 @@ struct preference_gtk_menu{
 struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data);
 void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
 
-GtkWidget * init_preference_expander(struct kemoviewer_type *kemo_sgl,
-                                     struct preference_gtk_menu *pref_gmenu, GtkWidget *window,
-                                     struct kemoviewer_type *kemoviewer_data);
+GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
+                                  struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
+GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
+                                     struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
 
 #endif

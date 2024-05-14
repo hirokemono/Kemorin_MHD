@@ -119,6 +119,30 @@
     return;
 };
 
+- (void)colormapToMetalShader:(struct kemoviewer_type *) kemo_sgl
+                     colorMap:(KemoViewNormalize *) metalColormap
+{
+    int i;
+    double value, color, opacity;
+    
+    metalColormap->id_cmap[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP);
+    
+    metalColormap->num_normalize[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
+    for(i=0;i<metalColormap->num_normalize[0];i++){
+        kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
+        metalColormap->data_reference[i] =  (float) value;
+        metalColormap->data_normalized[i] = (float) color;
+    }
+    
+    metalColormap->num_opacity[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
+    for(i=0;i<metalColormap->num_opacity[0];i++) {
+        kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+        metalColormap->alpha_reference[i] =  (float) value;
+        metalColormap->alpha_output[i] = (float) opacity;
+    }
+    return;
+};
+
 - (void)set2dProjectionMatrices:(struct kemoviewer_type *) kemo_sgl
                   MsgProjection:(matrix_float4x4 *) cbar_proj_mat
                   MapProjection:(matrix_float4x4 *) map_proj_mat

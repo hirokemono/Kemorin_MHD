@@ -1,0 +1,1 @@
+../../../../MHD/C_src/GLSL/colormap_space.frag

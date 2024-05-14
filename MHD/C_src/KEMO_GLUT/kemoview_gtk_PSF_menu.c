@@ -47,7 +47,7 @@ static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_type *kemo_s
 				G_CALLBACK(save_colormap_file_panel_CB), G_OBJECT(window));
 	
 	GtkWidget *loadButton = gtk_button_new_with_label("Load colormap...");
-    g_object_set_data(window, "kemoview",  (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(loadButton), "clicked",
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(window));
 	
@@ -135,4 +135,3 @@ void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
     set_vector_plot_availablity(kemo_sgl, psf_gmenu);
     return;
 }
-

@@ -40,8 +40,10 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 }
 
 static void set_vertexs_for_axis(struct view_element *view_s, double dist,
-								 double x_arrowx[6], double x_arrowy[6], double x_arrowz[6], double w_ratio[3],
-								 double x_charax[12], double x_charay[18], double x_charaz[18], double *radius){
+                                 double x_arrowx[8],  double x_arrowy[8], 
+                                 double x_arrowz[8],  double w_ratio[3],
+                                 double x_charax[16], double x_charay[24],
+                                 double x_charaz[24], double *radius){
 	double l_axis[3], axis_org[3];
 	double label_ratio[3], min_l_ratio;
 	
@@ -121,56 +123,123 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	z_text_x2 = axis_org[0] - label_ratio[2] * ( 0.13 * (1.0 + dist));
 	
     /* Generate vertex array*/
-	x_arrowx[ 0] = axis_org[0]; x_arrowx[ 3] = axis_org[0] + label_ratio[0];
-	x_arrowx[ 1] = axis_org[1]; x_arrowx[ 4] = axis_org[1];
-	x_arrowx[ 2] = axis_org[2]; x_arrowx[ 5] = axis_org[2];
+    x_arrowx[ 0] = axis_org[0];
+    x_arrowx[ 1] = axis_org[1];
+    x_arrowx[ 2] = axis_org[2];
+    x_arrowx[ 3] = 1.0;
+    
+    x_arrowx[ 4] = axis_org[0] + label_ratio[0];
+    x_arrowx[ 5] = axis_org[1];
+    x_arrowx[ 6] = axis_org[2];
+    x_arrowx[ 7] = 1.0;
+    
+    
+    x_arrowy[ 0] = axis_org[0];
+    x_arrowy[ 1] = axis_org[1];
+    x_arrowy[ 2] = axis_org[2];
+    x_arrowy[ 3] = 1.0;
+    
+    x_arrowy[ 4] = axis_org[0];
+    x_arrowy[ 5] = axis_org[1] + label_ratio[1];
+    x_arrowy[ 6] = axis_org[2];
+    x_arrowy[ 7] = 1.0;
 	
-	x_arrowy[ 0] = axis_org[0]; x_arrowy[ 3] = axis_org[0];
-	x_arrowy[ 1] = axis_org[1]; x_arrowy[ 4] = axis_org[1] + label_ratio[1];
-	x_arrowy[ 2] = axis_org[2]; x_arrowy[ 5] = axis_org[2];
-	
-	x_arrowz[ 0] = axis_org[0]; x_arrowz[ 3] = axis_org[0];
-	x_arrowz[ 1] = axis_org[1]; x_arrowz[ 4] = axis_org[1];
-	x_arrowz[ 2] = axis_org[2]; x_arrowz[ 5] = axis_org[2] + label_ratio[2];
+    x_arrowz[ 0] = axis_org[0];
+    x_arrowz[ 1] = axis_org[1];
+    x_arrowz[ 2] = axis_org[2];
+    x_arrowz[ 3] = 1.0;
+    
+    x_arrowz[ 4] = axis_org[0];
+    x_arrowz[ 5] = axis_org[1];
+    x_arrowz[ 6] = axis_org[2] + label_ratio[2];
+    x_arrowz[ 7] = 1.0;
 	
 	w_ratio[0] = 0.004 * min_l_ratio / label_ratio[0];
 	w_ratio[1] = 0.004 * min_l_ratio / label_ratio[1];
 	w_ratio[2] = 0.004 * min_l_ratio / label_ratio[2];
 	
 	
-	x_charax[ 0] = x_text_x1; x_charax[ 3] = x_text_x2;
-	x_charax[ 6] = x_text_x2; x_charax[ 9] = x_text_x1;
+    x_charax[ 0] = x_text_x1;
+    x_charax[ 1] = axis_org[1];
+    x_charax[ 2] = x_text_z1;
+    x_charax[ 3] = 1.0;
+    
+    x_charax[ 4] = x_text_x2;
+    x_charax[ 5] = axis_org[1];
+    x_charax[ 6] = x_text_z2;
+    x_charax[ 7] = 1.0;
+    
+    x_charax[ 8] = x_text_x2;
+    x_charax[ 9] = axis_org[1];
+    x_charax[10] = x_text_z1;
+    x_charax[11] = 1.0;
+    
+    x_charax[12] = x_text_x1;
+    x_charax[13] = axis_org[1];
+    x_charax[14] = x_text_z2;
+    x_charax[15] = 1.0;
+    
+    
+    x_charay[ 0] = axis_org[0];
+    x_charay[ 1] = y_text_y1;
+    x_charay[ 2] = y_text_z1;
+    x_charay[ 3] = 1.0;
+    
+    x_charay[ 4] = axis_org[0];
+    x_charay[ 5] = y_text_y2;
+    x_charay[ 6] = y_text_z2;
+    x_charay[ 7] = 1.0;
+    
+    x_charay[ 8] = axis_org[0];
+    x_charay[ 9] = y_text_y3;
+    x_charay[10] = y_text_z1;
+    x_charay[11] = 1.0;
+    
+    x_charay[12] = axis_org[0];
+    x_charay[13] = y_text_y2;
+    x_charay[14] = y_text_z2;
+    x_charay[15] = 1.0;
+    
+    x_charay[16] = axis_org[0];
+    x_charay[17] = y_text_y2;
+    x_charay[18] = y_text_z2;
+    x_charay[19] = 1.0;
+    
+    x_charay[20] = axis_org[0];
+    x_charay[21] = y_text_y2;
+    x_charay[22] = y_text_z3;
+    x_charay[23] = 1.0;
 	
-	x_charax[ 1] = axis_org[1]; x_charax[ 4] = axis_org[1];
-	x_charax[ 7] = axis_org[1]; x_charax[10] = axis_org[1];
 	
-	x_charax[ 2] = x_text_z1; x_charax[ 5] = x_text_z2;
-	x_charax[ 8] = x_text_z1; x_charax[11] = x_text_z2;
-	
-	x_charay[ 0] = axis_org[0]; x_charay[ 3] = axis_org[0];
-	x_charay[ 6] = axis_org[0]; x_charay[ 9] = axis_org[0];
-	x_charay[12] = axis_org[0]; x_charay[15] = axis_org[0];
-	
-	x_charay[ 1] = y_text_y1; x_charay[ 4] = y_text_y2;
-	x_charay[ 7] = y_text_y3; x_charay[10] = y_text_y2;
-	x_charay[13] = y_text_y2; x_charay[16] = y_text_y2;
-	
-	x_charay[ 2] = y_text_z1; x_charay[ 5] = y_text_z2;
-	x_charay[ 8] = y_text_z1; x_charay[11] = y_text_z2;
-	x_charay[14] = y_text_z2; x_charay[17] = y_text_z3;
-	
-	
-	x_charaz[ 0] = z_text_x1; x_charaz[ 3] = z_text_x2;
-	x_charaz[ 6] = z_text_x2; x_charaz[ 9] = z_text_x1;
-	x_charaz[12] = z_text_x1; x_charaz[15] = z_text_x2;
-	
-	x_charaz[ 1] = axis_org[1]; x_charaz[ 4] = axis_org[1];
-	x_charaz[ 7] = axis_org[1]; x_charaz[10] = axis_org[1];
-	x_charaz[13] = axis_org[1]; x_charaz[16] = axis_org[1];
-	
-	x_charaz[ 2] = z_text_z1; x_charaz[ 5] = z_text_z1;
-	x_charaz[ 8] = z_text_z1; x_charaz[11] = z_text_z2;
-	x_charaz[14] = z_text_z2; x_charaz[17] = z_text_z2;
+    x_charaz[ 0] = z_text_x1;
+    x_charaz[ 1] = axis_org[1];
+    x_charaz[ 2] = z_text_z1;
+    x_charaz[ 3] = 1.0;
+    
+    x_charaz[ 4] = z_text_x2;
+    x_charaz[ 5] = axis_org[1];
+    x_charaz[ 6] = z_text_z1;
+    x_charaz[ 7] = 1.0;
+    
+    x_charaz[ 8] = z_text_x2;
+    x_charaz[ 9] = axis_org[1];
+    x_charaz[10] = z_text_z1;
+    x_charaz[11] = 1.0;
+    
+    x_charaz[12] = z_text_x1;
+    x_charaz[13] = axis_org[1];
+    x_charaz[14] = z_text_z2;
+    x_charaz[15] = 1.0;
+    
+    x_charaz[16] = z_text_x1;
+    x_charaz[17] = axis_org[1];
+    x_charaz[18] = z_text_z2;
+    x_charaz[19] = 1.0;
+    
+    x_charaz[20] = z_text_x2;
+    x_charaz[21] = axis_org[1];
+    x_charaz[22] = z_text_z2;
+    x_charaz[23] = 1.0;
 /*
 	 printf("l_axis %e %e %e \n",l_axis[0],l_axis[1],l_axis[2]);
 	 printf("label_ratio %e %e %e \n",label_ratio[0],label_ratio[1],label_ratio[2]);
@@ -183,110 +252,101 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 }
 
 static long set_axis_rod_to_buf(int ncorner, float radius, 
-                                double x_arrowx[6], double x_arrowy[6], double x_arrowz[6],
-                                double x_charax[12], double x_charay[18], double x_charaz[18],
+                                double x_arrowx[8], double x_arrowy[8], double x_arrowz[8],
+                                double x_charax[16], double x_charay[24], double x_charaz[24],
                                 struct gl_strided_buffer *strided_buf){
-	double dir_line[6];
-	double norm_line[6];
+	double dir_line[8];
 	double color_2p[8];
-    long icou_patch = 0;
 	int k, nd;
     /*draw x axis */
+    dir_line[3] =  1.0;
+    dir_line[7] =  1.0;
+    
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowx[3+nd] - x_arrowx[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_arrowx[4+nd] - x_arrowx[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
 	}
 	/*
 	printf("x_arrowx1 %f %f %f \n", x_arrowx[0], x_arrowx[1], x_arrowx[2]);
-	printf("x_arrowx2 %f %f %f \n", x_arrowx[3], x_arrowx[4], x_arrowx[5]);
+	printf("x_arrowx2 %f %f %f \n", x_arrowx[4], x_arrowx[5], x_arrowx[6]);
 	printf("dir_line1 %f %f %f \n", dir_line[0], dir_line[1], dir_line[2]);
 	*/
-	find_normal_of_line(norm_line, x_arrowx, dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowx, 
-                                         dir_line, norm_line, color_2p, strided_buf);
+    long icou_tube = 0;
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowx, 
+                                         dir_line, color_2p, strided_buf);
 	
     /*draw y axis */
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowy[3+nd] - x_arrowy[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_arrowy[4+nd] - x_arrowy[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	find_normal_of_line(norm_line, x_arrowy, dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowy, 
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowy, 
+                                         dir_line, color_2p, strided_buf);
 	
     /*draw z axis */
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowz[3+nd] - x_arrowz[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_arrowz[4+nd] - x_arrowz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	find_normal_of_line(norm_line, x_arrowz, dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowz,
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowz,
+                                         dir_line, color_2p, strided_buf);
 	
 	
 	/*draw 'X' */
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[3+nd] - x_charax[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charax[4+nd] - x_charax[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
-	find_normal_of_line(norm_line, &x_charax[0], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[0],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charax[0],
+                                         dir_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[9+nd] - x_charax[6+nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charax[12+nd] - x_charax[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charax[6], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[6],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charax[8],
+                                         dir_line, color_2p, strided_buf);
 	
 	/*draw 'Y' */
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[3+nd] - x_charay[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[4+nd] - x_charay[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charay[0], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[0],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[0],
+                                         dir_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[9+nd] - x_charay[6+nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[12+nd] - x_charay[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charay[6], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[6],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[8],
+                                         dir_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[15+nd] - x_charay[12+nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[20+nd] - x_charay[16+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charay[12], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[12],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[16],
+                                         dir_line, color_2p, strided_buf);
 	
 	/*draw 'Z' */
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[3+nd] - x_charaz[nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[ 4+nd] - x_charaz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charaz[0], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[0],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[0],
+                                         dir_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[9+nd] - x_charaz[6+nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[12+nd] - x_charaz[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charaz[6], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[6],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[8],
+                                         dir_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
-		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[15+nd] - x_charaz[12+nd];};
+		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[20+nd] - x_charaz[16+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	find_normal_of_line(norm_line,  &x_charaz[12], dir_line);
-	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[12],
-                                         dir_line, norm_line, color_2p, strided_buf);
+	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[16],
+                                         dir_line, color_2p, strided_buf);
     
-	return icou_patch;
+	return (2*ncorner) * icou_tube ;
 }
 
 
@@ -313,9 +373,9 @@ long count_axis_to_buf(int ncorner){
 void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
                      double dist, int ncorner, double radius,
                      struct gl_strided_buffer *strided_buf){
-	double x_arrowx[6], x_arrowy[6], x_arrowz[6];
+	double x_arrowx[8], x_arrowy[8], x_arrowz[8];
 	double w_ratio[3];
-	double x_charax[12], x_charay[18], x_charaz[18];
+	double x_charax[16], x_charay[24], x_charaz[24];
 	long icou_patch = 0;
     
     if(iflag_draw_axis > 0){

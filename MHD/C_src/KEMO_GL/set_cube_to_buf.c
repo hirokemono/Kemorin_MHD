@@ -46,31 +46,42 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
 	int i, j;
 	int n_vertex = 8;
 	float radius;
+    
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
+    float *d_draw;
 	
 	for(i=0;i<n_vertex;i++){
-		strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*i];
-		strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
-		strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
-		strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
+		x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*i];
+		n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
+		x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
+		c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
+        d_draw = &strided_buf->v_buf[strided_buf->ist_data +  strided_buf->ncomp_buf*i];
 		
 		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
 					+ cube_vertices[i][1]*cube_vertices[i][1]
 					+ cube_vertices[i][2]*cube_vertices[i][2]);
-		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
-		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
-		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+		x_draw[0] = cube_vertices[i][0] * fSize;
+		x_draw[1] = cube_vertices[i][1] * fSize;
+		x_draw[2] = cube_vertices[i][2] * fSize;
+        x_draw[3] = 1.0;
 		
-		strided_buf->n_draw[0] = cube_vertices[i][0] / radius;
-		strided_buf->n_draw[1] = cube_vertices[i][1] / radius;
-		strided_buf->n_draw[2] = cube_vertices[i][2] / radius;
+		n_draw[0] = cube_vertices[i][0] / radius;
+		n_draw[1] = cube_vertices[i][1] / radius;
+		n_draw[2] = cube_vertices[i][2] / radius;
+        n_draw[3] = 1.0;
 		
-		strided_buf->x_txur[0] = strided_buf->x_draw[0];
-		strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		x_txur[0] = x_draw[0];
+		x_txur[1] = x_draw[1];
 		
-		strided_buf->c_draw[0] = cube_vertex_colors[i][0];
-		strided_buf->c_draw[1] = cube_vertex_colors[i][1];
-		strided_buf->c_draw[2] = cube_vertex_colors[i][2];
-		strided_buf->c_draw[3] = 1.0;
+		c_draw[0] = cube_vertex_colors[i][0];
+		c_draw[1] = cube_vertex_colors[i][1];
+		c_draw[2] = cube_vertex_colors[i][2];
+		c_draw[3] = 1.0;
+        
+        d_draw[0] = (float) i;
 	};
 	
     for(i=0;i<index_buf->num_ele_buf;i++){
@@ -82,33 +93,39 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
 }
 
 int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf){
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
 	int i, j, k;
 	
 	for(j=0;j<12;j++){
 		for(k=0;k<3;k++){
-			strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*icou];
-			strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*icou];
-			strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*icou];
-			strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*icou];
+			x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*icou];
+			n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*icou];
+			x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*icou];
+			c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*icou];
 		
 			icou = icou + 1;
 			
 			i = cube_tri_faces[j][k];
-			strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
-			strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
-			strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+			x_draw[0] = cube_vertices[i][0] * fSize;
+			x_draw[1] = cube_vertices[i][1] * fSize;
+			x_draw[2] = cube_vertices[i][2] * fSize;
+            x_draw[3] = 1.0;
 			
-			strided_buf->n_draw[0] = cube_normals[j/2][0];
-			strided_buf->n_draw[1] = cube_normals[j/2][1];
-			strided_buf->n_draw[2] = cube_normals[j/2][2];
+			n_draw[0] = cube_normals[j/2][0];
+			n_draw[1] = cube_normals[j/2][1];
+			n_draw[2] = cube_normals[j/2][2];
+            n_draw[3] = 1.0;
 		
-			strided_buf->x_txur[0] = strided_buf->x_draw[0];
-			strided_buf->x_txur[1] = strided_buf->x_draw[1];
+			x_txur[0] = x_draw[0];
+			x_txur[1] = x_draw[1];
 		
-			strided_buf->c_draw[0] = cube_vertex_colors[i][0];
-			strided_buf->c_draw[1] = cube_vertex_colors[i][1];
-			strided_buf->c_draw[2] = cube_vertex_colors[i][2];
-			strided_buf->c_draw[3] = 1.0;
+			c_draw[0] = cube_vertex_colors[i][0];
+			c_draw[1] = cube_vertex_colors[i][1];
+			c_draw[2] = cube_vertex_colors[i][2];
+			c_draw[3] = 1.0;
 		};
 	};
 	
@@ -116,30 +133,49 @@ int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 };
 
 long flatEdgeCube_VBO(long icou, float fSize,
-                      struct gl_strided_buffer *strided_buf){
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf){
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
+    float *d_draw;
 	int i, j, k;
 	
 	for(j=0;j<12;j++){
 		for(k=0;k<2;k++){
-            set_node_stride_buffer(icou, strided_buf);
-			icou = icou + 1;
+            point_buf->igl_xyzw =  strided_buf->ncomp_buf * icou + strided_buf->ist_xyz;
+            point_buf->igl_color = strided_buf->ncomp_buf * icou + strided_buf->ist_csurf;
+            point_buf->igl_norm =  strided_buf->ncomp_buf * icou + strided_buf->ist_norm;
+            point_buf->igl_txur =  strided_buf->ncomp_buf * icou + strided_buf->ist_tex;
+            point_buf->igl_data =  strided_buf->ncomp_buf * icou + strided_buf->ist_data;
+            
+            x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
+            c_draw = &strided_buf->v_buf[point_buf->igl_color];
+            n_draw = &strided_buf->v_buf[point_buf->igl_norm];
+            x_txur = &strided_buf->v_buf[point_buf->igl_txur];
+            d_draw = &strided_buf->v_buf[point_buf->igl_data];
 			
 			i = cube_edge[j][k];
-			strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
-			strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
-			strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+			x_draw[0] = cube_vertices[i][0] * fSize;
+			x_draw[1] = cube_vertices[i][1] * fSize;
+			x_draw[2] = cube_vertices[i][2] * fSize;
+            x_draw[3] = 1.0;
 			
-			strided_buf->n_draw[0] = cube_normals[j/2][0];
-			strided_buf->n_draw[1] = cube_normals[j/2][1];
-			strided_buf->n_draw[2] = cube_normals[j/2][2];
+			n_draw[0] = cube_normals[j/2][0];
+			n_draw[1] = cube_normals[j/2][1];
+			n_draw[2] = cube_normals[j/2][2];
+            n_draw[3] = 1.0;
 		
-			strided_buf->x_txur[0] = strided_buf->x_draw[0];
-			strided_buf->x_txur[1] = strided_buf->x_draw[1];
+			x_txur[0] = x_draw[0];
+			x_txur[1] = x_draw[1];
 		
-			strided_buf->c_draw[0] = 0.0;
-			strided_buf->c_draw[1] = 0.0;
-			strided_buf->c_draw[2] = 0.0;
-			strided_buf->c_draw[3] = 1.0;
+			c_draw[0] = 0.0;
+			c_draw[1] = 0.0;
+			c_draw[2] = 0.0;
+			c_draw[3] = 1.0;
+            
+            icou = icou + 1;
 		};
 	};
 	
@@ -147,33 +183,53 @@ long flatEdgeCube_VBO(long icou, float fSize,
 };
 
 long flatNodeCube_VBO(long icou, float fSize, 
-                      struct gl_strided_buffer *strided_buf){
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf){
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
+    float *d_draw;
 	int i, j;
 	float radius;
 	
 	for(j=0;j<8;j++){
-        set_node_stride_buffer(icou, strided_buf);
-		icou = icou + 1;
+        point_buf->igl_xyzw =  strided_buf->ncomp_buf * icou + strided_buf->ist_xyz;
+        point_buf->igl_color = strided_buf->ncomp_buf * icou + strided_buf->ist_csurf;
+        point_buf->igl_norm =  strided_buf->ncomp_buf * icou + strided_buf->ist_norm;
+        point_buf->igl_txur =  strided_buf->ncomp_buf * icou + strided_buf->ist_tex;
+        point_buf->igl_data =  strided_buf->ncomp_buf * icou + strided_buf->ist_data;
+        
+        x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
+        c_draw = &strided_buf->v_buf[point_buf->igl_color];
+        n_draw = &strided_buf->v_buf[point_buf->igl_norm];
+        x_txur = &strided_buf->v_buf[point_buf->igl_txur];
+        d_draw = &strided_buf->v_buf[point_buf->igl_data];
+        
 		
 		i = j;
 		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
 					+ cube_vertices[i][1]*cube_vertices[i][1]
 					+ cube_vertices[i][2]*cube_vertices[i][2]);
-		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
-		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
-		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+		x_draw[0] = cube_vertices[i][0] * fSize;
+		x_draw[1] = cube_vertices[i][1] * fSize;
+		x_draw[2] = cube_vertices[i][2] * fSize;
+        x_draw[3] = 1.0;
 		
-		strided_buf->n_draw[0] = cube_normals[j/2][0];
-		strided_buf->n_draw[1] = cube_normals[j/2][1];
-		strided_buf->n_draw[2] = cube_normals[j/2][2];
+		n_draw[0] = cube_normals[j/2][0];
+		n_draw[1] = cube_normals[j/2][1];
+		n_draw[2] = cube_normals[j/2][2];
+        n_draw[3] = 1.0;
 		
-		strided_buf->x_txur[0] = strided_buf->x_draw[0];
-		strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		x_txur[0] = x_draw[0];
+		x_txur[1] = x_draw[1];
 		
-		strided_buf->c_draw[0] = 0.0;
-		strided_buf->c_draw[1] = 0.0;
-		strided_buf->c_draw[2] = 0.0;
-		strided_buf->c_draw[3] = 1.0;
+		c_draw[0] = 0.0;
+		c_draw[1] = 0.0;
+		c_draw[2] = 0.0;
+		c_draw[3] = 1.0;
+        
+        icou = icou + 1;
 	};
 	
 	return icou;

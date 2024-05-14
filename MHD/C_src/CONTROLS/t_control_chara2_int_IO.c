@@ -19,8 +19,9 @@ struct chara2_int_ctl_item * init_c2i_ctl_item_c(void){
 		exit(0);
 	}
 
-	c2i_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c2i_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
+    c2i_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+	c2i_item->c1_tbl =       (char *)calloc(KCHARA_C, sizeof(char));
+	c2i_item->c2_tbl =       (char *)calloc(KCHARA_C, sizeof(char));
 	c2i_item->i_data = 0;
     return c2i_item;
 };

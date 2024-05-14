@@ -27,8 +27,8 @@
 /* prototypes */
 void set_surf_group_draw_box(struct kemoviewer_type *kemo_sgl,
                              struct group_gtk_menu *surf_group_gmenu);
-void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
-                                   struct group_gtk_menu *surf_group_gmenu);
-GtkWidget * pack_surf_group_draw_expander(GtkWidget *window, struct group_gtk_menu *surf_group_gmenu);
+void init_surf_group_draw_box(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+                              struct group_gtk_menu *surf_group_gmenu);
+GtkWidget * pack_surf_group_menu_box(struct group_gtk_menu *surf_group_gmenu);
 
 #endif /* tree_view_4_surf_group_viewer */

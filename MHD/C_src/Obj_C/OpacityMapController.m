@@ -30,7 +30,9 @@
     
 	NSInteger isel = [idOpacityTableView selectedRow];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	
+
+    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
+
 	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
 		opacity1 = [[self.OpacityTableOpacity objectAtIndex:isel-1] doubleValue];
@@ -120,6 +122,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
+	[_fillRectView UpdateColorbar];
     return;
 } // end tableView:setObjectValue:forTableColumn:row:
 

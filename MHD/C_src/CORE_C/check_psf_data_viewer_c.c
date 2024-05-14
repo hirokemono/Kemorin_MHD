@@ -12,8 +12,8 @@ void check_psf_data_c(struct psf_data *tako){
 	 printf("node \n");
 	for (i = 0; i < tako->nnod_viz; i++) {
 		printf(" %d %d %.12e %.12e %.12e \n", i, 
-				tako->inod_viz[i], tako->xx_viz[i][0],
-				tako->xx_viz[i][1], tako->xx_viz[i][2]);
+				tako->inod_viz[i], tako->xyzw_viz[i][0],
+				tako->xyzw_viz[i][1], tako->xyzw_viz[i][2]);
 	};
 	printf("connectivity \n");
 	for (i = 0; i < tako->nele_viz; i++) {
@@ -41,7 +41,7 @@ void check_psf_data_c(struct psf_data *tako){
 		for (j = 0; j < tako->nnod_viz; j++){
 			printf("%d %d ", j, tako->inod_viz[j]);
 			for (k = kst; k < ked; k++){
-				printf(" %.12e ", tako->d_nod[j][k]);
+				printf(" %.12e ", tako->d_nod[j+tako->ncomptot + k]);
 			}
 			printf("\n");
 		}
@@ -52,8 +52,8 @@ void check_psf_data_c(struct psf_data *tako){
 	 printf("patch normal \n");
 	for (i = 0; i < tako->nele_viz; i++) {
 		printf(" %d %.12e %.12e %.12e %.12e \n", i, 
-				tako->norm_ele[i][0], tako->norm_ele[i][1], 
-				tako->norm_ele[i][2], tako->area_viz[i]);
+				tako->norm_ele[4*i  ], tako->norm_ele[4*i+1],
+				tako->norm_ele[4*i+2], tako->area_viz[i]);
 	};
 	 printf("node normal \n");
 	for (i = 0; i < tako->nnod_viz; i++) {
@@ -80,18 +80,32 @@ void check_psf_ave_rms_c(struct psf_data *tako){
 	return;
 }
 
-void check_psf_min_max_c(struct psf_data *tako){
+static void check_min_max_data_c(long nfield, long *istack_comp,
+                                 char **data_name, double *d_min, double *d_max){
 	long i, k, kst, ked;
 	
 	printf("min and max value  \n");
-	for (i = 0; i < tako->nfield; i++) {
-		kst = tako->istack_comp[i];
-		ked = tako->istack_comp[i+1];
+	for (i = 0; i < nfield; i++) {
+		kst = istack_comp[i];
+		ked = istack_comp[i+1];
 		for (k = kst; k < ked; k++){
-			printf("field name: %s_%ld %ld %e %e \n", tako->data_name[i],k-kst+1,
-					k, tako->d_min[k], tako->d_max[k]);
+			printf("field name: %s_%ld %ld %e %e \n",
+                   data_name[i], k-kst+1, k, d_min[k], d_max[k]);
 		}
 	}
 	return;
+}
+
+void check_psf_min_max_c(struct psf_data *psf_s){
+    check_min_max_data_c(psf_s->nfield, psf_s->istack_comp,
+                         psf_s->data_name, psf_s->d_min, psf_s->d_max);
+    return;
+}
+
+void check_fline_min_max_c(struct psf_data *psf_s,
+                           struct fline_data *fline_d){
+    check_min_max_data_c(psf_s->nfield, psf_s->istack_comp,
+                         psf_s->data_name, fline_d->d_min, psf_s->d_max);
+    return;
 }
 

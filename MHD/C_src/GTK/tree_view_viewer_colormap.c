@@ -27,16 +27,16 @@ void update_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
                               color_vws->colormap_mode_gtk);
     
     clear_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
-    num = send_color_table_num_s(color_vws->cmap_param);
+    num = get_color_table_num_s(color_vws->cmap_param);
     for(i=0;i<num;i++){
-        send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
+        get_color_table_items_s(color_vws->cmap_param, i, &value, &color);
         append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
     };
     
     clear_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-    num = send_opacity_table_num_s(color_vws->cmap_param);
+    num = get_opacity_table_num_s(color_vws->cmap_param);
     for(i=0;i<num;i++){
-        send_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
+        get_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
         append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
     };
     

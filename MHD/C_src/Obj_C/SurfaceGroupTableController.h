@@ -25,6 +25,8 @@
 	NSMutableArray *SurfaceGroupDisplayWireFlags;
 	NSMutableArray *SurfaceGroupDisplayNodeFlags;
 	
+    CGFloat surfGrpAlpha;
+    
 	NSString *selectedSurfaceGroupObjectType;
 
 	IBOutlet id _SurfGrpPatchColorItem;
@@ -38,6 +40,7 @@
     NSColor *nsSurfGrpGridColor;
     NSColor *nsSurfGrpNodeColor;
 }
+@property CGFloat surfGrpAlpha;
 
 - (id) init;
 - (id) dealloc;

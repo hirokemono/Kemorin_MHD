@@ -26,6 +26,7 @@ OBJ_KEMO_C = \
  t_surf_edge_hash_c.o \
  t_psf_edge_connect_c.o \
  m_psf_data_4_viewer_c.o \
+ m_fline_data_4_viewer_c.o \
  m_map_data_4_viewer_c.o \
  check_viewer_mesh_c.o \
  check_psf_data_viewer_c.o \
@@ -53,10 +54,23 @@ OBJ_KEMO_C = \
  set_map_data_4_viewer_c.o \
  take_normal_psf_c.o \
  \
+ colormap_rainbow_c.o \
+ colormap_red_blue_c.o \
+ colormap_sym_gray_c.o \
+ colormap_grayscale_c.o \
+ colormap_molten_metal_c.o \
+ colormap_orange_cyan_c.o \
+ colormap_space_c.o \
+ \
  set_rgb_colors_c.o \
  invert_small_matrix_c.o \
  transfer_matvec.o \
- quicksort_c.o
+ quicksort_c.o \
+ bitonic_sort_pthread.o \
+ bitonic_sort_long_pthread.o \
+ bitonic_sort_int_pthread.o \
+ bitonic_sort_float_pthread.o \
+ bitonic_sort_c.o
 
 ifdef ZLIB_LIBS
   OBJ_KEMO_C += \

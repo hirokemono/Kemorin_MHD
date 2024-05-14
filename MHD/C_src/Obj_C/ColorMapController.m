@@ -45,6 +45,8 @@
 	NSInteger isel = [idColorTableView selectedRow];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     
+    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR) > 16) return;
+        
 	if(isel > 0) {
 		value1 = [[self.ColorTableField objectAtIndex:isel-1] doubleValue];
 		color1 = [[self.ColorTableColor objectAtIndex:isel-1] doubleValue];
@@ -132,6 +134,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_color_data(pRowIndex, value, color, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
+	[_fillRectView UpdateColorbar];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{

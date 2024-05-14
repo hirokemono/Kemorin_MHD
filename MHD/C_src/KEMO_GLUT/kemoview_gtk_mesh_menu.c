@@ -9,6 +9,19 @@
 
 #include "kemoview_gtk_mesh_menu.h"
 
+static void close_mesh_CB(GtkButton *button, gpointer user_data){
+    GtkWidget *meshWin = GTK_WIDGET(user_data);
+    struct kemoview_mesh_view *mesh_vws
+        = (struct kemoview_mesh_view *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
+    struct kemoviewer_type *kemo_sgl
+        = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
+    kemoview_close_mesh_view(kemo_sgl);
+    init_mesh_window(kemo_sgl, mesh_vws, meshWin);
+    draw_full(kemo_sgl);
+    return;
+};
+
 static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
@@ -106,9 +119,9 @@ void set_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl, 
-                        struct kemoview_mesh_view *mesh_vws, 
-                        GtkWidget *window){
+static void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
+                               struct kemoview_mesh_view *mesh_vws,
+                               GtkWidget *window){
     GtkAdjustment *adj_dist;
     GtkAdjustment *adj_node_size, *adj_node_digit;
     GtkAdjustment *adj_num_loop;
@@ -162,8 +175,8 @@ void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
     
     init_domain_draw_expander(kemo_sgl, window, mesh_vws->domain_group_gmenu);
     init_nod_group_draw_expander(kemo_sgl,  window, mesh_vws->node_group_gmenu);
-    init_ele_group_draw_expander(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
-    init_surf_group_draw_expander(kemo_sgl, window, mesh_vws->surf_group_gmenu);
+    init_ele_group_draw_box(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
+    init_surf_group_draw_box(kemo_sgl, window, mesh_vws->surf_group_gmenu);
     
     set_domain_draw_box(kemo_sgl, mesh_vws->domain_group_gmenu);
     set_nod_group_draw_box(kemo_sgl, mesh_vws->node_group_gmenu);
@@ -173,7 +186,8 @@ void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
     return;
 }
 
-GtkWidget *  pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *window){
+static GtkWidget * pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
+                                      GtkWidget *window){
     GtkWidget *frame;
 
     GtkWidget *hbox_distance = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -194,11 +208,20 @@ GtkWidget *  pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *
     gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("Number of color loop: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_num_loop), mesh_vws->spin_num_loop, TRUE, TRUE, 0);
     
-    GtkWidget *expander_domain = pack_domain_draw_expander(window, mesh_vws->domain_group_gmenu);
-    GtkWidget *expander_node =   pack_nod_group_draw_expander(window, mesh_vws->node_group_gmenu);
-    GtkWidget *expander_ele =    pack_ele_group_draw_expander(window, mesh_vws->ele_group_gmenu);
-    GtkWidget *expander_surf =   pack_surf_group_draw_expander(window, mesh_vws->surf_group_gmenu);
-    
+    GtkWidget *box_domain =    pack_domain_menu_box(mesh_vws->domain_group_gmenu);
+    GtkWidget *box_node_grp =  pack_nod_group_menu_box(mesh_vws->node_group_gmenu);
+    GtkWidget *box_ele_grp =   pack_ele_group_menu_box(mesh_vws->ele_group_gmenu);
+    GtkWidget *box_surf_grp =  pack_surf_group_menu_box(mesh_vws->surf_group_gmenu);
+
+    GtkWidget *expander_domain = wrap_into_scroll_expansion_gtk("Domain", 480, 640,
+                                                                window, box_domain);
+    GtkWidget *expander_node = wrap_into_scroll_expansion_gtk("Node group", 480, 480,
+                                                              window, box_node_grp);
+    GtkWidget *expander_ele =  wrap_into_scroll_expansion_gtk("Element group", 480, 640,
+                                                              window, box_ele_grp);
+    GtkWidget *expander_surf = wrap_into_scroll_expansion_gtk("Surface group", 480, 640,
+                                                              window, box_surf_grp);
+
     GtkWidget *vbox_mesh = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(vbox_mesh), mesh_vws->closeMeshButton,
                        FALSE, FALSE, 0);
@@ -214,5 +237,51 @@ GtkWidget *  pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *
 
     frame = wrap_into_frame_gtk("Mesh", vbox_mesh);
     return frame;
+}
+
+static void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
+                              struct kemoview_mesh_view *mesh_vws,
+                              GtkWidget *meshWin){
+    init_mesh_views_4_viewer(kemo_sgl, mesh_vws);
+    
+    /*  Set buttons */
+    g_object_set_data(G_OBJECT(meshWin), "mesh_menu", (gpointer) mesh_vws);
+    g_object_set_data(G_OBJECT(meshWin), "kemoview", (gpointer) kemo_sgl);
+
+    mesh_vws->closeMeshButton = gtk_button_new_with_label("Close mesh");
+    g_signal_connect(G_OBJECT(mesh_vws->closeMeshButton), "clicked",
+                     G_CALLBACK(close_mesh_CB), (gpointer) meshWin);
+    
+    init_gtk_mesh_menu(kemo_sgl, mesh_vws, meshWin);
+    return;
+}
+
+void init_mesh_window(struct kemoviewer_type *kemo_sgl,
+                      struct kemoview_mesh_view *mesh_vws,
+                      GtkWidget *meshWin){
+    if(mesh_vws->iflag_meshBox > 0){
+        gtk_widget_destroy(meshWin);
+        gtk_window_get_position(GTK_WINDOW(meshWin),
+                                &mesh_vws->ij_Win[0],
+                                &mesh_vws->ij_Win[1]);
+        dealloc_mesh_views_4_viewer(mesh_vws);
+    };
+    mesh_vws->iflag_meshBox = kemoview_get_draw_mesh_flag(kemo_sgl);
+    if(mesh_vws->iflag_meshBox == 0) return;
+
+    meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(meshWin), "Mesh");
+//    gtk_window_move (GTK_WINDOW(meshWin),
+//                     mesh_vws->ij_Win[0],
+//                     (mesh_vws->ij_Win[1]+28));
+    gtk_widget_set_size_request(meshWin, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(meshWin), 5);
+    
+    set_mesh_menu_box(kemo_sgl, mesh_vws, meshWin);
+    GtkWidget *frame_mesh = pack_gtk_mesh_menu(mesh_vws, meshWin);
+    
+    gtk_container_add(GTK_CONTAINER(meshWin), frame_mesh);
+    gtk_widget_show_all(meshWin);
+    return;
 }
 

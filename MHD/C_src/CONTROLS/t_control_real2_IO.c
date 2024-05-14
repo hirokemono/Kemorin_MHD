@@ -19,6 +19,7 @@ struct real2_ctl_item * init_real2_ctl_item_c(void){
         exit(0);
     }
 
+    r2_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	r2_item->r_data[0] = 0.0;
 	r2_item->r_data[1] = 0.0;
     return r2_item;

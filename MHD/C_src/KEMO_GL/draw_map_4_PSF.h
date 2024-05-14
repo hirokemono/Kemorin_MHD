@@ -15,7 +15,7 @@
 #include "set_color_code_on_nodes.h"
 #include "draw_coastline.h"
 #include "rainbow_color_code_c.h"
-#include "set_PSF_patches_to_buf.h"
+#include "pthread_PSF_patches_to_buf.h"
 #include "set_map_isolines_to_buf.h"
 #include "modify_object_4_viewer_c.h"
 
@@ -24,11 +24,12 @@
 
 int check_draw_map(struct kemo_array_control *psf_a);
 
-void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+void set_map_PSF_isolines_buffer(const int nthreads,
+                                 struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
                                  struct gl_strided_buffer *mline_buf);
-void set_map_patch_buffer(long ist_psf, long ied_psf, struct psf_data **psf_s,
-                          struct psf_menu_val **psf_m,
+void set_map_patch_buffer(const int nthreads, long ist_psf, long ied_psf,
+                          struct psf_data **psf_s, struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *map_buf);
 #endif

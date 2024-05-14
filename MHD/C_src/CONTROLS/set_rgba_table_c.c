@@ -7,10 +7,13 @@
 #include "set_rgba_table_c.h"
 
 
-const char *label_rainbow =   "rainbow";
-const char *label_bluered =   "blue_to_red";
-const char *label_grayscale = "grayscale";
-const char *label_sym_gray  = "symmetric_grayscale";
+const char *label_rainbow =      "rainbow";
+const char *label_bluered =      "blue_to_red";
+const char *label_grayscale =    "grayscale";
+const char *label_sym_gray =     "symmetric_grayscale";
+const char *label_orangecyan =   "cyan_to_orange";
+const char *label_molten_metal = "molten_metal";
+const char *label_space_color  = "space_color";
 
 const char *hd_minmax_c =      "minmax";
 const char *hd_linear_c =      "linear";
@@ -23,11 +26,14 @@ const char *hd_pointrange_c =  "point_ranges";
 const char *hd_pointdelta_c =  "point_delta";
 const char *hd_intensity_c =   "intense_chenge";
 
-const char color_labels[4][KCHARA_C] = {
+const char color_labels[7][KCHARA_C] = {
     "rainbow", 
     "grayscale",
     "blue_to_red",
-    "symmetric_grayscale"
+    "symmetric_grayscale",
+    "cyan_to_orange",
+    "molten_metal",
+    "space_color"
 };
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
@@ -40,28 +46,39 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 		copy_to_chara_ctl_item(label_grayscale, colormap_mode);
 	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
 		copy_to_chara_ctl_item(label_sym_gray, colormap_mode);
+	} else if(cmap_s->id_color_mode == ORANGE_CYAN_MODE){
+		copy_to_chara_ctl_item(label_orangecyan, colormap_mode);
+	} else if(cmap_s->id_color_mode == MOLTEN_METAL_MODE){
+		copy_to_chara_ctl_item(label_molten_metal, colormap_mode);
+	} else if(cmap_s->id_color_mode == SPACE_COLOR_MODE){
+		copy_to_chara_ctl_item(label_space_color, colormap_mode);
 	} else {
 		copy_to_chara_ctl_item(label_rainbow, colormap_mode);
 	};
 	return;
 };
 
-void set_rgb_from_value_s(struct colormap_params *cmap_s,
-			double value, double *red, double *green, double *blue){
-	struct colormap_array *cmap_tmp = init_colormap_from_list(cmap_s->colormap);
-    double rnorm = color_normalize_linear_segment_c(cmap_tmp->num,
-                                                       cmap_tmp->data,
-                                                       cmap_tmp->value, value);
-	dealloc_colormap_array(cmap_tmp);
+void set_rgb_from_value_s(struct colormap_array *cmap_array,
+                          int id_color_mode, double value,
+                          double *red, double *green, double *blue){
+    double rnorm = color_normalize_linear_segment_c(cmap_array->num,
+                                                    cmap_array->data,
+                                                    cmap_array->value, value);
 	
-	if(cmap_s->id_color_mode == GRAYSCALE_MODE){
-		color_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
-		color_sym_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == RED_BLUE_MODE){
-		color_redblue_c(rnorm, red, green, blue);
+	if(id_color_mode == GRAYSCALE_MODE){
+		colormap_grayscale_c(rnorm, red, green, blue);
+	} else if(id_color_mode == SYM_GRAY_MODE){
+		colormap_sym_grayscale_c(rnorm, red, green, blue);
+	} else if(id_color_mode == RED_BLUE_MODE){
+		colormap_red_blue_c(rnorm, red, green, blue);
+	} else if(id_color_mode == ORANGE_CYAN_MODE){
+		colormap_orange_cyan_c(rnorm, red, green, blue);
+	} else if(id_color_mode == MOLTEN_METAL_MODE){
+		colormap_molten_metal_c(rnorm, red, green, blue);
+	} else if(id_color_mode == SPACE_COLOR_MODE){
+		colormap_space_c(rnorm, red, green, blue);
 	} else {
-        color_rainbow_c(rnorm, red, green, blue);
+        colormap_rainbow_c(rnorm, red, green, blue);
 	}
 	return;
 }
@@ -75,13 +92,12 @@ void set_rgb_from_rgb(struct colormap_params *cmap_s,
     return;
 }
 
-double set_opacity_from_value_s(struct colormap_params *cmap_s, double value){
-	struct colormap_array *cmap_tmp = init_colormap_from_list(cmap_s->opacitymap);
-	double rnorm = color_normalize_linear_segment_c(cmap_tmp->num,
-                                                    cmap_tmp->data,
-                                                    cmap_tmp->value,
+double set_opacity_from_value_s(struct colormap_array *omap_array, 
+                                double value){
+	double rnorm = color_normalize_linear_segment_c(omap_array->num,
+                                                    omap_array->data,
+                                                    omap_array->value,
                                                     value);
-	dealloc_colormap_array(cmap_tmp);
 	return rnorm;
 }
 
@@ -113,37 +129,60 @@ void set_color_mode_by_id(struct colormap_params *cmap_s, int isel){
 	return;
 }
 
-double send_minimum_opacity_s(struct colormap_params *cmap_s){return cmap_s->min_opacity;}
-double send_maximum_opacity_s(struct colormap_params *cmap_s){return cmap_s->max_opacity;}
-int send_color_mode_id_s(struct colormap_params *cmap_s){return cmap_s->id_color_mode;}
-int send_color_table_num_s(struct colormap_params *cmap_s){
+double get_minimum_opacity_s(struct colormap_params *cmap_s){return cmap_s->min_opacity;}
+double get_maximum_opacity_s(struct colormap_params *cmap_s){return cmap_s->max_opacity;}
+int get_color_mode_id_s(struct colormap_params *cmap_s){return cmap_s->id_color_mode;}
+int get_color_table_num_s(struct colormap_params *cmap_s){
 	return count_real2_clist(cmap_s->colormap);
 };
-int send_opacity_table_num_s(struct colormap_params *cmap_s){
+int get_opacity_table_num_s(struct colormap_params *cmap_s){
 	return count_real2_clist(cmap_s->opacitymap);
 };
 
-void send_color_table_items_s(struct colormap_params *cmap_s, 
+void get_color_table_items_s(struct colormap_params *cmap_s, 
 			int i_point, double *value, double *color){
 	set_from_real2_clist_at_index(i_point, cmap_s->colormap, value, color);
 	return;
 }
 
-void send_opacity_table_items_s(struct colormap_params *cmap_s, 
-			int i_point, double *value, double *opacity){
+void get_opacity_table_items_s(struct colormap_params *cmap_s, 
+                               int i_point, double *value, double *opacity){
 	set_from_real2_clist_at_index(i_point, cmap_s->opacitymap, value, opacity);
 	return;
 }
 
+void get_colormap_to_tables(struct colormap_params *cmap_s, int *id_cmap, int *num_cmap, int *num_alpha,
+                            float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
+    int i;
+    double value, color, opacity;
+    
+    *num_cmap = get_color_table_num_s(cmap_s);
+    for(i=0;i<*num_cmap;i++){
+        get_color_table_items_s(cmap_s, i, &value, &color);
+        cmap_data[i] =  (float) value;
+        cmap_norm[i] = (float) color;
+    }
+    
+    *num_alpha = get_opacity_table_num_s(cmap_s);
+    for(i=0;i<*num_alpha;i++) {
+        get_opacity_table_items_s(cmap_s, i, &value, &opacity);
+        alpha_data[i] =  (float) value;
+        alpha_norm[i] = (float)  opacity;
+    }
+    
+    *id_cmap = get_color_mode_id_s(cmap_s);
+    return;
+};
+
 void set_linear_colormap(struct colormap_params *cmap_s,
-			double val_min, double val_max){
+                         double val_min, double val_max){
 	clear_real2_clist(cmap_s->colormap);
 	append_real2_clist(val_min, ZERO, cmap_s->colormap);
 	append_real2_clist(val_max, ONE,  cmap_s->colormap);
 	return;
 }
 void set_constant_opacitymap(struct colormap_params *cmap_s,
-			double val_min, double val_max, double opacity){
+                             double val_min, double val_max, double opacity){
 	clear_real2_clist(cmap_s->opacitymap);
 	append_real2_clist(val_min, opacity, cmap_s->opacitymap);
 	append_real2_clist(val_max, opacity, cmap_s->opacitymap);
@@ -152,13 +191,13 @@ void set_constant_opacitymap(struct colormap_params *cmap_s,
 	return;
 }
 void set_full_opacitymap(struct colormap_params *cmap_s,
-			double val_min, double val_max){
+                         double val_min, double val_max){
 	set_constant_opacitymap(cmap_s, val_min, val_max, ONE);
 	return;
 }
 
 static void copy_color_opacity_to_ctl(struct colormap_params *cmap_s, 
-			struct colormap_ctl_c *cmap_c){
+                                      struct colormap_ctl_c *cmap_c){
 	int i;
 	double color;
 	double d, v;
@@ -238,8 +277,14 @@ void copy_colormap_from_ctl(struct chara_ctl_item *f_colormap_mode_ctl,
 		cmap_s->id_color_mode = RED_BLUE_MODE;
 	} else if(compare_string(9, label_grayscale, f_colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = GRAYSCALE_MODE;
-	} else if(compare_string(18, label_sym_gray, f_colormap_mode_ctl->c_tbl) > 0){
+	} else if(compare_string(19, label_sym_gray, f_colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = SYM_GRAY_MODE;
+	} else if(compare_string(14, label_orangecyan, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = ORANGE_CYAN_MODE;
+	} else if(compare_string(12, label_molten_metal, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = MOLTEN_METAL_MODE;
+	} else if(compare_string(11, label_space_color, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = SPACE_COLOR_MODE;
 	} else {
 		cmap_s->id_color_mode = RAINBOW_MODE;
 	};

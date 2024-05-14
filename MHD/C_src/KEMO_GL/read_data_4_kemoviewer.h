@@ -12,6 +12,7 @@
 #include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_fline_data_4_viewer_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_kemoview_psf_menu.h"
@@ -39,7 +40,9 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
                      struct mesh_menu_val *mesh_m, struct view_element *view);
 
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m);
-int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m);
+int refresh_FLINE_data(struct psf_data *ucd_tmp,
+                       struct fline_data *fline_d,
+                       struct fline_menu_val *fline_m);
 
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view);
@@ -47,7 +50,8 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 void set_kemoview_psf_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
                            struct psf_menu_val *psf_m);
 
-void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
+void set_kemoview_fline_data(struct psf_data *ucd_tmp,
+                             struct fline_data *fline_d,
                              struct fline_menu_val *fline_m);
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m);

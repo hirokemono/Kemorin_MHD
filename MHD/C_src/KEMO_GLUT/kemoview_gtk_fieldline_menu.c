@@ -106,8 +106,8 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-    int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
-    kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
+    int istate = gtk_switch_get_state(GTK_SWITCH(switch_1));
+    kemoview_set_fline_field_param(LINETYPE_FLAG, istate, kemo_sgl);
     draw_full(kemo_sgl);
 	return;
 };
@@ -180,17 +180,6 @@ void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
-                                struct fieldline_gtk_menu *fline_menu){
-    update_fline_component_combobox(kemo_sgl, 
-                                    fline_menu->combobox_comp, 
-                                    fline_menu->label_tree_comp,
-                                    fline_menu->renderer_comp);
-    
-    set_gtk_fieldline_menu(kemo_sgl, fline_menu);
-    return;
-}
-
 void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
                               struct fieldline_gtk_menu *fline_menu){
     GtkWidget *label_tree_color;
@@ -229,6 +218,8 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     
     
     fline_menu->switch_tube = gtk_switch_new();
+    int iflag = get_fline_field_param(LINETYPE_FLAG, kemo_sgl);
+    gtk_switch_set_state(GTK_SWITCH(fline_menu->switch_tube), iflag);
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
                      G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_sgl);
@@ -260,14 +251,12 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) kemo_sgl);
     
-    add_fline_draw_field_box(kemo_sgl, 
-                             fline_menu->combobox_field, 
-                             fline_menu->label_tree_field,
-                             fline_menu->renderer_field);
-    fline_draw_component_combobox(kemo_sgl, 
-                                  fline_menu->combobox_comp, 
-                                  fline_menu->label_tree_comp,
-                                  fline_menu->renderer_comp);
+    fline_menu->combobox_field = fline_draw_field_box(kemo_sgl,
+                                                      fline_menu->label_tree_field,
+                                                      fline_menu->renderer_field);
+    fline_menu->combobox_comp = fline_draw_component_combobox(kemo_sgl,
+                                                              fline_menu->label_tree_comp,
+                                                              fline_menu->renderer_comp);
     return;
 }
 

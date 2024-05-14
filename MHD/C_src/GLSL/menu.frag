@@ -1,5 +1,9 @@
-#version 330
-  
+// #version 330
+//
+//   menu.flag
+//
+
+
 in vec4 ex_Color;
 out vec4 out_Color;
   

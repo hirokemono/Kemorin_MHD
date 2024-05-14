@@ -93,15 +93,15 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
 		fgets(buf, LENGTHBUF, fp_mesh);
 		sscanf(buf, "%d %lf %lf %lf", &itmp, 
-				&mesh_s->xx_view[i][0], 
-				&mesh_s->xx_view[i][1], 
-				&mesh_s->xx_view[i][2]);
+				&mesh_s->xx_view[4*i ],
+				&mesh_s->xx_view[4*i+1],
+				&mesh_s->xx_view[4*i+2]);
 	};
 	/*
 	printf("mesh_s->xx_view %e %e %e\n",
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][0],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][1],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][2]);
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-3],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-2],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-1]);
 	*/
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;
@@ -126,47 +126,47 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d %d %d %d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3], 
-				&mesh_s->ie_sf_viewer[i][4], 
-				&mesh_s->ie_sf_viewer[i][5], 
-				&mesh_s->ie_sf_viewer[i][6], 
-				&mesh_s->ie_sf_viewer[i][7], 
-				&mesh_s->ie_sf_viewer[i][8]);
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i    ],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 4],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 5],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 6],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 7],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 8]);
 		}
 	}
 	else if( mesh_s->nnod_4_surf == 8 ){
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d %d %d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3], 
-				&mesh_s->ie_sf_viewer[i][4], 
-				&mesh_s->ie_sf_viewer[i][5], 
-				&mesh_s->ie_sf_viewer[i][6], 
-					&mesh_s->ie_sf_viewer[i][7]);
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i    ],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 4],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 5],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 6],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 7]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3]);
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i    ],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3]);
 		}
 	}
 	
 /*	printf("mesh_s->ie_sf_viewer %d %d %d %d\n", 
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][0],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][1],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][2],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][3]);
+			mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1)   ],
+            mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 1],
+            mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 2],
+            mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 3]);
 	*/
 	
 	offset = skip_comment_c(fp_mesh);
@@ -184,23 +184,25 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1], 
-				&mesh_s->ie_edge_viewer[i][2]);
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 2]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1]);
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1]);
 		}
 	}
 	
-	/*printf("mesh_s->ie_edge_viewer %d %d\n", 
-	mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][1]);*/
+/*
+     printf("mesh_s->ie_edge_viewer %d %d\n",
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1)    ],
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1) + 1]);
+*/
 	
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;
@@ -215,10 +217,10 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		fgets(buf, LENGTHBUF, fp_mesh);
 		sscanf(buf, "%d %d %d %d %d", &itmp, 
-				&mesh_s->iedge_sf_viewer[i][0], 
-				&mesh_s->iedge_sf_viewer[i][1], 
-				&mesh_s->iedge_sf_viewer[i][2], 
-				&mesh_s->iedge_sf_viewer[i][3]);
+				&mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i    ],
+				&mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 1],
+				&mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 2],
+				&mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 3]);
 	}
 	
 	/*  node ID for domain boundary */

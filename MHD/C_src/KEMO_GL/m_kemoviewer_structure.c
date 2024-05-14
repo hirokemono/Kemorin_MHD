@@ -13,7 +13,7 @@ static void kemoview_allocate_pointers(struct kemoviewer_type *kemoviewer_data){
     kemoviewer_data->kemo_psf =   init_kemoview_psf();
 	
     kemoviewer_data->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
-	return;
+    return;
 }
 
 struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
@@ -29,7 +29,8 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
                     kemoviewer_data->kemo_mesh->mesh_m,
                     kemoviewer_data->view_s);
 	init_fline_parameters(kemoviewer_data->kemo_fline->fline_m);
-	return kemoviewer_data;
+
+    return kemoviewer_data;
 }
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
@@ -43,6 +44,13 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
+
+void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data){
+    CubeNode_to_buf(0.5f, kemoviewer_data->kemo_buffers->cube_buf, 
+                    kemoviewer_data->kemo_buffers->cube_index_buf);
+    return;
+};
+
 
 void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
@@ -61,15 +69,24 @@ void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstri
 	return;
 };
 
-
 /* Routines for Kemoviewer arrays */
-
 
 void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array){
     if(id_window > kemoview_array->num_window){printf("Something wrong in window ID \n");};
 	kemoview_array->id_current = id_window;
 	return;
 }
+
+/*  Routines for threads setting */
+
+void kemoview_set_number_of_threads(int input, struct kemoviewer_type *kemoviewer){
+    set_number_of_threads(input, kemoviewer->kemo_buffers);
+}
+int kemoview_get_number_of_threads(struct kemoviewer_type *kemoviewer){
+    return send_number_of_threads(kemoviewer->kemo_buffers);
+}
+
+
 /* Routines for draw by OpenGL */
 
 void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
@@ -570,6 +587,12 @@ int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
                                     int selected){
 	return toggle_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
 }
+
+void kemoview_set_PSF_draw_flags(int selected, int iflag,
+                                 struct kemoviewer_type *kemoviewer){
+    
+    set_each_PSF_draw_switch(selected, iflag, kemoviewer->kemo_psf);
+}
 int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                 int selected){
 	return get_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
@@ -682,14 +705,23 @@ double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
 void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
                                   int i_point, double *value, double *color){
     int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    send_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
-									i_point, value, color);
+    get_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
+                                   i_point, value, color);
 }
 void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
                                     int i_point, double *value, double *opacity){
     int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    send_each_PSF_opacity_table_items(kemoviewer->kemo_psf->psf_m[i_psf],
-									  i_point, value, opacity);
+    get_each_PSF_opacity_table_items(kemoviewer->kemo_psf->psf_m[i_psf],
+                                     i_point, value, opacity);
+}
+void kemoview_get_PSF_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                      int *id_cmap, int *num_cmap, int *num_alpha,
+                                      float *cmap_data, float *cmap_norm, 
+                                      float *alpha_data, float *alpha_norm){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    get_each_PSF_colormap_tables(kemoviewer->kemo_psf->psf_m[i_psf], 
+                                 id_cmap, num_cmap, num_alpha,
+                                 cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void kemoview_write_PSF_colormap_file(struct kv_string *filename,
@@ -814,6 +846,13 @@ void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                      int i_point, double *value, double *opacity){
 	get_fline_opacity_item(kemoviewer->kemo_fline->fline_m,
                            i_point, value, opacity);
+}
+void kemoview_get_fline_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                        int *id_cmap, int *num_cmap, int *num_alpha,
+                                        float *cmap_data, float *cmap_norm,
+                                        float *alpha_data, float *alpha_norm){
+    get_fline_colormap_tables(kemoviewer->kemo_fline->fline_m, id_cmap, num_cmap, num_alpha,
+                              cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void kemoview_write_fline_colormap_file(struct kv_string *filename,

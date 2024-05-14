@@ -598,15 +598,14 @@ void set_position_in_model(struct view_element *view, int nnod,
 
 
 void set_distance_in_model(struct view_element *view, long nnod,
-                           double **xx, double *z_eye){
+                           double *xyzw, double *z_eye){
 	long i;
 	
-	/* transfer matrix for object*/
 	for (i=0;i<nnod;i++){
-		z_eye[i]= (double) view->mat_object_2_eye[   2]*xx[i][0]
-        + (double) view->mat_object_2_eye[ 4+2]*xx[i][1]
-        + (double) view->mat_object_2_eye[ 8+2]*xx[i][2]
-        + (double) view->mat_object_2_eye[12+2] * 1.0;
+		z_eye[i]= (double) view->mat_object_2_eye[   2] * xyzw[4*i  ]
+                + (double) view->mat_object_2_eye[ 4+2] * xyzw[4*i+1]
+                + (double) view->mat_object_2_eye[ 8+2] * xyzw[4*i+2]
+                + (double) view->mat_object_2_eye[12+2] * 1.0;
 	}
 	return;
 }

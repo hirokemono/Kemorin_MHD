@@ -94,7 +94,7 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
         psf_b_WK->ilength = psf_b->nnod_viz * sizeof(double);
         rawread_64bit_psf(psf_b_WK, xx);
         for(i=0;i<psf_b->nnod_viz;i++){
-            psf_b->xx_viz[i][j] = xx[i];
+            psf_b->xyzw_viz[i*IFOUR + j] = xx[i];
         };
     };
     free(xx);
@@ -188,7 +188,7 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
         psf_b_WK->ilength = psf_b->nnod_viz * sizeof(double);
         rawread_64bit_psf(psf_b_WK, &d_nod[0]);
         for(i=0;i<psf_b->nnod_viz;i++){
-            psf_b->d_nod[i][j] = d_nod[i];
+            psf_b->d_nod[i*psf_b->ncomptot + j] = d_nod[i];
         };
     };
     return;

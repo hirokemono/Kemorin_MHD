@@ -10,7 +10,8 @@ void set_sph_flame_buffer(struct mesh_menu_val *mesh_m,
         long n_vertex = ITWO * count_sph_flame();
         set_buffer_address_4_patch(n_vertex, mflame_buf);
         resize_strided_buffer(mflame_buf);
-        set_sph_flame_to_buf(mesh_m->radius_coast, mflame_buf);
+        set_sph_flame_to_buf(mesh_m->radius_coast,
+                             mflame_buf);
     }else{
         mflame_buf->num_nod_buf = 0;
     };

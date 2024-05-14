@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #include "kemoviewer.h"
-#include "m_psf_data_4_viewer_c.h"
+#include "m_fline_data_4_viewer_c.h"
 #include "m_kemoview_fline_menu.h"
 #include "skip_comment_c.h"
 #include "kemoviewer_base.h"
@@ -34,11 +34,11 @@ void set_fline_switch(struct fline_menu_val *fline_m, int iflag);
 void set_fline_color_type(struct fline_menu_val *fline_m, int iflag);
 
 int get_fline_switch(struct fline_menu_val *fline_m);
-long get_fline_color_num_field(struct psf_data *fline_d);
-long get_fline_color_ncomptot(struct psf_data *fline_d);
-long fline_color_num_comps(struct psf_data *fline_d, int i);
-long get_fline_color_istack(struct psf_data *fline_d, int i);
-void get_fline_color_data_name(struct psf_data *fline_d, 
+long get_fline_color_num_field(struct fline_data *fline_d);
+long get_fline_color_ncomptot(struct fline_data *fline_d);
+long fline_color_num_comps(struct fline_data *fline_d, int i);
+long get_fline_color_istack(struct fline_data *fline_d, int i);
+void get_fline_color_data_name(struct fline_data *fline_d,
 			struct kv_string *colorname, int i);
 long get_fline_color_field(struct fline_menu_val *fline_m);
 long get_fline_color_component(struct fline_menu_val *fline_m);
@@ -49,17 +49,22 @@ int get_fline_colormode(struct fline_menu_val *fline_m);
 void set_fline_type(struct fline_menu_val *fline_m, long iflag);
 long get_fline_type(struct fline_menu_val *fline_m);
 
+void set_fline_corners(struct fline_menu_val *fline_m, int num);
+int get_fline_corners(struct fline_menu_val *fline_m);
+
 void set_fline_thickness(double value, struct fline_menu_val *fline_m);
 double get_fline_thickness(struct fline_menu_val *fline_m);
 
-double get_fline_data_min(struct psf_data *fline_d, int i);
-double get_fline_data_max(struct psf_data *fline_d, int i);
+double get_fline_data_min(struct fline_data *fline_d, int i);
+double get_fline_data_max(struct fline_data *fline_d, int i);
 
+int send_coordinate_id_fline(struct fline_data *fline_d, struct fline_menu_val *fline_m);
 
 void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
 							   struct fline_menu_val *fline_m);
-void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
-			double opacity);
+void set_fline_constant_opacity(struct fline_data *fline_d,
+                                struct fline_menu_val *fline_m,
+                                double opacity);
 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value);
 void set_fline_color_data(struct fline_menu_val *fline_m, 
@@ -81,6 +86,10 @@ void get_fline_color_item(struct fline_menu_val *fline_m,
 			int i_point, double *value, double *color);
 void get_fline_opacity_item(struct fline_menu_val *fline_m,
 			int i_point, double *value, double *opacity);
+
+void get_fline_colormap_tables(struct fline_menu_val *fline_m, int *id_cmap, int *num_cmap, int *num_alpha,
+                               float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
+
 void write_fline_colormap_file(struct kv_string *filename, const int iflag_draw_axis, 
                                struct fline_menu_val *fline_m);
 void read_fline_colormap_file(struct kv_string *filename, struct fline_menu_val *fline_m);

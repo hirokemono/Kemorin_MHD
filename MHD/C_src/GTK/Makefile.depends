@@ -225,6 +225,13 @@ tree_view_4_colormap.o: \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_4_field_GTK.o: \
@@ -298,6 +305,13 @@ tree_view_4_pvr_colormap.o: \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_block_GTK.o: \
@@ -508,8 +522,16 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
@@ -523,10 +545,13 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
+  $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
@@ -568,12 +593,18 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_mesh_patch_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
+  $(C_SRCDIR)/KEMO_GL/const_mesh_patch_table_for_gl.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \

@@ -15,9 +15,9 @@ void count_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf
 		i1 = psf_s->ie_viz[iele][0];
 		i2 = psf_s->ie_viz[iele][1];
 		i3 = psf_s->ie_viz[iele][2];
-		y1 = psf_s->xx_viz[i1-1][1];
-		y2 = psf_s->xx_viz[i2-1][1];
-		y3 = psf_s->xx_viz[i3-1][1];
+		y1 = psf_s->xyzw_viz[(i1-1)*IFOUR + 1];
+		y2 = psf_s->xyzw_viz[(i2-1)*IFOUR + 1];
+		y3 = psf_s->xyzw_viz[(i3-1)*IFOUR + 1];
 		
 		if     ( ((y1*y2) < ZERO) && ((y2*y3) < ZERO) ){
 			psf_map_s->nnod_add_map = psf_map_s->nnod_add_map + 2;
@@ -73,9 +73,9 @@ void set_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_m
 		i1 = psf_s->ie_viz[iele][0];
 		i2 = psf_s->ie_viz[iele][1];
 		i3 = psf_s->ie_viz[iele][2];
-		y1 = psf_s->xx_viz[i1-1][1];
-		y2 = psf_s->xx_viz[i2-1][1];
-		y3 = psf_s->xx_viz[i3-1][1];
+		y1 = psf_s->xyzw_viz[(i1-1)*IFOUR + 1];
+		y2 = psf_s->xyzw_viz[(i2-1)*IFOUR + 1];
+		y3 = psf_s->xyzw_viz[(i3-1)*IFOUR + 1];
 		
 		if     ( ((y1*y2) < ZERO) && ((y2*y3) < ZERO) ){
 			icou_n = icou_n + 2;
@@ -242,9 +242,9 @@ void set_map_grid_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++){
 		psf_map_s->inod_map[inod] = psf_s->inod_viz[inod];
-		psf_map_s->xx_map[inod][0] = psf_s->xx_viz[inod][0];
-		psf_map_s->xx_map[inod][1] = psf_s->xx_viz[inod][1];
-		psf_map_s->xx_map[inod][2] = psf_s->xx_viz[inod][2];
+		psf_map_s->xx_map[inod][0] = psf_s->xyzw_viz[inod*IFOUR + 0];
+		psf_map_s->xx_map[inod][1] = psf_s->xyzw_viz[inod*IFOUR + 1];
+		psf_map_s->xx_map[inod][2] = psf_s->xyzw_viz[inod*IFOUR + 2];
 	};
 	for (icou = 0; icou < psf_map_s->nnod_add_map; icou++){
 		inod = icou + psf_s->nnod_viz;
@@ -253,9 +253,11 @@ void set_map_grid_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 		y1 = psf_map_s->coef_itp_map[icou][0];
 		y2 = psf_map_s->coef_itp_map[icou][1];
 		psf_map_s->inod_map[inod] = inod+1;
-		psf_map_s->xx_map[inod][0] = (y1*psf_s->xx_viz[i1-1][0] - y2*psf_s->xx_viz[i2-1][0]) / (y1-y2);
+		psf_map_s->xx_map[inod][0] = (y1*psf_s->xyzw_viz[(i1-1)*IFOUR + 0]
+                                      - y2*psf_s->xyzw_viz[(i2-1)*IFOUR + 0]) / (y1-y2);
 		psf_map_s->xx_map[inod][1] = ZERO;
-		psf_map_s->xx_map[inod][2] = (y1*psf_s->xx_viz[i1-1][2] - y2*psf_s->xx_viz[i2-1][2]) / (y1-y2);
+		psf_map_s->xx_map[inod][2] = (y1*psf_s->xyzw_viz[(i1-1)*IFOUR + 2]
+                                      - y2*psf_s->xyzw_viz[(i2-1)*IFOUR + 2]) / (y1-y2);
 	};
 	
 	return;
@@ -267,7 +269,7 @@ void set_map_data_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++){
 		for (j = 0; j < psf_s->ncomptot; j++){
-			psf_map_s->d_nod_map[inod][j] = psf_s->d_nod[inod][j];
+			psf_map_s->d_nod_map[inod][j] = psf_s->d_nod[inod*psf_s->ncomptot + j];
 		};
 	};
 	for (icou = 0; icou < psf_map_s->nnod_add_map; icou++){
@@ -278,7 +280,8 @@ void set_map_data_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 		y2 = psf_map_s->coef_itp_map[icou][1];
 		for (j = 0; j < psf_s->ncomptot; j++){
 			psf_map_s->d_nod_map[inod][j] 
-			  = (y1*psf_s->d_nod[i1-1][j] - y2*psf_s->d_nod[i2-1][j]) / (y1-y2);
+			  = (y1*psf_s->d_nod[(i1-1)*psf_s->ncomptot + j]
+                 - y2*psf_s->d_nod[(i2-1)*psf_s->ncomptot + j]) / (y1-y2);
 		};
 	};
 	

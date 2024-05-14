@@ -24,6 +24,7 @@
 @synthesize Flinetype;
 @synthesize FlineThickFactor;
 @synthesize FlineThickDigit;
+@synthesize FlineNumCorners;
 
 - (id)init;
 {
@@ -69,6 +70,14 @@
 	
     [super dealloc];
 	return self;
+}
+
+-(void) awakeFromNib
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.Flinetype =       kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
+    self.FlineNumCorners = kemoview_get_fline_field_param(kemo_sgl, NUM_TUBE_CORNERS_FLAG);
+    return;
 }
 
 - (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
@@ -392,7 +401,16 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor,
                                    (int) self.FlineThickDigit, kemo_sgl);
-//	[_metalView UpdateImage:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetFieldTubeCornersAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_fline_field_param(NUM_TUBE_CORNERS_FLAG,
+                                   (int) self.FlineNumCorners,
+                                   kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 @end

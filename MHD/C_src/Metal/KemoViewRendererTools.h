@@ -32,6 +32,8 @@ typedef struct
 } KemoViewUnites;
 
 @interface KemoViewRendererTools : NSObject
+- (void)colormapToMetalShader:(struct kemoviewer_type *) kemo_sgl
+                     colorMap:(KemoViewNormalize *) metalColormap;
 
 - (void)setTransferMatrices:(struct kemoviewer_type *) kemo_sgl
                      unites:(KemoViewUnites *) monoViewUnites;

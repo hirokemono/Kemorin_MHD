@@ -11,6 +11,7 @@
 
 
 @implementation SurfaceGroupTableController
+@synthesize surfGrpAlpha;
 - (id) init
 {
 	NumSurfaceGroup = 0;
@@ -186,7 +187,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	int i, iflag;
     struct kv_string *groupname;
 	NSString *stname;
-	
+    float colorcode4[4];
+    kemoview_get_mesh_color_code(kemo_sgl, SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    self.surfGrpAlpha = colorcode4[3];
+
 	[SurfaceGroupDisplayNames removeAllObjects];
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
@@ -240,6 +245,19 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[_metalView UpdateImage:kemo_sgl];
 }
 
+
+- (IBAction)SetSurfGrpPatchAlphaAction:(id)sender
+{
+    float colorcode4[4];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_get_mesh_color_code(kemo_sgl, SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    colorcode4[3] = self.surfGrpAlpha;
+    kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4, kemo_sgl);
+    
+    [_metalView UpdateImage:kemo_sgl];
+};
 
 - (IBAction)SetSurfGrpPatchColorAction:(id)sender
 {

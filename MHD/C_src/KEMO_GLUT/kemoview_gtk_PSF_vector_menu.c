@@ -11,8 +11,9 @@
 
 static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
-	kemoview_select_PSF_draw_switch(kemo_sgl, PSFVECT_TOGGLE);
-	
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_vect));
+    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE, iflag, kemo_sgl);
+
     draw_full(kemo_sgl);
 	return;
 };
@@ -190,6 +191,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	GtkTreeModel *child_model_veccolor;
 	
 	int index = 0;
+    int iflag;
 	
 	GtkAdjustment *adj_ref_vect, *adj_ref_digit;
 	GtkAdjustment *adj_vect_inc, *adj_inc_digit;
@@ -197,7 +199,8 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	
 	
 	psf_vector_menu->switch_vect = gtk_switch_new();
-	gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), FALSE);
+    iflag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+    gtk_switch_set_state(GTK_SWITCH(psf_vector_menu->switch_vect), iflag);
 	g_signal_connect(G_OBJECT(psf_vector_menu->switch_vect), "notify::active",
 				G_CALLBACK(psf_vector_switch_CB), (gpointer) kemo_sgl);
 	

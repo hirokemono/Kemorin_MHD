@@ -32,9 +32,9 @@ struct psf_data{
 	long *ncomp;
 	long *istack_comp;
 	
-	double **xx_viz;
-	double **d_nod;
-	double **d_amp;
+	double *xyzw_viz;
+	double *d_nod;
+	double *d_amp;
 	
 	double *d_ave;
 	double *d_rms;
@@ -45,31 +45,24 @@ struct psf_data{
 	
 	char **data_name;
 	
-	double **x_ele_viz;
+	double *xyzw_ele_viz;
 	
-	double **norm_ele;
-	double **norm_nod;
+	double *norm_ele;
+	double *norm_nod;
 	double *area_viz;
 	double area_total;
-	
-	double **dir_ele;
-	double **dir_nod;
-	double *length_ele;
-	double length_total;
-    
+	    
     double center_psf[3];
     double xmin_psf[3];
     double xmax_psf[3];
     double rmax_psf;
 	
-	double **color_nod;
+	double *color_nod;
 	
-	int nnod_added_4_map;
-	long **inod_org_4_map_itp;
-	double **coef_4_map_itp;
-    
+
     struct psf_edge_data_c *psf_edge; 
 };
+
 
 typedef struct vtk_fields_list vtk_fields_t;
 
@@ -95,18 +88,14 @@ void alloc_viz_ele_s(struct psf_data *psf_s);
 void alloc_psf_field_name_c(struct psf_data *psf_s);
 void alloc_psf_data_s(struct psf_data *psf_s);
 void alloc_psf_field_data_c(struct psf_data *psf_s);
-void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
 void alloc_psf_norm_s(struct psf_data *psf_s);
-void alloc_psf_length_s(struct psf_data *psf_s);
-void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);
 void dealloc_psf_data_s(struct psf_data *psf_s);
-void dealloc_psf_cutting_4_map(struct psf_data *psf_s);
+void dealloc_psf_norm_s(struct psf_data *psf_s);
 void deallc_all_psf_data(struct psf_data *psf_s);
-void deallc_all_fline_data(struct psf_data *psf_s);
 
 struct vtk_field *alloc_vtk_fields_list_c(void);
 void alloc_vtk_field_data_c(vtk_fields_t *vtk_s);
@@ -114,10 +103,14 @@ void dealloc_vtk_field_data_c(vtk_fields_t *vtk_s);
 void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list);
 
 
-void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org);
-void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org);
-void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org);
-void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org);
+void copy_viewer_udt_node(struct psf_data *viz_org, long *inod_copied, double *xyzw_copied);
+void copy_viewer_udt_connect(struct psf_data *viz_org, long **ie_copied);
+long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
+                                long *ncomp, long *istack_comp,
+                                int *id_coord, char **data_name);
+void copy_viewer_udt_data(struct psf_data *viz_org,
+                          long nnod_copied, long ncomptot_copied,
+                          double *d_copied);
 
 void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);

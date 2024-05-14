@@ -5,7 +5,6 @@
 
 /* subroutine for reading PSF data by UCD */
 
-
 static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	
 	alloc_normal_surf_viewer_s(mesh_s);
@@ -13,10 +12,13 @@ static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	alloc_mesh_draw_s(mesh_s);
 	
 	set_surface_mesh_size(mesh_s);
+    center_of_mesh_triangles(mesh_s, mesh_s->surf_center_view);
 	take_normal_surf_mesh_c(mesh_s);
-	set_surface_normal_4_each_node(mesh_s);
+    
+    alloc_mesh_normals_s(mesh_s);
 	set_normal_on_node_4_mesh(mesh_s);
-	return;
+    set_mesh_patch_group_id(mesh_s);
+    return;
 }
 
 static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m, 
@@ -64,31 +66,31 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
-    /*	set_viewer_ucd_data(psf_s, ucd_tmp);*/
-	set_ucd_with_mapping(psf_s, ucd_tmp);
+    set_viewer_data_with_mapping(psf_s, ucd_tmp);
     
 	take_normal_psf(psf_s);
 	take_minmax_psf(psf_s);
-    /*
-    psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz, 
+    psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
-                                          psf_s->xx_viz, psf_s->norm_nod);
+                                          psf_s->xyzw_viz, psf_s->norm_nod);
 
+    /*
      check_psf_ave_rms_c(psf_s);
      check_psf_min_max_c(psf_s);
      */
 	return;
 }
 
-static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd_tmp) {
-	set_viewer_ucd_data(fline_s, ucd_tmp);
+static void set_fline_data_by_UCD(struct fline_data *fline_d,
+                                  struct psf_data *ucd_tmp){
+    set_viewer_fieldline_data(fline_d, ucd_tmp);
     
-	take_length_fline(fline_s);
-	take_minmax_fline(fline_s);
-	/*
-     check_psf_ave_rms_c(fline_s);
-     check_psf_min_max_c(fline_s);
-     */
+    alloc_fline_work_data(fline_d);
+    take_length_fline(fline_d);
+    
+    alloc_fline_ave_data(fline_d);
+	take_minmax_fline(fline_d);
+    dealloc_fline_work_data(fline_d);
 	return;
 };
 
@@ -122,7 +124,9 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
     return;
 }
 
-int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
+int refresh_FLINE_data(struct psf_data *ucd_tmp,
+                       struct fline_data *fline_d,
+                       struct fline_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
@@ -134,8 +138,8 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struc
 		return iflag_datatype;
 	}
     
-	deallc_all_fline_data(fline_s);
-	set_fline_data_by_UCD(fline_s, ucd_tmp);
+	deallc_all_fline_data(fline_d);
+	set_fline_data_by_UCD(fline_d, ucd_tmp);
 	return 0;
 }
 
@@ -176,23 +180,24 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 	return;
 }
 
-void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
+void set_kemoview_fline_data(struct psf_data *ucd_tmp,
+                             struct fline_data *fline_d,
                              struct fline_menu_val *fline_m){
 	int i;
 	
-	set_fline_data_by_UCD(fline_s, ucd_tmp);
-	alloc_draw_fline_flags(fline_s, fline_m);
+	set_fline_data_by_UCD(fline_d, ucd_tmp);
+	alloc_draw_fline_flags(fline_d, fline_m);
 	
 	fline_m->iflag_draw_fline = IONE;
 	
-	for (i=0;i<fline_s->nfield;i++){
-		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_s->amp_min[i], fline_s->amp_max[i]);
-		set_full_opacitymap(fline_m->cmap_fline_fld[i], fline_s->amp_min[i], fline_s->amp_max[i]);
+	for (i=0;i<fline_d->nfield;i++){
+		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
+		set_full_opacitymap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
 	};
 	
-	for (i=0;i<fline_s->ncomptot;i++){
-		set_linear_colormap(fline_m->cmap_fline_comp[i], fline_s->d_min[i], fline_s->d_max[i]);
-		set_full_opacitymap(fline_m->cmap_fline_comp[i], fline_s->d_min[i], fline_s->d_max[i]);
+	for (i=0;i<fline_d->ncomptot;i++){
+		set_linear_colormap(fline_m->cmap_fline_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
+		set_full_opacitymap(fline_m->cmap_fline_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
 	};
 	
 	return;

@@ -12,8 +12,9 @@
 static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
-	
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_1));
+    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE, iflag, kemo_sgl);
+
     draw_full(kemo_sgl);
 	return;
 };
@@ -21,7 +22,8 @@ static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
 	GtkWidget *window = GTK_WIDGET(user_data);
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_1));
+    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE, iflag, kemo_sgl);
 	
     draw_full(kemo_sgl);
 	gtk_widget_queue_draw(window);
@@ -122,14 +124,20 @@ void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl,
 GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
                                        struct psf_isoline_gtk_menu *psf_isoline_menu){
 	GtkWidget *expander_iso;
+    int iflag;
+    
     g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 	
 	psf_isoline_menu->switch_1 = gtk_switch_new();
+    iflag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
+    gtk_switch_set_state(GTK_SWITCH(psf_isoline_menu->switch_1), iflag);
 	gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), FALSE);
 	g_signal_connect(G_OBJECT(psf_isoline_menu->switch_1), "notify::active",
 				G_CALLBACK(psf_grid_switch_CB), (gpointer) window);
 	
 	psf_isoline_menu->switch_zero = gtk_switch_new();
+    iflag = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
+    gtk_switch_set_state(GTK_SWITCH(psf_isoline_menu->switch_zero), iflag);
 	gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), FALSE);
 	g_signal_connect(G_OBJECT(psf_isoline_menu->switch_zero), "notify::active",
 				G_CALLBACK(psf_zero_switch_CB), (gpointer) window);

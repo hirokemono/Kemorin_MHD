@@ -12,6 +12,7 @@
 
 @implementation DomainTableController
 @synthesize objectDistance;
+@synthesize domainAlpha;
 @synthesize DrawMeshFlag;
 @synthesize DomainWindowlabel;
 
@@ -41,12 +42,17 @@
                     kemoview:(struct kemoviewer_type *) kemo_sgl
 {
 	int i;
+    float colorcode4[4];
 	char name[4096];
 	NSString *stname;
 	
 	self.DomainWindowlabel = [NSString stringWithFormat:@"Mesh View - %@ -",MeshOpenFilehead];
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
 	NumSubDomain =     kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);
+    kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    self.domainAlpha = colorcode4[3];
+    self.objectDistance = (float) kemoview_get_domain_distance(kemo_sgl);
 
 	[DomainDisplayNames removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
@@ -114,12 +120,18 @@
 
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
 	NumSubDomain = kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);
-	[DomainDisplayNames removeAllObjects];
+    /*
+    [DomainDisplayNames      removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
-	[DomainDisplayWireFlags removeAllObjects];
-	[DomainDisplayNodeFlags removeAllObjects];
+	[DomainDisplayWireFlags  removeAllObjects];
+	[DomainDisplayNodeFlags  removeAllObjects];
 
-	[_metalView UpdateImage:kemo_sgl];
+    DomainDisplayNames= [[NSMutableArray alloc] init];
+    DomainDisplayPatchFlags= [[NSMutableArray alloc] init];
+    DomainDisplayWireFlags=  [[NSMutableArray alloc] init];
+    DomainDisplayNodeFlags=  [[NSMutableArray alloc] init];
+*/
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowAllDomainAction:(id)pId{
@@ -282,6 +294,18 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 	[_metalView UpdateImage:kemo_sgl];
 }
 
+- (IBAction)SetDomainPatchAlphaAction:(id)sender
+{
+    float colorcode4[4];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    colorcode4[3] = self.domainAlpha;
+    kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4, kemo_sgl);
+    
+    [_metalView UpdateImage:kemo_sgl];
+};
 
 - (IBAction)SetDomainPatchColorAction:(id)sender
 {

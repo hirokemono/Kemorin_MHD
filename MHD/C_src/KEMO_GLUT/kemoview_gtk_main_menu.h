@@ -37,19 +37,13 @@
 #endif
 
 struct updatable_widgets{
-    int iflag_psfBox;
-    GtkWidget *psfBox;
     struct psf_gtk_menu *psf_gmenu;
-    
-    int iflag_flineBox;
-    GtkWidget *flineBox;
     struct fieldline_gtk_menu *fline_menu;
     
-    int iflag_meshBox;
-    GtkWidget *meshBox;
+    GtkWidget *meshWin;
     struct kemoview_mesh_view *mesh_vws;
     
-    GtkWidget *expander_evo;
+    GtkWidget *itemTEvo;
     struct evolution_gtk_menu *evo_gmenu;
 };
 
@@ -89,7 +83,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 
 void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
                       struct kemoviewer_gl_type *kemo_gl,
-                      struct updatable_widgets *updatable, 
+                      struct psf_gtk_menu *psf_gmenu,
                       GtkWidget *window);
 void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
@@ -99,23 +93,6 @@ void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
 
 void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window);
-
-void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
-                       struct updatable_widgets *updatable, 
-                       GtkWidget *window);
-
-void update_current_psf_set_hbox(struct kemoviewer_type *kemo_sgl,
-                                 struct psf_gtk_menu *psf_gmenu);
-void update_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
-                                struct psf_gtk_menu *psf_gmenu);
-void update_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
-                                    struct psf_gtk_menu *psf_gmenu);
-void update_by_psf_field(struct kemoviewer_type *kemo_sgl,
-                         struct psf_gtk_menu *psf_gmenu);
-
-void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
-                          struct updatable_widgets *updatable,
-                          GtkWidget *menuHbox, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct main_buttons *mbot,
                             GtkWidget *takobox, GtkWidget *window_main,

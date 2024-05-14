@@ -19,6 +19,7 @@ struct int_real_ctl_item * init_int_real_ctl_item_c(void){
 		exit(0);
 	}
     
+    ir_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	ir_item->i_data = 0;
 	ir_item->r_data = 0.0;
     return ir_item;

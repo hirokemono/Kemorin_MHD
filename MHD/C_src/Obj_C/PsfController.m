@@ -672,16 +672,15 @@
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFSurfaceSwitch 
-        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFSOLID_TOGGLE);
+    kemoview_set_PSF_draw_flags(PSFSOLID_TOGGLE, self.PSFSurfaceSwitch ,
+                                kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFIsolineSwitch
-        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
+    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE, self.PSFIsolineSwitch, kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
@@ -690,8 +689,7 @@
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFZerolineSwitch
-        = kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
+    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE, self.PSFZerolineSwitch, kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
@@ -700,8 +698,7 @@
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFColorbarSwitch 
-        = kemoview_select_PSF_draw_switch(kemo_sgl, COLORBAR_TOGGLE);
+    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE, self.PSFColorbarSwitch, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -779,8 +776,7 @@
 - (IBAction)DrawPSFVectorAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.DrawPSFVectorFlag
-        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFVECT_TOGGLE);
+    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE, self.DrawPSFVectorFlag, kemo_sgl);
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};

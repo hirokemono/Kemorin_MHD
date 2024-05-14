@@ -19,7 +19,7 @@
 #include "read_data_4_kemoviewer.h"
 
 struct kemoview_fline{
-    struct psf_data           *fline_d;
+    struct fline_data         *fline_d;
     struct fline_menu_val     *fline_m;
 };
 

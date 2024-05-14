@@ -31,10 +31,11 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
 };
 
 
-void add_fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
-                              GtkWidget *combobox_field,
-                              GtkWidget *label_tree_field,
-                              GtkCellRenderer *renderer_field){
+GtkWidget * fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
+                                 GtkWidget *label_tree_field,
+                                 GtkCellRenderer *renderer_field){
+    GtkWidget *combobox_field;
+    
 	GtkTreeModel *model_field;
 	GtkTreeModel *child_model_field;
 	
@@ -63,36 +64,15 @@ void add_fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
 				G_CALLBACK(fline_field_select_CB), (gpointer) kemo_sgl);
-    return;
-}
-
-void update_fline_component_combobox(struct kemoviewer_type *kemo_sgl,
-                                     GtkWidget *combobox_comp,
-                                     GtkWidget *label_tree_comp,
-                                     GtkCellRenderer *renderer_comp){
-    char comp_name[1024];
-    int icomp, id_coord;
-    int if_fline = kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
-    int ncomp =  kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
-
-    clear_ci_tree_view(GTK_TREE_VIEW(label_tree_comp));
-    GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
-    GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-    int index = 0;
-    for(icomp=0;icomp<ncomp;icomp++){
-        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
-        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
-    };
-    
-    icomp = kemoview_get_fline_field_param(kemo_sgl, COMPONENT_SEL_FLAG);
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), icomp);
+    return combobox_field;
 }
 
 
-void fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
-                                   GtkWidget *combobox_comp,
+GtkWidget * fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
                                    GtkWidget *label_tree_comp,
                                    GtkCellRenderer *renderer_comp){
+    GtkWidget *combobox_comp;
+    
 	GtkTreeModel *model_comp;
 	GtkTreeModel *child_model_comp;
 	
@@ -107,7 +87,7 @@ void fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
     label_tree_comp = create_fixed_label_w_index_tree();
     model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
     child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-    id_coord = kemoview_get_each_PSF_field_param(kemo_sgl, COORDINATE_FLAG);
+    id_coord = kemoview_get_fline_field_param(kemo_sgl, COORDINATE_FLAG);
     index = 0;
     for(icomp=0;icomp<ncomp;icomp++){
         set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
@@ -122,6 +102,6 @@ void fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
                 "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_comp), "changed",
                 G_CALLBACK(fline_component_select_CB), (gpointer) kemo_sgl);
-	return;
+	return combobox_comp;
 }
 

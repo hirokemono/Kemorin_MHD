@@ -10,6 +10,14 @@ Header containing types and enum constants shared between Metal shaders and C/Ob
 
 #include <simd/simd.h>
 
+#define RAINBOW_MODE    0
+#define GRAYSCALE_MODE  1
+#define RED_BLUE_MODE   2
+#define SYM_GRAY_MODE   3
+#define ORANGE_CYAN_MODE   4
+#define MOLTEN_METAL_MODE  5
+#define SPACE_COLOR_MODE   6
+
 // Buffer index values shared between shader and C code to ensure Metal shader buffer inputs
 // match Metal API buffer set calls.
 typedef enum AAPLVertexInputIndex
@@ -17,20 +25,13 @@ typedef enum AAPLVertexInputIndex
     AAPLVertexInputIndexVertices =     0,
     AAPLVertexInputIndexViewportSize = 1,
     AAPLVertexInputIndexScale =        2,
-
     
     AAPLModelViewMatrix =   1,
     AAPLProjectionMatrix =  2,
     AAPLModelNormalMatrix = 3,
     
-    LeftModelViewMatrix =   4,
-    LeftProjectionMatrix =  5,
-    LeftModelNormalMatrix = 6,
-    
-    RightModelViewMatrix =   7,
-    RightProjectionMatrix =  8,
-    RightModelNormalMatrix = 9,
-    
+    AAPLColormapTable =     4,
+
     AAPLOrthogonalMatrix = 1,
 } AAPLVertexInputIndex;
 
@@ -85,6 +86,18 @@ typedef struct
 /* data value in pixel space. */
     vector_float2  data;
 } KemoViewVertex;
+
+typedef struct{
+    float data_reference[16];             // Data
+    float data_normalized[16];             // normalize
+    int num_normalize[1];
+
+    float alpha_reference[16];             // Data
+    float alpha_output[16];             // normalize
+    int num_opacity[1];
+
+    int id_cmap[1];
+} KemoViewNormalize;
 
 typedef struct{
 //    vector_float4 ambient[12];              // Aclarri

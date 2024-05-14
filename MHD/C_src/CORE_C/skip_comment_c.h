@@ -28,6 +28,8 @@ void read_multi_field_name(FILE *fp, char **data_name);
 
 int strngcopy_w_length(char *chara_out, const int len_chara, const char *chara_in);
 int strngcopy(char *chara_out, const char *chara_in);
+void append_text_c(const char *text_to_append, char *target_text);
+
 int compare_string(int length, const char *string1, const char *string2);
 int cmp_no_case_c(const char *string1, const char *string2);
 int check_cautation_require(const char *string);

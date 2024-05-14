@@ -139,6 +139,9 @@
 #define GRAYSCALE_MODE  1
 #define RED_BLUE_MODE   2
 #define SYM_GRAY_MODE   3
+#define ORANGE_CYAN_MODE   4
+#define MOLTEN_METAL_MODE  5
+#define SPACE_COLOR_MODE   6
 
 #define FLAT_SHADE    0
 #define SMOOTH_SHADE  1
@@ -232,7 +235,8 @@
 #define NTOT_COMPONENT_FLAG  3
 #define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
-#define LINETYPE_FLAG       46
+#define LINETYPE_FLAG          46
+#define NUM_TUBE_CORNERS_FLAG  47
 
 #define EPSILON  1.e-9
 
@@ -265,10 +269,13 @@ extern "C" {
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
-
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
+    void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data);
 
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
+
+    void kemoview_set_number_of_threads(int input, struct kemoviewer_type *kemoviewer);
+    int kemoview_get_number_of_threads(struct kemoviewer_type *kemoviewer);
 
     void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_set_background_color(float color[4],
@@ -423,6 +430,8 @@ extern "C" {
 
 	int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
                                         int selected);
+    void kemoview_set_PSF_draw_flags(int selected, int iflag,
+                                     struct kemoviewer_type *kemoviewer);
 	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                     int selected);
 	
@@ -472,6 +481,10 @@ extern "C" {
                                       int i_point, double *value, double *color);
     void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
                                         int i_point, double *value, double *opacity);
+    void kemoview_get_PSF_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                          int *id_cmap, int *num_cmap, int *num_alpha,
+                                          float *cmap_data, float *cmap_norm, 
+                                          float *alpha_data, float *alpha_norm);
     
     void kemoview_write_PSF_colormap_file(struct kv_string *filename,
                                           struct kemoviewer_type *kemoviewer);
@@ -534,6 +547,10 @@ extern "C" {
                                        int i_point, double *value, double *color);
     void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                          int i_point, double *value, double *opacity);
+    void kemoview_get_fline_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                            int *id_cmap, int *num_cmap, int *num_alpha,
+                                            float *cmap_data, float *cmap_norm,
+                                            float *alpha_data, float *alpha_norm);
     
     void kemoview_write_fline_colormap_file(struct kv_string *filename,
                                             struct kemoviewer_type *kemoviewer);

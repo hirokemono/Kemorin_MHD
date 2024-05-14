@@ -20,6 +20,7 @@
 !
 !    void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
 !    void kemoview_deallocate_pointers();
+!    void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data);
 !    
 !     void kemoview_set_current_viewer_id(int id_window, mul_kemoviewer_type *kemoview_array);
 !    

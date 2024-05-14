@@ -10,7 +10,7 @@
 #include "calypso_param_c.h"
 #include "kemoviewer_param_c.h"
 #include "m_color_table_c.h"
-#include "m_psf_data_4_viewer_c.h"
+#include "m_fline_data_4_viewer_c.h"
 #include "kemoviewer_base.h"
 
 struct fline_menu_val{
@@ -34,19 +34,22 @@ struct fline_menu_val{
 	struct colormap_params *cmap_fline;
 	struct colormap_params **cmap_fline_comp;
 	struct colormap_params **cmap_fline_fld;
+    
+    int ncorner;
 };
 
 /* Prototypes */
+struct fline_menu_val * init_fline_menu_val(void);
 
-void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);
-void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);
+void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m);
+void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m);
 
 void init_fline_parameters(struct fline_menu_val *fline_m);
 
-void set_fline_color_field(int selected, struct psf_data *fline_s, 
-			struct fline_menu_val *fline_m);
-void set_fline_color_component(int selected, struct psf_data *fline_s,
-			struct fline_menu_val *fline_m);
+void set_fline_color_field(int selected, struct fline_data *fline_d,
+                           struct fline_menu_val *fline_m);
+void set_fline_color_component(int selected, struct fline_data *fline_d,
+                               struct fline_menu_val *fline_m);
 
 
 #endif

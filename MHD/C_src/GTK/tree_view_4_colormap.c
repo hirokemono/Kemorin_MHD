@@ -240,7 +240,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     float height = 200.0;
     float top_s, height_s;
     
-    int *i_point;
+    long   *i_point;
 	double *d_point;
 	double o_point;
     double d_bottom = 0.0;
@@ -250,10 +250,10 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     int i;
     int num_cmap = count_real2_clist(cmap_param->colormap);
 	int num_omap = count_real2_clist(cmap_param->opacitymap);
-    int ntot = num_cmap + num_omap;
+    long ntot = num_cmap + num_omap;
 	double d1, v1;
 	
-	i_point = (int *) calloc(ntot, sizeof(int));
+	i_point = (long *) calloc(ntot, sizeof(long));
 	d_point = (double *) calloc(ntot, sizeof(double));
 	for(i=0;i<num_cmap;i++){
 		set_from_real2_clist_at_index(i, cmap_param->colormap, &d_point[i], &v1);
@@ -290,23 +290,31 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
 		if(d1 > d_top){d_top = d1;};
 		range = d_top - d_bottom;
 		
+        struct colormap_array *cmap_array = init_colormap_from_list(cmap_param->colormap);
+		struct colormap_array *omap_array = init_colormap_from_list(cmap_param->opacitymap);
         for(i=0;i<ntot-1;i++){
-			set_rgb_from_value_s(cmap_param, d_point[i], &red1, &green1, &blue1);
-			o_point = set_opacity_from_value_s(cmap_param, d_point[i]) / cmap_param->max_opacity;
+			set_rgb_from_value_s(cmap_array, cmap_param->id_color_mode, d_point[i],
+                                 &red1, &green1, &blue1);
+            o_point = set_opacity_from_value_s(omap_array, d_point[i]) / cmap_param->max_opacity;
 			
             height_s = 1.0 - (d_point[i] - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
             cairo_pattern_add_color_stop_rgba(pattern2, height_s, red1, green1, blue1, o_point);
-        }
+		}
+		
         for(i=1;i<10;i++){
             d_current = d_bottom + (double) i * range / 10.0;
-            set_rgb_from_value_s(cmap_param, d_current, &red1, &green1, &blue1);
-            o_point = set_opacity_from_value_s(cmap_param, d_current) / cmap_param->max_opacity;
+            
+            set_rgb_from_value_s(cmap_array, cmap_param->id_color_mode, d_current,
+                                 &red1, &green1, &blue1);
+            o_point = set_opacity_from_value_s(omap_array, d_current) / cmap_param->max_opacity;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
             cairo_pattern_add_color_stop_rgba(pattern2, height_s, red1, green1, blue1, o_point);
         }
+		dealloc_colormap_array(omap_array);
+        dealloc_colormap_array(cmap_array);
 
         /* Set colorpattern without opacity */
             cairo_set_source(cr, pattern1);
@@ -384,17 +392,26 @@ GtkWidget * init_combobox_cmap(int iflag){
     index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);
     index = append_ci_item_to_tree(index, &color_labels[RED_BLUE_MODE][0], RED_BLUE_MODE, child_model);
     index = append_ci_item_to_tree(index, &color_labels[SYM_GRAY_MODE][0], SYM_GRAY_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[ORANGE_CYAN_MODE][0], ORANGE_CYAN_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[MOLTEN_METAL_MODE][0], MOLTEN_METAL_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[SPACE_COLOR_MODE][0], SPACE_COLOR_MODE, child_model);
     
     combobox_cmap = gtk_combo_box_new_with_model(child_model);
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    if(iflag == SYM_GRAY_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
+    if(iflag == SPACE_COLOR_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), SPACE_COLOR_MODE);
+    } else if(iflag == MOLTEN_METAL_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), MOLTEN_METAL_MODE);
+    } else if(iflag == ORANGE_CYAN_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), ORANGE_CYAN_MODE);
+    } else if(iflag == SYM_GRAY_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), SYM_GRAY_MODE);
     } else if(iflag == RED_BLUE_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 2);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), RED_BLUE_MODE);
     } else if(iflag == GRAYSCALE_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 1);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), GRAYSCALE_MODE);
     } else {
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 0);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), RAINBOW_MODE);
     };
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), renderer, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), renderer,

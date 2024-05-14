@@ -1,5 +1,7 @@
-#version 330
+// #version 330
+//
 // phong.frag
+//
 
 in vec4 position;
 in vec4 ex_Color;

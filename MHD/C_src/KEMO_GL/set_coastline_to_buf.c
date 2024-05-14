@@ -33,6 +33,7 @@ long count_sph_flame(void){
 }
 
 long set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
     long inum;
 	int i, j, nd;
 	double f_color[4];
@@ -44,23 +45,27 @@ long set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 	for(j=0; j<NUM_P+1; j++){
 		for(i=0; i<N_CURVE; i++){
 			t_mid = 0.5 * (theta_p_grid[i] + theta_p_grid[i+1]);
-            set_node_stride_buffer((ITWO*inum  ), strided_buf);
-			strided_buf->x_draw[0] = (float) (radius * sin(theta_p_grid[i]) * cos(phi_p_grid[j]));
-			strided_buf->x_draw[1] = (float) (radius * sin(theta_p_grid[i]) * sin(phi_p_grid[j]));
-			strided_buf->x_draw[2] = (float) (radius * cos(theta_p_grid[i]));
-			strided_buf->n_draw[0] = (float) (1.0 *    sin(theta_p_grid[i]) * cos(phi_p_grid[j]));
-			strided_buf->n_draw[1] = (float) (1.0 *    sin(theta_p_grid[i]) * sin(phi_p_grid[j]));
-			strided_buf->n_draw[2] = (float) (1.0 *    cos(theta_p_grid[i]));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum  ), strided_buf, &point_buf);
+			strided_buf->v_buf[  point_buf.igl_xyzw] = (float) (radius * sin(theta_p_grid[i]) * cos(phi_p_grid[j]));
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = (float) (radius * sin(theta_p_grid[i]) * sin(phi_p_grid[j]));
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = (float) (radius * cos(theta_p_grid[i]));
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			strided_buf->v_buf[  point_buf.igl_norm] = (float) (1.0 *    sin(theta_p_grid[i]) * cos(phi_p_grid[j]));
+			strided_buf->v_buf[1+point_buf.igl_norm] = (float) (1.0 *    sin(theta_p_grid[i]) * sin(phi_p_grid[j]));
+			strided_buf->v_buf[2+point_buf.igl_norm] = (float) (1.0 *    cos(theta_p_grid[i]));
+            strided_buf->v_buf[3+point_buf.igl_norm] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			
-            set_node_stride_buffer((ITWO*inum+1), strided_buf);
-			strided_buf->x_draw[0] = (float) (radius * sin(t_mid) * cos(phi_p_grid[j]));
-			strided_buf->x_draw[1] = (float) (radius * sin(t_mid) * sin(phi_p_grid[j]));
-			strided_buf->x_draw[2] = (float) (radius * cos(t_mid));
-			strided_buf->n_draw[0] = (float) (1.0 *    sin(t_mid) * cos(phi_p_grid[j]));
-			strided_buf->n_draw[1] = (float) (1.0 *    sin(t_mid) * sin(phi_p_grid[j]));
-			strided_buf->n_draw[2] = (float) (1.0 *    cos(t_mid));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum+1), strided_buf, &point_buf);
+			strided_buf->v_buf[  point_buf.igl_xyzw] = (float) (radius * sin(t_mid) * cos(phi_p_grid[j]));
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = (float) (radius * sin(t_mid) * sin(phi_p_grid[j]));
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = (float) (radius * cos(t_mid));
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			strided_buf->v_buf[  point_buf.igl_norm] = (float) (1.0 *    sin(t_mid) * cos(phi_p_grid[j]));
+			strided_buf->v_buf[1+point_buf.igl_norm] = (float) (1.0 *    sin(t_mid) * sin(phi_p_grid[j]));
+			strided_buf->v_buf[2+point_buf.igl_norm] = (float) (1.0 *    cos(t_mid));
+            strided_buf->v_buf[3+point_buf.igl_norm] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			inum = inum + 1;
 		}
 	}
@@ -68,23 +73,27 @@ long set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 	for(j=0; j<NUM_T-1; j++){
 		for(i=0; i<N_CURVE; i++){
 			p_mid = 0.5 * (phi_t_grid[i] + phi_t_grid[i+1]);
-            set_node_stride_buffer((ITWO*inum  ), strided_buf);
-			strided_buf->x_draw[0] = (float) (radius * sin(theta_t_grid[j]) * cos(phi_t_grid[i]));
-			strided_buf->x_draw[1] = (float) (radius * sin(theta_t_grid[j]) * sin(phi_t_grid[i]));
-			strided_buf->x_draw[2] = (float) (radius * cos(theta_t_grid[j]));
-			strided_buf->n_draw[0] = (float) (1.0 *    sin(theta_t_grid[j]) * cos(phi_t_grid[i]));
-			strided_buf->n_draw[1] = (float) (1.0 *    sin(theta_t_grid[j]) * sin(phi_t_grid[i]));
-			strided_buf->n_draw[2] = (float) (1.0 *    cos(theta_t_grid[j]));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum  ), strided_buf, &point_buf);
+			strided_buf->v_buf[  point_buf.igl_xyzw] = (float) (radius * sin(theta_t_grid[j]) * cos(phi_t_grid[i]));
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = (float) (radius * sin(theta_t_grid[j]) * sin(phi_t_grid[i]));
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = (float) (radius * cos(theta_t_grid[j]));
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			strided_buf->v_buf[  point_buf.igl_norm] = (float) (1.0 *    sin(theta_t_grid[j]) * cos(phi_t_grid[i]));
+			strided_buf->v_buf[1+point_buf.igl_norm] = (float) (1.0 *    sin(theta_t_grid[j]) * sin(phi_t_grid[i]));
+			strided_buf->v_buf[2+point_buf.igl_norm] = (float) (1.0 *    cos(theta_t_grid[j]));
+            strided_buf->v_buf[3+point_buf.igl_norm] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			
-            set_node_stride_buffer((ITWO*inum+1), strided_buf);
-			strided_buf->x_draw[0] = (float) (radius * sin(theta_t_grid[j]) * cos(p_mid));
-			strided_buf->x_draw[1] = (float) (radius * sin(theta_t_grid[j]) * sin(p_mid));
-			strided_buf->x_draw[2] = (float) (radius * cos(theta_t_grid[j]));
-			strided_buf->n_draw[0] = (float) (1.0 *    sin(theta_t_grid[j]) * cos(p_mid));
-			strided_buf->n_draw[1] = (float) (1.0 *    sin(theta_t_grid[j]) * sin(p_mid));
-			strided_buf->n_draw[2] = (float) (1.0 *    cos(theta_t_grid[j]));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum+1), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = (float) (radius * sin(theta_t_grid[j]) * cos(p_mid));
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = (float) (radius * sin(theta_t_grid[j]) * sin(p_mid));
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = (float) (radius * cos(theta_t_grid[j]));
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			strided_buf->v_buf[  point_buf.igl_norm] = (float) (1.0 *    sin(theta_t_grid[j]) * cos(p_mid));
+			strided_buf->v_buf[1+point_buf.igl_norm] = (float) (1.0 *    sin(theta_t_grid[j]) * sin(p_mid));
+			strided_buf->v_buf[2+point_buf.igl_norm] = (float) (1.0 *    cos(theta_t_grid[j]));
+            strided_buf->v_buf[3+point_buf.igl_norm] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			inum = inum + 1;
 		}
 	}
@@ -92,6 +101,7 @@ long set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 }
 
 long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
     long inum;
 	int i, j, nd;
 	double rtp_flame[6], d_map_flame[4], f_color[4];
@@ -110,17 +120,19 @@ long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
 			
 			aitoff_c(ITWO, rtp_flame, d_map_flame);
 			
-            set_node_stride_buffer((ITWO*inum  ), strided_buf);
-			strided_buf->x_draw[0] = d_map_flame[0];
-			strided_buf->x_draw[1] = d_map_flame[1];
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum  ), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = d_map_flame[0];
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = d_map_flame[1];
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.002;
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			
-            set_node_stride_buffer((ITWO*inum+1), strided_buf);
-			strided_buf->x_draw[0] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
-			strided_buf->x_draw[1] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum+1), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.002;
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			inum = inum + 1;
 		}
 	}
@@ -134,17 +146,19 @@ long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
 			
 			aitoff_c(ITWO, rtp_flame, d_map_flame);
 			
-            set_node_stride_buffer((ITWO*inum  ), strided_buf);
-			strided_buf->x_draw[0] = d_map_flame[0];
-			strided_buf->x_draw[1] = d_map_flame[1];
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum  ), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = d_map_flame[0];
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = d_map_flame[1];
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.002;
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			
-            set_node_stride_buffer((ITWO*inum+1), strided_buf);
-			strided_buf->x_draw[0] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
-			strided_buf->x_draw[1] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];}
+            set_node_stride_buffer((ITWO*inum+1), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.002;
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];}
 			inum = inum + 1;
 		}
 	}
@@ -158,6 +172,7 @@ long count_coastline_buf(void){
 };
 
 long set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	int iedge, k, nd;
 	long nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
@@ -169,20 +184,23 @@ long set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
 		get_coastline(iedge, tp_coast, lake);
 		
 		for (k = 0; k < 2; k++) {
-            set_node_stride_buffer((ITWO*iedge+k), strided_buf);
-			strided_buf->x_draw[0] = (float) (radius * cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
-			strided_buf->x_draw[1] = (float) (radius * cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
-			strided_buf->x_draw[2] = (float) (radius * sin(tp_coast[2*k]));
-			strided_buf->n_draw[0] = (float) (1.0 *    cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
-			strided_buf->n_draw[1] = (float) (1.0 *    cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
-			strided_buf->n_draw[2] = (float) (1.0 *    sin(tp_coast[2*k]));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
+            set_node_stride_buffer((ITWO*iedge+k), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = (float) (radius * cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = (float) (radius * cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = (float) (radius * sin(tp_coast[2*k]));
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			strided_buf->v_buf[  point_buf.igl_norm] = (float) (1.0 *    cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
+			strided_buf->v_buf[1+point_buf.igl_norm] = (float) (1.0 *    cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
+			strided_buf->v_buf[2+point_buf.igl_norm] = (float) (1.0 *    sin(tp_coast[2*k]));
+            strided_buf->v_buf[3+point_buf.igl_norm] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];};
 		};
 	};
 	return nedge_coast;
 }
 
 long set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
+    struct gl_local_buffer_address point_buf;
 	int iedge, k, nd;
 	long nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
@@ -205,11 +223,12 @@ long set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
 		aitoff_c(ITWO, rtp_flame, xy_coast);
 		
 		for (k = 0; k < 2; k++) {
-            set_node_stride_buffer((ITWO*iedge+k), strided_buf);
-			strided_buf->x_draw[0] = xy_coast[2*k  ];
-			strided_buf->x_draw[1] = xy_coast[2*k+1];
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
+            set_node_stride_buffer((ITWO*iedge+k), strided_buf, &point_buf);
+			strided_buf->v_buf[0+point_buf.igl_xyzw] = xy_coast[2*k  ];
+			strided_buf->v_buf[1+point_buf.igl_xyzw] = xy_coast[2*k+1];
+			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.002;
+            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];};
 		};
 	};
 	return nedge_coast;

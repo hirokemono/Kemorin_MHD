@@ -13,7 +13,14 @@
 
 #include "skip_comment_c.h"
 
-#define NPATCH_GL_BUFFER  4096
+struct gl_local_buffer_address{
+    long igl_xyzw;
+    long igl_txur;
+    long igl_norm;
+    long igl_color;
+    long igl_data;
+};
+
 
 struct gl_strided_buffer{
     long nsize_buf;
@@ -30,12 +37,6 @@ struct gl_strided_buffer{
     int ist_data;
     
     float *v_buf;
-    
-    float *x_draw;
-    float *x_txur;
-    float *n_draw;
-    float *c_draw;
-    float *d_draw;
 };
 
 struct gl_index_buffer{
@@ -70,11 +71,14 @@ void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
 void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 
 void set_buffer_address_4_patch(long num_points, struct gl_strided_buffer *strided_buf);
-void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
+void set_buffer_address_4_colormap(long num_points, struct gl_strided_buffer *strided_buf);
 
-void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
-void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
-void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf);
+void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                            struct gl_local_buffer_address *point_buf);
+void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                            struct gl_local_buffer_address *point_buf);
+void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf);
 
 
 struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele);

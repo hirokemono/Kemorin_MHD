@@ -12,7 +12,6 @@
 
 #import "KemoViewerMetalView.h"
 #import "fillRectView.h"
-#import "KemoViewerRenderer.h"
 #import "KemoViewerObject.h"
 #include "Kemoviewer.h"
 

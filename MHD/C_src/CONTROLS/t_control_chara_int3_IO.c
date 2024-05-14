@@ -18,7 +18,8 @@ struct chara_int3_ctl_item * init_chara_int3_ctl_item_c(void){
 		printf("malloc error for ci3_item->f_iflag\n");
 		exit(0);
 	}
-	ci3_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
+    ci3_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+	ci3_item->c_tbl =        (char *)calloc(KCHARA_C, sizeof(char));
 	ci3_item->i_data[0] = 0;
 	ci3_item->i_data[1] = 0;
 	ci3_item->i_data[2] = 0;

@@ -31,9 +31,9 @@ static void read_psf_vtk_node_data(struct psf_data *viz_s){
         viz_s->inod_viz[i] = i + 1;
 		fgets(buf, LENGTHBUF, fp_vtk);
 		sscanf(buf, "%lf %lf %lf",
-               &viz_s->xx_viz[i][0],
-               &viz_s->xx_viz[i][1],
-               &viz_s->xx_viz[i][2]);
+               &viz_s->xyzw_viz[i*IFOUR + 0],
+               &viz_s->xyzw_viz[i*IFOUR + 1],
+               &viz_s->xyzw_viz[i*IFOUR + 2]);
 	};
 	return;
 };

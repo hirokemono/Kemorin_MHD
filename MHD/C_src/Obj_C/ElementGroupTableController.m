@@ -11,6 +11,7 @@
 
 
 @implementation ElementGroupTableController
+@synthesize eleGrpAlpha;
 - (id) init
 {
 	NumElementGroup = 0;
@@ -38,8 +39,13 @@
     struct kv_string *groupname;
 	NSString *stname;
 
+    float colorcode4[4];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	[ElementGroupDisplayNames removeAllObjects];
+    kemoview_get_mesh_color_code(kemo_sgl, ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    self.eleGrpAlpha = colorcode4[3];
+
+    [ElementGroupDisplayNames removeAllObjects];
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
 	[ElementGroupDisplayNodeFlags removeAllObjects];
@@ -188,7 +194,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	int i, iflag;
     struct kv_string *groupname;
 	NSString *stname;
-	
+    float colorcode4[4];
+    kemoview_get_mesh_color_code(kemo_sgl, ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    self.eleGrpAlpha = colorcode4[3];
+
 	// printf("Update Element group map\n");
 	[ElementGroupDisplayNames removeAllObjects];
 	[ElementGroupDisplayPatchFlags removeAllObjects];
@@ -245,6 +255,19 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                  (int) tag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
+
+- (IBAction)SetEleGrpPatchAlphaAction:(id)sender
+{
+    float colorcode4[4];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_get_mesh_color_code(kemo_sgl, ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4);
+    colorcode4[3] = self.eleGrpAlpha;
+    kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4, kemo_sgl);
+    
+    [_metalView UpdateImage:kemo_sgl];
+};
 
 - (IBAction)SetEleGrpPatchColorAction:(id)sender
 {

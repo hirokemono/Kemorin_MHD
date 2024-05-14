@@ -6,6 +6,7 @@
 
 #include "glsl.h"
 
+char *glsl_version = "#version 330 \n";
 
 /*
 ** Init GLSL
@@ -14,6 +15,49 @@ int glslInit(void)
 {
 	int error = 0;
 	return error;
+}
+
+
+char *phong_colormap_vertex_shader(void){
+    long len_colormap_rainbow =       strlen(load_colormap_rainbow_frag());
+    long len_colormap_grayscale =     strlen(load_colormap_grayscale_frag());
+    long len_colormap_sym_grayscale = strlen(load_colormap_sym_grayscale_frag());
+    long len_colormap_space =         strlen(load_colormap_space_frag());
+    long len_colormap_red_blue =      strlen(load_colormap_red_blue_frag());
+    long len_colormap_orange_cyan =   strlen(load_colormap_orange_cyan_frag());
+    long len_colormap_molten_metal =  strlen(load_colormap_molten_metal_frag());
+
+    long len_color_normalize = strlen(load_color_normalize_frag());
+    long len_colormap_select = strlen(load_colormap_select_frag());
+
+    long len_phong_w_colormap = strlen(load_phong_w_colormap_vert());
+
+    long len_vertex_shader = 0;
+    len_vertex_shader += len_phong_w_colormap;
+    len_vertex_shader += len_colormap_select;
+    len_vertex_shader += len_color_normalize;
+    len_vertex_shader += len_colormap_molten_metal;
+    len_vertex_shader += len_colormap_orange_cyan;
+    len_vertex_shader += len_colormap_red_blue;
+    len_vertex_shader += len_colormap_space;
+    len_vertex_shader += len_colormap_sym_grayscale;
+    len_vertex_shader += len_colormap_grayscale;
+    len_vertex_shader += len_colormap_rainbow;
+    
+    char *vertex_shader = alloc_string(len_vertex_shader);
+    append_text_c(load_colormap_rainbow_frag(), vertex_shader);
+    append_text_c(load_colormap_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_sym_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_space_frag(), vertex_shader);
+    append_text_c(load_colormap_red_blue_frag(), vertex_shader);
+    append_text_c(load_colormap_orange_cyan_frag(), vertex_shader);
+    append_text_c(load_colormap_molten_metal_frag(), vertex_shader);
+    
+    append_text_c(load_color_normalize_frag(), vertex_shader);
+    append_text_c(load_colormap_select_frag(), vertex_shader);
+    
+    append_text_c(load_phong_w_colormap_vert(), vertex_shader);
+    return vertex_shader;
 }
 
 /*
@@ -184,13 +228,28 @@ void LoadShaderFromFile(struct shader_ids *shader,
 void LoadShaderFromStrings(struct shader_ids *shader,
 			const GLchar *text_vertex, const GLchar *text_fragment)
 {
-	/* Make shader object */
+    long len_version = strlen(glsl_version);
+    long len_vertex =   strlen(text_vertex) + len_version;
+    long len_fragment = strlen(text_fragment) + len_version;
+
+    char *vertex_shader =   alloc_string(len_vertex+len_version);
+    append_text_c(glsl_version, vertex_shader);
+    append_text_c(text_vertex, vertex_shader);
+
+    char *fragment_shader = alloc_string(len_fragment+len_version);
+    append_text_c(glsl_version, fragment_shader);
+    append_text_c(text_fragment, fragment_shader);
+/*
+    printf("VERTEX: \n%s\n\n", vertex_shader);
+    printf("FRAGMENT: \n%s\n\n", fragment_shader);
+ */
+    /* Make shader object */
 	shader->vertexID = glCreateShader(GL_VERTEX_SHADER);
 	shader->fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 	
 	/* reader shader source */
-	glShaderSource(shader->vertexID, 1, &text_vertex, 0);
-	glShaderSource(shader->fragmentID, 1, &text_fragment, 0);
+	glShaderSource(shader->vertexID, 1, &vertex_shader, 0);
+	glShaderSource(shader->fragmentID, 1, &fragment_shader, 0);
 	
 	/* Compile and link  shader */
 	CompileLinkShader(shader);
@@ -299,7 +358,7 @@ void identity_matrix_to_shader(struct shader_ids *Shader){
 	glUniformMatrix4fv(normalMatLocation,  1, GL_FALSE, nrmat);
 };
 
-static struct shader_ids * init_shader_ids(){
+struct shader_ids * init_shader_ids(void){
     struct shader_ids *s_id;
     if((s_id = (struct shader_ids *) malloc(sizeof(struct shader_ids))) == NULL){
         printf("malloc error in shader_ids \n");
@@ -318,6 +377,7 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 	sds->gouraud = init_shader_ids();
 	sds->menu =    init_shader_ids();
 	sds->phong =   init_shader_ids();
+    sds->phong_w_cmap =    init_shader_ids();
 	sds->phong_texure =    init_shader_ids();
 	sds->phong_1color =    init_shader_ids();
     sds->simple_texure =   init_shader_ids();
@@ -331,8 +391,9 @@ void dealloc_kemoview_shaders(struct kemoview_shaders *sds){
 	destory_shaders(sds->simple_texure);
 	destory_shaders(sds->phong_1color);
 	destory_shaders(sds->phong_texure);
-	destory_shaders(sds->gouraud);
+    destory_shaders(sds->phong_w_cmap);
 	destory_shaders(sds->phong);
+    destory_shaders(sds->gouraud);
 	destory_shaders(sds->menu);
 	destory_shaders(sds->simple);
 		

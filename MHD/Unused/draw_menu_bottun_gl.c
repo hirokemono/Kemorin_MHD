@@ -6,7 +6,7 @@ void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_sh
 	struct gl_strided_buffer *strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(128, strided_buf);
 	alloc_strided_buffer(strided_buf);
-	const_menu_bottun_buffer(strided_buf);
+	const_menu_bottun_buffer(strided_buf, kemo_shaders->point_buf);
 	
 	GLenum ErrorCheckValue = glGetError();
 	
