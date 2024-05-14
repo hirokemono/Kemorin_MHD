@@ -15,6 +15,7 @@
 #include "t_PSF_each_isoline_edge_list.h"
 #include "set_hex_tube_to_buf.h"
 #include "set_new_patch_4_map_c.h"
+#include "icosahedron_c.h"
 
 
 /* prototypes */

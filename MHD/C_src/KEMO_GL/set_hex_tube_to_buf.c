@@ -99,16 +99,3 @@ int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
 	};
 	return idraw;
 };
-
-long append_line_tube_to_buf(const long ist_line,
-                             int ncorner, double radius, 
-                             double color_edge[8],
-                             double xyzw_edge[8], 
-							 double dir_edge[8],
-                             struct gl_strided_buffer *strided_buf){
-    long npatch = 2*ncorner * ist_line;
-    npatch = set_tube_strided_buffer(npatch, ncorner, radius,
-                                     xyzw_edge, dir_edge, color_edge,
-                                     strided_buf);
-    return npatch / (2*ncorner);
-};
