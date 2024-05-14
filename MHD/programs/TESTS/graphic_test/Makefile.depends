@@ -51,6 +51,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
   $(MHDDIR)/C_src/CORE_C/read_psf_data_viewer_c.h \
   $(MHDDIR)/C_src/CORE_C/take_normal_psf_c.h \
+  $(MHDDIR)/C_src/CORE_C/m_fline_data_4_viewer_c.h \
   $(MHDDIR)/C_src/CORE_C/cal_surface_center_normal_c.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
   $(MHDDIR)/C_src/CORE_C/check_psf_data_viewer_c.h \
@@ -111,6 +112,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(MHDDIR)/C_src/KEMO_GL/find_isoline_on_patch_c.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \

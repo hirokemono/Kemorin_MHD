@@ -531,6 +531,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
@@ -548,8 +549,9 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
+  $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
