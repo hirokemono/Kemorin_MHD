@@ -9,136 +9,6 @@
 
 #include "set_hex_tube_to_buf.h"
 
-static int hex_tube_pp[12][3] = {{0, 6,1}, {1, 6, 7},
-								 {1, 7,2}, {2, 7, 8},
-								 {2, 8,3}, {3, 8, 9},
-								 {3, 9,4}, {4, 9,10},
-								 {4,10,5}, {5,10,11},
-								 {5,11,0}, {0,11, 6}};
-static int hex_tube_pn[12][3] = {{0, 9,1}, {1, 9, 8},
-								 {1, 8,2}, {2, 8, 7},
-								 {2, 7,3}, {3, 7, 6},
-								 {3, 6,4}, {4, 6,11},
-								 {4,11,5}, {5,11,10},
-								 {5,10,0}, {0,10, 9}};
-static int hex_tube_nn[12][3] = {{3, 9,2}, {2, 9, 8},
-								 {2, 8,1}, {1, 8, 7},
-								 {1, 7,0}, {0, 7, 6},
-								 {0, 6,5}, {5, 6,11},
-								 {5,11,4}, {4,11,10},
-								 {4,10,3}, {3,10, 9}};
-static int hex_tube_np[12][3] = {{3, 6,2}, {2, 6, 7},
-								 {2, 7,1}, {1, 7, 8},
-								 {1, 8,0}, {0, 8, 9},
-								 {0, 9,5}, {5, 9,10},
-								 {5,10,4}, {4,10,11},
-								 {4,11,3}, {3,11, 6}};
-/*
-static int hex_cap_n[ 6][3] = {{0,6,1},
-							   {1,6,2},
-							   {2,6,3},
-							   {3,6,4},
-							   {4,6,5},
-							   {5,6,0}};
-static int hex_cap_p[ 6][3] = {{3,6,2},
-							   {2,6,1},
-							   {1,6,0},
-							   {0,6,5},
-							   {5,6,4},
-							   {4,6,3}};
-*/
-
-void copy_hex_tube_pp(int hex_tube[12][3]){
-	int i, k;
-	for(i=0;i<12;i++){
-		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_pp[i][k];};
-	};
-	return;
-};
-
-void copy_hex_tube_pn(int hex_tube[12][3]){
-	int i, k;
-	for(i=0;i<12;i++){
-		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_pn[i][k];};
-	};
-	return;
-};
-
-void copy_hex_tube_np(int hex_tube[12][3]){
-	int i, k;
-	for(i=0;i<12;i++){
-		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_np[i][k];};
-	};
-	return;
-};
-
-void copy_hex_tube_nn(int hex_tube[12][3]){
-	int i, k;
-	for(i=0;i<12;i++){
-		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_nn[i][k];};
-	};
-	return;
-};
-
-void hex_ring(double edge_dir[4], double edge_norm[4], double norm_hex[24]){
-	int nd;
-	double asqrt3 = sqrt(3.0) / 3.0;
-	
-	for(nd=0;nd<3;nd++){
-		norm_hex[   nd] =        edge_dir[nd];
-		norm_hex[ 4+nd] =  0.5 * edge_dir[nd] + asqrt3 * edge_norm[nd];
-		norm_hex[ 8+nd] = -0.5 * edge_dir[nd] + asqrt3 * edge_norm[nd];
-		norm_hex[12+nd] =      - edge_dir[nd];
-		norm_hex[16+nd] = -0.5 * edge_dir[nd] - asqrt3 * edge_norm[nd];
-		norm_hex[20+nd] =  0.5 * edge_dir[nd] - asqrt3 * edge_norm[nd];
-	};
-    for(nd=0;nd<6;nd++){
-        norm_hex[4*nd+3] = 1.0;
-    }
-	return;
-}
-
-void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
-						int hex_tube[2][3], double norms_hex[48], double radius,
-						double xyzw_edge[8], double color_edge[8]){
-    int nd;
-	int i1 = hex_tube[0][0];
-	int i2 = hex_tube[0][1];
-	int i3 = hex_tube[0][2];
-	int j1 = hex_tube[1][0];
-	int j2 = hex_tube[1][1];
-	int j3 = hex_tube[1][2];
-	
-    for(nd=0;nd<4;nd++){
-        color_tube[   nd] = color_edge[  nd];
-        color_tube[ 4+nd] = color_edge[4+nd];
-        color_tube[ 8+nd] = color_edge[  nd];
-        color_tube[12+nd] = color_edge[  nd];
-        color_tube[16+nd] = color_edge[4+nd];
-        color_tube[20+nd] = color_edge[4+nd];
-    };
-	for(nd=0;nd<4;nd++){
-		norm_tube[   nd] = norms_hex[4*i1+nd];
-		norm_tube[ 4+nd] = norms_hex[4*i2+nd];
-		norm_tube[ 8+nd] = norms_hex[4*i3+nd];
-		norm_tube[12+nd] = norms_hex[4*j1+nd];
-		norm_tube[16+nd] = norms_hex[4*j2+nd];
-		norm_tube[20+nd] = norms_hex[4*j3+nd];
-	};
-	for(nd=0;nd<3;nd++){
-        xyzw_tube[   nd] = xyzw_edge[  nd] + radius * norm_tube[   nd];
-        xyzw_tube[ 4+nd] = xyzw_edge[4+nd] + radius * norm_tube[ 4+nd];
-        xyzw_tube[ 8+nd] = xyzw_edge[  nd] + radius * norm_tube[ 8+nd];
-        xyzw_tube[12+nd] = xyzw_edge[  nd] + radius * norm_tube[12+nd];
-        xyzw_tube[16+nd] = xyzw_edge[4+nd] + radius * norm_tube[16+nd];
-        xyzw_tube[20+nd] = xyzw_edge[4+nd] + radius * norm_tube[20+nd];
-	};
-    for(nd=0;nd<6;nd++){
-        xyzw_tube[4*nd+3] = 1.0;
-    };
-	return;
-};
-
 void interpolate_on_edge(double xyzw_mid[4], const double xyzw1[4], const double xyzw2[4], 
 						 const double dat1, const double dat2, const double v_line){
 	int nd;
@@ -231,47 +101,14 @@ int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
 };
 
 long append_line_tube_to_buf(const long ist_line,
-                             int hex_tube[12][3], double radius, 
-							 double color_edge[8], double xyzw_edge[8], 
-							 double dir_edge[8], double norm_edge[8], 
+                             int ncorner, double radius, 
+                             double color_edge[8],
+                             double xyzw_edge[8], 
+							 double dir_edge[8],
                              struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-    
-	long ipatch = 12 * ist_line;
-	long i, k, nd;
-	double xyzw_tube[24];
-	double norm_tube[24];
-	double color_tube[24];
-	
-	double norms_hex[48];
-    double norm2[8];
-    
-    int ncorner = 6;
     long npatch = 2*ncorner * ist_line;
-    npatch = set_tube_strided_buffer(npatch, ncorner, radius, 
+    npatch = set_tube_strided_buffer(npatch, ncorner, radius,
                                      xyzw_edge, dir_edge, color_edge,
                                      strided_buf);
     return npatch / (2*ncorner);
-    /*
-    const double zero_v[3] = {0., 0., 0.};
-    cal_normal_4_triangle_c(zero_v, &dir_edge[0], &norm_edge[0], &norm2[0]);
-    cal_normal_4_triangle_c(zero_v, &dir_edge[4], &norm_edge[4], &norm2[4]);
-    
-    hex_ring(&norm2[0], &norm_edge[0], &norms_hex[ 0]);
-    hex_ring(&norm2[4], &norm_edge[4], &norms_hex[24]);
-
-    for(i=0;i<6;i++){
-		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
-						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
-		for(k=0;k<6;k++){
-            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, &point_buf);
-			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_tube[4*k+nd];
-                strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_tube[4*k+nd];
-                strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_tube[4*k+nd];
-            };
-		};
-	};
-    return ist_line + 1;
-    */
 };

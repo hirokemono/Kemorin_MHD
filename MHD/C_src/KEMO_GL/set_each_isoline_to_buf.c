@@ -157,21 +157,18 @@ long set_each_isoline_to_buf(const long ist_patch,
                              struct psf_data *psf_s,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf){
-    int hex_tube[12][3];
-    
     int idraw, nd;
     long iele, iedge1, iedge2;
-    
+    int ncorner = 6;
+
     long inum_patch = ist_patch;
-    copy_hex_tube_pp(hex_tube);
     long icou = 0;
     for (icou=ist; icou<ied; icou++){
-           inum_patch = append_line_tube_to_buf(inum_patch, hex_tube,
+           inum_patch = append_line_tube_to_buf(inum_patch, ncorner,
                                                 wk_iso_line->width,
                                                 wk_iso_line->f_color,
                                                 &wk_iso_line->xyzw_line[8*icou],
                                                 &wk_iso_line->dir_line[8*icou],
-                                                &wk_iso_line->norm_line[8*icou],
                                                 strided_buf);
     };
 
