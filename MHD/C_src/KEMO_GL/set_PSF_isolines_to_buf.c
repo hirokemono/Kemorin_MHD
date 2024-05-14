@@ -24,7 +24,13 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
     
     set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
     set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
+    
     adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
+    
+    adjust_direction_by_neighbor_2(wk_iso_mesh, wk_iso_line,
+                                   wk_iso_line->dir_line);
+
+    
     set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
                            wk_iso_mesh, wk_iso_line);
     adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->norm_line);

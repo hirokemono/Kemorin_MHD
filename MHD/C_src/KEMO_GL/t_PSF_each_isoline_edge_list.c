@@ -274,92 +274,118 @@ void adjust_direction_by_neighbor(struct isoline_mesh_work *wk_iso_mesh,
 
 
 
-long adjust_neighboring_direction(long *icou,  long iedge,
-                                  struct isoline_mesh_work *wk_iso_mesh, 
+long adjust_neighboring_direction(long icou, long j_ref, long j1_line, long j2_line,
                                   int *iflag_checked, double *vect_line){
-    long ineib1, ineib2;
-    long j_ref, j1_line, j2_line;
-    long j1, j2;
-    double def;
-    
-    
-    j_ref = wk_iso_mesh->inum_line[2*iedge  ];
-    ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-    if(ineib2 > 0){
-        j2_line = wk_iso_mesh->inum_line[2*ineib2  ];
-        if(iflag_checked[j2_line] == 0){
-            def =  vect_line[4*j2_line  ] * vect_line[4*j_ref  ]
-            + vect_line[4*j2_line+1] * vect_line[4*j_ref+1]
-            + vect_line[4*j2_line+2] * vect_line[4*j_ref+2];
-            if(def < 0.0){
-                vect_line[4*j2_line  ] = -vect_line[4*j2_line  ];
-                vect_line[4*j2_line+1] = -vect_line[4*j2_line+1];
-                vect_line[4*j2_line+2] = -vect_line[4*j2_line+2];
-            }
-            iflag_checked[j2_line] = 1;
-            *icou = *icou + 1;
-            
-            j2 = wk_iso_mesh->inum_line[2*ineib2+1];
-            if(j2 > 0){
-                vect_line[4*j2  ] = vect_line[4*j2_line  ];
-                vect_line[4*j2+1] = vect_line[4*j2_line+1];
-                vect_line[4*j2+2] = vect_line[4*j2_line+2];
-                iflag_checked[j2] = 1;
-                *icou = *icou + 1;
-            };
-            return ineib2;
-        };
-    };
-    
-    ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
-    j1_line = wk_iso_mesh->inum_line[2*ineib1  ];
-    if(iflag_checked[j1_line] == 0){
-        def =  vect_line[4*j1_line  ] * vect_line[4*j_ref  ]
-             + vect_line[4*j1_line+1] * vect_line[4*j_ref+1]
-             + vect_line[4*j1_line+2] * vect_line[4*j_ref+2];
-        if(def < 0.0){
-            vect_line[4*j1_line  ] = -vect_line[4*j1_line  ];
-            vect_line[4*j1_line+1] = -vect_line[4*j1_line+1];
-            vect_line[4*j1_line+2] = -vect_line[4*j1_line+2];
-        }
-        iflag_checked[j1_line] = 1;
-        
-        j2 = wk_iso_mesh->inum_line[2*ineib1+1];
-        if(j2 > 0){
-            vect_line[4*j2  ] = vect_line[4*j1_line  ];
-            vect_line[4*j2+1] = vect_line[4*j1_line+1];
-            vect_line[4*j2+2] = vect_line[4*j1_line+2];
-            iflag_checked[j2] = 1;
-            *icou = *icou + 1;
-        };
-        iflag_checked[j2] = 1;
-        return ineib1;
+    double def =  vect_line[4*j1_line  ] * vect_line[4*j_ref  ]
+                 + vect_line[4*j1_line+1] * vect_line[4*j_ref+1]
+                 + vect_line[4*j1_line+2] * vect_line[4*j_ref+2];
+    if(def < 0.0){
+        vect_line[4*j1_line  ] = -vect_line[4*j1_line  ];
+        vect_line[4*j1_line+1] = -vect_line[4*j1_line+1];
+        vect_line[4*j1_line+2] = -vect_line[4*j1_line+2];
     }
-    return -1;
+    iflag_checked[j1_line] = 1;
+    icou = icou + 1;
+    
+    if(j2_line >= 0){
+        vect_line[4*j2_line  ] = vect_line[4*j1_line  ];
+        vect_line[4*j2_line+1] = vect_line[4*j1_line+1];
+        vect_line[4*j2_line+2] = vect_line[4*j1_line+2];
+        iflag_checked[j2_line] = 1;
+        icou = icou + 1;
+    };
+    return icou;
 }
 
 void adjust_direction_by_neighbor_2(struct isoline_mesh_work *wk_iso_mesh, 
                                     struct isoline_line_work *wk_iso_line,
                                     double *vect_line){
-    long j, iedge1, icou;
+    long j, iedge1;
     
     for(j=0;j<wk_iso_line->num_line;j++){
         wk_iso_line->iflag_checked[2*j  ] = 0;
         wk_iso_line->iflag_checked[2*j+1] = 0;
     }
-    icou = 0;
+    
+    long ineib1, ineib2;
+    long ineib11, ineib12;
+    long j_ref, j1_line, j2_line;
+    long icou = 0;
+    long jcou = 0;
+    /*
     for(j=0;j<wk_iso_line->num_line;j++){
         iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
-        if(wk_iso_line->iflag_checked[2*j  ] > 0) continue;
-//        printf("iedge1 %d %d %d %d\n", j, icou, iedge1,
-//               2*wk_iso_line->num_line);
-        for(int jj=0;jj<wk_iso_line->num_line;jj++){
-            iedge1 = adjust_neighboring_direction(&icou, iedge1, wk_iso_mesh, 
-                                                  wk_iso_line->iflag_checked, vect_line);
-            if(iedge1 < 0) break;
-        }
-        if(icou >= 2*wk_iso_line->num_line) continue;
+        j_ref = wk_iso_mesh->inum_line[2*iedge1  ];
+        wk_iso_line->iflag_checked[j_ref] = 1;
+        ineib1 = wk_iso_mesh->ineib_edge[2*iedge1  ];
+        ineib11 = wk_iso_mesh->ineib_edge[2*ineib1  ];
+        ineib12 = wk_iso_mesh->ineib_edge[2*ineib1+1];
+        if(iedge1 == ineib11) icou = icou + 1;
+        if(iedge1 == ineib12) jcou = jcou + 1;
     }
+    printf("counter: %d %d \n", icou, jcou);
+    */
+    long iflag0;
+    long kcou, lcou;
+    icou = 0;
+    jcou = 0;
+    lcou = 0;
+    for(j=0;j<wk_iso_line->num_line;j++){
+        if(wk_iso_line->iflag_checked[2*j  ] > 0) continue;
+        iflag0 = wk_iso_line->iflag_checked[2*j  ];
+        
+        kcou = 0;
+        iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
+        j_ref = wk_iso_mesh->inum_line[2*iedge1+1];
+        wk_iso_line->iflag_checked[j_ref] = 1;
+        j_ref = wk_iso_mesh->inum_line[2*iedge1  ];
+        wk_iso_line->iflag_checked[j_ref] = 1;
+        kcou = kcou + 2;
+        jcou = jcou + 2;
+        while(1){
+            ineib1 = wk_iso_mesh->ineib_edge[2*iedge1  ];
+            ineib2 = wk_iso_mesh->ineib_edge[2*iedge1+1];
+            if(ineib2 < 0){
+                j1_line = wk_iso_mesh->inum_line[2*ineib1  ];
+                if(wk_iso_line->iflag_checked[j1_line] == 0){
+                    jcou = adjust_neighboring_direction(jcou, j_ref, j1_line, -1, 
+                                                        wk_iso_line->iflag_checked, vect_line);
+                    kcou = kcou + 1;
+                    iedge1 = ineib1;
+                }
+                icou  = icou + 1;
+                printf("Dead end:  %d %d %d %d %d %d \n", icou, j, jcou, kcou,
+                       iedge1, ineib1, ineib2);
+                break;
+            }else{
+                j1_line = wk_iso_mesh->inum_line[2*ineib2  ];
+                j2_line = wk_iso_mesh->inum_line[2*ineib2+1];
+                if(wk_iso_line->iflag_checked[j1_line] == 0){
+                    jcou = adjust_neighboring_direction(jcou, j_ref, j1_line, j2_line, 
+                                                        wk_iso_line->iflag_checked, vect_line);
+                    kcou = kcou + 2;
+                    iedge1 = ineib2;
+                }else{
+                    j1_line = wk_iso_mesh->inum_line[2*ineib1  ];
+                    j2_line = wk_iso_mesh->inum_line[2*ineib1+1];
+                    if(wk_iso_line->iflag_checked[j1_line] == 0){
+                        jcou = adjust_neighboring_direction(jcou, j_ref, j1_line, j2_line, 
+                                                            wk_iso_line->iflag_checked, vect_line);
+                        kcou = kcou + 2;
+                        iedge1 = ineib1;
+                    }else{
+                        icou  = icou + 1;
+                        if(kcou > 0)lcou = lcou+1;
+                        printf("finished:  %d %d %d %d %d %d  %d %d \n", icou, lcou, j, jcou, kcou,
+                               iedge1, ineib1, ineib2);
+                        break;
+                    }
+                }
+            }
+        }
+        
+    }
+    printf("End %d %d    %d\n", j, icou,  2*wk_iso_line->num_line);
     return;
 }
 
