@@ -66,7 +66,6 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -195,7 +194,6 @@ draw_PSF_patches_by_VAO.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -323,7 +321,6 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -450,7 +447,6 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -580,7 +576,6 @@ init_gl_lighting_c.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -707,7 +702,6 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -837,7 +831,6 @@ move_draw_objects_gl.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -966,7 +959,6 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -1092,7 +1084,6 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -1221,7 +1212,6 @@ vartex_array_object_gl.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
@@ -1352,7 +1342,6 @@ write_gl_window_to_file.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
-  $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
