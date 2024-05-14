@@ -36,7 +36,7 @@ long set_each_map_isoline_to_list(const long ist_line,
                                   struct isoline_line_work *wk_iso_line);
 
 
-long set_each_isoline_to_buf(const long ist_patch,
+long set_each_isoline_to_buf(const long ist_tube,
                              const long ist, const long ied,
                              struct psf_data *psf_s,
                              struct isoline_line_work *wk_iso_line,

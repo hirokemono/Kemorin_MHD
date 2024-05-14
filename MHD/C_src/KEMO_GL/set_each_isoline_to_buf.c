@@ -152,25 +152,20 @@ long set_each_isoline_to_list(const long ist_line,
 	return num_line;
 };
 
-long set_each_isoline_to_buf(const long ist_patch,
+long set_each_isoline_to_buf(const long ist_tube,
                              const long ist, const long ied,
                              struct psf_data *psf_s,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf){
-    int ncorner = 6;
-
-    long inum_patch = ist_patch;
-    long icou = 0;
-    for (icou=ist; icou<ied; icou++){
-        inum_patch = 2*ncorner * inum_patch;
-        inum_patch = set_tube_strided_buffer(inum_patch, ncorner,
-                                             wk_iso_line->width,
-                                             &wk_iso_line->xyzw_line[8*icou],
-                                             &wk_iso_line->dir_line[8*icou],
-                                             wk_iso_line->f_color,
-                                             strided_buf);
-        inum_patch = inum_patch / (2*ncorner);
+    long inum_tube = ist_tube;
+    for(long icou=ist; icou<ied; icou++){
+        inum_tube = set_tube_strided_buffer(inum_tube, 
+                                            wk_iso_line->ncorner,
+                                            wk_iso_line->width,
+                                            &wk_iso_line->xyzw_line[8*icou],
+                                            &wk_iso_line->dir_line[8*icou],
+                                            wk_iso_line->f_color,
+                                            strided_buf);
     };
-
-    return inum_patch;
+    return inum_tube;
 };

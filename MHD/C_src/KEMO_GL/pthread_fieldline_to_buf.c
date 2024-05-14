@@ -38,9 +38,8 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
     
     long lo = fline_d->nedge_fline * id /     nthreads;
     long hi = fline_d->nedge_fline * (id+1) / nthreads;
-    long ist_patch = 2 * fline_m->ncorner * lo;
         
-    num_patch[id] = set_fieldtubes_to_buf(ist_patch, lo, hi,
+    num_patch[id] = set_fieldtubes_to_buf(lo, lo, hi,
                                           fline_d, fline_m, strided_buf);
     return 0;
 }
@@ -139,16 +138,16 @@ long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
                                    struct fline_data *fline_d,
                                    struct fline_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf){
-    long num_patch = ist_patch;
+    long num_tube = ist_patch / (2*fline_m->ncorner);
     if(nthreads > 1){
-        num_patch = set_fieldtubes_to_buf_pthread(num_patch, nthreads,
-                                                  fline_d, fline_m,
-                                                  strided_buf);
+        num_tube = set_fieldtubes_to_buf_pthread(num_tube, nthreads,
+                                                 fline_d, fline_m,
+                                                 strided_buf);
     }else{
-        num_patch = set_fieldtubes_to_buf(num_patch, IZERO, fline_d->nedge_fline,
-                                          fline_d, fline_m, strided_buf);
+        num_tube = set_fieldtubes_to_buf(num_tube, IZERO, fline_d->nedge_fline,
+                                         fline_d, fline_m, strided_buf);
     };
-    return num_patch;
+    return (2*fline_m->ncorner) * num_tube;
 }
 
 long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
