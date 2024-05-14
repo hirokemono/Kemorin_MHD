@@ -1,5 +1,6 @@
 #
-coastline_c.o: $(C_SRCDIR)/KEMO_GL/coastline_c.c \
+coastline_c.o: \
+  $(C_SRCDIR)/KEMO_GL/coastline_c.c \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 const_mesh_patch_table_for_gl.o: \
@@ -344,7 +345,8 @@ draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-icosahedron_c.o: $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
+icosahedron_c.o: \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
