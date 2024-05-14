@@ -61,7 +61,8 @@ void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val 
 	
 	for (i=0;i<fline_d->ncomptot;i++){dealloc_color_index_list_s(fline_m->cmap_fline_comp[i]);};
 	free(fline_m->cmap_fline_comp);
-	
+    fline_d->nfield = 0;
+    fline_d->ncomptot = 0;
 	dealloc_kvstring(fline_m->fline_header);
 	return;
 }

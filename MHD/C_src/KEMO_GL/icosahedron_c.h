@@ -18,7 +18,7 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
                     double color_line[8], double *xyzw, double *norm, double *col);
 
 
-long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
+long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
                              double x_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
 #endif

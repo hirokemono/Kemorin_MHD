@@ -302,13 +302,13 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 }
 
 
-long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius, 
+long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius, 
                              double x_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
 	double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
     double norm_line[8];
-	long npatch_wall = 0;
+    long npatch_wall;
 	long k, nd;
 	
 	find_normal_on_line(&norm_line[0], &dir_line[0]);
@@ -317,6 +317,7 @@ long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
                                   x_line, dir_line,
                                   norm_line, color_line,
                                   xyzw, norm, col);
+    long ist_patch = ist_tube * npatch_wall;
 	for (k=0; k<3*npatch_wall; k++) {
         set_node_stride_buffer((ITHREE*ist_patch+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
@@ -325,8 +326,6 @@ long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
             strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
         };
 	};
-	
-	npatch_wall = ist_patch + 2*ncorner;
-	return npatch_wall;
+    return (ist_tube + 1);
 }
 
