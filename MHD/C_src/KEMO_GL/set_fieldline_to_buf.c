@@ -24,8 +24,8 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
     double xyzw[4*6 * fline_m->ncorner];
     double norm[4*6 * fline_m->ncorner];
     double col[ 4*6 * fline_m->ncorner];
-	double x_line[6], dir_line[6], color_line[8];
-	double norm_line[6];
+	double x_line[8], dir_line[8], color_line[8];
+	double norm_line[8];
 	
 	set_color_code_for_fieldlines(fline_d, fline_m);
 	
@@ -34,12 +34,12 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 		for (k = 0; k < 2; k++) {
 			inod = fline_d->iedge_fline[iele][k] - 1;
 			for (nd=0; nd<3; nd++) {
-				x_line[3*k+nd] =   (float) fline_d->xyzw_fline[inod*IFOUR + nd];
-				dir_line[3*k+nd] = (float) fline_d->dir_nod[inod*IFOUR + nd];
+				x_line[4*k+nd] =   (float) fline_d->xyzw_fline[4*inod + nd];
+				dir_line[4*k+nd] = (float) fline_d->dir_nod[4*inod + nd];
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
-		find_normal_of_line(norm_line, x_line, dir_line);
+		find_normal_of_linew(norm_line, x_line, dir_line);
 		num_wall = set_tube_vertex(fline_m->ncorner, fline_m->fieldline_thick,
 								   x_line, dir_line, norm_line, color_line,
                                    xyzw, norm, col);
