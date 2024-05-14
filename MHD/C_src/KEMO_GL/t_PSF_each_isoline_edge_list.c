@@ -20,6 +20,8 @@ void dealloc_isoline_mesh_work(struct isoline_mesh_work *wk_iso_mesh){
 }
 
 void dealloc_isoline_line_work(struct isoline_line_work *wk_iso_line){
+        free(wk_iso_line->iflag_checked);
+    
         free(wk_iso_line->iedge_itp);
         free(wk_iso_line->xyzw_line);
         free(wk_iso_line->dir_line);
@@ -83,6 +85,7 @@ struct isoline_line_work * init_isoline_line_work(int nthreads, long *istack_thr
             printf("failed allocation for wk_iso_line->norm_line\n");
             exit(1);
     }
+    wk_iso_line->iflag_checked = (int *) malloc(2*wk_iso_line->num_line*sizeof(int));
     
     wk_iso_line->ncorner = NCORNER;
     return wk_iso_line;
@@ -264,6 +267,99 @@ void adjust_direction_by_neighbor(struct isoline_mesh_work *wk_iso_mesh,
                 };
             }
         }
+    return;
+}
+
+
+
+
+
+long adjust_neighboring_direction(long *icou,  long iedge,
+                                  struct isoline_mesh_work *wk_iso_mesh, 
+                                  int *iflag_checked, double *vect_line){
+    long ineib1, ineib2;
+    long j_ref, j1_line, j2_line;
+    long j1, j2;
+    double def;
+    
+    
+    j_ref = wk_iso_mesh->inum_line[2*iedge  ];
+    ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
+    if(ineib2 > 0){
+        j2_line = wk_iso_mesh->inum_line[2*ineib2  ];
+        if(iflag_checked[j2_line] == 0){
+            def =  vect_line[4*j2_line  ] * vect_line[4*j_ref  ]
+            + vect_line[4*j2_line+1] * vect_line[4*j_ref+1]
+            + vect_line[4*j2_line+2] * vect_line[4*j_ref+2];
+            if(def < 0.0){
+                vect_line[4*j2_line  ] = -vect_line[4*j2_line  ];
+                vect_line[4*j2_line+1] = -vect_line[4*j2_line+1];
+                vect_line[4*j2_line+2] = -vect_line[4*j2_line+2];
+            }
+            iflag_checked[j2_line] = 1;
+            *icou = *icou + 1;
+            
+            j2 = wk_iso_mesh->inum_line[2*ineib2+1];
+            if(j2 > 0){
+                vect_line[4*j2  ] = vect_line[4*j2_line  ];
+                vect_line[4*j2+1] = vect_line[4*j2_line+1];
+                vect_line[4*j2+2] = vect_line[4*j2_line+2];
+                iflag_checked[j2] = 1;
+                *icou = *icou + 1;
+            };
+            return ineib2;
+        };
+    };
+    
+    ineib1 = wk_iso_mesh->ineib_edge[2*iedge  ];
+    j1_line = wk_iso_mesh->inum_line[2*ineib1  ];
+    if(iflag_checked[j1_line] == 0){
+        def =  vect_line[4*j1_line  ] * vect_line[4*j_ref  ]
+             + vect_line[4*j1_line+1] * vect_line[4*j_ref+1]
+             + vect_line[4*j1_line+2] * vect_line[4*j_ref+2];
+        if(def < 0.0){
+            vect_line[4*j1_line  ] = -vect_line[4*j1_line  ];
+            vect_line[4*j1_line+1] = -vect_line[4*j1_line+1];
+            vect_line[4*j1_line+2] = -vect_line[4*j1_line+2];
+        }
+        iflag_checked[j1_line] = 1;
+        
+        j2 = wk_iso_mesh->inum_line[2*ineib1+1];
+        if(j2 > 0){
+            vect_line[4*j2  ] = vect_line[4*j1_line  ];
+            vect_line[4*j2+1] = vect_line[4*j1_line+1];
+            vect_line[4*j2+2] = vect_line[4*j1_line+2];
+            iflag_checked[j2] = 1;
+            *icou = *icou + 1;
+        };
+        iflag_checked[j2] = 1;
+        return ineib1;
+    }
+    return -1;
+}
+
+void adjust_direction_by_neighbor_2(struct isoline_mesh_work *wk_iso_mesh, 
+                                    struct isoline_line_work *wk_iso_line,
+                                    double *vect_line){
+    long j, iedge1, icou;
+    
+    for(j=0;j<wk_iso_line->num_line;j++){
+        wk_iso_line->iflag_checked[2*j  ] = 0;
+        wk_iso_line->iflag_checked[2*j+1] = 0;
+    }
+    icou = 0;
+    for(j=0;j<wk_iso_line->num_line;j++){
+        iedge1 = labs(wk_iso_line->iedge_itp[2*j  ]) - 1;
+        if(wk_iso_line->iflag_checked[2*j  ] > 0) continue;
+//        printf("iedge1 %d %d %d %d\n", j, icou, iedge1,
+//               2*wk_iso_line->num_line);
+        for(int jj=0;jj<wk_iso_line->num_line;jj++){
+            iedge1 = adjust_neighboring_direction(&icou, iedge1, wk_iso_mesh, 
+                                                  wk_iso_line->iflag_checked, vect_line);
+            if(iedge1 < 0) break;
+        }
+        if(icou >= 2*wk_iso_line->num_line) continue;
+    }
     return;
 }
 
