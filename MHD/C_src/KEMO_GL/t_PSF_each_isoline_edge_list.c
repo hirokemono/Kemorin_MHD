@@ -9,6 +9,8 @@
 
 #include "t_PSF_each_isoline_edge_list.h"
 
+#define NCORNER  6
+
 void dealloc_isoline_mesh_work(struct isoline_mesh_work *wk_iso_mesh){
         free(wk_iso_mesh->inum_line);
         free(wk_iso_mesh->ineib_edge);
@@ -60,7 +62,6 @@ struct isoline_line_work * init_isoline_line_work(int nthreads, long *istack_thr
             exit(1);
         }
         wk_iso_line->num_line = istack_threads[nthreads] - istack_threads[0];
-        wk_iso_line->num_line = wk_iso_line->num_line / 12;
         
         wk_iso_line->iedge_itp = (long *) calloc(2*wk_iso_line->num_line, sizeof(long));
         if(wk_iso_line->iedge_itp == NULL){
@@ -81,7 +82,9 @@ struct isoline_line_work * init_isoline_line_work(int nthreads, long *istack_thr
         if(wk_iso_line->norm_line == NULL){
             printf("failed allocation for wk_iso_line->norm_line\n");
             exit(1);
-        }
+    }
+    
+    wk_iso_line->ncorner = NCORNER;
     return wk_iso_line;
 }
 

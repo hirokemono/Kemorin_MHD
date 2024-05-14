@@ -57,6 +57,7 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                             istack_smp_map_iso[i]);
 		};
 	};
+    num_patch = 12 * num_patch;
     set_buffer_address_4_patch((ITHREE * num_patch), mline_buf);
 
     if(mline_buf->num_nod_buf <= 0) return;

@@ -19,10 +19,9 @@
 
 /* prototypes */
 
-long add_each_isoline_npatch(const long ist_patch,
-                             const long ist, const long ied,
-                             const double v_line, long icomp,
-                             struct psf_data *psf_s);
+long count_each_isoline_npatch(const long ist, const long ied,
+                               const double v_line, long icomp,
+                               struct psf_data *psf_s);
 
 long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,

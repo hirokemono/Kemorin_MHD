@@ -31,7 +31,7 @@ typedef struct{
 } args_pthread_PSF_Isoline;
 
 
-static void * add_isoline_npatch_each(void *args)
+static void * count_isoline_npatch_1thread(void *args)
 {
     args_pthread_PSF_Isoline * p = (args_pthread_PSF_Isoline *) args;
     int id =       p->id;
@@ -45,7 +45,7 @@ static void * add_isoline_npatch_each(void *args)
     long lo = psf_s->nele_viz * id /     nthreads;
     long hi = psf_s->nele_viz * (id+1) / nthreads;
     
-    num_line[id] = add_each_isoline_npatch(IZERO, lo, hi, v_line, icomp, psf_s);
+    num_line[id] = count_each_isoline_npatch(lo, hi, v_line, icomp, psf_s);
     return 0;
 }
 
@@ -138,7 +138,7 @@ static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthr
         args[ip].psf_s = psf_s;
         args[ip].num_line = num_line;
         
-        pthread_create(&thread_handles[ip], NULL, add_isoline_npatch_each, &args[ip]);
+        pthread_create(&thread_handles[ip], NULL, count_isoline_npatch_1thread, &args[ip]);
     }
     for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
     
@@ -149,7 +149,6 @@ static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthr
     free(num_line);
     free(thread_handles);
     free(args);
-//    printf("Parallel count %ld\n", inum_patch);
     return istack_threads[nthreads];
 };
 
@@ -177,7 +176,7 @@ static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_th
         args[ip].icomp = icomp;
         args[ip].v_line = v_line;
         
-        args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]) / 12;
+        args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]);
         args[ip].num_line = num_line;
         
         pthread_create(&thread_handles[ip], NULL, set_each_isoline_to_list_1thread, &args[ip]);
@@ -214,7 +213,7 @@ static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istac
         args[ip].icomp = icomp;
         args[ip].v_line = v_line;
         
-        args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]) / 12;
+        args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]);
         args[ip].num_line = num_line;
         
         pthread_create(&thread_handles[ip], NULL, set_each_map_isoline_to_list_1thread, &args[ip]);
@@ -250,9 +249,9 @@ static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line
         args[ip].psf_s = psf_s;
         args[ip].wk_iso_line = wk_iso_line;
 
-        args[ip].ist_patch = istack_threads[ip];
-        args[ip].ist = (istack_threads[ip  ] - istack_threads[0]) / 12;
-        args[ip].ied = (istack_threads[ip+1] - istack_threads[0]) / 12;
+        args[ip].ist_patch = istack_threads[ip]*12;
+        args[ip].ist = (istack_threads[ip  ] - istack_threads[0]);
+        args[ip].ied = (istack_threads[ip+1] - istack_threads[0]);
         
         args[ip].num_line = num_line;
         
@@ -271,13 +270,13 @@ static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line
 long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
                                          double v_line, long icomp, struct psf_data *psf_s,
                                          long *istack_threads){
-    long num_patch = ist_patch;
+    long num_patch;
     if(nthreads >1){
-        num_patch = add_each_isoline_npatch_pthread(num_patch, nthreads,
+        num_patch = add_each_isoline_npatch_pthread(ist_patch, nthreads,
                                                     v_line, icomp, psf_s, istack_threads);
     }else{
-        num_patch = add_each_isoline_npatch(num_patch, IZERO, psf_s->nele_viz,
-                                            v_line, icomp, psf_s);
+        num_patch = ist_patch + count_each_isoline_npatch(IZERO, psf_s->nele_viz,
+                                                          v_line, icomp, psf_s);
         istack_threads[1] = num_patch;
     }
     return num_patch;

@@ -113,6 +113,7 @@ static void const_PSF_isoline_buffer(const int nthreads,
                                                  istack_smp_psf_iso[i]);
 		};
 	};
+    num_patch = 12 * num_patch;
     set_buffer_address_4_patch((ITHREE*num_patch), psf_buf);
 
     if(psf_buf->num_nod_buf <= 0) return;

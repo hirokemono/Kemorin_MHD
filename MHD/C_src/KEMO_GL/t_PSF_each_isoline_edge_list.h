@@ -29,6 +29,8 @@ struct isoline_line_work{
     double *xyzw_line;
     double *dir_line;
     double *norm_line;
+    
+    int ncorner;
     double f_color[8];
     double width;
 };

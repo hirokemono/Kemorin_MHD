@@ -4,8 +4,8 @@
 
 #include "set_PSF_isolines_to_buf.h"
 
-static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
-static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
+static double black[4] =   {0.1,0.1,0.1,BLACK_A};
+static double white[4] =   {0.9,0.9,0.9,WHITE_A};
 
 long const_PSF_each_isoline_to_buf(const long ist_patch,
                                    const int nthreads, long *istack_threads,

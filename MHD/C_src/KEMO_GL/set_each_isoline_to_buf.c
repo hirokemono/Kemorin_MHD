@@ -48,24 +48,20 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3],
     return;
 };
 
-long add_each_isoline_npatch(const long ist_patch,
-                             const long ist, const long ied,
-                             const double v_line, long icomp,
-                             struct psf_data *psf_s){
+long count_each_isoline_npatch(const long ist, const long ied,
+                               const double v_line, long icomp,
+                               struct psf_data *psf_s){
     double d_tri[3];
     long iele;
-    int idraw;
     
-    long inum_patch = ist_patch;
+    long num_line = 0;
     for(iele=ist;iele<ied;iele++){
         copy_each_triangle_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                    psf_s->d_nod, icomp, d_tri);
         /*  find isoline */
-        idraw = find_isoline_on_triangle(d_tri, v_line);
-        /*  count isoline */
-        inum_patch = inum_patch + 12 * idraw;
+        num_line = num_line + find_isoline_on_triangle(d_tri, v_line);
     };
-    return inum_patch;
+    return num_line;
 };
 
 long set_each_map_isoline_to_list(const long ist_line,
