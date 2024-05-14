@@ -25,7 +25,6 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
     double norm[4*6 * fline_m->ncorner];
     double col[ 4*6 * fline_m->ncorner];
 	double x_line[8], dir_line[8], color_line[8];
-	double norm_line[8];
 	
 	set_color_code_for_fieldlines(fline_d, fline_m);
 	
@@ -39,20 +38,9 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
-		find_normal_of_linew(norm_line, dir_line);
-		num_wall = set_tube_vertex(fline_m->ncorner, fline_m->fieldline_thick,
-								   x_line, dir_line, norm_line, color_line,
-                                   xyzw, norm, col);
-		
-		for (k=0; k<3*num_wall; k++) {
-            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf, &point_buf);
-            for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
-                strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
-                strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
-            };
-		};
-		inum_patch = inum_patch + num_wall; 
+        inum_patch = set_tube_strided_buffer(inum_patch, 
+                                             fline_m->ncorner, fline_m->fieldline_thick,
+                                             x_line, dir_line, color_line, strided_buf);
 	};
 	return inum_patch;
 };
