@@ -161,6 +161,8 @@ long set_each_map_isoline_to_buf(const long ist_patch,
         copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                        psf_s->xyzw_viz, psf_s->d_nod, icomp,
                                        inod_tri, xyzw_map, norm_tri, d_tri);
+        
+        /*  find isoline */
         idraw = set_isoline_on_triangle(iedge_itp, inod_itp_edge, inod_itp_psf, 
                                         xyzw_line, dir_line, norm_line, 
                                         iele, inod_tri, xyzw_map, norm_tri, d_tri, 
@@ -175,6 +177,44 @@ long set_each_map_isoline_to_buf(const long ist_patch,
         };
     };
     return inum_patch;
+};
+
+long set_each_map_isoline_to_list(const long ist_line,
+                                  const long ist, const long ied,
+                                  double v_line, long icomp,
+                                  struct psf_data *psf_s,
+                                  struct isoline_line_work *wk_iso_line){
+    long inod_tri[3], iedge_out[2];
+    long inod_itp_psf[4], inod_itp_edge[4];
+    double d_tri[3];
+    double xyzw_map[12], norm_tri[12];
+    double xyzw_out[8], dir_line[8], norm_line[8], color_line[8];
+    int hex_tube[12][3];
+    
+    int idraw, nd;
+    long iele;
+    
+    long num_line = ist_line;
+    copy_hex_tube_pp(hex_tube);
+    for (iele = ist; iele < ied; iele++) {
+        copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
+                                       psf_s->xyzw_viz, psf_s->d_nod, icomp,
+                                       inod_tri, xyzw_map, norm_tri, d_tri);
+        
+        /*  find isoline */
+        idraw = set_isoline_on_triangle(iedge_out, inod_itp_edge, inod_itp_psf, 
+                                        xyzw_out, dir_line, norm_line, 
+                                        iele, inod_tri, xyzw_map, norm_tri, d_tri, 
+                                        v_line, psf_s->psf_edge);
+		/* store isoline */
+        if(idraw == 1){
+            wk_iso_line->iedge_itp[2*num_line  ] = iedge_out[0];
+            wk_iso_line->iedge_itp[2*num_line+1] = iedge_out[1];
+            for(nd=0;nd<8;nd++){wk_iso_line->xyzw_line[8*num_line+nd] = xyzw_out[nd];}
+            num_line = num_line + 1;
+        };
+    };
+    return num_line;
 };
 
 
@@ -203,11 +243,11 @@ static void copy_each_triangle_postion_norm2(long ntot_comp, long ie_viz[3],
 };
 
 
-long set_each_isoline_test(const long ist_line,
-                             const long ist, const long ied,
-                             double v_line, long icomp,
-                             struct psf_data *psf_s,
-                           struct isoline_line_work *wk_iso_line){
+long set_each_isoline_to_list(const long ist_line,
+                              const long ist, const long ied,
+                              double v_line, long icomp,
+                              struct psf_data *psf_s,
+                              struct isoline_line_work *wk_iso_line){
     long inod_tri[3], iedge_out[2];
     long inod_itp_edge[4], inod_itp_psf[4];
 	double d_tri[3], xyzw_out[8];
@@ -231,7 +271,7 @@ long set_each_isoline_test(const long ist_line,
                                         iele, inod_tri, xyzw_tri, norm_tri, d_tri,
                                         v_line, psf_s->psf_edge);
         
-		/* draw isoline */
+		/* store isoline */
         if(idraw == 1){
             wk_iso_line->iedge_itp[2*num_line  ] = iedge_out[0];
             wk_iso_line->iedge_itp[2*num_line+1] = iedge_out[1];

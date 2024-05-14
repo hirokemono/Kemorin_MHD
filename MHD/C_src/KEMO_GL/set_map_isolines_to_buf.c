@@ -12,6 +12,41 @@
 static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
+long const_map_each_isoline_to_buf(const long ist_patch,
+                                   const int nthreads, long *istack_threads,
+                                     double width, double v_line,
+                                     long icomp, double *f_color,
+                                     struct psf_data *psf_s,
+                                     struct gl_strided_buffer *strided_buf){
+    struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_s->psf_edge);
+    struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads,
+                                                                   istack_threads);
+    
+    long num = sel_each_map_isoline_to_list_pthread(nthreads, istack_threads,
+                                                    v_line, icomp, psf_s, wk_iso_line);
+    
+    set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
+    
+    set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
+    set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
+    adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
+    set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
+                           wk_iso_mesh, wk_iso_line);
+    adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->norm_line);
+    set_isoline_color_in_wk(f_color, wk_iso_line);
+    wk_iso_line->width = width;
+    dealloc_isoline_mesh_work(wk_iso_mesh);
+
+    long inum_patch = ist_patch;
+    inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, wk_iso_line->num_line,
+                                                  nthreads, istack_threads,
+                                                  psf_s, wk_iso_line, strided_buf);
+        
+    dealloc_isoline_line_work(wk_iso_line);
+    return inum_patch;
+}
+
+
 static long add_map_isoline_num(long num_patch, const int nthreads,
                                 int ist, int ied, struct psf_data *psf_s,
                                 struct psf_menu_val *psf_m,
@@ -119,10 +154,18 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
 	};
 	if(psf_m->draw_psf_zero  != 0){
 		dub_r = 2.0 * psf_m->isoline_width;
+        inum_patch = const_map_each_isoline_to_buf(inum_patch, nthreads,
+                                                   &istack_smp_map_iso[psf_m->n_isoline*nthreads],
+                                                   (2.0 * psf_m->isoline_width),
+                                                   ZERO, psf_m->icomp_draw_psf, black,
+                                                   psf_s, psf_buf);
+
+        /*
         inum_patch = sel_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
                                                          &istack_smp_map_iso[psf_m->n_isoline*nthreads],
                                                          dub_r, ZERO, psf_m->icomp_draw_psf,
                                                          black, psf_s, psf_buf);
+         */
 	};
 	return inum_patch;
 }
