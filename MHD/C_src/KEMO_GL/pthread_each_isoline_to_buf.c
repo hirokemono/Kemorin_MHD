@@ -287,7 +287,7 @@ long sel_each_isoline_to_list_pthread(const int nthreads, long *istack_threads,
                                       struct psf_data *psf_s,
                                       struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
-    if(nthreads < 1){
+    if(nthreads > 1){
         num_patch = set_each_isoline_to_list_pthread(nthreads, istack_threads,
                                                      v_line, icomp, psf_s, wk_iso_line);
     }else{
@@ -303,7 +303,7 @@ long sel_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threa
                                           struct psf_data *psf_s,
                                           struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
-    if(nthreads < 1){
+    if(nthreads > 1){
         num_patch = set_each_map_isoline_to_list_pthread(nthreads, istack_threads,
                                                      v_line, icomp, psf_s, wk_iso_line);
     }else{
