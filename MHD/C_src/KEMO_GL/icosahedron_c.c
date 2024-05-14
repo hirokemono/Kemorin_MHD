@@ -170,16 +170,12 @@ static void set_circle_of_line(int ncorner, double radius, double xx_line[3], do
 	return;
 }
 
-void find_normal_of_line(double norm_line[8],
-                         const double dir_line[8]){
-	int k;
-	
-	for(k=0;k<2;k++){
-		norm_line[4*k  ] = -dir_line[4*k+2];
-		norm_line[4*k+1] =  dir_line[4*k+2];
-        norm_line[4*k+2] =  dir_line[4*k  ] - dir_line[4*k+1];
-        norm_line[4*k+3] = 1.0;
-	};
+void find_normal_on_line(double norm_line[4],
+                         const double dir_line[4]){
+	norm_line[0] = -dir_line[2];
+	norm_line[1] =  dir_line[2];
+	norm_line[2] =  dir_line[0] - dir_line[1];
+    norm_line[3] = 1.0;
 	return;
 };
 
@@ -315,7 +311,8 @@ long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
 	long npatch_wall = 0;
 	long k, nd;
 	
-	find_normal_of_line(norm_line, dir_line);
+	find_normal_on_line(&norm_line[0], &dir_line[0]);
+	find_normal_on_line(&norm_line[4], &dir_line[4]);
     npatch_wall = set_tube_vertex(ncorner, radius,
                                   x_line, dir_line,
                                   norm_line, color_line,

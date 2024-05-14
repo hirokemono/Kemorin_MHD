@@ -245,10 +245,15 @@ long append_line_tube_to_buf(const long ist_line,
 	
 	double norms_hex[48];
     double norm2[8];
-
+    
+    int ncorner = 6;
+    long npatch = 2*ncorner * ist_line;
+    npatch = set_tube_strided_buffer(npatch, ncorner, radius, 
+                                     xyzw_edge, dir_edge, color_edge,
+                                     strided_buf);
+    return npatch / (2*ncorner);
+    /*
     const double zero_v[3] = {0., 0., 0.};
-    
-    
     cal_normal_4_triangle_c(zero_v, &dir_edge[0], &norm_edge[0], &norm2[0]);
     cal_normal_4_triangle_c(zero_v, &dir_edge[4], &norm_edge[4], &norm2[4]);
     
@@ -267,5 +272,6 @@ long append_line_tube_to_buf(const long ist_line,
             };
 		};
 	};
-	return ist_line + 1;
+    return ist_line + 1;
+    */
 };

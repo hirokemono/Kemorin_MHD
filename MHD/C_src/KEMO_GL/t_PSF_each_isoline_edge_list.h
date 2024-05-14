@@ -61,9 +61,6 @@ void set_normal_for_isoline(double *xyzw_psf,
 
 void adjust_direction_by_neighbor(struct isoline_mesh_work *wk_iso_mesh, 
                                   double *vect_line);
-void adjust_direction_by_neighbor_2(struct isoline_mesh_work *wk_iso_mesh, 
-                                    struct isoline_line_work *wk_iso_line,
-                                    double *vect_line);
 
 void set_isoline_color_in_wk(double color[4],
                              struct isoline_line_work *wk_iso_line);
