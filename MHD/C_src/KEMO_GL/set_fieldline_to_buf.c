@@ -39,7 +39,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
-		find_normal_of_linew(norm_line, x_line, dir_line);
+		find_normal_of_linew(norm_line, dir_line);
 		num_wall = set_tube_vertex(fline_m->ncorner, fline_m->fieldline_thick,
 								   x_line, dir_line, norm_line, color_line,
                                    xyzw, norm, col);

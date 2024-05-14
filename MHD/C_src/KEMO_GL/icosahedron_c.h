@@ -17,7 +17,6 @@ long set_icosahedron_patch(double size, double x_draw[3],
 void find_normal_of_line(double norm_line[6], 
 			const double x_line[6], const double dir_line[6]);
 void find_normal_of_linew(double norm_line[8], 
-                          const double x_line[8],
                           const double dir_line[8]);
 
 
@@ -31,7 +30,7 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 
 
 long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
-                             double x_line[6], double dir_line[6],
-                             double norm_line[6], double color_line[8],
+                             double x_line[8], double dir_line[8],
+                             double norm_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
 #endif

@@ -183,7 +183,6 @@ void find_normal_of_line(double norm_line[6],
 };
 
 void find_normal_of_linew(double norm_line[8],
-                          const double x_line[8], 
                           const double dir_line[8]){
 	int k;
 	
@@ -385,15 +384,17 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 
 
 long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius, 
-                             double x_line[6], double dir_line[6],
-                             double norm_line[6], double color_line[8],
+                             double x_line[8], double dir_line[8],
+                             double norm_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
 	double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
 	long npatch_wall = 0;
 	long k, nd;
 	
-	npatch_wall = set_tube_vertex_old(ncorner, radius, x_line, dir_line, norm_line, color_line,
+    npatch_wall = set_tube_vertex(ncorner, radius,
+                                  x_line, dir_line,
+                                  norm_line, color_line,
                                   xyzw, norm, col);
 	for (k=0; k<3*npatch_wall; k++) {
         set_node_stride_buffer((ITHREE*ist_patch+k), strided_buf, &point_buf);
