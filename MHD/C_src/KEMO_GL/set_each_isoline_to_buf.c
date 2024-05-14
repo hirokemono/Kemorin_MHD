@@ -20,34 +20,10 @@ static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
 	};
 	return;
 };
-static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3], 
-                                            double *xyzw_viz, double *norm_nod,
-											double *d_nod, long icomp,
-                                            long inod_tri[3], double xyzw_tri[12], 
-                                            double norm_tri[12], double d_tri[3]){
-	int k;
-	long inod;
-	for (k = 0; k < 3; k++) {
-		inod = ie_viz[k] - 1;
-        
-        inod_tri[k] =  ie_viz[k];
-		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
-        xyzw_tri[4*k  ] = xyzw_viz[inod*IFOUR + 0];
-        xyzw_tri[4*k+1] = xyzw_viz[inod*IFOUR + 1];
-        xyzw_tri[4*k+2] = xyzw_viz[inod*IFOUR + 2];
-        xyzw_tri[4*k+3] = 1.0;
-        norm_tri[4*k  ] = norm_nod[4*inod+0];
-        norm_tri[4*k+1] = norm_nod[4*inod+1];
-        norm_tri[4*k+2] = norm_nod[4*inod+2];
-        norm_tri[4*k+3] = 1.0;
-	};
-	return;
-};
 
-static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], double *xyzw_viz,
-                                           double *d_nod, long icomp,
-                                           long inod_tri[3], double xyzw_map[12],
-                                           double norm_tri[12], double d_tri[3]){
+static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], 
+                                           double *xyzw_viz, double *d_nod, long icomp,
+                                           double xyzw_map[12], double d_tri[3]){
     double xyz_tri[9];
     double xyz_map[9];
 	long inod;
@@ -55,7 +31,6 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
 		
-        inod_tri[k] =  ie_viz[k];
 		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
 		xyz_tri[3*k  ] = xyzw_viz[inod*IFOUR + 0];
 		xyz_tri[3*k+1] = xyzw_viz[inod*IFOUR + 1];
@@ -69,10 +44,6 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
         xyzw_map[4*k+1] = xyz_map[3*k+1];
         xyzw_map[4*k+2] = xyz_map[3*k+2];
         xyzw_map[4*k+3] = 1.0;
-        norm_tri[4*k  ] = 0.0;
-        norm_tri[4*k+1] = 0.0;
-        norm_tri[4*k+2] = 1.0;
-        norm_tri[4*k+3] = 1.0;
    }
     return;
 };
@@ -102,9 +73,9 @@ long set_each_map_isoline_to_list(const long ist_line,
                                   double v_line, long icomp,
                                   struct psf_data *psf_s,
                                   struct isoline_line_work *wk_iso_line){
-    long inod_tri[3], iedge_out[2];
+    long iedge_out[2];
     double d_tri[3];
-    double xyzw_map[12], norm_tri[12];
+    double xyzw_map[12];
     double xyzw_out[8];
     
     int idraw, nd;
@@ -114,7 +85,7 @@ long set_each_map_isoline_to_list(const long ist_line,
     for (iele = ist; iele < ied; iele++) {
         copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                        psf_s->xyzw_viz, psf_s->d_nod, icomp,
-                                       inod_tri, xyzw_map, norm_tri, d_tri);
+                                       xyzw_map, d_tri);
         
         /*  find isoline */
         idraw = set_isoline_on_triangle(iedge_out, xyzw_out,
@@ -132,26 +103,20 @@ long set_each_map_isoline_to_list(const long ist_line,
 };
 
 
-static void copy_each_triangle_postion_norm2(long ntot_comp, long ie_viz[3], 
+static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3], 
                                             double *xyzw_viz, double *norm_nod,
 											double *d_nod, long icomp,
-                                            long inod_tri[3], double xyzw_tri[12], 
-                                            double norm_tri[12], double d_tri[3]){
+                                            double xyzw_tri[12], double d_tri[3]){
 	int k;
 	long inod;
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
         
-        inod_tri[k] =  ie_viz[k];
 		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
         xyzw_tri[4*k  ] = xyzw_viz[inod*IFOUR + 0];
         xyzw_tri[4*k+1] = xyzw_viz[inod*IFOUR + 1];
         xyzw_tri[4*k+2] = xyzw_viz[inod*IFOUR + 2];
         xyzw_tri[4*k+3] = 1.0;
-        norm_tri[4*k  ] = norm_nod[4*inod+0];
-        norm_tri[4*k+1] = norm_nod[4*inod+1];
-        norm_tri[4*k+2] = norm_nod[4*inod+2];
-        norm_tri[4*k+3] = 1.0;
 	};
 	return;
 };
@@ -162,19 +127,18 @@ long set_each_isoline_to_list(const long ist_line,
                               double v_line, long icomp,
                               struct psf_data *psf_s,
                               struct isoline_line_work *wk_iso_line){
-    long inod_tri[3], iedge_out[2];
+    long iedge_out[2];
 	double d_tri[3], xyzw_out[8];
-    double xyzw_tri[12], norm_tri[12];
+    double xyzw_tri[12];
 	
 	int idraw, nd;
 	long iele;
     
 	long num_line = ist_line;
 	for (iele = ist; iele < ied; iele++) {
-		copy_each_triangle_postion_norm2(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
+		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                         psf_s->xyzw_viz, psf_s->norm_nod,
-										psf_s->d_nod, icomp,
-                                        inod_tri, xyzw_tri, norm_tri, d_tri);
+										psf_s->d_nod, icomp, xyzw_tri, d_tri);
 		/*  find isoline */
         idraw = set_isoline_on_triangle(iedge_out, xyzw_out, 
                                         iele, xyzw_tri, d_tri,
