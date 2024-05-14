@@ -124,11 +124,11 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
                                    v_line, f_color);
 		};
         
-        inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, nthreads,
-                                                     &istack_smp_psf_iso[j*nthreads],
-                                                     psf_m->isoline_width, v_line,
-                                                     psf_m->icomp_draw_psf, f_color,
-                                                     psf_s, psf_buf);
+        inum_patch = const_PSF_each_isoline_to_buf(inum_patch, nthreads,
+                                                   &istack_smp_psf_iso[j*nthreads],
+                                                   psf_m->isoline_width, v_line,
+                                                   psf_m->icomp_draw_psf, f_color,
+                                                   psf_s, psf_buf);
         
 	};
     dealloc_colormap_array(omap_array);
