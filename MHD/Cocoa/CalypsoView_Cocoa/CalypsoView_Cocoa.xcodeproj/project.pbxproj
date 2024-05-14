@@ -145,7 +145,6 @@
 		18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* draw_fieldlines.c */; };
 		18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */; };
 		18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */; };
-		18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */; };
 		18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C31562D359009B05FF /* icosahedron_c.c */; };
 		18D7E7671562D359009B05FF /* kemoviewer_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C81562D359009B05FF /* kemoviewer_param_c.c */; };
 		18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6CA1562D359009B05FF /* m_gl_transfer_matrix.c */; };
@@ -461,8 +460,6 @@
 		18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_patch_4_mesh_c.h; sourceTree = "<group>"; };
 		18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patches_4_PSF.c; sourceTree = "<group>"; };
 		18D7E6B81562D359009B05FF /* draw_patches_4_PSF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_patches_4_PSF.h; sourceTree = "<group>"; };
-		18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = find_isoline_on_patch_c.c; sourceTree = "<group>"; };
-		18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = find_isoline_on_patch_c.h; sourceTree = "<group>"; };
 		18D7E6C31562D359009B05FF /* icosahedron_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = icosahedron_c.c; sourceTree = "<group>"; };
 		18D7E6C41562D359009B05FF /* icosahedron_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = icosahedron_c.h; sourceTree = "<group>"; };
 		18D7E6C71562D359009B05FF /* kemoviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kemoviewer.h; sourceTree = "<group>"; };
@@ -832,8 +829,6 @@
 				18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */,
 				18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */,
 				18D7E6B81562D359009B05FF /* draw_patches_4_PSF.h */,
-				18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */,
-				18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */,
 				18D7E6C31562D359009B05FF /* icosahedron_c.c */,
 				18D7E6C41562D359009B05FF /* icosahedron_c.h */,
 				18D7E6C71562D359009B05FF /* kemoviewer.h */,
@@ -1249,7 +1244,6 @@
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,
 				188C941C230CF90A00A4DB14 /* m_kemoview_psf_menu.c in Sources */,
-				18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */,
 				18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */,
 				18D7E7671562D359009B05FF /* kemoviewer_param_c.c in Sources */,
 				18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */,

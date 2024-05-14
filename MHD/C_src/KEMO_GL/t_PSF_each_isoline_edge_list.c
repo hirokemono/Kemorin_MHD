@@ -25,7 +25,6 @@ void dealloc_isoline_line_work(struct isoline_line_work *wk_iso_line){
         free(wk_iso_line->iedge_itp);
         free(wk_iso_line->xyzw_line);
         free(wk_iso_line->dir_line);
-        free(wk_iso_line->norm_line);
         free(wk_iso_line);
     return;
 }
@@ -59,31 +58,26 @@ struct isoline_mesh_work * init_isoline_mesh_work(struct psf_edge_data_c *psf_ed
 struct isoline_line_work * init_isoline_line_work(int nthreads, long *istack_threads){
         struct isoline_line_work *wk_iso_line
                 = (struct isoline_line_work *) malloc(sizeof(struct isoline_line_work));
-        if(wk_iso_line == NULL){
-            printf("failed allocation for isoline_line_work\n");
-            exit(1);
-        }
-        wk_iso_line->num_line = istack_threads[nthreads] - istack_threads[0];
-        
-        wk_iso_line->iedge_itp = (long *) calloc(2*wk_iso_line->num_line, sizeof(long));
-        if(wk_iso_line->iedge_itp == NULL){
-            printf("failed allocation for wk_iso_line->iedge_itp\n");
-            exit(1);
-        }
-        wk_iso_line->xyzw_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->xyzw_line == NULL){
-            printf("failed allocation for wk_iso_line->xyzw_line\n");
-            exit(1);
-        }
-        wk_iso_line->dir_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->dir_line == NULL){
-            printf("failed allocation for wk_iso_line->dir_line\n");
-            exit(1);
-        }
-        wk_iso_line->norm_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
-        if(wk_iso_line->norm_line == NULL){
-            printf("failed allocation for wk_iso_line->norm_line\n");
-            exit(1);
+    if(wk_iso_line == NULL){
+        printf("failed allocation for isoline_line_work\n");
+        exit(1);
+    }
+    wk_iso_line->num_line = istack_threads[nthreads] - istack_threads[0];
+    
+    wk_iso_line->iedge_itp = (long *) calloc(2*wk_iso_line->num_line, sizeof(long));
+    if(wk_iso_line->iedge_itp == NULL){
+        printf("failed allocation for wk_iso_line->iedge_itp\n");
+        exit(1);
+    }
+    wk_iso_line->xyzw_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
+    if(wk_iso_line->xyzw_line == NULL){
+        printf("failed allocation for wk_iso_line->xyzw_line\n");
+        exit(1);
+    }
+    wk_iso_line->dir_line = (double *) calloc(8*wk_iso_line->num_line, sizeof(double));
+    if(wk_iso_line->dir_line == NULL){
+        printf("failed allocation for wk_iso_line->dir_line\n");
+        exit(1);
     }
     wk_iso_line->iflag_checked = (int *) malloc(2*wk_iso_line->num_line*sizeof(int));
     
@@ -202,18 +196,6 @@ void set_normal_for_isoline(double *xyzw_psf,
             
             j2 = wk_iso_mesh->inum_line[2*iedge+1];
             in2 = psf_edge->ie_edge[iedge][1] - 1;
-            if(j2 < 0){
-                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k1  ], &wk_iso_mesh->xyzw_edge[4*iedge],
-                                    &wk_iso_line->xyzw_line[4*j1  ], &xyzw_psf[4*in2],
-                                    &wk_iso_line->norm_line[4*j]);
-            }else{
-                ineib2 = wk_iso_mesh->ineib_edge[2*iedge+1];
-                k2 = wk_iso_mesh->inum_line[2*ineib2  ];
-                cal_normal_4_quad_c(&wk_iso_line->xyzw_line[4*k2  ], &wk_iso_mesh->xyzw_edge[4*iedge],
-                                    &wk_iso_line->xyzw_line[4*k1  ], &xyzw_psf[4*in2],
-                                    &wk_iso_line->norm_line[4*j]);
-            }
-            wk_iso_line->norm_line[4*j+3] = 1.0;
         }
     return;
 }

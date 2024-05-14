@@ -28,7 +28,6 @@ struct isoline_line_work{
     long *iedge_itp;
     double *xyzw_line;
     double *dir_line;
-    double *norm_line;
     
     int ncorner;
     double f_color[8];

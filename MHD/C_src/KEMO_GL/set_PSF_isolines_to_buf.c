@@ -28,7 +28,6 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
     
     set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
                            wk_iso_mesh, wk_iso_line);
-    adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->norm_line);
     set_isoline_color_in_wk(f_color, wk_iso_line);
     wk_iso_line->width = width;
     dealloc_isoline_mesh_work(wk_iso_mesh);
