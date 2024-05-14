@@ -230,16 +230,14 @@ int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
 	return idraw;
 };
 
-
-int add_line_tube_patch_num(int ipatch_in){return ipatch_in + 12;};
-
-long append_line_tube_to_buf(const long ipatch_in, 
+long append_line_tube_to_buf(const long ist_line,
                              int hex_tube[12][3], double radius, 
 							 double color_edge[8], double xyzw_edge[8], 
 							 double dir_edge[8], double norm_edge[8], 
                              struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
-	long ipatch = ipatch_in;
+    
+	long ipatch = 12 * ist_line;
 	long i, k, nd;
 	double xyzw_tube[24];
 	double norm_tube[24];
@@ -269,5 +267,5 @@ long append_line_tube_to_buf(const long ipatch_in,
             };
 		};
 	};
-	return ipatch + 12;
+	return ist_line + 1;
 };

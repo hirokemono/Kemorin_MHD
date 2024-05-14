@@ -37,7 +37,6 @@ int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
                             const double d_tri[3], const double v_line,
                             struct psf_edge_data_c *psf_edge);
 
-int add_line_tube_patch_num(int ipatch_in);
 long append_line_tube_to_buf(const long ipatch_in, 
                              int hex_tube[12][3], double radius, 
                              double color_edge[8], double xyzw_edge[8], 

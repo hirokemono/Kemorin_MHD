@@ -249,7 +249,7 @@ static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line
         args[ip].psf_s = psf_s;
         args[ip].wk_iso_line = wk_iso_line;
 
-        args[ip].ist_patch = istack_threads[ip]*12;
+        args[ip].ist_patch = istack_threads[ip];
         args[ip].ist = (istack_threads[ip  ] - istack_threads[0]);
         args[ip].ied = (istack_threads[ip+1] - istack_threads[0]);
         
