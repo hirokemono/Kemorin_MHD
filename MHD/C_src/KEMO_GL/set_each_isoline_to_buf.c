@@ -97,88 +97,6 @@ long add_each_isoline_npatch(const long ist_patch,
     return inum_patch;
 };
 
-long set_each_isoline_to_buf(const long ist_patch,
-                             const long ist, const long ied,
-                             double width, double v_line,
-                             long icomp, double *f_color,
-                             struct psf_data *psf_s,
-                             struct gl_strided_buffer *strided_buf){
-    long inod_tri[3], iedge_itp[2];
-    long inod_itp_psf[4], inod_itp_edge[4];
-	double d_tri[3];
-    double xyzw_tri[12], norm_tri[12];
-    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
-	int hex_tube[12][3];
-	
-	int idraw, nd;
-	long iele;
-	
-	long inum_patch = ist_patch;
-	copy_hex_tube_pp(hex_tube);
-	for (iele = ist; iele < ied; iele++) {
-		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                        psf_s->xyzw_viz, psf_s->norm_nod,
-										psf_s->d_nod, icomp,
-                                        inod_tri, xyzw_tri, norm_tri, d_tri);
-		/*  find isoline */
-		idraw = set_isoline_on_triangle(iedge_itp, inod_itp_edge, inod_itp_psf, 
-                                        xyzw_line, dir_line, norm_line,
-                                        iele, inod_tri, xyzw_tri, norm_tri, d_tri,
-                                        v_line, psf_s->psf_edge);
-        
-		/* draw isoline */
-        if(idraw == 1){
-			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
-			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
-			inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line, 
-                                                 xyzw_line, dir_line, norm_line,
-                                                 strided_buf);
-		};
-	};
-
-	return inum_patch;
-};
-
-long set_each_map_isoline_to_buf(const long ist_patch,
-                                 const long ist, const long ied,
-                                 double width, double v_line,
-                                 long icomp, double *f_color,
-                                 struct psf_data *psf_s,
-                                 struct gl_strided_buffer *strided_buf){
-    long inod_tri[3], iedge_itp[2];
-    long inod_itp_psf[4], inod_itp_edge[4];
-    double d_tri[3];
-    double xyzw_map[12], norm_tri[12];
-    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
-    int hex_tube[12][3];
-    
-    int idraw, nd;
-    long iele;
-    
-    long inum_patch = ist_patch;
-    copy_hex_tube_pp(hex_tube);
-    for (iele = ist; iele < ied; iele++) {
-        copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                       psf_s->xyzw_viz, psf_s->d_nod, icomp,
-                                       inod_tri, xyzw_map, norm_tri, d_tri);
-        
-        /*  find isoline */
-        idraw = set_isoline_on_triangle(iedge_itp, inod_itp_edge, inod_itp_psf, 
-                                        xyzw_line, dir_line, norm_line, 
-                                        iele, inod_tri, xyzw_map, norm_tri, d_tri, 
-                                        v_line, psf_s->psf_edge);
-        /*  draw isoline */
-        if(idraw == 1){
-            for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
-            for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
-            inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
-                                                 xyzw_line, dir_line, norm_line,
-                                                 strided_buf);
-        };
-    };
-    return inum_patch;
-};
-
 long set_each_map_isoline_to_list(const long ist_line,
                                   const long ist, const long ied,
                                   double v_line, long icomp,
@@ -283,10 +201,10 @@ long set_each_isoline_to_list(const long ist_line,
 	return num_line;
 };
 
-long set_each_isoline_to_buf2(const long ist_patch,
+long set_each_isoline_to_buf(const long ist_patch,
                              const long ist, const long ied,
                              struct psf_data *psf_s,
-                              struct isoline_line_work *wk_iso_line,
+                             struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf){
     int hex_tube[12][3];
     

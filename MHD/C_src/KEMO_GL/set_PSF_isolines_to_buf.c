@@ -33,9 +33,9 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
     dealloc_isoline_mesh_work(wk_iso_mesh);
 
     long inum_patch = ist_patch;
-    inum_patch = sel_each_isoline_to_buf2_pthread(inum_patch, wk_iso_line->num_line, 
-                                                  nthreads, istack_threads,
-                                                  psf_s, wk_iso_line, strided_buf);
+    inum_patch = sel_each_isoline_to_buf_pthread(inum_patch, wk_iso_line->num_line,
+                                                 nthreads, istack_threads,
+                                                 psf_s, wk_iso_line, strided_buf);
         
     dealloc_isoline_line_work(wk_iso_line);
     return inum_patch;

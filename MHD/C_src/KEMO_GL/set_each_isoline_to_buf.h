@@ -23,19 +23,6 @@ long add_each_isoline_npatch(const long ist_patch,
                              const long ist, const long ied,
                              const double v_line, long icomp,
                              struct psf_data *psf_s);
-long set_each_isoline_to_buf(const long ist_patch,
-                             const long ist, const long ied,
-                             double width, double v_line,
-                             long icomp, double *f_color,
-                             struct psf_data *psf_s,
-                             struct gl_strided_buffer *strided_buf);
-long set_each_map_isoline_to_buf(const long ist_patch,
-                                 const long ist, const long ied,
-                                 double width, double v_line,
-                                 long icomp, double *f_color,
-                                 struct psf_data *psf_s,
-                                 struct gl_strided_buffer *strided_buf);
-
 
 long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,
@@ -49,10 +36,10 @@ long set_each_map_isoline_to_list(const long ist_line,
                                   struct isoline_line_work *wk_iso_line);
 
 
-long set_each_isoline_to_buf2(const long ist_patch,
+long set_each_isoline_to_buf(const long ist_patch,
                              const long ist, const long ied,
                              struct psf_data *psf_s,
-                              struct isoline_line_work *wk_iso_line,
+                             struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif
