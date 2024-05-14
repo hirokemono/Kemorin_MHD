@@ -29,17 +29,11 @@ void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color
 						int hex_tube[2][3], double norms_hex[48], double radius,
 						double xyzw_edge[8], double color_edge[8]);
 
-void interpolate_on_edge(double xyzw_mid[4], double dir_mid[4], double norm_mid[4], 
-						 const double xyzw1[4], const double xyz2[4], 
-                         const double norm1[4], const double norm2[4],
+void interpolate_on_edge(double xyzw_mid[4], const double xyzw1[4], const double xyzw2[4],
 						 const double dat1, const double dat2, const double v_line);
 int find_isoline_on_triangle(const double d_tri[3], const double v_line);
-int set_isoline_on_triangle(long iedge_itp[2], long inod_itp_edge[4],
-                            long inod_itp_psf[4], double xyzw_line[8],
-                            double dir_line[8], double norm_line[8], 
-                            long iele, long inod_tri[3], 
-                            const double xyzw_tri[12], 
-                            const double norm_tri[12],
+int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
+                            long iele, const double xyzw_tri[12],
                             const double d_tri[3], const double v_line,
                             struct psf_edge_data_c *psf_edge);
 

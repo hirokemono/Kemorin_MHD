@@ -139,24 +139,14 @@ void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color
 	return;
 };
 
-void interpolate_on_edge(double xyzw_mid[4], double dir_mid[4], double norm_mid[4], 
-						 const double xyzw1[4], const double xyzw2[4], 
-						 const double norm1[4], const double norm2[4],
+void interpolate_on_edge(double xyzw_mid[4], const double xyzw1[4], const double xyzw2[4], 
 						 const double dat1, const double dat2, const double v_line){
 	int nd;
 	double coef = (dat2 - v_line) / (dat2 - dat1);
 	for(nd=0; nd<4; nd++){
-		dir_mid[nd] =  xyzw2[nd] - xyzw1[nd];
         xyzw_mid[nd] = coef * xyzw1[nd] + (1.0 - coef) * xyzw2[nd];
-        norm_mid[nd] = coef * norm1[nd] + (1.0 - coef) * norm2[nd];
-	};
-	coef = sqrt(dir_mid[0]*dir_mid[0] + dir_mid[1]*dir_mid[1] + dir_mid[2]*dir_mid[2]);
-	for(nd=0; nd<4; nd++){
-		dir_mid[nd] = dir_mid[nd] / coef;
 	};
     xyzw_mid[3] = 1.0;
-    dir_mid[3] =  1.0;
-    norm_mid[3] = 1.0;
 	return;
 };
 
@@ -186,12 +176,8 @@ int find_isoline_on_triangle(const double d_tri[3], const double v_line){
 	return idraw;
 };
 
-int set_isoline_on_triangle(long iedge_itp[2], long inod_itp_edge[4],
-                            long inod_itp_psf[4], double xyzw_line[8],
-                            double dir_line[8], double norm_line[8], 
-                            long iele, long inod_tri[3], 
-                            const double xyzw_tri[12], 
-                            const double norm_tri[12],
+int set_isoline_on_triangle(long iedge_itp[2], double xyzw_line[8],
+                            long iele, const double xyzw_tri[12], 
                             const double d_tri[3], const double v_line,
                             struct psf_edge_data_c *psf_edge){
 	double sig[3];
@@ -208,49 +194,26 @@ int set_isoline_on_triangle(long iedge_itp[2], long inod_itp_edge[4],
 		sig[2] = (d_tri[i1] - v_line) * (d_tri[i2] - v_line);
 		
 		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
-			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
+			interpolate_on_edge(&xyzw_line[0],
 								&xyzw_tri[4*i1], &xyzw_tri[4*i2], 
-								&norm_tri[4*i1], &norm_tri[4*i2],
                                 d_tri[i1], d_tri[i2], v_line);
 			for(nd=0; nd<3; nd++){
                 xyzw_line[4+nd] = xyzw_tri[4*i3+nd];
-				dir_line[4+nd] = -dir_line[nd];
-                norm_line[4+nd] = xyzw_tri[4*i3+nd];
 			};
             iedge_itp[0] = psf_edge->iedge_4_sf[iele][i1];
             iedge_itp[1] = psf_edge->iedge_4_sf[iele][i3];
-            inod_itp_edge[0] = psf_edge->ie_edge[labs(iedge_itp[0])-1][0];
-            inod_itp_edge[1] = psf_edge->ie_edge[labs(iedge_itp[0])-1][1];
-            inod_itp_edge[2] = psf_edge->ie_edge[labs(iedge_itp[1])-1][0];
-            inod_itp_edge[3] = psf_edge->ie_edge[labs(iedge_itp[1])-1][1];
-            
-            inod_itp_psf[0] = inod_tri[i1];
-            inod_itp_psf[1] = inod_tri[i2];
-            inod_itp_psf[2] = inod_tri[i3];
-            inod_itp_psf[3] = inod_tri[i3];
             idraw = 1;
 			break;
 		}
 		else if ( (sig[0]<ZERO) && (sig[2]<ZERO) ){
-			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
+			interpolate_on_edge(&xyzw_line[0],
 								&xyzw_tri[4*i1], &xyzw_tri[4*i2], 
-								&norm_tri[4*i1], &norm_tri[4*i2],
 								d_tri[i1], d_tri[i2], v_line);
-			interpolate_on_edge(&xyzw_line[4], &dir_line[4], &norm_line[4], 
+			interpolate_on_edge(&xyzw_line[4],
 								&xyzw_tri[4*i3], &xyzw_tri[4*i2], 
-								&norm_tri[4*i3], &norm_tri[4*i2],
 								d_tri[i3], d_tri[i2], v_line);
             iedge_itp[0] = psf_edge->iedge_4_sf[iele][i1];
             iedge_itp[1] = psf_edge->iedge_4_sf[iele][i2];
-            inod_itp_edge[0] = psf_edge->ie_edge[labs(iedge_itp[0])-1][0];
-            inod_itp_edge[1] = psf_edge->ie_edge[labs(iedge_itp[0])-1][1];
-            inod_itp_edge[2] = psf_edge->ie_edge[labs(iedge_itp[1])-1][0];
-            inod_itp_edge[3] = psf_edge->ie_edge[labs(iedge_itp[1])-1][1];
-            
-            inod_itp_psf[0] = inod_tri[i1];
-            inod_itp_psf[1] = inod_tri[i2];
-            inod_itp_psf[2] = inod_tri[i2];
-            inod_itp_psf[3] = inod_tri[i3];
             idraw = 1;
 			break;
 		}

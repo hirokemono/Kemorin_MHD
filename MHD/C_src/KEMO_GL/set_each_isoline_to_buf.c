@@ -103,26 +103,22 @@ long set_each_map_isoline_to_list(const long ist_line,
                                   struct psf_data *psf_s,
                                   struct isoline_line_work *wk_iso_line){
     long inod_tri[3], iedge_out[2];
-    long inod_itp_psf[4], inod_itp_edge[4];
     double d_tri[3];
     double xyzw_map[12], norm_tri[12];
-    double xyzw_out[8], dir_line[8], norm_line[8], color_line[8];
-    int hex_tube[12][3];
+    double xyzw_out[8];
     
     int idraw, nd;
     long iele;
     
     long num_line = ist_line;
-    copy_hex_tube_pp(hex_tube);
     for (iele = ist; iele < ied; iele++) {
         copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                        psf_s->xyzw_viz, psf_s->d_nod, icomp,
                                        inod_tri, xyzw_map, norm_tri, d_tri);
         
         /*  find isoline */
-        idraw = set_isoline_on_triangle(iedge_out, inod_itp_edge, inod_itp_psf, 
-                                        xyzw_out, dir_line, norm_line, 
-                                        iele, inod_tri, xyzw_map, norm_tri, d_tri, 
+        idraw = set_isoline_on_triangle(iedge_out, xyzw_out,
+                                        iele, xyzw_map, d_tri, 
                                         v_line, psf_s->psf_edge);
 		/* store isoline */
         if(idraw == 1){
@@ -167,26 +163,21 @@ long set_each_isoline_to_list(const long ist_line,
                               struct psf_data *psf_s,
                               struct isoline_line_work *wk_iso_line){
     long inod_tri[3], iedge_out[2];
-    long inod_itp_edge[4], inod_itp_psf[4];
 	double d_tri[3], xyzw_out[8];
     double xyzw_tri[12], norm_tri[12];
-    double norm_line[8], color_line[8], dir_line[8];
-	int hex_tube[12][3];
 	
 	int idraw, nd;
 	long iele;
     
 	long num_line = ist_line;
-	copy_hex_tube_pp(hex_tube);
 	for (iele = ist; iele < ied; iele++) {
 		copy_each_triangle_postion_norm2(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                         psf_s->xyzw_viz, psf_s->norm_nod,
 										psf_s->d_nod, icomp,
                                         inod_tri, xyzw_tri, norm_tri, d_tri);
 		/*  find isoline */
-		idraw = set_isoline_on_triangle(iedge_out, inod_itp_edge, inod_itp_psf,
-                                        xyzw_out, dir_line, norm_line,
-                                        iele, inod_tri, xyzw_tri, norm_tri, d_tri,
+        idraw = set_isoline_on_triangle(iedge_out, xyzw_out, 
+                                        iele, xyzw_tri, d_tri,
                                         v_line, psf_s->psf_edge);
         
 		/* store isoline */
