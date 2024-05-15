@@ -20,6 +20,8 @@
 #include "tree_view_4_light_position.h"
 #include "kemoview_gtk_colorsel.h"
 #include "kemoview_gtk_routines.h"
+#include "kemoview_gtk_rotation_menu.h"
+#include "view_modifier_glfw.h"
 
 #ifdef GLFW3
 	#include "view_modifier_glfw.h"
@@ -32,6 +34,9 @@ struct preference_gtk_menu{
 	
     GtkWidget *spin_threads;
     GtkWidget *spin_nTubeCorner;
+    
+    GtkWidget *fpsTextBox;
+    GtkWidget *fpsButton;
 
     GtkWidget *BGselButton;
     GtkWidget *spin_ambient;
@@ -44,6 +49,7 @@ struct preference_gtk_menu{
     GtkWidget *pref_hbox[4];
     GtkWidget *pref_vbox;
     GtkWidget *nTubeCorner_hbox;
+    GtkWidget *FPStest_hbox;
 
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
@@ -56,8 +62,10 @@ struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *ke
 void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
 
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
+                                  struct rotation_gtk_menu *rot_gmenu,
                                   struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
 GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
+                                     struct rotation_gtk_menu *rot_gmenu,
                                      struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
 
 #endif

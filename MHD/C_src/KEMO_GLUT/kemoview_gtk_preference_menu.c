@@ -90,6 +90,31 @@ static void ShinenessChange_CB(GtkWidget *entry, gpointer data)
 	return;
 }
 
+static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
+    GtkEntry *FPSentry = GTK_ENTRY(user_data);
+    GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+    struct rotation_gtk_menu *rot_gmenu
+            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
+    struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
+    
+    gtk_window_set_focus(GTK_WINDOW(window), NULL);
+    double AverageFPS = draw_rotate_gl_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
+                                             rot_gmenu->iaxis_rot, rot_gmenu->inc_deg,
+                                             2);
+    kemoview_free_kvstring(image_prefix);
+
+
+    gchar text_AverageFPS[25];
+    sprintf(text_AverageFPS, "%f", (float) AverageFPS);
+    gtk_entry_set_text(GTK_ENTRY(FPSentry), text_AverageFPS);
+    return;
+};
+
+
+
 static void set_GTK_preference_menu(struct kemoviewer_type *kemoviewer_data,
                                     struct preference_gtk_menu *pref_gmenu){
 	double current_value;
@@ -105,6 +130,7 @@ static void set_GTK_preference_menu(struct kemoviewer_type *kemoviewer_data,
 }
 
 static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
+                                 struct rotation_gtk_menu *rot_gmenu,
                                  struct preference_gtk_menu *pref_gmenu,
                                  GtkWidget *window){
     float color[4];
@@ -137,7 +163,23 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
     pref_gmenu->nTubeCorner_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), gtk_label_new("# of tube corners:  "), TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), pref_gmenu->spin_nTubeCorner, FALSE, FALSE, 0);
+
     
+    pref_gmenu->fpsTextBox = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(pref_gmenu->fpsTextBox), "0.0");
+    g_object_set_data(G_OBJECT(pref_gmenu->fpsTextBox), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(pref_gmenu->fpsTextBox), "rotation", (gpointer) rot_gmenu);
+    g_object_set_data(G_OBJECT(pref_gmenu->fpsTextBox), "kemoview", (gpointer) kemoviewer_data);
+
+    pref_gmenu->fpsButton = gtk_button_new_with_label("Start FPS test");
+    g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemoviewer_data);
+    g_signal_connect(G_OBJECT(pref_gmenu->fpsButton), "clicked",
+                     G_CALLBACK(rot_FPS_view_CB), (gpointer)pref_gmenu->fpsTextBox);
+
+    pref_gmenu->FPStest_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->FPStest_hbox), pref_gmenu->fpsButton,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->FPStest_hbox), gtk_label_new("Average FPS:"), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->FPStest_hbox), pref_gmenu->fpsTextBox, FALSE, FALSE, 0);
 
     
     pref_gmenu->Frame_BGsel = init_light_list_frame(kemoviewer_data,
@@ -193,24 +235,29 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[3], FALSE, FALSE, 0);
 
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->nTubeCorner_hbox, FALSE, FALSE, 0);
+
+
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->FPStest_hbox, FALSE, FALSE, 0);
     return;
 }
 
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
+                                  struct rotation_gtk_menu *rot_gmenu,
                                   struct preference_gtk_menu *pref_gmenu,
                                   GtkWidget *window){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
     gtk_frame_set_shadow_type(GTK_FRAME(frame_pref), GTK_SHADOW_IN);
-    init_preference_vbox(kemoviewer_data, pref_gmenu, window);
+    init_preference_vbox(kemoviewer_data, rot_gmenu, pref_gmenu, window);
     gtk_container_add(GTK_CONTAINER(frame_pref), pref_gmenu->pref_vbox);
     return frame_pref;
 }
 
 GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
+                                     struct rotation_gtk_menu *rot_gmenu,
                                      struct preference_gtk_menu *pref_gmenu,
                                      GtkWidget *window){
     GtkWidget *expander_pref;
-    init_preference_vbox(kemoviewer_data, pref_gmenu, window);
+    init_preference_vbox(kemoviewer_data, rot_gmenu, pref_gmenu, window);
     expander_pref = wrap_into_scroll_expansion_gtk("Preferences", 160, 400,
                                                    window, pref_gmenu->pref_vbox);
     return expander_pref;

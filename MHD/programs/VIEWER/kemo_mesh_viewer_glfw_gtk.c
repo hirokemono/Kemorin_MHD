@@ -198,7 +198,8 @@ static void pref_menu_CB(GtkWidget *menu_item, gpointer user_data)
     g_signal_connect(G_OBJECT(pref_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
     g_signal_connect(G_OBJECT(pref_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, pref_win);
+    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->rot_gmenu,
+                                                  mbot->pref_gmenu, pref_win);
     gtk_container_add(GTK_CONTAINER(pref_win), frame_pref);
     gtk_widget_show_all(pref_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
