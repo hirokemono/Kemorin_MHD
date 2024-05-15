@@ -642,6 +642,7 @@
 	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_sgl);
     [self SetCurrentPSFFile:kemo_sgl];
     [self UpdateCurrentPsfMenu:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) PsfFieldAction:(id)sender

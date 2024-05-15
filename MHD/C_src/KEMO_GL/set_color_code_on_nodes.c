@@ -86,7 +86,7 @@ void set_color_code_for_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_
     int i;
     
     for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_solid){
+        if(psf_a->iflag_loaded[i] != 0){
             set_color_code_for_psf(psf_s[i], psf_m[i]);
         };
     };

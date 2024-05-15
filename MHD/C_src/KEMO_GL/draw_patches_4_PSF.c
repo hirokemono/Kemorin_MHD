@@ -17,6 +17,16 @@ static void const_PSF_patch_buffer(int shading_mode, const int nthreads,
 	resize_strided_buffer(psf_buf);
     num_patch = sel_psf_nodes_to_buf_pthread(0, nthreads, ist_psf, ied_psf, shading_mode,
                                              psf_s, psf_m, psf_a, psf_buf);
+/*
+    struct gl_local_buffer_address point_buf;
+    set_node_stride_buffer(0, psf_buf, &point_buf);
+    printf("First %f %f %f %f\n",
+           psf_buf->v_buf[point_buf.igl_color],
+           psf_buf->v_buf[point_buf.igl_color+1],
+           psf_buf->v_buf[point_buf.igl_color+2],
+           psf_buf->v_buf[point_buf.igl_color+3]
+           );
+*/
 	return;
 }
 

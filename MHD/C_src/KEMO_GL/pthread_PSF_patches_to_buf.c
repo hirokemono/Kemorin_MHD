@@ -46,10 +46,10 @@ static void * set_psf_nodes_to_buf_1thread(void *args)
     long ied_psf = p->ied_psf;
     long *num_patch =  p->num_patch;
     
-    long lo = ist_psf + (ied_psf-ist_psf) * id /     nthreads;
-    long hi = ist_psf + (ied_psf-ist_psf) * (id+1) / nthreads;
-    num_patch[id] = set_psf_nodes_to_buf(lo, lo, hi, shading_mode, 
-                                         psf_s, psf_m, psf_a,
+    long lo = (ied_psf-ist_psf) * id /     nthreads;
+    long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
+    num_patch[id] = set_psf_nodes_to_buf(lo, (lo+ist_psf), (hi+ist_psf),
+                                         shading_mode, psf_s, psf_m, psf_a,
                                          strided_buf);
     return 0;
 }
