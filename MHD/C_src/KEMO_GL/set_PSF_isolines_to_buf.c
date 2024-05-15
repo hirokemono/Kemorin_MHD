@@ -167,7 +167,6 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
                                  const int nthreads, long *istack_smp_psf_iso,
                                  struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                  struct gl_strided_buffer *psf_buf){
-	double dub_r;
 	long inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,

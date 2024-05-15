@@ -16,14 +16,9 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct fline_data *fline_d,
                            struct fline_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
     long k;
-	int num_wall;
 	int nd;
     long iele, inod;
-    double xyzw[4*6 * fline_m->ncorner];
-    double norm[4*6 * fline_m->ncorner];
-    double col[ 4*6 * fline_m->ncorner];
 	double x_line[8], dir_line[8], color_line[8];
 	
 	set_color_code_for_fieldlines(fline_d, fline_m);

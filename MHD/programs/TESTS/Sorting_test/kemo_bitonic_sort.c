@@ -45,7 +45,7 @@
 #include "bitonic_sort_int_pthread.h"
 #include "bitonic_sort_float_pthread.h"
 
-#ifdef __APPLE__
+#ifdef __vDSP__
   #include <Accelerate/Accelerate.h>
 #else
   #include "bitonic_sort_omp.h"
@@ -61,7 +61,7 @@ void sort_comparison_int(int nthreads, long Narray) {
     
     seq_time1 = max_int_array_test(_iSort);
     seq_time2 = max_int_array_pthread_test(_iSort);
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = max_int_array_omp_test(_iSort);
 #endif
     
@@ -69,7 +69,7 @@ void sort_comparison_int(int nthreads, long Narray) {
     printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
     printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time2);
-#ifndef __APPLE__
+#ifndef __vDSP__
     printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time3);
 #endif
@@ -82,7 +82,7 @@ void sort_comparison_int(int nthreads, long Narray) {
     printf("pthreads parallel flip_int_sign with %i threads wall clock time = %f\n",
            nthreads,  seq_time2);
     
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = flip_sign_int_omp_test(_iSort);
     printf("OpenMP   parallel flip_int_sign with %i threads wall clock time = %f\n",
             nthreads,  seq_time1);
@@ -95,7 +95,7 @@ void sort_comparison_int(int nthreads, long Narray) {
     seq_time4 = bitonicsort_imp_int_test(_iSort);
     seq_time3 = bitonicsort_pthread_int_test(_iSort);
     
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time5 = bitonicsort_OMP_int_test(_iSort);
 #endif
     dealloc_sort_int_array(_iSort);
@@ -107,7 +107,7 @@ void sort_comparison_int(int nthreads, long Narray) {
     printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
     printf("Bitonic parallel recursive with %i threads\n", nthreads);
     printf("             and quicksort wall clock time = %f\n", seq_time3);
-#ifndef __APPLE__
+#ifndef __vDSP__
     printf("OpenMP Bitonic parallel imperagive \n");
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
@@ -124,7 +124,7 @@ void sort_comparison_float(int nthreads, long Narray) {
     
     seq_time1 = max_float_array_test(rSort);
     seq_time2 = max_float_array_pthread_test(rSort);
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = max_float_array_omp_test(rSort);
 #endif
     
@@ -132,7 +132,7 @@ void sort_comparison_float(int nthreads, long Narray) {
     printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
     printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time2);
-#ifndef __APPLE__
+#ifndef __vDSP__
     printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time3);
 #endif
@@ -145,7 +145,7 @@ void sort_comparison_float(int nthreads, long Narray) {
     printf("pthreads parallel flip_float_sign with %i threads wall clock time = %f\n",
            nthreads,  seq_time2);
     
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = flip_sign_float_omp_test(rSort);
     printf("OpenMP   parallel flip_float_sign with %i threads wall clock time = %f\n",
             nthreads,  seq_time1);
@@ -156,7 +156,7 @@ void sort_comparison_float(int nthreads, long Narray) {
     seq_time2 = bitonicsort_rec_float_test(rSort);
     seq_time4 = bitonicsort_imp_float_test(rSort);
     seq_time3 = bitonicsort_pthread_float_test(rSort);
-#ifdef __APPLE__
+#ifdef __vDSP__
     seq_time6 = vDSP_vsorti_test(rSort);
 #else
     seq_time5 = bitonicsort_OMP_float_test(rSort);
@@ -170,7 +170,7 @@ void sort_comparison_float(int nthreads, long Narray) {
     printf("Bitonic parallel recursive with %i threads\n", nthreads);
     printf("             and quicksort wall clock time = %f\n", seq_time3);
     printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
-#ifdef __APPLE__
+#ifdef __vDSP__
     printf("               vDSP_vsorti wall clock time = %f\n", seq_time6);
 #else
     printf("OpenMP Bitonic parallel imperagive \n");
@@ -192,7 +192,7 @@ void sort_comparison_double(int nthreads, long Narray) {
     printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time2);
     
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = max_double_array_omp_test(dSort);
     printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time3);
@@ -207,7 +207,7 @@ void sort_comparison_double(int nthreads, long Narray) {
     printf("pthreads parallel flip_double_sign with %i threads wall clock time = %f\n",
            nthreads,  seq_time2 );
     
-#ifndef __APPLE__
+#ifndef __vDSP__
     seq_time3 = flip_sign_double_omp_test(dSort);
     printf("OpenMP   parallel flip_double_sign with %i threads wall clock time = %f\n",
             nthreads,  seq_time3);
@@ -219,7 +219,7 @@ void sort_comparison_double(int nthreads, long Narray) {
     seq_time4 = bitonicsort_imp_double_test(dSort);
     seq_time3 = bitonicsort_pthread_double_test(dSort);
     
-#ifdef __APPLE__
+#ifdef __vDSP__
     seq_time6 = vDSP_vsortiD_test(dSort);
 #else
     seq_time5 = bitonicsort_OMP_double_test(dSort);
@@ -233,7 +233,7 @@ void sort_comparison_double(int nthreads, long Narray) {
     printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
     printf("Bitonic parallel recursive with %i threads\n", nthreads);
     printf("             and quicksort wall clock time = %f\n", seq_time3);
-#ifdef __APPLE__
+#ifdef __vDSP__
     printf("              vDSP_vsortiD wall clock time = %f\n", seq_time6);
 #else
     printf("OpenMP Bitonic parallel imperagive \n");

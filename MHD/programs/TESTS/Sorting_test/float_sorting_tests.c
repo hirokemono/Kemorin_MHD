@@ -169,7 +169,7 @@ double flip_sign_float_pthread_test(struct sort_float_array *rSort){
     return seq_time1;
 }
 
-#ifdef __APPLE__
+#ifdef __vDSP__
 double vDSP_vsorti_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
@@ -218,7 +218,7 @@ double max_float_array_omp_test(struct sort_float_array *rSort){
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
     gettimeofday( &startwtime, NULL );
-    float rmax1 = max_double_array_omp(rSort->nthreads, rSort->Narray, rSort->ra);
+    float rmax1 = max_float_array_omp(rSort->nthreads, rSort->Narray, rSort->ra);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
@@ -232,7 +232,7 @@ double flip_sign_float_omp_test(struct sort_float_array *rSort){
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
     gettimeofday( &startwtime, NULL );
-    flip_double_sign_omp(rSort->nthreads, rSort->Narray, rSort->ra);
+    flip_float_sign_omp(rSort->nthreads, rSort->Narray, rSort->ra);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );

@@ -1,0 +1,83 @@
+#! /bin/csh
+#
+#
+
+HOMEDIR= $(HOME)
+SRCDIR = $(HOME)/src_kemo
+MHDDIR = $(SRCDIR)/MHD
+WORKDIR = $(SRCDIR)/work
+
+LOCALDIR= $(HOMEDIR)/local
+
+CC=cc
+COCOA_FLAG= -D__vDSP__
+OPTFLAGS = -O3 -Wall -g $(COCOA_FLAG)
+
+#
+#   Library settings
+#
+KEMO_INCLUDES = -I. -I$(MHDDIR)/C_src/CORE_C
+
+LIB_KEMO_C = -L$(WORKDIR) -lkemo_c -framework accelerate
+
+#
+
+#
+#  -------------------------------------------------------------------------
+#
+#
+#
+SORT_TEST_DIR = $$(TESTS_DIR)/Sorting_test
+
+TARGET_SORT_TEST_vDSP = test_sortings_vDSP
+
+MOD_SORT_TEST = \
+kemo_bitonic_sort.o \
+\
+array_for_sorting_test.o \
+double_sorting_tests.o \
+float_sorting_tests.o \
+integer_sorting_tests.o
+
+#
+#  ------------------------------------------------------------------
+#
+
+.SUFFIXES: .o .c
+
+all: $(TARGET_SORT_TEST_vDSP)
+
+clean:
+	rm -f *.o *.mod *~ *.par *.diag *.a
+	rm -fr test_sortings_*
+
+$(TARGET_SORT_TEST_vDSP): $(MOD_SORT_TEST)
+	$(CC) $(OPTFLAGS) -o $(TARGET_SORT_TEST_vDSP) \
+	$(MOD_SORT_TEST) $(LIB_KEMO_C)
+
+array_for_sorting_test.o: \
+ array_for_sorting_test.c \
+ array_for_sorting_test.h
+	$(CC) -c $(OPTFLAGS) $(KEMO_INCLUDES) $<
+double_sorting_tests.o: \
+ double_sorting_tests.c \
+ double_sorting_tests.h \
+ array_for_sorting_test.h
+	$(CC) -c $(OPTFLAGS) $(KEMO_INCLUDES) $<
+float_sorting_tests.o: \
+ float_sorting_tests.c \
+ float_sorting_tests.h \
+ array_for_sorting_test.h
+	$(CC) -c $(OPTFLAGS) $(KEMO_INCLUDES) $<
+integer_sorting_tests.o: \
+ integer_sorting_tests.c \
+ integer_sorting_tests.h \
+ array_for_sorting_test.h
+	$(CC) -c $(OPTFLAGS) $(KEMO_INCLUDES) $<
+kemo_bitonic_sort.o: \
+ kemo_bitonic_sort.c \
+ array_for_sorting_test.h \
+ integer_sorting_tests.h \
+ double_sorting_tests.h \
+ float_sorting_tests.h
+	$(CC) -c $(OPTFLAGS) $(KEMO_INCLUDES) $<

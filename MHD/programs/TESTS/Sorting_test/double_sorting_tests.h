@@ -17,7 +17,7 @@
 #include "bitonic_sort_c.h"
 #include "bitonic_sort_pthread.h"
 
-#ifdef __APPLE__
+#ifdef __vDSP__
   #include <Accelerate/Accelerate.h>
 #else
   #include "bitonic_sort_omp.h"
@@ -53,7 +53,7 @@ double max_double_array_pthread_test(struct sort_double_array *dSort);
 double flip_sign_double_test(struct sort_double_array *dSort);
 double flip_sign_double_pthread_test(struct sort_double_array *dSort);
 
-#ifdef __APPLE__
+#ifdef __vDSP__
     double vDSP_vsortiD_test(struct sort_double_array *dSort);
 #else
     double bitonicsort_OMP_double_test(struct sort_double_array *dSort);

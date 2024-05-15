@@ -14,6 +14,7 @@ Legendre_test \
 zlib_test     \
 graphic_test  \
 FFT_test      \
+Sorting_test  \
 \
 BC_file_test
 
@@ -52,7 +53,7 @@ target_task:
 	f_graphic_tests fft_test leg_tests getarg_tests node_clustring_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo tests_with_c: zlib_tests c_graphic_tests \
+	@echo tests_with_c: zlib_tests c_graphic_tests sort_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
