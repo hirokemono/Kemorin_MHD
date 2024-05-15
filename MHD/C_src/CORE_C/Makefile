@@ -4,6 +4,7 @@
 
 KEMO_C_DIR =     $$(C_SRCDIR)/CORE_C
 
+CURRENTDIR = $(shell pwd)
 SRC_KEMO_C = $(shell ls *.c)
 INC_KEMO_C = $(addsuffix .h,$(basename $(SRC_KEMO_C)) )
 
@@ -115,11 +116,11 @@ depends:
 	@for sources in $(SRC_KEMO_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(MHDDIR)/C_src/CORE_C/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/CORE_C/Makefile.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

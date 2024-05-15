@@ -5,6 +5,7 @@ SORT_TEST_DIR = $$(TESTS_DIR)/Sorting_test
 
 TARGET_SORT_TEST =   test_sortings
 
+CURRENTDIR = $(shell pwd)
 SRC_C = $(shell ls *.c)
 
 MOD_SORT_TEST = \
@@ -26,7 +27,7 @@ dir_list:
 	@echo 'SORT_TEST_DIR = $(SORT_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_SORT_TEST =   $$(BUILDDIR)/tests/$(TARGET_SORT_TEST)'  \
+	@echo 'TARGET_SORT_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_SORT_TEST)'  \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -58,11 +59,11 @@ depends:
 	@for sources in $(SRC_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/TESTS/Sorting_test/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(OPTFLAGS) $(C_INCLUDE) -I. $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)//programs/TESTS/Sorting_test/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

@@ -23,6 +23,7 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_COMM_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 
 MOD_COMM_TEST = \
@@ -50,9 +51,9 @@ dir_list:
 	@echo 'COMM_TEST_DIR =      $$(TESTS_DIR)/comm_test'         >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_COMM_TEST =   $$(BUILDDIR)/$(TARGET_COMM_TEST)' \
+	@echo 'TARGET_COMM_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_COMM_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_F_COMM_TEST = $$(BUILDDIR)/$(TARGET_F_COMM_TEST)' \
+	@echo 'TARGET_F_COMM_TEST = $$(TEST_BUILD_DIR)/$(TARGET_F_COMM_TEST)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 

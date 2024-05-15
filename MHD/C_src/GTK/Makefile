@@ -3,6 +3,7 @@
 #
 
 KEMO_GTK_DIR = $$(C_SRCDIR)/GTK
+CURRENTDIR = $(shell pwd)
 SRC_GTK_C = $(shell ls *.c)
 INC_GTK_C = $(addsuffix .h,$(basename $(SRC_GTK_C)) )
 OBJ_GTK_C = $(addsuffix .o,$(basename $(SRC_GTK_C)) )
@@ -37,11 +38,11 @@ depends:
 	@for sources in $(SRC_GTK_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(MHDDIR)/C_src/GTK/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp >  $(MHDDIR)/C_src/GTK/Makefile.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp >  $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

@@ -187,8 +187,6 @@
 		1809BF3A2B8FF9160008A294 /* m_vertex_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BECC2B8FF9120008A294 /* m_vertex_buffer.c */; };
 		1809BF3B2B8FF9160008A294 /* m_kemoview_psf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED22B8FF9120008A294 /* m_kemoview_psf.c */; };
 		1809BF3C2B8FF9160008A294 /* m_kemoview_psf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED22B8FF9120008A294 /* m_kemoview_psf.c */; };
-		1809BF3D2B8FF9160008A294 /* find_isoline_on_patch_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED52B8FF9120008A294 /* find_isoline_on_patch_c.c */; };
-		1809BF3E2B8FF9160008A294 /* find_isoline_on_patch_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED52B8FF9120008A294 /* find_isoline_on_patch_c.c */; };
 		1809BF3F2B8FF9160008A294 /* set_texture_4_psf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED82B8FF9120008A294 /* set_texture_4_psf.c */; };
 		1809BF402B8FF9160008A294 /* set_texture_4_psf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED82B8FF9120008A294 /* set_texture_4_psf.c */; };
 		1809BF412B8FF9160008A294 /* kemoviewer_base.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BED92B8FF9120008A294 /* kemoviewer_base.c */; };
@@ -339,6 +337,48 @@
 		183870AB2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */; };
 		1849CD922BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */; };
 		1849CD932BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */; };
+		1899DCC42BF506E90041DE84 /* t_PSF_each_isoline_edge_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCC32BF506C60041DE84 /* t_PSF_each_isoline_edge_list.c */; };
+		1899DCC52BF506EA0041DE84 /* t_PSF_each_isoline_edge_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCC32BF506C60041DE84 /* t_PSF_each_isoline_edge_list.c */; };
+		1899DCC82BF507940041DE84 /* m_fline_data_4_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCC62BF507940041DE84 /* m_fline_data_4_viewer_c.c */; };
+		1899DCC92BF507940041DE84 /* m_fline_data_4_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCC62BF507940041DE84 /* m_fline_data_4_viewer_c.c */; };
+		1899DCD42BF507D60041DE84 /* pthread_mesh_patch_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCC2BF507D50041DE84 /* pthread_mesh_patch_to_buf.c */; };
+		1899DCD52BF507D60041DE84 /* pthread_mesh_patch_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCC2BF507D50041DE84 /* pthread_mesh_patch_to_buf.c */; };
+		1899DCD62BF507D60041DE84 /* pthread_PSF_arrows_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCD2BF507D50041DE84 /* pthread_PSF_arrows_to_buf.c */; };
+		1899DCD72BF507D60041DE84 /* pthread_PSF_arrows_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCD2BF507D50041DE84 /* pthread_PSF_arrows_to_buf.c */; };
+		1899DCD82BF507D60041DE84 /* pthread_fieldline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCE2BF507D60041DE84 /* pthread_fieldline_to_buf.c */; };
+		1899DCD92BF507D60041DE84 /* pthread_fieldline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCE2BF507D60041DE84 /* pthread_fieldline_to_buf.c */; };
+		1899DCDA2BF507D60041DE84 /* pthread_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCF2BF507D60041DE84 /* pthread_each_isoline_to_buf.c */; };
+		1899DCDB2BF507D60041DE84 /* pthread_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCCF2BF507D60041DE84 /* pthread_each_isoline_to_buf.c */; };
+		1899DCDC2BF507D60041DE84 /* pthread_PSF_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCD32BF507D60041DE84 /* pthread_PSF_patches_to_buf.c */; };
+		1899DCDD2BF507D60041DE84 /* pthread_PSF_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCD32BF507D60041DE84 /* pthread_PSF_patches_to_buf.c */; };
+		1899DCE02BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCDE2BF508790041DE84 /* const_mesh_patch_table_for_gl.c */; };
+		1899DCE12BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 1899DCDE2BF508790041DE84 /* const_mesh_patch_table_for_gl.c */; };
+		1899DCE32BF509610041DE84 /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE22BF509610041DE84 /* libpango-1.0.dylib */; };
+		1899DCE42BF509610041DE84 /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE22BF509610041DE84 /* libpango-1.0.dylib */; };
+		1899DCE62BF509960041DE84 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE52BF509960041DE84 /* libgtk-3.dylib */; };
+		1899DCE72BF509960041DE84 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE52BF509960041DE84 /* libgtk-3.dylib */; };
+		1899DCE92BF509B40041DE84 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE82BF509B40041DE84 /* libgdk-3.dylib */; };
+		1899DCEA2BF509B40041DE84 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCE82BF509B40041DE84 /* libgdk-3.dylib */; };
+		1899DCEC2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCEB2BF509C30041DE84 /* libgio-2.0.dylib */; };
+		1899DCED2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCEB2BF509C30041DE84 /* libgio-2.0.dylib */; };
+		1899DCEF2BF509D80041DE84 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCEE2BF509D80041DE84 /* libgobject-2.0.dylib */; };
+		1899DCF02BF509D80041DE84 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCEE2BF509D80041DE84 /* libgobject-2.0.dylib */; };
+		1899DCF22BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF12BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib */; };
+		1899DCF32BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF12BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib */; };
+		1899DCF52BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF42BF50A0F0041DE84 /* libglib-2.0.dylib */; };
+		1899DCF62BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF42BF50A0F0041DE84 /* libglib-2.0.dylib */; };
+		1899DCF82BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF72BF50A1E0041DE84 /* libglfw.3.dylib */; };
+		1899DCF92BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCF72BF50A1E0041DE84 /* libglfw.3.dylib */; };
+		1899DCFC2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCFA2BF50A3D0041DE84 /* libcairo-gobject.2.dylib */; };
+		1899DCFD2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCFA2BF50A3D0041DE84 /* libcairo-gobject.2.dylib */; };
+		1899DCFE2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCFB2BF50A3D0041DE84 /* libcairo.2.dylib */; };
+		1899DCFF2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DCFB2BF50A3D0041DE84 /* libcairo.2.dylib */; };
+		1899DD012BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD002BF50A5D0041DE84 /* libatk-1.0.dylib */; };
+		1899DD022BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD002BF50A5D0041DE84 /* libatk-1.0.dylib */; };
+		1899DD042BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD032BF50A930041DE84 /* libharfbuzz.dylib */; };
+		1899DD052BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD032BF50A930041DE84 /* libharfbuzz.dylib */; };
+		1899DD072BF50ABD0041DE84 /* libintl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD062BF50ABD0041DE84 /* libintl.dylib */; };
+		1899DD082BF50ABD0041DE84 /* libintl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1899DD062BF50ABD0041DE84 /* libintl.dylib */; };
 		18A91E1324B9256E00D30C46 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1224B9256E00D30C46 /* libz.tbd */; };
 		18A91E1924B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1724B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c */; };
 		18A91E1A24B925DC00D30C46 /* kemoviewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1824B925DC00D30C46 /* kemoviewer_glfw_gtk.c */; };
@@ -368,26 +408,6 @@
 		18D822292BE472390067B954 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822282BE472390067B954 /* Accelerate.framework */; };
 		18D8222B2BE473580067B954 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8222A2BE473580067B954 /* libpng.dylib */; };
 		18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8222A2BE473580067B954 /* libpng.dylib */; };
-		18D822312BE473950067B954 /* libgtk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822302BE473950067B954 /* libgtk-3.0.dylib */; };
-		18D822322BE473950067B954 /* libgtk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822302BE473950067B954 /* libgtk-3.0.dylib */; };
-		18D822342BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822332BE4739D0067B954 /* libgdk-3.0.dylib */; };
-		18D822352BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822332BE4739D0067B954 /* libgdk-3.0.dylib */; };
-		18D824822BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824812BE49F320067B954 /* libgio-2.0.0.dylib */; };
-		18D824832BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824812BE49F320067B954 /* libgio-2.0.0.dylib */; };
-		18D824852BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */; };
-		18D824862BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */; };
-		18D824882BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */; };
-		18D824892BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */; };
-		18D8248B2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */; };
-		18D8248C2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */; };
-		18D8248E2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */; };
-		18D8248F2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */; };
-		18D824912BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */; };
-		18D824922BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */; };
-		18D824942BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */; };
-		18D824952BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */; };
-		18D824972BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824962BE49FBC0067B954 /* libcairo.2.dylib */; };
-		18D824982BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824962BE49FBC0067B954 /* libcairo.2.dylib */; };
 		18D8249B2BE49FEF0067B954 /* libpthread.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824992BE49FEF0067B954 /* libpthread.tbd */; };
 		18D8249F2BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
 		18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
@@ -597,7 +617,6 @@
 		1809BED22B8FF9120008A294 /* m_kemoview_psf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_psf.c; path = ../../../C_src/KEMO_GL/m_kemoview_psf.c; sourceTree = "<group>"; };
 		1809BED32B8FF9120008A294 /* read_data_4_kemoviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = read_data_4_kemoviewer.h; path = ../../../C_src/KEMO_GL/read_data_4_kemoviewer.h; sourceTree = "<group>"; };
 		1809BED42B8FF9120008A294 /* kemoviewer_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoviewer_param_c.h; path = ../../../C_src/KEMO_GL/kemoviewer_param_c.h; sourceTree = "<group>"; };
-		1809BED52B8FF9120008A294 /* find_isoline_on_patch_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = find_isoline_on_patch_c.c; path = ../../../C_src/KEMO_GL/find_isoline_on_patch_c.c; sourceTree = "<group>"; };
 		1809BED62B8FF9120008A294 /* kemoviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoviewer.h; path = ../../../C_src/KEMO_GL/kemoviewer.h; sourceTree = "<group>"; };
 		1809BED72B8FF9120008A294 /* m_gl_transfer_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_gl_transfer_matrix.h; path = ../../../C_src/KEMO_GL/m_gl_transfer_matrix.h; sourceTree = "<group>"; };
 		1809BED82B8FF9120008A294 /* set_texture_4_psf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_texture_4_psf.c; path = ../../../C_src/KEMO_GL/set_texture_4_psf.c; sourceTree = "<group>"; };
@@ -638,7 +657,6 @@
 		1809BEFB2B8FF9140008A294 /* draw_map_4_PSF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = draw_map_4_PSF.h; path = ../../../C_src/KEMO_GL/draw_map_4_PSF.h; sourceTree = "<group>"; };
 		1809BEFC2B8FF9140008A294 /* m_kemoviewer_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_kemoviewer_data.h; path = ../../../C_src/KEMO_GL/m_kemoviewer_data.h; sourceTree = "<group>"; };
 		1809BEFD2B8FF9140008A294 /* m_phong_light_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_phong_light_table_c.c; path = ../../../C_src/KEMO_GL/m_phong_light_table_c.c; sourceTree = "<group>"; };
-		1809BEFE2B8FF9140008A294 /* find_isoline_on_patch_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = find_isoline_on_patch_c.h; path = ../../../C_src/KEMO_GL/find_isoline_on_patch_c.h; sourceTree = "<group>"; };
 		1809BEFF2B8FF9140008A294 /* set_hex_tube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_hex_tube_to_buf.c; path = ../../../C_src/KEMO_GL/set_hex_tube_to_buf.c; sourceTree = "<group>"; };
 		1809BF002B8FF9140008A294 /* set_PSF_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_PSF_patches_to_buf.c; path = ../../../C_src/KEMO_GL/set_PSF_patches_to_buf.c; sourceTree = "<group>"; };
 		1809BF012B8FF9140008A294 /* set_each_isoline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_each_isoline_to_buf.h; path = ../../../C_src/KEMO_GL/set_each_isoline_to_buf.h; sourceTree = "<group>"; };
@@ -743,6 +761,35 @@
 		1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_sym_gray_c.c; path = ../../../C_src/CORE_C/colormap_sym_gray_c.c; sourceTree = "<group>"; };
 		1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_float_pthread.c; path = ../../../C_src/CORE_C/bitonic_sort_float_pthread.c; sourceTree = "<group>"; };
 		1849CD912BEC7B65003865EF /* bitonic_sort_float_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_float_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_float_pthread.h; sourceTree = "<group>"; };
+		1899DCC22BF506C60041DE84 /* t_PSF_each_isoline_edge_list.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_PSF_each_isoline_edge_list.h; path = ../../../C_src/KEMO_GL/t_PSF_each_isoline_edge_list.h; sourceTree = "<group>"; };
+		1899DCC32BF506C60041DE84 /* t_PSF_each_isoline_edge_list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = t_PSF_each_isoline_edge_list.c; path = ../../../C_src/KEMO_GL/t_PSF_each_isoline_edge_list.c; sourceTree = "<group>"; };
+		1899DCC62BF507940041DE84 /* m_fline_data_4_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_fline_data_4_viewer_c.c; path = ../../../C_src/CORE_C/m_fline_data_4_viewer_c.c; sourceTree = "<group>"; };
+		1899DCC72BF507940041DE84 /* m_fline_data_4_viewer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_fline_data_4_viewer_c.h; path = ../../../C_src/CORE_C/m_fline_data_4_viewer_c.h; sourceTree = "<group>"; };
+		1899DCCA2BF507D50041DE84 /* pthread_mesh_patch_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pthread_mesh_patch_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_mesh_patch_to_buf.h; sourceTree = "<group>"; };
+		1899DCCB2BF507D50041DE84 /* pthread_fieldline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pthread_fieldline_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_fieldline_to_buf.h; sourceTree = "<group>"; };
+		1899DCCC2BF507D50041DE84 /* pthread_mesh_patch_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_mesh_patch_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_mesh_patch_to_buf.c; sourceTree = "<group>"; };
+		1899DCCD2BF507D50041DE84 /* pthread_PSF_arrows_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_PSF_arrows_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_PSF_arrows_to_buf.c; sourceTree = "<group>"; };
+		1899DCCE2BF507D60041DE84 /* pthread_fieldline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_fieldline_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_fieldline_to_buf.c; sourceTree = "<group>"; };
+		1899DCCF2BF507D60041DE84 /* pthread_each_isoline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_each_isoline_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_each_isoline_to_buf.c; sourceTree = "<group>"; };
+		1899DCD02BF507D60041DE84 /* pthread_PSF_patches_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pthread_PSF_patches_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_PSF_patches_to_buf.h; sourceTree = "<group>"; };
+		1899DCD12BF507D60041DE84 /* pthread_each_isoline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pthread_each_isoline_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_each_isoline_to_buf.h; sourceTree = "<group>"; };
+		1899DCD22BF507D60041DE84 /* pthread_PSF_arrows_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pthread_PSF_arrows_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_PSF_arrows_to_buf.h; sourceTree = "<group>"; };
+		1899DCD32BF507D60041DE84 /* pthread_PSF_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_PSF_patches_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_PSF_patches_to_buf.c; sourceTree = "<group>"; };
+		1899DCDE2BF508790041DE84 /* const_mesh_patch_table_for_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = const_mesh_patch_table_for_gl.c; path = ../../../C_src/KEMO_GL/const_mesh_patch_table_for_gl.c; sourceTree = "<group>"; };
+		1899DCDF2BF508790041DE84 /* const_mesh_patch_table_for_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = const_mesh_patch_table_for_gl.h; path = ../../../C_src/KEMO_GL/const_mesh_patch_table_for_gl.h; sourceTree = "<group>"; };
+		1899DCE22BF509610041DE84 /* libpango-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpango-1.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libpango-1.0.dylib"; sourceTree = "<group>"; };
+		1899DCE52BF509960041DE84 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../opt/homebrew/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
+		1899DCE82BF509B40041DE84 /* libgdk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.dylib"; path = "../../../../../../../opt/homebrew/lib/libgdk-3.dylib"; sourceTree = "<group>"; };
+		1899DCEB2BF509C30041DE84 /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
+		1899DCEE2BF509D80041DE84 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		1899DCF12BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
+		1899DCF42BF50A0F0041DE84 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
+		1899DCF72BF50A1E0041DE84 /* libglfw.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.dylib; path = ../../../../../../../opt/homebrew/lib/libglfw.3.dylib; sourceTree = "<group>"; };
+		1899DCFA2BF50A3D0041DE84 /* libcairo-gobject.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.2.dylib"; path = "../../../../../../../opt/homebrew/lib/libcairo-gobject.2.dylib"; sourceTree = "<group>"; };
+		1899DCFB2BF50A3D0041DE84 /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../opt/homebrew/lib/libcairo.2.dylib; sourceTree = "<group>"; };
+		1899DD002BF50A5D0041DE84 /* libatk-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libatk-1.0.dylib"; sourceTree = "<group>"; };
+		1899DD032BF50A930041DE84 /* libharfbuzz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libharfbuzz.dylib; path = ../../../../../../../opt/homebrew/lib/libharfbuzz.dylib; sourceTree = "<group>"; };
+		1899DD062BF50ABD0041DE84 /* libintl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libintl.dylib; path = ../../../../../../../opt/homebrew/lib/libintl.dylib; sourceTree = "<group>"; };
 		18A91C8A24B9241B00D30C46 /* CalypsoView_Intel_GTK_GLFW */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CalypsoView_Intel_GTK_GLFW; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A91E1224B9256E00D30C46 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18A91E1624B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemo_mesh_viewer_glfw_gtk.h; path = ../../../programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h; sourceTree = "<group>"; };
@@ -796,16 +843,6 @@
 		18D822262BE44E400067B954 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		18D822282BE472390067B954 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		18D8222A2BE473580067B954 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../../../../../opt/homebrew/Cellar/libpng/1.6.43/lib/libpng.dylib; sourceTree = "<group>"; };
-		18D822302BE473950067B954 /* libgtk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gtk+3/3.24.41/lib/libgtk-3.0.dylib"; sourceTree = "<group>"; };
-		18D822332BE4739D0067B954 /* libgdk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gtk+3/3.24.41/lib/libgdk-3.0.dylib"; sourceTree = "<group>"; };
-		18D824812BE49F320067B954 /* libgio-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libgio-2.0.0.dylib"; sourceTree = "<group>"; };
-		18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libgobject-2.0.0.dylib"; sourceTree = "<group>"; };
-		18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib/libgdk_pixbuf-2.0.0.dylib"; sourceTree = "<group>"; };
-		18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
-		18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../../../../opt/homebrew/Cellar/glfw/3.3.8/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
-		18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/at-spi2-core/2.52.0/lib/libatk-1.0.0.dylib"; sourceTree = "<group>"; };
-		18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.2.dylib"; path = "../../../../../../../opt/homebrew/Cellar/cairo/1.18.0/lib/libcairo-gobject.2.dylib"; sourceTree = "<group>"; };
-		18D824962BE49FBC0067B954 /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../opt/homebrew/Cellar/cairo/1.18.0/lib/libcairo.2.dylib; sourceTree = "<group>"; };
 		18D824992BE49FEF0067B954 /* libpthread.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpthread.tbd; path = usr/lib/libpthread.tbd; sourceTree = SDKROOT; };
 		18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_pthread.c; path = ../../../C_src/CORE_C/bitonic_sort_pthread.c; sourceTree = "<group>"; };
 		18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
@@ -820,21 +857,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1899DCFD2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */,
+				1899DD052BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */,
+				1899DCF32BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
+				1899DCF02BF509D80041DE84 /* libgobject-2.0.dylib in Frameworks */,
 				18D8249B2BE49FEF0067B954 /* libpthread.tbd in Frameworks */,
 				18D822292BE472390067B954 /* Accelerate.framework in Frameworks */,
+				1899DCFF2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */,
+				1899DCF62BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */,
 				18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */,
-				18D824982BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */,
-				18D822352BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */,
-				18D8248F2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */,
-				18D824832BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */,
+				1899DCE72BF509960041DE84 /* libgtk-3.dylib in Frameworks */,
+				1899DCED2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */,
 				1809BC722B8FDD8A0008A294 /* libz.tbd in Frameworks */,
-				18D8248C2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */,
-				18D824862BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */,
-				18D824952BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */,
-				18D824892BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */,
-				18D822322BE473950067B954 /* libgtk-3.0.dylib in Frameworks */,
+				1899DCE42BF509610041DE84 /* libpango-1.0.dylib in Frameworks */,
+				1899DD082BF50ABD0041DE84 /* libintl.dylib in Frameworks */,
 				18D822272BE44E400067B954 /* CoreServices.framework in Frameworks */,
-				18D824922BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */,
+				1899DD022BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */,
+				1899DCF92BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */,
+				1899DCEA2BF509B40041DE84 /* libgdk-3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,18 +882,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1899DCE32BF509610041DE84 /* libpango-1.0.dylib in Frameworks */,
+				1899DD072BF50ABD0041DE84 /* libintl.dylib in Frameworks */,
+				1899DCE92BF509B40041DE84 /* libgdk-3.dylib in Frameworks */,
+				1899DCFE2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */,
 				18A91E1324B9256E00D30C46 /* libz.tbd in Frameworks */,
-				18D824972BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */,
-				18D8248E2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */,
-				18D824822BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */,
-				18D824882BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */,
-				18D8248B2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */,
-				18D824912BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */,
-				18D822312BE473950067B954 /* libgtk-3.0.dylib in Frameworks */,
+				1899DCEF2BF509D80041DE84 /* libgobject-2.0.dylib in Frameworks */,
+				1899DCF22BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
+				1899DCEC2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */,
 				18D8222B2BE473580067B954 /* libpng.dylib in Frameworks */,
-				18D824852BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */,
-				18D822342BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */,
-				18D824942BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */,
+				1899DCF52BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */,
+				1899DCE62BF509960041DE84 /* libgtk-3.dylib in Frameworks */,
+				1899DCFC2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */,
+				1899DCF82BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */,
+				1899DD042BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */,
+				1899DD012BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -913,6 +956,8 @@
 				1809BCE02B8FF1E50008A294 /* m_read_text_to_character.h */,
 				1809BCD12B8FF1E40008A294 /* m_surface_mesh_4_viewer_c.c */,
 				1809BCCB2B8FF1E40008A294 /* m_surface_mesh_4_viewer_c.h */,
+				1899DCC62BF507940041DE84 /* m_fline_data_4_viewer_c.c */,
+				1899DCC72BF507940041DE84 /* m_fline_data_4_viewer_c.h */,
 				1809BCB12B8FF1E30008A294 /* numbers_to_bin_c.c */,
 				1809BC9F2B8FF1E30008A294 /* numbers_to_bin_c.h */,
 				1809BCDE2B8FF1E40008A294 /* projection_patch_to_map.c */,
@@ -1122,8 +1167,6 @@
 				1809BEF42B8FF9130008A294 /* draw_patch_4_mesh_c.h */,
 				1809BF0C2B8FF9140008A294 /* draw_patches_4_PSF.c */,
 				1809BF052B8FF9140008A294 /* draw_patches_4_PSF.h */,
-				1809BED52B8FF9120008A294 /* find_isoline_on_patch_c.c */,
-				1809BEFE2B8FF9140008A294 /* find_isoline_on_patch_c.h */,
 				1809BEC12B8FF9110008A294 /* icosahedron_c.c */,
 				1809BED02B8FF9120008A294 /* icosahedron_c.h */,
 				1809BED92B8FF9120008A294 /* kemoviewer_base.c */,
@@ -1159,6 +1202,8 @@
 				1809BF1E2B8FF9150008A294 /* m_transfer_matrices.h */,
 				1809BECC2B8FF9120008A294 /* m_vertex_buffer.c */,
 				1809BEDD2B8FF9120008A294 /* m_vertex_buffer.h */,
+				1899DCC32BF506C60041DE84 /* t_PSF_each_isoline_edge_list.c */,
+				1899DCC22BF506C60041DE84 /* t_PSF_each_isoline_edge_list.h */,
 				1809BF0D2B8FF9140008A294 /* modify_object_4_viewer_c.c */,
 				1809BF222B8FF9150008A294 /* modify_object_4_viewer_c.h */,
 				1809BF042B8FF9140008A294 /* psf_data_array_manager.c */,
@@ -1211,6 +1256,18 @@
 				1809BEF62B8FF9130008A294 /* set_PSF_patches_to_buf.h */,
 				1809BEEC2B8FF9130008A294 /* set_psf_texture_by_png.c */,
 				1809BEC52B8FF9110008A294 /* set_psf_texture_by_png.h */,
+				1899DCCF2BF507D60041DE84 /* pthread_each_isoline_to_buf.c */,
+				1899DCD12BF507D60041DE84 /* pthread_each_isoline_to_buf.h */,
+				1899DCCE2BF507D60041DE84 /* pthread_fieldline_to_buf.c */,
+				1899DCCB2BF507D50041DE84 /* pthread_fieldline_to_buf.h */,
+				1899DCCC2BF507D50041DE84 /* pthread_mesh_patch_to_buf.c */,
+				1899DCCA2BF507D50041DE84 /* pthread_mesh_patch_to_buf.h */,
+				1899DCCD2BF507D50041DE84 /* pthread_PSF_arrows_to_buf.c */,
+				1899DCD22BF507D60041DE84 /* pthread_PSF_arrows_to_buf.h */,
+				1899DCD32BF507D60041DE84 /* pthread_PSF_patches_to_buf.c */,
+				1899DCD02BF507D60041DE84 /* pthread_PSF_patches_to_buf.h */,
+				1899DCDE2BF508790041DE84 /* const_mesh_patch_table_for_gl.c */,
+				1899DCDF2BF508790041DE84 /* const_mesh_patch_table_for_gl.h */,
 				1809BED82B8FF9120008A294 /* set_texture_4_psf.c */,
 				1809BF182B8FF9150008A294 /* set_texture_4_psf.h */,
 				1809BF122B8FF9150008A294 /* sort_by_patch_distance.c */,
@@ -1263,16 +1320,19 @@
 				18D822262BE44E400067B954 /* CoreServices.framework */,
 				18A91E1224B9256E00D30C46 /* libz.tbd */,
 				18D8222A2BE473580067B954 /* libpng.dylib */,
-				18D822332BE4739D0067B954 /* libgdk-3.0.dylib */,
-				18D822302BE473950067B954 /* libgtk-3.0.dylib */,
-				18D824812BE49F320067B954 /* libgio-2.0.0.dylib */,
-				18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */,
-				18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */,
-				18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */,
-				18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */,
-				18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */,
-				18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */,
-				18D824962BE49FBC0067B954 /* libcairo.2.dylib */,
+				1899DCFB2BF50A3D0041DE84 /* libcairo.2.dylib */,
+				1899DCE22BF509610041DE84 /* libpango-1.0.dylib */,
+				1899DCE52BF509960041DE84 /* libgtk-3.dylib */,
+				1899DCE82BF509B40041DE84 /* libgdk-3.dylib */,
+				1899DCEB2BF509C30041DE84 /* libgio-2.0.dylib */,
+				1899DCEE2BF509D80041DE84 /* libgobject-2.0.dylib */,
+				1899DCF12BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib */,
+				1899DCF42BF50A0F0041DE84 /* libglib-2.0.dylib */,
+				1899DCF72BF50A1E0041DE84 /* libglfw.3.dylib */,
+				1899DCFA2BF50A3D0041DE84 /* libcairo-gobject.2.dylib */,
+				1899DD062BF50ABD0041DE84 /* libintl.dylib */,
+				1899DD032BF50A930041DE84 /* libharfbuzz.dylib */,
+				1899DD002BF50A5D0041DE84 /* libatk-1.0.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1420,7 +1480,9 @@
 			files = (
 				1809BF962B8FF9160008A294 /* set_axis_to_buf.c in Sources */,
 				1809BFF02B9000900008A294 /* tree_views_4_fixed_lists_GTK.c in Sources */,
+				1899DCD72BF507D60041DE84 /* pthread_PSF_arrows_to_buf.c in Sources */,
 				1809BD272B8FF1E50008A294 /* invert_small_matrix_c.c in Sources */,
+				1899DCC92BF507940041DE84 /* m_fline_data_4_viewer_c.c in Sources */,
 				1809BF8C2B8FF9160008A294 /* set_PSF_isolines_to_buf.c in Sources */,
 				1809BD332B8FF1E50008A294 /* m_read_text_to_character.c in Sources */,
 				1809BD092B8FF1E50008A294 /* t_surf_edge_hash_c.c in Sources */,
@@ -1468,12 +1530,14 @@
 				1809BF7A2B8FF9160008A294 /* set_mesh_patch_2_gl_buf.c in Sources */,
 				1809BC5A2B8FDD8A0008A294 /* kemoview_gtk_axis_menu.c in Sources */,
 				1809BE292B8FF4250008A294 /* move_draw_objects_gl.c in Sources */,
+				1899DCDD2BF507D60041DE84 /* pthread_PSF_patches_to_buf.c in Sources */,
 				1809BC5B2B8FDD8A0008A294 /* tree_view_4_viewer_mesh.c in Sources */,
 				1809BCF72B8FF1E50008A294 /* set_rgb_colors_c.c in Sources */,
 				1809BCF92B8FF1E50008A294 /* transfer_matvec.c in Sources */,
 				1809BF382B8FF9160008A294 /* m_kemoview_object_buffers.c in Sources */,
 				1809BF902B8FF9160008A294 /* set_each_psf_parameters.c in Sources */,
 				1809BFA02B8FFC8F0008A294 /* tree_view_4_colormap.c in Sources */,
+				1899DCC52BF506EA0041DE84 /* t_PSF_each_isoline_edge_list.c in Sources */,
 				1809BF6C2B8FF9160008A294 /* set_mesh_node_2_gl_buf.c in Sources */,
 				1809BD192B8FF1E50008A294 /* m_grouping_mesh_4_viewer_c.c in Sources */,
 				1809BD412B8FF1E50008A294 /* calypso_zlib_io_c.c in Sources */,
@@ -1495,12 +1559,14 @@
 				1809BF542B8FF9160008A294 /* draw_fieldlines.c in Sources */,
 				1809BD132B8FF1E50008A294 /* numbers_to_bin_c.c in Sources */,
 				1809BD372B8FF1E50008A294 /* calypso_param_c.c in Sources */,
+				1899DCE12BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */,
 				1809BD4F2B8FF1E50008A294 /* jacobian_trilinear_c.c in Sources */,
 				1809BF302B8FF9160008A294 /* m_kemoviewer_data.c in Sources */,
 				1809BD2F2B8FF1E50008A294 /* m_surface_mesh_4_viewer_c.c in Sources */,
 				1809BE352B8FF4250008A294 /* init_gl_lighting_c.c in Sources */,
 				1809BD4B2B8FF1E50008A294 /* read_viewer_mesh_c.c in Sources */,
 				1809BC5D2B8FDD8A0008A294 /* kemoview_gtk_quilt_menu.c in Sources */,
+				1899DCD52BF507D60041DE84 /* pthread_mesh_patch_to_buf.c in Sources */,
 				1809BF922B8FF9160008A294 /* psf_patch_buffer.c in Sources */,
 				1809BC5E2B8FDD8A0008A294 /* tree_view_4_light_position.c in Sources */,
 				1809BF662B8FF9160008A294 /* m_phong_light_table_c.c in Sources */,
@@ -1553,7 +1619,6 @@
 				1809BC662B8FDD8A0008A294 /* kemoview_fileselector_gtk.c in Sources */,
 				183870A72BD1D2B400933367 /* colormap_molten_metal_c.c in Sources */,
 				1809BD1B2B8FF1E50008A294 /* m_map_data_4_viewer_c.c in Sources */,
-				1809BF3E2B8FF9160008A294 /* find_isoline_on_patch_c.c in Sources */,
 				1809BC672B8FDD8A0008A294 /* view_modifier_glfw.c in Sources */,
 				1809BC682B8FDD8A0008A294 /* kemo_mesh_viewer_glfw_gtk.c in Sources */,
 				1809BD472B8FF1E50008A294 /* read_psf_vtk_data_gz_c.c in Sources */,
@@ -1579,6 +1644,7 @@
 				1809BC6B2B8FDD8A0008A294 /* kemoview_gtk_preference_menu.c in Sources */,
 				1809BDB42B8FF30F0008A294 /* m_direction_labels_c.c in Sources */,
 				1809BFAA2B8FFCCE0008A294 /* t_control_real_IO.c in Sources */,
+				1899DCD92BF507D60041DE84 /* pthread_fieldline_to_buf.c in Sources */,
 				1809BCEF2B8FF1E50008A294 /* skip_comment_c.c in Sources */,
 				1809BD112B8FF1E50008A294 /* calypso_zlib_access_c.c in Sources */,
 				1809BF822B8FF9160008A294 /* select_read_psf_viewer_c.c in Sources */,
@@ -1598,6 +1664,7 @@
 				1809BF462B8FF9160008A294 /* read_data_4_kemoviewer.c in Sources */,
 				18D824A42BE4A0A70067B954 /* bitonic_sort_c.c in Sources */,
 				1809BE2F2B8FF4250008A294 /* shader_into_c.f90 in Sources */,
+				1899DCDB2BF507D60041DE84 /* pthread_each_isoline_to_buf.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1607,7 +1674,9 @@
 			files = (
 				1809BF952B8FF9160008A294 /* set_axis_to_buf.c in Sources */,
 				1809BFEF2B9000900008A294 /* tree_views_4_fixed_lists_GTK.c in Sources */,
+				1899DCD62BF507D60041DE84 /* pthread_PSF_arrows_to_buf.c in Sources */,
 				1809BD262B8FF1E50008A294 /* invert_small_matrix_c.c in Sources */,
+				1899DCC82BF507940041DE84 /* m_fline_data_4_viewer_c.c in Sources */,
 				1809BF8B2B8FF9160008A294 /* set_PSF_isolines_to_buf.c in Sources */,
 				1809BD322B8FF1E50008A294 /* m_read_text_to_character.c in Sources */,
 				1809BD082B8FF1E50008A294 /* t_surf_edge_hash_c.c in Sources */,
@@ -1655,12 +1724,14 @@
 				1809BF792B8FF9160008A294 /* set_mesh_patch_2_gl_buf.c in Sources */,
 				18A91E8324B9318500D30C46 /* kemoview_gtk_axis_menu.c in Sources */,
 				1809BE282B8FF4250008A294 /* move_draw_objects_gl.c in Sources */,
+				1899DCDC2BF507D60041DE84 /* pthread_PSF_patches_to_buf.c in Sources */,
 				18A91E8924B9318500D30C46 /* tree_view_4_viewer_mesh.c in Sources */,
 				1809BCF62B8FF1E50008A294 /* set_rgb_colors_c.c in Sources */,
 				1809BCF82B8FF1E50008A294 /* transfer_matvec.c in Sources */,
 				1809BF372B8FF9160008A294 /* m_kemoview_object_buffers.c in Sources */,
 				1809BF8F2B8FF9160008A294 /* set_each_psf_parameters.c in Sources */,
 				1809BF9F2B8FFC8F0008A294 /* tree_view_4_colormap.c in Sources */,
+				1899DCC42BF506E90041DE84 /* t_PSF_each_isoline_edge_list.c in Sources */,
 				1809BF6B2B8FF9160008A294 /* set_mesh_node_2_gl_buf.c in Sources */,
 				1809BD182B8FF1E50008A294 /* m_grouping_mesh_4_viewer_c.c in Sources */,
 				1809BD402B8FF1E50008A294 /* calypso_zlib_io_c.c in Sources */,
@@ -1682,12 +1753,14 @@
 				1809BF532B8FF9160008A294 /* draw_fieldlines.c in Sources */,
 				1809BD122B8FF1E50008A294 /* numbers_to_bin_c.c in Sources */,
 				1809BD362B8FF1E50008A294 /* calypso_param_c.c in Sources */,
+				1899DCE02BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */,
 				1809BD4E2B8FF1E50008A294 /* jacobian_trilinear_c.c in Sources */,
 				1809BF2F2B8FF9160008A294 /* m_kemoviewer_data.c in Sources */,
 				1809BD2E2B8FF1E50008A294 /* m_surface_mesh_4_viewer_c.c in Sources */,
 				1809BE342B8FF4250008A294 /* init_gl_lighting_c.c in Sources */,
 				1809BD4A2B8FF1E50008A294 /* read_viewer_mesh_c.c in Sources */,
 				18EC9F2826D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c in Sources */,
+				1899DCD42BF507D60041DE84 /* pthread_mesh_patch_to_buf.c in Sources */,
 				1809BF912B8FF9160008A294 /* psf_patch_buffer.c in Sources */,
 				18A91E7824B9318500D30C46 /* tree_view_4_light_position.c in Sources */,
 				1809BF652B8FF9160008A294 /* m_phong_light_table_c.c in Sources */,
@@ -1740,7 +1813,6 @@
 				18A91E8624B9318500D30C46 /* kemoview_fileselector_gtk.c in Sources */,
 				183870A62BD1D2B400933367 /* colormap_molten_metal_c.c in Sources */,
 				1809BD1A2B8FF1E50008A294 /* m_map_data_4_viewer_c.c in Sources */,
-				1809BF3D2B8FF9160008A294 /* find_isoline_on_patch_c.c in Sources */,
 				18A91E7C24B9318500D30C46 /* view_modifier_glfw.c in Sources */,
 				18A91E1924B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c in Sources */,
 				1809BD462B8FF1E50008A294 /* read_psf_vtk_data_gz_c.c in Sources */,
@@ -1766,6 +1838,7 @@
 				18A91E8024B9318500D30C46 /* kemoview_gtk_preference_menu.c in Sources */,
 				1809BDB32B8FF30F0008A294 /* m_direction_labels_c.c in Sources */,
 				1809BFA92B8FFCCE0008A294 /* t_control_real_IO.c in Sources */,
+				1899DCD82BF507D60041DE84 /* pthread_fieldline_to_buf.c in Sources */,
 				1809BCEE2B8FF1E50008A294 /* skip_comment_c.c in Sources */,
 				1809BD102B8FF1E50008A294 /* calypso_zlib_access_c.c in Sources */,
 				1809BF812B8FF9160008A294 /* select_read_psf_viewer_c.c in Sources */,
@@ -1785,6 +1858,7 @@
 				1809BF452B8FF9160008A294 /* read_data_4_kemoviewer.c in Sources */,
 				18D824A32BE4A0A70067B954 /* bitonic_sort_c.c in Sources */,
 				1809BE2E2B8FF4250008A294 /* shader_into_c.f90 in Sources */,
+				1899DCDA2BF507D60041DE84 /* pthread_each_isoline_to_buf.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1872,6 +1946,7 @@
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1959,6 +2034,7 @@
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2046,6 +2122,7 @@
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2133,6 +2210,7 @@
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2324,6 +2402,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2385,6 +2464,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2506,6 +2586,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2630,6 +2711,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					/opt/homebrew/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

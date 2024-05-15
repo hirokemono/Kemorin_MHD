@@ -13,6 +13,7 @@ TARGET_CPNG_READ_TEST = test_read_png
 TARGET_PNG_2_BMP_F =    test_png_2_bmp_f
 TARGET_PNG_2_QUILT =    test_png_2_quilt
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90 *.F90)
 SRC_C = $(shell ls *.c)
 
@@ -58,21 +59,21 @@ dir_list:
 	@echo 'GRAPHIC_TEST_DIR =   $(GRAPHIC_TEST_DIR)'      >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_BMP_TEST =      $$(BUILDDIR)/$(TARGET_BMP_TEST)'     \
+	@echo 'TARGET_BMP_TEST =       $$(TEST_BUILD_DIR)/$(TARGET_BMP_TEST)'     \
 	>> $(MAKENAME)
-	@echo 'TARGET_C_PNG_TEST =    $$(BUILDDIR)/$(TARGET_C_PNG_TEST)' \
+	@echo 'TARGET_C_PNG_TEST =     $$(TEST_BUILD_DIR)/$(TARGET_C_PNG_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_CPSF_READ_TEST = $$(BUILDDIR)/$(TARGET_CPSF_READ_TEST)' \
+	@echo 'TARGET_CPSF_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CPSF_READ_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_CBMP_READ_TEST = $$(BUILDDIR)/$(TARGET_CBMP_READ_TEST)' \
+	@echo 'TARGET_CBMP_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CBMP_READ_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_CBMP_GZ_TEST = $$(BUILDDIR)/$(TARGET_CBMP_GZ_TEST)' \
+	@echo 'TARGET_CBMP_GZ_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_CBMP_GZ_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_CPNG_READ_TEST = $$(BUILDDIR)/$(TARGET_CPNG_READ_TEST)' \
+	@echo 'TARGET_CPNG_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CPNG_READ_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_PNG_2_BMP_F = $$(BUILDDIR)/$(TARGET_PNG_2_BMP_F)' \
+	@echo 'TARGET_PNG_2_BMP_F =    $$(TEST_BUILD_DIR)/$(TARGET_PNG_2_BMP_F)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_PNG_2_QUILT = $$(BUILDDIR)/$(TARGET_PNG_2_QUILT)' \
+	@echo 'TARGET_PNG_2_QUILT =    $$(TEST_BUILD_DIR)/$(TARGET_PNG_2_QUILT)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -173,11 +174,11 @@ depends:
 	@for sources in $(SRC_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/TESTS/graphic_test/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MHDDIR)//programs/TESTS/graphic_test/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 

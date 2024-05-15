@@ -17,7 +17,8 @@ double_sorting_tests.o: \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
  $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h
+ $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
+ $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 float_sorting_tests.o: \
  $(MHDDIR)/programs/TESTS/Sorting_test/float_sorting_tests.c \
@@ -27,7 +28,8 @@ float_sorting_tests.o: \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
  $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h
+ $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
+ $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 integer_sorting_tests.o: \
  $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.c \
@@ -50,6 +52,7 @@ kemo_bitonic_sort.o: \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
  $(MHDDIR)/programs/TESTS/Sorting_test/double_sorting_tests.h \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
+ $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h \
  $(MHDDIR)/programs/TESTS/Sorting_test/float_sorting_tests.h \
  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

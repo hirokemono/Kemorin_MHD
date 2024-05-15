@@ -1,7 +1,8 @@
 #
 #
 #
-TESTS_DIR = $$(PROG_DIR)/TESTS
+TESTS_DIR =      $$(PROG_DIR)/TESTS
+TEST_BUILD_DIR = $$(BUILDDIR)/tests
 
 SUBDIRS =      \
 mesh_test      \
@@ -23,7 +24,8 @@ BC_file_test
 #
 
 dir_list:
-	@echo 'TESTS_DIR =  $(TESTS_DIR)'            >> $(MAKENAME)
+	@echo 'TESTS_DIR =       $(TESTS_DIR)'            >> $(MAKENAME)
+	@echo 'TEST_BUILD_DIR =  $(TEST_BUILD_DIR)'       >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \

@@ -7,6 +7,7 @@ KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER
 TARGET_KEMOVIEW_GTK =  kemoviewer_GTK
 TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
 
+CURRENTDIR = $(shell pwd)
 SRC_C = $(shell ls *.c)
 
 MOD_KEMOVIEW_GTK = \
@@ -74,11 +75,11 @@ depends:
 	@for sources in $(SRC_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/VIEWER/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)//programs/VIEWER/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

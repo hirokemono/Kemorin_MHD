@@ -4,6 +4,7 @@
 
 FFTW_C_DIR =     $$(C_SRCDIR)/FFTW_wrapper
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.c)
 INCLUDES = $(addsuffix .h,$(basename $(SOURCES)) )
 
@@ -40,11 +41,11 @@ depends:
 	@for sources in $(SOURCES) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) $(MHDDIR)/C_src/FFTW_wrapper/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/FFTW_wrapper/Makefile.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

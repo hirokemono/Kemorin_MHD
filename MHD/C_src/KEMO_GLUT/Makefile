@@ -3,6 +3,7 @@
 #
 
 KEMO_C_GLUTDIR = $$(C_SRCDIR)/KEMO_GLUT
+CURRENTDIR = $(shell pwd)
 SRC_GLUT_C = $(shell ls *.c)
 INC_GLUT_C = $(addsuffix .h,$(basename $(SRC_GLUT_C)) )
 OBJ_GLUT_C = $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
@@ -66,11 +67,11 @@ depends:
 	@for sources in $(SRC_GLUT_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(MHDDIR)/C_src/KEMO_GLUT/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/KEMO_GLUT/Makefile.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:
