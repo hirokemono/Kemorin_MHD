@@ -501,7 +501,7 @@ static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
 
 double draw_rotate_gl_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,
-                            int i_axis, int inc_deg, num_rotation){
+                            int i_axis, int inc_deg, int num_rotation){
     double AverageFPS = write_rotate_views(kemo_sgl, iflag_img, image_prefix,
                                            i_axis, inc_deg, num_rotation);
     return AverageFPS;

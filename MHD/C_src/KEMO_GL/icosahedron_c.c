@@ -266,11 +266,12 @@ int set_cone_vertex(int ncorner, double radius,
 }
 
 
-long set_line_strided_buffer(const long ist_line, double xyzw_line[8],
-                             double norm_line[8], double color_line[8],
+long set_line_strided_buffer(const long ist_line,
+                             double xyzw_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
     const long nvertex_line = 2;
+    double norm_line[4] = {0.0, 0.0, 1.0, 1.0};
 	long k, nd;
 	
     long ist_vertex = nvertex_line * ist_line;
@@ -278,7 +279,7 @@ long set_line_strided_buffer(const long ist_line, double xyzw_line[8],
         set_node_stride_buffer((ist_vertex+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_line[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_line[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_line[nd];
             strided_buf->v_buf[nd+point_buf.igl_color] = color_line[4*k+nd];
         };
 	};

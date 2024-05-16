@@ -33,6 +33,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->PSF_trns_buf =    init_strided_buffer(n_point);
     kemo_buffers->PSF_ttxur_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_isoline_buf = init_strided_buffer(n_point);
+    kemo_buffers->PSF_isotube_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_arrow_buf =   init_strided_buffer(n_point);
 
     kemo_buffers->MAP_solid_buf =   init_strided_buffer(n_point);
@@ -93,6 +94,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->PSF_solid_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_trns_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_isoline_buf);
+    dealloc_strided_buffer(kemo_buffers->PSF_isotube_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_arrow_buf);
 
     dealloc_strided_buffer(kemo_buffers->MAP_solid_buf);
@@ -159,13 +161,16 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
         set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
         
-        const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
-                                       view_s, kemo_psf->psf_d,
-                                       kemo_psf->psf_m, kemo_psf->psf_a,
-                                       kemo_buffers->PSF_solid_buf,
-                                       kemo_buffers->PSF_stxur_buf,
-                                       kemo_buffers->PSF_isoline_buf,
-                                       kemo_buffers->PSF_arrow_buf);
+        kemo_buffers->num_isoline_buf = const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
+                                                                       view_s, kemo_psf->psf_d,
+                                                                       kemo_psf->psf_m, kemo_psf->psf_a,
+                                                                       kemo_buffers->PSF_solid_buf,
+                                                                       kemo_buffers->PSF_stxur_buf,
+                                                                       kemo_buffers->PSF_isoline_buf,
+                                                                       kemo_buffers->PSF_isotube_buf,
+                                                                       kemo_buffers->PSF_arrow_buf);
+        kemo_buffers->PSF_isoline_buf->num_nod_buf = 0;
+
         const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
@@ -262,17 +267,16 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
                     kemo_buffers->axis_buf);
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
     
-    if(kemo_buffers->iflag_coastline_tube){
-        kemo_buffers->coast_line_buf->num_nod_buf
-            = ITWO * count_coastline_line_buffer(kemo_mesh->mesh_m);
-        kemo_buffers->coast_tube_buf->num_nod_buf = 0;
-    };
+    kemo_buffers->coast_line_buf->num_nod_buf
+        = ITWO * count_coastline_line_buffer(kemo_mesh->mesh_m);
+    kemo_buffers->coast_tube_buf->num_nod_buf = 0;
 
-    if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
-        kemo_buffers->FLINE_line_buf->num_nod_buf
-            = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
-        kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
-    };
+    kemo_buffers->PSF_isoline_buf->num_nod_buf = kemo_buffers->num_isoline_buf;
+    kemo_buffers->PSF_isotube_buf->num_nod_buf = 0;
+
+    kemo_buffers->FLINE_line_buf->num_nod_buf
+        = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
+    kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
     return;
 };
 

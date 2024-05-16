@@ -117,7 +117,7 @@ long set_sph_med_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
         i = iedge % num_grid;
         set_meridional_frame(i, radius, theta_p_grid, phi_p_grid[j],
                              xyzw_line, dir_line, norm_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	}
 	return inum;
 }
@@ -139,7 +139,7 @@ long set_sph_long_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
         i = iedge % num_grid;
         set_latitude_frame(i, radius, theta_t_grid[j], phi_t_grid,
                            xyzw_line, dir_line, norm_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
     }
     return inum;
 }
@@ -234,7 +234,7 @@ long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
         rtp_flame[1] = theta_p_grid[i];
         rtp_flame[4] = theta_p_grid[i+1];
         set_map_frame_edge(rtp_flame, xyzw_line, dir_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	}
 	return inum;
 }
@@ -263,7 +263,7 @@ long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
         rtp_flame[2] = phi_t_grid[i];
         rtp_flame[5] = phi_t_grid[i+1];
         set_map_frame_edge(rtp_flame, xyzw_line, dir_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
     }
     return inum;
 }
@@ -371,7 +371,7 @@ long set_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge;iedge++) {
         set_coastline_edge(iedge, radius, xyzw_line, dir_line, norm_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	};
 	return inum;
 }
@@ -434,7 +434,7 @@ long set_map_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++) {
         set_map_coastline_edge(iedge, xyzw_line, dir_line);
-        inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);
+        inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	};
 	return inum;
 }

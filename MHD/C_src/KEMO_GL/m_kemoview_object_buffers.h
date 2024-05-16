@@ -39,8 +39,11 @@ struct kemoview_buffers{
     struct gl_strided_buffer *PSF_stxur_buf;
     struct gl_strided_buffer *PSF_ttxur_buf;
     struct gl_strided_buffer *PSF_arrow_buf;
-    struct gl_strided_buffer *PSF_isoline_buf;
     
+    long num_isoline_buf;
+    struct gl_strided_buffer *PSF_isoline_buf;
+    struct gl_strided_buffer *PSF_isotube_buf;
+
     struct gl_strided_buffer *MAP_solid_buf;
     struct gl_strided_buffer *MAP_isoline_buf;
     

@@ -28,8 +28,8 @@ void const_PSF_gl_texure_name(const int ipsf_texured,
 void release_PSF_texture_from_gl(const int ipsf_texured, struct kemoview_shaders *kemo_shaders);
 
 void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
-                               struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,
-                               struct VAO_ids **psf_solid_VAO);
+                               struct gl_strided_buffer *PSF_isotube_buf, struct gl_strided_buffer *PSF_isoline_buf,
+                               struct gl_strided_buffer *PSF_arrow_buf, struct VAO_ids **psf_solid_VAO);
 
 void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf, struct gl_strided_buffer *PSF_ttxur_buf,
                                struct VAO_ids **psf_trans_VAO);

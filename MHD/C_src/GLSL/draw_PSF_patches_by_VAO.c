@@ -23,12 +23,13 @@ void release_PSF_texture_from_gl(const int ipsf_texured, struct kemoview_shaders
 };
 
 void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
-                               struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,
-                               struct VAO_ids **psf_solid_VAO){
+                               struct gl_strided_buffer *PSF_isotube_buf, struct gl_strided_buffer *PSF_isoline_buf,
+                               struct gl_strided_buffer *PSF_arrow_buf, struct VAO_ids **psf_solid_VAO){
     Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);
     Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);
-    Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isoline_buf);
+    Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isotube_buf);
     Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf);
+//    Const_VAO_4_Simple(psf_solid_VAO[4], PSF_isoline_buf);
     return;
 };
 
