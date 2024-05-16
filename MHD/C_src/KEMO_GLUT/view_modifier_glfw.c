@@ -336,10 +336,22 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 
 void draw_fast(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
+    kemoview_mono_viewmatrix(kemo_sgl);
+    kemoview_fast_buffers(kemo_sgl);
+    glDrawBuffer(GL_BACK);
+    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
+    glfwSwapBuffers(glfw_window);
+    return;
+};
+
+static void draw_movie(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
     select_anaglyph(kemo_sgl);
     return;
 };
+
 void draw_simple(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
@@ -517,7 +529,7 @@ void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
         write_rotate_views(kemo_sgl, iflag_img, image_prefix,
                            i_axis, inc_deg, 1);
 	}
-    draw_fast(kemo_sgl);
+    draw_movie(kemo_sgl);
 	return;
 }
 
