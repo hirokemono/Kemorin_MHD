@@ -345,10 +345,12 @@ void set_coastline_edge(long iedge, double radius, double xyzw_line[8],
         norm_line[4*k+3]  = 1.0;
     };
     for(int nd = 0;nd < 4; nd++){
-        xyzw_line[nd] =   radius * norm_line[nd];
-        xyzw_line[nd+4] = radius * norm_line[nd+4];
         dir_line[nd  ] =  norm_line[nd+4] - norm_line[nd];
         dir_line[nd+4] =  dir_line[nd];
+    };
+    for(int nd = 0;nd < 4; nd++){
+        xyzw_line[nd] =   radius * norm_line[nd];
+        xyzw_line[nd+4] = radius * (norm_line[nd] + 0.8 * dir_line[nd]);
     };
     xyzw_line[3] = 1.0;
     xyzw_line[7] = 1.0;
@@ -407,14 +409,16 @@ void set_map_coastline_edge(long iedge, double xyzw_line[8], double dir_line[8])
 	rtp_flame[0] = ONE;
 	rtp_flame[3] = ONE;
     aitoff_c(ITWO, rtp_flame, xy_coast);
-    xyzw_line[0] = xy_coast[0];
-    xyzw_line[1] = xy_coast[1];
-    xyzw_line[4] = xy_coast[2];
-    xyzw_line[5] = xy_coast[3];
+    
     dir_line[0] =  xy_coast[2] - xy_coast[0];
     dir_line[1] =  xy_coast[3] - xy_coast[1];
     dir_line[4] =  dir_line[0];
     dir_line[5] =  dir_line[1];
+    
+    xyzw_line[0] = xy_coast[0];
+    xyzw_line[1] = xy_coast[1];
+    xyzw_line[4] = xyzw_line[0] + 0.8 * dir_line[0];
+    xyzw_line[5] = xyzw_line[1] + 0.8 * dir_line[1];
     return;
 }
 

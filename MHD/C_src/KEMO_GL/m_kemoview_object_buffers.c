@@ -46,9 +46,12 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->mesh_node_buf =   init_strided_buffer(n_point);
     kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
 
+    kemo_buffers->iflag_coastline_tube = ON;
     kemo_buffers->tube_radius =  0.003;
     kemo_buffers->ncorner_axis = ISIX*2;
-    kemo_buffers->coast_buf = init_strided_buffer(n_point);
+    kemo_buffers->coast_line_buf = init_strided_buffer(n_point);
+    kemo_buffers->coast_tube_buf = init_strided_buffer(n_point);
+    
     kemo_buffers->axis_buf =  init_strided_buffer(n_point);
 
     n_point = count_colorbar_box_buffer(IONE, 128);
@@ -95,7 +98,8 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->MAP_solid_buf);
     dealloc_strided_buffer(kemo_buffers->MAP_isoline_buf);
 
-    dealloc_strided_buffer(kemo_buffers->coast_buf);
+    dealloc_strided_buffer(kemo_buffers->coast_tube_buf);
+    dealloc_strided_buffer(kemo_buffers->coast_line_buf);
 
     dealloc_strided_buffer(kemo_buffers->cbar_buf);
 
@@ -135,12 +139,15 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf);
         
-        if(kemo_mesh->mesh_m->iflag_draw_coast_tube == 0){
-            set_map_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
-        }else{
+        set_map_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
+        if(kemo_buffers->iflag_coastline_tube){
             set_map_coastline_tube_buffer(kemo_buffers->ncorner_axis, kemo_buffers->tube_radius,
-                                          kemo_mesh->mesh_m, kemo_buffers->coast_buf);
-        };
+                                          kemo_mesh->mesh_m, kemo_buffers->coast_tube_buf);
+            kemo_buffers->coast_line_buf->num_nod_buf = 0;
+        }else{
+            kemo_buffers->coast_tube_buf->num_nod_buf = 0;
+        }
+        
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 4.0;
@@ -165,11 +172,13 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_trns_buf,
                                        kemo_buffers->PSF_ttxur_buf);
 
-        if(kemo_mesh->mesh_m->iflag_draw_coast_tube == 0){
-            set_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
-        }else{
+        set_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
+        if(kemo_buffers->iflag_coastline_tube){
             set_coastline_tube_buffer(kemo_buffers->ncorner_axis, kemo_buffers->tube_radius,
-                                      kemo_mesh->mesh_m, kemo_buffers->coast_buf);
+                                      kemo_mesh->mesh_m, kemo_buffers->coast_tube_buf);
+            kemo_buffers->coast_line_buf->num_nod_buf = 0;
+        }else{
+            kemo_buffers->coast_tube_buf->num_nod_buf = 0;
         }
         
         const_fieldlines_buffer(kemo_buffers->nthreads,
@@ -242,8 +251,9 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
     return;
 };
 
-void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
-                      struct view_element *view_s, struct kemoview_buffers *kemo_buffers)
+void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                      struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                      struct kemoview_buffers *kemo_buffers)
 {
     double axis_radius = 4.0;
     set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
@@ -251,6 +261,18 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_
                     kemo_buffers->ncorner_axis, axis_radius,
                     kemo_buffers->axis_buf);
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
+    
+    if(kemo_buffers->iflag_coastline_tube){
+        kemo_buffers->coast_line_buf->num_nod_buf
+            = ITWO * count_coastline_line_buffer(kemo_mesh->mesh_m);
+        kemo_buffers->coast_tube_buf->num_nod_buf = 0;
+    };
+
+    if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
+        kemo_buffers->FLINE_line_buf->num_nod_buf
+            = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
+        kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
+    };
     return;
 };
 

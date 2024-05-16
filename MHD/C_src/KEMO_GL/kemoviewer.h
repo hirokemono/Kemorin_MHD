@@ -26,7 +26,7 @@
 
 #define TRIPLE_UPDATE 99
 #define FULL_DRAW      0
-#define FAST_DRAW      1
+#define MOVIE_DRAW     1
 #define SIMPLE_DRAW    2
 #define QUILT_DRAW     3
 

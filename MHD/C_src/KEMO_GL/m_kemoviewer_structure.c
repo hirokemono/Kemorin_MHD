@@ -321,8 +321,9 @@ void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer){
     return;
 };
 void kemoview_fast_buffers(struct kemoviewer_type *kemoviewer){
-    set_fast_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_mesh,
-                     kemoviewer->view_s, kemoviewer->kemo_buffers);
+    set_fast_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_fline,
+                     kemoviewer->kemo_mesh, kemoviewer->view_s,
+                     kemoviewer->kemo_buffers);
     return;
 };
 

@@ -67,8 +67,9 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 	return;
 };
 
-void draw_map_objects_VAO(struct transfer_matrices *matrices, 
-			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
+void draw_map_objects_VAO(struct transfer_matrices *matrices,
+                          struct VAO_ids **map_VAO,
+                          struct kemoview_shaders *kemo_shaders){
 	int i;
     /* set shading mode */
 	glDisable(GL_CULL_FACE);
@@ -77,14 +78,14 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
 
-	for(i=0;i<2;i++){
+	for(i=0;i<3;i++){
 		if(map_VAO[i]->npoint_draw > 0){
 			glBindVertexArray(map_VAO[i]->id_VAO);
 			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
 		};
 	};	
 		
-    if(map_VAO[2]->npoint_draw > 0){
+    if(map_VAO[3]->npoint_draw > 0){
         glBindVertexArray(map_VAO[2]->id_VAO);
         glDrawArrays(GL_LINES, IZERO, map_VAO[2]->npoint_draw);
     };

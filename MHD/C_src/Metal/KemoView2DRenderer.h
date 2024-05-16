@@ -28,8 +28,10 @@ typedef struct
     NSUInteger numMapinesVertice;
 
     /*  Vertex buffer for Coast lines */
-    id<MTLBuffer> _Nullable coastVertice;
-    NSUInteger numCoastVertice;
+    id<MTLBuffer> _Nullable coastLineVertice;
+    NSUInteger numCoastLineVertice;
+    id<MTLBuffer> _Nullable coastTubeVertice;
+    NSUInteger numCoastTubeVertice;
 
     /*  Vertex buffer for  color bar */
     id<MTLBuffer> _Nullable colorBarVertice;

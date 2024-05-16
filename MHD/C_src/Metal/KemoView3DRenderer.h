@@ -72,8 +72,11 @@ typedef struct
     NSUInteger numMeshNodeVertice;
 
     /*  Vertex buffer for Coast lines */
-    id<MTLBuffer> _Nullable coastVertice;
-    NSUInteger numCoastVertice;
+    id<MTLBuffer> _Nullable coastLineVertice;
+    NSUInteger numCoastLineVertice;
+    id<MTLBuffer> _Nullable coastTubeVertice;
+    NSUInteger numCoastTubeVertice;
+    
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
     NSUInteger numAxisVertice;
@@ -147,7 +150,7 @@ typedef struct
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
                            sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_tube;
+                       fieldTube:(int) iflag_field_tube;
 @end
 
 

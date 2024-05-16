@@ -34,7 +34,6 @@ struct mesh_menu_val{
 	
 	int iflag_draw_coast;
 	int iflag_draw_sph_grid;
-    int iflag_draw_coast_tube;
 	double radius_coast;
 	
 	int draw_surface_nod;

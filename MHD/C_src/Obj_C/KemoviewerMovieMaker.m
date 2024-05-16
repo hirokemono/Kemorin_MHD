@@ -498,8 +498,8 @@ NSData *SnapshotData;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
@@ -597,8 +597,8 @@ NSData *SnapshotData;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     [rotateProgreessBar setHidden:NO];
     [rotateProgreessBar setUsesThreadedAnimation:YES];
@@ -641,7 +641,7 @@ NSData *SnapshotData;
 -(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
 {
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 
     NSInteger num_step
         = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);

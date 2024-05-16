@@ -4,7 +4,7 @@
 
 #include  "draw_coastline.h"
 
-static long count_coastline_line_buffer(struct mesh_menu_val *mesh_m){
+long count_coastline_line_buffer(struct mesh_menu_val *mesh_m){
     long n_vertex = 0;
     if(mesh_m->iflag_draw_sph_grid > 0){
         n_vertex = n_vertex + (count_sph_med_flame() + count_sph_long_flame());
@@ -38,7 +38,7 @@ void set_coastline_line_buffer(struct mesh_menu_val *mesh_m,
     return;
 };
 
-void set_coastline_tube_buffer(int ncorner, int tube_radius,
+void set_coastline_tube_buffer(int ncorner, double tube_radius,
                                struct mesh_menu_val *mesh_m,
                                struct gl_strided_buffer *coast_buf){
     long n_vertex = ITHREE * (ITWO*ncorner) * count_coastline_line_buffer(mesh_m);
@@ -87,10 +87,10 @@ void set_map_coastline_line_buffer(struct mesh_menu_val *mesh_m,
 	return;
 };
 
-void set_map_coastline_tube_buffer(int ncorner, int tube_radius,
+void set_map_coastline_tube_buffer(int ncorner, double tube_radius,
                                    struct mesh_menu_val *mesh_m,
                                    struct gl_strided_buffer *coast_buf){
-    long n_vertex = (ITHREE*ncorner) * count_coastline_line_buffer(mesh_m);
+    long n_vertex = ITHREE*(ITWO*ncorner) * count_coastline_line_buffer(mesh_m);
 
     set_buffer_address_4_patch(n_vertex, coast_buf);
     if(coast_buf->num_nod_buf == 0) return;

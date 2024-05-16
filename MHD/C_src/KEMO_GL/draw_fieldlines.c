@@ -14,6 +14,14 @@ void const_fieldlines_buffer(const int nthreads,
         
     set_color_code_for_fieldlines(fline_d, fline_m);
 
+    long num_edge = count_fieldlines_to_buf(fline_d);
+    set_buffer_address_4_patch(ITWO*num_edge, FLINE_line_buf);
+    if(FLINE_line_buf->num_nod_buf>0){
+        resize_strided_buffer(FLINE_line_buf);
+        sel_fieldlines_to_buf_pthread(IZERO, nthreads,
+                                      fline_d, fline_m, FLINE_line_buf);
+    };
+
     if(fline_m->fieldline_type == IFLAG_PIPE){
         long num_patch = count_fieldtubes_to_buf(fline_m->ncorner, fline_d);
         
@@ -24,14 +32,8 @@ void const_fieldlines_buffer(const int nthreads,
                                                       fline_d, fline_m,
                                                       FLINE_tube_buf);
         };
+        FLINE_line_buf->num_nod_buf = 0;
     };
 
-    long num_edge = count_fieldlines_to_buf(fline_d);
-    set_buffer_address_4_patch(ITWO*num_edge, FLINE_line_buf);
-    if(FLINE_line_buf->num_nod_buf>0){
-        resize_strided_buffer(FLINE_line_buf);
-        sel_fieldlines_to_buf_pthread(IZERO, nthreads,
-                                      fline_d, fline_m, FLINE_line_buf);
-    };
 	return;
 }

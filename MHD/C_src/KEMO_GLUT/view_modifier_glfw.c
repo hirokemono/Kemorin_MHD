@@ -336,7 +336,7 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 
 void draw_fast(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
     select_anaglyph(kemo_sgl);
     return;
 };
@@ -418,7 +418,7 @@ static double write_rotate_views(struct kemoviewer_type *kemo_sgl,
 	for (i = 0; i< ied_deg; i++) {
 		int_degree =  i*inc_deg;
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 
         gettimeofday( &startwtime, NULL );
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

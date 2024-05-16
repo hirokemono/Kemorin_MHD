@@ -30,22 +30,26 @@
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
                 buffers:(struct kemoview_buffers *) kemo_buffers
 {
-    kemoView2DMetalBufs->numMapSolidVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->MAP_solid_buf
-                                                                            vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
-    kemoView2DMetalBufs->numMapinesVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->MAP_isoline_buf
-                                                                            vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
-    kemoView2DMetalBufs->numCoastVertice =    [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->coast_buf
-                                                                            vertex:&(kemoView2DMetalBufs->coastVertice)];
+    kemoView2DMetalBufs->numMapSolidVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
+                                                                             buffer:kemo_buffers->MAP_solid_buf
+                                                                             vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
+    kemoView2DMetalBufs->numMapinesVertice =   [_kemo2DMetalBufBase setMetalVertexs:device
+                                                                             buffer:kemo_buffers->MAP_isoline_buf
+                                                                             vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
+    kemoView2DMetalBufs->numCoastLineVertice = [_kemo2DMetalBufBase setMetalVertexs:device
+                                                                             buffer:kemo_buffers->coast_line_buf
+                                                                             vertex:&(kemoView2DMetalBufs->coastLineVertice)];
+    kemoView2DMetalBufs->numCoastTubeVertice = [_kemo2DMetalBufBase setMetalVertexs:device
+                                                                             buffer:kemo_buffers->coast_tube_buf
+                                                                             vertex:&(kemoView2DMetalBufs->coastTubeVertice)];
 };
 
 - (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
 {
-    if(kemoView2DMetalBufs->numMapSolidVertice > 0) {[kemoView2DMetalBufs->mapSolidVertice release];};
-    if(kemoView2DMetalBufs->numMapinesVertice > 0)  {[kemoView2DMetalBufs->mapLinesVertice release];};
-    if(kemoView2DMetalBufs->numCoastVertice > 0)    {[kemoView2DMetalBufs->coastVertice   release];};
+    if(kemoView2DMetalBufs->numMapSolidVertice > 0)  {[kemoView2DMetalBufs->mapSolidVertice release];};
+    if(kemoView2DMetalBufs->numMapinesVertice > 0)   {[kemoView2DMetalBufs->mapLinesVertice release];};
+    if(kemoView2DMetalBufs->numCoastLineVertice > 0) {[kemoView2DMetalBufs->coastLineVertice   release];};
+    if(kemoView2DMetalBufs->numCoastTubeVertice > 0) {[kemoView2DMetalBufs->coastTubeVertice   release];};
     return;
 }
 
@@ -346,10 +350,16 @@
                      vertex:&(kemoView2DMetalBufs->mapLinesVertice)
                  projection:map_proj_mat];
     /*  Commands to render Coastline on map */
+    [self draw2DPatchObject:renderEncoder
+                 pipelines:kemoView2DPipelines
+                 numVertex:kemoView2DMetalBufs->numCoastTubeVertice
+                    vertex:&(kemoView2DMetalBufs->coastTubeVertice)
+                projection:map_proj_mat];
+
     [self draw2DLineObject:renderEncoder
                  pipelines:kemoView2DPipelines
-                 numVertex:kemoView2DMetalBufs->numCoastVertice
-                    vertex:&(kemoView2DMetalBufs->coastVertice)
+                 numVertex:kemoView2DMetalBufs->numCoastLineVertice
+                    vertex:&(kemoView2DMetalBufs->coastLineVertice)
                 projection:map_proj_mat];
     return;
 }

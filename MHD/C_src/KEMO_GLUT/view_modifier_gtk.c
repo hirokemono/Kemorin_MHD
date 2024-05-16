@@ -385,7 +385,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
         kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
         kemoview_modify_view(kemo_sgl, kemoGL_GTK);

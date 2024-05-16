@@ -71,9 +71,12 @@
                                                                                vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
                                                                                texure:&(kemoView3DMetalBuf->psfSolidTexure)];
 
-    kemoView3DMetalBuf->numCoastVertice =    [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->coast_buf
-                                                                           vertex:&(kemoView3DMetalBuf->coastVertice)];
+    kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->coast_line_buf
+                                                                            vertex:&(kemoView3DMetalBuf->coastLineVertice)];
+    kemoView3DMetalBuf->numCoastTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->coast_tube_buf
+                                                                            vertex:&(kemoView3DMetalBuf->coastTubeVertice)];
 
     kemoView3DMetalBuf->numPSFSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->PSF_solid_buf
@@ -152,7 +155,8 @@
     if(kemoView3DMetalBuf->numMeshGridVertice > 0)  {[kemoView3DMetalBuf->meshGridVertice   release];};
     if(kemoView3DMetalBuf->numMeshSolidVertice > 0) {[kemoView3DMetalBuf->meshSolidVertice release];};
     
-    if(kemoView3DMetalBuf->numCoastVertice > 0)    {[kemoView3DMetalBuf->coastVertice   release];};
+    if(kemoView3DMetalBuf->numCoastTubeVertice > 0)    {[kemoView3DMetalBuf->coastTubeVertice   release];};
+    if(kemoView3DMetalBuf->numCoastLineVertice > 0)    {[kemoView3DMetalBuf->coastLineVertice   release];};
     
     /*  Set Cube Vertex buffer */
     if(kemoView3DMetalBuf->numCubeVertice > 0){
@@ -618,6 +622,14 @@
                       unites:monoViewUnites
                        sides:iflag_polygon
                        solid:SMOOTH_SHADE];
+
+    [self drawLineObject:renderEncoder
+               pipelines:kemo3DPipelines
+                   depth:depthState
+               numVertex:kemoView3DMetalBuf->numCoastLineVertice
+                  vertex:&(kemoView3DMetalBuf->coastLineVertice)
+                  unites:monoViewUnites];
+    
     [self drawCubeWithPhong:renderEncoder
                   pipelines:kemo3DPipelines
                       depth:depthState
@@ -625,13 +637,6 @@
                      vertex:&(kemoView3DMetalBuf->cubeVertice)
                       index:&(kemoView3DMetalBuf->cubeIndex)
                      unites:monoViewUnites];
-    
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numCoastVertice
-                  vertex:&(kemoView3DMetalBuf->coastVertice)
-                  unites:monoViewUnites];
     
     /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
@@ -671,7 +676,7 @@
              metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
                   unites:(KemoViewUnites *) monoViewUnites
                    sides:(int) iflag_polygon
-               fieldTube:(int) iflag_tube
+               fieldTube:(int) iflag_field_tube
 {
 
     /*  Draw solid objects */
@@ -718,7 +723,7 @@
                        sides:BOTH_SURFACES
                        solid:SMOOTH_SHADE];
     
-    if(iflag_tube == IFLAG_PIPE){
+    if(iflag_field_tube == IFLAG_PIPE){
         [self drawSolidWithPhong:renderEncoder
                        pipelines:kemo3DPipelines
                            depth:depthState
@@ -759,6 +764,24 @@
                       unites:monoViewUnites
                        sides:iflag_polygon
                        solid:SMOOTH_SHADE];
+
+    /* Draw ccoastlines */
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numCoastTubeVertice
+                      vertex:&(kemoView3DMetalBuf->coastTubeVertice)
+                      unites:monoViewUnites
+                       sides:iflag_polygon
+                       solid:SMOOTH_SHADE];
+
+    [self drawLineObject:renderEncoder
+               pipelines:kemo3DPipelines
+                   depth:depthState
+               numVertex:kemoView3DMetalBuf->numCoastLineVertice
+                  vertex:&(kemoView3DMetalBuf->coastLineVertice)
+                  unites:monoViewUnites];
+/* Draw initial cube */
     [self drawCubeWithPhong:renderEncoder
                   pipelines:kemo3DPipelines
                       depth:depthState
@@ -766,13 +789,6 @@
                      vertex:&(kemoView3DMetalBuf->cubeVertice)
                       index:&(kemoView3DMetalBuf->cubeIndex)
                      unites:monoViewUnites];
-    
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numCoastVertice
-                  vertex:&(kemoView3DMetalBuf->coastVertice)
-                  unites:monoViewUnites];
     
 /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
@@ -843,7 +859,7 @@
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
                            sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_tube
+                       fieldTube:(int) iflag_field_tube
 {
     [self encode3DObjects:renderEncoder
                 pipelines:&_kemoViewPipelines
@@ -851,7 +867,7 @@
               metalbuffer:&_kemoViewMetalBuf
                    unites:monoViewUnites
                     sides:iflag_polygon
-                fieldTube:iflag_tube];
+                fieldTube:iflag_field_tube];
     return;
 }
 

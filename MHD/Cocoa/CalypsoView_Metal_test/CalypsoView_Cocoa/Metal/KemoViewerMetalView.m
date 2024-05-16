@@ -231,7 +231,7 @@
             case 'c':
                 // toggle caps
                 fDrawCaps = 1 - fDrawCaps;
-                kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW,
+                kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW,
                                           [_kmv KemoViewPointer]);
                 [self setNeedsDisplay: YES];
                 break;
