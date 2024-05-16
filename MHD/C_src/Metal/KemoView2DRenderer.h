@@ -30,9 +30,6 @@ typedef struct
     /*  Vertex buffer for Coast lines */
     id<MTLBuffer> _Nullable coastVertice;
     NSUInteger numCoastVertice;
-    /*  Vertex buffer for sphere grids */
-    id<MTLBuffer> _Nullable sphGridVertice;
-    NSUInteger numSphGridVertice;
 
     /*  Vertex buffer for  color bar */
     id<MTLBuffer> _Nullable colorBarVertice;

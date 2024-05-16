@@ -37,10 +37,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->psf_trans_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
-	kemo_VAOs->grid_VAO = (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids *));
-	for(i=0;i<5;i++){
-		kemo_VAOs->grid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
+    kemo_VAOs->axis_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_VAOs->grid_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
@@ -49,7 +47,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-	for(i=0;i<4;i++){
+	for(i=0;i<3;i++){
 		kemo_VAOs->map_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
     
@@ -78,14 +76,14 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_VAO[i]);};
 	free(kemo_VAOs->psf_trans_VAO);
 
-	for(i=0;i<5;i++){free(kemo_VAOs->grid_VAO[i]);};
+    free(kemo_VAOs->axis_VAO);
 	free(kemo_VAOs->grid_VAO);
 
 	for(i=0;i<4;i++){free(kemo_VAOs->cbar_VAO[i]);};
 	free(kemo_VAOs->cbar_VAO);
 	free(kemo_VAOs->time_VAO);
 
-	for(i=0;i<4;i++){free(kemo_VAOs->map_VAO[i]);};
+	for(i=0;i<3;i++){free(kemo_VAOs->map_VAO[i]);};
 	free(kemo_VAOs->map_VAO);
 
     for(i=0;i<3;i++){free(kemo_VAOs->screen_FBO[i]);};
@@ -95,7 +93,8 @@ return;
 
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     int i;
-    for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->grid_VAO[i]->id_VAO));};
+    glGenVertexArrays(1, &(kemo_VAOs->axis_VAO->id_VAO));
+    glGenVertexArrays(1, &(kemo_VAOs->grid_VAO->id_VAO));
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
     for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->mesh_solid_VAO[i]->id_VAO));};
@@ -103,7 +102,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	glGenVertexArrays(1, &(kemo_VAOs->mesh_trans_VAO->id_VAO));
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->time_VAO->id_VAO));
-    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
+    for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
     glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->msg_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->screen_VAO->id_VAO));
@@ -111,7 +110,8 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     int i;
-    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->grid_VAO[i]);};
+    Destroy_VAO(kemo_VAOs->axis_VAO);
+    Destroy_VAO(kemo_VAOs->grid_VAO);
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->mesh_solid_VAO[i]);};
@@ -119,7 +119,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->time_VAO);
-    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
+    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
     Destroy_VAO(kemo_VAOs->cube_VAO);
     Destroy_VAO(kemo_VAOs->msg_VAO);
     Destroy_VAO(kemo_VAOs->screen_VAO);
@@ -153,7 +153,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
         glDisable(GL_CULL_FACE);
-		drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->grid_VAO[2]);
+		drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
 		drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
 
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
@@ -169,8 +169,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 		draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices, 
                             lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
 
-		drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[0], kemo_shaders);
-		drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[1], kemo_shaders);
+		drawgl_lines(view_matrices, kemo_VAOs->grid_VAO, kemo_shaders);
 
 /*  Stop drawing transparent objects  */
 		draw_PSF_trans_objects_VAO(view_matrices, lights,
@@ -214,8 +213,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
         draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
     }else{
         glDisable(GL_CULL_FACE);
-        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
-                                kemo_VAOs->grid_VAO[2]);
+        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
 
         if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
             glDisable(GL_CULL_FACE);
@@ -234,8 +232,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
         draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices,
                             lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
 
-        drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[0], kemo_shaders);
-        drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[1], kemo_shaders);
+        drawgl_lines(view_matrices, kemo_VAOs->grid_VAO, kemo_shaders);
     
         draw_PSF_trans_objects_VAO(view_matrices, lights,
                                    kemo_VAOs->psf_trans_VAO, kemo_shaders);
@@ -279,9 +276,8 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[2], kemo_buffers->coast_buf);
-        Const_VAO_4_Simple(kemo_VAOs->map_VAO[3], kemo_buffers->sph_grid_buf);
     }else{
-        Const_VAO_4_Phong(kemo_VAOs->grid_VAO[2], kemo_buffers->axis_buf);
+        Const_VAO_4_Phong(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
         
         Const_VAO_4_Phong(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
         Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
@@ -296,8 +292,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         Const_VAO_4_Simple(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);
         Const_VAO_4_Phong(kemo_VAOs->mesh_solid_VAO[2],  kemo_buffers->mesh_node_buf);
         
-        Const_VAO_4_Simple(kemo_VAOs->grid_VAO[0], kemo_buffers->coast_buf);
-        Const_VAO_4_Simple(kemo_VAOs->grid_VAO[1], kemo_buffers->sph_grid_buf);
+        Const_VAO_4_Simple(kemo_VAOs->grid_VAO, kemo_buffers->coast_buf);
         
         /* Set Transparent Objects */
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
@@ -331,7 +326,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
            && view_s->iflag_view_type != VIEW_MAP){
             set_fast_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
             
-            Const_VAO_4_Phong(kemo_VAOs->grid_VAO[2], kemo_buffers->axis_buf);
+            Const_VAO_4_Phong(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
         }else if(view_s->iflag_draw_mode == QUILT_DRAW
                  && view_s->iflag_view_type != VIEW_MAP){

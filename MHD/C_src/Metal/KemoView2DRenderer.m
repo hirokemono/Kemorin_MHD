@@ -39,9 +39,6 @@
     kemoView2DMetalBufs->numCoastVertice =    [_kemo2DMetalBufBase setMetalVertexs:device
                                                                             buffer:kemo_buffers->coast_buf
                                                                             vertex:&(kemoView2DMetalBufs->coastVertice)];
-    kemoView2DMetalBufs->numSphGridVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->sph_grid_buf
-                                                                            vertex:&(kemoView2DMetalBufs->sphGridVertice)];
 };
 
 - (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
@@ -49,7 +46,6 @@
     if(kemoView2DMetalBufs->numMapSolidVertice > 0) {[kemoView2DMetalBufs->mapSolidVertice release];};
     if(kemoView2DMetalBufs->numMapinesVertice > 0)  {[kemoView2DMetalBufs->mapLinesVertice release];};
     if(kemoView2DMetalBufs->numCoastVertice > 0)    {[kemoView2DMetalBufs->coastVertice   release];};
-    if(kemoView2DMetalBufs->numSphGridVertice > 0)  {[kemoView2DMetalBufs->sphGridVertice release];};
     return;
 }
 
@@ -354,12 +350,6 @@
                  pipelines:kemoView2DPipelines
                  numVertex:kemoView2DMetalBufs->numCoastVertice
                     vertex:&(kemoView2DMetalBufs->coastVertice)
-                projection:map_proj_mat];
-    /*  Commands to render grids on map */
-    [self draw2DLineObject:renderEncoder
-                 pipelines:kemoView2DPipelines
-                 numVertex:kemoView2DMetalBufs->numSphGridVertice
-                    vertex:&(kemoView2DMetalBufs->sphGridVertice)
                 projection:map_proj_mat];
     return;
 }

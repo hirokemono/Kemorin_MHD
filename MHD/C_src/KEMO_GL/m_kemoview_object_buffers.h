@@ -53,9 +53,9 @@ struct kemoview_buffers{
     struct gl_strided_buffer *mesh_trns_buf;
     
     struct gl_strided_buffer *coast_buf;
-    struct gl_strided_buffer *sph_grid_buf;
     
     int ncorner_axis;
+    double tube_radius;
     struct gl_strided_buffer *axis_buf;
     
 

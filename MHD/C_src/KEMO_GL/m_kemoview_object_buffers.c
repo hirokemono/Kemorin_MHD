@@ -46,11 +46,10 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->mesh_node_buf =   init_strided_buffer(n_point);
     kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
 
-    kemo_buffers->coast_buf =       init_strided_buffer(n_point);
-    kemo_buffers->sph_grid_buf =    init_strided_buffer(n_point);
-    
-    kemo_buffers->ncorner_axis = ISIX*8;
-    kemo_buffers->axis_buf =        init_strided_buffer(n_point);
+    kemo_buffers->tube_radius =  0.003;
+    kemo_buffers->ncorner_axis = ISIX*2;
+    kemo_buffers->coast_buf = init_strided_buffer(n_point);
+    kemo_buffers->axis_buf =  init_strided_buffer(n_point);
 
     n_point = count_colorbar_box_buffer(IONE, 128);
     kemo_buffers->cbar_buf =        init_strided_buffer(n_point);
@@ -97,7 +96,6 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->MAP_isoline_buf);
 
     dealloc_strided_buffer(kemo_buffers->coast_buf);
-    dealloc_strided_buffer(kemo_buffers->sph_grid_buf);
 
     dealloc_strided_buffer(kemo_buffers->cbar_buf);
 
@@ -137,10 +135,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf);
         
-        set_map_coastline_line_buffer(kemo_mesh->mesh_m,
-                                      kemo_buffers->coast_buf);
-        set_map_flame_line_buffer(kemo_mesh->mesh_m,
-                                  kemo_buffers->sph_grid_buf);
+        set_map_coastline_line_buffer(kemo_buffers->ncorner_axis, kemo_buffers->tube_radius,
+                                      kemo_mesh->mesh_m, kemo_buffers->coast_buf);
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 4.0;
@@ -165,10 +161,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_trns_buf,
                                        kemo_buffers->PSF_ttxur_buf);
 
-        set_coastline_line_buffer(kemo_mesh->mesh_m,
-                                  kemo_buffers->coast_buf);
-        set_sph_flame_line_buffer(kemo_mesh->mesh_m,
-                                  kemo_buffers->sph_grid_buf);
+        set_coastline_line_buffer(kemo_buffers->ncorner_axis, kemo_buffers->tube_radius,
+                                  kemo_mesh->mesh_m, kemo_buffers->coast_buf);
         
         const_fieldlines_buffer(kemo_buffers->nthreads,
                                 kemo_fline->fline_d,

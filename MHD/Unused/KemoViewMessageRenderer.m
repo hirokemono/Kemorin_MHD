@@ -210,12 +210,6 @@
                  pipelines:kemoView2DPipelines
                     vertex:&(kemoViewMetalBuf->coastVertice)
                 projection:map_proj_mat];
-    /*  Commands to render grids on map */
-    [self draw2DLineObject:kemo_buffers->sph_grid_buf
-                   encoder:renderEncoder
-                 pipelines:kemoView2DPipelines
-                    vertex:&(kemoViewMetalBuf->sphGridVertice)
-                projection:map_proj_mat];
     return;
 }
 

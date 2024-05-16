@@ -83,12 +83,11 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
 		};
 	};	
-	for(i=2;i<4;i++){
-		if(map_VAO[i]->npoint_draw > 0){
-			glBindVertexArray(map_VAO[i]->id_VAO);
-			glDrawArrays(GL_LINES, IZERO, map_VAO[i]->npoint_draw);
-		};
-	};
+		
+    if(map_VAO[2]->npoint_draw > 0){
+        glBindVertexArray(map_VAO[2]->id_VAO);
+        glDrawArrays(GL_LINES, IZERO, map_VAO[2]->npoint_draw);
+    };
 	return;
 }
 

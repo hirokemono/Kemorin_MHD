@@ -74,9 +74,6 @@
     kemoView3DMetalBuf->numCoastVertice =    [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->coast_buf
                                                                            vertex:&(kemoView3DMetalBuf->coastVertice)];
-    kemoView3DMetalBuf->numSphGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->sph_grid_buf
-                                                                           vertex:&(kemoView3DMetalBuf->sphGridVertice)];
 
     kemoView3DMetalBuf->numPSFSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->PSF_solid_buf
@@ -156,7 +153,6 @@
     if(kemoView3DMetalBuf->numMeshSolidVertice > 0) {[kemoView3DMetalBuf->meshSolidVertice release];};
     
     if(kemoView3DMetalBuf->numCoastVertice > 0)    {[kemoView3DMetalBuf->coastVertice   release];};
-    if(kemoView3DMetalBuf->numSphGridVertice > 0) {[kemoView3DMetalBuf->sphGridVertice release];};
     
     /*  Set Cube Vertex buffer */
     if(kemoView3DMetalBuf->numCubeVertice > 0){
@@ -636,12 +632,6 @@
                numVertex:kemoView3DMetalBuf->numCoastVertice
                   vertex:&(kemoView3DMetalBuf->coastVertice)
                   unites:monoViewUnites];
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numSphGridVertice
-                  vertex:&(kemoView3DMetalBuf->sphGridVertice)
-                  unites:monoViewUnites];
     
     /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
@@ -782,12 +772,6 @@
                    depth:depthState
                numVertex:kemoView3DMetalBuf->numCoastVertice
                   vertex:&(kemoView3DMetalBuf->coastVertice)
-                  unites:monoViewUnites];
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numSphGridVertice
-                  vertex:&(kemoView3DMetalBuf->sphGridVertice)
                   unites:monoViewUnites];
     
 /*  Draw transparent objects */

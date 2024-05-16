@@ -131,8 +131,9 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->surf_grp_opacity =  INIT_OPACITY;
 	
 	mesh_m->iflag_draw_coast =     OFF;
-	mesh_m->iflag_draw_sph_grid =  OFF;
-	mesh_m->radius_coast =         ONE;
+	mesh_m->iflag_draw_sph_grid =   OFF;
+    mesh_m->iflag_draw_coast_tube = OFF;
+	mesh_m->radius_coast =          ONE;
 	
 	init_single_color(mesh_m->domain_surface_color_code);
 	init_single_color(mesh_m->domain_grid_color_code);
