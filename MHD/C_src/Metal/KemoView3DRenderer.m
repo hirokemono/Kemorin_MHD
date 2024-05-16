@@ -688,7 +688,6 @@
              metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
                   unites:(KemoViewUnites *) monoViewUnites
                    sides:(int) iflag_polygon
-               fieldTube:(int) iflag_field_tube
 {
 
     /*  Draw solid objects */
@@ -742,18 +741,15 @@
                   vertex:&(kemoView3DMetalBuf->psfLinesVertice)
                   unites:monoViewUnites];
 
-    if(iflag_field_tube == IFLAG_PIPE){
-        [self drawSolidWithPhong:renderEncoder
-                       pipelines:kemo3DPipelines
-                           depth:depthState
-                       numVertex:kemoView3DMetalBuf->numFieldTubeVertice\
-         
-                          vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
-                          unites:monoViewUnites
-                           sides:BOTH_SURFACES
-                           solid:SMOOTH_SHADE];
-    };
-    
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numFieldTubeVertice
+                      vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+
     [self drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState
@@ -878,15 +874,13 @@
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
                            sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_field_tube
 {
     [self encode3DObjects:renderEncoder
                 pipelines:&_kemoViewPipelines
                     depth:depthState
               metalbuffer:&_kemoViewMetalBuf
                    unites:monoViewUnites
-                    sides:iflag_polygon
-                fieldTube:iflag_field_tube];
+                    sides:iflag_polygon];
     return;
 }
 

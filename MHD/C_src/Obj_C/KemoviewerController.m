@@ -27,6 +27,7 @@
 @synthesize axisDrawFlag;
 @synthesize axisDrawAccess;
 @synthesize ThreadsCount;
+@synthesize ShadingMode;
 - (id)init
 {
 	NodeSizeFactor =  1;
@@ -67,6 +68,8 @@
     }else{
         kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
     }
+    
+    self.ShadingMode = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
     return;
 }
 
@@ -133,9 +136,8 @@
 
 - (IBAction)ChooseSurfcetypeAction:(id)sender
 {
-	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode, kemo_sgl);
+	kemoview_set_object_property_flags(SHADING_SWITCH, (int) self.ShadingMode, kemo_sgl);
     
 	[_metalView UpdateImage:kemo_sgl];
 }

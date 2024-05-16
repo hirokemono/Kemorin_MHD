@@ -274,9 +274,11 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
     kemo_buffers->PSF_isoline_buf->num_nod_buf = kemo_buffers->num_isoline_buf;
     kemo_buffers->PSF_isotube_buf->num_nod_buf = 0;
 
-    kemo_buffers->FLINE_line_buf->num_nod_buf
+    if(kemo_fline->fline_m->iflag_draw_fline > 0){
+        kemo_buffers->FLINE_line_buf->num_nod_buf
         = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
-    kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
+        kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
+    }
     return;
 };
 

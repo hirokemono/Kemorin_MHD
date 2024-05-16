@@ -235,12 +235,10 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                      unites:monoViewUnites
                                                       sides:iflag_polygon];
     }else{
-        int iflag_tube =    kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
         [_kemo3DRenderer[i_current] encodeKemoView3DObjects:renderEncoder
                                                       depth:&_depthState
                                                      unites:monoViewUnites
-                                                      sides:iflag_polygon
-                                                  fieldTube:iflag_tube];
+                                                      sides:iflag_polygon];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
                                projection:&_cbar_proj_mat];

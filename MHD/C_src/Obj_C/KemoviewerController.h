@@ -75,6 +75,7 @@
 @property NSInteger QuiltFlag;
 @property CGFloat coastlineRadius;
 @property NSInteger psfTexTureEnable;
+@property NSInteger ShadingMode;
 @property NSInteger timeDisplayAccess;
 @property NSInteger fileStepDisplayAccess;
 @property NSInteger timeDisplayFlag;

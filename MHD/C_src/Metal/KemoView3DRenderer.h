@@ -151,8 +151,7 @@ typedef struct
 - (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_field_tube;
+                           sides:(int) iflag_polygon;
 @end
 
 
