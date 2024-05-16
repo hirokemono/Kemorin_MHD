@@ -427,7 +427,7 @@ long set_map_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
     set_black_color_c(&color_line[0]);
     for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 	
-    long inum = ist_edge;
+    long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++) {
         set_map_coastline_edge(iedge, xyzw_line, dir_line);
         inum = set_line_strided_buffer(inum, xyzw_line, norm_line, color_line, strided_buf);

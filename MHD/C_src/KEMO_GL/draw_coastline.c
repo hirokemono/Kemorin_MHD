@@ -16,16 +16,29 @@ void set_coastline_line_buffer(int ncorner, int tube_radius,
     };
     
     if(mesh_m->iflag_draw_coast_tube != 0){
-        coast_buf->num_nod_buf = ITWO * (ITWO*ncorner) * n_vertex;
+        n_vertex = ITHREE * (ITWO*ncorner) * n_vertex;
     }else{
-        coast_buf->num_nod_buf = ITWO * n_vertex;
+        n_vertex = ITWO * n_vertex;
     };
-    if(coast_buf->num_nod_buf == 0) return;
     set_buffer_address_4_patch(n_vertex, coast_buf);
+    if(coast_buf->num_nod_buf == 0) return;
     resize_strided_buffer(coast_buf);
 
     long n_tube = 0;
-    if(mesh_m->iflag_draw_coast_tube != 0){
+    if(mesh_m->iflag_draw_coast_tube == 0){
+        if(mesh_m->iflag_draw_sph_grid > 0){
+            n_tube = set_sph_med_flame_line_to_buf(n_tube, IZERO, count_sph_med_flame(),
+                                                   count_sph_frame_line(),
+                                                   mesh_m->radius_coast, coast_buf);
+            n_tube = set_sph_long_flame_line_to_buf(n_tube, IZERO, count_sph_long_flame(),
+                                                    count_sph_frame_line(),
+                                                    mesh_m->radius_coast, coast_buf);
+        };
+        if(mesh_m->iflag_draw_coast > 0){
+            n_tube = set_coastline_line_buf(n_tube, IZERO, get_nedge_coastline(),
+                                            mesh_m->radius_coast, coast_buf);
+        };
+    }else{
         if(mesh_m->iflag_draw_sph_grid > 0){
             n_tube = set_sph_med_flame_tube_to_buf(n_tube, IZERO, count_sph_med_flame(),
                                                    count_sph_frame_line(),
@@ -39,19 +52,6 @@ void set_coastline_line_buffer(int ncorner, int tube_radius,
         if(mesh_m->iflag_draw_coast > 0){
             n_tube = set_coastline_tube_buf(n_tube, IZERO, get_nedge_coastline(),
                                             ncorner, tube_radius,
-                                            mesh_m->radius_coast, coast_buf);
-        };
-    }else{
-        if(mesh_m->iflag_draw_sph_grid > 0){
-            n_tube = set_sph_med_flame_line_to_buf(n_tube, IZERO, count_sph_med_flame(),
-                                                   count_sph_frame_line(),
-                                                   mesh_m->radius_coast, coast_buf);
-            n_tube = set_sph_long_flame_line_to_buf(n_tube, IZERO, count_sph_long_flame(),
-                                                    count_sph_frame_line(),
-                                                    mesh_m->radius_coast, coast_buf);
-        };
-        if(mesh_m->iflag_draw_coast > 0){
-            n_tube = set_coastline_line_buf(n_tube, IZERO, get_nedge_coastline(),
                                             mesh_m->radius_coast, coast_buf);
         };
      };
@@ -70,17 +70,17 @@ void set_map_coastline_line_buffer(int ncorner, int tube_radius,
     }
     
     if(mesh_m->iflag_draw_coast_tube != 0){
-        coast_buf->num_nod_buf = ITWO * (ITWO*ncorner) * n_vertex;
+        n_vertex = ITHREE * (ITWO*ncorner) * n_vertex;
     }else{
-        coast_buf->num_nod_buf = ITWO * n_vertex;
+        n_vertex = ITWO * n_vertex;
     };
-    if(coast_buf->num_nod_buf == 0) return;
     set_buffer_address_4_patch(n_vertex, coast_buf);
+    if(coast_buf->num_nod_buf == 0) return;
     resize_strided_buffer(coast_buf);
 
     
     long n_tube = 0;
-    if(mesh_m->iflag_draw_coast_tube != 0){
+    if(mesh_m->iflag_draw_coast_tube == 0){
         if(mesh_m->iflag_draw_sph_grid != 0){
             n_tube = set_map_med_frame_line_to_buf(n_tube, IZERO, count_sph_med_flame(),
                                                    count_sph_frame_line(), coast_buf);
