@@ -126,110 +126,110 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
 }
 
 
-long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
+static void set_line_for_psf_arrow(int icomp, long inod, 
+                                   struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                   double xyzw_line[8], double dir_line[8], 
+                                   double color_line[8]){
+    int nd;
+    double v_xyz[3], v_tmp[3], x_rtp[3];
+    double dcolor[4];
+    
+	double ascale = ONE / psf_m->scale_vect;
+    
+    for (nd=0; nd<3; nd++) v_tmp[nd] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+nd];
+
+    if(psf_s->id_coord[psf_m->if_draw_psf]==1){
+        position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
+        sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
+    } else if(psf_s->id_coord[psf_m->if_draw_psf]==2){
+        position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
+        cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
+    } else {
+        for (nd=0; nd<3; nd++) v_xyz[nd] = v_tmp[nd];
+    };
+
+    if(psf_m->ivect_tangential==TANGENTIAL_COMPONENT){
+        for (nd=0; nd<3; nd++) {
+            v_xyz[nd] = v_xyz[nd] - psf_s->norm_nod[4*inod+nd]
+                    * (  v_xyz[0]*psf_s->norm_nod[4*inod  ]
+                       + v_xyz[1]*psf_s->norm_nod[4*inod+1]
+                       + v_xyz[2]*psf_s->norm_nod[4*inod+2]);
+        };
+    };
+    
+    for (nd=0; nd<3; nd++){
+        xyzw_line[nd  ] = psf_s->xyzw_viz[4*inod + nd];
+        xyzw_line[nd+4] = psf_s->xyzw_viz[4*inod + nd] + v_xyz[nd]*ascale;
+        dir_line[nd  ] =  v_xyz[nd];
+        dir_line[nd+4] =  v_xyz[nd];
+    };
+    xyzw_line[3] = 1.0;
+    xyzw_line[7] = 1.0;
+    dir_line[3] = 1.0;
+    dir_line[7] = 1.0;
+    return;
+}
+
+long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
                         struct psf_data *psf_s, struct psf_menu_val *psf_m){
     long inod;
-    long inum_buf = ist_patch;
+    long inum_cone = ist_cone;
     for(inod = ist; inod < ied; inod++){
         if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[4*inod  ] != 0.0
                         || psf_s->norm_nod[4*inod+1] !=0.0
                         || psf_s->norm_nod[4*inod+2] !=0.0){
-                inum_buf = inum_buf + ncorner;
+                inum_cone = inum_cone + 1;
             };
         };
     };
     
-    return inum_buf;
+    return inum_cone;
 }
 
 
-long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
+long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-	double x_line[6], dir_line[6], color_line[8];
+	double xyzw_line[8], dir_line[8], color_line[8];
 	double xyzw[24*ncorner], norm[24*ncorner], col[24*ncorner];
-	double dcolor[4];
-	int num_wall;
-	
-	double v_tmp[3], v_xyz[3], x_rtp[3], d_mag;
     
-	int k, nd;
-    long inod, inum_buf, i;
-	
-	long icomp = psf_s->istack_comp[psf_m->if_draw_psf];
-	double radius = psf_m->vector_thick;
-	double ascale = ONE / psf_m->scale_vect;
-	
+    double radius = psf_m->vector_thick;
+    
     struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
-
-    inum_buf = ist_patch;
+    
+    long inod, nd;
+    double d_mag;
+    
+    long inum_cone = ist_cone;
     for(inod = ist; inod < ied; inod++){
 		if (inod % psf_m->increment_vect == 0) {
-            if(psf_s->norm_nod[4*inod  ] != 0.0
+            if(   psf_s->norm_nod[4*inod  ] != 0.0
                || psf_s->norm_nod[4*inod+1] !=0.0
                || psf_s->norm_nod[4*inod+2] !=0.0){
-                for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+k];
-			
-                if(psf_s->id_coord[psf_m->if_draw_psf]==1){
-                    position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
-                    sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
-                } else if(psf_s->id_coord[psf_m->if_draw_psf]==2){
-                    position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
-                    cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
+                set_line_for_psf_arrow(psf_s->istack_comp[psf_m->if_draw_psf], 
+                                       inod, psf_s, psf_m,
+                                       xyzw_line, dir_line, color_line);
+                        
+                if(psf_m->vector_patch_color == RAINBOW_SURFACE){
+                    d_mag = sqrt(dir_line[0]*dir_line[0] + dir_line[1]*dir_line[1] + dir_line[2]*dir_line[2]);
+                    set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                                           d_mag, color_line);
                 } else {
-                    for (k=0; k<3; k++) v_xyz[k] = v_tmp[k];
-                };
-			
-				if(psf_m->ivect_tangential==TANGENTIAL_COMPONENT){
-					for (k=0; k<3; k++) {
-						v_xyz[k] = v_xyz[k] - psf_s->norm_nod[4*inod+k]
-								* (  v_xyz[0]*psf_s->norm_nod[4*inod  ]
-                                   + v_xyz[1]*psf_s->norm_nod[4*inod+1]
-                                   + v_xyz[2]*psf_s->norm_nod[4*inod+2]);
-					};
-				};
-				
-				d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
-				if(psf_m->vector_patch_color == RAINBOW_SURFACE){
-					set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
-                                           d_mag, dcolor);
-				} else {
-					for(nd=0;nd<4;nd++){dcolor[nd] = arrow_c[nd];};
-				}
-				
-				for (k=0; k<3; k++){
-					x_line[k  ] = psf_s->xyzw_viz[inod*IFOUR + k];
-					x_line[k+3] = psf_s->xyzw_viz[inod*IFOUR + k] + v_xyz[k]*ascale;
-					dir_line[k  ] =  v_xyz[k];
-					dir_line[k+3] =  v_xyz[k];
-				};
-				for (k=0; k<4; k++){
-					color_line[k  ] =  dcolor[k];
-					color_line[k+4] =  dcolor[k];
-				};
-				
-				num_wall = set_cone_vertex(ncorner, radius, x_line, dir_line, color_line,
-                                           xyzw, norm, col);
-				
-				for (i=0; i<3*num_wall; i++) {
-                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, &point_buf);
-					for(nd=0;nd<4;nd++){
-                        strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*i+nd];
-                        strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*i+nd];
-                        strided_buf->v_buf[nd+point_buf.igl_color] = col[4*i+nd];
-                    };
-				};
-				inum_buf = inum_buf + num_wall;
+                    for(nd=0;nd<4;nd++){color_line[nd] = arrow_c[nd];};
+                }
+                for (nd=0; nd<4; nd++){color_line[nd+4] =  color_line[nd];};
+                
+                inum_cone = set_cone_strided_buffer(inum_cone, ncorner, radius,
+                                                    xyzw_line, dir_line, color_line,
+                                                    strided_buf);
 			};
 		};
 	};
     dealloc_colormap_array(omap_array);
     dealloc_colormap_array(cmap_array);
 	
-	return inum_buf;
+	return inum_cone;
 }
-

@@ -58,7 +58,7 @@ static void *  set_psf_arrows_to_buf_1thread(void *args){
     int ncorner = p->ncorner;
     
     long *istack_smp_arrow =  p->istack_smp_arrow;
-    long nnod_viz = p->nnod_viz;
+    long nnod_viz =    p->nnod_viz;
     long *num_patch =  p->num_patch;
     
     long lo = nnod_viz * id /     nthreads;
@@ -71,7 +71,7 @@ static void *  set_psf_arrows_to_buf_1thread(void *args){
 
 
 
-static long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
+static long add_num_psf_arrows_pthread(long ist_cone, const int nthreads,
                                        long *istack_arrow, int ncorner, 
                                        struct psf_data *psf_s, struct psf_menu_val *psf_m){
 /* Allocate thread arguments. */
@@ -99,18 +99,18 @@ static long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
     }
     for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
  
-    istack_arrow[0] = ist_patch;
+    istack_arrow[0] = ist_cone;
     for(ip=0;ip<nthreads;ip++){
         istack_arrow[ip+1] = istack_arrow[ip] + num_each[ip];
     }
-    long inum_buf = istack_arrow[nthreads];
+    long inum_cone = istack_arrow[nthreads];
     free(num_each);
     free(thread_handles);
     free(args);
-    return inum_buf;
+    return inum_cone;
 }
 
-static long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
+static long set_psf_arrows_to_buf_pthread(long ist_cone, const int nthreads,
                                           long *istack_smp_arrow, int ncorner, 
                                           struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                           struct gl_strided_buffer *strided_buf){
@@ -140,45 +140,45 @@ static long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads,
         pthread_create(&thread_handles[ip], NULL, set_psf_arrows_to_buf_1thread, &args[ip]);
     }
     for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
-    long num_patch = ist_patch;
+    long num_cone = ist_cone;
     for(ip=0;ip<nthreads;ip++){
-        num_patch = num_patch + num_each[ip];
+        num_cone = num_cone + num_each[ip];
     }
     free(num_each);
     free(thread_handles);
     free(args);
-    return num_patch;
+    return num_cone;
 }
 
 
-long sel_add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
+long sel_add_num_psf_arrows_pthread(long ist_cone, const int nthreads,
                                     long *istack_arrow, int ncorner, 
                                     struct psf_data *psf_s, struct psf_menu_val *psf_m){
-    long num_patch = ist_patch;
+    long inum_cone = ist_cone;
     if(nthreads > 1){
-        num_patch = add_num_psf_arrows_pthread(num_patch,
+        inum_cone = add_num_psf_arrows_pthread(inum_cone,
                                                nthreads, istack_arrow,
                                                ncorner, psf_s, psf_m);
     }else{
-        num_patch = add_num_psf_arrows(num_patch, 0, psf_s->nnod_viz,
+        inum_cone = add_num_psf_arrows(inum_cone, 0, psf_s->nnod_viz,
                                        ncorner, psf_s, psf_m);
-        istack_arrow[1] = num_patch;
+        istack_arrow[1] = inum_cone;
     };
-    return num_patch;
+    return inum_cone;
 }
 
-long sel_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
+long sel_psf_arrows_to_buf_pthread(long ist_cone, const int nthreads,
                                    long *istack_smp_arrow, int ncorner, 
                                    struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                    struct gl_strided_buffer *strided_buf){
-    long num_patch = ist_patch;
+    long num_cone = ist_cone;
     if(nthreads > 1){
-        num_patch = set_psf_arrows_to_buf_pthread(num_patch, nthreads,
-                                                  istack_smp_arrow, ncorner,
-                                                  psf_s, psf_m, strided_buf);
+        num_cone = set_psf_arrows_to_buf_pthread(num_cone, nthreads,
+                                                 istack_smp_arrow, ncorner,
+                                                 psf_s, psf_m, strided_buf);
     }else{
-        num_patch = set_psf_arrows_to_buf(num_patch, 0, psf_s->nnod_viz, ncorner,
-                                          psf_s, psf_m, strided_buf);
+        num_cone = set_psf_arrows_to_buf(num_cone, 0, psf_s->nnod_viz, ncorner,
+                                         psf_s, psf_m, strided_buf);
     }
-    return num_patch;
+    return num_cone;
 }

@@ -11,6 +11,7 @@
 #include "coordinate_converter_c.h"
 #include "rainbow_color_code_c.h"
 #include "coastline_c.h"
+#include "icosahedron_c.h"
 
 /* prototypes */
 

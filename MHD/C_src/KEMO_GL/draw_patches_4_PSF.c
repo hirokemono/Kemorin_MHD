@@ -64,26 +64,26 @@ static void const_PSF_arrow_buffer(const int nthreads,
         }
     };
     
-    long num_patch = 0;
+    long num_cone = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            num_patch = sel_add_num_psf_arrows_pthread(num_patch,
-                                                   nthreads, istack_smp_arrow[i],
-                                                   ncorner, psf_s[i], psf_m[i]);
+            num_cone = sel_add_num_psf_arrows_pthread(num_cone,
+                                                      nthreads, istack_smp_arrow[i],
+                                                      ncorner, psf_s[i], psf_m[i]);
         };
     };
-    
-    set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
+    long num_vertex = ITHREE * ncorner * num_cone;
+    set_buffer_address_4_patch(num_vertex, psf_buf);
     if(psf_buf->num_nod_buf <= 0) return;
     
     resize_strided_buffer(psf_buf);
     
-    long inum_buf = 0;
+    long inum_cone = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            inum_buf = sel_psf_arrows_to_buf_pthread(inum_buf, nthreads,
-                                                     istack_smp_arrow[i], ncorner,
-                                                     psf_s[i], psf_m[i], psf_buf);
+            inum_cone = sel_psf_arrows_to_buf_pthread(inum_cone, nthreads,
+                                                      istack_smp_arrow[i], ncorner,
+                                                      psf_s[i], psf_m[i], psf_buf);
         };
     };
 

@@ -15,7 +15,7 @@
 
 /* prptotypes */
 
-long count_psf_nodes_to_buf(long ist_psf, long ied_psf);
+long count_psf_nodes_to_buf(long ist_cone, long ied_psf);
 
 long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
@@ -31,9 +31,9 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
                         struct kemo_array_control *psf_a,
                         struct gl_strided_buffer *strided_buf);
 
-long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
+long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
                         struct psf_data *psf_s, struct psf_menu_val *psf_m);
-long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
+long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf);
 #endif
