@@ -29,7 +29,6 @@ void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct g
     Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);
     Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isotube_buf);
     Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf);
-//    Const_VAO_4_Simple(psf_solid_VAO[4], PSF_isoline_buf);
     return;
 };
 
@@ -45,12 +44,13 @@ void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_solid_VAO,
                                 struct kemoview_shaders *kemo_shaders){
-    glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    
+    glEnable(GL_CULL_FACE);
     drawgl_textured_patches_VAO(&kemo_shaders->texture_name, matrices,
                                 lights, kemo_shaders, psf_solid_VAO[1]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[0]);
+    
+    glDisable(GL_CULL_FACE);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[2]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[3]);
     return;

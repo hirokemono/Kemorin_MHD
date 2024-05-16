@@ -36,7 +36,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	for(i=0;i<2;i++){
 		kemo_VAOs->psf_trans_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
-	
+    kemo_VAOs->psf_liness_VAO =      (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+
     kemo_VAOs->axis_VAO =      (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	kemo_VAOs->grid_line_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
     kemo_VAOs->grid_tube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -75,7 +76,8 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_VAO[i]);};
 	free(kemo_VAOs->psf_solid_VAO);
 	for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_VAO[i]);};
-	free(kemo_VAOs->psf_trans_VAO);
+    free(kemo_VAOs->psf_trans_VAO);
+    free(kemo_VAOs->psf_liness_VAO);
 
     free(kemo_VAOs->axis_VAO);
 	free(kemo_VAOs->grid_line_VAO);
@@ -100,6 +102,8 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     glGenVertexArrays(1, &(kemo_VAOs->grid_tube_VAO->id_VAO));
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
+    glGenVertexArrays(1, &(kemo_VAOs->psf_liness_VAO->id_VAO));
+
     for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->mesh_solid_VAO[i]->id_VAO));};
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->mesh_trans_VAO->id_VAO));
@@ -118,6 +122,8 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     Destroy_VAO(kemo_VAOs->grid_tube_VAO);
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
+    Destroy_VAO(kemo_VAOs->psf_liness_VAO);
+
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->mesh_solid_VAO[i]);};
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
@@ -155,14 +161,17 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     if(view_s->iflag_view_type == VIEW_MAP) return;
 
     glDisable(GL_CULL_FACE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
+    drawgl_lines(view_matrices, kemo_VAOs->psf_liness_VAO, kemo_shaders);
     drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
 
     iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-                kemo_psf->psf_a, view_s);
-    draw_PSF_solid_objects_VAO(view_matrices, lights,
-                               kemo_VAOs->psf_solid_VAO, kemo_shaders);
-//        drawgl_lines(view_matrices, kemo_VAOs->psf_solid_VAO[4], kemo_shaders);
+                                            kemo_psf->psf_a, view_s);
+    glEnable(GL_CULL_FACE);
+    drawgl_textured_patches_VAO(&kemo_shaders->texture_name, view_matrices,
+                                lights, kemo_shaders, kemo_VAOs->psf_solid_VAO[1]);
+    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->psf_solid_VAO[0]);
 
 /*  Draw mesh data */
         drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
@@ -227,7 +236,6 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
         };
         draw_PSF_solid_objects_VAO(view_matrices, lights,
                                    kemo_VAOs->psf_solid_VAO, kemo_shaders);
-//        drawgl_lines(view_matrices, kemo_VAOs->psf_solid_VAO[4], kemo_shaders);
 
         glDisable(GL_CULL_FACE);
         drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
@@ -325,9 +333,9 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                                 struct kemoview_shaders *kemo_shaders){
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == SIMPLE_DRAW){
-        //            Const_VAO_4_Simple(kemo_VAOs->grid_line_VAO, kemo_buffers->PSF_isoline_buf);
         Const_VAO_4_Simple(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
         Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
+        Const_VAO_4_Simple(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_isoline_buf);
         set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
         quick_draw_objects(kemo_psf, kemo_fline, kemo_mesh,
