@@ -137,10 +137,10 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf);
         
-        set_map_coastline_buffer(kemo_mesh->mesh_m,
-                                 kemo_buffers->coast_buf);
-        set_map_flame_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->sph_grid_buf);
+        set_map_coastline_line_buffer(kemo_mesh->mesh_m,
+                                      kemo_buffers->coast_buf);
+        set_map_flame_line_buffer(kemo_mesh->mesh_m,
+                                  kemo_buffers->sph_grid_buf);
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 4.0;
@@ -165,10 +165,10 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_trns_buf,
                                        kemo_buffers->PSF_ttxur_buf);
 
-        set_coastline_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->coast_buf);
-        set_sph_flame_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->sph_grid_buf);
+        set_coastline_line_buffer(kemo_mesh->mesh_m,
+                                  kemo_buffers->coast_buf);
+        set_sph_flame_line_buffer(kemo_mesh->mesh_m,
+                                  kemo_buffers->sph_grid_buf);
         
         const_fieldlines_buffer(kemo_buffers->nthreads,
                                 kemo_fline->fline_d,
