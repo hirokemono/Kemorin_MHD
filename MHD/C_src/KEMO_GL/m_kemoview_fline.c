@@ -84,8 +84,6 @@ void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_
 		set_fline_color_component(input, kemo_fline->fline_d, kemo_fline->fline_m);
 	}else if(selected == LINETYPE_FLAG){
 		set_fline_type(kemo_fline->fline_m, (long) input);
-    }else if(selected == NUM_TUBE_CORNERS_FLAG){
-        set_fline_corners(kemo_fline->fline_m, input);
 	};
 	return;
 };
@@ -105,8 +103,6 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 		output = get_fline_color_data_adress(kemo_fline->fline_m);
 	}else if(selected == LINETYPE_FLAG){
 		output = get_fline_type(kemo_fline->fline_m);
-    }else if(selected == NUM_TUBE_CORNERS_FLAG){
-        output = get_fline_corners(kemo_fline->fline_m);
     }else if(selected == COORDINATE_FLAG){
         output = send_coordinate_id_fline(kemo_fline->fline_d,
                                           kemo_fline->fline_m);

@@ -29,13 +29,14 @@ struct fline_menu_val{
 	
 	int fieldline_color;
 	long fieldline_type;
+    
+    int fieldline_ncorner;
 	double fieldline_thick;
 	
 	struct colormap_params *cmap_fline;
 	struct colormap_params **cmap_fline_comp;
 	struct colormap_params **cmap_fline_fld;
     
-    int ncorner;
 };
 
 /* Prototypes */

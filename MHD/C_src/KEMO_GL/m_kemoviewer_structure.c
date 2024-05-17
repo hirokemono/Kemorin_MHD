@@ -374,10 +374,6 @@ void kemoview_set_message_opacity(float opacity,
     return;
 }
 
-int kemoview_get_draw_mode(struct kemoviewer_type *kemoviewer){
-    return send_gl_draw_mode(kemoviewer->view_s);
-};
-
 void kemoview_set_view_integer(int selected, int ivalue,
                                struct kemoviewer_type *kemoviewer){
 	if(selected == ISET_ROTATE_AXIS){
@@ -386,8 +382,25 @@ void kemoview_set_view_integer(int selected, int ivalue,
 		set_gl_animation_rot_angle(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
         set_gl_draw_mode(kemoviewer->view_s, ivalue);
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        set_gl_tube_corners(kemoviewer->view_s, ivalue);
 	}
 	return;
+};
+
+int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
+                               int selected){
+    int ivalue = 0;
+    if(selected == ISET_PIXEL_X){
+        ivalue = send_gl_windowsize_x(kemoviewer->view_s);
+    }else if(selected == ISET_PIXEL_Y){
+        ivalue = send_gl_windowsize_y(kemoviewer->view_s);
+    }else if(selected == ISET_DRAW_MODE){
+        ivalue = send_gl_draw_mode(kemoviewer->view_s);
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        ivalue = send_gl_tube_corners(kemoviewer->view_s);
+    }
+    return ivalue;
 };
 
 void kemoview_set_view_parameter(int selected, int i, double value,
@@ -429,16 +442,6 @@ void kemoview_set_quilt_nums(int selected, int ivalue,
     return;
 };
 
-int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
-                              int selected){
-    int ivalue = 0;
-    if(selected == ISET_PIXEL_X){
-        ivalue = send_gl_windowsize_x(kemoviewer->view_s);
-    }else if(selected == ISET_PIXEL_Y){
-        ivalue = send_gl_windowsize_y(kemoviewer->view_s);
-    };
-    return ivalue;
-};
 double kemoview_get_view_parameter(struct kemoviewer_type *kemoviewer,
                                    int selected, int i){
 	double value = 0.0;
@@ -517,6 +520,17 @@ void kemoview_animation_add_rotation(double dt,
 };
 void kemoview_reset_animation(struct kemoviewer_type *kemoviewer){
     reset_rot_animation(kemoviewer->view_s);
+};
+
+
+void kemoview_set_coastline_thickness_w_exp(double value, int i_digit,
+                                            struct kemoviewer_type *kemoviewer){
+    set_coastline_thickness_w_exp(value, i_digit, kemoviewer->view_s);
+};
+void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                            double *value, int *i_digit){;
+    get_coastline_thickness_w_exp(kemoviewer->view_s, value, i_digit);
+    return;
 };
 
 

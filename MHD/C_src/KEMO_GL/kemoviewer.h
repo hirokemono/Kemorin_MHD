@@ -361,8 +361,6 @@ extern "C" {
     void kemoview_set_message_opacity(float opacity,
                                       struct kemoviewer_type *kemoviewer);
 
-    int kemoview_get_draw_mode(struct kemoviewer_type *kemoviewer);
-
     void kemoview_set_view_integer(int selected, int ivalue,
                                    struct kemoviewer_type *kemoviewer);
 
@@ -396,6 +394,11 @@ extern "C" {
     void kemoview_animation_add_rotation(double dt,
                                          struct kemoviewer_type *kemoviewer);
     void kemoview_reset_animation(struct kemoviewer_type *kemoviewer);
+
+    void kemoview_set_coastline_thickness_w_exp(double value, int i_digit,
+                                                struct kemoviewer_type *kemoviewer);
+    void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                                double *value, int *i_digit);
 
 /* subroutines for surafces */
     int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer);

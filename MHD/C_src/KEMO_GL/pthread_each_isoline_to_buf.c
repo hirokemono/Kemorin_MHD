@@ -18,7 +18,7 @@ typedef struct{
     struct gl_strided_buffer *strided_buf;
     struct psf_data          *psf_s;
     struct isoline_line_work *wk_iso_line;
-
+    
     long icomp;
     double width;
     double v_line;
@@ -264,7 +264,7 @@ static long set_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line
     for(ip=0;ip<nthreads;ip++) {
         args[ip].id = ip;
         args[ip].nthreads = nthreads;
-        
+
         args[ip].strided_buf = strided_buf;
         args[ip].psf_s = psf_s;
         args[ip].wk_iso_line = wk_iso_line;
@@ -379,8 +379,7 @@ long sel_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line,
                                      struct gl_strided_buffer *strided_buf){
     long num_patch = ist_patch;
     if(nthreads > 1){
-        num_patch = set_each_isotube_to_buf_pthread(num_patch, ntot_line,
-                                                    nthreads, istack_threads,
+        num_patch = set_each_isotube_to_buf_pthread(num_patch, ntot_line,nthreads, istack_threads,
                                                     psf_s, wk_iso_line, strided_buf);
     }else{
         num_patch = set_each_isotube_to_buf(num_patch, IZERO, ntot_line,

@@ -23,13 +23,11 @@ void const_fieldlines_buffer(const int nthreads,
     };
 
     if(fline_m->fieldline_type == IFLAG_PIPE){
-        long num_patch = count_fieldtubes_to_buf(fline_m->ncorner, fline_d);
-        
-        set_buffer_address_4_patch(ITHREE*num_patch, FLINE_tube_buf);
+        long num_patch = ITHREE * (ITWO*fline_m->fieldline_ncorner) * num_edge;
+        set_buffer_address_4_patch(num_patch, FLINE_tube_buf);
         if(FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(FLINE_tube_buf);
-            num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads,
-                                                      fline_d, fline_m,
+            num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads, fline_d, fline_m,
                                                       FLINE_tube_buf);
         };
         FLINE_line_buf->num_nod_buf = 0;

@@ -4,10 +4,6 @@
 #include "set_fieldline_to_buf.h"
 
 
-long count_fieldtubes_to_buf(int ncorner, struct fline_data *fline_d){
-    long num_patch = 2 * fline_d->nedge_fline * ncorner;
-	return num_patch;
-};
 long count_fieldlines_to_buf(struct fline_data *fline_d){
 	return fline_d->nedge_fline;
 }
@@ -34,7 +30,8 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
         inum_tube = set_tube_strided_buffer(inum_tube, 
-                                            fline_m->ncorner, fline_m->fieldline_thick,
+                                            fline_m->fieldline_ncorner,
+                                            fline_m->fieldline_thick,
                                             x_line, dir_line, color_line, strided_buf);
 	};
 	return inum_tube;

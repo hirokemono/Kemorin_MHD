@@ -169,7 +169,7 @@ static const NSUInteger MaxFramesInFlight = 3;
                         metalDevice:(id<MTLDevice> *) device
                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int iflag = kemoview_get_draw_mode(kemo_sgl);
+    int iflag = kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == SIMPLE_DRAW && iflag_view != VIEW_MAP){
         [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
@@ -229,7 +229,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
                                projection:&_map_proj_mat];
-    }else if(kemoview_get_draw_mode(kemo_sgl) == SIMPLE_DRAW){
+    }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
         [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
                                                       depth:&_depthState
                                                      unites:monoViewUnites

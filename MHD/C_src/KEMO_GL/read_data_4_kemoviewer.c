@@ -51,6 +51,9 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	view->iflag_view_type = VIEW_3D;
 	view->shading_mode =    INIT_SHADING_MODE;
     
+    view->ncorner_tube = 6;
+    view->width_tube =   0.003;
+    
     mesh_m->mesh_file_name = init_kvstring_by_string("in.ksm");
 	
 	mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;

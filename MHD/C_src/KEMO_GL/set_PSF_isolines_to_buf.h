@@ -24,9 +24,12 @@ long add_PSF_all_isolines_num(const long ist_patch, const int nthreads,
                               long *istack_smp_psf_iso);
 
 long set_PSF_all_isotubes_to_buf(const long ist_patch,
-                                 const int nthreads, long *istack_smp_psf_iso,
-                                 struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                 struct gl_strided_buffer *psf_buf);
+                                 const int nthreads,
+                                 long *istack_smp_psf_iso,
+                                 int isoline_ncorner,
+                                 struct psf_data *psf_s,
+                                 struct psf_menu_val *psf_m,
+                                struct gl_strided_buffer *psf_buf);
 long set_PSF_all_isolines_to_buf(const long ist_patch,
                                  const int nthreads, long *istack_smp_psf_iso,
                                  struct psf_data *psf_s, struct psf_menu_val *psf_m,

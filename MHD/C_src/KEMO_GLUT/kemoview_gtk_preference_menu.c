@@ -51,7 +51,7 @@ static void nTubeCornerChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
     int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    kemoview_set_fline_field_param(NUM_TUBE_CORNERS_FLAG, ivalue, kemo_sgl);
+    kemoview_set_view_integer(NUM_TUBE_CORNERS_FLAG, ivalue, kemo_sgl);
     draw_full(kemo_sgl);
     return;
 }
@@ -154,7 +154,7 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
     gtk_box_pack_start(GTK_BOX(pref_gmenu->nthread_hbox), pref_gmenu->spin_threads, FALSE, FALSE, 0);
 
     
-    int ncorner = kemoview_get_fline_field_param(kemoviewer_data, NUM_TUBE_CORNERS_FLAG);
+    int ncorner = kemoview_get_view_integer(kemoviewer_data, NUM_TUBE_CORNERS_FLAG);
     GtkAdjustment *adj_c = gtk_adjustment_new(ncorner, 1, 24, 1, 1, 0.0);
     pref_gmenu->spin_nTubeCorner = gtk_spin_button_new(GTK_ADJUSTMENT(adj_c),0,2);
     g_signal_connect(pref_gmenu->spin_nTubeCorner, "value-changed",

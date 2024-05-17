@@ -28,6 +28,9 @@
 @synthesize axisDrawAccess;
 @synthesize ThreadsCount;
 @synthesize ShadingMode;
+@synthesize TubeNumCorners;
+@synthesize CoastlineWidth;
+@synthesize CoastlineDigit;
 - (id)init
 {
 	NodeSizeFactor =  1;
@@ -70,6 +73,13 @@
     }
     
     self.ShadingMode = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+    self.TubeNumCorners = kemoview_get_view_integer(kemo_sgl, NUM_TUBE_CORNERS_FLAG);
+    int idigit;
+    double value;
+    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &value, &idigit);
+    self.CoastlineWidth = value;
+    self.CoastlineDigit = idigit;
+
     return;
 }
 
@@ -288,5 +298,21 @@
     [_metalView UpdateImage:kemo_sgl];
 }
 
+- (IBAction)SetTubeNumCornersAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_integer(NUM_TUBE_CORNERS_FLAG,
+                              (int) self.TubeNumCorners,
+                              kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction) SetCoastlineWidth:(id)pSender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_coastline_thickness_w_exp((double) self.CoastlineWidth,
+                                           (int) self.CoastlineDigit, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+};
 
 @end

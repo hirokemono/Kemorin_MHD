@@ -64,6 +64,10 @@
     NSInteger globeGridDrawFlag;
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
+    
+    NSInteger TubeNumCorners;
+    CGFloat   CoastlineWidth;
+    NSInteger CoastlineDigit;
 }
 
 @property CGFloat ColorLoopCount;
@@ -84,7 +88,10 @@
 @property NSInteger globeGridDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
-@property CGFloat ThreadsCount;
+@property NSInteger TubeNumCorners;
+@property CGFloat   ThreadsCount;
+@property CGFloat   CoastlineWidth;
+@property NSInteger CoastlineDigit;
 
 
 - (id)init;
@@ -122,5 +129,7 @@
 - (IBAction)FileStepLabelSwitchAction:(id)sender;
 
 - (IBAction)SetNnumberOfThreads:(id)pSender;
+- (IBAction)SetTubeNumCornersAction:(id)sender;
+- (IBAction)SetCoastlineWidth:(id)pSender;
 
 @end

@@ -159,8 +159,7 @@ long set_each_isotube_to_buf(const long ist_tube,
                              struct gl_strided_buffer *strided_buf){
     long inum_tube = ist_tube;
     for(long icou=ist; icou<ied; icou++){
-        inum_tube = set_tube_strided_buffer(inum_tube, 
-                                            wk_iso_line->ncorner,
+        inum_tube = set_tube_strided_buffer(inum_tube, wk_iso_line->ncorner,
                                             wk_iso_line->width,
                                             &wk_iso_line->xyzw_line[8*icou],
                                             &wk_iso_line->dir_line[8*icou],

@@ -15,7 +15,6 @@
 
 
 /* prototypes */
-long count_fieldtubes_to_buf(int ncorner, struct fline_data *fline_d);
 long count_fieldlines_to_buf(struct fline_data *fline_d);
 
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
