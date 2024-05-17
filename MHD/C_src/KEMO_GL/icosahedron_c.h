@@ -14,6 +14,9 @@ void init_icosahedron_c(void);
 long set_icosahedron_patch(double size, double x_draw[3], 
                            double *xyzw_draw, double *norm_draw);
 
+long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
+                              double norm_tri[12], double color_tri[12],
+                              struct gl_strided_buffer *strided_buf);
 long set_line_strided_buffer(const long ist_line,
                              double xyzw_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
@@ -23,4 +26,7 @@ long set_cone_strided_buffer(const long ist_tube, int ncorner, double radius,
 long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
                              double xyzw_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
+
+long set_textur_to_buf(long ist_texture, double xy_txur[6],
+                       struct gl_strided_buffer *strided_buf);
 #endif

@@ -11,44 +11,93 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 	return (ied_psf - ist_psf);
 };
 
+static void set_psf_nodes_to_tri(long ipsf, long iele,
+                                 int shading_mode, int polygon_mode_psf,
+                                 struct psf_data **psf_s, double xyzw_tri[12],
+                                 double norm_tri[12], double color_tri[12]){
+    long inod, nd;
+    
+    for(long k = 0; k < ITHREE; k++) {
+        inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
+        for(nd=0;nd<4;nd++){xyzw_tri[4*k+nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
+        for(nd=0;nd<4;nd++){color_tri[4*k+nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
+        if (shading_mode == SMOOTH_SHADE){
+            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];};
+        } else {
+            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
+        };
+        if(polygon_mode_psf == REVERSE_POLYGON){
+            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = -norm_tri[4*k+nd];};
+        };
+        xyzw_tri[4*k+3] = 1.0;
+        norm_tri[4*k+3] = 1.0;
+    };
+    return;
+}
+
+static void set_psf_textures_to_tri(long ipsf, long iele,
+                                    struct psf_data **psf_s,
+                                    double xy_txur[6]){
+    long inod, k;
+    double xx_tri[9], rtp_patch[9];
+    
+    for(k = 0; k < ITHREE; k++) {
+        inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
+        xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 0];
+        xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 1];
+        xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 2];
+    };
+    int iflag = latitude_longitude_on_map(xx_tri, rtp_patch);
+    
+    for(k = 0; k < ITHREE; k++) {
+        xy_txur[2*k  ] =       rtp_patch[ITHREE*k+2] * ARCPI * HALF;
+        xy_txur[2*k+1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
+    };
+    return;
+}
+
+static void set_psf_map_to_tri(long ipsf, long iele, struct psf_data **psf_s,
+                               double xyzw_tri[12], double color_tri[12]){
+    long inod, k;
+    double xx_tri[9], xyz_map[9];
+    for (k = 0; k < ITHREE; k++) {
+        inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
+        xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[4*inod + 0];
+        xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[4*inod + 1];
+        xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[4*inod + 2];
+        
+        color_tri[4*k  ] = psf_s[ipsf]->color_nod[4*inod  ];
+        color_tri[4*k+1] = psf_s[ipsf]->color_nod[4*inod+1];
+        color_tri[4*k+2] = psf_s[ipsf]->color_nod[4*inod+2];
+        color_tri[4*k+3] = psf_s[ipsf]->color_nod[4*inod+3];
+    };
+    
+    projection_patch_4_map(xx_tri, xyz_map);
+    
+    for (k = 0; k < ITHREE; k++) {
+        xyzw_tri[4*k  ] = xyz_map[ITHREE*k  ];
+        xyzw_tri[4*k+1] = xyz_map[ITHREE*k+1];
+        xyzw_tri[4*k+2] = 0.0;
+        xyzw_tri[4*k+3] = 1.0;
+    };
+    return;
+}
+
+
 long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-    long lk, inum, iele, inod;
-    int nd, ipsf;
-	
+    double xyzw_tri[12], norm_tri[12], color_tri[12];
+    long iele, ipsf;
     long ipatch = ipatch_in;
-	for(inum=ist_psf;inum<ied_psf;inum++){
+	for(long inum=ist_psf;inum<ied_psf;inum++){
 		ipsf = psf_a->ipsf_viz_far[inum]-1;
 		iele = psf_a->iele_viz_far[inum]-1;
-		for (lk = 0; lk < ITHREE; lk++) {
-			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
-			
-            set_node_stride_buffer((ITHREE*ipatch+lk), strided_buf, &point_buf);
-			for(nd=0;nd<3;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_xyzw] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];
-            };
-			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_color] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];
-            };
-			if (shading_mode == SMOOTH_SHADE){
-                for(nd=0;nd<3;nd++){
-                    strided_buf->v_buf[nd+point_buf.igl_norm] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];
-                };
-			} else {
-				for(nd=0;nd<3;nd++){
-                    strided_buf->v_buf[nd+point_buf.igl_norm] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];
-                };
-			};
-			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
-				for(nd=0;nd<3;nd++){
-                    strided_buf->v_buf[nd+point_buf.igl_norm] = -strided_buf->v_buf[nd+point_buf.igl_norm];
-                };
-			};
-		};
-        ipatch = ipatch + 1;
+        set_psf_nodes_to_tri(ipsf, iele, shading_mode, psf_m[ipsf]->polygon_mode_psf,
+                             psf_s, xyzw_tri, norm_tri, color_tri);
+        ipatch = set_patch_strided_buffer(ipatch, xyzw_tri, norm_tri, color_tri,
+                                          strided_buf);
     };
     return ipatch;
 }
@@ -57,31 +106,15 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
                              struct psf_data **psf_s,
                              struct kemo_array_control *psf_a,
                              struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-    long inum, iele, inod, k;
-    int ipsf;
-	int iflag;
-	double xx_tri[9], rtp_patch[9];
+    double xy_txur[6];
+    long ipsf, iele;
 	
     long ipatch = ist_texture;
-	for(inum=ist_psf; inum<ied_psf; inum++){
+	for(long inum=ist_psf; inum<ied_psf; inum++){
         ipsf = psf_a->ipsf_viz_far[inum]-1;
         iele = psf_a->iele_viz_far[inum]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 2];
-		};
-		iflag = latitude_longitude_on_map(xx_tri, rtp_patch);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITHREE*ipatch+k), strided_buf, &point_buf);
-			strided_buf->v_buf[point_buf.igl_txur  ] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			strided_buf->v_buf[point_buf.igl_txur+1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
-		};
-        ipatch = ipatch + 1;
+        set_psf_textures_to_tri(ipsf, iele, psf_s, xy_txur);
+        ipatch = set_textur_to_buf(ipatch, xy_txur, strided_buf);
 	};
 	return ipatch;
 }
@@ -90,7 +123,11 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
                         struct psf_data **psf_s,
                         struct kemo_array_control *psf_a,
                         struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
+    double xyzw_tri[12], color_tri[12];
+    double norm_tri[12] = {0.0, 0.0, 1.0, 1.0,
+                           0.0, 0.0, 1.0, 1.0,
+                           0.0, 0.0, 1.0, 1.0};
+
     long inum, iele, inod, k;
     int ipsf;
 	double xx_tri[9], xyz_map[9];
@@ -99,28 +136,9 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
 	for(inum=ist_psf; inum<ied_psf; inum++){
 		ipsf = psf_a->ipsf_viz_far[inum]-1;
 		iele = psf_a->iele_viz_far[inum]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 2];
-		};
-		projection_patch_4_map(xx_tri, xyz_map);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITHREE*ipatch+k), strided_buf, &point_buf);
-			strided_buf->v_buf[  point_buf.igl_xyzw] = xyz_map[ITHREE*k  ];
-			strided_buf->v_buf[1+point_buf.igl_xyzw] = xyz_map[ITHREE*k+1];
-			strided_buf->v_buf[2+point_buf.igl_xyzw] = 0.0;
-            strided_buf->v_buf[3+point_buf.igl_xyzw] = 1.0;
-			
-            strided_buf->v_buf[  point_buf.igl_color] = psf_s[ipsf]->color_nod[4*inod  ];
-            strided_buf->v_buf[1+point_buf.igl_color] = psf_s[ipsf]->color_nod[4*inod+1];
-            strided_buf->v_buf[2+point_buf.igl_color] = psf_s[ipsf]->color_nod[4*inod+2];
-            strided_buf->v_buf[3+point_buf.igl_color] = psf_s[ipsf]->color_nod[4*inod+3];
-		};
-        ipatch = ipatch + 1;
+        set_psf_map_to_tri(ipsf, iele, psf_s, xyzw_tri, color_tri);
+        ipatch = set_patch_strided_buffer(ipatch, xyzw_tri, norm_tri, color_tri,
+                                          strided_buf);
 	};
 	return ipatch;
 }
