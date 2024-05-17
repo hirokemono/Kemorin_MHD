@@ -127,7 +127,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     int iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                                 kemo_psf->psf_a, view_s);
 /* Set isolines thickness*/
-    if(view_s->width_tube <= 0.0){view_s->width_tube = set_tube_radius_by_view(view_s, 1.5);};
     if(view_s->ncorner_tube <= 0){view_s->ncorner_tube = 12;};
     kemo_fline->fline_m->fieldline_ncorner = view_s->ncorner_tube;
 
@@ -145,8 +144,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         
         set_map_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
         if(kemo_buffers->iflag_coastline_tube){
-            set_map_coastline_tube_buffer(view_s->ncorner_tube, view_s->width_tube,
-                                          kemo_mesh->mesh_m, kemo_buffers->coast_tube_buf);
+            set_map_coastline_tube_buffer(kemo_mesh->mesh_m, view_s,
+                                          kemo_buffers->coast_tube_buf);
             kemo_buffers->coast_line_buf->num_nod_buf = 0;
         }else{
             kemo_buffers->coast_tube_buf->num_nod_buf = 0;
@@ -180,16 +179,15 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
 
         set_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
         if(kemo_buffers->iflag_coastline_tube){
-            set_coastline_tube_buffer(view_s->ncorner_tube, view_s->width_tube,
-                                      kemo_mesh->mesh_m, kemo_buffers->coast_tube_buf);
+            set_coastline_tube_buffer(kemo_mesh->mesh_m, view_s,
+                                      kemo_buffers->coast_tube_buf);
             kemo_buffers->coast_line_buf->num_nod_buf = 0;
         }else{
             kemo_buffers->coast_tube_buf->num_nod_buf = 0;
         }
         
-        const_fieldlines_buffer(kemo_buffers->nthreads,
-                                kemo_fline->fline_d,
-                                kemo_fline->fline_m,
+        const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
+                                kemo_fline->fline_d, kemo_fline->fline_m,
                                 kemo_buffers->FLINE_tube_buf,
                                 kemo_buffers->FLINE_line_buf);
         

@@ -18,6 +18,7 @@
 #include "set_fieldline_to_buf.h"
 
 long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads, 
+                                   double tube_width,
                                    struct fline_data *fline_d,
                                    struct fline_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf);

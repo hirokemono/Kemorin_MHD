@@ -18,14 +18,12 @@ long count_coastline_line_buffer(struct mesh_menu_val *mesh_m);
 
 void set_coastline_line_buffer(struct mesh_menu_val *mesh_m,
                                struct gl_strided_buffer *coast_buf);
-void set_coastline_tube_buffer(int ncorner, double tube_radius,
-                               struct mesh_menu_val *mesh_m,
+void set_coastline_tube_buffer(struct mesh_menu_val *mesh_m, struct view_element *view_s,
                                struct gl_strided_buffer *coast_buf);
 
 
 void set_map_coastline_line_buffer(struct mesh_menu_val *mesh_m,
                                    struct gl_strided_buffer *coast_buf);
-void set_map_coastline_tube_buffer(int ncorner, double tube_radius,
-                                   struct mesh_menu_val *mesh_m,
+void set_map_coastline_tube_buffer(struct mesh_menu_val *mesh_m, struct view_element *view_s,
                                    struct gl_strided_buffer *coast_buf);
 #endif

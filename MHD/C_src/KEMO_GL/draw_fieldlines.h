@@ -12,11 +12,11 @@
 #include "set_color_code_on_nodes.h"
 #include "set_fieldline_to_buf.h"
 #include "pthread_fieldline_to_buf.h"
+#include "set_axis_to_buf.h"
 
 /* prototypes */
-void const_fieldlines_buffer(const int nthreads, 
-                             struct fline_data *fline_d,
-                             struct fline_menu_val *fline_m,
+void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
+                             struct fline_data *fline_d, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
                              struct gl_strided_buffer *FLINE_line_buf);
 #endif

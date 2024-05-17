@@ -39,25 +39,17 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 	return ratio;
 }
 
-static void set_vertexs_for_axis(struct view_element *view_s, double dist,
-                                 double x_arrowx[8],  double x_arrowy[8], 
-                                 double x_arrowz[8],  double w_ratio[3],
-                                 double x_charax[16], double x_charay[24],
-                                 double x_charaz[24], double *radius){
-	double l_axis[3], axis_org[3];
-	double label_ratio[3], min_l_ratio;
-	
-	double x_text_x1, x_text_x2, x_text_z1, x_text_z2;
-	double y_text_y1, y_text_y2, y_text_z1, y_text_z2;
-	double y_text_y3, y_text_z3;
-	double z_text_z1, z_text_z2, z_text_x1, z_text_x2;
-	
-	double xx_axis[3];
-	double x_label[2], y_label[2], z_label[2];
+static double set_minimum_length_view(struct view_element *view_s, double dist_mesh,
+                                      double axis_org[3], double label_ratio[3]){
+    double min_l_ratio;
+    
+    double xx_axis[3];
+    double x_label[2], y_label[2], z_label[2];
+    double l_axis[3];
 	
 	int zero_screen[2], end_screen[2];
 	
-	set_axis_positions(view_s, dist, l_axis, axis_org);
+	set_axis_positions(view_s, dist_mesh, l_axis, axis_org);
 	
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1];
@@ -96,31 +88,41 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	if(label_ratio[1] <= min_l_ratio) min_l_ratio = label_ratio[1];
 	if(label_ratio[2] <= min_l_ratio) min_l_ratio = label_ratio[2];
 	
-	*radius = *radius * min_l_ratio * (1.0 + (float)view_s->iflag_retina)
-			/ (float) view_s->ny_frame;
-
 	/*
 	 printf("x_label %e, %e \n",x_label[0],x_label[1]);
 	 printf("y_label %e, %e \n",y_label[0],y_label[1]);
 	 printf("z_label %e, %e \n",z_label[0],z_label[1]);
 	 */
+    return min_l_ratio;
+}
+
+static void scale_axis_positions(double dist_mesh,	double axis_org[3],
+                                double label_ratio[3], double  min_l_ratio,
+                                double x_arrowx[8],  double x_arrowy[8], 
+                                double x_arrowz[8],  double w_ratio[3],
+                                double x_charax[16], double x_charay[24],
+                                double x_charaz[24]){
+	double x_text_x1, x_text_x2, x_text_z1, x_text_z2;
+	double y_text_y1, y_text_y2, y_text_z1, y_text_z2;
+	double y_text_y3, y_text_z3;
+	double z_text_z1, z_text_z2, z_text_x1, z_text_x2;
 	
-	x_text_x1 = axis_org[0] + label_ratio[0] * ( 1.06 * (1.0 + dist));
+	x_text_x1 = axis_org[0] + label_ratio[0] * ( 1.06 * (1.0 + dist_mesh));
 	x_text_x2 = axis_org[0] + label_ratio[0];
-	x_text_z1 = axis_org[2] - label_ratio[0] * ( 0.05 * (1.0 + dist));
-	x_text_z2 = axis_org[2] - label_ratio[0] * ( 0.15 * (1.0 + dist));
+	x_text_z1 = axis_org[2] - label_ratio[0] * ( 0.05 * (1.0 + dist_mesh));
+	x_text_z2 = axis_org[2] - label_ratio[0] * ( 0.15 * (1.0 + dist_mesh));
 	
 	y_text_y1 = axis_org[1] + label_ratio[1];
-	y_text_y2 = axis_org[1] + label_ratio[1] * ( 1.03 * (1.0 + dist));
-	y_text_y3 = axis_org[1] + label_ratio[1] * ( 1.06 * (1.0 + dist));
-	y_text_z1 = axis_org[2] - label_ratio[1] * ( 0.05 * (1.0 + dist));
-	y_text_z2 = axis_org[2] - label_ratio[1] * ( 0.10 * (1.0 + dist));
-	y_text_z3 = axis_org[2] - label_ratio[1] * ( 0.15 * (1.0 + dist));
+	y_text_y2 = axis_org[1] + label_ratio[1] * ( 1.03 * (1.0 + dist_mesh));
+	y_text_y3 = axis_org[1] + label_ratio[1] * ( 1.06 * (1.0 + dist_mesh));
+	y_text_z1 = axis_org[2] - label_ratio[1] * ( 0.05 * (1.0 + dist_mesh));
+	y_text_z2 = axis_org[2] - label_ratio[1] * ( 0.10 * (1.0 + dist_mesh));
+	y_text_z3 = axis_org[2] - label_ratio[1] * ( 0.15 * (1.0 + dist_mesh));
 	
-	z_text_z1 = axis_org[2] + label_ratio[2] * ( 1.07 * (1.0 + dist));
+	z_text_z1 = axis_org[2] + label_ratio[2] * ( 1.07 * (1.0 + dist_mesh));
 	z_text_z2 = axis_org[2] + label_ratio[2];
-	z_text_x1 = axis_org[0] - label_ratio[2] * ( 0.07 * (1.0 + dist));
-	z_text_x2 = axis_org[0] - label_ratio[2] * ( 0.13 * (1.0 + dist));
+	z_text_x1 = axis_org[0] - label_ratio[2] * ( 0.07 * (1.0 + dist_mesh));
+	z_text_x2 = axis_org[0] - label_ratio[2] * ( 0.13 * (1.0 + dist_mesh));
 	
     /* Generate vertex array*/
     x_arrowx[ 0] = axis_org[0];
@@ -241,7 +243,6 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
     x_charaz[22] = z_text_z2;
     x_charaz[23] = 1.0;
 /*
-	 printf("l_axis %e %e %e \n",l_axis[0],l_axis[1],l_axis[2]);
 	 printf("label_ratio %e %e %e \n",label_ratio[0],label_ratio[1],label_ratio[2]);
 	 printf("x_text_x1 %e %e %e %e \n",x_text_x1,x_text_x2,x_text_z1,x_text_z2);
 	 printf("y_text_y1 %e %e %e %e %e %e \n",y_text_y1,y_text_y2,y_text_y3,
@@ -349,6 +350,9 @@ static long set_axis_rod_to_buf(int ncorner, float radius,
 	return (2*ncorner) * icou_tube ;
 }
 
+static double rescale_radius_for_axis(struct view_element *view_s, double min_l_ratio){
+	return (min_l_ratio * (1.0 + (float)view_s->iflag_retina) / (float) view_s->ny_frame);
+}
 
 long count_axis_to_buf(int ncorner){
 	long npatch_wall = 0;
@@ -370,21 +374,36 @@ long count_axis_to_buf(int ncorner){
 	return npatch_wall;
 }
 
+double set_tube_radius_by_axis(struct view_element *view_s){
+    double axis_org[3], label_ratio[3];
+    double min_l_ratio = set_minimum_length_view(view_s, ZERO, axis_org, label_ratio);
+    double radius = rescale_radius_for_axis(view_s, min_l_ratio);
+	return radius;
+};
+
 void set_axis_to_buf(struct view_element *view_s,
-                     int iflag_draw_axis, double dist, double radius,
+                     int iflag_draw_axis, double dist_mesh, double radius_ref,
                      struct gl_strided_buffer *strided_buf){
 	double x_arrowx[8], x_arrowy[8], x_arrowz[8];
 	double w_ratio[3];
-	double x_charax[16], x_charay[24], x_charaz[24];
+    double x_charax[16], x_charay[24], x_charaz[24];
+    double axis_org[3], label_ratio[3];
+    double min_l_ratio;
+    double radius;
 	long icou_patch = 0;
     
     if(iflag_draw_axis > 0){
         long n_vertex = ITHREE * count_axis_to_buf(view_s->ncorner_tube);
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
-        set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz,
-                             w_ratio, x_charax, x_charay, x_charaz, &radius);
-        icou_patch = set_axis_rod_to_buf(view_s->ncorner_tube, radius,
+        
+        min_l_ratio = set_minimum_length_view(view_s, dist_mesh, axis_org, label_ratio);
+        scale_axis_positions(dist_mesh, axis_org, label_ratio, min_l_ratio,
+                             x_arrowx, x_arrowy, x_arrowz, w_ratio,
+                             x_charax, x_charay, x_charaz);
+        radius = rescale_radius_for_axis(view_s, min_l_ratio);
+        
+        icou_patch = set_axis_rod_to_buf(view_s->ncorner_tube, (radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz, 
                                          x_charax, x_charay, x_charaz,
                                          strided_buf);

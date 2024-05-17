@@ -9,29 +9,27 @@ long count_fieldlines_to_buf(struct fline_data *fline_d){
 }
 
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
+                           double tube_width,
                            struct fline_data *fline_d,
                            struct fline_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
-    long k;
-	int nd;
-    long iele, inod;
+    long inod, nd;
 	double x_line[8], dir_line[8], color_line[8];
 	
-	set_color_code_for_fieldlines(fline_d, fline_m);
+    set_color_code_for_fieldlines(fline_d, fline_m);
 	
 	long inum_tube = ist_patch;
-	for (iele=ist_line; iele<ied_line; iele++) {
-		for (k = 0; k < 2; k++) {
+	for(long iele=ist_line; iele<ied_line; iele++) {
+		for(long k = 0; k < 2; k++) {
 			inod = fline_d->iedge_fline[iele][k] - 1;
-			for (nd=0; nd<3; nd++) {
+			for(nd=0; nd<3; nd++) {
 				x_line[4*k+nd] =   (float) fline_d->xyzw_fline[4*inod + nd];
 				dir_line[4*k+nd] = (float) fline_d->dir_nod[4*inod + nd];
 			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
+			for(nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
         inum_tube = set_tube_strided_buffer(inum_tube, 
-                                            fline_m->fieldline_ncorner,
-                                            fline_m->fieldline_thick,
+                                            fline_m->fieldline_ncorner, tube_width,
                                             x_line, dir_line, color_line, strided_buf);
 	};
 	return inum_tube;

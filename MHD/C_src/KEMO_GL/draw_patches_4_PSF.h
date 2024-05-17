@@ -17,6 +17,7 @@
 #include "pthread_PSF_arrows_to_buf.h"
 #include "set_PSF_isolines_to_buf.h"
 #include "modify_object_4_viewer_c.h"
+#include "set_axis_to_buf.h"
 
 
 /* prptotypes */

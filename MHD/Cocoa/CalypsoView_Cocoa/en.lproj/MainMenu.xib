@@ -2046,8 +2046,8 @@
                                                                     </constraints>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="WNR-ii-Xif">
                                                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="E8z-b2-sdH">
-                                                                            <real key="minimum" value="1"/>
-                                                                            <real key="maximum" value="9"/>
+                                                                            <real key="minimum" value="0.0"/>
+                                                                            <real key="maximum" value="9.9999990000000007"/>
                                                                         </numberFormatter>
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2119,7 +2119,7 @@
                                                                         <constraint firstAttribute="height" constant="22" id="l0b-wZ-uwJ"/>
                                                                         <constraint firstAttribute="width" constant="13" id="ysq-3L-mzZ"/>
                                                                     </constraints>
-                                                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="wfM-0m-97P">
+                                                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="wfM-0m-97P">
                                                                         <connections>
                                                                             <action selector="SetIsolineWidth:" target="1157" id="eDC-ew-hIc"/>
                                                                             <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="xqR-pP-GJo"/>
@@ -4386,7 +4386,7 @@
                                         <constraint firstAttribute="height" constant="19" id="a8U-pb-TwW"/>
                                         <constraint firstAttribute="width" constant="13" id="hpV-Xv-R74"/>
                                     </constraints>
-                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="3138">
+                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="3138">
                                         <connections>
                                             <binding destination="1932" name="value" keyPath="self.FlineThickFactor" id="3718"/>
                                             <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="3726"/>
@@ -4404,7 +4404,7 @@
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3141">
                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3142">
-                                            <real key="minimum" value="1"/>
+                                            <real key="minimum" value="0.0"/>
                                             <real key="maximum" value="9"/>
                                         </numberFormatter>
                                         <font key="font" metaFont="system"/>
@@ -5763,7 +5763,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Vck-nj-V4U">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="5NB-E3-bKg">
-                                                                <real key="minimum" value="1"/>
+                                                                <real key="minimum" value="0.0"/>
                                                                 <real key="maximum" value="9.9999990000000007"/>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
@@ -5780,7 +5780,7 @@
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eiT-8f-Ggt">
                                                         <rect key="frame" x="159" y="18" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="24" doubleValue="1" id="hpT-dQ-apy">
+                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9.9999999000000006" doubleValue="2" id="hpT-dQ-apy">
                                                             <connections>
                                                                 <binding destination="964" name="value" keyPath="self.CoastlineWidth" id="FWP-iX-M72"/>
                                                             </connections>
