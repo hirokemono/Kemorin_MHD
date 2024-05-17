@@ -73,8 +73,7 @@ long set_each_mesh_grid_to_buf(int ist, int ied, int *item_grp,
                                struct viewer_mesh *mesh_s,
                                double f_color[4], long ist_edge,
                                struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-    const float z_norm[4] = {0.0, 0.0, 1.0, 1.0};
+    double xyzw_line[8], color_line[8];
 	int i1, i2, k1, nd, inum;
     int icou, iedge;
     long inum_edge = ist_edge;
@@ -86,33 +85,26 @@ long set_each_mesh_grid_to_buf(int ist, int ied, int *item_grp,
             i1 = mesh_s->ie_edge_viewer[inum  ] - 1;
             i2 = mesh_s->ie_edge_viewer[inum+1] - 1;
             
-            set_node_stride_buffer((ITWO*inum_edge), strided_buf, &point_buf);
             for(nd=0;nd<4;nd++) {
-                strided_buf->v_buf[nd+point_buf.igl_xyzw] =  mesh_s->xyzw_draw[4*i1+nd];
-                strided_buf->v_buf[nd+point_buf.igl_norm] =  z_norm[nd];
-                strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
+                xyzw_line[nd  ] = mesh_s->xyzw_draw[4*i1+nd];
+                xyzw_line[4+nd] = mesh_s->xyzw_draw[4*i2+nd];
+                color_line[nd  ] =  f_color[nd];
+                color_line[4+nd] = f_color[nd];
             };
-            
-            set_node_stride_buffer((ITWO*inum_edge+1), strided_buf, &point_buf);
-            for(nd=0;nd<4;nd++) {
-                strided_buf->v_buf[nd+point_buf.igl_xyzw] =  mesh_s->xyzw_draw[4*i2+nd];
-                strided_buf->v_buf[nd+point_buf.igl_norm] =  z_norm[nd];
-                strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
-            };
-            
-            inum_edge = inum_edge + 1;
+            inum_edge = set_line_strided_buffer(inum_edge,
+                                                xyzw_line, color_line,
+                                                strided_buf);
         };
     };
 	return inum_edge;
 }
 
-static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
+static void add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode,
                                     int nnod_4_sf, double *xyzw_draw, int *ie_sf_viewer,
                                     int *node_quad_2_linear_tri,
-                                    double normal_ele[4], double normal_nod[12],
-                                    double f_color[4], const long inum_tri,
-                                    struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
+                                    double normal_ele[4], double normal_nod[12], double f_color[4],
+                                    double xyzw_tri[12], double norm_tri[12],
+                                    double color_tri[12]){
     int inod, inum, k1, nd;
     long k, kr;
     
@@ -123,31 +115,22 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
         inum = k1-1 + nnod_4_sf * (abs(iele)-1);
 		inod = ie_sf_viewer[inum]-1;
 		
-        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf, &point_buf);
-		
 		for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_draw[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
+            xyzw_tri[4*k+nd] =  xyzw_draw[4*inod+nd];
+            color_tri[4*k+nd] = f_color[nd];
         };
 		
 		if (shading_mode == SMOOTH_SHADE) {
-			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf.igl_norm] = normal_nod[4*kr+nd];
-            };
+			for(nd = 0; nd < 4; nd++){norm_tri[4*k+nd] =  normal_nod[4*kr+nd];};
 		} else {
-			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf.igl_norm] = normal_ele[nd];
-            };
+			for (nd = 0; nd < 4; nd++){norm_tri[4*k+nd] = normal_ele[nd];};
 		};
 		
 		if(polygon_mode == REVERSE_POLYGON){
-			for (nd = 0; nd < 4; nd++){
-                strided_buf->v_buf[nd+point_buf.igl_norm] =
-                    - strided_buf->v_buf[nd+point_buf.igl_norm];
-            };
+			for(nd = 0; nd < 4; nd++){norm_tri[4*k+nd] = - norm_tri[4*k+nd];};
 		};
 	};
-	return (inum_tri + 1);
+	return;
 };
 
 
@@ -155,6 +138,8 @@ long set_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                               struct viewer_mesh *mesh_s, long ist_tri,
                               long ist_ele, long ied_ele, long *iele_patch,
                               struct gl_strided_buffer *mesh_buf){
+    double xyzw_tri[12];
+    double norm_tri[12], color_tri[12];
     int j, icolor;
     long inum, icou, jnum, item;
 	
@@ -167,13 +152,16 @@ long set_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
         item =  mesh_s->item_mesh_patch[icou];
         jnum = j + (icou) * mesh_s->nsurf_each_tri;
         icolor = mesh_s->igroup_mesh_patch[jnum];
-        inum_tri = add_each_mesh_tri_patch(j, (int) item, shading_mode, polygon_mode,
-                                           mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
-                                           mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
-                                           &mesh_s->normal_mesh_patch[4*jnum],
-                                           &mesh_s->normal_nod_mesh_patch[12*jnum],
-                                           &mesh_s->mesh_color[4*icolor],
-                                           inum_tri, mesh_buf);
+        add_each_mesh_tri_patch(j, (int) item, shading_mode, polygon_mode,
+                                mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
+                                mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
+                                &mesh_s->normal_mesh_patch[4*jnum],
+                                &mesh_s->normal_nod_mesh_patch[12*jnum],
+                                &mesh_s->mesh_color[4*icolor],
+                                xyzw_tri, norm_tri, color_tri);
+        inum_tri = set_patch_strided_buffer(inum_tri, xyzw_tri,
+                                            norm_tri, color_tri,
+                                            mesh_buf);
     };
 	return inum_tri;
 }

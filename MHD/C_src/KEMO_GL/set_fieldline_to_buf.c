@@ -39,24 +39,22 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct fline_data *fline_d,
                            struct fline_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
+    double xyzw_line[8], color_line[8];
 	long iele, k, nd, inod;
 	
 	set_color_code_for_fieldlines(fline_d, fline_m);
 	
+    long inum_line = ist_patch;
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
 			inod = fline_d->iedge_fline[iele][k] - 1;
-            set_node_stride_buffer((ITWO*iele+k), strided_buf, &point_buf);
 			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_xyzw]
-                    = fline_d->xyzw_fline[4*inod + nd];
-            };
-			for(nd=0;nd<4;nd++){
-                strided_buf->v_buf[nd+point_buf.igl_color]
-                    = fline_d->color_nod[4*inod + nd];
+                xyzw_line[4*k+nd] =  fline_d->xyzw_fline[4*inod + nd];
+                color_line[4*k+nd] = fline_d->color_nod[4*inod + nd];
             };
 		};
+        inum_line = set_line_strided_buffer(inum_line, xyzw_line, color_line,
+                                            strided_buf);
 	};
 	
 	return fline_d->nedge_fline;
