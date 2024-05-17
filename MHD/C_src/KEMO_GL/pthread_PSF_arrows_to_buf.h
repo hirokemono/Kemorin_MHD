@@ -18,8 +18,9 @@ long sel_add_num_psf_arrows_pthread(long ist_cone, const int nthreads,
                                     long *istack_arrow, int ncorner, 
                                     struct psf_data *psf_s, struct psf_menu_val *psf_m);
 
-long sel_psf_arrows_to_buf_pthread(long ist_cone, const int nthreads, 
-                                   long *istack_smp_arrow, int ncorner, 
+long sel_psf_arrows_to_buf_pthread(long ist_cone,
+                                   const int nthreads, long *istack_smp_arrow,
+                                   int ncorner, double radius,
                                    struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                    struct gl_strided_buffer *strided_buf);
 

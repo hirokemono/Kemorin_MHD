@@ -34,6 +34,7 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
 long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
                         struct psf_data *psf_s, struct psf_menu_val *psf_m);
 long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
-                           int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                           int ncorner, double radius,
+                           struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf);
 #endif

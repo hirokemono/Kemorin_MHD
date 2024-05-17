@@ -44,7 +44,7 @@ static void const_PSF_texture_buffer(int shading_mode, const int nthreads,
     return;
 }
 
-static void const_PSF_arrow_buffer(const int nthreads, int ncorner_arrow,
+static void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
                                    struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                    struct kemo_array_control *psf_a,
                                    struct gl_strided_buffer *psf_buf){
@@ -66,22 +66,30 @@ static void const_PSF_arrow_buffer(const int nthreads, int ncorner_arrow,
     long num_cone = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            num_cone = sel_add_num_psf_arrows_pthread(num_cone,
-                                                      nthreads, istack_smp_arrow[i],
-                                                      ncorner_arrow, psf_s[i], psf_m[i]);
+            num_cone = sel_add_num_psf_arrows_pthread(num_cone, nthreads, istack_smp_arrow[i],
+                                                      view_s->ncorner_tube, psf_s[i], psf_m[i]);
         };
     };
-    long num_vertex = ITHREE * ncorner_arrow * num_cone;
+    long num_vertex = ITHREE * view_s->ncorner_tube * num_cone;
     set_buffer_address_4_patch(num_vertex, psf_buf);
     if(psf_buf->num_nod_buf <= 0) return;
     
     resize_strided_buffer(psf_buf);
     
+    double ref_width = 10.0;
+    double radius_arrow;
+
     long inum_cone = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_m[i]->vector_thick <= 0.0){
+            radius_arrow = ref_width * set_tube_radius_by_axis(view_s);
+        }else{
+            radius_arrow = psf_m[i]->vector_thick;
+        };
+
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            inum_cone = sel_psf_arrows_to_buf_pthread(inum_cone, nthreads,
-                                                      istack_smp_arrow[i], ncorner_arrow,
+            inum_cone = sel_psf_arrows_to_buf_pthread(inum_cone, nthreads, istack_smp_arrow[i],
+                                                      view_s->ncorner_tube, radius_arrow,
                                                       psf_s[i], psf_m[i], psf_buf);
         };
     };
@@ -229,7 +237,7 @@ long const_PSF_solid_objects_buffer(const int nthreads,
 
     const_PSF_isotube_buffer(nthreads, view_s, psf_s, psf_m, psf_a, PSF_isotube_buf);
 
-    const_PSF_arrow_buffer(nthreads, view_s->ncorner_tube, psf_s, psf_m, psf_a,
+    const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
                            PSF_arrow_buf);
     return PSF_isoline_buf->num_nod_buf;
 }

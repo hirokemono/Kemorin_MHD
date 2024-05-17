@@ -189,13 +189,12 @@ long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
 
 
 long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
-                           int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                           int ncorner, double radius,
+                           struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
 	double xyzw[24*ncorner], norm[24*ncorner], col[24*ncorner];
-    
-    double radius = psf_m->vector_thick;
-    
+        
     struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);

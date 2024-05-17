@@ -2952,7 +2952,7 @@
                                                                     </constraints>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="PWx-pc-oqz">
                                                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2ra-Je-Ahk">
-                                                                            <real key="minimum" value="1"/>
+                                                                            <real key="minimum" value="0.0"/>
                                                                             <real key="maximum" value="9"/>
                                                                         </numberFormatter>
                                                                         <font key="font" metaFont="system"/>
@@ -2992,7 +2992,7 @@
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bbg-kh-zzP">
                                                                     <rect key="frame" x="99" y="32" width="19" height="28"/>
-                                                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="ttV-DU-MkP">
+                                                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="ttV-DU-MkP">
                                                                         <connections>
                                                                             <action selector="SetVectorThickness:" target="1157" id="ttp-rY-By3"/>
                                                                             <binding destination="1157" name="value" keyPath="self.VectorThickness" id="bEw-Se-qI8"/>
