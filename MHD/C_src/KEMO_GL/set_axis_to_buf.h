@@ -12,7 +12,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "m_vertex_buffer.h"
 #include "modify_object_4_viewer_c.h"
-#include "icosahedron_c.h"
+#include "set_primitives_to_gl_buffer.h"
 #include "transfer_matvec.h"
 #include "invert_small_matrix_c.h"
 

@@ -37,8 +37,7 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
                                     struct viewer_mesh *mesh_s, double node_diam,
                                     double f_color[4], 
                                     struct gl_strided_buffer *mesh_buf){
-    long inod;
-    long inum, nd;
+    long inod, inum;
     
     long inum_tri = ist_tri;
     for(inum = ist_grp; inum < ied_grp; inum++){

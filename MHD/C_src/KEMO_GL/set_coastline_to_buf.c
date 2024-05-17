@@ -218,7 +218,6 @@ long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     
     double xyzw_line[8] = {0.0, 0.0, 0.002, 1.0, 0.0, 0.0, 0.002, 1.0};
     double dir_line[8] =  {0.0, 0.0, 0.0,   1.0, 0.0, 0.0, 0.0,   1.0};
-    double norm_line[8] = {0.0, 0.0, 1.0,   1.0, 0.0, 0.0, 1.0,   1.0};
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
@@ -470,7 +469,6 @@ long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge
     
     double xyzw_line[8] = {0.0, 0.0, 0.002, 1.0, 0.0, 0.0, 0.002, 1.0};
     double dir_line[8] =  {0.0, 0.0, 0.0,   1.0, 0.0, 0.0, 0.0,   1.0};
-    double norm_line[8] = {0.0, 0.0, 1.0,   1.0, 0.0, 0.0, 1.0,   1.0};
     double color_line[8];
     double pi = TWO * acos(ZERO);
     double theta_t_cyl[2];

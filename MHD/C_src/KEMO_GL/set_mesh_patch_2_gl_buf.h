@@ -14,7 +14,7 @@
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_vertex_buffer.h"
-#include "icosahedron_c.h"
+#include "set_primitives_to_gl_buffer.h"
 
 long num_icosahedron_patch(void);
 long add_mesh_node_ico_to_buf(long ist_patch, int *istack_grp, int num_pe_sf,

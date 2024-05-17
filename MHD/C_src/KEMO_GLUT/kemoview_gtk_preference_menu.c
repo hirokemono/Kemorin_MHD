@@ -166,6 +166,7 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 
     
     pref_gmenu->fpsTextBox = gtk_entry_new();
+    gtk_entry_set_width_chars(GTK_ENTRY(pref_gmenu->fpsTextBox), 12);
     gtk_entry_set_text(GTK_ENTRY(pref_gmenu->fpsTextBox), "0.0");
     g_object_set_data(G_OBJECT(pref_gmenu->fpsTextBox), "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(pref_gmenu->fpsTextBox), "rotation", (gpointer) rot_gmenu);

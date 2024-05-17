@@ -11,7 +11,7 @@
 #include "set_new_patch_4_map_c.h"
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
-#include "icosahedron_c.h"
+#include "set_primitives_to_gl_buffer.h"
 
 /* prptotypes */
 

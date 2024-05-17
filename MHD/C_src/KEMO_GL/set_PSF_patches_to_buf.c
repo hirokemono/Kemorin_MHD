@@ -148,7 +148,6 @@ static void set_line_for_psf_arrow(int icomp, long inod,
                                    double color_line[8]){
     int nd;
     double v_xyz[3], v_tmp[3], x_rtp[3];
-    double dcolor[4];
     
 	double ascale = ONE / psf_m->scale_vect;
     
@@ -209,7 +208,6 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
-	double xyzw[24*ncorner], norm[24*ncorner], col[24*ncorner];
         
     struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);

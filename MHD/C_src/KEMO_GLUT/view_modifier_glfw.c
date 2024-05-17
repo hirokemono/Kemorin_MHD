@@ -425,12 +425,12 @@ static double write_rotate_views(struct kemoviewer_type *kemo_sgl,
     ied_deg = n_rotate * 360/inc_deg;
 	
 	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 	glfwFocusWindow(glfw_window);
     double accum_time = 0.0;
 	for (i = 0; i< ied_deg; i++) {
 		int_degree =  i*inc_deg;
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
-        kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 
         gettimeofday( &startwtime, NULL );
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

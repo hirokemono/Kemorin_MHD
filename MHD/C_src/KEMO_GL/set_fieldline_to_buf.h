@@ -9,7 +9,7 @@
 #include "m_vertex_buffer.h"
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"
-#include "icosahedron_c.h"
+#include "set_primitives_to_gl_buffer.h"
 
 
 
