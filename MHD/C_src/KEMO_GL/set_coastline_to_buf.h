@@ -57,4 +57,12 @@ long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                                 int ncorner, double tube_radius,
                                 struct gl_strided_buffer *strided_buf);
 
+long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
+                                      long num_grid, double radius, double r_ICB,
+                                      struct gl_strided_buffer *strided_buf);
+long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
+                                      long num_grid, int ncorner, double tube_radius,
+                                      double radius, double r_ICB,
+                                      struct gl_strided_buffer *strided_buf);
+
 #endif

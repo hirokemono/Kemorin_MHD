@@ -36,7 +36,11 @@ struct mesh_menu_val{
 	int iflag_draw_sph_grid;
 	double radius_coast;
 	
-	int draw_surface_nod;
+    int iflag_draw_tangent_cyl;
+    double r_ICB;
+
+    
+    int draw_surface_nod;
 	int draw_surface_grid;
 	int draw_surface_solid;
 	
@@ -112,6 +116,7 @@ void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m);
 
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m);
 int toggle_draw_axis(struct mesh_menu_val *mesh_m);

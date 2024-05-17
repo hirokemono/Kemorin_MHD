@@ -33,12 +33,28 @@ static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpoi
     draw_full(kemo_sgl);
 	return;
 };
+static void draw_tangent_cyl_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH, iflag, kemo_sgl);
+    
+    draw_full(kemo_sgl);
+    return;
+};
 static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_coastline_radius(radius, kemo_sgl);
 	
+    draw_full(kemo_sgl);
+}
+static void ICB_radius_CB(GtkWidget *entry, gpointer data)
+{
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+    kemoview_set_inner_core_radius(radius, kemo_sgl);
+    
     draw_full(kemo_sgl);
 }
 
@@ -207,7 +223,27 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	GtkWidget *spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
 	g_signal_connect(spin_coast_radius, "value-changed",
                      G_CALLBACK(coastline_radius_CB), (gpointer) kemo_sgl);
-	
+
+    
+    GtkWidget *switch_tangent_cyl = gtk_switch_new();
+    if(kemoview_get_object_property_flags(kemo_sgl, TANGENT_CYLINDER_SWITCH) == 0){
+        gtk_switch_set_active(GTK_SWITCH(switch_tangent_cyl), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(switch_tangent_cyl), TRUE);
+    };
+    g_signal_connect(G_OBJECT(switch_tangent_cyl), "notify::active",
+                G_CALLBACK(draw_tangent_cyl_switch_CB), (gpointer) kemo_sgl);
+    
+
+    GtkAdjustment *adj_ICB_radius = gtk_adjustment_new(kemoview_get_inner_core_radius(kemo_sgl),
+                                          0.0, 10.0, 0.02, 0.02, 0.0);
+    GtkWidget *spin_ICB_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ICB_radius), 0, 3);
+    g_signal_connect(spin_ICB_radius, "value-changed",
+                     G_CALLBACK(ICB_radius_CB), (gpointer) kemo_sgl);
+
+
+    
+    
     double current_thick;
     int    current_digit;
     kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
@@ -251,6 +287,14 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), gtk_label_new("Radius: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), spin_coast_radius, FALSE, FALSE, 0);
 	
+    GtkWidget *hbox_tangent_cyl = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_tangent_cyl), gtk_label_new("Draw tangent cylinder: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_tangent_cyl), switch_tangent_cyl, FALSE, FALSE, 0);
+    
+    GtkWidget *hbox_ICB_radius = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_ICB_radius), gtk_label_new("ICB Radius: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_ICB_radius), spin_ICB_radius, FALSE, FALSE, 0);
+    
     GtkWidget *hbox_thickness = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_thickness), gtk_label_new("Thickness: "), TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_thickness), spin_cline_thick, TRUE, TRUE, 0);
@@ -265,6 +309,8 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coast_radius, TRUE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_coasttube, TRUE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_thickness, TRUE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_tangent_cyl, TRUE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_ICB_radius, TRUE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_surf_dir, TRUE, FALSE, 0);

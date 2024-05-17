@@ -24,6 +24,8 @@
 @synthesize fileStepDisplayAccess;
 @synthesize coastLineDrawFlag;
 @synthesize globeGridDrawFlag;
+@synthesize tangentCylinderDrawFlag;
+@synthesize ICBRadius;
 @synthesize axisDrawFlag;
 @synthesize axisDrawAccess;
 @synthesize ThreadsCount;
@@ -56,6 +58,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     self.coastlineRadius = kemoview_get_coastline_radius(kemo_sgl);
+    self.ICBRadius = kemoview_get_inner_core_radius(kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_AVAIL,
                                        (int) self.timeDisplayAccess, kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
@@ -74,6 +77,11 @@
     }
     
     self.ShadingMode = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+
+    self.coastLineDrawFlag = kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH);
+    self.globeGridDrawFlag = kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH);
+    self.tangentCylinderDrawFlag
+                = kemoview_get_object_property_flags(kemo_sgl, TANGENT_CYLINDER_SWITCH);
 
     self.CoastLineTubeFlag = kemoview_get_view_integer(kemo_sgl, COASTLINE_TUBE);
     self.TubeNumCorners =    kemoview_get_view_integer(kemo_sgl, NUM_TUBE_CORNERS_FLAG);
@@ -179,8 +187,23 @@
 - (IBAction)SphRadiusAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_coastline_radius((double) coastlineRadius, kemo_sgl);
+	kemoview_set_coastline_radius((double) self.coastlineRadius, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)TangentCylinderSwitchAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH,
+                                       self.tangentCylinderDrawFlag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)InnerCoreRadiusAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_inner_core_radius((double) self.ICBRadius, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender

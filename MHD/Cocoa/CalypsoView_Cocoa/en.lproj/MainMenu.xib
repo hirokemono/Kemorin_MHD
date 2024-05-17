@@ -3352,7 +3352,6 @@
                                                         </stepperCell>
                                                         <connections>
                                                             <action selector="SphRadiusAction:" target="964" id="3691"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="3660"/>
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6yM-q0-3eA">
@@ -3383,13 +3382,10 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10000" doubleValue="19.499999999999993" id="ZRT-FX-fwA">
                                                             <connections>
-                                                                <binding destination="964" name="value" keyPath="self.coastlineRadius" id="W0K-CT-voj"/>
+                                                                <action selector="InnerCoreRadiusAction:" target="964" id="BwZ-zM-8rx"/>
+                                                                <binding destination="964" name="value" keyPath="self.ICBRadius" id="XZg-2J-gI6"/>
                                                             </connections>
                                                         </stepperCell>
-                                                        <connections>
-                                                            <action selector="SphRadiusAction:" target="964" id="uRB-jC-30e"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="Evw-Dh-KuN"/>
-                                                        </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11W-Tw-V06">
                                                         <rect key="frame" x="79" y="11" width="73" height="22"/>
@@ -3400,10 +3396,13 @@
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <action selector="SphRadiusAction:" target="964" id="HCf-D2-iyM"/>
-                                                                <binding destination="964" name="value" keyPath="self.coastlineRadius" id="lhG-KP-CGH"/>
+                                                                <binding destination="964" name="value" keyPath="self.ICBRadius" id="G5H-rC-C3k"/>
                                                             </connections>
                                                         </textFieldCell>
+                                                        <connections>
+                                                            <action selector="InnerCoreRadiusAction:" target="964" id="n8C-KT-aOF"/>
+                                                            <binding destination="964" name="value" keyPath="self.ICBRadius" id="pRv-ls-HSN"/>
+                                                        </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2LH-MC-tY9">
                                                         <rect key="frame" x="7" y="14" width="66" height="16"/>
@@ -3421,11 +3420,12 @@
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                             <connections>
-                                                                <binding destination="964" name="value" keyPath="self.coastLineDrawFlag" id="BoL-08-QwB"/>
+                                                                <binding destination="964" name="value" keyPath="self.tangentCylinderDrawFlag" id="ozy-Zb-OOD"/>
                                                             </connections>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="CoastSwitchAction:" target="964" id="Abf-lZ-7qk"/>
+                                                            <action selector="TangentCylinderSwitchAction:" target="964" id="JTA-EB-Cdo"/>
+                                                            <binding destination="964" name="value" keyPath="self.tangentCylinderDrawFlag" id="5G6-QQ-c9W"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>

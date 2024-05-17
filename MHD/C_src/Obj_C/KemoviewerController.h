@@ -62,8 +62,10 @@
 
     NSInteger coastLineDrawFlag;
     NSInteger globeGridDrawFlag;
+    NSInteger tangentCylinderDrawFlag;
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
+    CGFloat ICBRadius;
     
     NSInteger CoastLineTubeFlag;
     NSInteger TubeNumCorners;
@@ -87,11 +89,13 @@
 @property NSInteger fileStepDisplayFlag;
 @property NSInteger coastLineDrawFlag;
 @property NSInteger globeGridDrawFlag;
+@property NSInteger tangentCylinderDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
 @property NSInteger TubeNumCorners;
 @property CGFloat   ThreadsCount;
 @property CGFloat   CoastlineWidth;
+@property CGFloat   ICBRadius;
 @property NSInteger CoastlineDigit;
 @property NSInteger CoastLineTubeFlag;
 
@@ -109,6 +113,8 @@
 - (IBAction)CoastSwitchAction:(id)sender;
 - (IBAction)SphGridSwitchAction:(id)sender;
 - (IBAction)SphRadiusAction:(id)sender;
+- (IBAction)TangentCylinderSwitchAction:(id)sender;
+
 - (IBAction)ChoosePolygontypeAction:(id)sender;
 - (IBAction)ChooseSurfcetypeAction:(id)sender;
 - (IBAction)ChooseColorModeAction:(id)sender;

@@ -168,6 +168,14 @@ double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer){
     return kemoviewer->kemo_mesh->mesh_m->radius_coast;
 };
 
+void kemoview_set_inner_core_radius(double r_ICB, struct kemoviewer_type *kemoviewer){
+    kemoviewer->kemo_mesh->mesh_m->r_ICB = r_ICB;
+};
+double kemoview_get_inner_core_radius(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->r_ICB;
+};
+
+
 void kemoview_set_object_property_flags(int selected, int iflag,
                                         struct kemoviewer_type *kemoviewer){
 	if (selected == AXIS_TOGGLE){
@@ -176,6 +184,8 @@ void kemoview_set_object_property_flags(int selected, int iflag,
         set_coastline_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SPHEREGRID_SWITCH){
         set_sphere_grid_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
+    }else if(selected == TANGENT_CYLINDER_SWITCH){
+        set_tangent_cylinder_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SHADING_SWITCH){
         kemoviewer->view_s->shading_mode = iflag;
     }else if(selected == POLYGON_SWITCH){
@@ -195,6 +205,8 @@ int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int s
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_coast;
     }else if(selected == SPHEREGRID_SWITCH){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_sph_grid;
+    }else if(selected == TANGENT_CYLINDER_SWITCH){
+        return kemoviewer->kemo_mesh->mesh_m->iflag_draw_tangent_cyl;
     }else if(selected == SHADING_SWITCH){
         return kemoviewer->view_s->shading_mode;
     }else if(selected == POLYGON_SWITCH){

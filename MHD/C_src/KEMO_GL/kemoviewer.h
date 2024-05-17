@@ -47,11 +47,12 @@
 #define INPUT_V_MATRIX         16
 #define COASTLINE_SWITCH        7
 #define SPHEREGRID_SWITCH       8
-#define SET_COAST_RADIUS      300
-#define FILE_STEP_LABEL_SWITCH  9
-#define TIME_LABEL_SWITCH      10
-#define FILE_STEP_LABEL_AVAIL  11
-#define TIME_LABEL_AVAIL       12
+#define TANGENT_CYLINDER_SWITCH   41
+#define SET_COAST_RADIUS         300
+#define FILE_STEP_LABEL_SWITCH     9
+#define TIME_LABEL_SWITCH         10
+#define FILE_STEP_LABEL_AVAIL     11
+#define TIME_LABEL_AVAIL          12
 
 #define MESH_OFF          100
 #define SURFNOD_TOGGLE    1
@@ -303,6 +304,9 @@ extern "C" {
     void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer);
     double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);
     
+    void kemoview_set_inner_core_radius(double r_ICB, struct kemoviewer_type *kemoviewer);
+    double kemoview_get_inner_core_radius(struct kemoviewer_type *kemoviewer);
+
     void kemoview_set_object_property_flags(int selected, int iflag,
                                             struct kemoviewer_type *kemoviewer);
     int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected);
