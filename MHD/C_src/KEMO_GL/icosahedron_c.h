@@ -26,6 +26,9 @@ long set_cone_strided_buffer(const long ist_tube, int ncorner, double radius,
 long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
                              double xyzw_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
+long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
+                                    double xyzw_draw[4], double f_color[4],
+                                    struct gl_strided_buffer *strided_buf);
 
 long set_textur_to_buf(long ist_texture, double xy_txur[6],
                        struct gl_strided_buffer *strided_buf);

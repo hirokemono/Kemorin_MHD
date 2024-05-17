@@ -113,7 +113,7 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
     
     long lo = (ied_grp - ist_grp) * id /     nthreads;
     long hi = (ied_grp - ist_grp) * (id+1) / nthreads;
-    long ist_patch = num_icosahedron_patch() * lo + istack_patch;
+    long ist_patch = lo + istack_patch;
         
     num_patch[id] = set_each_group_node_ico_to_buf(ist_patch,
                                                    (lo+ist_grp), (hi+ist_grp), item_grp,

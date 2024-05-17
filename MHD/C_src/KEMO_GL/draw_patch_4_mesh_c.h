@@ -18,6 +18,7 @@
 #include "pthread_mesh_patch_to_buf.h"
 #include "bitonic_sort_float_pthread.h"
 #include "const_mesh_patch_table_for_gl.h"
+#include "set_axis_to_buf.h"
 
 struct mesh_sorting_work{
     long nextP2_trans_patch;

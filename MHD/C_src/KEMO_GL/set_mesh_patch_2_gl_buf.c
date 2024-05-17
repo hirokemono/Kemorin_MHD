@@ -17,7 +17,7 @@ long num_icosahedron_patch(void){
 
 static long count_each_grp_node_ico_to_buf(int iflag_domain, int *istack_grp){
     if(iflag_domain == 0) return 0;
-    long num_patch = ntri_ico * (istack_grp[1] - istack_grp[0]);
+    long num_patch = istack_grp[1] - istack_grp[0];
     return num_patch;
 }
 
@@ -37,27 +37,15 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
                                     struct viewer_mesh *mesh_s, double node_diam,
                                     double f_color[4], 
                                     struct gl_strided_buffer *mesh_buf){
-    struct gl_local_buffer_address point_buf;
-    double xyzw_patch[240], norm_patch[240];
-    int inod;
-    long inum, icou, nd;
-    long inum_tri, ntri_ico;
+    long inod;
+    long inum, nd;
     
-    inum_tri = ist_tri;
+    long inum_tri = ist_tri;
     for(inum = ist_grp; inum < ied_grp; inum++){
         inod = item_grp[inum]-1;
-        ntri_ico = set_icosahedron_patch(node_diam, &mesh_s->xyzw_draw[4*inod  ],
-                                         xyzw_patch, norm_patch);
-
-        for (icou=0; icou<3*ntri_ico; icou++) {
-            set_node_stride_buffer((3*inum_tri+icou), mesh_buf, &point_buf);
-            for(nd=0;nd<4;nd++){
-                mesh_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw_patch[4*icou+nd];
-                mesh_buf->v_buf[nd+point_buf.igl_norm] = norm_patch[4*icou+nd];
-                mesh_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
-            };
-        };
-        inum_tri = inum_tri + ntri_ico;
+        inum_tri = set_icosahedron_strided_buffer(inum_tri, node_diam,
+                                                  &mesh_s->xyzw_draw[4*inod  ],
+                                                  f_color, mesh_buf);
     };
     return inum_tri;
 }

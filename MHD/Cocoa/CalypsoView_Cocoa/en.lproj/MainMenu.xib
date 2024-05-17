@@ -781,7 +781,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -1692,7 +1692,7 @@
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="697">
                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="698">
-                                            <real key="minimum" value="1"/>
+                                            <real key="minimum" value="0.0"/>
                                             <real key="maximum" value="9"/>
                                         </numberFormatter>
                                         <font key="font" metaFont="system"/>
@@ -1736,7 +1736,7 @@
                                         <constraint firstAttribute="width" constant="13" id="cOj-dJ-LT5"/>
                                         <constraint firstAttribute="height" constant="25" id="g8h-hC-nDI"/>
                                     </constraints>
-                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="1" id="694">
+                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="1" id="694">
                                         <connections>
                                             <binding destination="703" name="enabled" keyPath="self.DrawMeshFlag" id="1485"/>
                                             <binding destination="964" name="value" keyPath="self.NodeSizeFactor" id="1632"/>
