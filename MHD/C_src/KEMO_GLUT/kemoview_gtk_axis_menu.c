@@ -72,6 +72,34 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer dat
 	return;
 };
 
+static void coasttube_thickness_CB(GtkWidget *entry, gpointer data)
+{
+    double current_thick;
+    int current_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    
+    double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+    if(thick_in < 0) return;
+    
+    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
+    kemoview_set_coastline_thickness_w_exp(thick_in, current_digit, kemo_sgl);
+
+    draw_full(kemo_sgl);
+}
+
+static void coasttube_digit_CB(GtkWidget *entry, gpointer data)
+{
+    double current_thick;
+    int current_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    
+    int in_digit = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
+    kemoview_set_coastline_thickness_w_exp(current_thick, in_digit, kemo_sgl);
+    
+    draw_full(kemo_sgl);
+}
+
 
 GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
                                GtkWidget *window){
@@ -180,7 +208,21 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	g_signal_connect(spin_coast_radius, "value-changed",
                      G_CALLBACK(coastline_radius_CB), (gpointer) kemo_sgl);
 	
-	
+    double current_thick;
+    int    current_digit;
+    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
+    GtkWidget *adj_thick = gtk_adjustment_new(current_thick, 0, 9, 1, 1, 0.0);
+    GtkWidget *adj_digit = gtk_adjustment_new(current_digit, -30, 30, 1, 1, 0.0);
+    GtkWidget *spin_cline_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
+    GtkWidget *spin_cline_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+    g_signal_connect(spin_cline_thick, "value-changed",
+                     G_CALLBACK(coasttube_thickness_CB), (gpointer) kemo_sgl);
+    g_signal_connect(spin_cline_digit, "value-changed",
+                     G_CALLBACK(coasttube_digit_CB), (gpointer) kemo_sgl);
+    
+
+    
+    
 	GtkWidget *hbox_coasttube = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_coasttube), gtk_label_new("Coastline type: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_coasttube), combobox_coasttube, FALSE, FALSE, 0);
@@ -209,14 +251,21 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), gtk_label_new("Radius: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), spin_coast_radius, FALSE, FALSE, 0);
 	
-	
+    GtkWidget *hbox_thickness = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_thickness), gtk_label_new("Thickness: "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_thickness), spin_cline_thick, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_thickness), gtk_label_new("X 10^"), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_thickness), spin_cline_digit, TRUE, TRUE, 0);
+    
+
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_axis, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coastline, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coast_radius, TRUE, FALSE, 0);
-	
     gtk_box_pack_start(GTK_BOX(vbox), hbox_coasttube, TRUE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_thickness, TRUE, FALSE, 0);
+
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_surf_dir, TRUE, FALSE, 0);
 
