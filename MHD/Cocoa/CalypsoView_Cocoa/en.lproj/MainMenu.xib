@@ -4282,7 +4282,7 @@
             <connections>
                 <outlet property="delegate" destination="1157" id="1443"/>
             </connections>
-            <point key="canvasLocation" x="-211.5" y="-104"/>
+            <point key="canvasLocation" x="-213" y="-93"/>
         </window>
         <window title="Fieldline View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1944">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
@@ -4945,25 +4945,25 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="123" y="299" width="299" height="923"/>
+            <rect key="contentRect" x="123" y="299" width="299" height="1011"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="2203">
-                <rect key="frame" x="0.0" y="0.0" width="299" height="923"/>
+                <rect key="frame" x="0.0" y="0.0" width="299" height="1011"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xpN-NQ-7rA">
-                        <rect key="frame" x="-1" y="-1" width="301" height="925"/>
+                        <rect key="frame" x="-1" y="-2" width="301" height="1014"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <clipView key="contentView" id="H51-CE-nj3">
-                            <rect key="frame" x="1" y="1" width="299" height="923"/>
+                            <rect key="frame" x="1" y="1" width="299" height="1012"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="iRy-vr-6IA">
-                                    <rect key="frame" x="0.0" y="0.0" width="284" height="908"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="284" height="1010"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color Preference" translatesAutoresizingMaskIntoConstraints="NO" id="640">
-                                            <rect key="frame" x="10" y="635" width="265" height="117"/>
+                                            <rect key="frame" x="10" y="737" width="265" height="117"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="2yc-C0-chw">
                                                 <rect key="frame" x="3" y="3" width="259" height="99"/>
@@ -5090,7 +5090,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="File Format" translatesAutoresizingMaskIntoConstraints="NO" id="2479">
-                                            <rect key="frame" x="10" y="756" width="265" height="90"/>
+                                            <rect key="frame" x="10" y="858" width="265" height="90"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="H7o-Az-jrg">
                                                 <rect key="frame" x="3" y="3" width="259" height="72"/>
@@ -5186,7 +5186,7 @@
                                             </view>
                                         </box>
                                         <box fixedFrame="YES" title="lights" translatesAutoresizingMaskIntoConstraints="NO" id="C9P-vk-EKJ">
-                                            <rect key="frame" x="10" y="352" width="265" height="278"/>
+                                            <rect key="frame" x="10" y="454" width="265" height="278"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="eS1-Lb-gWJ">
                                                 <rect key="frame" x="3" y="3" width="259" height="260"/>
@@ -5604,7 +5604,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color Preference" translatesAutoresizingMaskIntoConstraints="NO" id="8Bq-lb-J3K">
-                                            <rect key="frame" x="10" y="850" width="265" height="58"/>
+                                            <rect key="frame" x="10" y="952" width="265" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="7TQ-ar-QFV">
                                                 <rect key="frame" x="3" y="3" width="259" height="40"/>
@@ -5663,7 +5663,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Shape of Tube" translatesAutoresizingMaskIntoConstraints="NO" id="7Ec-Jj-KUF">
-                                            <rect key="frame" x="10" y="240" width="265" height="108"/>
+                                            <rect key="frame" x="10" y="342" width="265" height="108"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="mve-kC-xUa">
                                                 <rect key="frame" x="3" y="3" width="259" height="90"/>
@@ -5792,8 +5792,141 @@
                                                 </subviews>
                                             </view>
                                         </box>
+                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Surface Type" translatesAutoresizingMaskIntoConstraints="NO" id="55b-Jb-xk0">
+                                            <rect key="frame" x="10" y="280" width="265" height="58"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="bf9-qB-Qop">
+                                                <rect key="frame" x="3" y="3" width="259" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yle-sf-fdH">
+                                                        <rect key="frame" x="16" y="12" width="228" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="112" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="bQV-Vh-3pY">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Smooth" imagePosition="left" alignment="left" tag="1" inset="2" id="kSA-qD-LUb">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="0vy-PF-wpW"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Flat" imagePosition="left" alignment="left" state="on" inset="2" id="p7r-2Z-I1h">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="yhx-mo-HIH"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <binding destination="964" name="selectedTag" keyPath="self.ShadingMode" id="Yos-VI-Hyr"/>
+                                                        </connections>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Arrow Location" translatesAutoresizingMaskIntoConstraints="NO" id="hR8-Bw-lDv">
+                                            <rect key="frame" x="10" y="156" width="265" height="58"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="hbY-Ws-3kf">
+                                                <rect key="frame" x="3" y="3" width="259" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yRG-Iv-kri">
+                                                        <rect key="frame" x="16" y="12" width="228" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="112" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="eEU-Sk-hCc">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Center" imagePosition="left" alignment="left" tag="1" inset="2" id="ofD-6c-qkg">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="x38-5U-SId"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Lower left" imagePosition="left" alignment="left" state="on" inset="2" id="meN-Uz-J3Y">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="YKa-ni-Lnl"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <binding destination="964" name="selectedTag" keyPath="self.ShadingMode" id="EmN-u9-laH"/>
+                                                        </connections>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Coastline type" translatesAutoresizingMaskIntoConstraints="NO" id="wBe-Fs-dU2">
+                                            <rect key="frame" x="10" y="218" width="265" height="58"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="a7H-YY-zOa">
+                                                <rect key="frame" x="3" y="3" width="259" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xfC-bx-Q3F">
+                                                        <rect key="frame" x="16" y="12" width="228" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="112" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="EQB-4i-Y8v">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Tube" imagePosition="left" alignment="left" tag="1" inset="2" id="2aW-Tz-vom">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="SetCoastLinETubeAction:" target="964" id="rHe-gs-OrA"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Line" imagePosition="left" alignment="left" state="on" inset="2" id="yXr-fq-Zwg">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="SetCoastLinETubeAction:" target="964" id="kYL-xc-lfd"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                        <connections>
+                                                            <action selector="SetCoastLinETubeAction:" target="964" id="mIb-du-0So"/>
+                                                            <binding destination="964" name="selectedTag" keyPath="self.CoastLineTubeFlag" id="5Gj-Kc-njt"/>
+                                                        </connections>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                        </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Performance Check" translatesAutoresizingMaskIntoConstraints="NO" id="Ds0-bV-RsW">
-                                            <rect key="frame" x="10" y="21" width="265" height="91"/>
+                                            <rect key="frame" x="10" y="61" width="265" height="91"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="Iox-xo-gBr">
                                                 <rect key="frame" x="3" y="3" width="259" height="73"/>
@@ -5906,110 +6039,22 @@
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Surface Type" translatesAutoresizingMaskIntoConstraints="NO" id="55b-Jb-xk0">
-                                            <rect key="frame" x="10" y="178" width="265" height="58"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="bf9-qB-Qop">
-                                                <rect key="frame" x="3" y="3" width="259" height="40"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yle-sf-fdH">
-                                                        <rect key="frame" x="16" y="12" width="228" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="112" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="bQV-Vh-3pY">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Smooth" imagePosition="left" alignment="left" tag="1" inset="2" id="kSA-qD-LUb">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="0vy-PF-wpW"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Flat" imagePosition="left" alignment="left" state="on" inset="2" id="p7r-2Z-I1h">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="yhx-mo-HIH"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                        <connections>
-                                                            <binding destination="964" name="selectedTag" keyPath="self.ShadingMode" id="Yos-VI-Hyr"/>
-                                                        </connections>
-                                                    </matrix>
-                                                </subviews>
-                                            </view>
-                                        </box>
-                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Arrow Location" translatesAutoresizingMaskIntoConstraints="NO" id="hR8-Bw-lDv">
-                                            <rect key="frame" x="10" y="116" width="265" height="58"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="hbY-Ws-3kf">
-                                                <rect key="frame" x="3" y="3" width="259" height="40"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yRG-Iv-kri">
-                                                        <rect key="frame" x="16" y="12" width="228" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="112" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="eEU-Sk-hCc">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Center" imagePosition="left" alignment="left" tag="1" inset="2" id="ofD-6c-qkg">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="x38-5U-SId"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Lower left" imagePosition="left" alignment="left" state="on" inset="2" id="meN-Uz-J3Y">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChooseSurfcetypeAction:" target="964" id="YKa-ni-Lnl"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                        <connections>
-                                                            <binding destination="964" name="selectedTag" keyPath="self.ShadingMode" id="EmN-u9-laH"/>
-                                                        </connections>
-                                                    </matrix>
-                                                </subviews>
-                                            </view>
-                                        </box>
                                     </subviews>
                                 </view>
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="yUQ-DO-QOX">
-                            <rect key="frame" x="1" y="908" width="299" height="16"/>
+                            <rect key="frame" x="1" y="997" width="299" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="1c6-o2-LPu">
-                            <rect key="frame" x="284" y="1" width="16" height="923"/>
+                            <rect key="frame" x="284" y="1" width="16" height="1012"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-305.5" y="841.5"/>
+            <point key="canvasLocation" x="-305.5" y="885.5"/>
         </window>
         <customObject id="2679" customClass="ResetViewControll">
             <connections>

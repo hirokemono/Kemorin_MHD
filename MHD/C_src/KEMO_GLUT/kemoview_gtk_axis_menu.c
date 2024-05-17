@@ -42,6 +42,16 @@ static void coastline_radius_CB(GtkWidget *entry, gpointer data)
     draw_full(kemo_sgl);
 }
 
+static void set_coasttube_CB(GtkComboBox *combobox_coasttube, gpointer data)
+{
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int index_mode = gtk_selected_combobox_index(combobox_coasttube);
+    
+    kemoview_set_view_integer(COASTLINE_TUBE, index_mode, kemo_sgl);
+    draw_full(kemo_sgl);
+    return;
+};
+
 static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
@@ -68,7 +78,34 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	int index = 0;
 	
 	/* Set buttons   */
-	GtkWidget * label_tree_shading = create_fixed_label_w_index_tree();
+    GtkWidget * label_tree_coasttube = create_fixed_label_w_index_tree();
+    GtkTreeModel * model_coasttube = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_coasttube));
+    GtkTreeModel * child_model_coasttube = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_coasttube));
+    index = 0;
+    index = append_ci_item_to_tree(index, "Tube",
+                                   ON, child_model_coasttube);
+    index = append_ci_item_to_tree(index, "Line",
+                                   OFF, child_model_coasttube);
+
+    GtkWidget *combobox_coasttube = gtk_combo_box_new_with_model(child_model_coasttube);
+    GtkCellRenderer *renderer_coasttube = gtk_cell_renderer_text_new();
+    if(kemoview_get_view_integer(kemo_sgl, COASTLINE_TUBE) == ON){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_coasttube), 0);
+    } else {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_coasttube), 1);
+    };
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_coasttube),
+                               renderer_coasttube, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_coasttube),
+                                   renderer_coasttube, "text",
+                                   COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(combobox_coasttube), "changed",
+                G_CALLBACK(set_coasttube_CB), (gpointer) kemo_sgl);
+    
+
+
+    
+    GtkWidget * label_tree_shading = create_fixed_label_w_index_tree();
 	GtkTreeModel * model_shading = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_shading));  
 	GtkTreeModel * child_model_shading = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_shading));
 	index = 0;
@@ -144,8 +181,12 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
                      G_CALLBACK(coastline_radius_CB), (gpointer) kemo_sgl);
 	
 	
-	GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
+	GtkWidget *hbox_coasttube = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_coasttube), gtk_label_new("Coastline type: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_coasttube), combobox_coasttube, FALSE, FALSE, 0);
+
+    GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_shading), combobox_shading, FALSE, FALSE, 0);
 	
 	GtkWidget *hbox_surf_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -175,6 +216,7 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coast_radius, TRUE, FALSE, 0);
 	
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_coasttube, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_surf_dir, TRUE, FALSE, 0);
 

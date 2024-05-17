@@ -58,10 +58,8 @@ struct kemoview_buffers{
     struct gl_strided_buffer *coast_line_buf;
     struct gl_strided_buffer *coast_tube_buf;
 
-    int iflag_coastline_tube;
     struct gl_strided_buffer *axis_buf;
     
-
     struct gl_strided_buffer *screen_buf;
     
     struct gl_strided_buffer *cbar_buf;

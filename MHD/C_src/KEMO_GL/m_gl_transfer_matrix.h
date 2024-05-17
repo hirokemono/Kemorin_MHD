@@ -67,6 +67,7 @@ struct view_element{
 	double rVel_animate[3];
 	double rAccel_animate[3];
     
+    int iflag_coastline_tube;
     int ncorner_tube;
     double width_tube;
 };
@@ -187,6 +188,9 @@ void view_for_xz_plane(struct view_element *view);
 void set_3d_position_to_window_d(int point_screen[2], double xx[3], 
                                  int nx_win, int ny_win, struct view_element *view);
 
+
+void set_coastline_tube_flag(struct view_element *view_s, int num);
+int send_coastline_tube_flag(struct view_element *view_s);
 void set_gl_tube_corners(struct view_element *view_s, int num);
 int send_gl_tube_corners(struct view_element *view_s);
 

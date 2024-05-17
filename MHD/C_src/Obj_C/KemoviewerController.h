@@ -65,6 +65,7 @@
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
     
+    NSInteger CoastLineTubeFlag;
     NSInteger TubeNumCorners;
     CGFloat   CoastlineWidth;
     NSInteger CoastlineDigit;
@@ -92,6 +93,7 @@
 @property CGFloat   ThreadsCount;
 @property CGFloat   CoastlineWidth;
 @property NSInteger CoastlineDigit;
+@property NSInteger CoastLineTubeFlag;
 
 
 - (id)init;
@@ -129,6 +131,8 @@
 - (IBAction)FileStepLabelSwitchAction:(id)sender;
 
 - (IBAction)SetNnumberOfThreads:(id)pSender;
+
+- (IBAction)SetCoastLinETubeAction:(id)sender;
 - (IBAction)SetTubeNumCornersAction:(id)sender;
 - (IBAction)SetCoastlineWidth:(id)pSender;
 

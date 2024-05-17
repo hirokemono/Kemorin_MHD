@@ -51,6 +51,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	view->iflag_view_type = VIEW_3D;
 	view->shading_mode =    INIT_SHADING_MODE;
     
+    view->iflag_coastline_tube = ON;
     view->ncorner_tube = 6;
     view->width_tube =   0.003;
     

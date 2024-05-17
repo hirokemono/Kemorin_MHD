@@ -237,6 +237,7 @@
 #define COORDINATE_FLAG      5
 #define LINETYPE_FLAG          46
 #define NUM_TUBE_CORNERS_FLAG  47
+#define COASTLINE_TUBE         48
 
 #define EPSILON  1.e-9
 

@@ -382,6 +382,8 @@ void kemoview_set_view_integer(int selected, int ivalue,
 		set_gl_animation_rot_angle(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
         set_gl_draw_mode(kemoviewer->view_s, ivalue);
+    }else if(selected == COASTLINE_TUBE){
+        set_coastline_tube_flag(kemoviewer->view_s, ivalue);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
         set_gl_tube_corners(kemoviewer->view_s, ivalue);
 	}
@@ -397,6 +399,8 @@ int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
         ivalue = send_gl_windowsize_y(kemoviewer->view_s);
     }else if(selected == ISET_DRAW_MODE){
         ivalue = send_gl_draw_mode(kemoviewer->view_s);
+    }else if(selected == COASTLINE_TUBE){
+        ivalue = send_coastline_tube_flag(kemoviewer->view_s);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
         ivalue = send_gl_tube_corners(kemoviewer->view_s);
     }

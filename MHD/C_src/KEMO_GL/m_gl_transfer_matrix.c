@@ -1007,6 +1007,10 @@ void set_3d_position_to_window_d(int point_screen[2], double xx[3],
 	return;
 }
 
+
+void set_coastline_tube_flag(struct view_element *view_s, int num) {view_s->iflag_coastline_tube = num;};
+int send_coastline_tube_flag(struct view_element *view_s) {return view_s->iflag_coastline_tube;};
+
 void set_gl_tube_corners(struct view_element *view_s, int num) {view_s->ncorner_tube = num;};
 int send_gl_tube_corners(struct view_element *view_s) {return view_s->ncorner_tube;};
 
