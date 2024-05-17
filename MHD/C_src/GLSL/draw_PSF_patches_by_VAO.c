@@ -45,7 +45,7 @@ void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 struct VAO_ids **psf_solid_VAO,
                                 struct kemoview_shaders *kemo_shaders){
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     drawgl_textured_patches_VAO(&kemo_shaders->texture_name, matrices,
                                 lights, kemo_shaders, psf_solid_VAO[1]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[0]);

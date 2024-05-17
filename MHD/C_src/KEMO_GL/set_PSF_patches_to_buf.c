@@ -128,9 +128,7 @@ long set_psf_map_to_buf(long ist_patch, long ist_psf, long ied_psf,
                            0.0, 0.0, 1.0, 1.0,
                            0.0, 0.0, 1.0, 1.0};
 
-    long inum, iele, inod, k;
-    int ipsf;
-	double xx_tri[9], xyz_map[9];
+    long inum, iele, ipsf;
 	
     long ipatch = ist_patch;
 	for(inum=ist_psf; inum<ied_psf; inum++){

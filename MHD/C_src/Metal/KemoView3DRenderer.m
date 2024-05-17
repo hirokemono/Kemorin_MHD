@@ -709,6 +709,7 @@
                        sides:BOTH_SURFACES
                        solid:SMOOTH_SHADE];
     
+    
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState

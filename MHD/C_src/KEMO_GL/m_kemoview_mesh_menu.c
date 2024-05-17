@@ -170,6 +170,9 @@ void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
+void set_axis_position(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_axis_position = iflag;};
+
+
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
 void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_tangent_cyl = iflag;};

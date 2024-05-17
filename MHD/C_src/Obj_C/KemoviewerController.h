@@ -65,6 +65,7 @@
     NSInteger tangentCylinderDrawFlag;
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
+    NSInteger axisPositionFlag;
     CGFloat ICBRadius;
     
     NSInteger CoastLineTubeFlag;
@@ -92,6 +93,7 @@
 @property NSInteger tangentCylinderDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
+@property NSInteger axisPositionFlag;
 @property NSInteger TubeNumCorners;
 @property CGFloat   ThreadsCount;
 @property CGFloat   CoastlineWidth;
@@ -110,6 +112,7 @@
               kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)AxisSwitchAction:(id)sender;
+- (IBAction)AxisPositionAction:(id)sender;
 - (IBAction)CoastSwitchAction:(id)sender;
 - (IBAction)SphGridSwitchAction:(id)sender;
 - (IBAction)SphRadiusAction:(id)sender;

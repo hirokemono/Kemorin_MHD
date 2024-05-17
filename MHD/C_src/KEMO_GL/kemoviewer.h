@@ -39,6 +39,7 @@
 #define RESET         10
 
 #define AXIS_TOGGLE             1
+#define AXIS_POSITION          20
 #define SHADING_SWITCH          2
 #define POLYGON_SWITCH          3
 #define SET_NODE_SIZE           4
@@ -58,6 +59,10 @@
 #define SURFNOD_TOGGLE    1
 #define SURFSOLID_TOGGLE  2
 #define SURFGRID_TOGGLE   3
+
+#define LOWER_LEFT_AXIS   1
+#define CENTER_AXIS       0
+
 
 #define DOMAIN_FLAG     0
 #define NODE_GRP_FLAG   1

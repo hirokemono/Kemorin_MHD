@@ -68,6 +68,15 @@ static void set_coasttube_CB(GtkComboBox *combobox_coasttube, gpointer data)
     return;
 };
 
+static void set_axisposition_CB(GtkComboBox *combobox_coasttube, gpointer data)
+{
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int index_mode = gtk_selected_combobox_index(combobox_coasttube);
+    
+    kemoview_set_object_property_flags(AXIS_POSITION, index_mode, kemo_sgl);
+    draw_full(kemo_sgl);
+    return;
+};
 static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
@@ -145,6 +154,31 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
                                    COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_coasttube), "changed",
                 G_CALLBACK(set_coasttube_CB), (gpointer) kemo_sgl);
+    
+
+    GtkWidget * label_tree_axisposition = create_fixed_label_w_index_tree();
+    GtkTreeModel * model_axisposition = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_axisposition));
+    GtkTreeModel * child_model_axisposition = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_axisposition));
+    index = 0;
+    index = append_ci_item_to_tree(index, "Center",
+                                   OFF, child_model_axisposition);
+    index = append_ci_item_to_tree(index, "Lower left",
+                                   ON, child_model_axisposition);
+
+    GtkWidget *combobox_axisposition = gtk_combo_box_new_with_model(child_model_axisposition);
+    GtkCellRenderer *renderer_axisposition = gtk_cell_renderer_text_new();
+    if(kemoview_get_object_property_flags(kemo_sgl, AXIS_POSITION) == ON){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_axisposition), 1);
+    } else {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_axisposition), 0);
+    };
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_axisposition),
+                               renderer_axisposition, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_axisposition),
+                                   renderer_axisposition, "text",
+                                   COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(combobox_axisposition), "changed",
+                G_CALLBACK(set_axisposition_CB), (gpointer) kemo_sgl);
     
 
 
@@ -275,6 +309,10 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(hbox_axis), gtk_label_new("Draw axis: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_axis), switch_axis, FALSE, FALSE, 0);
 	
+    GtkWidget *hbox_axisposition = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_axisposition), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_axisposition), combobox_axisposition, FALSE, FALSE, 0);
+    
 	GtkWidget *hbox_coastline = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_coastline), gtk_label_new("Draw coastline: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_coastline), switch_coastline, FALSE, FALSE, 0);
@@ -304,6 +342,7 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_axis, TRUE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_axisposition, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coastline, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coast_radius, TRUE, FALSE, 0);

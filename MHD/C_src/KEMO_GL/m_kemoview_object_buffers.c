@@ -153,9 +153,15 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 4.0;
-        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
-                        kemo_mesh->mesh_m->dist_domains, axis_radius,
-                        kemo_buffers->axis_buf);
+        if(kemo_mesh->mesh_m->iflag_axis_position == LOWER_LEFT_AXIS){
+            set_lower_flex_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                       kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                       kemo_buffers->axis_buf);
+        }else{
+            set_flex_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                 kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                 kemo_buffers->axis_buf);
+        }
         
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
         set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
@@ -259,9 +265,13 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
                       struct kemoview_buffers *kemo_buffers)
 {
     double axis_radius = 4.0;
-    set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
-                    kemo_mesh->mesh_m->dist_domains, axis_radius,
-                    kemo_buffers->axis_buf);
+    
+    if(kemo_mesh->mesh_m->iflag_axis_position == LOWER_LEFT_AXIS){
+        set_lower_fixed_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                    kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                    kemo_buffers->axis_buf);
+    }
+     
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
     
     kemo_buffers->coast_line_buf->num_nod_buf

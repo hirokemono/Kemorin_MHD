@@ -27,6 +27,7 @@
 @synthesize tangentCylinderDrawFlag;
 @synthesize ICBRadius;
 @synthesize axisDrawFlag;
+@synthesize axisPositionFlag;
 @synthesize axisDrawAccess;
 @synthesize ThreadsCount;
 @synthesize ShadingMode;
@@ -76,7 +77,9 @@
         kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
     }
     
-    self.ShadingMode = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+    self.axisDrawFlag =     kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE);
+    self.axisPositionFlag = kemoview_get_object_property_flags(kemo_sgl, AXIS_POSITION);
+    self.ShadingMode =      kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
 
     self.coastLineDrawFlag = kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH);
     self.globeGridDrawFlag = kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH);
@@ -169,6 +172,14 @@
     kemoview_set_object_property_flags(AXIS_TOGGLE, self.axisDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
+
+- (IBAction)AxisPositionAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_object_property_flags(AXIS_POSITION, self.axisPositionFlag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {

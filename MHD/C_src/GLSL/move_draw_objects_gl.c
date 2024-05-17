@@ -168,28 +168,30 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 
     iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                             kemo_psf->psf_a, view_s);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     drawgl_textured_patches_VAO(&kemo_shaders->texture_name, view_matrices,
                                 lights, kemo_shaders, kemo_VAOs->psf_solid_VAO[1]);
-    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->psf_solid_VAO[0]);
+    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
+                            kemo_VAOs->psf_solid_VAO[0]);
 
 /*  Draw mesh data */
-        drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
+    drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
 
-        glDisable(GL_CULL_FACE);
-		drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->mesh_solid_VAO[2]);
-		draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices, 
-                            lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
+    glDisable(GL_CULL_FACE);
+    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
+                            kemo_VAOs->mesh_solid_VAO[2]);
+    draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices,
+                        lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
 
 /*  Draw coastlines */
-        drawgl_lines(view_matrices, kemo_VAOs->grid_line_VAO, kemo_shaders);
+    drawgl_lines(view_matrices, kemo_VAOs->grid_line_VAO, kemo_shaders);
 
 /*  Stop drawing transparent objects  */
-		draw_PSF_trans_objects_VAO(view_matrices, lights,
-                                   kemo_VAOs->psf_trans_VAO, kemo_shaders);
-		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
-			draw_trans_mesh_VAO(view_matrices, lights,
-                                kemo_VAOs->mesh_trans_VAO, kemo_shaders);
+    draw_PSF_trans_objects_VAO(view_matrices, lights,
+                                kemo_VAOs->psf_trans_VAO, kemo_shaders);
+    if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
+        draw_trans_mesh_VAO(view_matrices, lights,
+                            kemo_VAOs->mesh_trans_VAO, kemo_shaders);
 	};
 	
 /* Draw Color bar and time label*/

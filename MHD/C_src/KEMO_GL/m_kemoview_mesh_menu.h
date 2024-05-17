@@ -31,7 +31,8 @@ struct mesh_menu_val{
 	int num_of_color_loop;
 	
 	int iflag_draw_axis;
-	
+    int iflag_axis_position;
+
 	int iflag_draw_coast;
 	int iflag_draw_sph_grid;
 	double radius_coast;
@@ -114,6 +115,8 @@ void set_domain_distance(double dist, struct mesh_menu_val *mesh_m);
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_axis_position(int iflag, struct mesh_menu_val *mesh_m);
+
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m);

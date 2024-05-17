@@ -180,6 +180,8 @@ void kemoview_set_object_property_flags(int selected, int iflag,
                                         struct kemoviewer_type *kemoviewer){
 	if (selected == AXIS_TOGGLE){
         set_axis_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
+    }else if(selected == AXIS_POSITION){
+        set_axis_position(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == COASTLINE_SWITCH){
         set_coastline_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SPHEREGRID_SWITCH){
@@ -201,6 +203,8 @@ void kemoview_set_object_property_flags(int selected, int iflag,
 int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected){
 	if (selected == AXIS_TOGGLE){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis;
+    }else if(selected == AXIS_POSITION){
+        return kemoviewer->kemo_mesh->mesh_m->iflag_axis_position;
     }else if(selected == COASTLINE_SWITCH){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_coast;
     }else if(selected == SPHEREGRID_SWITCH){

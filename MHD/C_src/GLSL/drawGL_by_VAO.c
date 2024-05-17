@@ -113,6 +113,7 @@ void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices,
 
 	glBindVertexArray(mesh_solid_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_solid_VAO->npoint_draw));
+    glCullFace(GL_FRONT);
 	return;
 };
 
