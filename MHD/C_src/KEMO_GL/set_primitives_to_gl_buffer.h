@@ -15,7 +15,10 @@
 #include "m_vertex_buffer.h"
 #include "icosahedron_c.h"
 
-long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
+long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_tri,
+                              double *norm_tri, double *color_tri,
+                              struct gl_strided_buffer *strided_buf);
+ long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
                               double norm_tri[12], double color_tri[12],
                               struct gl_strided_buffer *strided_buf);
 long set_line_strided_buffer(const long ist_line,

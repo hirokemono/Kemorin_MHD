@@ -17,10 +17,17 @@
 
 long count_psf_nodes_to_buf(long ist_cone, long ied_psf);
 
-long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
-                          struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                          struct kemo_array_control *psf_a,
+long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
+                          struct psf_data *psf_s,
                           struct gl_strided_buffer *strided_buf);
+
+long set_psf_patch_indices_to_buf(long ipatch_in, long ist_psf, long ied_psf,
+                                  struct psf_data **psf_s, struct kemo_array_control *psf_a,
+                                  struct gl_index_buffer *index_buf);
+long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode,
+                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                            struct kemo_array_control *psf_a,
+                            struct gl_strided_buffer *strided_buf);
 long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
                              struct psf_data **psf_s,
                              struct kemo_array_control *psf_a,

@@ -11,6 +11,15 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 	return (ied_psf - ist_psf);
 };
 
+static void set_psf_indices_to_tri(long ipsf, long iele,
+                                 int shading_mode, int polygon_mode_psf,
+                                 struct psf_data **psf_s, double xyzw_tri[12],
+                                 double norm_tri[12], double color_tri[12]){
+    long inod, nd;
+    
+   return;
+}
+
 static void set_psf_nodes_to_tri(long ipsf, long iele,
                                  int shading_mode, int polygon_mode_psf,
                                  struct psf_data **psf_s, double xyzw_tri[12],
@@ -84,10 +93,39 @@ static void set_psf_map_to_tri(long ipsf, long iele, struct psf_data **psf_s,
 }
 
 
-long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
-                          struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                          struct kemo_array_control *psf_a,
+long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
+                          struct psf_data *psf_s,
                           struct gl_strided_buffer *strided_buf){
+    long inum_nod = ipatch_in;
+    inum_nod =  set_nodes_strided_buffer(inum_nod, num,
+                                         &psf_s->xyzw_viz[IFOUR*ist_nod],
+                                         &psf_s->norm_nod[IFOUR*ist_nod],
+                                         &psf_s->color_nod[IFOUR*ist_nod],
+                                         strided_buf);
+    return inum_nod;
+}
+
+long set_psf_patch_indices_to_buf(long ipatch_in, long ist_psf, long ied_psf,
+                                  struct psf_data **psf_s, struct kemo_array_control *psf_a,
+                                  struct gl_index_buffer *index_buf){
+    long iele, ipsf;
+    long ipatch = ipatch_in;
+    for(long inum=ist_psf;inum<ied_psf;inum++){
+        ipsf = psf_a->ipsf_viz_far[inum]-1;
+        iele = psf_a->iele_viz_far[inum]-1;
+        for(long k = 0; k < ITHREE; k++) {
+            index_buf->ie_buf[ITHREE*ipatch+k] = (unsigned int) psf_a->istack_all_psf_node[ipsf]
+                                                + (unsigned int) psf_s[ipsf]->ie_viz[iele][k] - 1;
+        };
+        ipatch = ipatch + 1;
+    };
+    return ipatch;
+}
+
+long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode,
+                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                            struct kemo_array_control *psf_a,
+                            struct gl_strided_buffer *strided_buf){
     double xyzw_tri[12], norm_tri[12], color_tri[12];
     long iele, ipsf;
     long ipatch = ipatch_in;

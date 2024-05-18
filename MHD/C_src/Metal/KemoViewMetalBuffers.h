@@ -22,6 +22,9 @@
 - (NSUInteger) setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                         buffer:(struct gl_strided_buffer * _Nonnull) buf
                         vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices;
+- (NSUInteger) setMetalIndices:(id<MTLDevice> _Nonnull *_Nonnull) device
+                     indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
+                        index:(id<MTLBuffer> _Nonnull *_Nonnull) indices;
 
 - (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                       buffer:(struct gl_strided_buffer *_Nonnull) buf

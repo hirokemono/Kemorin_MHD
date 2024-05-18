@@ -22,6 +22,18 @@
     return buf->num_nod_buf;
 };
 
+- (NSUInteger) setMetalIndices:(id<MTLDevice> _Nonnull *_Nonnull) device
+                     indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
+                        index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
+{
+    if(index_buf->ntot_vertex > 0){
+        *indices = [*device newBufferWithBytes:index_buf->ie_buf
+                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
+                                       options:MTLResourceStorageModeShared];
+    };
+    return index_buf->ntot_vertex;
+};
+
 - (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                       buffer:(struct gl_strided_buffer *_Nonnull) buf
                        image:(struct gl_texure_image *_Nonnull) psf_texure

@@ -34,6 +34,12 @@ struct kemoview_buffers{
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
     
+    struct gl_strided_buffer *PSF_node_buf;
+    struct gl_index_buffer *PSF_solid_index_buf;
+    struct gl_index_buffer *PSF_trns_index_buf;
+    struct gl_index_buffer *PSF_stxur_index_buf;
+    struct gl_index_buffer *PSF_ttxur_index_buf;
+
     struct gl_strided_buffer *PSF_solid_buf;
     struct gl_strided_buffer *PSF_trns_buf;
     struct gl_strided_buffer *PSF_stxur_buf;

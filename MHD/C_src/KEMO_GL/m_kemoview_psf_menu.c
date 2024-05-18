@@ -119,6 +119,17 @@ void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 
 void alloc_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->iflag_loaded = (int *) calloc(psf_a->nlimit_loaded,sizeof(int));
+    if( psf_a->iflag_loaded == NULL ) {
+        printf( "Failed allocation for psf_a->iflag_loaded\n" );
+        exit( 1 );
+    }
+
+    psf_a->istack_all_psf_node = (long *) calloc(psf_a->nlimit_loaded+1,sizeof(long));
+    if( psf_a->istack_all_psf_node == NULL ) {
+        printf( "Failed allocation for psf_a->istack_all_psf_node\n" );
+        exit( 1 );
+    }
+
     
     psf_a->ntot_psf_patch = 0;
     psf_a->istack_solid_psf_txtur = 0;
@@ -145,6 +156,7 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
     dealloc_psfs_sorting_list(psf_a);
     dealloc_kemoview_gl_texure(psf_a->psf_texure);
 	free(psf_a->iflag_loaded);
+    free(psf_a->istack_all_psf_node);
 	return;
 };
 

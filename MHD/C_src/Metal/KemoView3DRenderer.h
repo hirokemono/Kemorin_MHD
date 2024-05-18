@@ -27,10 +27,26 @@ typedef struct
     /*  Index buffer for initial cube */
     id<MTLBuffer> _Nullable cubeIndex;
     
+    /*  Vertex buffer for initial cube */
+    id<MTLBuffer> _Nullable psfNodeVertice;
+    NSUInteger numPsfNodeVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable psfSolidIndices;
+    NSUInteger numPsfSolidIndices;
+    /*  Index buffer for psf transparent patch */
+    id<MTLBuffer> _Nullable psfTransIndices;
+    NSUInteger numPsfTransIndices;
+    /*  Index buffer for psf texured patch */
+    id<MTLBuffer> _Nullable psfSTexureIndices;
+    NSUInteger numPsfSTexureIndices;
+    /*  Index buffer for psf texured transparent patch */
+    id<MTLBuffer> _Nullable psfTTexureIndices;
+    NSUInteger numPsfTTexureIndices;
+
     /*  Vertex buffer for PSF solid patch */
     id<MTLBuffer> _Nullable psfSolidVertice;
     NSUInteger numPSFSolidVertice;
-    /*  Vertex buffer for PSF transoarent patch */
+    /*  Vertex buffer for PSF transparent patch */
     id<MTLBuffer> _Nullable psfTransVertice;
     NSUInteger numPSFTransVertice;
     /*  Vertex buffer for PSF with texure patch */

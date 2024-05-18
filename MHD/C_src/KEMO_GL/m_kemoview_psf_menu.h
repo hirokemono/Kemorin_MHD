@@ -26,6 +26,8 @@ struct kemo_array_control{
     int istep_sync;
 	int *iflag_loaded;
     
+    long *istack_all_psf_node;
+
     long ntot_psf_patch;
     long istack_solid_psf_txtur;
     long istack_solid_psf_patch;

@@ -17,7 +17,8 @@
 #include "set_new_patch_4_map_c.h"
 
 struct map_interpolate{
-    int nnod_added_4_map;
+    long nnod_org;
+    long nnod_added_4_map;
     long *inod_org_4_map_itp;
     double *coef_4_map_itp;
 };
