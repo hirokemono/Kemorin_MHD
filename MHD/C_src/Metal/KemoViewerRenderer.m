@@ -185,6 +185,10 @@ static const NSUInteger MaxFramesInFlight = 3;
         kemoview_fast_buffers(kemo_sgl);
         [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
                                                    kemoview:kemo_sgl];
+
+        [self refreshTripleBuffers:i_current
+                        metalDevice:device
+                            kemoview:kemo_sgl];
     }else if(iflag == QUILT_DRAW && iflag_view != VIEW_MAP){
         [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
         kemoview_transparent_buffers(kemo_sgl);
