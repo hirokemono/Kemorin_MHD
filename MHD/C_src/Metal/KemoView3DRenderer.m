@@ -199,15 +199,16 @@
     [self setAxisMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf
                        buffers:kemo_sgl->kemo_buffers];
-    [self setTransMetalBuffers:device
-                   metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_sgl->kemo_buffers
-                          PSFs:kemo_sgl->kemo_psf];
     [self set3DMetalBuffers:device
                 metalbuffer:&_kemoViewMetalBuf
                    kemoview:kemo_sgl
                     buffers:kemo_sgl->kemo_buffers
                        PSFs:kemo_sgl->kemo_psf];
+
+    [self setTransMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers
+                          PSFs:kemo_sgl->kemo_psf];
     return;
 }
 

@@ -251,22 +251,13 @@ static const NSUInteger MaxFramesInFlight = 3;
 -(void) KemoViewEncodeAll:(NSUInteger) i_current
                 metalView:(nonnull MTKView *)view
                  kemoview:(struct kemoviewer_type *) kemo_sgl
+            commandbuffer:(id<MTLCommandBuffer> *) commandBuffer
 {
-/*
-    Wait to ensure only `MaxFramesInFlight` number of frames are getting processed
-    by any stage in the Metal pipeline (CPU, GPU, Metal, Drivers, etc.).
-*/
-    dispatch_semaphore_wait(_inFlightSemaphore, DISPATCH_TIME_FOREVER);
-
-/* Create a new command buffer for each render pass to the current drawable. */
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-    commandBuffer.label = @"KemoViewerCommands";
 /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
     if(renderPassDescriptor != nil){
 /* Create a render command encoder. */
-        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder = [*commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
         [self encodeKemoViewers:i_current
                         encoder:&_renderEncoder
@@ -274,41 +265,24 @@ static const NSUInteger MaxFramesInFlight = 3;
                          unites:&_monoViewUnites];
         
 /*Schedule a present once the framebuffer is complete using the current drawable. */
-        [commandBuffer presentDrawable:view.currentDrawable];
+        [*commandBuffer presentDrawable:view.currentDrawable];
         [_renderEncoder endEncoding];
     }
-/*
-    Add a completion handler that signals `_inFlightSemaphore` when Metal and the GPU have fully
-    finished processing the commands that were encoded for this frame.
-    This completion indicates that the dynamic buffers that were written-to in this frame, are no
-    longer needed by Metal and the GPU; therefore, the CPU can overwrite the buffer contents
-    without corrupting any rendering operations.
-*/
-    __block dispatch_semaphore_t block_semaphore = _inFlightSemaphore;
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
-     {
-         dispatch_semaphore_signal(block_semaphore);
-     }];
-
-    [commandBuffer commit];
     return;
 }
 
-- (id<MTLTexture>) kemoViewEncodeToTexure:(NSUInteger) i_current
-                                metalView:(nonnull MTKView *)view
-                                 kemoview:(struct kemoviewer_type *) kemo_sgl
-                                   unites:(KemoViewUnites *) viewUnites
+- (void) kemoViewEncodeToTexure:(NSUInteger) i_current
+                      metalView:(nonnull MTKView *)view
+                       kemoview:(struct kemoviewer_type *) kemo_sgl
+                         unites:(KemoViewUnites *) viewUnites
+                  commandbuffer:(id<MTLCommandBuffer> *) commandBuffer
 {
-/* Create a new command buffer for each render pass to the current drawable. */
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-    commandBuffer.label = @"KemoViewerCommands";
 /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
 
     if(renderPassDescriptor != nil){
 /* Create a render command encoder. */
-        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder = [*commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
         [self encodeKemoViewers:i_current
                         encoder:&_renderEncoder
@@ -319,18 +293,17 @@ static const NSUInteger MaxFramesInFlight = 3;
         [_renderEncoder endEncoding];
     }
     // Add a completion handler and commit the command buffer.
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+    [*commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
         // Populate private buffer.
     }];
-    [commandBuffer commit];
-    [commandBuffer waitUntilCompleted];
-    return view.currentDrawable.texture;
+    return;
 }
 
-- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(NSUInteger) i_current
-                                      metalView:(nonnull MTKView *)view
-                                       kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
-                                         unites:(KemoViewUnites *_Nonnull) viewUnites
+- (void) drawKemoViewToTexure:(NSUInteger) i_current
+                    metalView:(nonnull MTKView *)view
+                     kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
+                       unites:(KemoViewUnites *_Nonnull) viewUnites
+                commandbuffer:(id<MTLCommandBuffer> *) commandBuffer
 {
     [self refreshKemoViewMetalBuffers:i_current
                           metalDevice:&_device
@@ -339,11 +312,12 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                ModelView:&_monoViewUnites
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
-    id<MTLTexture> _imageOutputTexture = [self kemoViewEncodeToTexure:i_current
-                                                            metalView:view
-                                                             kemoview:kemo_sgl
-                                                               unites:viewUnites];
-    return _imageOutputTexture;
+   [self kemoViewEncodeToTexure:i_current
+                       metalView:view
+                        kemoview:kemo_sgl
+                          unites:viewUnites
+                   commandbuffer:commandBuffer];
+    return;
 }
 
 -(void) encodeAnaglyphRender:(nonnull MTKView *) view
@@ -351,22 +325,13 @@ static const NSUInteger MaxFramesInFlight = 3;
                       vertex:(id<MTLBuffer> *) anaglyphVertice
                         left:(id<MTLTexture> *) leftTexure
                        right:(id<MTLTexture> *) rightTexure
+               commandbuffer:(id<MTLCommandBuffer> *) commandBuffer
 {
-/*
-    Wait to ensure only `MaxFramesInFlight` number of frames are getting processed
-    by any stage in the Metal pipeline (CPU, GPU, Metal, Drivers, etc.).
-*/
-    dispatch_semaphore_wait(_inFlightSemaphore, DISPATCH_TIME_FOREVER);
-
-    /* Create a new command buffer for each render pass to the current drawable. */
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-    commandBuffer.label = @"KemoViewerCommands";
     /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
     if(renderPassDescriptor != nil){
     /* Create a render command encoder. */
-        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder = [*commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
@@ -376,41 +341,24 @@ static const NSUInteger MaxFramesInFlight = 3;
                                          right:rightTexure
                                     projection:&_cbar_proj_mat];
     /*Schedule a present once the framebuffer is complete using the current drawable. */
-        [commandBuffer presentDrawable:view.currentDrawable];
+        [*commandBuffer presentDrawable:view.currentDrawable];
         [_renderEncoder endEncoding];
     }
-    /*
-        Add a completion handler that signals `_inFlightSemaphore` when Metal and the GPU have fully
-        finished processing the commands that were encoded for this frame.
-        This completion indicates that the dynamic buffers that were written-to in this frame, are no
-        longer needed by Metal and the GPU; therefore, the CPU can overwrite the buffer contents
-        without corrupting any rendering operations.
-    */
-    __block dispatch_semaphore_t block_semaphore = _inFlightSemaphore;
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
-     {
-         dispatch_semaphore_signal(block_semaphore);
-     }];
-
-    [commandBuffer commit];
     return;
 }
 
-- (id<MTLTexture>) encodeAnaglyphToTexure:(nonnull MTKView *)view
-                                numVertex:(NSUInteger) numVertex
-                                   vertex:(id<MTLBuffer> *) anaglyphVertice
-                                     left:(id<MTLTexture> *) leftTexure
-                                    right:(id<MTLTexture> *) rightTexure
+- (void) encodeAnaglyphToTexure:(nonnull MTKView *)view
+                      numVertex:(NSUInteger) numVertex
+                         vertex:(id<MTLBuffer> *) anaglyphVertice
+                           left:(id<MTLTexture> *) leftTexure
+                          right:(id<MTLTexture> *) rightTexure
+                  commandbuffer:(id<MTLCommandBuffer> *) commandBuffer
 {
-/* Create a new command buffer for each render pass to the current drawable. */
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-    commandBuffer.label = @"KemoViewerCommands";
 /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
     if(renderPassDescriptor != nil){
 /* Create a render command encoder. */
-        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder = [*commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
@@ -423,12 +371,10 @@ static const NSUInteger MaxFramesInFlight = 3;
         [_renderEncoder endEncoding];
     }
     // Add a completion handler and commit the command buffer.
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+    [*commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
         // Populate private buffer.
     }];
-    [commandBuffer commit];
-    [commandBuffer waitUntilCompleted];
-    return view.currentDrawable.texture;
+    return;
 }
 
 -(void) setKemoAnaglyphUnites:(nonnull MTKView *)view
@@ -453,6 +399,12 @@ static const NSUInteger MaxFramesInFlight = 3;
                      metalView:(nonnull MTKView *)view
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
+/*
+            Wait to ensure only `MaxFramesInFlight` number of frames are getting processed
+            by any stage in the Metal pipeline (CPU, GPU, Metal, Drivers, etc.).
+*/
+    dispatch_semaphore_wait(_inFlightSemaphore, DISPATCH_TIME_FOREVER);
+
     NSUInteger pix_xy[2];
     NSUInteger numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
     if(numScreenBuf > 0){
@@ -473,31 +425,60 @@ static const NSUInteger MaxFramesInFlight = 3;
                                          left:&_leftTexure
                                         right:&_rightTexure];
 
-        id<MTLTexture> _imageOutputTexture;
-        _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                               metalView:view
-                                                kemoview:kemo_sgl
-                                                  unites:&_leftViewUnites];
+/* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBufferLeft = [_commandQueue commandBuffer];
+        commandBufferLeft.label = @"KemoViewerDrawLeftViewCommands";
+        [self drawKemoViewToTexure:i_current
+                         metalView:view
+                          kemoview:kemo_sgl
+                            unites:&_leftViewUnites
+                     commandbuffer:&commandBufferLeft];
+        [commandBufferLeft commit];
+        [commandBufferLeft waitUntilCompleted];
+        id<MTLTexture> _imageOutputTextureLeft = view.currentDrawable.texture;
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
-                                               source:&_imageOutputTexture
+                                               source:&_imageOutputTextureLeft
                                                target:&_leftTexure];
-        _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                               metalView:view
-                                                kemoview:kemo_sgl
-                                                  unites:&_rightViewUnites];
+        
+        /* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBufferRight = [_commandQueue commandBuffer];
+        commandBufferRight.label = @"KemoViewerDrawRightViewCommands";
+        [self drawKemoViewToTexure:i_current
+                         metalView:view
+                          kemoview:kemo_sgl
+                            unites:&_rightViewUnites
+                     commandbuffer:&commandBufferRight];
+        [commandBufferRight commit];
+        [commandBufferRight waitUntilCompleted];
+        id<MTLTexture> _imageOutputTextureRight = view.currentDrawable.texture;
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
-                                               source:&_imageOutputTexture
+                                               source:&_imageOutputTextureRight
                                                target:&_rightTexure];
-
-
     }
+/* Create a new command buffer for each render pass to the current drawable. */
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    commandBuffer.label = @"KemoViewerAnaglyphCommands";
     [self encodeAnaglyphRender:view
                      numVertex:numScreenBuf
                         vertex:&_anaglyphVertice
                           left:&_leftTexure
-                         right:&_rightTexure];
+                         right:&_rightTexure
+                 commandbuffer:&commandBuffer];
+    /*
+        Add a completion handler that signals `_inFlightSemaphore` when Metal and the GPU have fully
+        finished processing the commands that were encoded for this frame.
+        This completion indicates that the dynamic buffers that were written-to in this frame, are no
+        longer needed by Metal and the GPU; therefore, the CPU can overwrite the buffer contents
+        without corrupting any rendering operations.
+    */
+    __block dispatch_semaphore_t block_semaphore = _inFlightSemaphore;
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
+     {
+         dispatch_semaphore_signal(block_semaphore);
+     }];
+    [commandBuffer commit];
     return;
 };
 
@@ -527,30 +508,51 @@ static const NSUInteger MaxFramesInFlight = 3;
                                          left:&_leftTexure
                                         right:&_rightTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                               metalView:view
-                                                kemoview:kemo_sgl
-                                                  unites:&_leftViewUnites];
+        /* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBufferLeft = [_commandQueue commandBuffer];
+        commandBufferLeft.label = @"KemoViewerDrawLeftViewCommands";
+        [self drawKemoViewToTexure:i_current
+                         metalView:view
+                          kemoview:kemo_sgl
+                            unites:&_leftViewUnites
+                     commandbuffer:&commandBufferLeft];
+        [commandBufferLeft commit];
+        [commandBufferLeft waitUntilCompleted];
+        id<MTLTexture> _imageOutputTextureLeft = view.currentDrawable.texture;
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
-                                               source:&_imageOutputTexture
+                                               source:&_imageOutputTextureLeft
                                                target:&_leftTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                               metalView:view
-                                                kemoview:kemo_sgl
-                                                  unites:&_rightViewUnites];
+        /* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBufferRight = [_commandQueue commandBuffer];
+        commandBufferRight.label = @"KemoViewerDrawRightViewCommands";
+        [self drawKemoViewToTexure:i_current
+                         metalView:view
+                          kemoview:kemo_sgl
+                            unites:&_rightViewUnites
+                     commandbuffer:&commandBufferRight];
+        [commandBufferRight commit];
+        [commandBufferRight waitUntilCompleted];
+        id<MTLTexture> _imageOutputTextureRight = view.currentDrawable.texture;
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
-                                               source:&_imageOutputTexture
+                                               source:&_imageOutputTextureRight
                                                target:&_rightTexure];
     }
-    _imageOutputTexture = [self encodeAnaglyphToTexure:view
-                                             numVertex:numScreenBuf
-                                                vertex:&_anaglyphVertice
-                                                  left:&_leftTexure
-                                                 right:&_rightTexure];
-    return _imageOutputTexture;
+
+/* Create a new command buffer for each render pass to the current drawable. */
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    commandBuffer.label = @"KemoViewerAnaglyphImageCommands";
+    [self encodeAnaglyphToTexure:view
+                       numVertex:numScreenBuf
+                          vertex:&_anaglyphVertice
+                            left:&_leftTexure
+                           right:&_rightTexure
+                   commandbuffer:&commandBuffer];
+    [commandBuffer commit];
+    [commandBuffer waitUntilCompleted];
+    return view.currentDrawable.texture;
 };
 
 - (void)drawKemoMetalView:(nonnull MTKView *)view
@@ -575,9 +577,34 @@ static const NSUInteger MaxFramesInFlight = 3;
                            metalView:view
                             kemoview:kemo_sgl];
     }else{
+/*
+            Wait to ensure only `MaxFramesInFlight` number of frames are getting processed
+            by any stage in the Metal pipeline (CPU, GPU, Metal, Drivers, etc.).
+*/
+        dispatch_semaphore_wait(_inFlightSemaphore, DISPATCH_TIME_FOREVER);
+
+/* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+        commandBuffer.label = @"KemoViewerCommands";
+
         [self KemoViewEncodeAll:_currentBuffer
                       metalView:view
-                       kemoview:kemo_sgl];
+                       kemoview:kemo_sgl
+                  commandbuffer:&commandBuffer];
+/*
+            Add a completion handler that signals `_inFlightSemaphore` when Metal and the GPU have fully
+            finished processing the commands that were encoded for this frame.
+            This completion indicates that the dynamic buffers that were written-to in this frame, are no
+            longer needed by Metal and the GPU; therefore, the CPU can overwrite the buffer contents
+            without corrupting any rendering operations.
+*/
+        __block dispatch_semaphore_t block_semaphore = _inFlightSemaphore;
+        [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
+         {
+             dispatch_semaphore_signal(block_semaphore);
+         }];
+
+        [commandBuffer commit];
     };
     return;
 }
@@ -594,10 +621,17 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                    metalView:view
                                                     kemoview:kemo_sgl];
     }else{
-        _imageOutputTexture = [self drawKemoViewToTexure:_currentBuffer
-                                               metalView:view
-                                                kemoview:kemo_sgl
-                                                  unites:&_monoViewUnites];
+        /* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+        commandBuffer.label = @"KemoViewerDrawTrxtureCommands";
+        [self drawKemoViewToTexure:_currentBuffer
+                         metalView:view
+                          kemoview:kemo_sgl
+                            unites:&_monoViewUnites
+                     commandbuffer:&commandBuffer];
+        [commandBuffer commit];
+        [commandBuffer waitUntilCompleted];
+        _imageOutputTexture = view.currentDrawable.texture;
     };
     return _imageOutputTexture;
 }
