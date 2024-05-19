@@ -42,8 +42,9 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->PSF_isotube_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_arrow_buf =   init_strided_buffer(n_point);
 
-    kemo_buffers->MAP_solid_buf =   init_strided_buffer(n_point);
-    kemo_buffers->MAP_isoline_buf = init_strided_buffer(n_point);
+    kemo_buffers->MAP_solid_index_buf = init_gl_index_buffer(12, 3);
+    kemo_buffers->MAP_solid_buf =       init_strided_buffer(n_point);
+    kemo_buffers->MAP_isoline_buf =     init_strided_buffer(n_point);
 
     kemo_buffers->FLINE_line_buf =  init_strided_buffer(n_point);
     kemo_buffers->FLINE_tube_buf =  init_strided_buffer(n_point);
@@ -106,6 +107,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->PSF_isotube_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_arrow_buf);
 
+    dealloc_gl_index_buffer(kemo_buffers->MAP_solid_index_buf);
     dealloc_strided_buffer(kemo_buffers->MAP_solid_buf);
     dealloc_strided_buffer(kemo_buffers->MAP_isoline_buf);
 
@@ -141,13 +143,30 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     if(view_s->ncorner_tube <= 0){view_s->ncorner_tube = 12;};
     kemo_fline->fline_m->fieldline_ncorner = view_s->ncorner_tube;
 
+    
+    const_PSF_node_stack(kemo_psf->psf_d, kemo_psf->psf_a);
+    set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
+
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
-        set_map_patch_buffer(kemo_buffers->nthreads,
-                             IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
-                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                             kemo_buffers->MAP_solid_buf);
+        if(view_s->shading_mode == SMOOTH_SHADE){
+            set_map_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_m,
+                                kemo_psf->psf_a, kemo_buffers->PSF_node_buf);
+            const_PSF_patch_index_buffer(kemo_buffers->nthreads,
+                                         IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                                         kemo_psf->psf_d, kemo_psf->psf_a,
+                                         kemo_buffers->MAP_solid_index_buf);
+            kemo_buffers->MAP_solid_buf->num_nod_buf = 0;
+        }else{
+            set_map_patch_buffer(kemo_buffers->nthreads,
+                                 IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                                 kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                 kemo_buffers->MAP_solid_buf);
+            kemo_buffers->MAP_solid_index_buf->ntot_vertex = 0;
+        }
+
+        
         set_map_PSF_isolines_buffer(kemo_buffers->nthreads,
                                     kemo_psf->psf_d, kemo_psf->psf_m,
                                     kemo_psf->psf_a, view_s,
@@ -176,7 +195,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         }
         
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
-        set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
 
         const_PSF_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_a,
                               kemo_buffers->PSF_node_buf);

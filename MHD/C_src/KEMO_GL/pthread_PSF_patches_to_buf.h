@@ -28,9 +28,9 @@ long sel_psf_textures_to_buf_pthread(int nthreads, long ist_psf, long ied_psf,
                                      struct psf_data **psf_s, struct kemo_array_control *psf_a,
                                      struct gl_strided_buffer *strided_buf);
 
-long sel_psf_map_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
-                                struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                struct gl_strided_buffer *strided_buf);
+long sel_map_patch_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
+                                  struct psf_data **psf_s, struct kemo_array_control *psf_a,
+                                  struct gl_strided_buffer *strided_buf);
 
 #endif /* PTHREAD_PSF_PATCHES_TO_BUF_ */
 

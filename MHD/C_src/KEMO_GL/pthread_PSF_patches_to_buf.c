@@ -270,7 +270,7 @@ long sel_psf_textures_to_buf_pthread(int nthreads, long ist_psf, long ied_psf,
 
 
 
-static void * set_psf_map_to_buf_1thread(void *args)
+static void * set_map_patch_to_buf_1thread(void *args)
 {
     args_pthread_PSF_Patch * p = (args_pthread_PSF_Patch *) args;
     int id =       p->id;
@@ -287,16 +287,16 @@ static void * set_psf_map_to_buf_1thread(void *args)
     
     long lo = (ied_psf-ist_psf) * id /     nthreads;
     long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
-    num_patch[id] = set_psf_map_to_buf(lo, (lo+ist_psf), (hi+ist_psf),
-                                       psf_s, psf_a, strided_buf);
+    num_patch[id] = set_map_patch_to_buf(lo, (lo+ist_psf), (hi+ist_psf),
+                                        psf_s, psf_a, strided_buf);
     return 0;
 }
 
-static long set_psf_map_to_buf_pthread(long ipatch_in, int nthreads,
-                                       long ist_psf, long ied_psf,
-                                       struct psf_data **psf_s,
-                                       struct kemo_array_control *psf_a,
-                                       struct gl_strided_buffer *strided_buf){
+static long set_map_patch_to_buf_pthread(long ipatch_in, int nthreads,
+                                         long ist_psf, long ied_psf,
+                                         struct psf_data **psf_s,
+                                         struct kemo_array_control *psf_a,
+                                         struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_PSF_Patch *args
             = (args_pthread_PSF_Patch *) malloc (nthreads * sizeof(args_pthread_PSF_Patch));
@@ -319,7 +319,7 @@ static long set_psf_map_to_buf_pthread(long ipatch_in, int nthreads,
         args[ip].ied_psf = ied_psf;
         args[ip].num_patch = num_each;
         
-        pthread_create(&thread_handles[ip], NULL, set_psf_map_to_buf_1thread, &args[ip]);
+        pthread_create(&thread_handles[ip], NULL, set_map_patch_to_buf_1thread, &args[ip]);
     }
     for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
     long num_patch = ipatch_in;
@@ -332,16 +332,16 @@ static long set_psf_map_to_buf_pthread(long ipatch_in, int nthreads,
     return num_patch;
 };
 
-long sel_psf_map_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
-                                struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                                struct gl_strided_buffer *strided_buf){
+long sel_map_patch_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
+                                 struct psf_data **psf_s, struct kemo_array_control *psf_a,
+                                 struct gl_strided_buffer *strided_buf){
     long num_patch = ipatch_in;
     if(nthreads > 1){
-            num_patch = set_psf_map_to_buf_pthread(num_patch, nthreads, ist_psf, ied_psf,
-                                                   psf_s, psf_a, strided_buf);
+            num_patch = set_map_patch_to_buf_pthread(num_patch, nthreads, ist_psf, ied_psf,
+                                                     psf_s, psf_a, strided_buf);
         }else{
-            num_patch = set_psf_map_to_buf(num_patch, ist_psf, ied_psf,
-                                           psf_s, psf_a, strided_buf);
+            num_patch = set_map_patch_to_buf(num_patch, ist_psf, ied_psf,
+                                             psf_s, psf_a, strided_buf);
     };
     return num_patch;
 }

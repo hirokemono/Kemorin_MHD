@@ -30,6 +30,13 @@
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
                 buffers:(struct kemoview_buffers *) kemo_buffers
 {
+    kemoView2DMetalBufs->numMapNodeVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->PSF_node_buf
+                                                                            vertex:&(kemoView2DMetalBufs->mapNodeVertice)];
+    kemoView2DMetalBufs->numMapSolidIndices = [_kemo2DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->MAP_solid_index_buf
+                                                                             index:&(kemoView2DMetalBufs->mapSolidIndices)];
+    
     kemoView2DMetalBufs->numMapSolidVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
                                                                              buffer:kemo_buffers->MAP_solid_buf
                                                                              vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
@@ -46,10 +53,13 @@
 
 - (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
 {
-    if(kemoView2DMetalBufs->numMapSolidVertice > 0)  {[kemoView2DMetalBufs->mapSolidVertice release];};
-    if(kemoView2DMetalBufs->numMapinesVertice > 0)   {[kemoView2DMetalBufs->mapLinesVertice release];};
-    if(kemoView2DMetalBufs->numCoastLineVertice > 0) {[kemoView2DMetalBufs->coastLineVertice   release];};
-    if(kemoView2DMetalBufs->numCoastTubeVertice > 0) {[kemoView2DMetalBufs->coastTubeVertice   release];};
+    if(kemoView2DMetalBufs->numMapNodeVertice > 0)  {[kemoView2DMetalBufs->mapNodeVertice    release];};
+    if(kemoView2DMetalBufs->numMapSolidIndices > 0)  {[kemoView2DMetalBufs->mapSolidIndices  release];};
+
+    if(kemoView2DMetalBufs->numMapSolidVertice > 0)  {[kemoView2DMetalBufs->mapSolidVertice  release];};
+    if(kemoView2DMetalBufs->numMapinesVertice > 0)   {[kemoView2DMetalBufs->mapLinesVertice  release];};
+    if(kemoView2DMetalBufs->numCoastLineVertice > 0) {[kemoView2DMetalBufs->coastLineVertice release];};
+    if(kemoView2DMetalBufs->numCoastTubeVertice > 0) {[kemoView2DMetalBufs->coastTubeVertice release];};
     return;
 }
 
@@ -249,6 +259,30 @@
 }
 
 
+- (void)draw2DElementObject:(id<MTLRenderCommandEncoder> *) renderEncoder
+                  pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+                  numVertex:(NSUInteger) numVertex
+                     vertex:(id<MTLBuffer> *) vertices
+                      index:(id<MTLBuffer> *) indices
+                 projection:(matrix_float4x4 *) projection_mat
+{
+    if(numVertex > 0){
+        [*renderEncoder setRenderPipelineState: kemoView2DPipelines->trans2DPipelineState];
+        [*renderEncoder setVertexBuffer:*vertices
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:projection_mat
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLOrthogonalMatrix];
+        [*renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
+                                   indexCount:numVertex
+                                    indexType:MTLIndexTypeUInt32
+                                  indexBuffer:*indices
+                            indexBufferOffset:0];
+    };
+    
+}
+
 - (void)draw2DPatchObject:(id<MTLRenderCommandEncoder> *) renderEncoder
                 pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
                 numVertex:(NSUInteger) numVertex
@@ -338,12 +372,21 @@
             projection:(matrix_float4x4 * _Nonnull) map_proj_mat
 {
     /*  Commands to render map projection */
+    [self draw2DElementObject:renderEncoder
+                    pipelines:kemoView2DPipelines
+                    numVertex:kemoView2DMetalBufs->numMapSolidIndices
+                       vertex:&(kemoView2DMetalBufs->mapNodeVertice)
+                       index:&(kemoView2DMetalBufs->mapSolidIndices)
+                   projection:map_proj_mat];
+
+    /*  Commands to render map projection */
     [self draw2DPatchObject:renderEncoder
                   pipelines:kemoView2DPipelines
                   numVertex:kemoView2DMetalBufs->numMapSolidVertice
                      vertex:&(kemoView2DMetalBufs->mapSolidVertice)
                  projection:map_proj_mat];
-    /*  Commands to render isolines on map */
+
+     /*  Commands to render isolines on map */
     [self draw2DPatchObject:renderEncoder
                   pipelines:kemoView2DPipelines
                   numVertex:kemoView2DMetalBufs->numMapinesVertice

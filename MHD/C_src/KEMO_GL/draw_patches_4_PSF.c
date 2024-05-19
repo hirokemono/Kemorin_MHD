@@ -5,28 +5,31 @@
 
 #define ARCPI 0.318309886
 
-void const_PSF_node_buffer(const int nthreads,
-                           struct psf_data **psf_s,
-                           struct kemo_array_control *psf_a,
-                           struct gl_strided_buffer *psf_buf){
-    int i_psf;
+void const_PSF_node_stack(struct psf_data **psf_s,
+                          struct kemo_array_control *psf_a){
     psf_a->istack_all_psf_node[0] = 0;
-    for(i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
+    for(int i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
         if(psf_a->iflag_loaded[i_psf] == 0){
             psf_a->istack_all_psf_node[i_psf+1] = psf_a->istack_all_psf_node[i_psf];
         }else{
             psf_a->istack_all_psf_node[i_psf+1] = psf_a->istack_all_psf_node[i_psf]
-                                                  + psf_s[i_psf]->nnod_viz;
+                                                 + psf_s[i_psf]->nnod_viz;
         }
     }
+    return;
+}
 
+void const_PSF_node_buffer(const int nthreads,
+                           struct psf_data **psf_s,
+                           struct kemo_array_control *psf_a,
+                           struct gl_strided_buffer *psf_buf){
     set_buffer_address_4_patch(psf_a->istack_all_psf_node[psf_a->nmax_loaded], psf_buf);
 	if(psf_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(psf_buf);
     
     long num_patch = 0;
-    for(i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
+    for(int i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
         if(psf_a->iflag_loaded[i_psf] == 0) continue;
         num_patch = sel_psf_nodes_to_buf_pthread(psf_a->istack_all_psf_node[i_psf], nthreads,
                                                  IZERO, psf_s[i_psf]->nnod_viz,

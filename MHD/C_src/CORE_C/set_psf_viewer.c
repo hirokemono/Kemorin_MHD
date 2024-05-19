@@ -158,9 +158,10 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end, long ie_pa
 	for (i=1; i<(num_map_patch); i++) {
 		for (k=0; k<3; k++) {
 			j = ie_cut[3*i+k]-1;
-            if(y_cut[i] < 0 && j >3){j = j + 2;};
+            if(y_cut[i] >= 0.0 && j >3){j = j + 2;};
 			viz_s->ie_viz[iele_end+i-1][k] = ie_patch[j];
 		};
+        printf("y_cut %d %f\n", i, y_cut[i]);
 	};
 
 	return num_map_patch;
@@ -229,7 +230,6 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp,
                                      long ncomptot, double *d_nod, double *d_itp){
     long i, nd;
     long i1, i2;
-	long nnod_org;
 	
 	for(i=0; i<map_itp->nnod_added_4_map; i++){
 		i1 = map_itp->inod_org_4_map_itp[2*i  ]-1;

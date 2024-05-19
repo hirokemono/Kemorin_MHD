@@ -20,6 +20,13 @@
 
 typedef struct
 {
+    /*  Vertex buffer for Map solid node */
+    id<MTLBuffer> _Nullable mapNodeVertice;
+    NSUInteger numMapNodeVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable mapSolidIndices;
+    NSUInteger numMapSolidIndices;
+
     /*  Vertex buffer for Map solid patch */
     id<MTLBuffer> _Nullable mapSolidVertice;
     NSUInteger numMapSolidVertice;

@@ -24,7 +24,9 @@
 
 int check_draw_psf(struct kemo_array_control *psf_a);
 
-void const_PSF_node_buffer(const int nthreads,
+void const_PSF_node_stack(struct psf_data **psf_s,
+                          struct kemo_array_control *psf_a);
+ void const_PSF_node_buffer(const int nthreads,
                            struct psf_data **psf_s,
                            struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *psf_buf);
