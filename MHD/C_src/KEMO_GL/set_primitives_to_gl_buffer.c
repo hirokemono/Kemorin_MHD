@@ -10,17 +10,19 @@
 #include "set_primitives_to_gl_buffer.h"
 
 
-long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_tri,
-                              double *norm_tri, double *color_tri,
+long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
+                              double *norm_nod, double *color_nod, double *xy_txur,
                               struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
     for(long inod = 0; inod < numnod; inod++) {
         set_node_stride_buffer((inod_in+inod), strided_buf, &point_buf);
         for(int nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_tri[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = color_tri[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_tri[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_nod[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = color_nod[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_nod[4*inod+nd];
         };
+        strided_buf->v_buf[  point_buf.igl_txur] = xy_txur[2*inod  ];
+        strided_buf->v_buf[1+point_buf.igl_txur] = xy_txur[2*inod+1];
     };
     return (inod_in + numnod);
 }
@@ -139,8 +141,8 @@ long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
 }
 
 
-long set_textur_to_buf(long ist_texture, double xy_txur[6],
-                       struct gl_strided_buffer *strided_buf){
+long set_patch_textur_to_buf(long ist_texture, double xy_txur[6],
+                             struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
     
     long ipatch = ITHREE*ist_texture;

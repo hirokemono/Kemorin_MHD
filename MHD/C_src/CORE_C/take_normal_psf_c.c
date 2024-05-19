@@ -449,12 +449,37 @@ static void take_minmax_viz_fields(long nfield, long *istack_comp,
 	return;
 }
 
-void take_normal_psf(struct psf_data *viz_s){
+static void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
+    long i, i1, i2;
+    double pi = FOUR * atan(ONE);
+    double *rtpw = (double *)malloc(IFOUR*viz_s->nnod_viz*sizeof(double));
+    if(rtpw  == NULL){
+        printf("malloc error for rtpw \n");
+        exit(0);
+    }
+    
+    xyzw_to_rtpw_c(viz_s->nnod_viz, viz_s->xyzw_viz, rtpw);
+    for(i=0;i<viz_s->nnod_viz;i++){
+        viz_s->rt_viz[2*i  ] = rtpw[4*i+1];
+        viz_s->rt_viz[2*i+1] = rtpw[4*i+2];
+    }
+    for(i=0;i<nadded_for_phi0;i++){
+        i1 = i + viz_s->nnod_viz - 2 * nadded_for_phi0;
+        i2 = i + viz_s->nnod_viz -     nadded_for_phi0;
+        viz_s->rt_viz[2*i1+1] = ZERO;
+        viz_s->rt_viz[2*i2+1] = TWO * pi;
+    }
+    free(rtpw);
+    return;
+}
+
+void take_normal_psf(long nadded_for_phi0, struct psf_data *viz_s){
 	alloc_psf_norm_s(viz_s);
     viz_s->rmax_psf = cal_psf_grid_range(viz_s->nnod_viz, viz_s->xyzw_viz,
                                          viz_s->xmin_psf, viz_s->xmax_psf,
                                          viz_s->center_psf);
-	take_normal_ele_psf(viz_s);
+    cal_colat_and_longitude(nadded_for_phi0, viz_s);
+    take_normal_ele_psf(viz_s);
 	take_normal_nod_psf(viz_s);
 	return;
 }

@@ -85,6 +85,8 @@ struct psf_menu_val{
 	int increment_vect;
 	double scale_vect;
 	double vector_thick;
+    
+    long nadded_for_phi0;
 };
 
 /* Prototypes */

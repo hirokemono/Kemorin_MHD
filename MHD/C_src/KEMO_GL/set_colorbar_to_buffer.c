@@ -58,8 +58,8 @@ static long set_one_texture_to_buf(const long i_quad,
         xy_txur[ 8+nd] = t4[nd];
         xy_txur[10+nd] = t1[nd];
     }
-    inum_patch = set_textur_to_buf(inum_patch, &xy_txur[0], strided_buf);
-    inum_patch = set_textur_to_buf(inum_patch, &xy_txur[6], strided_buf);
+    inum_patch = set_patch_textur_to_buf(inum_patch, &xy_txur[0], strided_buf);
+    inum_patch = set_patch_textur_to_buf(inum_patch, &xy_txur[6], strided_buf);
 	return inum_patch;
 };
 

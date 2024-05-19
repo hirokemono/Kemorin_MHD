@@ -265,7 +265,7 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
     return;
 }
 
-void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
+long set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);
@@ -314,10 +314,11 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
                              &viz_s->xyzw_viz[0], &viz_s->xyzw_viz[IFOUR*ist]);
     set_new_data_for_mapping(map_itp, viz_s->ncomptot,
                              &viz_s->d_nod[0], &viz_s->d_nod[viz_s->ncomptot*ist]);
-
+    
+    long nadded_for_phi0 = map_itp->nnod_added_4_map;
     dealloc_psf_cutting_4_map(map_itp);
 
 	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
-	return;
+	return nadded_for_phi0;
 }

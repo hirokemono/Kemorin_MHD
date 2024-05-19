@@ -11,15 +11,6 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 	return (ied_psf - ist_psf);
 };
 
-static void set_psf_indices_to_tri(long ipsf, long iele,
-                                 int shading_mode, int polygon_mode_psf,
-                                 struct psf_data **psf_s, double xyzw_tri[12],
-                                 double norm_tri[12], double color_tri[12]){
-    long inod, nd;
-    
-   return;
-}
-
 static void set_psf_nodes_to_tri(long ipsf, long iele,
                                  int shading_mode, int polygon_mode_psf,
                                  struct psf_data **psf_s, double xyzw_tri[12],
@@ -101,7 +92,44 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                          &psf_s->xyzw_viz[IFOUR*ist_nod],
                                          &psf_s->norm_nod[IFOUR*ist_nod],
                                          &psf_s->color_nod[IFOUR*ist_nod],
+                                         &psf_s->rt_viz[ITWO*ist_nod],
                                          strided_buf);
+    return inum_nod;
+}
+
+long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
+                          struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                          struct gl_strided_buffer *strided_buf){
+    double rtpw[4] =   {1.0, 0.0, 0.0, 1.0};
+    double map_xy[4] = {0.0, 0.0, 0.0002, 1.0};;
+    double normal[4] = {0.0, 0.0, 1.0, 1.0};
+    double pi = FOUR * atan(ONE);
+    long inod;
+    long ied = ist_nod + num;
+    long ied_normal = psf_s->nnod_viz - ITWO*psf_m->nadded_for_phi0;
+    long inum_nod = ipatch_in;
+    for(inod=ist_nod;inod<ied_normal;inod++){
+        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
+        rtpw[2] = psf_s->rt_viz[ITWO*inod+2];
+        aitoff_c(IONE, &rtpw[0], &map_xy[0]);
+
+        inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
+                                             map_xy, normal,
+                                             &psf_s->color_nod[IFOUR*inod],
+                                             &psf_s->rt_viz[ITWO*inod],
+                                             strided_buf);
+    }
+    for(inod=ied_normal;inod<ied;inod++){
+        xyzw_to_rtpw_c(IONE, &psf_s->xyzw_viz[IFOUR*ist_nod], rtpw);
+        rtpw[2] = TWO * pi * (double) ((int) (inod-ied_normal) / psf_m->nadded_for_phi0);
+        aitoff_c(IONE, &rtpw[0], &map_xy[0]);
+
+        inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
+                                             map_xy, normal,
+                                             &psf_s->color_nod[IFOUR*inod],
+                                             &psf_s->rt_viz[ITWO*inod],
+                                             strided_buf);
+    }
     return inum_nod;
 }
 
@@ -152,7 +180,7 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
         ipsf = psf_a->ipsf_viz_far[inum]-1;
         iele = psf_a->iele_viz_far[inum]-1;
         set_psf_textures_to_tri(ipsf, iele, psf_s, xy_txur);
-        ipatch = set_textur_to_buf(ipatch, xy_txur, strided_buf);
+        ipatch = set_patch_textur_to_buf(ipatch, xy_txur, strided_buf);
 	};
 	return ipatch;
 }
