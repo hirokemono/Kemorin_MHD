@@ -161,7 +161,6 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end, long ie_pa
             if(y_cut[i] >= 0.0 && j >3){j = j + 2;};
 			viz_s->ie_viz[iele_end+i-1][k] = ie_patch[j];
 		};
-        printf("y_cut %d %f\n", i, y_cut[i]);
 	};
 
 	return num_map_patch;
