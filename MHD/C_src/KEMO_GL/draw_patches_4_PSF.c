@@ -256,22 +256,26 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_index_buffer *PSF_solid_index_buf,
                                     struct gl_index_buffer *PSF_stxur_index_buf){
-    const_PSF_texture_buffer(view_s->shading_mode, nthreads,
-                             IZERO, psf_a->istack_solid_psf_txtur,
-                             psf_s, psf_m, psf_a, PSF_stxur_buf);
-    PSF_stxur_index_buf->ntot_vertex = 0;
 
     
     if(view_s->shading_mode == FLAT_SHADE){
-       const_PSF_patch_buffer(view_s->shading_mode, nthreads,
+        const_PSF_texture_buffer(view_s->shading_mode, nthreads,
+                                 IZERO, psf_a->istack_solid_psf_txtur,
+                                 psf_s, psf_m, psf_a, PSF_stxur_buf);
+        const_PSF_patch_buffer(view_s->shading_mode, nthreads,
                                psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
                                psf_s, psf_m, psf_a, PSF_solid_buf);
+        PSF_stxur_index_buf->ntot_vertex = 0;
         PSF_solid_index_buf->ntot_vertex = 0;
     }else{
+        const_PSF_patch_index_buffer(nthreads,
+                                     IZERO, psf_a->istack_solid_psf_txtur,
+                                     psf_s, psf_a, PSF_stxur_index_buf);
         const_PSF_patch_index_buffer(nthreads,
                                      psf_a->istack_solid_psf_txtur,
                                      psf_a->istack_solid_psf_patch,
                                      psf_s, psf_a,PSF_solid_index_buf);
+        PSF_stxur_buf->num_nod_buf = 0;
         PSF_solid_buf->num_nod_buf = 0;
     }
     return;

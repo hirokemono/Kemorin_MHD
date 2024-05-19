@@ -9,6 +9,8 @@
 
 #include "set_primitives_to_gl_buffer.h"
 
+#define ARCPI 0.318309886
+
 
 long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
                               double *norm_nod, double *color_nod, double *xy_txur,
@@ -21,8 +23,8 @@ long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
             strided_buf->v_buf[nd+point_buf.igl_color] = color_nod[4*inod+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_nod[4*inod+nd];
         };
-        strided_buf->v_buf[  point_buf.igl_txur] = xy_txur[2*inod  ];
-        strided_buf->v_buf[1+point_buf.igl_txur] = xy_txur[2*inod+1];
+        strided_buf->v_buf[  point_buf.igl_txur] = xy_txur[2*inod+1] * ARCPI * HALF;
+        strided_buf->v_buf[1+point_buf.igl_txur] = ONE - xy_txur[2*inod  ] * ARCPI;
     };
     return (inod_in + numnod);
 }

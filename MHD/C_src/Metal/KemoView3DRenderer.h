@@ -66,9 +66,11 @@ typedef struct
 
     /*  Texure buffer for PSF with texure */
     id<MTLTexture> _Nullable psfSolidTexure;
+    NSUInteger numPSFSolidTexurePixsel;
     /*  Texure buffer for PSF with transparent texure */
     id<MTLTexture> _Nullable psfTransTexure;
-    
+    NSUInteger numPSFTransTexurePixsel;
+
     /*  Vertex buffer for field lines solid patch */
     id<MTLBuffer> _Nullable fieldTubeVertice;
     NSUInteger numFieldTubeVertice;

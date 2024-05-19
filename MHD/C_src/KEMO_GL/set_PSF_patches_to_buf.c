@@ -109,8 +109,7 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
     long ied_normal = psf_s->nnod_viz - ITWO*psf_m->nadded_for_phi0;
     long inum_nod = ipatch_in;
     for(inod=ist_nod;inod<ied_normal;inod++){
-        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_s->rt_viz[ITWO*inod+2];
+        xyzw_to_rtpw_c(IONE, &psf_s->xyzw_viz[IFOUR*inod], rtpw);
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,

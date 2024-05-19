@@ -35,17 +35,10 @@
 };
 
 - (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-                      buffer:(struct gl_strided_buffer *_Nonnull) buf
                        image:(struct gl_texure_image *_Nonnull) psf_texure
-                      vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
+    if(psf_texure->texure_npix > 0){
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
         lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
@@ -67,7 +60,7 @@
                       withBytes:psf_texure->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
-    return buf->num_nod_buf;
+    return psf_texure->texure_npix;
 }
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
