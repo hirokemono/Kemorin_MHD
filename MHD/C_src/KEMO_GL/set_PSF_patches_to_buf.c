@@ -12,23 +12,14 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 };
 
 static void set_psf_nodes_to_tri(long ipsf, long iele,
-                                 int shading_mode, int polygon_mode_psf,
                                  struct psf_data **psf_s, double xyzw_tri[12],
                                  double norm_tri[12], double color_tri[12]){
     long inod, nd;
-    
     for(long k = 0; k < ITHREE; k++) {
         inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
         for(nd=0;nd<4;nd++){xyzw_tri[4*k+nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
         for(nd=0;nd<4;nd++){color_tri[4*k+nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
-        if (shading_mode == SMOOTH_SHADE){
-            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];};
-        } else {
-            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
-        };
-        if(polygon_mode_psf == REVERSE_POLYGON){
-            for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = -norm_tri[4*k+nd];};
-        };
+        for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
         xyzw_tri[4*k+3] = 1.0;
         norm_tri[4*k+3] = 1.0;
     };
@@ -149,9 +140,8 @@ long set_psf_patch_indices_to_buf(long ipatch_in, long ist_psf, long ied_psf,
     return ipatch;
 }
 
-long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode,
-                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                            struct kemo_array_control *psf_a,
+long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf,
+                            struct psf_data **psf_s, struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *strided_buf){
     double xyzw_tri[12], norm_tri[12], color_tri[12];
     long iele, ipsf;
@@ -159,8 +149,8 @@ long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shad
 	for(long inum=ist_psf;inum<ied_psf;inum++){
 		ipsf = psf_a->ipsf_viz_far[inum]-1;
 		iele = psf_a->iele_viz_far[inum]-1;
-        set_psf_nodes_to_tri(ipsf, iele, shading_mode, psf_m[ipsf]->polygon_mode_psf,
-                             psf_s, xyzw_tri, norm_tri, color_tri);
+        set_psf_nodes_to_tri(ipsf, iele, psf_s,
+                             xyzw_tri, norm_tri, color_tri);
         ipatch = set_patch_strided_buffer(ipatch, xyzw_tri, norm_tri, color_tri,
                                           strided_buf);
     };

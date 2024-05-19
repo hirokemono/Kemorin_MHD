@@ -19,8 +19,8 @@ long sel_psf_nodes_to_buf_pthread(long ipatch_in, const int nthreads,
                                   int i_psf, struct psf_data **psf_s,
                                   struct gl_strided_buffer *strided_buf);
 long sel_psf_patches_to_buf_pthread(long ipatch_in, const int nthreads,
-                                    long ist_psf, long ied_psf, int shading_mode,
-                                    struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                    long ist_psf, long ied_psf,
+                                    struct psf_data **psf_s,
                                     struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *strided_buf);
 

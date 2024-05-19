@@ -622,7 +622,6 @@
                           texure:(id<MTLTexture> *) texture
                           unites:(KemoViewUnites *) monoViewUnites
                            sides:(int) iflag_surface
-                           solid:(int) iflag_solid
 {
     if(numVertex > 0){
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
@@ -634,9 +633,7 @@
         }else{
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
-        if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:*depthState];
-        }
+        [*renderEncoder setDepthStencilState:*depthState];
         
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongTexturedPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
@@ -735,8 +732,7 @@
                              index:&(kemoView3DMetalBuf->psfSTexureIndices)
                             texure:&(kemoView3DMetalBuf->psfSolidTexure)
                             unites:monoViewUnites
-                             sides:BOTH_SURFACES
-                             solid:SMOOTH_SHADE];
+                             sides:BOTH_SURFACES];
     [self drawIndexPatchWithPhong:renderEncoder
                         pipelines:kemo3DPipelines
                             depth:depthState
@@ -818,6 +814,15 @@
                       unites:monoViewUnites
                        sides:BOTH_SURFACES];
 
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfTTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfTTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfTransTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
     [self drawIndexPatchWithPhong:renderEncoder
                         pipelines:kemo3DPipelines
                             depth:depthState
@@ -873,8 +878,7 @@
                              index:&(kemoView3DMetalBuf->psfSTexureIndices)
                             texure:&(kemoView3DMetalBuf->psfSolidTexure)
                             unites:monoViewUnites
-                             sides:BOTH_SURFACES
-                             solid:SMOOTH_SHADE];
+                             sides:BOTH_SURFACES];
     [self drawIndexPatchWithPhong:renderEncoder
                         pipelines:kemo3DPipelines
                             depth:depthState
@@ -992,6 +996,15 @@
                       unites:monoViewUnites
                        sides:BOTH_SURFACES];
     
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfTTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfTTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfTransTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
     [self drawIndexPatchWithPhong:renderEncoder
                         pipelines:kemo3DPipelines
                             depth:depthState

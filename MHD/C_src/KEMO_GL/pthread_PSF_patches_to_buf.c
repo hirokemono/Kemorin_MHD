@@ -18,9 +18,7 @@ typedef struct{
     struct gl_strided_buffer        *strided_buf;
 
     struct psf_data     **psf_s;
-    struct psf_menu_val **psf_m;
     struct kemo_array_control *psf_a;
-    int shading_mode;
     int i_psf;
 
     long ist_patch;
@@ -38,11 +36,7 @@ static void * set_psf_nodes_to_buf_1thread(void *args)
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     
-    struct psf_data     **psf_s =       p->psf_s;
-    struct psf_menu_val **psf_m =       p->psf_m;
-    struct kemo_array_control *psf_a = p->psf_a;
-   
-    int shading_mode = p->shading_mode;
+    struct psf_data     **psf_s = p->psf_s;
     int i_psf = p->i_psf;
 
     long ist_patch = p->ist_patch;
@@ -126,11 +120,8 @@ static void * set_psf_patches_to_buf_1thread(void *args)
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     
     struct psf_data     **psf_s =       p->psf_s;
-    struct psf_menu_val **psf_m =       p->psf_m;
     struct kemo_array_control *psf_a = p->psf_a;
-   
-    int shading_mode = p->shading_mode;
-    
+       
     long ist_patch = p->ist_patch;
     long ist_psf = p->ist_psf;
     long ied_psf = p->ied_psf;
@@ -139,15 +130,13 @@ static void * set_psf_patches_to_buf_1thread(void *args)
     long lo = (ied_psf-ist_psf) * id /     nthreads;
     long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
     num_patch[id] = set_psf_patches_to_buf((lo+ist_patch), (lo+ist_psf), (hi+ist_psf),
-                                           shading_mode, psf_s, psf_m, psf_a,
-                                           strided_buf);
+                                           psf_s, psf_a, strided_buf);
     return 0;
 }
 
 static long set_psf_patches_to_buf_pthread(long ipatch_in, int nthreads,
-                                           long ist_psf, long ied_psf, int shading_mode,
-                                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                                           struct kemo_array_control *psf_a,
+                                           long ist_psf, long ied_psf,
+                                           struct psf_data **psf_s, struct kemo_array_control *psf_a,
                                            struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_PSF_Patch *args
@@ -165,9 +154,7 @@ static long set_psf_patches_to_buf_pthread(long ipatch_in, int nthreads,
         
         args[ip].strided_buf = strided_buf;
         args[ip].psf_s = psf_s;
-        args[ip].psf_m = psf_m;
         args[ip].psf_a = psf_a;
-        args[ip].shading_mode = shading_mode;
 
         args[ip].ist_patch = ipatch_in;
         args[ip].ist_psf = ist_psf;
@@ -188,17 +175,17 @@ static long set_psf_patches_to_buf_pthread(long ipatch_in, int nthreads,
 };
 
 long sel_psf_patches_to_buf_pthread(long ipatch_in, const int nthreads,
-                                    long ist_psf, long ied_psf, int shading_mode,
-                                    struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                    long ist_psf, long ied_psf,
+                                    struct psf_data **psf_s,
                                     struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *strided_buf){
     long num_patch = ipatch_in;
     if(nthreads > 1){
-        num_patch = set_psf_patches_to_buf_pthread(num_patch, nthreads, ist_psf, ied_psf, shading_mode,
-                                                   psf_s, psf_m, psf_a, strided_buf);
+        num_patch = set_psf_patches_to_buf_pthread(num_patch, nthreads, ist_psf, ied_psf,
+                                                   psf_s, psf_a, strided_buf);
     }else{
-        num_patch = set_psf_patches_to_buf(num_patch, ist_psf, ied_psf, shading_mode,
-                                           psf_s, psf_m, psf_a, strided_buf);
+        num_patch = set_psf_patches_to_buf(num_patch, ist_psf, ied_psf,
+                                           psf_s, psf_a, strided_buf);
     };
     return num_patch;
 }
