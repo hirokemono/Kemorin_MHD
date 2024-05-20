@@ -201,14 +201,11 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
                             kemo_VAOs->psf_solid_VAO[0]);
 
-    /*
-    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
-                            kemo_VAOs->psf_solid_index_VAO[0]);
-     */
-    drawgl_patch_index_phong(view_matrices, lights,
-                             kemo_VAOs->psf_solid_index_VAO[0],
-                             kemo_shaders);
-    
+    drawgl_textured_patches_index_VAO(&kemo_shaders->texture_name, view_matrices, lights,
+                                      kemo_shaders, kemo_VAOs->psf_solid_index_VAO[1]);
+    drawgl_patch_index_phong(view_matrices, lights, kemo_shaders,
+                             kemo_VAOs->psf_solid_index_VAO[0]);
+
 /*  Draw mesh data */
     drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
 
@@ -321,6 +318,7 @@ static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers
                               kemo_buffers->PSF_ttxur_buf,
                               kemo_buffers->PSF_node_buf,
                               kemo_buffers->PSF_trns_index_buf,
+                              kemo_buffers->PSF_ttxur_index_buf,
                               kemo_VAOs->psf_trans_VAO,
                               kemo_VAOs->psf_trans_index_VAO);
     Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
@@ -350,7 +348,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                   kemo_buffers->PSF_isotube_buf, kemo_buffers->PSF_isoline_buf,
                                   kemo_buffers->PSF_arrow_buf, kemo_VAOs->psf_solid_VAO,
                                   kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
-                                  kemo_VAOs->psf_solid_index_VAO);
+                                  kemo_buffers->PSF_stxur_index_buf, kemo_VAOs->psf_solid_index_VAO);
         
         Const_VAO_4_Phong(kemo_VAOs->mesh_solid_VAO[0],  kemo_buffers->mesh_solid_buf);
         Const_VAO_4_Simple(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);
@@ -385,6 +383,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
         Const_VAO_4_Simple(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
         Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
         Const_VAO_4_Simple(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_isoline_buf);
+        
         set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
         quick_draw_objects(kemo_psf, kemo_fline, kemo_mesh,
