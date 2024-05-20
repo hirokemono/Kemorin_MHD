@@ -10,28 +10,6 @@
 #include "kemoview_gtk_main_menu.h"
 #include "view_modifier_glfw.h"
 
-static struct updatable_widgets * init_updatable_widgets(struct kemoviewer_type *kemoviewer_data){
-    struct updatable_widgets *updatable = (struct updatable_widgets *) malloc(sizeof(struct updatable_widgets));
-    if (updatable == NULL) {
-        printf("malloc error for updatable_widgets\n");
-        exit(0);
-    }
-
-    updatable->psf_gmenu = alloc_psf_gtk_menu();
-    updatable->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
-    updatable->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
-    updatable->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
-    return updatable;
-}
-static void dealloc_updatable_widgets(struct updatable_widgets *updatable){
-    dealloc_psf_gtk_menu(updatable->psf_gmenu);
-    free(updatable->fline_menu);
-    free(updatable->mesh_vws);
-    free(updatable->evo_gmenu);
-    free(updatable);
-    return;
-};
-
 
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data){
 	struct main_buttons *mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
@@ -40,8 +18,12 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
         exit(0);
     }
 
-    mbot->updatable = init_updatable_widgets(kemoviewer_data);
-	mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+    mbot->psf_gmenu = alloc_psf_gtk_menu();
+    mbot->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
+    mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
+
+    mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
 
 	mbot->rot_gmenu = init_rotation_menu_box();
     mbot->quilt_gmenu = init_quilt_menu_box();
@@ -50,8 +32,12 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 };
 
 void dealloc_main_buttons(struct main_buttons *mbot){
-    dealloc_updatable_widgets(mbot->updatable);
-	dealloc_preference_gtk_menu(mbot->pref_gmenu);
+    dealloc_psf_gtk_menu(mbot->psf_gmenu);
+    free(mbot->fline_menu);
+    free(mbot->mesh_vws);
+    free(mbot->evo_gmenu);
+
+    dealloc_preference_gtk_menu(mbot->pref_gmenu);
 	
 	free(mbot->rot_gmenu);
 	free(mbot->view_menu);
@@ -119,11 +105,11 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
-    init_psf_menu(kemo_sgl, kemo_gl, mbot->updatable->psf_gmenu, window_main);
-    init_fline_menu(kemo_sgl, mbot->updatable->fline_menu, window_main);
-    init_mesh_window(kemo_sgl, mbot->updatable->mesh_vws, mbot->updatable->meshWin);
+    init_psf_menu(kemo_sgl, kemo_gl, mbot->psf_gmenu, window_main);
+    init_fline_menu(kemo_sgl, mbot->fline_menu, window_main);
+    init_mesh_window(kemo_sgl, mbot->mesh_vws, mbot->meshWin);
 
-    activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
+    activate_evolution_menu(kemo_sgl, mbot->itemTEvo);
     gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);

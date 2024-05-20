@@ -132,6 +132,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
+ $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
@@ -344,6 +345,7 @@ kemo_mesh_viewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
+ $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
@@ -553,6 +555,7 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
+ $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
@@ -763,6 +766,7 @@ kemoviewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
+ $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \

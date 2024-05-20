@@ -319,11 +319,11 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), NULL);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
 
-    mbot->updatable->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
-    g_object_set_data(G_OBJECT(mbot->updatable->itemTEvo), "tevo_menu", (gpointer) mbot->updatable->evo_gmenu);
-    g_object_set_data(G_OBJECT(mbot->updatable->itemTEvo), "kemoview", (gpointer) kemoviewer_data);
-    g_signal_connect(mbot->updatable->itemTEvo, "activate", G_CALLBACK (evo_menu_CB), NULL);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), mbot->updatable->itemTEvo);
+    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
+    g_object_set_data(G_OBJECT(mbot->itemTEvo), "tevo_menu", (gpointer) mbot->evo_gmenu);
+    g_object_set_data(G_OBJECT(mbot->itemTEvo), "kemoview", (gpointer) kemoviewer_data);
+    g_signal_connect(mbot->itemTEvo, "activate", G_CALLBACK (evo_menu_CB), NULL);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), mbot->itemTEvo);
 
     GtkWidget *imprMi =  gtk_menu_item_new_with_label("Takotako");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(imprMi), submenu_widget);
@@ -364,12 +364,12 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
     
-    mbot->updatable->psf_gmenu->iflag_psfBox =    0;
-    mbot->updatable->fline_menu->iflag_flineBox = 0;
-    mbot->updatable->mesh_vws->iflag_meshBox =    0;
+    mbot->psf_gmenu->iflag_psfBox =    0;
+    mbot->fline_menu->iflag_flineBox = 0;
+    mbot->mesh_vws->iflag_meshBox =    0;
     mbot->id_current[0] = 1;
     
-    activate_evolution_menu(single_kemoview, mbot->updatable->itemTEvo);
+    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
 
     GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);

@@ -445,9 +445,10 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
 					COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
-                        GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox){
-    GtkWidget *expander, *Frame_1;
+GtkWidget * add_real3_list_frame(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                 GtkWidget *button_add, GtkWidget *button_delete){
+    GtkWidget *Frame_1;
+    
     GtkWidget *hbox_1, *vbox_1;
     
     GtkWidget *label;
@@ -483,15 +484,6 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r3_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
-    Frame_1 = gtk_frame_new("");
-    gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-    gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-    
-    expander = gtk_expander_new_with_mnemonic(r3_clist->clist_name);
-    gtk_container_add(GTK_CONTAINER(expander), Frame_1);
-    gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-    
-    
     selection = gtk_tree_view_get_selection(r3_tree_view);
     g_object_set_data(G_OBJECT(selection), "label", label);
     
@@ -501,6 +493,17 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     list = g_list_append(list, selection);
     g_object_set_data(G_OBJECT(child_model), "selection_list", list);
     
-    return;
+    Frame_1 = gtk_frame_new("");
+    gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+    gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
+    return Frame_1;
 };
 
+GtkWidget * real3_list_expander(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                GtkWidget *button_add, GtkWidget *button_delete){
+    GtkWidget *Frame_1 = add_real3_list_frame(r3_tree_view, r3_clist,
+                                              button_add, button_delete);
+    GtkWidget *expander = gtk_expander_new_with_mnemonic(r3_clist->clist_name);
+    gtk_container_add(GTK_CONTAINER(expander), Frame_1);
+    return expander;
+};

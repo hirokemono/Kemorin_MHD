@@ -36,7 +36,13 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct updatable_widgets{
+
+struct main_buttons{
+	GtkWidget *menuHbox;
+	
+	GtkWidget *vbox_menu;
+
+    int id_current[1];
     struct psf_gtk_menu *psf_gmenu;
     struct fieldline_gtk_menu *fline_menu;
     
@@ -45,16 +51,7 @@ struct updatable_widgets{
     
     GtkWidget *itemTEvo;
     struct evolution_gtk_menu *evo_gmenu;
-};
 
-struct main_buttons{
-	GtkWidget *menuHbox;
-	
-	GtkWidget *vbox_menu;
-
-    int id_current[1];
-    struct updatable_widgets *updatable;
-    
     GtkWidget *expander_view;
     struct view_widgets *view_menu;
 	
@@ -98,9 +95,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
                             GtkWidget *takobox, GtkWidget *window_main,
                             struct kemoviewer_type *kemo_sgl,
                             struct kemoviewer_gl_type *kemo_gl);
-
-void init_evolution_menu(struct updatable_widgets *updatable, GtkWidget *window);
-
 
 void sel_mesh_menu_box(struct main_buttons *mbot, gboolean flag);
 

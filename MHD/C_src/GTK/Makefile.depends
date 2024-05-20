@@ -676,6 +676,7 @@ tree_view_viewer_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
  $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \

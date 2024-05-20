@@ -108,7 +108,7 @@ void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
 	sync_phong_light_position_from_list(kemo_sgl, light_vws);
-	gtk_widget_queue_draw(light_vws->scrolled_window);
+	gtk_widget_queue_draw(light_vws->light_vbox);
 };
 
 void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
@@ -146,7 +146,7 @@ void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
 	sync_phong_light_position_from_list(kemo_sgl, light_vws);
-	gtk_widget_queue_draw(light_vws->scrolled_window);
+	gtk_widget_queue_draw(light_vws->light_vbox);
 };
 
 void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
@@ -184,7 +184,7 @@ void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
 	sync_phong_light_position_from_list(kemo_sgl, light_vws);
-	gtk_widget_queue_draw(light_vws->scrolled_window);
+	gtk_widget_queue_draw(light_vws->light_vbox);
 };
 
 void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
@@ -196,7 +196,7 @@ void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
 			= add_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 								light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(kemo_sgl, light_vws);
-	gtk_widget_queue_draw(light_vws->scrolled_window);
+	gtk_widget_queue_draw(light_vws->light_vbox);
 };
 void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
@@ -206,7 +206,7 @@ void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
 	delete_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(kemo_sgl, light_vws);
-	gtk_widget_queue_draw(light_vws->scrolled_window);
+	gtk_widget_queue_draw(light_vws->light_vbox);
 };
 
 static void cursor_chenge_CB(GtkTreeView *tree_view, gpointer user_data){
@@ -217,8 +217,8 @@ static void cursor_chenge_CB(GtkTreeView *tree_view, gpointer user_data){
 	printf("Changed %lf, %lf, %lf\n",org_value[0], org_value[1], org_value[2]);
 }
 
-static GtkWidget *init_lightposition_list_box(struct kemoviewer_type *kemo_sgl,
-                                              struct lightparams_view *light_vws){
+GtkWidget *init_lightposition_expander(struct kemoviewer_type *kemo_sgl,
+                                       struct lightparams_view *light_vws){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
 	GtkCellRenderer *renderer_spin3;
@@ -257,10 +257,9 @@ static GtkWidget *init_lightposition_list_box(struct kemoviewer_type *kemo_sgl,
 	button_add = gtk_button_new_with_label("Add");
     button_delete = gtk_button_new_with_label("Remove");
 	
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_real3_list_box(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
-				light_vws->light_rtp_vws->r3_clist_gtk,
-				button_add, button_delete, vbox);
+    GtkWidget *expander = real3_list_expander(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
+                                              light_vws->light_rtp_vws->r3_clist_gtk,
+                                              button_add, button_delete);
 	
     g_object_set_data(G_OBJECT(button_add),    "kemoview",  (gpointer) kemo_sgl);
     g_object_set_data(G_OBJECT(button_delete), "kemoview",  (gpointer) kemo_sgl);
@@ -270,27 +269,5 @@ static GtkWidget *init_lightposition_list_box(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_lightposition_list_items_cb), (gpointer) light_vws);
     
-    return vbox;
+    return expander;
 };
-
-GtkWidget * init_light_list_frame(struct kemoviewer_type *kemo_sgl,
-                                  struct lightparams_view *light_vws){
-    light_vws->light_vbox = init_lightposition_list_box(kemo_sgl, light_vws);
-	
-	light_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(light_vws->scrolled_window),
-                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(light_vws->scrolled_window, 160, 200);
-    gtk_widget_set_app_paintable(light_vws->scrolled_window, TRUE);
-    gtk_widget_add_events (light_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
-    gtk_container_add(GTK_CONTAINER(light_vws->scrolled_window), light_vws->light_vbox);
-	
-    
-    GtkWidget *Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_1), light_vws->scrolled_window);
-    
-    return Frame_1;
-};
-
-
