@@ -57,47 +57,6 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf,
 };
 
 
-void drawgl_patch_index_phong(struct transfer_matrices *matrices,
-                              struct phong_lights *lights,
-                              struct kemoview_shaders *kemo_shaders,
-                              struct VAO_ids *VAO){
-    if(VAO->npoint_draw <= 0) return;
-
-
-    glUseProgram(kemo_shaders->phong->programId);
-    transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-    set_phong_light_list(kemo_shaders->phong, lights);
-
-    glBindVertexArray(VAO->id_VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
-    glDrawElements(GL_TRIANGLES, VAO->npoint_draw , GL_UNSIGNED_INT, 0);
-    return;
-}
-
-void drawgl_textured_patches_index_VAO(GLuint *texture_name,
-                                       struct transfer_matrices *matrices,
-                                       struct phong_lights *lights,
-                                       struct kemoview_shaders *kemo_shaders,
-                                       struct VAO_ids *VAO){
-    if(VAO->npoint_draw <= 0) return;
-    
-    glUseProgram(kemo_shaders->phong_texure->programId);
-    transfer_matrix_to_GL(kemo_shaders->phong_texure, matrices);
-    set_phong_light_list(kemo_shaders->phong_texure, lights);
-
-    glBindVertexArray(VAO->id_VAO);
-    
-    glBindTexture(GL_TEXTURE_2D, *texture_name);
-    int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
-    glUniform1i(id_textureImage, 0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
-    glDrawElements(GL_TRIANGLES, VAO->npoint_draw , GL_UNSIGNED_INT, 0);
-    return;
-};
-
-
 void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_solid_VAO,
@@ -109,9 +68,9 @@ void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 lights, kemo_shaders, psf_solid_VAO[1]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[0]);
 
-    drawgl_patch_index_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[0]);
-    drawgl_textured_patches_index_VAO(&kemo_shaders->texture_name, matrices, lights,
-                                      kemo_shaders, psf_solid_index_VAO[1]);
+    drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[0]);
+    drawgl_textured_elements_VAO(&kemo_shaders->texture_name, matrices, lights,
+                                 kemo_shaders, psf_solid_index_VAO[1]);
     glDisable(GL_CULL_FACE);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[2]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[3]);
@@ -131,9 +90,9 @@ void draw_PSF_trans_objects_VAO(struct transfer_matrices *matrices,
     glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    drawgl_textured_patches_index_VAO(&kemo_shaders->texture_name, matrices, lights,
-                                      kemo_shaders, psf_trans_index_VAO[1]);
-    drawgl_patch_index_phong(matrices, lights, kemo_shaders, psf_trans_index_VAO[0]);
+    drawgl_textured_elements_VAO(&kemo_shaders->texture_name, matrices, lights,
+                                 kemo_shaders, psf_trans_index_VAO[1]);
+    drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_trans_index_VAO[0]);
     
     drawgl_textured_patches_VAO(&kemo_shaders->texture_name, matrices,
                                 lights, kemo_shaders, psf_trans_VAO[1]);

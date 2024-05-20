@@ -20,16 +20,6 @@
 #include "drawGL_by_VAO.h"
 
 /* prototypes */
-void drawgl_patch_index_phong(struct transfer_matrices *matrices,
-                              struct phong_lights *lights,
-                              struct kemoview_shaders *kemo_shaders,
-                              struct VAO_ids *psf_solid_index_VAO);
-void drawgl_textured_patches_index_VAO(GLuint *texture_name,
-                                       struct transfer_matrices *matrices,
-                                       struct phong_lights *lights,
-                                       struct kemoview_shaders *kemo_shaders,
-                                       struct VAO_ids *VAO);
-
 void const_PSF_gl_texure_name(const int ipsf_texured,
                               struct gl_texure_image *psf_texure,
                               struct kemoview_shaders *kemo_shaders);

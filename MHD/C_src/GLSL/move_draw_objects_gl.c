@@ -209,10 +209,10 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
                             kemo_VAOs->psf_solid_VAO[0]);
 
-    drawgl_textured_patches_index_VAO(&kemo_shaders->texture_name, view_matrices, lights,
-                                      kemo_shaders, kemo_VAOs->psf_solid_index_VAO[1]);
-    drawgl_patch_index_phong(view_matrices, lights, kemo_shaders,
-                             kemo_VAOs->psf_solid_index_VAO[0]);
+    drawgl_textured_elements_VAO(&kemo_shaders->texture_name, view_matrices, lights,
+                                 kemo_shaders, kemo_VAOs->psf_solid_index_VAO[1]);
+    drawgl_elements_with_phong(view_matrices, lights, kemo_shaders,
+                               kemo_VAOs->psf_solid_index_VAO[0]);
 
 /*  Draw mesh data */
     drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
