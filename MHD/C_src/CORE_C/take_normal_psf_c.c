@@ -461,7 +461,7 @@ void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
         viz_s->rt_viz[2*i+1] = rtpw[2];
         viz_s->rt_viz[2*i+1] = fmod(rtpw[2]+pi,(TWO*pi));
         if(viz_s->rt_viz[2*i+1]*viz_s->rt_viz[2*i+1] < 1.0e-25){
-            viz_s->rt_viz[2*i+1] = 0.0;
+            viz_s->rt_viz[2*i+1] = TWO * pi;
         }
 
     }
@@ -470,7 +470,7 @@ void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
 //        viz_s->rt_viz[2*i+1] = 0.;
     }
     for(i=viz_s->nnod_viz-nadded_for_phi0;i<viz_s->nnod_viz;i++){
-        viz_s->rt_viz[2*i+1] = TWO * pi;
+        viz_s->rt_viz[2*i+1] = 0.0;
     }
     return;
 }

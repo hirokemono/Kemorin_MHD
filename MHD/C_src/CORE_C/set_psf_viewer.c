@@ -189,13 +189,13 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end,
 
     for (k=0; k<3; k++) {
 		j = ie_cut[k] - 1;
-        if(y_cut[0] >= 0.0 && j >2){j = j + 2;};
+        if(y_cut[0] < 0.0 && j >2){j = j + 2;};
 		viz_s->ie_viz[iele][k] = ie_patch[j];
 	};
 	for(i=0; i<nele_add; i++) {
 		for (k=0; k<3; k++) {
 			j = ie_cut[3*(i+1)+k]-1;
-            if(y_cut[i+1] >= 0.0 && j >2){j = j + 2;};
+            if(y_cut[i+1] < 0.0 && j >2){j = j + 2;};
 			viz_s->ie_viz[iele_end+i][k] = ie_patch[j];
 		};
 	};
