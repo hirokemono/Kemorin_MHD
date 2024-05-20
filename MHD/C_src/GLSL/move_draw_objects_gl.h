@@ -26,6 +26,7 @@ struct kemoview_VAOs{
 
     struct VAO_ids **psf_solid_index_VAO;
     struct VAO_ids **psf_trans_index_VAO;
+    struct VAO_ids *map_index_VAO;
 
     struct VAO_ids **psf_solid_VAO;
     struct VAO_ids **psf_trans_VAO;

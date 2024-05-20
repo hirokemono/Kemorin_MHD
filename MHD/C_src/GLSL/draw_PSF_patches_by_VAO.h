@@ -20,6 +20,9 @@
 #include "drawGL_by_VAO.h"
 
 /* prototypes */
+void Const_VAO_Index_Simple(struct VAO_ids *VAO,
+                            struct gl_strided_buffer *strided_buf,
+                            struct gl_index_buffer *index_buf);
 void Const_VAO_Index_Phong(struct VAO_ids *VAO,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_index_buffer *index_buf);

@@ -57,6 +57,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	};
     kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
+    kemo_VAOs->map_index_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
 		kemo_VAOs->map_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -102,6 +103,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	free(kemo_VAOs->cbar_VAO);
 	free(kemo_VAOs->time_VAO);
 
+    free(kemo_VAOs->map_index_VAO);
 	for(i=0;i<4;i++){free(kemo_VAOs->map_VAO[i]);};
 	free(kemo_VAOs->map_VAO);
 
@@ -129,7 +131,10 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	glGenVertexArrays(1, &(kemo_VAOs->mesh_trans_VAO->id_VAO));
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->time_VAO->id_VAO));
+
+    glGenVertexArrays(1, &(kemo_VAOs->map_index_VAO->id_VAO));
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
+
     glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->msg_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->screen_VAO->id_VAO));
@@ -155,7 +160,10 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->time_VAO);
+
+    Destroy_VAO(kemo_VAOs->map_index_VAO);
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
+    
     Destroy_VAO(kemo_VAOs->cube_VAO);
     Destroy_VAO(kemo_VAOs->msg_VAO);
     Destroy_VAO(kemo_VAOs->screen_VAO);
@@ -258,7 +266,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
     free(orthogonal);
 
     if(view_s->iflag_view_type == VIEW_MAP){
-        draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
+        draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_VAOs->map_index_VAO, kemo_shaders);
     }else{
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
@@ -331,6 +339,9 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct kemoview_VAOs *kemo_VAOs,
                                     struct kemoview_shaders *kemo_shaders){
     if(view_s->iflag_view_type == VIEW_MAP){
+        Const_VAO_Index_Simple(kemo_VAOs->map_index_VAO, kemo_buffers->PSF_node_buf,
+                               kemo_buffers->MAP_solid_index_buf);
+
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
         

@@ -17,6 +17,40 @@ void const_PSF_gl_texure_name(const int ipsf_texured,
     return;
 };
 
+void Const_VAO_Index_Simple(struct VAO_ids *VAO,
+                            struct gl_strided_buffer *strided_buf,
+                            struct gl_index_buffer *index_buf){
+    VAO->npoint_draw = index_buf->ntot_vertex;
+    if(VAO->npoint_draw <= 0) return;
+    
+    glBindVertexArray(VAO->id_VAO);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    
+    glGenBuffers(1, &VAO->id_vertex);
+    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
+                 strided_buf->v_buf, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
+                          (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
+                          (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
+    
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    
+
+/* Create index buffer on GPU, and then copy from CPU */
+    glDeleteBuffers(1, &VAO->id_index);
+    glGenBuffers(1, &VAO->id_index);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (VAO->npoint_draw * sizeof(unsigned int)),
+                 index_buf->ie_buf, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+};
+
 
 void Const_VAO_Index_Phong(struct VAO_ids *VAO,
                            struct gl_strided_buffer *strided_buf,
@@ -46,9 +80,9 @@ void Const_VAO_Index_Phong(struct VAO_ids *VAO,
     glBindVertexArray(0);
 
     glBindVertexArray(VAO->id_VAO);
-    glDeleteBuffers(1, &VAO->id_index);
 
 /* Create index buffer on GPU, and then copy from CPU */
+    glDeleteBuffers(1, &VAO->id_index);
     glGenBuffers(1, &VAO->id_index);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, (VAO->npoint_draw * sizeof(unsigned int)),
