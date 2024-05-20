@@ -65,7 +65,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, gl_buf);
 	alloc_strided_buffer(gl_buf);
-    struct gl_index_buffer *index_buf = alloc_gl_index_buffer(12, 3);
+    struct gl_index_buffer *index_buf = init_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, gl_buf, index_buf);
     free(index_buf->ie_buf);
     free(index_buf);

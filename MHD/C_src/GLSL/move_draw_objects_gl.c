@@ -28,7 +28,16 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->fline_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
-	kemo_VAOs->psf_solid_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+    kemo_VAOs->psf_solid_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+    for(i=0;i<4;i++){
+        kemo_VAOs->psf_solid_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    };
+    kemo_VAOs->psf_trans_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+    for(i=0;i<2;i++){
+        kemo_VAOs->psf_trans_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    };
+
+    kemo_VAOs->psf_solid_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
 		kemo_VAOs->psf_solid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
@@ -73,8 +82,14 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	for(i=0;i<2;i++){free(kemo_VAOs->fline_VAO[i]);};
 	free(kemo_VAOs->fline_VAO);
 	
-	for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_VAO[i]);};
-	free(kemo_VAOs->psf_solid_VAO);
+    for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_index_VAO[i]);};
+    free(kemo_VAOs->psf_solid_index_VAO);
+    for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_index_VAO[i]);};
+    free(kemo_VAOs->psf_trans_index_VAO);
+
+    for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_VAO[i]);};
+    free(kemo_VAOs->psf_solid_VAO);
+
 	for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_VAO[i]);};
     free(kemo_VAOs->psf_trans_VAO);
     free(kemo_VAOs->psf_liness_VAO);
@@ -101,7 +116,12 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     glGenVertexArrays(1, &(kemo_VAOs->grid_line_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->grid_tube_VAO->id_VAO));
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
+
+    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_index_VAO[i]->id_VAO));};
+
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
+
     glGenVertexArrays(1, &(kemo_VAOs->psf_liness_VAO->id_VAO));
 
     for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->mesh_solid_VAO[i]->id_VAO));};
@@ -121,11 +141,17 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     Destroy_VAO(kemo_VAOs->grid_line_VAO);
     Destroy_VAO(kemo_VAOs->grid_tube_VAO);
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
+    
+    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
+    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_index_VAO[i]);};
+
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
+
     Destroy_VAO(kemo_VAOs->psf_liness_VAO);
 
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->mesh_solid_VAO[i]);};
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_VAO[i]);};
+    
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->time_VAO);
@@ -171,9 +197,18 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     glDisable(GL_CULL_FACE);
     drawgl_textured_patches_VAO(&kemo_shaders->texture_name, view_matrices,
                                 lights, kemo_shaders, kemo_VAOs->psf_solid_VAO[1]);
+
     drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
                             kemo_VAOs->psf_solid_VAO[0]);
 
+    /*
+    drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
+                            kemo_VAOs->psf_solid_index_VAO[0]);
+     */
+    drawgl_patch_index_phong(view_matrices, lights,
+                             kemo_VAOs->psf_solid_index_VAO[0],
+                             kemo_shaders);
+    
 /*  Draw mesh data */
     drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
 
@@ -188,7 +223,9 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 
 /*  Stop drawing transparent objects  */
     draw_PSF_trans_objects_VAO(view_matrices, lights,
-                                kemo_VAOs->psf_trans_VAO, kemo_shaders);
+                               kemo_VAOs->psf_trans_VAO,
+                               kemo_VAOs->psf_trans_index_VAO,
+                               kemo_shaders);
     if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
         draw_trans_mesh_VAO(view_matrices, lights,
                             kemo_VAOs->mesh_trans_VAO, kemo_shaders);
@@ -237,7 +274,9 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
             drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
         };
         draw_PSF_solid_objects_VAO(view_matrices, lights,
-                                   kemo_VAOs->psf_solid_VAO, kemo_shaders);
+                                   kemo_VAOs->psf_solid_VAO,
+                                   kemo_VAOs->psf_solid_index_VAO,
+                                   kemo_shaders);
 
         glDisable(GL_CULL_FACE);
         drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
@@ -250,7 +289,9 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
         drawgl_lines(view_matrices, kemo_VAOs->grid_line_VAO, kemo_shaders);
     
         draw_PSF_trans_objects_VAO(view_matrices, lights,
-                                   kemo_VAOs->psf_trans_VAO, kemo_shaders);
+                                   kemo_VAOs->psf_trans_VAO,
+                                   kemo_VAOs->psf_trans_index_VAO,
+                                   kemo_shaders);
         draw_trans_mesh_VAO(view_matrices,  lights, 
                             kemo_VAOs->mesh_trans_VAO, kemo_shaders);
     }
@@ -276,8 +317,12 @@ static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers
                                            struct kemoview_VAOs *kemo_VAOs,
                                            struct kemoview_shaders *kemo_shaders){
 /* Set Transparent Objects */
-    set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf,
-                              kemo_VAOs->psf_trans_VAO);
+    set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf,
+                              kemo_buffers->PSF_ttxur_buf,
+                              kemo_buffers->PSF_node_buf,
+                              kemo_buffers->PSF_trns_index_buf,
+                              kemo_VAOs->psf_trans_VAO,
+                              kemo_VAOs->psf_trans_index_VAO);
     Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
     return;
 };
@@ -303,7 +348,9 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
                                   kemo_buffers->PSF_isotube_buf, kemo_buffers->PSF_isoline_buf,
-                                  kemo_buffers->PSF_arrow_buf, kemo_VAOs->psf_solid_VAO);
+                                  kemo_buffers->PSF_arrow_buf, kemo_VAOs->psf_solid_VAO,
+                                  kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
+                                  kemo_VAOs->psf_solid_index_VAO);
         
         Const_VAO_4_Phong(kemo_VAOs->mesh_solid_VAO[0],  kemo_buffers->mesh_solid_buf);
         Const_VAO_4_Simple(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);

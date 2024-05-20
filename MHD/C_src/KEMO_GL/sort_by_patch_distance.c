@@ -145,6 +145,7 @@ const int sort_zbuf_ele_by_bitonic(long lnum, long narrayP2, double *z_ele_viz, 
     bitonicsort_Double_Pthread(numThread, narrayP2, z_ele_viz, ldx_tmp);
     return 0;
 }
+/*
 #ifdef __APPLE__
 const int sort_zbuf_ele_by_vDSP(long lnum, double *z_ele_viz, long *ldx_tmp){
     int i;
@@ -161,14 +162,18 @@ const int sort_zbuf_ele_by_vDSP(long lnum, double *z_ele_viz, long *ldx_tmp){
     return 0;
 }
 #endif
+*/
 
 void select_sort_zbuf_ele(long lnum, long narrayP2, double *z_ele_viz, long *idx_tmp){
     if(lnum < 65536){
+/*
 #ifdef __APPLE__
         sort_zbuf_ele_by_vDSP(lnum, z_ele_viz, idx_tmp);
 #else
         sort_zbuf_ele_by_quicksort(lnum, z_ele_viz, idx_tmp);
 #endif
+*/
+        sort_zbuf_ele_by_quicksort(lnum, z_ele_viz, idx_tmp);
     }else{
         sort_zbuf_ele_by_bitonic(lnum, narrayP2, z_ele_viz, idx_tmp);
     };

@@ -542,6 +542,7 @@ m_kemoview_fline.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -739,6 +740,7 @@ m_kemoview_object_buffers.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -864,6 +866,7 @@ m_kemoview_psf.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1010,6 +1013,7 @@ m_kemoviewer_structure.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1498,6 +1502,7 @@ read_data_4_kemoviewer.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1906,6 +1911,7 @@ set_each_fline_parameters.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -2128,6 +2134,7 @@ set_kemoviewer_ucd_data.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -2435,6 +2442,7 @@ set_psf_texture_by_png.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \

@@ -322,7 +322,9 @@ set_psf_viewer.o: \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
  $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 set_rgb_colors_c.o: \
  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.c \

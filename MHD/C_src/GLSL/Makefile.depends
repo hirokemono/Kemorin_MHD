@@ -105,6 +105,7 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -262,6 +263,7 @@ draw_PSF_patches_by_VAO.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -417,6 +419,7 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -570,6 +573,7 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -727,6 +731,7 @@ init_gl_lighting_c.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -881,6 +886,7 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1038,6 +1044,7 @@ move_draw_objects_gl.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1194,6 +1201,7 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1347,6 +1355,7 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1502,6 +1511,7 @@ vartex_array_object_gl.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
@@ -1661,6 +1671,7 @@ write_gl_window_to_file.o: \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
