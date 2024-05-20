@@ -81,7 +81,8 @@ static void mainloop_4_glfw(){
         set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
-            while (gtk_events_pending()) gtk_main_iteration();
+//            while (gtk_events_pending()) gtk_main_iteration();
+            while (g_main_context_pending(NULL)) g_main_context_iteration(NULL, TRUE);
             jcou++;
         };
 	};
@@ -234,6 +235,24 @@ static void tako_callback (GSimpleAction *simple,
 }
 
 /* Main GTK window */
+static void open_file_CB(GtkButton *button, gpointer user_data){
+    struct kv_string *filename;
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+
+    int iflag_set = kemoview_gtk_read_file_select(button, user_data);
+    if(iflag_set == IZERO) return;
+    GtkEntry *entry = GTK_ENTRY(user_data);
+    GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
+    filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+    
+    open_kemoviewer_file_glfw(kemo_sgl, kemo_gl, filename, mbot, window_main);
+    return;
+};
+
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct gl_texure_image *render_image = alloc_kemoview_gl_texure();
     if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
@@ -260,6 +279,65 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     dealloc_kemoview_gl_texure(fliped_img);
     return;
 }
+
+static void image_save_CB(GtkButton *button, gpointer user_data){
+    struct main_buttons *mbot =        (struct main_buttons *)    g_object_get_data(G_OBJECT(user_data), "buttons");
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    int iflag_set = kemoview_gtk_save_file_select(button, user_data);
+    int id_imagefmt_by_input;
+    int i_quilt;
+    
+    if(iflag_set == IZERO) return;
+    
+    int iflag_quilt = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+
+    GtkEntry *entry = GTK_ENTRY(user_data);
+    struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    
+    kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+    id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
+    if(id_imagefmt_by_input < 0) {
+        id_imagefmt_by_input = mbot->id_iamge_format;
+        kemoview_free_kvstring(file_prefix);
+        file_prefix = kemoview_init_kvstring_by_string(filename->string);
+    };
+    if(id_imagefmt_by_input == 0) return;
+    kemoview_free_kvstring(filename);
+    kemoview_free_kvstring(stripped_ext);
+    
+    printf("header: %s\n", file_prefix->string);
+    if(iflag_quilt == 0){
+        kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      npix_x, npix_y, image);
+    } else {
+        int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+        int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+        unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
+                                                                      (nimg_raw * npix_y));
+        for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
+            draw_quilt(i_quilt, kemo_sgl);
+            kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+            kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
+        };
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      (nimg_column * npix_x),
+                                      (nimg_raw * npix_y), quilt_image);
+        free(quilt_image);
+        printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+        draw_full(kemo_sgl);
+    }
+    free(image);
+    kemoview_free_kvstring(file_prefix);
+    
+    return;
+};
+
 /*
 static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
     struct main_buttons *mbot = (struct main_buttons *)user_data;
@@ -349,12 +427,37 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
+
+    GtkWidget *entry_file = gtk_entry_new();
+    g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer)   gtk_win);
+    g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
+    g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) single_kemoview);
+    g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_sgl_gl);
+
+    GtkWidget *open_Button = gtk_button_new_with_label("Open...");
+    g_signal_connect(G_OBJECT(open_Button), "clicked",
+                     G_CALLBACK(open_file_CB), (gpointer)entry_file);
+    GtkWidget *hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_open), menuGrid, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_open), gtk_label_new("File: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_open), entry_file, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_open), open_Button, FALSE, FALSE, 0);
+    
+
+    GtkWidget *entry_image_file = gtk_entry_new();
+    g_object_set_data(G_OBJECT(entry_image_file), "parent", (gpointer) gtk_win);
+    GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
+    g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
+                     G_CALLBACK(image_save_CB), (gpointer)entry_file);
+
+
     GtkWidget *topbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(topbox), menuGrid, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(topbox), imageSave_Button, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), copyButton, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), quitButton, TRUE, TRUE, 0);
 
     
+    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), topbox, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;

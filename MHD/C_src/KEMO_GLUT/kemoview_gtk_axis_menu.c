@@ -152,5 +152,5 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
     gtk_box_pack_start(GTK_BOX(vbox), hbox_tangent_cyl, TRUE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_ICB_radius, TRUE, FALSE, 0);
 
-    return wrap_into_scroll_expansion_gtk("Axis and grids", 320, 240, window, vbox);
+    return wrap_into_scroll_expansion_gtk("Axis and grids", 200, 240, window, vbox);
 }

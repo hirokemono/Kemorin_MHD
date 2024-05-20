@@ -197,8 +197,8 @@ static void set_GTK_preference_menu(struct kemoviewer_type *kemoviewer_data,
 	return;
 }
 
-GtkWidget * init_lighting_vbox(struct kemoviewer_type *kemoviewer_data,
-                               struct preference_gtk_menu *pref_gmenu){
+GtkWidget * init_lighting_frame(struct kemoviewer_type *kemoviewer_data,
+                                struct preference_gtk_menu *pref_gmenu){
     GtkWidget * light_vbox;
     
     float color[4];
@@ -254,19 +254,10 @@ GtkWidget * init_lighting_vbox(struct kemoviewer_type *kemoviewer_data,
     gtk_box_pack_start(GTK_BOX(light_vbox), pref_gmenu->pref_hbox[1], FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(light_vbox), pref_gmenu->pref_hbox[2], FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(light_vbox), pref_gmenu->pref_hbox[3], FALSE, FALSE, 0);
+
+    light_vbox = wrap_into_frame_gtk("Light parameters", light_vbox);
     return light_vbox;
 }
-
-GtkWidget * init_lighting_expander(struct kemoviewer_type *kemoviewer_data,
-                                   struct preference_gtk_menu *pref_gmenu,
-                                   GtkWidget *window){
-    GtkWidget *expander_light;
-    GtkWidget *hbox = init_lighting_vbox(kemoviewer_data, pref_gmenu);
-    expander_light = wrap_into_scroll_expansion_gtk("Light parameters", 160, 240,
-                                                    window, hbox);
-    return expander_light;
-}
-
 
 static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
                                  struct rotation_gtk_menu *rot_gmenu,
@@ -465,12 +456,12 @@ static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
     
     GtkWidget * FPS_frame = wrap_into_frame_gtk("FPS test", pref_gmenu->FPStest_hbox);
 
-    GtkWidget *expander_light = init_lighting_expander(kemoviewer_data, pref_gmenu, window);
+    GtkWidget *lighting_frame = init_lighting_frame(kemoviewer_data, pref_gmenu);
     
     pref_gmenu->pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), NumThread_frame, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->BGselButton, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), expander_light, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), lighting_frame, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), Tube_frame, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), Shading_frame, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), coastline_frame, FALSE, FALSE, 0);
