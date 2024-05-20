@@ -171,20 +171,6 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end,
         map_itp->inod_org_4_map_itp[2*(icou+i)+1] = ie_patch[i2];
         map_itp->coef_4_map_itp[2*(icou+i)  ] = coef_cut[2*i  ];
         map_itp->coef_4_map_itp[2*(icou+i)+1] = coef_cut[2*i+1];
-        
-        if(iele == 230159){
-            printf("tri: %lf %lf %lf    %lf %lf %lf   %lf %lf %lf \n",
-                   xyz_tri[3*0], xyz_tri[3*0+1], xyz_tri[3*0+2],
-                   xyz_tri[3*1], xyz_tri[3*1+1], xyz_tri[3*1+2],
-                   xyz_tri[3*2], xyz_tri[3*2+1], xyz_tri[3*2+2]
-                   );
-            printf("ie_patch: %d: %d %d:     %d %d %d  %d %d %d %d \n", iele, i1, i2, 
-                   ie_patch[0], ie_patch[1], ie_patch[2],
-                   ie_patch[3], ie_patch[4], ie_patch[5], ie_patch[6]);
-            printf("coefs_lo: %d %d  %d  %d %d %le %le \n", iele, icou+i, iflag_add,
-                   map_itp->inod_org_4_map_itp[2*(icou+i)], map_itp->inod_org_4_map_itp[2*(icou+i)+1],
-                   map_itp->coef_4_map_itp[2*(icou+i)], map_itp->coef_4_map_itp[2*(icou+i)+1]);
-        }
     };
 
     for (k=0; k<3; k++) {
@@ -222,15 +208,7 @@ static void cut_patches_for_map_tri(struct psf_data *viz_tmp, struct psf_data *v
         if(iflag_add > 0) lcou = lcou + 1;
 
 	}
-
-    
-    for(iele=map_itp->nnod_added_4_map-2; iele<map_itp->nnod_added_4_map; iele++){
-        printf("coefs: %d %d %d %le %le \n", iele,
-               map_itp->inod_org_4_map_itp[2*iele], map_itp->inod_org_4_map_itp[2*iele+1],
-               map_itp->coef_4_map_itp[2*iele], map_itp->coef_4_map_itp[2*iele+1]);
-    }
-    printf("count: %d %d   %d %d\n",kcou, lcou, map_itp->nnod_added_4_map, icou_nod);
-	return;
+    return;
 }
 
 static void cut_patches_for_map_quad(struct psf_data *viz_tmp, struct psf_data *viz_s,
@@ -308,7 +286,7 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
 }
 
 long set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
-    shift_longitude(0.01, viz_tmp);
+//    shift_longitude(0.00, viz_tmp);
 
     
     
