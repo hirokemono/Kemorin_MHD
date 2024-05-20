@@ -17,122 +17,6 @@ void const_PSF_gl_texure_name(const int ipsf_texured,
     return;
 };
 
-void Const_VAO_Index_Simple(struct VAO_ids *VAO,
-                            struct gl_strided_buffer *strided_buf,
-                            struct gl_index_buffer *index_buf){
-    VAO->npoint_draw = index_buf->ntot_vertex;
-    if(VAO->npoint_draw <= 0) return;
-    
-    glBindVertexArray(VAO->id_VAO);
-    glDeleteBuffers(1, &VAO->id_vertex);
-    
-    glGenBuffers(1, &VAO->id_vertex);
-    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
-                 strided_buf->v_buf, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-    
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    
-
-/* Create index buffer on GPU, and then copy from CPU */
-    glDeleteBuffers(1, &VAO->id_index);
-    glGenBuffers(1, &VAO->id_index);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (VAO->npoint_draw * sizeof(unsigned int)),
-                 index_buf->ie_buf, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-};
-
-
-void Const_VAO_Index_Phong(struct VAO_ids *VAO,
-                           struct gl_strided_buffer *strided_buf,
-                           struct gl_index_buffer *index_buf){
-    VAO->npoint_draw = index_buf->ntot_vertex;
-    if(VAO->npoint_draw <= 0) return;
-
-    GLenum ErrorCheckValue = glGetError();
-
-    glDeleteBuffers(1, &VAO->id_vertex);
-
-    glGenBuffers(1, &VAO->id_vertex);
-    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
-                 strided_buf->v_buf, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
-    
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glBindVertexArray(0);
-
-    glBindVertexArray(VAO->id_VAO);
-
-/* Create index buffer on GPU, and then copy from CPU */
-    glDeleteBuffers(1, &VAO->id_index);
-    glGenBuffers(1, &VAO->id_index);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (VAO->npoint_draw * sizeof(unsigned int)),
-                 index_buf->ie_buf, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    return;
-};
-
-
-
-void Const_VAO_Index_Phong_Texture(struct VAO_ids *VAO,
-                                   struct gl_strided_buffer *strided_buf,
-                                   struct gl_index_buffer *index_buf){
-    VAO->npoint_draw = index_buf->ntot_vertex;
-    if(VAO->npoint_draw <= 0) return;
-
-    glBindVertexArray(VAO->id_VAO);
-    glDeleteBuffers(1, &VAO->id_vertex);
-    
-    glGenBuffers(1, &VAO->id_vertex);
-    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
-                 strided_buf->v_buf, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, strided_buf->istride,
-                          (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-
-/* Create index buffer on GPU, and then copy from CPU */
-    glGenBuffers(1, &VAO->id_index);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (VAO->npoint_draw * sizeof(unsigned int)),
-                 index_buf->ie_buf, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    return;
-};
 
 
 void release_PSF_texture_from_gl(const int ipsf_texured, struct kemoview_shaders *kemo_shaders){
@@ -147,11 +31,11 @@ void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct g
                                struct gl_index_buffer *PSF_solid_index_buf, struct gl_index_buffer *PSF_stxur_index_buf,
                                struct VAO_ids **psf_solid_index_VAO){
     Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);
-    Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);
-    Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isotube_buf);
-    Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf);
+    Const_Phong_VAO(psf_solid_VAO[0], PSF_solid_buf);
+    Const_Phong_VAO(psf_solid_VAO[2], PSF_isotube_buf);
+    Const_Phong_VAO(psf_solid_VAO[3], PSF_arrow_buf);
 
-    Const_VAO_Index_Phong(psf_solid_index_VAO[0], PSF_node_buf, PSF_solid_index_buf);
+    Const_Phong_Index_VAO(psf_solid_index_VAO[0], PSF_node_buf, PSF_solid_index_buf);
     Const_VAO_Index_Phong_Texture(psf_solid_index_VAO[1], PSF_node_buf, PSF_stxur_index_buf);
 
     return;
@@ -164,10 +48,10 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf,
                                struct gl_index_buffer   *PSF_ttxur_index_buf,
                                struct VAO_ids **psf_trans_VAO,
                                struct VAO_ids **psf_trans_index_VAO){
-    Const_VAO_Index_Phong(psf_trans_index_VAO[0], PSF_node_buf, PSF_trns_index_buf);
+    Const_Phong_Index_VAO(psf_trans_index_VAO[0], PSF_node_buf, PSF_trns_index_buf);
     Const_VAO_Index_Phong_Texture(psf_trans_index_VAO[1], PSF_node_buf, PSF_ttxur_index_buf);
 
-    Const_VAO_4_Phong(psf_trans_VAO[0], PSF_trns_buf);
+    Const_Phong_VAO(psf_trans_VAO[0], PSF_trns_buf);
     Const_VAO_4_Phong_Texture(psf_trans_VAO[1], PSF_ttxur_buf);
     return;
 };

@@ -329,7 +329,7 @@ static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers
                               kemo_buffers->PSF_ttxur_index_buf,
                               kemo_VAOs->psf_trans_VAO,
                               kemo_VAOs->psf_trans_index_VAO);
-    Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
+    Const_Phong_VAO(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
     return;
 };
 
@@ -339,19 +339,19 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct kemoview_VAOs *kemo_VAOs,
                                     struct kemoview_shaders *kemo_shaders){
     if(view_s->iflag_view_type == VIEW_MAP){
-        Const_VAO_Index_Simple(kemo_VAOs->map_index_VAO, kemo_buffers->PSF_node_buf,
+        Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO, kemo_buffers->PSF_node_buf,
                                kemo_buffers->MAP_solid_index_buf);
 
-        Const_VAO_4_Simple(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
-        Const_VAO_4_Simple(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
+        Const_Simple_VAO(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
+        Const_Simple_VAO(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
         
-        Const_VAO_4_Simple(kemo_VAOs->map_VAO[2], kemo_buffers->coast_tube_buf);
-        Const_VAO_4_Simple(kemo_VAOs->map_VAO[3], kemo_buffers->coast_line_buf);
+        Const_Simple_VAO(kemo_VAOs->map_VAO[2], kemo_buffers->coast_tube_buf);
+        Const_Simple_VAO(kemo_VAOs->map_VAO[3], kemo_buffers->coast_line_buf);
     }else{
-        Const_VAO_4_Phong(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
+        Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
         
-        Const_VAO_4_Phong(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
-        Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
+        Const_Phong_VAO(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
+        Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
         
         const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);
@@ -361,24 +361,24 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                   kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
                                   kemo_buffers->PSF_stxur_index_buf, kemo_VAOs->psf_solid_index_VAO);
         
-        Const_VAO_4_Phong(kemo_VAOs->mesh_solid_VAO[0],  kemo_buffers->mesh_solid_buf);
-        Const_VAO_4_Simple(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);
-        Const_VAO_4_Phong(kemo_VAOs->mesh_solid_VAO[2],  kemo_buffers->mesh_node_buf);
+        Const_Phong_VAO(kemo_VAOs->mesh_solid_VAO[0],  kemo_buffers->mesh_solid_buf);
+        Const_Simple_VAO(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);
+        Const_Phong_VAO(kemo_VAOs->mesh_solid_VAO[2],  kemo_buffers->mesh_node_buf);
         
-        Const_VAO_4_Simple(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
-        Const_VAO_4_Phong(kemo_VAOs->grid_tube_VAO, kemo_buffers->coast_tube_buf);
+        Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
+        Const_Phong_VAO(kemo_VAOs->grid_tube_VAO, kemo_buffers->coast_tube_buf);
         
         /* Set Transparent Objects */
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
     };
     
-    Const_VAO_4_Simple(kemo_VAOs->cbar_VAO[0], kemo_buffers->cbar_buf);
-    const_texture_VBO(kemo_buffers->cbar_min_buf->image,  kemo_buffers->cbar_min_buf->vertex,  kemo_VAOs->cbar_VAO[1]);
-    const_texture_VBO(kemo_buffers->cbar_max_buf->image,  kemo_buffers->cbar_max_buf->vertex,  kemo_VAOs->cbar_VAO[2]);
-    const_texture_VBO(kemo_buffers->cbar_zero_buf->image, kemo_buffers->cbar_zero_buf->vertex, kemo_VAOs->cbar_VAO[3]);
-    const_texture_VBO(kemo_buffers->timelabel_buf->image, kemo_buffers->timelabel_buf->vertex, kemo_VAOs->time_VAO);
+    Const_Simple_VAO(kemo_VAOs->cbar_VAO[0], kemo_buffers->cbar_buf);
+    Const_texture_VAO(kemo_buffers->cbar_min_buf->image,  kemo_buffers->cbar_min_buf->vertex,  kemo_VAOs->cbar_VAO[1]);
+    Const_texture_VAO(kemo_buffers->cbar_max_buf->image,  kemo_buffers->cbar_max_buf->vertex,  kemo_VAOs->cbar_VAO[2]);
+    Const_texture_VAO(kemo_buffers->cbar_zero_buf->image, kemo_buffers->cbar_zero_buf->vertex, kemo_VAOs->cbar_VAO[3]);
+    Const_texture_VAO(kemo_buffers->timelabel_buf->image, kemo_buffers->timelabel_buf->vertex, kemo_VAOs->time_VAO);
     
-    const_texture_VBO(kemo_buffers->message_buf->image,   kemo_buffers->message_buf->vertex,  kemo_VAOs->msg_VAO);
+    Const_texture_VAO(kemo_buffers->message_buf->image,   kemo_buffers->message_buf->vertex,  kemo_VAOs->msg_VAO);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };
@@ -391,9 +391,9 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                                 struct kemoview_shaders *kemo_shaders){
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == SIMPLE_DRAW){
-        Const_VAO_4_Simple(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
-        Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
-        Const_VAO_4_Simple(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_isoline_buf);
+        Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
+        Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
+        Const_Simple_VAO(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_isoline_buf);
         
         set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
@@ -407,7 +407,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
             set_fast_buffers(kemo_psf, kemo_fline, kemo_mesh,
                              view_s, kemo_buffers);
             
-            Const_VAO_4_Phong(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
+            Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
         }else{
             set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
@@ -479,7 +479,7 @@ void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                         kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(anaglyph_image, kemoview->kemo_buffers->screen_buf,
+    Const_texture_VAO(anaglyph_image, kemoview->kemo_buffers->screen_buf,
                       kemo_gl->kemo_VAOs->screen_VAO);
 
     double *orthogonal = orthogonal_projection_mat_c(0.0, kemoview->view_s->nx_frame,

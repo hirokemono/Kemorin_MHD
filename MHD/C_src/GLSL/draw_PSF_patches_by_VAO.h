@@ -20,12 +20,6 @@
 #include "drawGL_by_VAO.h"
 
 /* prototypes */
-void Const_VAO_Index_Simple(struct VAO_ids *VAO,
-                            struct gl_strided_buffer *strided_buf,
-                            struct gl_index_buffer *index_buf);
-void Const_VAO_Index_Phong(struct VAO_ids *VAO,
-                           struct gl_strided_buffer *strided_buf,
-                           struct gl_index_buffer *index_buf);
 void drawgl_patch_index_phong(struct transfer_matrices *matrices,
                               struct phong_lights *lights,
                               struct kemoview_shaders *kemo_shaders,
