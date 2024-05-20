@@ -3,6 +3,20 @@
 
 @implementation fillRectView
 
+
+BOOL appearanceIsDark(NSAppearance * appearance)
+{
+    if (@available(macOS 10.14, *)) {
+        NSAppearanceName basicAppearance = [appearance bestMatchFromAppearancesWithNames:@[
+            NSAppearanceNameAqua,
+            NSAppearanceNameDarkAqua
+        ]];
+        return [basicAppearance isEqualToString:NSAppearanceNameDarkAqua];
+    } else {
+        return NO;
+    }
+}
+
 - (void)drawRect:(NSRect)frameRect
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
@@ -90,10 +104,18 @@
 }
 
 - (void)drawString:(NSString*)string x:(double)x y:(double)y {
-    NSDictionary* attr=[NSDictionary dictionaryWithObjectsAndKeys:
-						[NSFont systemFontOfSize:10.0f],NSFontAttributeName,//フォントサイズ
-						[NSColor blackColor],NSForegroundColorAttributeName,//フォント色
-						nil];
+    NSDictionary* attr;
+    if(appearanceIsDark(self.effectiveAppearance)){
+        attr=[NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSFont systemFontOfSize:10.0f],NSFontAttributeName,
+                            [NSColor whiteColor],NSForegroundColorAttributeName,
+                            nil];
+    }else{
+        attr=[NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSFont systemFontOfSize:10.0f],NSFontAttributeName,
+                            [NSColor blackColor],NSForegroundColorAttributeName,
+                            nil];
+    };
     
     NSPoint point;
     point.x = x;

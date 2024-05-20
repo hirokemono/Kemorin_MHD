@@ -9,9 +9,9 @@
 
 #include "set_color_code_on_nodes.h"
 
-static double black[4] =   {0.1,0.1,0.1,WHITE_A};
-static double gray[4] =   {0.2,0.2,0.2,0.5};
-static double white[4] =   {0.9,0.9,0.9,BLACK_A};
+static const double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
+static const double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
+static const double gray[4] =    {0.2,0.2,0.2,0.5};
 
 static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int inod, nd;

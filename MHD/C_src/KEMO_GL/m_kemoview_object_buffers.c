@@ -151,8 +151,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
         if(view_s->shading_mode == SMOOTH_SHADE){
-            set_map_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_m,
-                                kemo_psf->psf_a, kemo_buffers->PSF_node_buf);
+            set_map_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_a,
+                                kemo_buffers->PSF_node_buf);
             const_PSF_patch_index_buffer(kemo_buffers->nthreads,
                                          IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
                                          kemo_psf->psf_d, kemo_psf->psf_a,

@@ -16,7 +16,6 @@
     NSRect  rectList2[RECTCOUNT];
     NSColor *colors[RECTCOUNT];
 	NSColor *color_w_opaciy[RECTCOUNT];
-
 }
 
 - (void)UpdateColorbar;

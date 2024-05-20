@@ -411,6 +411,8 @@
 		18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
 		18D824A32BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
 		18D824A42BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
+		18EAA6CB2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
+		18EAA6CC2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
 		18EAC1A22BF7F4E8002CEB77 /* set_primitives_to_gl_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAC1A12BF7F4E7002CEB77 /* set_primitives_to_gl_buffer.c */; };
 		18EAC1A32BF7F4E8002CEB77 /* set_primitives_to_gl_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAC1A12BF7F4E7002CEB77 /* set_primitives_to_gl_buffer.c */; };
 		18EC9F2826D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */; };
@@ -846,6 +848,8 @@
 		18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
 		18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
 		18D824A22BE4A0A70067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
+		18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_MAP_patches_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.c; sourceTree = "<group>"; };
+		18EAA6CD2BFBBE92004BE670 /* pthread_MAP_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pthread_MAP_patches_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.h; sourceTree = "<group>"; };
 		18EAC1A12BF7F4E7002CEB77 /* set_primitives_to_gl_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_primitives_to_gl_buffer.c; path = ../../../C_src/KEMO_GL/set_primitives_to_gl_buffer.c; sourceTree = "<group>"; };
 		18EAC1A42BF7F4F7002CEB77 /* set_primitives_to_gl_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = set_primitives_to_gl_buffer.h; path = ../../../C_src/KEMO_GL/set_primitives_to_gl_buffer.h; sourceTree = "<group>"; };
 		18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_quilt_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.c; sourceTree = "<group>"; };
@@ -1266,6 +1270,8 @@
 				1899DCD22BF507D60041DE84 /* pthread_PSF_arrows_to_buf.h */,
 				1899DCD32BF507D60041DE84 /* pthread_PSF_patches_to_buf.c */,
 				1899DCD02BF507D60041DE84 /* pthread_PSF_patches_to_buf.h */,
+				18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */,
+				18EAA6CD2BFBBE92004BE670 /* pthread_MAP_patches_to_buf.h */,
 				1899DCDE2BF508790041DE84 /* const_mesh_patch_table_for_gl.c */,
 				1899DCDF2BF508790041DE84 /* const_mesh_patch_table_for_gl.h */,
 				1809BED82B8FF9120008A294 /* set_texture_4_psf.c */,
@@ -1553,6 +1559,7 @@
 				1809BC5C2B8FDD8A0008A294 /* tree_view_kemoview_colormap.c in Sources */,
 				1809BD032B8FF1E50008A294 /* coordinate_converter_c.c in Sources */,
 				1809BCF32B8FF1E50008A294 /* read_grouping_mesh_c.c in Sources */,
+				18EAA6CC2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */,
 				1809BF5A2B8FF9160008A294 /* set_psf_texture_by_png.c in Sources */,
 				1809BD172B8FF1E50008A294 /* t_all_field_control_c.c in Sources */,
 				1809BF542B8FF9160008A294 /* draw_fieldlines.c in Sources */,
@@ -1747,6 +1754,7 @@
 				18A91E8824B9318500D30C46 /* tree_view_kemoview_colormap.c in Sources */,
 				1809BD022B8FF1E50008A294 /* coordinate_converter_c.c in Sources */,
 				1809BCF22B8FF1E50008A294 /* read_grouping_mesh_c.c in Sources */,
+				18EAA6CB2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */,
 				1809BF592B8FF9160008A294 /* set_psf_texture_by_png.c in Sources */,
 				1809BD162B8FF1E50008A294 /* t_all_field_control_c.c in Sources */,
 				1809BF532B8FF9160008A294 /* draw_fieldlines.c in Sources */,

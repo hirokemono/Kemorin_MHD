@@ -141,17 +141,13 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
 
 
 long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
-                          struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                          struct psf_data *psf_s,
                           struct gl_strided_buffer *strided_buf){
     double rtpw[4] =   {1.0, 0.0, 0.0, 1.0};
     double map_xy[4] = {0.0, 0.0, 0.0002, 1.0};;
     double normal[4] = {0.0, 0.0, 1.0, 1.0};
-    double pi = FOUR * atan(ONE);
-    long inod, ist, ied;
     long inum_nod = ipatch_in;
-    ist = ist_nod;
-    ied = ist_nod+num - 2*psf_m->nadded_for_phi0;
-    for(inod=ist;inod<ist_nod+num ;inod++){
+    for(long inod=ist_nod;inod<ist_nod+num ;inod++){
         rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
         rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
@@ -162,37 +158,6 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                              &psf_s->rt_viz[ITWO*inod],
                                              strided_buf);
     }
-/*
-    ist = ist_nod+num - 2*psf_m->nadded_for_phi0;
-    ied = ist_nod+num -   psf_m->nadded_for_phi0;
-    for(inod=ist;inod<ied;inod++){
-        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
-        rtpw[2] = 0;
-        aitoff_c(IONE, &rtpw[0], &map_xy[0]);
-
-        inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
-                                             map_xy, normal,
-                                             &psf_s->color_nod[IFOUR*inod],
-                                             &psf_s->rt_viz[ITWO*inod],
-                                             strided_buf);
-    }
-    printf("reverse\n" );
-    ist = ist_nod+num -   psf_m->nadded_for_phi0;
-    ied = ist_nod+num;
-    for(inod=ist;inod<ied;inod++){
-        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
-        rtpw[2] = 2*pi;
-        aitoff_c(IONE, &rtpw[0], &map_xy[0]);
-
-        inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
-                                             map_xy, normal,
-                                             &psf_s->color_nod[IFOUR*inod],
-                                             &psf_s->rt_viz[ITWO*inod],
-                                             strided_buf);
-    }
-*/
     return inum_nod;
 }
 

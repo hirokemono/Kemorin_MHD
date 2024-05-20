@@ -18,7 +18,7 @@
 long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
                               double *norm_nod, double *color_nod, double *xy_txur,
                               struct gl_strided_buffer *strided_buf);
- long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
+long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
                               double norm_tri[12], double color_tri[12],
                               struct gl_strided_buffer *strided_buf);
 long set_line_strided_buffer(const long ist_line,

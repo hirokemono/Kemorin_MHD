@@ -33,6 +33,7 @@ NSData *SnapshotData;
 	self.EvolutionEndStep =   1;
 	self.EvolutionIncrement = 1;
 	
+    self.NumTeetRotation = 2;
 	return self;
 }
 
