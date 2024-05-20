@@ -70,6 +70,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static long set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
+    cal_colat_and_longitude(0, ucd_tmp);
     long nadded_for_phi0 = set_viewer_data_with_mapping(psf_s, ucd_tmp);
     
 	take_normal_psf(nadded_for_phi0, psf_s);

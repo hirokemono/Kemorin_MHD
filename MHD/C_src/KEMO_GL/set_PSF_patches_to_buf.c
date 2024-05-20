@@ -151,9 +151,9 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
     long inum_nod = ipatch_in;
     ist = ist_nod;
     ied = ist_nod+num - 2*psf_m->nadded_for_phi0;
-    for(inod=ist;inod<ied;inod++){
+    for(inod=ist;inod<ist_nod+num ;inod++){
         rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = fmod(psf_s->rt_viz[ITWO*inod+1]+pi,(TWO*pi));
+        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
@@ -162,14 +162,13 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                              &psf_s->rt_viz[ITWO*inod],
                                              strided_buf);
     }
-
+/*
     ist = ist_nod+num - 2*psf_m->nadded_for_phi0;
     ied = ist_nod+num -   psf_m->nadded_for_phi0;
     for(inod=ist;inod<ied;inod++){
         rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = fmod(psf_s->rt_viz[ITWO*inod+1]+pi,(TWO*pi));
-        if(rtpw[2]  != 0.) printf("phi %d %le \n", inod, rtpw[2]);
-        rtpw[2] = ZERO;
+        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
+        rtpw[2] = 0;
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
@@ -183,9 +182,8 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
     ied = ist_nod+num;
     for(inod=ist;inod<ied;inod++){
         rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = fmod(psf_s->rt_viz[ITWO*inod+1]+pi,(TWO*pi));
-        if(rtpw[2] != 0.) printf("phi %d %le \n", inod, rtpw[2]);
-        rtpw[2] = TWO * pi;
+        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
+        rtpw[2] = 2*pi;
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
@@ -194,7 +192,8 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                              &psf_s->rt_viz[ITWO*inod],
                                              strided_buf);
     }
-   return inum_nod;
+*/
+    return inum_nod;
 }
 
 long set_map_patch_to_buf(long ist_patch, long ist_psf, long ied_psf,

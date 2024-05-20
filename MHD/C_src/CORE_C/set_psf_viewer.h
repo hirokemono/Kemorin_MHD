@@ -15,10 +15,12 @@
 #include "m_fline_data_4_viewer_c.h"
 #include "skip_comment_c.h"
 #include "set_new_patch_4_map_c.h"
+#include "take_normal_psf_c.h"
 
 struct map_interpolate{
     long nnod_org;
     long nnod_added_4_map;
+    long nele_added_4_map;
     long *inod_org_4_map_itp;
     double *coef_4_map_itp;
 };

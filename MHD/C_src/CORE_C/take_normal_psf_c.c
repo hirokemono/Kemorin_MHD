@@ -449,28 +449,45 @@ static void take_minmax_viz_fields(long nfield, long *istack_comp,
 	return;
 }
 
-static void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
+void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
     long i, i1, i2;
     double pi = FOUR * atan(ONE);
-    double *rtpw = (double *)malloc(IFOUR*viz_s->nnod_viz*sizeof(double));
-    if(rtpw  == NULL){
-        printf("malloc error for rtpw \n");
-        exit(0);
-    }
+    double rtpw[4], v_out[3];
     
-    xyzw_to_rtpw_c(viz_s->nnod_viz, viz_s->xyzw_viz, rtpw);
     for(i=0;i<viz_s->nnod_viz;i++){
-        viz_s->rt_viz[2*i  ] = rtpw[4*i+1];
-        viz_s->rt_viz[2*i+1] = rtpw[4*i+2];
-        viz_s->rt_viz[2*i+1] = fmod(rtpw[4*i+2]+pi,(TWO*pi));
-        if(viz_s->rt_viz[2*i+1]*viz_s->rt_viz[2*i+1] < 1.e-24){
-            viz_s->rt_viz[2*i+1] = 2.0 * pi;
-        };
+        xyzw_to_rtpw_c(IONE, &viz_s->xyzw_viz[4*i], rtpw);
+        
+        viz_s->rt_viz[2*i  ] = rtpw[1];
+        viz_s->rt_viz[2*i+1] = rtpw[2];
+        viz_s->rt_viz[2*i+1] = fmod(rtpw[2]+pi,(TWO*pi));
+        if(viz_s->rt_viz[2*i+1]*viz_s->rt_viz[2*i+1] < 1.0e-25){
+            viz_s->rt_viz[2*i+1] = 0.0;
+        }
+
     }
-    for(i=viz_s->nnod_viz-2*nadded_for_phi0;i<viz_s->nnod_viz;i++){
-        viz_s->rt_viz[2*i+1] = 0.0;
+
+    for(i=viz_s->nnod_viz-2.0*nadded_for_phi0;i<viz_s->nnod_viz-nadded_for_phi0;i++){
+//        viz_s->rt_viz[2*i+1] = 0.;
     }
-    free(rtpw);
+    for(i=viz_s->nnod_viz-nadded_for_phi0;i<viz_s->nnod_viz;i++){
+        viz_s->rt_viz[2*i+1] = TWO * pi;
+    }
+    return;
+}
+
+void shift_longitude(double add_phi, struct psf_data *viz_s){
+    long i;
+    double pi = FOUR * atan(ONE);
+    double rtpw[4], v_out[3];
+    double r[3]={0.,0.,0.};
+    
+    for(i=0;i<viz_s->nnod_viz;i++){
+        xyzw_to_rtpw_c(IONE, &viz_s->xyzw_viz[4*i], rtpw);
+        
+        r[0] = rtpw[0];
+        rtpw[2] = fmod(rtpw[2]+add_phi,(TWO*pi));
+        sph_vector_to_xyz_vect(rtpw[1], rtpw[2], r, &viz_s->xyzw_viz[4*i]);
+    }
     return;
 }
 

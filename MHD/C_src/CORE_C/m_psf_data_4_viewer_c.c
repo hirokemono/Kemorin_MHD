@@ -18,6 +18,13 @@ void alloc_viz_node_s(struct psf_data *psf_s){
         printf("malloc error for psf_s->inod_viz \n");
         exit(0);
     }
+    
+    psf_s->rt_viz = (double *)malloc(ITWO*psf_s->nnod_viz*sizeof(double));
+    if(psf_s->rt_viz  == NULL){
+        printf("malloc error for psf_s->rt_viz \n");
+        exit(0);
+    }
+    
 	return;
 };
 
@@ -140,12 +147,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 };
 
 void alloc_psf_norm_s(struct psf_data *psf_s){
-    psf_s->rt_viz = (double *)malloc(ITWO*psf_s->nnod_viz*sizeof(double));
-    if(psf_s->rt_viz  == NULL){
-        printf("malloc error for psf_s->rt_viz \n");
-        exit(0);
-    }
-    
     psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
     if(psf_s->area_viz  == NULL){
         printf("malloc error for psf_s->area_viz \n");
@@ -173,7 +174,6 @@ void dealloc_psf_norm_s(struct psf_data *psf_s){
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
 	free(psf_s->area_viz);
-    free(psf_s->rt_viz);
 	return;
 };
 
@@ -216,7 +216,9 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 	free(psf_s->ie_viz);
 	free(psf_s->inod_viz);
 	free(psf_s->xyzw_viz);
-	return;
+
+    free(psf_s->rt_viz);
+    return;
 }
 
 void deallc_all_psf_data(struct psf_data *psf_s){
