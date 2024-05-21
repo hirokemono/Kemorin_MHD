@@ -81,7 +81,6 @@ static void mainloop_4_glfw(){
         set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
-//            while (gtk_events_pending()) gtk_main_iteration();
             while (g_main_context_pending(NULL)) g_main_context_iteration(NULL, TRUE);
             jcou++;
         };
@@ -186,8 +185,6 @@ static void prefWindowclose_CB (GtkWidget *new_win, gpointer user_data)
 
 static void pref_menu_CB(GtkWidget *menu_item, gpointer user_data)
 {
-    struct preference_gtk_menu *pref_gmenu
-            = (struct preference_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "pref_menu");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
 
@@ -199,8 +196,9 @@ static void pref_menu_CB(GtkWidget *menu_item, gpointer user_data)
     g_signal_connect(G_OBJECT(pref_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
     g_signal_connect(G_OBJECT(pref_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->rot_gmenu,
-                                                  mbot->pref_gmenu, pref_win);
+    GtkWidget *frame_pref = init_preference_frame(kemo_sgl,
+                                                  mbot->lightparams_vws,
+                                                  mbot->rot_gmenu, pref_win);
     gtk_container_add(GTK_CONTAINER(pref_win), frame_pref);
     gtk_widget_show_all(pref_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
@@ -225,13 +223,6 @@ static void evo_menu_CB(GtkWidget *menu_item, gpointer user_data)
     gtk_container_add(GTK_CONTAINER(evo_win), frame_evo);
     gtk_widget_show_all(evo_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
-}
-
-static void tako_callback (GSimpleAction *simple,
-              GVariant      *parameter,
-              gpointer       user_data)
-{
-    g_print ("You clicked \"Tako\"\n");
 }
 
 /* Main GTK window */
@@ -383,16 +374,8 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(gtk_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
 	
 
-    GtkWidget *submenu_widget = gtk_menu_new();
-    GtkWidget *itemTako = gtk_menu_item_new_with_mnemonic ("Tako");
-    gtk_menu_shell_append(GTK_MENU (submenu_widget), itemTako);
-    g_signal_connect(itemTako, "activate", G_CALLBACK (tako_callback), NULL);
-
-
     GtkWidget *menu_widget = gtk_menu_new();
-
     GtkWidget *itemPref = gtk_menu_item_new_with_mnemonic("Preferences...");
-    g_object_set_data(G_OBJECT(itemPref), "pref_menu", (gpointer) mbot->pref_gmenu);
     g_object_set_data(G_OBJECT(itemPref), "kemoview", (gpointer) kemoviewer_data);
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), NULL);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
@@ -403,9 +386,6 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     g_signal_connect(mbot->itemTEvo, "activate", G_CALLBACK (evo_menu_CB), NULL);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), mbot->itemTEvo);
 
-    GtkWidget *imprMi =  gtk_menu_item_new_with_label("Takotako");
-    gtk_menu_item_set_submenu(GTK_MENU_ITEM(imprMi), submenu_widget);
-    gtk_menu_shell_append(GTK_MENU (menu_widget), imprMi);
 
     GtkWidget *menuButton = gtk_menu_button_new();
     gtk_menu_button_set_popup (GTK_MENU_BUTTON (menuButton), menu_widget);

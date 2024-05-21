@@ -27,7 +27,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
 	mbot->rot_gmenu = init_rotation_menu_box();
     mbot->quilt_gmenu = init_quilt_menu_box();
-	mbot->pref_gmenu = init_preference_gtk_menu(kemoviewer_data);
+    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	return mbot;
 };
 
@@ -37,7 +37,7 @@ void dealloc_main_buttons(struct main_buttons *mbot){
     free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
 
-    dealloc_preference_gtk_menu(mbot->pref_gmenu);
+    dealloc_light_views_4_viewer(mbot->lightparams_vws);
 	
 	free(mbot->rot_gmenu);
 	free(mbot->view_menu);

@@ -4,7 +4,7 @@
 
 KEMO_C_GLUTDIR = $$(C_SRCDIR)/KEMO_GLUT
 CURRENTDIR = $(shell pwd)
-SRC_GLUT_C = $(shell ls *.c)
+SRC_GLUT_C = $(shell ls kemoview_*.c tree_view_*.c)
 INC_GLUT_C = $(addsuffix .h,$(basename $(SRC_GLUT_C)) )
 OBJ_GLUT_C = $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
@@ -14,30 +14,7 @@ else
 	OBJ_KEMOVIEW_GLUT = view_modifier_gtk.o
 endif
 
-OBJ_KEMOVIEW_GLUT += \
-kemoview_fileselector_gtk.o \
-kemoview_gtk_PSF_surface_menu.o \
-kemoview_gtk_PSF_isoline_menu.o \
-kemoview_gtk_PSF_vector_menu.o \
-kemoview_gtk_PSF_menu.o \
-kemoview_gtk_mesh_menu.o \
-kemoview_gtk_fline_selectors.o \
-kemoview_gtk_fieldline_menu.o \
-kemoview_gtk_axis_menu.o \
-kemoview_gtk_rotation_menu.o \
-kemoview_gtk_evolution_menu.o \
-kemoview_gtk_quilt_menu.o \
-kemoview_gtk_viewmatrix_menu.o \
-kemoview_gtk_main_menu.o \
-kemoview_gtk_preference_menu.o \
-\
-tree_view_4_light_position.o \
-tree_view_4_domain_viewer.o \
-tree_view_4_ele_group_viewer.o \
-tree_view_4_surf_group_viewer.o \
-tree_view_4_nod_group_viewer.o \
-tree_view_4_viewer_mesh.o \
-tree_view_kemoview_colormap.o
+OBJ_KEMOVIEW_GLUT += $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
 #
 #  ------------------------------------------------------------------

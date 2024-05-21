@@ -194,6 +194,11 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
@@ -406,6 +411,11 @@ kemo_mesh_viewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
@@ -617,6 +627,11 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
@@ -827,6 +842,11 @@ kemoviewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
