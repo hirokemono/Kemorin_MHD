@@ -186,6 +186,8 @@
 	ImageFormatFlag = [[defaults stringForKey:@"ImageFormatID"] intValue];
 	ImageFormatFlag = [[_ImageFormat_item selectedCell] tag];
 
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_integer(IMAGE_FORMAT_FLAG, (int) ImageFormatFlag, kemo_sgl);
 }
 
 @end

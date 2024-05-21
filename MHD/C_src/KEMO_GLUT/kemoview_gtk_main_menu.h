@@ -63,9 +63,6 @@ struct main_buttons{
     
     GtkWidget *expander_quilt;
 	struct quilt_gtk_menu *quilt_gmenu;
-
-	GtkWidget *ComboboxImageFormat;
-	int id_iamge_format;
 };
 
 

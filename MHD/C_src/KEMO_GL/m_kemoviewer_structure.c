@@ -20,11 +20,12 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	/*! Initialize mesh data*/
 	struct kemoviewer_type *kemoviewer_data 
 		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
+    kemoviewer_data->image_format_id = SAVE_PNG;
     
 	kemoview_allocate_pointers(kemoviewer_data);
     
 	init_kemoview_array(kemoviewer_data->kemo_psf->psf_a);
-    
+        
 	init_kemoviewer(IZERO, kemoviewer_data->kemo_mesh->mesh_d,
                     kemoviewer_data->kemo_mesh->mesh_m,
                     kemoviewer_data->view_s);
@@ -402,6 +403,8 @@ void kemoview_set_view_integer(int selected, int ivalue,
         set_coastline_tube_flag(kemoviewer->view_s, ivalue);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
         set_gl_tube_corners(kemoviewer->view_s, ivalue);
+    }else if(selected == IMAGE_FORMAT_FLAG){
+        set_default_image_format_id(kemoviewer, ivalue);
 	}
 	return;
 };
@@ -419,6 +422,8 @@ int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
         ivalue = send_coastline_tube_flag(kemoviewer->view_s);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
         ivalue = send_gl_tube_corners(kemoviewer->view_s);
+    }else if(selected == IMAGE_FORMAT_FLAG){
+        ivalue = send_default_image_format_id(kemoviewer);
     }
     return ivalue;
 };

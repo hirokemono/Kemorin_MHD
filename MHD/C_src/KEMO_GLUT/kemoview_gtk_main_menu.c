@@ -136,17 +136,6 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	return;
 };
 
-static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
-{
-	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(combobox_filefmt), "buttons");
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_filefmt), "kemoview");
-
-	mbot->id_iamge_format = gtk_selected_combobox_index(combobox_filefmt);
-	draw_full(kemo_sgl);
-	return;
-};
-
 static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data)
 {
     GtkWidget *window_main = GTK_WIDGET(user_data);
@@ -511,37 +500,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
                      G_CALLBACK(set_viewtype_CB), (gpointer) mbot->view_menu);
 	
 	
-	GtkWidget *label_tree_image_fileformat = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_image_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_image_fileformat));  
-	GtkTreeModel *child_model_image_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_image_fileformat));
-	index = 0;
-	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_image_fileformat);
-	index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_image_fileformat);
-	index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_image_fileformat);
-	
-	mbot->ComboboxImageFormat = gtk_combo_box_new_with_model(child_model_image_fileformat);
-	GtkCellRenderer *renderer_image_fileformat = gtk_cell_renderer_text_new();
-	mbot->id_iamge_format = NO_SAVE_FILE;
-	if(mbot->id_iamge_format == SAVE_BMP){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(mbot->ComboboxImageFormat), SAVE_BMP);
-	} else if(mbot->id_iamge_format == SAVE_PNG){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(mbot->ComboboxImageFormat), SAVE_PNG);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(mbot->ComboboxImageFormat), NO_SAVE_FILE);
-	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(mbot->ComboboxImageFormat), renderer_image_fileformat, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(mbot->ComboboxImageFormat), renderer_image_fileformat,
-				"text", COLUMN_FIELD_NAME, NULL);
-    g_object_set_data(G_OBJECT(mbot->ComboboxImageFormat), "kemoview",  (gpointer) kemo_sgl);
-    g_object_set_data(G_OBJECT(mbot->ComboboxImageFormat), "buttons", (gpointer)  mbot);
-	g_signal_connect(G_OBJECT(mbot->ComboboxImageFormat), "changed",
-				G_CALLBACK(set_image_fileformat_CB), NULL);
-	
-	
-	GtkWidget *hbox_image_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_image_save), gtk_label_new("Image file: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_image_save), mbot->ComboboxImageFormat, FALSE, FALSE, 0);
-	
 	GtkWidget *hbox_viewtype = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
@@ -559,7 +517,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
                                                     mbot->quilt_gmenu,
                                                     mbot->view_menu, window_main);
 
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_image_save, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_viewtype, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_rot, FALSE, FALSE, 0);

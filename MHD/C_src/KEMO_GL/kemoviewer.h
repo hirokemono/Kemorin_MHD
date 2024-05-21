@@ -244,6 +244,7 @@
 #define LINETYPE_FLAG          46
 #define NUM_TUBE_CORNERS_FLAG  47
 #define COASTLINE_TUBE         48
+#define IMAGE_FORMAT_FLAG      51
 
 #define EPSILON  1.e-9
 

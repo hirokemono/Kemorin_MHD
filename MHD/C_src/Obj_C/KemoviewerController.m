@@ -77,6 +77,9 @@
         kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
     }
     
+    int id_default_image = [[defaults stringForKey:@"ImageFormatID"] intValue];
+    kemoview_set_view_integer(IMAGE_FORMAT_FLAG, id_default_image, kemo_sgl);
+
     self.axisDrawFlag =     kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE);
     self.axisPositionFlag = kemoview_get_object_property_flags(kemo_sgl, AXIS_POSITION);
     self.ShadingMode =      kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);

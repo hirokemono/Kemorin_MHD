@@ -18,6 +18,8 @@
 
 struct kemoviewer_type{
 	int window_ID;
+    int image_format_id;
+
 	
 	struct kemoview_mesh      *kemo_mesh;
 	struct kemoview_psf       *kemo_psf;
@@ -39,6 +41,9 @@ struct mul_kemoviewer_type{
 };
 
 /*  prototype */
+
+void set_default_image_format_id(struct kemoviewer_type *kemo_sgl, int input);
+int send_default_image_format_id(struct kemoviewer_type *kemo_sgl);
 
 #endif
 

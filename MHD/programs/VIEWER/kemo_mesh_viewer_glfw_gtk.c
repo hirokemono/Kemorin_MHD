@@ -293,7 +293,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
     id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
     if(id_imagefmt_by_input < 0) {
-        id_imagefmt_by_input = mbot->id_iamge_format;
+        id_imagefmt_by_input = kemoview_get_view_integer(kemo_sgl, IMAGE_FORMAT_FLAG);;
         kemoview_free_kvstring(file_prefix);
         file_prefix = kemoview_init_kvstring_by_string(filename->string);
     };
