@@ -9,12 +9,12 @@ INC_GLUT_C = $(addsuffix .h,$(basename $(SRC_GLUT_C)) )
 OBJ_GLUT_C = $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
 ifdef GLFW_LIBS
-	OBJ_KEMOVIEW_GLUT = view_modifier_glfw.o
+	SRC_GLUT_C+=  view_modifier_glfw.c
 else
-	OBJ_KEMOVIEW_GLUT = view_modifier_gtk.o
+	SRC_GLUT_C+=  view_modifier_gtk.c
 endif
 
-OBJ_KEMOVIEW_GLUT += $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
+OBJ_KEMOVIEW_GLUT= $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
 #
 #  ------------------------------------------------------------------
