@@ -26,11 +26,11 @@
 #include "kemoview_gtk_quilt_menu.h"
 #include "kemoview_gtk_axis_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_gtk_PSF_menu.h"
-#include "kemoview_gtk_fieldline_menu.h"
 #include "kemoview_gtk_viewmatrix_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_PSF_window.h"
+#include "kemoview_gtk_Fline_window.h"
+#include "kemoview_gtk_viewmode_menu.h"
 
 #ifdef GLFW3
 	#include "view_modifier_glfw.h"

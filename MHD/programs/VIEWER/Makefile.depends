@@ -168,9 +168,11 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.c \
@@ -341,9 +343,11 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_glfw_gtk.c \
@@ -514,9 +518,11 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_gtk.c \
@@ -687,7 +693,9 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
