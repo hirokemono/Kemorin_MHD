@@ -31,6 +31,7 @@
 #include "kemoview_gtk_PSF_window.h"
 #include "kemoview_gtk_Fline_window.h"
 #include "kemoview_gtk_viewmode_menu.h"
+#include "kemoview_gtk_menu_button.h"
 
 #ifdef GLFW3
 	#include "view_modifier_glfw.h"
@@ -40,10 +41,6 @@
 
 
 struct main_buttons{
-	GtkWidget *menuHbox;
-	
-	GtkWidget *vbox_menu;
-
     int id_current[1];
     struct psf_gtk_menu *psf_gmenu;
     struct fieldline_gtk_menu *fline_menu;
@@ -77,24 +74,9 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
                                struct main_buttons *mbot,
                                GtkWidget *window_main);
 
-void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
-                      struct kemoviewer_gl_type *kemo_gl,
-                      struct psf_gtk_menu *psf_gmenu,
-                      GtkWidget *window);
-void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
-
-void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
-                            struct fieldline_gtk_menu *fline_menu,
-                            GtkWidget *window);
-
-void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
-                            GtkWidget *menuHbox, GtkWidget *window);
-
-void make_gtk_main_menu_box(struct main_buttons *mbot,
-                            GtkWidget *takobox, GtkWidget *window_main,
-                            struct kemoviewer_type *kemo_sgl,
-                            struct kemoviewer_gl_type *kemo_gl);
-
-void sel_mesh_menu_box(struct main_buttons *mbot, gboolean flag);
+GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
+                                   GtkWidget *quitButton, GtkWidget *window_main,
+                                   struct kemoviewer_type *kemo_sgl,
+                                   struct kemoviewer_gl_type *kemo_gl);
 
 #endif

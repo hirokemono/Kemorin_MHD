@@ -215,6 +215,8 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
  $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
@@ -436,6 +438,8 @@ kemo_mesh_viewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_glfw_gtk.o: \
@@ -654,6 +658,8 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
@@ -873,5 +879,7 @@ kemoviewer_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<

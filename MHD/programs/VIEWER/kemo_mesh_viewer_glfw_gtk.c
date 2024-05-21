@@ -180,45 +180,6 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 
 /* Main GTK window */
-static void open_file_CB(GtkButton *button, gpointer user_data){
-    struct kv_string *filename;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-    struct kemoviewer_gl_type *kemo_sgl_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-
-    int iflag_set = kemoview_gtk_read_file_select(button, user_data);
-    if(iflag_set == IZERO) return;
-    GtkEntry *entry = GTK_ENTRY(user_data);
-    GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
-    filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
-    
-    open_kemoviewer_file_glfw(kemo_sgl, kemo_sgl_gl, filename,
-                              mbot, window_main);
-    return;
-};
-
-/*
-static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
-    struct main_buttons *mbot = (struct main_buttons *)user_data;
-    gchar * text = gtk_button_get_label(button);
-    char test1[1];
-    test1[0] = text[1];
-    if(test1[0] == 110){
-        gtk_button_set_label(button, "Off");
-        gtk_widget_set_sensitive(mbot->expander_view, FALSE);
-        gtk_widget_set_sensitive(mbot->expander_pref, FALSE);
-//        sel_mesh_menu_box(mbot, FALSE);
-    }else if(test1[0] == 102){
-        gtk_button_set_label(button, "On");
-        gtk_widget_set_sensitive(mbot->expander_view, TRUE);
-        gtk_widget_set_sensitive(mbot->expander_pref, TRUE);
-//        sel_mesh_menu_box(mbot, TRUE);
-    };
-    return;
-}
-*/
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	mbot = init_main_buttons(kemoviewer_data);
 	
@@ -231,65 +192,25 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 //    g_signal_connect(G_OBJECT(gtk_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
 //    g_signal_connect(G_OBJECT(gtk_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *menuGrid = make_gtk_menu_button(mbot, single_kemoview);
-    
-    /*
-    GtkWidget *testButton = gtk_button_new_with_label("On");
-    g_signal_connect(G_OBJECT(testButton), "clicked",
-                     G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
-    */
-    mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-
-
-    GtkWidget *entry_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer)   gtk_win);
-    g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
-    g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) single_kemoview);
-    g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemoview_gl);
-
-    GtkWidget *open_Button = gtk_button_new_with_label("Open...");
-    g_signal_connect(G_OBJECT(open_Button), "clicked",
-                     G_CALLBACK(open_file_CB), (gpointer)entry_file);
-    GtkWidget *hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_pack_start(GTK_BOX(hbox_open), menuGrid, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_open), gtk_label_new("File: "), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_open), entry_file, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_open), open_Button, FALSE, FALSE, 0);
-    
-    GtkWidget *entry_image_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(entry_image_file), "parent", (gpointer) gtk_win);
-    
-    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), topbox, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;
     
     GtkWidget *quitButton = gtk_button_new_with_label("Quit");
     g_signal_connect(G_OBJECT(quitButton), "clicked",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
-    make_gtk_main_menu_box(mbot, quitButton, gtk_win, 
-                           single_kemoview, kemoview_gl);
     
-    GtkWidget *takobox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
-    
+    GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
+                                                  single_kemoview, kemoview_gl);
     mbot->psf_gmenu->iflag_psfBox =    0;
     mbot->fline_menu->iflag_flineBox = 0;
     mbot->mesh_vws->iflag_meshBox =    0;
     mbot->id_current[0] = 1;
-    
     activate_evolution_menu(single_kemoview, mbot->itemTEvo);
 
-    GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
     
 	gtk_widget_show(quitButton);
-    gtk_widget_show(copyButton);
-	gtk_widget_show(vbox_main);
-	gtk_widget_show_all(mbot->menuHbox);
+    gtk_widget_show_all(vbox_main);
 	gtk_widget_show(gtk_win);
 	return;
 }
