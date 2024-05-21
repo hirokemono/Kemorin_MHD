@@ -16,7 +16,6 @@
     printf("KemoViewerObject init Start!!\n");
 #endif
     self.kemoview_metal = kemoview_allocate_single_viwewer_struct();
-    kemoview_init_cube_buf(self.kemoview_metal);
     reset_all_view_parameter(self.kemoview_metal->view_s);
     reset_to_init_angle(self.kemoview_metal->view_s);
     update_projection_struct(self.kemoview_metal->view_s);

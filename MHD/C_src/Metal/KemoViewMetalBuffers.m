@@ -103,15 +103,15 @@
                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
                         index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
 {
-    if(buf->num_nod_buf > 0){
+    if(index_buf->ntot_vertex > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
                                          length:(buf->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
         *indices = [*device newBufferWithBytes:index_buf->ie_buf
-                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
+                                        length:(index_buf->ntot_vertex * sizeof(unsigned int))
                                        options:MTLResourceStorageModeShared];
     };
-    return buf->num_nod_buf;
+    return index_buf->ntot_vertex;
 };
 
 - (void)setAnaglyphTexture:(id<MTLDevice> _Nonnull *_Nonnull) device

@@ -33,7 +33,7 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO){
-    cube_VAO->npoint_draw = cube_buf->num_nod_buf;
+    cube_VAO->npoint_draw = index_buf->ntot_vertex;
 	if(cube_VAO->npoint_draw <= 0) return;
 	cube_surf_VBO(cube_VAO, cube_buf, index_buf);
 	glBindVertexArray(0);

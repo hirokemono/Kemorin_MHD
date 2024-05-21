@@ -23,7 +23,7 @@
 @synthesize radialSliderValue;
 @synthesize elevationSliderValue;
 @synthesize azimuthSliderValue;
-
+@synthesize lightCheckFlag;
 - (void)awakeFromNib{
     int i;
     float r, t, p;
@@ -37,7 +37,10 @@
 	self.numLightTable =  [[defaults stringForKey:@"numberOfLights"] intValue];
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.lightCheckFlag = kemoview_get_view_integer(LIGHTING_CHECK, kemo_sgl);
+;
     kemoview_init_phong_light_list(kemo_sgl);
+    
     if(self.numLightTable <= 0){
         
         self.numLightTable = kemoview_get_num_light_position(kemo_sgl);
@@ -371,6 +374,14 @@
 	self.elevationSliderValue = t0;
 	[self SetLightTable:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
+};
+
+- (IBAction)SetLightCheckAction:(id)sender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetLightTable:kemo_sgl];
+    kemoview_set_view_integer(LIGHTING_CHECK, self.lightCheckFlag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 @end

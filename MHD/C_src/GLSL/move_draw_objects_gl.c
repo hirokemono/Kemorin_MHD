@@ -191,9 +191,17 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     struct transfer_matrices *map_matrices = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
     free(orthogonal);
 
+/* draw example cube for empty data */
+    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
+    if(kemo_VAOs->cube_VAO->npoint_draw > 0){
+        free(map_matrices);
+        free(view_matrices);
+        free(cbar_matrices);
+        return;
+    };
+
 /* Draw Solid Objects */
     if(view_s->iflag_view_type == VIEW_MAP) return;
-
     glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
@@ -244,8 +252,6 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->time_VAO, kemo_shaders);
 /* Draw message */
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->msg_VAO, kemo_shaders);
-/* draw example cube for empty data */
-    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
 
     free(map_matrices);
     free(view_matrices);
@@ -265,9 +271,21 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
     struct transfer_matrices *map_matrices = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
     free(orthogonal);
 
+/* draw example cube for empty data */
+    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
+    if(kemo_VAOs->cube_VAO->npoint_draw > 0){
+        free(map_matrices);
+        free(view_matrices);
+        free(cbar_matrices);
+        return;
+    };
+    
+    
     if(view_s->iflag_view_type == VIEW_MAP){
         draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_VAOs->map_index_VAO, kemo_shaders);
     }else{
+
+
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
 
@@ -308,8 +326,6 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->time_VAO, kemo_shaders);
 /* draw message */
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->msg_VAO, kemo_shaders);
-/* draw example cube for empty data */
-    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
 
     free(map_matrices);
     free(view_matrices);
@@ -379,6 +395,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
     Const_texture_VAO(kemo_buffers->timelabel_buf->image, kemo_buffers->timelabel_buf->vertex, kemo_VAOs->time_VAO);
     
     Const_texture_VAO(kemo_buffers->message_buf->image,   kemo_buffers->message_buf->vertex,  kemo_VAOs->msg_VAO);
+
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };

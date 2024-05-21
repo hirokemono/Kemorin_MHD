@@ -67,6 +67,7 @@ struct view_element{
 	double rVel_animate[3];
 	double rAccel_animate[3];
     
+    int iflag_light_check;
     int iflag_coastline_tube;
     int ncorner_tube;
     double width_tube;
@@ -199,4 +200,6 @@ void set_coastline_thickness_w_exp(double value, int i_digit,
 void get_coastline_thickness_w_exp(struct view_element *view_s,
                                    double *value, int *i_digit);
 
+void set_lighting_check_flag(struct view_element *view_s, int num);
+int send_lighting_check_flag(struct view_element *view_s);
 #endif

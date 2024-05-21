@@ -1024,3 +1024,7 @@ void get_coastline_thickness_w_exp(struct view_element *view_s,
     find_order_digit(view_s->width_tube, value, i_digit);
     return;
 };
+
+void set_lighting_check_flag(struct view_element *view_s, int num) {view_s->iflag_light_check = num;};
+int send_lighting_check_flag(struct view_element *view_s) {return view_s->iflag_light_check;};
+

@@ -5090,14 +5090,14 @@
                                             </view>
                                         </box>
                                         <box fixedFrame="YES" title="lights" translatesAutoresizingMaskIntoConstraints="NO" id="C9P-vk-EKJ">
-                                            <rect key="frame" x="10" y="454" width="265" height="278"/>
+                                            <rect key="frame" x="10" y="417" width="265" height="315"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="eS1-Lb-gWJ">
-                                                <rect key="frame" x="3" y="3" width="259" height="260"/>
+                                                <rect key="frame" x="3" y="3" width="259" height="297"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HaE-Ye-h0l">
-                                                        <rect key="frame" x="171" y="106" width="70" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HaE-Ye-h0l">
+                                                        <rect key="frame" x="171" y="143" width="70" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="At9-lV-i1l"/>
                                                             <constraint firstAttribute="width" constant="66" id="Frx-8J-HUE"/>
@@ -5111,8 +5111,8 @@
                                                             <action selector="SetAzimuthLightPositionAction:" target="3Oj-aY-RpN" id="Pn8-Qp-9hJ"/>
                                                         </connections>
                                                     </slider>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-er-oM5">
-                                                        <rect key="frame" x="8" y="106" width="70" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-er-oM5">
+                                                        <rect key="frame" x="8" y="143" width="70" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="66" id="rkR-Tv-mNv"/>
                                                             <constraint firstAttribute="height" constant="16" id="zig-Zp-TLg"/>
@@ -5126,8 +5126,8 @@
                                                             <action selector="SetRadialLightPositionAction:" target="3Oj-aY-RpN" id="gag-sO-kUe"/>
                                                         </connections>
                                                     </slider>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ho1-eH-bxW">
-                                                        <rect key="frame" x="70" y="81" width="140" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ho1-eH-bxW">
+                                                        <rect key="frame" x="70" y="118" width="140" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="136" id="SdY-kU-iLT"/>
                                                             <constraint firstAttribute="height" constant="16" id="chX-rX-J3O"/>
@@ -5141,8 +5141,8 @@
                                                             <action selector="SetAmbientMaterialAction:" target="3Oj-aY-RpN" id="jcU-ur-vYf"/>
                                                         </connections>
                                                     </slider>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="S5r-T8-Nnz">
-                                                        <rect key="frame" x="70" y="56" width="140" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S5r-T8-Nnz">
+                                                        <rect key="frame" x="70" y="93" width="140" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="hMh-fT-7J1"/>
                                                             <constraint firstAttribute="width" constant="136" id="rYF-TR-OEz"/>
@@ -5156,8 +5156,8 @@
                                                             <action selector="SetDiffuseMaterialAction:" target="3Oj-aY-RpN" id="bVN-bc-KzL"/>
                                                         </connections>
                                                     </slider>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-58-61k">
-                                                        <rect key="frame" x="70" y="32" width="140" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-58-61k">
+                                                        <rect key="frame" x="70" y="69" width="140" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="6mg-uT-a1F"/>
                                                             <constraint firstAttribute="width" constant="136" id="ID0-t7-j6X"/>
@@ -5171,8 +5171,8 @@
                                                             <action selector="SetSpecularMaterialAction:" target="3Oj-aY-RpN" id="BPl-pZ-1Pj"/>
                                                         </connections>
                                                     </slider>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PyB-BB-Ozw">
-                                                        <rect key="frame" x="70" y="7" width="140" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PyB-BB-Ozw">
+                                                        <rect key="frame" x="70" y="44" width="140" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="hLW-Lc-SsT"/>
                                                             <constraint firstAttribute="width" constant="136" id="vCJ-Nt-kcz"/>
@@ -5186,8 +5186,8 @@
                                                             <action selector="SetShinenessMaterialAction:" target="3Oj-aY-RpN" id="ZxK-iM-fj6"/>
                                                         </connections>
                                                     </slider>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DUT-2i-m1R">
-                                                        <rect key="frame" x="216" y="81" width="32" height="19"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DUT-2i-m1R">
+                                                        <rect key="frame" x="216" y="118" width="32" height="19"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="32" id="6AP-zn-zBE"/>
                                                             <constraint firstAttribute="height" constant="19" id="aFj-8g-I1O"/>
@@ -5208,8 +5208,8 @@
                                                             <action selector="SetAmbientMaterialAction:" target="3Oj-aY-RpN" id="h0K-jn-8EV"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bW8-DY-SA2">
-                                                        <rect key="frame" x="216" y="55" width="32" height="22"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bW8-DY-SA2">
+                                                        <rect key="frame" x="216" y="92" width="32" height="22"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="22" id="RdK-Ng-mAF"/>
                                                             <constraint firstAttribute="width" constant="32" id="zGh-Ek-XOr"/>
@@ -5230,8 +5230,8 @@
                                                             <action selector="SetDiffuseMaterialAction:" target="3Oj-aY-RpN" id="K3Z-YV-F9f"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QfA-Xp-cau">
-                                                        <rect key="frame" x="216" y="32" width="32" height="19"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QfA-Xp-cau">
+                                                        <rect key="frame" x="216" y="69" width="32" height="19"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="19" id="4rk-Pe-XCV"/>
                                                             <constraint firstAttribute="width" constant="32" id="FSS-YK-tUc"/>
@@ -5252,8 +5252,8 @@
                                                             <action selector="SetSpecularMaterialAction:" target="3Oj-aY-RpN" id="jdK-7f-G0v"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JSQ-2C-jwe">
-                                                        <rect key="frame" x="216" y="6" width="32" height="22"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSQ-2C-jwe">
+                                                        <rect key="frame" x="216" y="43" width="32" height="22"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="22" id="L2Q-qc-cvx"/>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="vgL-gb-D6C"/>
@@ -5274,8 +5274,8 @@
                                                             <action selector="SetShinenessMaterialAction:" target="3Oj-aY-RpN" id="q4F-e5-omU"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yno-wy-SqJ">
-                                                        <rect key="frame" x="8" y="84" width="58" height="14"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yno-wy-SqJ">
+                                                        <rect key="frame" x="8" y="121" width="58" height="14"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="14" id="H4X-gu-tMd"/>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="QuB-aq-XR2"/>
@@ -5286,8 +5286,8 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EdQ-XP-Ram">
-                                                        <rect key="frame" x="8" y="59" width="58" height="14"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EdQ-XP-Ram">
+                                                        <rect key="frame" x="8" y="96" width="58" height="14"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="QTv-FJ-Dae"/>
                                                             <constraint firstAttribute="height" constant="14" id="U9A-Eh-2Sb"/>
@@ -5298,8 +5298,8 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yyw-rX-yKN">
-                                                        <rect key="frame" x="8" y="35" width="58" height="14"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yyw-rX-yKN">
+                                                        <rect key="frame" x="8" y="72" width="58" height="14"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="PKa-B1-7Y5"/>
                                                             <constraint firstAttribute="height" constant="14" id="qeb-pm-s2C"/>
@@ -5310,8 +5310,8 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ae5-cC-cdx">
-                                                        <rect key="frame" x="8" y="10" width="58" height="14"/>
+                                                    <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ae5-cC-cdx">
+                                                        <rect key="frame" x="8" y="47" width="58" height="14"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="14" id="0NF-er-hf3"/>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="K3h-hc-F0i"/>
@@ -5322,13 +5322,13 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0SB-z1-Sc1">
-                                                        <rect key="frame" x="10" y="133" width="229" height="118"/>
-                                                        <clipView key="contentView" id="Vae-Vq-U6W">
+                                                    <scrollView ambiguous="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0SB-z1-Sc1">
+                                                        <rect key="frame" x="10" y="170" width="229" height="118"/>
+                                                        <clipView key="contentView" ambiguous="YES" id="Vae-Vq-U6W">
                                                             <rect key="frame" x="1" y="1" width="227" height="116"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
+                                                                <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -5406,8 +5406,8 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </tableHeaderView>
                                                     </scrollView>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AKj-eE-c6c">
-                                                        <rect key="frame" x="239" y="153" width="20" height="20"/>
+                                                    <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AKj-eE-c6c">
+                                                        <rect key="frame" x="239" y="190" width="20" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="20" id="QXM-es-khp"/>
                                                             <constraint firstAttribute="height" constant="20" id="rfM-8i-Jyt"/>
@@ -5420,8 +5420,8 @@
                                                             <action selector="addAtSelectedRow:" target="3Oj-aY-RpN" id="yf7-N1-1bj"/>
                                                         </connections>
                                                     </button>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AAp-qZ-qdv">
-                                                        <rect key="frame" x="239" y="133" width="20" height="20"/>
+                                                    <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AAp-qZ-qdv">
+                                                        <rect key="frame" x="239" y="170" width="20" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="20" id="QBZ-NB-i9r"/>
                                                             <constraint firstAttribute="width" constant="20" id="pka-Ye-qhL"/>
@@ -5434,8 +5434,8 @@
                                                             <action selector="deleteSelectedRow:" target="3Oj-aY-RpN" id="sVJ-wK-sVL"/>
                                                         </connections>
                                                     </button>
-                                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4fh-vB-ROv">
-                                                        <rect key="frame" x="89" y="106" width="70" height="20"/>
+                                                    <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4fh-vB-ROv">
+                                                        <rect key="frame" x="89" y="143" width="70" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="5u3-ou-STP"/>
                                                             <constraint firstAttribute="width" constant="66" id="7nI-EP-DPr"/>
@@ -5449,62 +5449,21 @@
                                                             <action selector="SetelevationLightPositionAction:" target="3Oj-aY-RpN" id="5iP-30-528"/>
                                                         </connections>
                                                     </slider>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12z-io-swt">
+                                                        <rect key="frame" x="112" y="8" width="143" height="32"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="push" title="Check light direction" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aAd-63-srW">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <connections>
+                                                                <action selector="SetLightCheckAction:" target="3Oj-aY-RpN" id="DJ3-VS-UVO"/>
+                                                            </connections>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="3Oj-aY-RpN" name="value" keyPath="self.lightCheckFlag" id="1eX-zQ-X5R"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
-                                                <constraints>
-                                                    <constraint firstItem="JSQ-2C-jwe" firstAttribute="centerY" secondItem="ae5-cC-cdx" secondAttribute="centerY" id="1FA-Pt-vu2"/>
-                                                    <constraint firstItem="LMC-58-61k" firstAttribute="centerX" secondItem="Ho1-eH-bxW" secondAttribute="centerX" id="1Vp-Oq-XR7"/>
-                                                    <constraint firstItem="uhW-er-oM5" firstAttribute="leading" secondItem="eS1-Lb-gWJ" secondAttribute="leading" constant="10" id="2nU-h4-pVM"/>
-                                                    <constraint firstItem="Ho1-eH-bxW" firstAttribute="centerY" secondItem="yno-wy-SqJ" secondAttribute="centerY" id="3Ai-X5-YNA"/>
-                                                    <constraint firstItem="JSQ-2C-jwe" firstAttribute="top" secondItem="QfA-Xp-cau" secondAttribute="bottom" constant="4" id="4BT-Em-ZFq"/>
-                                                    <constraint firstAttribute="trailing" secondItem="QfA-Xp-cau" secondAttribute="trailing" constant="11" id="6Ic-oJ-piA"/>
-                                                    <constraint firstItem="0SB-z1-Sc1" firstAttribute="top" secondItem="eS1-Lb-gWJ" secondAttribute="top" constant="9" id="88j-rq-SKW"/>
-                                                    <constraint firstAttribute="bottom" secondItem="JSQ-2C-jwe" secondAttribute="bottom" constant="6" id="F0l-6O-6Qb"/>
-                                                    <constraint firstItem="HaE-Ye-h0l" firstAttribute="top" secondItem="0SB-z1-Sc1" secondAttribute="bottom" constant="9" id="F7l-fw-NY6"/>
-                                                    <constraint firstItem="S5r-T8-Nnz" firstAttribute="centerY" secondItem="EdQ-XP-Ram" secondAttribute="centerY" id="FNd-EI-UEz"/>
-                                                    <constraint firstAttribute="trailing" secondItem="DUT-2i-m1R" secondAttribute="trailing" constant="11" id="FsH-aZ-qZB"/>
-                                                    <constraint firstItem="LMC-58-61k" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Yyw-rX-yKN" secondAttribute="trailing" constant="8" symbolic="YES" id="H6G-yc-ao2"/>
-                                                    <constraint firstItem="AKj-eE-c6c" firstAttribute="leading" secondItem="0SB-z1-Sc1" secondAttribute="trailing" id="Hg3-dh-03J"/>
-                                                    <constraint firstItem="AAp-qZ-qdv" firstAttribute="bottom" secondItem="0SB-z1-Sc1" secondAttribute="bottom" id="Io5-4o-SJm"/>
-                                                    <constraint firstItem="S5r-T8-Nnz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EdQ-XP-Ram" secondAttribute="trailing" constant="8" symbolic="YES" id="J1l-yf-38j"/>
-                                                    <constraint firstItem="QfA-Xp-cau" firstAttribute="top" secondItem="bW8-DY-SA2" secondAttribute="bottom" constant="4" id="JSJ-WH-ieI"/>
-                                                    <constraint firstItem="DUT-2i-m1R" firstAttribute="top" secondItem="HaE-Ye-h0l" secondAttribute="bottom" constant="8" symbolic="YES" id="LNv-4H-VxD"/>
-                                                    <constraint firstItem="yno-wy-SqJ" firstAttribute="leading" secondItem="eS1-Lb-gWJ" secondAttribute="leading" constant="10" id="Odf-1K-ssb"/>
-                                                    <constraint firstAttribute="trailing" secondItem="AKj-eE-c6c" secondAttribute="trailing" id="P7E-Qi-6T2"/>
-                                                    <constraint firstItem="uhW-er-oM5" firstAttribute="top" secondItem="0SB-z1-Sc1" secondAttribute="bottom" constant="9" id="PHB-7W-NFV"/>
-                                                    <constraint firstAttribute="trailing" secondItem="JSQ-2C-jwe" secondAttribute="trailing" constant="11" id="QKT-CA-VyD"/>
-                                                    <constraint firstAttribute="trailing" secondItem="bW8-DY-SA2" secondAttribute="trailing" constant="11" id="W2F-PK-ZPB"/>
-                                                    <constraint firstItem="DUT-2i-m1R" firstAttribute="centerY" secondItem="yno-wy-SqJ" secondAttribute="centerY" id="YQp-FQ-v2d"/>
-                                                    <constraint firstItem="HaE-Ye-h0l" firstAttribute="centerY" secondItem="uhW-er-oM5" secondAttribute="centerY" id="YTx-Zd-54a"/>
-                                                    <constraint firstItem="DUT-2i-m1R" firstAttribute="leading" secondItem="Ho1-eH-bxW" secondAttribute="trailing" constant="8" symbolic="YES" id="ZXG-b6-JTw"/>
-                                                    <constraint firstItem="bW8-DY-SA2" firstAttribute="centerY" secondItem="EdQ-XP-Ram" secondAttribute="centerY" id="aCi-88-fkL"/>
-                                                    <constraint firstItem="4fh-vB-ROv" firstAttribute="leading" secondItem="uhW-er-oM5" secondAttribute="trailing" constant="15" id="ak0-a5-Zh0"/>
-                                                    <constraint firstItem="JSQ-2C-jwe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PyB-BB-Ozw" secondAttribute="trailing" constant="8" symbolic="YES" id="cah-vH-fX3"/>
-                                                    <constraint firstItem="Yyw-rX-yKN" firstAttribute="leading" secondItem="yno-wy-SqJ" secondAttribute="leading" id="chy-8P-2VR"/>
-                                                    <constraint firstItem="EdQ-XP-Ram" firstAttribute="leading" secondItem="yno-wy-SqJ" secondAttribute="leading" id="eh1-6w-90K"/>
-                                                    <constraint firstItem="S5r-T8-Nnz" firstAttribute="centerX" secondItem="Ho1-eH-bxW" secondAttribute="centerX" id="fEg-dx-luQ"/>
-                                                    <constraint firstItem="AAp-qZ-qdv" firstAttribute="leading" secondItem="0SB-z1-Sc1" secondAttribute="trailing" id="fus-Ay-xuA"/>
-                                                    <constraint firstItem="HaE-Ye-h0l" firstAttribute="leading" secondItem="4fh-vB-ROv" secondAttribute="trailing" constant="16" id="fzo-Ju-NFg"/>
-                                                    <constraint firstItem="HaE-Ye-h0l" firstAttribute="top" secondItem="0SB-z1-Sc1" secondAttribute="bottom" constant="9" id="h7P-R5-XAY"/>
-                                                    <constraint firstItem="QfA-Xp-cau" firstAttribute="trailing" secondItem="DUT-2i-m1R" secondAttribute="trailing" id="je1-sB-Igb"/>
-                                                    <constraint firstItem="ae5-cC-cdx" firstAttribute="leading" secondItem="yno-wy-SqJ" secondAttribute="leading" id="keq-hM-VUb"/>
-                                                    <constraint firstItem="AAp-qZ-qdv" firstAttribute="top" secondItem="AKj-eE-c6c" secondAttribute="bottom" id="mXV-2f-h1H"/>
-                                                    <constraint firstItem="4fh-vB-ROv" firstAttribute="centerY" secondItem="uhW-er-oM5" secondAttribute="centerY" id="mXV-no-Bb3"/>
-                                                    <constraint firstItem="HaE-Ye-h0l" firstAttribute="leading" secondItem="4fh-vB-ROv" secondAttribute="trailing" constant="16" id="ndN-Rm-DIF"/>
-                                                    <constraint firstItem="LMC-58-61k" firstAttribute="centerY" secondItem="Yyw-rX-yKN" secondAttribute="centerY" id="ngs-Mz-b3d"/>
-                                                    <constraint firstItem="4fh-vB-ROv" firstAttribute="top" secondItem="0SB-z1-Sc1" secondAttribute="bottom" constant="9" id="oYd-Do-Mah"/>
-                                                    <constraint firstItem="bW8-DY-SA2" firstAttribute="top" secondItem="DUT-2i-m1R" secondAttribute="bottom" constant="4" id="pVc-jw-R0A"/>
-                                                    <constraint firstItem="Ho1-eH-bxW" firstAttribute="leading" secondItem="yno-wy-SqJ" secondAttribute="trailing" constant="8" symbolic="YES" id="q2T-Ld-l1x"/>
-                                                    <constraint firstItem="PyB-BB-Ozw" firstAttribute="centerX" secondItem="Ho1-eH-bxW" secondAttribute="centerX" id="qYw-Cd-u68"/>
-                                                    <constraint firstItem="bW8-DY-SA2" firstAttribute="trailing" secondItem="DUT-2i-m1R" secondAttribute="trailing" id="rDC-gn-mJr"/>
-                                                    <constraint firstItem="0SB-z1-Sc1" firstAttribute="leading" secondItem="eS1-Lb-gWJ" secondAttribute="leading" constant="10" id="sKR-pH-4WV"/>
-                                                    <constraint firstItem="JSQ-2C-jwe" firstAttribute="trailing" secondItem="DUT-2i-m1R" secondAttribute="trailing" id="tlk-C5-Ibo"/>
-                                                    <constraint firstItem="PyB-BB-Ozw" firstAttribute="centerY" secondItem="ae5-cC-cdx" secondAttribute="centerY" id="w18-X2-GzZ"/>
-                                                    <constraint firstItem="QfA-Xp-cau" firstAttribute="centerY" secondItem="Yyw-rX-yKN" secondAttribute="centerY" id="wDe-th-7io"/>
-                                                    <constraint firstAttribute="trailing" secondItem="HaE-Ye-h0l" secondAttribute="trailing" constant="20" symbolic="YES" id="yMM-bM-V0R"/>
-                                                    <constraint firstItem="PyB-BB-Ozw" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ae5-cC-cdx" secondAttribute="trailing" constant="8" symbolic="YES" id="yPF-uM-hWN"/>
-                                                    <constraint firstAttribute="trailing" secondItem="AAp-qZ-qdv" secondAttribute="trailing" id="zi0-J6-XzQ"/>
-                                                    <constraint firstItem="AAp-qZ-qdv" firstAttribute="centerX" secondItem="AKj-eE-c6c" secondAttribute="centerX" id="zkk-Al-9b6"/>
-                                                </constraints>
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Threads" translatesAutoresizingMaskIntoConstraints="NO" id="8Bq-lb-J3K">
@@ -5567,7 +5526,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Shape of Tube" translatesAutoresizingMaskIntoConstraints="NO" id="7Ec-Jj-KUF">
-                                            <rect key="frame" x="10" y="342" width="265" height="108"/>
+                                            <rect key="frame" x="10" y="305" width="265" height="108"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="mve-kC-xUa">
                                                 <rect key="frame" x="3" y="3" width="259" height="90"/>
@@ -5697,7 +5656,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Surface Type" translatesAutoresizingMaskIntoConstraints="NO" id="55b-Jb-xk0">
-                                            <rect key="frame" x="10" y="280" width="265" height="58"/>
+                                            <rect key="frame" x="10" y="243" width="265" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="bf9-qB-Qop">
                                                 <rect key="frame" x="3" y="3" width="259" height="40"/>
@@ -5741,7 +5700,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Arrow Location" translatesAutoresizingMaskIntoConstraints="NO" id="hR8-Bw-lDv">
-                                            <rect key="frame" x="10" y="156" width="265" height="58"/>
+                                            <rect key="frame" x="10" y="119" width="265" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="hbY-Ws-3kf">
                                                 <rect key="frame" x="3" y="3" width="259" height="40"/>
@@ -5785,7 +5744,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Coastline type" translatesAutoresizingMaskIntoConstraints="NO" id="wBe-Fs-dU2">
-                                            <rect key="frame" x="10" y="218" width="265" height="58"/>
+                                            <rect key="frame" x="10" y="181" width="265" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="a7H-YY-zOa">
                                                 <rect key="frame" x="3" y="3" width="259" height="40"/>
@@ -5830,7 +5789,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Performance Check" translatesAutoresizingMaskIntoConstraints="NO" id="Ds0-bV-RsW">
-                                            <rect key="frame" x="10" y="61" width="265" height="91"/>
+                                            <rect key="frame" x="10" y="24" width="265" height="91"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="Iox-xo-gBr">
                                                 <rect key="frame" x="3" y="3" width="259" height="73"/>

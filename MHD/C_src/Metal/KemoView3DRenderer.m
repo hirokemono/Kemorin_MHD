@@ -659,6 +659,16 @@
                       unites:(KemoViewUnites *) monoViewUnites
                        sides:(int) iflag_polygon
 {
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numCubeVertice
+                           vertex:&(kemoView3DMetalBuf->cubeVertice)
+                            index:&(kemoView3DMetalBuf->cubeIndex)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+    if(kemoView3DMetalBuf->numCubeVertice > 0) return;
+
     /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
                     pipelines:kemo3DPipelines
@@ -740,14 +750,6 @@
                   vertex:&(kemoView3DMetalBuf->coastLineVertice)
                   unites:monoViewUnites];
     
-    [self drawIndexPatchWithPhong:renderEncoder
-                        pipelines:kemo3DPipelines
-                            depth:depthState
-                        numVertex:kemoView3DMetalBuf->numCubeVertice
-                           vertex:&(kemoView3DMetalBuf->cubeVertice)
-                            index:&(kemoView3DMetalBuf->cubeIndex)
-                           unites:monoViewUnites
-                            sides:BOTH_SURFACES];
     
     /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
@@ -803,6 +805,16 @@
                   unites:(KemoViewUnites *) monoViewUnites
                    sides:(int) iflag_polygon
 {
+    /* Draw initial cube */
+        [self drawIndexPatchWithPhong:renderEncoder
+                            pipelines:kemo3DPipelines
+                                depth:depthState
+                            numVertex:kemoView3DMetalBuf->numCubeVertice
+                               vertex:&(kemoView3DMetalBuf->cubeVertice)
+                                index:&(kemoView3DMetalBuf->cubeIndex)
+                               unites:monoViewUnites
+                                sides:BOTH_SURFACES];
+    if(kemoView3DMetalBuf->numCubeVertice > 0) return;
 
     /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
@@ -905,7 +917,7 @@
                       unites:monoViewUnites
                        sides:iflag_polygon];
 
-    /* Draw ccoastlines */
+    /* Draw coastlines */
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
@@ -920,15 +932,6 @@
                numVertex:kemoView3DMetalBuf->numCoastLineVertice
                   vertex:&(kemoView3DMetalBuf->coastLineVertice)
                   unites:monoViewUnites];
-/* Draw initial cube */
-    [self drawIndexPatchWithPhong:renderEncoder
-                        pipelines:kemo3DPipelines
-                            depth:depthState
-                        numVertex:kemoView3DMetalBuf->numCubeVertice
-                           vertex:&(kemoView3DMetalBuf->cubeVertice)
-                            index:&(kemoView3DMetalBuf->cubeIndex)
-                           unites:monoViewUnites
-                            sides:BOTH_SURFACES];
     
 /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder

@@ -169,7 +169,7 @@
 - (void) setKemoViewLightings:(struct kemoviewer_type *) kemo_sgl
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->cube_index_buf->ntot_vertex > 0){
         [self setCubeColorbuffer:&(monoViewUnites->lights)
                         material:&(monoViewUnites->material)
                         kemoview:kemo_sgl];

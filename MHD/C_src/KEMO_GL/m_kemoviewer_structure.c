@@ -46,12 +46,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	return;
 }
 
-void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data){
-    CubeNode_to_buf(0.5f, kemoviewer_data->kemo_buffers->cube_buf, 
-                    kemoviewer_data->kemo_buffers->cube_index_buf);
-    return;
-};
-
 
 void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
@@ -399,6 +393,8 @@ void kemoview_set_view_integer(int selected, int ivalue,
 		set_gl_animation_rot_angle(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
         set_gl_draw_mode(kemoviewer->view_s, ivalue);
+    }else if(selected == LIGHTING_CHECK){
+        set_lighting_check_flag(kemoviewer->view_s, ivalue);
     }else if(selected == COASTLINE_TUBE){
         set_coastline_tube_flag(kemoviewer->view_s, ivalue);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){
@@ -418,6 +414,8 @@ int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
         ivalue = send_gl_windowsize_y(kemoviewer->view_s);
     }else if(selected == ISET_DRAW_MODE){
         ivalue = send_gl_draw_mode(kemoviewer->view_s);
+    }else if(selected == LIGHTING_CHECK){
+        ivalue = send_lighting_check_flag(kemoviewer->view_s);
     }else if(selected == COASTLINE_TUBE){
         ivalue = send_coastline_tube_flag(kemoviewer->view_s);
     }else if(selected == NUM_TUBE_CORNERS_FLAG){

@@ -17,31 +17,32 @@
 
 
 @interface LightTableController : NSObject {
-	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerMetalView*  _metalView;
+    IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
+    IBOutlet KemoViewerMetalView*  _metalView;
     IBOutlet KemoViewerObject *_kmv;
-
+    
     IBOutlet id _lightTableView;
-
-	IBOutlet NSTableView * idlightTableView;
-
-	IBOutlet NSSlider * radialPositionSlider;
-	IBOutlet NSSlider * elevarionPositionSlider;
-	IBOutlet NSSlider * azimuthPositionSlider;
-
-	NSInteger  numLightTable;
-	NSMutableArray *radialLightPosition;
-	NSMutableArray *elevationLightPosition;
-	NSMutableArray *azimuthLightPosition;
-
-	CGFloat ambientMaterial;
-	CGFloat diffuseMaterial;
-	CGFloat specularMaterial;
-	CGFloat shinessMaterial;
-
-	CGFloat radialSliderValue;
-	CGFloat elevationSliderValue;
-	CGFloat azimuthSliderValue;
+    
+    IBOutlet NSTableView * idlightTableView;
+    
+    IBOutlet NSSlider * radialPositionSlider;
+    IBOutlet NSSlider * elevarionPositionSlider;
+    IBOutlet NSSlider * azimuthPositionSlider;
+    
+    NSInteger  lightCheckFlag;
+    NSInteger  numLightTable;
+    NSMutableArray *radialLightPosition;
+    NSMutableArray *elevationLightPosition;
+    NSMutableArray *azimuthLightPosition;
+    
+    CGFloat ambientMaterial;
+    CGFloat diffuseMaterial;
+    CGFloat specularMaterial;
+    CGFloat shinessMaterial;
+    
+    CGFloat radialSliderValue;
+    CGFloat elevationSliderValue;
+    CGFloat azimuthSliderValue;
 }
 @property (assign) NSMutableArray * radialLightPosition;
 @property (assign) NSMutableArray * elevationLightPosition;
@@ -58,6 +59,7 @@
 @property CGFloat radialSliderValue;
 @property CGFloat elevationSliderValue;
 @property CGFloat azimuthSliderValue;
+@property NSInteger lightCheckFlag;
 
 - (void)awakeFromNib;
 
@@ -83,6 +85,8 @@
 - (IBAction)SetRadialLightPositionAction:(id)sender;
 - (IBAction)SetelevationLightPositionAction:(id)sender;
 - (IBAction)SetAzimuthLightPositionAction:(id)sender;
+
+- (IBAction)SetLightCheckAction:(id)sender;
 
 @end
 

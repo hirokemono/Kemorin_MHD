@@ -28,6 +28,9 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->cube_buf =        init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf =  init_gl_index_buffer(12, 3);
 
+    CubeNode_to_buf(0.5f, kemo_buffers->cube_buf,
+                    kemo_buffers->cube_index_buf);
+
     kemo_buffers->PSF_node_buf =        init_strided_buffer(n_point);
     kemo_buffers->PSF_solid_index_buf = init_gl_index_buffer(12, 3);
     kemo_buffers->PSF_trns_index_buf =  init_gl_index_buffer(12, 3);
@@ -272,10 +275,11 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     /* draw example cube for empty data */
     
     iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-    if(iflag == 0){
-        kemo_buffers->cube_buf->num_nod_buf = kemo_buffers->cube_index_buf->nsize_buf;
+    if(iflag == 0 || view_s->iflag_light_check > 0){
+        kemo_buffers->cube_index_buf->ntot_vertex = kemo_buffers->cube_index_buf->num_ele_buf
+                                                   * kemo_buffers->cube_index_buf->num_each_ele;
     } else {
-        kemo_buffers->cube_buf->num_nod_buf = 0;
+        kemo_buffers->cube_index_buf->ntot_vertex = 0;
     }
     return;
 };

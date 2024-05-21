@@ -36,6 +36,7 @@
 #define VIEW_XY        3
 #define VIEW_XZ        4
 #define VIEW_YZ        5
+#define LIGHT_CHECK   21
 #define RESET         10
 
 #define AXIS_TOGGLE             1
@@ -241,6 +242,7 @@
 #define NTOT_COMPONENT_FLAG  3
 #define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
+#define LIGHTING_CHECK      31
 #define LINETYPE_FLAG          46
 #define NUM_TUBE_CORNERS_FLAG  47
 #define COASTLINE_TUBE         48
@@ -278,7 +280,6 @@ extern "C" {
 
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
-    void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data);
 
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
 

@@ -43,6 +43,14 @@ static void ShinenessChange_CB(GtkWidget *entry, gpointer data)
 	return;
 }
 
+static void light_chack_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_view_integer(LIGHTING_CHECK, iflag, kemo_sgl);
+    draw_full(kemo_sgl);
+    return;
+};
+
 GtkWidget * init_lighting_frame(struct kemoviewer_type *kemo_sgl,
                                 struct lightparams_view *lightparams_vws){
     GtkWidget * light_vbox;
@@ -98,7 +106,18 @@ GtkWidget * init_lighting_frame(struct kemoviewer_type *kemo_sgl,
     GtkWidget * hbox_shine = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(hbox_shine), gtk_label_new("Shineness: "), TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_shine), spin_shineness, FALSE, FALSE, 0);
+
     
+    
+    GtkWidget * lighting_switch = gtk_switch_new();
+    gtk_switch_set_active(GTK_SWITCH(lighting_switch), kemoview_get_view_integer(LIGHTING_CHECK, kemo_sgl));
+    g_signal_connect(G_OBJECT(lighting_switch), "notify::active",
+                     G_CALLBACK(light_chack_switch_CB), (gpointer) kemo_sgl);
+
+    GtkWidget * hbox_check = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_check), gtk_label_new("Check light directions: "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_check), lighting_switch, FALSE, FALSE, 0);
+
     
     GtkWidget * Frame_lights = init_lightposition_expander(kemo_sgl, lightparams_vws);
 
@@ -108,6 +127,7 @@ GtkWidget * init_lighting_frame(struct kemoviewer_type *kemo_sgl,
     gtk_box_pack_start(GTK_BOX(light_vbox), hbox_diffuse, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(light_vbox), hbox_specular, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(light_vbox), hbox_shine, FALSE, FALSE, 0);
-    
+    gtk_box_pack_start(GTK_BOX(light_vbox), hbox_check, FALSE, FALSE, 0);
+
     return  wrap_into_frame_gtk("Light parameters", light_vbox);
 }
