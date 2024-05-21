@@ -73,7 +73,6 @@ GtkWidget * init_default_image_format_menu(struct kemoviewer_type *kemo_sgl){
 
 GtkWidget * init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
                                  struct lightparams_view *lightparams_vws,
-                                 struct rotation_gtk_menu *rot_gmenu,
                                  GtkWidget *window){
     GtkWidget *pref_vbox;
     
@@ -92,7 +91,7 @@ GtkWidget * init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
     GtkWidget *Tube_frame =      init_tube_pref_frame(kemoviewer_data);
     GtkWidget *coastline_frame = init_coastline_pref_menu(kemoviewer_data);
     GtkWidget *Axis_frame =      init_axis_position_menu(kemoviewer_data);
-    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemoviewer_data, rot_gmenu, window);
+    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemoviewer_data, window);
     GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemoviewer_data);
     GtkWidget *ImgFormat_frame = init_default_image_format_menu(kemoviewer_data);
 
@@ -112,25 +111,21 @@ GtkWidget * init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
 
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
                                   struct lightparams_view *lightparams_vws,
-                                  struct rotation_gtk_menu *rot_gmenu,
                                   GtkWidget *window){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
     gtk_frame_set_shadow_type(GTK_FRAME(frame_pref), GTK_SHADOW_IN);
     GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data, 
-                                                lightparams_vws, 
-                                                rot_gmenu, window);
+                                                lightparams_vws,  window);
     gtk_container_add(GTK_CONTAINER(frame_pref), pref_vbox);
     return frame_pref;
 }
 
 GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
                                      struct lightparams_view *lightparams_vws,
-                                     struct rotation_gtk_menu *rot_gmenu,
                                      GtkWidget *window){
     GtkWidget *expander_pref;
     GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data,
-                                                lightparams_vws, 
-                                                rot_gmenu, window);
+                                                lightparams_vws, window);
     expander_pref = wrap_into_scroll_expansion_gtk("Preferences", 160, 400,
                                                    window, pref_vbox);
     return expander_pref;

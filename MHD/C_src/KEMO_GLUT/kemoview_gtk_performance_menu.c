@@ -9,6 +9,10 @@
 
 #include "kemoview_gtk_performance_menu.h"
 
+const int num_rotation =   2;
+const int iaxis_rotation = 3;
+const int increment_deg =  2;
+
 static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
 {
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
@@ -20,9 +24,8 @@ static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
 
 static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
     GtkEntry *FPSentry = GTK_ENTRY(user_data);
-    GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-    struct rotation_gtk_menu *rot_gmenu
-            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    GtkWidget *window
+            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "parent");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
@@ -30,8 +33,8 @@ static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
     
     gtk_window_set_focus(GTK_WINDOW(window), NULL);
     double AverageFPS = draw_rotate_gl_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
-                                             rot_gmenu->iaxis_rot, rot_gmenu->inc_deg,
-                                             2);
+                                             iaxis_rotation, increment_deg,
+                                             num_rotation);
     kemoview_free_kvstring(image_prefix);
 
 
@@ -57,13 +60,11 @@ GtkWidget * init_num_threads_menu_frame(struct kemoviewer_type *kemo_sgl){
 }
 
 GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_type *kemo_sgl,
-                                     struct rotation_gtk_menu *rot_gmenu,
                                      GtkWidget *window){
     GtkWidget * fpsTextBox = gtk_entry_new();
     gtk_entry_set_width_chars(GTK_ENTRY(fpsTextBox), 12);
     gtk_entry_set_text(GTK_ENTRY(fpsTextBox), "0.0");
     g_object_set_data(G_OBJECT(fpsTextBox), "parent", (gpointer) window);
-    g_object_set_data(G_OBJECT(fpsTextBox), "rotation", (gpointer) rot_gmenu);
     g_object_set_data(G_OBJECT(fpsTextBox), "kemoview", (gpointer) kemo_sgl);
 
     GtkWidget * fpsButton = gtk_button_new_with_label("Start FPS test");

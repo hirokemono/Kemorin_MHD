@@ -16,7 +16,8 @@
 #include "calypso_GTK.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
-#include "kemoview_gtk_rotation_menu.h"
+#include "kemoview_gtk_routines.h"
+#include "view_modifier_glfw.h"
 
 #ifdef GLFW3
 	#include "view_modifier_glfw.h"
@@ -28,7 +29,6 @@
 
 GtkWidget * init_num_threads_menu_frame(struct kemoviewer_type *kemo_sgl);
 GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_type *kemo_sgl,
-                                     struct rotation_gtk_menu *rot_gmenu,
                                      GtkWidget *window);
 
 #endif /*  KEMOVIEW_GTK_PERFORMANCE_MENU_  */

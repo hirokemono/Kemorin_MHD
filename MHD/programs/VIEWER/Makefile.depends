@@ -191,24 +191,23 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.h \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_ele_group_viewer.h \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
  $(MHDDIR)/C_src/KEMO_GL/set_each_psf_parameters.h \
  $(MHDDIR)/C_src/GTK/tree_view_4_pvr_colormap.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_mesh_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -217,6 +216,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
  $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
  $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
@@ -630,24 +630,23 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.h \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_ele_group_viewer.h \
  $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
  $(MHDDIR)/C_src/KEMO_GL/set_each_psf_parameters.h \
  $(MHDDIR)/C_src/GTK/tree_view_4_pvr_colormap.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_mesh_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -655,7 +654,8 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_gtk.o: \
  $(MHDDIR)/programs/VIEWER/kemoviewer_gtk.c \

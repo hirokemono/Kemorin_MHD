@@ -22,6 +22,15 @@
 #include "kemoview_fileselector_gtk.h"
 #include "kemoview_gtk_viewmatrix_menu.h"
 
+#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+    #include "view_modifier_glfw.h"
+#else
+    #include "view_modifier_gtk.h"
+#endif
+
+
 /* prototypes */
 
 GtkWidget * make_gtk_viewmode_menu_box(struct view_widgets *view_menu,

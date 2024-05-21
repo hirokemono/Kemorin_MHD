@@ -83,7 +83,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_sgl,
                                                           mbot->rot_gmenu,
                                                           window_main);
-//    GtkWidget *expander_evo = init_evoluaiton_menu_expander(kemo_sgl, mbot->evo_gmenu, window_main);
+//    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_sgl, mbot->evo_gmenu, window_main);
     mbot->expander_view = init_viewmatrix_menu_expander(kemo_sgl,
                                                         mbot->view_menu,
                                                         window_main);

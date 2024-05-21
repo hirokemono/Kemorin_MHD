@@ -21,6 +21,7 @@
 #include "tree_view_viewer_colormap.h"
 #include "kemoview_fileselector_gtk.h"
 #include "kemoview_gtk_PSF_menu.h"
+#include "view_modifier_glfw.h"
 
 #ifdef GLFW3
 	#include "view_modifier_glfw.h"

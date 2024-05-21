@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
+#include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_light_position.h"

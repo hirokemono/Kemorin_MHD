@@ -35,11 +35,9 @@
 /*  prototypes */
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
                                   struct lightparams_view *lightparams_vws,
-                                  struct rotation_gtk_menu *rot_gmenu,
                                   GtkWidget *window);
 GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
                                      struct lightparams_view *lightparams_vws,
-                                     struct rotation_gtk_menu *rot_gmenu,
                                      GtkWidget *window);
 
 #endif
