@@ -245,7 +245,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 /* Draw message */
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->msg_VAO, kemo_shaders);
 /* draw example cube for empty data */
-    draw_initial_cube(view_matrices, kemo_VAOs->cube_VAO, kemo_shaders);
+    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
 
     free(map_matrices);
     free(view_matrices);
@@ -309,7 +309,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
 /* draw message */
     draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->msg_VAO, kemo_shaders);
 /* draw example cube for empty data */
-    draw_initial_cube(view_matrices, kemo_VAOs->cube_VAO, kemo_shaders);
+    draw_initial_cube(view_matrices, lights, kemo_shaders, kemo_VAOs->cube_VAO);
 
     free(map_matrices);
     free(view_matrices);

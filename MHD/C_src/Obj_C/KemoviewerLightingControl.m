@@ -33,12 +33,12 @@
 	self.azimuthLightPosition = [[NSMutableArray alloc]init];
 	
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
+    
 	self.numLightTable =  [[defaults stringForKey:@"numberOfLights"] intValue];
-//	self.numLightTable = 0;
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_init_phong_light_list(kemo_sgl);
     if(self.numLightTable <= 0){
-        kemoview_init_phong_light_list(kemo_sgl);
         
         self.numLightTable = kemoview_get_num_light_position(kemo_sgl);
 
@@ -135,12 +135,12 @@
 	return NULL;
 };
 
-- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject 
+- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject
    forTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex{
 	float r0, t0, p0;
 	float r_in, r1, r2;
 	
-	int numberOfRaw = (int) [self.radialLightPosition count];
+    int numberOfRaw = (int) [self.radialLightPosition count];
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:pRowIndex] floatValue];
 	t0 =  [[self.elevationLightPosition objectAtIndex:pRowIndex] floatValue];
@@ -192,7 +192,9 @@
 } // end tableView:setObjectValue:forTableColumn:row:
 
 
-- (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
+- (void) ViewSelection:(NSTableView *)pTableViewObj
+    objectValueForTableColumn:(NSTableColumn *)pTableColumn
+                          row:(int)pRowIndex :(id)sender{
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
@@ -249,6 +251,14 @@
 };
 
 - (IBAction)UpdateLightTable:(id)pID{
+    float r, t, p;
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    int i = (int) [_lightTableView selectedRow];
+    kemoview_get_each_light_rtp(kemo_sgl, i, &r, &t, &p);
+    self.radialSliderValue =    r;
+    self.elevationSliderValue = t;
+    self.azimuthSliderValue =   p;
+
 	[self SetLightTable:[_kmv KemoViewPointer]];
 	return;
 };
@@ -256,7 +266,7 @@
 
 - (IBAction)SetAmbientMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialAmbient"];
+	[defaults setFloat:((float) self.ambientMaterial) forKey:@"materialAmbient"];
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial, kemo_sgl);

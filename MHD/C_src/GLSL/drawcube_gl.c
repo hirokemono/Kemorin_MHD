@@ -40,21 +40,32 @@ void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_bu
 	return;
 };
 
-void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
-                       struct kemoview_shaders *kemo_shaders){
+void draw_initial_cube(struct transfer_matrices *matrices, struct phong_lights *lights,
+                       struct kemoview_shaders *kemo_shaders, struct VAO_ids *cube_VAO){
+    float specular_tmp[4];
+    float shiness_tmp[1];
+    int nd;
+    
     if(cube_VAO->npoint_draw <= 0) return;
-
-    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-
+    
+    for(nd=0;nd<4;nd++){
+        specular_tmp[nd] = lights->specular[nd];
+        lights->specular[nd] = 1.0;
+    };
+    shiness_tmp[0] = lights->shiness[0];
+    lights->shiness[0] = 100.0;
+    
     glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	light_for_initial_cube(init_light, kemo_shaders);
-    free(init_light);
+    set_phong_light_list(kemo_shaders->phong, lights);
 
 	glBindVertexArray(cube_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	return;
+	glDrawElements(GL_TRIANGLES, cube_VAO->npoint_draw, GL_UNSIGNED_INT, 0);
+
+    for(nd=0;nd<4;nd++){lights->specular[nd] = specular_tmp[nd];};
+    lights->shiness[0] = shiness_tmp[0];
+return;
 }
 
 void draw_cube_edge_gl3(struct view_element *view_s, 
