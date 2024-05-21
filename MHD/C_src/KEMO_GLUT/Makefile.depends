@@ -1053,6 +1053,13 @@ kemoview_gtk_axis_prefs_menu.o: \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+ $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+ $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+ $(C_SRCDIR)/GTK/calypso_GTK.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+ $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_evolution_menu.o: \
@@ -1723,17 +1730,16 @@ kemoview_gtk_lighting_menu.o: \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
- $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
- $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
- $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
  $(C_SRCDIR)/GTK/calypso_GTK.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+ $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
- $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
- $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_main_menu.o: \
@@ -1912,6 +1918,9 @@ kemoview_gtk_main_menu.o: \
  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
@@ -1924,9 +1933,6 @@ kemoview_gtk_main_menu.o: \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_axis_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_preference_menu.h \
  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
- $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
- $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
- $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_colorsel.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
@@ -2472,14 +2478,11 @@ kemoview_gtk_preference_menu.o: \
  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
  $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
- $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
- $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
- $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
- $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_colorsel.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+ $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
@@ -2487,7 +2490,10 @@ kemoview_gtk_preference_menu.o: \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_performance_menu.h \
- $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_lighting_menu.h
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/GTK/tree_view_real3_GTK.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_quilt_menu.o: \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_quilt_menu.c \
@@ -2991,7 +2997,13 @@ kemoview_gtk_shading_mode_menu.o: \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
- $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
+ $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+ $(C_SRCDIR)/GTK/calypso_GTK.h \
+ $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+ $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_tube_pref_menu.o: \
@@ -3153,6 +3165,11 @@ kemoview_gtk_tube_pref_menu.o: \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+ $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+ $(C_SRCDIR)/GTK/calypso_GTK.h \
+ $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_viewmatrix_menu.o: \
