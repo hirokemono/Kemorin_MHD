@@ -57,12 +57,12 @@ int count_colorbar_box_buffer(int iflag_zero, int num_quad){
     return (ITHREE * num_patch);
 };
 
-static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
-                                      float text_color[4], float bg_color[4],
-                                      struct psf_menu_val **psf_m,
-                                      struct kemo_array_control *psf_a,
-                                      struct cbar_work *cbar_wk,
-                                      struct gl_strided_buffer *cbar_buf){
+void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                               float text_color[4], float bg_color[4],
+                               struct psf_menu_val **psf_m,
+                               struct kemo_array_control *psf_a,
+                               struct cbar_work *cbar_wk,
+                               struct gl_strided_buffer *cbar_buf){
     int i;
     long icomp;
     cbar_buf->num_nod_buf = 0;
@@ -87,12 +87,12 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
     return;
 };
 
-static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
-                                   struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                   struct cbar_work *cbar_wk,
-                                   struct gl_textbox_buffer *cbar_min_buf,
-                                   struct gl_textbox_buffer *cbar_max_buf,
-                                   struct gl_textbox_buffer *cbar_zero_buf){
+void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
+                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                            struct cbar_work *cbar_wk,
+                            struct gl_textbox_buffer *cbar_min_buf,
+                            struct gl_textbox_buffer *cbar_max_buf,
+                            struct gl_textbox_buffer *cbar_zero_buf){
     int i;
     cbar_min_buf->vertex->num_nod_buf =  0;
     cbar_max_buf->vertex->num_nod_buf =  0;
@@ -137,28 +137,6 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
    }else{
        tlabel_buf->vertex->num_nod_buf = 0;
     };
-    return;
-};
-
-void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
-                           float text_color[4], float bg_color[4],
-                           struct psf_menu_val **psf_m,
-                           struct kemo_array_control *psf_a,
-                           struct gl_textbox_buffer *cbar_min_buf,
-                           struct gl_textbox_buffer *cbar_max_buf,
-                           struct gl_textbox_buffer *cbar_zero_buf,
-                           struct gl_strided_buffer *cbar_buf){
-    struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
-    if(cbar_wk == NULL){
-        printf("malloc error for cbar_work\n");
-        exit(0);
-    }
-    
-    const_colorbar_box_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
-                              psf_m, psf_a, cbar_wk, cbar_buf);
-    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, cbar_wk,
-                           cbar_min_buf, cbar_max_buf, cbar_zero_buf);
-    free(cbar_wk);
     return;
 };
 

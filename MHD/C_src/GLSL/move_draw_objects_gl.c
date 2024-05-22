@@ -349,6 +349,18 @@ static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers
     return;
 };
 
+static void set_draw_messages_to_VAO(struct MESSAGE_buffers *MESSAGE_bufs,
+                                     struct kemoview_VAOs *kemo_VAOs){
+    Const_Simple_VAO(kemo_VAOs->cbar_VAO[0], MESSAGE_bufs->cbar_buf);
+    Const_texture_VAO(MESSAGE_bufs->cbar_min_buf->image,  MESSAGE_bufs->cbar_min_buf->vertex,  kemo_VAOs->cbar_VAO[1]);
+    Const_texture_VAO(MESSAGE_bufs->cbar_max_buf->image,  MESSAGE_bufs->cbar_max_buf->vertex,  kemo_VAOs->cbar_VAO[2]);
+    Const_texture_VAO(MESSAGE_bufs->cbar_zero_buf->image, MESSAGE_bufs->cbar_zero_buf->vertex, kemo_VAOs->cbar_VAO[3]);
+    Const_texture_VAO(MESSAGE_bufs->timelabel_buf->image, MESSAGE_bufs->timelabel_buf->vertex, kemo_VAOs->time_VAO);
+    
+    Const_texture_VAO(MESSAGE_bufs->message_buf->image,   MESSAGE_bufs->message_buf->vertex,  kemo_VAOs->msg_VAO);
+    return;
+}
+
 static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
@@ -387,15 +399,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         /* Set Transparent Objects */
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
     };
-    
-    Const_Simple_VAO(kemo_VAOs->cbar_VAO[0], kemo_buffers->cbar_buf);
-    Const_texture_VAO(kemo_buffers->cbar_min_buf->image,  kemo_buffers->cbar_min_buf->vertex,  kemo_VAOs->cbar_VAO[1]);
-    Const_texture_VAO(kemo_buffers->cbar_max_buf->image,  kemo_buffers->cbar_max_buf->vertex,  kemo_VAOs->cbar_VAO[2]);
-    Const_texture_VAO(kemo_buffers->cbar_zero_buf->image, kemo_buffers->cbar_zero_buf->vertex, kemo_VAOs->cbar_VAO[3]);
-    Const_texture_VAO(kemo_buffers->timelabel_buf->image, kemo_buffers->timelabel_buf->vertex, kemo_VAOs->time_VAO);
-    
-    Const_texture_VAO(kemo_buffers->message_buf->image,   kemo_buffers->message_buf->vertex,  kemo_VAOs->msg_VAO);
-
+    set_draw_messages_to_VAO(kemo_buffers->MESSAGE_bufs, kemo_VAOs);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };

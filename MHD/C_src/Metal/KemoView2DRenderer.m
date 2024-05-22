@@ -65,31 +65,31 @@
 
 - (void) setMsgMBuffers:(id<MTLDevice> *) device
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
+                buffers:(struct MESSAGE_buffers *) MESSAGE_bufs
 {
     kemoView2DMetalBufs->numColorBarVertice =    [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                               buffer:kemo_buffers->cbar_buf
+                                                                               buffer:MESSAGE_bufs->cbar_buf
                                                                                vertex:&(kemoView2DMetalBufs->colorBarVertice)];
     kemoView2DMetalBufs->numMinLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_min_buf
+                                                                               buffer:MESSAGE_bufs->cbar_min_buf
                                                                                vertex:&(kemoView2DMetalBufs->minLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->minLabelTexure)];
     kemoView2DMetalBufs->numMaxLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_max_buf
+                                                                               buffer:MESSAGE_bufs->cbar_max_buf
                                                                                vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->maxLabelTexure)];
     kemoView2DMetalBufs->numZeroLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_zero_buf
+                                                                               buffer:MESSAGE_bufs->cbar_zero_buf
                                                                                vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     
     kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->timelabel_buf
+                                                                               buffer:MESSAGE_bufs->timelabel_buf
                                                                                vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->timeLabelTexure)];
     
     kemoView2DMetalBufs->numMessageVertice =   [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->message_buf
+                                                                               buffer:MESSAGE_bufs->message_buf
                                                                                vertex:&(kemoView2DMetalBufs->messageVertice)
                                                                                texure:&(kemoView2DMetalBufs->messageTexure)];
     return;
@@ -478,7 +478,7 @@
 {
     [self setMsgMBuffers:device
              metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
+                 buffers:kemo_buffers->MESSAGE_bufs];
     return;
 }
 

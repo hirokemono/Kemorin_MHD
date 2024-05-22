@@ -7,6 +7,75 @@
 
 #include "m_kemoview_object_buffers.h"
 
+
+
+struct MESSAGE_buffers * init_MESSAGE_buffers(void)
+{
+    struct MESSAGE_buffers *MESSAGE_bufs = (struct MESSAGE_buffers *) malloc(sizeof(struct MESSAGE_buffers));
+    if(MESSAGE_bufs == NULL){
+        printf("malloc error in MESSAGE_buffers \n");
+        exit(0);
+    };
+
+    int n_point = count_colorbar_box_buffer(IONE, 128);
+    MESSAGE_bufs->cbar_buf =      init_strided_buffer(n_point);
+
+    MESSAGE_bufs->cbar_min_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    MESSAGE_bufs->cbar_max_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    MESSAGE_bufs->cbar_zero_buf = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+
+    MESSAGE_bufs->timelabel_buf = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    MESSAGE_bufs->message_buf =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG,    (ITWO * ITHREE), NCHARA_MSG);
+    return MESSAGE_bufs;
+}
+
+void dealloc_MESSAGE_buffers(struct MESSAGE_buffers *MESSAGE_bufs)
+{
+    dealloc_strided_buffer(MESSAGE_bufs->cbar_buf);
+    dealloc_line_text_image(MESSAGE_bufs->cbar_min_buf);
+    dealloc_line_text_image(MESSAGE_bufs->cbar_max_buf);
+    dealloc_line_text_image(MESSAGE_bufs->cbar_zero_buf);
+
+    dealloc_line_text_image(MESSAGE_bufs->timelabel_buf);
+    dealloc_line_text_image(MESSAGE_bufs->message_buf);
+    free(MESSAGE_bufs);
+};
+
+void const_message_buffers(int iflag_retina, int nx_win, int ny_win,
+                           float text_color[4], float bg_color[4],
+                           struct psf_menu_val **psf_m,
+                           struct kemo_array_control *psf_a,
+                           struct kemoview_mesh *kemo_mesh,
+                           struct view_element *view_s,
+                           struct MESSAGE_buffers *MESSAGE_bufs){
+    struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
+    if(cbar_wk == NULL){
+        printf("malloc error for cbar_work\n");
+        exit(0);
+    }
+
+    const_colorbar_box_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
+                              psf_m, psf_a, cbar_wk, MESSAGE_bufs->cbar_buf);
+    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, cbar_wk,
+                           MESSAGE_bufs->cbar_min_buf, MESSAGE_bufs->cbar_max_buf,
+                           MESSAGE_bufs->cbar_zero_buf);
+    
+    const_timelabel_buffer(view_s->iflag_retina,
+                           view_s->nx_frame, view_s->ny_frame,
+                           kemo_mesh->text_color, kemo_mesh->bg_color,
+                           psf_a, MESSAGE_bufs->timelabel_buf);
+    
+    const_message_buffer(view_s->iflag_retina,
+                         view_s->nx_frame, view_s->ny_frame,
+                         MESSAGE_bufs->message_buf->vertex,
+                         MESSAGE_bufs->message_buf);
+
+    free(cbar_wk);
+    return;
+};
+
+
+
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
@@ -62,14 +131,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     
     kemo_buffers->axis_buf =  init_strided_buffer(n_point);
 
-    n_point = count_colorbar_box_buffer(IONE, 128);
-    kemo_buffers->cbar_buf =        init_strided_buffer(n_point);
-
-    kemo_buffers->cbar_min_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
-    kemo_buffers->cbar_max_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
-    kemo_buffers->cbar_zero_buf = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
-    kemo_buffers->timelabel_buf = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
-    kemo_buffers->message_buf =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG,    (ITWO * ITHREE), NCHARA_MSG);
+    kemo_buffers->MESSAGE_bufs = init_MESSAGE_buffers();
 
     n_point = ITWO * ITHREE;
     kemo_buffers->screen_buf =  init_strided_buffer(n_point);
@@ -79,11 +141,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
-    dealloc_line_text_image(kemo_buffers->message_buf);
-    dealloc_line_text_image(kemo_buffers->timelabel_buf);
-    dealloc_line_text_image(kemo_buffers->cbar_zero_buf);
-    dealloc_line_text_image(kemo_buffers->cbar_max_buf);
-    dealloc_line_text_image(kemo_buffers->cbar_min_buf);
+    dealloc_MESSAGE_buffers(kemo_buffers->MESSAGE_bufs);
 
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
     dealloc_strided_buffer(kemo_buffers->cube_buf);
@@ -116,8 +174,6 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 
     dealloc_strided_buffer(kemo_buffers->coast_tube_buf);
     dealloc_strided_buffer(kemo_buffers->coast_line_buf);
-
-    dealloc_strided_buffer(kemo_buffers->cbar_buf);
 
     dealloc_strided_buffer(kemo_buffers->screen_buf);
 
@@ -249,26 +305,13 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                 kemo_buffers->mesh_trns_buf);
         
     };
-    const_timelabel_buffer(view_s->iflag_retina,
-                           view_s->nx_frame, view_s->ny_frame,
-                           kemo_mesh->text_color, kemo_mesh->bg_color,
-                           kemo_psf->psf_a,
-                           kemo_buffers->timelabel_buf);
-    
-    const_colorbar_buffer(view_s->iflag_retina,
+    const_message_buffers(view_s->iflag_retina,
                           view_s->nx_frame, view_s->ny_frame,
                           kemo_mesh->text_color, kemo_mesh->bg_color,
                           kemo_psf->psf_m, kemo_psf->psf_a,
-                          kemo_buffers->cbar_min_buf,
-                          kemo_buffers->cbar_max_buf,
-                          kemo_buffers->cbar_zero_buf,
-                          kemo_buffers->cbar_buf);
-    
-    const_message_buffer(view_s->iflag_retina,
-                         view_s->nx_frame, view_s->ny_frame,
-                         kemo_buffers->message_buf->vertex,
-                         kemo_buffers->message_buf);
-    
+                          kemo_mesh, view_s,
+                          kemo_buffers->MESSAGE_bufs);
+
     const_screen_buffer(view_s->iflag_view_type, view_s->nx_frame, view_s->ny_frame,
                         kemo_buffers->screen_buf);
 

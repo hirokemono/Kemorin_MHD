@@ -381,7 +381,7 @@ void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y,
 };
 void kemoview_set_message_opacity(float opacity,
                                   struct kemoviewer_type *kemoviewer){
-    kemoviewer->kemo_buffers->message_buf->text_opacity = opacity;
+    kemoviewer->kemo_buffers->MESSAGE_bufs->message_buf->text_opacity = opacity;
     return;
 }
 
