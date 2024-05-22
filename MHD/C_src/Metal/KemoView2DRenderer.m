@@ -28,26 +28,27 @@
 
 - (void) setMapMBuffers:(id<MTLDevice> *) device
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
+            node_buffer:(struct gl_strided_buffer *) PSF_node_buf
+            map_buffers:(struct MAP_buffers *) MAP_bufs
 {
     kemoView2DMetalBufs->numMapNodeVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->PSF_node_buf
+                                                                            buffer:PSF_node_buf
                                                                             vertex:&(kemoView2DMetalBufs->mapNodeVertice)];
     kemoView2DMetalBufs->numMapSolidIndices = [_kemo2DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->MAP_solid_index_buf
+                                                                          indexbuf:MAP_bufs->MAP_solid_index_buf
                                                                              index:&(kemoView2DMetalBufs->mapSolidIndices)];
     
     kemoView2DMetalBufs->numMapSolidVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_solid_buf
+                                                                             buffer:MAP_bufs->MAP_solid_buf
                                                                              vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
     kemoView2DMetalBufs->numMapinesVertice =   [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_isoline_buf
+                                                                             buffer:MAP_bufs->MAP_isoline_buf
                                                                              vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
     kemoView2DMetalBufs->numCoastLineVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_line_buf
+                                                                             buffer:MAP_bufs->MAP_coast_line_buf
                                                                              vertex:&(kemoView2DMetalBufs->coastLineVertice)];
     kemoView2DMetalBufs->numCoastTubeVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_tube_buf
+                                                                             buffer:MAP_bufs->MAP_coast_tube_buf
                                                                              vertex:&(kemoView2DMetalBufs->coastTubeVertice)];
 };
 
@@ -471,7 +472,8 @@
 {
     [self setMapMBuffers:device
              metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
+             node_buffer:kemo_buffers->PSF_node_buf
+             map_buffers:kemo_buffers->MAP_bufs];
 }
 - (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers

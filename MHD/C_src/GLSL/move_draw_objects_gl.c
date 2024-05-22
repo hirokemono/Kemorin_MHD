@@ -368,20 +368,28 @@ static void set_draw_mesh_to_VAO(struct MESH_buffers *MESH_bufs,
     Const_Phong_VAO(mesh_solid_VAO[2],  MESH_bufs->mesh_node_buf);
 }
 
+static void set_draw_map_to_VAO(struct gl_strided_buffer *PSF_node_buf,
+                                struct MAP_buffers *MAP_bufs,
+                                struct kemoview_VAOs *kemo_VAOs){
+    Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO, PSF_node_buf,
+                           MAP_bufs->MAP_solid_index_buf);
+
+    Const_Simple_VAO(kemo_VAOs->map_VAO[0], MAP_bufs->MAP_solid_buf);
+    Const_Simple_VAO(kemo_VAOs->map_VAO[1], MAP_bufs->MAP_isoline_buf);
+    
+    Const_Simple_VAO(kemo_VAOs->map_VAO[2], MAP_bufs->MAP_coast_tube_buf);
+    Const_Simple_VAO(kemo_VAOs->map_VAO[3], MAP_bufs->MAP_coast_line_buf);
+}
+
 static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
                                     struct kemoview_VAOs *kemo_VAOs,
                                     struct kemoview_shaders *kemo_shaders){
     if(view_s->iflag_view_type == VIEW_MAP){
-        Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO, kemo_buffers->PSF_node_buf,
-                               kemo_buffers->MAP_solid_index_buf);
-
-        Const_Simple_VAO(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
-        Const_Simple_VAO(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
-        
-        Const_Simple_VAO(kemo_VAOs->map_VAO[2], kemo_buffers->coast_tube_buf);
-        Const_Simple_VAO(kemo_VAOs->map_VAO[3], kemo_buffers->coast_line_buf);
+        set_draw_map_to_VAO(kemo_buffers->PSF_node_buf,
+                            kemo_buffers->MAP_bufs,
+                            kemo_VAOs);
     }else{
         Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
         

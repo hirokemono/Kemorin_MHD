@@ -15,6 +15,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_map_buffers.h"
 #include "m_kemoview_mesh_buffers.h"
 #include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
@@ -50,10 +51,8 @@ struct kemoview_buffers{
     long num_isoline_buf;
     struct gl_strided_buffer *PSF_isoline_buf;
     struct gl_strided_buffer *PSF_isotube_buf;
-
-    struct gl_strided_buffer *MAP_isoline_buf;
-    struct gl_strided_buffer *MAP_solid_buf;
-    struct gl_index_buffer *MAP_solid_index_buf;
+    
+    struct MAP_buffers *MAP_bufs;
     
     struct gl_strided_buffer *FLINE_line_buf;
     struct gl_strided_buffer *FLINE_tube_buf;
