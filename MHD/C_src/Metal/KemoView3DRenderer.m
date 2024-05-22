@@ -39,10 +39,10 @@
                                                                               texure:&(kemoView3DMetalBuf->psfTransTexure)];
 
     kemoView3DMetalBuf->numPSFTransTexureVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                                  buffer:kemo_buffers->PSF_ttxur_buf
+                                                                                  buffer:kemo_buffers->PSF_transes->PSF_ttxur_buf
                                                                                   vertex:&(kemoView3DMetalBuf->psfTTexureVertice)];
     kemoView3DMetalBuf->numPSFTransVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->PSF_trns_buf
+                                                                            buffer:kemo_buffers->PSF_transes->PSF_trns_buf
                                                                             vertex:&(kemoView3DMetalBuf->psfTransVertice)];
     kemoView3DMetalBuf->numMeshTransVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:kemo_buffers->mesh_trns_buf
@@ -50,11 +50,11 @@
     
 /*  Set PSF index buffer */
     kemoView3DMetalBuf->numPsfTransIndices =   [_kemo3DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->PSF_trns_index_buf
+                                                                          indexbuf:kemo_buffers->PSF_transes->PSF_trns_index_buf
                                                                              index:&(kemoView3DMetalBuf->psfTransIndices)];
-    kemoView3DMetalBuf->numPsfSTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->PSF_stxur_index_buf
-                                                                             index:&(kemoView3DMetalBuf->psfSTexureIndices)];
+    kemoView3DMetalBuf->numPsfTTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_transes->PSF_ttxur_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfTTexureIndices)];
 
     return;
 }
@@ -133,7 +133,7 @@
                                                                               texure:&(kemoView3DMetalBuf->psfSolidTexure)];
     
     kemoView3DMetalBuf->numPSFSolidTexureVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->PSF_stxur_buf
+                                                                            buffer:kemo_buffers->PSF_solids->PSF_stxur_buf
                                                                             vertex:&(kemoView3DMetalBuf->psfSTexureVertice)];
     
     kemoView3DMetalBuf->numPsfNodeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
@@ -142,16 +142,16 @@
 
     
     kemoView3DMetalBuf->numPSFSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->PSF_solid_buf
+                                                                           buffer:kemo_buffers->PSF_solids->PSF_solid_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfSolidVertice)];
 
 /*  Set PSF index buffer */
     kemoView3DMetalBuf->numPsfSolidIndices =   [_kemo3DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->PSF_solid_index_buf
+                                                                          indexbuf:kemo_buffers->PSF_solids->PSF_solid_index_buf
                                                                              index:&(kemoView3DMetalBuf->psfSolidIndices)];
-    kemoView3DMetalBuf->numPsfTTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->PSF_ttxur_index_buf
-                                                                             index:&(kemoView3DMetalBuf->psfTTexureIndices)];
+    kemoView3DMetalBuf->numPsfSTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_solids->PSF_stxur_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfSTexureIndices)];
 
 /*  Set Cube index buffer */
     kemoView3DMetalBuf->numCubeVertice = [_kemo3DMetalBufBase setCubeVertexs:device
@@ -172,7 +172,7 @@
     if(kemoView3DMetalBuf->numMeshTransVertice > 0) {[kemoView3DMetalBuf->meshTransVertice release];};
     
     if(kemoView3DMetalBuf->numPsfTransIndices > 0) {[kemoView3DMetalBuf->psfTransIndices release];};
-    if(kemoView3DMetalBuf->numPsfSTexureIndices > 0) {[kemoView3DMetalBuf->psfSTexureIndices release];};
+    if(kemoView3DMetalBuf->numPsfTTexureIndices > 0) {[kemoView3DMetalBuf->psfTTexureIndices release];};
     return;
 }
 
@@ -202,7 +202,7 @@
     
     if(kemoView3DMetalBuf->numPsfNodeVertice > 0) {[kemoView3DMetalBuf->psfNodeVertice release];};
     if(kemoView3DMetalBuf->numPsfSolidIndices > 0) {[kemoView3DMetalBuf->psfSolidIndices release];};
-    if(kemoView3DMetalBuf->numPsfTTexureIndices > 0) {[kemoView3DMetalBuf->psfTTexureIndices release];};
+    if(kemoView3DMetalBuf->numPsfSTexureIndices > 0) {[kemoView3DMetalBuf->psfSTexureIndices release];};
     
     if(kemoView3DMetalBuf->numPSFLinesVertice > 0) {[kemoView3DMetalBuf->psfLinesVertice release];};
     if(kemoView3DMetalBuf->numPSFArrowVertice > 0) {[kemoView3DMetalBuf->psfArrowVertice release];};

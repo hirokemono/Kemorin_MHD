@@ -338,13 +338,8 @@ static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers
                                            struct kemoview_VAOs *kemo_VAOs,
                                            struct kemoview_shaders *kemo_shaders){
 /* Set Transparent Objects */
-    set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf,
-                              kemo_buffers->PSF_ttxur_buf,
-                              kemo_buffers->PSF_node_buf,
-                              kemo_buffers->PSF_trns_index_buf,
-                              kemo_buffers->PSF_ttxur_index_buf,
-                              kemo_VAOs->psf_trans_VAO,
-                              kemo_VAOs->psf_trans_index_VAO);
+    set_PSF_trans_objects_VAO(kemo_buffers->PSF_node_buf, kemo_buffers->PSF_transes,
+                              kemo_VAOs->psf_trans_VAO, kemo_VAOs->psf_trans_index_VAO);
     Const_Phong_VAO(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
     return;
 };
@@ -398,9 +393,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         
         const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);
-        set_PSF_solid_objects_VAO(kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
-                                  kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
-                                  kemo_buffers->PSF_stxur_index_buf,
+        set_PSF_solid_objects_VAO(kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solids,
                                   kemo_VAOs->psf_solid_VAO, kemo_VAOs->psf_solid_index_VAO);
         set_PSF_line_objects_VAO(kemo_buffers->PSF_lines,
                                  kemo_VAOs->psf_solid_VAO,

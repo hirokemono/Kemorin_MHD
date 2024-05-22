@@ -7,8 +7,7 @@
 
 #include "m_kemoview_object_buffers.h"
 
-
- struct kemoview_buffers * init_kemoview_buffers(void)
+struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
     
@@ -32,16 +31,9 @@
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf,
                     kemo_buffers->cube_index_buf);
 
-    kemo_buffers->PSF_node_buf =        init_strided_buffer(n_point);
-    kemo_buffers->PSF_solid_index_buf = init_gl_index_buffer(12, 3);
-    kemo_buffers->PSF_trns_index_buf =  init_gl_index_buffer(12, 3);
-    kemo_buffers->PSF_stxur_index_buf = init_gl_index_buffer(12, 3);
-    kemo_buffers->PSF_ttxur_index_buf = init_gl_index_buffer(12, 3);
-
-    kemo_buffers->PSF_solid_buf =   init_strided_buffer(n_point);
-    kemo_buffers->PSF_stxur_buf =   init_strided_buffer(n_point);
-    kemo_buffers->PSF_trns_buf =    init_strided_buffer(n_point);
-    kemo_buffers->PSF_ttxur_buf =   init_strided_buffer(n_point);
+    kemo_buffers->PSF_node_buf = init_strided_buffer(n_point);
+    kemo_buffers->PSF_transes =  init_PSF_trans_buffers();
+    kemo_buffers->PSF_solids =   init_PSF_solid_buffers();
     
     kemo_buffers->PSF_lines = init_PSF_line_buffers();
     
@@ -76,16 +68,9 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->FLINE_line_buf);
     dealloc_strided_buffer(kemo_buffers->FLINE_tube_buf);
 
-    dealloc_gl_index_buffer(kemo_buffers->PSF_ttxur_index_buf);
-    dealloc_gl_index_buffer(kemo_buffers->PSF_stxur_index_buf);
-    dealloc_gl_index_buffer(kemo_buffers->PSF_solid_index_buf);
-    dealloc_gl_index_buffer(kemo_buffers->PSF_trns_index_buf);
+    dealloc_PSF_trans_buffers(kemo_buffers->PSF_transes);
+    dealloc_PSF_solid_buffers(kemo_buffers->PSF_solids);
     dealloc_strided_buffer(kemo_buffers->PSF_node_buf);
-
-    dealloc_strided_buffer(kemo_buffers->PSF_ttxur_buf);
-    dealloc_strided_buffer(kemo_buffers->PSF_stxur_buf);
-    dealloc_strided_buffer(kemo_buffers->PSF_solid_buf);
-    dealloc_strided_buffer(kemo_buffers->PSF_trns_buf);
     
     dealloc_PSF_line_buffers(kemo_buffers->PSF_lines);
     dealloc_MAP_buffers(kemo_buffers->MAP_bufs);
@@ -147,10 +132,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
-                                       kemo_buffers->PSF_solid_buf,
-                                       kemo_buffers->PSF_stxur_buf,
-                                       kemo_buffers->PSF_solid_index_buf,
-                                       kemo_buffers->PSF_stxur_index_buf);
+                                       kemo_buffers->PSF_solids);
         const_PSF_isolines_buffer(kemo_buffers->nthreads, 
                                   view_s, kemo_psf->psf_d,
                                   kemo_psf->psf_m, kemo_psf->psf_a,
@@ -161,10 +143,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
-                                       kemo_buffers->PSF_trns_buf,
-                                       kemo_buffers->PSF_ttxur_buf,
-                                       kemo_buffers->PSF_trns_index_buf,
-                                       kemo_buffers->PSF_ttxur_index_buf);
+                                       kemo_buffers->PSF_transes);
         
         const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
                                 kemo_fline->fline_d, kemo_fline->fline_m,
@@ -213,10 +192,7 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
     const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
                                    view_s, kemo_psf->psf_d,
                                    kemo_psf->psf_m, kemo_psf->psf_a,
-                                   kemo_buffers->PSF_trns_buf,
-                                   kemo_buffers->PSF_ttxur_buf,
-                                   kemo_buffers->PSF_trns_index_buf,
-                                   kemo_buffers->PSF_ttxur_index_buf);
+                                   kemo_buffers->PSF_transes);
 
     const_trans_mesh_buffer(kemo_buffers->nthreads,
                             kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,

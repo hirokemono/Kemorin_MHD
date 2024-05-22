@@ -15,6 +15,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_PSF_buffers.h"
 #include "m_kemoview_PSF_line_buffers.h"
 #include "m_kemoview_map_buffers.h"
 #include "m_kemoview_mesh_buffers.h"
@@ -37,15 +38,9 @@ struct kemoview_buffers{
     struct gl_index_buffer *cube_index_buf;
     
     struct gl_strided_buffer *PSF_node_buf;
-    struct gl_index_buffer *PSF_solid_index_buf;
-    struct gl_index_buffer *PSF_trns_index_buf;
-    struct gl_index_buffer *PSF_stxur_index_buf;
-    struct gl_index_buffer *PSF_ttxur_index_buf;
 
-    struct gl_strided_buffer *PSF_solid_buf;
-    struct gl_strided_buffer *PSF_trns_buf;
-    struct gl_strided_buffer *PSF_stxur_buf;
-    struct gl_strided_buffer *PSF_ttxur_buf;
+    struct PSF_solid_buffers *PSF_solids;
+    struct PSF_trans_buffers *PSF_transes;
     
     struct PSF_line_buffers *PSF_lines;
     
