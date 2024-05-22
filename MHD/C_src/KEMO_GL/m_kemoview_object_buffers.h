@@ -11,32 +11,20 @@
 #include <stdio.h>
 #include "set_cube_to_buf.h"
 #include "m_kemoview_psf_menu.h"
-#include "m_colorbar_buffer.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
 
 #include "draw_map_4_PSF.h"
 #include "draw_fieldlines.h"
 #include "draw_patch_4_mesh_c.h"
-#include "draw_colorbar_gl.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
 
-
-struct MESSAGE_buffers{
-    struct gl_strided_buffer *cbar_buf;
-
-    struct gl_textbox_buffer *cbar_min_buf;
-    struct gl_textbox_buffer *cbar_max_buf;
-    struct gl_textbox_buffer *cbar_zero_buf;
-
-    struct gl_textbox_buffer *timelabel_buf;
-    struct gl_textbox_buffer *message_buf;
-};
 
 struct kemoview_buffers{
     int nthreads;
