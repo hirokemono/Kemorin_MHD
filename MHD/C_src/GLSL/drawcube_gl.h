@@ -20,8 +20,11 @@
 #include "draw_colorbar_gl.h"
 #include "set_cube_VAO.h"
 
+
+
 /* prototypes */
-void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
+
+void set_initial_cube_VAO(struct initial_cube_buffers *initial_bufs,
                           struct VAO_ids *cube_VAO);
 void draw_initial_cube(struct transfer_matrices *matrices, struct phong_lights *lights,
                        struct kemoview_shaders *kemo_shaders, struct VAO_ids *cube_VAO);

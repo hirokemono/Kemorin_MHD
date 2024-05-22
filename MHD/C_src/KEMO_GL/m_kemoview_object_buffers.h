@@ -32,11 +32,7 @@ struct kemoview_buffers{
     
     struct phong_lights *kemo_lights;
     
-    struct gl_strided_buffer *cube_buf;
-    struct gl_index_buffer *cube_index_buf;
-    
     struct gl_strided_buffer *PSF_node_buf;
-
     struct PSF_solid_buffers *PSF_solids;
     struct PSF_trans_buffers *PSF_transes;
     struct PSF_line_buffers  *PSF_lines;
@@ -46,9 +42,10 @@ struct kemoview_buffers{
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
     
+    struct gl_strided_buffer *axis_buf;
     struct MESSAGE_buffers *MESSAGE_bufs;
     
-    struct gl_strided_buffer *axis_buf;
+    struct initial_cube_buffers *initial_bufs;
     
     struct gl_strided_buffer *screen_buf;
 };

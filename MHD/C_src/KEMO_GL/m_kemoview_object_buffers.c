@@ -7,6 +7,7 @@
 
 #include "m_kemoview_object_buffers.h"
 
+
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
@@ -25,12 +26,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     
     kemo_buffers->nthreads = 8;
     
-    kemo_buffers->cube_buf =        init_strided_buffer(n_point);
-    kemo_buffers->cube_index_buf =  init_gl_index_buffer(12, 3);
-
-    CubeNode_to_buf(0.5f, kemo_buffers->cube_buf,
-                    kemo_buffers->cube_index_buf);
-
+    kemo_buffers->initial_bufs = init_initial_cube_buffers();
+    
     kemo_buffers->PSF_node_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_transes =  init_PSF_trans_buffers();
     kemo_buffers->PSF_solids =   init_PSF_solid_buffers();
@@ -56,11 +53,9 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
+    dealloc_initial_cube_buffers(kemo_buffers->initial_bufs);
     dealloc_MESSAGE_buffers(kemo_buffers->MESSAGE_bufs);
-
-    dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
-    dealloc_strided_buffer(kemo_buffers->cube_buf);
-
+    
     dealloc_MESH_buffers(kemo_buffers->MESH_bufs);
     dealloc_strided_buffer(kemo_buffers->mesh_trns_buf);
 
@@ -87,6 +82,17 @@ void set_number_of_threads(int input, struct kemoview_buffers *kemo_buffers){
 int send_number_of_threads(struct kemoview_buffers *kemo_buffers){
     return kemo_buffers->nthreads;
 }
+
+void set_initial_cube_drawing(int iflag, struct view_element *view_s,
+                              struct initial_cube_buffers *initial_bufs){
+        if(iflag == 0 || view_s->iflag_light_check > 0){
+        initial_bufs->cube_index_buf->ntot_vertex = initial_bufs->cube_index_buf->num_ele_buf
+                                                   * initial_bufs->cube_index_buf->num_each_ele;
+    } else {
+        initial_bufs->cube_index_buf->ntot_vertex = 0;
+    }
+    return;
+};
 
 void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
@@ -167,13 +173,9 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
 
     /* draw example cube for empty data */
     
-    iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-    if(iflag == 0 || view_s->iflag_light_check > 0){
-        kemo_buffers->cube_index_buf->ntot_vertex = kemo_buffers->cube_index_buf->num_ele_buf
-                                                   * kemo_buffers->cube_index_buf->num_each_ele;
-    } else {
-        kemo_buffers->cube_index_buf->ntot_vertex = 0;
-    }
+    iflag = kemo_mesh->mesh_m->iflag_draw_mesh 
+            + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
+    set_initial_cube_drawing(iflag, view_s, kemo_buffers->initial_bufs);
     return;
 };
 
