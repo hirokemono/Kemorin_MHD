@@ -47,7 +47,7 @@ double max_int_array_pthread_test(struct sort_int_array *_iSort);
 double flip_sign_int_test(struct sort_int_array *_iSort);
 double flip_sign_int_pthread_test(struct sort_int_array *_iSort);
 
-#ifndef __APPLE__
+#ifndef __vDSP__
 double bitonicsort_OMP_int_test(struct sort_int_array *_iSort);
     double max_int_array_omp_test(struct sort_int_array *_iSort);
     double flip_sign_int_omp_test(struct sort_int_array *_iSort);

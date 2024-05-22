@@ -98,7 +98,6 @@ void set_isoline_color_in_wk(double color[4],
 void set_isoline_edge_list(struct isoline_line_work *wk_iso_line, 
                            struct isoline_mesh_work *wk_iso_mesh){
         long j;
-        long iedge;
         for(j=0;j<2*wk_iso_mesh->num_edge;j++){
             wk_iso_mesh->inum_line[j] = -1;
             wk_iso_mesh->ineib_edge[j] = -1;
@@ -183,8 +182,8 @@ void set_normal_for_isoline(double *xyzw_psf,
                             struct psf_edge_data_c *psf_edge,
                             struct isoline_mesh_work *wk_iso_mesh, 
                             struct isoline_line_work *wk_iso_line){
-    long iedge, ineib1, ineib2;
-    long j, j1, j2, k1, k2, in2;
+    long iedge, ineib1;
+    long j, j1, j2, k1, in2;
     
         for(j=0;j<2*(wk_iso_line->num_line);j++){
             iedge = labs(wk_iso_line->iedge_itp[j]) - 1;

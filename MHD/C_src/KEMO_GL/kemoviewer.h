@@ -26,7 +26,7 @@
 
 #define TRIPLE_UPDATE 99
 #define FULL_DRAW      0
-#define FAST_DRAW      1
+#define MOVIE_DRAW     1
 #define SIMPLE_DRAW    2
 #define QUILT_DRAW     3
 
@@ -36,9 +36,11 @@
 #define VIEW_XY        3
 #define VIEW_XZ        4
 #define VIEW_YZ        5
+#define LIGHT_CHECK   21
 #define RESET         10
 
 #define AXIS_TOGGLE             1
+#define AXIS_POSITION          20
 #define SHADING_SWITCH          2
 #define POLYGON_SWITCH          3
 #define SET_NODE_SIZE           4
@@ -47,16 +49,21 @@
 #define INPUT_V_MATRIX         16
 #define COASTLINE_SWITCH        7
 #define SPHEREGRID_SWITCH       8
-#define SET_COAST_RADIUS      300
-#define FILE_STEP_LABEL_SWITCH  9
-#define TIME_LABEL_SWITCH      10
-#define FILE_STEP_LABEL_AVAIL  11
-#define TIME_LABEL_AVAIL       12
+#define TANGENT_CYLINDER_SWITCH   41
+#define SET_COAST_RADIUS         300
+#define FILE_STEP_LABEL_SWITCH     9
+#define TIME_LABEL_SWITCH         10
+#define FILE_STEP_LABEL_AVAIL     11
+#define TIME_LABEL_AVAIL          12
 
 #define MESH_OFF          100
 #define SURFNOD_TOGGLE    1
 #define SURFSOLID_TOGGLE  2
 #define SURFGRID_TOGGLE   3
+
+#define LOWER_LEFT_AXIS   1
+#define CENTER_AXIS       0
+
 
 #define DOMAIN_FLAG     0
 #define NODE_GRP_FLAG   1
@@ -235,8 +242,11 @@
 #define NTOT_COMPONENT_FLAG  3
 #define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
+#define LIGHTING_CHECK      31
 #define LINETYPE_FLAG          46
 #define NUM_TUBE_CORNERS_FLAG  47
+#define COASTLINE_TUBE         48
+#define IMAGE_FORMAT_FLAG      51
 
 #define EPSILON  1.e-9
 
@@ -270,7 +280,6 @@ extern "C" {
 
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
-    void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data);
 
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
 
@@ -302,6 +311,9 @@ extern "C" {
     void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer);
     double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);
     
+    void kemoview_set_inner_core_radius(double r_ICB, struct kemoviewer_type *kemoviewer);
+    double kemoview_get_inner_core_radius(struct kemoviewer_type *kemoviewer);
+
     void kemoview_set_object_property_flags(int selected, int iflag,
                                             struct kemoviewer_type *kemoviewer);
     int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected);
@@ -361,8 +373,6 @@ extern "C" {
     void kemoview_set_message_opacity(float opacity,
                                       struct kemoviewer_type *kemoviewer);
 
-    int kemoview_get_draw_mode(struct kemoviewer_type *kemoviewer);
-
     void kemoview_set_view_integer(int selected, int ivalue,
                                    struct kemoviewer_type *kemoviewer);
 
@@ -396,6 +406,11 @@ extern "C" {
     void kemoview_animation_add_rotation(double dt,
                                          struct kemoviewer_type *kemoviewer);
     void kemoview_reset_animation(struct kemoviewer_type *kemoviewer);
+
+    void kemoview_set_coastline_thickness_w_exp(double value, int i_digit,
+                                                struct kemoviewer_type *kemoviewer);
+    void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                                double *value, int *i_digit);
 
 /* subroutines for surafces */
     int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer);

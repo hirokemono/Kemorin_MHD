@@ -81,7 +81,6 @@
 		188FFD9C2309A41400F5A0DE /* set_axis_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFD9B2309A41300F5A0DE /* set_axis_to_buf.c */; };
 		188FFD9F2309B02300F5A0DE /* set_fieldline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFD9E2309B02300F5A0DE /* set_fieldline_to_buf.c */; };
 		188FFDA22309B3A100F5A0DE /* set_coastline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA02309B3A000F5A0DE /* set_coastline_to_buf.c */; };
-		188FFDA52309BE6F00F5A0DE /* set_menu_bottun_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA32309BE6E00F5A0DE /* set_menu_bottun_to_buf.c */; };
 		188FFDA82309DE2900F5A0DE /* m_phong_light_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA62309DE2800F5A0DE /* m_phong_light_table_c.c */; };
 		1895A3352BDC625000701DEB /* colormap_grayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A32C2BDC624F00701DEB /* colormap_grayscale.metal */; };
 		1895A3362BDC625000701DEB /* colormap_orange_cyan.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A32D2BDC624F00701DEB /* colormap_orange_cyan.metal */; };
@@ -184,6 +183,8 @@
 		18DD11352BF047D6009C0A06 /* pthread_mesh_patch_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD112C2BF01CAF009C0A06 /* pthread_mesh_patch_to_buf.c */; };
 		18DD11392BF04BFA009C0A06 /* pthread_fieldline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD11382BF04BFA009C0A06 /* pthread_fieldline_to_buf.c */; };
 		18DD113F2BF10681009C0A06 /* m_fline_data_4_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD113E2BF10681009C0A06 /* m_fline_data_4_viewer_c.c */; };
+		18EAA6C92BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6C82BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c */; };
+		18EAC1A02BF7F430002CEB77 /* set_primitives_to_gl_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAC19E2BF7F36E002CEB77 /* set_primitives_to_gl_buffer.c */; };
 		18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EE497522E231B0000B1F03 /* m_read_text_to_character.c */; };
 		18F029742AF5A49500D37276 /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0296E2AF5A49500D37276 /* KemoViewerMetalView.m */; };
 		18F029752AF5A49500D37276 /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0296F2AF5A49500D37276 /* KemoViewerMetalViewController.m */; };
@@ -341,8 +342,6 @@
 		188FFD9E2309B02300F5A0DE /* set_fieldline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_fieldline_to_buf.c; sourceTree = "<group>"; };
 		188FFDA02309B3A000F5A0DE /* set_coastline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_coastline_to_buf.c; sourceTree = "<group>"; };
 		188FFDA12309B3A100F5A0DE /* set_coastline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_coastline_to_buf.h; sourceTree = "<group>"; };
-		188FFDA32309BE6E00F5A0DE /* set_menu_bottun_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_menu_bottun_to_buf.c; sourceTree = "<group>"; };
-		188FFDA42309BE6E00F5A0DE /* set_menu_bottun_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_menu_bottun_to_buf.h; sourceTree = "<group>"; };
 		188FFDA62309DE2800F5A0DE /* m_phong_light_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_phong_light_table_c.c; sourceTree = "<group>"; };
 		188FFDA72309DE2900F5A0DE /* m_phong_light_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_phong_light_table_c.h; sourceTree = "<group>"; };
 		1895A32C2BDC624F00701DEB /* colormap_grayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_grayscale.metal; path = Metal/colormap_grayscale.metal; sourceTree = "<group>"; };
@@ -539,6 +538,10 @@
 		18DD11382BF04BFA009C0A06 /* pthread_fieldline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pthread_fieldline_to_buf.c; sourceTree = "<group>"; };
 		18DD113D2BF1066F009C0A06 /* m_fline_data_4_viewer_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_fline_data_4_viewer_c.h; sourceTree = "<group>"; };
 		18DD113E2BF10681009C0A06 /* m_fline_data_4_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_fline_data_4_viewer_c.c; sourceTree = "<group>"; };
+		18EAA6C72BFBBDE8004BE670 /* pthread_MAP_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_MAP_patches_to_buf.h; sourceTree = "<group>"; };
+		18EAA6C82BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pthread_MAP_patches_to_buf.c; sourceTree = "<group>"; };
+		18EAC19E2BF7F36E002CEB77 /* set_primitives_to_gl_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = set_primitives_to_gl_buffer.c; sourceTree = "<group>"; };
+		18EAC19F2BF7F374002CEB77 /* set_primitives_to_gl_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = set_primitives_to_gl_buffer.h; sourceTree = "<group>"; };
 		18EE497522E231B0000B1F03 /* m_read_text_to_character.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_read_text_to_character.c; sourceTree = "<group>"; };
 		18EE497622E231B0000B1F03 /* m_read_text_to_character.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_read_text_to_character.h; sourceTree = "<group>"; };
 		18F0296B2AF5A49500D37276 /* KemoViewerMetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerMetalViewController.h; path = Metal/KemoViewerMetalViewController.h; sourceTree = "<group>"; };
@@ -805,6 +808,8 @@
 				18B885EE24E618040077BA16 /* set_each_isoline_to_buf.h */,
 				18DD11232BF00E89009C0A06 /* pthread_each_isoline_to_buf.c */,
 				18DD11242BF00E92009C0A06 /* pthread_each_isoline_to_buf.h */,
+				18EAA6C82BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c */,
+				18EAA6C72BFBBDE8004BE670 /* pthread_MAP_patches_to_buf.h */,
 				18DD11272BF014ED009C0A06 /* pthread_PSF_patches_to_buf.c */,
 				18DD11262BF014E2009C0A06 /* pthread_PSF_patches_to_buf.h */,
 				18DD112A2BF0192D009C0A06 /* pthread_PSF_arrows_to_buf.c */,
@@ -896,8 +901,6 @@
 				188FFD9D2309B02300F5A0DE /* set_fieldline_to_buf.h */,
 				188FFD9823092C8C00F5A0DE /* set_map_isolines_to_buf.c */,
 				188FFD9723092C8C00F5A0DE /* set_map_isolines_to_buf.h */,
-				188FFDA32309BE6E00F5A0DE /* set_menu_bottun_to_buf.c */,
-				188FFDA42309BE6E00F5A0DE /* set_menu_bottun_to_buf.h */,
 				188FFD8F2308C5F100F5A0DE /* set_mesh_grid_2_gl_buf.c */,
 				188FFD8E2308C5F100F5A0DE /* set_mesh_grid_2_gl_buf.h */,
 				188FFD8B2308B39400F5A0DE /* set_mesh_node_2_gl_buf.c */,
@@ -906,6 +909,8 @@
 				18DD11322BF04408009C0A06 /* set_mesh_patch_2_gl_buf.h */,
 				18DD11302BF03904009C0A06 /* const_mesh_patch_table_for_gl.c */,
 				18DD112F2BF038F8009C0A06 /* const_mesh_patch_table_for_gl.h */,
+				18EAC19E2BF7F36E002CEB77 /* set_primitives_to_gl_buffer.c */,
+				18EAC19F2BF7F374002CEB77 /* set_primitives_to_gl_buffer.h */,
 				188FFD952308F9B200F5A0DE /* set_PSF_isolines_to_buf.c */,
 				188FFD942308F9B200F5A0DE /* set_PSF_isolines_to_buf.h */,
 				188FFD922308E50000F5A0DE /* set_PSF_patches_to_buf.c */,
@@ -1170,6 +1175,7 @@
 				1838708F2BCF4A7E00933367 /* colormap_red_blue_c.c in Sources */,
 				1895A33F2BDC626400701DEB /* PhongShaderWithColorMap.metal in Sources */,
 				18D7E7361562D359009B05FF /* m_map_data_4_viewer_c.c in Sources */,
+				18EAA6C92BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c in Sources */,
 				18D7E7371562D359009B05FF /* m_psf_data_4_viewer_c.c in Sources */,
 				18D7E7381562D359009B05FF /* m_surface_mesh_4_viewer_c.c in Sources */,
 				188C9419230CF87500A4DB14 /* kemoviewer_base.c in Sources */,
@@ -1262,6 +1268,7 @@
 				18D7E7711562D359009B05FF /* read_data_4_kemoviewer.c in Sources */,
 				18D7E7731562D359009B05FF /* rotate_animation.c in Sources */,
 				18D95C482B0BB745001A801B /* TexureShader.metal in Sources */,
+				18EAC1A02BF7F430002CEB77 /* set_primitives_to_gl_buffer.c in Sources */,
 				18D7E7741562D359009B05FF /* set_color_code_on_nodes.c in Sources */,
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,
 				1895A3442BE28BF700701DEB /* bitonic_sort_pthread.c in Sources */,
@@ -1277,7 +1284,6 @@
 				18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */,
 				1885C3632B06B81600A6AED5 /* PhongTexureShader.metal in Sources */,
 				18D7E7781562D359009B05FF /* trackball.c in Sources */,
-				188FFDA52309BE6F00F5A0DE /* set_menu_bottun_to_buf.c in Sources */,
 				18263FED2AFCB2E900AA8E72 /* PhongShader.metal in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
@@ -1360,7 +1366,7 @@
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
@@ -1391,7 +1397,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
@@ -1437,7 +1443,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_VERSION = "";
@@ -1482,7 +1488,7 @@
 				GCC_ENABLE_OBJC_GC = "";
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

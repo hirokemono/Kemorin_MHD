@@ -62,8 +62,16 @@
 
     NSInteger coastLineDrawFlag;
     NSInteger globeGridDrawFlag;
+    NSInteger tangentCylinderDrawFlag;
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
+    NSInteger axisPositionFlag;
+    CGFloat ICBRadius;
+    
+    NSInteger CoastLineTubeFlag;
+    NSInteger TubeNumCorners;
+    CGFloat   CoastlineWidth;
+    NSInteger CoastlineDigit;
 }
 
 @property CGFloat ColorLoopCount;
@@ -75,15 +83,23 @@
 @property NSInteger QuiltFlag;
 @property CGFloat coastlineRadius;
 @property NSInteger psfTexTureEnable;
+@property NSInteger ShadingMode;
 @property NSInteger timeDisplayAccess;
 @property NSInteger fileStepDisplayAccess;
 @property NSInteger timeDisplayFlag;
 @property NSInteger fileStepDisplayFlag;
 @property NSInteger coastLineDrawFlag;
 @property NSInteger globeGridDrawFlag;
+@property NSInteger tangentCylinderDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
-@property CGFloat ThreadsCount;
+@property NSInteger axisPositionFlag;
+@property NSInteger TubeNumCorners;
+@property CGFloat   ThreadsCount;
+@property CGFloat   CoastlineWidth;
+@property CGFloat   ICBRadius;
+@property NSInteger CoastlineDigit;
+@property NSInteger CoastLineTubeFlag;
 
 
 - (id)init;
@@ -96,9 +112,12 @@
               kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)AxisSwitchAction:(id)sender;
+- (IBAction)AxisPositionAction:(id)sender;
 - (IBAction)CoastSwitchAction:(id)sender;
 - (IBAction)SphGridSwitchAction:(id)sender;
 - (IBAction)SphRadiusAction:(id)sender;
+- (IBAction)TangentCylinderSwitchAction:(id)sender;
+
 - (IBAction)ChoosePolygontypeAction:(id)sender;
 - (IBAction)ChooseSurfcetypeAction:(id)sender;
 - (IBAction)ChooseColorModeAction:(id)sender;
@@ -121,5 +140,9 @@
 - (IBAction)FileStepLabelSwitchAction:(id)sender;
 
 - (IBAction)SetNnumberOfThreads:(id)pSender;
+
+- (IBAction)SetCoastLinETubeAction:(id)sender;
+- (IBAction)SetTubeNumCornersAction:(id)sender;
+- (IBAction)SetCoastlineWidth:(id)pSender;
 
 @end

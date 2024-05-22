@@ -1,6 +1,5 @@
 #
-coastline_c.o: \
-  $(C_SRCDIR)/KEMO_GL/coastline_c.c \
+coastline_c.o: $(C_SRCDIR)/KEMO_GL/coastline_c.c \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 const_mesh_patch_table_for_gl.o: \
@@ -79,6 +78,8 @@ draw_coastline.o: \
   $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
@@ -87,7 +88,8 @@ draw_coastline.o: \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_colorbar_gl.o: \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.c \
@@ -125,9 +127,12 @@ draw_colorbar_gl.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
-  $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h
+  $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_fieldlines.o: \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.c \
@@ -148,6 +153,7 @@ draw_fieldlines.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
@@ -170,8 +176,14 @@ draw_fieldlines.o: \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
-  $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h
+  $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_map_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.c \
@@ -224,10 +236,14 @@ draw_map_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
@@ -282,12 +298,19 @@ draw_patch_4_mesh_c.o: \
   $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
   $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/pthread_mesh_patch_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
-  $(C_SRCDIR)/KEMO_GL/const_mesh_patch_table_for_gl.h
+  $(C_SRCDIR)/KEMO_GL/const_mesh_patch_table_for_gl.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
+  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.c \
@@ -325,6 +348,7 @@ draw_patches_4_PSF.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -335,6 +359,7 @@ draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -343,10 +368,12 @@ draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h
+  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-icosahedron_c.o: \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
+icosahedron_c.o: $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
@@ -386,7 +413,8 @@ m_gl_transfer_matrix.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_kemoview_fline.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.c \
@@ -429,6 +457,7 @@ m_kemoview_fline.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -437,6 +466,7 @@ m_kemoview_fline.o: \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -446,10 +476,12 @@ m_kemoview_fline.o: \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -595,11 +627,11 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -615,6 +647,7 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -623,6 +656,9 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -648,7 +684,7 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
-  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
@@ -722,6 +758,7 @@ m_kemoview_psf.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -730,6 +767,9 @@ m_kemoview_psf.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -788,7 +828,95 @@ m_kemoview_psf_menu.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_kemoviewer_data.o: \
-  $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.c
+  $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.c \
+  $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
+  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+  $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
+  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
+  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
+  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
+  $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
+  $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+  $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
+  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
+  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
+  $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_vtk_data_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_data_gz_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_vtk_data_gz_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_bin_data_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_rawfile_io_c.h \
+  $(C_SRCDIR)/CORE_C/read_psf_bin_data_gz_c.h \
+  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
+  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
+  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
+  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
+  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_structure.c \
@@ -847,6 +975,7 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -855,6 +984,9 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -879,12 +1011,11 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
-  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
   $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
-  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
@@ -916,7 +1047,8 @@ m_phong_light_table_c.o: \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_transfer_matrices.o: \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.c \
@@ -926,6 +1058,7 @@ m_transfer_matrices.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_vertex_buffer.o: \
@@ -972,7 +1105,8 @@ modify_object_4_viewer_c.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 psf_data_array_manager.o: \
   $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.c \
@@ -1012,6 +1146,51 @@ psf_data_array_manager.o: \
 psf_patch_buffer.o: \
   $(C_SRCDIR)/KEMO_GL/psf_patch_buffer.c \
   $(C_SRCDIR)/KEMO_GL/psf_patch_buffer.h
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
+pthread_MAP_patches_to_buf.o: \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.c \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+  $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
+  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
+  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+  $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
+  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
+  $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 pthread_PSF_arrows_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.c \
@@ -1055,6 +1234,7 @@ pthread_PSF_arrows_to_buf.o: \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 pthread_PSF_patches_to_buf.o: \
@@ -1099,6 +1279,7 @@ pthread_PSF_patches_to_buf.o: \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 pthread_each_isoline_to_buf.o: \
@@ -1117,9 +1298,10 @@ pthread_each_isoline_to_buf.o: \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 pthread_fieldline_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.c \
@@ -1160,6 +1342,7 @@ pthread_fieldline_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 pthread_mesh_patch_to_buf.o: \
@@ -1198,6 +1381,7 @@ pthread_mesh_patch_to_buf.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 rainbow_color_code_c.o: \
@@ -1241,6 +1425,7 @@ read_data_4_kemoviewer.o: \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
@@ -1266,7 +1451,6 @@ read_data_4_kemoviewer.o: \
   $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
   $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
@@ -1280,6 +1464,7 @@ read_data_4_kemoviewer.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -1288,6 +1473,9 @@ read_data_4_kemoviewer.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -1316,7 +1504,8 @@ rotate_animation.o: \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 select_read_psf_viewer_c.o: \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.c \
@@ -1384,7 +1573,8 @@ set_PSF_isolines_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
-  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_PSF_patches_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.c \
@@ -1427,6 +1617,7 @@ set_PSF_patches_to_buf.o: \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_axis_to_buf.o: \
@@ -1437,6 +1628,7 @@ set_axis_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
@@ -1469,7 +1661,10 @@ set_axis_to_buf.o: \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_coastline_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.c \
@@ -1499,7 +1694,9 @@ set_coastline_to_buf.o: \
   $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
   $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
-  $(C_SRCDIR)/KEMO_GL/coastline_c.h
+  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_color_code_on_nodes.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.c \
@@ -1568,7 +1765,9 @@ set_colorbar_to_buffer.o: \
   $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
   $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
   $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_space_c.h
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_cube_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.c \
@@ -1619,6 +1818,7 @@ set_each_fline_parameters.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1627,6 +1827,7 @@ set_each_fline_parameters.o: \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -1636,10 +1837,12 @@ set_each_fline_parameters.o: \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1677,9 +1880,10 @@ set_each_isoline_to_buf.o: \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_each_psf_parameters.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.c \
@@ -1756,6 +1960,7 @@ set_fieldline_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_hex_tube_to_buf.o: \
@@ -1824,6 +2029,7 @@ set_kemoviewer_ucd_data.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -1832,6 +2038,9 @@ set_kemoviewer_ucd_data.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -1902,15 +2111,8 @@ set_map_isolines_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
-  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-set_menu_bottun_to_buf.o: \
-  $(C_SRCDIR)/KEMO_GL/set_menu_bottun_to_buf.c \
-  $(C_SRCDIR)/KEMO_GL/set_menu_bottun_to_buf.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/ysglfontdata.h
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_mesh_grid_2_gl_buf.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.c \
@@ -1949,6 +2151,7 @@ set_mesh_grid_2_gl_buf.o: \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_mesh_patch_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_mesh_node_2_gl_buf.o: \
@@ -1988,6 +2191,7 @@ set_mesh_node_2_gl_buf.o: \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/pthread_mesh_patch_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_mesh_patch_2_gl_buf.o: \
@@ -2025,6 +2229,17 @@ set_mesh_patch_2_gl_buf.o: \
   $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
+set_primitives_to_gl_buffer.o: \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.c \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_psf_texture_by_png.o: \
@@ -2037,6 +2252,7 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
@@ -2047,7 +2263,6 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -2091,6 +2306,7 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -2099,6 +2315,8 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -2133,7 +2351,7 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
   $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
-  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
@@ -2227,6 +2445,7 @@ sort_by_patch_distance.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
   $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
   $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
@@ -2255,6 +2474,7 @@ write_modelview_matrix.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \

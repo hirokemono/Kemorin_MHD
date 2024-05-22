@@ -25,13 +25,15 @@ struct psf_edge_data_c{
 	
 	long **ie_edge;
 	long **iedge_4_sf;
-	
-	long *iedge_gl_view;
-	
-	double *xx_edge;
-	double *edge_norm;
-	double *edge_dir;
-	double *edge_len;
+};
+
+struct psf_edge_geometry{
+    long *iedge_gl_view;
+    
+    double *xyzw_edge;
+    double *edge_norm;
+    double *edge_dir;
+    double *edge_len;
 };
 
 /*  prototypes */

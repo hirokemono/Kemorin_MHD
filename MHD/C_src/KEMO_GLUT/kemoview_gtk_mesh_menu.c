@@ -140,7 +140,7 @@ static void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(mesh_vws->spin_dist, "value-changed",
                      G_CALLBACK(subdoain_distance_CB), (gpointer) kemo_sgl);
     
-    adj_node_size = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
+    adj_node_size = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
     mesh_vws->spin_node_size = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_size), 0, 3);
     g_signal_connect(mesh_vws->spin_node_size, "value-changed",
                      G_CALLBACK(node_size_CB), (gpointer) kemo_sgl);

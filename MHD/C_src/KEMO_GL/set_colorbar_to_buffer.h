@@ -10,6 +10,7 @@
 #include "m_vertex_buffer.h"
 #include "m_colorbar_buffer.h"
 #include "rainbow_color_code_c.h"
+#include "set_primitives_to_gl_buffer.h"
 
 /* prototypes */
 

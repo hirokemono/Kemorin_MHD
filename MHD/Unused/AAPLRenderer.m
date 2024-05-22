@@ -171,7 +171,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     int iflag = kemoview_get_draw_mode(kemo_sgl);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
-    if(iflag == FAST_DRAW && iflag_view != VIEW_MAP){
+    if(iflag == MOVIE_DRAW && iflag_view != VIEW_MAP){
         [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
         kemoview_fast_buffers(kemo_sgl);
         [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device

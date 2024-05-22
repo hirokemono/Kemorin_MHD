@@ -126,8 +126,8 @@ void init_phong_light_list(struct view_element *view_s, struct phong_lights *lig
 	alloc_phong_light_list(lights, 3);
 	
     for(i=0;i<3;i++){
-		lights->ambient[i] =  0.15;
-		lights->diffuse[i] =  0.35;
+		lights->ambient[i] =  0.18;
+		lights->diffuse[i] =  0.25;
 		lights->specular[i] = 0.05;
     }
     lights->ambient[3] =   1.0;
@@ -135,17 +135,17 @@ void init_phong_light_list(struct view_element *view_s, struct phong_lights *lig
     lights->specular[3] =  1.0;
 	lights->shiness[0] =  20.0;
 	
-	lights->light_rtp[0] = 10.0;
-	lights->light_rtp[1] = 20.0;
-	lights->light_rtp[2] = 30.0;
+	lights->light_rtp[0] =  10.0;
+	lights->light_rtp[1] =  30.0;
+	lights->light_rtp[2] = -75.0;
 	
 	lights->light_rtp[3] = 10.0;
-	lights->light_rtp[4] = 45.0;
-	lights->light_rtp[5] = 90.0;
+	lights->light_rtp[4] = 30.0;
+	lights->light_rtp[5] = 75.0;
 	
-	lights->light_rtp[6] = 10.0;
-	lights->light_rtp[7] =-75.0;
-	lights->light_rtp[8] =-75.0;
+	lights->light_rtp[6] = 80.0;
+	lights->light_rtp[7] =  0.0;
+	lights->light_rtp[8] =  0.0;
 	
 	light_position_from_angle(view_s, &lights->light_rtp[0], &lights->light_xyz[0]);
 	light_position_from_angle(view_s, &lights->light_rtp[3], &lights->light_xyz[4]);

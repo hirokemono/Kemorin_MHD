@@ -449,12 +449,55 @@ static void take_minmax_viz_fields(long nfield, long *istack_comp,
 	return;
 }
 
-void take_normal_psf(struct psf_data *viz_s){
+void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s){
+    long i, i1, i2;
+    double pi = FOUR * atan(ONE);
+    double rtpw[4], v_out[3];
+    
+    for(i=0;i<viz_s->nnod_viz;i++){
+        xyzw_to_rtpw_c(IONE, &viz_s->xyzw_viz[4*i], rtpw);
+        
+        viz_s->rt_viz[2*i  ] = rtpw[1];
+        viz_s->rt_viz[2*i+1] = rtpw[2];
+        viz_s->rt_viz[2*i+1] = fmod(rtpw[2]+pi,(TWO*pi));
+        if(viz_s->rt_viz[2*i+1]*viz_s->rt_viz[2*i+1] < 1.0e-25){
+            viz_s->rt_viz[2*i+1] = TWO * pi;
+        }
+
+    }
+
+    for(i=viz_s->nnod_viz-2.0*nadded_for_phi0;i<viz_s->nnod_viz-nadded_for_phi0;i++){
+//        viz_s->rt_viz[2*i+1] = 0.;
+    }
+    for(i=viz_s->nnod_viz-nadded_for_phi0;i<viz_s->nnod_viz;i++){
+        viz_s->rt_viz[2*i+1] = 0.0;
+    }
+    return;
+}
+
+void shift_longitude(double add_phi, struct psf_data *viz_s){
+    long i;
+    double pi = FOUR * atan(ONE);
+    double rtpw[4], v_out[3];
+    double r[3]={0.,0.,0.};
+    
+    for(i=0;i<viz_s->nnod_viz;i++){
+        xyzw_to_rtpw_c(IONE, &viz_s->xyzw_viz[4*i], rtpw);
+        
+        r[0] = rtpw[0];
+        rtpw[2] = fmod(rtpw[2]+add_phi,(TWO*pi));
+        sph_vector_to_xyz_vect(rtpw[1], rtpw[2], r, &viz_s->xyzw_viz[4*i]);
+    }
+    return;
+}
+
+void take_normal_psf(long nadded_for_phi0, struct psf_data *viz_s){
 	alloc_psf_norm_s(viz_s);
     viz_s->rmax_psf = cal_psf_grid_range(viz_s->nnod_viz, viz_s->xyzw_viz,
                                          viz_s->xmin_psf, viz_s->xmax_psf,
                                          viz_s->center_psf);
-	take_normal_ele_psf(viz_s);
+    cal_colat_and_longitude(nadded_for_phi0, viz_s);
+    take_normal_ele_psf(viz_s);
 	take_normal_nod_psf(viz_s);
 	return;
 }

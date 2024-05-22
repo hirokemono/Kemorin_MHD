@@ -24,9 +24,17 @@
 @synthesize fileStepDisplayAccess;
 @synthesize coastLineDrawFlag;
 @synthesize globeGridDrawFlag;
+@synthesize tangentCylinderDrawFlag;
+@synthesize ICBRadius;
 @synthesize axisDrawFlag;
+@synthesize axisPositionFlag;
 @synthesize axisDrawAccess;
 @synthesize ThreadsCount;
+@synthesize ShadingMode;
+@synthesize CoastLineTubeFlag;
+@synthesize TubeNumCorners;
+@synthesize CoastlineWidth;
+@synthesize CoastlineDigit;
 - (id)init
 {
 	NodeSizeFactor =  1;
@@ -51,6 +59,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     self.coastlineRadius = kemoview_get_coastline_radius(kemo_sgl);
+    self.ICBRadius = kemoview_get_inner_core_radius(kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_AVAIL,
                                        (int) self.timeDisplayAccess, kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
@@ -67,6 +76,27 @@
     }else{
         kemoview_set_number_of_threads((int) self.ThreadsCount, kemo_sgl);
     }
+    
+    int id_default_image = [[defaults stringForKey:@"ImageFormatID"] intValue];
+    kemoview_set_view_integer(IMAGE_FORMAT_FLAG, id_default_image, kemo_sgl);
+
+    self.axisDrawFlag =     kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE);
+    self.axisPositionFlag = kemoview_get_object_property_flags(kemo_sgl, AXIS_POSITION);
+    self.ShadingMode =      kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+
+    self.coastLineDrawFlag = kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH);
+    self.globeGridDrawFlag = kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH);
+    self.tangentCylinderDrawFlag
+                = kemoview_get_object_property_flags(kemo_sgl, TANGENT_CYLINDER_SWITCH);
+
+    self.CoastLineTubeFlag = kemoview_get_view_integer(kemo_sgl, COASTLINE_TUBE);
+    self.TubeNumCorners =    kemoview_get_view_integer(kemo_sgl, NUM_TUBE_CORNERS_FLAG);
+    int idigit;
+    double value;
+    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &value, &idigit);
+    self.CoastlineWidth = value;
+    self.CoastlineDigit = idigit;
+
     return;
 }
 
@@ -133,9 +163,8 @@
 
 - (IBAction)ChooseSurfcetypeAction:(id)sender
 {
-	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode, kemo_sgl);
+	kemoview_set_object_property_flags(SHADING_SWITCH, (int) self.ShadingMode, kemo_sgl);
     
 	[_metalView UpdateImage:kemo_sgl];
 }
@@ -146,6 +175,14 @@
     kemoview_set_object_property_flags(AXIS_TOGGLE, self.axisDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
+
+- (IBAction)AxisPositionAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_object_property_flags(AXIS_POSITION, self.axisPositionFlag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
@@ -164,8 +201,23 @@
 - (IBAction)SphRadiusAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_coastline_radius((double) coastlineRadius, kemo_sgl);
+	kemoview_set_coastline_radius((double) self.coastlineRadius, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)TangentCylinderSwitchAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH,
+                                       self.tangentCylinderDrawFlag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)InnerCoreRadiusAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_inner_core_radius((double) self.ICBRadius, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender
@@ -286,5 +338,30 @@
     [_metalView UpdateImage:kemo_sgl];
 }
 
+- (IBAction)SetCoastLinETubeAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_integer(COASTLINE_TUBE,
+                              (int) self.CoastLineTubeFlag,
+                              kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetTubeNumCornersAction:(id)sender;
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_integer(NUM_TUBE_CORNERS_FLAG,
+                              (int) self.TubeNumCorners,
+                              kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction) SetCoastlineWidth:(id)pSender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_coastline_thickness_w_exp((double) self.CoastlineWidth,
+                                           (int) self.CoastlineDigit, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+};
 
 @end

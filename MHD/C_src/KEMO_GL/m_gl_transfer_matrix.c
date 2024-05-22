@@ -1006,3 +1006,25 @@ void set_3d_position_to_window_d(int point_screen[2], double xx[3],
 	
 	return;
 }
+
+
+void set_coastline_tube_flag(struct view_element *view_s, int num) {view_s->iflag_coastline_tube = num;};
+int send_coastline_tube_flag(struct view_element *view_s) {return view_s->iflag_coastline_tube;};
+
+void set_gl_tube_corners(struct view_element *view_s, int num) {view_s->ncorner_tube = num;};
+int send_gl_tube_corners(struct view_element *view_s) {return view_s->ncorner_tube;};
+
+void set_coastline_thickness_w_exp(double value, int i_digit,
+                              struct view_element *view_s){
+    view_s->width_tube = const_from_digit_order(value, i_digit);
+    return;
+};
+void get_coastline_thickness_w_exp(struct view_element *view_s,
+                                  double *value, int *i_digit){
+    find_order_digit(view_s->width_tube, value, i_digit);
+    return;
+};
+
+void set_lighting_check_flag(struct view_element *view_s, int num) {view_s->iflag_light_check = num;};
+int send_lighting_check_flag(struct view_element *view_s) {return view_s->iflag_light_check;};
+

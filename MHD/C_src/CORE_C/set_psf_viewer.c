@@ -55,18 +55,51 @@ static void set_viewer_udt_quad(struct psf_data *viz_copied, struct psf_data *vi
 	return;
 }
 
-
+int kcou, lcou;
 static void count_new_node_for_mapping_tri(struct psf_data *viz_s,
                                            struct psf_data *viz_tmp,
                                            struct map_interpolate *map_itp){
-	int num_map_patch;
+	int iflag_add;
 	int iele, k, nd;
     long inod;
-	int num_add;
 	long ie_1ele[5];
 	double xyz_tri[9];
 	
-	num_add = 0;
+    kcou = 0;
+    int nnod_add = 0;
+    int nele_add = 0;
+    for(iele=0; iele<viz_tmp->nele_viz; iele++){
+        ie_1ele[0] = viz_tmp->ie_viz[iele][0];
+        ie_1ele[1] = viz_tmp->ie_viz[iele][1];
+        ie_1ele[2] = viz_tmp->ie_viz[iele][2];
+        
+        for (k=0; k<3; k++) {
+            inod = ie_1ele[k] - 1;
+            for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
+        };
+        iflag_add = count_new_patch_at_phi180(&xyz_tri[0]);
+
+        nele_add = nele_add + iflag_add / 100;
+        nnod_add = nnod_add + (iflag_add/10) % 10;
+        if(iflag_add > 0) kcou = kcou + 1;
+    }
+	
+    map_itp->nnod_added_4_map = nnod_add;
+    map_itp->nele_added_4_map = nele_add;
+	return;
+}
+
+static void count_new_node_for_mapping_quad(struct psf_data *viz_s,
+                                            struct psf_data *viz_tmp,
+                                            struct map_interpolate *map_itp){
+	int iflag_add;
+    long inod;
+	int iele, k, nd;
+	long ie_1ele[5];
+	double xyz_tri[9];
+	
+    int nnod_add = 0;
+    int nele_add = 0;
 	for(iele=0; iele<viz_tmp->nele_viz; iele++){
 		ie_1ele[0] = viz_tmp->ie_viz[iele][0];
 		ie_1ele[1] = viz_tmp->ie_viz[iele][1];
@@ -76,195 +109,154 @@ static void count_new_node_for_mapping_tri(struct psf_data *viz_s,
 			inod = ie_1ele[k] - 1;
 			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
 		};
-		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);
-		
-		num_add = num_add + num_map_patch-1;
-	}
-	
-	viz_s->nnod_viz = num_add + viz_tmp->nnod_viz;
-	viz_s->nele_viz = num_add + viz_tmp->nele_viz;
-	viz_s->nnod_4_ele_viz = ITHREE;
-    map_itp->nnod_added_4_map = num_add;
-	return;
-}
-
-static void count_new_node_for_mapping_quad(struct psf_data *viz_s,
-                                            struct psf_data *viz_tmp,
-                                            struct map_interpolate *map_itp){
-	int num_map_patch;
-    long inod;
-	int iele, k, nd;
-	int num_add;
-	long ie_1ele[5];
-	double xyz_tri[9];
-	
-	num_add = 0;
-	for(iele=0; iele<viz_tmp->nele_viz; iele++){
-		ie_1ele[0] = viz_tmp->ie_viz[iele][0];
-		ie_1ele[1] = viz_tmp->ie_viz[iele][1];
-		ie_1ele[2] = viz_tmp->ie_viz[iele][2];
-		
-		for (k=0; k<3; k++) {
-			inod = ie_1ele[k];
-			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
-		};
-		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);		
-		num_add = num_add + num_map_patch-1;
-		
+        iflag_add = count_new_patch_at_phi180(&xyz_tri[0]);
+        nele_add = nele_add + iflag_add / 100;
+		nnod_add = nnod_add + (iflag_add/10) % 10;
+        
 		ie_1ele[0] = viz_tmp->ie_viz[iele][2];
 		ie_1ele[1] = viz_tmp->ie_viz[iele][3];
 		ie_1ele[2] = viz_tmp->ie_viz[iele][0];
 		for (k=0; k<3; k++) {
-			inod = ie_1ele[k];
+			inod = ie_1ele[k] - 1;
 			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
 		};
-		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);
-		num_add = num_add + num_map_patch-1;
+        iflag_add = count_new_patch_at_phi180(&xyz_tri[0]);
+        nele_add = nele_add + iflag_add / 100;
+        nnod_add = nnod_add + (iflag_add/10) % 10;
 	}
-	
-	viz_s->nnod_viz = num_add + viz_tmp->nnod_viz;
-	viz_s->nele_viz = num_add + 2*viz_tmp->nele_viz;
-	viz_s->nnod_4_ele_viz = ITHREE;
-    map_itp->nnod_added_4_map = num_add;
+    
+    map_itp->nnod_added_4_map = nnod_add;
+    map_itp->nele_added_4_map = nele_add;
 	return;
 }
 
-static int cut_each_patch_for_map(int iele, int icou, long nnod_org, long iele_end, long ie_patch[5],
+static int cut_each_patch_for_map(int iele, int icou,  long iele_end,
+                                  long ie_patch[7], double *xyzw_org,
                                   struct psf_data *viz_s, struct map_interpolate *map_itp){
-	int num_map_patch;
+	int iflag_add = 0;
     long inod, i1, i2;
     long j;
     int k, nd, i;
+    long ie[3];
 	long ie_cut[9], inod_src[4];
 	double xyz_tri[9], coef_cut[4];
+    double  y_cut[3];
 	
 	for (k=0; k<3; k++) {
-		inod = ie_patch[k];
-		for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_s->xyzw_viz[(inod-1)*IFOUR + nd];};
+        ie[k] = ie_patch[k];
+		inod = ie_patch[k] - 1;
+		for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = xyzw_org[inod*IFOUR + nd];};
 	};
-	ie_patch[3] = nnod_org+icou+1;
-	ie_patch[4] = nnod_org+icou+2;
-	
-	num_map_patch = cut_new_patch_at_phi180(xyz_tri, ie_cut, inod_src, coef_cut);
-	for (i=0; i<(num_map_patch-1); i++){
-		i1 = inod_src[2*i  ]-1;
-		i2 = inod_src[2*i+1]-1;
+	ie_patch[3] = 1+icou + map_itp->nnod_org;
+	ie_patch[4] = 2+icou + map_itp->nnod_org;
+    ie_patch[5] = 1+icou + map_itp->nnod_org + map_itp->nnod_added_4_map;
+    ie_patch[6] = 2+icou + map_itp->nnod_org + map_itp->nnod_added_4_map;
+
+    
+    iflag_add = cut_new_patch_at_phi180(xyz_tri, ie_cut, y_cut, inod_src, coef_cut);
+
+    if(iflag_add == 0){
+        for (k=0; k<3; k++){viz_s->ie_viz[iele][k] = ie_patch[k];};
+        return 0;
+    }
+
+    int nele_add = iflag_add / 100;
+    int nnod_add = (iflag_add/10) % 10;
+
+
+    for (i=0; i<nnod_add; i++){
+        i1 = inod_src[2*i  ]-1;
+        i2 = inod_src[2*i+1]-1;
         map_itp->inod_org_4_map_itp[2*(icou+i)  ] = ie_patch[i1];
         map_itp->inod_org_4_map_itp[2*(icou+i)+1] = ie_patch[i2];
         map_itp->coef_4_map_itp[2*(icou+i)  ] = coef_cut[2*i  ];
         map_itp->coef_4_map_itp[2*(icou+i)+1] = coef_cut[2*i+1];
-	};
-	for (k=0; k<3; k++) {
+    };
+
+    for (k=0; k<3; k++) {
 		j = ie_cut[k] - 1;
+        if(y_cut[0] < 0.0 && j >2){j = j + 2;};
 		viz_s->ie_viz[iele][k] = ie_patch[j];
 	};
-	for (i=1; i<(num_map_patch); i++) {
+	for(i=0; i<nele_add; i++) {
 		for (k=0; k<3; k++) {
-			j = ie_cut[3*i+k]-1;
-			viz_s->ie_viz[iele_end+i-1][k] = ie_patch[j];
+			j = ie_cut[3*(i+1)+k]-1;
+            if(y_cut[i+1] < 0.0 && j >2){j = j + 2;};
+			viz_s->ie_viz[iele_end+i][k] = ie_patch[j];
 		};
 	};
-
-	return num_map_patch;
+    return iflag_add;
 }
 
-static void cut_patches_for_map_tri(long nele_org, struct psf_data *viz_s,
+static void cut_patches_for_map_tri(struct psf_data *viz_tmp, struct psf_data *viz_s,
                                     struct map_interpolate *map_itp){
-	int num_map_patch;
+	int iflag_add = 0;
 	int iele, icou;
-    long nnod_org, iele_end;
-	long ie_patch[5];
+	long ie_patch[7];
 	
-	nnod_org = viz_s->nnod_viz - map_itp->nnod_added_4_map;
-	iele_end = nele_org;
-	icou = 0;
-	for(iele=0; iele<nele_org; iele++){
-		ie_patch[0] = viz_s->ie_viz[iele][0];
-		ie_patch[1] = viz_s->ie_viz[iele][1];
-		ie_patch[2] = viz_s->ie_viz[iele][2];
+	long iele_end = viz_tmp->nele_viz;
+	int icou_nod = 0;
+	for(iele=0; iele<viz_tmp->nele_viz; iele++){
+		ie_patch[0] = viz_tmp->ie_viz[iele][0];
+		ie_patch[1] = viz_tmp->ie_viz[iele][1];
+		ie_patch[2] = viz_tmp->ie_viz[iele][2];
 		
-		num_map_patch = cut_each_patch_for_map(iele, icou, nnod_org, iele_end, ie_patch,
-                                               viz_s, map_itp);
-		
-		icou = icou + num_map_patch-1;
-		iele_end = iele_end + num_map_patch-1;
+        iflag_add = cut_each_patch_for_map(iele, icou_nod, iele_end, ie_patch,
+                                           viz_tmp->xyzw_viz, viz_s, map_itp);
+        iele_end = iele_end + iflag_add / 100;
+        icou_nod = icou_nod + (iflag_add/10) % 10;
+        if(iflag_add > 0) lcou = lcou + 1;
+
 	}
-	
-	return;
+    return;
 }
 
-static void cut_patches_for_map_quad(long nele_org, struct psf_data *viz_s,
+static void cut_patches_for_map_quad(struct psf_data *viz_tmp, struct psf_data *viz_s,
                                      struct map_interpolate *map_itp){
-	int num_map_patch;
-	int iele, icou;
-    long nnod_org, iele_end;
-	long ie_patch[5];
+	int iflag_add;
+	int iele;
+    long iele_end;
+	long ie_patch[7];
 	
-	nnod_org = viz_s->nnod_viz - map_itp->nnod_added_4_map;
-	iele_end = 2*nele_org;
-	icou = 0;
-	for(iele=0; iele<nele_org; iele++){
+	iele_end = viz_tmp->nele_viz;
+    int icou_nod = 0;
+	for(iele=0; iele<viz_tmp->nele_viz; iele++){
 		ie_patch[0] = viz_s->ie_viz[iele][0];
 		ie_patch[1] = viz_s->ie_viz[iele][1];
 		ie_patch[2] = viz_s->ie_viz[iele][2];
 		
-		num_map_patch = cut_each_patch_for_map(iele, icou, nnod_org, iele_end, ie_patch,
-                                               viz_s, map_itp);
+        iflag_add = cut_each_patch_for_map(iele, icou_nod, iele_end, ie_patch,
+                                           viz_tmp->xyzw_viz, viz_s, map_itp);
+        iele_end = iele_end + iflag_add / 100;
+        icou_nod = icou_nod + (iflag_add/10) % 10;
 
-		icou = icou + num_map_patch-1;
-		iele_end = iele_end + num_map_patch-1;
-		
-		
 		ie_patch[0] = viz_s->ie_viz[iele][2];
 		ie_patch[1] = viz_s->ie_viz[iele][3];
 		ie_patch[2] = viz_s->ie_viz[iele][0];
 		
-		num_map_patch = cut_each_patch_for_map(iele, icou, nnod_org, iele_end, ie_patch,
-                                               viz_s, map_itp);
-
-		icou = icou + num_map_patch-1;
-		iele_end = iele_end + num_map_patch-1;
+        iflag_add = cut_each_patch_for_map(iele, icou_nod, iele_end, ie_patch,
+                                           viz_tmp->xyzw_viz, viz_s, map_itp);
+        iele_end = iele_end + iflag_add / 100;
+        icou_nod = icou_nod + (iflag_add/10) % 10;
 	}
 	
 	return;
 }
 
-static void set_new_node_for_mapping(struct map_interpolate *map_itp, struct psf_data *viz_s){
-    int i;
+static void set_new_data_for_mapping(struct map_interpolate *map_itp,
+                                     long ncomptot, double *d_nod, double *d_itp){
+    long i, nd;
     long i1, i2;
-	long nnod_org;
 	
-	nnod_org = viz_s->nnod_viz - map_itp->nnod_added_4_map;
 	for(i=0; i<map_itp->nnod_added_4_map; i++){
 		i1 = map_itp->inod_org_4_map_itp[2*i  ]-1;
 		i2 = map_itp->inod_org_4_map_itp[2*i+1]-1;
-
-		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 0]
-			= map_itp->coef_4_map_itp[2*i  ] * viz_s->xyzw_viz[i1*IFOUR + 0]
-			+ map_itp->coef_4_map_itp[2*i+1] * viz_s->xyzw_viz[i2*IFOUR + 0];
-		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 1] = ZERO;
-		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 2]
-			= map_itp->coef_4_map_itp[2*i  ] * viz_s->xyzw_viz[i1*IFOUR + 2]
-			+ map_itp->coef_4_map_itp[2*i+1] * viz_s->xyzw_viz[i2*IFOUR + 2];
-	};
-
-	return;
-};
-
-static void set_new_data_for_mapping(struct map_interpolate *map_itp, struct psf_data *viz_s){
-	int i, nd;
-    long i1, i2;
-	long ncomp, nnod_org;
-	
-	ncomp =    viz_s->ncomptot;
-	nnod_org = viz_s->nnod_viz - map_itp->nnod_added_4_map;
-	for(i=0; i<map_itp->nnod_added_4_map; i++){
-		i1 = map_itp->inod_org_4_map_itp[2*i  ]-1;
-		i2 = map_itp->inod_org_4_map_itp[2*i+1]-1;
-		for (nd=0; nd<ncomp; nd++) {
-			viz_s->d_nod[(nnod_org+i)*viz_s->ncomptot + nd]
-			= map_itp->coef_4_map_itp[2*i  ] * viz_s->d_nod[i1*viz_s->ncomptot + nd]
-             + map_itp->coef_4_map_itp[2*i+1] * viz_s->d_nod[i2*viz_s->ncomptot + nd];
+		for (nd=0; nd<ncomptot; nd++) {
+            d_itp[i*ncomptot + nd] = map_itp->coef_4_map_itp[2*i  ] * d_nod[i1*ncomptot + nd]
+                                    + map_itp->coef_4_map_itp[2*i+1] * d_nod[i2*ncomptot + nd];
+            if(d_itp[i*ncomptot + nd]*d_itp[i*ncomptot + nd] < 1.0e-24){
+                d_itp[i*ncomptot + nd] = 0.0;
+            }
 		};
 	};
 	return;
@@ -293,8 +285,11 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
     return;
 }
 
-void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	
+long set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
+//    shift_longitude(0.00, viz_tmp);
+
+    
+    
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);
     viz_s->ncomptot = copy_viewer_udt_field_name(viz_tmp, viz_s->nfield,
@@ -302,11 +297,16 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
                                                  viz_s->id_coord, viz_s->data_name);
 
     struct map_interpolate *map_itp = alloc_psf_cutting_4_map();
+    map_itp->nnod_org = viz_tmp->nnod_viz;
 	if (viz_tmp->nnod_4_ele_viz == 4) {
 		count_new_node_for_mapping_quad(viz_s, viz_tmp, map_itp);
+        viz_s->nele_viz = map_itp->nele_added_4_map + viz_tmp->nele_viz;
 	} else {
 		count_new_node_for_mapping_tri(viz_s, viz_tmp, map_itp);
+        viz_s->nele_viz = map_itp->nele_added_4_map + viz_tmp->nele_viz;
 	};
+    viz_s->nnod_4_ele_viz = ITHREE;
+    viz_s->nnod_viz = ITWO * map_itp->nnod_added_4_map + map_itp->nnod_org;
 
 	alloc_psf_data_s(viz_s);
 	alloc_viz_ele_s(viz_s);
@@ -320,16 +320,28 @@ void set_viewer_data_with_mapping(struct psf_data *viz_s, struct psf_data *viz_t
                          viz_s->d_nod);
 	if (viz_tmp->nnod_4_ele_viz == 4) {
 		set_viewer_udt_quad(viz_s, viz_tmp);
-		cut_patches_for_map_quad(viz_tmp->nele_viz, viz_s, map_itp);
+		cut_patches_for_map_quad(viz_tmp, viz_s, map_itp);
 	} else {
         copy_viewer_udt_connect(viz_tmp, viz_s->ie_viz);
-		cut_patches_for_map_tri(viz_tmp->nele_viz, viz_s, map_itp);
+		cut_patches_for_map_tri(viz_tmp, viz_s, map_itp);
 	};
-	set_new_node_for_mapping(map_itp, viz_s);
-	set_new_data_for_mapping(map_itp, viz_s);
+    
+    long ist = viz_s->nnod_viz - 2 * map_itp->nnod_added_4_map;
+    set_new_data_for_mapping(map_itp, IFOUR,
+                             &viz_s->xyzw_viz[0], &viz_s->xyzw_viz[IFOUR*ist]);
+	set_new_data_for_mapping(map_itp, viz_s->ncomptot,
+                             &viz_s->d_nod[0], &viz_s->d_nod[viz_s->ncomptot*ist]);
+
+    ist = viz_s->nnod_viz - map_itp->nnod_added_4_map;
+    set_new_data_for_mapping(map_itp, IFOUR,
+                             &viz_s->xyzw_viz[0], &viz_s->xyzw_viz[IFOUR*ist]);
+    set_new_data_for_mapping(map_itp, viz_s->ncomptot,
+                             &viz_s->d_nod[0], &viz_s->d_nod[viz_s->ncomptot*ist]);
+    
+    long nadded_for_phi0 = map_itp->nnod_added_4_map;
     dealloc_psf_cutting_4_map(map_itp);
 
 	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
-	return;
+	return nadded_for_phi0;
 }

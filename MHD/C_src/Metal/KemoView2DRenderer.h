@@ -20,6 +20,13 @@
 
 typedef struct
 {
+    /*  Vertex buffer for Map solid node */
+    id<MTLBuffer> _Nullable mapNodeVertice;
+    NSUInteger numMapNodeVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable mapSolidIndices;
+    NSUInteger numMapSolidIndices;
+
     /*  Vertex buffer for Map solid patch */
     id<MTLBuffer> _Nullable mapSolidVertice;
     NSUInteger numMapSolidVertice;
@@ -28,11 +35,10 @@ typedef struct
     NSUInteger numMapinesVertice;
 
     /*  Vertex buffer for Coast lines */
-    id<MTLBuffer> _Nullable coastVertice;
-    NSUInteger numCoastVertice;
-    /*  Vertex buffer for sphere grids */
-    id<MTLBuffer> _Nullable sphGridVertice;
-    NSUInteger numSphGridVertice;
+    id<MTLBuffer> _Nullable coastLineVertice;
+    NSUInteger numCoastLineVertice;
+    id<MTLBuffer> _Nullable coastTubeVertice;
+    NSUInteger numCoastTubeVertice;
 
     /*  Vertex buffer for  color bar */
     id<MTLBuffer> _Nullable colorBarVertice;

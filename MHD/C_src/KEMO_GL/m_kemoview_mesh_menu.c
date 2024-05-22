@@ -130,10 +130,12 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->ele_grp_opacity =   INIT_OPACITY;
 	mesh_m->surf_grp_opacity =  INIT_OPACITY;
 	
-	mesh_m->iflag_draw_coast =     OFF;
-	mesh_m->iflag_draw_sph_grid =  OFF;
-	mesh_m->radius_coast =         ONE;
-	
+	mesh_m->iflag_draw_tangent_cyl = OFF;
+    mesh_m->iflag_draw_coast =       OFF;
+	mesh_m->iflag_draw_sph_grid =    OFF;
+	mesh_m->radius_coast =           ONE;
+    mesh_m->r_ICB =                  0.35;
+
 	init_single_color(mesh_m->domain_surface_color_code);
 	init_single_color(mesh_m->domain_grid_color_code);
 	init_single_color(mesh_m->surf_surface_color_code);
@@ -168,8 +170,12 @@ void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
+void set_axis_position(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_axis_position = iflag;};
+
+
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
+void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_tangent_cyl = iflag;};
 
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m){
 	return mesh_m->polygon_mode = toggle_value_c(mesh_m->polygon_mode);

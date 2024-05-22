@@ -98,7 +98,7 @@ static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue, kemo_sgl);
 	
-	draw_fast(kemo_sgl);
+    draw_fast(kemo_sgl);
 	return;
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){

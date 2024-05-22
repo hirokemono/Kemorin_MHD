@@ -1,7 +1,8 @@
 #
 #
 #
-TESTS_DIR = $$(PROG_DIR)/TESTS
+TESTS_DIR =      $$(PROG_DIR)/TESTS
+TEST_BUILD_DIR = $$(BUILDDIR)/tests
 
 SUBDIRS =      \
 mesh_test      \
@@ -14,6 +15,7 @@ Legendre_test \
 zlib_test     \
 graphic_test  \
 FFT_test      \
+Sorting_test  \
 \
 BC_file_test
 
@@ -22,7 +24,8 @@ BC_file_test
 #
 
 dir_list:
-	@echo 'TESTS_DIR =  $(TESTS_DIR)'            >> $(MAKENAME)
+	@echo 'TESTS_DIR =       $(TESTS_DIR)'            >> $(MAKENAME)
+	@echo 'TEST_BUILD_DIR =  $(TEST_BUILD_DIR)'       >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
@@ -52,7 +55,7 @@ target_task:
 	f_graphic_tests fft_test leg_tests getarg_tests node_clustring_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo tests_with_c: zlib_tests c_graphic_tests \
+	@echo tests_with_c: zlib_tests c_graphic_tests sort_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

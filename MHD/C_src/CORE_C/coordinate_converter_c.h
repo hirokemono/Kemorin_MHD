@@ -13,6 +13,7 @@
 
 void aitoff_c(int nnod, double *rtp, double *xy_map);
 void position_2_sph_c(int nnod, double *xyz, double *rtp);
+void xyzw_to_rtpw_c(long nnod, double *xyzw, double *rtpw);
 
 /*
 	position data

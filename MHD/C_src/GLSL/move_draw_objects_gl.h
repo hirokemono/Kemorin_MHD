@@ -23,10 +23,18 @@ struct kemoview_VAOs{
     struct VAO_ids *mesh_trans_VAO;
     
     struct VAO_ids **fline_VAO;
+
+    struct VAO_ids **psf_solid_index_VAO;
+    struct VAO_ids **psf_trans_index_VAO;
+    struct VAO_ids *map_index_VAO;
+
     struct VAO_ids **psf_solid_VAO;
     struct VAO_ids **psf_trans_VAO;
-    
-    struct VAO_ids **grid_VAO;
+    struct VAO_ids *psf_liness_VAO;
+
+    struct VAO_ids *axis_VAO;
+    struct VAO_ids *grid_line_VAO;
+    struct VAO_ids *grid_tube_VAO;
     struct VAO_ids **cbar_VAO;
     struct VAO_ids *time_VAO;
     

@@ -14,6 +14,7 @@
 #import "KemoViewerMetalViewController.h"
 #import "KemoViewerObject.h"
 
+#include <time.h>
 #include "Kemoviewer.h"
 
 
@@ -42,6 +43,10 @@
 	NSInteger EvolutionIncrement;
 	
     NSInteger CurrentStep;
+    
+    NSInteger NumTeetRotation;
+    CGFloat   SnapshotFPS;
+    CGFloat   AverageFPS;
 
     NSString *RotateImageFilehead;
 	NSString *RotateImageFilenameNoStep;
@@ -60,6 +65,9 @@
 @property NSInteger EvolutionEndStep;
 @property NSInteger EvolutionIncrement;
 @property NSInteger CurrentStep;
+@property NSInteger NumTeetRotation;
+@property CGFloat   SnapshotFPS;
+@property CGFloat   AverageFPS;
 
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
@@ -87,6 +95,8 @@
 - (IBAction)SendToClipAsTIFF:(id)sender;
 
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
+
+- (IBAction)GetRotationMovieFPS:(id)sender;
 
 - (IBAction)ShowRotationMovie:(id)sender;
 - (IBAction)ShowQuiltMovie:(id)sender;

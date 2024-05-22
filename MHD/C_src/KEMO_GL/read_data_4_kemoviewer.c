@@ -51,6 +51,11 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	view->iflag_view_type = VIEW_3D;
 	view->shading_mode =    INIT_SHADING_MODE;
     
+    view->iflag_light_check =    OFF;
+    view->iflag_coastline_tube = ON;
+    view->ncorner_tube = 6;
+    view->width_tube =   0.003;
+    
     mesh_m->mesh_file_name = init_kvstring_by_string("in.ksm");
 	
 	mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
@@ -65,10 +70,11 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	return;
 }
 
-static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
-    set_viewer_data_with_mapping(psf_s, ucd_tmp);
+static long set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
+    cal_colat_and_longitude(0, ucd_tmp);
+    long nadded_for_phi0 = set_viewer_data_with_mapping(psf_s, ucd_tmp);
     
-	take_normal_psf(psf_s);
+	take_normal_psf(nadded_for_phi0, psf_s);
 	take_minmax_psf(psf_s);
     psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
@@ -78,7 +84,7 @@ static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp
      check_psf_ave_rms_c(psf_s);
      check_psf_min_max_c(psf_s);
      */
-	return;
+	return nadded_for_phi0;
 }
 
 static void set_fline_data_by_UCD(struct fline_data *fline_d,
@@ -120,7 +126,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
     
     set_iflag_draw_time(time, psf_m);
     deallc_all_psf_data(psf_s);
-    set_psf_data_by_UCD(psf_s, ucd_tmp);
+    psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_s, ucd_tmp);
     return;
 }
 
@@ -158,7 +164,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
                            struct psf_menu_val *psf_m){
 	int i;
 	
-	set_psf_data_by_UCD(psf_s, ucd_tmp);
+    psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_s, ucd_tmp);
 	
 	alloc_draw_psf_flags(psf_s, psf_m);
 	

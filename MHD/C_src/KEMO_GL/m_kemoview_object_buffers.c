@@ -26,17 +26,28 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->nthreads = 8;
     
     kemo_buffers->cube_buf =        init_strided_buffer(n_point);
-    kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
+    kemo_buffers->cube_index_buf =  init_gl_index_buffer(12, 3);
+
+    CubeNode_to_buf(0.5f, kemo_buffers->cube_buf,
+                    kemo_buffers->cube_index_buf);
+
+    kemo_buffers->PSF_node_buf =        init_strided_buffer(n_point);
+    kemo_buffers->PSF_solid_index_buf = init_gl_index_buffer(12, 3);
+    kemo_buffers->PSF_trns_index_buf =  init_gl_index_buffer(12, 3);
+    kemo_buffers->PSF_stxur_index_buf = init_gl_index_buffer(12, 3);
+    kemo_buffers->PSF_ttxur_index_buf = init_gl_index_buffer(12, 3);
 
     kemo_buffers->PSF_solid_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_stxur_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_trns_buf =    init_strided_buffer(n_point);
     kemo_buffers->PSF_ttxur_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_isoline_buf = init_strided_buffer(n_point);
+    kemo_buffers->PSF_isotube_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_arrow_buf =   init_strided_buffer(n_point);
 
-    kemo_buffers->MAP_solid_buf =   init_strided_buffer(n_point);
-    kemo_buffers->MAP_isoline_buf = init_strided_buffer(n_point);
+    kemo_buffers->MAP_solid_index_buf = init_gl_index_buffer(12, 3);
+    kemo_buffers->MAP_solid_buf =       init_strided_buffer(n_point);
+    kemo_buffers->MAP_isoline_buf =     init_strided_buffer(n_point);
 
     kemo_buffers->FLINE_line_buf =  init_strided_buffer(n_point);
     kemo_buffers->FLINE_tube_buf =  init_strided_buffer(n_point);
@@ -46,11 +57,10 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->mesh_node_buf =   init_strided_buffer(n_point);
     kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
 
-    kemo_buffers->coast_buf =       init_strided_buffer(n_point);
-    kemo_buffers->sph_grid_buf =    init_strided_buffer(n_point);
+    kemo_buffers->coast_line_buf = init_strided_buffer(n_point);
+    kemo_buffers->coast_tube_buf = init_strided_buffer(n_point);
     
-    kemo_buffers->ncorner_axis = ISIX*8;
-    kemo_buffers->axis_buf =        init_strided_buffer(n_point);
+    kemo_buffers->axis_buf =  init_strided_buffer(n_point);
 
     n_point = count_colorbar_box_buffer(IONE, 128);
     kemo_buffers->cbar_buf =        init_strided_buffer(n_point);
@@ -86,18 +96,26 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->FLINE_line_buf);
     dealloc_strided_buffer(kemo_buffers->FLINE_tube_buf);
 
+    dealloc_gl_index_buffer(kemo_buffers->PSF_ttxur_index_buf);
+    dealloc_gl_index_buffer(kemo_buffers->PSF_stxur_index_buf);
+    dealloc_gl_index_buffer(kemo_buffers->PSF_solid_index_buf);
+    dealloc_gl_index_buffer(kemo_buffers->PSF_trns_index_buf);
+    dealloc_strided_buffer(kemo_buffers->PSF_node_buf);
+
     dealloc_strided_buffer(kemo_buffers->PSF_ttxur_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_stxur_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_solid_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_trns_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_isoline_buf);
+    dealloc_strided_buffer(kemo_buffers->PSF_isotube_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_arrow_buf);
 
+    dealloc_gl_index_buffer(kemo_buffers->MAP_solid_index_buf);
     dealloc_strided_buffer(kemo_buffers->MAP_solid_buf);
     dealloc_strided_buffer(kemo_buffers->MAP_isoline_buf);
 
-    dealloc_strided_buffer(kemo_buffers->coast_buf);
-    dealloc_strided_buffer(kemo_buffers->sph_grid_buf);
+    dealloc_strided_buffer(kemo_buffers->coast_tube_buf);
+    dealloc_strided_buffer(kemo_buffers->coast_line_buf);
 
     dealloc_strided_buffer(kemo_buffers->cbar_buf);
 
@@ -124,55 +142,100 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     int iflag;
     int iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                                 kemo_psf->psf_a, view_s);
-    /* Set transfer matrices */
+/* Set isolines thickness*/
+    if(view_s->ncorner_tube <= 0){view_s->ncorner_tube = 12;};
+    kemo_fline->fline_m->fieldline_ncorner = view_s->ncorner_tube;
+
+    
+    const_PSF_node_stack(kemo_psf->psf_d, kemo_psf->psf_a);
+    set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
+
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
-        set_map_patch_buffer(kemo_buffers->nthreads,
-                             IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
-                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                             kemo_buffers->MAP_solid_buf);
+        if(view_s->shading_mode == SMOOTH_SHADE){
+            set_map_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_a,
+                                kemo_buffers->PSF_node_buf);
+            const_PSF_patch_index_buffer(kemo_buffers->nthreads,
+                                         IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                                         kemo_psf->psf_d, kemo_psf->psf_a,
+                                         kemo_buffers->MAP_solid_index_buf);
+            kemo_buffers->MAP_solid_buf->num_nod_buf = 0;
+        }else{
+            set_map_patch_buffer(kemo_buffers->nthreads,
+                                 IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                                 kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                 kemo_buffers->MAP_solid_buf);
+            kemo_buffers->MAP_solid_index_buf->ntot_vertex = 0;
+        }
+
+        
         set_map_PSF_isolines_buffer(kemo_buffers->nthreads,
                                     kemo_psf->psf_d, kemo_psf->psf_m,
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf);
         
-        set_map_coastline_buffer(kemo_mesh->mesh_m,
-                                 kemo_buffers->coast_buf);
-        set_map_flame_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->sph_grid_buf);
+        set_map_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
+        if(view_s->iflag_coastline_tube){
+            set_map_coastline_tube_buffer(kemo_mesh->mesh_m, view_s,
+                                          kemo_buffers->coast_tube_buf);
+            kemo_buffers->coast_line_buf->num_nod_buf = 0;
+        }else{
+            kemo_buffers->coast_tube_buf->num_nod_buf = 0;
+        }
+        
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 4.0;
-        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
-                        kemo_mesh->mesh_m->dist_domains,
-                        kemo_buffers->ncorner_axis, axis_radius,
-                        kemo_buffers->axis_buf);
+        if(kemo_mesh->mesh_m->iflag_axis_position == LOWER_LEFT_AXIS){
+            set_lower_flex_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                       kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                       kemo_buffers->axis_buf);
+        }else{
+            set_flex_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                 kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                 kemo_buffers->axis_buf);
+        }
         
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
-        set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
+
+        const_PSF_node_buffer(kemo_buffers->nthreads, kemo_psf->psf_d, kemo_psf->psf_a,
+                              kemo_buffers->PSF_node_buf);
         
         const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_solid_buf,
                                        kemo_buffers->PSF_stxur_buf,
-                                       kemo_buffers->PSF_isoline_buf,
-                                       kemo_buffers->PSF_arrow_buf);
+                                       kemo_buffers->PSF_solid_index_buf,
+                                       kemo_buffers->PSF_stxur_index_buf);
+        kemo_buffers->num_isoline_buf = const_PSF_isolines_buffer(kemo_buffers->nthreads,
+                                                                  view_s, kemo_psf->psf_d,
+                                                                  kemo_psf->psf_m, kemo_psf->psf_a,
+                                                                  kemo_buffers->PSF_isoline_buf,
+                                                                  kemo_buffers->PSF_isotube_buf,
+                                                                  kemo_buffers->PSF_arrow_buf);
+        kemo_buffers->PSF_isoline_buf->num_nod_buf = 0;
+
         const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_trns_buf,
-                                       kemo_buffers->PSF_ttxur_buf);
+                                       kemo_buffers->PSF_ttxur_buf,
+                                       kemo_buffers->PSF_trns_index_buf,
+                                       kemo_buffers->PSF_ttxur_index_buf);
 
-        set_coastline_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->coast_buf);
-        set_sph_flame_buffer(kemo_mesh->mesh_m,
-                             kemo_buffers->sph_grid_buf);
+        set_coastline_line_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_line_buf);
+        if(view_s->iflag_coastline_tube){
+            set_coastline_tube_buffer(kemo_mesh->mesh_m, view_s,
+                                      kemo_buffers->coast_tube_buf);
+            kemo_buffers->coast_line_buf->num_nod_buf = 0;
+        }else{
+            kemo_buffers->coast_tube_buf->num_nod_buf = 0;
+        }
         
-        const_fieldlines_buffer(kemo_buffers->nthreads,
-                                kemo_fline->fline_d,
-                                kemo_fline->fline_m,
+        const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
+                                kemo_fline->fline_d, kemo_fline->fline_m,
                                 kemo_buffers->FLINE_tube_buf,
                                 kemo_buffers->FLINE_line_buf);
         
@@ -212,10 +275,11 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     /* draw example cube for empty data */
     
     iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-    if(iflag == 0){
-        kemo_buffers->cube_buf->num_nod_buf = kemo_buffers->cube_index_buf->nsize_buf;
+    if(iflag == 0 || view_s->iflag_light_check > 0){
+        kemo_buffers->cube_index_buf->ntot_vertex = kemo_buffers->cube_index_buf->num_ele_buf
+                                                   * kemo_buffers->cube_index_buf->num_each_ele;
     } else {
-        kemo_buffers->cube_buf->num_nod_buf = 0;
+        kemo_buffers->cube_index_buf->ntot_vertex = 0;
     }
     return;
 };
@@ -233,22 +297,42 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
                                    view_s, kemo_psf->psf_d,
                                    kemo_psf->psf_m, kemo_psf->psf_a,
                                    kemo_buffers->PSF_trns_buf,
-                                   kemo_buffers->PSF_ttxur_buf);
+                                   kemo_buffers->PSF_ttxur_buf,
+                                   kemo_buffers->PSF_trns_index_buf,
+                                   kemo_buffers->PSF_ttxur_index_buf);
+
     const_trans_mesh_buffer(kemo_buffers->nthreads,
                             kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                             kemo_buffers->mesh_trns_buf);
     return;
 };
 
-void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
-                      struct view_element *view_s, struct kemoview_buffers *kemo_buffers)
+void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                      struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                      struct kemoview_buffers *kemo_buffers)
 {
     double axis_radius = 4.0;
-    set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
-                    kemo_mesh->mesh_m->dist_domains,
-                    kemo_buffers->ncorner_axis, axis_radius,
-                    kemo_buffers->axis_buf);
+    
+    if(kemo_mesh->mesh_m->iflag_axis_position == LOWER_LEFT_AXIS){
+        set_lower_fixed_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                                    kemo_mesh->mesh_m->dist_domains, axis_radius,
+                                    kemo_buffers->axis_buf);
+    }
+     
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
+    
+    kemo_buffers->coast_line_buf->num_nod_buf
+        = ITWO * count_coastline_line_buffer(kemo_mesh->mesh_m);
+    kemo_buffers->coast_tube_buf->num_nod_buf = 0;
+
+    kemo_buffers->PSF_isoline_buf->num_nod_buf = kemo_buffers->num_isoline_buf;
+    kemo_buffers->PSF_isotube_buf->num_nod_buf = 0;
+
+    if(kemo_fline->fline_m->iflag_draw_fline > 0){
+        kemo_buffers->FLINE_line_buf->num_nod_buf
+        = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
+        kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
+    }
     return;
 };
 

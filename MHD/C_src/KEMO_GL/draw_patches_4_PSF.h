@@ -17,22 +17,44 @@
 #include "pthread_PSF_arrows_to_buf.h"
 #include "set_PSF_isolines_to_buf.h"
 #include "modify_object_4_viewer_c.h"
+#include "set_axis_to_buf.h"
 
 
 /* prptotypes */
 
 int check_draw_psf(struct kemo_array_control *psf_a);
 
+void const_PSF_node_stack(struct psf_data **psf_s,
+                          struct kemo_array_control *psf_a);
+ void const_PSF_node_buffer(const int nthreads,
+                           struct psf_data **psf_s,
+                           struct kemo_array_control *psf_a,
+                           struct gl_strided_buffer *psf_buf);
+
+void const_PSF_patch_index_buffer(const int nthreads, long ist_psf, long ied_psf,
+                                  struct psf_data **psf_s,  struct kemo_array_control *psf_a,
+                                  struct gl_index_buffer *index_buf);
+
 void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_solid_buf,
                                     struct gl_strided_buffer *PSF_stxur_buf,
-                                    struct gl_strided_buffer *PSF_isoline_buf,
-                                    struct gl_strided_buffer *PSF_arrow_buf);
-void const_PSF_trans_objects_buffer(const int nthreads, 
+                                    struct gl_index_buffer *PSF_solid_index_buf,
+                                    struct gl_index_buffer *PSF_stxur_index_buf);
+
+long const_PSF_isolines_buffer(const int nthreads,
+                               struct view_element *view_s, struct psf_data **psf_s,
+                               struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                               struct gl_strided_buffer *PSF_isoline_buf,
+                               struct gl_strided_buffer *PSF_isotube_buf,
+                               struct gl_strided_buffer *PSF_arrow_buf);
+
+void const_PSF_trans_objects_buffer(const int nthreads,
                                     struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_trns_buf,
-                                    struct gl_strided_buffer *PSF_ttxur_buf);
+                                    struct gl_strided_buffer *PSF_ttxur_buf,
+                                    struct gl_index_buffer *PSF_trns_index_buf,
+                                    struct gl_index_buffer *PSF_ttxur_index_buf);
 #endif

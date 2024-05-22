@@ -168,7 +168,7 @@ double flip_sign_double_pthread_test(struct sort_double_array *dSort){
     return seq_time1;
 }
 
-#ifdef __APPLE__
+#ifdef __vDSP__
 double vDSP_vsortiD_test(struct sort_double_array *dSort){
     double seq_time1;
     struct timeval startwtime, endwtime;

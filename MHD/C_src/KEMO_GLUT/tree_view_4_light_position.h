@@ -30,8 +30,8 @@ struct lightparams_view * init_light_views_4_ctl(struct real3_clist *light_list)
 struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights);
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws);
 
-GtkWidget * init_light_list_frame(struct kemoviewer_type *kemo_sgl,
-                                  struct lightparams_view *light_vws);
+GtkWidget *init_lightposition_expander(struct kemoviewer_type *kemo_sgl,
+                                       struct lightparams_view *light_vws);
 
 
 #endif /* tree_view_4_pvr_colormap_h_ */

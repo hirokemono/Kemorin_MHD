@@ -9,16 +9,14 @@
 
 #include "kemoview_gtk_preference_menu.h"
 
-struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data){
-	struct preference_gtk_menu *pref_gmenu
-			= (struct preference_gtk_menu *) malloc(sizeof(struct preference_gtk_menu));
-	pref_gmenu->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
-	
-	return pref_gmenu;
-};
-void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu){
-	dealloc_light_views_4_viewer(pref_gmenu->lightparams_vws);
-	free(pref_gmenu);
+static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
+{
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_filefmt), "kemoview");
+
+    int id_img_format = gtk_selected_combobox_index(combobox_filefmt);
+    kemoview_set_view_integer(IMAGE_FORMAT_FLAG, id_img_format, kemo_sgl);
+	draw_full(kemo_sgl);
 	return;
 };
 
@@ -38,180 +36,97 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	return;
 }
 
-static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-    int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    kemoview_set_number_of_threads(ivalue, kemo_sgl);
-    draw_full(kemo_sgl);
-    return;
-}
-
-static void nTubeCornerChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-    int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    kemoview_set_fline_field_param(NUM_TUBE_CORNERS_FLAG, ivalue, kemo_sgl);
-    draw_full(kemo_sgl);
-    return;
-}
-
-static void AmbientChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(AMBIENT_FLAG, value, kemo_sgl);
-    draw_full(kemo_sgl);
-	return;
-}
-static void DiffuseChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(DIFFUSE_FLAG, value, kemo_sgl);
-    draw_full(kemo_sgl);
-	return;
-}
-static void SpecularChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(SPECULAR_FLAG, value, kemo_sgl);
-    draw_full(kemo_sgl);
-	return;
-}
-static void ShinenessChange_CB(GtkWidget *entry, gpointer data)
-{
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+GtkWidget * init_default_image_format_menu(struct kemoviewer_type *kemo_sgl){
 	
-	kemoview_set_material_parameter(SHINENESS_FLAG, value, kemo_sgl);
-    draw_full(kemo_sgl);
-	return;
+	GtkWidget *label_tree_image_fileformat = create_fixed_label_w_index_tree();
+	GtkTreeModel *model_image_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_image_fileformat));  
+	GtkTreeModel *child_model_image_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_image_fileformat));
+	int index = 0;
+	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_image_fileformat);
+	index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_image_fileformat);
+	index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_image_fileformat);
+	
+	GtkWidget *ComboboxImageFormat = gtk_combo_box_new_with_model(child_model_image_fileformat);
+	GtkCellRenderer *renderer_image_fileformat = gtk_cell_renderer_text_new();
+	int id_img_format = kemoview_get_view_integer(kemo_sgl, IMAGE_FORMAT_FLAG);
+	if(id_img_format == SAVE_BMP){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(ComboboxImageFormat), SAVE_BMP);
+	} else if(id_img_format == SAVE_PNG){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(ComboboxImageFormat), SAVE_PNG);
+	} else {
+		gtk_combo_box_set_active(GTK_COMBO_BOX(ComboboxImageFormat), NO_SAVE_FILE);
+	};
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ComboboxImageFormat), renderer_image_fileformat, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(ComboboxImageFormat), renderer_image_fileformat,
+				"text", COLUMN_FIELD_NAME, NULL);
+    g_object_set_data(G_OBJECT(ComboboxImageFormat), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(ComboboxImageFormat), "changed",
+				G_CALLBACK(set_image_fileformat_CB), NULL);
+	
+	
+	GtkWidget *hbox_image_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_image_save), gtk_label_new("Image file: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_image_save), ComboboxImageFormat, FALSE, FALSE, 0);
+    return wrap_into_frame_gtk("Default image format", hbox_image_save);
 }
 
-static void set_GTK_preference_menu(struct kemoviewer_type *kemoviewer_data,
-                                    struct preference_gtk_menu *pref_gmenu){
-	double current_value;
-	current_value = kemoview_get_material_parameter(kemoviewer_data, AMBIENT_FLAG);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_ambient), current_value);
-	current_value = kemoview_get_material_parameter(kemoviewer_data, DIFFUSE_FLAG);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_diffuse), current_value);
-	current_value = kemoview_get_material_parameter(kemoviewer_data, SPECULAR_FLAG);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_specular), current_value);
-	current_value = kemoview_get_material_parameter(kemoviewer_data, SHINENESS_FLAG);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_shineness), current_value);
-	return;
-}
 
-static void init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
-                                 struct preference_gtk_menu *pref_gmenu,
+GtkWidget * init_preference_vbox(struct kemoviewer_type *kemoviewer_data,
+                                 struct lightparams_view *lightparams_vws,
                                  GtkWidget *window){
+    GtkWidget *pref_vbox;
+    
     float color[4];
 	kemoview_get_background_color(kemoviewer_data, color);
 	
 	/* Set buttons   */
-    pref_gmenu->BGselButton = gtk_button_new_with_label("Set Background");
+    GtkWidget *BGselButton = gtk_button_new_with_label("Set Background");
     g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemoviewer_data);
-	g_signal_connect(G_OBJECT(pref_gmenu->BGselButton), "clicked",
+	g_signal_connect(G_OBJECT(BGselButton), "clicked",
                      G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)window);
+    
+    GtkWidget *lighting_frame =  init_lighting_frame(kemoviewer_data, 
+                                                     lightparams_vws);
+    GtkWidget *Shading_frame =   shading_mode_menu_frame(kemoviewer_data);
+    GtkWidget *Tube_frame =      init_tube_pref_frame(kemoviewer_data);
+    GtkWidget *coastline_frame = init_coastline_pref_menu(kemoviewer_data);
+    GtkWidget *Axis_frame =      init_axis_position_menu(kemoviewer_data);
+    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemoviewer_data, window);
+    GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemoviewer_data);
+    GtkWidget *ImgFormat_frame = init_default_image_format_menu(kemoviewer_data);
 
     
-    int current_int = kemoview_get_number_of_threads(kemoviewer_data);
-    GtkAdjustment *adj_t = gtk_adjustment_new(current_int, 1, 256, 1, 1, 0.0);
-    pref_gmenu->spin_threads = gtk_spin_button_new(GTK_ADJUSTMENT(adj_t),0,2);
-    g_signal_connect(pref_gmenu->spin_threads, "value-changed",
-                     G_CALLBACK(NumThreadsChange_CB), (gpointer) kemoviewer_data);
-
-    pref_gmenu->nthread_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->nthread_hbox), gtk_label_new("# of threads:  "), TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->nthread_hbox), pref_gmenu->spin_threads, FALSE, FALSE, 0);
-
-    
-    int ncorner = kemoview_get_fline_field_param(kemoviewer_data, NUM_TUBE_CORNERS_FLAG);
-    GtkAdjustment *adj_c = gtk_adjustment_new(ncorner, 1, 24, 1, 1, 0.0);
-    pref_gmenu->spin_nTubeCorner = gtk_spin_button_new(GTK_ADJUSTMENT(adj_c),0,2);
-    g_signal_connect(pref_gmenu->spin_nTubeCorner, "value-changed",
-                     G_CALLBACK(nTubeCornerChange_CB), (gpointer) kemoviewer_data);
-
-    pref_gmenu->nTubeCorner_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), gtk_label_new("# of tube corners:  "), TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->nTubeCorner_hbox), pref_gmenu->spin_nTubeCorner, FALSE, FALSE, 0);
-    
-
-    
-    pref_gmenu->Frame_BGsel = init_light_list_frame(kemoviewer_data,
-                                                    pref_gmenu->lightparams_vws);
-	float current_value = 0.0;
-	GtkAdjustment *adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	pref_gmenu->spin_ambient = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
-	
-	GtkAdjustment *adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	pref_gmenu->spin_diffuse = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
-	
-	GtkAdjustment *adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	pref_gmenu->spin_specular = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
-	
-	GtkAdjustment *adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
-	pref_gmenu->spin_shineness = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
-	
-	g_signal_connect(pref_gmenu->spin_ambient, "value-changed",
-                     G_CALLBACK(AmbientChange_CB), (gpointer) kemoviewer_data);
-	g_signal_connect(pref_gmenu->spin_diffuse, "value-changed",
-                     G_CALLBACK(DiffuseChange_CB), (gpointer) kemoviewer_data);
-	g_signal_connect(pref_gmenu->spin_specular, "value-changed",
-                     G_CALLBACK(SpecularChange_CB), (gpointer) kemoviewer_data);
-	g_signal_connect(pref_gmenu->spin_shineness, "value-changed",
-                     G_CALLBACK(ShinenessChange_CB), (gpointer) kemoviewer_data);
-	
-	set_GTK_preference_menu(kemoviewer_data, pref_gmenu);
-	
-    pref_gmenu->pref_hbox[0] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[0]), gtk_label_new("Ambient:   "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[0]), pref_gmenu->spin_ambient, FALSE, FALSE, 0);
-	
-    pref_gmenu->pref_hbox[1] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[1]), gtk_label_new("Diffuse:   "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[1]), pref_gmenu->spin_diffuse, FALSE, FALSE, 0);
-	
-    pref_gmenu->pref_hbox[2] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[2]), gtk_label_new("Specular:  "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[2]), pref_gmenu->spin_specular, FALSE, FALSE, 0);
-	
-    pref_gmenu->pref_hbox[3] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[3]), gtk_label_new("Shineness: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[3]), pref_gmenu->spin_shineness, FALSE, FALSE, 0);
-		
-    pref_gmenu->pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->BGselButton, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->nthread_hbox, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->Frame_BGsel, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[0], FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[1], FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[2], FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->pref_hbox[3], FALSE, FALSE, 0);
-
-    gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_vbox), pref_gmenu->nTubeCorner_hbox, FALSE, FALSE, 0);
-    return;
+    pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), BGselButton, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), NumThread_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), ImgFormat_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), lighting_frame, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), Tube_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), Shading_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), coastline_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), Axis_frame, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pref_vbox), FPS_frame, FALSE, FALSE, 0);
+    return pref_vbox;
 }
 
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
-                                  struct preference_gtk_menu *pref_gmenu,
+                                  struct lightparams_view *lightparams_vws,
                                   GtkWidget *window){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
     gtk_frame_set_shadow_type(GTK_FRAME(frame_pref), GTK_SHADOW_IN);
-    init_preference_vbox(kemoviewer_data, pref_gmenu, window);
-    gtk_container_add(GTK_CONTAINER(frame_pref), pref_gmenu->pref_vbox);
+    GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data, 
+                                                lightparams_vws,  window);
+    gtk_container_add(GTK_CONTAINER(frame_pref), pref_vbox);
     return frame_pref;
 }
 
 GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
-                                     struct preference_gtk_menu *pref_gmenu,
+                                     struct lightparams_view *lightparams_vws,
                                      GtkWidget *window){
     GtkWidget *expander_pref;
-    init_preference_vbox(kemoviewer_data, pref_gmenu, window);
+    GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data,
+                                                lightparams_vws, window);
     expander_pref = wrap_into_scroll_expansion_gtk("Preferences", 160, 400,
-                                                   window, pref_gmenu->pref_vbox);
+                                                   window, pref_vbox);
     return expander_pref;
 }

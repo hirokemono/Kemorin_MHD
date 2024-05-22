@@ -20,11 +20,12 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	/*! Initialize mesh data*/
 	struct kemoviewer_type *kemoviewer_data 
 		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
+    kemoviewer_data->image_format_id = SAVE_PNG;
     
 	kemoview_allocate_pointers(kemoviewer_data);
     
 	init_kemoview_array(kemoviewer_data->kemo_psf->psf_a);
-    
+        
 	init_kemoviewer(IZERO, kemoviewer_data->kemo_mesh->mesh_d,
                     kemoviewer_data->kemo_mesh->mesh_m,
                     kemoviewer_data->view_s);
@@ -44,12 +45,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
-
-void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data){
-    CubeNode_to_buf(0.5f, kemoviewer_data->kemo_buffers->cube_buf, 
-                    kemoviewer_data->kemo_buffers->cube_index_buf);
-    return;
-};
 
 
 void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
@@ -168,14 +163,26 @@ double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer){
     return kemoviewer->kemo_mesh->mesh_m->radius_coast;
 };
 
+void kemoview_set_inner_core_radius(double r_ICB, struct kemoviewer_type *kemoviewer){
+    kemoviewer->kemo_mesh->mesh_m->r_ICB = r_ICB;
+};
+double kemoview_get_inner_core_radius(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->r_ICB;
+};
+
+
 void kemoview_set_object_property_flags(int selected, int iflag,
                                         struct kemoviewer_type *kemoviewer){
 	if (selected == AXIS_TOGGLE){
         set_axis_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
+    }else if(selected == AXIS_POSITION){
+        set_axis_position(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == COASTLINE_SWITCH){
         set_coastline_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SPHEREGRID_SWITCH){
         set_sphere_grid_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
+    }else if(selected == TANGENT_CYLINDER_SWITCH){
+        set_tangent_cylinder_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SHADING_SWITCH){
         kemoviewer->view_s->shading_mode = iflag;
     }else if(selected == POLYGON_SWITCH){
@@ -191,10 +198,14 @@ void kemoview_set_object_property_flags(int selected, int iflag,
 int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected){
 	if (selected == AXIS_TOGGLE){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis;
+    }else if(selected == AXIS_POSITION){
+        return kemoviewer->kemo_mesh->mesh_m->iflag_axis_position;
     }else if(selected == COASTLINE_SWITCH){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_coast;
     }else if(selected == SPHEREGRID_SWITCH){
         return kemoviewer->kemo_mesh->mesh_m->iflag_draw_sph_grid;
+    }else if(selected == TANGENT_CYLINDER_SWITCH){
+        return kemoviewer->kemo_mesh->mesh_m->iflag_draw_tangent_cyl;
     }else if(selected == SHADING_SWITCH){
         return kemoviewer->view_s->shading_mode;
     }else if(selected == POLYGON_SWITCH){
@@ -321,8 +332,9 @@ void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer){
     return;
 };
 void kemoview_fast_buffers(struct kemoviewer_type *kemoviewer){
-    set_fast_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_mesh,
-                     kemoviewer->view_s, kemoviewer->kemo_buffers);
+    set_fast_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_fline,
+                     kemoviewer->kemo_mesh, kemoviewer->view_s,
+                     kemoviewer->kemo_buffers);
     return;
 };
 
@@ -373,10 +385,6 @@ void kemoview_set_message_opacity(float opacity,
     return;
 }
 
-int kemoview_get_draw_mode(struct kemoviewer_type *kemoviewer){
-    return send_gl_draw_mode(kemoviewer->view_s);
-};
-
 void kemoview_set_view_integer(int selected, int ivalue,
                                struct kemoviewer_type *kemoviewer){
 	if(selected == ISET_ROTATE_AXIS){
@@ -385,8 +393,37 @@ void kemoview_set_view_integer(int selected, int ivalue,
 		set_gl_animation_rot_angle(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
         set_gl_draw_mode(kemoviewer->view_s, ivalue);
+    }else if(selected == LIGHTING_CHECK){
+        set_lighting_check_flag(kemoviewer->view_s, ivalue);
+    }else if(selected == COASTLINE_TUBE){
+        set_coastline_tube_flag(kemoviewer->view_s, ivalue);
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        set_gl_tube_corners(kemoviewer->view_s, ivalue);
+    }else if(selected == IMAGE_FORMAT_FLAG){
+        set_default_image_format_id(kemoviewer, ivalue);
 	}
 	return;
+};
+
+int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
+                               int selected){
+    int ivalue = 0;
+    if(selected == ISET_PIXEL_X){
+        ivalue = send_gl_windowsize_x(kemoviewer->view_s);
+    }else if(selected == ISET_PIXEL_Y){
+        ivalue = send_gl_windowsize_y(kemoviewer->view_s);
+    }else if(selected == ISET_DRAW_MODE){
+        ivalue = send_gl_draw_mode(kemoviewer->view_s);
+    }else if(selected == LIGHTING_CHECK){
+        ivalue = send_lighting_check_flag(kemoviewer->view_s);
+    }else if(selected == COASTLINE_TUBE){
+        ivalue = send_coastline_tube_flag(kemoviewer->view_s);
+    }else if(selected == NUM_TUBE_CORNERS_FLAG){
+        ivalue = send_gl_tube_corners(kemoviewer->view_s);
+    }else if(selected == IMAGE_FORMAT_FLAG){
+        ivalue = send_default_image_format_id(kemoviewer);
+    }
+    return ivalue;
 };
 
 void kemoview_set_view_parameter(int selected, int i, double value,
@@ -428,16 +465,6 @@ void kemoview_set_quilt_nums(int selected, int ivalue,
     return;
 };
 
-int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
-                              int selected){
-    int ivalue = 0;
-    if(selected == ISET_PIXEL_X){
-        ivalue = send_gl_windowsize_x(kemoviewer->view_s);
-    }else if(selected == ISET_PIXEL_Y){
-        ivalue = send_gl_windowsize_y(kemoviewer->view_s);
-    };
-    return ivalue;
-};
 double kemoview_get_view_parameter(struct kemoviewer_type *kemoviewer,
                                    int selected, int i){
 	double value = 0.0;
@@ -516,6 +543,17 @@ void kemoview_animation_add_rotation(double dt,
 };
 void kemoview_reset_animation(struct kemoviewer_type *kemoviewer){
     reset_rot_animation(kemoviewer->view_s);
+};
+
+
+void kemoview_set_coastline_thickness_w_exp(double value, int i_digit,
+                                            struct kemoviewer_type *kemoviewer){
+    set_coastline_thickness_w_exp(value, i_digit, kemoviewer->view_s);
+};
+void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                            double *value, int *i_digit){;
+    get_coastline_thickness_w_exp(kemoviewer->view_s, value, i_digit);
+    return;
 };
 
 

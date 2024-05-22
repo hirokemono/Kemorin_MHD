@@ -110,6 +110,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_color_code_on_nodes.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -117,6 +118,9 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
+  $(MHDDIR)/C_src/CORE_C/transfer_matvec.h \
+  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_gz_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_coastline_to_buf.h \

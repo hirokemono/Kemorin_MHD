@@ -2,6 +2,7 @@
 #
 #
 
+CURRENTDIR = $(shell pwd)
 ISPACK3_DIR =     $$(EXT_DIR)/ISPACK3_custum
 FXPACK3_DIR = $$(ISPACK3_DIR)/ispack-3.0.1/fxpack/src
 MXPACK3_DIR = $$(ISPACK3_DIR)/ispack-3.0.1/mxpack/src

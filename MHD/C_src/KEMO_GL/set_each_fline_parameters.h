@@ -49,9 +49,6 @@ int get_fline_colormode(struct fline_menu_val *fline_m);
 void set_fline_type(struct fline_menu_val *fline_m, long iflag);
 long get_fline_type(struct fline_menu_val *fline_m);
 
-void set_fline_corners(struct fline_menu_val *fline_m, int num);
-int get_fline_corners(struct fline_menu_val *fline_m);
-
 void set_fline_thickness(double value, struct fline_menu_val *fline_m);
 double get_fline_thickness(struct fline_menu_val *fline_m);
 

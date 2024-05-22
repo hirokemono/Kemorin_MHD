@@ -402,7 +402,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
         glDrawBuffer(GL_BACK);
         kemoview_modify_view(kemo_sgl, kemo_gl);
 		glutSwapBuffers();

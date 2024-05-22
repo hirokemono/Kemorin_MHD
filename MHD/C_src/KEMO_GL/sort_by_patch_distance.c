@@ -162,20 +162,24 @@ const int sort_zbuf_ele_by_vDSP(long lnum, double *z_ele_viz, long *ldx_tmp){
     return 0;
 }
 #endif
+*/
 
 void select_sort_zbuf_ele(long lnum, long narrayP2, double *z_ele_viz, long *idx_tmp){
     if(lnum < 65536){
+/*
 #ifdef __APPLE__
         sort_zbuf_ele_by_vDSP(lnum, z_ele_viz, idx_tmp);
 #else
         sort_zbuf_ele_by_quicksort(lnum, z_ele_viz, idx_tmp);
 #endif
+*/
+        sort_zbuf_ele_by_quicksort(lnum, z_ele_viz, idx_tmp);
     }else{
         sort_zbuf_ele_by_bitonic(lnum, narrayP2, z_ele_viz, idx_tmp);
     };
     return;
 }
-*/
+
 int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s){
     count_patch_distance_psfs(psf_s, psf_m, psf_a);
@@ -190,8 +194,8 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
         
         set_trans_patch_distance_psfs(view_s, psf_s, psf_a, z_ele_viz);
         
-//        select_sort_zbuf_ele(lnum, narrayP2, z_ele_viz, idx_tmp);
-        sort_zbuf_ele_by_bitonic(lnum, narrayP2, z_ele_viz, idx_tmp);
+        select_sort_zbuf_ele(lnum, narrayP2, z_ele_viz, idx_tmp);
+//        sort_zbuf_ele_by_bitonic(lnum, narrayP2, z_ele_viz, idx_tmp);
 
         set_patch_order_by_distance(lnum, idx_tmp, psf_a);
         free(z_ele_viz);

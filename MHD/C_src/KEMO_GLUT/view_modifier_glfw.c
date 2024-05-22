@@ -336,10 +336,22 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 
 void draw_fast(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
+    kemoview_mono_viewmatrix(kemo_sgl);
+    kemoview_fast_buffers(kemo_sgl);
+    glDrawBuffer(GL_BACK);
+    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
+    glfwSwapBuffers(glfw_window);
+    return;
+};
+
+static void draw_movie(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
     select_anaglyph(kemo_sgl);
     return;
 };
+
 void draw_simple(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
@@ -396,32 +408,46 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
-                               int iflag_img, struct kv_string *image_prefix,
-                               int i_axis, int inc_deg) {
+static double write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                                 int iflag_img, struct kv_string *image_prefix,
+                                 int i_axis, int inc_deg, int n_rotate){
+    struct timeval startwtime;
+    struct timeval endwtime;
+    double seq_time;
+    double AverageFPS = 0.0;
+
     int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 	
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
-    ied_deg = 360/inc_deg;
+    ied_deg = n_rotate * 360/inc_deg;
 	
 	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 	glfwFocusWindow(glfw_window);
+    double accum_time = 0.0;
 	for (i = 0; i< ied_deg; i++) {
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
-		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+
+        gettimeofday( &startwtime, NULL );
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         select_anaglyph(kemo_sgl);
+        gettimeofday( &endwtime, NULL );
+
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-											 npix_x, npix_y, image);
+        kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
+                                             npix_x, npix_y, image);
+        seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                             + endwtime.tv_sec - startwtime.tv_sec );
+        accum_time = accum_time + seq_time;
+/*        *SnapshotFPS = 1.0 / seq_time; */
+        AverageFPS =  (double) i / accum_time;
 	};
     free(image);
-	return;
+	return AverageFPS;
 }
 
 static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
@@ -485,16 +511,25 @@ static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
 };
 
 
+double draw_rotate_gl_views(struct kemoviewer_type *kemo_sgl,
+                            int iflag_img, struct kv_string *image_prefix,
+                            int i_axis, int inc_deg, int num_rotation){
+    double AverageFPS = write_rotate_views(kemo_sgl, iflag_img, image_prefix,
+                                           i_axis, inc_deg, num_rotation);
+    return AverageFPS;
+}
+
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,
-                            int i_axis, int inc_deg) {
+                            int i_axis, int inc_deg){
 	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
 		write_rotate_quilt_views(kemo_sgl,iflag_img, image_prefix,
                                  i_axis, inc_deg);
 	}else{
-		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
+        write_rotate_views(kemo_sgl, iflag_img, image_prefix,
+                           i_axis, inc_deg, 1);
 	}
-    draw_fast(kemo_sgl);
+    draw_movie(kemo_sgl);
 	return;
 }
 

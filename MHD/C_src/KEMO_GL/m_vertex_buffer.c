@@ -116,7 +116,16 @@ void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf,
 }
 
 
-struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele){
+void alloc_gl_index_buffer(struct gl_index_buffer *index_buf){
+    index_buf->nsize_buf = index_buf->ntot_vertex;
+    if((index_buf->ie_buf = (unsigned int *) malloc(index_buf->nsize_buf * sizeof(unsigned int))) == NULL){
+        printf("malloc error in index_buf\n");
+        exit(0);
+    }
+    return;
+}
+
+struct gl_index_buffer * init_gl_index_buffer(long numele, int nnod_4_ele){
     struct gl_index_buffer *index_buf;
     if((index_buf = (struct gl_index_buffer *) malloc(sizeof(struct gl_index_buffer))) == NULL) {
         printf("malloc error in gl_index_buffer\n");
@@ -124,18 +133,26 @@ struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele){
     }
     index_buf->num_ele_buf =  numele;
     index_buf->num_each_ele = nnod_4_ele;
-    index_buf->nsize_buf =    numele * nnod_4_ele;
-    
-    if((index_buf->ie_buf = (unsigned int *) malloc(index_buf->nsize_buf * sizeof(unsigned int))) == NULL){
-        printf("malloc error in index_buf\n");
-        exit(0);
-    }
+    index_buf->ntot_vertex = numele * nnod_4_ele;
+    alloc_gl_index_buffer(index_buf);
     return index_buf;
 }
 
 void dealloc_gl_index_buffer(struct gl_index_buffer *index_buf){
     if(index_buf->nsize_buf > 0) free(index_buf->ie_buf);
     free(index_buf);
+    return;
+};
+
+void resize_gl_index_buffer(long numele, int nnod_4_ele,
+                            struct gl_index_buffer *index_buf){
+    index_buf->num_ele_buf =  numele;
+    index_buf->num_each_ele = nnod_4_ele;
+    index_buf->ntot_vertex = numele * nnod_4_ele;
+    if(index_buf->ntot_vertex <= index_buf->nsize_buf) return;
+    
+    free(index_buf->ie_buf);
+    alloc_gl_index_buffer(index_buf);
     return;
 };
 

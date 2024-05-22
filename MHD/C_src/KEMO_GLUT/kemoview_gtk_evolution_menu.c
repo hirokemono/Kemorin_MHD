@@ -258,12 +258,20 @@ static GtkWidget * pack_evoluaiton_menu_box(struct evolution_gtk_menu *evo_gmenu
 	return evo_box;
 }
 
-GtkWidget * init_evoluaiton_menu_frame(struct kemoviewer_type *kemo_sgl,
-                                          struct evolution_gtk_menu *evo_gmenu,
-                                          GtkWidget *evoWindow){
+GtkWidget * init_evolution_menu_frame(struct kemoviewer_type *kemo_sgl,
+                                      struct evolution_gtk_menu *evo_gmenu,
+                                      GtkWidget *evoWindow){
     set_evoluaiton_menu_expander(kemo_sgl, IZERO, evoWindow, evo_gmenu);
     GtkWidget *evo_box = pack_evoluaiton_menu_box(evo_gmenu);
     return wrap_into_frame_gtk("Evolution", evo_box);
+}
+
+GtkWidget * init_evolution_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                         struct evolution_gtk_menu *evo_gmenu,
+                                         GtkWidget *window){
+    set_evoluaiton_menu_expander(kemo_sgl, IZERO, window, evo_gmenu);
+    GtkWidget *evo_box = pack_evoluaiton_menu_box(evo_gmenu);
+    return wrap_into_scroll_expansion_gtk("Evolution", 360, 280, window, evo_box);
 }
 
 void activate_evolution_menu(struct kemoviewer_type *kemo_sgl,

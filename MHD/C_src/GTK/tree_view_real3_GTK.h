@@ -45,8 +45,11 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
 void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
                             GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2,
                             GtkCellRenderer *renderer_spin3);
-void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
-                        GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox);
+
+GtkWidget * add_real3_list_frame(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                 GtkWidget *button_add, GtkWidget *button_delete);
+GtkWidget * real3_list_expander(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                GtkWidget *button_add, GtkWidget *button_delete);
 
 
 #endif /* tree_view_real3_GTK_h_ */

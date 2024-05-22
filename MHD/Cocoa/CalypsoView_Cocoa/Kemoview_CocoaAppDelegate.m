@@ -51,4 +51,11 @@
 	// "WinController"インスタンスを生成する。
 	[[KemoviewDragDropWindow alloc] init];
 }
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender
+{
+    [_ElasticControl UpdateWindow:0];
+    return NSTerminateNow;
+}
+
 @end

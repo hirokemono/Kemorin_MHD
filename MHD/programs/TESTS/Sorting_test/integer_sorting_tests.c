@@ -168,7 +168,7 @@ double flip_sign_int_pthread_test(struct sort_int_array *_iSort){
     return seq_time1;
 }
 
-#ifndef __APPLE__
+#ifndef __vDSP__
 double bitonicsort_OMP_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;

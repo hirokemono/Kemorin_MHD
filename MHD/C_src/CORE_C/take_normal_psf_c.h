@@ -15,7 +15,10 @@
 /* prototype */
 void easy_normal_nod_psf(struct psf_data *viz_s);
 
-void take_normal_psf(struct psf_data *viz_s);
+void shift_longitude(double add_phi, struct psf_data *viz_s);
+void cal_colat_and_longitude(long nadded_for_phi0, struct psf_data *viz_s);
+
+void take_normal_psf(long nadded_for_phi0, struct psf_data *viz_s);
 void take_minmax_psf(struct psf_data *viz_s);
 
 void take_length_fline(struct fline_data *fline_d);

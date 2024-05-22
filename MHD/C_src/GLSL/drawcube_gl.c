@@ -33,28 +33,39 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO){
-    cube_VAO->npoint_draw = cube_buf->num_nod_buf;
+    cube_VAO->npoint_draw = index_buf->ntot_vertex;
 	if(cube_VAO->npoint_draw <= 0) return;
 	cube_surf_VBO(cube_VAO, cube_buf, index_buf);
 	glBindVertexArray(0);
 	return;
 };
 
-void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
-                       struct kemoview_shaders *kemo_shaders){
+void draw_initial_cube(struct transfer_matrices *matrices, struct phong_lights *lights,
+                       struct kemoview_shaders *kemo_shaders, struct VAO_ids *cube_VAO){
+    float specular_tmp[4];
+    float shiness_tmp[1];
+    int nd;
+    
     if(cube_VAO->npoint_draw <= 0) return;
-
-    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-
+    
+    for(nd=0;nd<4;nd++){
+        specular_tmp[nd] = lights->specular[nd];
+        lights->specular[nd] = 1.0;
+    };
+    shiness_tmp[0] = lights->shiness[0];
+    lights->shiness[0] = 100.0;
+    
     glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	light_for_initial_cube(init_light, kemo_shaders);
-    free(init_light);
+    set_phong_light_list(kemo_shaders->phong, lights);
 
 	glBindVertexArray(cube_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	return;
+	glDrawElements(GL_TRIANGLES, cube_VAO->npoint_draw, GL_UNSIGNED_INT, 0);
+
+    for(nd=0;nd<4;nd++){lights->specular[nd] = specular_tmp[nd];};
+    lights->shiness[0] = shiness_tmp[0];
+return;
 }
 
 void draw_cube_edge_gl3(struct view_element *view_s, 
@@ -65,7 +76,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, gl_buf);
 	alloc_strided_buffer(gl_buf);
-    struct gl_index_buffer *index_buf = alloc_gl_index_buffer(12, 3);
+    struct gl_index_buffer *index_buf = init_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, gl_buf, index_buf);
     free(index_buf->ie_buf);
     free(index_buf);
@@ -87,7 +98,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	glBindVertexArray(cube_VAO->id_VAO);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
 	
-    Destroy_VAO_4_Simple(cube_VAO);
+    Destroy_Simple_VAO(cube_VAO);
 	glDeleteVertexArrays(1, &(cube_VAO->id_VAO));
 }
 
@@ -115,7 +126,7 @@ void draw_quad_gl3(struct view_element *view_s,
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
-    Destroy_VAO_4_Simple(quad_VAO);
+    Destroy_Simple_VAO(quad_VAO);
 	glDeleteVertexArrays(1, &(quad_VAO->id_VAO));
 	
 	free(quad_buf->v_buf);

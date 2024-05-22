@@ -40,8 +40,10 @@ void drawgl_patch_with_phong(struct transfer_matrices *matrices, struct phong_li
 	return;
 }
 
-void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct phong_lights *lights, 
-                                struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+
+
+void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct phong_lights *lights,
+                                struct kemoview_shaders *kemo_shaders, struct VAO_ids *VAO){
     if(VAO->npoint_draw <= 0) return;
     
     glUseProgram(kemo_shaders->phong->programId);
@@ -53,6 +55,31 @@ void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct phong
     glDrawElements(GL_TRIANGLES, VAO->npoint_draw, GL_UNSIGNED_INT, IZERO);
     return;
 }
+
+void drawgl_textured_elements_VAO(GLuint *texture_name,
+                                  struct transfer_matrices *matrices,
+                                  struct phong_lights *lights,
+                                  struct kemoview_shaders *kemo_shaders,
+                                  struct VAO_ids *VAO){
+    if(VAO->npoint_draw <= 0) return;
+    
+    glUseProgram(kemo_shaders->phong_texure->programId);
+    transfer_matrix_to_GL(kemo_shaders->phong_texure, matrices);
+    set_phong_light_list(kemo_shaders->phong_texure, lights);
+
+    glBindVertexArray(VAO->id_VAO);
+    
+    glBindTexture(GL_TEXTURE_2D, *texture_name);
+    int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
+    glUniform1i(id_textureImage, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
+    glDrawElements(GL_TRIANGLES, VAO->npoint_draw , GL_UNSIGNED_INT, 0);
+    return;
+};
+
+
 
 void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders){
@@ -67,8 +94,9 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 	return;
 };
 
-void draw_map_objects_VAO(struct transfer_matrices *matrices, 
-			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
+void draw_map_objects_VAO(struct transfer_matrices *matrices,
+                          struct VAO_ids **map_VAO, struct VAO_ids *map_index_VAO,
+                          struct kemoview_shaders *kemo_shaders){
 	int i;
     /* set shading mode */
 	glDisable(GL_CULL_FACE);
@@ -77,18 +105,24 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
 
-	for(i=0;i<2;i++){
+    if(map_index_VAO->npoint_draw > 0){
+        glBindVertexArray(map_index_VAO->id_VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO->id_index);
+        glDrawElements(GL_TRIANGLES, map_index_VAO->npoint_draw , GL_UNSIGNED_INT, 0);
+    }
+
+    
+	for(i=0;i<3;i++){
 		if(map_VAO[i]->npoint_draw > 0){
 			glBindVertexArray(map_VAO[i]->id_VAO);
 			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
 		};
 	};	
-	for(i=2;i<4;i++){
-		if(map_VAO[i]->npoint_draw > 0){
-			glBindVertexArray(map_VAO[i]->id_VAO);
-			glDrawArrays(GL_LINES, IZERO, map_VAO[i]->npoint_draw);
-		};
-	};
+		
+    if(map_VAO[3]->npoint_draw > 0){
+        glBindVertexArray(map_VAO[2]->id_VAO);
+        glDrawArrays(GL_LINES, IZERO, map_VAO[2]->npoint_draw);
+    };
 	return;
 }
 
@@ -113,6 +147,7 @@ void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices,
 
 	glBindVertexArray(mesh_solid_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_solid_VAO->npoint_draw));
+    glCullFace(GL_FRONT);
 	return;
 };
 

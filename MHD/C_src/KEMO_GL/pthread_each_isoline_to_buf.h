@@ -30,6 +30,11 @@ long sel_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threa
                                           struct psf_data *psf_s,
                                           struct isoline_line_work *wk_iso_line);
 
+long sel_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line,
+                                     const int nthreads, long *istack_threads,
+                                     struct psf_data *psf_s,
+                                     struct isoline_line_work *wk_iso_line,
+                                     struct gl_strided_buffer *strided_buf);
 long sel_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line,
                                      const int nthreads, long *istack_threads,
                                      struct psf_data *psf_s,

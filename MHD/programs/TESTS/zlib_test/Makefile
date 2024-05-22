@@ -7,6 +7,7 @@ TARGET_C_ZLIB_TEST =   test_zlib_c_IO
 TARGET_F_ZLIB_TEST =   test_zlib_f_IO
 TARGET_GETARG_TEST =   test_getarg
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 SRC_C = $(shell ls *.c)
 
@@ -26,9 +27,9 @@ dir_list:
 	@echo 'ZLIB_TEST_DIR = $(ZLIB_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_C_ZLIB_TEST =   $$(BUILDDIR)/$(TARGET_C_ZLIB_TEST)'  \
+	@echo 'TARGET_C_ZLIB_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_C_ZLIB_TEST)'  \
 	>> $(MAKENAME)
-	@echo 'TARGET_F_ZLIB_TEST =   $$(BUILDDIR)/$(TARGET_F_ZLIB_TEST)'  \
+	@echo 'TARGET_F_ZLIB_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_F_ZLIB_TEST)'  \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -84,11 +85,11 @@ depends:
 	@for sources in $(SRC_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/TESTS/zlib_test/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MHDDIR)//programs/TESTS/zlib_test/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

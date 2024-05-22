@@ -258,7 +258,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	g_signal_connect(psf_vector_menu->spin_inc_digit, "value-changed",
 					 G_CALLBACK(set_increment_digit_CB), (gpointer) kemo_sgl);
 	
-	adj_vect_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
+	adj_vect_width = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
 	psf_vector_menu->spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 0);
 	g_signal_connect(psf_vector_menu->spin_vect_width, "value-changed",
 					 G_CALLBACK(set_vector_width_CB), (gpointer) kemo_sgl);

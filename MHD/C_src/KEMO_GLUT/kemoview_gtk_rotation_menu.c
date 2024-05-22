@@ -66,8 +66,8 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
-                           rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    draw_rotate_gl_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
+                         rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -171,6 +171,8 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 	
 	GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
 	rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_increment), 0);
+    gtk_entry_set_width_chars(GTK_ENTRY(rot_gmenu->spin_rot_increment), 6);
 	g_signal_connect(rot_gmenu->spin_rot_increment, "value-changed",
 					 G_CALLBACK(rotation_increment_CB),entry_rotation_file);
 	
@@ -193,7 +195,7 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 	
 	GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment, FALSE, FALSE, 0);
 	
 	GtkWidget *hbox_rotation_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), gtk_label_new("Image file: "), FALSE, FALSE, 0);
@@ -211,11 +213,11 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 	
 	
     GtkWidget *rot_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_dir, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rot_increment, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_filename, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_fileformat, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_save, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_dir, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rot_increment, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_filename, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_fileformat, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_save, FALSE, FALSE, 0);
 	
 	expander_rot = wrap_into_scroll_expansion_gtk("Rotation", 360, 200, window, rot_box);
 	return expander_rot;

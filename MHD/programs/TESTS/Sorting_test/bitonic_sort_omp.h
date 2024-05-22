@@ -26,7 +26,10 @@
 #define BITONIC_SORT_OMP_
 
 #include <math.h>
-#include <omp.h>
+
+#ifndef __vDSP__
+  #include <omp.h>
+#endif
 
 #include "quicksort_c.h"
 

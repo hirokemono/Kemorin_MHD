@@ -34,15 +34,25 @@ struct kemoview_buffers{
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
     
+    struct gl_strided_buffer *PSF_node_buf;
+    struct gl_index_buffer *PSF_solid_index_buf;
+    struct gl_index_buffer *PSF_trns_index_buf;
+    struct gl_index_buffer *PSF_stxur_index_buf;
+    struct gl_index_buffer *PSF_ttxur_index_buf;
+
     struct gl_strided_buffer *PSF_solid_buf;
     struct gl_strided_buffer *PSF_trns_buf;
     struct gl_strided_buffer *PSF_stxur_buf;
     struct gl_strided_buffer *PSF_ttxur_buf;
     struct gl_strided_buffer *PSF_arrow_buf;
-    struct gl_strided_buffer *PSF_isoline_buf;
     
-    struct gl_strided_buffer *MAP_solid_buf;
+    long num_isoline_buf;
+    struct gl_strided_buffer *PSF_isoline_buf;
+    struct gl_strided_buffer *PSF_isotube_buf;
+
     struct gl_strided_buffer *MAP_isoline_buf;
+    struct gl_strided_buffer *MAP_solid_buf;
+    struct gl_index_buffer *MAP_solid_index_buf;
     
     struct gl_strided_buffer *FLINE_line_buf;
     struct gl_strided_buffer *FLINE_tube_buf;
@@ -52,13 +62,11 @@ struct kemoview_buffers{
     struct gl_strided_buffer *mesh_node_buf;
     struct gl_strided_buffer *mesh_trns_buf;
     
-    struct gl_strided_buffer *coast_buf;
-    struct gl_strided_buffer *sph_grid_buf;
-    
-    int ncorner_axis;
+    struct gl_strided_buffer *coast_line_buf;
+    struct gl_strided_buffer *coast_tube_buf;
+
     struct gl_strided_buffer *axis_buf;
     
-
     struct gl_strided_buffer *screen_buf;
     
     struct gl_strided_buffer *cbar_buf;
@@ -86,7 +94,8 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
                              struct kemoview_mesh *kemo_mesh,
                              struct view_element *view_s,
                              struct kemoview_buffers *kemo_buffers);
-void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
-                      struct view_element *view_s, struct kemoview_buffers *kemo_buffers);
+void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                      struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                      struct kemoview_buffers *kemo_buffers);
 
 #endif /* m_kemoview_object_buffers_h_ */

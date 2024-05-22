@@ -34,12 +34,13 @@
                          PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
 {
     /*  Set transparent vertexs */
-    kemoView3DMetalBuf->numPSFTransTexureVertice = [_kemo3DMetalBufBase setPSFTexture:device
-                                                                               buffer:kemo_buffers->PSF_ttxur_buf
-                                                                                image:kemo_psf->psf_a->psf_texure
-                                                                               vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
-                                                                               texure:&(kemoView3DMetalBuf->psfTransTexure)];
+    kemoView3DMetalBuf->numPSFTransTexurePixsel = [_kemo3DMetalBufBase setPSFTexture:device
+                                                                               image:kemo_psf->psf_a->psf_texure
+                                                                              texure:&(kemoView3DMetalBuf->psfTransTexure)];
 
+    kemoView3DMetalBuf->numPSFTransTexureVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                                  buffer:kemo_buffers->PSF_ttxur_buf
+                                                                                  vertex:&(kemoView3DMetalBuf->psfTTexureVertice)];
     kemoView3DMetalBuf->numPSFTransVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:kemo_buffers->PSF_trns_buf
                                                                             vertex:&(kemoView3DMetalBuf->psfTransVertice)];
@@ -65,25 +66,37 @@
                    buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
                       PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
 {
-    kemoView3DMetalBuf->numPSFSolidTexureVertice = [_kemo3DMetalBufBase setPSFTexture:device
-                                                                               buffer:kemo_buffers->PSF_stxur_buf
-                                                                                image:kemo_psf->psf_a->psf_texure
-                                                                               vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
-                                                                               texure:&(kemoView3DMetalBuf->psfSolidTexure)];
+    kemoView3DMetalBuf->numPSFSolidTexurePixsel = [_kemo3DMetalBufBase setPSFTexture:device
+                                                                               image:kemo_psf->psf_a->psf_texure
+                                                                              texure:&(kemoView3DMetalBuf->psfSolidTexure)];
+    
+    kemoView3DMetalBuf->numPSFSolidTexureVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->PSF_stxur_buf
+                                                                            vertex:&(kemoView3DMetalBuf->psfSTexureVertice)];
 
-    kemoView3DMetalBuf->numCoastVertice =    [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->coast_buf
-                                                                           vertex:&(kemoView3DMetalBuf->coastVertice)];
-    kemoView3DMetalBuf->numSphGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->sph_grid_buf
-                                                                           vertex:&(kemoView3DMetalBuf->sphGridVertice)];
+    kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->coast_line_buf
+                                                                            vertex:&(kemoView3DMetalBuf->coastLineVertice)];
+    kemoView3DMetalBuf->numCoastTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->coast_tube_buf
+                                                                            vertex:&(kemoView3DMetalBuf->coastTubeVertice)];
 
+    
+    kemoView3DMetalBuf->numPsfNodeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_node_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfNodeVertice)];
+
+    
     kemoView3DMetalBuf->numPSFSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->PSF_solid_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfSolidVertice)];
+    kemoView3DMetalBuf->numPSFTubesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_isotube_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfTubesVertice)];
     kemoView3DMetalBuf->numPSFLinesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->PSF_isoline_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfLinesVertice)];
+
     kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:kemo_buffers->PSF_arrow_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
@@ -109,7 +122,20 @@
                                                                             buffer:kemo_buffers->mesh_solid_buf
                                                                             vertex:&(kemoView3DMetalBuf->meshSolidVertice)];
 
-    /*  Set Cube Vertex buffer */
+    /*  Set Cube index buffer */
+    kemoView3DMetalBuf->numPsfSolidIndices =   [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_solid_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfSolidIndices)];
+    kemoView3DMetalBuf->numPsfTTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_ttxur_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfTTexureIndices)];
+    kemoView3DMetalBuf->numPsfTransIndices =   [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_trns_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfTransIndices)];
+    kemoView3DMetalBuf->numPsfSTexureIndices = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:kemo_buffers->PSF_stxur_index_buf
+                                                                             index:&(kemoView3DMetalBuf->psfSTexureIndices)];
+
     kemoView3DMetalBuf->numCubeVertice = [_kemo3DMetalBufBase setCubeVertexs:device
                                                                       buffer:kemo_buffers->cube_buf
                                                                     indexbuf:kemo_buffers->cube_index_buf
@@ -121,11 +147,9 @@
 - (void) releaseTransMetalBuffers:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
 {
     /*  Release transparent vertexs */
-    if(kemoView3DMetalBuf->numPSFTransTexureVertice > 0){
-        [kemoView3DMetalBuf->psfTTexureVertice release];
-        [kemoView3DMetalBuf->psfTransTexure release];
-    };
-    
+    if(kemoView3DMetalBuf->numPSFTransTexurePixsel > 0){[kemoView3DMetalBuf->psfTransTexure release];};
+    if(kemoView3DMetalBuf->numPSFTransTexureVertice > 0){[kemoView3DMetalBuf->psfTTexureVertice release];};
+
     if(kemoView3DMetalBuf->numPSFTransVertice > 0)  {[kemoView3DMetalBuf->psfTransVertice  release];};
     if(kemoView3DMetalBuf->numMeshTransVertice > 0) {[kemoView3DMetalBuf->meshTransVertice release];};
     return;
@@ -139,12 +163,17 @@
 
 - (void) release3DMetalBuffers:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
 {
-    if(kemoView3DMetalBuf->numPSFSolidTexureVertice > 0){
-        [kemoView3DMetalBuf->psfSTexureVertice release];
-        [kemoView3DMetalBuf->psfSolidTexure    release];
-    };
+    if(kemoView3DMetalBuf->numPSFSolidTexurePixsel > 0){[kemoView3DMetalBuf->psfSolidTexure release];};
+    if(kemoView3DMetalBuf->numPSFSolidTexureVertice > 0){[kemoView3DMetalBuf->psfSolidTexure    release];};
+    
+    if(kemoView3DMetalBuf->numPsfNodeVertice > 0) {[kemoView3DMetalBuf->psfNodeVertice release];};
+    if(kemoView3DMetalBuf->numPsfSolidIndices > 0) {[kemoView3DMetalBuf->psfSolidIndices release];};
+    if(kemoView3DMetalBuf->numPsfTTexureIndices > 0) {[kemoView3DMetalBuf->psfTTexureIndices release];};
+    if(kemoView3DMetalBuf->numPsfTransIndices > 0) {[kemoView3DMetalBuf->psfTransIndices release];};
+    if(kemoView3DMetalBuf->numPsfSTexureIndices > 0) {[kemoView3DMetalBuf->psfSTexureIndices release];};
     
     if(kemoView3DMetalBuf->numPSFSolidVertice > 0) {[kemoView3DMetalBuf->psfSolidVertice release];};
+    if(kemoView3DMetalBuf->numPSFTubesVertice > 0) {[kemoView3DMetalBuf->psfTubesVertice release];};
     if(kemoView3DMetalBuf->numPSFLinesVertice > 0) {[kemoView3DMetalBuf->psfLinesVertice release];};
     if(kemoView3DMetalBuf->numPSFArrowVertice > 0) {[kemoView3DMetalBuf->psfArrowVertice release];};
     
@@ -155,8 +184,8 @@
     if(kemoView3DMetalBuf->numMeshGridVertice > 0)  {[kemoView3DMetalBuf->meshGridVertice   release];};
     if(kemoView3DMetalBuf->numMeshSolidVertice > 0) {[kemoView3DMetalBuf->meshSolidVertice release];};
     
-    if(kemoView3DMetalBuf->numCoastVertice > 0)    {[kemoView3DMetalBuf->coastVertice   release];};
-    if(kemoView3DMetalBuf->numSphGridVertice > 0) {[kemoView3DMetalBuf->sphGridVertice release];};
+    if(kemoView3DMetalBuf->numCoastTubeVertice > 0)    {[kemoView3DMetalBuf->coastTubeVertice   release];};
+    if(kemoView3DMetalBuf->numCoastLineVertice > 0)    {[kemoView3DMetalBuf->coastLineVertice   release];};
     
     /*  Set Cube Vertex buffer */
     if(kemoView3DMetalBuf->numCubeVertice > 0){
@@ -194,15 +223,16 @@
     [self setAxisMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf
                        buffers:kemo_sgl->kemo_buffers];
-    [self setTransMetalBuffers:device
-                   metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_sgl->kemo_buffers
-                          PSFs:kemo_sgl->kemo_psf];
     [self set3DMetalBuffers:device
                 metalbuffer:&_kemoViewMetalBuf
                    kemoview:kemo_sgl
                     buffers:kemo_sgl->kemo_buffers
                        PSFs:kemo_sgl->kemo_psf];
+
+    [self setTransMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers
+                          PSFs:kemo_sgl->kemo_psf];
     return;
 }
 
@@ -397,7 +427,6 @@
                      texure:(id<MTLTexture> *) texture
                      unites:(KemoViewUnites *) monoViewUnites
                       sides:(int) iflag_surface
-                      solid:(int) iflag_solid
 {
     if(numVertex > 0){
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
@@ -409,9 +438,7 @@
         }else{
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
-        if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:*depthState];
-        }
+        [*renderEncoder setDepthStencilState:*depthState];
         
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongTexturedPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
@@ -443,18 +470,72 @@
     };
 };
 
-- (void)drawCubeWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
-                pipelines:(KemoView3DPipelines *) kemo3DPipelines
-                    depth:(id<MTLDepthStencilState> *) depthState
-                numVertex:(NSUInteger) numVertex
-                   vertex:(id<MTLBuffer> *) vertices
-                    index:(id<MTLBuffer> *) indices
-                   unites:(KemoViewUnites *) monoViewUnites
+- (void)drawSolidWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
+                 pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                     depth:(id<MTLDepthStencilState> *) depthState
+                 numVertex:(NSUInteger) numVertex
+                    vertex:(id<MTLBuffer> *) vertices
+                    unites:(KemoViewUnites *) monoViewUnites
+                     sides:(int) iflag_surface
 {
     if(numVertex > 0){
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-        [*renderEncoder setCullMode:MTLCullModeBack];
+        if(iflag_surface == NORMAL_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeBack];
+        }else if(iflag_surface == REVERSE_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeFront];
+        }else{
+            [*renderEncoder setCullMode:MTLCullModeNone];
+        }
+        [*renderEncoder setDepthStencilState:*depthState];
+        
+        [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
+        [*renderEncoder setVertexBuffer:*vertices
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->modelview_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLModelViewMatrix];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->projection_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLProjectionMatrix];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->normal_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLModelNormalMatrix];
+        
+        [*renderEncoder setFragmentBytes:&(monoViewUnites->lights)
+                                  length:(sizeof(LightSourceParameters))
+                                 atIndex:AAPLLightsParams];
+        [*renderEncoder setFragmentBytes:&(monoViewUnites->material)
+                                  length:sizeof(MaterialParameters)
+                                 atIndex:AAPLMaterialParams];
+        
+        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                           vertexStart:0
+                           vertexCount:numVertex];
+    };
+};
+
+- (void)drawIndexPatchWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
+                      pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                          depth:(id<MTLDepthStencilState> *) depthState
+                      numVertex:(NSUInteger) numVertex
+                         vertex:(id<MTLBuffer> *) vertices
+                           index:(id<MTLBuffer> *) indices
+                         unites:(KemoViewUnites *) monoViewUnites
+                          sides:(int) iflag_surface
+{
+    if(numVertex > 0){
+        [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+        [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+        if(iflag_surface == NORMAL_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeBack];
+        }else if(iflag_surface == REVERSE_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeFront];
+        }else{
+            [*renderEncoder setCullMode:MTLCullModeNone];
+        }
         [*renderEncoder setDepthStencilState:*depthState];
         
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
@@ -484,16 +565,17 @@
                                   indexBuffer:*indices
                             indexBufferOffset:0];
     };
-}
+};
 
-- (void)drawSolidWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
-                 pipelines:(KemoView3DPipelines *) kemo3DPipelines
-                     depth:(id<MTLDepthStencilState> *) depthState
-                 numVertex:(NSUInteger) numVertex
-                    vertex:(id<MTLBuffer> *) vertices
-                    unites:(KemoViewUnites *) monoViewUnites
-                     sides:(int) iflag_surface
-                     solid:(int) iflag_solid
+- (void)drawIndexTexureWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
+                       pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                           depth:(id<MTLDepthStencilState> *) depthState
+                       numVertex:(NSUInteger) numVertex
+                          vertex:(id<MTLBuffer> *) vertices
+                           index:(id<MTLBuffer> *) indices
+                          texure:(id<MTLTexture> *) texture
+                          unites:(KemoViewUnites *) monoViewUnites
+                           sides:(int) iflag_surface
 {
     if(numVertex > 0){
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
@@ -505,11 +587,9 @@
         }else{
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
-        if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:*depthState];
-        }
+        [*renderEncoder setDepthStencilState:*depthState];
         
-        [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
+        [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongTexturedPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -530,11 +610,17 @@
                                   length:sizeof(MaterialParameters)
                                  atIndex:AAPLMaterialParams];
         
-        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                           vertexStart:0
-                           vertexCount:numVertex];
+        [*renderEncoder setFragmentTexture:*texture
+                                   atIndex:AAPLTextureIndexBaseColor];
+        
+        [*renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
+                                   indexCount:numVertex
+                                    indexType:MTLIndexTypeUInt32
+                                  indexBuffer:*indices
+                            indexBufferOffset:0];
     };
 };
+
 
 - (void)drawLineObject:(id<MTLRenderCommandEncoder> *) renderEncoder
              pipelines:(KemoView3DPipelines *) kemo3DPipelines
@@ -573,6 +659,16 @@
                       unites:(KemoViewUnites *) monoViewUnites
                        sides:(int) iflag_polygon
 {
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numCubeVertice
+                           vertex:&(kemoView3DMetalBuf->cubeVertice)
+                            index:&(kemoView3DMetalBuf->cubeIndex)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+    if(kemoView3DMetalBuf->numCubeVertice > 0) return;
+
     /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
                     pipelines:kemo3DPipelines
@@ -581,26 +677,50 @@
                        vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
                        texure:&(kemoView3DMetalBuf->psfSolidTexure)
                        unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:SMOOTH_SHADE];
+                        sides:BOTH_SURFACES];
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numAxisVertice
                       vertex:&(kemoView3DMetalBuf->axisVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
+   
     
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfSTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfSTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfSolidTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numPsfSolidIndices
+                           vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                            index:&(kemoView3DMetalBuf->psfSolidIndices)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numPSFSolidVertice
                       vertex:&(kemoView3DMetalBuf->psfSolidVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
+
     
+    [self drawLineObject:renderEncoder
+               pipelines:kemo3DPipelines
+                   depth:depthState
+               numVertex:kemoView3DMetalBuf->numPSFLinesVertice
+                  vertex:&(kemoView3DMetalBuf->psfLinesVertice)
+                  unites:monoViewUnites];
+
     [self drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState
@@ -614,34 +734,22 @@
                numVertex:kemoView3DMetalBuf->numMeshGridVertice
                   vertex:&(kemoView3DMetalBuf->meshGridVertice)
                   unites:monoViewUnites];
+    
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numMeshSolidVertice
                       vertex:&(kemoView3DMetalBuf->meshSolidVertice)
                       unites:monoViewUnites
-                       sides:iflag_polygon
-                       solid:SMOOTH_SHADE];
-    [self drawCubeWithPhong:renderEncoder
-                  pipelines:kemo3DPipelines
-                      depth:depthState
-                  numVertex:kemoView3DMetalBuf->numCubeVertice
-                     vertex:&(kemoView3DMetalBuf->cubeVertice)
-                      index:&(kemoView3DMetalBuf->cubeIndex)
-                     unites:monoViewUnites];
+                       sides:iflag_polygon];
+
+    [self drawLineObject:renderEncoder
+               pipelines:kemo3DPipelines
+                   depth:depthState
+               numVertex:kemoView3DMetalBuf->numCoastLineVertice
+                  vertex:&(kemoView3DMetalBuf->coastLineVertice)
+                  unites:monoViewUnites];
     
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numCoastVertice
-                  vertex:&(kemoView3DMetalBuf->coastVertice)
-                  unites:monoViewUnites];
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numSphGridVertice
-                  vertex:&(kemoView3DMetalBuf->sphGridVertice)
-                  unites:monoViewUnites];
     
     /*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
@@ -651,8 +759,7 @@
                        vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
                        texure:&(kemoView3DMetalBuf->psfTransTexure)
                        unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:SMOOTH_SHADE];
+                        sides:BOTH_SURFACES];
     
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
@@ -660,17 +767,33 @@
                    numVertex:kemoView3DMetalBuf->numPSFTransVertice
                       vertex:&(kemoView3DMetalBuf->psfTransVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-    
+                       sides:BOTH_SURFACES];
+
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfTTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfTTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfTransTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numPsfTransIndices
+                           vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                            index:&(kemoView3DMetalBuf->psfTransIndices)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numMeshTransVertice
                       vertex:&(kemoView3DMetalBuf->meshTransVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
 
     return;
 }
@@ -681,8 +804,17 @@
              metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
                   unites:(KemoViewUnites *) monoViewUnites
                    sides:(int) iflag_polygon
-               fieldTube:(int) iflag_tube
 {
+    /* Draw initial cube */
+        [self drawIndexPatchWithPhong:renderEncoder
+                            pipelines:kemo3DPipelines
+                                depth:depthState
+                            numVertex:kemoView3DMetalBuf->numCubeVertice
+                               vertex:&(kemoView3DMetalBuf->cubeVertice)
+                                index:&(kemoView3DMetalBuf->cubeIndex)
+                               unites:monoViewUnites
+                                sides:BOTH_SURFACES];
+    if(kemoView3DMetalBuf->numCubeVertice > 0) return;
 
     /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
@@ -692,54 +824,71 @@
                        vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
                        texure:&(kemoView3DMetalBuf->psfSolidTexure)
                        unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:SMOOTH_SHADE];
+                        sides:BOTH_SURFACES];
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numAxisVertice
                       vertex:&(kemoView3DMetalBuf->axisVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
     
+    
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfSTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfSTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfSolidTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numPsfSolidIndices
+                           vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                            index:&(kemoView3DMetalBuf->psfSolidIndices)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numPSFSolidVertice
                       vertex:&(kemoView3DMetalBuf->psfSolidVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
-                   numVertex:kemoView3DMetalBuf->numPSFLinesVertice
-                      vertex:&(kemoView3DMetalBuf->psfLinesVertice)
+                   numVertex:kemoView3DMetalBuf->numPSFTubesVertice
+                      vertex:&(kemoView3DMetalBuf->psfTubesVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numPSFArrowVertice
                       vertex:&(kemoView3DMetalBuf->psfArrowVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
     
-    if(iflag_tube == IFLAG_PIPE){
-        [self drawSolidWithPhong:renderEncoder
-                       pipelines:kemo3DPipelines
-                           depth:depthState
-                       numVertex:kemoView3DMetalBuf->numFieldTubeVertice\
-         
-                          vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
-                          unites:monoViewUnites
-                           sides:BOTH_SURFACES
-                           solid:SMOOTH_SHADE];
-    };
-    
+    [self drawLineObject:renderEncoder
+               pipelines:kemo3DPipelines
+                   depth:depthState
+               numVertex:kemoView3DMetalBuf->numPSFLinesVertice
+                  vertex:&(kemoView3DMetalBuf->psfLinesVertice)
+                  unites:monoViewUnites];
+
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numFieldTubeVertice
+                      vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES];
+
     [self drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState
@@ -753,8 +902,7 @@
                    numVertex:kemoView3DMetalBuf->numMeshNodeVertice
                       vertex:&(kemoView3DMetalBuf->meshNodeVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
+                       sides:BOTH_SURFACES];
     [self drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState
@@ -767,27 +915,22 @@
                    numVertex:kemoView3DMetalBuf->numMeshSolidVertice
                       vertex:&(kemoView3DMetalBuf->meshSolidVertice)
                       unites:monoViewUnites
-                       sides:iflag_polygon
-                       solid:SMOOTH_SHADE];
-    [self drawCubeWithPhong:renderEncoder
-                  pipelines:kemo3DPipelines
-                      depth:depthState
-                  numVertex:kemoView3DMetalBuf->numCubeVertice
-                     vertex:&(kemoView3DMetalBuf->cubeVertice)
-                      index:&(kemoView3DMetalBuf->cubeIndex)
-                     unites:monoViewUnites];
-    
+                       sides:iflag_polygon];
+
+    /* Draw coastlines */
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numCoastTubeVertice
+                      vertex:&(kemoView3DMetalBuf->coastTubeVertice)
+                      unites:monoViewUnites
+                       sides:iflag_polygon];
+
     [self drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState
-               numVertex:kemoView3DMetalBuf->numCoastVertice
-                  vertex:&(kemoView3DMetalBuf->coastVertice)
-                  unites:monoViewUnites];
-    [self drawLineObject:renderEncoder
-               pipelines:kemo3DPipelines
-                   depth:depthState
-               numVertex:kemoView3DMetalBuf->numSphGridVertice
-                  vertex:&(kemoView3DMetalBuf->sphGridVertice)
+               numVertex:kemoView3DMetalBuf->numCoastLineVertice
+                  vertex:&(kemoView3DMetalBuf->coastLineVertice)
                   unites:monoViewUnites];
     
 /*  Draw transparent objects */
@@ -798,8 +941,7 @@
                        vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
                        texure:&(kemoView3DMetalBuf->psfTransTexure)
                        unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:FLAT_SHADE];
+                        sides:BOTH_SURFACES];
     
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
@@ -807,17 +949,33 @@
                    numVertex:kemoView3DMetalBuf->numPSFTransVertice
                       vertex:&(kemoView3DMetalBuf->psfTransVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
+                       sides:BOTH_SURFACES];
     
+    [self drawIndexTexureWithPhong:renderEncoder
+                         pipelines:kemo3DPipelines
+                             depth:depthState
+                         numVertex:kemoView3DMetalBuf->numPsfTTexureIndices
+                            vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                             index:&(kemoView3DMetalBuf->psfTTexureIndices)
+                            texure:&(kemoView3DMetalBuf->psfTransTexure)
+                            unites:monoViewUnites
+                             sides:BOTH_SURFACES];
+    [self drawIndexPatchWithPhong:renderEncoder
+                        pipelines:kemo3DPipelines
+                            depth:depthState
+                        numVertex:kemoView3DMetalBuf->numPsfTransIndices
+                           vertex:&(kemoView3DMetalBuf->psfNodeVertice)
+                            index:&(kemoView3DMetalBuf->psfTransIndices)
+                           unites:monoViewUnites
+                            sides:BOTH_SURFACES];
+
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
                    numVertex:kemoView3DMetalBuf->numMeshTransVertice
                       vertex:&(kemoView3DMetalBuf->meshTransVertice)
                       unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
+                       sides:BOTH_SURFACES];
 
     return;
 }
@@ -859,15 +1017,13 @@
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
                            sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_tube
 {
     [self encode3DObjects:renderEncoder
                 pipelines:&_kemoViewPipelines
                     depth:depthState
               metalbuffer:&_kemoViewMetalBuf
                    unites:monoViewUnites
-                    sides:iflag_polygon
-                fieldTube:iflag_tube];
+                    sides:iflag_polygon];
     return;
 }
 

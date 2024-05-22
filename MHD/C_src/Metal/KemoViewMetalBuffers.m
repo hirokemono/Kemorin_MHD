@@ -22,18 +22,23 @@
     return buf->num_nod_buf;
 };
 
+- (NSUInteger) setMetalIndices:(id<MTLDevice> _Nonnull *_Nonnull) device
+                     indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
+                        index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
+{
+    if(index_buf->ntot_vertex > 0){
+        *indices = [*device newBufferWithBytes:index_buf->ie_buf
+                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
+                                       options:MTLResourceStorageModeShared];
+    };
+    return index_buf->ntot_vertex;
+};
+
 - (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-                      buffer:(struct gl_strided_buffer *_Nonnull) buf
                        image:(struct gl_texure_image *_Nonnull) psf_texure
-                      vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
+    if(psf_texure->texure_npix > 0){
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
         lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
@@ -55,7 +60,7 @@
                       withBytes:psf_texure->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
-    return buf->num_nod_buf;
+    return psf_texure->texure_npix;
 }
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
@@ -98,15 +103,15 @@
                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
                         index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
 {
-    if(buf->num_nod_buf > 0){
+    if(index_buf->ntot_vertex > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
                                          length:(buf->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
         *indices = [*device newBufferWithBytes:index_buf->ie_buf
-                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
+                                        length:(index_buf->ntot_vertex * sizeof(unsigned int))
                                        options:MTLResourceStorageModeShared];
     };
-    return buf->num_nod_buf;
+    return index_buf->ntot_vertex;
 };
 
 - (void)setAnaglyphTexture:(id<MTLDevice> _Nonnull *_Nonnull) device

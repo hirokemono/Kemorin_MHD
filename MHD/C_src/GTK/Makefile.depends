@@ -493,6 +493,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
@@ -503,7 +504,6 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
-  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -547,6 +547,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -555,6 +556,8 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/CORE_C/transfer_matvec.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
@@ -589,7 +592,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
   $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
-  $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \

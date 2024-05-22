@@ -4,6 +4,7 @@
 
 F90_LOCAL = gfortran-mp-8
 
+CURRENTDIR = $(shell pwd)
 SHADERDIR = $$(C_SRCDIR)/GLSL
 SRC_GLSL_C = $(shell ls *.c)
 INC_GLSL_C = $(addsuffix .h,$(basename $(SRC_GLSL_C)) )
@@ -54,11 +55,11 @@ depends: wrap_shader
 	@for sources in $(SRC_GLSL_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(MHDDIR)/C_src/GLSL/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/GLSL/Makefile.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

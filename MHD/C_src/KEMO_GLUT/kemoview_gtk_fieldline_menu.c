@@ -224,7 +224,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
                      G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_sgl);
     
-    adj_thick = gtk_adjustment_new(1, 0.0, 9.0, 1, 1, 0.0);
+    adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0.0);
     adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
     fline_menu->spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     fline_menu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);

@@ -109,8 +109,8 @@ depends:
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
-		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
-		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		GLFW_LIBS="$(GLFW_LIBS)" \
 		depends \
 		) \
 	done

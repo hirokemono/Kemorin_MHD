@@ -101,21 +101,14 @@
 
 - (void)setCubeColorbuffer:(LightSourceParameters *) lights
                   material:(MaterialParameters *) mats
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     int i, j;
-    
-    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-    lights->num_lights = init_light->num_light;
-    for(i=0;i<lights->num_lights;i++){
-        for(j=0;j<4;j++){
-            lights->position[i][j] = init_light->lightposition[i][j];
-        };
-    };
-    mats->ambient[0] =  init_light->whitelight[0][0];
-    mats->diffuse[0] =  init_light->whitelight[1][0];
-    mats->specular[0] = init_light->whitelight[2][0];
-    mats->shininess =   init_light->shine[0];
-    free(init_light);
+    [self setMetalColorbuffer:lights
+                     material:mats
+                     kemoview:kemo_sgl];
+    mats->specular[0] = 1.0;
+    mats->shininess = 100.0;
     return;
 };
 
@@ -176,9 +169,10 @@
 - (void) setKemoViewLightings:(struct kemoviewer_type *) kemo_sgl
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->cube_index_buf->ntot_vertex > 0){
         [self setCubeColorbuffer:&(monoViewUnites->lights)
-                        material:&(monoViewUnites->material)];
+                        material:&(monoViewUnites->material)
+                        kemoview:kemo_sgl];
     } else {
         [self setMetalColorbuffer:&(monoViewUnites->lights)
                          material:&(monoViewUnites->material)

@@ -159,7 +159,7 @@ static void const_mesh_grids_buffer(int nthreads,
 }
 
 
-static void const_mesh_nodes_ico_buffer(int nthreads,
+static void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
                                         struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                         struct gl_strided_buffer *mesh_buf){
     long num;
@@ -172,13 +172,23 @@ static void const_mesh_nodes_ico_buffer(int nthreads,
     num = mesh_s->ngrp_surf_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_node_surf_grp_patch = (long *) calloc(num, sizeof(long));
     
-	long num_patch = count_mesh_node_to_buf(mesh_s, mesh_m,
+	long num_ico =   count_mesh_node_to_buf(mesh_s, mesh_m,
                                             istack_node_domain_patch,
                                             istack_node_nod_grp_patch,
                                             istack_node_ele_grp_patch,
                                             istack_node_surf_grp_patch);
+    long num_patch = ITHREE * num_icosahedron_patch() * num_ico;
     
-    set_buffer_address_4_patch((ITHREE*num_patch), mesh_buf);
+    
+    double ref_diam = 4.0;
+    double node_diam;
+    if(mesh_m->node_diam <= 0.0){
+        node_diam = ref_diam * set_tube_radius_by_axis(view_s);
+    }else{
+        node_diam = mesh_m->node_diam;
+    };
+    
+    set_buffer_address_4_patch(num_patch, mesh_buf);
     if(mesh_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_buf);
         
@@ -186,7 +196,7 @@ static void const_mesh_nodes_ico_buffer(int nthreads,
                              istack_node_nod_grp_patch,
                              istack_node_ele_grp_patch,
                              istack_node_surf_grp_patch,
-                             mesh_s, mesh_m, mesh_buf);
+                             node_diam, mesh_s, mesh_m, mesh_buf);
     };
     free(istack_node_domain_patch);
     free(istack_node_nod_grp_patch);
@@ -207,7 +217,7 @@ void const_solid_mesh_buffer(int nthreads,
     if(mesh_m->iflag_draw_mesh == 0) return;
         
     const_mesh_grids_buffer(nthreads, mesh_s, mesh_m, mesh_grid_buf);
-    const_mesh_nodes_ico_buffer(nthreads, mesh_s, mesh_m, mesh_node_buf);
+    const_mesh_nodes_ico_buffer(nthreads, view_s, mesh_s, mesh_m, mesh_node_buf);
     const_solid_mesh_patch_bufffer(nthreads, view_s->shading_mode, mesh_s, mesh_m,
                                    mesh_solid_buf);
     return;

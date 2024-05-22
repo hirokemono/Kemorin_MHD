@@ -9,6 +9,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
   $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -19,7 +20,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
-  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
@@ -63,6 +63,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_color_code_on_nodes.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -71,6 +72,8 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
+  $(MHDDIR)/C_src/CORE_C/transfer_matvec.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_gz_c.h \
   $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
@@ -105,7 +108,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
@@ -152,7 +155,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_ele_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
   $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
@@ -160,8 +162,18 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_glfw_gtk.c \
@@ -173,6 +185,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
   $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -183,7 +196,6 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
-  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
@@ -227,6 +239,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_color_code_on_nodes.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_primitives_to_gl_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/pthread_PSF_arrows_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/t_PSF_each_isoline_edge_list.h \
@@ -235,6 +248,8 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
+  $(MHDDIR)/C_src/CORE_C/transfer_matvec.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_gz_c.h \
   $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
@@ -269,7 +284,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/pthread_MAP_patches_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
@@ -316,7 +331,6 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_ele_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
   $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
@@ -324,6 +338,16 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_shading_mode_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_tube_pref_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_prefs_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_performance_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<

@@ -167,7 +167,7 @@ GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidg
 	g_signal_connect(psf_isoline_menu->spin_nline, "value-changed",
                      G_CALLBACK(set_nline_CB), (gpointer) kemo_sgl);
 	
-	GtkAdjustment *adj_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
+	GtkAdjustment *adj_width = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
 	psf_isoline_menu->spin_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width), 0, 0);
 	g_signal_connect(psf_isoline_menu->spin_width, "value-changed", 
                      G_CALLBACK(set_width_CB), (gpointer) kemo_sgl);

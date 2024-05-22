@@ -14,14 +14,14 @@
 #define RED_B   ZERO
 #define RED_A   ONE
 
-#define WHITE_R   ONE
-#define WHITE_G   ONE
-#define WHITE_B   ONE
+#define WHITE_R   0.9
+#define WHITE_G   0.9
+#define WHITE_B   0.9
 #define WHITE_A   ONE
 
-#define BLACK_R   ZERO
-#define BLACK_G   ZERO
-#define BLACK_B   ZERO
+#define BLACK_R   0.1
+#define BLACK_G   0.1
+#define BLACK_B   0.1
 #define BLACK_A   ONE
 
 #define GRAY_R   SEVEN_DECI
@@ -55,7 +55,7 @@
 #define  INIT_NUM_COLOR_LOOP   ISIX
 
 #define  INIT_POLYGON_MODE      NORMAL_POLYGON
-#define  INIT_SHADING_MODE      FLAT_SHADE
+#define  INIT_SHADING_MODE      SMOOTH_SHADE
 #define  INIT_TANGENTIAL_VECT   FULL_COMPONENT
 #define  INIT_VECTOR_WIDTH      0.05
 

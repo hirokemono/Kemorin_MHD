@@ -5,63 +5,62 @@
 #include "set_colorbar_to_buffer.h"
 
 
-static void set_one_quad_to_buf(long i_quad, 
+static long set_one_quad_to_buf(long i_quad,
                                 float x1[4], float x2[4], float x3[4], float x4[4],
                                 float c1[4], float c2[4], float c3[4], float c4[4],
                                 struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
+    double xyzw_tri[12];
+    double color_tri[12];
+    double norm_tri[12] = {0.0, 0.0, 1.0, 1.0,
+                           0.0, 0.0, 1.0, 1.0,
+                           0.0, 0.0, 1.0, 1.0};
 	int nd;
 	
-    set_node_stride_buffer(6*i_quad, strided_buf, &point_buf);
-    for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x1[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c1[nd];};
-	
-    set_node_stride_buffer(6*i_quad+1, strided_buf, &point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x2[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c2[nd];};
+    for(nd=0;nd<4;nd++){
+        xyzw_tri[  nd] =  x1[nd];
+        xyzw_tri[4+nd] =  x2[nd];
+        xyzw_tri[8+nd] =  x3[nd];
+        color_tri[  nd] = c1[nd];
+        color_tri[4+nd] = c2[nd];
+        color_tri[8+nd] = c3[nd];
+    }
+    long ipatch_in = 2*i_quad;
+    ipatch_in = set_patch_strided_buffer(ipatch_in, xyzw_tri,
+                                         norm_tri, color_tri,
+                                         strided_buf);
 		
-    set_node_stride_buffer(6*i_quad+2, strided_buf, &point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x3[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c3[nd];};
-		
-    set_node_stride_buffer(6*i_quad+3, strided_buf, &point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x3[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c3[nd];};
-		
-    set_node_stride_buffer(6*i_quad+4, strided_buf, &point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x4[nd];}
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c4[nd];};
-	
-    set_node_stride_buffer(6*i_quad+5, strided_buf, &point_buf);
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_xyzw] =  x1[nd];};
-	for(nd=0;nd<4;nd++) {strided_buf->v_buf[nd+point_buf.igl_color] = c1[nd];};
-	return;
+    for(nd=0;nd<4;nd++){
+        xyzw_tri[  nd] =  x3[nd];
+        xyzw_tri[4+nd] =  x4[nd];
+        xyzw_tri[8+nd] =  x1[nd];
+        color_tri[  nd] = c3[nd];
+        color_tri[4+nd] = c4[nd];
+        color_tri[8+nd] = c1[nd];
+    }
+    ipatch_in = set_patch_strided_buffer(ipatch_in, xyzw_tri,
+                                         norm_tri, color_tri,
+                                         strided_buf);
+	return ipatch_in;
 };
 
-static void set_one_texture_to_buf(const long i_quad, 
+static long set_one_texture_to_buf(const long i_quad, 
                                    float t1[2], float t2[2], float t3[2], float t4[2],
                                    struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
+    double xy_txur[12];
 	int nd;
 	
-    set_node_stride_buffer(6*i_quad, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t1[nd];}
-	
-    set_node_stride_buffer(6*i_quad+1, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t2[nd];}
-		
-    set_node_stride_buffer(6*i_quad+2, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t3[nd];}
-		
-    set_node_stride_buffer(6*i_quad+3, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t3[nd];}
-		
-    set_node_stride_buffer(6*i_quad+4, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t4[nd];}
-	
-    set_node_stride_buffer(6*i_quad+5, strided_buf, &point_buf);
-	for(nd=0;nd<2;nd++) {strided_buf->v_buf[nd+point_buf.igl_txur] = t1[nd];};
-	return;
+    long inum_patch = 2 * i_quad;
+    for(nd=0;nd<2;nd++){
+        xy_txur[   nd] = t1[nd];
+        xy_txur[ 2+nd] = t2[nd];
+        xy_txur[ 4+nd] = t3[nd];
+        xy_txur[ 6+nd] = t3[nd];
+        xy_txur[ 8+nd] = t4[nd];
+        xy_txur[10+nd] = t1[nd];
+    }
+    inum_patch = set_patch_textur_to_buf(inum_patch, &xy_txur[0], strided_buf);
+    inum_patch = set_patch_textur_to_buf(inum_patch, &xy_txur[6], strided_buf);
+	return inum_patch;
 };
 
 long solid_colorbar_box_to_buf(const long ist_quad,

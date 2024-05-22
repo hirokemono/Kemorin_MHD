@@ -88,6 +88,68 @@ void position_2_sph_c(int nnod, double *xyz, double *rtp){
 	return;
 };
 
+void xyzw_to_rtpw_c(long nnod, double *xyzw, double *rtpw){
+    int i;
+    double rs, ar, as, ratio_x, ratio_z, pi;
+    
+    pi = FOUR*atan(ONE);
+    
+    for (i = 0; i < nnod; i++){
+        rtpw[4*i  ]
+        =   sqrt( xyzw[4*i  ] * xyzw[4*i  ]
+                + xyzw[4*i+1] * xyzw[4*i+1]
+                + xyzw[4*i+2] * xyzw[4*i+2]);
+        rs = sqrt(xyzw[4*i  ] * xyzw[4*i  ]
+                + xyzw[4*i+1] * xyzw[4*i+1]);
+        /*
+        printf("rtpw, rs %e %e \n", rtpw[4*i  ], rs);
+        */
+        if( rtpw[4*i  ] == ZERO){
+            rtpw[4*i+1] = ZERO;
+            rtpw[4*i+2] = ZERO;
+        }
+        else if(rs == ZERO){
+            if( xyzw[4*i+2] >= ZERO) {
+                rtpw[4*i+1] = ZERO;
+            } else {
+                rtpw[4*i+1] = pi;
+            };
+        }
+        else {
+            ar = ONE / rtpw[4*i  ];
+            as = ONE / rs;
+            ratio_x = xyzw[4*i  ] * as;
+            ratio_z = xyzw[4*i+2] * ar;
+            
+            if( ratio_z > ONE){
+                rtpw[4*i+1] = ZERO;
+            } else if ( ratio_z < -ONE){
+                rtpw[4*i+1] = pi;
+            } else {
+                rtpw[4*i+1] = acos(ratio_z);
+            }
+            
+            if( xyzw[4*i+1] == ZERO){
+                if( xyzw[4*i  ] > ZERO){
+                    rtpw[4*i+2] = ZERO;
+                } else {
+                    rtpw[4*i+2] = pi;
+                }
+            } else if(ratio_x >=  ONE) {
+                rtpw[4*i+2] = ZERO;
+            } else if(ratio_x <= -ONE) {
+                rtpw[4*i+2] = pi;
+            } else if(xyzw[4*i+1] >= ZERO) {
+                rtpw[4*i+2] = acos(ratio_x);
+            } else if(xyzw[4*i+1] <  ZERO) {
+                rtpw[4*i+2] = TWO*pi - acos(ratio_x);
+            };
+        };
+        rtpw[4*i+3] = 1.0;
+    };
+    return;
+};
+
 
 void const_map_data_from_xyz(int nnod, double *xyz, double *rtp, double *xy_map){
 	int i;

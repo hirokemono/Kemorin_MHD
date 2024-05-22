@@ -21,6 +21,9 @@ NSData *SnapshotData;
 @synthesize EvolutionEndStep;
 @synthesize EvolutionIncrement;
 @synthesize CurrentStep;
+@synthesize NumTeetRotation;
+@synthesize SnapshotFPS;
+@synthesize AverageFPS;
 -(id) init
 {
 	self.FramePerSecond = 12;
@@ -30,6 +33,7 @@ NSData *SnapshotData;
 	self.EvolutionEndStep =   1;
 	self.EvolutionIncrement = 1;
 	
+    self.NumTeetRotation = 2;
 	return self;
 }
 
@@ -495,8 +499,8 @@ NSData *SnapshotData;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
@@ -582,10 +586,63 @@ NSData *SnapshotData;
     [_metalView setNeedsDisplay:YES];
 }
 
+-(void) ShowQTmovieRotation:(struct kemoviewer_type *) kemo_sgl
+                numRotation:(NSInteger) rotCounts;
+{
+    struct timeval startwtime;
+    struct timeval endwtime;
+    double seq_time;
+    double accum_time = 0.0;
+
+    NSInteger ied_deg = rotCounts * 360/self.RotationIncrement;
+    NSInteger int_degree, icount;
+    
+    [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+
+    [rotateProgreessBar setHidden:NO];
+    [rotateProgreessBar setUsesThreadedAnimation:YES];
+    [rotateProgreessBar startAnimation:self];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
+    [rotateProgreessBar displayIfNeeded];
+    
+    for(icount = 0;icount<ied_deg;icount++){
+        int_degree = (icount * self.RotationIncrement);
+        self.CurrentStep = icount;
+        [self setRotation:int_degree
+                     axis:RotationAxisID
+                 kemoview:kemo_sgl];
+
+        gettimeofday( &startwtime, NULL );
+        [_metalView draw];
+        gettimeofday( &endwtime, NULL );
+        seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                             + endwtime.tv_sec - startwtime.tv_sec );
+        accum_time = accum_time + seq_time;
+        self.SnapshotFPS = 1.0 / seq_time;
+        self.AverageFPS =  (double) icount / accum_time;
+
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
+        [rotateProgreessBar incrementBy:(double) int_degree];
+        [rotateProgreessBar displayIfNeeded];
+    }
+    [rotateProgreessBar setDoubleValue:(double) 0];
+    [rotateProgreessBar stopAnimation:self];
+    [rotateProgreessBar setHidden:YES];
+    [rotateProgreessBar displayIfNeeded];
+    
+    kemoview_step_viewmatrix(IZERO, kemo_sgl);
+    [self setRotation:IZERO
+                 axis:RotationAxisID
+             kemoview:kemo_sgl];
+    [_metalView setNeedsDisplay:YES];
+}
+
 -(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
 {
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 
     NSInteger num_step
         = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
@@ -733,11 +790,20 @@ NSData *SnapshotData;
 
 // ---------------------------------
 
+- (IBAction)GetRotationMovieFPS:(id)sender
+{
+    CurrentMovieFormat = 0;
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self ShowQTmovieRotation:kemo_sgl
+                  numRotation:self.NumTeetRotation];
+}
+
 - (IBAction)ShowRotationMovie:(id)sender;
 {
 	CurrentMovieFormat = 0;
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SaveQTmovieRotation:kemo_sgl];
+    [self ShowQTmovieRotation:kemo_sgl
+                  numRotation:1];
 }
 
 - (IBAction)ShowQuiltMovie:(id)sender;

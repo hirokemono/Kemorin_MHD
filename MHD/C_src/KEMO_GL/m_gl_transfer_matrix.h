@@ -10,6 +10,7 @@
 
 #include "kemoviewer_param_c.h"
 #include "trackball.h"
+#include "numbers_to_bin_c.h"
 
 #define INITIAL_APATURE    10
 #define INITIAL_ASPECT      1
@@ -61,10 +62,15 @@ struct view_element{
 	double eye_separation; /*eye separation for streo view*/
 	double focal_length;   /*focal length for streo view*/
     
-	/* spin for Animation */
+/* spin for Animation */
 	double rRot_animate[3];
 	double rVel_animate[3];
 	double rAccel_animate[3];
+    
+    int iflag_light_check;
+    int iflag_coastline_tube;
+    int ncorner_tube;
+    double width_tube;
 };
 
 /* prototypes */
@@ -183,4 +189,17 @@ void view_for_xz_plane(struct view_element *view);
 void set_3d_position_to_window_d(int point_screen[2], double xx[3], 
                                  int nx_win, int ny_win, struct view_element *view);
 
+
+void set_coastline_tube_flag(struct view_element *view_s, int num);
+int send_coastline_tube_flag(struct view_element *view_s);
+void set_gl_tube_corners(struct view_element *view_s, int num);
+int send_gl_tube_corners(struct view_element *view_s);
+
+void set_coastline_thickness_w_exp(double value, int i_digit,
+                                   struct view_element *view_s);
+void get_coastline_thickness_w_exp(struct view_element *view_s,
+                                   double *value, int *i_digit);
+
+void set_lighting_check_flag(struct view_element *view_s, int num);
+int send_lighting_check_flag(struct view_element *view_s);
 #endif

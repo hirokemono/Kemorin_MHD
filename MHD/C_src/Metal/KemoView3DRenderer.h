@@ -27,10 +27,26 @@ typedef struct
     /*  Index buffer for initial cube */
     id<MTLBuffer> _Nullable cubeIndex;
     
+    /*  Vertex buffer for initial cube */
+    id<MTLBuffer> _Nullable psfNodeVertice;
+    NSUInteger numPsfNodeVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable psfSolidIndices;
+    NSUInteger numPsfSolidIndices;
+    /*  Index buffer for psf transparent patch */
+    id<MTLBuffer> _Nullable psfTransIndices;
+    NSUInteger numPsfTransIndices;
+    /*  Index buffer for psf texured patch */
+    id<MTLBuffer> _Nullable psfSTexureIndices;
+    NSUInteger numPsfSTexureIndices;
+    /*  Index buffer for psf texured transparent patch */
+    id<MTLBuffer> _Nullable psfTTexureIndices;
+    NSUInteger numPsfTTexureIndices;
+
     /*  Vertex buffer for PSF solid patch */
     id<MTLBuffer> _Nullable psfSolidVertice;
     NSUInteger numPSFSolidVertice;
-    /*  Vertex buffer for PSF transoarent patch */
+    /*  Vertex buffer for PSF transparent patch */
     id<MTLBuffer> _Nullable psfTransVertice;
     NSUInteger numPSFTransVertice;
     /*  Vertex buffer for PSF with texure patch */
@@ -45,12 +61,16 @@ typedef struct
     /*  Vertex buffer for PSF isolines */
     id<MTLBuffer> _Nullable psfLinesVertice;
     NSUInteger numPSFLinesVertice;
+    id<MTLBuffer> _Nullable psfTubesVertice;
+    NSUInteger numPSFTubesVertice;
 
     /*  Texure buffer for PSF with texure */
     id<MTLTexture> _Nullable psfSolidTexure;
+    NSUInteger numPSFSolidTexurePixsel;
     /*  Texure buffer for PSF with transparent texure */
     id<MTLTexture> _Nullable psfTransTexure;
-    
+    NSUInteger numPSFTransTexurePixsel;
+
     /*  Vertex buffer for field lines solid patch */
     id<MTLBuffer> _Nullable fieldTubeVertice;
     NSUInteger numFieldTubeVertice;
@@ -72,11 +92,11 @@ typedef struct
     NSUInteger numMeshNodeVertice;
 
     /*  Vertex buffer for Coast lines */
-    id<MTLBuffer> _Nullable coastVertice;
-    NSUInteger numCoastVertice;
-    /*  Vertex buffer for sphere grids */
-    id<MTLBuffer> _Nullable sphGridVertice;
-    NSUInteger numSphGridVertice;
+    id<MTLBuffer> _Nullable coastLineVertice;
+    NSUInteger numCoastLineVertice;
+    id<MTLBuffer> _Nullable coastTubeVertice;
+    NSUInteger numCoastTubeVertice;
+    
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
     NSUInteger numAxisVertice;
@@ -149,8 +169,7 @@ typedef struct
 - (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
                           unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon
-                       fieldTube:(int) iflag_tube;
+                           sides:(int) iflag_polygon;
 @end
 
 

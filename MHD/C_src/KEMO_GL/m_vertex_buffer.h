@@ -40,8 +40,9 @@ struct gl_strided_buffer{
 };
 
 struct gl_index_buffer{
-    int nsize_buf;
-    int num_ele_buf;
+    long nsize_buf;
+    long ntot_vertex;
+    long num_ele_buf;
     int num_each_ele;
     unsigned int *ie_buf;
 };
@@ -81,8 +82,10 @@ void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf);
 
 
-struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele);
-void dealloc_gl_index_buffer(struct gl_index_buffer * alloc_gl_index_buffer);
+struct gl_index_buffer * init_gl_index_buffer(long numele, int nnod_4_ele);
+void dealloc_gl_index_buffer(struct gl_index_buffer * index_buf);
+void resize_gl_index_buffer(long numele, int nnod_4_ele,
+                            struct gl_index_buffer *index_buf);
 
 
 struct gl_texure_image * alloc_kemoview_gl_texure(void);

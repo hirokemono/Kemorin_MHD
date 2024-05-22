@@ -195,6 +195,7 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
 	
 	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode, kemo_sgl);
     gtk_widget_queue_draw(color_vws->scrolled_window);
+    draw_full(kemo_sgl);
     return;
 }
 

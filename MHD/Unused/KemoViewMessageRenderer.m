@@ -204,18 +204,21 @@
                   pipelines:kemoView2DPipelines
                      vertex:&(kemoViewMetalBuf->mapLinesVertice)
                  projection:map_proj_mat];
+    /*  Commands to render Coastline tube on map */
+    if(kemo_buffers->iflag_coastline_tube){
+        [self draw2DPatchObject:kemo_buffers->coast_tube_buf
+                        encoder:renderEncoder
+                      pipelines:kemoView2DPipelines
+                         vertex:&(kemoViewMetalBuf->coastVertice)
+                     projection:map_proj_mat];
     /*  Commands to render Coastline on map */
-    [self draw2DLineObject:kemo_buffers->coast_buf
-                   encoder:renderEncoder
-                 pipelines:kemoView2DPipelines
-                    vertex:&(kemoViewMetalBuf->coastVertice)
-                projection:map_proj_mat];
-    /*  Commands to render grids on map */
-    [self draw2DLineObject:kemo_buffers->sph_grid_buf
-                   encoder:renderEncoder
-                 pipelines:kemoView2DPipelines
-                    vertex:&(kemoViewMetalBuf->sphGridVertice)
-                projection:map_proj_mat];
+    }else{
+        [self draw2DLineObject:kemo_buffers->coast_line_buf
+                       encoder:renderEncoder
+                     pipelines:kemoView2DPipelines
+                        vertex:&(kemoViewMetalBuf->coastVertice)
+                    projection:map_proj_mat];
+    }
     return;
 }
 
