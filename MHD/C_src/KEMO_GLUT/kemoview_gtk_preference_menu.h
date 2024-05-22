@@ -26,11 +26,7 @@
 #include "kemoview_gtk_performance_menu.h"
 #include "kemoview_gtk_lighting_menu.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,

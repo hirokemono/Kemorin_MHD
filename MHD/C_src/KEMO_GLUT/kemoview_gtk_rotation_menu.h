@@ -23,11 +23,7 @@
 #include "kemoview_gtk_routines.h"
 #include "view_modifier_glfw.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct rotation_gtk_menu{
 	int id_fmt_rot;

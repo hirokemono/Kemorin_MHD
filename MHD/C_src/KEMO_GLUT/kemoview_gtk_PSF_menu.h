@@ -27,11 +27,7 @@
 #include "kemoview_gtk_PSF_isoline_menu.h"
 #include "kemoview_gtk_PSF_vector_menu.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct psf_color_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;

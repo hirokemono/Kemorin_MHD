@@ -4,21 +4,10 @@
 
 KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER
 
-TARGET_KEMOVIEW_GTK =  kemoviewer_GTK
 TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
 
 CURRENTDIR = $(shell pwd)
 SRC_C = $(shell ls *.c)
-
-MOD_KEMOVIEW_GTK = \
-tree_views_4_fixed_lists_GTK.o \
-tree_view_real2_GTK.o \
-tree_view_4_pvr_colormap.o \
-\
-kemo_mesh_viewer_gtk.o \
-kemoviewer_gtk.o \
-\
-'$$(OBJ_KEMOVIEW_GLUT)'
 
 MOD_KEMOVIEW_GLFW = \
 kemoviewer_glfw_gtk.o \
@@ -35,20 +24,11 @@ dir_list:
 	@echo 'KEMO_GTKDIR =  $$(C_SRCDIR)/GTK'  >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_KEMOVIEW_GTK =  $$(BUILDDIR)/$(TARGET_KEMOVIEW_GTK)'  >> $(MAKENAME)
 	@echo 'TARGET_KEMOVIEW_GLFW = $$(BUILDDIR)/$(TARGET_KEMOVIEW_GLFW)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo viewer_gtk:  '$$(TARGET_KEMOVIEW_GTK)'   >> $(MAKENAME)
 	@echo viewer_glfw: '$$(TARGET_KEMOVIEW_GLFW)'  >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_KEMOVIEW_GTK)': '$$(MOD_KEMOVIEW_GTK)' \
-	'$$(LIB_KEMO_C_FILE)' \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GTK)' \
-	'$$(MOD_KEMOVIEW_GTK) -L. $$(LIB_KEMO_C)' \
-	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_KEMOVIEW_GLFW)': '$$(MOD_KEMOVIEW_GLFW)' \
 	'$$(LIB_KEMO_C_FILE)' \
@@ -61,8 +41,6 @@ target_task:
 lib_name:
 
 mod_list:
-	@echo  MOD_KEMOVIEW_GTK =  \\ >> $(MAKENAME)
-	@echo  $(MOD_KEMOVIEW_GTK) >> $(MAKENAME)
 	@echo  MOD_KEMOVIEW_GLFW =  \\ >> $(MAKENAME)
 	@echo  $(MOD_KEMOVIEW_GLFW) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

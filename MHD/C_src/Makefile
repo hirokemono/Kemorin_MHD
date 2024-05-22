@@ -78,8 +78,9 @@ mod_list:
 		GMAKE='$(GMAKE)' \
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
-		GLFW_LIBS='$(GLFW_LIBS)'   \
-		MAKENAME='$(MAKENAME)' \
+		GLFW_CFLAGS='$(GLFW_LIBS)'   \
+		GLFW_LIBS='$(GLFW_LIBS)'     \
+		MAKENAME='$(MAKENAME)'       \
 		mod_list \
 		) \
 	done

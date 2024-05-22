@@ -18,11 +18,7 @@
 #include "tree_view_4_viewer_mesh.h"
 #include "quicksort_c.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 /* prototypes */
 void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
