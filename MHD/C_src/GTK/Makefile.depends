@@ -674,13 +674,17 @@ tree_view_viewer_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
- $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_map_4_PSF.h \
  $(C_SRCDIR)/KEMO_GL/pthread_MAP_patches_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_fieldline_buffers.h \
  $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
  $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
  $(C_SRCDIR)/CORE_C/quicksort_c.h \
@@ -693,6 +697,7 @@ tree_view_viewer_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
  $(C_SRCDIR)/KEMO_GL/const_mesh_patch_table_for_gl.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_message_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
  $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
