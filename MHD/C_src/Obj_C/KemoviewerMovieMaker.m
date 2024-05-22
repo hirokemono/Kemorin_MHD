@@ -599,7 +599,6 @@ NSData *SnapshotData;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
     kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
-//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     [rotateProgreessBar setHidden:NO];
     [rotateProgreessBar setUsesThreadedAnimation:YES];
@@ -632,6 +631,7 @@ NSData *SnapshotData;
     [rotateProgreessBar setHidden:YES];
     [rotateProgreessBar displayIfNeeded];
     
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
     [self setRotation:IZERO
                  axis:RotationAxisID

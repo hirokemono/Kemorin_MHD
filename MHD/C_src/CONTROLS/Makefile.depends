@@ -1,394 +1,432 @@
 #
 control_elements_IO_c.o: \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.c \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.c \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 ctl_data_pvr_colormap_IO_c.o: \
-  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.c \
-  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
+ $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.c \
+ $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_color_table_c.o: \
-  $(C_SRCDIR)/CONTROLS/m_color_table_c.c \
-  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
-  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/m_color_table_c.c \
+ $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+ $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_direction_labels_c.o: \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.c \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+ $(C_SRCDIR)/CONTROLS/m_direction_labels_c.c \
+ $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_field_name_from_f.o: \
-  $(C_SRCDIR)/CONTROLS/m_field_name_from_f.c \
-  $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 set_rgba_table_c.o: \
-  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.c \
-  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
-  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
-  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
-  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
-  $(C_SRCDIR)/CORE_C/colormap_space_c.h
+ $(C_SRCDIR)/CONTROLS/set_rgba_table_c.c \
+ $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
+ $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+ $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_space_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_MHD_controls.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_MHD_controls.c \
-  $(C_SRCDIR)/CONTROLS/t_control_MHD_controls.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h
+ $(C_SRCDIR)/CONTROLS/t_control_MHD_controls.c \
+ $(C_SRCDIR)/CONTROLS/t_control_MHD_controls.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_c_lists.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists.c \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_c_lists.c \
+ $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara2_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara2_int_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara2_real_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara3_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara_int2_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara_int3_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara_int_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara_real_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_4_pvr_movie_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_movie_c.c \
-  $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_movie_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
+ $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_movie_c.c \
+ $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_movie_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_int2_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_int2_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_int2_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_int_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_int_real_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_label_from_f.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.c \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.c \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_real2_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_real3_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_real_IO.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.c \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.c \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara2_int_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara2_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara2_real_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_real_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_real_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_real_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_real_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara3_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara_int3_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara_int_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara_real_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_int2_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_int_real_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_int_real_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_int_real_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_int_real_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_int_real_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_real_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_real3_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_real3_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_real3_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_real3_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_real3_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_single_items_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_data_4_fields_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_fields_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_fields_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
-  $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_4_fields_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_4_fields_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara3_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_data_4_view_transfer_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_data_pvr_colormap_c.o: \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.c \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.c \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

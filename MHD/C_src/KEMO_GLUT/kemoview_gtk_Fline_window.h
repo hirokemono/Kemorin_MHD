@@ -25,7 +25,6 @@
 /* prototypes */
 
 void init_fline_window(struct kemoviewer_type *kemo_sgl,
-                       struct fieldline_gtk_menu *fline_menu,
-                       GtkWidget *window);
+                       struct fieldline_gtk_menu *fline_menu);
 
 #endif /*  KEMOVIEW_GTK_FLINE_WINDOW_  */

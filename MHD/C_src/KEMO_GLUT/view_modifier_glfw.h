@@ -36,7 +36,6 @@ void draw_full(struct kemoviewer_type *kemo_sgl);
 void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl);
 
 double draw_rotate_gl_views(struct kemoviewer_type *kemo_sgl,
-                            int iflag_img, struct kv_string *image_prefix,
                             int i_axis, int inc_deg, int num_rotation);
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,

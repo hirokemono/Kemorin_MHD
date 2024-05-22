@@ -62,13 +62,9 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-
-	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    draw_rotate_gl_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
-                         rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
-	kemoview_free_kvstring(image_prefix);
+    draw_rotate_gl_views(kemo_sgl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
 	return;
 };
 

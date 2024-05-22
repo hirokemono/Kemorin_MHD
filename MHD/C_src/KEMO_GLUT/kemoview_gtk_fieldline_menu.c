@@ -16,7 +16,7 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
     
 	double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	if(thick_in <= 0) return;
+	if(thick_in < 0) return;
 	
 	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH, 
                                    &current_thick, &current_digit);

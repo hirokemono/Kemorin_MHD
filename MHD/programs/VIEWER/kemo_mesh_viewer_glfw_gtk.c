@@ -138,7 +138,7 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 	for (int i = 0; i < num; i++) {
 		filename = kemoview_init_kvstring_by_string(paths[i]);
 		open_kemoviewer_file_glfw(single_kemoview, kemoview_gl,
-                                  filename, mbot, gtk_win);
+                                  filename, mbot);
 	}
 }
 

@@ -4860,7 +4860,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <clipView key="contentView" id="H51-CE-nj3">
                             <rect key="frame" x="1" y="1" width="299" height="1013"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view id="iRy-vr-6IA">
                                     <rect key="frame" x="0.0" y="0.0" width="284" height="1010"/>
@@ -5326,7 +5326,7 @@
                                                         <rect key="frame" x="10" y="170" width="229" height="118"/>
                                                         <clipView key="contentView" ambiguous="YES" id="Vae-Vq-U6W">
                                                             <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>

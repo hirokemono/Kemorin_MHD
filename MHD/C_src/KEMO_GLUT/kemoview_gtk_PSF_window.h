@@ -31,10 +31,13 @@
 
 
 /*  prototypes */
+GtkWidget * set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
+                             struct kemoviewer_gl_type *kemo_gl,
+                             struct psf_gtk_menu *psf_gmenu,
+                             GtkWidget *window);
 
 void init_psf_window(struct kemoviewer_type *kemo_sgl,
                      struct kemoviewer_gl_type *kemo_gl,
-                     struct psf_gtk_menu *psf_gmenu,
-                     GtkWidget *window);
+                     struct psf_gtk_menu *psf_gmenu);
 
 #endif /*  KEMOVIEW_GTK_PSF_WINDOW_ */

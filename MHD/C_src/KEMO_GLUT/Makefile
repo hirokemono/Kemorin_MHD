@@ -8,7 +8,7 @@ SRC_GLUT_C = $(shell ls kemoview_*.c tree_view_*.c)
 INC_GLUT_C = $(addsuffix .h,$(basename $(SRC_GLUT_C)) )
 OBJ_GLUT_C = $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
-ifdef GLFW_LIBS
+ifdef GLFW_CFLAGS
 	SRC_GLUT_C+=  view_modifier_glfw.c
 else
 	SRC_GLUT_C+=  view_modifier_gtk.c
