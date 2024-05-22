@@ -43,10 +43,10 @@ void dealloc_mesh_sorting_work(struct mesh_sorting_work *mesh_sort){
     free(mesh_sort->z_ele_view);
 }
 
-static void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
-                                           struct viewer_mesh *mesh_s,
-                                           struct mesh_menu_val *mesh_m,
-                                           struct gl_strided_buffer *mesh_solid_buf){
+void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
+                                    struct viewer_mesh *mesh_s,
+                                    struct mesh_menu_val *mesh_m,
+                                    struct gl_strided_buffer *mesh_solid_buf){
 	mesh_s->ntot_solid_patch = count_solid_mesh_patches(mesh_s, mesh_m);
     if(mesh_s->ntot_solid_patch > 0){
         set_mesh_patch_colors(mesh_m, mesh_s);
@@ -126,11 +126,10 @@ void const_trans_mesh_buffer(int nthreads,
     return;
 };
 
-
-static void const_mesh_grids_buffer(int nthreads,
-                                    struct viewer_mesh *mesh_s,
-                                    struct mesh_menu_val *mesh_m,
-                                    struct gl_strided_buffer *mesh_buf){
+void const_mesh_grids_buffer(int nthreads,
+                             struct viewer_mesh *mesh_s,
+                             struct mesh_menu_val *mesh_m,
+                             struct gl_strided_buffer *mesh_buf){
     long num;
     num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_edge_domain_edge =   (long *) calloc(num, sizeof(long));
@@ -159,9 +158,9 @@ static void const_mesh_grids_buffer(int nthreads,
 }
 
 
-static void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
-                                        struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                                        struct gl_strided_buffer *mesh_buf){
+void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
+                                 struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                                 struct gl_strided_buffer *mesh_buf){
     long num;
     num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_node_domain_patch =   (long *) calloc(num, sizeof(long));
@@ -204,21 +203,3 @@ static void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_
     free(istack_node_surf_grp_patch);
     return;
 }
-
-void const_solid_mesh_buffer(int nthreads,
-                             struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                             struct view_element *view_s,
-                             struct gl_strided_buffer *mesh_solid_buf,
-                             struct gl_strided_buffer *mesh_grid_buf,
-                             struct gl_strided_buffer *mesh_node_buf){
-    mesh_solid_buf->num_nod_buf = 0;
-    mesh_grid_buf->num_nod_buf = 0;
-    mesh_node_buf->num_nod_buf = 0;
-    if(mesh_m->iflag_draw_mesh == 0) return;
-        
-    const_mesh_grids_buffer(nthreads, mesh_s, mesh_m, mesh_grid_buf);
-    const_mesh_nodes_ico_buffer(nthreads, view_s, mesh_s, mesh_m, mesh_node_buf);
-    const_solid_mesh_patch_bufffer(nthreads, view_s->shading_mode, mesh_s, mesh_m,
-                                   mesh_solid_buf);
-    return;
-};

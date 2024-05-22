@@ -52,9 +52,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->FLINE_line_buf =  init_strided_buffer(n_point);
     kemo_buffers->FLINE_tube_buf =  init_strided_buffer(n_point);
 
-    kemo_buffers->mesh_solid_buf =  init_strided_buffer(n_point);
-    kemo_buffers->mesh_grid_buf =   init_strided_buffer(n_point);
-    kemo_buffers->mesh_node_buf =   init_strided_buffer(n_point);
+    kemo_buffers->MESH_bufs =  init_MESH_buffers();
     kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
 
     kemo_buffers->coast_line_buf = init_strided_buffer(n_point);
@@ -77,9 +75,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
     dealloc_strided_buffer(kemo_buffers->cube_buf);
 
-    dealloc_strided_buffer(kemo_buffers->mesh_solid_buf);
-    dealloc_strided_buffer(kemo_buffers->mesh_grid_buf);
-    dealloc_strided_buffer(kemo_buffers->mesh_node_buf);
+    dealloc_MESH_buffers(kemo_buffers->MESH_bufs);
     dealloc_strided_buffer(kemo_buffers->mesh_trns_buf);
 
     dealloc_strided_buffer(kemo_buffers->FLINE_line_buf);
@@ -228,9 +224,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         
         const_solid_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
-                                kemo_buffers->mesh_solid_buf,
-                                kemo_buffers->mesh_grid_buf,
-                                kemo_buffers->mesh_node_buf);
+                                kemo_buffers->MESH_bufs);
         const_trans_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->mesh_trns_buf);

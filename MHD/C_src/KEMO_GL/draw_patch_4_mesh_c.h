@@ -32,15 +32,24 @@ struct mesh_sorting_work{
 
 
 /* prototypes */
-void const_solid_mesh_buffer(int nthreads,
-                             struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                             struct view_element *view_s,
-                             struct gl_strided_buffer *mesh_solid_buf,
-                             struct gl_strided_buffer *mesh_grid_buf,
-                             struct gl_strided_buffer *mesh_node_buf);
+void const_solid_mesh_patch_bufffer(int nthreads, int shading_mode,
+                                    struct viewer_mesh *mesh_s,
+                                    struct mesh_menu_val *mesh_m,
+                                    struct gl_strided_buffer *mesh_solid_buf);
+
+void const_mesh_grids_buffer(int nthreads,
+                             struct viewer_mesh *mesh_s,
+                             struct mesh_menu_val *mesh_m,
+                             struct gl_strided_buffer *mesh_buf);
+
+void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
+                                 struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                                 struct gl_strided_buffer *mesh_buf);
+
 void const_trans_mesh_buffer(int nthreads,
                              struct viewer_mesh *mesh_s,
                              struct mesh_menu_val *mesh_m,
                              struct view_element *view_s,
                              struct gl_strided_buffer *mesh_trns_buf);
+
 #endif

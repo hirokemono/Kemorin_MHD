@@ -102,6 +102,22 @@
     return;
 }
 
+- (void) set3DMeshBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+               metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
+                   buffers:(struct MESH_buffers *_Nonnull) MESH_bufs
+{
+    kemoView3DMetalBuf->numMeshNodeVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:MESH_bufs->mesh_node_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshNodeVertice)];
+    kemoView3DMetalBuf->numMeshGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:MESH_bufs->mesh_grid_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshGridVertice)];
+    kemoView3DMetalBuf->numMeshSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:MESH_bufs->mesh_solid_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshSolidVertice)];
+    return;
+}
+
 - (void) set3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
                   kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
@@ -129,17 +145,6 @@
                                                                            buffer:kemo_buffers->PSF_arrow_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
     
-
-    kemoView3DMetalBuf->numMeshNodeVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->mesh_node_buf
-                                                                            vertex:&(kemoView3DMetalBuf->meshNodeVertice)];
-    kemoView3DMetalBuf->numMeshGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->mesh_grid_buf
-                                                                            vertex:&(kemoView3DMetalBuf->meshGridVertice)];
-    kemoView3DMetalBuf->numMeshSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->mesh_solid_buf
-                                                                            vertex:&(kemoView3DMetalBuf->meshSolidVertice)];
-
 /*  Set PSF index buffer */
     kemoView3DMetalBuf->numPsfSolidIndices =   [_kemo3DMetalBufBase setMetalIndices:device
                                                                           indexbuf:kemo_buffers->PSF_solid_index_buf
@@ -270,6 +275,9 @@
                    kemoview:kemo_sgl
                     buffers:kemo_sgl->kemo_buffers
                        PSFs:kemo_sgl->kemo_psf];
+    [self set3DMeshBuffers:device
+               metalbuffer:&_kemoViewMetalBuf
+                   buffers:kemo_sgl->kemo_buffers->MESH_bufs];
 
     [self setTransMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf

@@ -361,6 +361,13 @@ static void set_draw_messages_to_VAO(struct MESSAGE_buffers *MESSAGE_bufs,
     return;
 }
 
+static void set_draw_mesh_to_VAO(struct MESH_buffers *MESH_bufs,
+                                 struct VAO_ids **mesh_solid_VAO){
+    Const_Phong_VAO(mesh_solid_VAO[0],  MESH_bufs->mesh_solid_buf);
+    Const_Simple_VAO(mesh_solid_VAO[1], MESH_bufs->mesh_grid_buf);
+    Const_Phong_VAO(mesh_solid_VAO[2],  MESH_bufs->mesh_node_buf);
+}
+
 static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
@@ -389,9 +396,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                   kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
                                   kemo_buffers->PSF_stxur_index_buf, kemo_VAOs->psf_solid_index_VAO);
         
-        Const_Phong_VAO(kemo_VAOs->mesh_solid_VAO[0],  kemo_buffers->mesh_solid_buf);
-        Const_Simple_VAO(kemo_VAOs->mesh_solid_VAO[1], kemo_buffers->mesh_grid_buf);
-        Const_Phong_VAO(kemo_VAOs->mesh_solid_VAO[2],  kemo_buffers->mesh_node_buf);
+        set_draw_mesh_to_VAO(kemo_buffers->MESH_bufs, kemo_VAOs->mesh_solid_VAO);
         
         Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
         Const_Phong_VAO(kemo_VAOs->grid_tube_VAO, kemo_buffers->coast_tube_buf);

@@ -12,16 +12,15 @@
 #include "set_cube_to_buf.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_gl_transfer_matrix.h"
-#include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_mesh_buffers.h"
 #include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
 
 #include "draw_map_4_PSF.h"
 #include "draw_fieldlines.h"
-#include "draw_patch_4_mesh_c.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
 
@@ -59,9 +58,7 @@ struct kemoview_buffers{
     struct gl_strided_buffer *FLINE_line_buf;
     struct gl_strided_buffer *FLINE_tube_buf;
     
-    struct gl_strided_buffer *mesh_solid_buf;
-    struct gl_strided_buffer *mesh_grid_buf;
-    struct gl_strided_buffer *mesh_node_buf;
+    struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
     
     struct gl_strided_buffer *coast_line_buf;
