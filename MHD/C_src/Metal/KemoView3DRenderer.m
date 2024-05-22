@@ -84,13 +84,13 @@
 
     if(kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG) == IFLAG_PIPE){
         [_kemo3DMetalBufBase setMetalVertexs:device
-                                      buffer:kemo_buffers->FLINE_tube_buf
+                                      buffer:kemo_buffers->Fline_bufs->FLINE_tube_buf
                                       vertex:&(kemoView3DMetalBuf->fieldTubeVertice)];
     };
-    kemoView3DMetalBuf->numFieldTubeVertice = kemo_buffers->FLINE_tube_buf->num_nod_buf;
+    kemoView3DMetalBuf->numFieldTubeVertice = kemo_buffers->Fline_bufs->FLINE_tube_buf->num_nod_buf;
     
     kemoView3DMetalBuf->numFfieldLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->FLINE_line_buf
+                                                                             buffer:kemo_buffers->Fline_bufs->FLINE_line_buf
                                                                              vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
 
     kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device

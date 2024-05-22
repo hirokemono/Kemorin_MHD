@@ -141,7 +141,7 @@
 		18D7E7521562D359009B05FF /* coastline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69D1562D359009B05FF /* coastline_c.c */; };
 		18D7E7541562D359009B05FF /* draw_coastline.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A11562D359009B05FF /* draw_coastline.c */; };
 		18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */; };
-		18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* draw_fieldlines.c */; };
+		18D7E7561562D359009B05FF /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */; };
 		18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */; };
 		18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */; };
 		18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C31562D359009B05FF /* icosahedron_c.c */; };
@@ -458,8 +458,8 @@
 		18D7E6A21562D359009B05FF /* draw_coastline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_coastline.h; sourceTree = "<group>"; };
 		18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_colorbar_gl.c; sourceTree = "<group>"; };
 		18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_colorbar_gl.h; sourceTree = "<group>"; };
-		18D7E6A51562D359009B05FF /* draw_fieldlines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_fieldlines.c; sourceTree = "<group>"; };
-		18D7E6A61562D359009B05FF /* draw_fieldlines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_fieldlines.h; sourceTree = "<group>"; };
+		18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fieldline_buffers.c; sourceTree = "<group>"; };
+		18D7E6A61562D359009B05FF /* m_kemoview_fieldline_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fieldline_buffers.h; sourceTree = "<group>"; };
 		18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patch_4_mesh_c.c; sourceTree = "<group>"; };
 		18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_patch_4_mesh_c.h; sourceTree = "<group>"; };
 		18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patches_4_PSF.c; sourceTree = "<group>"; };
@@ -841,8 +841,6 @@
 				18D7E6A21562D359009B05FF /* draw_coastline.h */,
 				18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */,
 				18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */,
-				18D7E6A51562D359009B05FF /* draw_fieldlines.c */,
-				18D7E6A61562D359009B05FF /* draw_fieldlines.h */,
 				188BA7592306BB0400348842 /* draw_map_4_PSF.c */,
 				188BA75A2306BB0500348842 /* draw_map_4_PSF.h */,
 				18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */,
@@ -890,6 +888,8 @@
 				18DA6FE02BFE66DD00D0E417 /* m_kemoview_mesh_buffers.h */,
 				18DA6FE22BFE6BC100D0E417 /* m_kemoview_map_buffers.c */,
 				18DA6FEF2BFE790900D0E417 /* m_kemoview_map_buffers.h */,
+				18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */,
+				18D7E6A61562D359009B05FF /* m_kemoview_fieldline_buffers.h */,
 				18DA6FD42BFE60A400D0E417 /* m_kemoview_message_buffers.c */,
 				18DA6FD32BFE608F00D0E417 /* m_kemoview_message_buffers.h */,
 				180999AB2B14576100F83574 /* m_vertex_buffer.c */,
@@ -1272,7 +1272,7 @@
 				188FFD9923092C8C00F5A0DE /* set_map_isolines_to_buf.c in Sources */,
 				18DA6FF62BFE845C00D0E417 /* m_kemoview_PSF_buffers.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
-				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,
+				18D7E7561562D359009B05FF /* m_kemoview_fieldline_buffers.c in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,

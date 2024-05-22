@@ -376,6 +376,12 @@ static void set_draw_map_to_VAO(struct gl_strided_buffer *PSF_node_buf,
     Const_Simple_VAO(kemo_VAOs->map_VAO[3], MAP_bufs->MAP_coast_line_buf);
 }
 
+static void set_draw_fieldline_to_VAO(struct FieldLine_buffers *Fline_bufs,
+                                      struct VAO_ids **fline_VAO){
+    Const_Phong_VAO(fline_VAO[0], Fline_bufs->FLINE_tube_buf);
+    Const_Simple_VAO(fline_VAO[1], Fline_bufs->FLINE_line_buf);
+}
+
 static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
@@ -388,9 +394,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
     }else{
         Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
         
-        Const_Phong_VAO(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
-        Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
-        
+        set_draw_fieldline_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
         const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solids,
@@ -419,8 +423,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == SIMPLE_DRAW){
         Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->PSF_lines->coast_line_buf);
-        Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
         Const_Simple_VAO(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_lines->PSF_isoline_buf);
+        Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->Fline_bufs->FLINE_line_buf);
         
         set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);

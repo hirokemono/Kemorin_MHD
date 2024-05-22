@@ -53,7 +53,6 @@ void dealloc_PSF_solid_buffers(struct PSF_solid_buffers *PSF_solids)
     free(PSF_solids);
 };
 
-
 void dealloc_PSF_trans_buffers(struct PSF_trans_buffers *PSF_transes)
 {
     dealloc_gl_index_buffer(PSF_transes->PSF_trns_index_buf);

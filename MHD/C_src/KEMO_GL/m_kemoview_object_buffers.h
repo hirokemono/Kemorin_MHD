@@ -18,19 +18,17 @@
 #include "m_kemoview_PSF_buffers.h"
 #include "m_kemoview_PSF_line_buffers.h"
 #include "m_kemoview_map_buffers.h"
+#include "m_kemoview_fieldline_buffers.h"
 #include "m_kemoview_mesh_buffers.h"
 #include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
 
 #include "draw_map_4_PSF.h"
-#include "draw_fieldlines.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
 
 struct kemoview_buffers{
     int nthreads;
-    
-    struct MESSAGE_buffers *MESSAGE_bufs;
     
     struct phong_lights *kemo_lights;
     
@@ -41,16 +39,14 @@ struct kemoview_buffers{
 
     struct PSF_solid_buffers *PSF_solids;
     struct PSF_trans_buffers *PSF_transes;
-    
-    struct PSF_line_buffers *PSF_lines;
-    
-    struct MAP_buffers *MAP_bufs;
-    
-    struct gl_strided_buffer *FLINE_line_buf;
-    struct gl_strided_buffer *FLINE_tube_buf;
+    struct PSF_line_buffers  *PSF_lines;
+    struct MAP_buffers       *MAP_bufs;
+    struct FieldLine_buffers *Fline_bufs;
     
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
+    
+    struct MESSAGE_buffers *MESSAGE_bufs;
     
     struct gl_strided_buffer *axis_buf;
     

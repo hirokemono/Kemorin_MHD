@@ -39,11 +39,10 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     
     kemo_buffers->MAP_bufs = init_MAP_buffers();
     
-    kemo_buffers->FLINE_line_buf =  init_strided_buffer(n_point);
-    kemo_buffers->FLINE_tube_buf =  init_strided_buffer(n_point);
+    kemo_buffers->Fline_bufs = init_FieldLine_buffers();
 
-    kemo_buffers->MESH_bufs =  init_MESH_buffers();
-    kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
+    kemo_buffers->MESH_bufs =     init_MESH_buffers();
+    kemo_buffers->mesh_trns_buf = init_strided_buffer(n_point);
 
     kemo_buffers->axis_buf =  init_strided_buffer(n_point);
 
@@ -65,8 +64,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_MESH_buffers(kemo_buffers->MESH_bufs);
     dealloc_strided_buffer(kemo_buffers->mesh_trns_buf);
 
-    dealloc_strided_buffer(kemo_buffers->FLINE_line_buf);
-    dealloc_strided_buffer(kemo_buffers->FLINE_tube_buf);
+    dealloc_FieldLine_buffers(kemo_buffers->Fline_bufs);
 
     dealloc_PSF_trans_buffers(kemo_buffers->PSF_transes);
     dealloc_PSF_solid_buffers(kemo_buffers->PSF_solids);
@@ -147,8 +145,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         
         const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
                                 kemo_fline->fline_d, kemo_fline->fline_m,
-                                kemo_buffers->FLINE_tube_buf,
-                                kemo_buffers->FLINE_line_buf);
+                                kemo_buffers->Fline_bufs);
         
         const_solid_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
@@ -214,11 +211,8 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
      
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
     set_isolines_for_fast_draw(kemo_mesh->mesh_m, kemo_buffers->PSF_lines);
-    
-    if(kemo_fline->fline_m->iflag_draw_fline > 0){
-        kemo_buffers->FLINE_line_buf->num_nod_buf
-        = ITWO * count_fieldlines_to_buf(kemo_fline->fline_d);
-        kemo_buffers->FLINE_tube_buf->num_nod_buf = 0;
-    }
+    set_fast_mode_for_fieldline(kemo_fline->fline_d, 
+                                kemo_fline->fline_m,
+                                kemo_buffers->Fline_bufs);
     return;
 };
