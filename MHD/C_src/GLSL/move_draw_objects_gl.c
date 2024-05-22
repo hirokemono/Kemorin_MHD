@@ -399,16 +399,16 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
-                                  kemo_buffers->PSF_isotube_buf, kemo_buffers->PSF_isoline_buf,
-                                  kemo_buffers->PSF_arrow_buf, kemo_VAOs->psf_solid_VAO,
                                   kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solid_index_buf,
-                                  kemo_buffers->PSF_stxur_index_buf, kemo_VAOs->psf_solid_index_VAO);
-        
+                                  kemo_buffers->PSF_stxur_index_buf,
+                                  kemo_VAOs->psf_solid_VAO, kemo_VAOs->psf_solid_index_VAO);
+        set_PSF_line_objects_VAO(kemo_buffers->PSF_lines,
+                                 kemo_VAOs->psf_solid_VAO,
+                                 kemo_VAOs->grid_line_VAO,
+                                 kemo_VAOs->grid_tube_VAO);
+
         set_draw_mesh_to_VAO(kemo_buffers->MESH_bufs, kemo_VAOs->mesh_solid_VAO);
-        
-        Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
-        Const_Phong_VAO(kemo_VAOs->grid_tube_VAO, kemo_buffers->coast_tube_buf);
-        
+
         /* Set Transparent Objects */
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
     };
@@ -425,9 +425,9 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                                 struct kemoview_shaders *kemo_shaders){
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == SIMPLE_DRAW){
-        Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->coast_line_buf);
+        Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->PSF_lines->coast_line_buf);
         Const_Simple_VAO(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
-        Const_Simple_VAO(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_isoline_buf);
+        Const_Simple_VAO(kemo_VAOs->psf_liness_VAO, kemo_buffers->PSF_lines->PSF_isoline_buf);
         
         set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);

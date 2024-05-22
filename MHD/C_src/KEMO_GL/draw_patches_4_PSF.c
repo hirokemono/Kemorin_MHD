@@ -77,10 +77,10 @@ static void const_PSF_texture_buffer(int shading_mode, const int nthreads,
     return;
 }
 
-static void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
-                                   struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                                   struct kemo_array_control *psf_a,
-                                   struct gl_strided_buffer *psf_buf){
+void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
+                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                            struct kemo_array_control *psf_a,
+                            struct gl_strided_buffer *psf_buf){
     int i;
     long **istack_smp_arrow = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
     if(istack_smp_arrow == NULL) {
@@ -133,10 +133,10 @@ static void const_PSF_arrow_buffer(const int nthreads, struct view_element *view
 }
 
 
-static void const_PSF_isotube_buffer(const int nthreads,
-                                     struct view_element *view_s, struct psf_data **psf_s,
-                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *psf_buf){
+void const_PSF_isotube_buffer(const int nthreads,
+                              struct view_element *view_s, struct psf_data **psf_s,
+                              struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                              struct gl_strided_buffer *psf_buf){
     int i, iflag;
     long **istack_smp_psf_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
     if(istack_smp_psf_iso == NULL) {
@@ -191,10 +191,10 @@ static void const_PSF_isotube_buffer(const int nthreads,
 	return;
 }
 
-static void const_PSF_isoline_buffer(const int nthreads,
-                                     struct view_element *view_s, struct psf_data **psf_s,
-                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *psf_buf){
+void const_PSF_isoline_buffer(const int nthreads,
+                              struct view_element *view_s, struct psf_data **psf_s,
+                              struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                              struct gl_strided_buffer *psf_buf){
     int i, iflag;
     long **istack_smp_psf_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
     if(istack_smp_psf_iso == NULL) {
@@ -282,21 +282,6 @@ void const_PSF_solid_objects_buffer(const int nthreads,
         PSF_solid_buf->num_nod_buf = 0;
     }
     return;
-}
-
-long const_PSF_isolines_buffer(const int nthreads,
-                               struct view_element *view_s, struct psf_data **psf_s,
-                               struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                               struct gl_strided_buffer *PSF_isoline_buf,
-                               struct gl_strided_buffer *PSF_isotube_buf,
-                               struct gl_strided_buffer *PSF_arrow_buf){
-    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
-
-    const_PSF_isotube_buffer(nthreads, view_s, psf_s, psf_m, psf_a, PSF_isotube_buf);
-
-    const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
-                           PSF_arrow_buf);
-    return PSF_isoline_buf->num_nod_buf;
 }
 
 void const_PSF_trans_objects_buffer(const int nthreads, 

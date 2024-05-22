@@ -15,6 +15,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_PSF_line_buffers.h"
 #include "m_kemoview_map_buffers.h"
 #include "m_kemoview_mesh_buffers.h"
 #include "m_kemoview_message_buffers.h"
@@ -24,7 +25,6 @@
 #include "draw_fieldlines.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
-
 
 struct kemoview_buffers{
     int nthreads;
@@ -46,11 +46,8 @@ struct kemoview_buffers{
     struct gl_strided_buffer *PSF_trns_buf;
     struct gl_strided_buffer *PSF_stxur_buf;
     struct gl_strided_buffer *PSF_ttxur_buf;
-    struct gl_strided_buffer *PSF_arrow_buf;
     
-    long num_isoline_buf;
-    struct gl_strided_buffer *PSF_isoline_buf;
-    struct gl_strided_buffer *PSF_isotube_buf;
+    struct PSF_line_buffers *PSF_lines;
     
     struct MAP_buffers *MAP_bufs;
     
@@ -60,9 +57,6 @@ struct kemoview_buffers{
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
     
-    struct gl_strided_buffer *coast_line_buf;
-    struct gl_strided_buffer *coast_tube_buf;
-
     struct gl_strided_buffer *axis_buf;
     
     struct gl_strided_buffer *screen_buf;

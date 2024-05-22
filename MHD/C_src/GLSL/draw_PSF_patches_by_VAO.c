@@ -24,16 +24,15 @@ void release_PSF_texture_from_gl(const int ipsf_texured, struct kemoview_shaders
     return;
 };
 
-void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
-                               struct gl_strided_buffer *PSF_isotube_buf, struct gl_strided_buffer *PSF_isoline_buf,
-                               struct gl_strided_buffer *PSF_arrow_buf, struct VAO_ids **psf_solid_VAO,
+void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf,
+                               struct gl_strided_buffer *PSF_stxur_buf,
                                struct gl_strided_buffer *PSF_node_buf,
-                               struct gl_index_buffer *PSF_solid_index_buf, struct gl_index_buffer *PSF_stxur_index_buf,
+                               struct gl_index_buffer *PSF_solid_index_buf,
+                               struct gl_index_buffer *PSF_stxur_index_buf,
+                               struct VAO_ids **psf_solid_VAO,
                                struct VAO_ids **psf_solid_index_VAO){
     Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);
     Const_Phong_VAO(psf_solid_VAO[0], PSF_solid_buf);
-    Const_Phong_VAO(psf_solid_VAO[2], PSF_isotube_buf);
-    Const_Phong_VAO(psf_solid_VAO[3], PSF_arrow_buf);
 
     Const_Phong_Index_VAO(psf_solid_index_VAO[0], PSF_node_buf, PSF_solid_index_buf);
     Const_VAO_Index_Phong_Texture(psf_solid_index_VAO[1], PSF_node_buf, PSF_stxur_index_buf);
@@ -56,6 +55,17 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf,
     return;
 };
 
+void set_PSF_line_objects_VAO(struct PSF_line_buffers *PSF_lines,
+                              struct VAO_ids **psf_solid_VAO,
+                              struct VAO_ids *grid_line_VAO,
+                              struct VAO_ids *grid_tube_VAO){
+    Const_Phong_VAO(psf_solid_VAO[2], PSF_lines->PSF_isotube_buf);
+    Const_Phong_VAO(psf_solid_VAO[3], PSF_lines->PSF_arrow_buf);
+    
+    Const_Simple_VAO(grid_line_VAO, PSF_lines->coast_line_buf);
+    Const_Phong_VAO(grid_tube_VAO,  PSF_lines->coast_tube_buf);
+    return;
+};
 
 void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 struct phong_lights *lights,

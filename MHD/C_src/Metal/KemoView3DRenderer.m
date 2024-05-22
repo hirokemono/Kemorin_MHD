@@ -76,10 +76,10 @@
                      PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
 {
     kemoView3DMetalBuf->numPSFTubesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->PSF_isotube_buf
+                                                                           buffer:kemo_buffers->PSF_lines->PSF_isotube_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfTubesVertice)];
     kemoView3DMetalBuf->numPSFLinesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->PSF_isoline_buf
+                                                                           buffer:kemo_buffers->PSF_lines->PSF_isoline_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfLinesVertice)];
 
     if(kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG) == IFLAG_PIPE){
@@ -94,12 +94,16 @@
                                                                              vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
 
     kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->coast_line_buf
+                                                                            buffer:kemo_buffers->PSF_lines->coast_line_buf
                                                                             vertex:&(kemoView3DMetalBuf->coastLineVertice)];
     kemoView3DMetalBuf->numCoastTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->coast_tube_buf
+                                                                            buffer:kemo_buffers->PSF_lines->coast_tube_buf
                                                                             vertex:&(kemoView3DMetalBuf->coastTubeVertice)];
-    return;
+
+    kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_lines->PSF_arrow_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
+        return;
 }
 
 - (void) set3DMeshBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
@@ -141,10 +145,6 @@
                                                                            buffer:kemo_buffers->PSF_solid_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfSolidVertice)];
 
-    kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->PSF_arrow_buf
-                                                                           vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
-    
 /*  Set PSF index buffer */
     kemoView3DMetalBuf->numPsfSolidIndices =   [_kemo3DMetalBufBase setMetalIndices:device
                                                                           indexbuf:kemo_buffers->PSF_solid_index_buf
