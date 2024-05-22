@@ -1,58 +1,18 @@
 #
 array_for_sorting_test.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h
+  $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.c \
+  $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
+  $(MHDDIR)/C_src/CORE_C/quicksort_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-bitonic_sort_omp.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-double_sorting_tests.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/double_sorting_tests.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/double_sorting_tests.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-float_sorting_tests.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/float_sorting_tests.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/float_sorting_tests.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 integer_sorting_tests.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_int_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h
+  $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.c \
+  $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.h \
+  $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
+  $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_int_pthread.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-kemo_bitonic_sort.o: \
- $(MHDDIR)/programs/TESTS/Sorting_test/kemo_bitonic_sort.c \
- $(MHDDIR)/programs/TESTS/Sorting_test/array_for_sorting_test.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/integer_sorting_tests.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_int_pthread.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/double_sorting_tests.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/bitonic_sort_omp.h \
- $(MHDDIR)/programs/TESTS/Sorting_test/float_sorting_tests.h \
- $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
