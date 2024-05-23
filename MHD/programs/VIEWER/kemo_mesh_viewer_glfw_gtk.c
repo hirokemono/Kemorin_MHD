@@ -205,7 +205,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->fline_menu->iflag_flineBox = 0;
     mbot->mesh_vws->iflag_meshBox =    0;
     mbot->id_current[0] = 1;
-    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
+//    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
 
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
     

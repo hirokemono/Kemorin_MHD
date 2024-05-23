@@ -6041,6 +6041,30 @@
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Nx-Qx-Xru" customClass="KemoViewerMetalView">
                         <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tGC-fu-bSu">
+                                <rect key="frame" x="403" y="349" width="154" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="large" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" alignment="center" drawsBackground="YES" usesSingleLineMode="YES" id="zmm-gS-4yJ">
+                                    <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="percent" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" id="mbc-74-MHg">
+                                        <integer key="multiplier" value="100"/>
+                                    </numberFormatter>
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="tertiaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <connections>
+                                        <binding destination="2637" name="value" keyPath="self.stepToDisplay" id="CQ7-MD-TBh"/>
+                                    </connections>
+                                </textFieldCell>
+                                <connections>
+                                    <binding destination="2637" name="hidden" keyPath="self.self.stepDisplayFlag" id="udQ-ae-ooB">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </textField>
+                        </subviews>
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
                             <outlet property="_kmv" destination="w8N-Cd-Q0k" id="frD-ZC-lh2"/>

@@ -77,10 +77,10 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
 	int id_image;
+    kemoview_gtk_save_file_select(button, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
-	
 	
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	id_image = kemoview_set_image_file_format_id(stripped_ext);
@@ -171,12 +171,7 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
     gtk_entry_set_width_chars(GTK_ENTRY(rot_gmenu->spin_rot_increment), 6);
 	g_signal_connect(rot_gmenu->spin_rot_increment, "value-changed",
 					 G_CALLBACK(rotation_increment_CB),entry_rotation_file);
-	
-	GtkWidget *rotSelect_Button = gtk_button_new_with_label("Select...");
-	g_signal_connect(rotSelect_Button, "clicked", G_CALLBACK(kemoview_gtk_save_file_select),
-				(gpointer) entry_rotation_file);
-	
-	
+		
 	rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
 	g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
 					 G_CALLBACK(rotation_view_CB), (gpointer)entry_rotation_file);
@@ -196,7 +191,6 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 	GtkWidget *hbox_rotation_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), gtk_label_new("Image file: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), entry_rotation_file, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), rotSelect_Button, TRUE, TRUE, 0);
 	
 	GtkWidget *hbox_rotation_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "), FALSE, FALSE, 0);

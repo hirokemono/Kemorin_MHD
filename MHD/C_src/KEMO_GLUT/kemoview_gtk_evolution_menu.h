@@ -39,7 +39,6 @@ struct evolution_gtk_menu{
     
     GtkWidget *combobox_evo_fileformat;
     
-    GtkWidget *evoSelect_Button;
     GtkWidget *evoView_Button;
     GtkWidget *evoSave_Button;
     GtkWidget *entry_evo_file;

@@ -69,7 +69,7 @@ int kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	iflag_set = IZERO;
 	/* generate file selection widget*/
 	
-	filew = gtk_file_chooser_dialog_new("Select File", GTK_WINDOW(parent), action,
+	filew = gtk_file_chooser_dialog_new("Save File", GTK_WINDOW(parent), action,
 				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 	
 	gtk_widget_show_all(filew);

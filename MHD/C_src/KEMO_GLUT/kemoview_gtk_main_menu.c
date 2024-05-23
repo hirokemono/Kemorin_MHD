@@ -66,7 +66,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     init_fline_window(kemo_sgl, mbot->fline_menu);
     init_mesh_window(kemo_sgl, mbot->mesh_vws, mbot->meshWin);
 
-    activate_evolution_menu(kemo_sgl, mbot->itemTEvo);
+//    activate_evolution_menu(kemo_sgl, mbot->itemTEvo);
     draw_full(kemo_sgl);
 	return;
 };
