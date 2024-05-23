@@ -13,6 +13,7 @@
 #endif
 
 #include "kemoviewer_gl.h"
+#include "kemoview_FFMPEG_encoder.h"
 
 #define ZOOM    1
 #define PAN     2
@@ -39,8 +40,8 @@ double draw_rotate_gl_views(struct kemoviewer_type *kemo_sgl,
                             int i_axis, int inc_deg, int num_rotation);
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,
-                            int i_axis, int inc_deg);
+                            int i_fps, int i_axis, int inc_deg);
 void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
                                int iflag_img, struct kv_string *image_prefix,
-                               int ist_udt, int ied_udt, int inc_udt);
+                               int i_fps, int ist_udt, int ied_udt, int inc_udt);
 #endif

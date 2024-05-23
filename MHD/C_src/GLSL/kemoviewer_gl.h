@@ -32,6 +32,9 @@
     #include "set_psf_texture_by_png.h"
 #endif
 
+#include "kemoview_FFMPEG_encoder.h"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -88,8 +91,11 @@ extern "C" {
     void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
                                        int npix_x, int npix_y, unsigned char *image);
 /* Write Kemoviwer window image to file with step number */
-    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
-                                              int npix_x, int npix_y, unsigned char *image);
+void kemoview_write_window_to_movie(int iflag_img, int istep,
+                                    struct kv_string *image_prefix,
+                                    int npix_x, int npix_y,
+                                    unsigned char *image,
+                                    struct FFMPEG_encoder *kemo_encode);
 
 /*  Old routines */
     void kemoview_draw_menu_setup(struct kemoviewer_gl_type *kemo_gl);

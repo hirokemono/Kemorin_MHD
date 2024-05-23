@@ -28,12 +28,14 @@
 struct rotation_gtk_menu{
 	int id_fmt_rot;
 	
+    int i_FPS;
 	int inc_deg;
 	int iaxis_rot;
 		
 	GtkWidget *combobox_rotation_dir;
 	GtkWidget *spin_rot_increment;
-	
+    GtkWidget *spin_rot_FPS;
+
 	GtkWidget *combobox_rotation_fileformat;
 	GtkWidget *rotView_Button;
 	GtkWidget *rotSave_Button;

@@ -221,11 +221,6 @@ int draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 1;
-	/* Initialize arrays for viewer */
-	
-	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_gl = kemoview_allocate_gl_pointers();
-	
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
 
@@ -253,18 +248,23 @@ int draw_mesh_kemo(void) {
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	    
-	/* Create a windowed mode window and its OpenGL context */
+/* Create a windowed mode window and its OpenGL context */
     int nx_buf, ny_buf;
 	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
-	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
+    glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
+    fprintf(
+            stdout,
+            "INFO: OpenGL Version: %s\n",
+            glGetString(GL_VERSION)
+            );
+    
+
+    /* Initialize arrays for viewer */
+        
+    single_kemoview = kemoview_allocate_single_viwewer_struct();
+    kemoview_gl = kemoview_allocate_gl_pointers();
     kemoview_set_windowsize(nx_buf, ny_buf, NPIX_X, NPIX_Y,
                             single_kemoview);
-	
-	fprintf(
-			stdout,
-			"INFO: OpenGL Version: %s\n",
-			glGetString(GL_VERSION)
-			);
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle(single_kemoview);

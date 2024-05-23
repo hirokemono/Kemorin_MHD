@@ -421,6 +421,10 @@
 		18DA6FF22BFE841500D0E417 /* m_kemoview_PSF_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF02BFE841500D0E417 /* m_kemoview_PSF_buffers.c */; };
 		18DA6FF92BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */; };
 		18DA6FFA2BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */; };
+		18DA700B2BFFE7EF00D0E417 /* libavformat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA70082BFFE7EE00D0E417 /* libavformat.dylib */; };
+		18DA700C2BFFE7EF00D0E417 /* libswscale.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA70092BFFE7EE00D0E417 /* libswscale.dylib */; };
+		18DA70102BFFEADD00D0E417 /* libavcodec.61.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */; };
+		18DA70132BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70122BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.c */; };
 		18EAA6CB2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
 		18EAA6CC2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
 		18EAA6D82BFC2A70004BE670 /* kemoview_gtk_lighting_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CE2BFC2A6E004BE670 /* kemoview_gtk_lighting_menu.c */; };
@@ -886,6 +890,11 @@
 		18DA6FF32BFE842200D0E417 /* m_kemoview_PSF_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_PSF_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_PSF_buffers.h; sourceTree = "<group>"; };
 		18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_fieldline_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_fieldline_buffers.c; sourceTree = "<group>"; };
 		18DA6FF82BFE874700D0E417 /* m_kemoview_fieldline_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_kemoview_fieldline_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_fieldline_buffers.h; sourceTree = "<group>"; };
+		18DA70082BFFE7EE00D0E417 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libavformat.dylib; sourceTree = "<group>"; };
+		18DA70092BFFE7EE00D0E417 /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libswscale.dylib; sourceTree = "<group>"; };
+		18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.61.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libavcodec.61.dylib; sourceTree = "<group>"; };
+		18DA70112BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_FFMPEG_encoder.h; path = ../../../C_src/GLSL/kemoview_FFMPEG_encoder.h; sourceTree = "<group>"; };
+		18DA70122BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_FFMPEG_encoder.c; path = ../../../C_src/GLSL/kemoview_FFMPEG_encoder.c; sourceTree = "<group>"; };
 		18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_MAP_patches_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.c; sourceTree = "<group>"; };
 		18EAA6CD2BFBBE92004BE670 /* pthread_MAP_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pthread_MAP_patches_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.h; sourceTree = "<group>"; };
 		18EAA6CE2BFC2A6E004BE670 /* kemoview_gtk_lighting_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_lighting_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.c; sourceTree = "<group>"; };
@@ -917,6 +926,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18DA70102BFFEADD00D0E417 /* libavcodec.61.dylib in Frameworks */,
 				1899DCFD2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */,
 				1899DD052BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */,
 				1899DCF32BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
@@ -926,6 +936,7 @@
 				1899DCFF2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */,
 				1899DCF62BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */,
 				18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */,
+				18DA700B2BFFE7EF00D0E417 /* libavformat.dylib in Frameworks */,
 				1899DCE72BF509960041DE84 /* libgtk-3.dylib in Frameworks */,
 				1899DCED2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */,
 				1809BC722B8FDD8A0008A294 /* libz.tbd in Frameworks */,
@@ -934,6 +945,7 @@
 				18D822272BE44E400067B954 /* CoreServices.framework in Frameworks */,
 				1899DD022BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */,
 				1899DCF92BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */,
+				18DA700C2BFFE7EF00D0E417 /* libswscale.dylib in Frameworks */,
 				1899DCEA2BF509B40041DE84 /* libgdk-3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1154,6 +1166,8 @@
 				1809BDFB2B8FF4230008A294 /* init_gl_lighting_c.h */,
 				1809BE142B8FF4240008A294 /* kemoviewer_gl.c */,
 				1809BE002B8FF4240008A294 /* kemoviewer_gl.h */,
+				18DA70122BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.c */,
+				18DA70112BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.h */,
 				1809BDFC2B8FF4230008A294 /* menu.frag */,
 				1809BE022B8FF4240008A294 /* menu.vert */,
 				1809BE092B8FF4240008A294 /* move_draw_objects_gl.c */,
@@ -1387,6 +1401,9 @@
 		18A91E0724B9250500D30C46 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */,
+				18DA70082BFFE7EE00D0E417 /* libavformat.dylib */,
+				18DA70092BFFE7EE00D0E417 /* libswscale.dylib */,
 				18D824992BE49FEF0067B954 /* libpthread.tbd */,
 				18D822282BE472390067B954 /* Accelerate.framework */,
 				18D822262BE44E400067B954 /* CoreServices.framework */,
@@ -1634,6 +1651,7 @@
 				1899DCC52BF506EA0041DE84 /* t_PSF_each_isoline_edge_list.c in Sources */,
 				1809BF6C2B8FF9160008A294 /* set_mesh_node_2_gl_buf.c in Sources */,
 				1809BD192B8FF1E50008A294 /* m_grouping_mesh_4_viewer_c.c in Sources */,
+				18DA70132BFFEE3900D0E417 /* kemoview_FFMPEG_encoder.c in Sources */,
 				1809BD412B8FF1E50008A294 /* calypso_zlib_io_c.c in Sources */,
 				1809BFCC2B8FFE7E0008A294 /* kemoview_gtk_colorsel.c in Sources */,
 				18EAA6E72BFCEFD2004BE670 /* kemoview_gtk_Fline_window.c in Sources */,
@@ -2008,7 +2026,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2044,6 +2062,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2067,6 +2086,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2096,7 +2116,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2132,6 +2152,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2155,6 +2176,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2184,7 +2206,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2220,6 +2242,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2243,6 +2266,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2272,7 +2296,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2308,6 +2332,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2331,6 +2356,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

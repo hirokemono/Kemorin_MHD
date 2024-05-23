@@ -30,13 +30,15 @@ struct evolution_gtk_menu{
     int istart_evo;
     int iend_evo;
     int inc_evo;
+    int i_FPS;
     
     GtkWidget *switch_timelabel;
     GtkWidget *switch_fileindex;
     GtkWidget *spin_evo_start;
     GtkWidget *spin_evo_end;
     GtkWidget *spin_evo_increment;
-    
+    GtkWidget *spin_evo_FPS;
+
     GtkWidget *combobox_evo_fileformat;
     
     GtkWidget *evoView_Button;

@@ -9,6 +9,7 @@
 
 #include "kemoview_gtk_evolution_menu.h"
 
+int i_fps_r = 24;
 struct evolution_gtk_menu * init_evoluaiton_menu_box(struct kemoviewer_type *kemo_sgl){
 	struct evolution_gtk_menu *evo_gmenu
 			= (struct evolution_gtk_menu *)  malloc(sizeof(struct evolution_gtk_menu));
@@ -32,7 +33,7 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
-    sel_write_evolution_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
+    sel_write_evolution_views(kemo_sgl, NO_SAVE_FILE, image_prefix, 0, 
                               evo_gmenu->istart_evo, evo_gmenu->iend_evo,
                               evo_gmenu->inc_evo);
 	kemoview_free_kvstring(image_prefix);
@@ -89,7 +90,7 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
 	
 	printf("header: %s\n", file_prefix->string);
 	printf("steps: %d %d %d\n", evo_gmenu->istart_evo, evo_gmenu->iend_evo, evo_gmenu->inc_evo);
-    sel_write_evolution_views(kemo_sgl, id_image, file_prefix,
+    sel_write_evolution_views(kemo_sgl, id_image, file_prefix, i_fps_r,
                               evo_gmenu->istart_evo, evo_gmenu->iend_evo,
                               evo_gmenu->inc_evo);
     kemoview_free_kvstring(file_prefix);
@@ -120,6 +121,14 @@ static void evo_increment_CB(GtkWidget *entry, gpointer user_data)
 /*	printf("radius %d\n", radius);*/
 }
 
+static void evo_FPS_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct evolution_gtk_menu *evo_gmenu
+            = (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "evolution");
+    evo_gmenu->i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+/*    printf("radius %d\n", radius);*/
+}
+
 static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
 {
 	struct evolution_gtk_menu *evo_gmenu 
@@ -143,10 +152,11 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     GtkTreeModel *child_model_evo_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_evo_fileformat));
     
     int index = 0;
-    index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_evo_fileformat);
-    index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_evo_fileformat);
-    index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_evo_fileformat);
-    
+    index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE,  child_model_evo_fileformat);
+    index = append_ci_item_to_tree(index, "PNG",      SAVE_PNG,      child_model_evo_fileformat);
+    index = append_ci_item_to_tree(index, "BMP",      SAVE_BMP,      child_model_evo_fileformat);
+    index = append_ci_item_to_tree(index, "Movie",    SAVE_QT_MOVIE, child_model_evo_fileformat);
+
     GtkCellRenderer *renderer_evo_fileformat = gtk_cell_renderer_text_new();
     evo_gmenu->combobox_evo_fileformat = gtk_combo_box_new_with_model(child_model_evo_fileformat);
     evo_gmenu->id_fmt_evo = NO_SAVE_FILE;
@@ -204,6 +214,14 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     evo_gmenu->spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 1, 0);
     g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed",
                      G_CALLBACK(evo_increment_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    evo_gmenu->i_FPS = 30;
+    GtkAdjustment *adj_evo_FPS = gtk_adjustment_new(evo_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
+    evo_gmenu->spin_evo_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_FPS), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(evo_gmenu->spin_evo_FPS), 0);
+    gtk_entry_set_width_chars(GTK_ENTRY(evo_gmenu->spin_evo_FPS), 6);
+    g_signal_connect(evo_gmenu->spin_evo_FPS, "value-changed",
+                     G_CALLBACK(evo_FPS_CB), (gpointer) evo_gmenu->entry_evo_file);
     return;
 }
 
@@ -228,7 +246,11 @@ static GtkWidget * pack_evoluaiton_menu_box(struct evolution_gtk_menu *evo_gmenu
 	gtk_box_pack_start(GTK_BOX(hbox_evo_increment), gtk_label_new("Increment: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_evo_increment), evo_gmenu->spin_evo_increment, TRUE, TRUE, 0);
 	
-	GtkWidget *hbox_evo_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    GtkWidget *hbox_evo_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_evo_FPS), gtk_label_new("FPS in movie: "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_evo_FPS), evo_gmenu->spin_evo_FPS, TRUE, TRUE, 0);
+
+    GtkWidget *hbox_evo_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_evo_fileformat), gtk_label_new("File format: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_evo_fileformat), evo_gmenu->combobox_evo_fileformat, TRUE, TRUE, 0);
 	
@@ -246,7 +268,8 @@ static GtkWidget * pack_evoluaiton_menu_box(struct evolution_gtk_menu *evo_gmenu
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_fileindex, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_start, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_end, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_increment, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_increment, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_FPS, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_filename, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_fileformat, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_save, FALSE, TRUE, 0);
