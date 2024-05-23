@@ -285,7 +285,6 @@ struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nel
 	set_edge_position_4_sf_c(xyzw_viz, psf_edge, psf_edge_xyz);
 	set_edge_direction_4_sf_c(xyzw_viz, psf_edge, psf_edge_xyz);
 	set_edge_normal_4_sf_c(norm_nod, psf_edge, psf_edge_xyz);
-*/
 
     fp = fopen("Users/matsui/Desktop/edge.txt", "w");
     fprintf(fp,"nnod nele %ld %ld \n", nnod_viz, nele_viz);
@@ -301,6 +300,8 @@ struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nel
                psf_edge->iedge_4_sf[i][0], psf_edge->iedge_4_sf[i][1], psf_edge->iedge_4_sf[i][2]);
     };
     fclose(fp);
+ */
+ 
     dealloc_sum_hash(ed_sf_tbl);
 
     return psf_edge;
