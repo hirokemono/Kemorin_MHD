@@ -10,6 +10,7 @@
 #include <libswresample/swresample.h>
 
 #include "read_image_2_png.h"
+#include "kemoview_FFMPEG_encoder.h"
 
 void flip_gl_bitmap(int num_x, int num_y,
                     unsigned char *glimage, unsigned char *fliped_img){
@@ -146,133 +147,6 @@ void avcodec_free_context_k(AVCodecContext **pavctx)
  }
   
 
-struct FFMPEG_encoder{
-    int pts_inc;
-    
-    AVFormatContext *outputFmtContxt;
-    const AVCodec *encoder;
-    AVCodecContext *encoderContxt;
-    struct SwsContext *rgb2yuv;
-    enum AVPixelFormat pix_fmt;
-    
-    AVPacket *packet;
-    AVFrame *rgbframe;
-    AVFrame *outframe;
-    uint8_t *outbuf;
-};
-
-struct FFMPEG_encoder * init_FFMPEG_encoder(int width, int height, int FrameRate){
-    struct FFMPEG_encoder *kemo_encode
-        = (struct FFMPEG_encoder *) malloc(sizeof(struct FFMPEG_encoder));
-	if (kemo_encode == NULL){
-		printf("malloc error for FFMPEG_encoder\n");
-		exit(0);
-    }
-    
-    kemo_encode->pix_fmt = AV_PIX_FMT_YUV420P;
-    kemo_encode->pts_inc = 90000 / FrameRate;
-    
-    /* costruct frames */
-    kemo_encode->outputFmtContxt = NULL;
-    kemo_encode->encoder =         NULL;
-    kemo_encode->encoderContxt =   NULL;
-    
-    const AVOutputFormat *MovieFmt = av_guess_format("mp4", NULL, NULL);
-    avformat_alloc_output_context2(&kemo_encode->outputFmtContxt, 
-                                   MovieFmt, NULL, NULL);
-    printf("Frame generated\n");
-    
-/* encoder settings */
-    AVStream *out_stream = avformat_new_stream(kemo_encode->outputFmtContxt, NULL);
-    AVRational fps = av_make_q(FrameRate, 1);
-    kemo_encode->encoder = avcodec_find_encoder(AV_CODEC_ID_H264);
-    kemo_encode->encoderContxt = avcodec_alloc_context3(kemo_encode->encoder);
-    kemo_encode->encoderContxt->width = width;
-    kemo_encode->encoderContxt->height = height;
-    kemo_encode->encoderContxt->pix_fmt = kemo_encode->pix_fmt;
-    kemo_encode->encoderContxt->gop_size = 2000;
-    kemo_encode->encoderContxt->keyint_min = 25;
-    kemo_encode->encoderContxt->qmax = 10;
-    kemo_encode->encoderContxt->bit_rate = 3000000;
-    kemo_encode->encoderContxt->framerate = fps;
-    kemo_encode->encoderContxt->time_base = av_make_q(1, 90000);
-    
-    av_opt_set(kemo_encode->encoderContxt->priv_data, "tune", "zerolatency", 0);
-    avcodec_open2(kemo_encode->encoderContxt, kemo_encode->encoder, NULL);
-    avcodec_parameters_from_context(out_stream->codecpar,
-                                    kemo_encode->encoderContxt);
-/*
-    printf("Encoder generated %d %d\n", fps.num, fps.den);
-    printf("encoderContxt->framerate %d %d\n", kemo_encode->encoderContxt->framerate.num, kemo_encode->encoderContxt->framerate.den);
-    printf("encoderContxt->time_base %d %d\n", kemo_encode->encoderContxt->time_base.num, kemo_encode->encoderContxt->time_base.den);
-    */
-    
-/*    Context to convert from RGB to YUV */
-    kemo_encode->rgb2yuv = sws_getContext(width, height, AV_PIX_FMT_RGB24,
-                                          width, height, kemo_encode->pix_fmt, SWS_BICUBIC,
-                                          NULL, NULL, NULL);
-    int ret = 0;
-    
-/*   prepare packet and frame  */
-    kemo_encode->packet = av_packet_alloc();
-    kemo_encode->packet->data = NULL;
-    kemo_encode->packet->size = 0;
-    
-    kemo_encode->rgbframe = av_frame_alloc();
-    kemo_encode->rgbframe->width = width;
-    kemo_encode->rgbframe->height = height;
-    kemo_encode->rgbframe->format = AV_PIX_FMT_RGB24;
-//    kemo_encode->rgbframe->format = AV_PIX_FMT_RGBA 
-    kemo_encode->rgbframe->duration = 1;        /* estimated duration of the frame */
-    ret = av_frame_get_buffer(kemo_encode->rgbframe, 0);
-    
-    kemo_encode->outframe = av_frame_alloc();
-    kemo_encode->outframe->width = width;
-    kemo_encode->outframe->height = height;
-    kemo_encode->outframe->format = kemo_encode->pix_fmt;
-    kemo_encode->outframe->duration = kemo_encode->pts_inc;
-    ret = av_frame_get_buffer(kemo_encode->outframe, 0);
-    kemo_encode->outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(kemo_encode->pix_fmt, height, height, 1));
-    ret = av_image_fill_arrays(kemo_encode->outframe->data,
-                               kemo_encode->outframe->linesize, 
-                               kemo_encode->outbuf, kemo_encode->pix_fmt,
-                               width, height, 1);
-    
-/*   prepare output file  */
-    av_dump_format(kemo_encode->outputFmtContxt, 0, output, 1);
-    avio_open(&kemo_encode->outputFmtContxt->pb, output, AVIO_FLAG_WRITE);
-    ret = avformat_write_header(kemo_encode->outputFmtContxt, NULL);
-    printf("Prepare output\n");
-    
-    return kemo_encode;
-}
-
-void finalize_FFMPEG_encoder(struct FFMPEG_encoder *kemo_encode){
-    printf("###  av_write_trailer ###\n");
-    av_write_trailer(kemo_encode->outputFmtContxt);
-    printf("###  kemo_encode->packet ###\n");
-    av_packet_free(&kemo_encode->packet);
-    printf("###  sws_freeContext ###\n");
-    sws_freeContext(kemo_encode->rgb2yuv);
-    printf("###  kemo_encode->rgbframe ###\n");
-    av_frame_free(&kemo_encode->rgbframe);
-    printf("###  kemo_encode->outframe ###\n");
-         fflush(stdout);
-   av_frame_free(&kemo_encode->outframe);
-        fflush(stdout);
-    avformat_free_context(kemo_encode->outputFmtContxt);
-    printf("###  kemo_encode->outbuf ###\n");
-        fflush(stdout);
-    av_freep(&kemo_encode->outbuf);
-    
-    printf("###  encoderContxt ###\n");
-        fflush(stdout);
-    avcodec_free_context(&kemo_encode->encoderContxt);
-    printf("###  kemo_encode->outputFmtContxt ###\n");
-    free(kemo_encode);
-    return;
-}
-
 int main(int argc, char *argv[])
 {
     struct FFMPEG_encoder *kemo_encode;
@@ -316,12 +190,11 @@ int main(int argc, char *argv[])
     flip_gl_bitmap(width, height, cimage, fliped_img);
     
     
-    kemo_encode = init_FFMPEG_encoder(width, height, FrameRate);
+    kemo_encode = init_FFMPEG_encoder(width, height, FrameRate, output);
     int ret = 0;
     
     int j;
     printf("file: ");
-    int64_t pts = 0;
         kemo_encode->outframe->pict_type = AV_PICTURE_TYPE_NONE;
 //        kemo_encode->outframe->key_frame = 1;
     for(int i=ist;i<ied;i++){
@@ -335,36 +208,7 @@ int main(int argc, char *argv[])
         copy_rgb_from_png_c(width, height, iflag_rgba, cimage);
         flip_gl_bitmap(width, height, cimage, fliped_img);
         
-        kemo_encode->outframe->pts = pts;
-        pts = pts + (uint64_t) kemo_encode->pts_inc;
-        ret = av_frame_make_writable(kemo_encode->outframe);
-        if (ret < 0){
-            printf("frame unwritable\n");
-            break;
-        }
-        
-    /* convert image */
-        ret = av_image_fill_arrays(kemo_encode->rgbframe->data,
-                                   kemo_encode->rgbframe->linesize,
-                                   fliped_img, 
-                                   AV_PIX_FMT_RGB24, width, height, 1);
-        sws_scale(kemo_encode->rgb2yuv, 
-                  (const unsigned char * const*) kemo_encode->rgbframe->data,
-                  kemo_encode->rgbframe->linesize, 0, height,
-                  kemo_encode->outframe->data, kemo_encode->outframe->linesize);
-        
-    /* send the frame to the encoder */
-        ret = avcodec_send_frame(kemo_encode->encoderContxt, kemo_encode->outframe);
-        if (ret < 0){break;}
-        while (ret >= 0){
-            ret = avcodec_receive_packet(kemo_encode->encoderContxt, kemo_encode->packet);
-            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0){break;};
-            kemo_encode->packet->pts = kemo_encode->outframe->pts;
-            kemo_encode->packet->dts = kemo_encode->packet->dts;
-            kemo_encode->packet->duration = kemo_encode->pts_inc;
-            ret = av_interleaved_write_frame(kemo_encode->outputFmtContxt, kemo_encode->packet);
-        }
-        av_packet_unref(kemo_encode->packet);
+        encode_by_FFMPEG(width, height, fliped_img, kemo_encode);
         
         for(j=0;j<strlen(fname);j++)printf("\b");
         fflush(stdout);

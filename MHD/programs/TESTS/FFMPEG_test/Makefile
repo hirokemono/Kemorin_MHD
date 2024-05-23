@@ -16,7 +16,8 @@ SOURCE = \
 png2mp4_test.c
 
 MORE_SOURCES = \
-$(C_SRCDIR)/CORE_C/read_image_2_png.c
+$(C_SRCDIR)/CORE_C/read_image_2_png.c \
+kemoview_FFMPEG_encoder.c
 
 #
 #  ------------------------------------------------------------------
