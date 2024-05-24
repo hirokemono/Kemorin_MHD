@@ -20,7 +20,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_viewer_colormap.h"
 #include "tree_view_4_light_position.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_evolution_menu.h"
 #include "kemoview_gtk_rotation_menu.h"
 #include "kemoview_gtk_quilt_menu.h"

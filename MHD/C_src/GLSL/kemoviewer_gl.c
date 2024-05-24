@@ -147,25 +147,17 @@ void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix
     write_gl_window_to_file(iflag_img, image_prefix->string,
                             npix_x, npix_y, image);
 }
-void kemoview_write_window_to_movie(int iflag_img, int istep,
-                                    struct kv_string *image_prefix,
-                                    int npix_x, int npix_y,
-                                    unsigned char *image,
-                                    struct FFMPEG_encoder *kemo_encode){
-    if(iflag_img == SAVE_QT_MOVIE){
-        encode_by_FFMPEG(npix_x, npix_y, image, kemo_encode);
-    }else{
-        write_gl_window_step_file(iflag_img, istep, image_prefix->string,
-                                  npix_x, npix_y, image);
-    }
+void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
+                                          int npix_x, int npix_y, unsigned char *image){
+    write_gl_window_step_file(iflag_img, istep, image_prefix->string,
+                              npix_x, npix_y, image);
 }
-
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
                                  struct kemoviewer_type *kemo_sgl,
                                  struct kemoviewer_gl_type *kemo_gl){
-    set_texture_to_psf(img_fmt, image_prefix->string,
-                       kemo_sgl->kemo_psf->psf_a->psf_texure,
-                       &kemo_gl->kemo_shaders->texture_name);
+    int iflag = set_texture_to_psf(img_fmt, image_prefix->string,
+                                   kemo_sgl->kemo_psf->psf_a->psf_texure);
+    if(iflag > 0){glGenTextures(1 , &kemo_gl->kemo_shaders->texture_name);};
 };
 #endif
 

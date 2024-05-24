@@ -31,13 +31,11 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
-	
-    sel_write_evolution_views(kemo_sgl, NO_SAVE_FILE, image_prefix, 0, 
-                              evo_gmenu->istart_evo, evo_gmenu->iend_evo,
-                              evo_gmenu->inc_evo);
-	kemoview_free_kvstring(image_prefix);
-    
+    draw_evolution_views(kemo_sgl,
+                         evo_gmenu->istart_evo,
+                         evo_gmenu->iend_evo,
+                         evo_gmenu->inc_evo);
+
     gtk_widget_destroy(window);
 	return;
 };
@@ -155,7 +153,9 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE,  child_model_evo_fileformat);
     index = append_ci_item_to_tree(index, "PNG",      SAVE_PNG,      child_model_evo_fileformat);
     index = append_ci_item_to_tree(index, "BMP",      SAVE_BMP,      child_model_evo_fileformat);
+#ifdef FFMPEG
     index = append_ci_item_to_tree(index, "Movie",    SAVE_QT_MOVIE, child_model_evo_fileformat);
+#endif
 
     GtkCellRenderer *renderer_evo_fileformat = gtk_cell_renderer_text_new();
     evo_gmenu->combobox_evo_fileformat = gtk_combo_box_new_with_model(child_model_evo_fileformat);

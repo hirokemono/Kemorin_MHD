@@ -72,7 +72,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    draw_rotate_gl_views(kemo_sgl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
+    draw_rotate_views(kemo_sgl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
 	return;
 };
 
@@ -151,7 +151,9 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE,  child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "PNG",      SAVE_PNG,      child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "BMP",      SAVE_BMP,      child_model_rotation_fileformat);
+#ifdef FFMPEG
     index = append_ci_item_to_tree(index, "Movie",    SAVE_QT_MOVIE, child_model_rotation_fileformat);
+#endif
 
 	rot_gmenu->combobox_rotation_fileformat = 
 			gtk_combo_box_new_with_model(child_model_rotation_fileformat);

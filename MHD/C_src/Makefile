@@ -79,7 +79,7 @@ mod_list:
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		GLFW_CFLAGS='$(GLFW_LIBS)'   \
-		GLFW_LIBS='$(GLFW_LIBS)'     \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		MAKENAME='$(MAKENAME)'       \
 		mod_list \
 		) \
@@ -111,7 +111,7 @@ depends:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
-		GLFW_LIBS="$(GLFW_LIBS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		depends \
 		) \
 	done

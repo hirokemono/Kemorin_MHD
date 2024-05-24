@@ -156,7 +156,6 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -319,7 +318,6 @@ draw_PSF_patches_by_VAO.o: \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -478,7 +476,6 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
@@ -643,7 +640,6 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -805,7 +801,6 @@ init_gl_lighting_c.o: \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
@@ -968,7 +963,6 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -1095,7 +1089,6 @@ move_draw_objects_gl.o: \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
@@ -1293,7 +1286,6 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -1455,7 +1447,6 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -1618,7 +1609,6 @@ vartex_array_object_gl.o: \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
@@ -1744,7 +1734,6 @@ write_gl_window_to_file.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/CORE_C/read_image_2_png.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
