@@ -16,9 +16,14 @@ struct FFMPEG_encoder * init_FFMPEG_encoder(int iflag_flip, int width, int heigh
 		exit(0);
     }
     kemo_encode->iflag_flip = iflag_flip;
-    kemo_encode->pix_fmt = AV_PIX_FMT_YUV420P;
-    kemo_encode->pts_inc = 90000 / FrameRate;
+
+    kemo_encode->img_fmt = AV_PIX_FMT_RGB24;
+//    kemo_encode->img_fmt = AV_PIX_FMT_RGBA;
     
+    kemo_encode->pix_fmt = AV_PIX_FMT_YUV420P;
+    kemo_encode->pts_inc = 91050 / FrameRate;
+//    kemo_encode->pts_inc = 90000 / FrameRate;  //  Aviable for FFMPEG 6.0
+
     /* costruct frames */
     kemo_encode->outputFmtContxt = NULL;
     kemo_encode->encoder =         NULL;
@@ -55,7 +60,7 @@ struct FFMPEG_encoder * init_FFMPEG_encoder(int iflag_flip, int width, int heigh
     */
     
 /*    Context to convert from RGB to YUV */
-    kemo_encode->rgb2yuv = sws_getContext(width, height, AV_PIX_FMT_RGB24,
+    kemo_encode->rgb2yuv = sws_getContext(width, height, kemo_encode->img_fmt,
                                           width, height, kemo_encode->pix_fmt, SWS_BICUBIC,
                                           NULL, NULL, NULL);
     int ret = 0;
@@ -68,18 +73,17 @@ struct FFMPEG_encoder * init_FFMPEG_encoder(int iflag_flip, int width, int heigh
     kemo_encode->rgbframe = av_frame_alloc();
     kemo_encode->rgbframe->width = width;
     kemo_encode->rgbframe->height = height;
-    kemo_encode->rgbframe->format = AV_PIX_FMT_RGB24;
-//    kemo_encode->rgbframe->format = AV_PIX_FMT_RGBA 
-    kemo_encode->rgbframe->duration = 1;        /* estimated duration of the frame */
+    kemo_encode->rgbframe->format = kemo_encode->img_fmt;
+    //    kemo_encode->rgbframe->duration = 1;        /* (Aviable for FFMPEG 6.0)   estimated duration of the frame */
     ret = av_frame_get_buffer(kemo_encode->rgbframe, 0);
     
     kemo_encode->outframe = av_frame_alloc();
     kemo_encode->outframe->width = width;
     kemo_encode->outframe->height = height;
     kemo_encode->outframe->format = kemo_encode->pix_fmt;
-    kemo_encode->outframe->duration = kemo_encode->pts_inc;
+    //    kemo_encode->outframe->duration = kemo_encode->pts_inc;       //  Aviable for FFMPEG 6.0
     ret = av_frame_get_buffer(kemo_encode->outframe, 0);
-    kemo_encode->outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(kemo_encode->pix_fmt, height, height, 1));
+    kemo_encode->outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(kemo_encode->pix_fmt, width, height, 1));
     ret = av_image_fill_arrays(kemo_encode->outframe->data,
                                kemo_encode->outframe->linesize, 
                                kemo_encode->outbuf, kemo_encode->pix_fmt,
@@ -151,11 +155,11 @@ int encode_by_FFMPEG(int width, int height,
         ret = av_image_fill_arrays(kemo_encode->rgbframe->data,
                                    kemo_encode->rgbframe->linesize,
                                    kemo_encode->fliped_img,
-                                   AV_PIX_FMT_RGB24, width, height, 1);
+                                   kemo_encode->img_fmt, width, height, 1);
     }else{
         ret = av_image_fill_arrays(kemo_encode->rgbframe->data,
                                    kemo_encode->rgbframe->linesize,
-                                   rgb, AV_PIX_FMT_RGB24, width, height, 1);
+                                   rgb, kemo_encode->img_fmt, width, height, 1);
     }
     sws_scale(kemo_encode->rgb2yuv,
               (const unsigned char * const*) kemo_encode->rgbframe->data,
@@ -170,7 +174,7 @@ int encode_by_FFMPEG(int width, int height,
         if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0){break;};
         kemo_encode->packet->pts = kemo_encode->outframe->pts;
         kemo_encode->packet->dts = kemo_encode->packet->dts;
-        kemo_encode->packet->duration = kemo_encode->pts_inc;
+//        kemo_encode->packet->duration = kemo_encode->pts_inc;                  //  Aviable for FFMPEG 6.0
         ret = av_interleaved_write_frame(kemo_encode->outputFmtContxt, kemo_encode->packet);
     }
     av_packet_unref(kemo_encode->packet);

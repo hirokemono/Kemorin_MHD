@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
     outframe->format = pix_fmt;
     outframe->duration = pts_inc;
     ret = av_frame_get_buffer(outframe, 0);
-    uint8_t *outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(pix_fmt, height, height, 1));
+    uint8_t *outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(pix_fmt, width, height, 1));
     ret = av_image_fill_arrays(outframe->data, outframe->linesize, 
                                outbuf, pix_fmt, width, height, 1);
     int j;

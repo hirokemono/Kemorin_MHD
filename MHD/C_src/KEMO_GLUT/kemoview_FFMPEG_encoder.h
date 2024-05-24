@@ -24,7 +24,8 @@ struct FFMPEG_encoder{
     int pts_inc;
     int64_t loop_pts;
     enum AVPixelFormat pix_fmt;
-    
+    enum AVPixelFormat img_fmt;
+
     AVFormatContext *outputFmtContxt;
     const AVCodec *encoder;
     AVCodecContext *encoderContxt;
