@@ -49,8 +49,8 @@ static void mainloop_4_glfw(){
 	    	    message_opacity = log10(10.0 - 2.0*delta_t);
                 kemoview_set_message_opacity(message_opacity,
                                              single_kemoview);
-            	draw_full(single_kemoview);
-            }else{ 
+                draw_full_gl(kemoview_gl);
+            }else{
                 iflag_msg_fade = 0;
             };
         };
@@ -63,7 +63,7 @@ static void mainloop_4_glfw(){
 
             delta_t = glfwGetTime() - fast_draw_start;
             if(delta_t > 1.5){
-                draw_full(single_kemoview);
+                draw_full_gl(kemoview_gl);
                 iflag_fast_prev = 0;
             	iflag_fast_draw = 0;
             };
@@ -137,8 +137,7 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 	struct kv_string *filename;
 	for (int i = 0; i < num; i++) {
 		filename = kemoview_init_kvstring_by_string(paths[i]);
-		open_kemoviewer_file_glfw(single_kemoview, kemoview_gl,
-                                  filename, mbot);
+		open_kemoviewer_file_glfw(kemoview_gl, filename, mbot);
 	}
 }
 
@@ -156,7 +155,7 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     msg_timer_start = glfwGetTime();
 	
     if(mbot == NULL) return;
-    update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
+    update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
 /*    printf("retinemode %d\n", kemoview_get_retinamode(single_kemoview)); */
 }
 
@@ -175,7 +174,7 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
     msg_timer_start = glfwGetTime();
 	
     if(mbot == NULL) return;
-	update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
+	update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
 }
 
 
@@ -200,7 +199,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
                      G_CALLBACK(gtkWindowclose_CB), NULL);
     
     GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
-                                                  single_kemoview, kemoview_gl);
+                                                  kemoview_gl);
     mbot->psf_gmenu->iflag_psfBox =    0;
     mbot->fline_menu->iflag_flineBox = 0;
     mbot->mesh_vws->iflag_meshBox =    0;
@@ -292,8 +291,8 @@ int draw_mesh_kemo(void) {
 	
 //	iflag_gtk_focus = 1;
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full(single_kemoview);
-	glfwPollEvents();
+    draw_full_gl(kemoview_gl);
+    glfwPollEvents();
 	glfwPostEmptyEvent();
 	
     /*! GTK Initialization*/

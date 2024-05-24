@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 
 #include "kemoview_gtk_routines.h"
@@ -79,7 +79,7 @@ struct view_widgets{
 
 /*  prototypes */
 
-void update_windowsize_menu(struct kemoviewer_type *kemo_sgl,
+void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct view_widgets *view_menu,
                             GtkWidget *window);
 void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,

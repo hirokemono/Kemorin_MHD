@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_chara_int_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -52,7 +52,7 @@ struct quilt_gtk_menu{
 /*  prototypes */
 
 struct quilt_gtk_menu * init_quilt_menu_box(void);
-GtkWidget * init_quilt_menu_expander(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_quilt_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                      struct quilt_gtk_menu *quilt_gmenu,
                                      struct view_widgets *view_menu,
                                      GtkWidget *window);

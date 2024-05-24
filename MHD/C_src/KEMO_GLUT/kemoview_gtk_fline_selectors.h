@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_psf_menu.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -25,11 +25,11 @@
 
 /*  prototypes */
 
-GtkWidget * fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
+GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *label_tree_field,
                                  GtkCellRenderer *renderer_field);
 
-GtkWidget * fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
+GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
                                           GtkWidget *label_tree_comp,
                                           GtkCellRenderer *renderer_comp);
 #endif

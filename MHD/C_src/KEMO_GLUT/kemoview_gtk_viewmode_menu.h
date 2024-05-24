@@ -26,7 +26,6 @@
 
 /* prototypes */
 
-GtkWidget * make_gtk_viewmode_menu_box(struct view_widgets *view_menu,
-                                       struct kemoviewer_type *kemo_sgl);
-
+GtkWidget * make_gtk_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
+                                       struct view_widgets *view_menu);
 #endif /*  KEMOVIEW_GTK_VIEWMODE_MENU_  */

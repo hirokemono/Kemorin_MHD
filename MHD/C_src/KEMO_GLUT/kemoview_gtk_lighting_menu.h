@@ -14,7 +14,6 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_light_position.h"
@@ -22,7 +21,7 @@
 
 #include "view_modifier_glfw.h"
 
-GtkWidget * init_lighting_frame(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl,
                                 struct lightparams_view *lightparams_vws);
 
 #endif /* KEMOVIEW_GTK_LIGHTING_MENU_ */

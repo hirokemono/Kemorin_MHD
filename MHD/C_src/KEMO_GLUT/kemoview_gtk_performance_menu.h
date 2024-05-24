@@ -23,8 +23,8 @@
 
 /*  prototypes */
 
-GtkWidget * init_num_threads_menu_frame(struct kemoviewer_type *kemo_sgl);
-GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_num_threads_menu_frame(struct kemoviewer_gl_type *kemo_gl);
+GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_gl_type *kemo_gl,
                                      GtkWidget *window);
 
 #endif /*  KEMOVIEW_GTK_PERFORMANCE_MENU_  */

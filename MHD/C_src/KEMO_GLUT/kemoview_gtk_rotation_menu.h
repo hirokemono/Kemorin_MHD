@@ -45,7 +45,7 @@ struct rotation_gtk_menu{
 /*  prototypes */
 
 struct rotation_gtk_menu * init_rotation_menu_box(void);
-GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                         struct rotation_gtk_menu *rot_gmenu,
                                         GtkWidget *window);
 

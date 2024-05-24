@@ -15,94 +15,94 @@ static gboolean kemoview_draw_colorabar_CB(GtkWidget *widget, cairo_t *cr, gpoin
 
 static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     colormap_data_edited_CB(path_str, new_text, color_vws);
 	
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_sgl);
+		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     colormap_color_edited_CB(path_str, new_text, color_vws);
 	
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_sgl);
+		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR) > 16) return;
+    if(kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_NUM_COLOR) > 16) return;
     add_colormap_list_items_CB(color_vws);
 	
-	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_sgl);
+	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_gl->kemoview_data);
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_sgl);
+		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 
 static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     delete_colormap_list_items_CB(color_vws);
 	double value, color;
 	
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	if(num > 2) kemoview_delete_PSF_color_list(num, kemo_sgl);
-	for(i=0;i<num;i++){
+	if(num > 2) kemoview_delete_PSF_color_list(num, kemo_gl->kemoview_data);
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_sgl);
+		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 
 
 static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     opacity_data_edited_CB(path_str, new_text, color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -111,20 +111,20 @@ static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *pa
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);
+		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     opacity_color_edited_CB(path_str, new_text, color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -133,21 +133,21 @@ static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *p
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);
+		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
+    if(kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_NUM_OPACITY) > 16) return;
 
     add_opacity_list_items_CB(color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -156,20 +156,20 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	kemoview_add_PSF_opacity_list(ZERO, ZERO, kemo_sgl);
-	for(i=0;i<num;i++){
+	kemoview_add_PSF_opacity_list(ZERO, ZERO, kemo_gl->kemoview_data);
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);
+		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_data){
-	int i;
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     delete_opacity_list_items_CB(color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -177,42 +177,41 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 	
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-	if(num > 2) kemoview_delete_PSF_opacity_list(num, kemo_sgl);
-	for(i=0;i<num;i++){
+	if(num > 2) kemoview_delete_PSF_opacity_list(num, kemo_gl->kemoview_data);
+	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);
+		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 };
 
 static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data)
 {
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_cmap), "kemoview");
+    struct colormap_view *color_vws
+            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int index_mode = set_color_mode_CB(combobox_cmap, color_vws);
 	
-	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode, kemo_sgl);
+	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode, kemo_gl->kemoview_data);
     gtk_widget_queue_draw(color_vws->scrolled_window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
     return;
 }
 
-static void add_kemoview_cmap_list_box(struct kemoviewer_type *kemo_sgl,
+static void add_kemoview_cmap_list_box(struct kemoviewer_gl_type *kemo_gl,
                                        struct colormap_view *color_vws,
-                                       GtkWidget *vbox){
+                                       GtkWidget *vbox, GtkWidget *dummy_enty){
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
 
     color_vws->renderer_value_spin = gtk_cell_renderer_text_new();
-    g_object_set_data(G_OBJECT(color_vws->renderer_value_spin), "kemoview",  (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(color_vws->renderer_value_spin), "edited",
-                     G_CALLBACK(kemoview_colormap_data_edited_CB), (gpointer) color_vws);
+                     G_CALLBACK(kemoview_colormap_data_edited_CB), (gpointer) dummy_enty);
 
     color_vws->renderer_color_spin = gtk_cell_renderer_text_new();
-    g_object_set_data(G_OBJECT(color_vws->renderer_color_spin), "kemoview",  (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(color_vws->renderer_color_spin), "edited",
-					 G_CALLBACK(kemoview_colormap_color_edited_CB), (gpointer) color_vws);
+					 G_CALLBACK(kemoview_colormap_color_edited_CB), (gpointer) dummy_enty);
 	
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
                            color_vws->cmap_vws->r2_clist_gtk, 
@@ -231,28 +230,25 @@ static void add_kemoview_cmap_list_box(struct kemoviewer_type *kemo_sgl,
                        color_vws->cmap_vws->r2_clist_gtk,
                        color_vws->button_add, color_vws->button_delete, vbox);
 
-    g_object_set_data(G_OBJECT(color_vws->button_add), "kemoview",  (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(color_vws->button_add), "clicked",
-                     G_CALLBACK(add_kemoview_colormap_list_items_CB), (gpointer) color_vws);
-    g_object_set_data(G_OBJECT(color_vws->button_delete), "kemoview",  (gpointer) kemo_sgl);
+                     G_CALLBACK(add_kemoview_colormap_list_items_CB), (gpointer) dummy_enty);
     g_signal_connect(G_OBJECT(color_vws->button_delete), "clicked",
-                     G_CALLBACK(delete_kemoview_colormap_list_items_CB), (gpointer) color_vws);
+                     G_CALLBACK(delete_kemoview_colormap_list_items_CB), (gpointer) dummy_enty);
 };
 
-static void add_kemoview_omap_list_box(struct kemoviewer_type *kemo_sgl,
+static void add_kemoview_omap_list_box(struct kemoviewer_gl_type *kemo_gl,
                                        struct colormap_view *color_vws,
-                                       GtkWidget *vbox){
+                                       GtkWidget *vbox, GtkWidget *dummy_enty){
 	color_vws->opacity_vws->tree_view = gtk_tree_view_new();
+    g_object_set_data(G_OBJECT(color_vws->renderer_color_spin), "colormap_view",  (gpointer) color_vws);
 
     color_vws->renderer_value_spin =    gtk_cell_renderer_text_new();
-    g_object_set_data(G_OBJECT(color_vws->renderer_value_spin), "kemoview",  (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(color_vws->renderer_value_spin), "edited",
-                     G_CALLBACK(kemoview_opacity_data_edited_CB), (gpointer) color_vws);
+                     G_CALLBACK(kemoview_opacity_data_edited_CB), (gpointer) dummy_enty);
 
     color_vws->renderer_color_spin =    gtk_cell_renderer_text_new();
-    g_object_set_data(G_OBJECT(color_vws->renderer_color_spin), "kemoview",  (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(color_vws->renderer_color_spin), "edited",
-					 G_CALLBACK(kemoview_opacity_color_edited_CB), (gpointer) color_vws);
+					 G_CALLBACK(kemoview_opacity_color_edited_CB), (gpointer) dummy_enty);
 		
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), 
                            color_vws->opacity_vws->r2_clist_gtk, 
@@ -269,30 +265,35 @@ static void add_kemoview_omap_list_box(struct kemoviewer_type *kemo_sgl,
                        color_vws->opacity_vws->r2_clist_gtk,
                        color_vws->button_add, color_vws->button_delete, vbox);
 	
-    g_object_set_data(G_OBJECT(color_vws->button_add), "kemoview",  (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(color_vws->button_add), "clicked",
-                     G_CALLBACK(add_kemoview_opacity_list_items_CB), (gpointer) color_vws);
-    g_object_set_data(G_OBJECT(color_vws->button_delete), "kemoview",  (gpointer) kemo_sgl);
+                     G_CALLBACK(add_kemoview_opacity_list_items_CB), (gpointer) dummy_enty);
     g_signal_connect(G_OBJECT(color_vws->button_delete), "clicked",
-                     G_CALLBACK(delete_kemoview_opacity_list_items_CB), (gpointer) color_vws);
+                     G_CALLBACK(delete_kemoview_opacity_list_items_CB), (gpointer) dummy_enty);
 };
 
-GtkWidget * init_kemoview_colormap_list_vbox(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_kemoview_colormap_list_vbox(struct kemoviewer_gl_type *kemo_gl,
                                              struct colormap_view *color_vws){
+    GtkWidget *dummy_enty = gtk_entry_new();
+    g_object_set_data(G_OBJECT(dummy_enty), "kemoview_gl",    (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(dummy_enty), "colormap_view",  (gpointer) color_vws);
+
     GtkWidget *frame_cmap;
-    int iflag = kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP);
+    int iflag = kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_COLORMAP);
     color_vws->combobox_cmap = init_combobox_cmap(iflag);
-    g_object_set_data(G_OBJECT(color_vws->combobox_cmap), "kemoview",  (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(color_vws->combobox_cmap), "changed",
-                     G_CALLBACK(set_kemoview_color_mode_CB), (gpointer) color_vws);
+                     G_CALLBACK(set_kemoview_color_mode_CB), (gpointer) dummy_enty);
 	
 	
     color_vws->vbox_cmap = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(color_vws->vbox_cmap), color_vws->combobox_cmap,
                        FALSE, TRUE, 0);
 	
-	add_kemoview_cmap_list_box(kemo_sgl, color_vws, color_vws->vbox_cmap);
-	add_kemoview_omap_list_box(kemo_sgl, color_vws, color_vws->vbox_cmap);
+	add_kemoview_cmap_list_box(kemo_gl, color_vws,
+                               color_vws->vbox_cmap,
+                               dummy_enty);
+	add_kemoview_omap_list_box(kemo_gl, color_vws,
+                               color_vws->vbox_cmap,
+                               dummy_enty);
 	
     color_vws->hbox_cmap = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(color_vws->hbox_cmap), color_vws->vbox_cmap,

@@ -20,6 +20,6 @@
 
 #include "view_modifier_glfw.h"
 
-GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl);
+GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl);
 
 #endif /*KEMOVIEW_GTK_SHADING_MODE_MENU_ */

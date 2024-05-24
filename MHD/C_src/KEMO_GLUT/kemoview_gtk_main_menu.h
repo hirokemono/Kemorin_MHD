@@ -64,14 +64,12 @@ struct main_buttons{
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data);
 void dealloc_main_buttons(struct main_buttons *mbot);
 
-void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
-                               struct kemoviewer_gl_type *kemo_gl,
+void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
                                struct kv_string *filename, 
                                struct main_buttons *mbot);
 
 GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
                                    GtkWidget *quitButton, GtkWidget *window_main,
-                                   struct kemoviewer_type *kemo_sgl,
                                    struct kemoviewer_gl_type *kemo_gl);
 
 #endif

@@ -23,7 +23,7 @@
 
 /*  prototypes */
 
-GtkWidget *make_gtk_menu_button(struct main_buttons *mbot,
-                                struct kemoviewer_type *kemo_sgl);
+GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
+                                struct main_buttons *mbot);
 
 #endif /* KEMOVIEW_GTK_MENU_BUTTON_ */

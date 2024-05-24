@@ -10,10 +10,11 @@
 
 static void nTubeCornerChange_CB(GtkWidget *entry, gpointer data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int ivalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    kemoview_set_view_integer(NUM_TUBE_CORNERS_FLAG, ivalue, kemo_sgl);
-    draw_full(kemo_sgl);
+    kemoview_set_view_integer(NUM_TUBE_CORNERS_FLAG, ivalue,
+                              kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
     return;
 }
 
@@ -21,49 +22,55 @@ static void coasttube_thickness_CB(GtkWidget *entry, gpointer data)
 {
     double current_thick;
     int current_digit;
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     
     double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
     if(thick_in < 0) return;
     
-    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
-    kemoview_set_coastline_thickness_w_exp(thick_in, current_digit, kemo_sgl);
+    kemoview_get_coastline_thickness_w_exp(kemo_gl->kemoview_data,
+                                           &current_thick, &current_digit);
+    kemoview_set_coastline_thickness_w_exp(thick_in, current_digit,
+                                           kemo_gl->kemoview_data);
 
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void coasttube_digit_CB(GtkWidget *entry, gpointer data)
 {
     double current_thick;
     int current_digit;
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     
     int in_digit = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
-    kemoview_set_coastline_thickness_w_exp(current_thick, in_digit, kemo_sgl);
+    kemoview_get_coastline_thickness_w_exp(kemo_gl->kemoview_data,
+                                           &current_thick, &current_digit);
+    kemoview_set_coastline_thickness_w_exp(current_thick, in_digit,
+                                           kemo_gl->kemoview_data);
     
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 
-GtkWidget * init_tube_pref_frame(struct kemoviewer_type *kemo_sgl){
-    int ncorner = kemoview_get_view_integer(kemo_sgl, NUM_TUBE_CORNERS_FLAG);
+GtkWidget * init_tube_pref_frame(struct kemoviewer_gl_type *kemo_gl){
+    int ncorner = kemoview_get_view_integer(kemo_gl->kemoview_data,
+                                            NUM_TUBE_CORNERS_FLAG);
     GtkAdjustment *adj_c = gtk_adjustment_new(ncorner, 1, 24, 1, 1, 0.0);
     GtkWidget *spin_nTubeCorner = gtk_spin_button_new(GTK_ADJUSTMENT(adj_c),0,2);
     g_signal_connect(spin_nTubeCorner, "value-changed",
-                     G_CALLBACK(nTubeCornerChange_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(nTubeCornerChange_CB), (gpointer) kemo_gl);
 
     double current_thick;
     int    current_digit;
-    kemoview_get_coastline_thickness_w_exp(kemo_sgl, &current_thick, &current_digit);
+    kemoview_get_coastline_thickness_w_exp(kemo_gl->kemoview_data,
+                                           &current_thick, &current_digit);
     GtkWidget *adj_thick = gtk_adjustment_new(current_thick, 0, 9, 1, 1, 0.0);
     GtkWidget *adj_digit = gtk_adjustment_new(current_digit, -30, 30, 1, 1, 0.0);
     GtkWidget *spin_cline_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     GtkWidget *spin_cline_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
     g_signal_connect(spin_cline_thick, "value-changed",
-                     G_CALLBACK(coasttube_thickness_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(coasttube_thickness_CB), (gpointer) kemo_gl);
     g_signal_connect(spin_cline_digit, "value-changed",
-                     G_CALLBACK(coasttube_digit_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(coasttube_digit_CB), (gpointer) kemo_gl);
     
 
     GtkWidget *nTubeCorner_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);

@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
@@ -36,9 +36,9 @@ struct psf_vector_gtk_menu{
 
 /*  prototypes */
 
-void set_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl,
+void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
                              struct psf_vector_gtk_menu *psf_vector_menu);
-GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl, GtkWidget *window,
                                      struct psf_vector_gtk_menu *psf_vector_menu);
 
 #endif

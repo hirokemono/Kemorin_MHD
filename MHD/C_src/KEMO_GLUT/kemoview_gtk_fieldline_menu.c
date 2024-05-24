@@ -267,10 +267,10 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) kemo_gl);
     
-    fline_menu->combobox_field = fline_draw_field_box(kemo_gl->kemoview_data,
+    fline_menu->combobox_field = fline_draw_field_box(kemo_gl,
                                                       fline_menu->label_tree_field,
                                                       fline_menu->renderer_field);
-    fline_menu->combobox_comp = fline_draw_component_combobox(kemo_gl->kemoview_data,
+    fline_menu->combobox_comp = fline_draw_component_combobox(kemo_gl,
                                                               fline_menu->label_tree_comp,
                                                               fline_menu->renderer_comp);
     return;

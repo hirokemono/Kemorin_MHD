@@ -43,23 +43,25 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, iflag,
+                                       kemo_gl->kemoview_data);
     	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, iflag,
+                                       kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
@@ -137,13 +139,14 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
-                                         GtkWidget *window,
+static void set_evoluaiton_menu_expander(struct kemoviewer_gl_type *kemo_gl, GtkWidget *window,
                                          struct evolution_gtk_menu *evo_gmenu){
     evo_gmenu->entry_evo_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evoWindow", (gpointer) window);
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evolution", (gpointer) evo_gmenu);
-    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "kemoview",  (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file),
+                      "kemoview",  (gpointer) kemo_gl->kemoview_data);
+    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "kemoview_gl",  (gpointer) kemo_gl);
 
     GtkWidget *label_tree_evo_fileformat = create_fixed_label_w_index_tree();
     GtkTreeModel *model_evo_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_evo_fileformat));
@@ -169,7 +172,7 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
                      G_CALLBACK(set_evo_fileformat_CB), (gpointer) evo_gmenu->entry_evo_file);
     
     evo_gmenu->switch_timelabel = gtk_switch_new();
-    if(kemoview_get_object_property_flags(kemo_sgl, TIME_LABEL_SWITCH) == 0){
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, TIME_LABEL_SWITCH) == 0){
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
     } else {
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
@@ -178,7 +181,7 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
                      G_CALLBACK(draw_time_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
     
     evo_gmenu->switch_fileindex = gtk_switch_new();
-    if(kemoview_get_object_property_flags(kemo_sgl, FILE_STEP_LABEL_SWITCH) == 0){
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, FILE_STEP_LABEL_SWITCH) == 0){
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
     } else {
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);
@@ -195,7 +198,8 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     
     int file_fmt;
     struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
-    evo_gmenu->istart_evo = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, image_prefix, &file_fmt);
+    evo_gmenu->istart_evo = kemoview_get_PSF_full_path_file_prefix(kemo_gl->kemoview_data,
+                                                                   image_prefix, &file_fmt);
     evo_gmenu->iend_evo = evo_gmenu->istart_evo;
     evo_gmenu->inc_evo = 1;
     kemoview_free_kvstring(image_prefix);
@@ -277,18 +281,18 @@ static GtkWidget * pack_evoluaiton_menu_box(struct evolution_gtk_menu *evo_gmenu
 	return evo_box;
 }
 
-GtkWidget * init_evolution_menu_frame(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_evolution_menu_frame(struct kemoviewer_gl_type *kemo_gl,
                                       struct evolution_gtk_menu *evo_gmenu,
                                       GtkWidget *evoWindow){
-    set_evoluaiton_menu_expander(kemo_sgl, evoWindow, evo_gmenu);
+    set_evoluaiton_menu_expander(kemo_gl, evoWindow, evo_gmenu);
     GtkWidget *evo_box = pack_evoluaiton_menu_box(evo_gmenu);
     return wrap_into_frame_gtk("Evolution", evo_box);
 }
 
-GtkWidget * init_evolution_menu_expander(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_evolution_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                          struct evolution_gtk_menu *evo_gmenu,
                                          GtkWidget *window){
-    set_evoluaiton_menu_expander(kemo_sgl, window, evo_gmenu);
+    set_evoluaiton_menu_expander(kemo_gl, window, evo_gmenu);
     GtkWidget *evo_box = pack_evoluaiton_menu_box(evo_gmenu);
     return wrap_into_scroll_expansion_gtk("Evolution", 360, 280, window, evo_box);
 }

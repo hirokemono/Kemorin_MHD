@@ -22,6 +22,6 @@
 
 /* protytypes */
 
-GtkWidget * init_tube_pref_frame(struct kemoviewer_type *kemo_sgl);
+GtkWidget * init_tube_pref_frame(struct kemoviewer_gl_type *kemo_gl);
 
 #endif /* KEMOVIEW_GTK_TUBE_PREF_MENU_*/

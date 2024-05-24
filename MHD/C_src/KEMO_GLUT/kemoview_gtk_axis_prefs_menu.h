@@ -23,7 +23,7 @@
 
 /* protytypes */
 
-GtkWidget * init_coastline_pref_menu(struct kemoviewer_type *kemo_sgl);
-GtkWidget * init_axis_position_menu(struct kemoviewer_type *kemo_sgl);
+GtkWidget * init_coastline_pref_menu(struct kemoviewer_gl_type *kemo_gl);
+GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_sgl);
 
 #endif /* KEMOVIEW_GTK_AXIS_PREFS_MENU_*/

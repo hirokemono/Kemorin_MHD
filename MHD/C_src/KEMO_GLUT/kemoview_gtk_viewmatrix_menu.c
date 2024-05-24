@@ -9,20 +9,22 @@
 #include "kemoview_gtk_viewmatrix_menu.h"
 
 
-void update_windowsize_menu(struct kemoviewer_type *kemo_sgl,
+void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct view_widgets *view_menu,
                             GtkWidget *window){
     char windowsize_x_text[30];
     char windowsize_y_text[30];
     
-    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X));
-    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y));
+    sprintf(windowsize_x_text, "    %d    ",
+            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ",
+            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y));
     
     gtk_label_set_text(GTK_LABEL(view_menu->spin_win_x), windowsize_x_text);
     gtk_label_set_text(GTK_LABEL(view_menu->spin_win_y), windowsize_y_text);
 	
 	gtk_widget_queue_draw(window);
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
@@ -63,15 +65,15 @@ void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,
 
 static void save_viewmatrix_CB(GtkButton *button, gpointer user_data){
     GtkEntry *entry = GTK_ENTRY(user_data);
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     int iflag_set = kemoview_gtk_save_file_select(button, user_data);
 	if(iflag_set == IZERO) return;
 	
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
-	kemoview_write_modelview_file(filename, kemo_sgl);
+	kemoview_write_modelview_file(filename, kemo_gl->kemoview_data);
 	kemoview_free_kvstring(filename);
 	
 	return;
@@ -79,17 +81,17 @@ static void save_viewmatrix_CB(GtkButton *button, gpointer user_data){
 
 static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
     GtkEntry *entry = GTK_ENTRY(user_data);
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
 	int iflag_set = kemoview_gtk_read_file_select(button, user_data);
 	
 	if(iflag_set == IZERO) return;
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
-	kemoview_load_modelview_file(filename, kemo_sgl);
+	kemoview_load_modelview_file(filename, kemo_gl->kemoview_data);
 	kemoview_free_kvstring(filename);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
@@ -273,7 +275,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
 	view_menu->adj_eye_sep = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.01, 0.0);
     view_menu->adj_sep_angle = gtk_adjustment_new(35.0, 0.1, 180.0, 0.1, 0.1, 0.0);
 
-	update_windowsize_menu(kemo_gl->kemoview_data, view_menu, window);
+	update_windowsize_menu(kemo_gl, view_menu, window);
 	set_viewmatrix_value(kemo_gl->kemoview_data, view_menu, window);
 	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
@@ -419,7 +421,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
 	g_object_set_data(G_OBJECT(view_menu->entry_viewmatrix_file),
                       "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(view_menu->entry_viewmatrix_file),
-                      "kemoview", (gpointer) kemo_gl->kemoview_data);
+                      "kemoview_gl", (gpointer) kemo_gl);
 
 	view_menu->saveView_Button = gtk_button_new_with_label("Save View...");
 	g_signal_connect(G_OBJECT(view_menu->saveView_Button), "clicked", 

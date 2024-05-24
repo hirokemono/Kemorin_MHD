@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
@@ -36,9 +36,9 @@ struct psf_isoline_gtk_menu{
 
 
 /*  prototypes */
-void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl, 
+void set_gtk_isoline_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_isoline_gtk_menu *psf_isoline_menu);
-GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+GtkWidget * init_isoline_menu_expander(struct kemoviewer_gl_type *kemo_gl, GtkWidget *window,
                                        struct psf_isoline_gtk_menu *psf_isoline_menu);
 
 #endif
