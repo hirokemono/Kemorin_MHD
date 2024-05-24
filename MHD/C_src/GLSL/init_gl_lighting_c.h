@@ -13,7 +13,7 @@
 /* prototypes */
 void set_gl_bg_color(float bg_color[4]);
 
-void kemo_gl_initial_lighting_c(struct kemoview_shaders *kemo_shaders);
+void initialize_gl_shaders(struct kemoview_shaders *kemo_shaders);
 void init_gl_menu_setup(struct kemoview_shaders *kemo_shaders);
 
 void colormap_to_glsl(const int id_cmap, const int num_cmap, const int num_alpha, 

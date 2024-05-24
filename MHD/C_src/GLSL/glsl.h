@@ -23,6 +23,9 @@ struct shader_ids{
 	
 	GLuint vertexID;
 	GLuint fragmentID;
+    
+    char *vetex_text;
+    char *fragment_text;
 };
 
 struct kemoview_shaders{

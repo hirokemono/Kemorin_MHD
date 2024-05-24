@@ -39,10 +39,10 @@ extern "C" {
 
 
 /*  OopenGL routines */
-    struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void);
+    struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer);
     void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl);
 
-    void kemoview_gl_init_lighting(struct kemoviewer_gl_type *kemo_gl);
+    void kemoview_gl_init_shaders(struct kemoviewer_gl_type *kemo_gl);
 
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);

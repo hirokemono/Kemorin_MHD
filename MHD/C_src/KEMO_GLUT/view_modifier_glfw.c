@@ -275,6 +275,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemoview_GLFW);
  	};
 	
+    draw_fast(kemoview_GLFW);
 	glfwSwapBuffers(window);
 	return;
 }
@@ -314,7 +315,10 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-
+void draw_full_gl(struct kemoviewer_gl_type *kemo_gl){
+    draw_full_lc(glfw_window, kemo_gl->kemoview_data, kemo_gl);
+    return;
+};
 
 void draw_full(struct kemoviewer_type *kemo_sgl){
     draw_full_lc(glfw_window, kemo_sgl, kemoGL_GLFW);

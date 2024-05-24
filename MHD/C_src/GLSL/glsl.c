@@ -232,24 +232,24 @@ void LoadShaderFromStrings(struct shader_ids *shader,
     long len_vertex =   strlen(text_vertex) + len_version;
     long len_fragment = strlen(text_fragment) + len_version;
 
-    char *vertex_shader =   alloc_string(len_vertex+len_version);
-    append_text_c(glsl_version, vertex_shader);
-    append_text_c(text_vertex, vertex_shader);
+    shader->vetex_text =   alloc_string(len_vertex+len_version);
+    append_text_c(glsl_version, shader->vetex_text);
+    append_text_c(text_vertex, shader->vetex_text);
 
-    char *fragment_shader = alloc_string(len_fragment+len_version);
-    append_text_c(glsl_version, fragment_shader);
-    append_text_c(text_fragment, fragment_shader);
+    shader->fragment_text = alloc_string(len_fragment+len_version);
+    append_text_c(glsl_version, shader->fragment_text);
+    append_text_c(text_fragment, shader->fragment_text);
 /*
-    printf("VERTEX: \n%s\n\n", vertex_shader);
-    printf("FRAGMENT: \n%s\n\n", fragment_shader);
+    printf("VERTEX: \n%s\n\n", shader->vetex_text);
+    printf("FRAGMENT: \n%s\n\n", shader->fragment_text);
  */
     /* Make shader object */
 	shader->vertexID = glCreateShader(GL_VERTEX_SHADER);
 	shader->fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 	
 	/* reader shader source */
-	glShaderSource(shader->vertexID, 1, &vertex_shader, 0);
-	glShaderSource(shader->fragmentID, 1, &fragment_shader, 0);
+	glShaderSource(shader->vertexID,   1, &shader->vetex_text,    0);
+	glShaderSource(shader->fragmentID, 1, &shader->fragment_text, 0);
 	
 	/* Compile and link  shader */
 	CompileLinkShader(shader);
@@ -277,6 +277,9 @@ void destory_shaders(struct shader_ids *shader)
 	
 	ierr_gl = glGetError();
 	
+    free(shader->vetex_text);
+    free(shader->fragment_text);
+    
 	/*
 	if (ierr_gl != GL_NO_ERROR)
 	{

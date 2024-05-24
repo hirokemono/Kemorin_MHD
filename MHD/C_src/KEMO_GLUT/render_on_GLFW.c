@@ -8,11 +8,11 @@
 #include "render_on_GLFW.h"
 
 void draw_full_lc(GLFWwindow *glfw_win,
-                  struct kemoviewer_type *kemo_sgl,
                   struct kemoviewer_gl_type * kemo_gl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
-    kemoview_modify_anaglyph(kemo_sgl, kemo_gl);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_gl->kemoview_data);
+    kemoview_modify_anaglyph(kemo_gl->kemoview_data, kemo_gl);
     glfwSwapBuffers(glfw_win);
     return;
 };
