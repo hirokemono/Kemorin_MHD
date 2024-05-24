@@ -98,9 +98,15 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     
     struct gl_texure_image *render_image = alloc_kemoview_gl_texure();
     if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
-        draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_sgl_gl, render_image);
+        draw_anaglyph_to_rgb_gl(kemo_sgl,
+                                kemo_sgl_gl->kemo_VAOs,
+                                kemo_sgl_gl->kemo_shaders,
+                                render_image);
     }else{
-        draw_objects_to_rgb_gl(kemo_sgl, kemo_sgl_gl, render_image);
+        draw_objects_to_rgb_gl(kemo_sgl,
+                               kemo_sgl_gl->kemo_VAOs,
+                               kemo_sgl_gl->kemo_shaders,
+                               render_image);
     }
     
     struct gl_texure_image *fliped_img = alloc_kemoview_gl_texure();

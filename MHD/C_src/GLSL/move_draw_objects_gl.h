@@ -44,15 +44,6 @@ struct kemoview_VAOs{
     struct VAO_ids **screen_FBO;
 };
 
-struct kemoviewer_gl_type{
-    struct kemoview_shaders   *kemo_shaders;
-    struct kemoview_VAOs      *kemo_VAOs;
-    struct VAO_ids            *menu_VAO;
-    
-    struct kemoviewer_type    *kemoview_data;
-};
-
-
 /* prototypes */
 struct kemoview_VAOs * init_kemoview_VAOs(void);
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
@@ -62,19 +53,20 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
-                             struct kemoviewer_gl_type *kemo_gl);
+                             struct kemoview_VAOs *kemo_VAOs,
+                             struct kemoview_shaders *kemo_shaders);
 
 void draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
-                            struct kemoviewer_gl_type *kemo_gl,
+                            struct kemoview_VAOs *kemo_VAOs,
+                            struct kemoview_shaders *kemo_shaders,
                             struct gl_texure_image *image);
 void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
-                             struct kemoviewer_gl_type *kemo_gl,
+                             struct kemoview_VAOs *kemo_VAOs,
+                             struct kemoview_shaders *kemo_shaders,
                              struct gl_texure_image *anaglyph_image);
 
-unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
-                                           struct kemoviewer_type *kemoview,
-                                           struct kemoviewer_gl_type *kemo_gl);
 void select_modify_anaglyph(struct kemoviewer_type *kemoview,
-                            struct kemoviewer_gl_type *kemo_gl);
+                            struct kemoview_VAOs *kemo_VAOs,
+                            struct kemoview_shaders *kemo_shaders);
 
 #endif

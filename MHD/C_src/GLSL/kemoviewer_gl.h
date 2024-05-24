@@ -37,6 +37,13 @@
 extern "C" {
 #endif
 
+struct kemoviewer_gl_type{
+    struct kemoview_shaders   *kemo_shaders;
+    struct kemoview_VAOs      *kemo_VAOs;
+    struct VAO_ids            *menu_VAO;
+    
+//    struct kemoviewer_type    *kemoview_data;
+};
 
 /*  OopenGL routines */
     struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer);

@@ -415,11 +415,11 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
 };
 
 
-static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
-                                struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
-                                struct kemoview_buffers *kemo_buffers,
-                                struct kemoview_VAOs *kemo_VAOs,
-                                struct kemoview_shaders *kemo_shaders){
+static void update_draw_objects_gl(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                                   struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                                   struct kemoview_buffers *kemo_buffers,
+                                   struct kemoview_VAOs *kemo_VAOs,
+                                   struct kemoview_shaders *kemo_shaders){
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == SIMPLE_DRAW){
         Const_Simple_VAO(kemo_VAOs->grid_line_VAO, kemo_buffers->PSF_lines->coast_line_buf);
@@ -452,24 +452,25 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 }
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
-                             struct kemoviewer_gl_type *kemo_gl){
+                             struct kemoview_VAOs *kemo_VAOs,
+                             struct kemoview_shaders *kemo_shaders){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-                        kemoview->kemo_mesh, kemoview->view_s,
-                        kemoview->kemo_buffers, kemo_gl->kemo_VAOs,
-                        kemo_gl->kemo_shaders);
+    update_draw_objects_gl(kemoview->kemo_psf, kemoview->kemo_fline,
+                           kemoview->kemo_mesh, kemoview->view_s,
+                           kemoview->kemo_buffers, kemo_VAOs, kemo_shaders);
 	return;
 }
 
 void draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
-                            struct kemoviewer_gl_type *kemo_gl,
+                            struct kemoview_VAOs *kemo_VAOs,
+                            struct kemoview_shaders *kemo_shaders,
                             struct gl_texure_image *image){
     alloc_draw_psf_texture(kemoview->view_s->nx_frame,
                            kemoview->view_s->ny_frame,
                            image);
 
     glDrawBuffer(GL_BACK);
-    update_draw_objects_gl3(kemoview, kemo_gl);
+    update_draw_objects_gl3(kemoview, kemo_VAOs, kemo_shaders);
     glReadBuffer(GL_BACK);
     glPixelStorei(GL_PACK_ALIGNMENT, IONE);
     glReadPixels(IZERO, IZERO, image->nipxel_xy[0], image->nipxel_xy[1],
@@ -478,7 +479,8 @@ void draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
 };
 
 void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
-                             struct kemoviewer_gl_type *kemo_gl,
+                             struct kemoview_VAOs *kemo_VAOs,
+                             struct kemoview_shaders *kemo_shaders,
                              struct gl_texure_image *anaglyph_image){
     struct gl_texure_image *left_img =  alloc_kemoview_gl_texure();
     struct gl_texure_image *right_img = alloc_kemoview_gl_texure();
@@ -488,10 +490,12 @@ void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
                            anaglyph_image);
 
     modify_left_viewmat(kemoview->view_s);
-    draw_objects_to_rgb_gl(kemoview, kemo_gl, left_img);
+    draw_objects_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders,
+                           left_img);
     
     modify_right_viewmat(kemoview->view_s);
-    draw_objects_to_rgb_gl(kemoview, kemo_gl, right_img);
+    draw_objects_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders,
+                           right_img);
 
     half_anaglyph_rgba_by_rgbs(left_img->nipxel_xy[0], left_img->nipxel_xy[1],
                                left_img->texure_rgba, right_img->texure_rgba,
@@ -503,7 +507,8 @@ void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
 
 
 static void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
-                                   struct kemoviewer_gl_type *kemo_gl,
+                                   struct kemoview_VAOs *kemo_VAOs,
+                                   struct kemoview_shaders *kemo_shaders,
                                    struct gl_texure_image *anaglyph_image){
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
@@ -511,7 +516,7 @@ static void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                         kemoview->kemo_buffers->screen_buf);
 
     Const_texture_VAO(anaglyph_image, kemoview->kemo_buffers->screen_buf,
-                      kemo_gl->kemo_VAOs->screen_VAO);
+                      kemo_VAOs->screen_VAO);
 
     double *orthogonal = orthogonal_projection_mat_c(0.0, kemoview->view_s->nx_frame,
                                                      0.0, kemoview->view_s->ny_frame,
@@ -521,58 +526,27 @@ static void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
 
     /* draw message */
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    draw_textured_2D_box_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO,
-                             kemo_gl->kemo_shaders);
+    draw_textured_2D_box_VAO(cbar_matrices, kemo_VAOs->screen_VAO, kemo_shaders);
     free(cbar_matrices);
     return;
 }
 
-unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
-                                           struct kemoviewer_type *kemoview,
-                                           struct kemoviewer_gl_type *kemo_gl){
-    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
-    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
-/* Construct screen_FBO */
-    Const_FBO(npix_xy[0], npix_xy[1], kemo_gl->kemo_VAOs->screen_FBO[0]);
-/* Set draw target to screen_FBO */
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
-                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
-
-    GLuint num_pixel = npix_xy[0] * npix_xy[1];
-    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
-    if(rgb == NULL){
-        printf("malloc error for bgra\n");
-        exit(0);
-    };
-    glFlush();
-
-    glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
-                 GL_RGB, GL_UNSIGNED_BYTE,rgb);
-/* Back draw target to screen framewbuffer */
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-/* Destroy screen_FBO */
-    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
-    return rgb;
-}
-
 void select_modify_anaglyph(struct kemoviewer_type *kemoview,
-                            struct kemoviewer_gl_type *kemo_gl){
+                            struct kemoview_VAOs *kemo_VAOs,
+                            struct kemoview_shaders *kemo_shaders){
     if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
         struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
-        draw_anaglyph_to_rgb_gl(kemoview, kemo_gl, anaglyph_image);
+        draw_anaglyph_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders,
+                                anaglyph_image);
         
         glDrawBuffer(GL_BACK);
-        move_draw_anaglyph_gl3(kemoview, kemo_gl, anaglyph_image);
+        move_draw_anaglyph_gl3(kemoview, kemo_VAOs, kemo_shaders,
+                               anaglyph_image);
         dealloc_kemoview_gl_texure(anaglyph_image);
     }else{
         modify_mono_viewmat(kemoview->view_s);
         glDrawBuffer(GL_BACK);
-        update_draw_objects_gl3(kemoview, kemo_gl);
+        update_draw_objects_gl3(kemoview, kemo_VAOs, kemo_shaders);
     }
 };
 

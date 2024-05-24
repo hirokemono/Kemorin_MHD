@@ -15,7 +15,7 @@ struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type
         printf("malloc error for kemoviewer_gl_type\n");
         exit(0);
     };
-    kemo_gl->kemoview_data = kemoviewer;
+//    kemo_gl->kemoview_data = kemoviewer;
     kemo_gl->kemo_shaders = init_kemoview_shaders();
     kemo_gl->kemo_VAOs = init_kemoview_VAOs();
 
@@ -31,7 +31,7 @@ void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl){
     clear_kemoview_VAOs(kemo_gl->kemo_VAOs);
     dealloc_kemoview_VAOs(kemo_gl->kemo_VAOs);
     dealloc_kemoview_shaders(kemo_gl->kemo_shaders);
-    kemo_gl->kemoview_data = NULL;
+//    kemo_gl->kemoview_data = NULL;
     free(kemo_gl);
     return;
 }
@@ -58,12 +58,14 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 
 void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
                           struct kemoviewer_gl_type *kemo_gl){
-    update_draw_objects_gl3(kemo_sgl, kemo_gl);
+    update_draw_objects_gl3(kemo_sgl, kemo_gl->kemo_VAOs,
+                            kemo_gl->kemo_shaders);
 };
 
 void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
                               struct kemoviewer_gl_type *kemo_gl){
-    select_modify_anaglyph(kemo_sgl, kemo_gl);
+    select_modify_anaglyph(kemo_sgl, kemo_gl->kemo_VAOs,
+                           kemo_gl->kemo_shaders);
 };
 
 
@@ -122,8 +124,8 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
 
 void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                      struct kemoviewer_gl_type *kemo_gl){
-    release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->ipsf_texured,
-                                kemo_gl->kemo_shaders);
+    int iflag = kemo_sgl->kemo_psf->psf_a->ipsf_texured;
+    release_PSF_texture_from_gl(iflag, kemo_gl->kemo_shaders);
     return;
 };
 
