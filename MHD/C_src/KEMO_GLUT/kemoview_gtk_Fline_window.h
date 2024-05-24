@@ -19,13 +19,12 @@
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_viewer_colormap.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_fieldline_menu.h"
 
 /* prototypes */
 
 void init_fline_window(struct kemoviewer_type *kemo_sgl,
-                       struct fieldline_gtk_menu *fline_menu,
-                       GtkWidget *window);
+                       struct fieldline_gtk_menu *fline_menu);
 
 #endif /*  KEMOVIEW_GTK_FLINE_WINDOW_  */

@@ -29,15 +29,10 @@ static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-    struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
-    
     gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    double AverageFPS = draw_rotate_gl_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
-                                             iaxis_rotation, increment_deg,
-                                             num_rotation);
-    kemoview_free_kvstring(image_prefix);
-
-
+    double AverageFPS = draw_rotate_views(kemo_sgl,
+                                          iaxis_rotation, increment_deg,
+                                          num_rotation);
     gchar text_AverageFPS[25];
     sprintf(text_AverageFPS, "%f", (float) AverageFPS);
     gtk_entry_set_text(GTK_ENTRY(FPSentry), text_AverageFPS);

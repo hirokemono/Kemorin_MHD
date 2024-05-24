@@ -23,7 +23,6 @@
 		1809BC632B8FDD8A0008A294 /* kemoview_gtk_mesh_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6524B9318500D30C46 /* kemoview_gtk_mesh_menu.c */; };
 		1809BC642B8FDD8A0008A294 /* tree_view_4_ele_group_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E4D24B9318500D30C46 /* tree_view_4_ele_group_viewer.c */; };
 		1809BC652B8FDD8A0008A294 /* tree_view_4_nod_group_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6A24B9318500D30C46 /* tree_view_4_nod_group_viewer.c */; };
-		1809BC662B8FDD8A0008A294 /* kemoview_fileselector_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6C24B9318500D30C46 /* kemoview_fileselector_gtk.c */; };
 		1809BC672B8FDD8A0008A294 /* view_modifier_glfw.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E4E24B9318500D30C46 /* view_modifier_glfw.c */; };
 		1809BC682B8FDD8A0008A294 /* kemo_mesh_viewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1724B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c */; };
 		1809BC692B8FDD8A0008A294 /* kemoview_gtk_PSF_isoline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E4C24B9318500D30C46 /* kemoview_gtk_PSF_isoline_menu.c */; };
@@ -205,8 +204,6 @@
 		1809BF502B8FF9160008A294 /* m_kemoview_fline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE52B8FF9130008A294 /* m_kemoview_fline_menu.c */; };
 		1809BF512B8FF9160008A294 /* draw_map_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE62B8FF9130008A294 /* draw_map_4_PSF.c */; };
 		1809BF522B8FF9160008A294 /* draw_map_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE62B8FF9130008A294 /* draw_map_4_PSF.c */; };
-		1809BF532B8FF9160008A294 /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE82B8FF9130008A294 /* draw_fieldlines.c */; };
-		1809BF542B8FF9160008A294 /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE82B8FF9130008A294 /* draw_fieldlines.c */; };
 		1809BF552B8FF9160008A294 /* set_coastline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE92B8FF9130008A294 /* set_coastline_to_buf.c */; };
 		1809BF562B8FF9160008A294 /* set_coastline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEE92B8FF9130008A294 /* set_coastline_to_buf.c */; };
 		1809BF572B8FF9160008A294 /* m_kemoview_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BEEA2B8FF9130008A294 /* m_kemoview_mesh.c */; };
@@ -394,7 +391,6 @@
 		18A91E8324B9318500D30C46 /* kemoview_gtk_axis_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6624B9318500D30C46 /* kemoview_gtk_axis_menu.c */; };
 		18A91E8424B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6824B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.c */; };
 		18A91E8524B9318500D30C46 /* tree_view_4_nod_group_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6A24B9318500D30C46 /* tree_view_4_nod_group_viewer.c */; };
-		18A91E8624B9318500D30C46 /* kemoview_fileselector_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6C24B9318500D30C46 /* kemoview_fileselector_gtk.c */; };
 		18A91E8724B9318500D30C46 /* tree_view_4_surf_group_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6D24B9318500D30C46 /* tree_view_4_surf_group_viewer.c */; };
 		18A91E8824B9318500D30C46 /* tree_view_kemoview_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E6E24B9318500D30C46 /* tree_view_kemoview_colormap.c */; };
 		18A91E8924B9318500D30C46 /* tree_view_4_viewer_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7124B9318500D30C46 /* tree_view_4_viewer_mesh.c */; };
@@ -411,6 +407,29 @@
 		18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
 		18D824A32BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
 		18D824A42BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
+		18DA6FD72BFE610900D0E417 /* m_kemoview_message_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FD62BFE610900D0E417 /* m_kemoview_message_buffers.c */; };
+		18DA6FD82BFE610900D0E417 /* m_kemoview_message_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FD62BFE610900D0E417 /* m_kemoview_message_buffers.c */; };
+		18DA6FDB2BFE668500D0E417 /* m_kemoview_mesh_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FDA2BFE668500D0E417 /* m_kemoview_mesh_buffers.c */; };
+		18DA6FDC2BFE668500D0E417 /* m_kemoview_mesh_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FDA2BFE668500D0E417 /* m_kemoview_mesh_buffers.c */; };
+		18DA6FE62BFE6BF700D0E417 /* m_kemoview_map_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FE52BFE6BF700D0E417 /* m_kemoview_map_buffers.c */; };
+		18DA6FE72BFE6BF700D0E417 /* m_kemoview_map_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FE52BFE6BF700D0E417 /* m_kemoview_map_buffers.c */; };
+		18DA6FEA2BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FE92BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c */; };
+		18DA6FEB2BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FE92BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c */; };
+		18DA6FF12BFE841500D0E417 /* m_kemoview_PSF_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF02BFE841500D0E417 /* m_kemoview_PSF_buffers.c */; };
+		18DA6FF22BFE841500D0E417 /* m_kemoview_PSF_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF02BFE841500D0E417 /* m_kemoview_PSF_buffers.c */; };
+		18DA6FF92BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */; };
+		18DA6FFA2BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */; };
+		18DA700B2BFFE7EF00D0E417 /* libavformat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA70082BFFE7EE00D0E417 /* libavformat.dylib */; };
+		18DA700C2BFFE7EF00D0E417 /* libswscale.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA70092BFFE7EE00D0E417 /* libswscale.dylib */; };
+		18DA70102BFFEADD00D0E417 /* libavcodec.61.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */; };
+		18DA70162C003A0500D0E417 /* kemoview_gtk_fileselector.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70142C003A0400D0E417 /* kemoview_gtk_fileselector.c */; };
+		18DA70172C003A0500D0E417 /* kemoview_gtk_fileselector.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70142C003A0400D0E417 /* kemoview_gtk_fileselector.c */; };
+		18DA701C2C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70182C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c */; };
+		18DA701D2C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70182C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c */; };
+		18DA701E2C00591700D0E417 /* render_on_GLFW.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA701B2C00591700D0E417 /* render_on_GLFW.c */; };
+		18DA701F2C00591700D0E417 /* render_on_GLFW.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA701B2C00591700D0E417 /* render_on_GLFW.c */; };
+		18DA70222C00594200D0E417 /* kemoview_FFMPEG_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70212C00594200D0E417 /* kemoview_FFMPEG_encoder.c */; };
+		18DA70232C00594200D0E417 /* kemoview_FFMPEG_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA70212C00594200D0E417 /* kemoview_FFMPEG_encoder.c */; };
 		18EAA6CB2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
 		18EAA6CC2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */; };
 		18EAA6D82BFC2A70004BE670 /* kemoview_gtk_lighting_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA6CE2BFC2A6E004BE670 /* kemoview_gtk_lighting_menu.c */; };
@@ -630,7 +649,6 @@
 		1809BECB2B8FF9120008A294 /* set_cube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_cube_to_buf.h; path = ../../../C_src/KEMO_GL/set_cube_to_buf.h; sourceTree = "<group>"; };
 		1809BECC2B8FF9120008A294 /* m_vertex_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_vertex_buffer.c; path = ../../../C_src/KEMO_GL/m_vertex_buffer.c; sourceTree = "<group>"; };
 		1809BECD2B8FF9120008A294 /* m_colorbar_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_colorbar_buffer.h; path = ../../../C_src/KEMO_GL/m_colorbar_buffer.h; sourceTree = "<group>"; };
-		1809BECE2B8FF9120008A294 /* draw_fieldlines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = draw_fieldlines.h; path = ../../../C_src/KEMO_GL/draw_fieldlines.h; sourceTree = "<group>"; };
 		1809BECF2B8FF9120008A294 /* m_kemoview_mesh_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_kemoview_mesh_menu.h; path = ../../../C_src/KEMO_GL/m_kemoview_mesh_menu.h; sourceTree = "<group>"; };
 		1809BED02B8FF9120008A294 /* icosahedron_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = icosahedron_c.h; path = ../../../C_src/KEMO_GL/icosahedron_c.h; sourceTree = "<group>"; };
 		1809BED12B8FF9120008A294 /* m_kemoview_fline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_kemoview_fline_menu.h; path = ../../../C_src/KEMO_GL/m_kemoview_fline_menu.h; sourceTree = "<group>"; };
@@ -654,7 +672,6 @@
 		1809BEE52B8FF9130008A294 /* m_kemoview_fline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_fline_menu.c; path = ../../../C_src/KEMO_GL/m_kemoview_fline_menu.c; sourceTree = "<group>"; };
 		1809BEE62B8FF9130008A294 /* draw_map_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_map_4_PSF.c; path = ../../../C_src/KEMO_GL/draw_map_4_PSF.c; sourceTree = "<group>"; };
 		1809BEE72B8FF9130008A294 /* sort_by_patch_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sort_by_patch_distance.h; path = ../../../C_src/KEMO_GL/sort_by_patch_distance.h; sourceTree = "<group>"; };
-		1809BEE82B8FF9130008A294 /* draw_fieldlines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_fieldlines.c; path = ../../../C_src/KEMO_GL/draw_fieldlines.c; sourceTree = "<group>"; };
 		1809BEE92B8FF9130008A294 /* set_coastline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_coastline_to_buf.c; path = ../../../C_src/KEMO_GL/set_coastline_to_buf.c; sourceTree = "<group>"; };
 		1809BEEA2B8FF9130008A294 /* m_kemoview_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_mesh.c; path = ../../../C_src/KEMO_GL/m_kemoview_mesh.c; sourceTree = "<group>"; };
 		1809BEEB2B8FF9130008A294 /* set_each_fline_parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_each_fline_parameters.h; path = ../../../C_src/KEMO_GL/set_each_fline_parameters.h; sourceTree = "<group>"; };
@@ -835,8 +852,6 @@
 		18A91E5D24B9318500D30C46 /* kemoview_gtk_fieldline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_fieldline_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h; sourceTree = "<group>"; };
 		18A91E5E24B9318500D30C46 /* tree_view_4_surf_group_viewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_surf_group_viewer.h; path = ../../../C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h; sourceTree = "<group>"; };
 		18A91E5F24B9318500D30C46 /* kemoview_gtk_main_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_main_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_main_menu.c; sourceTree = "<group>"; };
-		18A91E6024B9318500D30C46 /* t_ctl_data_4_kemoview_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_kemoview_mesh_c.h; path = ../../../C_src/KEMO_GLUT/t_ctl_data_4_kemoview_mesh_c.h; sourceTree = "<group>"; };
-		18A91E6124B9318500D30C46 /* kemoview_fileselector_gtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_fileselector_gtk.h; path = ../../../C_src/KEMO_GLUT/kemoview_fileselector_gtk.h; sourceTree = "<group>"; };
 		18A91E6224B9318500D30C46 /* kemoview_gtk_preference_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_preference_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_preference_menu.c; sourceTree = "<group>"; };
 		18A91E6324B9318500D30C46 /* kemoview_gtk_evolution_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_evolution_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.c; sourceTree = "<group>"; };
 		18A91E6424B9318500D30C46 /* kemoview_gtk_fline_selectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_fline_selectors.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h; sourceTree = "<group>"; };
@@ -847,7 +862,6 @@
 		18A91E6924B9318500D30C46 /* tree_view_4_domain_viewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_domain_viewer.h; path = ../../../C_src/KEMO_GLUT/tree_view_4_domain_viewer.h; sourceTree = "<group>"; };
 		18A91E6A24B9318500D30C46 /* tree_view_4_nod_group_viewer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_nod_group_viewer.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.c; sourceTree = "<group>"; };
 		18A91E6B24B9318500D30C46 /* tree_view_4_nod_group_viewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_nod_group_viewer.h; path = ../../../C_src/KEMO_GLUT/tree_view_4_nod_group_viewer.h; sourceTree = "<group>"; };
-		18A91E6C24B9318500D30C46 /* kemoview_fileselector_gtk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_fileselector_gtk.c; path = ../../../C_src/KEMO_GLUT/kemoview_fileselector_gtk.c; sourceTree = "<group>"; };
 		18A91E6D24B9318500D30C46 /* tree_view_4_surf_group_viewer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_surf_group_viewer.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.c; sourceTree = "<group>"; };
 		18A91E6E24B9318500D30C46 /* tree_view_kemoview_colormap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_kemoview_colormap.c; path = ../../../C_src/KEMO_GLUT/tree_view_kemoview_colormap.c; sourceTree = "<group>"; };
 		18A91E6F24B9318500D30C46 /* tree_view_kemoview_colormap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_kemoview_colormap.h; path = ../../../C_src/KEMO_GLUT/tree_view_kemoview_colormap.h; sourceTree = "<group>"; };
@@ -866,6 +880,29 @@
 		18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
 		18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
 		18D824A22BE4A0A70067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
+		18DA6FD62BFE610900D0E417 /* m_kemoview_message_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_message_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_message_buffers.c; sourceTree = "<group>"; };
+		18DA6FD92BFE611400D0E417 /* m_kemoview_message_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_message_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_message_buffers.h; sourceTree = "<group>"; };
+		18DA6FDA2BFE668500D0E417 /* m_kemoview_mesh_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_mesh_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_mesh_buffers.c; sourceTree = "<group>"; };
+		18DA6FDD2BFE668B00D0E417 /* m_kemoview_mesh_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_mesh_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_mesh_buffers.h; sourceTree = "<group>"; };
+		18DA6FE42BFE6BF000D0E417 /* m_kemoview_map_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_map_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_map_buffers.h; sourceTree = "<group>"; };
+		18DA6FE52BFE6BF700D0E417 /* m_kemoview_map_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_map_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_map_buffers.c; sourceTree = "<group>"; };
+		18DA6FE82BFE787B00D0E417 /* m_kemoview_PSF_line_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_PSF_line_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_PSF_line_buffers.h; sourceTree = "<group>"; };
+		18DA6FE92BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_PSF_line_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_PSF_line_buffers.c; sourceTree = "<group>"; };
+		18DA6FF02BFE841500D0E417 /* m_kemoview_PSF_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_PSF_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_PSF_buffers.c; sourceTree = "<group>"; };
+		18DA6FF32BFE842200D0E417 /* m_kemoview_PSF_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = m_kemoview_PSF_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_PSF_buffers.h; sourceTree = "<group>"; };
+		18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_kemoview_fieldline_buffers.c; path = ../../../C_src/KEMO_GL/m_kemoview_fieldline_buffers.c; sourceTree = "<group>"; };
+		18DA6FF82BFE874700D0E417 /* m_kemoview_fieldline_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_kemoview_fieldline_buffers.h; path = ../../../C_src/KEMO_GL/m_kemoview_fieldline_buffers.h; sourceTree = "<group>"; };
+		18DA70082BFFE7EE00D0E417 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libavformat.dylib; sourceTree = "<group>"; };
+		18DA70092BFFE7EE00D0E417 /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libswscale.dylib; sourceTree = "<group>"; };
+		18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.61.dylib; path = ../../../../../../../opt/homebrew/Cellar/ffmpeg/7.0_1/lib/libavcodec.61.dylib; sourceTree = "<group>"; };
+		18DA70142C003A0400D0E417 /* kemoview_gtk_fileselector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_fileselector.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fileselector.c; sourceTree = "<group>"; };
+		18DA70152C003A0400D0E417 /* kemoview_gtk_fileselector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_fileselector.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fileselector.h; sourceTree = "<group>"; };
+		18DA70182C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = movie_from_GLFW_by_FFMPEG.c; path = ../../../C_src/KEMO_GLUT/movie_from_GLFW_by_FFMPEG.c; sourceTree = "<group>"; };
+		18DA70192C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = movie_from_GLFW_by_FFMPEG.h; path = ../../../C_src/KEMO_GLUT/movie_from_GLFW_by_FFMPEG.h; sourceTree = "<group>"; };
+		18DA701A2C00591700D0E417 /* render_on_GLFW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = render_on_GLFW.h; path = ../../../C_src/KEMO_GLUT/render_on_GLFW.h; sourceTree = "<group>"; };
+		18DA701B2C00591700D0E417 /* render_on_GLFW.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_on_GLFW.c; path = ../../../C_src/KEMO_GLUT/render_on_GLFW.c; sourceTree = "<group>"; };
+		18DA70202C00594200D0E417 /* kemoview_FFMPEG_encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_FFMPEG_encoder.h; path = ../../../C_src/KEMO_GLUT/kemoview_FFMPEG_encoder.h; sourceTree = "<group>"; };
+		18DA70212C00594200D0E417 /* kemoview_FFMPEG_encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_FFMPEG_encoder.c; path = ../../../C_src/KEMO_GLUT/kemoview_FFMPEG_encoder.c; sourceTree = "<group>"; };
 		18EAA6CA2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pthread_MAP_patches_to_buf.c; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.c; sourceTree = "<group>"; };
 		18EAA6CD2BFBBE92004BE670 /* pthread_MAP_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pthread_MAP_patches_to_buf.h; path = ../../../C_src/KEMO_GL/pthread_MAP_patches_to_buf.h; sourceTree = "<group>"; };
 		18EAA6CE2BFC2A6E004BE670 /* kemoview_gtk_lighting_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_lighting_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_lighting_menu.c; sourceTree = "<group>"; };
@@ -897,6 +934,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18DA70102BFFEADD00D0E417 /* libavcodec.61.dylib in Frameworks */,
 				1899DCFD2BF50A3D0041DE84 /* libcairo-gobject.2.dylib in Frameworks */,
 				1899DD052BF50A930041DE84 /* libharfbuzz.dylib in Frameworks */,
 				1899DCF32BF509EA0041DE84 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
@@ -906,6 +944,7 @@
 				1899DCFF2BF50A3D0041DE84 /* libcairo.2.dylib in Frameworks */,
 				1899DCF62BF50A0F0041DE84 /* libglib-2.0.dylib in Frameworks */,
 				18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */,
+				18DA700B2BFFE7EF00D0E417 /* libavformat.dylib in Frameworks */,
 				1899DCE72BF509960041DE84 /* libgtk-3.dylib in Frameworks */,
 				1899DCED2BF509C30041DE84 /* libgio-2.0.dylib in Frameworks */,
 				1809BC722B8FDD8A0008A294 /* libz.tbd in Frameworks */,
@@ -914,6 +953,7 @@
 				18D822272BE44E400067B954 /* CoreServices.framework in Frameworks */,
 				1899DD022BF50A5D0041DE84 /* libatk-1.0.dylib in Frameworks */,
 				1899DCF92BF50A1F0041DE84 /* libglfw.3.dylib in Frameworks */,
+				18DA700C2BFFE7EF00D0E417 /* libswscale.dylib in Frameworks */,
 				1899DCEA2BF509B40041DE84 /* libgdk-3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1199,8 +1239,6 @@
 				1809BEC22B8FF9110008A294 /* draw_coastline.h */,
 				1809BF0E2B8FF9140008A294 /* draw_colorbar_gl.c */,
 				1809BF0A2B8FF9140008A294 /* draw_colorbar_gl.h */,
-				1809BEE82B8FF9130008A294 /* draw_fieldlines.c */,
-				1809BECE2B8FF9120008A294 /* draw_fieldlines.h */,
 				1809BEE62B8FF9130008A294 /* draw_map_4_PSF.c */,
 				1809BEFB2B8FF9140008A294 /* draw_map_4_PSF.h */,
 				1809BF1B2B8FF9150008A294 /* draw_patch_4_mesh_c.c */,
@@ -1230,6 +1268,18 @@
 				1809BECA2B8FF9120008A294 /* m_kemoview_mesh.h */,
 				1809BEC92B8FF9120008A294 /* m_kemoview_object_buffers.c */,
 				1809BEE42B8FF9130008A294 /* m_kemoview_object_buffers.h */,
+				18DA6FE52BFE6BF700D0E417 /* m_kemoview_map_buffers.c */,
+				18DA6FE42BFE6BF000D0E417 /* m_kemoview_map_buffers.h */,
+				18DA6FDA2BFE668500D0E417 /* m_kemoview_mesh_buffers.c */,
+				18DA6FDD2BFE668B00D0E417 /* m_kemoview_mesh_buffers.h */,
+				18DA6FF02BFE841500D0E417 /* m_kemoview_PSF_buffers.c */,
+				18DA6FF32BFE842200D0E417 /* m_kemoview_PSF_buffers.h */,
+				18DA6FE92BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c */,
+				18DA6FE82BFE787B00D0E417 /* m_kemoview_PSF_line_buffers.h */,
+				18DA6FF72BFE874700D0E417 /* m_kemoview_fieldline_buffers.c */,
+				18DA6FF82BFE874700D0E417 /* m_kemoview_fieldline_buffers.h */,
+				18DA6FD62BFE610900D0E417 /* m_kemoview_message_buffers.c */,
+				18DA6FD92BFE611400D0E417 /* m_kemoview_message_buffers.h */,
 				1809BF032B8FF9140008A294 /* m_kemoview_psf_menu.c */,
 				1809BEDA2B8FF9120008A294 /* m_kemoview_psf_menu.h */,
 				1809BED22B8FF9120008A294 /* m_kemoview_psf.c */,
@@ -1357,6 +1407,9 @@
 		18A91E0724B9250500D30C46 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18DA700F2BFFEADD00D0E417 /* libavcodec.61.dylib */,
+				18DA70082BFFE7EE00D0E417 /* libavformat.dylib */,
+				18DA70092BFFE7EE00D0E417 /* libswscale.dylib */,
 				18D824992BE49FEF0067B954 /* libpthread.tbd */,
 				18D822282BE472390067B954 /* Accelerate.framework */,
 				18D822262BE44E400067B954 /* CoreServices.framework */,
@@ -1396,12 +1449,12 @@
 				18EAA6E42BFCEFD2004BE670 /* kemoview_gtk_Fline_window.h */,
 				18EAA6E32BFCEFD2004BE670 /* kemoview_gtk_PSF_window.c */,
 				18EAA6E52BFCEFD2004BE670 /* kemoview_gtk_PSF_window.h */,
-				18A91E6C24B9318500D30C46 /* kemoview_fileselector_gtk.c */,
-				18A91E6124B9318500D30C46 /* kemoview_fileselector_gtk.h */,
 				18A91E6624B9318500D30C46 /* kemoview_gtk_axis_menu.c */,
 				18A91E4F24B9318500D30C46 /* kemoview_gtk_axis_menu.h */,
 				18A91E6324B9318500D30C46 /* kemoview_gtk_evolution_menu.c */,
 				18A91E5124B9318500D30C46 /* kemoview_gtk_evolution_menu.h */,
+				18DA70142C003A0400D0E417 /* kemoview_gtk_fileselector.c */,
+				18DA70152C003A0400D0E417 /* kemoview_gtk_fileselector.h */,
 				18A91E4A24B9318500D30C46 /* kemoview_gtk_fieldline_menu.c */,
 				18A91E5D24B9318500D30C46 /* kemoview_gtk_fieldline_menu.h */,
 				18A91E7324B9318500D30C46 /* kemoview_gtk_fline_selectors.c */,
@@ -1440,7 +1493,6 @@
 				18EAA6D62BFC2A70004BE670 /* kemoview_gtk_shading_mode_menu.h */,
 				18EAA6D02BFC2A6F004BE670 /* kemoview_gtk_tube_pref_menu.c */,
 				18EAA6D72BFC2A70004BE670 /* kemoview_gtk_tube_pref_menu.h */,
-				18A91E6024B9318500D30C46 /* t_ctl_data_4_kemoview_mesh_c.h */,
 				18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */,
 				18A91E6924B9318500D30C46 /* tree_view_4_domain_viewer.h */,
 				18A91E4D24B9318500D30C46 /* tree_view_4_ele_group_viewer.c */,
@@ -1457,6 +1509,12 @@
 				18A91E6F24B9318500D30C46 /* tree_view_kemoview_colormap.h */,
 				18A91E4E24B9318500D30C46 /* view_modifier_glfw.c */,
 				18A91E7024B9318500D30C46 /* view_modifier_glfw.h */,
+				18DA70182C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c */,
+				18DA70192C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.h */,
+				18DA701B2C00591700D0E417 /* render_on_GLFW.c */,
+				18DA701A2C00591700D0E417 /* render_on_GLFW.h */,
+				18DA70212C00594200D0E417 /* kemoview_FFMPEG_encoder.c */,
+				18DA70202C00594200D0E417 /* kemoview_FFMPEG_encoder.h */,
 			);
 			name = KEMO_GLUT;
 			sourceTree = "<group>";
@@ -1547,6 +1605,7 @@
 				1809BF8C2B8FF9160008A294 /* set_PSF_isolines_to_buf.c in Sources */,
 				1809BD332B8FF1E50008A294 /* m_read_text_to_character.c in Sources */,
 				1809BD092B8FF1E50008A294 /* t_surf_edge_hash_c.c in Sources */,
+				18DA6FDC2BFE668500D0E417 /* m_kemoview_mesh_buffers.c in Sources */,
 				1809BD232B8FF1E50008A294 /* set_surface_mesh_data.c in Sources */,
 				1809BF502B8FF9160008A294 /* m_kemoview_fline_menu.c in Sources */,
 				1809BFAC2B8FFCCE0008A294 /* t_control_real2_IO.c in Sources */,
@@ -1558,6 +1617,7 @@
 				1809BF942B8FF9160008A294 /* write_modelview_matrix.c in Sources */,
 				1809BC562B8FDD8A0008A294 /* kemoview_gtk_PSF_menu.c in Sources */,
 				1809BE2B2B8FF4250008A294 /* write_gl_window_to_file.c in Sources */,
+				18DA6FFA2BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */,
 				1809BFBC2B8FFD4F0008A294 /* t_control_chara_int_IO.c in Sources */,
 				1809BC572B8FDD8A0008A294 /* tree_view_4_domain_viewer.c in Sources */,
 				1809BF422B8FF9160008A294 /* kemoviewer_base.c in Sources */,
@@ -1580,6 +1640,7 @@
 				1809BE272B8FF4250008A294 /* shaders.c in Sources */,
 				1809BD432B8FF1E50008A294 /* m_psf_data_4_viewer_c.c in Sources */,
 				1809BF322B8FF9160008A294 /* icosahedron_c.c in Sources */,
+				18DA701F2C00591700D0E417 /* render_on_GLFW.c in Sources */,
 				1809BDBA2B8FF30F0008A294 /* t_control_c_lists.c in Sources */,
 				1809BD2B2B8FF1E50008A294 /* set_map_data_4_viewer_c.c in Sources */,
 				1809BC592B8FDD8A0008A294 /* kemoview_gtk_evolution_menu.c in Sources */,
@@ -1621,7 +1682,6 @@
 				18EAA6CC2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */,
 				1809BF5A2B8FF9160008A294 /* set_psf_texture_by_png.c in Sources */,
 				1809BD172B8FF1E50008A294 /* t_all_field_control_c.c in Sources */,
-				1809BF542B8FF9160008A294 /* draw_fieldlines.c in Sources */,
 				1809BD132B8FF1E50008A294 /* numbers_to_bin_c.c in Sources */,
 				1809BD372B8FF1E50008A294 /* calypso_param_c.c in Sources */,
 				1899DCE12BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */,
@@ -1658,20 +1718,25 @@
 				1809BF442B8FF9160008A294 /* coastline_c.c in Sources */,
 				1809BD452B8FF1E50008A294 /* take_normal_surf_mesh_c.c in Sources */,
 				1809BFD82B8FFF180008A294 /* tree_view_chara_int_GTK.c in Sources */,
+				18DA6FEB2BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */,
 				1809BCFF2B8FF1E50008A294 /* take_normal_psf_c.c in Sources */,
 				1809BF862B8FF9160008A294 /* draw_patch_4_mesh_c.c in Sources */,
 				1809BF522B8FF9160008A294 /* draw_map_4_PSF.c in Sources */,
 				1809BF8E2B8FF9160008A294 /* m_transfer_matrices.c in Sources */,
+				18DA6FE72BFE6BF700D0E417 /* m_kemoview_map_buffers.c in Sources */,
 				1809BC622B8FDD8A0008A294 /* kemoview_gtk_fieldline_menu.c in Sources */,
 				1809BF4A2B8FF9160008A294 /* set_kemoviewer_ucd_data.c in Sources */,
 				1809BD052B8FF1E50008A294 /* read_image_2_bmp.c in Sources */,
 				1809BF682B8FF9160008A294 /* set_hex_tube_to_buf.c in Sources */,
+				18DA70232C00594200D0E417 /* kemoview_FFMPEG_encoder.c in Sources */,
+				18DA6FD82BFE610900D0E417 /* m_kemoview_message_buffers.c in Sources */,
 				183870A12BD1D2B400933367 /* colormap_red_blue_c.c in Sources */,
 				1809BF562B8FF9160008A294 /* set_coastline_to_buf.c in Sources */,
 				18EAC1A32BF7F4E8002CEB77 /* set_primitives_to_gl_buffer.c in Sources */,
 				1809BC632B8FDD8A0008A294 /* kemoview_gtk_mesh_menu.c in Sources */,
 				183870A52BD1D2B400933367 /* colormap_space_c.c in Sources */,
 				1809BF762B8FF9160008A294 /* draw_colorbar_gl.c in Sources */,
+				18DA6FF22BFE841500D0E417 /* m_kemoview_PSF_buffers.c in Sources */,
 				1809BC642B8FDD8A0008A294 /* tree_view_4_ele_group_viewer.c in Sources */,
 				1809BFB42B8FFD170008A294 /* t_control_real3_IO.c in Sources */,
 				1809BF402B8FF9160008A294 /* set_texture_4_psf.c in Sources */,
@@ -1683,7 +1748,6 @@
 				1809BC652B8FDD8A0008A294 /* tree_view_4_nod_group_viewer.c in Sources */,
 				1809BF362B8FF9160008A294 /* set_each_fline_parameters.c in Sources */,
 				1809BD0F2B8FF1E50008A294 /* read_psf_bin_data_gz_c.c in Sources */,
-				1809BC662B8FDD8A0008A294 /* kemoview_fileselector_gtk.c in Sources */,
 				183870A72BD1D2B400933367 /* colormap_molten_metal_c.c in Sources */,
 				1809BD1B2B8FF1E50008A294 /* m_map_data_4_viewer_c.c in Sources */,
 				18EAA6E92BFCEFD2004BE670 /* kemoview_gtk_PSF_window.c in Sources */,
@@ -1696,6 +1760,7 @@
 				183870A32BD1D2B400933367 /* colormap_orange_cyan_c.c in Sources */,
 				1809BC692B8FDD8A0008A294 /* kemoview_gtk_PSF_isoline_menu.c in Sources */,
 				1809BD1D2B8FF1E50008A294 /* read_image_2_png.c in Sources */,
+				18DA70172C003A0500D0E417 /* kemoview_gtk_fileselector.c in Sources */,
 				1809BE212B8FF4250008A294 /* drawcube_gl.c in Sources */,
 				1809BCFB2B8FF1E50008A294 /* read_psf_data_viewer_c.c in Sources */,
 				1809BD152B8FF1E50008A294 /* set_new_patch_4_map_c.c in Sources */,
@@ -1716,6 +1781,7 @@
 				1809BCEF2B8FF1E50008A294 /* skip_comment_c.c in Sources */,
 				1809BD112B8FF1E50008A294 /* calypso_zlib_access_c.c in Sources */,
 				18EAA6DD2BFC2A70004BE670 /* kemoview_gtk_tube_pref_menu.c in Sources */,
+				18DA701D2C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c in Sources */,
 				1809BF822B8FF9160008A294 /* select_read_psf_viewer_c.c in Sources */,
 				183870AB2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */,
 				1809BC6C2B8FDD8A0008A294 /* kemoview_gtk_rotation_menu.c in Sources */,
@@ -1751,6 +1817,7 @@
 				1809BF8B2B8FF9160008A294 /* set_PSF_isolines_to_buf.c in Sources */,
 				1809BD322B8FF1E50008A294 /* m_read_text_to_character.c in Sources */,
 				1809BD082B8FF1E50008A294 /* t_surf_edge_hash_c.c in Sources */,
+				18DA6FDB2BFE668500D0E417 /* m_kemoview_mesh_buffers.c in Sources */,
 				1809BD222B8FF1E50008A294 /* set_surface_mesh_data.c in Sources */,
 				1809BF4F2B8FF9160008A294 /* m_kemoview_fline_menu.c in Sources */,
 				1809BFAB2B8FFCCE0008A294 /* t_control_real2_IO.c in Sources */,
@@ -1762,6 +1829,7 @@
 				1809BF932B8FF9160008A294 /* write_modelview_matrix.c in Sources */,
 				18A91E7D24B9318500D30C46 /* kemoview_gtk_PSF_menu.c in Sources */,
 				1809BE2A2B8FF4250008A294 /* write_gl_window_to_file.c in Sources */,
+				18DA6FF92BFE874800D0E417 /* m_kemoview_fieldline_buffers.c in Sources */,
 				1809BFBB2B8FFD4F0008A294 /* t_control_chara_int_IO.c in Sources */,
 				18A91E8D24B9318500D30C46 /* tree_view_4_domain_viewer.c in Sources */,
 				1809BF412B8FF9160008A294 /* kemoviewer_base.c in Sources */,
@@ -1784,6 +1852,7 @@
 				1809BE262B8FF4250008A294 /* shaders.c in Sources */,
 				1809BD422B8FF1E50008A294 /* m_psf_data_4_viewer_c.c in Sources */,
 				1809BF312B8FF9160008A294 /* icosahedron_c.c in Sources */,
+				18DA701E2C00591700D0E417 /* render_on_GLFW.c in Sources */,
 				1809BDB92B8FF30F0008A294 /* t_control_c_lists.c in Sources */,
 				1809BD2A2B8FF1E50008A294 /* set_map_data_4_viewer_c.c in Sources */,
 				18A91E8124B9318500D30C46 /* kemoview_gtk_evolution_menu.c in Sources */,
@@ -1825,7 +1894,6 @@
 				18EAA6CB2BFBBE7C004BE670 /* pthread_MAP_patches_to_buf.c in Sources */,
 				1809BF592B8FF9160008A294 /* set_psf_texture_by_png.c in Sources */,
 				1809BD162B8FF1E50008A294 /* t_all_field_control_c.c in Sources */,
-				1809BF532B8FF9160008A294 /* draw_fieldlines.c in Sources */,
 				1809BD122B8FF1E50008A294 /* numbers_to_bin_c.c in Sources */,
 				1809BD362B8FF1E50008A294 /* calypso_param_c.c in Sources */,
 				1899DCE02BF5087A0041DE84 /* const_mesh_patch_table_for_gl.c in Sources */,
@@ -1862,20 +1930,25 @@
 				1809BF432B8FF9160008A294 /* coastline_c.c in Sources */,
 				1809BD442B8FF1E50008A294 /* take_normal_surf_mesh_c.c in Sources */,
 				1809BFD72B8FFF180008A294 /* tree_view_chara_int_GTK.c in Sources */,
+				18DA6FEA2BFE788400D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */,
 				1809BCFE2B8FF1E50008A294 /* take_normal_psf_c.c in Sources */,
 				1809BF852B8FF9160008A294 /* draw_patch_4_mesh_c.c in Sources */,
 				1809BF512B8FF9160008A294 /* draw_map_4_PSF.c in Sources */,
 				1809BF8D2B8FF9160008A294 /* m_transfer_matrices.c in Sources */,
+				18DA6FE62BFE6BF700D0E417 /* m_kemoview_map_buffers.c in Sources */,
 				18A91E7924B9318500D30C46 /* kemoview_gtk_fieldline_menu.c in Sources */,
 				1809BF492B8FF9160008A294 /* set_kemoviewer_ucd_data.c in Sources */,
 				1809BD042B8FF1E50008A294 /* read_image_2_bmp.c in Sources */,
 				1809BF672B8FF9160008A294 /* set_hex_tube_to_buf.c in Sources */,
+				18DA70222C00594200D0E417 /* kemoview_FFMPEG_encoder.c in Sources */,
+				18DA6FD72BFE610900D0E417 /* m_kemoview_message_buffers.c in Sources */,
 				183870A02BD1D2B400933367 /* colormap_red_blue_c.c in Sources */,
 				1809BF552B8FF9160008A294 /* set_coastline_to_buf.c in Sources */,
 				18EAC1A22BF7F4E8002CEB77 /* set_primitives_to_gl_buffer.c in Sources */,
 				18A91E8224B9318500D30C46 /* kemoview_gtk_mesh_menu.c in Sources */,
 				183870A42BD1D2B400933367 /* colormap_space_c.c in Sources */,
 				1809BF752B8FF9160008A294 /* draw_colorbar_gl.c in Sources */,
+				18DA6FF12BFE841500D0E417 /* m_kemoview_PSF_buffers.c in Sources */,
 				18A91E7B24B9318500D30C46 /* tree_view_4_ele_group_viewer.c in Sources */,
 				1809BFB32B8FFD170008A294 /* t_control_real3_IO.c in Sources */,
 				1809BF3F2B8FF9160008A294 /* set_texture_4_psf.c in Sources */,
@@ -1887,7 +1960,6 @@
 				18A91E8524B9318500D30C46 /* tree_view_4_nod_group_viewer.c in Sources */,
 				1809BF352B8FF9160008A294 /* set_each_fline_parameters.c in Sources */,
 				1809BD0E2B8FF1E50008A294 /* read_psf_bin_data_gz_c.c in Sources */,
-				18A91E8624B9318500D30C46 /* kemoview_fileselector_gtk.c in Sources */,
 				183870A62BD1D2B400933367 /* colormap_molten_metal_c.c in Sources */,
 				1809BD1A2B8FF1E50008A294 /* m_map_data_4_viewer_c.c in Sources */,
 				18EAA6E82BFCEFD2004BE670 /* kemoview_gtk_PSF_window.c in Sources */,
@@ -1900,6 +1972,7 @@
 				183870A22BD1D2B400933367 /* colormap_orange_cyan_c.c in Sources */,
 				18A91E7A24B9318500D30C46 /* kemoview_gtk_PSF_isoline_menu.c in Sources */,
 				1809BD1C2B8FF1E50008A294 /* read_image_2_png.c in Sources */,
+				18DA70162C003A0500D0E417 /* kemoview_gtk_fileselector.c in Sources */,
 				1809BE202B8FF4250008A294 /* drawcube_gl.c in Sources */,
 				1809BCFA2B8FF1E50008A294 /* read_psf_data_viewer_c.c in Sources */,
 				1809BD142B8FF1E50008A294 /* set_new_patch_4_map_c.c in Sources */,
@@ -1920,6 +1993,7 @@
 				1809BCEE2B8FF1E50008A294 /* skip_comment_c.c in Sources */,
 				1809BD102B8FF1E50008A294 /* calypso_zlib_access_c.c in Sources */,
 				18EAA6DC2BFC2A70004BE670 /* kemoview_gtk_tube_pref_menu.c in Sources */,
+				18DA701C2C00591700D0E417 /* movie_from_GLFW_by_FFMPEG.c in Sources */,
 				1809BF812B8FF9160008A294 /* select_read_psf_viewer_c.c in Sources */,
 				183870AA2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */,
 				18A91E8C24B9318500D30C46 /* kemoview_gtk_rotation_menu.c in Sources */,
@@ -1968,7 +2042,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2004,6 +2078,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2027,6 +2102,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2056,7 +2132,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2092,6 +2168,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2115,6 +2192,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2144,7 +2222,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2180,6 +2258,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2203,6 +2282,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2232,7 +2312,7 @@
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/include/gtk-3.0",
 					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
 					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
@@ -2268,6 +2348,7 @@
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
 					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2291,6 +2372,7 @@
 					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 					"$(SDKROOT)/usr/lib/system",
 					/opt/homebrew/lib,
+					/opt/homebrew/Cellar/ffmpeg/7.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2342,6 +2424,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PNG_OUTPUT,
 					ZLIB_IO,
+					FFMPEG,
 				);
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2406,6 +2489,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PNG_OUTPUT,
 					ZLIB_IO,
+					FFMPEG,
 				);
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2593,6 +2677,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PNG_OUTPUT,
 					ZLIB_IO,
+					FFMPEG,
 				);
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2715,6 +2800,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					PNG_OUTPUT,
 					ZLIB_IO,
+					FFMPEG,
 				);
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

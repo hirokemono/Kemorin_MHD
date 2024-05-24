@@ -1,5 +1,5 @@
 /*
- *  kemoview_fileselector_gtk.c
+ *  kemoview_gtk_fileselector.c
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
@@ -7,7 +7,7 @@
  *
  */
 
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
 GtkWidget *filew;
 GtkWidget *fmtw;
@@ -69,7 +69,7 @@ int kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	iflag_set = IZERO;
 	/* generate file selection widget*/
 	
-	filew = gtk_file_chooser_dialog_new("Select File", GTK_WINDOW(parent), action,
+	filew = gtk_file_chooser_dialog_new("Save File", GTK_WINDOW(parent), action,
 				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 	
 	gtk_widget_show_all(filew);

@@ -20,13 +20,9 @@
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_routines.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct psf_surface_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;

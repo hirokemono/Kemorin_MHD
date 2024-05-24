@@ -19,17 +19,10 @@
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_viewer_colormap.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_viewmatrix_menu.h"
 
 #include "view_modifier_glfw.h"
-
-#ifdef GLFW3
-    #include "view_modifier_glfw.h"
-#else
-    #include "view_modifier_gtk.h"
-#endif
-
 
 /* prototypes */
 

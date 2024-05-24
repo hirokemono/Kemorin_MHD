@@ -141,7 +141,7 @@
 		18D7E7521562D359009B05FF /* coastline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69D1562D359009B05FF /* coastline_c.c */; };
 		18D7E7541562D359009B05FF /* draw_coastline.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A11562D359009B05FF /* draw_coastline.c */; };
 		18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */; };
-		18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* draw_fieldlines.c */; };
+		18D7E7561562D359009B05FF /* m_kemoview_fieldline_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */; };
 		18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */; };
 		18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */; };
 		18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C31562D359009B05FF /* icosahedron_c.c */; };
@@ -175,6 +175,11 @@
 		18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7261562D359009B05FF /* RGBAMapController.m */; };
 		18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */; };
 		18D95C482B0BB745001A801B /* TexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D95C472B0BB745001A801B /* TexureShader.metal */; };
+		18DA6FD52BFE60A400D0E417 /* m_kemoview_message_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FD42BFE60A400D0E417 /* m_kemoview_message_buffers.c */; };
+		18DA6FDF2BFE66D700D0E417 /* m_kemoview_mesh_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FDE2BFE66D700D0E417 /* m_kemoview_mesh_buffers.c */; };
+		18DA6FE32BFE6BC100D0E417 /* m_kemoview_map_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FE22BFE6BC100D0E417 /* m_kemoview_map_buffers.c */; };
+		18DA6FED2BFE78E800D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FEC2BFE78E800D0E417 /* m_kemoview_PSF_line_buffers.c */; };
+		18DA6FF62BFE845C00D0E417 /* m_kemoview_PSF_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DA6FF52BFE845C00D0E417 /* m_kemoview_PSF_buffers.c */; };
 		18DD11252BF0100C009C0A06 /* pthread_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD11232BF00E89009C0A06 /* pthread_each_isoline_to_buf.c */; };
 		18DD11282BF014ED009C0A06 /* pthread_PSF_patches_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD11272BF014ED009C0A06 /* pthread_PSF_patches_to_buf.c */; };
 		18DD112B2BF0192D009C0A06 /* pthread_PSF_arrows_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18DD112A2BF0192D009C0A06 /* pthread_PSF_arrows_to_buf.c */; };
@@ -453,8 +458,8 @@
 		18D7E6A21562D359009B05FF /* draw_coastline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_coastline.h; sourceTree = "<group>"; };
 		18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_colorbar_gl.c; sourceTree = "<group>"; };
 		18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_colorbar_gl.h; sourceTree = "<group>"; };
-		18D7E6A51562D359009B05FF /* draw_fieldlines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_fieldlines.c; sourceTree = "<group>"; };
-		18D7E6A61562D359009B05FF /* draw_fieldlines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_fieldlines.h; sourceTree = "<group>"; };
+		18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fieldline_buffers.c; sourceTree = "<group>"; };
+		18D7E6A61562D359009B05FF /* m_kemoview_fieldline_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fieldline_buffers.h; sourceTree = "<group>"; };
 		18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patch_4_mesh_c.c; sourceTree = "<group>"; };
 		18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_patch_4_mesh_c.h; sourceTree = "<group>"; };
 		18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patches_4_PSF.c; sourceTree = "<group>"; };
@@ -522,6 +527,16 @@
 		18D7E7291562D359009B05FF /* SurfaceGroupTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurfaceGroupTableController.h; sourceTree = "<group>"; };
 		18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurfaceGroupTableController.m; sourceTree = "<group>"; };
 		18D95C472B0BB745001A801B /* TexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = TexureShader.metal; path = Metal/TexureShader.metal; sourceTree = "<group>"; };
+		18DA6FD32BFE608F00D0E417 /* m_kemoview_message_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_message_buffers.h; sourceTree = "<group>"; };
+		18DA6FD42BFE60A400D0E417 /* m_kemoview_message_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_message_buffers.c; sourceTree = "<group>"; };
+		18DA6FDE2BFE66D700D0E417 /* m_kemoview_mesh_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_mesh_buffers.c; sourceTree = "<group>"; };
+		18DA6FE02BFE66DD00D0E417 /* m_kemoview_mesh_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_mesh_buffers.h; sourceTree = "<group>"; };
+		18DA6FE22BFE6BC100D0E417 /* m_kemoview_map_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_map_buffers.c; sourceTree = "<group>"; };
+		18DA6FEC2BFE78E800D0E417 /* m_kemoview_PSF_line_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_PSF_line_buffers.c; sourceTree = "<group>"; };
+		18DA6FEE2BFE78F300D0E417 /* m_kemoview_PSF_line_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_PSF_line_buffers.h; sourceTree = "<group>"; };
+		18DA6FEF2BFE790900D0E417 /* m_kemoview_map_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_map_buffers.h; sourceTree = "<group>"; };
+		18DA6FF42BFE845300D0E417 /* m_kemoview_PSF_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_PSF_buffers.h; sourceTree = "<group>"; };
+		18DA6FF52BFE845C00D0E417 /* m_kemoview_PSF_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_PSF_buffers.c; sourceTree = "<group>"; };
 		18DD11232BF00E89009C0A06 /* pthread_each_isoline_to_buf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pthread_each_isoline_to_buf.c; sourceTree = "<group>"; };
 		18DD11242BF00E92009C0A06 /* pthread_each_isoline_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_each_isoline_to_buf.h; sourceTree = "<group>"; };
 		18DD11262BF014E2009C0A06 /* pthread_PSF_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_PSF_patches_to_buf.h; sourceTree = "<group>"; };
@@ -826,8 +841,6 @@
 				18D7E6A21562D359009B05FF /* draw_coastline.h */,
 				18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */,
 				18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */,
-				18D7E6A51562D359009B05FF /* draw_fieldlines.c */,
-				18D7E6A61562D359009B05FF /* draw_fieldlines.h */,
 				188BA7592306BB0400348842 /* draw_map_4_PSF.c */,
 				188BA75A2306BB0500348842 /* draw_map_4_PSF.h */,
 				18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */,
@@ -867,6 +880,18 @@
 				188C941E230DA8C200A4DB14 /* set_each_fline_parameters.h */,
 				180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */,
 				180999A22B13C5CF00F83574 /* m_kemoview_object_buffers.h */,
+				18DA6FF52BFE845C00D0E417 /* m_kemoview_PSF_buffers.c */,
+				18DA6FF42BFE845300D0E417 /* m_kemoview_PSF_buffers.h */,
+				18DA6FEC2BFE78E800D0E417 /* m_kemoview_PSF_line_buffers.c */,
+				18DA6FEE2BFE78F300D0E417 /* m_kemoview_PSF_line_buffers.h */,
+				18DA6FDE2BFE66D700D0E417 /* m_kemoview_mesh_buffers.c */,
+				18DA6FE02BFE66DD00D0E417 /* m_kemoview_mesh_buffers.h */,
+				18DA6FE22BFE6BC100D0E417 /* m_kemoview_map_buffers.c */,
+				18DA6FEF2BFE790900D0E417 /* m_kemoview_map_buffers.h */,
+				18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */,
+				18D7E6A61562D359009B05FF /* m_kemoview_fieldline_buffers.h */,
+				18DA6FD42BFE60A400D0E417 /* m_kemoview_message_buffers.c */,
+				18DA6FD32BFE608F00D0E417 /* m_kemoview_message_buffers.h */,
 				180999AB2B14576100F83574 /* m_vertex_buffer.c */,
 				180999AA2B14576100F83574 /* m_vertex_buffer.h */,
 				18D7E6CE1562D359009B05FF /* m_kemoviewer_structure.c */,
@@ -1205,6 +1230,7 @@
 				1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */,
 				18D7E7451562D359009B05FF /* set_new_patch_4_map_c.c in Sources */,
 				18DD11352BF047D6009C0A06 /* pthread_mesh_patch_to_buf.c in Sources */,
+				18DA6FD52BFE60A400D0E417 /* m_kemoview_message_buffers.c in Sources */,
 				18D7E7461562D359009B05FF /* set_normal_on_node_4_mesh.c in Sources */,
 				1895A3382BDC625000701DEB /* colormap_red_blue.metal in Sources */,
 				18DD11312BF03904009C0A06 /* const_mesh_patch_table_for_gl.c in Sources */,
@@ -1244,8 +1270,9 @@
 				18D7E7521562D359009B05FF /* coastline_c.c in Sources */,
 				18D7E7541562D359009B05FF /* draw_coastline.c in Sources */,
 				188FFD9923092C8C00F5A0DE /* set_map_isolines_to_buf.c in Sources */,
+				18DA6FF62BFE845C00D0E417 /* m_kemoview_PSF_buffers.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
-				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,
+				18D7E7561562D359009B05FF /* m_kemoview_fieldline_buffers.c in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,
@@ -1260,6 +1287,7 @@
 				188C9428230DDC7B00A4DB14 /* m_kemoviewer_data.c in Sources */,
 				188FFD962308F9B200F5A0DE /* set_PSF_isolines_to_buf.c in Sources */,
 				1895A3352BDC625000701DEB /* colormap_grayscale.metal in Sources */,
+				18DA6FDF2BFE66D700D0E417 /* m_kemoview_mesh_buffers.c in Sources */,
 				182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */,
 				18D7E76F1562D359009B05FF /* psf_data_array_manager.c in Sources */,
 				183870892BCF4A7E00933367 /* colormap_space_c.c in Sources */,
@@ -1274,6 +1302,7 @@
 				1895A3442BE28BF700701DEB /* bitonic_sort_pthread.c in Sources */,
 				18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				185CB9C8212F593D00BB3C0B /* t_control_int_real_IO.c in Sources */,
+				18DA6FED2BFE78E800D0E417 /* m_kemoview_PSF_line_buffers.c in Sources */,
 				18D7E7751562D359009B05FF /* set_kemoviewer_ucd_data.c in Sources */,
 				1895A33A2BDC625000701DEB /* colormap_space.metal in Sources */,
 				18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */,
@@ -1284,6 +1313,7 @@
 				18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */,
 				1885C3632B06B81600A6AED5 /* PhongTexureShader.metal in Sources */,
 				18D7E7781562D359009B05FF /* trackball.c in Sources */,
+				18DA6FE32BFE6BC100D0E417 /* m_kemoview_map_buffers.c in Sources */,
 				18263FED2AFCB2E900AA8E72 /* PhongShader.metal in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
@@ -1366,7 +1396,7 @@
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
@@ -1397,7 +1427,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
@@ -1443,7 +1473,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_VERSION = "";
@@ -1488,7 +1518,7 @@
 				GCC_ENABLE_OBJC_GC = "";
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

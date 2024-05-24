@@ -28,26 +28,27 @@
 
 - (void) setMapMBuffers:(id<MTLDevice> *) device
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
+            node_buffer:(struct gl_strided_buffer *) PSF_node_buf
+            map_buffers:(struct MAP_buffers *) MAP_bufs
 {
     kemoView2DMetalBufs->numMapNodeVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->PSF_node_buf
+                                                                            buffer:PSF_node_buf
                                                                             vertex:&(kemoView2DMetalBufs->mapNodeVertice)];
     kemoView2DMetalBufs->numMapSolidIndices = [_kemo2DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->MAP_solid_index_buf
+                                                                          indexbuf:MAP_bufs->MAP_solid_index_buf
                                                                              index:&(kemoView2DMetalBufs->mapSolidIndices)];
     
     kemoView2DMetalBufs->numMapSolidVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_solid_buf
+                                                                             buffer:MAP_bufs->MAP_solid_buf
                                                                              vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
     kemoView2DMetalBufs->numMapinesVertice =   [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_isoline_buf
+                                                                             buffer:MAP_bufs->MAP_isoline_buf
                                                                              vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
     kemoView2DMetalBufs->numCoastLineVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_line_buf
+                                                                             buffer:MAP_bufs->MAP_coast_line_buf
                                                                              vertex:&(kemoView2DMetalBufs->coastLineVertice)];
     kemoView2DMetalBufs->numCoastTubeVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_tube_buf
+                                                                             buffer:MAP_bufs->MAP_coast_tube_buf
                                                                              vertex:&(kemoView2DMetalBufs->coastTubeVertice)];
 };
 
@@ -65,31 +66,31 @@
 
 - (void) setMsgMBuffers:(id<MTLDevice> *) device
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
+                buffers:(struct MESSAGE_buffers *) MESSAGE_bufs
 {
     kemoView2DMetalBufs->numColorBarVertice =    [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                               buffer:kemo_buffers->cbar_buf
+                                                                               buffer:MESSAGE_bufs->cbar_buf
                                                                                vertex:&(kemoView2DMetalBufs->colorBarVertice)];
     kemoView2DMetalBufs->numMinLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_min_buf
+                                                                               buffer:MESSAGE_bufs->cbar_min_buf
                                                                                vertex:&(kemoView2DMetalBufs->minLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->minLabelTexure)];
     kemoView2DMetalBufs->numMaxLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_max_buf
+                                                                               buffer:MESSAGE_bufs->cbar_max_buf
                                                                                vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->maxLabelTexure)];
     kemoView2DMetalBufs->numZeroLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_zero_buf
+                                                                               buffer:MESSAGE_bufs->cbar_zero_buf
                                                                                vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     
     kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->timelabel_buf
+                                                                               buffer:MESSAGE_bufs->timelabel_buf
                                                                                vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->timeLabelTexure)];
     
     kemoView2DMetalBufs->numMessageVertice =   [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->message_buf
+                                                                               buffer:MESSAGE_bufs->message_buf
                                                                                vertex:&(kemoView2DMetalBufs->messageVertice)
                                                                                texure:&(kemoView2DMetalBufs->messageTexure)];
     return;
@@ -471,14 +472,15 @@
 {
     [self setMapMBuffers:device
              metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
+             node_buffer:kemo_buffers->PSF_node_buf
+             map_buffers:kemo_buffers->MAP_bufs];
 }
 - (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
 {
     [self setMsgMBuffers:device
              metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
+                 buffers:kemo_buffers->MESSAGE_bufs];
     return;
 }
 

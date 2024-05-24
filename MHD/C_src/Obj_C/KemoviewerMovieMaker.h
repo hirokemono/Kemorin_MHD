@@ -56,6 +56,9 @@
 	NSInteger RotationAxisID;
 	NSInteger RotationIncrement;
 	IBOutlet id rotationAxis;
+    
+    NSInteger stepDisplayFlag;
+    CGFloat   stepToDisplay;
 }
 @property NSInteger MovieFormatFlag;
 @property NSInteger FramePerSecond;
@@ -68,6 +71,8 @@
 @property NSInteger NumTeetRotation;
 @property CGFloat   SnapshotFPS;
 @property CGFloat   AverageFPS;
+@property CGFloat   stepToDisplay;
+@property NSInteger stepDisplayFlag;
 
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;

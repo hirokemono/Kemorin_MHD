@@ -11,18 +11,19 @@
 #include <stdio.h>
 #include "set_cube_to_buf.h"
 #include "m_kemoview_psf_menu.h"
-#include "m_colorbar_buffer.h"
 #include "m_gl_transfer_matrix.h"
-#include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_kemoview_PSF_buffers.h"
+#include "m_kemoview_PSF_line_buffers.h"
+#include "m_kemoview_map_buffers.h"
+#include "m_kemoview_fieldline_buffers.h"
+#include "m_kemoview_mesh_buffers.h"
+#include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
 
 #include "draw_map_4_PSF.h"
-#include "draw_fieldlines.h"
-#include "draw_patch_4_mesh_c.h"
-#include "draw_colorbar_gl.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
 
@@ -31,51 +32,22 @@ struct kemoview_buffers{
     
     struct phong_lights *kemo_lights;
     
-    struct gl_strided_buffer *cube_buf;
-    struct gl_index_buffer *cube_index_buf;
-    
     struct gl_strided_buffer *PSF_node_buf;
-    struct gl_index_buffer *PSF_solid_index_buf;
-    struct gl_index_buffer *PSF_trns_index_buf;
-    struct gl_index_buffer *PSF_stxur_index_buf;
-    struct gl_index_buffer *PSF_ttxur_index_buf;
-
-    struct gl_strided_buffer *PSF_solid_buf;
-    struct gl_strided_buffer *PSF_trns_buf;
-    struct gl_strided_buffer *PSF_stxur_buf;
-    struct gl_strided_buffer *PSF_ttxur_buf;
-    struct gl_strided_buffer *PSF_arrow_buf;
+    struct PSF_solid_buffers *PSF_solids;
+    struct PSF_trans_buffers *PSF_transes;
+    struct PSF_line_buffers  *PSF_lines;
+    struct MAP_buffers       *MAP_bufs;
+    struct FieldLine_buffers *Fline_bufs;
     
-    long num_isoline_buf;
-    struct gl_strided_buffer *PSF_isoline_buf;
-    struct gl_strided_buffer *PSF_isotube_buf;
-
-    struct gl_strided_buffer *MAP_isoline_buf;
-    struct gl_strided_buffer *MAP_solid_buf;
-    struct gl_index_buffer *MAP_solid_index_buf;
-    
-    struct gl_strided_buffer *FLINE_line_buf;
-    struct gl_strided_buffer *FLINE_tube_buf;
-    
-    struct gl_strided_buffer *mesh_solid_buf;
-    struct gl_strided_buffer *mesh_grid_buf;
-    struct gl_strided_buffer *mesh_node_buf;
+    struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
     
-    struct gl_strided_buffer *coast_line_buf;
-    struct gl_strided_buffer *coast_tube_buf;
-
     struct gl_strided_buffer *axis_buf;
+    struct MESSAGE_buffers *MESSAGE_bufs;
+    
+    struct initial_cube_buffers *initial_bufs;
     
     struct gl_strided_buffer *screen_buf;
-    
-    struct gl_strided_buffer *cbar_buf;
-    
-    struct gl_textbox_buffer *cbar_min_buf;
-    struct gl_textbox_buffer *cbar_max_buf;
-    struct gl_textbox_buffer *cbar_zero_buf;
-    struct gl_textbox_buffer *timelabel_buf;
-    struct gl_textbox_buffer *message_buf;
 };
 
 

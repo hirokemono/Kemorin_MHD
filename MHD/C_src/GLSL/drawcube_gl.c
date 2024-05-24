@@ -9,6 +9,7 @@
 
 #include "drawcube_gl.h"
 
+
 static void light_for_initial_cube(struct initial_cube_lighting *init_light,
                                    struct kemoview_shaders *kemo_shaders){
     int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
@@ -31,11 +32,11 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 	return;
 };
 
-void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
+void set_initial_cube_VAO(struct initial_cube_buffers *initial_bufs,
                           struct VAO_ids *cube_VAO){
-    cube_VAO->npoint_draw = index_buf->ntot_vertex;
+    cube_VAO->npoint_draw = initial_bufs->cube_index_buf->ntot_vertex;
 	if(cube_VAO->npoint_draw <= 0) return;
-	cube_surf_VBO(cube_VAO, cube_buf, index_buf);
+	cube_surf_VBO(cube_VAO, initial_bufs->cube_buf, initial_bufs->cube_index_buf);
 	glBindVertexArray(0);
 	return;
 };

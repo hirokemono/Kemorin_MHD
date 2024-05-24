@@ -110,7 +110,8 @@ GtkWidget * init_lighting_frame(struct kemoviewer_type *kemo_sgl,
     
     
     GtkWidget * lighting_switch = gtk_switch_new();
-    gtk_switch_set_active(GTK_SWITCH(lighting_switch), kemoview_get_view_integer(LIGHTING_CHECK, kemo_sgl));
+    int iflag = kemoview_get_view_integer(kemo_sgl, LIGHTING_CHECK);
+    gtk_switch_set_active(GTK_SWITCH(lighting_switch), (gboolean) iflag);
     g_signal_connect(G_OBJECT(lighting_switch), "notify::active",
                      G_CALLBACK(light_chack_switch_CB), (gpointer) kemo_sgl);
 

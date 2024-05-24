@@ -17,7 +17,7 @@
 #include "const_viewer_menu_glut.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
 /* prototypes */
 

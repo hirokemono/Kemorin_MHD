@@ -95,7 +95,7 @@ static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
 
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
-	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	double gtk_floatvalue = - gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue, kemo_sgl);
 	
     draw_fast(kemo_sgl);
@@ -103,7 +103,7 @@ static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
-	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	double gtk_floatvalue = - gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 1, gtk_floatvalue, kemo_sgl);
 	
     draw_fast(kemo_sgl);

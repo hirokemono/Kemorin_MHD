@@ -19,14 +19,10 @@
 #include "m_kemoviewer_data.h"
 #include "tree_view_chara_int_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_routines.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct evolution_gtk_menu{
     int id_fmt_evo;
@@ -34,16 +30,17 @@ struct evolution_gtk_menu{
     int istart_evo;
     int iend_evo;
     int inc_evo;
+    int i_FPS;
     
     GtkWidget *switch_timelabel;
     GtkWidget *switch_fileindex;
     GtkWidget *spin_evo_start;
     GtkWidget *spin_evo_end;
     GtkWidget *spin_evo_increment;
-    
+    GtkWidget *spin_evo_FPS;
+
     GtkWidget *combobox_evo_fileformat;
     
-    GtkWidget *evoSelect_Button;
     GtkWidget *evoView_Button;
     GtkWidget *evoSave_Button;
     GtkWidget *entry_evo_file;

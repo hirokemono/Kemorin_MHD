@@ -61,13 +61,9 @@ void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
 
 void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
                               struct kemoviewer_gl_type *kemo_gl){
-    struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
-    draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl, anaglyph_image);
-
-    glDrawBuffer(GL_BACK);
-    move_draw_anaglyph_gl3(kemo_sgl, kemo_gl, anaglyph_image);
-    dealloc_kemoview_gl_texure(anaglyph_image);
+    select_modify_anaglyph(kemo_sgl, kemo_gl);
 };
+
 
 
 unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
@@ -152,13 +148,12 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
     write_gl_window_step_file(iflag_img, istep, image_prefix->string,
                               npix_x, npix_y, image);
 }
-
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
                                  struct kemoviewer_type *kemo_sgl,
                                  struct kemoviewer_gl_type *kemo_gl){
-    set_texture_to_psf(img_fmt, image_prefix->string,
-                       kemo_sgl->kemo_psf->psf_a->psf_texure,
-                       &kemo_gl->kemo_shaders->texture_name);
+    int iflag = set_texture_to_psf(img_fmt, image_prefix->string,
+                                   kemo_sgl->kemo_psf->psf_a->psf_texure);
+    if(iflag > 0){glGenTextures(1 , &kemo_gl->kemo_shaders->texture_name);};
 };
 #endif
 

@@ -176,19 +176,11 @@ static const NSUInteger MaxFramesInFlight = 3;
         kemoview_fast_buffers(kemo_sgl);
         [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
                                                    kemoview:kemo_sgl];
-
-        [self refreshTripleBuffers:i_current
-                        metalDevice:device
-                            kemoview:kemo_sgl];
     }else if(iflag == MOVIE_DRAW && iflag_view != VIEW_MAP){
-        [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
+        [_kemo3DRenderer[i_current] releaseKemoMovieMetalBuffers];
         kemoview_fast_buffers(kemo_sgl);
-        [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
-                                                   kemoview:kemo_sgl];
-
-        [self refreshTripleBuffers:i_current
-                        metalDevice:device
-                            kemoview:kemo_sgl];
+        [_kemo3DRenderer[i_current] setKemoMovieMetalBuffers:device
+                                                    kemoview:kemo_sgl];
     }else if(iflag == QUILT_DRAW && iflag_view != VIEW_MAP){
         [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
         kemoview_transparent_buffers(kemo_sgl);
@@ -205,11 +197,9 @@ static const NSUInteger MaxFramesInFlight = 3;
                              kemoview:kemo_sgl
                              viewflag:iflag_view];
 
-        if(iflag == TRIPLE_UPDATE){
-            [self refreshTripleBuffers:i_current
+        [self refreshTripleBuffers:i_current
                            metalDevice:device
                               kemoview:kemo_sgl];
-       }
     };
     return;
 }

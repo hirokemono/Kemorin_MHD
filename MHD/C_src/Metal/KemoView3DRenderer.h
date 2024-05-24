@@ -149,11 +149,14 @@ typedef struct
                                kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoFastMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                         kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
+- (void) setKemoMovieMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                         kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                           kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
 - (void) releaseTransparentMetalBuffers;
 - (void) releaseKemoFastMetalBuffers;
+- (void) releaseKemoMovieMetalBuffers;
 - (void) releaseKemoView3DMetalBuffers;
 
 -(void) addKemoView3DShaderLibrary:(id<MTLLibrary> _Nonnull *_Nonnull) defaultLibrary;
