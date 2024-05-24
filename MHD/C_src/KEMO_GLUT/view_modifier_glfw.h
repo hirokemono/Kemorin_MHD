@@ -13,9 +13,10 @@
 #endif
 
 #include "kemoviewer_gl.h"
+#include "render_on_GLFW.h"
 
 #ifdef FFMPEG
-  #include "kemoview_FFMPEG_encoder.h"
+  #include "movie_from_GLFW_by_FFMPEG.h"
 #endif
 
 #define ZOOM    1

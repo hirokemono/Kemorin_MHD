@@ -159,6 +159,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/render_on_GLFW.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
  $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \
@@ -386,6 +387,7 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \
  $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/render_on_GLFW.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
  $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \

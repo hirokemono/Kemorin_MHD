@@ -74,7 +74,7 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	};
 	
 	if(action == GLFW_RELEASE){
-		draw_full(kemoview_GLFW);
+        draw_full_lc(glfw_window, kemoview_GLFW, kemoGL_GLFW);
 	};
 	return;
 };
@@ -314,390 +314,50 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-void select_anaglyph(struct kemoviewer_type *kemo_sgl){
-    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
-        kemoview_modify_anaglyph(kemo_sgl, kemoGL_GLFW);
-        glfwSwapBuffers(glfw_window);
-    }else{
-        kemoview_mono_viewmatrix(kemo_sgl);
-        glDrawBuffer(GL_BACK);
-        kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
-        glfwSwapBuffers(glfw_window);
-    }
-    return;
-}
+
 
 void draw_full(struct kemoviewer_type *kemo_sgl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
-    select_anaglyph(kemo_sgl);
-	return;
+    draw_full_lc(glfw_window, kemo_sgl, kemoGL_GLFW);
+    return;
 };
 
 void draw_fast(struct kemoviewer_type *kemo_sgl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
-    kemoview_mono_viewmatrix(kemo_sgl);
-    kemoview_fast_buffers(kemo_sgl);
-    glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
-    glfwSwapBuffers(glfw_window);
-    return;
-};
-
-static void draw_movie(struct kemoviewer_type *kemo_sgl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
-    kemoview_transparent_buffers(kemo_sgl);
-    select_anaglyph(kemo_sgl);
-    return;
-};
-
-void draw_simple(struct kemoviewer_type *kemo_sgl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
-    kemoview_mono_viewmatrix(kemo_sgl);
-    glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
-    glfwSwapBuffers(glfw_window);
+    draw_fast_lc(glfw_window, kemo_sgl, kemoGL_GLFW);
     return;
 };
 
 void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, QUILT_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix(istep_qult, kemo_sgl);
-    glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
-    glfwSwapBuffers(glfw_window);
+    draw_quilt_lc(istep_qult, glfw_window, kemo_sgl, kemoGL_GLFW);
     return;
 };
 
-
-
-
 double draw_rotate_views(struct kemoviewer_type *kemo_sgl,
-                        int i_axis, int inc_deg, int num_rotation){
-    struct timeval startwtime;
-    struct timeval endwtime;
-    double seq_time;
-    double AverageFPS = 0.0;
-    
-    if(inc_deg <= 0) inc_deg = 1;
-    int ied_deg = 1 + num_rotation * 360/inc_deg;
-    
-    kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
-    glfwFocusWindow(glfw_window);
-    double accum_time = 0.0;
-    for (int i = 0; i< ied_deg; i++) {
-        kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg), kemo_sgl);
-        
-        gettimeofday( &startwtime, NULL );
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        select_anaglyph(kemo_sgl);
-        gettimeofday( &endwtime, NULL );
-        seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                             + endwtime.tv_sec - startwtime.tv_sec );
-        accum_time = accum_time + seq_time;
-/*        *SnapshotFPS = 1.0 / seq_time; */
-    };
-    AverageFPS =  (double) ied_deg / accum_time;
-    return AverageFPS;
+                         int i_axis, int inc_deg, int num_rotation){
+    return draw_rotate_views_lc(glfw_window, kemo_sgl, kemoGL_GLFW,
+                                i_axis, inc_deg, num_rotation);
 }
 
 void draw_evolution_views(struct kemoviewer_type *kemo_sgl,
                           int ist_udt, int ied_udt, int inc_udt){
-	glfwFocusWindow(glfw_window);
-	glfwSwapBuffers(glfw_window);
-	for (int i=ist_udt; i<(ied_udt+1); i++) {
-		if( ((i-ist_udt)%inc_udt) == 0) {
-			kemoview_viewer_evolution(i, kemo_sgl);
-			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_full(kemo_sgl);
-			glfwSwapBuffers(glfw_window);
-		}
-	}
+    draw_evolution_views_lc(glfw_window, kemo_sgl, kemoGL_GLFW,
+                            ist_udt, ied_udt, inc_udt);
 	return;
 };
-
-
-static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
-                               int ied_deg, int inc_deg,
-                               int iflag_img, struct kv_string *image_prefix,
-                               int npix_x, int npix_y, unsigned char *image) {
-	for (int i = 0; i< ied_deg; i++) {
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg), kemo_sgl);
-        select_anaglyph(kemo_sgl);
-		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-        kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                             npix_x, npix_y, image);
-	};
-	return;
-}
-
-static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
-                                     int ied_deg, int inc_deg,
-                                     int iflag_img, struct kv_string *image_prefix,
-                                     int npix_x, int npix_y, unsigned char *image) {
-	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-	
-    int i_quilt;
-	for (int i = 0; i< ied_deg; i++) {
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg), kemo_sgl);
-		
-		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
-			draw_quilt(i_quilt, kemo_sgl);
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-			kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
-		};
-        kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                             (nimg_column * npix_x),
-                                             (nimg_raw * npix_y),
-                                             quilt_image);
-	};
-    free(quilt_image);
-	return;
-}
-
-static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
-                                        int ist_udt, int ied_udt, int inc_udt,
-                                        int iflag_img, struct kv_string *image_prefix,
-                                        int npix_x, int npix_y, unsigned char *image) {
-	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-	int i, i_quilt;
-
-	for (i=ist_udt; i<(ied_udt+1); i++) {
-		if( ((i-ist_udt)%inc_udt) == 0) {
-			
-			kemoview_viewer_evolution(i, kemo_sgl);
-			
-			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-				draw_quilt(i_quilt, kemo_sgl);
-				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-				kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
-			};
-            
-            kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                                 (nimg_column * npix_x),
-                                                 (nimg_raw * npix_y),
-                                                 quilt_image);
-		}
-	}
-    free(quilt_image);
-	return;
-};
-
-static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
-                                  int ist_udt, int ied_udt, int inc_udt,
-                                  int iflag_img, struct kv_string *image_prefix,
-                                  int npix_x, int npix_y, unsigned char *image) {
-	for(int i=ist_udt; i<(ied_udt+1); i++) {
-		if( ((i-ist_udt)%inc_udt) == 0) {
-			kemoview_viewer_evolution(i, kemo_sgl);
-			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_full(kemo_sgl);
-			glfwSwapBuffers(glfw_window);
-			
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-            kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                                 npix_x, npix_y, image);
-		}
-	}
-	return;
-};
-
-#ifdef FFMPEG
-static void write_rotate_movie(struct kemoviewer_type *kemo_sgl,
-                               int ied_deg, int inc_deg,
-                               struct kv_string *image_prefix, int i_fps, 
-                               int npix_x, int npix_y, unsigned char *image){
-    struct FFMPEG_encoder *kemo_encode;
-    kemo_encode = init_FFMPEG_encoder(1, npix_x, npix_y, i_fps,
-                                      image_prefix->string);
-    for (int i = 0; i< ied_deg; i++) {
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg), kemo_sgl);
-        select_anaglyph(kemo_sgl);
-		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-        encode_by_FFMPEG(npix_x, npix_y, image, kemo_encode);
-	};
-    finalize_FFMPEG_encoder(kemo_encode);
-	return;
-}
-
-static void write_rotate_quilt_movie(struct kemoviewer_type *kemo_sgl,
-                                     int ied_deg, int inc_deg,
-                                     struct kv_string *image_prefix, int i_fps, 
-                                     int npix_x, int npix_y, unsigned char *image) {
-	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-	
-    struct FFMPEG_encoder *kemo_encode;
-    kemo_encode = init_FFMPEG_encoder(1, npix_x, npix_y, i_fps,
-                                      image_prefix->string);
-    
-    int i_quilt;
-	for (int i = 0; i< ied_deg; i++) {
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg), kemo_sgl);
-		
-		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
-			draw_quilt(i_quilt, kemo_sgl);
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-			kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
-		};
-        encode_by_FFMPEG((nimg_column * npix_x),
-                         (nimg_raw * npix_y),
-                         quilt_image, kemo_encode);
-	};
-    finalize_FFMPEG_encoder(kemo_encode);
-    free(quilt_image);
-	return;
-}
-
-static void write_evolution_movie(struct kemoviewer_type *kemo_sgl,
-                                  int ist_udt, int ied_udt, int inc_udt,
-                                  struct kv_string *image_prefix, int i_fps, 
-                                  int npix_x, int npix_y, unsigned char *image) {
-    struct FFMPEG_encoder *kemo_encode;
-    kemo_encode = init_FFMPEG_encoder(1, npix_x, npix_y, i_fps,
-                                      image_prefix->string);
-	for(int i=ist_udt; i<(ied_udt+1); i++) {
-		if( ((i-ist_udt)%inc_udt) == 0) {
-			kemoview_viewer_evolution(i, kemo_sgl);
-			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_full(kemo_sgl);
-			glfwSwapBuffers(glfw_window);
-			
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-            encode_by_FFMPEG(npix_x, npix_y, image, kemo_encode);
-		}
-	}
-    finalize_FFMPEG_encoder(kemo_encode);
-	return;
-};
-
-static void write_evolution_quilt_movie(struct kemoviewer_type *kemo_sgl,
-                                        int ist_udt, int ied_udt, int inc_udt,
-                                        struct kv_string *image_prefix, int i_fps, 
-                                        int npix_x, int npix_y, unsigned char *image) {
-	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-	int i, i_quilt;
-
-    struct FFMPEG_encoder *kemo_encode;
-    kemo_encode = init_FFMPEG_encoder(1, npix_x, npix_y, i_fps,
-                                      image_prefix->string);
-	for (i=ist_udt; i<(ied_udt+1); i++) {
-		if( ((i-ist_udt)%inc_udt) == 0) {
-			
-			kemoview_viewer_evolution(i, kemo_sgl);
-			
-			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-				draw_quilt(i_quilt, kemo_sgl);
-				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-				kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
-			};
-            encode_by_FFMPEG((nimg_column * npix_x),
-                             (nimg_raw * npix_y),
-                             quilt_image, kemo_encode);
-		}
-	}
-    finalize_FFMPEG_encoder(kemo_encode);
-    
-    free(quilt_image);
-	return;
-};
-#endif
-
 
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,
                             int i_fps, int i_axis, int inc_deg){
-    if(inc_deg <= 0) inc_deg = 1;
-    int ied_deg = 1 + 360/inc_deg;
-    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
-    unsigned char *image =      kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-    
-    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
-    kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
-    glfwFocusWindow(glfw_window);
-    
-#ifdef FFMPEG
-    if(iflag_img == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) > 0){
-            write_rotate_quilt_movie(kemo_sgl, ied_deg, inc_deg,
-                                     image_prefix, i_fps, 
-                                     npix_x, npix_y, image);
-        }else{
-            write_rotate_movie(kemo_sgl, ied_deg, inc_deg, 
-                               image_prefix, i_fps, 
-                               npix_x, npix_y, image);
-        };
-        return;
-    }
-#endif
-    
-    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) > 0){
-        write_rotate_quilt_views(kemo_sgl, ied_deg, inc_deg,
-                                 iflag_img, image_prefix,
-                                 npix_x, npix_y, image);
-    }else{
-        write_rotate_views(kemo_sgl, ied_deg, inc_deg, 
-                           iflag_img, image_prefix,
-                           npix_x, npix_y, image);
-	}
-    draw_movie(kemo_sgl);
-	return;
+    sel_lc_write_rotate_views(glfw_window, kemo_sgl, kemoGL_GLFW,
+                              iflag_img, image_prefix,
+                              i_fps, i_axis, inc_deg);
+    return;
 }
 
 void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
-                               int iflag_img, struct kv_string *image_prefix, 
+                               int iflag_img, struct kv_string *image_prefix,
                                int i_fps, int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-    
-    glfwFocusWindow(glfw_window);
-    glfwSwapBuffers(glfw_window);
-    
-#ifdef FFMPEG
-    if(iflag_img == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
-            write_evolution_quilt_movie(kemo_sgl, ist_udt, ied_udt, inc_udt,
-                                        image_prefix, i_fps,
-                                        npix_x, npix_y, image);
-        }else{
-            write_evolution_movie(kemo_sgl, ist_udt, ied_udt, inc_udt,
-                                  image_prefix, i_fps,
-                                  npix_x, npix_y, image);
-        }
-        return;
-    }
-#endif
-    
-    
-	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
-        write_evolution_quilt_views(kemo_sgl, ist_udt, ied_udt, inc_udt,
-                                    iflag_img, image_prefix,
-                                    npix_x, npix_y, image);
-	}else{
-        write_evolution_views(kemo_sgl, ist_udt, ied_udt, inc_udt,
-                              iflag_img, image_prefix,
-                              npix_x, npix_y, image);
-	};
-    free(image);
-    
-    draw_full(kemo_sgl);
-	return;
+    sel_lc_write_evolution_views(glfw_window, kemo_sgl, kemoGL_GLFW,
+                                 iflag_img, image_prefix, i_fps,
+                                 ist_udt, ied_udt, inc_udt);
+    return;
 };
-
-

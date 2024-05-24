@@ -502,9 +502,9 @@ void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
 };
 
 
-void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
-                            struct kemoviewer_gl_type *kemo_gl,
-                            struct gl_texure_image *anaglyph_image){
+static void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
+                                   struct kemoviewer_gl_type *kemo_gl,
+                                   struct gl_texure_image *anaglyph_image){
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,
@@ -559,4 +559,20 @@ unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
     Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
     return rgb;
 }
+
+void select_modify_anaglyph(struct kemoviewer_type *kemoview,
+                            struct kemoviewer_gl_type *kemo_gl){
+    if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
+        struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
+        draw_anaglyph_to_rgb_gl(kemoview, kemo_gl, anaglyph_image);
+        
+        glDrawBuffer(GL_BACK);
+        move_draw_anaglyph_gl3(kemoview, kemo_gl, anaglyph_image);
+        dealloc_kemoview_gl_texure(anaglyph_image);
+    }else{
+        modify_mono_viewmat(kemoview->view_s);
+        glDrawBuffer(GL_BACK);
+        update_draw_objects_gl3(kemoview, kemo_gl);
+    }
+};
 

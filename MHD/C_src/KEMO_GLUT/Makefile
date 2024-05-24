@@ -4,7 +4,7 @@
 
 KEMO_C_GLUTDIR = $$(C_SRCDIR)/KEMO_GLUT
 CURRENTDIR = $(shell pwd)
-SRC_GLUT_C = $(shell ls kemoview_gtk**.c tree_view_*.c)
+SRC_GLUT_C = $(shell ls kemoview_gtk*.c tree_view_*.c)
 INC_GLUT_C = $(addsuffix .h,$(basename $(SRC_GLUT_C)) )
 OBJ_GLUT_C = $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
@@ -13,11 +13,15 @@ GLUT_INCLUDES= \
   $$(GTK3_CFLAGS) \
   $$(GLFW_CFLAGS)
 
-SRC_GLUT_C+=  view_modifier_glfw.c
+SRC_GLUT_C+= \
+  view_modifier_glfw.c  \
+  render_on_GLFW.c      \
+  movie_from_GLFW_by_FFMPEG.c
 
 ifdef FFMPEG_CFLAGS
   GLUT_INCLUDES+=  $$(FFMPEG_CFLAGS)
-  SRC_GLUT_C+=     kemoview_FFMPEG_encoder.c
+  SRC_GLUT_C+= \
+    kemoview_FFMPEG_encoder.c
 endif
 
 OBJ_KEMOVIEW_GLUT= $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
