@@ -1,6 +1,5 @@
 #
-drawGL_by_VAO.o: \
- $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
+drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
  $(C_SRCDIR)/GLSL/drawGL_by_VAO.h \
  $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
@@ -323,8 +322,7 @@ draw_PSF_patches_by_VAO.o: \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-drawcube_gl.o: \
- $(C_SRCDIR)/GLSL/drawcube_gl.c \
+drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/GLSL/drawcube_gl.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
@@ -808,8 +806,7 @@ init_gl_lighting_c.o: \
  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-kemoviewer_gl.o: \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
+kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
  $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
  $(C_SRCDIR)/GLSL/glsl.h \
@@ -1132,8 +1129,7 @@ move_draw_objects_gl.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_message_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-set_cube_VAO.o: \
- $(C_SRCDIR)/GLSL/set_cube_VAO.c \
+set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
  $(C_SRCDIR)/GLSL/set_cube_VAO.h \
  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
