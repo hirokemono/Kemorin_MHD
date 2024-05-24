@@ -14,8 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
-#include "m_kemoviewer_data.h"
+#include "kemoviewer_gl.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_fileselector.h"
@@ -25,7 +24,7 @@
 
 /*  prototypes */
 
-GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
+GtkWidget * make_axis_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                GtkWidget *window);
 
 #endif

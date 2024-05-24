@@ -63,8 +63,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     kemoview_free_kvstring(filename);
 	
     init_psf_window(kemo_sgl, kemo_gl, mbot->psf_gmenu);
-    init_fline_window(kemo_sgl, mbot->fline_menu);
-    init_mesh_window(kemo_sgl, mbot->mesh_vws, mbot->meshWin);
+    init_fline_window(kemo_gl, mbot->fline_menu);
+    init_mesh_window(kemo_gl, mbot->mesh_vws, mbot->meshWin);
 
 //    activate_evolution_menu(kemo_sgl, mbot->itemTEvo);
     draw_full(kemo_sgl);
@@ -279,12 +279,12 @@ GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
     GtkWidget *savebox = make_gtk_save_file_box(mbot, quitButton, kemo_sgl, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(mbot->view_menu, kemo_sgl);
-    GtkWidget *hbox_axis = make_axis_menu_box(kemo_sgl, window_main);
+    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, window_main);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_sgl,
                                                           mbot->rot_gmenu,
                                                           window_main);
 //    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_sgl, mbot->evo_gmenu, window_main);
-    mbot->expander_view = init_viewmatrix_menu_expander(kemo_sgl,
+    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl,
                                                         mbot->view_menu,
                                                         window_main);
     mbot->expander_quilt = init_quilt_menu_expander(kemo_sgl,

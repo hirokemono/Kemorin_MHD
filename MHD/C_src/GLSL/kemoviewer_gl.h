@@ -42,7 +42,7 @@ struct kemoviewer_gl_type{
     struct kemoview_VAOs      *kemo_VAOs;
     struct VAO_ids            *menu_VAO;
     
-//    struct kemoviewer_type    *kemoview_data;
+    struct kemoviewer_type    *kemoview_data;
 };
 
 /*  OopenGL routines */
@@ -54,10 +54,10 @@ struct kemoviewer_gl_type{
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
-                              struct kemoviewer_gl_type *kemo_gl);
+    void kemoview_modify_view(struct kemoviewer_gl_type *kemo_gl);
     void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
                                   struct kemoviewer_gl_type *kemo_gl);
+    void draw_fast_lc(struct kemoviewer_gl_type * kemo_gl);
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);

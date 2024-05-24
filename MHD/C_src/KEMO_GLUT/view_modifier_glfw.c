@@ -314,19 +314,20 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 	
 	return;
 }
-/*
+
 void draw_full_gl(struct kemoviewer_gl_type *kemo_gl){
     draw_full_lc(glfw_window, kemo_gl->kemoview_data, kemo_gl);
     return;
 };
-*/
+
 void draw_full(struct kemoviewer_type *kemo_sgl){
     draw_full_lc(glfw_window, kemo_sgl, kemoGL_GLFW);
     return;
 };
 
-void draw_fast(struct kemoviewer_type *kemo_sgl){
-    draw_fast_lc(glfw_window, kemo_sgl, kemoGL_GLFW);
+void draw_fast(struct kemoviewer_gl_type *kemo_gl){
+    draw_fast_lc(kemo_gl);
+    glfwSwapBuffers(glfw_window);
     return;
 };
 

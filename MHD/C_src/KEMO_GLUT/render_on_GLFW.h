@@ -24,9 +24,6 @@ void draw_full_lc(GLFWwindow *glfw_win,
 void draw_quilt_lc(int istep_qult, GLFWwindow *glfw_win,
                    struct kemoviewer_type *kemo_sgl,
                    struct kemoviewer_gl_type * kemo_gl);
-void draw_fast_lc(GLFWwindow *glfw_win,
-                  struct kemoviewer_type *kemo_sgl,
-                  struct kemoviewer_gl_type * kemo_gl);
 
 double draw_rotate_views_lc(GLFWwindow *glfw_win,
                             struct kemoviewer_type *kemo_sgl,

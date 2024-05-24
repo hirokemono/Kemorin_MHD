@@ -11,209 +11,220 @@
 
 static void toggle_draw_domain_patch_CB(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(renderer), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int index1_for_toggle;
 	int index_grp = toggle_draw_patch_switch(path_str, grp_vws, &index1_for_toggle);
     kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, 
-                                index_grp, index1_for_toggle, kemo_sgl);
+                                index_grp, index1_for_toggle,
+                                kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void toggle_draw_domain_grid_CB(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(renderer), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int index2_for_toggle;
 	int index_grp = toggle_draw_grid_switch(path_str, grp_vws, &index2_for_toggle);
     kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, 
-                                index_grp, index2_for_toggle, kemo_sgl);
+                                index_grp, index2_for_toggle,
+                                kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void toggle_draw_domain_node_CB(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(renderer), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int index3_for_toggle;
 	int index_grp = toggle_draw_node_switch(path_str, grp_vws, &index3_for_toggle);
     kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                index_grp, index3_for_toggle, kemo_sgl);
+                                index_grp, index3_for_toggle,
+                                kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 
 static void draw_all_domain_patch_CB(GtkButton *button, gpointer user_data)
 {
-	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, grp_vws);
-	for(i=0;i<num;i++){
+	for(int i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                    i, IONE, kemo_sgl);
+                                    i, IONE, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void draw_all_domain_grids_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, grp_vws);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, 
-                                    i, IONE, kemo_sgl);
+                                    i, IONE, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void draw_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, grp_vws);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, 
-                                    i, IONE, kemo_sgl);
+                                    i, IONE, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void hide_all_domain_patch_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, grp_vws);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, 
-                                    i, IZERO, kemo_sgl);
+                                    i, IZERO, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void hide_all_domain_grids_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int num = set_all_draw_flags(IZERO, COLUMN_MESH_FORTH, grp_vws);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, 
-                                    i, IZERO, kemo_sgl);
+                                    i, IZERO, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 static void hide_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-    struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+    struct ci3_clist_view *grp_vws
+            = (struct ci3_clist_view *) g_object_get_data(G_OBJECT(user_data),     "domain_view");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, grp_vws);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, 
-                                    i, IZERO, kemo_sgl);
+                                    i, IZERO, kemo_gl->kemoview_data);
 	};
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 
 static void domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	} else {
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	};
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
 static void domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	} else {
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	};
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
 static void domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	} else {
 		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                     index_mode, kemo_sgl);
+                                     index_mode, kemo_gl->kemoview_data);
 	};
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
 static void set_domain_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
 	float colorcode4[4];
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                 colorcode4, kemo_sgl);
+                                 colorcode4, kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 }
 static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_data)
 {
 	float colorcode4[4];
 	GtkWindow *parent_win = GTK_WINDOW(user_data);
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                     colorcode4, kemo_sgl);
+                                     colorcode4, kemo_gl->kemoview_data);
     };
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
@@ -221,42 +232,43 @@ static void set_single_domain_grids_color_CB(GtkButton *button, gpointer user_da
 {
 	float colorcode4[4];
 	GtkWindow *parent_win = GTK_WINDOW(user_data);
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE,
-                                     colorcode4, kemo_sgl);
+                                     colorcode4, kemo_gl->kemoview_data);
     };
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 static void set_single_domain_nodes_color_CB(GtkButton *button, gpointer user_data)
 {
 	float colorcode4[4];
 	GtkWindow *parent_win = GTK_WINDOW(user_data);
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                     colorcode4, kemo_sgl);
+                                     colorcode4, kemo_gl->kemoview_data);
     };
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
 
-static void create_domain_group_columns(struct kemoviewer_type *kemo_sgl,
-                                        struct ci3_clist_view *domain_vws)
+static void create_domain_group_columns(struct kemoviewer_gl_type *kemo_gl,
+                                        struct ci3_clist_view *domain_vws,
+                                        GtkWidget *scrolled_table)
 {
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
@@ -270,6 +282,7 @@ static void create_domain_group_columns(struct kemoviewer_type *kemo_sgl,
     GtkTreeViewColumn *column_4th;
     GtkTreeViewColumn *column_5th;
 	
+
     /* First raw */
 	column_1st = create_each_column_no_sort(domain_vws->tree_view, 
 				"Index", COLUMN_MESH_INDEX);
@@ -284,29 +297,27 @@ static void create_domain_group_columns(struct kemoviewer_type *kemo_sgl,
 	column_3rd = create_each_column_no_sort(domain_vws->tree_view,
 				"Patch", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 30, COLUMN_MESH_THIRD);
-    g_object_set_data(G_OBJECT(toggleRenderer1), "kemoview", (gpointer) kemo_sgl);
-	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
-				G_CALLBACK(toggle_draw_domain_patch_CB), (gpointer) domain_vws);
+	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled",
+				G_CALLBACK(toggle_draw_domain_patch_CB), (gpointer) scrolled_table);
     
     /* Forth row */
 	column_4th = create_each_column_no_sort(domain_vws->tree_view,
 				"Grid", COLUMN_MESH_FORTH);
 	toggleRenderer2 = create_each_toggle_renderer(column_4th, 30, COLUMN_MESH_FORTH);
-    g_object_set_data(G_OBJECT(toggleRenderer2), "kemoview", (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
-				G_CALLBACK(toggle_draw_domain_grid_CB), (gpointer) domain_vws);
+				G_CALLBACK(toggle_draw_domain_grid_CB), (gpointer) scrolled_table);
 	
     /* Fifth row */
 	column_5th = create_each_column_no_sort(domain_vws->tree_view,
 				"Node", COLUMN_MESH_FIFTH);
 	toggleRenderer3 = create_each_toggle_renderer(column_5th, 30, COLUMN_MESH_FIFTH);
-    g_object_set_data(G_OBJECT(toggleRenderer3), "kemoview", (gpointer) kemo_sgl);
 	g_signal_connect(G_OBJECT(toggleRenderer3), "toggled",
-				G_CALLBACK(toggle_draw_domain_node_CB), (gpointer) domain_vws);
+				G_CALLBACK(toggle_draw_domain_node_CB), (gpointer) scrolled_table);
 };
 
-static void create_domain_group_view(struct kemoviewer_type *kemo_sgl,
-                                     struct ci3_clist_view *domain_vws)
+static void create_domain_group_view(struct kemoviewer_gl_type *kemo_gl,
+                                     struct ci3_clist_view *domain_vws,
+                                     GtkWidget *scrolled_table)
 {
     int i;
     GtkTreeModel *model;
@@ -323,7 +334,7 @@ static void create_domain_group_view(struct kemoviewer_type *kemo_sgl,
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(domain_vws->tree_view), model);
 	
-	create_domain_group_columns(kemo_sgl, domain_vws);
+	create_domain_group_columns(kemo_gl, domain_vws, scrolled_table);
     
     /* Mode selection */
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(domain_vws->tree_view));
@@ -341,11 +352,12 @@ static void create_domain_group_view(struct kemoviewer_type *kemo_sgl,
     
 }
 
-void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
+void set_domain_draw_box(struct kemoviewer_gl_type *kemo_gl,
                          struct group_gtk_menu *domain_group_gmenu){
 	int iflag_color;
 	float color4[4];
-	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, DOMAIN_FLAG, SURFSOLID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_gl->kemoview_data,
+                                               DOMAIN_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_patch_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -356,7 +368,8 @@ void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_patch_color), 0);
 	};
 	
-	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, DOMAIN_FLAG, SURFGRID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_gl->kemoview_data,
+                                               DOMAIN_FLAG, SURFGRID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_grid_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -367,7 +380,8 @@ void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_grid_color), 0);
 	};
 	
-	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, DOMAIN_FLAG, SURFNOD_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_gl->kemoview_data,
+                                               DOMAIN_FLAG, SURFNOD_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -378,20 +392,20 @@ void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_node_color), 0);
 	};
 	
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(domain_group_gmenu->spin_opacity), (double) color4[3]);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_patch_color),
 							   &domain_group_gmenu->gcolor);
 
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFGRID_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_grid_color),
 							   &domain_group_gmenu->gcolor);
 	
-	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+	kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                  SURFNOD_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_node_color),
@@ -399,13 +413,10 @@ void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
+void init_domain_draw_expander(struct kemoviewer_gl_type *kemo_gl,
                                GtkWidget *window,
                                struct group_gtk_menu *domain_group_gmenu){
-    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 
-    create_domain_group_view(kemo_sgl, domain_group_gmenu->group_vws);
-    
     /* Delete data bottun */
     domain_group_gmenu->scrolled_table = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(domain_group_gmenu->scrolled_table),
@@ -414,36 +425,40 @@ void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
     gtk_container_add(GTK_CONTAINER(domain_group_gmenu->scrolled_table),
                       domain_group_gmenu->group_vws->tree_view);
     
+    g_object_set_data(G_OBJECT(domain_group_gmenu->scrolled_table),
+                      "domain_view", (gpointer) domain_group_gmenu->group_vws);
+    g_object_set_data(G_OBJECT(domain_group_gmenu->scrolled_table),
+                      "kemoview_gl", (gpointer) kemo_gl);
+
+    create_domain_group_view(kemo_gl, domain_group_gmenu->group_vws,
+                             domain_group_gmenu->scrolled_table);
+    
     domain_group_gmenu->button_draw_patch = gtk_button_new_with_label("Draw patch");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_draw_patch), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_draw_patch), "clicked",
-                     G_CALLBACK(draw_all_domain_patch_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(draw_all_domain_patch_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     domain_group_gmenu->button_draw_grid = gtk_button_new_with_label("Draw grids");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_draw_grid), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_draw_grid), "clicked",
-                     G_CALLBACK(draw_all_domain_grids_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(draw_all_domain_grids_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     domain_group_gmenu->button_draw_node = gtk_button_new_with_label("Draw nodes");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_draw_node), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_draw_node), "clicked",
-                     G_CALLBACK(draw_all_domain_nodes_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(draw_all_domain_nodes_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     
     domain_group_gmenu->button_hide_patch = gtk_button_new_with_label("Hide patch");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_patch), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_hide_patch), "clicked",
-                     G_CALLBACK(hide_all_domain_patch_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(hide_all_domain_patch_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     domain_group_gmenu->button_hide_grid = gtk_button_new_with_label("Hide grids");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_grid), "kemoview", (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_grid), "kemoview_gl", (gpointer) kemo_gl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_hide_grid), "clicked",
-                     G_CALLBACK(hide_all_domain_grids_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(hide_all_domain_grids_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     domain_group_gmenu->button_hide_node = gtk_button_new_with_label("Hide nodes");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_node), "kemoview", (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_node), "kemoview_gl", (gpointer) kemo_gl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_hide_node), "clicked",
-                     G_CALLBACK(hide_all_domain_nodes_CB), (gpointer) domain_group_gmenu->group_vws);
+                     G_CALLBACK(hide_all_domain_nodes_CB), (gpointer) domain_group_gmenu->scrolled_table);
     
     
     GtkWidget *label_tree_patch_color = create_fixed_label_w_index_tree();
@@ -463,7 +478,7 @@ void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(domain_group_gmenu->combobox_patch_color),
                                    renderer_patch_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(domain_group_gmenu->combobox_patch_color), "changed",
-                     G_CALLBACK(domain_patch_colormode_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(domain_patch_colormode_CB), (gpointer) kemo_gl);
     
     
     GtkWidget *label_tree_grid_color = create_fixed_label_w_index_tree();
@@ -483,7 +498,7 @@ void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(domain_group_gmenu->combobox_grid_color),
                                    renderer_grid_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(domain_group_gmenu->combobox_grid_color), "changed",
-                     G_CALLBACK(domain_grid_colormode_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(domain_grid_colormode_CB), (gpointer) kemo_gl);
     
     
     GtkWidget *label_tree_node_color = create_fixed_label_w_index_tree();
@@ -503,8 +518,10 @@ void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(domain_group_gmenu->combobox_node_color),
                                    renderer_node_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(domain_group_gmenu->combobox_node_color), "changed",
-                     G_CALLBACK(domain_node_colormode_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(domain_node_colormode_CB), (gpointer) kemo_gl);
     
+    g_object_set_data(G_OBJECT(window), "kemoview_gl",  (gpointer) kemo_gl);
+
     float color4[4] = {0.0, 0.0, 0.0, 1.0};
     set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
     GtkAdjustment *adj_opacity = gtk_adjustment_new(color4[3], 0.0, 1.0, 0.01, 0.01, 0.0);

@@ -9,7 +9,7 @@
 #define TREE_VIEW_4_NOD_GROUP_VIEWER_
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "kemoview_gtk_routines.h"
 #include "kemoview_gtk_colorsel.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -21,9 +21,9 @@
 #include "view_modifier_glfw.h"
 
 /* prototypes */
-void set_nod_group_draw_box(struct kemoviewer_type *kemo_sgl,
+void set_nod_group_draw_box(struct kemoviewer_gl_type *kemo_gl,
                             struct nod_grp_gtk_menu *node_group_gmenu);
-void init_nod_group_draw_expander(struct kemoviewer_type *kemo_sgl,
+void init_nod_group_draw_expander(struct kemoviewer_gl_type *kemo_gl,
                                   GtkWidget *window, 
                                   struct nod_grp_gtk_menu *node_group_gmenu);
 GtkWidget * pack_nod_group_menu_box(struct nod_grp_gtk_menu *node_group_gmenu);

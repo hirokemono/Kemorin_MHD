@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "kemoview_gtk_fline_selectors.h"
 
@@ -45,9 +45,9 @@ struct fieldline_gtk_menu{
 
 /*  prototypes */
 
-void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
+void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct fieldline_gtk_menu *fline_menu);
-void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                               struct fieldline_gtk_menu *fline_menu);
 
 GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);

@@ -86,7 +86,7 @@ void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,
                           struct view_widgets *view_menu,
                           GtkWidget *window);
 
-GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                           struct view_widgets *view_menu,
                                           GtkWidget *window);
 #endif

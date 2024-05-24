@@ -36,7 +36,9 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 void set_GLFWindowSize(int width, int height,
                        struct kemoviewer_type *kemo_sgl);
 
-void draw_fast(struct kemoviewer_type *kemo_sgl);
+void draw_full_gl(struct kemoviewer_gl_type *kemo_gl);
+void draw_fast(struct kemoviewer_gl_type *kemo_gl);
+
 void draw_full(struct kemoviewer_type *kemo_sgl);
 void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl);
 

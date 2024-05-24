@@ -18,19 +18,6 @@ void draw_full_lc(GLFWwindow *glfw_win,
     return;
 };
 
-void draw_fast_lc(GLFWwindow *glfw_win,
-                  struct kemoviewer_type *kemo_sgl,
-                  struct kemoviewer_gl_type * kemo_gl){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
-    kemoview_mono_viewmatrix(kemo_sgl);
-    kemoview_fast_buffers(kemo_sgl);
-    glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl, kemo_gl);
-    glfwSwapBuffers(glfw_win);
-    return;
-};
-
 void draw_quilt_lc(int istep_qult, GLFWwindow *glfw_win,
                    struct kemoviewer_type *kemo_sgl,
                    struct kemoviewer_gl_type * kemo_gl){
@@ -38,7 +25,7 @@ void draw_quilt_lc(int istep_qult, GLFWwindow *glfw_win,
     kemoview_set_view_integer(ISET_DRAW_MODE, QUILT_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(istep_qult, kemo_sgl);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl, kemo_gl);
+    kemoview_modify_view(kemo_gl);
     glfwSwapBuffers(glfw_win);
     return;
 };

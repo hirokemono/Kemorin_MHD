@@ -15,7 +15,7 @@ struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type
         printf("malloc error for kemoviewer_gl_type\n");
         exit(0);
     };
-//    kemo_gl->kemoview_data = kemoviewer;
+    kemo_gl->kemoview_data = kemoviewer;
     kemo_gl->kemo_shaders = init_kemoview_shaders();
     kemo_gl->kemo_VAOs = init_kemoview_VAOs();
 
@@ -56,15 +56,28 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
-                          struct kemoviewer_gl_type *kemo_gl){
-    update_draw_objects_gl3(kemo_sgl, kemo_gl->kemo_VAOs,
+void kemoview_modify_view(struct kemoviewer_gl_type *kemo_gl){
+    update_draw_objects_gl3(kemo_gl->kemoview_data,
+                            kemo_gl->kemo_VAOs,
                             kemo_gl->kemo_shaders);
+};
+
+void draw_fast_lc(struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW,
+                              kemo_gl->kemoview_data);
+    kemoview_mono_viewmatrix(kemo_gl->kemoview_data);
+    kemoview_fast_buffers(kemo_gl->kemoview_data);
+    glDrawBuffer(GL_BACK);
+    kemoview_modify_view(kemo_gl);
+    return;
 };
 
 void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
                               struct kemoviewer_gl_type *kemo_gl){
-    select_modify_anaglyph(kemo_sgl, kemo_gl->kemo_VAOs,
+    select_modify_anaglyph(kemo_gl->kemoview_data,
+                           kemo_gl->kemo_VAOs,
                            kemo_gl->kemo_shaders);
 };
 
@@ -124,7 +137,7 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
 
 void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                      struct kemoviewer_gl_type *kemo_gl){
-    int iflag = kemo_sgl->kemo_psf->psf_a->ipsf_texured;
+    int iflag = kemo_gl->kemoview_data->kemo_psf->psf_a->ipsf_texured;
     release_PSF_texture_from_gl(iflag, kemo_gl->kemo_shaders);
     return;
 };
@@ -156,7 +169,7 @@ void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
                                  struct kemoviewer_type *kemo_sgl,
                                  struct kemoviewer_gl_type *kemo_gl){
     int iflag = set_texture_to_psf(img_fmt, image_prefix->string,
-                                   kemo_sgl->kemo_psf->psf_a->psf_texure);
+                                   kemo_gl->kemoview_data->kemo_psf->psf_a->psf_texure);
     if(iflag > 0){glGenTextures(1 , &kemo_gl->kemo_shaders->texture_name);};
 };
 #endif

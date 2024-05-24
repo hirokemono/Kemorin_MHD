@@ -26,7 +26,7 @@
 
 
 /*  prototypes */
-void init_mesh_window(struct kemoviewer_type *kemo_sgl,
+void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
                       struct kemoview_mesh_view *mesh_vws,
                       GtkWidget *meshWin);
 #endif

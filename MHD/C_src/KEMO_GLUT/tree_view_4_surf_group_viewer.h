@@ -9,7 +9,7 @@
 #define TREE_VIEW_4_SURF_GROUP_VIEWER_
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "t_control_chara_int3_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int3_GTK.h"
@@ -21,9 +21,9 @@
 #include "view_modifier_glfw.h"
 
 /* prototypes */
-void set_surf_group_draw_box(struct kemoviewer_type *kemo_sgl,
+void set_surf_group_draw_box(struct kemoviewer_gl_type *kemo_gl,
                              struct group_gtk_menu *surf_group_gmenu);
-void init_surf_group_draw_box(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+void init_surf_group_draw_box(struct kemoviewer_gl_type *kemo_gl, GtkWidget *window,
                               struct group_gtk_menu *surf_group_gmenu);
 GtkWidget * pack_surf_group_menu_box(struct group_gtk_menu *surf_group_gmenu);
 

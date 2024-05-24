@@ -14,7 +14,6 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -24,7 +23,7 @@
 
 /* prototypes */
 
-void init_fline_window(struct kemoviewer_type *kemo_sgl,
+void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
                        struct fieldline_gtk_menu *fline_menu);
 
 #endif /*  KEMOVIEW_GTK_FLINE_WINDOW_  */
