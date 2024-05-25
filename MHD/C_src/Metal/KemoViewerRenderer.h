@@ -14,6 +14,7 @@ Header for a platform independent renderer class, which performs Metal setup and
 #import "KemoView2DRenderer.h"
 #import "KemoView3DRenderer.h"
 #import "KemoViewMetalBuffers.h"
+#import "KemoViewMapRenderer.h"
 
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_object_buffers.h"

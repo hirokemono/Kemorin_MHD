@@ -21,8 +21,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 
     KemoView2DMetalPipelines _kemoView2DPipelines;
     KemoView2DMetalBuffers   _kemoView2DMetalBufs;
-    
+    KemoViewMapMetalBuffers  _kemoViewMapMetalBufs;
+
     KemoView2DRenderer *   _kemo2DRenderer;
+    KemoViewMapRenderer *  _kemoMapRenderer;
     KemoView3DRenderer *   _kemo3DRenderer[MaxFramesInFlight];
     KemoViewRendererTools * _kemoRendererTools;
 
@@ -70,9 +72,10 @@ static const NSUInteger MaxFramesInFlight = 3;
     int i;
     
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
-    _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
-    _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
-    
+    _kemoMetalBufBase =  [[KemoViewMetalBuffers alloc] init];
+    _kemo2DRenderer =    [[KemoView2DRenderer alloc] init];
+    _kemoMapRenderer =   [[KemoViewMapRenderer alloc] init];
+
     
     for(i=0;i<MaxFramesInFlight;i++){
         _kemo3DRenderer[i] = [[KemoView3DRenderer alloc] init];
@@ -123,7 +126,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     if(iflag_view == VIEW_MAP){
 /*  Release Map vertexs */
-        [_kemo2DRenderer releaseMapMetalBuffers:&_kemoView2DMetalBufs];
+        [_kemoMapRenderer releaseMapMetalBuffers:&_kemoViewMapMetalBufs];
     }else{
 /*  Release 3D vertexs */
         [kemo3DRenderer releaseKemoView3DMetalBuffers];
@@ -141,9 +144,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     if(viewflag == VIEW_MAP){
 /*  Set Map vertexs to Metal buffers */
-        [_kemo2DRenderer setMapMetalBuffers:device
-                                metalBuffer:&_kemoView2DMetalBufs
-                                    buffers:kemo_sgl->kemo_buffers];
+        [_kemoMapRenderer setMapMetalBuffers:device
+                             baseMetalBuffer:_kemoMetalBufBase
+                                 metalBuffer:&_kemoViewMapMetalBufs
+                                     buffers:kemo_sgl->kemo_buffers];
     }else{
 /*  Set 3D vertexs to Metal buffers */
         [kemo3DRenderer setKemoView3DMetalBuffers:device
@@ -152,6 +156,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     
 /*  Set message vertexs to Metal buffers */
     [_kemo2DRenderer setMessageMetalBuffers:device
+                            baseMetalBuffer:_kemoMetalBufBase
                                 metalBuffer:&_kemoView2DMetalBufs
                                     buffers:kemo_sgl->kemo_buffers];
     return;
@@ -230,10 +235,11 @@ static const NSUInteger MaxFramesInFlight = 3;
     int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
-        [_kemo2DRenderer encodeMapObjects:renderEncoder
-                                pipelines:&_kemoView2DPipelines
-                              metalBuffer:&_kemoView2DMetalBufs
-                               projection:&_map_proj_mat];
+        [_kemoMapRenderer encodeMapObjects:renderEncoder
+                               base2Dclass:_kemo2DRenderer
+                                 pipelines:&_kemoView2DPipelines
+                               metalBuffer:&_kemoViewMapMetalBufs
+                                projection:&_map_proj_mat];
     }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
         [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
                                                       depth:&_depthState

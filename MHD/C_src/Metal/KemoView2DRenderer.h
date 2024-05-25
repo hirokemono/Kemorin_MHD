@@ -20,26 +20,6 @@
 
 typedef struct
 {
-    /*  Vertex buffer for Map solid node */
-    id<MTLBuffer> _Nullable mapNodeVertice;
-    NSUInteger numMapNodeVertice;
-    /*  Index buffer for psf solid patch */
-    id<MTLBuffer> _Nullable mapSolidIndices;
-    NSUInteger numMapSolidIndices;
-
-    /*  Vertex buffer for Map solid patch */
-    id<MTLBuffer> _Nullable mapSolidVertice;
-    NSUInteger numMapSolidVertice;
-    /*  Vertex buffer for Map isolines */
-    id<MTLBuffer> _Nullable mapLinesVertice;
-    NSUInteger numMapinesVertice;
-
-    /*  Vertex buffer for Coast lines */
-    id<MTLBuffer> _Nullable coastLineVertice;
-    NSUInteger numCoastLineVertice;
-    id<MTLBuffer> _Nullable coastTubeVertice;
-    NSUInteger numCoastTubeVertice;
-
     /*  Vertex buffer for  color bar */
     id<MTLBuffer> _Nullable colorBarVertice;
     NSUInteger numColorBarVertice;
@@ -106,17 +86,27 @@ typedef struct
 
 
 @interface KemoView2DRenderer : NSObject
-{
-    KemoViewMetalBuffers * _kemo2DMetalBufBase;
-}
+- (void)draw2DLineObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+               pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) simple2DPipelineState
+               numVertex:(NSUInteger) numVertex
+                  vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+              projection:(matrix_float4x4 *_Nonnull) projection_mat;
+- (void)draw2DPatchObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) trans2DPipelineState
+                numVertex:(NSUInteger) numVertex
+                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+               projection:(matrix_float4x4 *_Nonnull) projection_mat;
+- (void)draw2DElementObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                  pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) trans2DPipelineState
+                  numVertex:(NSUInteger) numVertex
+                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+                      index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
+                 projection:(matrix_float4x4 *_Nonnull) projection_mat;
 
-- (void) releaseMapMetalBuffers:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs;
 - (void) releaseMsgMetalBuffers:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs;
 
-- (void) setMapMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
-                metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-                    buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 - (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
+                baseMetalBuffer:(KemoViewMetalBuffers *_Nonnull) kemo2DMetalBufBase
                     metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 
@@ -127,10 +117,6 @@ typedef struct
                      pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                    targetPixel:(MTLPixelFormat) pixelformat;
 
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
-              metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-               projection:(matrix_float4x4 * _Nonnull) map_proj_mat;
 - (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
                     pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                   metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
