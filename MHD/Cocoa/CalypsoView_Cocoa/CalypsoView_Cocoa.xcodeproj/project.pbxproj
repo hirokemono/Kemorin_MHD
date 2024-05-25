@@ -537,6 +537,8 @@
 		18DA6FEF2BFE790900D0E417 /* m_kemoview_map_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_map_buffers.h; sourceTree = "<group>"; };
 		18DA6FF42BFE845300D0E417 /* m_kemoview_PSF_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_PSF_buffers.h; sourceTree = "<group>"; };
 		18DA6FF52BFE845C00D0E417 /* m_kemoview_PSF_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_PSF_buffers.c; sourceTree = "<group>"; };
+		18DA702C2C01809600D0E417 /* KemoViewMapRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewMapRenderer.h; path = Metal/KemoViewMapRenderer.h; sourceTree = "<group>"; };
+		18DA702D2C01809600D0E417 /* KemoViewMapRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewMapRenderer.m; path = Metal/KemoViewMapRenderer.m; sourceTree = "<group>"; };
 		18DD11232BF00E89009C0A06 /* pthread_each_isoline_to_buf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pthread_each_isoline_to_buf.c; sourceTree = "<group>"; };
 		18DD11242BF00E92009C0A06 /* pthread_each_isoline_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_each_isoline_to_buf.h; sourceTree = "<group>"; };
 		18DD11262BF014E2009C0A06 /* pthread_PSF_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_PSF_patches_to_buf.h; sourceTree = "<group>"; };
@@ -1014,6 +1016,8 @@
 				1830DF042B166F4D00984382 /* KemoView2DRenderer.m */,
 				180999B62B16C7C800F83574 /* KemoView3DRenderer.h */,
 				180999B72B16C7C800F83574 /* KemoView3DRenderer.m */,
+				18DA702C2C01809600D0E417 /* KemoViewMapRenderer.h */,
+				18DA702D2C01809600D0E417 /* KemoViewMapRenderer.m */,
 				18F0296D2AF5A49500D37276 /* KemoViewerMetalView.h */,
 				18F0296E2AF5A49500D37276 /* KemoViewerMetalView.m */,
 				18F0296B2AF5A49500D37276 /* KemoViewerMetalViewController.h */,

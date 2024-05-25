@@ -110,11 +110,14 @@ typedef struct
     KemoViewMetalBuffers * _kemo2DMetalBufBase;
 }
 
-- (void) releaseMapMetalBuffers;
-- (void) releaseMsgMetalBuffers;
+- (void) releaseMapMetalBuffers:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs;
+- (void) releaseMsgMetalBuffers:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs;
+
 - (void) setMapMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
+                metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                     buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 - (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
+                    metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 
 
@@ -124,8 +127,10 @@ typedef struct
                    targetPixel:(MTLPixelFormat) pixelformat;
 
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+              metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat;
 - (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
+                  metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder

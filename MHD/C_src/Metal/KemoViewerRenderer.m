@@ -18,6 +18,8 @@ static const NSUInteger MaxFramesInFlight = 3;
 @implementation KemoViewerRenderer
 {
     KemoViewMetalBuffers * _kemoMetalBufBase;
+    KemoView2DMetalBuffers   _kemoView2DMetalBufs;
+    
     KemoView2DRenderer *   _kemo2DRenderer;
     KemoView3DRenderer *   _kemo3DRenderer[MaxFramesInFlight];
     KemoViewRendererTools * _kemoRendererTools;
@@ -116,13 +118,13 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     if(iflag_view == VIEW_MAP){
 /*  Release Map vertexs */
-        [_kemo2DRenderer releaseMapMetalBuffers];
+        [_kemo2DRenderer releaseMapMetalBuffers:&_kemoView2DMetalBufs];
     }else{
 /*  Release 3D vertexs */
         [kemo3DRenderer releaseKemoView3DMetalBuffers];
     };
 /*  Release Message vertexs */
-    [_kemo2DRenderer releaseMsgMetalBuffers];
+    [_kemo2DRenderer releaseMsgMetalBuffers:&_kemoView2DMetalBufs];
     return;
 }
 
@@ -135,6 +137,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     if(viewflag == VIEW_MAP){
 /*  Set Map vertexs to Metal buffers */
         [_kemo2DRenderer setMapMetalBuffers:device
+                                metalBuffer:&_kemoView2DMetalBufs
                                     buffers:kemo_sgl->kemo_buffers];
     }else{
 /*  Set 3D vertexs to Metal buffers */
@@ -144,6 +147,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     
 /*  Set message vertexs to Metal buffers */
     [_kemo2DRenderer setMessageMetalBuffers:device
+                                metalBuffer:&_kemoView2DMetalBufs
                                     buffers:kemo_sgl->kemo_buffers];
     return;
 }
@@ -222,6 +226,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
+                              metalBuffer:&_kemoView2DMetalBufs
                                projection:&_map_proj_mat];
     }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
         [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
@@ -235,6 +240,7 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                       sides:iflag_polygon];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
+                              metalBuffer:&_kemoView2DMetalBufs
                                projection:&_cbar_proj_mat];
 }
 
