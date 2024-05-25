@@ -16,7 +16,6 @@
 @implementation KemoView2DRenderer
 {
     KemoView2DMetalShaders   _kemoView2DShaders;
-    KemoView2DMetalPipelines _kemoView2DPipelines;
 }
 
 -(id) init
@@ -333,13 +332,13 @@
     };
 }
 
-- (void)drawAnaglyphObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                 pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
-                 numVertex:(NSUInteger) numVertex
-                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                      left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
-                     right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
-                projection:(matrix_float4x4 *_Nonnull) projection_mat;
+- (void)encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                    pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                    numVertex:(NSUInteger) numVertex
+                       vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                         left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
+                        right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
+                   projection:(matrix_float4x4 *_Nonnull) projection_mat;
 {
     if(numVertex > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->anaglyphPipelineState];
@@ -366,10 +365,10 @@
 }
 
 
-- (void) setMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-             pipelines:(KemoView2DMetalPipelines * _Nonnull) kemoView2DPipelines
-           metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-            projection:(matrix_float4x4 * _Nonnull) map_proj_mat
+- (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                pipelines:(KemoView2DMetalPipelines * _Nonnull) kemoView2DPipelines
+              metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+               projection:(matrix_float4x4 * _Nonnull) map_proj_mat
 {
     /*  Commands to render map projection */
     [self draw2DElementObject:renderEncoder
@@ -407,10 +406,10 @@
     return;
 }
 
-- (void) setMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                 pipelines:(KemoView2DMetalPipelines * _Nonnull) kemo2DPipelines
-               metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                projection:(matrix_float4x4 * _Nonnull) projection_mat
+- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                    pipelines:(KemoView2DMetalPipelines * _Nonnull) kemo2DPipelines
+                  metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                   projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
 /*  Commands to render colorbar  box */
     [self draw2DPatchObject:renderEncoder
@@ -482,48 +481,13 @@
                      library:shaderLibrary];
 }
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
+                     pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                    targetPixel:(MTLPixelFormat) pixelformat
 {
     [self setKemoView2DPipelines:mtkView
                          shaders:&_kemoView2DShaders
-                       pipelines:&_kemoView2DPipelines
+                       pipelines:kemoView2DPipelines
                      targetPixel:pixelformat];
 }
-
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-              metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-               projection:(matrix_float4x4 * _Nonnull) map_proj_mat
-{
-    [self setMapObjects:renderEncoder
-              pipelines:&_kemoView2DPipelines
-            metalBuffer:kemoView2DMetalBufs
-              projection:map_proj_mat];
-}
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                  metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-                   projection:(matrix_float4x4 * _Nonnull) projection_mat
-{
-    [self setMessageObjects:renderEncoder
-               pipelines:&_kemoView2DPipelines
-             metalBuffer:kemoView2DMetalBufs
-              projection:projection_mat];
-}
-
-- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                     numVertex:(NSUInteger) numVertex
-                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
-                          left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
-                         right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
-                    projection:(matrix_float4x4 * _Nonnull) projection_mat
-{
-    [self drawAnaglyphObject:renderEncoder
-                   pipelines:&_kemoView2DPipelines
-                   numVertex:numVertex
-                      vertex:anaglyphVertex
-                        left:leftTexure
-                       right:rightTexure
-                  projection:projection_mat];
-}
-
 @end
 

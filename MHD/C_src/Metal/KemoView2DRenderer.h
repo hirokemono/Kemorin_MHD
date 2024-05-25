@@ -124,16 +124,20 @@ typedef struct
 -(void) add2DShaderLibrary:(id<MTLLibrary> _Nonnull * _Nonnull) shaderLibrary;
 
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
+                     pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                    targetPixel:(MTLPixelFormat) pixelformat;
 
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
               metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat;
 - (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
+                    pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                   metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
+                     pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                      numVertex:(NSUInteger) numVertex
                         vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
                           left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure

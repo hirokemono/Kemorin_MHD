@@ -18,6 +18,8 @@ static const NSUInteger MaxFramesInFlight = 3;
 @implementation KemoViewerRenderer
 {
     KemoViewMetalBuffers * _kemoMetalBufBase;
+
+    KemoView2DMetalPipelines _kemoView2DPipelines;
     KemoView2DMetalBuffers   _kemoView2DMetalBufs;
     
     KemoView2DRenderer *   _kemo2DRenderer;
@@ -70,6 +72,8 @@ static const NSUInteger MaxFramesInFlight = 3;
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
     _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
     _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
+    
+    
     for(i=0;i<MaxFramesInFlight;i++){
         _kemo3DRenderer[i] = [[KemoView3DRenderer alloc] init];
     };
@@ -93,6 +97,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         [_kemo2DRenderer addKemoView2DPipelines:mtkView
+                                      pipelines:&_kemoView2DPipelines
                                     targetPixel:mtkView.colorPixelFormat];
         for(i=0;i<MaxFramesInFlight;i++){
             [_kemo3DRenderer[i] addKemoView3DPipelines:mtkView
@@ -226,6 +231,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
+                                pipelines:&_kemoView2DPipelines
                               metalBuffer:&_kemoView2DMetalBufs
                                projection:&_map_proj_mat];
     }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
@@ -240,6 +246,7 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                       sides:iflag_polygon];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
+                                pipelines:&_kemoView2DPipelines
                               metalBuffer:&_kemoView2DMetalBufs
                                projection:&_cbar_proj_mat];
 }
@@ -331,7 +338,8 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
-                                     numVertex:numVertex
+                                     pipelines:&_kemoView2DPipelines
+                                    numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure
                                          right:rightTexure
@@ -358,6 +366,7 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
+                                     pipelines:&_kemoView2DPipelines
                                      numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure
