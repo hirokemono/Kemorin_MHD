@@ -16,13 +16,13 @@ struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type
         exit(0);
     };
     kemo_gl->kemoview_data = kemoviewer;
+    
     kemo_gl->kemo_shaders = init_kemoview_shaders();
-    kemo_gl->kemo_VAOs = init_kemoview_VAOs();
+    initialize_gl_shaders(kemo_gl->kemo_shaders);
 
-    if((kemo_gl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids))) == NULL){
-        printf("malloc error for menu_VAO\n");
-        exit(0);
-    };
+    kemo_gl->kemo_VAOs = init_kemoview_VAOs();
+    assign_kemoview_VAOs(kemo_gl->kemo_VAOs);
+
     return kemo_gl;
 }
 
@@ -35,13 +35,6 @@ void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl){
     free(kemo_gl);
     return;
 }
-
-void kemoview_gl_init_shaders(struct kemoviewer_gl_type *kemo_gl){
-    initialize_gl_shaders(kemo_gl->kemo_shaders);
-    assign_kemoview_VAOs(kemo_gl->kemo_VAOs);
-    return;
-}
-
 
 void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer){
     set_gl_bg_color(kemoviewer->kemo_mesh->bg_color);
@@ -56,13 +49,18 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_modify_view(struct kemoviewer_gl_type *kemo_gl){
-    update_draw_objects_gl3(kemo_gl->kemoview_data,
-                            kemo_gl->kemo_VAOs,
-                            kemo_gl->kemo_shaders);
+void kemoview_gl_full_draw(struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW,
+                              kemo_gl->kemoview_data);
+    select_modify_anaglyph(kemo_gl->kemoview_data,
+                           kemo_gl->kemo_VAOs,
+                           kemo_gl->kemo_shaders);
+    return;
 };
 
-void draw_fast_lc(struct kemoviewer_gl_type * kemo_gl){
+void kemoview_gl_fast_draw(struct kemoviewer_gl_type * kemo_gl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
                               kemo_gl->kemoview_data);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW,
@@ -70,12 +68,26 @@ void draw_fast_lc(struct kemoviewer_gl_type * kemo_gl){
     kemoview_mono_viewmatrix(kemo_gl->kemoview_data);
     kemoview_fast_buffers(kemo_gl->kemoview_data);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_gl);
+    update_draw_objects_gl3(kemo_gl->kemoview_data,
+                            kemo_gl->kemo_VAOs,
+                            kemo_gl->kemo_shaders);
     return;
 };
 
-void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
-                              struct kemoviewer_gl_type *kemo_gl){
+void kemoview_gl_quilt_draw(int istep_qult, struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, QUILT_DRAW,
+                              kemo_gl->kemoview_data);
+    kemoview_step_viewmatrix(istep_qult, kemo_gl->kemoview_data);
+    glDrawBuffer(GL_BACK);
+    update_draw_objects_gl3(kemo_gl->kemoview_data,
+                            kemo_gl->kemo_VAOs,
+                            kemo_gl->kemo_shaders);
+    return;
+};
+
+void kemoview_modify_anaglyph(struct kemoviewer_gl_type *kemo_gl){
     select_modify_anaglyph(kemo_gl->kemoview_data,
                            kemo_gl->kemo_VAOs,
                            kemo_gl->kemo_shaders);

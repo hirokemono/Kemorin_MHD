@@ -74,7 +74,8 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	};
 	
 	if(action == GLFW_RELEASE){
-        draw_full_lc(glfw_window, kemoview_GLFW, kemoGL_GLFW);
+        kemoview_gl_full_draw(kemoGL_GLFW);
+        glfwSwapBuffers(glfw_window);
 	};
 	return;
 };
@@ -275,7 +276,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemoview_GLFW);
  	};
 	
-    draw_fast(kemoview_GLFW);
+    draw_fast_gl(kemoGL_GLFW);
 	glfwSwapBuffers(window);
 	return;
 }
@@ -316,47 +317,49 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 }
 
 void draw_full_gl(struct kemoviewer_gl_type *kemo_gl){
-    draw_full_lc(glfw_window, kemo_gl->kemoview_data, kemo_gl);
-    return;
-};
-
-void draw_fast(struct kemoviewer_gl_type *kemo_gl){
-    draw_fast_lc(kemo_gl);
+    kemoview_gl_full_draw(kemo_gl);
     glfwSwapBuffers(glfw_window);
     return;
 };
 
-void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl){
-    draw_quilt_lc(istep_qult, glfw_window, kemo_sgl, kemoGL_GLFW);
+void draw_fast_gl(struct kemoviewer_gl_type *kemo_gl){
+    kemoview_gl_fast_draw(kemo_gl);
+    glfwSwapBuffers(glfw_window);
     return;
 };
 
-double draw_rotate_views(struct kemoviewer_type *kemo_sgl,
+void draw_quilt(int istep_qult, struct kemoviewer_gl_type *kemo_gl){
+    kemoview_gl_quilt_draw(istep_qult, kemo_gl);
+    glfwSwapBuffers(glfw_window);
+    return;
+};
+
+double draw_rotate_views(struct kemoviewer_gl_type *kemo_gl,
                          int i_axis, int inc_deg, int num_rotation){
-    return draw_rotate_views_lc(glfw_window, kemo_sgl, kemoGL_GLFW,
+    return draw_rotate_views_lc(glfw_window, kemo_gl,
                                 i_axis, inc_deg, num_rotation);
 }
 
-void draw_evolution_views(struct kemoviewer_type *kemo_sgl,
+void draw_evolution_views(struct kemoviewer_gl_type *kemo_gl,
                           int ist_udt, int ied_udt, int inc_udt){
-    draw_evolution_views_lc(glfw_window, kemo_sgl, kemoGL_GLFW,
+    draw_evolution_views_lc(glfw_window, kemo_gl,
                             ist_udt, ied_udt, inc_udt);
 	return;
 };
 
-void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+void sel_write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
                             int iflag_img, struct kv_string *image_prefix,
                             int i_fps, int i_axis, int inc_deg){
-    sel_lc_write_rotate_views(glfw_window, kemo_sgl, kemoGL_GLFW,
+    sel_lc_write_rotate_views(glfw_window, kemo_gl,
                               iflag_img, image_prefix,
                               i_fps, i_axis, inc_deg);
     return;
 }
 
-void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
+void sel_write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
                                int iflag_img, struct kv_string *image_prefix,
                                int i_fps, int ist_udt, int ied_udt, int inc_udt){
-    sel_lc_write_evolution_views(glfw_window, kemo_sgl, kemoGL_GLFW,
+    sel_lc_write_evolution_views(glfw_window, kemo_gl,
                                  iflag_img, image_prefix, i_fps,
                                  ist_udt, ied_udt, inc_udt);
     return;

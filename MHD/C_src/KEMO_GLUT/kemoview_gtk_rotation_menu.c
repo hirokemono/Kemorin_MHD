@@ -72,8 +72,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    draw_rotate_views(kemo_gl->kemoview_data,
-                      rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
+    draw_rotate_views(kemo_gl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
 	return;
 };
 
@@ -101,7 +100,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(kemo_gl->kemoview_data, rot_gmenu->id_fmt_rot, file_prefix,
+    sel_write_rotate_views(kemo_gl, rot_gmenu->id_fmt_rot, file_prefix,
                            rot_gmenu->i_FPS, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	
 	return;

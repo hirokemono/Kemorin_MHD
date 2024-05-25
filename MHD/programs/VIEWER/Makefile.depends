@@ -118,7 +118,8 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
- $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
+ $(MHDDIR)/C_src/GLSL/kemoview_gl_draw_objects.h \
+ $(MHDDIR)/C_src/GLSL/m_kemoview_gl_VAOs.h \
  $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
@@ -155,6 +156,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/const_mesh_patch_table_for_gl.h \
  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_message_buffers.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
+ $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
  $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \
@@ -346,7 +348,8 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
- $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
+ $(MHDDIR)/C_src/GLSL/kemoview_gl_draw_objects.h \
+ $(MHDDIR)/C_src/GLSL/m_kemoview_gl_VAOs.h \
  $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
@@ -383,6 +386,7 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/const_mesh_patch_table_for_gl.h \
  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_message_buffers.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
+ $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
  $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
  $(MHDDIR)/C_src/GTK/calypso_GTK.h \

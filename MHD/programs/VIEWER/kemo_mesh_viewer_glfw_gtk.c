@@ -262,6 +262,8 @@ int draw_mesh_kemo(void) {
         
     single_kemoview = kemoview_allocate_single_viwewer_struct();
     kemoview_gl = kemoview_allocate_gl_pointers(single_kemoview);
+    kemoview_init_lighting(single_kemoview);
+    
     kemoview_set_windowsize(nx_buf, ny_buf, NPIX_X, NPIX_Y,
                             single_kemoview);
 	
@@ -283,10 +285,8 @@ int draw_mesh_kemo(void) {
 	glfwSetWindowCloseCallback(glfw_win, glfwWindowclose_CB);
 	
 	/* ! set the perspective and lighting */
-    kemoview_init_lighting(single_kemoview);
     kemoview_init_background_color(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_shaders(kemoview_gl);
 	kemoview_init_phong_light_list(single_kemoview);
 	
 //	iflag_gtk_focus = 1;

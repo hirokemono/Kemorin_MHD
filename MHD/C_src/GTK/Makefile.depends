@@ -662,7 +662,8 @@ tree_view_viewer_colormap.o: \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
- $(C_SRCDIR)/GLSL/move_draw_objects_gl.h \
+ $(C_SRCDIR)/GLSL/kemoview_gl_draw_objects.h \
+ $(C_SRCDIR)/GLSL/m_kemoview_gl_VAOs.h \
  $(C_SRCDIR)/GLSL/drawGL_by_VAO.h \
  $(C_SRCDIR)/GLSL/drawcube_gl.h \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
@@ -699,6 +700,7 @@ tree_view_viewer_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/const_mesh_patch_table_for_gl.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_message_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
+ $(C_SRCDIR)/GLSL/move_draw_objects_gl.h \
  $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
  $(C_SRCDIR)/CORE_C/write_image_2_png.h \
  $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \

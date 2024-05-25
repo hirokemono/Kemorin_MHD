@@ -30,7 +30,7 @@ static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    double AverageFPS = draw_rotate_views(kemo_gl->kemoview_data,
+    double AverageFPS = draw_rotate_views(kemo_gl,
                                           iaxis_rotation, increment_deg,
                                           num_rotation);
     gchar text_AverageFPS[25];

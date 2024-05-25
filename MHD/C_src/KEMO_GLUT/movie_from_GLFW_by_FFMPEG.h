@@ -25,12 +25,10 @@
 /*  prototypes */
 
 void sel_lc_write_rotate_views(GLFWwindow *glfw_win,
-                               struct kemoviewer_type *kemo_sgl,
                                struct kemoviewer_gl_type *kemo_gl,
                                int iflag_img, struct kv_string *image_prefix,
                                int i_fps, int i_axis, int inc_deg);
 void sel_lc_write_evolution_views(GLFWwindow *glfw_win,
-                                  struct kemoviewer_type *kemo_sgl,
                                   struct kemoviewer_gl_type *kemo_gl,
                                   int iflag_img, struct kv_string *image_prefix,
                                   int i_fps, int ist_udt, int ied_udt, int inc_udt);

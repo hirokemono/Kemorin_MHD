@@ -24,6 +24,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "init_gl_lighting_c.h"
 #include "kemoviewer_param_c.h"
+#include "kemoview_gl_draw_objects.h"
 #include "move_draw_objects_gl.h"
 #include "write_gl_window_to_file.h"
 #include "set_kemoviewer_ucd_data.h"
@@ -49,15 +50,15 @@ struct kemoviewer_gl_type{
     struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer);
     void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl);
 
-    void kemoview_gl_init_shaders(struct kemoviewer_gl_type *kemo_gl);
-
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_modify_view(struct kemoviewer_gl_type *kemo_gl);
-    void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
-                                  struct kemoviewer_gl_type *kemo_gl);
-    void draw_fast_lc(struct kemoviewer_gl_type * kemo_gl);
+    void kemoview_modify_anaglyph(struct kemoviewer_gl_type *kemo_gl);
+
+    void kemoview_gl_full_draw(struct kemoviewer_gl_type * kemo_gl);
+    void kemoview_gl_fast_draw(struct kemoviewer_gl_type * kemo_gl);
+    void kemoview_gl_quilt_draw(int istep_qult, struct kemoviewer_gl_type * kemo_gl);
+
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);

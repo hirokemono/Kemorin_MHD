@@ -101,7 +101,7 @@ static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
@@ -110,7 +110,7 @@ static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_SHIFT, 1, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
@@ -119,7 +119,7 @@ static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_SHIFT, 2, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 
@@ -129,7 +129,7 @@ static void scale_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_SCALE, 0, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 
@@ -139,7 +139,7 @@ static void spin_x_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_ROTATE, 1, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void spin_y_CB(GtkWidget *entry, gpointer user_data){
@@ -148,7 +148,7 @@ static void spin_y_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_ROTATE, 2, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void spin_z_CB(GtkWidget *entry, gpointer user_data){
@@ -157,7 +157,7 @@ static void spin_z_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_ROTATE, 3, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
@@ -166,7 +166,7 @@ static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_ROTATE, 0, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 
@@ -176,7 +176,7 @@ static void aperture_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_set_view_parameter(ISET_APERTURE, 0, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 
@@ -186,7 +186,7 @@ static void focus_CB(GtkWidget *spin_focus, gpointer user_data){
 	kemoview_set_stereo_parameter(ISET_FOCUS, gtk_floatvalue,
                                   kemo_gl->kemoview_data);
 	
-    draw_fast(kemo_gl);
+    draw_fast_gl(kemo_gl);
 	return;
 };
 static void eye_sep_dist_CB(GtkWidget *spin_eye_sep, gpointer user_data){
@@ -205,7 +205,7 @@ static void eye_sep_dist_CB(GtkWidget *spin_eye_sep, gpointer user_data){
                                                    ISET_EYEAGL, 0);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_sep_angle), angle);
 
-        draw_fast(kemo_gl);
+        draw_fast_gl(kemo_gl);
     }
     view_menu->iflag_updated_eye_separation = 0;
 	return;
@@ -225,7 +225,7 @@ static void eye_sep_angle_CB(GtkWidget *spin_sep_angle, gpointer user_data){
         double separation = kemoview_get_view_parameter(kemo_gl->kemoview_data,
                                                         ISET_EYESEP, 0);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), separation);
-        draw_fast(kemo_gl);
+        draw_fast_gl(kemo_gl);
     }
     view_menu->iflag_updated_eye_sep_angle = 0;
     return;
