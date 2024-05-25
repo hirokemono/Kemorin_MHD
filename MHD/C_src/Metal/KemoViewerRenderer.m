@@ -22,11 +22,13 @@ static const NSUInteger MaxFramesInFlight = 3;
     KemoView2DMetalPipelines _kemoView2DPipelines;
     KemoView2DMetalBuffers   _kemoView2DMetalBufs;
     KemoViewMapMetalBuffers  _kemoViewMapMetalBufs;
+    KemoViewMessageMetalBuffers  _kemoViewMessageMetalBufs;
 
-    KemoView2DRenderer *   _kemo2DRenderer;
-    KemoViewMapRenderer *  _kemoMapRenderer;
-    KemoView3DRenderer *   _kemo3DRenderer[MaxFramesInFlight];
-    KemoViewRendererTools * _kemoRendererTools;
+    KemoView2DRenderer      *_kemo2DRenderer;
+    KemoViewMapRenderer     *_kemoMapRenderer;
+    KemoViewMessageRenderer *_kemoMessageRenderer;
+    KemoView3DRenderer      *_kemo3DRenderer[MaxFramesInFlight];
+    KemoViewRendererTools   *_kemoRendererTools;
 
     id<MTLDevice> _device;
 
@@ -71,10 +73,11 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     int i;
     
-    _kemoRendererTools = [[KemoViewRendererTools alloc] init];
-    _kemoMetalBufBase =  [[KemoViewMetalBuffers alloc] init];
-    _kemo2DRenderer =    [[KemoView2DRenderer alloc] init];
-    _kemoMapRenderer =   [[KemoViewMapRenderer alloc] init];
+    _kemoRendererTools =   [[KemoViewRendererTools alloc] init];
+    _kemoMetalBufBase =    [[KemoViewMetalBuffers alloc] init];
+    _kemo2DRenderer =      [[KemoView2DRenderer alloc] init];
+    _kemoMapRenderer =     [[KemoViewMapRenderer alloc] init];
+    _kemoMessageRenderer = [[KemoViewMessageRenderer alloc] init];
 
     
     for(i=0;i<MaxFramesInFlight;i++){
@@ -132,7 +135,7 @@ static const NSUInteger MaxFramesInFlight = 3;
         [kemo3DRenderer releaseKemoView3DMetalBuffers];
     };
 /*  Release Message vertexs */
-    [_kemo2DRenderer releaseMsgMetalBuffers:&_kemoView2DMetalBufs];
+    [_kemoMessageRenderer releaseMsgMetalBuffers:&_kemoViewMessageMetalBufs];
     return;
 }
 
@@ -155,10 +158,10 @@ static const NSUInteger MaxFramesInFlight = 3;
     };
     
 /*  Set message vertexs to Metal buffers */
-    [_kemo2DRenderer setMessageMetalBuffers:device
-                            baseMetalBuffer:_kemoMetalBufBase
-                                metalBuffer:&_kemoView2DMetalBufs
-                                    buffers:kemo_sgl->kemo_buffers];
+    [_kemoMessageRenderer setMessageMetalBuffers:device
+                                 baseMetalBuffer:_kemoMetalBufBase
+                                     metalBuffer:&_kemoViewMessageMetalBufs
+                                         buffers:kemo_sgl->kemo_buffers];
     return;
 }
 
@@ -251,10 +254,11 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                      unites:monoViewUnites
                                                       sides:iflag_polygon];
     };
-    [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                                pipelines:&_kemoView2DPipelines
-                              metalBuffer:&_kemoView2DMetalBufs
-                               projection:&_cbar_proj_mat];
+    [_kemoMessageRenderer encodeMessageObjects:renderEncoder
+                                   base2Dclass:_kemo2DRenderer
+                                     pipelines:&_kemoView2DPipelines
+                                   metalBuffer:&_kemoViewMessageMetalBufs
+                                    projection:&_cbar_proj_mat];
 }
 
 -(void) KemoViewEncodeAll:(NSUInteger) i_current

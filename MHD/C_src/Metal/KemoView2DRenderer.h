@@ -103,24 +103,11 @@ typedef struct
                       index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
                  projection:(matrix_float4x4 *_Nonnull) projection_mat;
 
-- (void) releaseMsgMetalBuffers:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs;
-
-- (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
-                baseMetalBuffer:(KemoViewMetalBuffers *_Nonnull) kemo2DMetalBufBase
-                    metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-                        buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
-
-
 -(void) add2DShaderLibrary:(id<MTLLibrary> _Nonnull * _Nonnull) shaderLibrary;
 
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
                      pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                    targetPixel:(MTLPixelFormat) pixelformat;
-
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                    pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
-                  metalBuffer:(KemoView2DMetalBuffers *_Nonnull) kemoView2DMetalBufs
-                   projection:(matrix_float4x4 * _Nonnull) projection_mat;
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
                      pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
