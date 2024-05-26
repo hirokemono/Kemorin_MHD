@@ -85,10 +85,12 @@
     }
     
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(icount = 0;icount<ied_deg;icount++){
         int_degree = (icount * self.RotationIncrement);
         self.CurrentStep = icount;
         self.stepToDisplay = (float) icount / (float) (ied_deg - 1);
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
         [self setRotation:int_degree
                      axis:RotationAxisID
                  kemoview:kemo_sgl];
@@ -107,6 +109,7 @@
         }
     }
     self.stepDisplayFlag = 0;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [_KemoviewQTMaker CloseKemoviewMovieFile];
@@ -132,10 +135,12 @@
     }
     
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(icount = 0;icount<ied_deg;icount++){
         int_degree = (icount * self.RotationIncrement);
         self.CurrentStep = icount;
         self.stepToDisplay = (float) icount / (float) (ied_deg - 1);
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
         [self setRotation:int_degree
                      axis:RotationAxisID
                  kemoview:kemo_sgl];
@@ -159,6 +164,7 @@
         }
     }
     self.stepDisplayFlag = 0;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [_KemoviewQTMaker CloseKemoviewMovieFile];
@@ -245,8 +251,10 @@
 
     int num = self.EvolutionEndStep - self.EvolutionStartStep;
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
         self.stepToDisplay = (float) (self.CurrentStep - self.EvolutionStartStep) / (float) num;
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
         if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
             [_metalView DrawEvolution:self.CurrentStep
@@ -266,6 +274,7 @@
         }
     }
     self.stepDisplayFlag = 0;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [_KemoviewQTMaker CloseKemoviewMovieFile];
@@ -288,8 +297,10 @@
 
     int num = self.EvolutionEndStep - self.EvolutionStartStep;
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
         self.stepToDisplay = (float) (self.CurrentStep - self.EvolutionStartStep) / (float) num;
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
         if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
             [_metalView DrawEvolution:self.CurrentStep
@@ -314,6 +325,7 @@
         }
     }
     self.stepDisplayFlag = 0;
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [_KemoviewQTMaker CloseKemoviewMovieFile];
