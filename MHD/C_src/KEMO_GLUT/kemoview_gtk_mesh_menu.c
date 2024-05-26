@@ -17,8 +17,8 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
         = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     kemoview_close_mesh_view(kemo_gl->kemoview_data);
-    init_mesh_window(kemo_gl, mesh_vws, meshWin);
-    
+    gtk_widget_destroy(meshWin);
+
     draw_full_gl(kemo_gl);
     return;
 };
@@ -261,7 +261,7 @@ static void set_mesh_menu_box(struct kemoviewer_gl_type *kemo_gl,
 
 void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
                       struct kemoview_mesh_view *mesh_vws,
-                      GtkWidget *meshWin){
+                      GtkWidget *main_window, GtkWidget *meshWin){
     if(mesh_vws->iflag_meshBox > 0){
         gtk_widget_destroy(meshWin);
         gtk_window_get_position(GTK_WINDOW(meshWin),
@@ -273,11 +273,15 @@ void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
         = kemoview_get_draw_mesh_flag(kemo_gl->kemoview_data);
     if(mesh_vws->iflag_meshBox == 0) return;
 
+    gint win_upperleft[2], size_xy[2];
+    gtk_window_get_position(GTK_WINDOW(main_window), &win_upperleft[0], &win_upperleft[1]);
+    gtk_window_get_size(GTK_WINDOW(main_window), &size_xy[0], &size_xy[1]);
+
     meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(meshWin), "Mesh");
-//    gtk_window_move (GTK_WINDOW(meshWin),
-//                     mesh_vws->ij_Win[0],
-//                     (mesh_vws->ij_Win[1]+28));
+    gtk_window_move (GTK_WINDOW(meshWin),
+                     (win_upperleft[0]+size_xy[0]),
+                     win_upperleft[1]);
     gtk_widget_set_size_request(meshWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(meshWin), 5);
     

@@ -47,7 +47,8 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 
 void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
                                struct kv_string *filename,
-                               struct main_buttons *mbot){
+                               struct main_buttons *mbot,
+                               GtkWidget *main_window){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
@@ -61,11 +62,11 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
     kemoview_free_kvstring(filename);
 	
-    init_psf_window(kemo_gl, mbot->psf_gmenu);
-    init_fline_window(kemo_gl, mbot->fline_menu);
-    init_mesh_window(kemo_gl, mbot->mesh_vws, mbot->meshWin);
+    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_menu, main_window, mbot->itemTEvo);
+    init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
 
-//    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
+    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -73,6 +74,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 
 static void open_file_CB(GtkButton *button, gpointer user_data){
     struct kv_string *filename;
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "window"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
@@ -82,7 +84,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
     struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
     filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     
-    open_kemoviewer_file_glfw(kemo_gl, filename, mbot);
+    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
     return;
 };
 
@@ -206,8 +208,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-GtkWidget * make_gtk_open_file_box(struct main_buttons *mbot,
-                                   struct kemoviewer_gl_type *kemo_gl){
+GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
+                                   GtkWidget *main_window, struct main_buttons *mbot){
     GtkWidget *hbox_open;
     /*
     GtkWidget *testButton = gtk_button_new_with_label("On");
@@ -218,8 +220,9 @@ GtkWidget * make_gtk_open_file_box(struct main_buttons *mbot,
     GtkWidget *entry_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
     g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
-    
-    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, mbot);
+    g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
+
+    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window, mbot);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",
@@ -265,24 +268,24 @@ GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
 };
 
 GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
-                                   GtkWidget *quitButton, GtkWidget *window_main,
+                                   GtkWidget *quitButton, GtkWidget *main_window,
                                    struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *vbox_menu;
     
-    GtkWidget *hbox_open = make_gtk_open_file_box(mbot, kemo_gl);
+    GtkWidget *hbox_open = make_gtk_open_file_box(kemo_gl, main_window, mbot);
     GtkWidget *savebox = make_gtk_save_file_box(mbot, quitButton, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(kemo_gl, mbot->view_menu);
-    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, window_main);
+    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
-                                                          window_main);
+                                                          main_window);
 /*
-    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, window_main);
+    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
 */
     mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
-                                                        window_main);
+                                                        main_window);
     mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
-                                                    mbot->view_menu, window_main);
+                                                    mbot->view_menu, main_window);
     
     vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(vbox_menu), hbox_open, FALSE, FALSE, 0);

@@ -66,10 +66,11 @@ void dealloc_main_buttons(struct main_buttons *mbot);
 
 void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
                                struct kv_string *filename, 
-                               struct main_buttons *mbot);
+                               struct main_buttons *mbot,
+                               GtkWidget *main_window);
 
 GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
-                                   GtkWidget *quitButton, GtkWidget *window_main,
+                                   GtkWidget *quitButton, GtkWidget *main_window,
                                    struct kemoviewer_gl_type *kemo_gl);
 
 #endif

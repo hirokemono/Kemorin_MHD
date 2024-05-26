@@ -29,10 +29,13 @@
 #include "view_modifier_glfw.h"
 
 /*  prototypes */
-GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
+GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
                                   struct lightparams_view *lightparams_vws,
                                   GtkWidget *window);
-GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
+GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
+                                     struct lightparams_view *lightparams_vws,
+                                      GtkWidget *window);
+GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
                                      struct lightparams_view *lightparams_vws,
                                      GtkWidget *window);
 

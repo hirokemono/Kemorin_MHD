@@ -137,7 +137,7 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 	struct kv_string *filename;
 	for (int i = 0; i < num; i++) {
 		filename = kemoview_init_kvstring_by_string(paths[i]);
-		open_kemoviewer_file_glfw(kemoview_gl, filename, mbot);
+		open_kemoviewer_file_glfw(kemoview_gl, filename, mbot, gtk_win);
 	}
 }
 
@@ -204,7 +204,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->fline_menu->iflag_flineBox = 0;
     mbot->mesh_vws->iflag_meshBox =    0;
     mbot->id_current[0] = 1;
-//    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
+    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
 
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
     

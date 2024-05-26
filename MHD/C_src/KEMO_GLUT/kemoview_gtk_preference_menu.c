@@ -108,24 +108,31 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
     return pref_vbox;
 }
 
-GtkWidget * init_preference_frame(struct kemoviewer_type *kemoviewer_data,
+GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
                                   struct lightparams_view *lightparams_vws,
                                   GtkWidget *window){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
     gtk_frame_set_shadow_type(GTK_FRAME(frame_pref), GTK_SHADOW_IN);
-    GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data, 
-                                                lightparams_vws,  window);
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws,  window);
     gtk_container_add(GTK_CONTAINER(frame_pref), pref_vbox);
     return frame_pref;
 }
 
-GtkWidget * init_preference_expander(struct kemoviewer_type *kemoviewer_data,
+GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
+                                     struct lightparams_view *lightparams_vws,
+                                     GtkWidget *window){
+    GtkWidget *scroll_pref;
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws, window);
+    scroll_pref = wrap_into_scrollbox_gtk(400, 400, pref_vbox);
+    return scroll_pref;
+}
+
+GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
                                      struct lightparams_view *lightparams_vws,
                                      GtkWidget *window){
     GtkWidget *expander_pref;
-    GtkWidget *pref_vbox = init_preference_vbox(kemoviewer_data,
-                                                lightparams_vws, window);
-    expander_pref = wrap_into_scroll_expansion_gtk("Preferences", 160, 400,
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws, window);
+    expander_pref = wrap_into_scroll_expansion_gtk("Preferences", 400, 400,
                                                    window, pref_vbox);
     return expander_pref;
 }

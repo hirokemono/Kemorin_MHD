@@ -20,10 +20,12 @@
 #include "tree_view_viewer_colormap.h"
 #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_fieldline_menu.h"
+#include "kemoview_gtk_evolution_menu.h"
 
 /* prototypes */
 
 void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
-                       struct fieldline_gtk_menu *fline_menu);
+                       struct fieldline_gtk_menu *fline_menu,
+                       GtkWidget *main_window, GtkWidget *itemTEvo);
 
 #endif /*  KEMOVIEW_GTK_FLINE_WINDOW_  */

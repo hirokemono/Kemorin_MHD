@@ -28,5 +28,5 @@
 /*  prototypes */
 void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
                       struct kemoview_mesh_view *mesh_vws,
-                      GtkWidget *meshWin);
+                      GtkWidget *main_window, GtkWidget *meshWin);
 #endif
