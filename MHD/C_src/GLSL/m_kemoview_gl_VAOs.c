@@ -234,8 +234,6 @@ void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                               kemo_buffers->MAP_bufs,
                               kemo_VAOs);
     }else{
-        Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
-        
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
         const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
                                  kemo_psf->psf_a->psf_texure, kemo_shaders);

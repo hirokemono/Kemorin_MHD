@@ -108,7 +108,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     
     const_PSF_node_stack(kemo_psf->psf_d, kemo_psf->psf_a);
     set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
-
+    
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         const_map_buffers(kemo_buffers->nthreads, kemo_psf,
@@ -142,7 +142,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                   kemo_psf->psf_m, kemo_psf->psf_a,
                                   kemo_mesh->mesh_m,
                                   kemo_buffers->PSF_lines);
-        kemo_buffers->PSF_lines->PSF_isoline_buf->num_nod_buf = 0;
 
         const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
                                        view_s, kemo_psf->psf_d,
@@ -167,7 +166,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                           kemo_psf->psf_m, kemo_psf->psf_a,
                           kemo_mesh, view_s,
                           kemo_buffers->MESSAGE_bufs);
-
+    
     const_screen_buffer(view_s->iflag_view_type, view_s->nx_frame, view_s->ny_frame,
                         kemo_buffers->screen_buf);
 
@@ -212,9 +211,5 @@ void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
     }
      
     set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
-    set_isolines_for_fast_draw(kemo_mesh->mesh_m, kemo_buffers->PSF_lines);
-    set_fast_mode_for_fieldline(kemo_fline->fline_d, 
-                                kemo_fline->fline_m,
-                                kemo_buffers->Fline_bufs);
     return;
 };

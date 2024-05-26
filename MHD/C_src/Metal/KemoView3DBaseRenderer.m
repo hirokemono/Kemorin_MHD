@@ -170,6 +170,8 @@
                        unites:(KemoViewUnites *_Nullable) monoViewUnites
                         sides:(int) iflag_surface
 {
+    [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+    [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
     if(iflag_surface == NORMAL_POLYGON){
         [*renderEncoder setCullMode:MTLCullModeBack];
     }else if(iflag_surface == REVERSE_POLYGON){

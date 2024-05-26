@@ -19,7 +19,6 @@
 #include "draw_coastline.h"
 
 struct PSF_line_buffers{
-    long num_isoline_buf;
     struct gl_strided_buffer *PSF_isoline_buf;
     struct gl_strided_buffer *PSF_isotube_buf;
     struct gl_strided_buffer *PSF_arrow_buf;
@@ -38,8 +37,4 @@ void const_PSF_isolines_buffer(const int nthreads,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                struct mesh_menu_val *mesh_m, 
                                struct PSF_line_buffers *PSF_lines);
-void set_isolines_for_fast_draw(struct mesh_menu_val *mesh_m, 
-                                struct PSF_line_buffers *PSF_lines);
-
-
 #endif /* M_KEMOVIEW_PSF_LINE_BUFFERS_ */

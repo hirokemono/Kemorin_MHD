@@ -50,8 +50,6 @@
 
     NSString *RotateImageFilehead;
 	NSString *RotateImageFilenameNoStep;
-	IBOutlet NSProgressIndicator *rotateProgreessBar;
-	IBOutlet NSProgressIndicator *evolutionProgreessBar;
 	
 	NSInteger RotationAxisID;
 	NSInteger RotationIncrement;

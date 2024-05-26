@@ -243,11 +243,6 @@ static const NSUInteger MaxFramesInFlight = 3;
                                  pipelines:&_kemoView2DPipelines
                                metalBuffer:&_kemoViewMapMetalBufs
                                 projection:&_map_proj_mat];
-    }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
-        [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
-                                                      depth:&_depthState
-                                                     unites:monoViewUnites
-                                                      sides:iflag_polygon];
     }else{
         [_kemo3DRenderer[i_current] encodeKemoView3DObjects:renderEncoder
                                                       depth:&_depthState

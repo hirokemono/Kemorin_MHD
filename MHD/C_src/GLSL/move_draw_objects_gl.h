@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef MOVE_DRAW_OBJECT_GL_
-#define MOVE_DRAW_OBJECT_GL_
+#ifndef MOVE_DRAW_OBJECTS_GL_
+#define MOVE_DRAW_OBJECTS_GL_
 
 #include <stdlib.h>
 

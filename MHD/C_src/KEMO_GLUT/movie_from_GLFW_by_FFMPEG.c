@@ -133,7 +133,7 @@ void sel_lc_write_rotate_views(GLFWwindow *glfw_win,
                                int iflag_img, struct kv_string *image_prefix,
                                int i_fps, int i_axis, int inc_deg){
     if(inc_deg <= 0) inc_deg = 1;
-    int ied_deg = 1 + 360/inc_deg;
+    int ied_deg = 360/inc_deg;
     int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data,
                                            ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data,

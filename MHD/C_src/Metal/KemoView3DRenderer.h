@@ -127,15 +127,10 @@ typedef struct
 -(void) addKemoView3DPipelines:(nonnull MTKView *)mtkView
                    targetPixel:(MTLPixelFormat) pixelformat;
 
-- (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
-                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
-                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon;
-
-- (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
-                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
-                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon;
+-(void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
+                          depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
+                         unites:(KemoViewUnites *_Nonnull) monoViewUnites
+                          sides:(int) iflag_polygon;
 @end
 
 

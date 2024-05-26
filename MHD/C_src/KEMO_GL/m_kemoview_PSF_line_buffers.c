@@ -49,26 +49,14 @@ void const_PSF_isolines_buffer(const int nthreads,
 
     const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
                            PSF_lines->PSF_arrow_buf);
-    PSF_lines->num_isoline_buf = PSF_lines->PSF_isoline_buf->num_nod_buf;
     
     
     set_coastline_line_buffer(mesh_m, PSF_lines->coast_line_buf);
     if(view_s->iflag_coastline_tube){
         set_coastline_tube_buffer(mesh_m, view_s,
                                   PSF_lines->coast_tube_buf);
-        PSF_lines->coast_line_buf->num_nod_buf = 0;
     }else{
         PSF_lines->coast_tube_buf->num_nod_buf = 0;
     }
     return;
-}
-
-void set_isolines_for_fast_draw(struct mesh_menu_val *mesh_m, 
-                                struct PSF_line_buffers *PSF_lines)
-{
-    PSF_lines->coast_line_buf->num_nod_buf = ITWO * count_coastline_line_buffer(mesh_m);
-    PSF_lines->coast_tube_buf->num_nod_buf = 0;
-
-    PSF_lines->PSF_isoline_buf->num_nod_buf = PSF_lines->num_isoline_buf;
-    PSF_lines->PSF_isotube_buf->num_nod_buf = 0;
 }

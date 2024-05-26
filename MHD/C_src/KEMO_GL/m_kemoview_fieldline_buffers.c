@@ -61,20 +61,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                                                       fline_d, fline_m,
                                                       Fline_bufs->FLINE_tube_buf);
         };
-        Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
     };
 
 	return;
 }
-
-void set_fast_mode_for_fieldline(struct fline_data *fline_d,
-                                 struct fline_menu_val *fline_m,
-                                 struct FieldLine_buffers *Fline_bufs)
-{
-    if(fline_m->iflag_draw_fline > 0){
-        Fline_bufs->FLINE_line_buf->num_nod_buf
-            = ITWO * count_fieldlines_to_buf(fline_d);
-        Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
-    }
-    return;
-};

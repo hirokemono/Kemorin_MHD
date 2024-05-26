@@ -220,14 +220,6 @@ NSData *SnapshotData;
 
     glimage =    (unsigned char*)calloc(3*XViewsize*YViewsize, sizeof(unsigned char));
 
-    [evolutionProgreessBar setHidden:NO];
-    [evolutionProgreessBar setUsesThreadedAnimation:YES];
-    [evolutionProgreessBar setMinValue:(double) 0];
-    [evolutionProgreessBar setMaxValue:(double) num_step];
-    [evolutionProgreessBar startAnimation:self];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
-    
     NSBitmapImageRep *SnapshotBitmapRep
                                 = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
                                                                           pixelsWide: XViewsize*XNumImage
@@ -257,20 +249,7 @@ NSData *SnapshotData;
                                    (int) pix_xy[0], (int) pix_xy[1], bgra, 
                                    [SnapshotBitmapRep bitmapData]);
         free(bgra);
-
-        
-        [evolutionProgreessBar incrementBy:(double) 1.0];
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-        [evolutionProgreessBar displayIfNeeded];
     }
-    
-    [evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
-    [evolutionProgreessBar stopAnimation:self];
-    [evolutionProgreessBar setHidden:YES];
-    [evolutionProgreessBar setDisplayedWhenStopped:NO];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
-    
     free(glimage);
     return SnapshotBitmapRep;
 }
@@ -498,29 +477,14 @@ NSData *SnapshotData;
     return self;
 }
 
--(void) SaveQTmovieRotation:(struct kemoviewer_type *) kemo_sgl;
+-(void) SaveQTMovieRotation:(struct kemoviewer_type *) kemo_sgl;
 {
     NSInteger ied_deg = 360/self.RotationIncrement;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
-//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
-    if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
-            if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep
-                                 kemoview:kemo_sgl] != 0) return;
-        }else{
-            [self OpenQTMovieFile:RotateImageFilenameNoStep];
-        }
-    }
-    
-    [rotateProgreessBar setHidden:NO];
-    [rotateProgreessBar setUsesThreadedAnimation:YES];
-    [rotateProgreessBar startAnimation:self];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [rotateProgreessBar displayIfNeeded];
+    if (CurrentMovieFormat == SAVE_QT_MOVIE){[self OpenQTMovieFile:RotateImageFilenameNoStep];}
     
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
     for(icount = 0;icount<ied_deg;icount++){
@@ -531,59 +495,26 @@ NSData *SnapshotData;
                      axis:RotationAxisID
                  kemoview:kemo_sgl];
 
-        if (CurrentMovieFormat == SAVE_QT_MOVIE
-            && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-            CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
-            [self AddKemoviewQuiltToMovie:frameTime
-                                   degree:int_degree
-                                   axis:RotationAxisID
-                                 kemoview:kemo_sgl];
-        }else if(CurrentMovieFormat == SAVE_QT_MOVIE) {
+        if(CurrentMovieFormat == SAVE_QT_MOVIE) {
             CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
             [self AddKemoviewImageToMovie:frameTime
                                  kemoview:kemo_sgl];
         } else if (CurrentMovieFormat != 0) {
             NSString *numstring = [NSString stringWithFormat:@".%ld",icount];
             NSString *ImageFilehead =  [RotateImageFilehead stringByAppendingString:numstring];
-            if (CurrentMovieFormat == SAVE_PNG
-                && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltPNGFile:ImageFilehead
-                                        degree:int_degree
-                                          axis:RotationAxisID
-                                      kemoview:kemo_sgl];
-            } else if(CurrentMovieFormat == SAVE_PNG){
+            if(CurrentMovieFormat == SAVE_PNG){
                 [self SaveKemoviewPNGFile:ImageFilehead];
-            } else if (CurrentMovieFormat == SAVE_BMP
-                       && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltBMPFile:ImageFilehead
-                                        degree:int_degree
-                                          axis:RotationAxisID
-                                      kemoview:kemo_sgl];
             } else if(CurrentMovieFormat == SAVE_BMP){
                 [self SaveKemoviewBMPFile:ImageFilehead];
-            } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltPDFFile:ImageFilehead
-                                        degree:int_degree
-                                          axis:RotationAxisID
-                                      kemoview:kemo_sgl];
             } else {
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
         }else{
             [_metalView draw];
         }
-        
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-        [rotateProgreessBar incrementBy:(double) int_degree];
-        [rotateProgreessBar displayIfNeeded];
     }
     self.stepDisplayFlag = 0;
 
-    [rotateProgreessBar setDoubleValue:(double) 0];
-    [rotateProgreessBar stopAnimation:self];
-    [rotateProgreessBar setHidden:YES];
-    [rotateProgreessBar displayIfNeeded];
-    
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [self CloseKemoviewMovieFile];
     }
@@ -595,26 +526,83 @@ NSData *SnapshotData;
     [_metalView setNeedsDisplay:YES];
 }
 
--(void) ShowQTmovieRotation:(struct kemoviewer_type *) kemo_sgl
-                numRotation:(NSInteger) rotCounts;
+-(void) SaveQuiltMovieRotation:(struct kemoviewer_type *) kemo_sgl;
+{
+    NSInteger ied_deg = 360/self.RotationIncrement;
+    NSInteger int_degree, icount;
+    
+    [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
+
+    if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep
+                             kemoview:kemo_sgl] != 0) return;
+    }
+    
+    if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    for(icount = 0;icount<ied_deg;icount++){
+        int_degree = (icount * self.RotationIncrement);
+        self.CurrentStep = icount;
+        self.stepToDisplay = (float) icount / (float) (ied_deg - 1);
+        [self setRotation:int_degree
+                     axis:RotationAxisID
+                 kemoview:kemo_sgl];
+
+        if (CurrentMovieFormat == SAVE_QT_MOVIE){
+            CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
+            [self AddKemoviewQuiltToMovie:frameTime
+                                   degree:int_degree
+                                   axis:RotationAxisID
+                                 kemoview:kemo_sgl];
+        } else if (CurrentMovieFormat != 0) {
+            NSString *numstring = [NSString stringWithFormat:@".%ld",icount];
+            NSString *ImageFilehead =  [RotateImageFilehead stringByAppendingString:numstring];
+            if (CurrentMovieFormat == SAVE_PNG) {
+                [self SaveKemoviewQuiltPNGFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
+            } else if (CurrentMovieFormat == SAVE_BMP) {
+                [self SaveKemoviewQuiltBMPFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
+            } else {
+                [self SaveKemoviewQuiltPDFFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
+            }
+        }else{
+            [_metalView draw];
+        }
+    }
+    self.stepDisplayFlag = 0;
+
+    if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        [self CloseKemoviewMovieFile];
+    }
+    
+    kemoview_step_viewmatrix(IZERO, kemo_sgl);
+    [self setRotation:IZERO
+                 axis:RotationAxisID
+             kemoview:kemo_sgl];
+    [_metalView setNeedsDisplay:YES];
+}
+
+-(void) ShowMetalRotation:(struct kemoviewer_type *) kemo_sgl
+              numRotation:(NSInteger) rotCounts;
 {
     struct timeval startwtime;
     struct timeval endwtime;
     double seq_time;
     double accum_time = 0.0;
 
-    NSInteger ied_deg = rotCounts * 360/self.RotationIncrement;
+    NSInteger ied_deg = 1 + rotCounts * 360/self.RotationIncrement;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
     kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
 
-    [rotateProgreessBar setHidden:NO];
-    [rotateProgreessBar setUsesThreadedAnimation:YES];
-    [rotateProgreessBar startAnimation:self];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [rotateProgreessBar displayIfNeeded];
-    
     for(icount = 0;icount<ied_deg;icount++){
         int_degree = (icount * self.RotationIncrement);
         self.stepToDisplay = (float) icount / (float) (ied_deg - 1);
@@ -632,14 +620,7 @@ NSData *SnapshotData;
         self.SnapshotFPS = 1.0 / seq_time;
         self.AverageFPS =  (double) icount / accum_time;
 
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-        [rotateProgreessBar incrementBy:(double) int_degree];
-        [rotateProgreessBar displayIfNeeded];
     }
-    [rotateProgreessBar setDoubleValue:(double) 0];
-    [rotateProgreessBar stopAnimation:self];
-    [rotateProgreessBar setHidden:YES];
-    [rotateProgreessBar displayIfNeeded];
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
@@ -657,29 +638,12 @@ NSData *SnapshotData;
     NSInteger num_step
         = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 
-    [evolutionProgreessBar setHidden:NO];
-    [evolutionProgreessBar setUsesThreadedAnimation:YES];
-    [evolutionProgreessBar setMinValue:(double) 0];
-    [evolutionProgreessBar setMaxValue:(double) num_step];
-    [evolutionProgreessBar startAnimation:self];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
         [_metalView DrawQuilt:(self.CurrentStep+1)
                        degree:IZERO
                          axis:IONE
                      kemoview:kemo_sgl];
-
-        [evolutionProgreessBar incrementBy:(double) 1.0];
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-        [evolutionProgreessBar displayIfNeeded];
     }
-    [evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
-    [evolutionProgreessBar stopAnimation:self];
-    [evolutionProgreessBar setHidden:YES];
-    [evolutionProgreessBar setDisplayedWhenStopped:NO];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
     
     [_metalView DrawQuilt:IZERO
                    degree:IZERO
@@ -692,24 +656,11 @@ NSData *SnapshotData;
     NSInteger iframe;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
-            if([self OpenQuiltQTMovieFile:EvolutionImageFilename
-                                 kemoview:kemo_sgl] != 0) return;
-        }else{
             [self OpenQTMovieFile:EvolutionImageFilename];
-        }
     }
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
-    [evolutionProgreessBar setHidden:NO];
-    [evolutionProgreessBar setUsesThreadedAnimation:YES];
-    [evolutionProgreessBar setMinValue:(double) self.EvolutionStartStep];
-    [evolutionProgreessBar setMaxValue:(double) self.EvolutionEndStep];
-    [evolutionProgreessBar startAnimation:self];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
-    
     int num = self.EvolutionEndStep - self.EvolutionStartStep;
     if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
@@ -719,15 +670,7 @@ NSData *SnapshotData;
             [_metalView DrawEvolution:self.CurrentStep
                              kemoview:kemo_sgl];
             
-            if (CurrentMovieFormat == SAVE_QT_MOVIE
-                && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
-                CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
-                [self AddKemoviewQuiltToMovie:frameTime
-                                       degree:IZERO
-                                       axis:IONE
-                                     kemoview:kemo_sgl];
-            }else if(CurrentMovieFormat == SAVE_QT_MOVIE) {
+            if(CurrentMovieFormat == SAVE_QT_MOVIE) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
                 [self AddKemoviewImageToMovie:frameTime
@@ -735,46 +678,75 @@ NSData *SnapshotData;
             } else if (CurrentMovieFormat != 0) {
                 NSString *numstring = [NSString stringWithFormat:@".%ld",self.CurrentStep];
                 NSString *ImageFilehead =  [EvolutionImageFilehead stringByAppendingString:numstring];
-                if (CurrentMovieFormat == SAVE_PNG
-                    && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltPNGFile:ImageFilehead
-                                            degree:IZERO
-                                              axis:IONE
-                                          kemoview:kemo_sgl];
-                } else if(CurrentMovieFormat == SAVE_PNG){
+                if(CurrentMovieFormat == SAVE_PNG){
                     [self SaveKemoviewPNGFile:ImageFilehead];
-                } else if (CurrentMovieFormat == SAVE_BMP
-                           && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltBMPFile:ImageFilehead
-                                            degree:IZERO
-                                              axis:IONE
-                                          kemoview:kemo_sgl];
                 } else if(CurrentMovieFormat == SAVE_BMP){
                     [self SaveKemoviewBMPFile:ImageFilehead];
-                } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltPDFFile:ImageFilehead
-                                            degree:IZERO
-                                              axis:IONE
-                                          kemoview:kemo_sgl];
                 } else {
                     [self SaveKemoviewPDFFile:ImageFilehead];
                 }
             }
-            
-            [evolutionProgreessBar incrementBy:(double) self.EvolutionIncrement];
-            [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-            [evolutionProgreessBar displayIfNeeded];
         }
     }
     self.stepDisplayFlag = 0;
 
-    [evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
-    [evolutionProgreessBar stopAnimation:self];
-    [evolutionProgreessBar setHidden:YES];
-    [evolutionProgreessBar setDisplayedWhenStopped:NO];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
-    [evolutionProgreessBar displayIfNeeded];
+    if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
+        
+    kemoview_step_viewmatrix(IZERO, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+-(void) SaveQuiltMovieEvolution:(struct kemoviewer_type *) kemo_sgl;
+{
+    NSInteger iframe;
     
+    if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        if([self OpenQuiltQTMovieFile:EvolutionImageFilename
+                             kemoview:kemo_sgl] != 0) return;
+    }
+    
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+
+    int num = self.EvolutionEndStep - self.EvolutionStartStep;
+    if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
+        self.stepToDisplay = (float) (self.CurrentStep - self.EvolutionStartStep) / (float) num;
+
+        if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
+            [_metalView DrawEvolution:self.CurrentStep
+                             kemoview:kemo_sgl];
+            
+            if (CurrentMovieFormat == SAVE_QT_MOVIE == 1) {
+                iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
+                CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
+                [self AddKemoviewQuiltToMovie:frameTime
+                                       degree:IZERO
+                                       axis:IONE
+                                     kemoview:kemo_sgl];
+             } else if (CurrentMovieFormat != 0) {
+                NSString *numstring = [NSString stringWithFormat:@".%ld",self.CurrentStep];
+                NSString *ImageFilehead =  [EvolutionImageFilehead stringByAppendingString:numstring];
+                if (CurrentMovieFormat == SAVE_PNG) {
+                    [self SaveKemoviewQuiltPNGFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
+                } else if (CurrentMovieFormat == SAVE_BMP) {
+                    [self SaveKemoviewQuiltBMPFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
+                } else {
+                    [self SaveKemoviewQuiltPDFFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
+                }
+            }
+        }
+    }
+    self.stepDisplayFlag = 0;
+
     if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
         
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
@@ -809,16 +781,16 @@ NSData *SnapshotData;
 {
     CurrentMovieFormat = 0;
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self ShowQTmovieRotation:kemo_sgl
-                  numRotation:self.NumTeetRotation];
+    [self ShowMetalRotation:kemo_sgl
+                numRotation:self.NumTeetRotation];
 }
 
 - (IBAction)ShowRotationMovie:(id)sender;
 {
 	CurrentMovieFormat = 0;
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self ShowQTmovieRotation:kemo_sgl
-                  numRotation:1];
+    [self ShowMetalRotation:kemo_sgl
+                numRotation:1];
 }
 
 - (IBAction)ShowQuiltMovie:(id)sender;
@@ -832,7 +804,12 @@ NSData *SnapshotData;
 {
 	CurrentMovieFormat = NO_SAVE_FILE;
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SaveQTmovieEvolution:kemo_sgl];
+    
+    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
+        [self SaveQuiltMovieEvolution:kemo_sgl];
+    }else{
+        [self SaveQTmovieEvolution:kemo_sgl];
+    }
 }
 
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension
@@ -872,12 +849,18 @@ NSData *SnapshotData;
     CurrentMovieFormat = [self SetImageFileFormatID:RotateImageFileext];
     
     if(CurrentMovieFormat == SAVE_UNDEFINED){
-    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+        CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
     }
     if(CurrentMovieFormat == SAVE_QT_MOVIE){
         RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
     }
-    [self SaveQTmovieRotation:kemo_sgl];
+    
+    kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_sgl);
+    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
+        [self SaveQuiltMovieRotation:kemo_sgl];
+    }else{
+        [self SaveQTMovieRotation:kemo_sgl];
+    }
 }
 
 - (void) SelectEvolutionMovieFile:(NSString *)EvolutionMovieFilename
@@ -896,8 +879,12 @@ NSData *SnapshotData;
         EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
     }
 
-    [self SaveQTmovieEvolution:kemo_sgl];
-
+    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
+        [self SaveQuiltMovieEvolution:kemo_sgl];
+    }else{
+        [self SaveQTmovieEvolution:kemo_sgl];
+    }
+    return;
 }
 
 - (IBAction)SaveRotationMovie:(id)sender;
