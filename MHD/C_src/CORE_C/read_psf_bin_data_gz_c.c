@@ -39,23 +39,29 @@ static void close_read_psf_bin_gz_file(void *FP_gzip, struct psf_bin_work *psf_z
     return;
 };
 
-static void read_alloc_psf_node_bin_gz(void *FP_gzip, struct psf_data *psf_z,
-									   struct psf_bin_work *psf_z_WK){
-    int i, j;
-    
+static void read_num_node_bin_gz(void *FP_gzip, struct psf_data *psf_z,
+                                 struct psf_bin_work *psf_z_WK){
     long *n_inter_gz =  (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     psf_z_WK->ilength = psf_z_WK->nprocs * sizeof(long);
     gzread_64bit_psf(FP_gzip, psf_z_WK, (char *) psf_z_WK->itmp_mp);
     gzread_64bit_psf(FP_gzip, psf_z_WK, (char *) n_inter_gz);
     
     psf_z->nnod_viz = 0;
-    for(i=0;i<psf_z_WK->nprocs;i++){psf_z->nnod_viz = psf_z->nnod_viz + n_inter_gz[i];};
+    for(int i=0;i<psf_z_WK->nprocs;i++){
+        psf_z->nnod_viz = psf_z->nnod_viz + n_inter_gz[i];
+    };
     /*
      printf("n_inter_gz ");
      for(i=0;i<psf_z_WK->nprocs;i++){printf("%ld ", n_inter_gz[i]);};
      printf("\n");
      */
     free(n_inter_gz);
+    return;
+};
+
+static void read_alloc_psf_node_bin_gz(void *FP_gzip, struct psf_data *psf_z,
+									   struct psf_bin_work *psf_z_WK){
+    int i, j;
     
     alloc_viz_node_s(psf_z);
     double *xx_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
@@ -173,6 +179,18 @@ static void read_alloc_psf_data_bin_gz(void *FP_gzip, struct psf_data *psf_z,
 };
 
 
+void read_psf_num_node_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+    struct psf_bin_work *psf_z_WK = init_psf_bin_work();
+    void *FP_gzip1 = open_read_psf_bin_gz_file(gzip_name, psf_z_WK);
+    psf_z_WK->ilength = sizeof(long);
+    gzread_64bit_psf(FP_gzip1, psf_z_WK, (char *) &psf_z_WK->nprocs);
+    psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
+    
+    read_num_node_bin_gz(FP_gzip1, psf_z, psf_z_WK);
+    close_read_psf_bin_gz_file(FP_gzip1, psf_z_WK);
+    return;
+};
+
 int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
 	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = init_psf_bin_work();
@@ -181,6 +199,7 @@ int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     gzread_64bit_psf(FP_gzip1, psf_z_WK, (char *) &psf_z_WK->nprocs);
     psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     
+    read_num_node_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     read_alloc_psf_node_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     iflag_datatype = read_alloc_psf_ele_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(FP_gzip1, psf_z_WK);
@@ -218,6 +237,7 @@ int read_alloc_iso_bin_gz(const char *gzip_name, double *time, struct psf_data *
     gzread_64bit_psf(FP_gzip1, psf_z_WK, (char *) &psf_z_WK->nprocs);
     psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     
+    read_num_node_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     read_alloc_psf_node_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     iflag_datatype = read_alloc_psf_ele_bin_gz(FP_gzip1, psf_z, psf_z_WK);
     

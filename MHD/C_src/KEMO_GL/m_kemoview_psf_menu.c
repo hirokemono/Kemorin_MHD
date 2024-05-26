@@ -108,6 +108,8 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int i;
 	
+    dealloc_psf_cutting_4_map(psf_m->map_itp);
+        
 	for (i=0;i<psf_s->nfield;i++){dealloc_color_index_list_s(psf_m->cmap_psf_fld[i]);};
 	free(psf_m->cmap_psf_fld);
 	

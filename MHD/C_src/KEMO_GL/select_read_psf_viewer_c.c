@@ -35,13 +35,37 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, double *time,
 	return iflag_datatype;
 }
 
-int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header, 
-			struct psf_data *viz_s){
-	int iflag_datatype;
-	struct kv_string *ucd_m = alloc_kvstring();
-	
-	alloc_set_grd_field_file_name(iformat_ucd_file, ucd_header, ucd_m);
-	
+void check_gzip_psf_num_nod_first(int iformat_ucd_file, const char *ucd_header,
+                                  struct psf_data *viz_s){
+    struct kv_string *ucd_m = alloc_kvstring();
+    
+    alloc_set_grd_field_file_name(iformat_ucd_file, ucd_header, ucd_m);
+    
+    if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
+        read_num_node_grd_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
+        read_num_node_vtg_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ){
+        read_psf_num_node_bin_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_SDT){
+        read_psf_num_nod_bin(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_VTD){
+        read_num_node_vtg(ucd_m->string, viz_s);
+    } else {
+        read_num_node_grd(ucd_m->string, viz_s);
+    };
+    
+    dealloc_kvstring(ucd_m);
+    return;
+}
+
+int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
+                             struct psf_data *viz_s){
+    int iflag_datatype;
+    struct kv_string *ucd_m = alloc_kvstring();
+    
+    alloc_set_grd_field_file_name(iformat_ucd_file, ucd_header, ucd_m);
+    
     if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
         iflag_datatype = read_psf_grd_gz(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
@@ -57,13 +81,13 @@ int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
     };
     
     if (iflag_datatype < 0) printf("Read error for grid data %s \n", ucd_m->string);
-	
-	dealloc_kvstring(ucd_m);
-	return iflag_datatype;
+    
+    dealloc_kvstring(ucd_m);
+    return iflag_datatype;
 }
 
-void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time, const char *ucd_header,
-			struct psf_data *viz_s){
+void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time,
+                              const char *ucd_header, struct psf_data *viz_s){
 	int ierr;
 	struct kv_string *ucd_m = alloc_kvstring();
 	

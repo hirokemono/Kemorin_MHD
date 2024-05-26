@@ -3,21 +3,27 @@
 
 #include "read_psf_data_gz_c.h"
 
+static void read_gz_viz_node_num(void *FP_gzip, struct psf_data *viz_s){
+    int itmp;
+    int lbuf = LENGTHBUF;
+    char buf[lbuf];    /* array for reading line */
+    int num_word[1], nchara[1];
+    
+    get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
+    sscanf(buf, "%ld %ld %ld %d %d",
+            &viz_s->nnod_viz, &viz_s->nele_viz,
+            &viz_s->ncomptot, &itmp, &itmp);
+    return;
+};
+
 static void read_gz_viz_node_data(void *FP_gzip, struct psf_data *viz_s){
-	int i;
-	int itmp;
     int lbuf = LENGTHBUF;
 	char buf[lbuf];    /* array for reading line */
 	int num_word[1], nchara[1];
 	
-    get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
-	sscanf(buf, "%ld %ld %ld %d %d",
-			&viz_s->nnod_viz, &viz_s->nele_viz, 
-			&viz_s->ncomptot, &itmp, &itmp);
+    alloc_viz_node_s(viz_s);
 	
-	alloc_viz_node_s(viz_s);
-	
-	for (i = 0; i < viz_s->nnod_viz; i++) {
+	for(int i = 0; i < viz_s->nnod_viz; i++) {
         get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 		sscanf(buf, "%ld %lf %lf %lf",
 			&viz_s->inod_viz[i], &viz_s->xyzw_viz[i*IFOUR + 0],
@@ -196,12 +202,23 @@ static void read_gz_viz_phys_data(void *FP_gzip, struct psf_data *viz_s){
 };
 
 
+void read_num_node_grd_gz(const char *file_name, struct psf_data *viz_s){
+    printf("gzipped grd file name: %s \n",file_name);
+    void *FP_gzip1 = open_rd_gzfile_c(file_name);
+    if (FP_gzip1 == NULL){return;};
+    
+    read_gz_viz_node_num(FP_gzip1, viz_s);
+    close_gzfile_c(FP_gzip1);
+    return;
+}
+
 int read_psf_grd_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
 	printf("gzipped grd file name: %s \n",file_name);
     void *FP_gzip1 = open_rd_gzfile_c(file_name);
 	if (FP_gzip1 == NULL){return 1;};
 	
+    read_gz_viz_node_num(FP_gzip1, viz_s);
 	read_gz_viz_node_data(FP_gzip1, viz_s);
 	iflag_datatype = read_gz_psf_connect_data(FP_gzip1, viz_s);
 	if (iflag_datatype == -1){
@@ -231,6 +248,7 @@ int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
     void *FP_gzip1 = open_rd_gzfile_c(file_name);
 	if (FP_gzip1 == NULL) return -1;
 	
+    read_gz_viz_node_num(FP_gzip1, viz_s);
 	read_gz_viz_node_data(FP_gzip1, viz_s);
 	iflag_datatype = read_gz_kemoview_connect_data(FP_gzip1, viz_s);
 	if (iflag_datatype == -1){

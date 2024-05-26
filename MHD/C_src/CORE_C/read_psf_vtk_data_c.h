@@ -15,6 +15,7 @@
 
 /* prototypes */
 
+void read_num_node_vtg(const char *file_name, struct psf_data *viz_s);
 int read_psf_vtg(const char *file_name, struct psf_data *viz_s);
 int read_psf_vtd(const char *file_name, struct psf_data *viz_s);
 int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s);

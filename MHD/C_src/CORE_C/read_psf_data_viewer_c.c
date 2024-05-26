@@ -6,25 +6,31 @@
 FILE *fp_psf;
 
 
+static void read_viz_num_node(struct psf_data *viz_s){
+    int i;
+    int itmp;
+    char buf[LENGTHBUF];    /* array for reading line */
+    
+    fgets(buf, LENGTHBUF, fp_psf);
+    sscanf(buf, "%ld %ld %ld %d %d",
+            &viz_s->nnod_viz, &viz_s->nele_viz,
+            &viz_s->ncomptot, &itmp, &itmp);
+    return;
+};
+
 static void read_viz_node_data(struct psf_data *viz_s){
-	int i;
-	int itmp;
-	char buf[LENGTHBUF];    /* array for reading line */
-	
-	fgets(buf, LENGTHBUF, fp_psf);
-	sscanf(buf, "%ld %ld %ld %d %d",
-			&viz_s->nnod_viz, &viz_s->nele_viz, 
-			&viz_s->ncomptot, &itmp, &itmp);
-	
-	alloc_viz_node_s(viz_s);
-	
-	for (i = 0; i < viz_s->nnod_viz; i++) {
-		fgets(buf, LENGTHBUF, fp_psf);
-		sscanf(buf, "%ld %lf %lf %lf",
-			&viz_s->inod_viz[i], &viz_s->xyzw_viz[i*IFOUR + 0],
-			&viz_s->xyzw_viz[i*IFOUR + 1], &viz_s->xyzw_viz[i*IFOUR + 2]);
-	};
-	return;
+    int itmp;
+    char buf[LENGTHBUF];    /* array for reading line */
+    
+    alloc_viz_node_s(viz_s);
+    
+    for (int i = 0; i < viz_s->nnod_viz; i++) {
+        fgets(buf, LENGTHBUF, fp_psf);
+        sscanf(buf, "%ld %lf %lf %lf",
+            &viz_s->inod_viz[i], &viz_s->xyzw_viz[i*IFOUR + 0],
+            &viz_s->xyzw_viz[i*IFOUR + 1], &viz_s->xyzw_viz[i*IFOUR + 2]);
+    };
+    return;
 };
 
 static int read_kemoview_ucd_connect(struct psf_data *viz_s){
@@ -163,6 +169,20 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 };
 
 
+void read_num_node_grd(const char *file_name, struct psf_data *viz_s){
+    printf("grid file name: %s \n",file_name);
+    
+    /* Error for failed file*/
+    if ((fp_psf = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
+        return;                    /* terminate with error message */
+    };
+    
+    read_viz_num_node(viz_s);
+    fclose(fp_psf);
+    return;
+}
+
 int read_psf_grd(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
 	printf("grid file name: %s \n",file_name);
@@ -173,6 +193,7 @@ int read_psf_grd(const char *file_name, struct psf_data *viz_s){
 		return 1;                    /* terminate with error message */
 	};
 	
+    read_viz_num_node(viz_s);
 	read_viz_node_data(viz_s);
 	iflag_datatype = read_psf_connect_data(viz_s);
 	if(iflag_datatype == -1){
@@ -208,6 +229,7 @@ int read_kemoview_ucd(const char *file_name, struct psf_data *viz_s){
 		return -1;                    /* terminate with error message */
 	};
 	
+    read_viz_num_node(viz_s);
 	read_viz_node_data(viz_s);
 	iflag_datatype = read_kemoview_ucd_connect(viz_s);
 	

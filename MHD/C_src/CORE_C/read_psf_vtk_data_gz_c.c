@@ -10,30 +10,35 @@
 #include "read_psf_vtk_data_gz_c.h"
 
 
-static void read_psf_vtk_node_data_gz(void *FP_gzip, int lbuf, char *buf,
+static void read_psf_vtk_num_node_gz(void *FP_gzip, int lbuf, char *buf,
                                       struct psf_data *viz_s){
-	int i;
-	char tmpchara[8];
-	int num_word, nchara;
-	
+    char tmpchara[8];
+    int num_word, nchara;
+    
     num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);
     get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* ASCII */
     get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* DATASET UNSTRUCTURED_GRID */
     
     get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* POINTS    nnod_viz  float */
-	sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
-	
-	alloc_viz_node_s(viz_s);
-	
-	for (i = 0; i < viz_s->nnod_viz; i++) {
+    sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+    return;
+};
+
+static void read_psf_vtk_node_data_gz(void *FP_gzip, int lbuf, char *buf,
+                                      struct psf_data *viz_s){
+    int num_word, nchara;
+    
+    alloc_viz_node_s(viz_s);
+    
+    for(int i = 0; i < viz_s->nnod_viz; i++) {
         viz_s->inod_viz[i] = i + 1;
         get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
-		sscanf(buf, "%lf %lf %lf",
+        sscanf(buf, "%lf %lf %lf",
                &viz_s->xyzw_viz[i*IFOUR + 0],
                &viz_s->xyzw_viz[i*IFOUR + 1],
                &viz_s->xyzw_viz[i*IFOUR + 2]);
-	};
-	return;
+    };
+    return;
 };
 
 static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
@@ -214,6 +219,22 @@ static void read_psf_vtk_field_data_gz(void *FP_gzip, int lbuf, char *buf,
 };
 
 
+void read_num_node_vtg_gz(const char *file_name, struct psf_data *viz_s){
+    int lbuf = LENGTHBUF;
+    char buf[lbuf];    /* array for reading line */
+    
+    printf("gzipped grid file name: %s \n",file_name);
+    
+    /* Error for failed file*/
+    void *FP_gzip1 = open_rd_gzfile_c(file_name);
+    if(FP_gzip1 == NULL){return;};
+    
+    read_psf_vtk_num_node_gz(FP_gzip1, lbuf, buf, viz_s);
+    
+    close_gzfile_c(FP_gzip1);
+    return;
+}
+
 int read_psf_vtg_gz(const char *file_name, struct psf_data *viz_s){
     int lbuf = LENGTHBUF;
     char buf[lbuf];    /* array for reading line */
@@ -224,6 +245,7 @@ int read_psf_vtg_gz(const char *file_name, struct psf_data *viz_s){
 	void *FP_gzip1 = open_rd_gzfile_c(file_name);
 	if(FP_gzip1 == NULL){return 1;};
 	
+    read_psf_vtk_num_node_gz(FP_gzip1, lbuf, buf, viz_s);
 	read_psf_vtk_node_data_gz(FP_gzip1, lbuf, buf, viz_s);
 	int iflag_datatype = read_psf_vtk_connect_data_gz(FP_gzip1, lbuf, buf, viz_s);
 	if(iflag_datatype == -1){
@@ -260,6 +282,7 @@ int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
     void *FP_gzip1 = open_rd_gzfile_c(file_name);
 	if (FP_gzip1 == NULL){return 1;};     /* terminate with error message */
 	
+    read_psf_vtk_num_node_gz(FP_gzip1, lbuf, buf, viz_s);
 	read_psf_vtk_node_data_gz(FP_gzip1, lbuf, buf, viz_s);
 	int iflag_datatype = read_psf_vtk_connect_data_gz(FP_gzip1, lbuf, buf, viz_s);
 

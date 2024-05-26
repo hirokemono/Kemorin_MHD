@@ -68,9 +68,7 @@ static void close_read_psf_bin_file(struct psf_bin_work *psf_b_WK){
     return;
 };
 
-static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
-    int i, j;
-    
+static void read_psf_numnod_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
     long *n_inter =  (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
     rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
@@ -82,8 +80,15 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
      */
     
     psf_b->nnod_viz = 0;
-    for(i=0;i<psf_b_WK->nprocs;i++){psf_b->nnod_viz = psf_b->nnod_viz + n_inter[i];};
+    for(int i=0;i<psf_b_WK->nprocs;i++){
+        psf_b->nnod_viz = psf_b->nnod_viz + n_inter[i];
+    };
     free(n_inter);
+    return;
+};
+
+static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
+    int i, j;
     
     alloc_viz_node_s(psf_b);
     double *xx = (double *) calloc(psf_b->nnod_viz,sizeof(double));
@@ -195,6 +200,17 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
 };
 
 
+void read_psf_num_nod_bin(const char *bin_name, struct psf_data *psf_b){
+    struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+    psf_b_WK->ilength = sizeof(long);
+    rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
+    psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
+    
+    read_psf_numnod_bin(psf_b, psf_b_WK);
+    close_read_psf_bin_file(psf_b_WK);
+    return;
+};
+
 int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
     int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
@@ -202,6 +218,7 @@ int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
     rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
     psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     
+    read_psf_numnod_bin(psf_b, psf_b_WK);
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
     iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
@@ -237,6 +254,7 @@ int read_alloc_iso_bin(const char *bin_name, double *time, struct psf_data *psf_
     rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
     psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     
+    read_psf_numnod_bin(psf_b, psf_b_WK);
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
     iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
     

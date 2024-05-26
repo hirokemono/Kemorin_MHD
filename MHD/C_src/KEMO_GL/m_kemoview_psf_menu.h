@@ -17,6 +17,7 @@
 #include "m_colorbar_buffer.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
+#include "set_psf_viewer.h"
 
 struct kemo_array_control{
 	int nlimit_loaded;
@@ -87,6 +88,7 @@ struct psf_menu_val{
 	double vector_thick;
     
     long nadded_for_phi0;
+    struct map_interpolate *map_itp;
 };
 
 /* Prototypes */

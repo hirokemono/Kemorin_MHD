@@ -23,6 +23,7 @@
 #include "skip_comment_c.h"
 
 /* prototypes */
+void read_num_node_vtg_gz(const char *file_name, struct psf_data *viz_s);
 int read_psf_vtg_gz(const char *file_name, struct psf_data *viz_s);
 int read_psf_vtd_gz(const char *file_name, struct psf_data *viz_s);
 int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s);

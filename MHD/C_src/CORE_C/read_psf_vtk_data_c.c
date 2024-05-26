@@ -11,19 +11,27 @@
 FILE *fp_vtk;
 
 
-static void read_psf_vtk_node_data(struct psf_data *viz_s){
-	int i;
+static void read_psf_vtk_num_node(struct psf_data *viz_s){
+    int i;
     long offset;
-	char tmpchara[8];
-	char buf[LENGTHBUF];    /* array for reading line */
-	
+    char tmpchara[8];
+    char buf[LENGTHBUF];    /* array for reading line */
+    
     offset = skip_comment_c(fp_vtk);
     fgets(buf, LENGTHBUF, fp_vtk);     /* (blank line) */
     fgets(buf, LENGTHBUF, fp_vtk);     /* ASCII */
     fgets(buf, LENGTHBUF, fp_vtk);     /* DATASET UNSTRUCTURED_GRID */
 
-	fgets(buf, LENGTHBUF, fp_vtk);     /* POINTS    nnod_viz  float */
-	sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+    fgets(buf, LENGTHBUF, fp_vtk);     /* POINTS    nnod_viz  float */
+    sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+    return;
+};
+
+static void read_psf_vtk_node_data(struct psf_data *viz_s){
+	int i;
+    long offset;
+	char tmpchara[8];
+	char buf[LENGTHBUF];    /* array for reading line */
 	
 	alloc_viz_node_s(viz_s);
 	
@@ -214,24 +222,39 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
 };
 
 
-int read_psf_vtg(const char *file_name, struct psf_data *viz_s){
-	int iflag_datatype;
-	printf("grid file name: %s \n",file_name);
-	
-	/* Error for failed file*/
-	if ((fp_vtk = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!: %s\n", file_name);
-		return 1;                    /* terminate with error message */
-	};
-	
-	read_psf_vtk_node_data(viz_s);
-	iflag_datatype = read_psf_vtk_connect_data(viz_s);
-	if(iflag_datatype == -1){
-		dealloc_psf_mesh_c(viz_s);
-	}
+void read_num_node_vtg(const char *file_name, struct psf_data *viz_s){
+    printf("grid file name: %s \n",file_name);
     
-	fclose(fp_vtk);
-	return iflag_datatype;
+    /* Error for failed file*/
+    if ((fp_vtk = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
+        return;                    /* terminate with error message */
+    };
+    
+    read_psf_vtk_num_node(viz_s);
+    fclose(fp_vtk);
+    return;
+}
+
+int read_psf_vtg(const char *file_name, struct psf_data *viz_s){
+    int iflag_datatype;
+    printf("grid file name: %s \n",file_name);
+    
+    /* Error for failed file*/
+    if ((fp_vtk = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
+        return 1;                    /* terminate with error message */
+    };
+    
+    read_psf_vtk_num_node(viz_s);
+    read_psf_vtk_node_data(viz_s);
+    iflag_datatype = read_psf_vtk_connect_data(viz_s);
+    if(iflag_datatype == -1){
+        dealloc_psf_mesh_c(viz_s);
+    }
+    
+    fclose(fp_vtk);
+    return iflag_datatype;
 }
 
 int read_psf_vtd(const char *file_name, struct psf_data *viz_s){
@@ -259,6 +282,7 @@ int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
 		return -1;                    /* terminate with error message */
 	};
 	
+    read_psf_vtk_num_node(viz_s);
 	read_psf_vtk_node_data(viz_s);
 	iflag_datatype = read_psf_vtk_connect_data(viz_s);
 	
