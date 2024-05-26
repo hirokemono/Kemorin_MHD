@@ -415,6 +415,7 @@
                 <outlet property="_ImageFormat_item" destination="1530" id="3583"/>
                 <outlet property="_domainTableController" destination="703" id="3578"/>
                 <outlet property="_flineController" destination="1932" id="3579"/>
+                <outlet property="_kemoImageMaker" destination="shz-wW-1CK" id="lLe-q2-Ntg"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="UQo-9i-5Nl"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="oW7-4t-FPV"/>
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
@@ -5907,8 +5908,16 @@
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="8Ur-Se-17U"/>
             </connections>
         </customObject>
+        <customObject id="shz-wW-1CK" customClass="KemoviewerImageMaker">
+            <connections>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="nyl-md-DkV"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="C9g-U0-KBG"/>
+                <outlet property="_metalViewController" destination="QEu-s0-e0C" id="ZBl-2n-uzN"/>
+            </connections>
+        </customObject>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
+                <outlet property="_kemoImageMaker" destination="shz-wW-1CK" id="fjB-OZ-bhq"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="8fk-RI-qiY"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>
                 <outlet property="_metalViewController" destination="QEu-s0-e0C" id="RKm-dQ-eOX"/>

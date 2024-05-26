@@ -12,6 +12,7 @@
 #import "DomainTableController.h"
 #import "PsfController.h"
 #import "FlineController.h"
+#import "KemoviewerImageMaker.h"
 #import "KemoviewerMovieMaker.h"
 #import "KemoViewerObject.h"
 
@@ -27,6 +28,7 @@
 	IBOutlet DomainTableController * _domainTableController;
 	IBOutlet PsfController         * _psfController;
 	IBOutlet FlineController       * _flineController;
+    IBOutlet KemoviewerImageMaker  * _kemoImageMaker;
 	IBOutlet KemoviewerMovieMaker  * _movieMakerController;
     IBOutlet KemoViewerObject      * _kmv;
     
