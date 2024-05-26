@@ -5915,8 +5915,16 @@
                 <outlet property="_metalViewController" destination="QEu-s0-e0C" id="ZBl-2n-uzN"/>
             </connections>
         </customObject>
+        <customObject id="e1p-BX-qRE" customClass="KemoviewerQuickTimeMaker">
+            <connections>
+                <outlet property="_kemoImageMaker" destination="shz-wW-1CK" id="4Ls-x7-ZCb"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="v3f-e5-Pih"/>
+                <outlet property="_metalViewController" destination="QEu-s0-e0C" id="Rt2-EY-GRF"/>
+            </connections>
+        </customObject>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
+                <outlet property="_KemoviewQTMaker" destination="e1p-BX-qRE" id="AMZ-9y-783"/>
                 <outlet property="_kemoImageMaker" destination="shz-wW-1CK" id="fjB-OZ-bhq"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="8fk-RI-qiY"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>

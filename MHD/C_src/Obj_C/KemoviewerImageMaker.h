@@ -27,8 +27,6 @@
     IBOutlet KemoViewerObject *_kmv;
 }
 
--(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
-
 -(void) SendImageToClipboardAsTIFF;
 
 -(void) SalectSaveKemoviewImageFile:(NSInteger) id_format

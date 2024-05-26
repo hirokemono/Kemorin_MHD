@@ -124,7 +124,7 @@
     
     NSString * ImageFilehead =  [ImageFilename stringByDeletingPathExtension];
     NSString * ImageFileext =   [ImageFilename pathExtension];
-    NSInteger id_format = [_movieMakerController SetImageFileFormatID:ImageFileext];
+    NSInteger id_format = [_kemoImageMaker SetImageFileFormatID:ImageFileext];
     // NSLog(@" ImageFilename = %@",  ImageFilename);
     // NSLog(@" ImageFilehead = %@",  ImageFilehead);
     

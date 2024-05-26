@@ -17,17 +17,20 @@
 #import "KemoViewerMetalViewController.h"
 #import "KemoViewerObject.h"
 #import "KemoviewerImageMaker.h"
+#import "KemoviewerQuickTimeMaker.h"
 
 #include <time.h>
 #include "Kemoviewer.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
-    IBOutlet KemoviewerImageMaker *_kemoImageMaker;
-    
-    IBOutlet NSWindow*  window;
+        IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
+    
     IBOutlet KemoViewerMetalViewController * _metalViewController;
+    IBOutlet KemoviewerImageMaker *_kemoImageMaker;
+    IBOutlet KemoviewerQuickTimeMaker *_KemoviewQTMaker;
+    
     IBOutlet KemoViewerObject *_kmv;
 
     IBOutlet NSUserDefaultsController* _movie_defaults_controller;
@@ -84,8 +87,6 @@
 -(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)SendToClipAsTIFF:(id)sender;
-
-- (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
 
 - (IBAction)GetRotationMovieFPS:(id)sender;
 

@@ -14,50 +14,34 @@ NSData *SnapshotData;
 
 @implementation KemoviewerImageMaker
 
--(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
+
+- (NSInteger) SetImageFileFormatID:(NSString *)FileExtension
 {
-    NSDictionary *options = @{ (NSString *)kCVPixelBufferCGImageCompatibilityKey: @YES,
-                               (NSString *)kCVPixelBufferCGBitmapContextCompatibilityKey: @YES, };
+    NSInteger id_format;
+
+    if ([FileExtension isEqualToString:@"mov"]
+        || [FileExtension isEqualToString:@"MOV"]
+        || [FileExtension isEqualToString:@"mp4"]
+        || [FileExtension isEqualToString:@"MP4"]
+        || [FileExtension isEqualToString:@"moov"]
+        || [FileExtension isEqualToString:@"MOOV"]) {
+        id_format = SAVE_QT_MOVIE;
+    } else if ([FileExtension isEqualToString:@"png"]
+               || [FileExtension isEqualToString:@"PNG"]) {
+        id_format = SAVE_PNG;
+    } else if ([FileExtension isEqualToString:@"bmp"]
+               || [FileExtension isEqualToString:@"BMP"]) {
+        id_format = SAVE_BMP;
+    } else if ([FileExtension isEqualToString:@"pdf"]
+               || [FileExtension isEqualToString:@"PDF"]) {
+        id_format = SAVE_PDF;
+    } else {
+        id_format = SAVE_UNDEFINED;
+    }
     
-    CVPixelBufferRef pxbuffer = NULL;
-    
-/*    width is required producs of 16 pixels */
-    CGFloat width  = 16 * (int) (1 + CGImageGetWidth(image) / 16);
-/*
-    CGFloat width  = CGImageGetWidth(image);
- */
-    CGFloat height = CGImageGetHeight(image);
-    CVPixelBufferCreate(kCFAllocatorDefault,
-                        width,
-                        height,
-                        kCVPixelFormatType_32ARGB,
-                        (__bridge CFDictionaryRef)options,
-                        &pxbuffer);
-    
-    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    
-    size_t bitsPerComponent       = 8;
-    size_t bytesPerRow            = 4 * width;
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(pxdata,
-                                                 width,
-                                                 height,
-                                                 bitsPerComponent,
-                                                 bytesPerRow,
-                                                 rgbColorSpace,
-                                                 (CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
-    
-    CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
-    CGColorSpaceRelease(rgbColorSpace);
-    CGContextRelease(context);
-    
-    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    
-    return pxbuffer;
+    return id_format;
 }
 
-/*  ---------------------------------  */
 
 - (void)SendImageToClipboardAsTIFF
 {
@@ -332,8 +316,5 @@ NSData *SnapshotData;
     }
     return;
 }
-
-
-
 
 @end
