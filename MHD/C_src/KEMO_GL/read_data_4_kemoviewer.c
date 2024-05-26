@@ -103,7 +103,6 @@ static void set_fline_data_by_UCD(struct fline_data *fline_d,
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
     double time = 0.0;
-	
 	if(psf_m->iflag_psf_file == IFLAG_SURF_UDT
 	   || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
 	   || psf_m->iflag_psf_file == IFLAG_SURF_VTD

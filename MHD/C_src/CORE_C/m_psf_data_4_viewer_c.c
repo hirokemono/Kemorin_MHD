@@ -222,10 +222,9 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 }
 
 void deallc_all_psf_data(struct psf_data *psf_s){
-    /*
     dealloc_edge_data_4_psf(psf_s->nele_viz, psf_s->psf_edge);
-    */
-	dealloc_psf_norm_s(psf_s);
+
+    dealloc_psf_norm_s(psf_s);
 	dealloc_psf_data_s(psf_s);
 	dealloc_psf_mesh_c(psf_s);
 	return;

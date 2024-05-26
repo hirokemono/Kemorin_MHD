@@ -104,9 +104,10 @@
             NSString *ImageFilehead =  [RotateImageFilehead stringByAppendingString:numstring];
             [_kemoImageMaker SalectSaveKemoviewImageFile:CurrentMovieFormat
                                               filePrefix:ImageFilehead];
-        }else{
+        }else if(icount % 20 != 0){
             [_metalView draw];
         }
+        if(icount % 20 == 0) [_metalView draw];
     }
     self.stepDisplayFlag = 0;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
@@ -159,9 +160,10 @@
                                                    degree:int_degree
                                                      axis:RotationAxisID
                                                  kemoview:kemo_sgl];
-        }else{
+        }else if(icount % 20 != 0){
             [_metalView draw];
         }
+        if(icount % 20 == 0) [_metalView draw];
     }
     self.stepDisplayFlag = 0;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
@@ -207,7 +209,6 @@
         accum_time = accum_time + seq_time;
         self.SnapshotFPS = 1.0 / seq_time;
         self.AverageFPS =  (double) icount / accum_time;
-
     }
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);

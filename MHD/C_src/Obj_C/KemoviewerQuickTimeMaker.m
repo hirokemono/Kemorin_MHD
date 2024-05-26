@@ -116,6 +116,7 @@
         NSLog(@"Finish writing!");
     }];
     CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    [writerInput release];
 }
 
 // ---------------------------------

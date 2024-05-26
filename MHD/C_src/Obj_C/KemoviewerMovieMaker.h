@@ -39,10 +39,6 @@
     NSInteger CurrentMovieFormat;
     IBOutlet id movieFormat_item;
 
-    AVAssetWriter *videoWriter;
-    AVAssetWriterInput *writerInput;
-    AVAssetWriterInputPixelBufferAdaptor *adaptor;
-    NSImage *SnapshotImage;
     NSInteger FramePerSecond;
 
     NSString *EvolutionImageFilehead;
