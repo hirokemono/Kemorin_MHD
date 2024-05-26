@@ -71,6 +71,19 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
     return;
 }
 
+struct psf_menu_val *  init_psf_menu_val(void){
+    struct psf_menu_val *psf_m = (struct psf_menu_val *) malloc(sizeof(struct psf_menu_val));
+    if(psf_m  == NULL) {
+        printf( "psf_m cannot alloc!\n" );
+        exit( 1 );
+    }
+    return psf_m;
+}
+
+void dealloc_psf_menu_val(struct psf_menu_val *psf_m){
+    free(psf_m);
+}
+
 void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int i;
 	psf_m->cmap_psf_comp =  (struct colormap_params **) malloc(psf_s->ncomptot*sizeof(struct colormap_params *));
@@ -161,6 +174,7 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
     free(psf_a->istack_all_psf_node);
 	return;
 };
+
 
 void init_psf_parameters(struct psf_menu_val *psf_m){
 	psf_m->if_draw_psf = INIT_IF_DRAW_PSF;

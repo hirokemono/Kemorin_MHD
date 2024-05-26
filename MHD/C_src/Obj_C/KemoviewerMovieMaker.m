@@ -249,17 +249,18 @@
     }
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_step_viewmatrix(IZERO, kemo_sgl);
 
     int num = self.EvolutionEndStep - self.EvolutionStartStep;
-    if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    self.stepDisplayFlag = 1;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
         self.stepToDisplay = (float) (self.CurrentStep - self.EvolutionStartStep) / (float) num;
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
         if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
-            [_metalView DrawEvolution:self.CurrentStep
-                             kemoview:kemo_sgl];
+            kemoview_viewer_evolution((int) self.CurrentStep, kemo_sgl);
             
             if(CurrentMovieFormat == SAVE_QT_MOVIE) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
@@ -271,7 +272,10 @@
                 NSString *ImageFilehead =  [EvolutionImageFilehead stringByAppendingString:numstring];
                 [_kemoImageMaker SalectSaveKemoviewImageFile:CurrentMovieFormat
                                                   filePrefix:ImageFilehead];
+            }else if(self.CurrentStep % 20 != 0){
+                [_metalView draw];
             }
+            if(self.CurrentStep % 20 == 0) [_metalView draw];
         }
     }
     self.stepDisplayFlag = 0;
@@ -281,7 +285,7 @@
         [_KemoviewQTMaker CloseKemoviewMovieFile];
     }
         
-    kemoview_step_viewmatrix(IZERO, kemo_sgl);
+    kemoview_viewer_evolution((int) self.EvolutionStartStep, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -295,18 +299,19 @@
     }
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_step_viewmatrix(IZERO, kemo_sgl);
 
     int num = self.EvolutionEndStep - self.EvolutionStartStep;
-    if(CurrentMovieFormat != NO_SAVE_FILE) self.stepDisplayFlag = 1;
+    self.stepDisplayFlag = 1;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
         self.stepToDisplay = (float) (self.CurrentStep - self.EvolutionStartStep) / (float) num;
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
 
         if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
-            [_metalView DrawEvolution:self.CurrentStep
-                             kemoview:kemo_sgl];
-            
+            kemoview_viewer_evolution((int) self.CurrentStep, kemo_sgl);
+
             if (CurrentMovieFormat == SAVE_QT_MOVIE == 1) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
@@ -322,7 +327,10 @@
                                                        degree:IZERO
                                                          axis:IONE
                                                      kemoview:kemo_sgl];
-            }
+             }else if(self.CurrentStep % 20 != 0){
+                 [_metalView draw];
+             }
+             if(self.CurrentStep % 20 == 0) [_metalView draw];
         }
     }
     self.stepDisplayFlag = 0;
@@ -332,7 +340,7 @@
         [_KemoviewQTMaker CloseKemoviewMovieFile];
     }
         
-    kemoview_step_viewmatrix(IZERO, kemo_sgl);
+    kemoview_viewer_evolution((int) self.EvolutionStartStep, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 

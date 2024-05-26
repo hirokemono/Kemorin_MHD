@@ -62,10 +62,7 @@
            axis:(NSInteger) rotationaxis
        kemoview:(struct kemoviewer_type *) kemo_sgl;
 
--(id) DrawEvolution:(NSInteger)timeStep
-           kemoview:(struct kemoviewer_type *) kemo_sgl;
-
-- (void) Resetview;
+-(void) Resetview;
 
 -(void) setInfo:(NSInteger)flag;
 -(void) setQuickHelp:(NSInteger)flag;

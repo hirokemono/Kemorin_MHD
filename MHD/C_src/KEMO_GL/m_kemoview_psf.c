@@ -16,10 +16,18 @@ struct kemoview_psf * init_kemoview_psf(void){
 	set_max_psf_loading(NMAX_PSF, kemo_psf->psf_a);
 	
 	kemo_psf->psf_d =  (struct psf_data **)     malloc(NMAX_PSF*sizeof(struct psf_data *));
+    if(kemo_psf->psf_d == NULL){
+        printf("malloc error for kemo_psf->psf_d\n");
+        exit(0);
+    }
 	kemo_psf->psf_m =  (struct psf_menu_val **) malloc(NMAX_PSF*sizeof(struct psf_menu_val *));
+    if(kemo_psf->psf_m == NULL){
+        printf("malloc error for kemo_psf->psf_m\n");
+        exit(0);
+    }
 	for(i=0;i<kemo_psf->psf_a->nlimit_loaded;i++){
-		kemo_psf->psf_d[i] =   (struct psf_data *) malloc(sizeof(struct psf_data));
-		kemo_psf->psf_m[i] =   (struct psf_menu_val *) malloc(sizeof(struct psf_menu_val));
+		kemo_psf->psf_d[i] =init_psf_data();
+		kemo_psf->psf_m[i] = init_psf_menu_val();
 		init_psf_parameters(kemo_psf->psf_m[i]);
 	}
 	return kemo_psf;

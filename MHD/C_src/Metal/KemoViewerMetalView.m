@@ -184,17 +184,6 @@
     return self;
 }
 
--(id) DrawEvolution:(NSInteger)timeStep
-           kemoview:(struct kemoviewer_type *) kemo_sgl
-{
-    kemoview_viewer_evolution((int) timeStep, kemo_sgl);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_step_viewmatrix(IZERO, kemo_sgl);
-//    [self setNeedsDisplay: YES];
-    [self draw];
-    return self;
-}
-
 // ---------------------------------
 // updates the contexts model view matrix for object and camera moves
 - (void) Resetview

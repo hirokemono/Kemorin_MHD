@@ -100,6 +100,10 @@ test_read_psf_data.o: \
  $(MHDDIR)/C_src/CORE_C/colormap_orange_cyan_c.h \
  $(MHDDIR)/C_src/CORE_C/colormap_molten_metal_c.h \
  $(MHDDIR)/C_src/CORE_C/colormap_space_c.h \
+ $(MHDDIR)/C_src/CORE_C/set_psf_viewer.h \
+ $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
+ $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
+ $(MHDDIR)/C_src/CORE_C/take_normal_psf_c.h \
  $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
  $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(MHDDIR)/C_src/CORE_C/m_fline_data_4_viewer_c.h \
@@ -114,7 +118,6 @@ test_read_psf_data.o: \
  $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
  $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
  $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
- $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
  $(MHDDIR)/C_src/KEMO_GL/icosahedron_c.h \
  $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
  $(MHDDIR)/C_src/KEMO_GL/set_color_code_on_nodes.h \
@@ -139,9 +142,6 @@ test_read_psf_data.o: \
  $(MHDDIR)/C_src/KEMO_GL/select_read_psf_viewer_c.h \
  $(MHDDIR)/C_src/KEMO_GL/set_coastline_to_buf.h \
  $(MHDDIR)/C_src/KEMO_GL/coastline_c.h \
- $(MHDDIR)/C_src/CORE_C/set_psf_viewer.h \
- $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
- $(MHDDIR)/C_src/CORE_C/take_normal_psf_c.h \
  $(MHDDIR)/C_src/CORE_C/take_normal_surf_mesh_c.h \
  $(MHDDIR)/C_src/CORE_C/set_surface_mesh_data.h \
  $(MHDDIR)/C_src/CORE_C/check_viewer_mesh_c.h \

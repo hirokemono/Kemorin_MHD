@@ -83,6 +83,9 @@ struct vtk_field{
 
 /* prototypes */
 
+struct psf_data * init_psf_data(void);
+void dealloc_psf_data(struct psf_data *psf_s);
+
 void alloc_viz_node_s(struct psf_data *psf_s);
 void alloc_viz_ele_s(struct psf_data *psf_s);
 void alloc_psf_field_name_c(struct psf_data *psf_s);

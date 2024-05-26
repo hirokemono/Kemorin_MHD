@@ -4,6 +4,19 @@
 #include <stdlib.h>
 #include "m_psf_data_4_viewer_c.h"
 
+struct psf_data * init_psf_data(void){
+    struct psf_data *psf_s = (struct psf_data *) malloc(sizeof(struct psf_data));
+    if(psf_s  == NULL){
+        printf("malloc error for psf_data \n");
+        exit(0);
+    }
+    return psf_s;
+};
+void dealloc_psf_data(struct psf_data *psf_s){
+    free(psf_s);
+    return;
+};
+
 
 void alloc_viz_node_s(struct psf_data *psf_s){
 	/* allocate memory  xyzw_viz[node #][direction]*/
