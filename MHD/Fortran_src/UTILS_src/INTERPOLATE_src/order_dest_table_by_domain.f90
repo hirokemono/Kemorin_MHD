@@ -109,4 +109,71 @@
 !
 !-----------------------------------------------------------------------
 !
+!
+      subroutine order_dest_table_for_each_pe                           &
+     &         (node, iflag_org_domain, ierr_missing,                   &
+     &          itp_dest, itp_coef_dest, orderd)
+!
+      use calypso_mpi
+      use t_geometry_data
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
+      use t_work_const_itp_table
+!
+      type(node_data), intent(inout) :: node
+      integer(kind = kint), intent(in) :: iflag_org_domain(node%numnod)
+      integer(kind = kint), intent(in) :: ierr_missing
+!
+      type(interpolate_table_dest), intent(inout) :: itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      type(ordered_list), intent(inout) :: orderd
+!
+      integer(kind = kint) :: j, jp, inod, icou, numnod_dest
+!
+!
+      numnod_dest = 0
+!
+      do inod = 1, node%internal_node
+        jp = iflag_org_domain(inod)
+        itp_dest%inod_dest_4_dest(inod) = inod
+        if(jp-1 .eq. my_rank) numnod_dest = numnod_dest + 1
+      end do
+!
+      itp_dest%num_org_domain = 0
+      itp_dest%istack_nod_tbl_dest(0) = 0
+        if (numnod_dest .gt. 0) then
+          itp_dest%num_org_domain = 1
+          itp_dest%id_org_domain(1) = my_rank
+          itp_dest%istack_nod_tbl_dest(1) = 1
+        end if
+!     write(*,*) 'num_org_domain', itp_dest%num_org_domain
+!
+!
+        icou = 0
+        do inod = 1, node%internal_node
+          if (iflag_org_domain(inod) .eq. jp) then
+            icou = icou + 1
+            call swap_interpolation_table                               &
+     &         (icou, inod, itp_dest, itp_coef_dest, orderd)
+          end if
+        end do
+!
+!   set missing nodes at the end
+!
+      if (ierr_missing .gt. 0) then
+        do inod = 1, node%internal_node
+          if (iflag_org_domain(inod) .eq. 0) then
+            icou = icou + 1
+            call swap_interpolation_table                               &
+     &         (icou, inod, itp_dest, itp_coef_dest, orderd)
+          end if
+        end do
+      end if
+!
+      call copy_table_2_order(orderd, itp_dest, itp_coef_dest)
+!
+      end subroutine order_dest_table_for_each_pe
+!
+!-----------------------------------------------------------------------
+!
       end module order_dest_table_by_domain

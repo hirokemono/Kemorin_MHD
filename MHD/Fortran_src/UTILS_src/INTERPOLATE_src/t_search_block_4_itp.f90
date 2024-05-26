@@ -83,8 +83,8 @@
       integer, intent(in) :: nprocs_org
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(in) :: xx(nnod,3)
+      type(mesh_data), intent(in) :: para_mesh(nprocs_org)
 !
-      type(mesh_data), intent(inout) :: para_mesh(nprocs_org)
       type(block_4_interpolate), intent(inout)                          &
      &                          :: org_blocks(nprocs_org)
       type(block_4_interpolate), intent(inout) :: dest_block

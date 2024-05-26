@@ -7,7 +7,7 @@
 !      subroutine deallocate_work_4_interpolate
 !
 !!      subroutine s_cal_interpolate_coefs                              &
-!!     &         (gen_itp_p, new_node, org_node, org_ele,               &
+!!     &         (x_target, gen_itp_p, org_node, org_ele,               &
 !!     &          my_rank_org, inod, jele, error_level, iflag_message,  &
 !!     &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
 !!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
@@ -16,9 +16,9 @@
 !!        type(element_data), intent(in) :: org_ele
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !!      subroutine check_interpolation                                  &
-!!     &         (new_node, org_node, org_ele, itp_coef_dest,           &
+!!     &         (nnod_dest, internod_dest, xx_dest,                    &
+!!     &          org_node, org_ele, itp_coef_dest,                     &
 !!     &          id_file, my_rank_org, iflag_org_domain)
-!!        type(node_data), intent(in) :: new_node
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
 !!        type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
@@ -65,7 +65,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_interpolate_coefs                                &
-     &         (gen_itp_p, new_node, org_node, org_ele,                 &
+     &         (x_target, gen_itp_p, org_node, org_ele,                 &
      &          my_rank_org, inod, jele, error_level, iflag_message,    &
      &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
 !
@@ -80,8 +80,8 @@
       use t_geometry_data
       use t_interpolate_coefs_dest
 !
+      real(kind=kreal), intent(in) :: x_target(3)
       type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
-      type(node_data), intent(in) :: new_node
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
@@ -92,14 +92,13 @@
       real(kind = kreal), intent(in) :: error_level
 !
       integer(kind = kint), intent(inout) :: iflag_org_tmp
-      integer(kind = kint), intent(inout)                               &
-     &                    :: iflag_org_domain(new_node%numnod)
+      integer(kind = kint), intent(inout) :: iflag_org_domain
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       real(kind=kreal) :: s_coef(3)
       real(kind=kreal) :: xi(3)
       real(kind=kreal) :: v_tetra(3,3)
-      real(kind=kreal) :: x_target(3), v_target(3)
+      real(kind=kreal) :: v_target(3)
       real(kind=kreal) :: ref_error
 !
       integer (kind = kint) :: itet, ierr_inter, i
@@ -107,7 +106,6 @@
 !
       ierr_inter = 1
 !
-      call copy_target_local_vector(new_node, inod, x_target)
       call copy_position_2_2nd_local_ele(org_node, org_ele,             &
      &    jele, x_local_ele)
 !
@@ -153,7 +151,7 @@
 !
           if (ierr_inter.gt.0 .and. ierr_inter.le.gen_itp_p%maxitr) then
              call set_results_2_array(my_rank_org, gen_itp_p,           &
-     &           inod, jele, xi, iflag_org_domain(inod), itp_coef_dest)
+     &           inod, jele, xi, iflag_org_domain, itp_coef_dest)
              go to 10
           else
             if (iflag_message .eq. 1) then
@@ -179,7 +177,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine check_interpolation                                    &
-     &         (new_node, org_node, org_ele, itp_coef_dest,             &
+     &         (nnod_dest, internod_dest, xx_dest,                      &
+     &          org_node, org_ele, itp_coef_dest,                       &
      &          id_file, my_rank_org, iflag_org_domain)
 !
       use subroutines_4_search_table
@@ -188,13 +187,14 @@
       use t_geometry_data
       use t_interpolate_coefs_dest
 !
-      type(node_data), intent(in) :: new_node
+      integer(kind = kint), intent(in) :: nnod_dest, internod_dest
+      real(kind = kreal), intent(in) :: xx_dest(nnod_dest,3)
 ! 
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
       integer(kind = kint), intent(in)                                  &
-     &                    :: iflag_org_domain(new_node%numnod)
+     &                    :: iflag_org_domain(nnod_dest)
 !
       integer, intent(in) :: my_rank_org
       integer(kind = kint), intent(in) :: id_file
@@ -207,7 +207,7 @@
       write(id_file,*) '#  node, difference from original node'
       write(id_file,*) '#'
 !
-      do inod = 1, new_node%internal_node
+      do inod = 1, internod_dest
         if(iflag_org_domain(inod) .eq. my_rank_org) then
 !
           xi(1:3) = itp_coef_dest%coef_inter_dest(inod,1:3)
@@ -217,7 +217,7 @@
           call cal_position_and_gradient(org_ele%nnod_4_ele, xx_z,      &
      &        dnxi, dnei, dnzi, x_local_ele, xi)
 !
-          diff(1:3) = xx_z(1:3) - new_node%xx(inod,1:3)
+          diff(1:3) = xx_z(1:3) - xx_dest(inod,1:3)
 !
           write(id_file,*) inod, diff(1:3)
 !
