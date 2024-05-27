@@ -33,7 +33,6 @@
       use t_control_params_4_fline
       use t_source_of_filed_line
       use t_local_fline
-      use t_global_fieldline
       use t_ucd_data
 !
       implicit  none
@@ -47,8 +46,6 @@
         type(each_fieldline_trace), allocatable :: fln_tce(:)
 !
         type(local_fieldline) :: fline_lc
-        type(global_fieldline_data) :: fline_gl
-!
         type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
@@ -62,8 +59,11 @@
      &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
+      use m_connect_hexa_2_tetra
       use t_control_data_flines
+      use t_find_interpolate_in_ele
       use set_fline_control
+      use quicksort
 !
       integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: fem
@@ -71,7 +71,25 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
-      integer(kind = kint) :: i_fln
+      type(cal_interpolate_coefs_work), save :: itp_ele_work_f
+      integer(kind = kint), parameter :: maxitr = 20
+      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
+      integer(kind = kint), parameter :: iflag_nomessage = 0
+      real(kind = kreal), parameter ::   error_level = 0.0
+      integer(kind = kint) :: ierr_inter
+!
+      real(kind = kreal), allocatable :: x(:)
+      real(kind = kreal), allocatable :: y(:)
+      real(kind = kreal), allocatable :: z(:)
+      real(kind = kreal), allocatable :: ele_size(:)
+      real(kind = kreal), allocatable :: size_max(:)
+
+      integer(kind = kint), allocatable :: index(:)
+      real(kind = kreal), allocatable :: distance(:)
+      real(kind = kreal) :: dist_tmp
+      real(kind = kreal) :: xi(3)
+      integer(kind = kint) :: i_fln, i, iele, k1, inum, inod, ip
+      integer(kind = kint) :: num_search
 !
 !
       fline%num_fline = fline_ctls%num_fline_ctl
@@ -100,7 +118,112 @@
       end do
 !
       call alloc_local_fline(fline%fline_lc)
-      call alloc_global_fline_num(fline%fline_gl)
+      allocate(x(fem%mesh%ele%nnod_4_ele))
+      allocate(y(fem%mesh%ele%nnod_4_ele))
+      allocate(z(fem%mesh%ele%nnod_4_ele))
+
+      allocate(ele_size(fem%mesh%ele%numele))
+      allocate(size_max(fem%mesh%ele%numele))
+      allocate(distance(fem%mesh%ele%numele))
+      allocate(index(fem%mesh%ele%numele))
+
+      if (fem%mesh%ele%nnod_4_ele .eq. num_t_linear) then
+        call set_1_hexa_2_5_tetra
+      else if (fem%mesh%ele%nnod_4_ele .eq. num_t_quad) then
+        call set_1_hexa_2_21_tetra
+      else if (fem%mesh%ele%nnod_4_ele .eq. num_t_lag) then
+        call set_1_hexa_2_40_tetra
+      end if
+!$omp parallel do private(iele,k1,inod,x,y,z)
+      do iele = 1, fem%mesh%ele%numele
+        do k1 = 1, fem%mesh%ele%nnod_4_ele
+          inod = fem%mesh%ele%ie(iele,k1)
+          x(k1) = fem%mesh%node%xx(inod,1)
+          y(k1) = fem%mesh%node%xx(inod,2)
+          z(k1) = fem%mesh%node%xx(inod,3)
+        end do
+        size_max(1) = maxval(x) - minval(x)
+        size_max(2) = maxval(y) - minval(y)
+        size_max(3) = maxval(z) - minval(z)
+        size_max(iele) = sqrt(size_max(1)*size_max(1)                   &
+     &                      + size_max(2)*size_max(2)                   &
+     &                      + size_max(3)*size_max(3))
+!        size_max(iele) = size_max(1) + size_max(2) + size_max(3)
+      end do
+!$omp end parallel do
+      call calypso_mpi_barrier
+      call alloc_work_4_interpolate(fem%mesh%ele%nnod_4_ele,            &
+    &                               itp_ele_work_f)
+
+      do i_fln = 1, fline%num_fline
+        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
+    &                       .eq. iflag_position_list) then
+          do i = 1, fline%fln_prm(i_fln)%num_each_field_line
+            x(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(1,i)
+            y(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(2,i)
+            z(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(3,i)
+            num_search = 0
+            do iele = 1, fem%mesh%ele%numele
+              dist_tmp = sqrt ((x(1) - fem%mesh%ele%x_ele(iele,1))**2   &
+     &                       + (y(1) - fem%mesh%ele%x_ele(iele,2))**2   &
+     &                       + (z(1) - fem%mesh%ele%x_ele(iele,3))**2)
+              if(dist_tmp .le. size_max(iele)) then
+                num_search = num_search + 1
+                index(num_search) =    iele
+                distance(num_search) = dist_tmp
+              end if
+            end do
+
+            if(num_search .gt. 1) then
+              call quicksort_real_w_index(fem%mesh%ele%numele,          &
+    &             distance(1), ione, num_search, index(1))
+            end if
+!
+            fline%fln_prm(i_fln)%ip_surf_start_fline(i) = -1
+            fline%fln_prm(i_fln)%iele_surf_start_fline(i) = 0
+            fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i) = -2.0
+            do inum = 1, num_search
+              iele = index(inum)
+              if(fem%mesh%ele%ie(iele,1) .gt. fem%mesh%node%internal_node) cycle
+              ierr_inter = 0
+              xi(1:3) = -2.0
+              call find_interpolate_in_ele                              &
+     &           (fline%fln_prm(i_fln)%xx_surf_start_fline(1,i),        &
+     &            maxitr, eps_iter,                                     &
+     &            my_rank, iflag_nomessage, error_level,                &
+     &            fem%mesh%node, fem%mesh%ele, iele,                    &
+     &            itp_ele_work_f, xi, ierr_inter)
+              if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) exit
+            end do
+            if(num_search .gt. 0 .and. ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
+              fline%fln_prm(i_fln)%ip_surf_start_fline(i) = my_rank
+              fline%fln_prm(i_fln)%iele_surf_start_fline(i) = iele
+              fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i) = xi(1:3)
+            end if
+          end do
+        end if
+      end do
+
+      do i_fln = 1, fline%num_fline
+        do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(my_rank .ne. ip-1) cycle
+          do i = 1, fline%fln_prm(i_fln)%num_each_field_line
+            if(fline%fln_prm(i_fln)%ip_surf_start_fline(i) .ge. 0) then
+            write(*,*) my_rank, i_fln, i, 'fline%fln_prm(i_fln)',  &
+     &        fline%fln_prm(i_fln)%ip_surf_start_fline(i),    &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(i),  &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i), &
+              fem%mesh%ele%numele, ierr_inter
+            end if
+          end do
+        end do
+      end do
+
+
+      deallocate(size_max, ele_size, distance, index)
+      call dealloc_work_4_interpolate(itp_ele_work_f)
+
 !
       end subroutine FLINE_initialize
 !
@@ -146,20 +269,15 @@
      &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
-        call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
-     &     fline%fline_lc, fline%fline_gl)
-
-        write(*,*) 'copy_time_step_size_data'
         call copy_time_step_size_data(time_d, t_IO)
-        write(*,*) 'copy_local_fieldline_to_IO'
-        call copy_local_fieldline_to_IO(fline%fln_prm(i_fln)%name_color_output, &
+        call copy_local_fieldline_to_IO                                 &
+     &     (fline%fln_prm(i_fln)%name_color_output,                     &
      &      fline%fline_lc, fline%fline_ucd)
         call sel_write_parallel_ucd_file                                &
      &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
      &      fline%fline_ucd)
         call deallocate_parallel_ucd_mesh(fline%fline_ucd)
         call calypso_mpi_barrier
-        if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
       end do
 !
       end subroutine FLINE_visualize
@@ -176,7 +294,6 @@
       if (fline%num_fline .le. 0) return
 !
       call dealloc_local_fline(fline%fline_lc)
-      call dealloc_global_fline_num(fline%fline_gl)
 !
       do i = 1, fline%num_fline
         call dealloc_iflag_fline_used_ele(fline%fln_prm(i))
@@ -193,4 +310,5 @@
       end subroutine FLINE_finalize
 !
 !  ---------------------------------------------------------------------
+!
       end module t_fieldline

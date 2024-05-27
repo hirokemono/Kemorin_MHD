@@ -1,14 +1,18 @@
+!>@file   modify_local_positions.f90
+!!@brief  module modify_local_positions
+!!
+!!@date  Programmed by H.Matsui in Aug. 2011
 !
-!     module modify_local_positions
-!
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine s_modify_local_positions(maxitr, eps_iter, xi,        &
-!     &          x_target, nnod_ele_2, x_local_ele, iflag_message,      &
-!     &          differ, ierr_modify)
-!      subroutine modify_local_positions_no_fix(maxitr, eps_iter, xi,   &
-!     &          x_target, nnod_ele_2, x_local_ele, iflag_message,      &
-!     &          differ, ierr_modify)
+!>@brief find point in one element and return local coordinate
+!!
+!!@verbatim
+!!      subroutine s_modify_local_positions(maxitr, eps_iter, xi,       &
+!!     &          x_target, nnod_ele_2, x_local_ele, iflag_message,     &
+!!     &          differ, ierr_modify)
+!!      subroutine modify_local_positions_no_fix(maxitr, eps_iter, xi,  &
+!!     &          x_target, nnod_ele_2, x_local_ele, iflag_message,     &
+!!     &          differ, ierr_modify)
+!!@verbatim
 !
       module modify_local_positions
 !

@@ -1,3 +1,5 @@
+cal_position_and_grad.o: $(ITP_PARA_DIR)/cal_position_and_grad.f90 m_precision.o m_constants.o m_geometry_constants.o cal_shape_function_3d.o interporate_position_in_ele.o cal_shape_function_2d.o cal_shape_function_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
 copy_interpolate_types.o: $(ITP_PARA_DIR)/copy_interpolate_types.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 interpolate_by_module.o: $(ITP_PARA_DIR)/interpolate_by_module.f90 m_precision.o m_constants.o calypso_mpi.o select_copy_from_recv.o t_work_4_interpolation.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_solver_ordered_crs.o t_comm_table.o t_vector_for_solver.o t_solver_SR.o t_solver_SR_int.o m_machine_parameter.o t_geometry_data.o t_interpolate_table.o interpolate_scalar_1pe.o calypso_SR.o solver_SR.o interpolate_vector_1pe.o calypso_SR_3.o solver_SR_3.o interpolate_tensor_1pe.o calypso_SR_6.o solver_SR_6.o solver_SR_N.o interpolate_fields_1pe.o calypso_SR_N.o interpolate_imark_1pe.o calypso_SR_int.o solver_SR_type.o
@@ -7,6 +9,10 @@ interpolate_field_type.o: $(ITP_PARA_DIR)/interpolate_field_type.f90 m_precision
 interpolate_nod_field_2_type.o: $(ITP_PARA_DIR)/interpolate_nod_field_2_type.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_comm_table.o t_phys_data.o t_interpolate_table.o t_vector_for_solver.o t_solver_SR.o calypso_mpi.o interpolate_by_module.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_interpolate_table_IO.o: $(ITP_PARA_DIR)/m_interpolate_table_IO.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o copy_interpolate_types.o itrplte_tbl_coef_IO_select.o
+	$(F90) -c $(F90OPTFLAGS) $<
+modify_local_positions.o: $(ITP_PARA_DIR)/modify_local_positions.f90 m_precision.o solver_33_array.o cal_position_and_grad.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_find_interpolate_in_ele.o: $(ITP_PARA_DIR)/t_find_interpolate_in_ele.f90 m_precision.o m_constants.o m_connect_hexa_2_tetra.o t_ctl_params_4_gen_table.o cal_local_position_by_tetra.o modify_local_positions.o solver_33_array.o t_geometry_data.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_interpolate_table.o: $(ITP_PARA_DIR)/t_interpolate_table.f90 m_precision.o m_constants.o t_comm_table.o t_geometry_data.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_solver_ordered_crs.o select_copy_from_recv.o m_machine_parameter.o interpolate_matrix_para.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -1,39 +1,48 @@
+!>@file   cal_interpolate_coefs.f90
+!!@brief  module cal_interpolate_coefs
+!!
+!!@date  Programmed by H.Matsui in Aug. 2011
 !
-!      module cal_interpolate_coefs
-!
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine allocate_work_4_interpolate(nnod_4_ele_2)
-!      subroutine deallocate_work_4_interpolate
-!
+!>@brief find point in one element and return local coordinate
+!!
+!!@verbatim
 !!      subroutine s_cal_interpolate_coefs                              &
 !!     &         (x_target, gen_itp_p, org_node, org_ele,               &
 !!     &          my_rank_org, inod, jele, error_level, iflag_message,  &
-!!     &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
+!!     &          itp_ele_work, iflag_org_domain, itp_coef_dest)
 !!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(node_data), intent(in) :: new_node
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!        type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
+!!
+!!      subroutine set_results_2_array(id_rank_org, inod, jele, xi,     &
+!!     &                               iflag_org_domain, itp_coef_dest)
+!!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!      subroutine set_results_2_array_fin(id_rank_org, inod, jele, xi, &
+!!     &          differ_tmp, differ_res, iflag_org_tmp, itp_coef_dest)
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!
 !!      subroutine check_interpolation                                  &
 !!     &         (nnod_dest, internod_dest, xx_dest,                    &
 !!     &          org_node, org_ele, itp_coef_dest,                     &
-!!     &          id_file, my_rank_org, iflag_org_domain)
+!!     &          id_file, my_rank_org, iflag_org_domain, itp_ele_work)
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
 !!        type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
+!!        type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
+!!@endverbatim
 !
       module cal_interpolate_coefs
 !
       use m_precision
+      use t_find_interpolate_in_ele
 !
       implicit none
 !
-      real(kind=kreal), allocatable :: coefs_by_tet(:)
-      real(kind=kreal), allocatable :: x_local_ele(:,:)
-      real(kind=kreal) :: differ_tmp, differ_res
-!
-      private :: coefs_by_tet, x_local_ele, differ_res
+      private :: set_results_2_array, set_results_2_array_fin
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,33 +50,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_interpolate(nnod_4_ele_2)
-!
-      integer(kind = kint), intent(in) :: nnod_4_ele_2
-!
-      allocate( coefs_by_tet(nnod_4_ele_2) )
-      allocate( x_local_ele(nnod_4_ele_2,3) )
-!
-      coefs_by_tet = 0.0d0
-      x_local_ele = 0.0d0
-!
-      end subroutine allocate_work_4_interpolate
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_work_4_interpolate
-!
-      deallocate( coefs_by_tet )
-      deallocate( x_local_ele )
-!
-      end subroutine deallocate_work_4_interpolate
-!
-! ----------------------------------------------------------------------
-!
       subroutine s_cal_interpolate_coefs                                &
      &         (x_target, gen_itp_p, org_node, org_ele,                 &
      &          my_rank_org, inod, jele, error_level, iflag_message,    &
-     &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
+     &          itp_ele_work, iflag_org_domain, itp_coef_dest)
 !
       use calypso_mpi
       use t_ctl_params_4_gen_table
@@ -91,95 +77,85 @@
       integer(kind = kint), intent(in) :: iflag_message
       real(kind = kreal), intent(in) :: error_level
 !
-      integer(kind = kint), intent(inout) :: iflag_org_tmp
       integer(kind = kint), intent(inout) :: iflag_org_domain
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
-      real(kind=kreal) :: s_coef(3)
       real(kind=kreal) :: xi(3)
-      real(kind=kreal) :: v_tetra(3,3)
-      real(kind=kreal) :: v_target(3)
-      real(kind=kreal) :: ref_error
 !
-      integer (kind = kint) :: itet, ierr_inter, i
+      integer (kind = kint) :: ierr_inter
 !
+      if (iflag_message .eq. 1) then
+        write(my_rank+60,*) my_rank_org, inod, x_target(1:3)
+      end if
 !
-      ierr_inter = 1
+      call find_interpolate_in_ele                                      &
+     &   (x_target, gen_itp_p%maxitr, gen_itp_p%eps_iter,               &
+     &    my_rank, iflag_message, error_level, org_node, org_ele,       &
+     &    jele, itp_ele_work, xi, ierr_inter)
 !
-      call copy_position_2_2nd_local_ele(org_node, org_ele,             &
-     &    jele, x_local_ele)
-!
-      do itet = 1, num_tetra
-        call cal_3vector_4_tet_2nd(org_ele%nnod_4_ele, itet,            &
-     &      v_target, v_tetra, x_target, x_local_ele)
-!
-!   solve equations
-!
-        call solve_33_array(s_coef, v_target, v_tetra)
-!
-!   check solution
-!
-        call check_solution_in_tet(ref_error, s_coef)
-!
-!    satisfy the error level
-!
-        if ( abs(ref_error) .le. error_level) then
-!
-          call init_coefs_on_tet                                        &
-     &        (org_ele%nnod_4_ele, itet, coefs_by_tet, s_coef)
-!
-          call s_cal_local_position_by_tetra(org_ele%nnod_4_ele, xi,    &
-     &       coefs_by_tet)
-!
-          if (iflag_message .eq. 1) then
-            write(my_rank+60,*) inod, x_target(1:3)
-            do i = 1, org_ele%nnod_4_ele
-              write(my_rank+60,*) i, jele, x_local_ele(i,1:3)
-            end do
-!            write(my_rank+60,*) 'coefs_by_tet', coefs_by_tet
-            write(my_rank+60,*) 's_coef', s_coef
-          end if
-!
-!     improve solution
-!
-          call s_modify_local_positions                                 &
-     &       (gen_itp_p%maxitr, gen_itp_p%eps_iter, xi, x_target,       &
-     &        org_ele%nnod_4_ele, x_local_ele, iflag_message,           &
-     &        differ_res, ierr_inter)
-!
-!     finish improvement
-!
-          if (ierr_inter.gt.0 .and. ierr_inter.le.gen_itp_p%maxitr) then
-             call set_results_2_array(my_rank_org, gen_itp_p,           &
-     &           inod, jele, xi, iflag_org_domain, itp_coef_dest)
-             go to 10
-          else
-            if (iflag_message .eq. 1) then
-              write(my_rank+60,*)                                       &
-     &                'improvement failed!!: inod, jele, itet:',        &
-     &                 my_rank, inod, differ_tmp, differ_res,           &
-     &                 my_rank_org, jele, itet, xi
-              if (differ_res .lt. differ_tmp) then
-                call set_results_2_array_fin(my_rank_org, inod, jele,   &
-     &              xi, differ_tmp, differ_res, iflag_org_tmp,          &
-     &              itp_coef_dest)
-              end if
-            end if
-          end if
-!
-        end if
-      end do
-!
-  10  continue
+      if(ierr_inter.gt.0 .and. ierr_inter.le.gen_itp_p%maxitr) then
+        call set_results_2_array(my_rank_org, inod, jele, xi,           &
+     &                           iflag_org_domain, itp_coef_dest)
+      else
+        call set_results_2_array_fin(my_rank_org, inod, jele, xi,       &
+     &                               itp_ele_work, itp_coef_dest)
+      end if
 !
       end subroutine s_cal_interpolate_coefs
 !
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_results_2_array(id_rank_org, inod, jele, xi,       &
+     &                               iflag_org_domain, itp_coef_dest)
+!
+      use t_ctl_params_4_gen_table
+      use t_interpolate_coefs_dest
+!
+      integer, intent(in) :: id_rank_org
+      integer(kind = kint), intent(in) :: inod, jele
+      real(kind = kreal), intent(in) :: xi(3)
+!
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      integer(kind = kint), intent(inout) :: iflag_org_domain
+!
+      iflag_org_domain = id_rank_org + 1
+      itp_coef_dest%iele_org_4_dest(inod) =  jele
+      itp_coef_dest%coef_inter_dest(inod,1:3) = xi(1:3)
+!
+      end subroutine set_results_2_array
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_results_2_array_fin(id_rank_org, inod, jele, xi,   &
+     &                                   itp_ele_work, itp_coef_dest)
+!
+      use m_constants
+      use t_interpolate_coefs_dest
+!
+      integer, intent(in) :: id_rank_org
+      integer(kind = kint), intent(in) :: inod, jele
+      real(kind = kreal), intent(in) :: xi(3)
+!
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
+!
+!
+      itp_ele_work%iflag_org_tmp = id_rank_org + 1
+      itp_coef_dest%iele_org_4_dest(inod) =  jele
+      itp_coef_dest%coef_inter_dest(inod,1:3) = xi(1:3)
+      itp_ele_work%differ_tmp = itp_ele_work%differ_res
+!
+      end subroutine set_results_2_array_fin
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine check_interpolation                                    &
      &         (nnod_dest, internod_dest, xx_dest,                      &
      &          org_node, org_ele, itp_coef_dest,                       &
-     &          id_file, my_rank_org, iflag_org_domain)
+     &          id_file, my_rank_org, iflag_org_domain, itp_ele_work)
 !
       use subroutines_4_search_table
       use cal_position_and_grad
@@ -198,6 +174,7 @@
 !
       integer, intent(in) :: my_rank_org
       integer(kind = kint), intent(in) :: id_file
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
       integer(kind = kint) :: inod
       real(kind=kreal) :: xx_z(3), xi(3), diff(3)
@@ -212,10 +189,11 @@
 !
           xi(1:3) = itp_coef_dest%coef_inter_dest(inod,1:3)
           call copy_position_2_2nd_local_ele(org_node, org_ele,         &
-     &        itp_coef_dest%iele_org_4_dest(inod), x_local_ele)
+     &        itp_coef_dest%iele_org_4_dest(inod),                      &
+     &        itp_ele_work%x_local_ele)
 !
           call cal_position_and_gradient(org_ele%nnod_4_ele, xx_z,      &
-     &        dnxi, dnei, dnzi, x_local_ele, xi)
+     &        dnxi, dnei, dnzi, itp_ele_work%x_local_ele, xi)
 !
           diff(1:3) = xx_z(1:3) - xx_dest(inod,1:3)
 !

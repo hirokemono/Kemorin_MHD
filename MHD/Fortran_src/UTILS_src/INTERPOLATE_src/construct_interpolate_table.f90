@@ -7,6 +7,9 @@
 !!     &          nnod_dest, internod_dest, xx_dest, neib_nod,          &
 !!     &          org_blocks, itp_coef_dest, iflag_org_domain,          &
 !!     &          ierr_missing)
+!!      subroutine const_interpolate_table_each(org_mesh, gen_itp_p,    &
+!!     &          nnod_dest, internod_dest, xx_dest, neib_nod,          &
+!!     &          org_blocks, itp_coef_dest, iflag_org_domain)
 !!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
@@ -61,6 +64,7 @@
 !
       type(mesh_geometry_p) :: org_mesh
       type(mesh_groups_p) ::   org_grp
+      type(cal_interpolate_coefs_work) :: itp_ele_work_i
 !
       integer(kind = kint) :: ierr_local
       integer(kind = kint) :: ilevel
@@ -79,16 +83,17 @@
           my_rank_2nd = mod(my_rank+jp-1,itp_org%nprocs_org)
 !
           call link_2nd_geometry_4_itp_tbl(my_rank_2nd, itp_org,        &
-      &                                    org_mesh, org_grp)
+     &                                     org_mesh, org_grp)
 !
-          call allocate_work_4_interpolate(org_mesh%ele%nnod_4_ele)
+          call alloc_work_4_interpolate(org_mesh%ele%nnod_4_ele,        &
+     &                                  itp_ele_work_i)
 !
           if (ilevel .eq. 0) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank_2nd, gen_itp_p,     &
      &          org_mesh%node, org_mesh%ele, org_blocks(my_rank_2nd+1), &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
           else if (ilevel .eq. (gen_itp_p%num_search_times+1)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
@@ -98,7 +103,7 @@
             call search_node_in_all_element                             &
      &          (my_rank_2nd, error_level_final, gen_itp_p,             &
      &          org_mesh%node, org_mesh%ele,                            &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
           else if (ilevel .eq. (gen_itp_p%num_search_times+2)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
@@ -108,7 +113,7 @@
             call giveup_to_search_element(my_rank_2nd,                  &
      &          error_level_final, neib_nod%istack_next, gen_itp_p,     &
      &          org_mesh%node, org_mesh%ele,                            &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
@@ -116,16 +121,16 @@
             call search_node_in_element_2nd((ilevel-1), my_rank_2nd,    &
      &          gen_itp_p, org_mesh%node, org_mesh%ele,                 &
      &          org_blocks(my_rank_2nd+1),                              &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
           end if
 !
 !          if (ilevel.eq.3) call check_interpolation                    &
 !     &     (nnod_dest, internod_dest, xx_dest,                         &
 !     &      org_mesh%node, org_mesh%ele, itp_coef_dest,                &
-!     &      14, my_rank_2nd, iflag_org_domain)
+!     &      14, my_rank_2nd, iflag_org_domain, itp_ele_work_i)
 !
-          call deallocate_work_4_interpolate
+          call dealloc_work_4_interpolate(itp_ele_work_i)
 !
           call deallocate_hex_2_tetra
           call unlink_pointer_mesh(org_mesh, org_grp)
@@ -151,11 +156,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_interpolate_table_each                           &
-     &         (id_rank_search, org_mesh, org_grp, gen_itp_p,           &
+      subroutine const_interpolate_table_each(org_mesh, gen_itp_p,      &
      &          nnod_dest, internod_dest, xx_dest, neib_nod,            &
-     &          org_blocks, itp_coef_dest, iflag_org_domain,            &
-     &          ierr_missing)
+     &          org_blocks, itp_coef_dest, iflag_org_domain)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -173,9 +176,7 @@
       use subroutines_4_search_table
       use transfer_to_long_integers
 !
-      integer, intent(in) :: id_rank_search
       type(mesh_geometry_p), intent(in) :: org_mesh
-      type(mesh_groups_p), intent(in) ::   org_grp
 !
       type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(next_nod_id_4_nod), intent(in)  :: neib_nod
@@ -184,11 +185,11 @@
       integer(kind = kint), intent(in) :: nnod_dest, internod_dest
       real(kind = kreal), intent(in) :: xx_dest(nnod_dest,3)
 ! 
-      integer(kind = kint), intent(inout) :: ierr_missing
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_org_domain(nnod_dest)
 !
+      type(cal_interpolate_coefs_work) :: itp_ele_work_i
       integer(kind = kint) :: ilevel
       real(kind = kreal) :: error_level_final
       integer (kind = kint) :: inod, icou
@@ -201,13 +202,14 @@
 !$omp end parallel workshare
 
       
-      call allocate_work_4_interpolate(org_mesh%ele%nnod_4_ele)
+      call alloc_work_4_interpolate(org_mesh%ele%nnod_4_ele,            &
+     &                              itp_ele_work_i)
 !
             if (i_debug.ge.iflag_routine_msg)                           &
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank, gen_itp_p,         &
      &          org_mesh%node, org_mesh%ele, org_blocks,                &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
 !
       call calypso_mpi_allreduce_int(iflag_org_domain, iflag_org_gl,    &
@@ -228,7 +230,7 @@
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
             call search_node_in_element_2nd((ilevel-1), my_rank,        &
      &          gen_itp_p, org_mesh%node, org_mesh%ele, org_blocks,     &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
         call calypso_mpi_allreduce_int(iflag_org_domain, iflag_org_gl,  &
      &                               cast_long(internod_dest), MPI_MAX)
@@ -251,7 +253,7 @@
             call search_node_in_all_element                             &
      &          (my_rank, error_level_final, gen_itp_p,                 &
      &          org_mesh%node, org_mesh%ele,                            &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
       call calypso_mpi_allreduce_int(iflag_org_domain, iflag_org_gl,    &
      &                               cast_long(internod_dest), MPI_MAX)
@@ -272,7 +274,7 @@
             call giveup_to_search_element(my_rank,                      &
      &          error_level_final, neib_nod%istack_next, gen_itp_p,     &
      &          org_mesh%node, org_mesh%ele,                            &
-     &          nnod_dest, internod_dest, xx_dest,                      &
+     &          nnod_dest, internod_dest, xx_dest, itp_ele_work_i,      &
      &          itp_coef_dest, iflag_org_domain)
       call calypso_mpi_allreduce_int(iflag_org_domain, iflag_org_gl,    &
      &                               cast_long(internod_dest), MPI_MAX)
@@ -288,8 +290,8 @@
       if(my_rank .eq. 0) write(*,*) icou, 'points are given up'
 !
       deallocate(iflag_org_gl)
-          call deallocate_work_4_interpolate
-          call deallocate_hex_2_tetra
+      call dealloc_work_4_interpolate(itp_ele_work_i)
+      call deallocate_hex_2_tetra
 !
       end subroutine const_interpolate_table_each
 !

@@ -6,24 +6,25 @@
 !!      subroutine search_node_in_element_1st                           &
 !!     &         (id_rank, gen_itp_p, org_node, org_ele, org_blk,       &
 !!     &          nnod_dest, internod_dest, xx_dest,                    &
-!!     &          itp_coef_dest, iflag_org_domain)
+!!     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !!      subroutine search_node_in_element_2nd                           &
 !!     &         (iinc, id_rank, gen_itp_p, org_node, org_ele, org_blk, &
 !!     &          nnod_dest, internod_dest, xx_dest,                    &
-!!     &          itp_coef_dest, iflag_org_domain)
+!!     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !!      subroutine search_node_in_all_element(my_rank_2nd, error_level, &
 !!     &          gen_itp_p, org_node, org_ele,                         &
 !!     &          nnod_dest, internod_dest, xx_dest,                    &
-!!     &          itp_coef_dest, iflag_org_domain)
+!!     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !!      subroutine giveup_to_search_element                             &
 !!     &         (my_rank_2nd, error_level, inod_next_stack_4_node,     &
 !!     &          gen_itp_p, org_node, org_ele,                         &
 !!     &          nnod_dest, internod_dest, xx_dest,                    &
-!!     &          itp_coef_dest, iflag_org_domain)
-!!       type(node_data), intent(in) :: org_node
-!!       type(element_data), intent(in) :: org_ele
-!!       type(block_4_interpolate), intent(in) :: org_blk
-!!       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
+!!        type(node_data), intent(in) :: org_node
+!!        type(element_data), intent(in) :: org_ele
+!!        type(block_4_interpolate), intent(in) :: org_blk
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!        type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
       module search_node_in_element
 !
@@ -40,9 +41,6 @@
 !
       implicit none
 !
-      integer(kind = kint) :: iflag_org_tmp
-      private :: iflag_org_tmp
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -52,7 +50,7 @@
       subroutine search_node_in_element_1st                             &
      &         (id_rank, gen_itp_p, org_node, org_ele, org_blk,         &
      &          nnod_dest, internod_dest, xx_dest,                      &
-     &          itp_coef_dest, iflag_org_domain)
+     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !
       use subroutines_4_search_table
 !
@@ -66,12 +64,13 @@
       integer(kind = kint), intent(in) :: nnod_dest, internod_dest
       real(kind = kreal), intent(in) :: xx_dest(nnod_dest,3)
 !
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_org_domain(nnod_dest)
 !
       real(kind = kreal) :: x_target(3)
-      integer(kind = kint) :: ip, ist, ied, inod
+      integer(kind = kint) :: inod
       integer(kind = kint) :: ihash, jst, jed, jnum, jele
       integer(kind = kint), parameter :: iflag_nomessage = 0
 !
@@ -97,7 +96,7 @@
 !
               call s_cal_interpolate_coefs                              &
      &           (x_target, gen_itp_p, org_node, org_ele, id_rank,      &
-     &            inod, jele, zero, iflag_nomessage, iflag_org_tmp,     &
+     &            inod, jele, zero, iflag_nomessage, itp_ele_work,      &
      &            iflag_org_domain(inod), itp_coef_dest)
               if ( iflag_org_domain(inod) .gt. 0) go to 10
             end if
@@ -114,7 +113,7 @@
       subroutine search_node_in_element_2nd                             &
      &         (iinc, id_rank, gen_itp_p, org_node, org_ele, org_blk,   &
      &          nnod_dest, internod_dest, xx_dest,                      &
-     &          itp_coef_dest, iflag_org_domain)
+     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !
       use subroutines_4_search_table
 !
@@ -129,12 +128,13 @@
       integer(kind = kint), intent(in) :: nnod_dest, internod_dest
       real(kind = kreal), intent(in) :: xx_dest(nnod_dest,3)
 !
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_org_domain(nnod_dest)
 !
       real(kind = kreal) :: x_target(3)
-      integer(kind = kint) :: ip, ist, ied, inod, i1, i2, i3
+      integer(kind = kint) :: inod, i1, i2, i3
       integer(kind = kint) :: igh(3)
       integer(kind = kint) :: ihash, jst, jed, jnum, jele
       integer(kind = kint), parameter :: iflag_nomessage = 0
@@ -161,7 +161,7 @@
                   x_target(1:3) = xx_dest(inod,1:3)
                   call s_cal_interpolate_coefs(x_target, gen_itp_p,     &
      &                org_node, org_ele, id_rank, inod, jele, zero,     &
-     &                iflag_nomessage, iflag_org_tmp,                   &
+     &                iflag_nomessage, itp_ele_work,                    &
      &                iflag_org_domain(inod), itp_coef_dest)
                   if ( iflag_org_domain(inod) .gt. 0) go to 10
 !
@@ -180,7 +180,7 @@
       subroutine search_node_in_all_element(my_rank_2nd, error_level,   &
      &          gen_itp_p, org_node, org_ele,                           &
      &          nnod_dest, internod_dest, xx_dest,                      &
-     &          itp_coef_dest, iflag_org_domain)
+     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !
       use subroutines_4_search_table
 !
@@ -194,25 +194,26 @@
       integer(kind = kint), intent(in) :: nnod_dest, internod_dest
       real(kind = kreal), intent(in) :: xx_dest(nnod_dest,3)
 !
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_org_domain(nnod_dest)
 !
       real(kind = kreal) :: x_target(3)
-      integer(kind = kint) :: ip, ist, ied, inod, jele
+      integer(kind = kint) :: inod, jele
       integer(kind = kint), parameter :: iflag_message = 1
 !
 !
       do inod = 1, internod_dest
         if ( iflag_org_domain(inod) .le. 0) then
 !
-          differ_tmp = 1.0d20
-          iflag_org_tmp = 0
+          itp_ele_work%differ_tmp = 1.0d20
+          itp_ele_work%iflag_org_tmp = 0
           do jele = 1, org_ele%numele
             x_target(1:3) = xx_dest(inod,1:3)
             call s_cal_interpolate_coefs                                &
      &         (x_target, gen_itp_p, org_node, org_ele, my_rank_2nd,    &
-     &          inod, jele, error_level, iflag_message, iflag_org_tmp,  &
+     &          inod, jele, error_level, iflag_message, itp_ele_work,   &
      &         iflag_org_domain(inod), itp_coef_dest)
             if ( iflag_org_domain(inod) .gt. 0) go to  10
           end do
@@ -229,7 +230,7 @@
      &         (my_rank_2nd, error_level, inod_next_stack_4_node,       &
      &          gen_itp_p, org_node, org_ele,                           &
      &          nnod_dest, internod_dest, xx_dest,                      &
-     &          itp_coef_dest, iflag_org_domain)
+     &          itp_ele_work, itp_coef_dest, iflag_org_domain)
 !
       use subroutines_4_search_table
 !
@@ -246,11 +247,12 @@
       integer, intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
 !
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_org_domain(nnod_dest)
 !
-      integer(kind = kint) :: ip, ist, ied, inod, jele
+      integer(kind = kint) :: inod, jele
       integer(kind = kint) :: kst, ked
       real(kind = kreal) :: x_target(3)
       integer(kind = kint), parameter :: iflag_message = 1
@@ -263,18 +265,18 @@
           write(*,*) 'inod_next_4_node(:)', inod, kst,ked
             
 !
-          differ_tmp = 1.0d20
-          iflag_org_tmp = 0
+          itp_ele_work%differ_tmp = 1.0d20
+          itp_ele_work%iflag_org_tmp = 0
           do jele = 1, org_ele%numele
             x_target(1:3) = xx_dest(inod,1:3)
             call s_cal_interpolate_coefs                                &
      &        (x_target, gen_itp_p, org_node, org_ele, my_rank_2nd,     &
-     &         inod, jele, error_level, iflag_message, iflag_org_tmp,   &
+     &         inod, jele, error_level, iflag_message, itp_ele_work,    &
      &         iflag_org_domain(inod), itp_coef_dest)
             if ( iflag_org_domain(inod) .gt. 0) go to  10
           end do
 !
-          iflag_org_domain(inod) = iflag_org_tmp
+          iflag_org_domain(inod) = itp_ele_work%iflag_org_tmp
         end if
    10   continue
 !

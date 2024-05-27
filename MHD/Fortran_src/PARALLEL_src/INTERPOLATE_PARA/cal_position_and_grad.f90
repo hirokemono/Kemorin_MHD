@@ -1,15 +1,16 @@
+!>@file   cal_position_and_grad.f90
+!!@brief  module cal_position_and_grad
+!!
+!!@date  Programmed by H.Matsui in Aug. 2011
 !
-!cal_position_and_grad.f90
-!      module cal_position_and_grad
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H. Matsui on Aug., 2006
-!
-!      subroutine cal_position_and_grad_surf(nnod_sf, xx_z, dnxi, dnei, &
-!     &          x_local_ele, xi)
-!      subroutine cal_position_and_grad_edge(nnod_ed, xx_z,  dnxi,      &
-!     &          x_local_ele, xi)
+!>@brief find point in one element and return local coordinate
+!!
+!!@verbatim
+!!      subroutine cal_position_and_grad_surf(nnod_sf, xx_z, dnxi, dnei,&
+!!     &          x_local_ele, xi)
+!!      subroutine cal_position_and_grad_edge(nnod_ed, xx_z,  dnxi,     &
+!!     &          x_local_ele, xi)
+!!@endverbatim
 !
       module cal_position_and_grad
 !
