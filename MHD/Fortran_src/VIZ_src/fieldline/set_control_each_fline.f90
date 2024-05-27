@@ -47,6 +47,7 @@
       use m_control_fline_flags
 !
       use t_source_of_filed_line
+      use set_isosurface_file_ctl
       use set_area_4_viz
       use skip_comment_f
       use delete_data_files
@@ -64,26 +65,27 @@
 !
 !
       if(fln%fline_file_head_ctl%iflag .gt. 0) then
-        fln_prm%fline_prefix =  fln%fline_file_head_ctl%charavalue
+        fln_prm%fline_file_IO%file_prefix                               &
+     &         =  fln%fline_file_head_ctl%charavalue
       else
-        fln_prm%fline_prefix =  'field_line'
+        fln_prm%fline_file_IO%file_prefix =  'field_line'
       end if
 !
       call calypso_mpi_barrier
-      if(check_file_writable(my_rank, fln_prm%fline_prefix)             &
+      if(check_file_writable(my_rank,                                   &
+     &                       fln_prm%fline_file_IO%file_prefix)         &
      &                                             .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_VIZ,                                &
      &                         'Check Directory for Fieldline output')
       end if
 !
-      character_256 = fln%fline_output_type_ctl%charavalue
-      if     (cmp_no_case(character_256, 'ucd')) then
-        fln_prm%iformat_file_file = iflag_ucd
-      else if(cmp_no_case(character_256, 'vtk')) then
-        fln_prm%iformat_file_file = iflag_vtk
+      if(fln%fline_output_type_ctl%iflag .eq. 0) then
+        fln_prm%fline_file_IO%iflag_format = iflag_sgl_vtk
       else
-        fln_prm%iformat_file_file = iflag_vtk
+        fln_prm%fline_file_IO%iflag_format                              &
+     &      = sel_iso_file_format(fln%fline_output_type_ctl%charavalue)
       end if
+!
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &

@@ -1,9 +1,3 @@
-!const_field_lines.f90
-!
-!      module const_field_lines
-!
-!      Written by H. Matsui on Aug., 2011
-!
 !>@file   const_field_lines.f90
 !!@brief  module const_field_lines
 !!

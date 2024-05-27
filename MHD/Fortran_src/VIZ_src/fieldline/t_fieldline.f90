@@ -10,8 +10,9 @@
 !!      subroutine FLINE_initialize                                     &
 !!     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !!      subroutine FLINE_visualize                                      &
-!!     &         (istep_fline, fem, next_tbl, nod_fld, fline)
+!!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
 !!      subroutine FLINE_finalize(fline)
+!!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: fem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
@@ -25,6 +26,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
+      use t_time_data
       use t_mesh_data
       use t_phys_data
       use t_next_node_ele_4_node
@@ -32,6 +34,7 @@
       use t_source_of_filed_line
       use t_local_fline
       use t_global_fieldline
+      use t_ucd_data
 !
       implicit  none
 !
@@ -45,6 +48,8 @@
 !
         type(local_fieldline) :: fline_lc
         type(global_fieldline_data) :: fline_gl
+!
+        type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
 !  ---------------------------------------------------------------------
@@ -102,19 +107,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize                                        &
-     &         (istep_fline, fem, next_tbl, nod_fld, fline)
+     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
 !
       use set_fields_for_fieldline
       use const_field_lines
       use collect_fline_data
+      use parallel_ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep_fline
+      type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: fem
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_module), intent(inout) :: fline
 !
+      type(time_data) :: t_IO
       integer(kind = kint) :: i_fln
 !
 !
@@ -138,9 +146,20 @@
      &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
-        if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
+        call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
      &     fline%fline_lc, fline%fline_gl)
+
+        write(*,*) 'copy_time_step_size_data'
+        call copy_time_step_size_data(time_d, t_IO)
+        write(*,*) 'copy_local_fieldline_to_IO'
+        call copy_local_fieldline_to_IO(fline%fln_prm(i_fln)%name_color_output, &
+     &      fline%fline_lc, fline%fline_ucd)
+        call sel_write_parallel_ucd_file                                &
+     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
+     &      fline%fline_ucd)
+        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
+        call calypso_mpi_barrier
+        if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
       end do
 !
       end subroutine FLINE_visualize

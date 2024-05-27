@@ -22,6 +22,7 @@
       module t_control_params_4_fline
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -32,9 +33,7 @@
 !
       type fieldline_paramter
 !>        File of for field line data file
-        character(len = kchara) :: fline_prefix
-!>        File format for field line data file
-        integer(kind = kint) :: iformat_file_file = 0
+        type(field_IO_params) :: fline_file_IO
 !
 !>        Area of seed point
         integer(kind = kint) :: id_fline_seed_type = 0
@@ -183,8 +182,9 @@
       integer(kind = kint) :: i
 !
 !
-        write(*,*) 'fline_header: ', trim(fln_prm%fline_prefix)
-        write(*,*) 'file format: ', fln_prm%iformat_file_file
+        write(*,*) 'fline_header: ',                                    &
+     &            trim(fln_prm%fline_file_IO%file_prefix)
+        write(*,*) 'file format: ', fln_prm%fline_file_IO%iflag_format
         write(*,*) 'id_fline_direction: ', fln_prm%id_fline_direction
         write(*,*) 'id_fline_seed_type: ', fln_prm%id_fline_seed_type
         write(*,*) 'id_seed_distribution: ',                            &

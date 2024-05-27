@@ -43,7 +43,7 @@
 !
       nneib_recv = 0
       num = int(3 * fline_lc%nnod_line_l)
-      call MPI_Isend(fline_lc%xx_line_l(1,1), num, CALYPSO_REAL, 0, &
+      call MPI_Isend(fline_lc%xx_line_l(1,1), num, CALYPSO_REAL, 0,     &
      &    0, CALYPSO_COMM, fline_gl%req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then

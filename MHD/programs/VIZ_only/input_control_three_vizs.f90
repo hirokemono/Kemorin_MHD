@@ -37,7 +37,8 @@
 !
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter :: fname_viz_ctl = "ctl_viz"
+      character(len = kchara), parameter                                &
+     &         :: fname_viz_ctl = "control_viz"
 !
       private :: bcast_three_vizs_control_data
       private :: set_ctl_params_three_vizs
