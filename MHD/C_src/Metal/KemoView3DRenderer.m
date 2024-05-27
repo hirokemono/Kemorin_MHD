@@ -449,7 +449,7 @@
                                      vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
                                      unites:monoViewUnites
                                       sides:BOTH_SURFACES];
-    if(kemoView3DMetalBuf->fieldTubeVertice == 0){
+    if(kemoView3DMetalBuf->numFieldTubeVertice == 0){
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
                                       depth:depthState
