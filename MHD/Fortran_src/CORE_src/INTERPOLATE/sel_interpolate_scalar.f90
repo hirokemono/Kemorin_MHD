@@ -45,7 +45,7 @@
       use interpolate_scalar_ele27
 !
       integer (kind = kint), intent(in) :: np_smp
-      integer (kind = kint), intent(in) :: numnod, numele
+      integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer (kind = kint), intent(in) :: istack_smp(0:np_smp)
       integer (kind = kint), intent(in) :: num_points
@@ -55,18 +55,17 @@
 !
       real (kind=kreal), intent(inout) :: vect(num_points)
 !
-      if (ele%nnod_4_ele .eq. num_t_linear) then
+      if (nnod_4_ele .eq. num_t_linear) then
         call s_interpolate_scalar_ele8                                  &
-     &     (np_smp, n_point, numele, ie, v_org, istack_smp,             &
+     &     (np_smp, numnod, numele, ie, v_org, istack_smp,              &
      &      num_points, iele_gauss, xi_gauss, vect)
-      else if(ele%nnod_4_ele .eq. num_t_quad)
+      else if(nnod_4_ele .eq. num_t_quad) then
         call s_interpolate_scalar_ele27                                 &
-     &     (np_smp, n_point, numele, ie, v_org, istack_smp,             &
+     &     (np_smp, numnod, numele, ie, v_org, istack_smp,              &
      &      num_points, iele_gauss, xi_gauss, vect)
-      else if(ele%nnod_4_ele .eq. num_t_lag) then
-!
+      else if(nnod_4_ele .eq. num_t_lag) then
         call s_interpolate_scalar_ele20                                 &
-     &     (np_smp, n_point, numele, ie, v_org, istack_smp,             &
+     &     (np_smp, numnod, numele, ie, v_org, istack_smp,              &
      &      num_points, iele_gauss, xi_gauss, vect)
       end if
 !

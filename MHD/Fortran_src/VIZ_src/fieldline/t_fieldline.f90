@@ -60,11 +60,10 @@
 !
       use calypso_mpi
       use calypso_mpi_int
-      use m_connect_hexa_2_tetra
       use t_control_data_flines
       use t_find_interpolate_in_ele
       use set_fline_control
-      use quicksort
+      use set_fline_seeds_from_list
 !
       integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: fem
@@ -72,25 +71,9 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
-      type(cal_interpolate_coefs_work), save :: itp_ele_work_f
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
-      integer(kind = kint), parameter :: iflag_nomessage = 0
-      real(kind = kreal), parameter ::   error_level = 0.0
-      integer(kind = kint) :: ierr_inter
-!
-      real(kind = kreal), allocatable :: x(:)
-      real(kind = kreal), allocatable :: y(:)
-      real(kind = kreal), allocatable :: z(:)
-      real(kind = kreal), allocatable :: ele_size(:)
-      real(kind = kreal), allocatable :: size_max(:)
-
-      integer(kind = kint), allocatable :: index(:)
-      real(kind = kreal), allocatable :: distance(:)
-      real(kind = kreal) :: dist_tmp
-      real(kind = kreal) :: xi(3)
-      integer(kind = kint) :: i_fln, i, iele, k1, inum, inod, ip, icou
-      integer(kind = kint) :: num_search
+      integer(kind = kint) :: i_fln
+      type(FLINE_element_size) :: fln_dist
+      logical :: flag_fln_dist
 !
       fline%num_fline = fline_ctls%num_fline_ctl
       if(increment_fline .le. 0) fline%num_fline = 0
@@ -118,133 +101,26 @@
       end do
 !
       call alloc_local_fline(fline%fline_lc)
-      allocate(x(fem%mesh%ele%nnod_4_ele))
-      allocate(y(fem%mesh%ele%nnod_4_ele))
-      allocate(z(fem%mesh%ele%nnod_4_ele))
-
-      allocate(ele_size(fem%mesh%ele%numele))
-      allocate(size_max(fem%mesh%ele%numele))
-      allocate(distance(fem%mesh%ele%numele))
-      allocate(index(fem%mesh%ele%numele))
-
-      if (fem%mesh%ele%nnod_4_ele .eq. num_t_linear) then
-        call set_1_hexa_2_5_tetra
-      else if (fem%mesh%ele%nnod_4_ele .eq. num_t_quad) then
-        call set_1_hexa_2_21_tetra
-      else if (fem%mesh%ele%nnod_4_ele .eq. num_t_lag) then
-        call set_1_hexa_2_40_tetra
-      end if
-!$omp parallel do private(iele,k1,inod,x,y,z)
-      do iele = 1, fem%mesh%ele%numele
-        do k1 = 1, fem%mesh%ele%nnod_4_ele
-          inod = fem%mesh%ele%ie(iele,k1)
-          x(k1) = fem%mesh%node%xx(inod,1)
-          y(k1) = fem%mesh%node%xx(inod,2)
-          z(k1) = fem%mesh%node%xx(inod,3)
-        end do
-        size_max(1) = maxval(x) - minval(x)
-        size_max(2) = maxval(y) - minval(y)
-        size_max(3) = maxval(z) - minval(z)
-        size_max(iele) = sqrt(size_max(1)*size_max(1)                   &
-     &                      + size_max(2)*size_max(2)                   &
-     &                      + size_max(3)*size_max(3))
-!        size_max(iele) = size_max(1) + size_max(2) + size_max(3)
-      end do
-!$omp end parallel do
-      call calypso_mpi_barrier
-      call alloc_work_4_interpolate(fem%mesh%ele%nnod_4_ele,            &
-    &                               itp_ele_work_f)
-
+!
+      flag_fln_dist = .FALSE.
       do i_fln = 1, fline%num_fline
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-    &                       .eq. iflag_position_list) then
-          do i = 1, fline%fln_prm(i_fln)%num_each_field_line
-            x(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(1,i)
-            y(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(2,i)
-            z(1) = fline%fln_prm(i_fln)%xx_surf_start_fline(3,i)
-            num_search = 0
-            do iele = 1, fem%mesh%ele%numele
-              dist_tmp = sqrt ((x(1) - fem%mesh%ele%x_ele(iele,1))**2   &
-     &                       + (y(1) - fem%mesh%ele%x_ele(iele,2))**2   &
-     &                       + (z(1) - fem%mesh%ele%x_ele(iele,3))**2)
-              if(dist_tmp .le. size_max(iele)) then
-                num_search = num_search + 1
-                index(num_search) =    iele
-                distance(num_search) = dist_tmp
-              end if
-            end do
-
-            if(num_search .gt. 1) then
-              call quicksort_real_w_index(fem%mesh%ele%numele,          &
-    &             distance(1), ione, num_search, index(1))
-            end if
-!
-            fline%fln_prm(i_fln)%ip_surf_start_fline(i) = -1
-            fline%fln_prm(i_fln)%iele_surf_start_fline(i) = 0
-            fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i) = -2.0
-            do inum = 1, num_search
-              iele = index(inum)
-              if(fem%mesh%ele%ie(iele,1)                                & 
-     &                .gt. fem%mesh%node%internal_node) cycle
-              ierr_inter = 0
-              xi(1:3) = -2.0
-              call find_interpolate_in_ele                              &
-     &           (fline%fln_prm(i_fln)%xx_surf_start_fline(1,i),        &
-     &            maxitr, eps_iter,                                     &
-     &            my_rank, iflag_nomessage, error_level,                &
-     &            fem%mesh%node, fem%mesh%ele, iele,                    &
-     &            itp_ele_work_f, xi, ierr_inter)
-              if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) exit
-            end do
-            if(num_search .gt. 0 .and. ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
-              fline%fln_prm(i_fln)%ip_surf_start_fline(i) = my_rank
-              fline%fln_prm(i_fln)%iele_surf_start_fline(i) = iele
-              fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i) = xi(1:3)
-            end if
-          end do
+     &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
+      end do
+      if(flag_fln_dist) then
+        call alloc_FLINE_element_size(fem%mesh%ele, fln_dist)
+        call cal_FLINE_element_size(fem%mesh%node, fem%mesh%ele,        &
+     &                              fln_dist)
+      end if
+      do i_fln = 1, fline%num_fline
+        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
+     &                       .eq. iflag_position_list) then
+          call init_FLINE_seed_from_list(fem%mesh%node, fem%mesh%ele,   &
+     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
+     &        fline%fln_tce(i_fln), fln_dist)
         end if
       end do
-
-      do i_fln = 1, fline%num_fline
-        do ip = 1, nprocs
-        call calypso_mpi_barrier
-        if(my_rank .ne. ip-1) cycle
-          do i = 1, fline%fln_prm(i_fln)%num_each_field_line
-            if(fline%fln_prm(i_fln)%ip_surf_start_fline(i) .ge. 0) then
-            write(*,*) my_rank, i_fln, i, 'fline%fln_prm(i_fln)',    &
-     &        fline%fln_prm(i_fln)%ip_surf_start_fline(i),           &
-     &        fline%fln_prm(i_fln)%iele_surf_start_fline(i),         &
-     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1:3,i),       &
-              fem%mesh%ele%numele, ierr_inter
-            end if
-          end do
-        end do
-!
-        call calypso_mpi_barrier
-        fline%fln_src(i_fln)%num_line_local = 0
-        do i = 1, fline%fln_prm(i_fln)%num_each_field_line
-        if(fline%fln_prm(i_fln)%ip_surf_start_fline(i) .eq. my_rank)   &
-          fline%fln_src(i_fln)%num_line_local    &
-     &      = fline%fln_src(i_fln)%num_line_local + 1
-        end do
-        call calypso_mpi_barrier
-        write(*,*) my_rank, 'fline%fln_src(i_fln)%num_line_local', &
-     &            fline%fln_src(i_fln)%num_line_local
-
-        call calypso_mpi_allgather_one_int                              &
-     &     (fline%fln_src(i_fln)%num_line_local, fline%fln_tce(i_fln)%num_current_fline)
-        fline%fln_tce(i_fln)%istack_current_fline(0) = 0
-        do i = 1, nprocs
-          fline%fln_tce(i_fln)%istack_current_fline(i)   &
-     &        = fline%fln_tce(i_fln)%istack_current_fline(i-1)   &
-     &         + fline%fln_tce(i_fln)%num_current_fline(i)
-        end do
-      end do
-
-
-      deallocate(size_max, ele_size, distance, index)
-      call dealloc_work_4_interpolate(itp_ele_work_f)
-
+      if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
 !
       end subroutine FLINE_initialize
 !
@@ -257,7 +133,7 @@
       use const_field_lines
       use collect_fline_data
       use parallel_ucd_IO_select
-      use sel_interpolate_scalar
+      use set_fline_seeds_from_list
 !
 !
       integer(kind = kint), intent(in) :: istep_fline
@@ -269,14 +145,7 @@
       type(fieldline_module), intent(inout) :: fline
 !
       type(time_data) :: t_IO
-      integer(kind = kint) :: i_fln, icou, inum
-!
-      integer(kind = kint) :: istack_tbl_wtype_smp(0:4)
-      integer(kind = kint) :: itype_start_fline(1)
-      real(kind = kreal) :: color_start(1)
-      real(kind = kreal) :: vector_start(3)
-      real(kind = kreal) :: position_check(3)
-      real(kind = kreal) :: x4_start(4), v4_start(4)
+      integer(kind = kint) :: i_fln
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
@@ -286,88 +155,19 @@
      &    fline%fln_prm(i_fln), fline%fln_src(i_fln))
 !
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-    &                       .eq. iflag_position_list) then
-
-        call calypso_mpi_barrier
-        write(*,*) my_rank, 'fline%fln_tce(i_fln)%istack_current_fline',&
-     &            fline%fln_tce(i_fln)%istack_current_fline
-!
-        icou = fline%fln_tce(i_fln)%istack_current_fline(my_rank)
-        do inum = 1, fline%fln_prm(i_fln)%num_each_field_line
-          if(fline%fln_prm(i_fln)%ip_surf_start_fline(inum) .ne. my_rank) cycle
-            icou = icou + 1
-
-
-            istack_tbl_wtype_smp(0:3) = 0
-            istack_tbl_wtype_smp(4) =   1
-            itype_start_fline(1) = 0
-
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, fem%mesh%node%numnod, fem%mesh%ele%numele,           &
-     &          fem%mesh%ele%nnod_4_ele, fem%mesh%ele%ie,               &
-     &          fline%fln_src(i_fln)%vector_nod_fline(1,1),             &
-     &          istack_tbl_wtype_smp(3), ione,                          &
-     &          fline%fln_prm(i_fln)%iele_surf_start_fline(inum),       &
-     &          fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),       &
-     &          vector_start(1))
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, fem%mesh%node%numnod, fem%mesh%ele%numele,           &
-     &          fem%mesh%ele%nnod_4_ele, fem%mesh%ele%ie,               &
-     &          fline%fln_src(i_fln)%vector_nod_fline(1,2),             &
-     &          istack_tbl_wtype_smp(3), ione,                          &
-     &          fline%fln_prm(i_fln)%iele_surf_start_fline(inum),       &
-     &          fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),       &
-     &          vector_start(2))
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, fem%mesh%node%numnod, fem%mesh%ele%numele,           &
-     &          fem%mesh%ele%nnod_4_ele, fem%mesh%ele%ie,               &
-     &          fline%fln_src(i_fln)%vector_nod_fline(1,3),             &
-     &          istack_tbl_wtype_smp(3), ione,                          &
-     &          fline%fln_prm(i_fln)%iele_surf_start_fline(inum),       &
-     &          fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),       &
-     &          vector_start(3))
-!
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, fem%mesh%node%numnod, fem%mesh%ele%numele,           &
-     &          fem%mesh%ele%nnod_4_ele, fem%mesh%ele%ie,               &
-     &          fline%fln_src(i_fln)%color_nod_fline,                   &
-     &          istack_tbl_wtype_smp(3), ione,                          &
-     &          fline%fln_prm(i_fln)%iele_surf_start_fline(inum),       &
-     &          fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),       &
-     &          color_start)
-!
-          write(*,*) 'check', icou, position_check
-          write(*,*) 'target', icou, fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)
-!           
-          x4_start(1:3) = fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)
-          v4_start(1:3) = vector_start(1:3)
-          fline%fln_tce(i_fln)%isf_fline_start(1,icou)   &
-     &      = fline%fln_prm(i_fln)%iele_surf_start_fline(inum)
-          fline%fln_tce(i_fln)%isf_fline_start(2,icou) = 0
-          fline%fln_tce(i_fln)%xx_fline_start(1:4,icou) =  x4_start(1:4)
-          fline%fln_tce(i_fln)%v_fline_start(1:4,icou) =   v4_start(1:4)
-          fline%fln_tce(i_fln)%c_fline_start(icou) =       color_start(1)
-          fline%fln_tce(i_fln)%icount_fline(icou) = 0
-          fline%fln_tce(i_fln)%iflag_fline(icou) = 0
-        end do
-     
-
+     &                       .eq. iflag_position_list) then
+          call set_FLINE_seed_field_from_list                           &
+     &       (fem%mesh%node, fem%mesh%ele, fline%fln_prm(i_fln),        &
+     &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
         else
-
-
-
-
-        if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-        call s_set_fields_for_fieldline(fem%mesh, fem%group,            &
-     &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
-     &      fline%fln_tce(i_fln))
+          if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
+          call s_set_fields_for_fieldline(fem%mesh, fem%group,          &
+     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
+     &        fline%fln_tce(i_fln))
         end if
       end do
 !
-        call calypso_mpi_barrier
-        write(*,*) my_rank, 'fline%fln_tce%istack_current_fline',&
-     &            fline%fln_tce(1)%istack_current_fline
-
+!
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
