@@ -299,7 +299,9 @@
         icou = 0
         do inum = 1, fline%fln_prm(i_fln)%num_each_field_line
           if(fline%fln_prm(i_fln)%ip_surf_start_fline(inum) .ne. my_rank) cycle
-         azs   icou = icou + 1
+            icou = icou + 1
+
+
             mat%NC = 1
             mat%NUM_NCOMP = 4
             istack_tbl_wtype_smp(0:3) = 0
@@ -339,7 +341,7 @@
            call dealloc_crs_smp_mat(mat)
 !
           write(*,*) 'check', icou, position_check
-          write(*,*) 'target', icou, fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)r5555
+          write(*,*) 'target', icou, fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)
 !           
           x4_start(1:3) = fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)
           v4_start(1:3) = vector_start(1:3)
