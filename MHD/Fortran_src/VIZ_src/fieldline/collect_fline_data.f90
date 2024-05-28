@@ -7,9 +7,7 @@
 !> @brief MPI communication To collect field line data
 !!
 !!@verbatim
-!!      subroutine copy_local_fieldline_to_IO(color_name_gl, fln_prm,   &
-!!     &                                      fline_lc, ucd)
-!!        character(len = kchara), intent(in) :: color_name_gl
+!!      subroutine copy_local_fieldline_to_IO(fln_prm, fline_lc, ucd)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(ucd_data), intent(inout) :: ucd
@@ -33,13 +31,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_local_fieldline_to_IO(color_name_gl, fln_prm,     &
-     &                                      fline_lc, ucd)
+      subroutine copy_local_fieldline_to_IO(fln_prm, fline_lc, ucd)
 !
       use t_ucd_data
       use const_global_element_ids
 !
-      character(len = kchara), intent(in) :: color_name_gl
       type(fieldline_paramter), intent(in) :: fln_prm
       type(local_fieldline), intent(in) :: fline_lc
 !

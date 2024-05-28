@@ -47,18 +47,13 @@
 !
 !>        Maximum step length for line tracing
         integer(kind = kint) :: max_line_stepping = 1000
+!>        Maximum trace length for line tracing
+        real(kind = kreal) :: max_trace_length =  1.0d30
 !
 !>        Field address for fieldline
         integer(kind = kint) :: ifield_4_fline = 0
 !>        Component address for fieldline
         integer(kind = kint) :: icomp_4_fline = 0
-!
-!>        Field address for fieldline color
-        integer(kind = kint) :: ifield_linecolor = 0
-!>        Component address for fieldline color
-        integer(kind = kint) :: icomp_linecolor = 0
-!>        Field name for fieldline color
-        character(len = kchara) :: name_color_output
 !
 !>        number of field for coloring
         integer(kind = kint) :: num_color_fields = 0
@@ -260,13 +255,10 @@
         write(*,*) 'id_seed_distribution: ',                            &
      &            fln_prm%id_seed_distribution
         write(*,*) 'max_line_stepping: ', fln_prm%max_line_stepping
+        write(*,*) 'max_trace_length: ',  fln_prm%max_trace_length
 !
         write(*,*) 'ifield_4_fline: ', fln_prm%ifield_4_fline
         write(*,*) 'icomp_4_fline: ',  fln_prm%icomp_4_fline
-        write(*,*) 'ifield_linecolor: ', fln_prm%ifield_linecolor
-        write(*,*) 'icomp_linecolor: ', fln_prm%icomp_linecolor
-        write(*,*) 'name_color_output: ',                               &
-     &            trim(fln_prm%name_color_output)
 !
         write(*,*) 'nele_grp_area_fline: ',                             &
      &            fln_prm%nele_grp_area_fline

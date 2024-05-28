@@ -180,8 +180,7 @@
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO                                 &
-     &     (fline%fln_prm(i_fln)%name_color_output,                     &
-     &      fline%fln_prm(i_fln), fline%fline_lc(i_fln),                &
+     &     (fline%fln_prm(i_fln), fline%fline_lc(i_fln),                &
      &      fline%fline_ucd)
         call sel_write_parallel_ucd_file                                &
      &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &

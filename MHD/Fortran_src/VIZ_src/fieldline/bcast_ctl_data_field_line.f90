@@ -92,6 +92,7 @@
 !
       call bcast_ctl_type_i1(fln%num_fieldline_ctl)
       call bcast_ctl_type_i1(fln%max_line_stepping_ctl)
+      call bcast_ctl_type_r1(fln%max_trace_length_ctl)
 !
       end subroutine bcast_field_line_ctl
 !

@@ -62,6 +62,8 @@
 !
         fln_tce%xx_fline_start(1:4,inum1)                               &
      &       = fln_src%xx4_initial_fline(1:4,i)
+        fln_tce%trace_length(inum1) = 0.0d0
+        fln_tce%icount_fline(inum1) = 0
 !
         xyz_surf(1:3) = surf%x_surf(isurf,1:3)
         call cal_fields_on_line(isurf, xi, xyz_surf,                    &
@@ -89,6 +91,8 @@
      &         fln_tce%isf_fline_start(1,inum1))
 !
           inum2 = inum1 + fln_src%num_line_local
+          fln_tce%trace_length(inum2) = 0.0d0
+          fln_tce%icount_fline(inum2) = 0
           fln_tce%xx_fline_start(1:4,inum2)                             &
      &          = fln_tce%xx_fline_start(1:4,inum1)
           fln_tce%v_fline_start(1:4,inum2)                              &

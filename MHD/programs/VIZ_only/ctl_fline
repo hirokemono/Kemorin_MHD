@@ -13,6 +13,7 @@ begin fieldline
 !  starting_type:    position_list, surface_list,  or surface_group
   line_direction_ctl        forward
   max_line_stepping_ctl     1000
+  max_trace_length_ctl      20.0
   starting_type_ctl     position_list
 !
   start_surf_grp_ctl      icb_surf

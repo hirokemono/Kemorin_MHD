@@ -73,16 +73,6 @@
      &     num_comp, fln_prm%icomp_4_fline,                             &
      &     nod_fld%d_fld(1,ist_fld+1), fln_src%vector_nod_fline)
 !
-        i_field = fln_prm%ifield_linecolor
-        ist_fld = nod_fld%istack_component(i_field-1)
-        num_comp = nod_fld%istack_component(i_field) - ist_fld
-        if (iflag_debug .gt. 0) write(*,*)                              &
-     &     'convert_comps_4_viz ifield_linecolor', i_field
-        call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
-     &      node%xx, node%rr, node%a_r, node%ss, node%a_s, ione,        &
-     &      num_comp, fln_prm%icomp_linecolor,                          &
-     &      nod_fld%d_fld(1,ist_fld+1), fln_src%color_nod_fline)
-!
       end subroutine set_local_field_4_fline
 !
 !  ---------------------------------------------------------------------

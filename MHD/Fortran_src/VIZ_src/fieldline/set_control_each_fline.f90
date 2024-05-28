@@ -132,6 +132,18 @@
         fln_prm%id_seed_distribution =  iflag_no_random
       end if
 !
+      fln_prm%max_line_stepping = 1000
+      if(fln%max_line_stepping_ctl%iflag .gt. 0) then
+          fln_prm%max_line_stepping                                     &
+     &           = fln%max_line_stepping_ctl%intvalue
+      end if
+!
+      fln_prm%max_trace_length = 1.0d30
+      if(fln%max_trace_length_ctl%iflag .gt. 0) then
+          fln_prm%max_trace_length                                      &
+     &           = fln%max_trace_length_ctl%realvalue
+      end if
+!
       if(    fln_prm%id_fline_seed_type .eq. iflag_surface_group        &
      &  .or. fln_prm%id_fline_seed_type .eq. iflag_spray_in_domain)     &
      &      then
@@ -139,12 +151,6 @@
           fln_prm%num_each_field_line = fln%num_fieldline_ctl%intvalue
         else
           fln_prm%num_each_field_line = 8
-        end if
-!
-        fln_prm%max_line_stepping = 1000
-        if(fln%max_line_stepping_ctl%iflag .gt. 0) then
-          fln_prm%max_line_stepping                                     &
-     &           = fln%max_line_stepping_ctl%intvalue
         end if
 !
         if(fln%start_surf_grp_ctl%iflag .gt. 0) then
@@ -206,21 +212,6 @@
         call calypso_MPI_abort(ierr_fld,                                &
      &      'Choose vector field for field line')
       end if
-!
-      tmpfield(1) = fln%fline_color_field_ctl%charavalue
-      tmpcomp(1) = fln%fline_color_comp_ctl%charavalue
-      call set_components_4_viz                                         &
-     &   (nod_fld%num_phys, nod_fld%phys_name,                          &
-     &    ione, tmpfield, tmpcomp, ione, ifield_tmp, icomp_tmp,         &
-     &    ncomp, ncomp_org, tmpchara)
-      fln_prm%ifield_linecolor =   ifield_tmp(1)
-      fln_prm%icomp_linecolor =    icomp_tmp(1)
-      fln_prm%name_color_output =  tmpchara(1)
-!
-      if(ncomp(1) .ne. ione) then
-        call calypso_MPI_abort(ierr_fld,'field color should be scalar')
-      end if
-!
 !
       if(fln%fline_field_output_ctl%num .le. izero) then
         call alloc_fline_color_field_param (ione, fln_prm)

@@ -45,6 +45,7 @@ struct f_VIZ_FLINE_ctl{
     struct chara_ctl_item  *f_start_surf_grp_ctl;
     struct int_ctl_item    *f_num_fieldline_ctl;
     struct int_ctl_item    *f_max_line_stepping_ctl;
+    struct int_ctl_item    *f_max_trace_length_ctl;
     struct real3_clist     *f_seed_point_ctl;
     struct int2_clist      *f_seed_surface_ctl;
     

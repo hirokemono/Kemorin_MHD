@@ -18,7 +18,8 @@ label[5]   coloring_comp_ctl
 label[6]   num_fieldline_ctl 
 label[7]   line_direction_ctl 
 label[8]   max_line_stepping_ctl 
-label[9]   starting_type_ctl 
+label[14]   max_trace_length_ctl
+label[9]    starting_type_ctl 
 label[10]   selection_type_ctl 
 label[11]   start_surf_grp_ctl 
 label[12]   starting_point_ctl 

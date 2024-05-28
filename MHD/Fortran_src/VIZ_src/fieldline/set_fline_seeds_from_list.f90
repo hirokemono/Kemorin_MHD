@@ -299,6 +299,7 @@
           fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_prm%xx_surf_start_fline(1:3,inum)
           fln_tce%xx_fline_start(4,icou) = one
+          fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0
           
           if     (fln_prm%id_fline_direction                            &
@@ -322,6 +323,7 @@
      &        = fln_tce%v_fline_start(1:4,icou-1)
             fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)       &
      &        = fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou-1)
+            fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
           end if
         end do

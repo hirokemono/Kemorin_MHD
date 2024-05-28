@@ -41,6 +41,7 @@
 !!  starting_type:    position_list, surface_list,  or surface_group
 !!    line_direction_ctl        forward
 !!    max_line_stepping_ctl     1000
+!!    max_trace_length_ctl      20.0
 !!    starting_type_ctl     position_list
 !!
 !!    start_surf_grp_ctl      icb_surf
@@ -76,6 +77,7 @@
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_integer2
+      use t_control_array_real
       use t_control_array_real3
       use calypso_mpi
 !
@@ -102,6 +104,8 @@
      &      :: hd_line_direction = 'line_direction_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_max_line_stepping = 'max_line_stepping_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_max_trace_length = 'max_trace_length_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_starting_type =  'starting_type_ctl'
       character(len=kchara), parameter, private                         &
@@ -188,6 +192,9 @@
      &      fln%num_fieldline_ctl )
         call read_integer_ctl_type(c_buf, hd_max_line_stepping,         &
      &      fln%max_line_stepping_ctl)
+
+        call read_real_ctl_type(c_buf, hd_max_trace_length,             &
+     &      fln%max_trace_length_ctl)
       end do
       fln%i_vr_fline_ctl = 1 
 !
@@ -246,6 +253,8 @@
      &    fln%line_direction_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    fln%max_line_stepping_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    fln%max_trace_length_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%starting_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -313,6 +322,8 @@
      &      fln%num_fieldline_ctl )
         call init_int_ctl_item_label(hd_max_line_stepping,              &
      &      fln%max_line_stepping_ctl)
+        call init_real_ctl_item_label(hd_max_trace_length,              &
+     &      fln%max_trace_length_ctl)
 !
       end subroutine init_field_line_ctl_label
 !

@@ -75,6 +75,7 @@ GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_FLINE_ct
     
     GtkWidget *hbox_11 = draw_int_item_entry_hbox(f_fline_item->f_num_fieldline_ctl);
     GtkWidget *hbox_12 = draw_int_item_entry_hbox(f_fline_item->f_max_line_stepping_ctl);
+    GtkWidget *hbox_15 = draw_int_item_entry_hbox(f_fline_item->f_max_trace_length_ctl);
     GtkWidget *hbox_13 = r3_list_combobox_expander(f_fline_item->f_seed_point_ctl,
                                                    fline_vws->f_seed_point_vws, window);
     
@@ -94,6 +95,7 @@ GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_FLINE_ct
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_10, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_11, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_15, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_13, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_14, FALSE, FALSE, 0);
     

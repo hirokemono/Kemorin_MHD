@@ -32,7 +32,6 @@
 !
       type each_fieldline_source
         real(kind = kreal), allocatable :: vector_nod_fline(:,:)
-        real(kind = kreal), allocatable :: color_nod_fline(:)
 !
         integer(kind = kint) :: nele_start_grp = 0
         integer(kind = kint), allocatable :: iele_start_item(:,:)
@@ -54,6 +53,7 @@
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
+        real(kind = kreal), allocatable ::  trace_length(:)
 !
         integer(kind= kint) :: nitem_export
         integer(kind= kint) :: ncomp_export
@@ -89,10 +89,7 @@
 !
 !
       allocate(fln_src%vector_nod_fline(node%numnod,3))
-      allocate(fln_src%color_nod_fline(node%numnod))
-!
       fln_src%vector_nod_fline = 0.0d0
-      fln_src%color_nod_fline =  0.0d0
 !
       end subroutine alloc_local_data_4_fline
 !
@@ -141,6 +138,7 @@
       allocate(fln_tce%xx_fline_start(4,num))
       allocate(fln_tce%v_fline_start(4,num))
       allocate(fln_tce%c_fline_start(fln_prm%ntot_color_comp, num))
+      allocate(fln_tce%trace_length(num))
 !
       fln_tce%iflag_fline =  0
       fln_tce%icount_fline = 0
@@ -148,9 +146,10 @@
       fln_tce%v_fline_start =  0.0d0
       fln_tce%c_fline_start =  0.0d0
       fln_tce%xx_fline_start = 0.0d0
+      fln_tce%trace_length = 0.0d0
 !
       fln_tce%nitem_export = 7
-      fln_tce%ncomp_export = 8 + fln_prm%ntot_color_comp
+      fln_tce%ncomp_export = 9 + fln_prm%ntot_color_comp
       allocate(fln_tce%id_fline_export(fln_tce%nitem_export,num))
       allocate(fln_tce%fline_export(fln_tce%ncomp_export,num))
       fln_tce%id_fline_export = 0
@@ -177,7 +176,7 @@
       type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      deallocate(fln_src%vector_nod_fline, fln_src%color_nod_fline)
+      deallocate(fln_src%vector_nod_fline)
 !
       end subroutine dealloc_local_data_4_fline
 !
@@ -208,6 +207,7 @@
       deallocate(fln_tce%xx_fline_start)
       deallocate(fln_tce%v_fline_start)
       deallocate(fln_tce%c_fline_start)
+      deallocate(fln_tce%trace_length)
 !
       deallocate(fln_tce%id_fline_export)
       deallocate(fln_tce%fline_export)

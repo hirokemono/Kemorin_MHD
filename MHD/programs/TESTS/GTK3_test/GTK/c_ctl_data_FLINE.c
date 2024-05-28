@@ -27,6 +27,7 @@ extern void * c_VIZ_FLINE_line_direction_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_start_surf_grp_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_num_fieldline_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_max_line_step_ctl(void *f_fline_ctl);
+extern void * c_VIZ_FLINE_max_trace_len_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_seed_point_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_seed_surface_ctl(void *f_fline_ctl);
 
@@ -74,6 +75,8 @@ struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
 															   f_fline_ctl->f_self);
     f_fline_ctl->f_max_line_stepping_ctl =  init_f_ctl_int_item(c_VIZ_FLINE_max_line_step_ctl,
 															   f_fline_ctl->f_self);
+    f_fline_ctl->f_max_trace_length_ctl =   init_f_ctl_real_item(c_VIZ_FLINE_max_trace_len_ctl,
+															   f_fline_ctl->f_self);
     f_fline_ctl->f_seed_point_ctl =         init_f_ctl_r3_array(c_VIZ_FLINE_seed_point_ctl,
 															   f_fline_ctl->f_self);
     f_fline_ctl->f_seed_surface_ctl =      init_f_ctl_i2_array(c_VIZ_FLINE_seed_surface_ctl,
@@ -99,6 +102,7 @@ void dealloc_f_VIZ_FLINE_ctl(struct f_VIZ_FLINE_ctl *f_fline_ctl)
     dealloc_chara_ctl_item_c(f_fline_ctl->f_start_surf_grp_ctl);
     dealloc_int_ctl_item_c(f_fline_ctl->f_num_fieldline_ctl);
     dealloc_int_ctl_item_c(f_fline_ctl->f_max_line_stepping_ctl);
+    dealloc_real_ctl_item_c(f_fline_ctl->f_max_trace_length_ctl);
     dealloc_chara_clist(f_fline_ctl->f_fline_area_grp_ctl);
     dealloc_real3_clist(f_fline_ctl->f_seed_point_ctl);
     dealloc_int2_clist(f_fline_ctl->f_seed_surface_ctl);

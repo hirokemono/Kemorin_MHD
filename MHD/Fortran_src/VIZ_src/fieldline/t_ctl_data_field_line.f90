@@ -32,6 +32,7 @@
 !!  starting_type:    position_list, surface_list,  or surface_group
 !!    line_direction_ctl        forward
 !!    max_line_stepping_ctl     1000
+!!    max_trace_length_ctl      20.0
 !!    starting_type_ctl     position_list
 !!
 !!    start_surf_grp_ctl      icb_surf
@@ -73,6 +74,7 @@
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_integer2
+      use t_control_array_real
       use t_control_array_real3
       use t_control_array_character2
       use skip_comment_f
@@ -108,6 +110,7 @@
 !
         type(read_integer_item) :: num_fieldline_ctl
         type(read_integer_item) :: max_line_stepping_ctl
+        type(read_real_item) ::    max_trace_length_ctl
 !
 !>      Structure for seed points
 !!@n      seed_point_ctl%vec1:  X-component of seed points
@@ -159,6 +162,7 @@
 !
       fln%num_fieldline_ctl%iflag  =     0
       fln%max_line_stepping_ctl%iflag  = 0
+      fln%max_trace_length_ctl%iflag  = 0
       fln%starting_type_ctl%iflag =  0
       fln%selection_type_ctl%iflag = 0
       fln%start_surf_grp_ctl%iflag = 0
@@ -211,6 +215,8 @@
      &                      new_fln%num_fieldline_ctl)
       call copy_integer_ctl(org_fln%max_line_stepping_ctl,              &
      &                      new_fln%max_line_stepping_ctl)
+      call copy_real_ctl(org_fln%max_trace_length_ctl,                  &
+     &                   new_fln%max_trace_length_ctl)
 !
       call dup_control_array_c1(org_fln%fline_area_grp_ctl,             &
      &                          new_fln%fline_area_grp_ctl)

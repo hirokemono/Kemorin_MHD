@@ -103,14 +103,15 @@
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
           call s_extend_field_line(node, ele, surf, nod_fld, fln_prm,   &
-     &        fln_prm%max_line_stepping,                                &
+     &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_fline(inum), fln_src%vector_nod_fline,      &
      &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        fln_tce%icount_fline(inum), iflag_comm, fline_lc)
+     &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
+     &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, inum, node%numnod,   &
@@ -216,12 +217,13 @@
 !
         fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
-        fln_tce%fline_export(8+1:8+ntot_comp,i)                         &
+        fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
+        fln_tce%fline_export(9+1:9+ntot_comp,i)                         &
     &         = fln_tce%c_fline_start(1:ntot_comp,i)
       else
         fln_tce%id_fline_export(1,i) =   -ione
         fln_tce%id_fline_export(2:7,i) = izero
-        fln_tce%fline_export(1:8+ntot_comp,i) = zero
+        fln_tce%fline_export(1:fln_tce%ncomp_export,i) = zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -344,8 +346,9 @@
           fln_tce%xx_fline_start(1:4,icou)                              &
      &         = fln_tce%fline_export(1:4,i)
           fln_tce%v_fline_start(1:4,icou) = fln_tce%fline_export(5:8,i)
+          fln_tce%trace_length(icou) = fln_tce%fline_export(9,i)
           fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)         &
-     &        = fln_tce%fline_export(8+1:8+fln_prm%ntot_color_comp,i)
+     &        = fln_tce%fline_export(9+1:9+fln_prm%ntot_color_comp,i)
         end if
       end do
 !
