@@ -53,8 +53,10 @@
         integer(kind= kint), allocatable :: isf_fline_start(:,:)
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
-        real(kind = kreal), allocatable ::  c_fline_start(:)
+        real(kind = kreal), allocatable ::  c_fline_start(:,:)
 !
+        integer(kind= kint) :: nitem_export
+        integer(kind= kint) :: ncomp_export
         integer(kind= kint), allocatable :: id_fline_export(:,:)
         real(kind = kreal), allocatable ::  fline_export(:,:)
       end type each_fieldline_trace
@@ -138,7 +140,7 @@
 !
       allocate(fln_tce%xx_fline_start(4,num))
       allocate(fln_tce%v_fline_start(4,num))
-      allocate(fln_tce%c_fline_start(num))
+      allocate(fln_tce%c_fline_start(fln_prm%ntot_color_comp, num))
 !
       fln_tce%iflag_fline =  0
       fln_tce%icount_fline = 0
@@ -147,8 +149,10 @@
       fln_tce%c_fline_start =  0.0d0
       fln_tce%xx_fline_start = 0.0d0
 !
-      allocate(fln_tce%id_fline_export(7,num))
-      allocate(fln_tce%fline_export(9,num))
+      fln_tce%nitem_export = 7
+      fln_tce%ncomp_export = 8 + fln_prm%ntot_color_comp
+      allocate(fln_tce%id_fline_export(fln_tce%nitem_export,num))
+      allocate(fln_tce%fline_export(fln_tce%ncomp_export,num))
       fln_tce%id_fline_export = 0
       fln_tce%fline_export = 0.0d0
 !

@@ -44,8 +44,8 @@
 !
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
+        type(local_fieldline), allocatable  :: fline_lc(:)
 !
-        type(local_fieldline) :: fline_lc
         type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
@@ -60,6 +60,7 @@
 !
       use calypso_mpi
       use calypso_mpi_int
+      use m_connect_hexa_2_tetra
       use t_control_data_flines
       use t_find_interpolate_in_ele
       use set_fline_control
@@ -82,6 +83,7 @@
       allocate(fline%fln_prm(fline%num_fline))
       allocate(fline%fln_src(fline%num_fline))
       allocate(fline%fln_tce(fline%num_fline))
+      allocate(fline%fline_lc(fline%num_fline))
 !
       do i_fln = 1, fline%num_fline
         call s_set_fline_control(fem%mesh, fem%group, nod_fld,          &
@@ -98,9 +100,10 @@
      &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
      &      fline%fln_prm(i_fln), fline%fln_tce(i_fln))
+        call alloc_local_fline(fline%fln_prm(i_fln)%ntot_color_comp,    &
+     &                         fline%fline_lc(i_fln))
       end do
 !
-      call alloc_local_fline(fline%fline_lc)
 !
       flag_fln_dist = .FALSE.
       do i_fln = 1, fline%num_fline
@@ -157,28 +160,29 @@
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
      &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &
-     &       (fem%mesh%node, fem%mesh%ele, fline%fln_prm(i_fln),        &
-     &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
+     &       (fem%mesh%node, fem%mesh%ele, nod_fld,                     &
+     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
+     &        fline%fln_tce(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline(fem%mesh, fem%group,          &
+          call s_set_fields_for_fieldline(fem%mesh, fem%group, nod_fld, &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln))
         end if
       end do
 !
-!
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
      &      fem%mesh%surf, next_tbl%neib_ele, fem%mesh%nod_comm,        &
-     &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
-     &      fline%fln_tce(i_fln), fline%fline_lc)
+     &      nod_fld, fline%fln_prm(i_fln), fline%fln_src(i_fln),        &
+     &      fline%fln_tce(i_fln), fline%fline_lc(i_fln))
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO                                 &
      &     (fline%fln_prm(i_fln)%name_color_output,                     &
-     &      fline%fline_lc, fline%fline_ucd)
+     &      fline%fln_prm(i_fln), fline%fline_lc(i_fln),                &
+     &      fline%fline_ucd)
         call sel_write_parallel_ucd_file                                &
      &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
      &      fline%fline_ucd)
@@ -194,24 +198,26 @@
 !
       type(fieldline_module), intent(inout) :: fline
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i_fln
 !
 !
       if (fline%num_fline .le. 0) return
 !
-      call dealloc_local_fline(fline%fline_lc)
 !
-      do i = 1, fline%num_fline
-        call dealloc_iflag_fline_used_ele(fline%fln_prm(i))
-        call dealloc_fline_starts_ctl(fline%fln_prm(i))
+      do i_fln = 1, fline%num_fline
+        call dealloc_local_fline(fline%fline_lc(i_fln))
+        call dealloc_iflag_fline_used_ele(fline%fln_prm(i_fln))
+        call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
+        call dealloc_fline_color_field_param(fline%fln_prm(i_fln))
 !
-        call dealloc_local_start_grp_item(fline%fln_src(i))
-        call dealloc_local_data_4_fline(fline%fln_src(i))
-        call dealloc_start_point_fline(fline%fln_src(i))
-        call dealloc_num_gl_start_fline(fline%fln_tce(i))
+        call dealloc_local_start_grp_item(fline%fln_src(i_fln))
+        call dealloc_local_data_4_fline(fline%fln_src(i_fln))
+        call dealloc_start_point_fline(fline%fln_src(i_fln))
+        call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
       end do
 !
-      deallocate(fline%fln_src, fline%fln_tce, fline%fln_prm)
+      deallocate(fline%fln_src, fline%fline_lc)
+      deallocate(fline%fln_tce, fline%fln_prm)
 !
       end subroutine FLINE_finalize
 !

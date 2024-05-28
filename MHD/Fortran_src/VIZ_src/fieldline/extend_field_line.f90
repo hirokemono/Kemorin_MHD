@@ -7,17 +7,18 @@
 !> @brief extend field line in each domain
 !!
 !!@verbatim
-!!      subroutine s_extend_field_line(node, ele, surf,                 &
-!!     &          max_line_step, iflag_used_ele, iflag_dir,             &
-!!     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,   &
+!!      subroutine s_extend_field_line(node, ele, surf, nod_fld,        &
+!!     &          fln_prm, max_line_step, iflag_used_ele, iflag_dir,    &
+!!     &          vect_nod, isurf_org, x4_start, v4_start,              &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        integer(kind = kint), intent(in) :: iflag_dir, max_line_step
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !!        real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
-!!        real(kind = kreal), intent(in) :: color_nod(node%numnod)
 !!        integer(kind = kint), intent(inout) :: isurf_org(3)
 !!        integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
@@ -41,45 +42,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_extend_field_line(node, ele, surf,                   &
-     &          max_line_step, iflag_used_ele, iflag_dir,               &
-     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,     &
+      subroutine s_extend_field_line(node, ele, surf, nod_fld,          &
+     &          fln_prm, max_line_step, iflag_used_ele, iflag_dir,      &
+     &          vect_nod, isurf_org, x4_start, v4_start,                &
      &          c_field, icount_line, iflag_comm, fline_lc)
 !
       use t_geometry_data
       use t_surface_data
+      use t_phys_data
       use t_local_fline
+      use t_control_params_4_fline
       use cal_field_on_surf_viz
       use cal_fline_in_cube
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramter), intent(in) :: fln_prm
 !
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
       real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
-      real(kind = kreal), intent(in) :: color_nod(node%numnod)
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
-      real(kind = kreal), intent(inout) ::   c_field(1)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: c_field(fln_prm%ntot_color_comp)
 !
       type(local_fieldline), intent(inout) :: fline_lc
 !
-      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      real(kind = kreal) :: x4_tgt(4), v4_tgt(4), c_tgt(1)
+      real(kind = kreal) :: x4_tgt(4), v4_tgt(4)
       real(kind = kreal) :: xi(2), flux
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
+      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
+
+      real(kind = kreal) :: c_tgt(fln_prm%ntot_color_comp)
 !
       if(isurf_org(1) .eq. 0) then
         iflag_comm = 0
         return
       end if
 !
-      call add_fline_start(x4_start, c_field(1), fline_lc)
+      call add_fline_start(x4_start, fln_prm%ntot_color_comp,           &
+     &                     c_field(1), fline_lc)
 !
        do
         icount_line = icount_line + 1
@@ -102,16 +110,19 @@
         call cal_field_on_surf_vect4                                    &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
      &      surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
-        call cal_field_on_surf_scalar                                   &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
-     &      surf%ie_surf, isurf_end, xi, color_nod, c_tgt(1))
+!
+        call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
+     &                          surf, nod_fld, fln_prm, c_tgt)
 !
         isf_org =  0
         x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
         v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
-        c_field(1) =   half * (c_field(1) + c_tgt(1))
+        c_field(1:fln_prm%ntot_color_comp)                              &
+     &      = half * (c_field(1:fln_prm%ntot_color_comp)                &
+     &                + c_tgt(1:fln_prm%ntot_color_comp))
 !
-        call add_fline_list(x4_start, c_field(1), fline_lc)
+        call add_fline_list(x4_start, fln_prm%ntot_color_comp,          &
+     &                      c_field(1), fline_lc)
 !
 !   extend to surface of element
         call position_on_each_ele_surfs                                 &
@@ -129,12 +140,13 @@
         call cal_field_on_surf_vect4                                    &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
      &      surf%ie_surf, isurf_end, xi, vect_nod, v4_start)
-        call cal_field_on_surf_scalar                                   &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
-     &      surf%ie_surf, isurf_end, xi, color_nod, c_field(1))
+        call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
+     &                          surf, nod_fld, fln_prm, c_tgt)
+!
         x4_start(1:4) =  x4_tgt(1:4)
 !
-        call add_fline_list(x4_start, c_field(1), fline_lc)
+        call add_fline_list(x4_start, fln_prm%ntot_color_comp,          &
+     &                      c_field(1), fline_lc)
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
@@ -181,6 +193,118 @@
       end do
 !
       end subroutine s_extend_field_line
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_fields_on_line(isurf, xi_surf, xyz_surf,           &
+     &                              surf, nod_fld, fln_prm, c_tgt)
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_phys_data
+      use t_control_params_4_fline
+      use coordinate_converter
+      use convert_components_4_viz
+      use cal_field_on_surf_viz
+!
+      integer(kind = kint), intent(in) :: isurf
+      real(kind = kreal), intent(in) :: xi_surf(2)
+      real(kind = kreal), intent(in) :: xyz_surf(3)
+      type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramter), intent(in) :: fln_prm
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_tgt(fln_prm%ntot_color_comp)
+!
+      real(kind = kreal) :: r(1), theta(1), phi(1)
+      real(kind = kreal) :: a_r(1), rs(1), a_rs(1)
+      real(kind = kreal) :: c_xyz(9)
+      integer(kind = kint) :: istack_single(0:1) = (/0, 1/)
+!
+      integer(kind = kint) :: inum, ifield, ist, jst, nd
+!
+      call position_2_sph(ione, xyz_surf(1), r, theta, phi,             &
+     &                    a_r, rs, a_rs )
+      do inum = 1, fln_prm%num_color_fields
+        ifield = fln_prm%ifleld_color_field(inum)
+        if(ifield .le. 0) then
+          jst = fln_prm%istack_color_field(inum-1)
+          c_tgt(jst+1) = zero
+        else
+          ist = nod_fld%istack_component(ifield-1)
+          jst = fln_prm%istack_color_field(inum-1)
+          do nd = 1, fln_prm%ncomp_org_color_field(inum)
+            call cal_field_on_surf_scalar(nod_fld%n_point,              &
+     &          surf%numsurf, surf%nnod_4_surf, surf%ie_surf,           &
+     &          isurf, xi_surf, nod_fld%d_fld(1,ist+nd), c_xyz(nd))
+          end do
+          call convert_comps_4_viz                                      &
+     &       (ione, istack_single, xyz_surf(1), r, a_r, rs, a_rs,       &
+     &        fln_prm%ncomp_color_field(inum),                          &
+     &        fln_prm%ncomp_org_color_field(inum),                      &
+     &        fln_prm%icomp_color_field(inum), c_xyz(1), c_tgt(jst+1))
+        end if
+      end do
+!
+      end subroutine cal_fields_on_line
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_fields_in_element(iele, xi_cube, xyz,              &
+     &                                 ele, nod_fld, fln_prm, c_tgt)
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_control_params_4_fline
+      use coordinate_converter
+      use convert_components_4_viz
+      use sel_interpolate_scalar
+!
+      integer(kind = kint), intent(in) :: iele(1)
+      real(kind = kreal), intent(in) :: xi_cube(3)
+      real(kind = kreal), intent(in) :: xyz(3)
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramter), intent(in) :: fln_prm
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_tgt(fln_prm%ntot_color_comp)
+!
+      real(kind = kreal) :: r(1), theta(1), phi(1)
+      real(kind = kreal) :: a_r(1), rs(1), a_rs(1)
+      real(kind = kreal) :: c_xyz(9)
+      integer(kind = kint), parameter                                   &
+     &                   :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
+      integer(kind = kint), parameter :: istack_single(0:1) = (/0,1/)
+!
+      integer(kind = kint) :: inum, ifield, ist, jst, nd
+!
+      call position_2_sph(ione, xyz(1), r, theta, phi,                  &
+     &                    a_r, rs, a_rs )
+      do inum = 1, fln_prm%num_color_fields
+        ifield = fln_prm%ifleld_color_field(inum)
+        if(ifield .le. 0) then
+          jst = fln_prm%istack_color_field(inum-1)
+          c_tgt(jst+1) = zero
+        else
+          ist = nod_fld%istack_component(ifield-1)
+          jst = fln_prm%istack_color_field(inum-1)
+          do nd = 1, fln_prm%ncomp_org_color_field(inum)
+            call s_sel_interpolate_scalar_ele                           &
+     &         (1, nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie, &
+     &          nod_fld%d_fld(1,ist+nd), istack_single, ione,           &
+     &          iele, xi_cube, c_xyz(nd))
+          end do
+          call convert_comps_4_viz                                      &
+     &       (ione, istack_single, xyz(1), r, a_r, rs, a_rs,            &
+     &        fln_prm%ncomp_color_field(inum),                          &
+     &        fln_prm%ncomp_org_color_field(inum),                      &
+     &        fln_prm%icomp_color_field(inum), c_xyz(1), c_tgt(jst+1))
+        end if
+      end do
+!
+      end subroutine cal_fields_in_element
 !
 !  ---------------------------------------------------------------------
 !

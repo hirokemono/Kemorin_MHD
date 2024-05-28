@@ -4,11 +4,11 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_start_surface_4_fline(node, ele, surf,             &
+!!      subroutine s_start_surface_4_fline(node, surf, nod_fld,         &
 !!     &          fln_prm, fln_src, fln_tce)
 !!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -36,7 +36,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_start_surface_4_fline(node, ele, surf,               &
+      subroutine s_start_surface_4_fline(node, surf, nod_fld,           &
      &          fln_prm, fln_src, fln_tce)
 !
       use calypso_mpi_int
@@ -45,8 +45,8 @@
       use set_fline_start_surface
 !
       type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
@@ -95,9 +95,8 @@
      &         + fln_tce%num_current_fline(i)
       end do
 !
-      call set_fline_start_surf(my_rank, node%numnod, ele%numele,       &
-     &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
-     &    surf%isf_4_ele, surf%iele_4_surf, fln_prm, fln_src, fln_tce)
+      call set_fline_start_surf(my_rank, surf, nod_fld,                 &
+     &                          fln_prm, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &

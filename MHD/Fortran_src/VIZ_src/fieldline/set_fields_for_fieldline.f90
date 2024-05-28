@@ -16,9 +16,10 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine s_set_fields_for_fieldline                           &
-!!     &         (mesh, group, fln_prm, fln_src, fln_tce)
+!!     &         (mesh, group, nod_fld, fln_prm, fln_src, fln_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -140,9 +141,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fields_for_fieldline                             &
-     &         (mesh, group, fln_prm, fln_src, fln_tce)
+     &         (mesh, group, nod_fld, fln_prm, fln_src, fln_tce)
 !
       use t_mesh_data
+      use t_phys_data
       use start_surface_by_gl_table
       use start_surface_by_flux
       use start_surface_in_volume
@@ -150,6 +152,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
@@ -174,8 +177,8 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
-      call s_start_surface_4_fline(mesh%node, mesh%ele, mesh%surf,      &
-     &    fln_prm, fln_src, fln_tce)
+      call s_start_surface_4_fline(mesh%node, mesh%surf, nod_fld,       &
+     &                             fln_prm, fln_src, fln_tce)
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline end'
 !
       end subroutine s_set_fields_for_fieldline

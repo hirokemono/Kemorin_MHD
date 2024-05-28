@@ -22,6 +22,8 @@
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_color_field_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_color_comp_ctl(c_ctl)          &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_color_comp_ctl')
+!!      type(c_ptr) function c_VIZ_FLINE_field_output_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_VIZ_FLINE_field_output_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_area_grp_ctl(c_ctl)            &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_area_grp_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_starting_type_ctl(c_ctl)       &
@@ -123,6 +125,17 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_FLINE_color_comp_ctl = C_loc(f_ctl%fline_color_comp_ctl)
       end function c_VIZ_FLINE_color_comp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_FLINE_field_output_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_VIZ_FLINE_field_output_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(fline_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_FLINE_field_output_ctl                                      &
+     &       = C_loc(f_ctl%fline_field_output_ctl)
+      end function c_VIZ_FLINE_field_output_ctl
 !
 !  ---------------------------------------------------------------------
 !

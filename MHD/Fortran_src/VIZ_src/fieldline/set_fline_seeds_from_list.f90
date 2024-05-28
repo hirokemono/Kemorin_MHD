@@ -28,8 +28,11 @@
       use m_machine_parameter
       use m_geometry_constants
       use t_geometry_data
+      use t_phys_data
       use t_control_params_4_fline
       use t_source_of_filed_line
+!
+      implicit none
 !
       integer(kind = kint), parameter, private :: maxitr = 20
       real(kind = kreal), parameter, private ::   eps_iter = 1.0d-9
@@ -149,7 +152,7 @@
 !      integer(kind = kint) :: ip, i_fln
 
 !
-      call alloc_work_4_interpolate(nnod_4_ele, itp_ele_work_f)
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
 !
       do i = 1, fln_prm%num_each_field_line
         x = fln_prm%xx_surf_start_fline(1,i)
@@ -237,12 +240,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_FLINE_seed_field_from_list                         &
-     &         (node, ele, fln_prm, fln_src, fln_tce)
+     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
 !
       use sel_interpolate_scalar
+      use extend_field_line
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
@@ -250,63 +255,50 @@
 !
       integer(kind = kint) :: icou, inum
 !
-      integer(kind = kint) :: istack_tbl_wtype_smp(0:4)
-      real(kind = kreal) :: color_start(1)
-      real(kind = kreal) :: vector_start(3)
+      integer(kind = kint) :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
 !      real(kind = kreal) :: position_check(3)
-      real(kind = kreal) :: x4_start(4), v4_start(4)
 ! 
-      x4_start(1:4) = 0.0 
-      v4_start(1:4) = 0.0 
-!
       icou = fln_tce%istack_current_fline(my_rank)
       do inum = 1, fln_prm%num_each_field_line
           if(fln_prm%ip_surf_start_fline(inum) .ne. my_rank) cycle
 !
-          istack_tbl_wtype_smp(0:3) = 0
-          istack_tbl_wtype_smp(4) =   1
-
           call s_sel_interpolate_scalar_ele                             &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
      &          fln_src%vector_nod_fline(1,1),                          &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &
-     &          vector_start(1))
+     &          fln_tce%v_fline_start(1,icou))
             call s_sel_interpolate_scalar_ele                           &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
      &          fln_src%vector_nod_fline(1,2),                          &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &
-     &          vector_start(2))
+     &          fln_tce%v_fline_start(2,icou))
             call s_sel_interpolate_scalar_ele                           &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
      &          fln_src%vector_nod_fline(1,3),                          &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &
-     &          vector_start(3))
+     &          fln_tce%v_fline_start(3,icou))
+          fln_tce%v_fline_start(4,icou) = one
 !
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
-     &          fln_src%color_nod_fline,                                &
-     &          istack_tbl_wtype_smp(3), ione,                          &
-     &          fln_prm%iele_surf_start_fline(inum),                    &
-     &          fln_prm%xi_surf_start_fline(1,inum),                    &
-     &          color_start)
+          call cal_fields_in_element                                    &
+     &       (fln_prm%iele_surf_start_fline(inum),                      &
+     &        fln_prm%xi_surf_start_fline(1,inum),                      &
+     &        fln_prm%xx_surf_start_fline(1,inum),                      &
+     &        ele, nod_fld, fln_prm,                                    &
+     &        fln_tce%c_fline_start(1,icou))
 !
-!
-          x4_start(1:3) = fln_prm%xx_surf_start_fline(1:3,inum)
-          v4_start(1:3) = vector_start(1:3)
-
           icou = icou + 1
           fln_tce%isf_fline_start(1,icou)                               &
      &      = fln_prm%iele_surf_start_fline(inum)
           fln_tce%isf_fline_start(2,icou) = 0
-          fln_tce%xx_fline_start(1:4,icou) =  x4_start(1:4)
-          fln_tce%v_fline_start(1:4,icou) =   v4_start(1:4)
-          fln_tce%c_fline_start(icou) =       color_start(1)
+          fln_tce%xx_fline_start(1:3,icou)                              &
+     &         = fln_prm%xx_surf_start_fline(1:3,inum)
+          fln_tce%xx_fline_start(4,icou) = one
           fln_tce%icount_fline(icou) = 0
           
           if     (fln_prm%id_fline_direction                            &
@@ -324,9 +316,12 @@
             fln_tce%isf_fline_start(1,icou)                             &
      &            = fln_prm%iele_surf_start_fline(inum)
             fln_tce%isf_fline_start(2,icou) = 0
-            fln_tce%xx_fline_start(1:4,icou) =  x4_start(1:4)
-            fln_tce%v_fline_start(1:4,icou) =   v4_start(1:4)
-            fln_tce%c_fline_start(icou) =       color_start(1)
+            fln_tce%xx_fline_start(1:4,icou)                            &
+     &        = fln_tce%xx_fline_start(1:4,icou-1)
+            fln_tce%v_fline_start(1:4,icou)                             &
+     &        = fln_tce%v_fline_start(1:4,icou-1)
+            fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)       &
+     &        = fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou-1)
             fln_tce%icount_fline(icou) = 0
           end if
         end do

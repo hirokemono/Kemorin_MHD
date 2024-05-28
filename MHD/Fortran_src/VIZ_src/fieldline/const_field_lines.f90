@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
-!!     &         (node, ele, surf, ele_4_nod, nod_comm,                 &
+!!     &         (node, ele, surf, ele_4_nod, nod_comm, nod_fld,        &
 !!     &          fln_prm, fln_src, fln_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -41,7 +42,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines                                    &
-     &         (node, ele, surf, ele_4_nod, nod_comm,                   &
+     &         (node, ele, surf, ele_4_nod, nod_comm, nod_fld,          &
      &          fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
@@ -50,6 +51,7 @@
       use t_surface_data
       use t_comm_table
       use t_next_node_ele_4_node
+      use t_phys_data
       use t_local_fline
       use t_source_of_filed_line
       use calypso_mpi_real
@@ -62,6 +64,8 @@
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
+      type(phys_data), intent(in) :: nod_fld
+
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
@@ -94,24 +98,24 @@
       do
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(*,*) 'fffln_tce%istack_current_fline', my_rank,             &
+        write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
-          call s_extend_field_line(node, ele, surf,                     &
+          call s_extend_field_line(node, ele, surf, nod_fld, fln_prm,   &
      &        fln_prm%max_line_stepping,                                &
      &        fln_prm%iflag_fline_used_ele,                             &
-     &        fln_tce%iflag_fline(inum),                                &
-     &        fln_src%vector_nod_fline, fln_src%color_nod_fline,        &
+     &        fln_tce%iflag_fline(inum), fln_src%vector_nod_fline,      &
      &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(inum), fln_tce%icount_fline(inum),  &
-     &        iflag_comm, fline_lc)
+     &        fln_tce%c_fline_start(1,inum),                            &
+     &        fln_tce%icount_fline(inum), iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, inum, node%numnod,   &
      &          ele%numele, node%inod_global, ele%iele_global,          &
+     &          fln_prm%ntot_color_comp,                                &
      &          nod_comm%num_neib, nod_comm%id_neib,                    &
      &          nod_comm%ntot_import,  nod_comm%istack_import,          &
      &          nod_comm%item_import, fln_tce)
@@ -121,13 +125,13 @@
         do ip = 1, nprocs
           src_rank = int(ip - 1)
           ist = fln_tce%istack_current_fline(ip-1)
-          num64 = 9 * fln_tce%num_current_fline(ip)
-          if(num64 .gt. 0) then
+          num64 = fln_tce%num_current_fline(ip)
+          if(num64 .le. 0) cycle
             call calypso_mpi_bcast_int                                  &
-     &         (fln_tce%id_fline_export(1,ist+1), num64, src_rank)
-            call calypso_mpi_bcast_real                                 &
-     &         (fln_tce%fline_export(1,ist+1), num64, src_rank)
-          end if
+     &         (fln_tce%id_fline_export(1,ist+1),                       &
+     &          (num64*fln_tce%nitem_export), src_rank)
+            call calypso_mpi_bcast_real(fln_tce%fline_export(1,ist+1),  &
+     &          (num64*fln_tce%ncomp_export), src_rank)
         end do
 !
         if(iflag_debug .gt. 0) then
@@ -144,7 +148,7 @@
      &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
      &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
      &      nod_comm%istack_export, nod_comm%item_export, fln_tce)
-        call set_fline_start_from_neib(fln_tce)
+        call set_fline_start_from_neib(fln_prm, fln_tce)
 !
         nline = fln_tce%istack_current_fline(nprocs)                    &
      &         - fln_tce%istack_current_fline(0)
@@ -155,7 +159,7 @@
           write(my_rank+50,*) 'number of lines: ', nline
           write(*,*) 'number of lines: ', my_rank, nline
         end if
-        if(nline .le. 0) exit
+       if(nline .le. 0) exit
       end do
 !
 !      call check_local_fline_dx( (my_rank+60), fline_lc)
@@ -165,7 +169,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_start_2_bcast(iflag_comm, i,                 &
-     &          numnod, numele, inod_global, iele_global,               &
+     &          numnod, numele, inod_global, iele_global, ntot_comp,    &
      &          num_neib, id_neib, ntot_import, istack_import,          &
      &          item_import, fln_tce)
 !
@@ -176,6 +180,7 @@
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint_gl), intent(in) :: iele_global(numele)
+      integer(kind = kint), intent(in) :: ntot_comp
 !
       integer(kind = kint), intent(in) :: num_neib, ntot_import
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -211,11 +216,12 @@
 !
         fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
-        fln_tce%fline_export(9,i) = fln_tce%c_fline_start(i)
+        fln_tce%fline_export(8+1:8+ntot_comp,i)                         &
+    &         = fln_tce%c_fline_start(1:ntot_comp,i)
       else
         fln_tce%id_fline_export(1,i) =   -ione
         fln_tce%id_fline_export(2:7,i) = izero
-        fln_tce%fline_export(1:9,i) =     zero
+        fln_tce%fline_export(1:8+ntot_comp,i) = zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -298,11 +304,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_from_neib(fln_tce)
+      subroutine set_fline_start_from_neib(fln_prm, fln_tce)
 !
       use calypso_mpi_int
       use t_source_of_filed_line
 !
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ied_lin, i, icou, ip
@@ -337,7 +344,8 @@
           fln_tce%xx_fline_start(1:4,icou)                              &
      &         = fln_tce%fline_export(1:4,i)
           fln_tce%v_fline_start(1:4,icou) = fln_tce%fline_export(5:8,i)
-          fln_tce%c_fline_start(icou) = fln_tce%fline_export(9,i)
+          fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)         &
+     &        = fln_tce%fline_export(8+1:8+fln_prm%ntot_color_comp,i)
         end if
       end do
 !

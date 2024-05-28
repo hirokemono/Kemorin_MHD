@@ -221,6 +221,39 @@
         call calypso_MPI_abort(ierr_fld,'field color should be scalar')
       end if
 !
+!
+      if(fln%fline_field_output_ctl%num .le. izero) then
+        call alloc_fline_color_field_param (ione, fln_prm)
+      else
+        call alloc_fline_color_field_param                              &
+     &     (fln%fline_field_output_ctl%num, fln_prm)
+      end if
+!
+      if(fln%fline_field_output_ctl%num .le. izero) then
+        fln_prm%color_field_name(1) = 'data'
+        fln_prm%ifleld_color_field = -1
+        fln_prm%icomp_color_field =  -1
+        fln_prm%ncomp_color_field = 1
+        fln_prm%ncomp_org_color_field = 0
+      else
+        call set_components_4_viz                                       &
+     &     (nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      fln%fline_field_output_ctl%num,                             &
+     &      fln%fline_field_output_ctl%c1_tbl,                          &
+     &      fln%fline_field_output_ctl%c2_tbl,                          &
+     &      fln_prm%num_color_fields,                                   &
+     &      fln_prm%ifleld_color_field, fln_prm%icomp_color_field,      &
+     &      fln_prm%ncomp_color_field, fln_prm%ncomp_org_color_field,   &
+     &      fln_prm%color_field_name)
+      end if
+      fln_prm%istack_color_field(0) = 0
+      do i = 1, fln_prm%num_color_fields
+        fln_prm%istack_color_field(i) = fln_prm%istack_color_field(i-1) &
+     &                                 + fln_prm%ncomp_color_field(i)
+      end do
+      fln_prm%ntot_color_comp                                           &
+     &       = fln_prm%istack_color_field(fln_prm%num_color_fields)
+!
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)

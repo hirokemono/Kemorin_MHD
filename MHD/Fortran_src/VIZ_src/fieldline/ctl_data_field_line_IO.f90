@@ -26,9 +26,13 @@
 !!    fline_file_prefix    'fline'
 !!    fline_output_format   ucd
 !!
-!!    field_line_field_ctl      magnetic_field   end
+!!    field_line_field_ctl      magnetic_field
 !!    coloring_field_ctl        magnetic_field   end
 !!    coloring_comp_ctl          radial   end
+!!    array output_field
+!!      output_field    velocity         vector
+!!      output_field    magnetic_field   radial
+!!    end array output_field
 !!
 !!    array chosen_ele_grp_ctl
 !!      chosen_ele_grp_ctl   outer_core   end
@@ -88,6 +92,8 @@
      &      :: hd_coloring_field = 'coloring_field_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_coloring_comp =  'coloring_comp_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_fline_result_field = 'output_field'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_fline_grp = 'chosen_ele_grp_ctl'
@@ -149,6 +155,9 @@
      &      hd_xx_start_point, fln%seed_point_ctl, c_buf)
         call read_control_array_i2(id_control,                          &
      &      hd_start_global_surf, fln%seed_surface_ctl, c_buf)
+!
+        call read_control_array_c2(id_control,                          &
+     &      hd_fline_result_field, fln%fline_field_output_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_fline_file_prefix,           &
      &      fln%fline_file_head_ctl)
@@ -227,6 +236,8 @@
      &    fln%fline_color_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%fline_color_comp_ctl)
+      call write_control_array_c2(id_control, level,                    &
+     &    fln%fline_field_output_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
      &    fln%fline_area_grp_ctl)
@@ -270,6 +281,8 @@
      &     (hd_xx_start_point, fln%seed_point_ctl)
         call init_int2_ctl_array_label                                  &
      &     (hd_start_global_surf, fln%seed_surface_ctl)
+        call init_chara2_ctl_array_label                                  &
+     &     (hd_fline_result_field, fln%fline_field_output_ctl)
 !
         call init_chara_ctl_item_label(hd_fline_file_prefix,            &
      &      fln%fline_file_head_ctl)

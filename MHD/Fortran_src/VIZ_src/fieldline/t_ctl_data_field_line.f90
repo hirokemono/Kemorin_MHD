@@ -55,8 +55,10 @@
 !!       norm, 
 !!
 !!    field_line_field_ctl      magnetic_field   end
-!!    coloring_field_ctl        magnetic_field   end
-!!    coloring_comp_ctl        radial   end
+!!    array output_field
+!!      output_field    velocity         vector
+!!      output_field    magnetic_field   radial
+!!    end array output_field
 !!
 !!  end fieldline
 !!  ---------------------------------------------------------------------
@@ -72,6 +74,7 @@
       use t_control_array_character
       use t_control_array_integer2
       use t_control_array_real3
+      use t_control_array_character2
       use skip_comment_f
 !
       implicit  none
@@ -87,6 +90,10 @@
         type(read_character_item) :: fline_field_ctl
         type(read_character_item) :: fline_color_field_ctl
         type(read_character_item) :: fline_color_comp_ctl
+!>      Structure for list of output field
+!!@n      field_output_ctl%c1_tbl: Name of field
+!!@n      field_output_ctl%c2_tbl: Name of component
+        type(ctl_array_c2) :: fline_field_output_ctl
 !
 !>      Structure for element group to draw field line
 !!@n      fline_area_grp_ctl%c_tbl:  element group to draw field line
@@ -161,6 +168,7 @@
       fln%fline_area_grp_ctl%icou = 0
       fln%seed_point_ctl%icou =     0
       fln%seed_surface_ctl%icou =   0
+      fln%fline_field_output_ctl%icou = 0
 !
       fln%fline_color_field_ctl%iflag =   0
       fln%fline_color_comp_ctl%iflag =    0
@@ -210,6 +218,8 @@
      &                          new_fln%seed_point_ctl)
       call dup_control_array_i2(org_fln%seed_surface_ctl,               &
      &                          new_fln%seed_surface_ctl)
+      call dup_control_array_c2(org_fln%fline_field_output_ctl,         &
+     &                          new_fln%fline_field_output_ctl)
 !
       new_fln%block_name =      org_fln%block_name
       new_fln%i_vr_fline_ctl =  org_fln%i_vr_fline_ctl

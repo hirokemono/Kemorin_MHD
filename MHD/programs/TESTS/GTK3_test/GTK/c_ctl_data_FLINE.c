@@ -19,6 +19,7 @@ extern void * c_VIZ_FLINE_output_type_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_field_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_color_field_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_color_comp_ctl(void *f_fline_ctl);
+extern void * c_VIZ_FLINE_field_output_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_area_grp_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_starting_type_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_selection_type_ctl(void *f_fline_ctl);
@@ -47,31 +48,33 @@ struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
 	f_block_name =   (char *) c_VIZ_FLINE_ctl_block_name(f_fline_ctl->f_self);
 	f_fline_ctl->c_block_name = strngcopy_from_f(f_block_name);
     
-    f_fline_ctl->f_fline_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_FLINE_file_head_ctl,
+    f_fline_ctl->f_fline_file_head_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_file_head_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_output_type_ctl = init_f_ctl_chara_item(c_VIZ_FLINE_output_type_ctl,
+    f_fline_ctl->f_fline_output_type_ctl =  init_f_ctl_chara_item(c_VIZ_FLINE_output_type_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_field_ctl =       init_f_ctl_chara_item(c_VIZ_FLINE_field_ctl,
+    f_fline_ctl->f_fline_field_ctl =        init_f_ctl_chara_item(c_VIZ_FLINE_field_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_color_field_ctl = init_f_ctl_chara_item(c_VIZ_FLINE_color_field_ctl,
+    f_fline_ctl->f_fline_color_field_ctl =  init_f_ctl_chara_item(c_VIZ_FLINE_color_field_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_color_comp_ctl =  init_f_ctl_chara_item(c_VIZ_FLINE_color_comp_ctl,
+    f_fline_ctl->f_fline_color_comp_ctl =   init_f_ctl_chara_item(c_VIZ_FLINE_color_comp_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_area_grp_ctl =    init_f_ctl_chara_array(c_VIZ_FLINE_area_grp_ctl,
+    f_fline_ctl->f_fline_field_output_ctl = init_f_ctl_chara_item(c_VIZ_FLINE_field_output_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_area_grp_ctl =     init_f_ctl_chara_array(c_VIZ_FLINE_area_grp_ctl,
 																  f_fline_ctl->f_self);
-    f_fline_ctl->f_starting_type_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_starting_type_ctl,
+    f_fline_ctl->f_starting_type_ctl =      init_f_ctl_chara_item(c_VIZ_FLINE_starting_type_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_selection_type_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_selection_type_ctl,
+    f_fline_ctl->f_selection_type_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_selection_type_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_line_direction_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_line_direction_ctl,
+    f_fline_ctl->f_line_direction_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_line_direction_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_start_surf_grp_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_start_surf_grp_ctl,
+    f_fline_ctl->f_start_surf_grp_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_start_surf_grp_ctl,
 																 f_fline_ctl->f_self);
-    f_fline_ctl->f_num_fieldline_ctl =     init_f_ctl_int_item(c_VIZ_FLINE_num_fieldline_ctl,
+    f_fline_ctl->f_num_fieldline_ctl =      init_f_ctl_int_item(c_VIZ_FLINE_num_fieldline_ctl,
 															   f_fline_ctl->f_self);
-    f_fline_ctl->f_max_line_stepping_ctl = init_f_ctl_int_item(c_VIZ_FLINE_max_line_step_ctl,
+    f_fline_ctl->f_max_line_stepping_ctl =  init_f_ctl_int_item(c_VIZ_FLINE_max_line_step_ctl,
 															   f_fline_ctl->f_self);
-    f_fline_ctl->f_seed_point_ctl =        init_f_ctl_r3_array(c_VIZ_FLINE_seed_point_ctl,
+    f_fline_ctl->f_seed_point_ctl =         init_f_ctl_r3_array(c_VIZ_FLINE_seed_point_ctl,
 															   f_fline_ctl->f_self);
     f_fline_ctl->f_seed_surface_ctl =      init_f_ctl_i2_array(c_VIZ_FLINE_seed_surface_ctl,
 															   f_fline_ctl->f_self);
@@ -89,6 +92,7 @@ void dealloc_f_VIZ_FLINE_ctl(struct f_VIZ_FLINE_ctl *f_fline_ctl)
     dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_field_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_field_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_comp_ctl);
+    dealloc_chara2_ctl_item_c(f_fline_ctl->f_fline_field_output_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_starting_type_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_selection_type_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_line_direction_ctl);

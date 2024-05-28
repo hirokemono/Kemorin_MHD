@@ -33,19 +33,20 @@ struct f_VIZ_FLINE_ctl{
     char *fline_ctl_file_name;
 	
     struct chara_ctl_item *f_fline_file_head_ctl;
-    struct chara_ctl_item *f_fline_output_type_ctl;
-    struct chara_ctl_item *f_fline_field_ctl;
-    struct chara_ctl_item *f_fline_color_field_ctl;
-    struct chara_ctl_item *f_fline_color_comp_ctl;
-    struct chara_clist    *f_fline_area_grp_ctl;
-    struct chara_ctl_item *f_starting_type_ctl;
-    struct chara_ctl_item *f_selection_type_ctl;
-    struct chara_ctl_item *f_line_direction_ctl;
-    struct chara_ctl_item *f_start_surf_grp_ctl;
-    struct int_ctl_item   *f_num_fieldline_ctl;
-    struct int_ctl_item   *f_max_line_stepping_ctl;
-    struct real3_clist    *f_seed_point_ctl;
-    struct int2_clist     *f_seed_surface_ctl;
+    struct chara_ctl_item  *f_fline_output_type_ctl;
+    struct chara_ctl_item  *f_fline_field_ctl;
+    struct chara_ctl_item  *f_fline_color_field_ctl;
+    struct chara_ctl_item  *f_fline_color_comp_ctl;
+    struct chara2_ctl_item *f_fline_field_output_ctl;
+    struct chara_clist     *f_fline_area_grp_ctl;
+    struct chara_ctl_item  *f_starting_type_ctl;
+    struct chara_ctl_item  *f_selection_type_ctl;
+    struct chara_ctl_item  *f_line_direction_ctl;
+    struct chara_ctl_item  *f_start_surf_grp_ctl;
+    struct int_ctl_item    *f_num_fieldline_ctl;
+    struct int_ctl_item    *f_max_line_stepping_ctl;
+    struct real3_clist     *f_seed_point_ctl;
+    struct int2_clist      *f_seed_surface_ctl;
     
     void *void_panel;
 };

@@ -7,9 +7,10 @@
 !> @brief MPI communication To collect field line data
 !!
 !!@verbatim
-!!      subroutine copy_local_fieldline_to_IO(color_name_gl,            &
+!!      subroutine copy_local_fieldline_to_IO(color_name_gl, fln_prm,   &
 !!     &                                      fline_lc, ucd)
 !!        character(len = kchara), intent(in) :: color_name_gl
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -22,6 +23,7 @@
       use m_constants
       use m_geometry_constants
       use t_local_fline
+      use t_control_params_4_fline
 !
       implicit  none
 !
@@ -31,14 +33,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_local_fieldline_to_IO(color_name_gl,              &
+      subroutine copy_local_fieldline_to_IO(color_name_gl, fln_prm,     &
      &                                      fline_lc, ucd)
 !
       use t_ucd_data
       use const_global_element_ids
 !
       character(len = kchara), intent(in) :: color_name_gl
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(local_fieldline), intent(in) :: fline_lc
+!
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint_gl) :: i, nd
@@ -83,18 +87,20 @@
       end do
 !$omp end parallel do
       
-      ucd%num_field = 1
+      ucd%num_field = fln_prm%num_color_fields
       call allocate_ucd_phys_name(ucd)
 !$omp parallel workshare
-      ucd%phys_name(1:ucd%num_field) = color_name_gl
-      ucd%num_comp(1:ucd%num_field) =  1
+      ucd%phys_name(1:ucd%num_field)                                    &
+     &     = fln_prm%color_field_name(1:ucd%num_field)
+      ucd%num_comp(1:ucd%num_field)                                     &
+     &     = fln_prm%ncomp_color_field(1:ucd%num_field)
 !$omp end parallel workshare
 
-      ucd%ntot_comp = sum(ucd%num_comp)
+      ucd%ntot_comp = fln_prm%ntot_color_comp
       call allocate_ucd_phys_data(ucd)
       do nd = 1, ucd%ntot_comp
 !$omp parallel workshare
-        ucd%d_ucd(1:ucd%nnod,nd) = fline_lc%col_line_l(1:ucd%nnod)
+        ucd%d_ucd(1:ucd%nnod,nd) = fline_lc%col_line_l(nd,1:ucd%nnod)
 !$omp end parallel workshare
       end do
 !
