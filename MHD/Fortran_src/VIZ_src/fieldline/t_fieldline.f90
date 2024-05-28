@@ -324,17 +324,17 @@
 
      
            call itp_matvec_vector     &
-     &        (1, ione, fem%mesh%node%xx,              &
+     &        (1, fem%mesh%node%numnod, fem%mesh%node%xx,              &
      &      mat%NC, mat%NCM, mat%INM, mat%IAM,      &
      &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,   &
      &      position_check)
            call itp_matvec_vector     &
-     &        (1, ione, fline%fln_src(i_fln)%vector_nod_fline, &
+     &        (1, fem%mesh%node%numnod, fline%fln_src(i_fln)%vector_nod_fline, &
      &      mat%NC, mat%NCM, mat%INM, mat%IAM,      &
      &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,   &
      &      vector_start)
           call itp_matvec_scalar   &
-     &       (1, ione, fline%fln_src(i_fln)%color_nod_fline,  &
+     &       (1, fem%mesh%node%numnod, fline%fln_src(i_fln)%color_nod_fline,  &
      &      mat%NC, mat%NCM, mat%INM, mat%IAM,          &
      &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,       &
      &      color_start)
