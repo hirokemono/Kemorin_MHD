@@ -259,8 +259,8 @@
       use parallel_ucd_IO_select
       use t_solver_ordered_crs
       use interpolate_matrix_para
-      use interpolate_vector_1pe
-      use interpolate_scalar_1pe
+      use interpolate_scalar_ele8
+      use interpolate_vector_ele8
 !
 !
       integer(kind = kint), intent(in) :: istep_fline
@@ -272,7 +272,7 @@
       type(fieldline_module), intent(inout) :: fline
 !
       type(time_data) :: t_IO
-      integer(kind = kint) :: i_fln, icou, inum
+      integer(kind = kint) :: i_fln, icou, inum, inod
 !
       type(CRS_SMP_CONNECT_MATRIX) :: mat
       integer(kind = kint) :: istack_tbl_wtype_smp(0:4)
@@ -284,6 +284,7 @@
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
+
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       do i_fln = 1, fline%num_fline
         call set_local_field_4_fline(fem%mesh%node, nod_fld,            &
@@ -302,43 +303,58 @@
             icou = icou + 1
 
 
-            mat%NC = 1
-            mat%NUM_NCOMP = 4
             istack_tbl_wtype_smp(0:3) = 0
             istack_tbl_wtype_smp(4) =   1
             itype_start_fline(1) = 0
-            call alloc_crs_smp_num(1, mat)
-            call count_interporate_mat_para                         &
-     &   (1, fem%mesh%ele%nnod_4_ele, istack_tbl_wtype_smp,  &
-     &    mat%NC, mat%NUM_NCOMP, mat%NCM, mat%INOD_DJO,  mat%INM,   &
-     &    mat%NUM_SUM, mat%IEND_SUM, mat%IEND_SUM_smp)
-            call alloc_crs_smp_mat(mat)
-          call set_interporate_mat_para                                 &
-     &     (1, fem%mesh%ele%numele, fem%mesh%ele%nnod_4_ele,  &
-     &    fem%mesh%ele%ie, &
-     &    fline%fln_prm(i_fln)%iele_surf_start_fline(inum),  &
-     &    itype_start_fline,         &
-     &    fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum), &
-     &      mat%NC, mat%NCM, mat%INM,    &
-     &    mat%IAM, mat%AM, mat%IEND_SUM_smp)
 
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie, fem%mesh%node%xx(1,1),   &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),   &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        position_check(1))
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie, fem%mesh%node%xx(1,2),   &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),   &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        position_check(2))
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie, fem%mesh%node%xx(1,3),   &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),   &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        position_check(3))
+!
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie,                     &
+     &        fline%fln_src(i_fln)%vector_nod_fline(1,1),           &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),  &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        vector_start(1))
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie,                     &
+     &        fline%fln_src(i_fln)%vector_nod_fline(1,3),           &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),  &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        vector_start(2))
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie,                     &
+     &        fline%fln_src(i_fln)%vector_nod_fline(1,2),           &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),  &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        vector_start(3))
      
-           call itp_matvec_vector     &
-     &        (1, fem%mesh%node%numnod, fem%mesh%node%xx,              &
-     &      mat%NC, mat%NCM, mat%INM, mat%IAM,      &
-     &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,   &
-     &      position_check)
-           call itp_matvec_vector     &
-     &        (1, fem%mesh%node%numnod, fline%fln_src(i_fln)%vector_nod_fline, &
-     &      mat%NC, mat%NCM, mat%INM, mat%IAM,      &
-     &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,   &
-     &      vector_start)
-          call itp_matvec_scalar   &
-     &       (1, fem%mesh%node%numnod, fline%fln_src(i_fln)%color_nod_fline,  &
-     &      mat%NC, mat%NCM, mat%INM, mat%IAM,          &
-     &      mat%AM, mat%NUM_SUM(4), mat%IEND_SUM_smp,       &
-     &      color_start)
-           call dealloc_crs_smp_mat(mat)
+          call s_interpolate_scalar_ele8(ione, fem%mesh%node%numnod,    &
+     &        fem%mesh%ele%numele, fem%mesh%ele%ie,                     &
+     &        fline%fln_src(i_fln)%color_nod_fline,           &
+     &        istack_tbl_wtype_smp(3), ione,         &
+     &        fline%fln_prm(i_fln)%iele_surf_start_fline(inum),  &
+     &        fline%fln_prm(i_fln)%xi_surf_start_fline(1,inum),         &
+     &        color_start)
 !
           write(*,*) 'check', icou, position_check
           write(*,*) 'target', icou, fline%fln_prm(i_fln)%xx_surf_start_fline(1:3,inum)
