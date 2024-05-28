@@ -132,13 +132,13 @@
         fln_prm%id_seed_distribution =  iflag_no_random
       end if
 !
-      fln_prm%max_line_stepping = 1000
+      fln_prm%max_line_stepping = -1
       if(fln%max_line_stepping_ctl%iflag .gt. 0) then
           fln_prm%max_line_stepping                                     &
      &           = fln%max_line_stepping_ctl%intvalue
       end if
 !
-      fln_prm%max_trace_length = 1.0d30
+      fln_prm%max_trace_length = -1.0
       if(fln%max_trace_length_ctl%iflag .gt. 0) then
           fln_prm%max_trace_length                                      &
      &           = fln%max_trace_length_ctl%realvalue

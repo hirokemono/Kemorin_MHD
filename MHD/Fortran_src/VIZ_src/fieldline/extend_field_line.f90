@@ -122,7 +122,8 @@
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        if((half*trip) .ge. (end_trace-trace_length)) then
+        if((half*trip) .ge. (end_trace-trace_length)                    &
+     &     .and. end_trace .gt. zero) then
           ratio = trip / (end_trace-trace_length)
           x4_start(1:4) = ratio * x4_tgt(1:4)                           &
      &                   + (one - ratio) * x4_start(1:4)
@@ -147,7 +148,6 @@
           call add_fline_list(x4_start, fln_prm%ntot_color_comp,        &
      &                        c_field(1), fline_lc)
         end if
-        write(*,*) 'trace_length', trace_length, end_trace
 !
 !
 !   extend to surface of element
@@ -172,7 +172,8 @@
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        if(trip .ge. (end_trace-trace_length)) then
+        if(trip .ge. (end_trace-trace_length)                           &
+     &          .and. end_trace.gt.zero) then
           ratio = trip / (end_trace-trace_length)
           x4_start(1:4) = ratio * x4_tgt(1:4)                           &
      &                   + (one - ratio) * x4_start(1:4)
@@ -185,7 +186,6 @@
 !
           call add_fline_list(x4_start, fln_prm%ntot_color_comp,        &
      &                        c_field(1), fline_lc)
-          write(*,*) 'end B', x4_start
           iflag_comm = 0
           exit
         else
@@ -197,7 +197,6 @@
           call add_fline_list(x4_start, fln_prm%ntot_color_comp,        &
      &                        c_field(1), fline_lc)
         end if
-        write(*,*) 'trace_length', trace_length, end_trace
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
@@ -236,10 +235,12 @@
 !         write(70+my_rank,*) 'isurf_nxt', icount_line, isurf_org(1:2), &
 !     &                        surf%isf_4_ele(isurf_org(1),isurf_org(2))
 !
-        if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0            &
-     &     .or. icount_line.gt.max_line_step) then
-          iflag_comm = 0
-          exit
+        if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0) then
+          if(max_line_step .gt. 0                                       &
+     &          .and. icount_line.gt.max_line_step) then
+            iflag_comm = 0
+            exit
+          end if
         end if
       end do
 !
