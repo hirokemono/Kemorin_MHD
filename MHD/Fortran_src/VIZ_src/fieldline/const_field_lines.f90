@@ -94,7 +94,7 @@
       do
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
+        write(*,*) 'fffln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
