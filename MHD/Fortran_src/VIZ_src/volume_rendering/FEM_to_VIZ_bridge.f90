@@ -61,6 +61,7 @@
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(mesh_SR), intent(inout) :: m_SR
 !
+      integer(kind = kint) :: iflag
 !
       call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
      &                             m_SR%SR_sig, m_SR%SR_i)
@@ -73,6 +74,14 @@
      &    VIZ_DAT%ele_comm, VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,       &
      &    VIZ_DAT%inod_dbl, VIZ_DAT%iele_dbl, VIZ_DAT%isurf_dbl,        &
      &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
+!
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        allocate(VIZ_DAT%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        call set_iele_4_surf_double_index                               &
+     &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
+     &      VIZ_DAT%iele_4_surf_dbl, m_SR)
+      end if
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -133,6 +142,12 @@
      &     (geofem%mesh%surf%numsurf, geofem%mesh%surf%ie_surf(1,1),    &
      &      VIZ_DAT%surf_comm, VIZ_DAT%inod_dbl, VIZ_DAT%isurf_dbl,     &
      &      m_SR%SR_sig, m_SR%SR_i)
+!
+        allocate(VIZ_DAT%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        call set_iele_4_surf_double_index                               &
+     &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
+     &      VIZ_DAT%iele_4_surf_dbl, m_SR)
+
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
@@ -244,5 +259,51 @@
       end subroutine normals_and_jacobians_4_VIZ
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine set_iele_4_surf_double_index                           &
+     &         (surf, iele_dbl, surf_comm, iele_4_surf_dbl, m_SR)
+!
+      use  solver_SR_type
+!
+      type(surface_data), intent(in) :: surf
+      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(communication_table), intent(in) :: surf_comm
+!
+      integer(kind = kint), intent(inout)     &
+     &    :: iele_4_surf_dbl(surf%numsurf,2,3)
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: isurf, iele
+!
+!
+!$omp parallel do private(isurf,iele)
+      do isurf = 1, surf%numsurf
+        iele =             surf%iele_4_surf(isurf,1,1)
+        iele_4_surf_dbl(isurf,1,1) = iele_dbl%irank(iele)
+        iele_4_surf_dbl(isurf,1,2) = iele_dbl%index(iele)
+        iele_4_surf_dbl(isurf,1,3) = surf%iele_4_surf(isurf,1,2)
+        iele =             surf%iele_4_surf(isurf,2,1)
+        iele_4_surf_dbl(isurf,2,1) = iele_dbl%irank(iele)
+        iele_4_surf_dbl(isurf,2,2) = iele_dbl%index(iele)
+        iele_4_surf_dbl(isurf,2,3) = surf%iele_4_surf(isurf,2,2)
+      end do
+!$omp end parallel do
+!
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,1,1))
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,1,2))
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,1,3))
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,2,1))
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,2,2))
+      call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
+     &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,2,3))
+!
+      end subroutine set_iele_4_surf_double_index
+!
+!  ---------------------------------------------------------------------
 !
       end module FEM_to_VIZ_bridge
