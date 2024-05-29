@@ -69,8 +69,8 @@
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
-      call normals_and_jacobians_4_VIZ                                  &
-     &   (viz_step, geofem, VIZ_DAT%ele_comm, VIZ_DAT%edge_comm,        &
+      call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
+     &    VIZ_DAT%ele_comm, VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,       &
      &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
 !
       end subroutine init_FEM_to_VIZ_bridge
@@ -88,6 +88,7 @@
       use set_element_id_4_node
       use parallel_FEM_mesh_init
       use const_element_comm_tables
+      use const_surface_comm_table
       use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -111,6 +112,10 @@
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
      &      VIZ_DAT%ele_comm, m_SR)
+        if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+        call const_surf_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%surf_comm,  &
+     &      geofem%mesh%surf, m_SR)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
@@ -133,17 +138,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine normals_and_jacobians_4_VIZ(viz_step, geofem,          &
-     &          ele_comm, edge_comm, next_tbl, jacobians, m_SR)
+     &          ele_comm, surf_comm, edge_comm,                         &
+     &          next_tbl, jacobians, m_SR)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
       use set_element_id_4_node
       use set_normal_vectors
       use const_element_comm_tables
+      use const_surface_comm_table
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(communication_table), intent(inout) :: ele_comm
+      type(communication_table), intent(inout) :: surf_comm
       type(communication_table), intent(inout) :: edge_comm
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
@@ -166,6 +174,10 @@
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
      &      ele_comm, m_SR)
+        if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+        call const_surf_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, surf_comm,          &
+     &      geofem%mesh%surf, m_SR)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
