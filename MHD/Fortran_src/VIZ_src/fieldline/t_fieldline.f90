@@ -181,8 +181,8 @@
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
-     &      fem%mesh%surf, next_tbl%neib_ele, fem%mesh%nod_comm,        &
-     &      inod_dbl, iele_dbl, isurf_dbl, isf_4_ele_dbl, iele_4_surf_dbl,   &
+     &      fem%mesh%surf,  inod_dbl, iele_dbl, isurf_dbl,     &
+     &      isf_4_ele_dbl, iele_4_surf_dbl,   &
      &      nod_fld, fline%fln_prm(i_fln), fline%fln_src(i_fln),        &
      &      fline%fln_tce(i_fln), fline%fline_lc(i_fln))
 !

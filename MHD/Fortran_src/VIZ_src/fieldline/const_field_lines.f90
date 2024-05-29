@@ -8,13 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
-!!     &         (node, ele, surf, ele_4_nod, nod_comm, nod_fld,        &
+!!     &         (node, ele, surf, nod_fld,        &
 !!     &          fln_prm, fln_src, fln_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
-!!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(communication_table), intent(in) :: nod_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
@@ -45,8 +43,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines(node, ele, surf, ele_4_nod,        &
-     &          nod_comm, inod_dbl, iele_dbl, isurf_dbl, isf_4_ele_dbl, iele_4_surf_dbl,          &
+      subroutine s_const_field_lines(node, ele, surf,        &
+     &          inod_dbl, iele_dbl, isurf_dbl, isf_4_ele_dbl, iele_4_surf_dbl,          &
      &          nod_fld, fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
@@ -63,8 +61,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(element_around_node), intent(in) :: ele_4_nod
-      type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       type(node_ele_double_number), intent(in) :: isurf_dbl
       type(phys_data), intent(in) :: nod_fld
@@ -123,10 +119,8 @@
 !
           call set_fline_start_2_bcast                                  &
      &       (iflag_comm, inum, ele, surf, inod_dbl, iele_dbl, isurf_dbl, &
-     &        isf_4_ele_dbl, iele_4_surf_dbl, fln_prm%ntot_color_comp,                 &
-     &          nod_comm%num_neib, nod_comm%id_neib,                    &
-     &          nod_comm%ntot_import,  nod_comm%istack_import,          &
-     &          nod_comm%item_import, fln_tce)
+     &        isf_4_ele_dbl, iele_4_surf_dbl, fln_prm%ntot_color_comp, &
+     &        fln_tce)
         end do
         call calypso_MPI_barrier
 !
@@ -164,9 +158,7 @@
 !
       subroutine set_fline_start_2_bcast(iflag_comm, i,                 &
      &          ele, surf, inod_dbl, iele_dbl, isurf_dbl,  &
-     &    isf_4_ele_dbl, iele_4_surf_dbl, ntot_comp,   &
-     &          num_neib, id_neib, ntot_import, istack_import,          &
-     &          item_import, fln_tce)
+     &    isf_4_ele_dbl, iele_4_surf_dbl, ntot_comp, fln_tce)
 !
       use t_source_of_filed_line
 !
@@ -181,11 +173,6 @@
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
       integer(kind = kint), intent(in) :: ntot_comp
-!
-      integer(kind = kint), intent(in) :: num_neib, ntot_import
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in) :: item_import(ntot_import)
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -253,8 +240,6 @@
           icou = icou + 1
         end if
       end do
-!
-      write(*,*), my_rank, "count", icou
 !
       call calypso_mpi_allgather_one_int                                &
      &   (icou, fln_tce%num_current_fline)
