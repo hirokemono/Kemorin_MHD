@@ -77,10 +77,10 @@
 !
       iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
-        allocate(VIZ_DAT%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        allocate(VIZ_DAT%para_surf%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
         call set_iele_4_surf_double_index                               &
      &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
-     &      VIZ_DAT%iele_4_surf_dbl, m_SR)
+     &      VIZ_DAT%para_surf%iele_4_surf_dbl, m_SR)
       end if
 !
       end subroutine init_FEM_to_VIZ_bridge
@@ -143,10 +143,10 @@
      &      VIZ_DAT%surf_comm, VIZ_DAT%inod_dbl, VIZ_DAT%isurf_dbl,     &
      &      m_SR%SR_sig, m_SR%SR_i)
 !
-        allocate(VIZ_DAT%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        allocate(VIZ_DAT%para_surf%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
         call set_iele_4_surf_double_index                               &
      &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
-     &      VIZ_DAT%iele_4_surf_dbl, m_SR)
+     &      VIZ_DAT%para_surf%iele_4_surf_dbl, m_SR)
 
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
@@ -269,7 +269,7 @@
       type(node_ele_double_number), intent(in) :: iele_dbl
       type(communication_table), intent(in) :: surf_comm
 !
-      integer(kind = kint), intent(inout)     &
+      integer(kind = kint), intent(inout)                               &
      &    :: iele_4_surf_dbl(surf%numsurf,2,3)
       type(mesh_SR), intent(inout) :: m_SR
 !

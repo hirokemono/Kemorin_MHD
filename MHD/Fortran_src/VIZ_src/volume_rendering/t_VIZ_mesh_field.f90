@@ -30,6 +30,10 @@
 !
       implicit none
 !
+!>      Structure of data for visualization
+      type paralell_surface_indices
+        integer(kind = kint), allocatable :: iele_4_surf_dbl(:,:,:)
+      end type paralell_surface_indices
 !
 !>      Structure of data for visualization
       type VIZ_mesh_field
@@ -60,8 +64,9 @@
         type(node_ele_double_number) :: iele_dbl
 !>        Double numbering for surface
         type(node_ele_double_number) :: isurf_dbl
-!>
-        integer(kind = kint), allocatable :: iele_4_surf_dbl(:,:,:)
+!
+!>        Double numbering for surface
+        type(paralell_surface_indices) :: para_surf
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------

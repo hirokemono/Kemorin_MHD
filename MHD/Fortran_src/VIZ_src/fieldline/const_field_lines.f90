@@ -43,8 +43,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines(node, ele, surf, ele_4_nod,        &
-     &          nod_comm, inod_dbl, iele_dbl, nod_fld,                  &
-     &          fln_prm, fln_src, fln_tce, fline_lc)
+     &          nod_comm, inod_dbl, iele_dbl, iele_4_surf_dbl,          &
+     &          nod_fld, fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
       use t_comm_table
@@ -67,7 +67,9 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       type(phys_data), intent(in) :: nod_fld
-
+      integer(kind = kint), intent(in)                                  &
+     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
+!
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
