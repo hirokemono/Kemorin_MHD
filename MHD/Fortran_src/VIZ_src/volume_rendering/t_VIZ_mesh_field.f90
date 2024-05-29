@@ -26,6 +26,7 @@
       use t_shape_functions
       use t_jacobians
       use t_VIZ_step_parameter
+      use t_para_double_numbering
 !
       implicit none
 !
@@ -50,6 +51,15 @@
         type(communication_table) :: ele_comm
 !>        Structure of edge communication table
         type(communication_table) :: edge_comm
+!>        Structure of edge communication table
+        type(communication_table) :: surf_comm
+!
+!>        Double numbering for node
+        type(node_ele_double_number) :: inod_dbl
+!>        Double numbering for element
+        type(node_ele_double_number) :: iele_dbl
+!>        Double numbering for surface
+        type(node_ele_double_number) :: isurf_dbl
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------
