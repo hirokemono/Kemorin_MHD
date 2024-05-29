@@ -37,7 +37,6 @@
 !
       implicit  none
 !
-      private :: recover_local_fline_start
       private :: set_fline_start_2_bcast, set_fline_start_from_neib
 !
 !  ---------------------------------------------------------------------
@@ -143,19 +142,6 @@
      &          (num64*fln_tce%ncomp_export), src_rank)
         end do
 !
-        if(iflag_debug .gt. 0) then
-          write(my_rank+50,*) 'i, new_start_pe, id_fline_export'
-          do i = 1, fln_tce%istack_current_fline(nprocs)
-            write(my_rank+50,'(10i16)')                                 &
-     &              i, fln_tce%id_fline_export(1:3,i)
-          end do
-        end if
-!
-        call recover_local_fline_start(ele, surf, inod_dbl, iele_dbl,        &
-     &      node%numnod, isf_4_ele_dbl, iele_4_surf_dbl, ele_4_nod%ntot,           &
-     &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
-     &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
-     &      nod_comm%istack_export, nod_comm%item_export, fln_tce)
         call set_fline_start_from_neib(fln_prm, fln_tce)
 !
         nline = fln_tce%istack_current_fline(nprocs)                    &
@@ -211,37 +197,12 @@
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
         inod = fln_tce%isf_fline_start(3,i)
-        do ip = 1, num_neib
-          ist = istack_import(ip-1) + 1
-          ied = istack_import(ip)
-          do inum = ist, ied
-            if(item_import(inum) .eq. inod) then
-              fln_tce%id_fline_export(1,i) = id_neib(ip)
-              fln_tce%id_fline_export(7,i) = 1 + inum - ist
-              exit
-            end if
-          end do
-        end do
         isurf = abs(surf%isf_4_ele(iele,isf))
-!        if(surf%isf_4_ele(iele,isf) .lt. 0) then
-          write(*,*)  my_rank, iele, isf, surf%isf_4_ele(iele,isf),&
-     &      'iele_4_surf_dbl_1', &
-     &          surf%iele_4_surf(isurf, 1, 1:2), ':  ', &
-     &          iele_4_surf_dbl(isurf, 1, 1:3),  &
-     &          isf_4_ele_dbl(iele,isf,1:2)
-
-!        else
-          write(*,*)  my_rank, iele, isf, surf%isf_4_ele(iele,isf),&
-     &       'iele_4_surf_dbl_2', &
-     &          surf%iele_4_surf(isurf, 2, 1:2), ':  ', &
-     &          iele_4_surf_dbl(isurf, 2, 1:3), &
-     &          isurf_dbl%irank(isurf), isurf_dbl%index(isurf)
-!        end if
 !
         fln_tce%id_fline_export(2,i) = fln_tce%iflag_fline(i)
         fln_tce%id_fline_export(3,i) = fln_tce%icount_fline(i)
         fln_tce%id_fline_export(5,i) = isf
-        fln_tce%id_fline_export(6,i) = surf%isf_4_ele(iele,isf)
+        fln_tce%id_fline_export(6,i) = fln_tce%iline_original(i)
 !
         fln_tce%id_fline_export( 8,i) = int(iele_dbl%irank(iele))
         fln_tce%id_fline_export( 9,i) = int(iele_dbl%index(iele))
@@ -257,130 +218,19 @@
         fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
         fln_tce%fline_export(9+1:9+ntot_comp,i)                         &
     &         = fln_tce%c_fline_start(1:ntot_comp,i)
+!
+            if(fln_tce%id_fline_export(19,i) .lt. 0) then
+              fln_tce%id_fline_export(4:5,i) = fln_tce%id_fline_export(13:14,i)
+            else
+              fln_tce%id_fline_export(4:5,i) = fln_tce%id_fline_export(16:17,i)
+            end if
       else
-        fln_tce%id_fline_export(1,i) =   -ione
+        fln_tce%id_fline_export(18,i) =    -ione
         fln_tce%id_fline_export(2:11,i) = izero
         fln_tce%fline_export(1:fln_tce%ncomp_export,i) = zero
       end if
 !
       end subroutine set_fline_start_2_bcast
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine recover_local_fline_start(ele, surf, inod_dbl, iele_dbl,    &
-     &          numnod, isf_4_ele_dbl, iele_4_surf_dbl, ntot_ele_4_node,               &
-     &          iele_stack_4_node, iele_4_node, num_neib, id_neib,      &
-     &          ntot_export, istack_export, item_export, fln_tce)
-!
-      use m_geometry_constants
-      use t_source_of_filed_line
-!
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in)                               &
-     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
-      integer(kind = kint), intent(in)                                  &
-     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
-!
-      integer (kind=kint), intent(in) :: ntot_ele_4_node
-      integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer (kind=kint), intent(in) :: iele_4_node(ntot_ele_4_node)
-!
-      integer(kind = kint), intent(in) :: num_neib, ntot_export
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in) :: item_export(ntot_export)
-!
-      type(each_fieldline_trace), intent(inout) :: fln_tce
-!
-      integer(kind = kint) :: ip, ip_org, ist_lin, ied_lin, i
-      integer(kind = kint) :: inum, inod, ist_ele, ied_ele, jnum, jele
-      integer(kind = kint) :: isf, isurf, is(2)
-!
-!
-      do ip = 1, num_neib
-        ip_org = id_neib(ip) + 1
-!
-        ist_lin = fln_tce%istack_current_fline(ip_org-1) + 1
-        ied_lin = fln_tce%istack_current_fline(ip_org)
-        do i = ist_lin, ied_lin
-          if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
-          
-            if(fln_tce%id_fline_export(19,i) .lt. 0) then
-              is(1:2) = fln_tce%id_fline_export(13:14,i)
-            else
-              is(1:2) = fln_tce%id_fline_export(16:17,i)
-            end if
-          
-          
-            inum = fln_tce%id_fline_export(7,i) + istack_export(ip-1)
-            inod = item_export(inum)
-!            write(60+my_rank,*) 'recover node', inod,                  &
-!     &           inod_global(inod),fln_tce%id_fline_export(6,i)
-!
-            ist_ele = iele_stack_4_node(inod-1) + 1
-            ied_ele = iele_stack_4_node(inod)
-            do jnum = ist_ele, ied_ele
-              isf =  fln_tce%id_fline_export(5,i)
-              jele = iele_4_node(jnum)
-              if(fln_tce%id_fline_export(8,i) .eq. iele_dbl%irank(jele) &
-               .and. fln_tce%id_fline_export(9,i)                       &
-      &                    .eq. iele_dbl%index(jele)) then
-                isurf = abs(surf%isf_4_ele(jele,isf))
-!
-                 write(*,*) i, my_rank, jele, &
-      &                 iele_dbl%index(jele), 'jele_comp', &
-      &                 fln_tce%id_fline_export(18:19,i), &
-      &                 fln_tce%id_fline_export(6,i), &
-      &                  fln_tce%id_fline_export(13,i), &
-      &                  fln_tce%id_fline_export(16,i), &
-      &                  fln_tce%id_fline_export(12,i), &
-      &               surf%isf_4_ele(fln_tce%id_fline_export(13,i),isf),&
-      &                  fln_tce%id_fline_export(15,i), &
-      &               surf%isf_4_ele(fln_tce%id_fline_export(16,i),isf) &
-      &
-                 
-!
-                if(surf%isf_4_ele(jele,isf) .lt. 0) then
-!                if(fln_tce%id_fline_export(6,i) .lt. 0) then
-                  fln_tce%id_fline_export(4,i) = surf%iele_4_surf(isurf,1,1)
-                  fln_tce%id_fline_export(5,i) = surf%iele_4_surf(isurf,1,2)
-!              write(*,*)  i, my_rank, jele, isf,  &
-!     &         surf%isf_4_ele(jele,isf), &
-!     &          fln_tce%id_fline_export(6,i), 'found', &
-!     &          fln_tce%id_fline_export(3,i), 'found', &
-!     &          surf%iele_4_surf(isurf, 1, 1:2), ':  ', &
-!     &          iele_4_surf_dbl(isurf, 1, 1:3),   ':  ', &
-!     &          fln_tce%id_fline_export(12:17,i)
-                else
-                  fln_tce%id_fline_export(4,i) = surf%iele_4_surf(isurf,2,1)
-                  fln_tce%id_fline_export(5,i) = surf%iele_4_surf(isurf,2,2)
-!              write(*,*)  i, my_rank, jele, isf,&
-!     & surf%isf_4_ele(jele,isf), &
-!     &          fln_tce%id_fline_export(6,i), 'found', &
-!     &          fln_tce%id_fline_export(3,i), 'found', &
-!     &          surf%iele_4_surf(isurf, 2, 1:2), ':  ', &
-!     &          iele_4_surf_dbl(isurf, 2, 1:3),   ':  ', &
-!     &          fln_tce%id_fline_export(12:17,i)
-                end if
-              write(*,*)  'Found:   ', fln_tce%id_fline_export(4:5,i), &
-          &   is
-!                write(60+my_rank,*) 'recover surf',                    &
-!     &                         fln_tce%id_fline_export(4:5,i)
-!
-                exit
-              end if
-            end do
-            fln_tce%id_fline_export(6,i) = inod
-!
-          end if
-        end do
-      end do
-      call calypso_mpi_barrier
-!
-      end subroutine recover_local_fline_start
 !
 !  ---------------------------------------------------------------------
 !
@@ -395,13 +245,16 @@
       integer(kind = kint) :: ied_lin, i, icou, ip
 !
 !
+!
       ied_lin = fln_tce%istack_current_fline(nprocs)
       icou = 0
       do i = 1, ied_lin
-        if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
+        if(fln_tce%id_fline_export(18,i) .eq. my_rank) then
           icou = icou + 1
         end if
       end do
+!
+      write(*,*), my_rank, "count", icou
 !
       call calypso_mpi_allgather_one_int                                &
      &   (icou, fln_tce%num_current_fline)
@@ -414,12 +267,13 @@
 !
       icou =   fln_tce%istack_current_fline(my_rank)
       do i = 1, ied_lin
-        if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
+        if(fln_tce%id_fline_export(18,i) .eq. my_rank) then
           icou = icou + 1
+          fln_tce%iline_original(icou) = fln_tce%id_fline_export(6,i)
           fln_tce%iflag_fline(icou) =  fln_tce%id_fline_export(2,i)
           fln_tce%icount_fline(icou) = fln_tce%id_fline_export(3,i)
-          fln_tce%isf_fline_start(1:3,icou)                             &
-     &         = fln_tce%id_fline_export(4:6,i)
+          fln_tce%isf_fline_start(1:2,icou)                             &
+     &         = fln_tce%id_fline_export(4:5,i)
 !
           fln_tce%xx_fline_start(1:4,icou)                              &
      &         = fln_tce%fline_export(1:4,i)

@@ -47,6 +47,7 @@
         integer(kind = kint), allocatable :: num_current_fline(:)
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
+        integer(kind= kint), allocatable :: iline_original(:)
         integer(kind= kint), allocatable :: iflag_fline(:)
         integer(kind= kint), allocatable :: icount_fline(:)
         integer(kind= kint), allocatable :: isf_fline_start(:,:)
@@ -120,7 +121,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, i
 !
 !
       allocate(fln_tce%istack_current_fline(0:num_pe))
@@ -131,9 +132,14 @@
       fln_tce%flux_stack_fline = 0.0d0
 !
       num = 2 * fln_prm%num_each_field_line
+      allocate(fln_tce%iline_original(num))
       allocate(fln_tce%iflag_fline(num))
       allocate(fln_tce%icount_fline(num))
       allocate(fln_tce%isf_fline_start(3,num))
+!
+      do i = 1, num
+        fln_tce%iline_original(i) = i
+      end do
 !
       allocate(fln_tce%xx_fline_start(4,num))
       allocate(fln_tce%v_fline_start(4,num))
@@ -201,6 +207,7 @@
       deallocate(fln_tce%num_current_fline)
       deallocate(fln_tce%flux_stack_fline)
 !
+      deallocate(fln_tce%iline_original)
       deallocate(fln_tce%iflag_fline)
       deallocate(fln_tce%icount_fline)
       deallocate(fln_tce%isf_fline_start)
