@@ -78,14 +78,7 @@
       integer(kind = kint) :: internal_num = 0
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
-      integer i
 !
-      write(100+my_rank,*) 'sum surf%interior_surf', sum(surf%interior_surf)
-      do i = 1, surf%numsurf
-        write(100+my_rank,*) i, 'surf%interior_surf', surf%interior_surf(i)
-      end do
-      write(*,*) 'surf%interior_surf', allocated(surf%isurf_global), &
-      &     allocated(surf%interior_surf)
       call dealloc_interior_surf(surf)
       call alloc_global_surf_id(surf)
       call alloc_interior_surf(surf)
@@ -98,10 +91,6 @@
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
      &    internal_num, surf%interior_surf, isurf_dbl)
-      write(110+my_rank,*) 'sum surf%interior_surf', sum(surf%interior_surf)
-      do i = 1, surf%numsurf
-        write(110+my_rank,*) i, 'surf%interior_surf', surf%interior_surf(i)
-      end do
 !
       call set_surf_id_4_node_sum_order(node, surf, inod_dbl,           &
      &                                  neib_surf, sum_list_s)

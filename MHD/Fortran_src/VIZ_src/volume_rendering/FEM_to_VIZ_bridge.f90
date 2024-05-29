@@ -71,6 +71,7 @@
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%ele_comm, VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,       &
+     &    VIZ_DAT%inod_dbl, VIZ_DAT%iele_dbl, VIZ_DAT%isurf_dbl,        &
      &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
 !
       end subroutine init_FEM_to_VIZ_bridge
@@ -116,6 +117,22 @@
         call const_surf_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%surf_comm,  &
      &      geofem%mesh%surf, m_SR)
+!
+        call alloc_double_numbering(geofem%mesh%node%numnod,            &
+     &                              VIZ_DAT%inod_dbl)
+        call alloc_double_numbering(geofem%mesh%ele%numele,             &
+     &                              VIZ_DAT%iele_dbl)
+        call set_node_ele_double_address                                &
+     &     (geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
+     &      VIZ_DAT%ele_comm, VIZ_DAT%inod_dbl, VIZ_DAT%iele_dbl,       &
+     &      m_SR%SR_sig, m_SR%SR_i)
+!
+        call alloc_double_numbering(geofem%mesh%surf%numsurf,           &
+     &                              VIZ_DAT%isurf_dbl)
+        call set_ele_double_numbering                                   &
+     &     (geofem%mesh%surf%numsurf, geofem%mesh%surf%ie_surf(1,1),    &
+     &      VIZ_DAT%surf_comm, VIZ_DAT%inod_dbl, VIZ_DAT%isurf_dbl,     &
+     &      m_SR%SR_sig, m_SR%SR_i)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
@@ -139,6 +156,7 @@
 !
       subroutine normals_and_jacobians_4_VIZ(viz_step, geofem,          &
      &          ele_comm, surf_comm, edge_comm,                         &
+     &          inod_dbl, iele_dbl, isurf_dbl,                          &
      &          next_tbl, jacobians, m_SR)
 !
       use t_fem_gauss_int_coefs
@@ -153,6 +171,9 @@
       type(communication_table), intent(inout) :: ele_comm
       type(communication_table), intent(inout) :: surf_comm
       type(communication_table), intent(inout) :: edge_comm
+      type(node_ele_double_number), intent(inout) :: inod_dbl
+      type(node_ele_double_number), intent(inout) :: iele_dbl
+      type(node_ele_double_number), intent(inout) :: isurf_dbl
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
       type(mesh_SR), intent(inout) :: m_SR
@@ -178,6 +199,20 @@
         call const_surf_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, surf_comm,          &
      &      geofem%mesh%surf, m_SR)
+!
+        call alloc_double_numbering(geofem%mesh%node%numnod,            &
+     &                              inod_dbl)
+        call alloc_double_numbering(geofem%mesh%ele%numele,             &
+     &                              iele_dbl)
+        call set_node_ele_double_address                                &
+     &     (geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
+     &      ele_comm, inod_dbl, iele_dbl, m_SR%SR_sig, m_SR%SR_i)
+!
+        call alloc_double_numbering(geofem%mesh%surf%numsurf,           &
+     &                              isurf_dbl)
+        call set_ele_double_numbering                                   &
+     &     (geofem%mesh%surf%numsurf, geofem%mesh%surf%ie_surf(1,1),    &
+     &      surf_comm, inod_dbl, isurf_dbl, m_SR%SR_sig, m_SR%SR_i)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
