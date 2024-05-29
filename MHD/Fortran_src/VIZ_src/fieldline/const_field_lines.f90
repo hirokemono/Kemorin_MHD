@@ -44,7 +44,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines(node, ele, surf,        &
-     &          inod_dbl, iele_dbl, isurf_dbl, isf_4_ele_dbl, iele_4_surf_dbl,          &
+     &          isf_4_ele_dbl, iele_4_surf_dbl,          &
      &          nod_fld, fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
@@ -61,10 +61,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
-      type(node_ele_double_number), intent(in) :: isurf_dbl
       type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in)                               &
+      integer(kind = kint), intent(in)                                  &
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
@@ -117,12 +115,10 @@
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
-          call set_fline_start_2_bcast                                  &
-     &       (iflag_comm, inum, ele, surf, inod_dbl, iele_dbl, isurf_dbl, &
+          call set_fline_start_2_bcast(iflag_comm, inum, ele, surf,    &
      &        isf_4_ele_dbl, iele_4_surf_dbl, fln_prm%ntot_color_comp, &
      &        fln_tce)
         end do
-        call calypso_MPI_barrier
 !
         do ip = 1, nprocs
           src_rank = int(ip - 1)
@@ -156,9 +152,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_2_bcast(iflag_comm, i,                 &
-     &          ele, surf, inod_dbl, iele_dbl, isurf_dbl,  &
-     &    isf_4_ele_dbl, iele_4_surf_dbl, ntot_comp, fln_tce)
+      subroutine set_fline_start_2_bcast(iflag_comm, i, ele, surf,      &
+     &          isf_4_ele_dbl, iele_4_surf_dbl, ntot_comp, fln_tce)
 !
       use t_source_of_filed_line
 !
@@ -166,9 +161,7 @@
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
-      type(node_ele_double_number), intent(in) :: isurf_dbl
-      integer(kind = kint), intent(in)                               &
+      integer(kind = kint), intent(in)                                  &
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
@@ -186,34 +179,25 @@
         inod = fln_tce%isf_fline_start(3,i)
         isurf = abs(surf%isf_4_ele(iele,isf))
 !
+        fln_tce%id_fline_export(1,i) = fln_tce%iline_original(i)
         fln_tce%id_fline_export(2,i) = fln_tce%iflag_fline(i)
         fln_tce%id_fline_export(3,i) = fln_tce%icount_fline(i)
-        fln_tce%id_fline_export(5,i) = isf
-        fln_tce%id_fline_export(6,i) = fln_tce%iline_original(i)
 !
-        fln_tce%id_fline_export( 8,i) = int(iele_dbl%irank(iele))
-        fln_tce%id_fline_export( 9,i) = int(iele_dbl%index(iele))
-        fln_tce%id_fline_export(10,i) = int(inod_dbl%irank(inod))
-        fln_tce%id_fline_export(11,i) = int(inod_dbl%index(inod))
-!
-        fln_tce%id_fline_export(12:14,i) = iele_4_surf_dbl(isurf, 1, 1:3)
-        fln_tce%id_fline_export(15:17,i) = iele_4_surf_dbl(isurf, 2, 1:3)
-        fln_tce%id_fline_export(18:19,i) = isf_4_ele_dbl(iele,isf,1:2)
+        if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
+          fln_tce%id_fline_export(4:5,i) = iele_4_surf_dbl(isurf, 1, 2:3)
+        else
+          fln_tce%id_fline_export(4:5,i) = iele_4_surf_dbl(isurf, 2, 2:3)
+        end if
+        fln_tce%id_fline_export(6,i) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
         fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
         fln_tce%fline_export(9+1:9+ntot_comp,i)                         &
     &         = fln_tce%c_fline_start(1:ntot_comp,i)
-!
-            if(fln_tce%id_fline_export(19,i) .lt. 0) then
-              fln_tce%id_fline_export(4:5,i) = fln_tce%id_fline_export(13:14,i)
-            else
-              fln_tce%id_fline_export(4:5,i) = fln_tce%id_fline_export(16:17,i)
-            end if
       else
-        fln_tce%id_fline_export(18,i) =    -ione
-        fln_tce%id_fline_export(2:11,i) = izero
+        fln_tce%id_fline_export(1:5,i) = izero
+        fln_tce%id_fline_export(6,i) =  -ione
         fln_tce%fline_export(1:fln_tce%ncomp_export,i) = zero
       end if
 !
@@ -236,7 +220,7 @@
       ied_lin = fln_tce%istack_current_fline(nprocs)
       icou = 0
       do i = 1, ied_lin
-        if(fln_tce%id_fline_export(18,i) .eq. my_rank) then
+        if(fln_tce%id_fline_export(6,i) .eq. my_rank) then
           icou = icou + 1
         end if
       end do
@@ -252,9 +236,9 @@
 !
       icou =   fln_tce%istack_current_fline(my_rank)
       do i = 1, ied_lin
-        if(fln_tce%id_fline_export(18,i) .eq. my_rank) then
+        if(fln_tce%id_fline_export(6,i) .eq. my_rank) then
           icou = icou + 1
-          fln_tce%iline_original(icou) = fln_tce%id_fline_export(6,i)
+          fln_tce%iline_original(icou) = fln_tce%id_fline_export(1,i)
           fln_tce%iflag_fline(icou) =  fln_tce%id_fline_export(2,i)
           fln_tce%icount_fline(icou) = fln_tce%id_fline_export(3,i)
           fln_tce%isf_fline_start(1:2,icou)                             &

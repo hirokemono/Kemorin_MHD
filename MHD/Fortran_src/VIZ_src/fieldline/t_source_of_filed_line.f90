@@ -154,7 +154,7 @@
       fln_tce%xx_fline_start = 0.0d0
       fln_tce%trace_length = 0.0d0
 !
-      fln_tce%nitem_export = 19
+      fln_tce%nitem_export = 6
       fln_tce%ncomp_export = 9 + fln_prm%ntot_color_comp
       allocate(fln_tce%id_fline_export(fln_tce%nitem_export,num))
       allocate(fln_tce%fline_export(fln_tce%ncomp_export,num))
