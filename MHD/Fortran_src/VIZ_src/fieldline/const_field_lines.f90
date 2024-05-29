@@ -86,9 +86,9 @@
      &         'istack_current_fline', fln_tce%istack_current_fline(:)
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(my_rank+50,*) 'isf_fline_start(1:3,inum)'
+        write(my_rank+50,*) 'isf_fline_start(1:2,inum)'
         do inum = ist, ied
-          write(my_rank+50,*) inum, fln_tce%isf_fline_start(1:3,inum)
+          write(my_rank+50,*) inum, fln_tce%isf_fline_start(1:2,inum)
         end do
       end if
       call calypso_MPI_barrier
@@ -169,14 +169,13 @@
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: inod, iele, isf, ip, ist, ied, inum
+      integer(kind = kint) :: iele, isf, ip, ist, ied, inum
       integer(kind = kint) :: isurf
 !
 !
       if(iflag_comm .eq. ione) then
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
-        inod = fln_tce%isf_fline_start(3,i)
         isurf = abs(surf%isf_4_ele(iele,isf))
 !
         fln_tce%id_fline_export(1,i) = fln_tce%iline_original(i)

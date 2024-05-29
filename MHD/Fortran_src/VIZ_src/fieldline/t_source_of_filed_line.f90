@@ -135,7 +135,7 @@
       allocate(fln_tce%iline_original(num))
       allocate(fln_tce%iflag_fline(num))
       allocate(fln_tce%icount_fline(num))
-      allocate(fln_tce%isf_fline_start(3,num))
+      allocate(fln_tce%isf_fline_start(2,num))
 !
       do i = 1, num
         fln_tce%iline_original(i) = i

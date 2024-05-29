@@ -122,22 +122,16 @@
       integer(kind = kint), intent(in) :: iele, isf_1ele, isurf
 !
       integer(kind = kint), intent(inout) :: iflag_fline
-      integer(kind = kint), intent(inout) :: isf_fline_start(3)
+      integer(kind = kint), intent(inout) :: isf_fline_start(2)
 !
-      integer(kind = kint) :: inod
-!
-!
-      inod =  surf%ie_surf(isurf,1)
 !
       iflag_fline = 0
       if(iflag_outward_flux .eq. 0) then
         isf_fline_start(1) = iele
         isf_fline_start(2) = isf_1ele
-        isf_fline_start(3) = inod
       else
         isf_fline_start(1) = surf%iele_4_surf(isurf,2,1)
         isf_fline_start(2) = surf%iele_4_surf(isurf,2,2)
-        isf_fline_start(3) = inod
       end if
 !
       end subroutine set_forward_fline_start_surf
@@ -153,23 +147,18 @@
       integer(kind = kint), intent(in) :: iele, isf_1ele, isurf
 !
       integer(kind = kint), intent(inout) :: iflag_fline
-      integer(kind = kint), intent(inout) :: isf_fline_start(3)
-!
-      integer(kind = kint) :: inod
+      integer(kind = kint), intent(inout) :: isf_fline_start(2)
 !
 !
-      inod =  surf%ie_surf(isurf,1)
 !
       iflag_fline = 1
 !
       if(iflag_outward_flux .eq. 1) then
         isf_fline_start(1) = iele
         isf_fline_start(2) = isf_1ele
-        isf_fline_start(3) = inod
       else
         isf_fline_start(1) = surf%iele_4_surf(isurf,2,1)
         isf_fline_start(2) = surf%iele_4_surf(isurf,2,2)
-        isf_fline_start(3) = inod
       end if
 !
       end subroutine set_backward_fline_start_surf

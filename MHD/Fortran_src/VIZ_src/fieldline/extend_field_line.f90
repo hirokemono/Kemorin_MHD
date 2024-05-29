@@ -69,7 +69,7 @@
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
       real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
 !
-      integer(kind = kint), intent(inout) :: isurf_org(3)
+      integer(kind = kint), intent(inout) :: isurf_org(2)
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                    :: c_field(fln_prm%ntot_color_comp)
@@ -210,7 +210,6 @@
         if(surf%interior_surf(isurf_end) .eq. izero) then
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
-          isurf_org(3) = surf%ie_surf(isurf_end,1)
           iflag_comm = 1
           exit
         end if
@@ -243,7 +242,6 @@
           else
             isurf_org(1) = iele
             isurf_org(2) = isf_tgt
-            isurf_org(3) = surf%ie_surf(isurf_end,1)
             iflag_comm = 1
             write(*,*) 'complete extend within internal'
           end if
