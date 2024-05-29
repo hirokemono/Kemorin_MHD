@@ -104,7 +104,8 @@
       call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
 !  -----  Construct Element communication table
-      if(viz_step%LIC_t%increment .gt. 0) then
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
@@ -155,14 +156,12 @@
 !  -----  Const Neighboring information
       iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
         call set_belonged_ele_and_next_nod                              &
      &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
-      end if
 !
 !  -----  Construct Element communication table
-      if(viz_step%LIC_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
