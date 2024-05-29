@@ -216,12 +216,10 @@
 !
         fln_tce%id_fline_export(2,i) = fln_tce%iflag_fline(i)
         fln_tce%id_fline_export(3,i) = fln_tce%icount_fline(i)
-        fln_tce%id_fline_export(4,i) = int(iele_global(iele))
         fln_tce%id_fline_export(5,i) = isf
-        fln_tce%id_fline_export(6,i) = int(inod_global(inod))
 !
-        fln_tce%id_fline_export( 8,i) = int(iele_dbl%irank(inod))
-        fln_tce%id_fline_export( 9,i) = int(iele_dbl%index(inod))
+        fln_tce%id_fline_export( 8,i) = int(iele_dbl%irank(iele))
+        fln_tce%id_fline_export( 9,i) = int(iele_dbl%index(iele))
         fln_tce%id_fline_export(10,i) = int(inod_dbl%irank(inod))
         fln_tce%id_fline_export(11,i) = int(inod_dbl%index(inod))
 !
@@ -232,7 +230,7 @@
     &         = fln_tce%c_fline_start(1:ntot_comp,i)
       else
         fln_tce%id_fline_export(1,i) =   -ione
-        fln_tce%id_fline_export(2:7,i) = izero
+        fln_tce%id_fline_export(2:11,i) = izero
         fln_tce%fline_export(1:fln_tce%ncomp_export,i) = zero
       end if
 !
@@ -288,10 +286,9 @@
             ied_ele = iele_stack_4_node(inod)
             do jnum = ist_ele, ied_ele
               jele = iele_4_node(jnum)
-              if(iele_global(jele)                                      &
-     &               .eq. fln_tce%id_fline_export(4,i)) then
-!                write(60+my_rank,*) 'recover ele',                     &
-!      &                      jele, iele_global(jele)
+              if(fln_tce%id_fline_export(8,i) .eq. iele_dbl%irank(jele) &
+               .and. fln_tce%id_fline_export(9,i)                       &
+      &                    .eq. iele_dbl%index(jele)) then
                 isf =  fln_tce%id_fline_export(5,i)
                 isurf = abs(isf_4_ele(jele,isf))
 !
