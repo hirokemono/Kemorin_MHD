@@ -129,9 +129,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_visualize                                        &
-     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
+      subroutine FLINE_visualize(istep_fline, time_d, fem,              &
+     &          inod_dbl, iele_dbl, next_tbl, nod_fld, fline)
 !
+      use t_para_double_numbering
       use set_fields_for_fieldline
       use const_field_lines
       use collect_fline_data
@@ -142,6 +143,7 @@
       integer(kind = kint), intent(in) :: istep_fline
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: fem
+      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
@@ -175,6 +177,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
      &      fem%mesh%surf, next_tbl%neib_ele, fem%mesh%nod_comm,        &
+     &      inod_dbl, iele_dbl, &
      &      nod_fld, fline%fln_prm(i_fln), fline%fln_src(i_fln),        &
      &      fline%fln_tce(i_fln), fline%fline_lc(i_fln))
 !

@@ -29,6 +29,7 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
+      use t_para_double_numbering
 !
       implicit  none
 !
@@ -41,8 +42,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines                                    &
-     &         (node, ele, surf, ele_4_nod, nod_comm, nod_fld,          &
+      subroutine s_const_field_lines(node, ele, surf, ele_4_nod,        &
+     &          nod_comm, inod_dbl, iele_dbl, nod_fld,                  &
      &          fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
@@ -64,6 +65,7 @@
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
+      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       type(phys_data), intent(in) :: nod_fld
 
       type(fieldline_paramter), intent(in) :: fln_prm
@@ -114,7 +116,8 @@
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
-          call set_fline_start_2_bcast(iflag_comm, inum, node%numnod,   &
+          call set_fline_start_2_bcast                                  &
+     &       (iflag_comm, inum, inod_dbl, iele_dbl, node%numnod,   &
      &          ele%numele, node%inod_global, ele%iele_global,          &
      &          fln_prm%ntot_color_comp,                                &
      &          nod_comm%num_neib, nod_comm%id_neib,                    &
@@ -143,8 +146,8 @@
           end do
         end if
 !
-        call recover_local_fline_start                                  &
-     &     (node%numnod, ele%numele, surf%numsurf, ele%iele_global,     &
+        call recover_local_fline_start(inod_dbl, iele_dbl,              &
+     &      node%numnod, ele%numele, surf%numsurf, ele%iele_global,     &
      &      surf%isf_4_ele, surf%iele_4_surf, ele_4_nod%ntot,           &
      &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
      &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
@@ -170,6 +173,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_start_2_bcast(iflag_comm, i,                 &
+     &          inod_dbl, iele_dbl,     &
      &          numnod, numele, inod_global, iele_global, ntot_comp,    &
      &          num_neib, id_neib, ntot_import, istack_import,          &
      &          item_import, fln_tce)
@@ -178,6 +182,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_comm, i
 !
+      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint_gl), intent(in) :: iele_global(numele)
@@ -215,6 +220,11 @@
         fln_tce%id_fline_export(5,i) = isf
         fln_tce%id_fline_export(6,i) = int(inod_global(inod))
 !
+        fln_tce%id_fline_export( 8,i) = int(iele_dbl%irank(inod))
+        fln_tce%id_fline_export( 9,i) = int(iele_dbl%index(inod))
+        fln_tce%id_fline_export(10,i) = int(inod_dbl%irank(inod))
+        fln_tce%id_fline_export(11,i) = int(inod_dbl%index(inod))
+!
         fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
         fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
@@ -230,8 +240,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine recover_local_fline_start                              &
-     &         (numnod, numele, numsurf, iele_global,                   &
+      subroutine recover_local_fline_start(inod_dbl, iele_dbl,          &
+     &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
      &          iele_stack_4_node, iele_4_node, num_neib, id_neib,      &
      &          ntot_export, istack_export, item_export, fln_tce)
@@ -239,6 +249,7 @@
       use m_geometry_constants
       use t_source_of_filed_line
 !
+      type(node_ele_double_number), intent(in) :: inod_dbl, iele_dbl
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer (kind=kint_gl), intent(in) :: iele_global(numele)
       integer (kind=kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
