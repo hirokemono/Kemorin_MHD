@@ -240,6 +240,12 @@
      &          .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
             exit
+          else
+            isurf_org(1) = iele
+            isurf_org(2) = isf_tgt
+            isurf_org(3) = surf%ie_surf(isurf_end,1)
+            iflag_comm = 1
+            write(*,*) 'complete extend within internal'
           end if
         end if
       end do

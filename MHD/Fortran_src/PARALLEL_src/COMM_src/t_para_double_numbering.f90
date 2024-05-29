@@ -152,10 +152,12 @@
 !$omp parallel do
       do iele = 1, numele
         iele_dbl%index(iele) = iele
-        iele_dbl%irank(iele) = inod_dbl%irank(ie(iele,1))
+        iele_dbl%irank(iele) = my_rank
       end do
 !$omp end parallel do
 !
+      call SOLVER_SEND_RECV_int_type(numele, ele_comm,                  &
+     &                               SR_sig, SR_i, iele_dbl%irank(1))
       call SOLVER_SEND_RECV_int_type(numele, ele_comm,                  &
      &                               SR_sig, SR_i, iele_dbl%index(1))
 !

@@ -32,6 +32,7 @@
 !
 !>      Structure of data for visualization
       type paralell_surface_indices
+        integer(kind = kint), allocatable :: isf_4_ele_dbl(:,:,:)
         integer(kind = kint), allocatable :: iele_4_surf_dbl(:,:,:)
       end type paralell_surface_indices
 !

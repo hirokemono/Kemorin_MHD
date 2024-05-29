@@ -154,7 +154,8 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
       call FLINE_visualize(viz_step%istep_fline, time_d, geofem,        &
-     &    VIZ_DAT%inod_dbl, VIZ_DAT%iele_dbl, VIZ_DAT%next_tbl,         &
+     &    VIZ_DAT%inod_dbl, VIZ_DAT%iele_dbl, VIZ_DAT%isurf_dbl, VIZ_DAT%next_tbl,         &
+     &    VIZ_DAT%para_surf%isf_4_ele_dbl,   &
      &    VIZ_DAT%para_surf%iele_4_surf_dbl, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
 !

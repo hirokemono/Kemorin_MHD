@@ -77,7 +77,12 @@
 !
       iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
+        allocate(VIZ_DAT%para_surf%isf_4_ele_dbl(geofem%mesh%ele%numele,nsurf_4_ele,2))
         allocate(VIZ_DAT%para_surf%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        call set_isf_4_ele_double_index                                 &
+     &     (geofem%mesh%ele, geofem%mesh%surf,                          &
+     &      VIZ_DAT%isurf_dbl, VIZ_DAT%ele_comm,                        &
+     &      VIZ_DAT%para_surf%isf_4_ele_dbl, m_SR)
         call set_iele_4_surf_double_index                               &
      &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
      &      VIZ_DAT%para_surf%iele_4_surf_dbl, m_SR)
@@ -143,7 +148,12 @@
      &      VIZ_DAT%surf_comm, VIZ_DAT%inod_dbl, VIZ_DAT%isurf_dbl,     &
      &      m_SR%SR_sig, m_SR%SR_i)
 !
+        allocate(VIZ_DAT%para_surf%isf_4_ele_dbl(geofem%mesh%ele%numele,nsurf_4_ele,2))
         allocate(VIZ_DAT%para_surf%iele_4_surf_dbl(geofem%mesh%surf%numsurf,2,3))
+        call set_isf_4_ele_double_index                                 &
+     &     (geofem%mesh%ele, geofem%mesh%surf,                          &
+     &      VIZ_DAT%isurf_dbl, VIZ_DAT%ele_comm,                        &
+     &      VIZ_DAT%para_surf%isf_4_ele_dbl, m_SR)
         call set_iele_4_surf_double_index                               &
      &     (geofem%mesh%surf, VIZ_DAT%iele_dbl, VIZ_DAT%surf_comm,      &
      &      VIZ_DAT%para_surf%iele_4_surf_dbl, m_SR)
@@ -263,6 +273,7 @@
       subroutine set_iele_4_surf_double_index                           &
      &         (surf, iele_dbl, surf_comm, iele_4_surf_dbl, m_SR)
 !
+      use m_geometry_constants
       use  solver_SR_type
 !
       type(surface_data), intent(in) :: surf
@@ -303,6 +314,47 @@
      &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,2,3))
 !
       end subroutine set_iele_4_surf_double_index
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_isf_4_ele_double_index                             &
+     &         (ele, surf, isurf_dbl, ele_comm, isf_4_ele_dbl, m_SR)
+!
+      use  solver_SR_type
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(node_ele_double_number), intent(in) :: isurf_dbl
+      type(communication_table), intent(in) :: ele_comm
+!
+      integer(kind = kint), intent(inout)                               &
+     &    :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: isurf, iele, k1
+!
+!
+      do k1 = 1, nsurf_4_ele
+!$omp parallel do private(isurf,iele)
+        do iele = 1, ele%numele
+          isurf = abs(surf%isf_4_ele(iele,k1))
+          
+          isf_4_ele_dbl(iele,k1,1) = isurf_dbl%irank(isurf)
+          isf_4_ele_dbl(iele,k1,2) = isurf_dbl%index(isurf)             &
+    &                             * (surf%isf_4_ele(iele,k1) / isurf)
+
+        end do
+!$omp end parallel do
+      end do
+!
+      do k1 = 1, nsurf_4_ele
+        call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm,            &
+     &      m_SR%SR_sig, m_SR%SR_i, isf_4_ele_dbl(1,k1,1))
+        call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm,            &
+     &      m_SR%SR_sig, m_SR%SR_i, isf_4_ele_dbl(1,k1,2))
+      end do
+!
+      end subroutine set_isf_4_ele_double_index
 !
 !  ---------------------------------------------------------------------
 !
