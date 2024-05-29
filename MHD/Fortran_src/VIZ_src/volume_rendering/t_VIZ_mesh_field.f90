@@ -60,6 +60,8 @@
         type(node_ele_double_number) :: iele_dbl
 !>        Double numbering for surface
         type(node_ele_double_number) :: isurf_dbl
+!>
+        integer(kind = kint), allocatable :: iele_4_surf_dbl(:,:,:)
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------
