@@ -94,13 +94,10 @@
       call reset_fline_start(fline_lc)
 !
       do
-        ist = fln_tce%istack_current_fline(my_rank)
-        ied = fln_tce%istack_current_fline(my_rank+1)
-        num = ied - ist
         write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
-        do inum = 1, num
+        do inum = 1, fln_tce%num_current_fline(my_rank+1)
           call s_extend_field_line                                      &
      &       (node, ele, surf, nod_fld, fln_prm%fline_fields,           &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &

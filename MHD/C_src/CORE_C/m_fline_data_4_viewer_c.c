@@ -9,6 +9,183 @@
 
 #include "m_fline_data_4_viewer_c.h"
 
+struct points_data * init_points_data(void){
+    struct points_data *points_d = (struct points_data *) malloc(sizeof(struct points_data));
+    if(points_d  == NULL){
+        printf("malloc error for points_data \n");
+        exit(0);
+    }
+    return points_d;
+};
+
+void alloc_points_node_s(long nnod, struct points_data *points_d){
+    points_d->nnod_points = nnod;
+    /* allocate memory  xyzw_points[node #][direction]*/
+    points_d->xyzw_points = (double *)malloc(IFOUR*points_d->nnod_pointsg*sizeof(double));
+    if(points_d->xyzw_points  == NULL){
+        printf("malloc error for points_d->xyzw_viz \n");
+        exit(0);
+    }
+    
+    points_d->inod_points = (long *)calloc(points_d->nnod_points,sizeof(long));
+    if(points_d->inod_points  == NULL){
+        printf("malloc error for points_d->inod_points \n");
+        exit(0);
+    }
+    return;
+};
+
+static void dealloc_points_node_s(struct points_data *points_d){
+    free(points_d->inod_fline);
+    free(points_d->xyzw_fline);
+}
+
+
+void alloc_points_field_name_c(long nfield, struct points_data *points_d){
+    int i;
+    
+    points_d->nfield = nfield;
+    points_d->ncomp =       (long *)calloc(points_d->nfield,sizeof(long));
+    if(points_d->ncomp  == NULL){
+        printf("malloc error for points_d->ncomp \n");
+        exit(0);
+    }
+    points_d->istack_comp = (long *)calloc(points_d->nfield+1,sizeof(long));
+    if(points_d->istack_comp  == NULL){
+        printf("malloc error for points_d->istack_comp \n");
+        exit(0);
+    }
+
+    points_d->id_coord =    (int *)calloc(points_d->nfield,sizeof(int));
+    if(points_d->id_coord  == NULL){
+        printf("malloc error for points_d->id_coord \n");
+        exit(0);
+    }
+    
+    points_d->data_name = (char **)malloc(points_d->nfield*sizeof(char *));
+    if(points_d->data_name  == NULL){
+        printf("malloc error for points_d->data_name \n");
+        exit(0);
+    }
+
+    for (i = 0; i < printf->nfield; i++) {
+        printf->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
+        if(printf->data_name[i]  == NULL){
+            printf("malloc error for printf->data_name[i], %d \n", i);
+            exit(0);
+        }
+    };
+};
+
+void alloc_points_field_data_c(struct points_data *points_d){
+    /* allocate memory  d_nod[node #][component]*/
+    long num = points_d->ncomptot * points_d->nnod_points;
+    points_d->d_nod = (double *)malloc(num*sizeof(double));
+    if(points_d->d_nod  == NULL){
+        printf("malloc error for points_d->d_nod \n");
+        exit(0);
+    }
+};
+
+void dealloc_points_field_data_c(struct points_data *points_d){
+    free(points_d->d_nod);
+    free(points_d->ncomp);
+    free(points_d->istack_comp);
+    free(points_d->id_coord);
+
+    for(int i = 0; i < points_d->nfield; i++) free(points_d->data_name[i]);
+    free(points_d->data_name);
+};
+
+void alloc_points_color_data(struct points_data *points_d){
+    points_d->color_nod = (double *)malloc(4*points_d->nnod_points*sizeof(double));
+    if(points_d->color_nod  == NULL){
+        printf("malloc error for points_d->color_nod \n");
+        exit(0);
+    }
+    return;
+};
+void dealloc_points_color_data(struct points_data *points_d){
+    free(points_d->color_nod);
+    return;
+}
+
+void alloc_points_ave_data(struct points_data *points_d){
+    long num;
+
+    /* allocate memory  d_amp[node #][field]*/
+    num = points_d->nfield * points_d->nnod_points;
+    points_d->d_amp = (double *)malloc(num*sizeof(double));
+    if(points_d->d_amp  == NULL){
+        printf("malloc error for psf_s->d_amp \n");
+        exit(0);
+    }
+
+    
+    points_d->amp_min = (double *)calloc(points_d->nfield,sizeof(double));
+    if(points_d->amp_min  == NULL){
+        printf("malloc error for points_d->amp_min \n");
+        exit(0);
+    }
+
+    points_d->amp_max = (double *)calloc(points_d->nfield,sizeof(double));
+    if(points_d->amp_max  == NULL){
+        printf("malloc error for points_d->amp_max \n");
+        exit(0);
+    }
+
+    points_d->d_min = (double *)calloc(points_d->ncomptot,sizeof(double));
+    if(points_d->d_min  == NULL){
+        printf("malloc error for points_d->d_min \n");
+        exit(0);
+    }
+
+    points_d->d_max = (double *)calloc(points_d->ncomptot,sizeof(double));
+    if(points_d->d_max  == NULL){
+        printf("malloc error for points_d->d_max \n");
+        exit(0);
+    }
+
+    points_d->d_ave = (double *)calloc(points_d->ncomptot,sizeof(double));
+    if(points_d->d_ave  == NULL){
+        printf("malloc error for points_d->d_ave \n");
+        exit(0);
+    }
+
+    points_d->d_rms = (double *)calloc(points_d->ncomptot,sizeof(double));
+    if(points_d->d_rms  == NULL){
+        printf("malloc error for points_d->d_rms \n");
+        exit(0);
+    }
+    return;
+};
+
+static void dealloc_points_ave_data(struct points_data *points_d){
+    free(points_d->d_amp);
+    
+    free(points_d->amp_min);
+    free(points_d->amp_max);
+    free(points_d->d_min);
+    free(points_d->d_max);
+    free(points_d->d_rms);
+    free(points_d->d_ave);
+    return;
+}
+
+void deallc_all_points_data(struct points_data *points_d){
+    dealloc_points_ave_data(fline_d);
+    dealloc_points_color_data(fline_d);
+    
+    dealloc_points_field_data_c(fline_d);
+    dealloc_points_node_s(fline_d);
+    return;
+};
+
+
+
+
+
+
 struct fline_data * init_fline_data(void){
     struct fline_data *fline_d = (struct fline_data *) malloc(sizeof(struct fline_data));
     if(fline_d  == NULL){
@@ -17,6 +194,11 @@ struct fline_data * init_fline_data(void){
     }
     return fline_d;
 };
+static void dealloc_fline_node_s(struct fline_data *fline_d){
+    free(fline_d->inod_fline);
+    free(fline_d->xyzw_fline);
+}
+
 
 void alloc_fline_node_s(long nnod, struct fline_data *fline_d){
     fline_d->nnod_fline = nnod;
@@ -73,9 +255,22 @@ void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d){
     
     fline_d->nfield = nfield;
     fline_d->ncomp =       (long *)calloc(fline_d->nfield,sizeof(long));
+    if(fline_d->ncomp  == NULL){
+        printf("malloc error for fline_d->ncomp \n");
+        exit(0);
+    }
+
     fline_d->istack_comp = (long *)calloc(fline_d->nfield+1,sizeof(long));
+    if(fline_d->istack_comp  == NULL){
+        printf("malloc error for fline_d->istack_comp \n");
+        exit(0);
+    }
 
     fline_d->id_coord =    (int *)calloc(fline_d->nfield,sizeof(int));
+    if(fline_d->id_coord  == NULL){
+        printf("malloc error for fline_d->id_coord \n");
+        exit(0);
+    }
     
     fline_d->data_name = (char **)malloc(fline_d->nfield*sizeof(char *));
     if(fline_d->data_name  == NULL){
@@ -101,6 +296,7 @@ void alloc_fline_field_data_c(struct fline_data *fline_d){
         exit(0);
     }
 };
+
 void dealloc_fline_field_data_c(struct fline_data *fline_d){
     free(fline_d->d_nod);
     free(fline_d->ncomp);

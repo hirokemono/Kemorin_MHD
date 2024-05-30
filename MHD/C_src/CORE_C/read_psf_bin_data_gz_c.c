@@ -91,7 +91,11 @@ static int read_alloc_psf_ele_bin_gz(void *FP_gzip, struct psf_data *psf_z,
     gzread_64bit_psf(FP_gzip, psf_z_WK, (char *) &eletype_gz);
     /*    printf("eletype_gz %d \n", eletype_gz); */
 	
-	if(psf_z->nnod_4_ele_viz == 2){iflag_datatype = IFLAG_LINES;};
+	if(psf_b->nnod_4_ele_viz == 2){
+        iflag_datatype = IFLAG_LINES;
+    }else if(psf_b->nnod_4_ele_viz == 1){
+        iflag_datatype = IFLAG_POINTS;
+    };
     
     long *nele_gz = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     psf_z_WK->ilength = psf_z_WK->nprocs * sizeof(long);

@@ -63,8 +63,7 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 3){
+    }else if(viz_s->nnod_4_ele_viz == 3){
 		printf("Triangle patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
@@ -73,14 +72,20 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 2){
+    }else if(viz_s->nnod_4_ele_viz == 2){
 		printf("Line data \n");
 		iflag_datatype = IFLAG_LINES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%d %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
+        };
+    }else if(viz_s->nnod_4_ele_viz == 1){
+		printf("Points data \n");
+		iflag_datatype = IFLAG_LINES;
+        for (i = 0; i < viz_s->nele_viz; i++) {
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
+            sscanf(buf, "%d %ld", &itmp, &viz_s->ie_viz[i][0]);
         };
     };
     

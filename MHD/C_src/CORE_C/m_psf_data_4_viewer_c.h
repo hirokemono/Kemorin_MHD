@@ -6,6 +6,7 @@
 #define IFLAG_MESH       99
 #define IFLAG_SURFACES   2
 #define IFLAG_LINES      1
+#define IFLAG_POINTS     0
 
 #define IFLAG_SURF_UDT   10
 #define IFLAG_SURF_UCD   11

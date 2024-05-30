@@ -117,7 +117,11 @@ static int read_alloc_psf_ele_bin(struct psf_data *psf_b, struct psf_bin_work *p
     rawread_64bit_psf(psf_b_WK, &eletype);
     /*    printf("eletype %d \n", eletype); */
 	
-	if(psf_b->nnod_4_ele_viz == 2){iflag_datatype = IFLAG_LINES;};
+	if(psf_b->nnod_4_ele_viz == 2){
+        iflag_datatype = IFLAG_LINES;
+    }else if(psf_b->nnod_4_ele_viz == 1){
+        iflag_datatype = IFLAG_POINTS;
+    };
 	
     long *nele = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);

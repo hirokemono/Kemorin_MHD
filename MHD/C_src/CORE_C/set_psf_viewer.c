@@ -263,6 +263,24 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp,
 };
 
 
+void set_viewer_points_data(struct points_data *points_d,
+                            struct psf_data *viz_tmp){
+	alloc_points_field_name_c(viz_tmp->nfield, points_d);
+    points_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, points_d->nfield,
+                                                    points_d->ncomp,  points_d->istack_comp,
+                                                    points_d->id_coord, points_d->data_name);
+
+    alloc_points_node_s(viz_tmp->nnod_viz, points_d);
+    alloc_points_field_data_c(points_d);
+
+	copy_viewer_udt_node(viz_tmp, points_d->inod_points, points_d->xyzw_points);
+	copy_viewer_udt_data(viz_tmp, points_d->nnod_points, points_d->ncomptot, points_d->d_nod);
+
+	dealloc_psf_data_s(viz_tmp);
+	dealloc_psf_mesh_c(viz_tmp);
+    return;
+}
+
 void set_viewer_fieldline_data(struct fline_data *fline_d,
                                struct psf_data *viz_tmp){
 	alloc_fline_field_name_c(viz_tmp->nfield, fline_d);

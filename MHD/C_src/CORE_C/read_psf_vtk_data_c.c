@@ -68,8 +68,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 3){
+    }else if(viz_s->nnod_4_ele_viz == 3){
 		printf("Triangle patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
@@ -78,14 +77,20 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 2){
+    }else if(viz_s->nnod_4_ele_viz == 2){
 		printf("Line data \n");
 		iflag_datatype = IFLAG_LINES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             fgets(buf, LENGTHBUF, fp_vtk);
             sscanf(buf, "%d %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
+        };
+    }else if(viz_s->nnod_4_ele_viz == 1){
+		printf("Point data \n");
+		iflag_datatype = IFLAG_POINTS;
+        for (i = 0; i < viz_s->nele_viz; i++) {
+            fgets(buf, LENGTHBUF, fp_vtk);
+            sscanf(buf, "%d %ld %ld", &itmp, &viz_s->ie_viz[i][0]);
         };
     };
 
