@@ -55,7 +55,7 @@
 !
 !
       do i = 1, fln_src%num_line_local
-        inum1 = i + fln_tce%istack_current_fline(id_rank)
+        inum1 = i
         iele =     fln_prm%id_surf_start_fline(1,i)
         isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf_1ele))

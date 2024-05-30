@@ -265,7 +265,7 @@
       integer(kind = kint) :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
 !      real(kind = kreal) :: position_check(3)
 ! 
-      icou = fln_tce%istack_current_fline(my_rank)
+      icou = 0
       do inum = 1, fln_prm%num_each_field_line
           if(fln_prm%ip_surf_start_fline(inum) .ne. my_rank) cycle
           icou = icou + 1

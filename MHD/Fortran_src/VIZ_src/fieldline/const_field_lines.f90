@@ -71,7 +71,7 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: iflag_comm
-      integer(kind = kint) :: i, ist, ied, ip, nline, inum
+      integer(kind = kint) :: i, ist, ied, ip, nline, inum, num
       integer(kind = kint_gl) :: num64
       integer :: src_rank
 !
@@ -94,12 +94,13 @@
       call reset_fline_start(fline_lc)
 !
       do
-        ist = fln_tce%istack_current_fline(my_rank) + 1
+        ist = fln_tce%istack_current_fline(my_rank)
         ied = fln_tce%istack_current_fline(my_rank+1)
+        num = ied - ist
         write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
-        do inum = ist, ied
+        do inum = 1, num
           call s_extend_field_line                                      &
      &       (node, ele, surf, nod_fld, fln_prm%fline_fields,           &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
@@ -167,35 +168,38 @@
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: iele, isf
+      integer(kind = kint) :: iele, isf, ist
       integer(kind = kint) :: isurf
 !
 !
+      ist = fln_tce%istack_current_fline(my_rank)
       if(iflag_comm .eq. ione) then
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf))
 !
-        fln_tce%id_fline_export(1,i) = fln_tce%iline_original(i)
-        fln_tce%id_fline_export(2,i) = fln_tce%iflag_fline(i)
-        fln_tce%id_fline_export(3,i) = fln_tce%icount_fline(i)
+        fln_tce%id_fline_export(1,i+ist) = fln_tce%iline_original(i)
+        fln_tce%id_fline_export(2,i+ist) = fln_tce%iflag_fline(i)
+        fln_tce%id_fline_export(3,i+ist) = fln_tce%icount_fline(i)
 !
         if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
-          fln_tce%id_fline_export(4:5,i) = iele_4_surf_dbl(isurf, 1, 2:3)
+          fln_tce%id_fline_export(4:5,i+ist)                            &
+     &               = iele_4_surf_dbl(isurf, 1, 2:3)
         else
-          fln_tce%id_fline_export(4:5,i) = iele_4_surf_dbl(isurf, 2, 2:3)
+          fln_tce%id_fline_export(4:5,i+ist)                            &
+     &               = iele_4_surf_dbl(isurf, 2, 2:3)
         end if
-        fln_tce%id_fline_export(6,i) = isf_4_ele_dbl(iele,isf,1)
+        fln_tce%id_fline_export(6,i+ist) = isf_4_ele_dbl(iele,isf,1)
 !
-        fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
-        fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
-        fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
-        fln_tce%fline_export(9+1:9+viz_fields%ntot_color_comp,i)        &
+        fln_tce%fline_export(1:4,i+ist) = fln_tce%xx_fline_start(1:4,i)
+        fln_tce%fline_export(5:8,i+ist) = fln_tce%v_fline_start(1:4,i)
+        fln_tce%fline_export(9,i+ist) =   fln_tce%trace_length(i)
+        fln_tce%fline_export(9+1:9+viz_fields%ntot_color_comp,i+ist)    &
     &         = fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i)
       else
-        fln_tce%id_fline_export(1:5,i) = izero
-        fln_tce%id_fline_export(6,i) =  -ione
-        fln_tce%fline_export(1:fln_tce%ncomp_export,i) = zero
+        fln_tce%id_fline_export(1:5,i+ist) = izero
+        fln_tce%id_fline_export(6,i+ist) =  -ione
+        fln_tce%fline_export(1:fln_tce%ncomp_export,i+ist) = zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -231,7 +235,7 @@
      &                    + fln_tce%num_current_fline(ip)
       end do
 !
-      icou =   fln_tce%istack_current_fline(my_rank)
+      icou = 0
       do i = 1, ied_lin
         if(fln_tce%id_fline_export(6,i) .eq. my_rank) then
           icou = icou + 1
