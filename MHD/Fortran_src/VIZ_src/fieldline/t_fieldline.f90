@@ -32,6 +32,7 @@
       use t_next_node_ele_4_node
       use t_control_params_4_fline
       use t_source_of_filed_line
+      use t_trace_data_send_recv
       use t_broadcast_trace_data
       use t_local_fline
       use t_ucd_data
@@ -45,8 +46,9 @@
 !
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
-        type(broadcast_trace_data), allocatable :: fln_bcast(:)
         type(local_fieldline), allocatable  :: fline_lc(:)
+        type(broadcast_trace_data), allocatable :: fln_bcast(:)
+        type(trace_data_send_recv), allocatable :: fln_SR(:)
 !
         type(ucd_data) :: fline_ucd
       end type fieldline_module
@@ -85,6 +87,7 @@
       allocate(fline%fln_prm(fline%num_fline))
       allocate(fline%fln_src(fline%num_fline))
       allocate(fline%fln_tce(fline%num_fline))
+      allocate(fline%fln_SR(fline%num_fline))
       allocate(fline%fln_bcast(fline%num_fline))
       allocate(fline%fline_lc(fline%num_fline))
 !
@@ -108,6 +111,8 @@
      &      fline%fln_prm(i_fln)%fline_fields, fline%fln_bcast(i_fln))
         call alloc_local_fline(fline%fln_prm(i_fln)%fline_fields,       &
      &                         fline%fline_lc(i_fln))
+        call alloc_trace_data_SR_num(fline%fln_prm(i_fln)%fline_fields, &
+     &                               fline%fln_SR(i_fln))
       end do
 !
 !
@@ -183,7 +188,8 @@
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
      &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl, nod_fld,     &
      &      fline%fln_prm(i_fln), fline%fln_tce(i_fln),                 &
-     &      fline%fln_bcast(i_fln), fline%fline_lc(i_fln), m_SR)
+     &      fline%fln_SR(i_fln), fline%fln_bcast(i_fln),                &
+     &      fline%fline_lc(i_fln), m_SR)
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO                                 &
@@ -219,10 +225,11 @@
         call dealloc_start_point_fline(fline%fln_src(i_fln))
         call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
         call dealloc_broadcast_trace_data(fline%fln_bcast(i_fln))
+        call dealloc_trace_data_SR_num(fline%fln_SR(i_fln))
       end do
 !
       deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
-      deallocate(fline%fln_tce, fline%fln_prm)
+      deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !
       end subroutine FLINE_finalize
 !

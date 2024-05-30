@@ -42,8 +42,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines(node, ele, surf,                   &
-     &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          nod_fld, fln_prm, fln_tce, fln_bcast, fline_lc, m_SR)
+     &          isf_4_ele_dbl, iele_4_surf_dbl, nod_fld,                &
+     &          fln_prm, fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
 !
       use t_control_params_4_fline
       use t_comm_table
@@ -73,7 +73,7 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
       type(broadcast_trace_data), intent(inout) :: fln_bcast
-      type(trace_data_send_recv) :: fln_SR
+      type(trace_data_send_recv), intent(inout) :: fln_SR
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: ist, ied, nline, inum, i
@@ -113,7 +113,6 @@
      &        fln_tce%iflag_comm_start(inum), fline_lc)
         end do
 !
-        call alloc_trace_data_SR_num(fln_prm%fline_fields, fln_SR)
         call s_trace_data_send_recv                                     &
      &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
      &      fln_tce, fln_SR, m_SR, nline)
@@ -124,7 +123,6 @@
 !
         write(*,*) my_rank, fln_SR%ntot_recv, 'fln_tce%num_current_fline(ip)', &
      &          fln_tce%num_current_fline
-        call dealloc_trace_data_SR_num(fln_SR)
 !
 !        write(*,*) my_rank, 'check'fln_tce%num_current_fline(
 !        do i = 1, my_rank+1)
@@ -139,9 +137,6 @@
 !          inum =  fln_SR%iRecv(i,5) - fln_tce%isf_fline_start(2,i)
 !          if(inum .ne. 0) write(*,*) my_rank, i, inum
 !        end do
-
-        deallocate(fln_SR%rSend, fln_SR%iSend)
-        deallocate(fln_SR%rRecv, fln_SR%iRecv)
 !
         if(i_debug .gt. 0) then
           write(my_rank+50,*) 'istack_current_fline',                   &

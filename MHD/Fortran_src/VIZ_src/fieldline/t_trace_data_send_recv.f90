@@ -124,6 +124,8 @@
       fln_SR%istack_irecv(0:nprocs) =  0
 !$omp end parallel workshare
 !
+      call alloc_trace_SR_export(ione, fln_SR)
+      call alloc_trace_SR_import(ione, fln_SR)
 !
       end subroutine alloc_trace_data_SR_num
 !
@@ -155,28 +157,25 @@
 !
       call count_trace_data_SR_npe(ele, isf_4_ele_dbl, fln_tce, fln_SR)
       call count_trace_data_SR_num(fln_SR)
-      call alloc_trace_SR_export(ione, fln_SR)
-      call alloc_trace_SR_import(ione, fln_SR)
-      call raise_trace_SR_export(fln_SR)
+      call raise_trace_SR_export(fln_tce%num_current_fline(my_rank+1), &
+     &                           fln_SR)
       call raise_trace_SR_import(fln_SR)
+      write(*,*) 'size init', size(fln_SR%rsend), size(fln_SR%isend), fln_SR%ncomp_export
+      write(*,*) 'size init', size(fln_SR%rrecv), size(fln_SR%irecv)
 
-      allocate(fln_SR%rSend(fln_SR%ncomp_export,fln_tce%num_current_fline(my_rank+1)))
-      allocate(fln_SR%iSend(fln_tce%num_current_fline(my_rank+1),nitem_export))
       call set_trace_data_to_SR(ele, surf,                              &
      &    isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
 !
-      allocate(fln_SR%rRecv(fln_SR%ncomp_export,fln_SR%ntot_recv))
-      allocate(fln_SR%iRecv(fln_SR%ntot_recv,nitem_export))
       call calypso_send_recv_N                                          &
-     &   (0, fln_SR%ncomp_export,fln_tce%num_current_fline(my_rank+1), fln_SR%ntot_recv,   &
-     &    fln_SR%npe_send, fln_SR%id_pe_send,                           &
+     &   (0, fln_SR%ncomp_export,fln_tce%num_current_fline(my_rank+1),  &
+     &    fln_SR%ntot_recv, fln_SR%npe_send, fln_SR%id_pe_send,         &
      &    fln_SR%istack_send, fln_SR%item_send,                         &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
      &    fln_SR%istack_recv, fln_SR%item_recv, fln_SR%item_recv, 0,    &
      &    m_SR%SR_sig, m_SR%SR_r, fln_SR%rSend, fln_SR%rRecv)
       do i = 1, nitem_export
         call calypso_send_recv_int                                      &
-     &   (0, fln_tce%num_current_fline(my_rank+1), fln_SR%ntot_recv,                        &
+     &   (0, fln_tce%num_current_fline(my_rank+1), fln_SR%ntot_recv,    &
      &    fln_SR%npe_send, fln_SR%id_pe_send,                           &
      &    fln_SR%istack_send, fln_SR%item_send, 0,                      &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
@@ -187,8 +186,6 @@
       call set_trace_data_from_SR(fln_SR, fln_tce)
       nline_global = fln_tce%istack_current_fline(nprocs)             &
      &              - fln_tce%istack_current_fline(0)
-      call dealloc_trace_SR_export(fln_SR)
-      call dealloc_trace_SR_import(fln_SR)
 !
       end subroutine s_trace_data_send_recv
 !
@@ -210,13 +207,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine raise_trace_SR_export(fln_SR)
+      subroutine raise_trace_SR_export(nnod_org, fln_SR)
 !
+      integer(kind = kint), intent(in) :: nnod_org
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
-      if(fln_SR%ntot_sendbuf .ge. fln_SR%ntot_send) return
+      if(fln_SR%ntot_sendbuf .gt. nnod_org) return
       call dealloc_trace_SR_export(fln_SR)
-      call alloc_trace_SR_export(fln_SR%ntot_send, fln_SR)
+      call alloc_trace_SR_export(nnod_org, fln_SR)
 !
       end subroutine raise_trace_SR_export
 !
@@ -226,7 +224,7 @@
 !
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
-      if(fln_SR%ntot_recvbuf .ge. fln_SR%ntot_recv) return
+      if(fln_SR%ntot_recvbuf .gt. fln_SR%ntot_recv) return
       call dealloc_trace_SR_import(fln_SR)
       call alloc_trace_SR_import(fln_SR%ntot_recv, fln_SR)
 !
@@ -241,10 +239,19 @@
 !
       fln_SR%ntot_sendbuf = ntot
       allocate(fln_SR%item_send(ntot))
+      allocate(fln_SR%iSend(ntot,nitem_export))
+      allocate(fln_SR%rSend(fln_SR%ncomp_export,ntot))
+      return
 !
       if(ntot .le. 0) return
 !$omp parallel workshare
-      fln_SR%item_send(1:ntot) =                   0
+      fln_SR%item_send(1:ntot) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%iSend(1:ntot,1:nitem_export) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%rSend(1:fln_SR%ncomp_export,1:ntot) = 0
 !$omp end parallel workshare
 !
       end subroutine alloc_trace_SR_export
@@ -258,10 +265,19 @@
 !
       fln_SR%ntot_recvbuf = ntot
       allocate(fln_SR%item_recv(ntot))
+      allocate(fln_SR%iRecv(ntot,nitem_export))
+      allocate(fln_SR%rRecv(fln_SR%ncomp_export,ntot))
+      return
 !
       if(ntot .le. 0) return
 !$omp parallel workshare
-      fln_SR%item_recv(1:ntot) =        0
+      fln_SR%item_recv(1:fln_SR%ntot_recvbuf) =          0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%iRecv(1:fln_SR%ntot_recvbuf,nitem_export) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%rRecv(1:fln_SR%ncomp_export,1:fln_SR%ntot_recvbuf) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_trace_SR_import
@@ -273,6 +289,8 @@
 !
       if(allocated(fln_SR%item_send) .eqv. .FALSE.) return
       deallocate(fln_SR%item_send)
+      deallocate(fln_SR%iSend)
+      deallocate(fln_SR%rSend)
 !
       end subroutine dealloc_trace_SR_export
 !
@@ -283,6 +301,8 @@
 !
       if(allocated(fln_SR%item_recv) .eqv. .FALSE.) return
       deallocate(fln_SR%item_recv)
+      deallocate(fln_SR%rRecv)
+      deallocate(fln_SR%iRecv)
 !
       end subroutine dealloc_trace_SR_import
 !
