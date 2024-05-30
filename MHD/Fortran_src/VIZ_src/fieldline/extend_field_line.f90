@@ -71,8 +71,6 @@
      &          icount_line, trace_length, iflag_comm, fline_lc)
 !
       use t_local_fline
-      use cal_field_on_surf_viz
-      use cal_fline_in_cube
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -94,9 +92,7 @@
       real(kind = kreal), intent(inout) :: trace_length
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !
-      real(kind = kreal) :: x4_tgt(4)
-      real(kind = kreal) :: xi(2), flux
-      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+      real(kind = kreal) :: flux
 !
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
 
@@ -116,41 +112,21 @@
         isf_org = isurf_org(2)
 !
 !   extend in the middle of element
-        call position_on_each_ele_surfs                                 &
-     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-        call find_line_end_in_1ele(iflag_dir,                           &
-     &      isf_org, v4_start, x4_start, xx4_ele_surf,                  &
-     &      isf_tgt, x4_tgt, xi)
-        if(isf_tgt .eq. 0) then
-          iflag_comm = -1
-          exit
-        end if
-!
-        isf_org =  0
         call trace_in_element(half, end_trace, trace_length, &
-     &      iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
-     &      node, surf, nod_fld, viz_fields, isurf_end, &
-     &      x4_start, v4_start, c_field)
-         call add_fline_list(x4_start, viz_fields%ntot_color_comp,      &
+     &      iele, isf_org, i_fline, iflag_dir,   &
+     &      node, surf, nod_fld, viz_fields, isurf_end, isf_tgt, &
+     &      x4_start, v4_start, c_field, iflag_comm)
+        if(iflag_comm .eq. -1) return
+        call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
      &                       c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
-        call position_on_each_ele_surfs                                 &
-     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-        call find_line_end_in_1ele(iflag_dir,                           &
-     &      isf_org, v4_start, x4_start, xx4_ele_surf,                  &
-     &      isf_tgt, x4_tgt, xi)
-!
-        if(isf_tgt .eq. 0) then
-          iflag_comm = -1
-          exit
-        end if
-!
         call trace_in_element(one, end_trace, trace_length, &
-     &      iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
-     &      node, surf, nod_fld, viz_fields, isurf_end,  &
-     &      x4_start, v4_start, c_field)
+     &      iele, izero, i_fline, iflag_dir,   &
+     &      node, surf, nod_fld, viz_fields, isurf_end, isf_tgt, &
+     &      x4_start, v4_start, c_field, iflag_comm)
+        if(iflag_comm .eq. -1) return
         call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
      &                      c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
@@ -210,37 +186,50 @@
 !  ---------------------------------------------------------------------
 !
       subroutine trace_in_element(trace_ratio, end_trace, trace_length, &
-     &          iele, isf_tgt, iphys_fline, xi_surf, x4_tgt,    &
+     &          iele, isf_org, iphys_fline, iflag_dir,   &
      &          node, surf, nod_fld, viz_fields, &
-     &          isurf_end, x4_start, v4_start, c_field)
+     &          isurf_end, isf_tgt, x4_start, v4_start, c_field, iflag_comm)
 !
       use coordinate_converter
       use convert_components_4_viz
       use cal_field_on_surf_viz
+      use cal_fline_in_cube
 !
       real(kind = kreal), intent(in) :: trace_ratio
       real(kind = kreal), intent(in) ::   end_trace
       real(kind = kreal), intent(inout) :: trace_length
 !
-      integer(kind = kint), intent(in) :: iele, isf_tgt, iphys_fline
-      real(kind = kreal), intent(in) :: xi_surf(2)
-      real(kind = kreal), intent(in) :: x4_tgt(4)
+      integer(kind = kint), intent(in) :: iele, isf_org
+      integer(kind = kint), intent(in) :: iphys_fline, iflag_dir
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
-      integer(kind = kint), intent(inout) :: isurf_end
+      integer(kind = kint), intent(inout) :: isurf_end, isf_tgt
       real(kind = kreal), intent(inout) :: x4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_field(viz_fields%ntot_color_comp)
+      integer(kind = kint), intent(inout) :: iflag_comm
 !
-      real(kind = kreal) :: v4_tgt(4)
+      real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
-      real(kind = kreal) :: xi(2), flux, trip, ratio
+      real(kind = kreal) :: xi_surf(2), flux, trip, ratio
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
+!
+      call position_on_each_ele_surfs                                   &
+     &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+      call find_line_end_in_1ele(iflag_dir,                             &
+     &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
+     &    isf_tgt, x4_tgt, xi_surf)
+!
+      if(isf_tgt .eq. 0) then
+        iflag_comm = -1
+        return
+      end if
 !
       isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
       call cal_field_on_surf_vect4                                      &
