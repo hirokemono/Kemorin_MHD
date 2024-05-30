@@ -43,8 +43,9 @@
 !
       subroutine s_trace_particle(dt_init, node, ele, surf,             &
      &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev)
+     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev, SR_sig)
 !
+      use calypso_SR
       use t_control_params_4_fline
       use t_comm_table
       use t_next_node_ele_4_node
@@ -70,12 +71,10 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       real(kind = kreal) :: dt
-      integer(kind = kint) :: iflag_comm
-      integer(kind = kint) :: i, ist, ied, ip, nline, inum, num
-      integer(kind = kint_gl) :: num64
-      integer :: src_rank
+      integer(kind = kint) :: ist, ied, nline, inum
 !
 !
       if(i_debug .gt. iflag_full_msg) then
@@ -92,7 +91,6 @@
       end if
       call calypso_MPI_barrier
 !
-      iflag_comm = 0
       dt = dt_init
       do
         write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
@@ -106,14 +104,12 @@
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        iflag_comm)
-          write(50+my_rank,*) 'extension end for ', inum, iflag_comm
-!
-          call set_fline_start_2_bcast(iflag_comm, inum, ele, surf,     &
-     &        isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_bcast)
+     &        fln_tce%iflag_comm_start(inum))
         end do
 !
-        call s_broadcast_trace_data(fln_tce, fln_bcast, nline)
+        call s_broadcast_trace_data                                     &
+     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
+     &      fln_tce, fln_bcast, nline)
 
         if(i_debug .gt. 0) then
           write(my_rank+50,*) 'istack_current_fline',                   &

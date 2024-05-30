@@ -136,13 +136,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize(istep_fline, time_d, fem,              &
-     &          isf_4_ele_dbl, iele_4_surf_dbl, nod_fld, fline)
+     &          isf_4_ele_dbl, iele_4_surf_dbl, nod_fld, fline, m_SR)
 !
       use set_fields_for_fieldline
       use const_field_lines
       use collect_fline_data
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list
+      use t_mesh_SR
 !
 !
       integer(kind = kint), intent(in) :: istep_fline
@@ -155,6 +156,7 @@
      &               :: iele_4_surf_dbl(fem%mesh%surf%numsurf,2,3)
 !
       type(fieldline_module), intent(inout) :: fline
+      type(mesh_SR), intent(inout) :: m_SR
 !
       type(time_data) :: t_IO
       integer(kind = kint) :: i_fln
@@ -181,7 +183,7 @@
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
      &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl, nod_fld,     &
      &      fline%fln_prm(i_fln), fline%fln_tce(i_fln),                 &
-     &      fline%fln_bcast(i_fln), fline%fline_lc(i_fln))
+     &      fline%fln_bcast(i_fln), fline%fline_lc(i_fln), m_SR)
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO                                 &

@@ -50,9 +50,10 @@
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
         integer(kind= kint), allocatable :: iline_original(:)
-        integer(kind= kint), allocatable :: iflag_fline(:)
+        integer(kind= kint), allocatable :: iflag_direction(:)
         integer(kind= kint), allocatable :: icount_fline(:)
         integer(kind= kint), allocatable :: isf_fline_start(:,:)
+        integer(kind= kint), allocatable :: iflag_comm_start(:)
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
@@ -117,7 +118,8 @@
 !
       num = 2 * num_each_field_line
       allocate(fln_tce%iline_original(num))
-      allocate(fln_tce%iflag_fline(num))
+      allocate(fln_tce%iflag_direction(num))
+      allocate(fln_tce%iflag_comm_start(num))
       allocate(fln_tce%icount_fline(num))
       allocate(fln_tce%isf_fline_start(2,num))
 !
@@ -130,7 +132,8 @@
       allocate(fln_tce%c_fline_start(viz_fields%ntot_color_comp, num))
       allocate(fln_tce%trace_length(num))
 !
-      fln_tce%iflag_fline =  0
+      fln_tce%iflag_direction =  0
+      fln_tce%iflag_comm_start =  0
       fln_tce%icount_fline = 0
       fln_tce%isf_fline_start = 0
       fln_tce%v_fline_start =  0.0d0
@@ -195,7 +198,8 @@
       deallocate(fln_tce%flux_stack_fline)
 !
       deallocate(fln_tce%iline_original)
-      deallocate(fln_tce%iflag_fline)
+      deallocate(fln_tce%iflag_direction)
+      deallocate(fln_tce%iflag_comm_start)
       deallocate(fln_tce%icount_fline)
       deallocate(fln_tce%isf_fline_start)
       deallocate(fln_tce%xx_fline_start)

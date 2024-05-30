@@ -146,8 +146,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine TRACER_visualize(istep_fline, time_d, fem,             &
-     &          isf_4_ele_dbl, iele_4_surf_dbl, nod_fld, fline, v_prev)
+     &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
+     &          nod_fld, fline, v_prev, SR_sig)
 !
+      use calypso_SR
       use set_fields_for_fieldline
       use trace_particle
       use collect_fline_data
@@ -166,6 +168,7 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
 !
       type(fieldline_module), intent(inout) :: fline
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(time_data) :: t_IO
       integer(kind = kint) :: i_fln
@@ -173,11 +176,11 @@
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
       do i_fln = 1, fline%num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
+        if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
         call s_trace_particle(time_d%dt, fem%mesh%node, fem%mesh%ele,   &
      &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl,              &
      &      nod_fld, fline%fln_prm(i_fln), fline%fln_tce(i_fln),        &
-     &      fline%fln_bcast(i_fln), v_prev)
+     &      fline%fln_bcast(i_fln), v_prev, SR_sig)
 !
 !        call copy_time_step_size_data(time_d, t_IO)
 !        call copy_local_fieldline_to_IO                                 &

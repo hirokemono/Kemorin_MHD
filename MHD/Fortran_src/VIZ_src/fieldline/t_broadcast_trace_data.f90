@@ -13,21 +13,20 @@
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
 !!
-!!      subroutine s_broadcast_trace_data(fln_tce, fln_bcast,           &
-!!     &                                  nline_global)
+!!      subroutine s_broadcast_trace_data                               &
+!!     &         (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,            &
+!!     &          fln_tce, fln_bcast, nline_global)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
-!!        integer(kind = kint), intent(inout) :: nline_global
-!!      subroutine set_fline_start_2_bcast(iflag_comm, i, ele, surf,    &
-!!     &          isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_bcast)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        integer(kind = kint), intent(in)                              &
 !!     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
 !!        integer(kind = kint), intent(in)                              &
 !!     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
-!!        type(each_fieldline_trace), intent(in) :: fln_tce
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
+!!        integer(kind = kint), intent(inout) :: nline_global
 !!@endverbatim
 !
       module t_broadcast_trace_data
@@ -53,7 +52,7 @@
         real(kind = kreal), allocatable ::  fline_export(:,:)
       end type broadcast_trace_data
 
-      private :: set_fline_start_from_neib
+      private :: set_fline_start_2_bcast, set_fline_start_from_neib
 !
 !  ---------------------------------------------------------------------
 !
@@ -96,22 +95,35 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_broadcast_trace_data(fln_tce, fln_bcast,             &
-     &                                  nline_global)
+      subroutine s_broadcast_trace_data                                 &
+     &         (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,              &
+     &          fln_tce, fln_bcast, nline_global)
 !
       use t_source_of_filed_line
       use calypso_mpi_real
       use calypso_mpi_int
       use transfer_to_long_integers
 !
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in)                                  &
+     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
+      integer(kind = kint), intent(in)                                  &
+     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
+!
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       integer(kind = kint), intent(inout) :: nline_global
 !
-      integer(kind = kint) :: ist, ip
+      integer(kind = kint) :: ist, ip, inum
       integer(kind = kint_gl) :: num64
       integer :: src_rank
 !
+!
+      do inum = 1, fln_tce%num_current_fline(my_rank+1)
+        call set_fline_start_2_bcast(inum, ele, surf,                   &
+     &      isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_bcast)
+      end do
 !
         do ip = 1, nprocs
           src_rank = int(ip - 1)
@@ -135,12 +147,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_2_bcast(iflag_comm, i, ele, surf,      &
+      subroutine set_fline_start_2_bcast(i, ele, surf,                  &
      &          isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_bcast)
 !
       use t_source_of_filed_line
 !
-      integer(kind = kint), intent(in) :: iflag_comm, i
+      integer(kind = kint), intent(in) :: i
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -157,13 +169,13 @@
 !
 !
       ist = fln_tce%istack_current_fline(my_rank)
-      if(iflag_comm .eq. ione) then
+      if(fln_tce%iflag_comm_start(i) .eq. ione) then
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf))
 !
         fln_bcast%id_fline_export(1,i+ist) = fln_tce%iline_original(i)
-        fln_bcast%id_fline_export(2,i+ist) = fln_tce%iflag_fline(i)
+        fln_bcast%id_fline_export(2,i+ist) = fln_tce%iflag_direction(i)
         fln_bcast%id_fline_export(3,i+ist) = fln_tce%icount_fline(i)
 !
         if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
@@ -226,8 +238,9 @@
         if(fln_bcast%id_fline_export(6,i) .eq. my_rank) then
           icou = icou + 1
           fln_tce%iline_original(icou) = fln_bcast%id_fline_export(1,i)
-          fln_tce%iflag_fline(icou) =  fln_bcast%id_fline_export(2,i)
-          fln_tce%icount_fline(icou) = fln_bcast%id_fline_export(3,i)
+          fln_tce%iflag_direction(icou)                                 &
+     &                                 = fln_bcast%id_fline_export(2,i)
+          fln_tce%icount_fline(icou) =   fln_bcast%id_fline_export(3,i)
           fln_tce%isf_fline_start(1:2,icou)                             &
      &                               = fln_bcast%id_fline_export(4:5,i)
 !
