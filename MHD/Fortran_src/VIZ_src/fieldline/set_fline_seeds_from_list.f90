@@ -268,6 +268,7 @@
       icou = fln_tce%istack_current_fline(my_rank)
       do inum = 1, fln_prm%num_each_field_line
           if(fln_prm%ip_surf_start_fline(inum) .ne. my_rank) cycle
+          icou = icou + 1
 !
           call s_sel_interpolate_scalar_ele                             &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
@@ -299,7 +300,6 @@
      &        ele, nod_fld, fln_prm%fline_fields,                       &
      &        fln_tce%c_fline_start(1,icou))
 !
-          icou = icou + 1
           fln_tce%isf_fline_start(1,icou)                               &
      &      = fln_prm%iele_surf_start_fline(inum)
           fln_tce%isf_fline_start(2,icou) = 0
