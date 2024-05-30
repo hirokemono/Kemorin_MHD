@@ -37,7 +37,7 @@
       use t_source_of_filed_line
 !
       use cal_field_on_surf_viz
-      use extend_field_line
+      use trace_in_element
 !
       integer, intent(in) :: id_rank
 !

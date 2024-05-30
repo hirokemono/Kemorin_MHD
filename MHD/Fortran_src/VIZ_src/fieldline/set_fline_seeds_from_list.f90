@@ -251,6 +251,7 @@
 !
       use sel_interpolate_scalar
       use extend_field_line
+      use trace_in_element
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
