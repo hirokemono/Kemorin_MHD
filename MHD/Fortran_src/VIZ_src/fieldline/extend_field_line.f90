@@ -94,13 +94,12 @@
       real(kind = kreal), intent(inout) :: trace_length
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !
-      real(kind = kreal) :: x4_tgt(4), v4_tgt(4)
-      real(kind = kreal) :: xi(2), flux, trip, ratio
+      real(kind = kreal) :: x4_tgt(4)
+      real(kind = kreal) :: xi(2), flux
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
 
-      real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
 !
       if(isurf_org(1) .eq. 0) then
         iflag_comm = 0
@@ -128,27 +127,10 @@
         end if
 !
         isf_org =  0
-        call trace_in_element(iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
-     &      node, surf, nod_fld, viz_fields, isurf_end, v4_tgt, c_tgt)
-!
-        trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
-     &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
-     &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        trace_length = trace_length + half*trip
-        if(trace_length .ge. end_trace .and. end_trace .gt. zero) then
-           ratio = (trace_length - end_trace) / trip
-           trace_length = end_trace
-         else
-           ratio = half
-         end if
-!
-         x4_start(1:4) = ratio * x4_start(1:4)                          &
-     &                 + (one - ratio) * x4_tgt(1:4)
-         v4_start(1:4) = ratio * v4_start(1:4)                          &
-     &                 + (one - ratio) * v4_tgt(1:4)
-         c_field(1:viz_fields%ntot_color_comp)                          &
-     &        =  ratio * c_field(1:viz_fields%ntot_color_comp)          &
-     &         + (one - ratio) * c_tgt(1:viz_fields%ntot_color_comp)
+        call trace_in_element(half, end_trace, trace_length, &
+     &      iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
+     &      node, surf, nod_fld, viz_fields, isurf_end, &
+     &      x4_start, v4_start, c_field)
          call add_fline_list(x4_start, viz_fields%ntot_color_comp,      &
      &                       c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
@@ -165,27 +147,10 @@
           exit
         end if
 !
-        call trace_in_element(iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
-     &      node, surf, nod_fld, viz_fields, isurf_end, v4_tgt, c_tgt)
-!
-        trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
-     &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
-     &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        trace_length = trace_length + trip
-        if(trace_length .ge. end_trace .and. end_trace.gt.zero) then
-          ratio = (end_trace-trace_length) / trip
-          trace_length = end_trace
-        else
-          ratio = zero
-        end if
-!
-        x4_start(1:4) = ratio * x4_start(1:4)                           &
-     &                 + (one - ratio) * x4_tgt(1:4)
-        v4_start(1:4) = ratio * v4_start(1:4)                           &
-     &                 + (one - ratio) * v4_tgt(1:4)
-        c_field(1:viz_fields%ntot_color_comp)                           &
-     &        =  ratio * c_field(1:viz_fields%ntot_color_comp)          &
-     &         + (one - ratio) * c_tgt(1:viz_fields%ntot_color_comp)
+        call trace_in_element(one, end_trace, trace_length, &
+     &      iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
+     &      node, surf, nod_fld, viz_fields, isurf_end,  &
+     &      x4_start, v4_start, c_field)
         call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
      &                      c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
@@ -244,18 +209,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trace_in_element                                       &
-     &         (iele, isf_tgt, iphys_fline, xi_surf, xyz_surf,    &
+      subroutine trace_in_element(trace_ratio, end_trace, trace_length, &
+     &          iele, isf_tgt, iphys_fline, xi_surf, x4_tgt,    &
      &          node, surf, nod_fld, viz_fields, &
-     &          isurf_end, v4_tgt, c_tgt)
+     &          isurf_end, x4_start, v4_start, c_field)
 !
       use coordinate_converter
       use convert_components_4_viz
       use cal_field_on_surf_viz
 !
+      real(kind = kreal), intent(in) :: trace_ratio
+      real(kind = kreal), intent(in) ::   end_trace
+      real(kind = kreal), intent(inout) :: trace_length
+!
       integer(kind = kint), intent(in) :: iele, isf_tgt, iphys_fline
       real(kind = kreal), intent(in) :: xi_surf(2)
-      real(kind = kreal), intent(in) :: xyz_surf(3)
+      real(kind = kreal), intent(in) :: x4_tgt(4)
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
@@ -263,17 +232,42 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
       integer(kind = kint), intent(inout) :: isurf_end
-      real(kind = kreal), intent(inout) :: v4_tgt(4)
+      real(kind = kreal), intent(inout) :: x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: c_tgt(viz_fields%ntot_color_comp)
+     &                   :: c_field(viz_fields%ntot_color_comp)
+!
+      real(kind = kreal) :: v4_tgt(4)
+      real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
+      real(kind = kreal) :: xi(2), flux, trip, ratio
 !
 !
       isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
       call cal_field_on_surf_vect4                                      &
      &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
      &    isurf_end, xi_surf, nod_fld%d_fld(1,iphys_fline), v4_tgt)
-      call cal_fields_on_line(isurf_end, xi_surf, xyz_surf,             &
+      call cal_fields_on_line(isurf_end, xi_surf, x4_tgt,               &
      &                        surf, nod_fld, viz_fields, c_tgt)
+!
+!
+        trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
+     &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
+     &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
+        trace_length = trace_length + trace_ratio * trip
+        if(trace_length .ge. end_trace .and. end_trace .gt. zero) then
+           ratio = (trace_length - end_trace) / trip
+           trace_length = end_trace
+         else
+           ratio = one - trace_ratio
+         end if
+!
+         x4_start(1:4) = ratio * x4_start(1:4)                          &
+     &                 + (one - ratio) * x4_tgt(1:4)
+         v4_start(1:4) = ratio * v4_start(1:4)                          &
+     &                 + (one - ratio) * v4_tgt(1:4)
+         c_field(1:viz_fields%ntot_color_comp)                          &
+     &        =  ratio * c_field(1:viz_fields%ntot_color_comp)          &
+     &         + (one - ratio) * c_tgt(1:viz_fields%ntot_color_comp)
 !
       end subroutine trace_in_element
 !
