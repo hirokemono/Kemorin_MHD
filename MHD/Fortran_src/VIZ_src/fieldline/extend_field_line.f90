@@ -128,12 +128,8 @@
         end if
 !
         isf_org =  0
-        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4                                    &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf_end, xi, nod_fld%d_fld(1,i_fline), v4_tgt)
-        call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
-     &                          surf, nod_fld, viz_fields, c_tgt)
+        call trace_in_element(iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
+     &      node, surf, nod_fld, viz_fields, isurf_end, v4_tgt, c_tgt)
 !
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
@@ -169,12 +165,8 @@
           exit
         end if
 !
-        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4                                    &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf_end, xi, nod_fld%d_fld(1,i_fline), v4_tgt)
-        call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
-     &                          surf, nod_fld, viz_fields, c_tgt)
+        call trace_in_element(iele, isf_tgt, i_fline, xi, x4_tgt(1),    &
+     &      node, surf, nod_fld, viz_fields, isurf_end, v4_tgt, c_tgt)
 !
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
@@ -249,6 +241,41 @@
       end do
 !
       end subroutine s_extend_field_line
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine trace_in_element                                       &
+     &         (iele, isf_tgt, iphys_fline, xi_surf, xyz_surf,    &
+     &          node, surf, nod_fld, viz_fields, &
+     &          isurf_end, v4_tgt, c_tgt)
+!
+      use coordinate_converter
+      use convert_components_4_viz
+      use cal_field_on_surf_viz
+!
+      integer(kind = kint), intent(in) :: iele, isf_tgt, iphys_fline
+      real(kind = kreal), intent(in) :: xi_surf(2)
+      real(kind = kreal), intent(in) :: xyz_surf(3)
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+!
+      integer(kind = kint), intent(inout) :: isurf_end
+      real(kind = kreal), intent(inout) :: v4_tgt(4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_tgt(viz_fields%ntot_color_comp)
+!
+!
+      isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+      call cal_field_on_surf_vect4                                      &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
+     &    isurf_end, xi_surf, nod_fld%d_fld(1,iphys_fline), v4_tgt)
+      call cal_fields_on_line(isurf_end, xi_surf, xyz_surf,             &
+     &                        surf, nod_fld, viz_fields, c_tgt)
+!
+      end subroutine trace_in_element
 !
 !  ---------------------------------------------------------------------
 !
