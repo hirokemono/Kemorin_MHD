@@ -9,13 +9,12 @@
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
 !!     &         (node, ele, surf, nod_fld,        &
-!!     &          fln_prm, fln_src, fln_tce, fline_lc)
+!!     &          fln_prm, fln_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
@@ -43,9 +42,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines(node, ele, surf,        &
-     &          isf_4_ele_dbl, iele_4_surf_dbl,          &
-     &          nod_fld, fln_prm, fln_src, fln_tce, fline_lc)
+      subroutine s_const_field_lines(node, ele, surf,                   &
+     &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
+     &          nod_fld, fln_prm, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
       use t_comm_table
@@ -68,8 +67,6 @@
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
 !
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(each_fieldline_source), intent(in) :: fln_src
-!
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
 !

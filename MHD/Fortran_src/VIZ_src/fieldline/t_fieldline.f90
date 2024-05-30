@@ -94,8 +94,6 @@
       call dealloc_fline_ctl_struct(fline_ctls)
 !
       do i_fln = 1, fline%num_fline
-        call alloc_local_data_4_fline                                   &
-     &     (fem%mesh%node, fline%fln_src(i_fln))
         call alloc_start_point_fline                                    &
      &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
@@ -163,8 +161,7 @@
      &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &
      &       (fem%mesh%node, fem%mesh%ele, nod_fld,                     &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln))
+     &        fline%fln_prm(i_fln), fline%fln_tce(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
           call s_set_fields_for_fieldline(fem%mesh, fem%group, nod_fld, &
@@ -176,8 +173,8 @@
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
-     &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl,   &
-     &      nod_fld, fline%fln_prm(i_fln), fline%fln_src(i_fln),        &
+     &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl,              &
+     &      nod_fld, fline%fln_prm(i_fln),                              &
      &      fline%fln_tce(i_fln), fline%fline_lc(i_fln))
 !
         call copy_time_step_size_data(time_d, t_IO)
@@ -211,7 +208,6 @@
         call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
 !
         call dealloc_local_start_grp_item(fline%fln_src(i_fln))
-        call dealloc_local_data_4_fline(fline%fln_src(i_fln))
         call dealloc_start_point_fline(fline%fln_src(i_fln))
         call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
       end do

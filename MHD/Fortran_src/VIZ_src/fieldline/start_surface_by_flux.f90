@@ -4,11 +4,12 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_start_surface_by_flux(node, ele, surf,             &
+!!      subroutine s_start_surface_by_flux(node, ele, surf, nod_fld,    &
 !!     &          fln_prm, fln_src, fln_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -39,7 +40,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_start_surface_by_flux(node, ele, surf,               &
+      subroutine s_start_surface_by_flux(node, ele, surf, nod_fld,      &
      &          fln_prm, fln_src, fln_tce)
 !
       use calypso_mpi_real
@@ -50,6 +51,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
@@ -75,7 +77,7 @@
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
      &      ele%interior_ele, surf%vnorm_surf, surf%area_surf,          &
      &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
-     &      fln_src%vector_nod_fline, fln_src%flux_start)
+     &      nod_fld%d_fld(1,fln_prm%iphys_4_fline), fln_src%flux_start)
       end if
 !
       abs_flux_start_l = 0.0d0

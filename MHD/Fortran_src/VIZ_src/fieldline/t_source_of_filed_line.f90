@@ -5,8 +5,6 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine alloc_local_start_grp_item(fln_src)
-!!      subroutine alloc_local_data_4_fline(node, fln_src)
-!!        type(node_data), intent(in) :: node
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_start_point_fline(fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
@@ -22,7 +20,6 @@
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
-!!      subroutine dealloc_local_data_4_fline(fln_src)
 !!      subroutine dealloc_local_start_grp_item(fln_src)
 !!      subroutine dealloc_start_point_fline(fln_src)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -38,8 +35,6 @@
 !
 !
       type each_fieldline_source
-        real(kind = kreal), allocatable :: vector_nod_fline(:,:)
-!
         integer(kind = kint) :: nele_start_grp = 0
         integer(kind = kint), allocatable :: iele_start_item(:,:)
         real(kind = kreal),   allocatable :: flux_start(:)
@@ -85,21 +80,6 @@
       if(fln_src%nele_start_grp .gt. 0) fln_src%iele_start_item = 0
 !
       end subroutine alloc_local_start_grp_item
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_local_data_4_fline(node, fln_src)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-!
-      allocate(fln_src%vector_nod_fline(node%numnod,3))
-      fln_src%vector_nod_fline = 0.0d0
-!
-      end subroutine alloc_local_data_4_fline
 !
 !  ---------------------------------------------------------------------
 !
@@ -204,17 +184,6 @@
       deallocate(fln_src%iele_start_item, fln_src%flux_start)
 !
       end subroutine dealloc_local_start_grp_item
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_local_data_4_fline(fln_src)
-!
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-!
-      deallocate(fln_src%vector_nod_fline)
-!
-      end subroutine dealloc_local_data_4_fline
 !
 !  ---------------------------------------------------------------------
 !

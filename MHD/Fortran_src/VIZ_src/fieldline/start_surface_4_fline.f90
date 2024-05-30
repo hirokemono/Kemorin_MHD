@@ -66,7 +66,8 @@
         xi(1:2) = zero
         call cal_field_on_surf_vector                                   &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf, xi, fln_src%vector_nod_fline, vec_surf)
+     &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
+     &      vec_surf)
 !
         fln_src%flux_start_fline(i)                                     &
      &                     = (vec_surf(1) * surf%vnorm_surf(isurf,1)    &

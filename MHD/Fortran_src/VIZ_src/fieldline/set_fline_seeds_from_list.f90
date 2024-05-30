@@ -18,6 +18,13 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fieldline_module), intent(inout) :: fline
+!!      subroutine set_FLINE_seed_field_from_list                       &
+!!     &         (node, ele, nod_fld, fln_prm, fln_tce)
+!!         type(node_data), intent(in) :: node
+!!         type(element_data), intent(in) :: ele
+!!         type(phys_data), intent(in) :: nod_fld
+!!         type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!@endverbatim
 !
       module set_fline_seeds_from_list
@@ -240,7 +247,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_FLINE_seed_field_from_list                         &
-     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
+     &         (node, ele, nod_fld, fln_prm, fln_tce)
 !
       use sel_interpolate_scalar
       use extend_field_line
@@ -250,7 +257,6 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(each_fieldline_source), intent(in) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: icou, inum
@@ -264,21 +270,21 @@
 !
           call s_sel_interpolate_scalar_ele                             &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
-     &          fln_src%vector_nod_fline(1,1),                          &
+     &          nod_fld%d_fld(1,fln_prm%iphys_4_fline),                 &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &
      &          fln_tce%v_fline_start(1,icou))
             call s_sel_interpolate_scalar_ele                           &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
-     &          fln_src%vector_nod_fline(1,2),                          &
+     &          nod_fld%d_fld(1,fln_prm%iphys_4_fline+1),               &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &
      &          fln_tce%v_fline_start(2,icou))
             call s_sel_interpolate_scalar_ele                           &
      &         (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,     &
-     &          fln_src%vector_nod_fline(1,3),                          &
+     &          nod_fld%d_fld(1,fln_prm%iphys_4_fline+2),               &
      &          istack_tbl_wtype_smp(3), ione,                          &
      &          fln_prm%iele_surf_start_fline(inum),                    &
      &          fln_prm%xi_surf_start_fline(1,inum),                    &

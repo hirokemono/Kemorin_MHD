@@ -110,6 +110,7 @@
       call add_fline_start(x4_start, viz_fields%ntot_color_comp,        &
      &                     c_field(1), fline_lc)
 !
+      iflag_comm = 0
       do
         icount_line = icount_line + 1
         iele =    isurf_org(1)
@@ -126,48 +127,35 @@
           exit
         end if
 !
+        isf_org =  0
         isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4                                    &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
      &      isurf_end, xi, nod_fld%d_fld(1,i_fline), v4_tgt)
-!
         call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
      &                          surf, nod_fld, viz_fields, c_tgt)
 !
-        isf_org =  0
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        if((half*trip) .ge. (end_trace-trace_length)                    &
-     &     .and. end_trace .gt. zero) then
-          ratio = (end_trace-trace_length) / trip
-          x4_start(1:4) = ratio * x4_tgt(1:4)                           &
-     &                   + (one - ratio) * x4_start(1:4)
-          v4_start(1:4) = ratio * v4_tgt(1:4)                           &
-     &                   + (one - ratio) * v4_start(1:4)
-          c_field(1:viz_fields%ntot_color_comp)                         &
-     &          = (one - ratio) * c_field(1:viz_fields%ntot_color_comp) &
-     &           + ratio * c_tgt(1:viz_fields%ntot_color_comp)
-          trace_length = end_trace
+        trace_length = trace_length + half*trip
+        if(trace_length .ge. end_trace .and. end_trace .gt. zero) then
+           ratio = (trace_length - end_trace) / trip
+           trace_length = end_trace
+         else
+           ratio = half
+         end if
 !
-          call add_fline_list(x4_start, viz_fields%ntot_color_comp,     &
-     &                        c_field(1), fline_lc)
-          iflag_comm = 0
-          exit
-        else
-          trace_length = trace_length + trip
-          ratio = half
-          x4_start(1:4) = ratio * x4_tgt(1:4)                           &
-     &                   + (one - ratio) * x4_start(1:4)
-          v4_start(1:4) = ratio * v4_tgt(1:4)                           &
-     &                   + (one - ratio) * v4_start(1:4)
-          c_field(1:viz_fields%ntot_color_comp)                         &
-     &          = (one - ratio) * c_field(1:viz_fields%ntot_color_comp) &
-     &           + ratio * c_tgt(1:viz_fields%ntot_color_comp)
-          call add_fline_list(x4_start, viz_fields%ntot_color_comp,     &
-     &                        c_field(1), fline_lc)
-        end if
-!
+         x4_start(1:4) = ratio * x4_start(1:4)                          &
+     &                 + (one - ratio) * x4_tgt(1:4)
+         v4_start(1:4) = ratio * v4_start(1:4)                          &
+     &                 + (one - ratio) * v4_tgt(1:4)
+         c_field(1:viz_fields%ntot_color_comp)                          &
+     &        =  ratio * c_field(1:viz_fields%ntot_color_comp)          &
+     &         + (one - ratio) * c_tgt(1:viz_fields%ntot_color_comp)
+         call add_fline_list(x4_start, viz_fields%ntot_color_comp,      &
+     &                       c_field(1), fline_lc)
+        if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
         call position_on_each_ele_surfs                                 &
@@ -191,31 +179,24 @@
         trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
      &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
-        if(trip .ge. (end_trace-trace_length)                           &
-     &          .and. end_trace.gt.zero) then
+        trace_length = trace_length + trip
+        if(trace_length .ge. end_trace .and. end_trace.gt.zero) then
           ratio = (end_trace-trace_length) / trip
-          x4_start(1:4) = ratio * x4_tgt(1:4)                           &
-     &                   + (one - ratio) * x4_start(1:4)
-          v4_start(1:4) = ratio * v4_tgt(1:4)                           &
-     &                   + (one - ratio) * v4_start(1:4)
-          c_field(1:viz_fields%ntot_color_comp)                         &
-     &          = (one - ratio) * c_field(1:viz_fields%ntot_color_comp) &
-     &           + ratio * c_tgt(1:viz_fields%ntot_color_comp)
           trace_length = end_trace
-!
-          call add_fline_list(x4_start, viz_fields%ntot_color_comp,     &
-     &                        c_field(1), fline_lc)
-          iflag_comm = 0
-          exit
         else
-          trace_length = trace_length + trip
-          x4_start(1:4) = x4_tgt(1:4)
-          v4_start(1:4) = v4_tgt(1:4)
-          c_field(1:viz_fields%ntot_color_comp)                         &
-     &        = c_tgt(1:viz_fields%ntot_color_comp)
-          call add_fline_list(x4_start, viz_fields%ntot_color_comp,     &
-     &                        c_field(1), fline_lc)
+          ratio = zero
         end if
+!
+        x4_start(1:4) = ratio * x4_start(1:4)                           &
+     &                 + (one - ratio) * x4_tgt(1:4)
+        v4_start(1:4) = ratio * v4_start(1:4)                           &
+     &                 + (one - ratio) * v4_tgt(1:4)
+        c_field(1:viz_fields%ntot_color_comp)                           &
+     &        =  ratio * c_field(1:viz_fields%ntot_color_comp)          &
+     &         + (one - ratio) * c_tgt(1:viz_fields%ntot_color_comp)
+        call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
+     &                      c_field(1), fline_lc)
+        if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
