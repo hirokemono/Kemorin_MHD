@@ -131,7 +131,7 @@
 !
       subroutine s_trace_data_send_recv(ele, surf,                      &
      &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          fln_tce, fln_SR, m_SR)
+     &          fln_tce, fln_SR, m_SR, nline_global)
 !
       use calypso_SR
       use calypso_SR_int
@@ -146,6 +146,7 @@
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
 !
+      integer(kind = kint), intent(inout) :: nline_global
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
       type(mesh_SR), intent(inout) :: m_SR
@@ -163,11 +164,6 @@
       allocate(fln_SR%iSend(fln_tce%num_current_fline(my_rank+1),nitem_export))
       call set_trace_data_to_SR(ele, surf,                              &
      &    isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
-!
-      write(*,*) my_rank, 'fln_SR%id_pe_send', fln_SR%id_pe_send
-      write(*,*) my_rank, 'fln_SR%istack_send', fln_SR%istack_send
-      write(*,*) my_rank, 'fln_SR%rSend', fln_SR%npe_send,              &
-     &      size(fln_SR%rSend) / fln_SR%ncomp_export
 !
       allocate(fln_SR%rRecv(fln_SR%ncomp_export,fln_SR%ntot_recv))
       allocate(fln_SR%iRecv(fln_SR%ntot_recv,nitem_export))
@@ -187,10 +183,12 @@
      &    fln_SR%istack_recv, fln_SR%item_recv, fln_SR%item_recv,       &
      &    m_SR%SR_sig, m_SR%SR_i, fln_SR%iSend(1,i), fln_SR%iRecv(1,i))
       end do
+!
+      call set_trace_data_from_SR(fln_SR, fln_tce)
+      nline_global = fln_tce%istack_current_fline(nprocs)             &
+     &              - fln_tce%istack_current_fline(0)
       call dealloc_trace_SR_export(fln_SR)
       call dealloc_trace_SR_import(fln_SR)
-!
-!      call set_trace_data_from_SR(fln_SR, fln_tce)
 !
       end subroutine s_trace_data_send_recv
 !
@@ -452,6 +450,7 @@
 !
       subroutine set_trace_data_from_SR(fln_SR, fln_tce)
 !
+      use calypso_mpi_int
       use t_source_of_filed_line
 !
       type(trace_data_send_recv), intent(in) :: fln_SR
@@ -459,10 +458,14 @@
 !
       integer(kind = kint) :: ip, i
 !
+      call calypso_mpi_allgather_one_int                                &
+     &   (fln_SR%ntot_recv, fln_tce%num_current_fline)
+!
       fln_tce%istack_current_fline(0) = 0
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &
-     &     = fln_tce%istack_current_fline(ip-1) + fln_SR%num_recv(ip)
+     &                   = fln_tce%istack_current_fline(ip-1)           &
+     &                    + fln_tce%num_current_fline(ip)
       end do
       do i = 1, fln_SR%ntot_recv
           fln_tce%iline_original(i) =      fln_SR%iRecv(i,1)

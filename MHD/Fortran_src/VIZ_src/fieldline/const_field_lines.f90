@@ -116,29 +116,32 @@
         call alloc_trace_data_SR_num(fln_prm%fline_fields, fln_SR)
         call s_trace_data_send_recv                                     &
      &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-     &      fln_tce, fln_SR, m_SR)
+     &      fln_tce, fln_SR, m_SR, nline)
+!
+!        call s_broadcast_trace_data                                     &
+!     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
+!     &      fln_tce, fln_bcast, nline)
+!
+        write(*,*) my_rank, fln_SR%ntot_recv, 'fln_tce%num_current_fline(ip)', &
+     &          fln_tce%num_current_fline
         call dealloc_trace_data_SR_num(fln_SR)
 !
-        call s_broadcast_trace_data                                     &
-     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-     &      fln_tce, fln_bcast, nline)
-!
-        write(*,*) my_rank, 'check'
-        do i = 1, fln_tce%num_current_fline(my_rank+1)
-          inum =  fln_SR%iRecv(i,1) - fln_tce%iline_original(i)
-          if(inum .ne. 0) write(*,*) my_rank, i, inum
-          inum =  fln_SR%iRecv(i,2) - fln_tce%iflag_direction(i)
-          if(inum .ne. 0) write(*,*) my_rank, i, inum
-          inum =  fln_SR%iRecv(i,3) - fln_tce%icount_fline(i)
-          if(inum .ne. 0) write(*,*) my_rank, i, inum
-          inum =  fln_SR%iRecv(i,4) - fln_tce%isf_fline_start(1,i)
-          if(inum .ne. 0) write(*,*) my_rank, i, inum
-          inum =  fln_SR%iRecv(i,5) - fln_tce%isf_fline_start(2,i)
-          if(inum .ne. 0) write(*,*) my_rank, i, inum
-        end do
+!        write(*,*) my_rank, 'check'fln_tce%num_current_fline(
+!        do i = 1, my_rank+1)
+!          inum =  fln_SR%iRecv(i,1) - fln_tce%iline_original(i)
+!          if(inum .ne. 0) write(*,*) my_rank, i, inum
+!          inum =  fln_SR%iRecv(i,2) - fln_tce%iflag_direction(i)
+!          if(inum .ne. 0) write(*,*) my_rank, i, inum
+!          inum =  fln_SR%iRecv(i,3) - fln_tce%icount_fline(i)
+!          if(inum .ne. 0) write(*,*) my_rank, i, inum
+!          inum =  fln_SR%iRecv(i,4) - fln_tce%isf_fline_start(1,i)
+!          if(inum .ne. 0) write(*,*) my_rank, i, inum
+!          inum =  fln_SR%iRecv(i,5) - fln_tce%isf_fline_start(2,i)
+!          if(inum .ne. 0) write(*,*) my_rank, i, inum
+!        end do
 
-      deallocate(fln_SR%rSend, fln_SR%iSend)
-      deallocate(fln_SR%rRecv, fln_SR%iRecv)
+        deallocate(fln_SR%rSend, fln_SR%iSend)
+        deallocate(fln_SR%rRecv, fln_SR%iRecv)
 !
         if(i_debug .gt. 0) then
           write(my_rank+50,*) 'istack_current_fline',                   &
