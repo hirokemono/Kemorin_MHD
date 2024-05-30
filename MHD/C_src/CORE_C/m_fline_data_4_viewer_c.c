@@ -21,7 +21,7 @@ struct points_data * init_points_data(void){
 void alloc_points_node_s(long nnod, struct points_data *points_d){
     points_d->nnod_points = nnod;
     /* allocate memory  xyzw_points[node #][direction]*/
-    points_d->xyzw_points = (double *)malloc(IFOUR*points_d->nnod_pointsg*sizeof(double));
+    points_d->xyzw_points = (double *)malloc(IFOUR*points_d->nnod_points*sizeof(double));
     if(points_d->xyzw_points  == NULL){
         printf("malloc error for points_d->xyzw_viz \n");
         exit(0);
@@ -36,8 +36,8 @@ void alloc_points_node_s(long nnod, struct points_data *points_d){
 };
 
 static void dealloc_points_node_s(struct points_data *points_d){
-    free(points_d->inod_fline);
-    free(points_d->xyzw_fline);
+    free(points_d->inod_points);
+    free(points_d->xyzw_points);
 }
 
 
@@ -68,10 +68,10 @@ void alloc_points_field_name_c(long nfield, struct points_data *points_d){
         exit(0);
     }
 
-    for (i = 0; i < printf->nfield; i++) {
-        printf->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
-        if(printf->data_name[i]  == NULL){
-            printf("malloc error for printf->data_name[i], %d \n", i);
+    for (i = 0; i < points_d->nfield; i++) {
+        points_d->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
+        if(points_d->data_name[i]  == NULL){
+            printf("malloc error for points_d->data_name[i], %d \n", i);
             exit(0);
         }
     };
@@ -173,11 +173,11 @@ static void dealloc_points_ave_data(struct points_data *points_d){
 }
 
 void deallc_all_points_data(struct points_data *points_d){
-    dealloc_points_ave_data(fline_d);
-    dealloc_points_color_data(fline_d);
+    dealloc_points_ave_data(points_d);
+    dealloc_points_color_data(points_d);
     
-    dealloc_points_field_data_c(fline_d);
-    dealloc_points_node_s(fline_d);
+    dealloc_points_field_data_c(points_d);
+    dealloc_points_node_s(points_d);
     return;
 };
 
@@ -194,11 +194,6 @@ struct fline_data * init_fline_data(void){
     }
     return fline_d;
 };
-static void dealloc_fline_node_s(struct fline_data *fline_d){
-    free(fline_d->inod_fline);
-    free(fline_d->xyzw_fline);
-}
-
 
 void alloc_fline_node_s(long nnod, struct fline_data *fline_d){
     fline_d->nnod_fline = nnod;
