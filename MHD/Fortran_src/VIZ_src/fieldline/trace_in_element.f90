@@ -100,7 +100,7 @@
 !
       real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
-      real(kind = kreal) :: xi_surf(2), flux, trip, ratio
+      real(kind = kreal) :: xi_surf(2), trip, ratio
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !
