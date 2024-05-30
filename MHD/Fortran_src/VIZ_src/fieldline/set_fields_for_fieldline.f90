@@ -4,11 +4,6 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_local_field_4_fline                              &
-!!     &         (node, nod_fld, fln_prm, fln_src)
-!!        type(node_data), intent(in) :: node
-!!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      integer(kind = kint) function count_nsurf_for_starting          &
 !!     &                            (ele, sf_grp, igrp_seed)
 !!      subroutine set_isurf_for_starting                               &
@@ -45,35 +40,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_local_field_4_fline                                &
-     &         (node, nod_fld, fln_prm, fln_src)
-!
-      use convert_components_4_viz
-!
-      type(node_data), intent(in) :: node
-      type(phys_data), intent(in) :: nod_fld
-      type(fieldline_paramter), intent(in) :: fln_prm
-!
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-      integer(kind = kint) :: i_field, ist_fld, num_comp
-!
-!
-        i_field = fln_prm%ifield_4_fline
-        ist_fld = nod_fld%istack_component(i_field-1)
-        num_comp = nod_fld%istack_component(i_field) - ist_fld
-!
-        if (iflag_debug .gt. 0) write(*,*)                              &
-     &    'convert_comps_4_viz ifield_4_fline', i_field
-        call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
-     &     node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,        &
-     &     num_comp, fln_prm%icomp_4_fline,                             &
-     &     nod_fld%d_fld(1,ist_fld+1), fln_src%vector_nod_fline)
-!
-      end subroutine set_local_field_4_fline
 !
 !  ---------------------------------------------------------------------
 !

@@ -159,9 +159,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       do i_fln = 1, fline%num_fline
-        call set_local_field_4_fline(fem%mesh%node, nod_fld,            &
-     &    fline%fln_prm(i_fln), fline%fln_src(i_fln))
-!
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
      &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &

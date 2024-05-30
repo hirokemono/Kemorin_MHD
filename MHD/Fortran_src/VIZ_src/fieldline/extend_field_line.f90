@@ -10,7 +10,7 @@
 !!      subroutine s_extend_field_line                                  &
 !!     &         (node, ele, surf, nod_fld, viz_fields, max_line_step,  &
 !!     &          end_trace, iflag_used_ele, iflag_dir,                 &
-!!     &          vect_nod, isurf_org, x4_start, v4_start,              &
+!!     &          i_fline, isurf_org, x4_start, v4_start,               &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -20,7 +20,6 @@
 !!        real(kind = kreal), intent(in) ::   end_trace
 !!        integer(kind = kint), intent(in) :: iflag_dir, max_line_step
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
-!!        real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
 !!        integer(kind = kint), intent(inout) :: isurf_org(3)
 !!        integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
@@ -68,7 +67,7 @@
       subroutine s_extend_field_line                                    &
      &         (node, ele, surf, nod_fld, viz_fields, max_line_step,    &
      &          end_trace, iflag_used_ele, iflag_dir,                   &
-     &          vect_nod, isurf_org, x4_start, v4_start, c_field,       &
+     &          i_fline, isurf_org, x4_start, v4_start, c_field,        &
      &          icount_line, trace_length, iflag_comm, fline_lc)
 !
       use t_local_fline
@@ -80,11 +79,11 @@
       type(surface_data), intent(in) :: surf
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
+      integer(kind = kint), intent(in) :: i_fline
 !
       real(kind = kreal), intent(in) ::   end_trace
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
-      real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
 !
       integer(kind = kint), intent(inout) :: isurf_org(2)
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
@@ -129,8 +128,8 @@
 !
         isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4                                    &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
-     &      surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, nod_fld%d_fld(1,i_fline), v4_tgt)
 !
         call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
      &                          surf, nod_fld, viz_fields, c_tgt)
@@ -184,8 +183,8 @@
 !
         isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4                                    &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
-     &      surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, nod_fld%d_fld(1,i_fline), v4_tgt)
         call cal_fields_on_line(isurf_end, xi, x4_tgt(1),               &
      &                          surf, nod_fld, viz_fields, c_tgt)
 !

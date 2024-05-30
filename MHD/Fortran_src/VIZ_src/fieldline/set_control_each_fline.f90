@@ -205,15 +205,15 @@
       call set_components_4_viz                                         &
      &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp, &
      &    ione, ifield_tmp, icomp_tmp, ncomp, ncomp_org, tmpchara)
-      fln_prm%ifield_4_fline = ifield_tmp(1)
-      fln_prm%icomp_4_fline =  icomp_tmp(1)
 !
-      if(fln_prm%icomp_4_fline .ne. icomp_VECTOR) then
+      if(icomp_tmp(1) .ne. icomp_VECTOR) then
         call calypso_MPI_abort(ierr_fld,                                &
      &      'Choose vector field for field line')
       end if
+      fln_prm%iphys_4_fline                                             &
+     &       = nod_fld%istack_component(ifield_tmp(1)-1) + 1
 !
-      call set_ctl_params_viz_fields(fln%fline_field_output_ctl,       &
+      call set_ctl_params_viz_fields(fln%fline_field_output_ctl,        &
      &                               nod_fld, fln_prm%fline_fields)
 !
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &

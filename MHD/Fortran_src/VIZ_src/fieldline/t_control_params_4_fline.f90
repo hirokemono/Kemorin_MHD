@@ -50,10 +50,8 @@
 !>        Maximum trace length for line tracing
         real(kind = kreal) :: max_trace_length =  1.0d30
 !
-!>        Field address for fieldline
-        integer(kind = kint) :: ifield_4_fline = 0
-!>        Component address for fieldline
-        integer(kind = kint) :: icomp_4_fline = 0
+!>        start address for of field data for fieldline
+        integer(kind = kint) :: iphys_4_fline = 0
 !
 !>        control parameter for vizulization field output
         type(ctl_params_viz_fields) :: fline_fields
@@ -212,9 +210,6 @@
      &            fln_prm%id_seed_distribution
         write(*,*) 'max_line_stepping: ', fln_prm%max_line_stepping
         write(*,*) 'max_trace_length: ',  fln_prm%max_trace_length
-!
-        write(*,*) 'ifield_4_fline: ', fln_prm%ifield_4_fline
-        write(*,*) 'icomp_4_fline: ',  fln_prm%icomp_4_fline
 !
         write(*,*) 'nele_grp_area_fline: ',                             &
      &            fln_prm%nele_grp_area_fline
