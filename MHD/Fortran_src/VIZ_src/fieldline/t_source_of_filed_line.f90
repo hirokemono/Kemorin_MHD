@@ -57,11 +57,6 @@
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
         real(kind = kreal), allocatable ::  trace_length(:)
-!
-        integer(kind= kint) :: nitem_export
-        integer(kind= kint) :: ncomp_export
-        integer(kind= kint), allocatable :: id_fline_export(:,:)
-        real(kind = kreal), allocatable ::  fline_export(:,:)
       end type each_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -143,13 +138,6 @@
       fln_tce%xx_fline_start = 0.0d0
       fln_tce%trace_length = 0.0d0
 !
-      fln_tce%nitem_export = 6
-      fln_tce%ncomp_export = 9 + viz_fields%ntot_color_comp
-      allocate(fln_tce%id_fline_export(fln_tce%nitem_export,num))
-      allocate(fln_tce%fline_export(fln_tce%ncomp_export,num))
-      fln_tce%id_fline_export = 0
-      fln_tce%fline_export = 0.0d0
-!
       end subroutine alloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
@@ -214,9 +202,6 @@
       deallocate(fln_tce%v_fline_start)
       deallocate(fln_tce%c_fline_start)
       deallocate(fln_tce%trace_length)
-!
-      deallocate(fln_tce%id_fline_export)
-      deallocate(fln_tce%fline_export)
 !
       end subroutine dealloc_num_gl_start_fline
 !

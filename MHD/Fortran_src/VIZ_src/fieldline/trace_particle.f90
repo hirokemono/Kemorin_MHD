@@ -1,5 +1,5 @@
-!>@file   const_field_lines.f90
-!!@brief  module const_field_lines
+!>@file   trace_particle.f90
+!!@brief  module trace_particle
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
@@ -7,9 +7,10 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine s_const_field_lines                                  &
-!!     &         (node, ele, surf, nod_fld,        &
-!!     &          fln_prm, fln_tce, fln_bcast, fline_lc)
+!!      subroutine s_trace_particle(dt_init, node, ele, surf,           &
+!!     &          isf_4_ele_dbl, iele_4_surf_dbl,                       &
+!!     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev)
+!!        real(kind = kreal), intent(in) :: dt_init
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -17,10 +18,9 @@
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
-!!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
-      module const_field_lines
+      module trace_particle
 !
       use m_precision
 !
@@ -41,22 +41,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines(node, ele, surf,                   &
+      subroutine s_trace_particle(dt_init, node, ele, surf,             &
      &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          nod_fld, fln_prm, fln_tce, fln_bcast, fline_lc)
+     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev)
 !
       use t_control_params_4_fline
       use t_comm_table
       use t_next_node_ele_4_node
       use t_phys_data
-      use t_local_fline
-      use t_broadcast_trace_data
       use t_source_of_filed_line
+      use t_broadcast_trace_data
       use calypso_mpi_real
       use calypso_mpi_int
       use transfer_to_long_integers
-      use extend_field_line
+      use trace_particle_in_element
 !
+      real(kind = kreal), intent(in) :: dt_init
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -68,9 +68,10 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
-      type(local_fieldline), intent(inout) :: fline_lc
       type(broadcast_trace_data), intent(inout) :: fln_bcast
+      real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
 !
+      real(kind = kreal) :: dt
       integer(kind = kint) :: iflag_comm
       integer(kind = kint) :: i, ist, ied, ip, nline, inum, num
       integer(kind = kint_gl) :: num64
@@ -92,24 +93,20 @@
       call calypso_MPI_barrier
 !
       iflag_comm = 0
-      call reset_fline_start(fline_lc)
-!
+      dt = dt_init
       do
         write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = 1, fln_tce%num_current_fline(my_rank+1)
-          call s_extend_field_line                                      &
-     &       (node, ele, surf, nod_fld, fln_prm%fline_fields,           &
-     &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
-     &        fln_prm%iflag_fline_used_ele,                             &
-     &        fln_tce%iflag_fline(inum), fln_prm%iphys_4_fline,         &
+          call s_trace_particle_in_element                              &
+     &       (dt, node, surf, nod_fld, v_prev,                          &
+     &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
      &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
-     &        iflag_comm, fline_lc)
+     &        iflag_comm)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, inum, ele, surf,     &
@@ -128,10 +125,8 @@
        if(nline .le. 0) exit
       end do
 !
-!      call check_local_fline_dx( (my_rank+60), fline_lc)
-!
-      end subroutine s_const_field_lines
+      end subroutine s_trace_particle
 !
 !  ---------------------------------------------------------------------
 !
-      end module const_field_lines
+      end module trace_particle
