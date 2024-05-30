@@ -99,8 +99,10 @@
         call alloc_start_point_fline                                    &
      &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i_fln), fline%fln_tce(i_fln))
-        call alloc_local_fline(fline%fln_prm(i_fln)%ntot_color_comp,    &
+     &      fline%fln_prm(i_fln)%num_each_field_line,                   &
+     &      fline%fln_prm(i_fln)%fline_fields,                          &
+     &      fline%fln_tce(i_fln))
+        call alloc_local_fline(fline%fln_prm(i_fln)%fline_fields,       &
      &                         fline%fline_lc(i_fln))
       end do
 !
@@ -183,7 +185,7 @@
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO                                 &
-     &     (fline%fln_prm(i_fln), fline%fline_lc(i_fln),                &
+     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),   &
      &      fline%fline_ucd)
         call sel_write_parallel_ucd_file                                &
      &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
@@ -210,7 +212,6 @@
         call dealloc_local_fline(fline%fline_lc(i_fln))
         call dealloc_iflag_fline_used_ele(fline%fln_prm(i_fln))
         call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
-        call dealloc_fline_color_field_param(fline%fln_prm(i_fln))
 !
         call dealloc_local_start_grp_item(fline%fln_src(i_fln))
         call dealloc_local_data_4_fline(fline%fln_src(i_fln))

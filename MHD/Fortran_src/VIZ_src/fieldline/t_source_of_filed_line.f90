@@ -11,8 +11,15 @@
 !!      subroutine alloc_start_point_fline(fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine alloc_num_gl_start_fline(num_pe, fln_prm, fln_tce)
-!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!      subroutine alloc_num_gl_start_fline(num_pe, num_each_field_line,&
+!!     &                                    viz_fields, fln_tce)
+!!        integer, intent(in) :: num_pe
+!!        integer(kind = kint), intent(in) :: num_each_field_line
+!!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
+!!      subroutine copy_global_start_fline(i_copied, i_org,             &
+!!     &                                   viz_fields, ln_tce)
+!!        integer(kind = kint), intent(in) :: i_copied, i_org
+!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine dealloc_local_data_4_fline(fln_src)
@@ -115,10 +122,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_num_gl_start_fline(num_pe, fln_prm, fln_tce)
+      subroutine alloc_num_gl_start_fline(num_pe, num_each_field_line,  &
+     &                                    viz_fields, fln_tce)
 !
       integer, intent(in) :: num_pe
-      type(fieldline_paramter), intent(in) :: fln_prm
+      integer(kind = kint), intent(in) :: num_each_field_line
+      type(ctl_params_viz_fields), intent(inout) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: num, i
@@ -131,7 +140,7 @@
       fln_tce%num_current_fline =    0
       fln_tce%flux_stack_fline = 0.0d0
 !
-      num = 2 * fln_prm%num_each_field_line
+      num = 2 * num_each_field_line
       allocate(fln_tce%iline_original(num))
       allocate(fln_tce%iflag_fline(num))
       allocate(fln_tce%icount_fline(num))
@@ -143,7 +152,7 @@
 !
       allocate(fln_tce%xx_fline_start(4,num))
       allocate(fln_tce%v_fline_start(4,num))
-      allocate(fln_tce%c_fline_start(fln_prm%ntot_color_comp, num))
+      allocate(fln_tce%c_fline_start(viz_fields%ntot_color_comp, num))
       allocate(fln_tce%trace_length(num))
 !
       fln_tce%iflag_fline =  0
@@ -155,13 +164,34 @@
       fln_tce%trace_length = 0.0d0
 !
       fln_tce%nitem_export = 6
-      fln_tce%ncomp_export = 9 + fln_prm%ntot_color_comp
+      fln_tce%ncomp_export = 9 + viz_fields%ntot_color_comp
       allocate(fln_tce%id_fline_export(fln_tce%nitem_export,num))
       allocate(fln_tce%fline_export(fln_tce%ncomp_export,num))
       fln_tce%id_fline_export = 0
       fln_tce%fline_export = 0.0d0
 !
       end subroutine alloc_num_gl_start_fline
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_global_start_fline(i_copied, i_org,               &
+     &                                   viz_fields, ln_tce)
+!
+      use t_ctl_params_viz_fields
+!
+      integer(kind = kint), intent(in) :: i_copied, i_org
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+          fln_tce%xx_fline_start(1:4,i_copied)                          &
+     &          = fln_tce%xx_fline_start(1:4,i_org)
+          fln_tce%v_fline_start(1:4,i_copied)                           &
+     &          = fln_tce%v_fline_start(1:4,i_org)
+          fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_copied)  &
+     &      = fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_org)
+!
+      end subroutine copy_global_start_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

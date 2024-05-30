@@ -7,7 +7,8 @@
 !!      subroutine reset_fline_start(fline_lc)
 !!      subroutine add_fline_start(xx4_add, ntot_comp, col_add,         &
 !!     &                           fline_lc)
-!!      subroutine alloc_local_fline(ntot_comp, fline_lc)
+!!      subroutine alloc_local_fline(viz_fields, fline_lc)
+!!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
 !!      subroutine dealloc_local_fline(fline_lc)
 !!      subroutine add_fline_list(xx4_add, ntot_comp, col_add, fline_lc)
 !!        integer(kind = kint), intent(in) :: ntot_comp
@@ -121,15 +122,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_fline(ntot_comp, fline_lc)
+      subroutine alloc_local_fline(viz_fields, fline_lc)
 !
-      integer(kind = kint), intent(in) :: ntot_comp
+      use t_ctl_params_viz_fields
+!
+      type(ctl_params_viz_fields), intent(inout) :: viz_fields
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
       call reset_fline_start(fline_lc)
 !
-      fline_lc%ntot_comp_l = ntot_comp
+      fline_lc%ntot_comp_l = viz_fields%ntot_color_comp
       call alloc_local_fline_conn(ione, fline_lc)
       call alloc_local_fline_data(itwo, fline_lc)
 !

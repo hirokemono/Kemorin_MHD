@@ -67,7 +67,7 @@
 !
         xyz_surf(1:3) = surf%x_surf(isurf,1:3)
         call cal_fields_on_line(isurf, xi, xyz_surf,                    &
-     &                          surf, nod_fld, fln_prm,                 &
+     &                          surf, nod_fld, fln_prm%fline_fields,    &
      &                          fln_tce%c_fline_start(1,inum1))
 !
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then
@@ -93,12 +93,8 @@
           inum2 = inum1 + fln_src%num_line_local
           fln_tce%trace_length(inum2) = 0.0d0
           fln_tce%icount_fline(inum2) = 0
-          fln_tce%xx_fline_start(1:4,inum2)                             &
-     &          = fln_tce%xx_fline_start(1:4,inum1)
-          fln_tce%v_fline_start(1:4,inum2)                              &
-     &          = fln_tce%v_fline_start(1:4,inum1)
-          fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,inum2)        &
-     &         = fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,inum1)
+          call copy_global_start_fline(inum2, inum1,                    &
+     &                                 fln_prm%fline_fields, fln_tce)
 !
            call set_backward_fline_start_surf                           &
      &         (fln_prm%iflag_outward_flux_fline(i),                    &

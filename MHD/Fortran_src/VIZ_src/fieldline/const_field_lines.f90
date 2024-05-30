@@ -103,7 +103,8 @@
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
-          call s_extend_field_line(node, ele, surf, nod_fld, fln_prm,   &
+          call s_extend_field_line                                      &
+     &       (node, ele, surf, nod_fld, fln_prm%fline_fields,           &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_fline(inum), fln_src%vector_nod_fline,      &
@@ -115,8 +116,8 @@
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', inum, iflag_comm
 !
-          call set_fline_start_2_bcast(iflag_comm, inum, ele, surf,    &
-     &        isf_4_ele_dbl, iele_4_surf_dbl, fln_prm%ntot_color_comp, &
+          call set_fline_start_2_bcast(iflag_comm, inum, ele, surf,     &
+     &        isf_4_ele_dbl, iele_4_surf_dbl, fln_prm%fline_fields,     &
      &        fln_tce)
         end do
 !
@@ -132,7 +133,7 @@
      &          (num64*fln_tce%ncomp_export), src_rank)
         end do
 !
-        call set_fline_start_from_neib(fln_prm, fln_tce)
+        call set_fline_start_from_neib(fln_prm%fline_fields, fln_tce)
 !
         nline = fln_tce%istack_current_fline(nprocs)                    &
      &         - fln_tce%istack_current_fline(0)
@@ -153,7 +154,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_start_2_bcast(iflag_comm, i, ele, surf,      &
-     &          isf_4_ele_dbl, iele_4_surf_dbl, ntot_comp, fln_tce)
+     &          isf_4_ele_dbl, iele_4_surf_dbl, viz_fields, fln_tce)
 !
       use t_source_of_filed_line
 !
@@ -161,15 +162,15 @@
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
       integer(kind = kint), intent(in)                                  &
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
-      integer(kind = kint), intent(in) :: ntot_comp
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: iele, isf, ip, ist, ied, inum
+      integer(kind = kint) :: iele, isf
       integer(kind = kint) :: isurf
 !
 !
@@ -192,8 +193,8 @@
         fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
         fln_tce%fline_export(9,i) =   fln_tce%trace_length(i)
-        fln_tce%fline_export(9+1:9+ntot_comp,i)                         &
-    &         = fln_tce%c_fline_start(1:ntot_comp,i)
+        fln_tce%fline_export(9+1:9+viz_fields%ntot_color_comp,i)        &
+    &         = fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i)
       else
         fln_tce%id_fline_export(1:5,i) = izero
         fln_tce%id_fline_export(6,i) =  -ione
@@ -204,12 +205,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_from_neib(fln_prm, fln_tce)
+      subroutine set_fline_start_from_neib(viz_fields, fln_tce)
 !
       use calypso_mpi_int
       use t_source_of_filed_line
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ied_lin, i, icou, ip
@@ -247,8 +248,8 @@
      &         = fln_tce%fline_export(1:4,i)
           fln_tce%v_fline_start(1:4,icou) = fln_tce%fline_export(5:8,i)
           fln_tce%trace_length(icou) = fln_tce%fline_export(9,i)
-          fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)         &
-     &        = fln_tce%fline_export(9+1:9+fln_prm%ntot_color_comp,i)
+          fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,icou)      &
+     &       = fln_tce%fline_export(9+1:9+viz_fields%ntot_color_comp,i)
         end if
       end do
 !

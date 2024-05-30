@@ -289,7 +289,7 @@
      &       (fln_prm%iele_surf_start_fline(inum),                      &
      &        fln_prm%xi_surf_start_fline(1,inum),                      &
      &        fln_prm%xx_surf_start_fline(1,inum),                      &
-     &        ele, nod_fld, fln_prm,                                    &
+     &        ele, nod_fld, fln_prm%fline_fields,                       &
      &        fln_tce%c_fline_start(1,icou))
 !
           icou = icou + 1
@@ -317,14 +317,11 @@
             fln_tce%isf_fline_start(1,icou)                             &
      &            = fln_prm%iele_surf_start_fline(inum)
             fln_tce%isf_fline_start(2,icou) = 0
-            fln_tce%xx_fline_start(1:4,icou)                            &
-     &        = fln_tce%xx_fline_start(1:4,icou-1)
-            fln_tce%v_fline_start(1:4,icou)                             &
-     &        = fln_tce%v_fline_start(1:4,icou-1)
-            fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou)       &
-     &        = fln_tce%c_fline_start(1:fln_prm%ntot_color_comp,icou-1)
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
+            call copy_global_start_fline(icou, (icou-1),                &
+     &                                   fln_prm%fline_fields, fln_tce)
+
           end if
         end do
 !

@@ -8,7 +8,6 @@
 !!@verbatim
 !!      subroutine alloc_fline_starts_ctl(fln_prm)
 !!      subroutine alloc_iflag_fline_used_ele(ele, fln_prm)
-!!      subroutine alloc_fline_color_field_param(num_field, fln_prm)
 !!        type(element_data), intent(in) :: ele
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!
@@ -24,6 +23,7 @@
 !
       use m_precision
       use t_file_IO_parameter
+      use t_ctl_params_viz_fields
 !
       implicit  none
 !
@@ -55,22 +55,8 @@
 !>        Component address for fieldline
         integer(kind = kint) :: icomp_4_fline = 0
 !
-!>        number of field for coloring
-        integer(kind = kint) :: num_color_fields = 0
-!>        number of field for coloring
-        integer(kind = kint) :: ntot_color_comp =  0
-!>        Field name for fieldline color
-        character(len = kchara), allocatable :: color_field_name(:)
-!>        Field address for fieldline color
-        integer(kind = kint), allocatable :: ifleld_color_field(:)
-!>        component address for fieldline color
-        integer(kind = kint), allocatable :: icomp_color_field(:)
-!>        number of component for fieldline color
-        integer(kind = kint), allocatable :: istack_color_field(:)
-!>        number of component for fieldline color
-        integer(kind = kint), allocatable :: ncomp_color_field(:)
-!>        number of component for fieldline color
-        integer(kind = kint), allocatable :: ncomp_org_color_field(:)
+!>        control parameter for vizulization field output
+        type(ctl_params_viz_fields) :: fline_fields
 !
 !
 !>        Number of element group to use in fieldline
@@ -174,29 +160,14 @@
       end subroutine alloc_iflag_fline_used_ele
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine alloc_fline_color_field_param(num_field, fln_prm)
-!
-      integer(kind = kint), intent(in) :: num_field
-      type(fieldline_paramter), intent(inout) :: fln_prm
-!
-      fln_prm%num_color_fields = num_field
-      allocate(fln_prm%color_field_name(fln_prm%num_color_fields))
-      allocate(fln_prm%ifleld_color_field(fln_prm%num_color_fields))
-      allocate(fln_prm%icomp_color_field(fln_prm%num_color_fields))
-      allocate(fln_prm%istack_color_field(0:fln_prm%num_color_fields))
-      allocate(fln_prm%ncomp_color_field(fln_prm%num_color_fields))
-      allocate(fln_prm%ncomp_org_color_field(fln_prm%num_color_fields))
-!
-      end subroutine alloc_fline_color_field_param
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_fline_starts_ctl(fln_prm)
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
+!
+      call dealloc_ctl_params_viz_fields(fln_prm%fline_fields)
 !
       deallocate(fln_prm%id_ele_grp_area_fline)
 !
@@ -221,21 +192,6 @@
       deallocate(fln_prm%iflag_fline_used_ele)
 !
       end subroutine dealloc_iflag_fline_used_ele
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_fline_color_field_param(fln_prm)
-!
-      type(fieldline_paramter), intent(inout) :: fln_prm
-!
-      deallocate(fln_prm%color_field_name)
-      deallocate(fln_prm%ifleld_color_field)
-      deallocate(fln_prm%icomp_color_field)
-      deallocate(fln_prm%istack_color_field)
-      deallocate(fln_prm%ncomp_color_field)
-      deallocate(fln_prm%ncomp_org_color_field)
-!
-      end subroutine dealloc_fline_color_field_param
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

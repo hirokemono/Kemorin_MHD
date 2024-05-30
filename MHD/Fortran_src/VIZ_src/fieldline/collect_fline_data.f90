@@ -7,8 +7,8 @@
 !> @brief MPI communication To collect field line data
 !!
 !!@verbatim
-!!      subroutine copy_local_fieldline_to_IO(fln_prm, fline_lc, ucd)
-!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!      subroutine copy_local_fieldline_to_IO(viz_fields, fline_lc, ucd)
+!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -31,12 +31,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_local_fieldline_to_IO(fln_prm, fline_lc, ucd)
+      subroutine copy_local_fieldline_to_IO(viz_fields, fline_lc, ucd)
 !
       use t_ucd_data
       use const_global_element_ids
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(local_fieldline), intent(in) :: fline_lc
 !
       type(ucd_data), intent(inout) :: ucd
@@ -83,16 +83,16 @@
       end do
 !$omp end parallel do
       
-      ucd%num_field = fln_prm%num_color_fields
+      ucd%num_field = viz_fields%num_color_fields
       call allocate_ucd_phys_name(ucd)
 !$omp parallel workshare
       ucd%phys_name(1:ucd%num_field)                                    &
-     &     = fln_prm%color_field_name(1:ucd%num_field)
+     &     = viz_fields%color_field_name(1:ucd%num_field)
       ucd%num_comp(1:ucd%num_field)                                     &
-     &     = fln_prm%ncomp_color_field(1:ucd%num_field)
+     &     = viz_fields%ncomp_color_field(1:ucd%num_field)
 !$omp end parallel workshare
 
-      ucd%ntot_comp = fln_prm%ntot_color_comp
+      ucd%ntot_comp = viz_fields%ntot_color_comp
       call allocate_ucd_phys_data(ucd)
       do nd = 1, ucd%ntot_comp
 !$omp parallel workshare
