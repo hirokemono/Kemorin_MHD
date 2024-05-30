@@ -124,11 +124,11 @@
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
         if((half*trip) .ge. (end_trace-trace_length)                    &
      &     .and. end_trace .gt. zero) then
-          ratio = trip / (end_trace-trace_length)
+          ratio = (end_trace-trace_length) / trip
           x4_start(1:4) = ratio * x4_tgt(1:4)                           &
      &                   + (one - ratio) * x4_start(1:4)
           v4_start(1:4) = ratio * v4_tgt(1:4)                           &
-     &                   + (one - ratio) * x4_start(1:4)
+     &                   + (one - ratio) * v4_start(1:4)
           c_field(1:fln_prm%ntot_color_comp)                            &
      &             = (one - ratio) * c_field(1:fln_prm%ntot_color_comp) &
      &              + ratio * c_tgt(1:fln_prm%ntot_color_comp)
@@ -140,11 +140,14 @@
           exit
         else
           trace_length = trace_length + trip
-          x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
-          v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
+          ratio = half
+          x4_start(1:4) = ratio * x4_tgt(1:4)                           &
+     &                   + (one - ratio) * x4_start(1:4)
+          v4_start(1:4) = ratio * v4_tgt(1:4)                           &
+     &                   + (one - ratio) * v4_start(1:4)
           c_field(1:fln_prm%ntot_color_comp)                            &
-     &        = half * (c_field(1:fln_prm%ntot_color_comp)              &
-     &                + c_tgt(1:fln_prm%ntot_color_comp))
+     &             = (one - ratio) * c_field(1:fln_prm%ntot_color_comp) &
+     &              + ratio * c_tgt(1:fln_prm%ntot_color_comp)
           call add_fline_list(x4_start, fln_prm%ntot_color_comp,        &
      &                        c_field(1), fline_lc)
         end if
@@ -174,11 +177,11 @@
      &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
         if(trip .ge. (end_trace-trace_length)                           &
      &          .and. end_trace.gt.zero) then
-          ratio = trip / (end_trace-trace_length)
+          ratio = (end_trace-trace_length) / trip
           x4_start(1:4) = ratio * x4_tgt(1:4)                           &
      &                   + (one - ratio) * x4_start(1:4)
           v4_start(1:4) = ratio * v4_tgt(1:4)                           &
-     &                   + (one - ratio) * x4_start(1:4)
+     &                   + (one - ratio) * v4_start(1:4)
           c_field(1:fln_prm%ntot_color_comp)                            &
      &             = (one - ratio) * c_field(1:fln_prm%ntot_color_comp) &
      &              + ratio * c_tgt(1:fln_prm%ntot_color_comp)
