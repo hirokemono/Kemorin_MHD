@@ -104,13 +104,14 @@
       flux_4_each_line                                                  &
      &      = abs_flux_start / dble(fln_prm%num_each_field_line)
 !
+      fln_tce%istack_current_fline(0) = 0
       do ip = 1, nprocs
-        fln_tce%num_current_fline(ip)                                   &
+        fln_tce%istack_current_fline(ip)                                &
      &     = nint((fln_tce%flux_stack_fline(ip)                         &
      &      - fln_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
       fln_src%num_line_local                                            &
-     &     = fln_tce%num_current_fline(my_rank+1)
+     &     = fln_tce%istack_current_fline(my_rank+1)
 !
       if(i_debug .gt. 0) then
         write(my_rank+50,*)  'abs_flux_start',                          &

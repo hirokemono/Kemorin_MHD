@@ -77,12 +77,13 @@
       total_volume = fln_tce%flux_stack_fline(nprocs)
       volume_start_l = total_volume / dble(fln_prm%num_each_field_line)
 !
+      fln_tce%istack_current_fline(0) = 0
       do ip = 1, nprocs
-        fln_tce%num_current_fline(ip)                                   &
+        fln_tce%istack_current_fline(ip)                                &
      &     = nint((fln_tce%flux_stack_fline(ip)                         &
      &      - fln_tce%flux_stack_fline(ip-1)) / volume_start_l)
       end do
-      fln_src%num_line_local = fln_tce%num_current_fline(my_rank+1)
+      fln_src%num_line_local = fln_tce%istack_current_fline(my_rank+1)
 !
       if(i_debug .gt. 0) then
         write(my_rank+50,*)  'total_volume',                            &

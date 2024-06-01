@@ -74,30 +74,13 @@
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: ist, ied, nline, inum, i
+      integer(kind = kint) :: nline, inum
 !
-!
-      if(i_debug .gt. iflag_full_msg) then
-        write(my_rank+50,*)                                             &
-     &         'num_current_fline', fln_tce%num_current_fline(:)
-        write(my_rank+50,*)                                             &
-     &         'istack_current_fline', fln_tce%istack_current_fline(:)
-        ist = fln_tce%istack_current_fline(my_rank) + 1
-        ied = fln_tce%istack_current_fline(my_rank+1)
-        write(my_rank+50,*) 'isf_fline_start(1:2,inum)'
-        do inum = ist, ied
-          write(my_rank+50,*) inum, fln_tce%isf_fline_start(1:2,inum)
-        end do
-      end if
-      call calypso_MPI_barrier
 !
       call reset_fline_start(fline_lc)
 !
       do
-        write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
-     &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
-     &            fln_tce%num_current_fline(my_rank+1)
-        do inum = 1, fln_tce%num_current_fline(my_rank+1)
+        do inum = 1, fln_tce%num_current_fline
           call s_extend_field_line                                      &
      &       (node, ele, surf, nod_fld, fln_prm%fline_fields,           &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
@@ -111,7 +94,7 @@
      &        fln_tce%iflag_comm_start(inum), fline_lc)
         end do
 !
-        if(fln_tce%num_current_fline(my_rank+1) .gt. 4096) then
+        if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv                                   &
      &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                &
      &        fln_tce, fln_SR, m_SR, nline)
@@ -121,13 +104,6 @@
      &      fln_tce, fln_bcast, nline)
         end if
 !
-        if(i_debug .gt. 0) then
-          write(my_rank+50,*) 'istack_current_fline',                   &
-     &                       fln_tce%istack_current_fline(:)
-!
-          write(my_rank+50,*) 'number of lines: ', nline
-          write(*,*) 'number of lines: ', my_rank, nline
-        end if
        if(nline .le. 0) exit
       end do
 !

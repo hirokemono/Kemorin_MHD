@@ -45,8 +45,8 @@
       end type each_fieldline_source
 !
       type each_fieldline_trace
+        integer(kind = kint) :: num_current_fline
         integer(kind = kint), allocatable :: istack_current_fline(:)
-        integer(kind = kint), allocatable :: num_current_fline(:)
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
         integer(kind= kint), allocatable :: iline_original(:)
@@ -110,7 +110,6 @@
 !
 !
       allocate(fln_tce%istack_current_fline(0:num_pe))
-      allocate(fln_tce%num_current_fline(num_pe))
       allocate(fln_tce%flux_stack_fline(0:num_pe))
       fln_tce%istack_current_fline = 0
       fln_tce%num_current_fline =    0
@@ -194,7 +193,6 @@
 !
 !
       deallocate(fln_tce%istack_current_fline)
-      deallocate(fln_tce%num_current_fline)
       deallocate(fln_tce%flux_stack_fline)
 !
       deallocate(fln_tce%iline_original)

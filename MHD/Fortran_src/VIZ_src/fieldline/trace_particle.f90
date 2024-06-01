@@ -82,7 +82,7 @@
 !
       if(i_debug .gt. iflag_full_msg) then
         write(my_rank+50,*)                                             &
-     &         'num_current_fline', fln_tce%num_current_fline(:)
+     &         'num_current_fline', fln_tce%num_current_fline
         write(my_rank+50,*)                                             &
      &         'istack_current_fline', fln_tce%istack_current_fline(:)
         ist = fln_tce%istack_current_fline(my_rank) + 1
@@ -96,7 +96,7 @@
       dt = dt_init
       call reset_fline_start(fline_lc)
       do
-        do inum = 1, fln_tce%num_current_fline(my_rank+1)
+        do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
      &       (dt, node, surf, nod_fld, v_prev,                          &
      &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
@@ -116,7 +116,7 @@
      &                         fline_lc)
         end if
 !
-        if(fln_tce%num_current_fline(my_rank+1) .gt. 4096) then
+        if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv                                   &
      &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                &
      &        fln_tce, fln_SR, m_SR, nline)
@@ -137,8 +137,7 @@
       end do
 !
 !
-      fln_tce%num_current_fline(my_rank+1)                              &
-     &        = fline_lc%nnod_line_l
+      fln_tce%num_current_fline = fline_lc%nnod_line_l
       do inum = 1, fline_lc%nnod_line_l
         call return_to_trace_list(inum, fline_lc,                       &
      &      fln_tce%isf_fline_start(1,inum),                            &

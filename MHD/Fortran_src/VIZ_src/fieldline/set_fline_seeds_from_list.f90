@@ -227,18 +227,18 @@
 !        write(*,*) my_rank, 'fln_src%num_line_local',                  &
 !     &            fln_src%num_line_local
 
-      call calypso_mpi_allgather_one_int                                &
-     &   (fln_src%num_line_local, fln_tce%num_current_fline)
+      fln_tce%num_current_fline = fln_src%num_line_local
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
-        fln_tce%num_current_fline(1:nprocs)                             &
-     &        = 2 * fln_tce%num_current_fline(1:nprocs)
+        fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
       end if
-
+!
       fln_tce%istack_current_fline(0) = 0
+      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
+     &                                 fln_tce%istack_current_fline(1))
       do i = 1, nprocs
         fln_tce%istack_current_fline(i)                                 &
      &     = fln_tce%istack_current_fline(i-1)                          &
-     &      + fln_tce%num_current_fline(i)
+     &      + fln_tce%istack_current_fline(i)
       end do
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !

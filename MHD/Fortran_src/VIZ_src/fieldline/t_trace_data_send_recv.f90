@@ -157,17 +157,15 @@
 !
       call count_trace_data_SR_npe(ele, isf_4_ele_dbl, fln_tce, fln_SR)
       call count_trace_data_SR_num(fln_SR)
-      call raise_trace_SR_export(fln_tce%num_current_fline(my_rank+1), &
+      call raise_trace_SR_export(fln_tce%num_current_fline,             &
      &                           fln_SR)
       call raise_trace_SR_import(fln_SR)
-      write(*,*) 'size init', size(fln_SR%rsend), size(fln_SR%isend), fln_SR%ncomp_export
-      write(*,*) 'size init', size(fln_SR%rrecv), size(fln_SR%irecv)
 
       call set_trace_data_to_SR(ele, surf,                              &
      &    isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
 !
       call calypso_send_recv_N                                          &
-     &   (0, fln_SR%ncomp_export,fln_tce%num_current_fline(my_rank+1),  &
+     &   (0, fln_SR%ncomp_export,fln_tce%num_current_fline,             &
      &    fln_SR%ntot_recv, fln_SR%npe_send, fln_SR%id_pe_send,         &
      &    fln_SR%istack_send, fln_SR%item_send,                         &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
@@ -175,7 +173,7 @@
      &    m_SR%SR_sig, m_SR%SR_r, fln_SR%rSend, fln_SR%rRecv)
       do i = 1, nitem_export
         call calypso_send_recv_int                                      &
-     &   (0, fln_tce%num_current_fline(my_rank+1), fln_SR%ntot_recv,    &
+     &   (0, fln_tce%num_current_fline, fln_SR%ntot_recv,               &
      &    fln_SR%npe_send, fln_SR%id_pe_send,                           &
      &    fln_SR%istack_send, fln_SR%item_send, 0,                      &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
@@ -429,7 +427,7 @@
 
 
       fln_SR%icou_send(1:nprocs) = fln_SR%istack_send(0:nprocs-1)
-      do inum = 1, fln_tce%num_current_fline(my_rank+1)
+      do inum = 1, fln_tce%num_current_fline
         if(fln_tce%iflag_comm_start(inum) .ne. ione) cycle
         iele = fln_tce%isf_fline_start(1,inum)
         isf =  fln_tce%isf_fline_start(2,inum)
@@ -441,7 +439,7 @@
         fln_SR%item_send(icou) = inum
       end do
 !
-      do inum = 1, fln_tce%num_current_fline(my_rank+1)
+      do inum = 1, fln_tce%num_current_fline
         iele = fln_tce%isf_fline_start(1,inum)
         isf =  fln_tce%isf_fline_start(2,inum)
         isurf = abs(surf%isf_4_ele(iele,isf))
@@ -478,14 +476,15 @@
 !
       integer(kind = kint) :: ip, i
 !
-      call calypso_mpi_allgather_one_int                                &
-     &   (fln_SR%ntot_recv, fln_tce%num_current_fline)
-!
+      fln_tce%num_current_fline = fln_SR%ntot_recv
       fln_tce%istack_current_fline(0) = 0
+      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
+     &                                 fln_tce%istack_current_fline(1))
+!
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &
      &                   = fln_tce%istack_current_fline(ip-1)           &
-     &                    + fln_tce%num_current_fline(ip)
+     &                    + fln_tce%istack_current_fline(ip)
       end do
       do i = 1, fln_SR%ntot_recv
           fln_tce%iline_original(i) =      fln_SR%iRecv(i,1)

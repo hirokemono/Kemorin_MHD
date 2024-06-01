@@ -120,7 +120,7 @@
       integer :: src_rank
 !
 !
-      do inum = 1, fln_tce%num_current_fline(my_rank+1)
+      do inum = 1, fln_tce%num_current_fline
         call set_fline_start_2_bcast(inum, ele, surf,                   &
      &      isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_bcast)
       end do
@@ -128,7 +128,7 @@
         do ip = 1, nprocs
           src_rank = int(ip - 1)
           ist = fln_tce%istack_current_fline(ip-1)
-          num64 = fln_tce%num_current_fline(ip)
+          num64 = fln_tce%istack_current_fline(ip) - ist
           if(num64 .le. 0) cycle
             call calypso_mpi_bcast_int                                  &
      &         (fln_bcast%id_fline_export(1,ist+1),                     &
@@ -223,14 +223,16 @@
           icou = icou + 1
         end if
       end do
+      fln_tce%num_current_fline = icou
 !
-      call calypso_mpi_allgather_one_int                                &
-     &   (icou, fln_tce%num_current_fline)
+      fln_tce%istack_current_fline(0) = 0
+      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
+     &                                 fln_tce%istack_current_fline(1))
 !
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &
      &                   = fln_tce%istack_current_fline(ip-1)           &
-     &                    + fln_tce%num_current_fline(ip)
+     &                    + fln_tce%istack_current_fline(ip)
       end do
 !
       icou = 0

@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_fline_start_surf(id_rank, surf, nod_fld,         &
+!!      subroutine set_fline_start_surf(surf, nod_fld,                  &
 !!     &                                fln_prm, fln_src, fln_tce)
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
@@ -27,7 +27,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_surf(id_rank, surf, nod_fld,           &
+      subroutine set_fline_start_surf(surf, nod_fld,                    &
      &                                fln_prm, fln_src, fln_tce)
 !
       use m_constants
@@ -38,8 +38,6 @@
 !
       use cal_field_on_surf_viz
       use trace_in_element
-!
-      integer, intent(in) :: id_rank
 !
       type(surface_data), intent(in) :: surf
       type(phys_data), intent(in) :: nod_fld
