@@ -112,7 +112,7 @@
       call alloc_merged_field_stack(IO_param%nprocs_in, fld_IO)
       call read_field_header_mpi_b(num_pe, IO_param, t_IO,              &
      &    num64, fld_IO%istack_numnod_IO)
-      fld_IO%nnod_IO = num64
+      fld_IO%nnod_IO = int(num64, KIND(fld_IO%nnod_IO))
       call mpi_read_one_inthead_b(IO_param, fld_IO%num_field_IO)
 !
       num64 = fld_IO%num_field_IO
@@ -162,7 +162,7 @@
       call alloc_merged_field_stack(IO_param%nprocs_in, fld_IO)
       call read_field_header_mpi_b(num_pe, IO_param, t_IO,              &
      &    num64, fld_IO%istack_numnod_IO)
-      fld_IO%nnod_IO = num64
+      fld_IO%nnod_IO = int(num64, KIND(fld_IO%nnod_IO))
       call mpi_read_one_inthead_b(IO_param, fld_IO%num_field_IO)
 !
       num64 = fld_IO%num_field_IO
@@ -219,7 +219,7 @@
       call alloc_merged_field_stack(IO_param%nprocs_in, fld_IO)
       call read_field_header_mpi_b(num_pe, IO_param, t_IO,              &
      &    num64, fld_IO%istack_numnod_IO)
-      fld_IO%nnod_IO = num64
+      fld_IO%nnod_IO = int(num64, KIND(fld_IO%nnod_IO))
       call mpi_read_one_inthead_b(IO_param, fld_IO%num_field_IO)
 !
       num64 = fld_IO%num_field_IO

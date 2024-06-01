@@ -18,7 +18,7 @@
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine read_number_of_node(id_file, nod_IO, iend)
-!!      subroutine read_geometry_info(id_file, nod_IO)
+!!      subroutine read_geometry_info(id_file, nod_IO, iend)
 !!      subroutine read_scalar_in_element                               &
 !!     &         (id_file, nod_IO, sfed_IO, iend)
 !!      subroutine read_vector_in_element                               &
@@ -153,14 +153,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_info(id_file, nod_IO)
+      subroutine read_geometry_info(id_file, nod_IO, iend)
 !
       integer (kind = kint), intent(in) :: id_file
       type(node_data), intent(inout) :: nod_IO
+      integer(kind = kint), intent(inout) :: iend
 !
       integer (kind = kint) :: i, k
 !
 !
+      call read_number_of_node(id_file, nod_IO, iend)
+      if(iend .ne. 0) return
       call alloc_node_geometry_base(nod_IO)
 !
       do i=1, nod_IO%numnod
