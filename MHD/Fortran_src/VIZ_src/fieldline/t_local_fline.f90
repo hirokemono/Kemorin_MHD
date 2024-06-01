@@ -5,19 +5,19 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine reset_fline_start(fline_lc)
-!!      subroutine add_fline_start(xx4_add, ntot_comp, col_add,         &
+!!      subroutine add_fline_start(xx4_add, v4_add, ntot_comp, col_add, &
 !!     &                           fline_lc)
 !!      subroutine alloc_local_fline(viz_fields, fline_lc)
 !!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
 !!      subroutine dealloc_local_fline(fline_lc)
-!!      subroutine add_fline_list(xx4_add, ntot_comp, col_add, fline_lc)
+!!      subroutine add_fline_list(xx4_add, v4_add, ntot_comp, col_add,  &
+!!     &                          fline_lc)
 !!        integer(kind = kint), intent(in) :: ntot_comp
 !!        real(kind = kreal), intent(in) :: xx4_add(4),
 !!        real(kind = kreal), intent(in) :: col_add(ntot_comp)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
 !!      subroutine check_local_fline(id_file, fline_lc)
-!!      subroutine check_local_fline_dx(id_file, fline_lc)
 !!        type(local_fieldline), intent(in) :: fline_lc
 !
       module t_local_fline
@@ -35,10 +35,12 @@
         integer(kind = kint) :: ntot_comp_l
         integer(kind = kint), allocatable :: iedge_line_l(:,:)
         real(kind = kreal), allocatable ::   xx_line_l(:,:)
+        real(kind = kreal), allocatable ::   v_line_l(:,:)
         real(kind = kreal), allocatable ::   col_line_l(:,:)
 !
         integer(kind = kint), allocatable :: iedge_line_tmp(:,:)
         real(kind = kreal), allocatable ::   xx_line_tmp(:,:)
+        real(kind = kreal), allocatable ::   v_line_tmp(:,:)
         real(kind = kreal), allocatable ::   col_line_tmp(:,:)
       end type local_fieldline
 !
@@ -68,11 +70,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_start(xx4_add, ntot_comp, col_add,           &
+      subroutine add_fline_start(xx4_add, v4_add, ntot_comp, col_add,   &
      &                           fline_lc)
 !
       integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: xx4_add(4)
+      real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
       real(kind = kreal), intent(in) :: col_add(ntot_comp)
       type(local_fieldline), intent(inout) :: fline_lc
 !
@@ -83,6 +85,7 @@
       fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
 !
       fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
+      fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &       = col_add(1:ntot_comp)
 !
@@ -90,10 +93,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_list(xx4_add, ntot_comp, col_add, fline_lc)
+      subroutine add_fline_list(xx4_add, v4_add, ntot_comp, col_add,    &
+     &                          fline_lc)
 !
       integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: xx4_add(4)
+      real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
       real(kind = kreal), intent(in) :: col_add(ntot_comp)
       type(local_fieldline), intent(inout) :: fline_lc
 !
@@ -114,6 +118,7 @@
      &      = fline_lc%nnod_line_l
 !
       fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
+      fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &      = col_add(1:ntot_comp)
 !
@@ -196,6 +201,9 @@
         fline_lc%xx_line_tmp(1,i) = fline_lc%xx_line_l(1,i)
         fline_lc%xx_line_tmp(2,i) = fline_lc%xx_line_l(2,i)
         fline_lc%xx_line_tmp(3,i) = fline_lc%xx_line_l(3,i)
+        fline_lc%v_line_tmp(1,i) =  fline_lc%v_line_l(1,i)
+        fline_lc%v_line_tmp(2,i) =  fline_lc%v_line_l(2,i)
+        fline_lc%v_line_tmp(3,i) =  fline_lc%v_line_l(3,i)
         fline_lc%col_line_tmp(1:fline_lc%ntot_comp_l,i)                 &
      &           =  fline_lc%col_line_l(1:fline_lc%ntot_comp_l,i)
       end do
@@ -209,6 +217,9 @@
         fline_lc%xx_line_l(1,i) = fline_lc%xx_line_tmp(1,i)
         fline_lc%xx_line_l(2,i) = fline_lc%xx_line_tmp(2,i)
         fline_lc%xx_line_l(3,i) = fline_lc%xx_line_tmp(3,i)
+        fline_lc%v_line_l(1,i) =  fline_lc%v_line_tmp(1,i)
+        fline_lc%v_line_l(2,i) =  fline_lc%v_line_tmp(2,i)
+        fline_lc%v_line_l(3,i) =  fline_lc%v_line_tmp(3,i)
         fline_lc%col_line_l(1:fline_lc%ntot_comp_l,i)                   &
      &        =  fline_lc%col_line_tmp(1:fline_lc%ntot_comp_l,i)
       end do
@@ -241,9 +252,11 @@
 !
       fline_lc%nnod_line_buf = nnod_buf
       allocate(fline_lc%xx_line_l(3,fline_lc%nnod_line_buf))
+      allocate(fline_lc%v_line_l(3,fline_lc%nnod_line_buf))
       allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
      &                             fline_lc%nnod_line_buf))
-      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%xx_line_l = 0.0d0
+      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%xx_line_l =  0.0d0
+      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%v_line_l =   0.0d0
       if(fline_lc%nnod_line_buf .gt. 0) fline_lc%col_line_l = 0.0d0
 !
       end subroutine alloc_local_fline_data
@@ -266,9 +279,11 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       allocate(fline_lc%xx_line_tmp(3,fline_lc%nnod_line_l))
+      allocate(fline_lc%v_line_tmp(3,fline_lc%nnod_line_l))
       allocate(fline_lc%col_line_tmp(fline_lc%ntot_comp_l,              &
      &                               fline_lc%nnod_line_l))
       if(fline_lc%nnod_line_l .gt. 0) fline_lc%xx_line_tmp = 0.0d0
+      if(fline_lc%nnod_line_l .gt. 0) fline_lc%v_line_tmp =  0.0d0
       if(fline_lc%nnod_line_l .gt. 0) fline_lc%col_line_tmp = 0.0d0
 !
       end subroutine allocate_local_fline_data_tmp
@@ -290,7 +305,8 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
-      deallocate(fline_lc%xx_line_l, fline_lc%col_line_l)
+      deallocate(fline_lc%xx_line_l, fline_lc%v_line_l)
+      deallocate(fline_lc%col_line_l)
 !
       end subroutine dealloc_local_fline_data
 !
@@ -309,7 +325,8 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
-      deallocate(fline_lc%xx_line_tmp, fline_lc%col_line_tmp)
+      deallocate(fline_lc%xx_line_tmp, fline_lc%v_line_tmp)
+      deallocate(fline_lc%col_line_tmp)
 !
       end subroutine deallocate_local_fline_data_tmp
 !
@@ -323,11 +340,17 @@
       integer(kind = kint) :: i, nd
 !
 !
-      write(id_file,*) fline_lc%nnod_line_l, fline_lc%nele_line_l
+      write(id_file,*) 'xx_line_l', fline_lc%nnod_line_l
       do i = 1, fline_lc%nnod_line_l
         write(id_file,'(i16,1p3e16.7)') i, fline_lc%xx_line_l(1:3,i)
       end do
 !
+      write(id_file,*) 'v_line_l', fline_lc%nnod_line_l
+      do i = 1, fline_lc%nnod_line_l
+        write(id_file,'(i16,1p3e16.7)') i, fline_lc%v_line_l(1:3,i)
+      end do
+!
+      write(id_file,*) 'iedge_line_l', fline_lc%nele_line_l
       do i = 1, fline_lc%nele_line_l
         write(id_file,'(2i16,a7,2i16)') i, ione,                        &
      &               '  line ', fline_lc%iedge_line_l(1:2,i)
@@ -347,62 +370,6 @@
       close(id_file)
 !
       end subroutine check_local_fline
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_local_fline_dx(id_file, fline_lc)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(local_fieldline), intent(in) :: fline_lc
-      integer(kind = kint) :: i, nd
-!
-!
-      write(id_file,'(a)') '#'
-      write(id_file,'(a)') '#  node information'
-      write(id_file,'(a,i16,a)')                                        &
-     &   'object 1 class array type float rank 1 shape 3 items  ',      &
-     &   fline_lc%nnod_line_l, ' data follows'
-!
-      do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(1p3e16.7)') fline_lc%xx_line_l(1:3,i)
-      end do
-!
-      write(id_file,'(a)') '#'
-      write(id_file,'(a)') '# element connectivity'
-      write(id_file,'(a,i16,a)')                                        &
-     &   'object 2 class array type int rank 1 shape 2 items    ',      &
-     &   fline_lc%nele_line_l, ' data follows'
-      do i = 1, fline_lc%nele_line_l
-        write(id_file,'(2i16)') (fline_lc%iedge_line_l(1:2,i)-1)
-      end do
-      write(id_file,'(a)') 'attribute "element type" string "lines"'
-      write(id_file,'(a)') 'attribute "ref" string "positions"'
-!
-      write(id_file,'(a)') '#'
-      write(id_file,'(a)') '# scalar'
-      write(id_file,'(a,i16,a)')                                        &
-     &   'object 3 class array type float rank 1 shape 1 items  ',      &
-     &   fline_lc%nnod_line_l, ' data follows'
-      do i = 1, fline_lc%nnod_line_l
-        do nd = 1, fline_lc%ntot_comp_l
-           write(id_file,'(1pe16.7)', ADVANCE='NO')                     &
-     &                           fline_lc%col_line_l(nd,i)
-        end do
-        write(id_file,*)
-      end do
-      write(id_file,'(a)') 'attribute "dep" string "positions"'
-!
-      write(id_file,'(a)') '#'
-      write(id_file,'(a)') 'object "irregular positions irregular connections ascii file" class field'
-      write(id_file,'(a)') 'component "positions" value 1'
-      write(id_file,'(a)') 'component "connections" value 2'
-      write(id_file,'(a)') 'component "data" value    3'
-      write(id_file,'(a)') 'end'
-
-
-      close(id_file)
-!
-      end subroutine check_local_fline_dx
 !
 !  ---------------------------------------------------------------------
 !

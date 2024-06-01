@@ -87,8 +87,8 @@
         return
       end if
 !
-      call add_fline_start(x4_start, viz_fields%ntot_color_comp,        &
-     &                     c_field(1), fline_lc)
+      call add_fline_start(x4_start, v4_start,                          &
+     &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
       iflag_comm = 0
       do
@@ -102,8 +102,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) return
-        call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
-     &                       c_field(1), fline_lc)
+        call add_fline_list(x4_start, v4_start,                         &
+     &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
@@ -112,8 +112,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) return
-        call add_fline_list(x4_start, viz_fields%ntot_color_comp,       &
-     &                      c_field(1), fline_lc)
+        call add_fline_list(x4_start, v4_start,                         &
+     &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &

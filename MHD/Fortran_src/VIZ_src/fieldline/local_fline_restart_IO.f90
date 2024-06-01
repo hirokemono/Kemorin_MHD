@@ -100,9 +100,9 @@
         particle_IO%node%xx(i,2) = fline_lc%xx_line_l(2,i)
         particle_IO%node%xx(i,3) = fline_lc%xx_line_l(3,i)
 !
-!        particle_IO%sfed%ele_vector(i,1) = fline_lc%v_line_l(1,i)
-!        particle_IO%sfed%ele_vector(i,2) = fline_lc%v_line_l(2,i)
-!        particle_IO%sfed%ele_vector(i,3) = fline_lc%v_line_l(3,i)
+        particle_IO%sfed%ele_vector(i,1) = fline_lc%v_line_l(1,i)
+        particle_IO%sfed%ele_vector(i,2) = fline_lc%v_line_l(2,i)
+        particle_IO%sfed%ele_vector(i,3) = fline_lc%v_line_l(3,i)
 !
         particle_IO%sfed%ele_scalar(i) =   fline_lc%col_line_l(1,i)
       end do
@@ -148,9 +148,9 @@
         fline_lc%xx_line_l(1,i) = particle_IO%node%xx(i,1)
         fline_lc%xx_line_l(2,i) = particle_IO%node%xx(i,2)
         fline_lc%xx_line_l(3,i) = particle_IO%node%xx(i,3)
-!        fline_lc%v_line_l(1,i) =  particle_IO%sfed%ele_vector(i,1)
-!        fline_lc%v_line_l(2,i) =  particle_IO%sfed%ele_vector(i,2)
-!        fline_lc%v_line_l(3,i) =  particle_IO%sfed%ele_vector(i,3)
+        fline_lc%v_line_l(1,i) =  particle_IO%sfed%ele_vector(i,1)
+        fline_lc%v_line_l(2,i) =  particle_IO%sfed%ele_vector(i,2)
+        fline_lc%v_line_l(3,i) =  particle_IO%sfed%ele_vector(i,3)
         fline_lc%col_line_l(1,i) =  particle_IO%sfed%ele_scalar(i)
       end do
 !$omp end parallel do

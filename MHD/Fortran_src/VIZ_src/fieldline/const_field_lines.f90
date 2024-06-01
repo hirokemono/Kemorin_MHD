@@ -148,8 +148,6 @@
        if(nline .le. 0) exit
       end do
 !
-!      call check_local_fline_dx( (my_rank+60), fline_lc)
-!
       end subroutine s_const_field_lines
 !
 !  ---------------------------------------------------------------------
