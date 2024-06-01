@@ -13,6 +13,12 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_array_c2), intent(in) :: field_output_ctl
 !!       type(ctl_params_viz_fields), intent(inout) :: viz_fields
+!!
+!!      subroutine copy_ctl_params_viz_fields(num_field, viz_fields,    &
+!!     &                                      new_viz_fields)
+!!      subroutine append_ctl_params_viz_fields                         &
+!!     &         (field_name, iphys_field, icomp_flag,                  &
+!!     &          num_comp, ncomp_org, viz_fields)
 !!@endverbatim
 !
       module t_ctl_params_viz_fields
@@ -83,6 +89,72 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine append_ctl_params_viz_fields                           &
+     &         (field_name, iphys_field, icomp_flag,                    &
+     &          num_comp, ncomp_org, viz_fields)
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: iphys_field, icomp_flag
+      integer(kind = kint), intent(in) :: num_comp, ncomp_org
+!
+      type(ctl_params_viz_fields), intent(inout) :: viz_fields
+      type(ctl_params_viz_fields) :: tmp_fields
+      integer(kind = kint) :: new_num_fields
+!
+      call alloc_ctl_params_viz_fields(viz_fields%num_color_fields,     &
+     &                                 tmp_fields)
+      call copy_ctl_params_viz_fields(viz_fields%num_color_fields,      &
+     &                                viz_fields, tmp_fields)
+      call dealloc_ctl_params_viz_fields(viz_fields)
+!
+      new_num_fields = viz_fields%num_color_fields + 1
+      call alloc_ctl_params_viz_fields(new_num_fields, viz_fields)
+!
+      call copy_ctl_params_viz_fields(tmp_fields%num_color_fields,      &
+     &                                tmp_fields, viz_fields)
+      call dealloc_ctl_params_viz_fields(tmp_fields)
+!
+      viz_fields%ntot_color_comp                                        &
+     &    = viz_fields%ntot_color_comp + num_comp 
+      viz_fields%color_field_name(new_num_fields) =   field_name
+      viz_fields%ifleld_color_field(new_num_fields) = iphys_field
+      viz_fields%icomp_color_field(new_num_fields) =  icomp_flag
+      viz_fields%istack_color_field(new_num_fields)                     &
+     &    = viz_fields%istack_color_field(new_num_fields-1) + num_comp
+      viz_fields%ncomp_color_field(new_num_fields) =      num_comp
+      viz_fields%ncomp_org_color_field(new_num_fields) = ncomp_org
+!
+      end subroutine append_ctl_params_viz_fields
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_ctl_params_viz_fields(num_field, viz_fields,      &
+     &                                      new_viz_fields)
+!
+      integer(kind = kint), intent(in) :: num_field
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+      type(ctl_params_viz_fields), intent(inout) :: new_viz_fields
+!
+      new_viz_fields%ntot_color_comp = viz_fields%ntot_color_comp
+!$omp parallel workshare
+      new_viz_fields%color_field_name(1:num_field)                      &
+     &       = viz_fields%color_field_name(1:num_field)
+      new_viz_fields%ifleld_color_field(1:num_field)                    &
+     &       = viz_fields%ifleld_color_field(1:num_field)
+      new_viz_fields%icomp_color_field(1:num_field)                     &
+     &       = viz_fields%icomp_color_field(1:num_field)
+      new_viz_fields%istack_color_field(1:num_field)                    &
+     &       = viz_fields%istack_color_field(1:num_field)
+      new_viz_fields%ncomp_color_field(1:num_field)                     &
+     &       = viz_fields%ncomp_color_field(1:num_field)
+      new_viz_fields%ncomp_org_color_field(1:num_field)                 &
+     &       = viz_fields%ncomp_org_color_field(1:num_field)
+!$omp end parallel workshare
+!
+      end subroutine copy_ctl_params_viz_fields
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_ctl_params_viz_fields(field_output_ctl, nod_fld,   &
      &                                     viz_fields)
 !
@@ -99,7 +171,7 @@
 !
 !
       if(field_output_ctl%num .le. izero) then
-        call alloc_ctl_params_viz_fields (ione, viz_fields)
+        call alloc_ctl_params_viz_fields(ione, viz_fields)
       else
         call alloc_ctl_params_viz_fields                              &
      &     (field_output_ctl%num, viz_fields)

@@ -51,25 +51,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_global_num_of_tracer(fline_lc)
+!      subroutine count_global_num_of_tracer(fline_lc)
 !
-      use calypso_mpi_int
+!      use calypso_mpi_int
 !
-      type(local_fieldline), intent(inout) :: fline_lc
+!      type(local_fieldline), intent(inout) :: fline_lc
 !
 !
-      integer(kind = kint) :: i
+!      integer(kind = kint) :: i
 !
-      call calypso_mpi_allgather_one_int                                &
-     &   (fline_lc%nnod_line_l, fline_lc%istack_nnod_line(1))
+!      call calypso_mpi_allgather_one_int                               &
+!     &   (fline_lc%nnod_line_l, fline_lc%istack_nnod_line(1))
 !
-      fline_lc%istack_nnod_line(0) = 0
-      do i = 1, nprocs
-        fline_lc%istack_nnod_line(i) = fline_lc%istack_nnod_line(i-1)   &
-     &                               + fline_lc%istack_nnod_line(i)
-      end do
+!      fline_lc%istack_nnod_line(0) = 0
+!      do i = 1, nprocs
+!        fline_lc%istack_nnod_line(i) = fline_lc%istack_nnod_line(i-1)  &
+!     &                               + fline_lc%istack_nnod_line(i)
+!      end do
 !
-      end subroutine count_global_num_of_tracer
+!      end subroutine count_global_num_of_tracer
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -94,15 +94,15 @@
 !
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
-        particle_IO%node%inod_global(i)                                 &
-     &                       = i + fline_lc%istack_nnod_line(my_rank-1)
+!        particle_IO%node%inod_global(i)                                 &
+!     &                       = i + fline_lc%istack_nnod_line(my_rank-1)
         particle_IO%node%xx(i,1) = fline_lc%xx_line_l(1,i)
         particle_IO%node%xx(i,2) = fline_lc%xx_line_l(2,i)
         particle_IO%node%xx(i,3) = fline_lc%xx_line_l(3,i)
 !
-        particle_IO%sfed%ele_vector(i,1) = fline_lc%v_line_l(1,i)
-        particle_IO%sfed%ele_vector(i,2) = fline_lc%v_line_l(2,i)
-        particle_IO%sfed%ele_vector(i,3) = fline_lc%v_line_l(3,i)
+!        particle_IO%sfed%ele_vector(i,1) = fline_lc%v_line_l(1,i)
+!        particle_IO%sfed%ele_vector(i,2) = fline_lc%v_line_l(2,i)
+!        particle_IO%sfed%ele_vector(i,3) = fline_lc%v_line_l(3,i)
 !
         particle_IO%sfed%ele_scalar(i) =   fline_lc%col_line_l(1,i)
       end do
@@ -115,8 +115,8 @@
       call alloc_ele_connectivity(particle_IO%ele)
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
-        particle_IO%ele%iele_global(i)                                  &
-     &                      = i + fline_lc%istack_nnod_line(my_rank-1)
+!        particle_IO%ele%iele_global(i)                                  &
+!     &                      = i + fline_lc%istack_nnod_line(my_rank-1)
         particle_IO%ele%nodelm(i) = particle_IO%ele%nnod_4_ele
         particle_IO%ele%elmtyp(i)                                       &
      &       = linear_eletype_from_num(particle_IO%ele%nnod_4_ele)
@@ -148,9 +148,9 @@
         fline_lc%xx_line_l(1,i) = particle_IO%node%xx(i,1)
         fline_lc%xx_line_l(2,i) = particle_IO%node%xx(i,2)
         fline_lc%xx_line_l(3,i) = particle_IO%node%xx(i,3)
-        fline_lc%v_line_l(1,i) =  particle_IO%sfed%ele_vector(i,1)
-        fline_lc%v_line_l(2,i) =  particle_IO%sfed%ele_vector(i,2)
-        fline_lc%v_line_l(3,i) =  particle_IO%sfed%ele_vector(i,3)
+!        fline_lc%v_line_l(1,i) =  particle_IO%sfed%ele_vector(i,1)
+!        fline_lc%v_line_l(2,i) =  particle_IO%sfed%ele_vector(i,2)
+!        fline_lc%v_line_l(3,i) =  particle_IO%sfed%ele_vector(i,3)
         fline_lc%col_line_l(1,i) =  particle_IO%sfed%ele_scalar(i)
       end do
 !$omp end parallel do

@@ -32,7 +32,9 @@
       use t_next_node_ele_4_node
       use t_control_params_4_fline
       use t_source_of_filed_line
+      use t_trace_data_send_recv
       use t_broadcast_trace_data
+      use t_local_fline
       use t_ucd_data
 !
       implicit  none
@@ -44,7 +46,9 @@
 !
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
+        type(local_fieldline), allocatable  :: fline_lc(:)
         type(broadcast_trace_data), allocatable :: fln_bcast(:)
+        type(trace_data_send_recv), allocatable :: fln_SR(:)
 !
         type(ucd_data) :: fline_ucd
       end type fieldline_module
@@ -83,7 +87,9 @@
       allocate(fline%fln_prm(fline%num_fline))
       allocate(fline%fln_src(fline%num_fline))
       allocate(fline%fln_tce(fline%num_fline))
+      allocate(fline%fln_SR(fline%num_fline))
       allocate(fline%fln_bcast(fline%num_fline))
+      allocate(fline%fline_lc(fline%num_fline))
 !
       do i_fln = 1, fline%num_fline
         call s_set_fline_control(fem%mesh, fem%group, nod_fld,          &
@@ -103,6 +109,10 @@
         call alloc_broadcast_trace_data                                 &
      &     (fline%fln_prm(i_fln)%num_each_field_line,                   &
      &      fline%fln_prm(i_fln)%fline_fields, fline%fln_bcast(i_fln))
+        call alloc_local_fline(fline%fln_prm(i_fln)%fline_fields,       &
+     &                         fline%fline_lc(i_fln))
+        call alloc_trace_data_SR_num(fline%fln_prm(i_fln)%fline_fields, &
+     &                               fline%fln_SR(i_fln))
       end do
 !
 !
@@ -145,11 +155,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_visualize(istep_fline, time_d, fem,             &
+      subroutine TRACER_visualize(increment_output, time_d, fem,        &
      &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          nod_fld, fline, v_prev, SR_sig)
+     &          nod_fld, fline, v_prev, m_SR)
 !
-      use calypso_SR
+      use t_mesh_SR
       use set_fields_for_fieldline
       use trace_particle
       use collect_fline_data
@@ -157,7 +167,7 @@
       use set_fline_seeds_from_list
 !
 !
-      integer(kind = kint), intent(in) :: istep_fline
+      integer(kind = kint), intent(in) :: increment_output
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
@@ -168,29 +178,32 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
 !
       type(fieldline_module), intent(inout) :: fline
-      type(send_recv_status), intent(inout) :: SR_sig
+      type(mesh_SR), intent(inout) :: m_SR
 !
       type(time_data) :: t_IO
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_fln, istep_fline
 !  
-      if (fline%num_fline.le.0 .or. istep_fline.le.0) return
-!
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
         call s_trace_particle(time_d%dt, fem%mesh%node, fem%mesh%ele,   &
      &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl,              &
      &      nod_fld, fline%fln_prm(i_fln), fline%fln_tce(i_fln),        &
-     &      fline%fln_bcast(i_fln), v_prev, SR_sig)
+     &      fline%fline_lc(i_fln), fline%fln_SR(i_fln), fline%fln_bcast(i_fln),              &
+     &      v_prev, m_SR)
+      end do
 !
-!        call copy_time_step_size_data(time_d, t_IO)
-!        call copy_local_fieldline_to_IO                                 &
-!     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),  &
-!     &      fline%fline_ucd)
-!        call sel_write_parallel_ucd_file                                &
-!     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
-!     &      fline%fline_ucd)
-!        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
-!        call calypso_mpi_barrier
+      if(mod(time_d%i_time_step, increment_output) .ne. 0) return
+      istep_fline = time_d%i_time_step / increment_output
+!
+      do i_fln = 1, fline%num_fline
+        call copy_time_step_size_data(time_d, t_IO)
+        call copy_local_particles_to_IO                                 &
+     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),   &
+     &      fline%fline_ucd)
+        call sel_write_parallel_ucd_file                                &
+     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
+     &      fline%fline_ucd)
+        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
       end do
 !
       end subroutine TRACER_visualize
@@ -208,6 +221,7 @@
 !
 !
       do i_fln = 1, fline%num_fline
+        call dealloc_local_fline(fline%fline_lc(i_fln))
         call dealloc_iflag_fline_used_ele(fline%fln_prm(i_fln))
         call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
 !
@@ -215,10 +229,11 @@
         call dealloc_start_point_fline(fline%fln_src(i_fln))
         call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
         call dealloc_broadcast_trace_data(fline%fln_bcast(i_fln))
+        call dealloc_trace_data_SR_num(fline%fln_SR(i_fln))
       end do
 !
-      deallocate(fline%fln_src, fline%fln_bcast)
-      deallocate(fline%fln_tce, fline%fln_prm)
+      deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
+      deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !
       end subroutine TRACER_finalize
 !

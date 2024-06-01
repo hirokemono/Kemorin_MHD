@@ -128,7 +128,6 @@
      &      v_prev, viz_fields, isurf_end, isf_tgt,                     &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) return
-        if(trace_length.ge.end_trace) return
 
         p_ratio = (trace_length - trace_pre) / (vmag * dt)
 !$parallel workshare

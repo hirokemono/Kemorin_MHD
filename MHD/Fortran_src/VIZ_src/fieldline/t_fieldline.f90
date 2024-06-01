@@ -199,6 +199,15 @@
      &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
      &      fline%fline_ucd)
         call deallocate_parallel_ucd_mesh(fline%fline_ucd)
+!
+        call copy_local_particles_to_IO                                 &
+     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),   &
+     &      fline%fline_ucd)
+        fline%fln_prm(i_fln)%fline_file_IO%iflag_format = iflag_sgl_ucd
+        call sel_write_parallel_ucd_file                                &
+     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
+     &      fline%fline_ucd)
+        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
         call calypso_mpi_barrier
       end do
 !
