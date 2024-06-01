@@ -55,8 +55,6 @@
       use t_source_of_filed_line
       use t_mesh_SR
       use calypso_SR
-      use calypso_mpi_real
-      use calypso_mpi_int
       use transfer_to_long_integers
       use extend_field_line
 !
@@ -72,8 +70,8 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
-      type(broadcast_trace_data), intent(inout) :: fln_bcast
       type(trace_data_send_recv), intent(inout) :: fln_SR
+      type(broadcast_trace_data), intent(inout) :: fln_bcast
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: ist, ied, nline, inum, i
@@ -113,30 +111,15 @@
      &        fln_tce%iflag_comm_start(inum), fline_lc)
         end do
 !
-        call s_trace_data_send_recv                                     &
+        if(fln_tce%num_current_fline(my_rank+1) .gt. 4096) then
+          call s_trace_data_send_recv                                   &
+     &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                &
+     &        fln_tce, fln_SR, m_SR, nline)
+        else
+          call s_broadcast_trace_data                                   &
      &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-     &      fln_tce, fln_SR, m_SR, nline)
-!
-!        call s_broadcast_trace_data                                     &
-!     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-!     &      fln_tce, fln_bcast, nline)
-!
-        write(*,*) my_rank, fln_SR%ntot_recv, 'fln_tce%num_current_fline(ip)', &
-     &          fln_tce%num_current_fline
-!
-!        write(*,*) my_rank, 'check'fln_tce%num_current_fline(
-!        do i = 1, my_rank+1)
-!          inum =  fln_SR%iRecv(i,1) - fln_tce%iline_original(i)
-!          if(inum .ne. 0) write(*,*) my_rank, i, inum
-!          inum =  fln_SR%iRecv(i,2) - fln_tce%iflag_direction(i)
-!          if(inum .ne. 0) write(*,*) my_rank, i, inum
-!          inum =  fln_SR%iRecv(i,3) - fln_tce%icount_fline(i)
-!          if(inum .ne. 0) write(*,*) my_rank, i, inum
-!          inum =  fln_SR%iRecv(i,4) - fln_tce%isf_fline_start(1,i)
-!          if(inum .ne. 0) write(*,*) my_rank, i, inum
-!          inum =  fln_SR%iRecv(i,5) - fln_tce%isf_fline_start(2,i)
-!          if(inum .ne. 0) write(*,*) my_rank, i, inum
-!        end do
+     &      fln_tce, fln_bcast, nline)
+        end if
 !
         if(i_debug .gt. 0) then
           write(my_rank+50,*) 'istack_current_fline',                   &
@@ -147,6 +130,8 @@
         end if
        if(nline .le. 0) exit
       end do
+!
+!      call check_local_fline_dx( (my_rank+60), fline_lc)
 !
       end subroutine s_const_field_lines
 !
