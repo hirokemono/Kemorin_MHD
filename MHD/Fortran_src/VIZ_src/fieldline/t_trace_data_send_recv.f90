@@ -325,20 +325,17 @@
 !$omp parallel workshare
       fln_SR%num_send(1:nprocs) = 0
 !$omp end parallel workshare
-      num = fln_tce%istack_current_fline(my_rank+1)                     &
-     &     - fln_tce%istack_current_fline(my_rank)
-      do i =  1, num
+
+      do i =  1, fln_tce%num_current_fline
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
+        &  fln_tce%iflag_comm_start(i), &
+        &   isf_4_ele_dbl(iele,isf,1:)
         if(isf_4_ele_dbl(iele,isf,1) .eq. my_rank                       &
      &             .and. fln_tce%iflag_comm_start(i) .ne. ione) cycle
 !
-        do ip = 1, nprocs
-          if(isf_4_ele_dbl(iele,isf,1) .eq. (ip-1)) then
+        ip = isf_4_ele_dbl(iele,isf,1) + 1
             fln_SR%num_send(ip) = fln_SR%num_send(ip) + 1
-            exit
-          end if
-        end do
       end do
       call calypso_mpi_alltoall_one_int(fln_SR%num_send,                &
      &                                  fln_SR%num_recv)
@@ -425,20 +422,23 @@
         fln_SR%item_recv(inum) = inum
       end do
 
-
       fln_SR%icou_send(1:nprocs) = fln_SR%istack_send(0:nprocs-1)
       do inum = 1, fln_tce%num_current_fline
         if(fln_tce%iflag_comm_start(inum) .ne. ione) cycle
+        
         iele = fln_tce%isf_fline_start(1,inum)
         isf =  fln_tce%isf_fline_start(2,inum)
-!
         irank_send = isf_4_ele_dbl(iele,isf,1)
+        if(irank_send .eq. my_rank) cycle
+        
+!
         ineib_tmp = fln_SR%ineib_send(irank_send+1)
         fln_SR%icou_send(ineib_tmp) = fln_SR%icou_send(ineib_tmp) + 1
         icou = fln_SR%icou_send(ineib_tmp)
         fln_SR%item_send(icou) = inum
       end do
 !
+!$omp parallel do private(inum,ieke,isf,isurf)
       do inum = 1, fln_tce%num_current_fline
         iele = fln_tce%isf_fline_start(1,inum)
         isf =  fln_tce%isf_fline_start(2,inum)
