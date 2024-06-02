@@ -77,6 +77,10 @@
       integer(kind = kint) :: nline, inum
 !
 !
+      do inum = 1, fln_tce%num_current_fline
+        fln_tce%isf_dbl_start(1,inum) = my_rank
+        fln_tce%isf_dbl_start(2:3,inum) = fln_tce%isf_fline_start(1:2,inum)
+      end do
       call reset_fline_start(fline_lc)
 !
       do
@@ -86,7 +90,6 @@
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,     &
-     &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
@@ -97,16 +100,12 @@
         end do
 !
 !        if(fln_tce%num_current_fline .gt. 4096) then
-!          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,        &
-!     &                                m_SR%SR_sig, nline)
+          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,        &
+     &                                m_SR%SR_sig, nline)
 !        else
-          call s_broadcast_trace_data(fln_prm, fln_tce,                &
-     &                                 fln_bcast, nline)
+!          call s_broadcast_trace_data(fln_prm, fln_tce,                &
+!     &                                 fln_bcast, nline)
 !        end if
-!
-         do inum = 1, fln_tce%num_current_fline
-           fln_tce%isf_fline_start(1:2,inum) = fln_tce%isf_dbl_start(2:3,inum)
-         end do
 !
 !
 !         write(*,*) my_rank, 'fln_tce%num_current_fline :', &
