@@ -136,10 +136,11 @@
      &          fln_tce, fln_SR, m_SR, nline_global)
 !
       use calypso_SR
-      use calypso_SR_int
-      use calypso_SR_N
+      use calypso_SR_core
+      use set_to_send_buffer
       use solver_SR_int
       use set_to_send_buffer
+      use select_copy_from_recv
       use t_mesh_SR
       use t_source_of_filed_line
 !
@@ -166,24 +167,34 @@
       call set_trace_data_to_SR(ele, surf,                              &
      &    isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
 !
-      call calypso_send_recv_N                                          &
+      call resize_work_SR(fln_SR%ncomp_export,                          &
+     &                    fln_SR%npe_send, fln_SR%npe_recv,             &
+     &                    fln_SR%istack_send(fln_SR%npe_send),          &
+     &                    fln_SR%istack_recv(fln_SR%npe_recv),          &
+     &                    m_SR%SR_sig, m_SR%SR_r)
+      call sel_copy_to_send_buf_N                                       &
      &   (0, fln_SR%ncomp_export, fln_tce%num_current_fline,            &
-     &    fln_SR%ntot_recv, fln_SR%npe_send, fln_SR%id_pe_send,         &
-     &    fln_SR%istack_send, fln_SR%item_send,                         &
+     &    fln_SR%npe_send, fln_SR%istack_send(fln_SR%npe_send),         &
+     &    fln_SR%istack_send, fln_SR%item_send, fln_SR%rSend,           &
+     &    m_SR%SR_r%WS)
+      call calypso_send_recv_core                                       &
+     &   (fln_SR%ncomp_export, fln_SR%npe_send, fln_SR%id_pe_send,      &
+     &    fln_SR%istack_send, m_SR%SR_r%WS(1),                          &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
-     &    fln_SR%istack_recv, fln_SR%item_recv, fln_SR%item_recv, 0,    &
-     &    m_SR%SR_sig, m_SR%SR_r, fln_SR%rSend, fln_SR%rRecv)
+     &    fln_SR%istack_recv, 0, fln_SR%rRecv, m_SR%SR_sig)
+      call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
+!
       do i = 1, nitem_export
         call resize_iwork_SR_t(fln_SR%npe_send, fln_SR%npe_recv,        &
      &                         fln_SR%istack_send(fln_SR%npe_send),     &
      &                         fln_SR%istack_recv(fln_SR%npe_recv),     &
      &                         m_SR%SR_sig, m_SR%SR_i)
         call set_to_send_buf_int(fln_tce%num_current_fline,             &
-     &      fln_SR%istack_send(fln_SR%npe_send), fln_SR%item_send, fln_SR%iSend(1,i), &
-     &      m_SR%SR_i%iWS)
+     &      fln_SR%istack_send(fln_SR%npe_send), fln_SR%item_send,      &
+     &      fln_SR%iSend(1,i), m_SR%SR_i%iWS)
         call calypso_send_recv_intcore                                  &
      &   (fln_SR%npe_send, fln_SR%id_pe_send,                           &
-     &    fln_SR%istack_send, m_SR%SR_i%iWS(1), 0,                     &
+     &    fln_SR%istack_send, m_SR%SR_i%iWS(1), 0,                      &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
      &    fln_SR%istack_recv, fln_SR%iRecv(1,i), m_SR%SR_sig)
         call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
