@@ -87,7 +87,7 @@
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,     &
      &        fln_tce%isf_fline_start(1,inum),                          &
-     &        fln_tce%isf_dbl_start(1,inum),                          &
+     &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
@@ -97,26 +97,32 @@
         end do
 !
 !        if(fln_tce%num_current_fline .gt. 4096) then
-          call s_trace_data_send_recv                                  &
-     &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,               &
-     &        fln_prm, fln_tce, fln_SR, m_SR, nline)
+          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
+     &                                m_SR%SR_sig, nline)
 !        else
 !          call s_broadcast_trace_data                                  &
 !     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                 &
 !     &      fln_prm, fln_tce, fln_bcast, nline)
 !        end if
 !
-         write(*,*) my_rank, 'fln_tce%num_current_fline :', &
-     &     fln_tce%num_current_fline    
          do inum = 1, fln_tce%num_current_fline
-           if(fln_tce%isf_dbl_start(1,inum) .ne. my_rank &
-     &       .or.  fln_tce%isf_dbl_start(2,inum) .ne. fln_tce%isf_fline_start(1,inum) &
-     &      .or.  fln_tce%isf_dbl_start(3,inum) .ne. fln_tce%isf_fline_start(2,inum)     ) then
-             write(*,*) my_rank, inum, 'Failed :', &
-      &        fln_tce%isf_fline_start(1:2,inum), &
-      &       ':   ', fln_tce%isf_dbl_start(1:3,inum)
-           end if
+           fln_tce%isf_fline_start(1:2,inum) = fln_tce%isf_dbl_start(2:3,inum)
          end do
+!
+!
+!         write(*,*) my_rank, 'fln_tce%num_current_fline :', &
+!     &     fln_tce%num_current_fline    
+!         do inum = 1, fln_tce%num_current_fline
+!           if(fln_tce%isf_dbl_start(1,inum) .ne. my_rank &
+!     &       .or.  fln_tce%isf_dbl_start(2,inum)   &
+!     &           .ne. fln_tce%isf_fline_start(1,inum) &
+!     &      .or.  fln_tce%isf_dbl_start(3,inum)    &
+!     &            .ne. fln_tce%isf_fline_start(2,inum)     ) then
+!             write(*,*) my_rank, inum, 'Failed :', &
+!      &        fln_tce%isf_fline_start(1:2,inum), &
+!      &       ':   ', fln_tce%isf_dbl_start(1:3,inum)
+!           end if
+!         end do
 !
        if(nline .le. 0) exit
       end do

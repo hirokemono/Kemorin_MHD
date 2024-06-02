@@ -7,27 +7,10 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine alloc_broadcast_trace_data(num_each_field_line,      &
-!!     &                                      viz_fields, fln_SR)
-!!      subroutine dealloc_broadcast_trace_data(fln_SR)
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
-!!        type(trace_data_send_recv), intent(inout) :: fln_SR
-!!
-!!      subroutine s_broadcast_trace_data(fln_tce, fln_SR,           &
-!!     &                                  nline_global)
-!!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!        type(trace_data_send_recv), intent(inout) :: fln_SR
-!!        integer(kind = kint), intent(inout) :: nline_global
-!!      subroutine set_fline_start_2_bcast(iflag_comm, i, ele, surf,    &
-!!     &          isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
-!!        integer(kind = kint), intent(in)                              &
-!!     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
-!!        integer(kind = kint), intent(in)                              &
-!!     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
-!!        type(each_fieldline_trace), intent(in) :: fln_tce
-!!        type(trace_data_send_recv), intent(inout) :: fln_SR
+!!      subroutine alloc_trace_data_SR_num(viz_fields, fln_SR)
+!!      subroutine dealloc_trace_data_SR_num(fln_SR)
+!!      subroutine s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,     &
+!!     &                                  SR_sig, nline_global)
 !!@endverbatim
 !
       module t_trace_data_send_recv
@@ -46,7 +29,7 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem_export = 10
+      integer(kind= kint), parameter, private :: nitem_export = 6
 !
       type trace_data_send_recv
         integer(kind = kint) :: npe_send
@@ -132,9 +115,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_data_send_recv(ele, surf,                      &
-     &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
-     &          fln_prm, fln_tce, fln_SR, m_SR, nline_global)
+      subroutine s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,       &
+     &                                  SR_sig, nline_global)
 !
       use calypso_SR
       use calypso_SR_core
@@ -142,55 +124,40 @@
       use solver_SR_int
       use set_to_send_buffer
       use select_copy_from_recv
-      use t_mesh_SR
+      use t_solver_SR
       use t_source_of_filed_line
 !
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in)                                  &
-     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
-      integer(kind = kint), intent(in)                                  &
-     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       integer(kind = kint), intent(inout) :: nline_global
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
-      type(mesh_SR), intent(inout) :: m_SR
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: i
 !
-      call count_trace_data_SR_npe(ele, isf_4_ele_dbl, fln_tce, fln_SR)
+      call count_trace_data_SR_npe(fln_tce, fln_SR)
       call count_trace_data_SR_num(fln_SR)
       call raise_trace_SR_export(fln_SR%ntot_send,             &
      &                           fln_SR)
       call raise_trace_SR_import(fln_SR)
 
-      call set_trace_data_to_SR(ele, surf,                              &
-     &    isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
+      call set_trace_data_to_SR(fln_tce, fln_SR)
 !
-      call resize_work_SR(fln_SR%ncomp_export,                          &
-     &                    fln_SR%npe_send, fln_SR%npe_recv,             &
-     &                    fln_SR%istack_send(fln_SR%npe_send),          &
-     &                    fln_SR%istack_recv(fln_SR%npe_recv),          &
-     &                    m_SR%SR_sig, m_SR%SR_r)
+      call resize_SR_flag(fln_SR%npe_send, fln_SR%npe_recv, SR_sig)
       call calypso_send_recv_core                                       &
      &   (fln_SR%ncomp_export, fln_SR%npe_send, fln_SR%id_pe_send,      &
      &    fln_SR%istack_send, fln_SR%rSend(1,1),                        &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
-     &    fln_SR%istack_recv, 0, fln_SR%rRecv, m_SR%SR_sig)
-      call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
+     &    fln_SR%istack_recv, 0, fln_SR%rRecv, SR_sig)
+      call calypso_send_recv_fin(fln_SR%npe_send, 0, SR_sig)
 !
-      call resize_iwork_SR_t(fln_SR%npe_send, fln_SR%npe_recv,          &
-     &                       fln_SR%istack_isend(fln_SR%npe_send),      &
-     &                       fln_SR%istack_irecv(fln_SR%npe_recv),      &
-     &                       m_SR%SR_sig, m_SR%SR_i)
       call calypso_send_recv_intcore                                    &
      &   (fln_SR%npe_send, fln_SR%id_pe_send,                           &
      &    fln_SR%istack_isend, fln_SR%iSend(1,1), 0,                    &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
-     &    fln_SR%istack_irecv, fln_SR%iRecv(1,1), m_SR%SR_sig)
-      call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
+     &    fln_SR%istack_irecv, fln_SR%iRecv(1,1), SR_sig)
+      call calypso_send_recv_fin(fln_SR%npe_send, 0, SR_sig)
 !
       call set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
       nline_global = fln_tce%istack_current_fline(nprocs)               &
@@ -318,20 +285,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_trace_data_SR_npe(ele,                           &
-     &          isf_4_ele_dbl, fln_tce, fln_SR)
+      subroutine count_trace_data_SR_npe(fln_tce, fln_SR)
 !
       use calypso_mpi_int
       use t_source_of_filed_line
 !
-      type(element_data), intent(in) :: ele
-      integer(kind = kint), intent(in)                                  &
-     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       type(each_fieldline_trace), intent(in) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
-      integer(kind = kint) :: num, i, ip
-      integer(kind = kint) :: iele, isf
+      integer(kind = kint) :: i, ip
 !
 !$omp parallel workshare
       fln_SR%num_send(1:nprocs) =   0
@@ -419,22 +381,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_trace_data_to_SR(ele, surf,                        &
-     &          isf_4_ele_dbl, iele_4_surf_dbl, fln_tce, fln_SR)
+      subroutine set_trace_data_to_SR(fln_tce, fln_SR)
 !
       use t_source_of_filed_line
 !
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in)                                  &
-     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
-      integer(kind = kint), intent(in)                                  &
-     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
       type(each_fieldline_trace), intent(in) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
-      integer(kind = kint) :: inum, isurf
-      integer(kind = kint) :: iele, isf, icou
+      integer(kind = kint) :: inum, icou
       integer(kind = kint) :: irank_send, ineib_tmp
 !
       do inum = 1, fln_SR%ntot_recv
@@ -453,24 +407,14 @@
         fln_SR%item_send(icou) = inum
       end do
 !
-!$omp parallel do private(icou,inum,iele,isf,isurf)
+!$omp parallel do private(icou,inum)
       do icou = 1, fln_SR%ntot_send
         inum = fln_SR%item_send(icou)
-        iele = fln_tce%isf_fline_start(1,inum)
-        isf =  fln_tce%isf_fline_start(2,inum)
-        isurf = abs(surf%isf_4_ele(iele,isf))
 !
-        fln_SR%iSend(1,icou) = fln_tce%iline_original(inum)
-        fln_SR%iSend(2,icou) = fln_tce%iflag_direction(inum)
-        fln_SR%iSend(3,icou) = fln_tce%icount_fline(inum)
-!
-       if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
-          fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,1,1:3)
-        else
-          fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,2,1:3)
-        end if
-        fln_SR%iSend(7:9,icou) = fln_tce%isf_dbl_start(1:3,inum)   
-        fln_SR%iSend(10,icou) = isf_4_ele_dbl(iele,isf,1)
+        fln_SR%iSend(1,icou) =   fln_tce%iline_original(inum)
+        fln_SR%iSend(2,icou) =   fln_tce%iflag_direction(inum)
+        fln_SR%iSend(3,icou) =   fln_tce%icount_fline(inum)
+        fln_SR%iSend(4:6,icou) = fln_tce%isf_dbl_start(1:3,inum)   
 !
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
         fln_SR%rSend(5:8,icou) = fln_tce%v_fline_start(1:4,inum)
@@ -512,8 +456,7 @@
           fln_tce%iline_original(i) =      fln_SR%iRecv(1,i)
           fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
           fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
-          fln_tce%isf_fline_start(1:2,i) = fln_SR%iRecv(5:6,i)
-          fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(7:9,i)
+          fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(4:6,i)
 !
           fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
           fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)
