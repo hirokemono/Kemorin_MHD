@@ -103,7 +103,6 @@
         call alloc_start_point_fline                                    &
      &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i_fln)%num_each_field_line,                   &
      &      fline%fln_prm(i_fln)%fline_fields,                          &
      &      fline%fln_tce(i_fln))
         call alloc_broadcast_trace_data                                 &

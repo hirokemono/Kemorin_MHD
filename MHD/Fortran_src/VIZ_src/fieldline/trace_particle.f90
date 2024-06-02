@@ -119,11 +119,11 @@
         if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv                                   &
      &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                &
-     &        fln_tce, fln_SR, m_SR, nline)
+     &        fln_prm, fln_tce, fln_SR, m_SR, nline)
         else
           call s_broadcast_trace_data                                   &
      &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-     &      fln_tce, fln_bcast, nline)
+     &      fln_prm, fln_tce, fln_bcast, nline)
         end if
 !
         if(i_debug .gt. 0) then
@@ -138,6 +138,8 @@
 !
 !
       fln_tce%num_current_fline = fline_lc%nnod_line_l
+      call resize_line_start_fline(fln_tce%num_current_fline,           &
+     &                             fln_prm%fline_fields, fln_tce)
       do inum = 1, fline_lc%nnod_line_l
         call return_to_trace_list(inum, fline_lc,                       &
      &      fln_tce%isf_fline_start(1,inum),                            &

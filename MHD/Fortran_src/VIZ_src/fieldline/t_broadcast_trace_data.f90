@@ -41,6 +41,7 @@
       use t_surface_data
       use t_comm_table
       use t_para_double_numbering
+      use t_control_params_4_fline
 !
       implicit  none
 !
@@ -97,7 +98,7 @@
 !
       subroutine s_broadcast_trace_data                                 &
      &         (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,              &
-     &          fln_tce, fln_bcast, nline_global)
+     &          fln_prm, fln_tce, fln_bcast, nline_global)
 !
       use t_source_of_filed_line
       use calypso_mpi_real
@@ -110,6 +111,7 @@
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       integer(kind = kint), intent(in)                                  &
      &               :: iele_4_surf_dbl(surf%numsurf,2,3)
+      type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(broadcast_trace_data), intent(inout) :: fln_bcast
@@ -138,7 +140,7 @@
      &          (num64*fln_bcast%ncomp_bcast), src_rank)
         end do
 !
-        call set_fline_start_from_neib(fln_bcast, fln_tce)
+        call set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
 !
         nline_global = fln_tce%istack_current_fline(nprocs)             &
      &               - fln_tce%istack_current_fline(0)
@@ -204,12 +206,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_from_neib(fln_bcast, fln_tce)
+      subroutine set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
 !
       use calypso_mpi_int
       use t_source_of_filed_line
 !
       type(broadcast_trace_data), intent(in) :: fln_bcast
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ied_lin, i, icou, ip
@@ -224,6 +227,8 @@
         end if
       end do
       fln_tce%num_current_fline = icou
+      call resize_line_start_fline(fln_tce%num_current_fline,           &
+     &                             fln_prm%fline_fields, fln_tce)
 !
       fln_tce%istack_current_fline(0) = 0
       call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &

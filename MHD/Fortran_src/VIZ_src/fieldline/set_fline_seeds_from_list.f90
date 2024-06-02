@@ -231,6 +231,8 @@
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
         fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
       end if
+      call resize_line_start_fline(fln_tce%num_current_fline,           &
+     &                             fln_prm%fline_fields, fln_tce)
 !
       fln_tce%istack_current_fline(0) = 0
       call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
