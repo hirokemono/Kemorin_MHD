@@ -171,7 +171,7 @@
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
           iflag_comm = 1
-            write(*,*) 'Exit from tracing area', my_rank, inum
+          write(*,*) 'Exit from tracing area', my_rank, inum
         end if
         if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0) then
           isurf_org(1) = iele
