@@ -444,7 +444,7 @@
 
       fln_SR%icou_send(1:nprocs) = fln_SR%istack_send(0:nprocs-1)
       do inum = 1, fln_tce%num_current_fline
-        if(fln_tce%iflag_comm_start(ione) .ne. ione) cycle
+        if(fln_tce%iflag_comm_start(inum) .ne. ione) cycle
         if(fln_tce%isf_dbl_start(1,inum) .eq. my_rank                   &
      &    .or. fln_tce%isf_dbl_start(3,inum) .eq. 0) cycle
         

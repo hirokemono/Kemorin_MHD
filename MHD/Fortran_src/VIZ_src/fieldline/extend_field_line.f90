@@ -86,7 +86,7 @@
 !
       real(kind = kreal) :: flux
 !
-      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
+      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org, jcou
 
 !
       if(isurf_org(1) .eq. 0) then
@@ -98,8 +98,10 @@
       call add_fline_start(x4_start, v4_start,                          &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
+      jcou = 0
       iflag_comm = 0
       do
+        jcou = jcou + 1
         icount_line = icount_line + 1
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
@@ -110,7 +112,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then
-          write(*,*) 'Error at trace to mid point', my_rank, inum
+          write(*,*) 'Error at trace to mid point', my_rank, inum, &
+     &              ' at ', jcou, ': ', iele, isf_org     
           exit
         end if
         call add_fline_list(x4_start, v4_start,                         &
@@ -123,7 +126,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then
-          write(*,*) 'Error at trace to end point', my_rank, inum
+          write(*,*) 'Error at trace to end point', my_rank, inum, &
+     &              ' at ', jcou, ': ', iele, isf_org     
           exit
         end if
         call add_fline_list(x4_start, v4_start,                         &
@@ -161,7 +165,9 @@
             isurf_org(1) = iele
             isurf_org(2) = isf_tgt
             iflag_comm = 1
-            write(*,*) 'Exit for external surface', my_rank, inum
+            write(*,*) 'Exit for external surface', my_rank, inum, &
+       &            ': ', isurf_org_dbl(1:3), ': ',  &
+       &             isf_4_ele_dbl(iele,isf_tgt,2)
             exit
           end if
         end if
@@ -183,10 +189,9 @@
           write(*,*) 'Exit from tracing area', my_rank, inum
         end if
         if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0) then
-          isurf_org(1) = iele
-          isurf_org(2) = isf_tgt
-          iflag_comm = 1
-          write(*,*) 'complete extend within internal', my_rank, inum
+          iflag_comm = -2
+          write(*,*) 'Trace leaves from domain', my_rank, inum
+          exit
         end if
       end do
 !

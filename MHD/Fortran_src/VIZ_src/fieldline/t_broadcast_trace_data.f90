@@ -199,8 +199,8 @@
         fln_bcast%fline_export(9+1:fln_bcast%ncomp_bcast,i+ist)         &
     &         = fln_tce%c_fline_start(1:fln_bcast%ncomp_bcast-9,i)
       else
-        fln_bcast%id_fline_export(1:9,i+ist) = izero
-        fln_bcast%id_fline_export(10,i+ist) =  -ione
+        fln_bcast%id_fline_export(1:10,i+ist) = izero
+        fln_bcast%id_fline_export(7,i+ist) =  -ione
         fln_bcast%fline_export(1:fln_bcast%ncomp_bcast,i+ist) = zero
       end if
 !
@@ -224,9 +224,9 @@
       ied_lin = fln_tce%istack_current_fline(nprocs)
       icou = 0
       do i = 1, ied_lin
-        if(fln_bcast%id_fline_export(10,i) .eq. my_rank) then
-          icou = icou + 1
-        end if
+        if(fln_bcast%id_fline_export(7,i) .ne. my_rank) cycle
+!
+        icou = icou + 1
       end do
       fln_tce%num_current_fline = icou
       call resize_line_start_fline(fln_tce%num_current_fline,           &
@@ -244,7 +244,8 @@
 !
       icou = 0
       do i = 1, ied_lin
-        if(fln_bcast%id_fline_export(10,i) .eq. my_rank) then
+        if(fln_bcast%id_fline_export(7,i) .ne. my_rank) cycle
+!
           icou = icou + 1
           fln_tce%iline_original(icou) = fln_bcast%id_fline_export(1,i)
           fln_tce%iflag_direction(icou)                                 &
@@ -262,7 +263,6 @@
           fln_tce%trace_length(icou) = fln_bcast%fline_export(9,i)
           fln_tce%c_fline_start(1:fln_bcast%ncomp_bcast-9,icou)         &
      &            = fln_bcast%fline_export(9+1:fln_bcast%ncomp_bcast,i)
-        end if
       end do
 !
       end subroutine set_fline_start_from_neib

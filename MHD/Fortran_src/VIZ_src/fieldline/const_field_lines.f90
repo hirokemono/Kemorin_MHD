@@ -106,6 +106,8 @@
      &      fln_prm, fln_tce, fln_bcast, nline)
 !        end if
 !
+         write(*,*) my_rank, 'fln_tce%num_current_fline :', &
+     &     fln_tce%num_current_fline    
          do inum = 1, fln_tce%num_current_fline
            if(fln_tce%isf_dbl_start(1,inum) .ne. my_rank &
      &       .or.  fln_tce%isf_dbl_start(2,inum) .ne. fln_tce%isf_fline_start(1,inum) &
