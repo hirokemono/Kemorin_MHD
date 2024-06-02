@@ -97,12 +97,11 @@
         end do
 !
 !        if(fln_tce%num_current_fline .gt. 4096) then
-          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
-     &                                m_SR%SR_sig, nline)
+!          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,        &
+!     &                                m_SR%SR_sig, nline)
 !        else
-!          call s_broadcast_trace_data                                  &
-!     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                 &
-!     &      fln_prm, fln_tce, fln_bcast, nline)
+          call s_broadcast_trace_data(fln_prm, fln_tce,                &
+     &                                 fln_bcast, nline)
 !        end if
 !
          do inum = 1, fln_tce%num_current_fline
