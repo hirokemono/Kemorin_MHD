@@ -334,16 +334,27 @@
       integer(kind = kint) :: iele, isf
 !
 !$omp parallel workshare
-      fln_SR%num_send(1:nprocs) = 0
+      fln_SR%num_send(1:nprocs) =   0
+      fln_SR%num_recv(1:nprocs) =   0
+      fln_SR%ineib_send(1:nprocs) = 0
+      fln_SR%ineib_recv(1:nprocs) = 0
+      fln_SR%id_pe_send(1:nprocs) = -1
+      fln_SR%id_pe_recv(1:nprocs) = -1
+      fln_SR%icou_send(1:nprocs) =  0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%istack_send(0:nprocs) =   0
+      fln_SR%istack_recv(0:nprocs) =   0
+      fln_SR%istack_isend(0:nprocs) =  0
+      fln_SR%istack_irecv(0:nprocs) =  0
 !$omp end parallel workshare
 
       do i =  1, fln_tce%num_current_fline
-        iele = fln_tce%isf_fline_start(1,i)
-        isf =  fln_tce%isf_fline_start(2,i)
-        if(isf_4_ele_dbl(iele,isf,1) .eq. my_rank                       &
-     &             .and. fln_tce%iflag_comm_start(i) .ne. ione) cycle
+        if(fln_tce%iflag_comm_start(i) .ne. ione) cycle
+        if(fln_tce%isf_dbl_start(1,i) .eq. my_rank                      &
+     &    .or. fln_tce%isf_dbl_start(3,i) .eq. 0) cycle
 !
-        ip = isf_4_ele_dbl(iele,isf,1) + 1
+        ip = fln_tce%isf_dbl_start(1,i) + 1
             fln_SR%num_send(ip) = fln_SR%num_send(ip) + 1
       end do
       call calypso_mpi_alltoall_one_int(fln_SR%num_send,                &
@@ -433,14 +444,11 @@
 
       fln_SR%icou_send(1:nprocs) = fln_SR%istack_send(0:nprocs-1)
       do inum = 1, fln_tce%num_current_fline
-        if(fln_tce%iflag_comm_start(inum) .ne. ione) cycle
+        if(fln_tce%iflag_comm_start(ione) .ne. ione) cycle
+        if(fln_tce%isf_dbl_start(1,inum) .eq. my_rank                   &
+     &    .or. fln_tce%isf_dbl_start(3,inum) .eq. 0) cycle
         
-        iele = fln_tce%isf_fline_start(1,inum)
-        isf =  fln_tce%isf_fline_start(2,inum)
-        irank_send = isf_4_ele_dbl(iele,isf,1)
-        if(irank_send .eq. my_rank) cycle
-        
-!
+        irank_send = fln_tce%isf_dbl_start(1,inum)
         ineib_tmp = fln_SR%ineib_send(irank_send+1)
         fln_SR%icou_send(ineib_tmp) = fln_SR%icou_send(ineib_tmp) + 1
         icou = fln_SR%icou_send(ineib_tmp)
@@ -463,7 +471,7 @@
         else
           fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,2,1:3)
         end if
-        fln_SR%iRecv(7:9,icou) = fln_tce%isf_dbl_start(1:3,inum)   
+        fln_SR%iSend(7:9,icou) = fln_tce%isf_dbl_start(1:3,inum)   
         fln_SR%iSend(10,icou) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
