@@ -44,7 +44,7 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem_bcast = 6
+      integer(kind= kint), parameter, private :: nitem_bcast = 10
 !
       type broadcast_trace_data
         integer(kind= kint) :: ncomp_bcast
@@ -179,13 +179,13 @@
         fln_bcast%id_fline_export(3,i+ist) = fln_tce%icount_fline(i)
 !
         if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
-          fln_bcast%id_fline_export(4:5,i+ist)                          &
-     &               = iele_4_surf_dbl(isurf, 1, 2:3)
+          fln_bcast%id_fline_export(4:6,i+ist)                          &
+     &               = iele_4_surf_dbl(isurf, 1, 1:3)
         else
-          fln_bcast%id_fline_export(4:5,i+ist)                          &
-     &               = iele_4_surf_dbl(isurf, 2, 2:3)
+          fln_bcast%id_fline_export(4:6,i+ist)                          &
+     &               = iele_4_surf_dbl(isurf, 2, 1:3)
         end if
-        fln_bcast%id_fline_export(6,i+ist) = isf_4_ele_dbl(iele,isf,1)
+        fln_bcast%id_fline_export(10,i+ist) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_bcast%fline_export(1:4,i+ist)                               &
      &               = fln_tce%xx_fline_start(1:4,i)
@@ -195,8 +195,8 @@
         fln_bcast%fline_export(9+1:fln_bcast%ncomp_bcast,i+ist)         &
     &         = fln_tce%c_fline_start(1:fln_bcast%ncomp_bcast-9,i)
       else
-        fln_bcast%id_fline_export(1:5,i+ist) = izero
-        fln_bcast%id_fline_export(6,i+ist) =  -ione
+        fln_bcast%id_fline_export(1:9,i+ist) = izero
+        fln_bcast%id_fline_export(10,i+ist) =  -ione
         fln_bcast%fline_export(1:fln_bcast%ncomp_bcast,i+ist) = zero
       end if
 !
@@ -219,7 +219,7 @@
       ied_lin = fln_tce%istack_current_fline(nprocs)
       icou = 0
       do i = 1, ied_lin
-        if(fln_bcast%id_fline_export(6,i) .eq. my_rank) then
+        if(fln_bcast%id_fline_export(10,i) .eq. my_rank) then
           icou = icou + 1
         end if
       end do
@@ -237,14 +237,14 @@
 !
       icou = 0
       do i = 1, ied_lin
-        if(fln_bcast%id_fline_export(6,i) .eq. my_rank) then
+        if(fln_bcast%id_fline_export(10,i) .eq. my_rank) then
           icou = icou + 1
           fln_tce%iline_original(icou) = fln_bcast%id_fline_export(1,i)
           fln_tce%iflag_direction(icou)                                 &
      &                                 = fln_bcast%id_fline_export(2,i)
           fln_tce%icount_fline(icou) =   fln_bcast%id_fline_export(3,i)
           fln_tce%isf_fline_start(1:2,icou)                             &
-     &                               = fln_bcast%id_fline_export(4:5,i)
+     &                               = fln_bcast%id_fline_export(5:6,i)
 !
           fln_tce%xx_fline_start(1:4,icou)                              &
      &                               = fln_bcast%fline_export(1:4,i)
