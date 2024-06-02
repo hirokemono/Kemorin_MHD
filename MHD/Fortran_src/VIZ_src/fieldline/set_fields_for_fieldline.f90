@@ -27,6 +27,7 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
+      use m_geometry_constants
 !
       use t_phys_data
       use t_geometry_data
@@ -96,8 +97,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_fields_for_fieldline                             &
-     &         (mesh, group, nod_fld, fln_prm, fln_src, fln_tce)
+      subroutine s_set_fields_for_fieldline(mesh, group, nod_fld,       &
+     &         isf_4_ele_dbl, fln_prm, fln_src, fln_tce)
 !
       use t_mesh_data
       use t_phys_data
@@ -109,6 +110,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      integer(kind = kint), intent(in)                                  &
+     &               :: isf_4_ele_dbl(mesh%ele%numele,nsurf_4_ele,2)
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
@@ -133,8 +136,9 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
-      call s_start_surface_4_fline(mesh%node, mesh%surf, nod_fld,       &
-     &                             fln_prm, fln_src, fln_tce)
+      call s_start_surface_4_fline                                      &
+     &   (mesh%node, mesh%ele, mesh%surf, nod_fld,                      &
+     &    isf_4_ele_dbl, fln_prm, fln_src, fln_tce)
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline end'
 !
       end subroutine s_set_fields_for_fieldline

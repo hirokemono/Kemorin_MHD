@@ -36,8 +36,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_start_surface_4_fline(node, surf, nod_fld,           &
-     &          fln_prm, fln_src, fln_tce)
+      subroutine s_start_surface_4_fline(node, ele, surf, nod_fld,      &
+     &          isf_4_ele_dbl, fln_prm, fln_src, fln_tce)
 !
       use calypso_mpi_int
       use extend_field_line
@@ -45,7 +45,10 @@
       use set_fline_start_surface
 !
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in)                                  &
+     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
@@ -98,7 +101,7 @@
      &         + fln_tce%istack_current_fline(i)
       end do
 !
-      call set_fline_start_surf(surf, nod_fld,                          &
+      call set_fline_start_surf(ele, surf, isf_4_ele_dbl, nod_fld,                          &
      &                          fln_prm, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then

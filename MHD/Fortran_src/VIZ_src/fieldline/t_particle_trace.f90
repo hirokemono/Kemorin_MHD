@@ -60,7 +60,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine TRACER_initialize                                      &
-     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
+     &         (increment_fline, fem, isf_4_ele_dbl, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -73,6 +73,8 @@
       integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
+      integer(kind = kint), intent(in)                                  &
+     &               :: isf_4_ele_dbl(fem%mesh%ele%numele,3)
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
@@ -142,7 +144,8 @@
      &        fline%fln_prm(i_fln), fline%fln_tce(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline(fem%mesh, fem%group, nod_fld, &
+          call s_set_fields_for_fieldline                               &
+     &       (fem%mesh, fem%group, nod_fld, isf_4_ele_dbl,              &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln))
         end if

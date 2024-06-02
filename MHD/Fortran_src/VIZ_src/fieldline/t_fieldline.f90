@@ -176,7 +176,8 @@
      &        fline%fln_prm(i_fln), fline%fln_tce(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline(fem%mesh, fem%group, nod_fld, &
+          call s_set_fields_for_fieldline                               &
+     &       (fem%mesh, fem%group, nod_fld, isf_4_ele_dbl,              &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln))
         end if
