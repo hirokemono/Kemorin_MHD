@@ -92,23 +92,23 @@
       call calypso_mpi_allreduce_one_real                               &
      &   (tot_flux_start_l, tot_flux_start, MPI_SUM)
       call calypso_mpi_allgather_one_real                               &
-     &   (abs_flux_start_l, fln_tce%flux_stack_fline(1))
+     &   (abs_flux_start_l, fln_src%flux_stack_fline(1))
 !
-      fln_tce%flux_stack_fline(0) = 0.0d0
+      fln_src%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs
-        fln_tce%flux_stack_fline(ip)                                    &
-     &                         = fln_tce%flux_stack_fline(ip-1)         &
-     &                          + fln_tce%flux_stack_fline(ip)
+        fln_src%flux_stack_fline(ip)                                    &
+     &                         = fln_src%flux_stack_fline(ip-1)         &
+     &                          + fln_src%flux_stack_fline(ip)
       end do
-      abs_flux_start = fln_tce%flux_stack_fline(nprocs)
+      abs_flux_start = fln_src%flux_stack_fline(nprocs)
       flux_4_each_line                                                  &
      &      = abs_flux_start / dble(fln_prm%num_each_field_line)
 !
       fln_tce%istack_current_fline(0) = 0
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &
-     &     = nint((fln_tce%flux_stack_fline(ip)                         &
-     &      - fln_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
+     &     = nint((fln_src%flux_stack_fline(ip)                         &
+     &      - fln_src%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
       fln_src%num_line_local                                            &
      &     = fln_tce%istack_current_fline(my_rank+1)

@@ -102,8 +102,8 @@
       call dealloc_fline_ctl_struct(fline_ctls)
 !
       do i_fln = 1, fline%num_fline
-        call alloc_start_point_fline                                    &
-     &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
+        call alloc_start_point_fline(nprocs, fline%fln_prm(i_fln),      &
+     &                               fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
      &      fline%fln_prm(i_fln)%fline_fields,                          &
      &      fline%fln_tce(i_fln))

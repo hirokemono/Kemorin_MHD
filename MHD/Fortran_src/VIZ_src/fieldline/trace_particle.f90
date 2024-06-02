@@ -87,9 +87,9 @@
      &         'istack_current_fline', fln_tce%istack_current_fline(:)
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(my_rank+50,*) 'isf_fline_start(1:2,inum)'
+        write(my_rank+50,*) 'isf_dbl_start(1:3,inum)'
         do inum = ist, ied
-          write(my_rank+50,*) inum, fln_tce%isf_fline_start(1:2,inum)
+          write(my_rank+50,*) inum, fln_tce%isf_dbl_start(1:3,inum)
         end do
       end if
 
@@ -100,7 +100,7 @@
           call s_trace_particle_in_element                              &
      &       (dt, node, surf, nod_fld, v_prev,                          &
      &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
-     &        fln_tce%isf_fline_start(1,inum),                          &
+     &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
@@ -108,7 +108,7 @@
         end do
 !
         if(fln_tce%iflag_comm_start(inum) .eq. 0) then
-          call add_traced_list(fln_tce%isf_fline_start(1,inum),         &
+          call add_traced_list(fln_tce%isf_dbl_start(1,inum),           &
      &                         fln_tce%xx_fline_start(1,inum),          &
      &                         fln_tce%v_fline_start(1,inum),           &
      &                         fln_prm%fline_fields%ntot_color_comp,    &
@@ -140,7 +140,7 @@
      &                             fln_prm%fline_fields, fln_tce)
       do inum = 1, fline_lc%nnod_line_l
         call return_to_trace_list(inum, fline_lc,                       &
-     &      fln_tce%isf_fline_start(1,inum),                            &
+     &      fln_tce%isf_dbl_start(1,inum),                              &
      &      fln_tce%xx_fline_start(1,inum),                             &
      &      fln_tce%v_fline_start(1,inum),                              &
      &      fln_tce%c_fline_start(1,inum))

@@ -66,22 +66,22 @@
      &     iflag_ele, volume_local)
 !
       call calypso_mpi_allgather_one_real(volume_local,                 &
-     &                                    fln_tce%flux_stack_fline(1))
+     &                                    fln_src%flux_stack_fline(1))
 !
-      fln_tce%flux_stack_fline(0) = 0.0d0
+      fln_src%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs
-        fln_tce%flux_stack_fline(ip)                                    &
-     &                         = fln_tce%flux_stack_fline(ip-1)         &
-     &                          + fln_tce%flux_stack_fline(ip)
+        fln_src%flux_stack_fline(ip)                                    &
+     &                         = fln_src%flux_stack_fline(ip-1)         &
+     &                          + fln_src%flux_stack_fline(ip)
       end do
-      total_volume = fln_tce%flux_stack_fline(nprocs)
+      total_volume = fln_src%flux_stack_fline(nprocs)
       volume_start_l = total_volume / dble(fln_prm%num_each_field_line)
 !
       fln_tce%istack_current_fline(0) = 0
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &
-     &     = nint((fln_tce%flux_stack_fline(ip)                         &
-     &      - fln_tce%flux_stack_fline(ip-1)) / volume_start_l)
+     &     = nint((fln_src%flux_stack_fline(ip)                         &
+     &      - fln_src%flux_stack_fline(ip-1)) / volume_start_l)
       end do
       fln_src%num_line_local = fln_tce%istack_current_fline(my_rank+1)
 !

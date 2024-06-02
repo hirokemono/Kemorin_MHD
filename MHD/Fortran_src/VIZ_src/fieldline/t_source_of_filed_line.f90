@@ -6,7 +6,7 @@
 !
 !!      subroutine alloc_local_start_grp_item(fln_src)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine alloc_start_point_fline(fln_prm, fln_src)
+!!      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_num_gl_start_fline(num_pe, viz_fields, fln_tce)
@@ -47,25 +47,24 @@
         integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx4_initial_fline(:,:)
         real(kind = kreal), allocatable :: flux_start_fline(:)
+!
+        real(kind = kreal),   allocatable :: flux_stack_fline(:)
       end type each_fieldline_source
 !
       type each_fieldline_trace
         integer(kind = kint) :: num_current_fline
         integer(kind = kint), allocatable :: istack_current_fline(:)
-        real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
         integer(kind = kint) :: num_trace_buf
         integer(kind= kint), allocatable :: iline_original(:)
         integer(kind= kint), allocatable :: iflag_direction(:)
         integer(kind= kint), allocatable :: icount_fline(:)
-        integer(kind= kint), allocatable :: isf_fline_start(:,:)
         integer(kind= kint), allocatable :: iflag_comm_start(:)
+        integer(kind= kint), allocatable :: isf_dbl_start(:,:)
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
         real(kind = kreal), allocatable ::  trace_length(:)
-!
-        integer(kind= kint), allocatable :: isf_dbl_start(:,:)
       end type each_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -87,13 +86,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_start_point_fline(fln_prm, fln_src)
+      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
 !
+      integer, intent(in) :: num_pe
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint) :: num
 !
+!
+      allocate(fln_src%flux_stack_fline(0:num_pe))
+      fln_src%flux_stack_fline = 0.0d0
 !
       num = fln_prm%num_each_field_line
       allocate(fln_src%xx4_initial_fline(4,num))
@@ -116,10 +119,8 @@
 !
 !
       allocate(fln_tce%istack_current_fline(0:num_pe))
-      allocate(fln_tce%flux_stack_fline(0:num_pe))
       fln_tce%istack_current_fline = 0
       fln_tce%num_current_fline =    0
-      fln_tce%flux_stack_fline = 0.0d0
 !
       call alloc_line_start_fline(ione, viz_fields, fln_tce)
 !
@@ -142,7 +143,6 @@
       allocate(fln_tce%iflag_direction(fln_tce%num_trace_buf))
       allocate(fln_tce%iflag_comm_start(fln_tce%num_trace_buf))
       allocate(fln_tce%icount_fline(fln_tce%num_trace_buf))
-      allocate(fln_tce%isf_fline_start(2,fln_tce%num_trace_buf))
       allocate(fln_tce%isf_dbl_start(3,fln_tce%num_trace_buf))
 !
       do i = 1, fln_tce%num_trace_buf
@@ -159,7 +159,6 @@
       fln_tce%iflag_direction =  0
       fln_tce%iflag_comm_start =  0
       fln_tce%icount_fline = 0
-      fln_tce%isf_fline_start = 0
       fln_tce%isf_dbl_start = 0
       fln_tce%v_fline_start =  0.0d0
       fln_tce%c_fline_start =  0.0d0
@@ -225,6 +224,7 @@
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       deallocate(fln_src%xx4_initial_fline, fln_src%flux_start_fline)
+      deallocate(fln_src%flux_stack_fline)
 !
       end subroutine dealloc_start_point_fline
 !
@@ -239,7 +239,6 @@
       deallocate(fln_tce%iflag_direction)
       deallocate(fln_tce%iflag_comm_start)
       deallocate(fln_tce%icount_fline)
-      deallocate(fln_tce%isf_fline_start)
       deallocate(fln_tce%isf_dbl_start)
       deallocate(fln_tce%xx_fline_start)
       deallocate(fln_tce%v_fline_start)
@@ -258,7 +257,6 @@
       call dealloc_line_start_fline(fln_tce)
 
       deallocate(fln_tce%istack_current_fline)
-      deallocate(fln_tce%flux_stack_fline)
 !
       end subroutine dealloc_num_gl_start_fline
 !

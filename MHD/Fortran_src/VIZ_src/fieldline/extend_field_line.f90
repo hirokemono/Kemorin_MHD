@@ -91,7 +91,7 @@
 !
       if(isurf_org_dbl(2) .eq. 0) then
         iflag_comm = 0
-        write(*,*) 'Exit at initial tracing', my_rank, inum
+!        write(*,*) 'Exit at initial tracing', my_rank, inum
         return
       end if
       isurf_org(1:2) = isurf_org_dbl(2:3)
@@ -111,8 +111,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then
-          write(*,*) 'Error at trace to mid point', my_rank, inum, &
-     &              ' at ', jcou, ': ', isurf_org(1:2)
+!          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
+!     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
         call add_fline_list(x4_start, v4_start,                         &
@@ -125,8 +125,8 @@
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then
-          write(*,*) 'Error at trace to end point', my_rank, inum, &
-     &              ' at ', jcou, ': ', isurf_org(1:2)
+!          write(*,*) 'Error at trace to end point', my_rank, inum,     &
+!     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
         call add_fline_list(x4_start, v4_start,                         &
@@ -138,10 +138,6 @@
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
      &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
      &         *(-one)**iflag_dir
-!
-!         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
-!     &          v4_start(1:4), flux
-!
 !
 !   set backside element and surface 
 !
@@ -166,7 +162,7 @@
 !            isurf_org(1) = isurf_org(1)
             isurf_org(2) = isf_tgt
             iflag_comm = 1
-            write(*,*) 'Exit for external surface', my_rank, inum
+!            write(*,*) 'Exit for external surface', my_rank, inum
 !       &            ': ', isurf_org_dbl(1:3), ': ',  &
 !       &             isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
             exit
@@ -175,18 +171,18 @@
 !
         if(max_line_step.gt.0 .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
-            write(*,*) 'Exit by trace counts', my_rank, inum
+!            write(*,*) 'Exit by trace counts', my_rank, inum
             exit
         end if
         if(iflag_used_ele(isurf_org(1)) .eq. 0) then
 !          isurf_org(2) = isf_tgt
           iflag_comm = 1
-          write(*,*) 'Exit from tracing area', my_rank, inum
+!          write(*,*) 'Exit from tracing area', my_rank, inum
           exit
         end if
         if(isurf_org(1) .eq. 0) then
           iflag_comm = -2
-          write(*,*) 'Trace leaves from domain', my_rank, inum
+!          write(*,*) 'Trace leaves from domain', my_rank, inum
           exit
         end if
       end do

@@ -17,6 +17,7 @@
       use m_geometry_constants
       use t_geometry_data
       use t_surface_data
+      use calypso_mpi
 !
       implicit  none
 !
@@ -78,7 +79,7 @@
            call set_forward_fline_start_surf                            &
      &        (fln_prm%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
-     &         fln_tce%isf_fline_start(1,inum1))
+     &         fln_tce%isf_dbl_start(1,inum1))
 !
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
      &      then
@@ -86,14 +87,14 @@
            call set_backward_fline_start_surf                           &
      &         (fln_prm%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
-     &          fln_tce%isf_fline_start(1,inum1))
+     &          fln_tce%isf_dbl_start(1,inum1))
 !
         else
            fln_tce%iflag_direction(inum1) = 0
            call set_forward_fline_start_surf                            &
      &        (fln_prm%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
-     &         fln_tce%isf_fline_start(1,inum1))
+     &         fln_tce%isf_dbl_start(1,inum1))
 !
           inum2 = inum1 + fln_src%num_line_local
           fln_tce%trace_length(inum2) = 0.0d0
@@ -105,7 +106,7 @@
            call set_backward_fline_start_surf                           &
      &         (fln_prm%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
-     &          fln_tce%isf_fline_start(1,inum2))
+     &          fln_tce%isf_dbl_start(1,inum2))
         end if
       end do
 !
@@ -115,8 +116,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_forward_fline_start_surf                           &
-     &         (iflag_outward_flux, iele, isf_1ele, isurf,       &
-     &          ele, surf, isf_4_ele_dbl, isf_fline_start)
+     &         (iflag_outward_flux, iele, isf_1ele, isurf,              &
+     &          ele, surf, isf_4_ele_dbl, isf_dbl_start)
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -125,18 +126,19 @@
       integer(kind = kint), intent(in) :: iflag_outward_flux
       integer(kind = kint), intent(in) :: iele, isf_1ele, isurf
 !
-      integer(kind = kint), intent(inout) :: isf_fline_start(2)
+      integer(kind = kint), intent(inout) :: isf_dbl_start(3)
 !
 !
+      isf_dbl_start(1) = my_rank
       if(iflag_outward_flux .eq. 0) then
-        isf_fline_start(1) = iele
-        isf_fline_start(2) = isf_1ele
+        isf_dbl_start(2) = iele
+        isf_dbl_start(3) = isf_1ele
       else if(isf_4_ele_dbl(iele,isf_1ele,2) .le. 0) then
-        isf_fline_start(1) = surf%iele_4_surf(isurf,1,1)
-        isf_fline_start(2) = surf%iele_4_surf(isurf,1,2)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,1,1)
+        isf_dbl_start(3) = surf%iele_4_surf(isurf,1,2)
       else
-        isf_fline_start(1) = surf%iele_4_surf(isurf,2,1)
-        isf_fline_start(2) = surf%iele_4_surf(isurf,2,2)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,2,1)
+        isf_dbl_start(3) = surf%iele_4_surf(isurf,2,2)
       end if
 !
       end subroutine set_forward_fline_start_surf
@@ -145,7 +147,7 @@
 !
       subroutine set_backward_fline_start_surf                          &
      &         (iflag_outward_flux, iele, isf_1ele, isurf,       &
-     &          ele, surf, isf_4_ele_dbl, isf_fline_start)
+     &          ele, surf, isf_4_ele_dbl, isf_dbl_start)
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -154,18 +156,19 @@
       integer(kind = kint), intent(in) :: iflag_outward_flux
       integer(kind = kint), intent(in) :: iele, isf_1ele, isurf
 !
-      integer(kind = kint), intent(inout) :: isf_fline_start(2)
+      integer(kind = kint), intent(inout) :: isf_dbl_start(3)
 !
 !
+      isf_dbl_start(1) = my_rank
       if(iflag_outward_flux .eq. 1) then
-        isf_fline_start(1) = iele
-        isf_fline_start(2) = isf_1ele
+        isf_dbl_start(2) = iele
+        isf_dbl_start(3) = isf_1ele
       else if(isf_4_ele_dbl(iele,isf_1ele,2) .le. 0) then
-        isf_fline_start(1) = surf%iele_4_surf(isurf,1,1)
-        isf_fline_start(2) = surf%iele_4_surf(isurf,1,2)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,1,1)
+        isf_dbl_start(3) = surf%iele_4_surf(isurf,1,2)
       else
-        isf_fline_start(1) = surf%iele_4_surf(isurf,2,1)
-        isf_fline_start(2) = surf%iele_4_surf(isurf,2,2)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,2,1)
+        isf_dbl_start(3) = surf%iele_4_surf(isurf,2,2)
       end if
 !
       end subroutine set_backward_fline_start_surf

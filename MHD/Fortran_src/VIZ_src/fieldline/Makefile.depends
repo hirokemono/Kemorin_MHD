@@ -46,7 +46,7 @@ set_fline_control.o: $(FIELDLINE_DIR)/set_fline_control.f90 m_precision.o m_mach
 	$(F90) -c $(F90OPTFLAGS) $<
 set_fline_seeds_from_list.o: $(FIELDLINE_DIR)/set_fline_seeds_from_list.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_phys_data.o t_control_params_4_fline.o t_source_of_filed_line.o m_connect_hexa_2_tetra.o calypso_mpi_int.o t_control_data_flines.o t_find_interpolate_in_ele.o set_fline_control.o quicksort.o sel_interpolate_scalar.o extend_field_line.o trace_in_element.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_fline_start_surface.o: $(FIELDLINE_DIR)/set_fline_start_surface.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o m_constants.o t_phys_data.o t_control_params_4_fline.o t_source_of_filed_line.o cal_field_on_surf_viz.o trace_in_element.o
+set_fline_start_surface.o: $(FIELDLINE_DIR)/set_fline_start_surface.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o calypso_mpi.o m_constants.o t_phys_data.o t_control_params_4_fline.o t_source_of_filed_line.o cal_field_on_surf_viz.o trace_in_element.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_iflag_for_used_ele.o: $(FIELDLINE_DIR)/set_iflag_for_used_ele.f90 m_precision.o t_geometry_data.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -58,7 +58,7 @@ start_surface_by_gl_table.o: $(FIELDLINE_DIR)/start_surface_by_gl_table.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 start_surface_in_volume.o: $(FIELDLINE_DIR)/start_surface_in_volume.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_phys_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_fline.o t_source_of_filed_line.o calypso_mpi_real.o extend_field_line.o cal_field_on_surf_viz.o set_fline_start_surface.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_broadcast_trace_data.o: $(FIELDLINE_DIR)/t_broadcast_trace_data.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_comm_table.o t_para_double_numbering.o t_control_params_4_fline.o t_ctl_params_viz_fields.o t_source_of_filed_line.o calypso_mpi_real.o calypso_mpi_int.o transfer_to_long_integers.o
+t_broadcast_trace_data.o: $(FIELDLINE_DIR)/t_broadcast_trace_data.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_comm_table.o t_para_double_numbering.o t_control_params_4_fline.o t_ctl_params_viz_fields.o t_source_of_filed_line.o calypso_mpi_real.o calypso_mpi_int.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_flines.o: $(FIELDLINE_DIR)/t_control_data_flines.f90 m_precision.o m_constants.o m_machine_parameter.o t_ctl_data_field_line.o ctl_data_field_line_IO.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -74,7 +74,7 @@ t_particle_trace.o: $(FIELDLINE_DIR)/t_particle_trace.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 t_source_of_filed_line.o: $(FIELDLINE_DIR)/t_source_of_filed_line.f90 m_precision.o m_constants.o t_control_params_4_fline.o t_ctl_params_viz_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_trace_data_send_recv.o: $(FIELDLINE_DIR)/t_trace_data_send_recv.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_comm_table.o t_para_double_numbering.o t_control_params_4_fline.o t_ctl_params_viz_fields.o calypso_SR.o calypso_SR_core.o set_to_send_buffer.o solver_SR_int.o select_copy_from_recv.o t_mesh_SR.o t_source_of_filed_line.o calypso_mpi_int.o
+t_trace_data_send_recv.o: $(FIELDLINE_DIR)/t_trace_data_send_recv.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_comm_table.o t_para_double_numbering.o t_control_params_4_fline.o t_ctl_params_viz_fields.o calypso_SR.o calypso_SR_core.o set_to_send_buffer.o solver_SR_int.o select_copy_from_recv.o t_solver_SR.o t_source_of_filed_line.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 trace_in_element.o: $(FIELDLINE_DIR)/trace_in_element.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o t_geometry_data.o t_surface_data.o t_phys_data.o t_ctl_params_viz_fields.o coordinate_converter.o convert_components_4_viz.o cal_field_on_surf_viz.o cal_fline_in_cube.o sel_interpolate_scalar.o
 	$(F90) -c $(F90OPTFLAGS) $<

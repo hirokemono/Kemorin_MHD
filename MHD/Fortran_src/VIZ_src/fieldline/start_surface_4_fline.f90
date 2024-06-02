@@ -122,8 +122,8 @@
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
         do inum = ist, ied
-          write(50+my_rank,*) 'isf_fline_start', inum,                  &
-     &                         fln_tce%isf_fline_start(1:2,inum)
+          write(50+my_rank,*) 'isf_dbl_start', inum,                    &
+     &                         fln_tce%isf_dbl_start(1:3,inum)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point',               &
      &      fln_tce%xx_fline_start(1:4,inum)
         end do

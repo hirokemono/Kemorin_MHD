@@ -77,10 +77,6 @@
       integer(kind = kint) :: nline, inum
 !
 !
-      do inum = 1, fln_tce%num_current_fline
-        fln_tce%isf_dbl_start(1,inum) = my_rank
-        fln_tce%isf_dbl_start(2:3,inum) = fln_tce%isf_fline_start(1:2,inum)
-      end do
       call reset_fline_start(fline_lc)
 !
       do
@@ -107,25 +103,8 @@
 !     &                                 fln_bcast, nline)
 !        end if
 !
-!
-!         write(*,*) my_rank, 'fln_tce%num_current_fline :', &
-!     &     fln_tce%num_current_fline    
-!         do inum = 1, fln_tce%num_current_fline
-!           if(fln_tce%isf_dbl_start(1,inum) .ne. my_rank &
-!     &       .or.  fln_tce%isf_dbl_start(2,inum)   &
-!     &           .ne. fln_tce%isf_fline_start(1,inum) &
-!     &      .or.  fln_tce%isf_dbl_start(3,inum)    &
-!     &            .ne. fln_tce%isf_fline_start(2,inum)     ) then
-!             write(*,*) my_rank, inum, 'Failed :', &
-!      &        fln_tce%isf_fline_start(1:2,inum), &
-!      &       ':   ', fln_tce%isf_dbl_start(1:3,inum)
-!           end if
-!         end do
-!
        if(nline .le. 0) exit
       end do
-!
-!      call check_local_fline_dx( (my_rank+60), fline_lc)
 !
       end subroutine s_const_field_lines
 !

@@ -302,9 +302,10 @@
      &        ele, nod_fld, fln_prm%fline_fields,                       &
      &        fln_tce%c_fline_start(1,icou))
 !
-          fln_tce%isf_fline_start(1,icou)                               &
+          fln_tce%isf_dbl_start(1,icou) = my_rank
+          fln_tce%isf_dbl_start(2,icou)                                 &
      &      = fln_prm%iele_surf_start_fline(inum)
-          fln_tce%isf_fline_start(2,icou) = 0
+          fln_tce%isf_dbl_start(3,icou) = 0
           fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_prm%xx_surf_start_fline(1:3,inum)
           fln_tce%xx_fline_start(4,icou) = one
@@ -323,9 +324,10 @@
 !
             icou = icou + 1
             fln_tce%iflag_direction(icou) = 1
-            fln_tce%isf_fline_start(1,icou)                             &
+            fln_tce%isf_dbl_start(1,icou) = my_rank
+            fln_tce%isf_dbl_start(2,icou)                               &
      &            = fln_prm%iele_surf_start_fline(inum)
-            fln_tce%isf_fline_start(2,icou) = 0
+            fln_tce%isf_dbl_start(3,icou) = 0
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
             call copy_global_start_fline(icou, (icou-1),                &
