@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine alloc_local_start_grp_item(fln_src)
-!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
+!!      subroutine alloc_init_tracer_position(fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!
 !!      subroutine dealloc_local_start_grp_item(fln_src)
 !!      subroutine dealloc_start_point_fline(fln_src)
+!!      subroutine dealloc_init_tracer_position(fln_prm)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!@endverbatim
 !
@@ -40,6 +41,14 @@
 !>        outward flux flag
         integer(kind = kint), allocatable                               &
      &                       :: iflag_outward_flux_fline(:)
+!
+!
+!>        Position list of seed point in start element
+        real(kind = kreal), allocatable :: xi_surf_start_fline(:,:)
+!>        domain list of seed point
+        integer(kind = kint), allocatable :: ip_surf_start_fline(:)
+!>        element list of seed point
+        integer(kind = kint), allocatable :: iele_surf_start_fline(:)
       end type each_fieldline_source
 !
 !  ---------------------------------------------------------------------
@@ -85,6 +94,29 @@
       end subroutine alloc_start_point_fline
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine alloc_init_tracer_position(fln_prm, fln_src)
+!
+      type(fieldline_paramter), intent(in) :: fln_prm
+      type(each_fieldline_source), intent(inout) :: fln_src
+!
+      integer(kind = kint) :: num
+!
+!
+      num = fln_prm%num_each_field_line
+      allocate(fln_src%xi_surf_start_fline(3,num))
+      allocate(fln_src%ip_surf_start_fline(num))
+      allocate(fln_src%iele_surf_start_fline(num))
+!
+      if(num .gt. 0) then
+        fln_src%xi_surf_start_fline(1:3,1:num) = 0.0d0
+        fln_src%ip_surf_start_fline(1:num) =        0
+        fln_src%iele_surf_start_fline(1:num) =      0
+      end if
+!
+      end subroutine alloc_init_tracer_position
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_local_start_grp_item(fln_src)
@@ -107,6 +139,18 @@
       deallocate(fln_src%iflag_outward_flux_fline)
 !
       end subroutine dealloc_start_point_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_init_tracer_position(fln_src)
+!
+      type(each_fieldline_source), intent(inout) :: fln_src
+!
+      deallocate(fln_src%xi_surf_start_fline)
+      deallocate(fln_src%ip_surf_start_fline)
+      deallocate(fln_src%iele_surf_start_fline)
+!
+      end subroutine dealloc_init_tracer_position
 !
 !  ---------------------------------------------------------------------
 !

@@ -129,6 +129,8 @@
       do i_fln = 1, fline%num_fline
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
      &                       .eq. iflag_position_list) then
+          call alloc_init_tracer_position(fline%fln_prm(i_fln),         &
+     &                                    fline%fln_src(i_fln))
           call init_FLINE_seed_from_list(fem%mesh%node, fem%mesh%ele,   &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln), fln_dist)
@@ -174,7 +176,9 @@
      &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &
      &       (fem%mesh%node, fem%mesh%ele, nod_fld,                     &
-     &        fline%fln_prm(i_fln), fline%fln_tce(i_fln))
+     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
+     &        fline%fln_tce(i_fln))
+          call dealloc_init_tracer_position(fline%fln_src(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
           call s_set_fields_for_fieldline                               &
