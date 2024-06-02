@@ -351,8 +351,7 @@
 
       do i =  1, fln_tce%num_current_fline
         if(fln_tce%iflag_comm_start(i) .ne. ione) cycle
-        if(fln_tce%isf_dbl_start(1,i) .eq. my_rank                      &
-     &    .or. fln_tce%isf_dbl_start(3,i) .eq. 0) cycle
+        if(fln_tce%isf_dbl_start(1,i) .eq. my_rank) cycle
 !
         ip = fln_tce%isf_dbl_start(1,i) + 1
             fln_SR%num_send(ip) = fln_SR%num_send(ip) + 1
@@ -445,8 +444,7 @@
       fln_SR%icou_send(1:nprocs) = fln_SR%istack_send(0:nprocs-1)
       do inum = 1, fln_tce%num_current_fline
         if(fln_tce%iflag_comm_start(inum) .ne. ione) cycle
-        if(fln_tce%isf_dbl_start(1,inum) .eq. my_rank                   &
-     &    .or. fln_tce%isf_dbl_start(3,inum) .eq. 0) cycle
+        if(fln_tce%isf_dbl_start(1,inum) .eq. my_rank) cycle
         
         irank_send = fln_tce%isf_dbl_start(1,inum)
         ineib_tmp = fln_SR%ineib_send(irank_send+1)

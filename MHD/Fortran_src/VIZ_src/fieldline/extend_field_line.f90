@@ -161,7 +161,9 @@
             isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
           end if
 !
-          if(surf%interior_surf(isurf_end) .eq. izero) then
+!          if(surf%interior_surf(isurf_end) .eq. izero) then
+          if(isurf_org_dbl(1) .ne. my_rank                              &
+     &        .or. isurf_org_dbl(3) .eq. 0) then
             isurf_org(1) = iele
             isurf_org(2) = isf_tgt
             iflag_comm = 1
