@@ -52,7 +52,7 @@
      &         (node, ele, surf, nod_fld, viz_fields, max_line_step,    &
      &          end_trace, iflag_used_ele, iflag_dir,                   &
      &          i_fline, isurf_org, x4_start, v4_start, c_field,        &
-     &          icount_line, trace_length, iflag_comm, fline_lc)
+     &          icount_line, trace_length, iflag_comm, fline_lc, inum)
 !
       use t_local_fline
       use trace_in_element
@@ -64,6 +64,7 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       integer(kind = kint), intent(in) :: i_fline
 !
+      integer(kind = kint), intent(in) :: inum
       real(kind = kreal), intent(in) ::   end_trace
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
@@ -84,6 +85,7 @@
 !
       if(isurf_org(1) .eq. 0) then
         iflag_comm = 0
+        write(*,*) 'Exit at initial tracing', my_rank, inum
         return
       end if
 !
@@ -101,7 +103,10 @@
      &      iele, isf_org, iflag_dir, node, surf, nod_fld,              &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
-        if(iflag_comm .eq. -1) return
+        if(iflag_comm .eq. -1) then
+          write(*,*) 'Error at trace to mid point', my_rank, inum
+          exit
+        end if
         call add_fline_list(x4_start, v4_start,                         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
@@ -111,7 +116,10 @@
      &      iele, izero, iflag_dir, node, surf, nod_fld,                &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
-        if(iflag_comm .eq. -1) return
+        if(iflag_comm .eq. -1) then
+          write(*,*) 'Error at trace to end point', my_rank, inum
+          exit
+        end if
         call add_fline_list(x4_start, v4_start,                         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
@@ -125,16 +133,13 @@
 !         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
 !     &          v4_start(1:4), flux
 !
-        if(surf%interior_surf(isurf_end) .eq. izero) then
-          isurf_org(1) = iele
-          isurf_org(2) = isf_tgt
-          iflag_comm = 1
-          exit
-        end if
 !
 !   set backside element and surface 
 !
-        if(flux.ge.zero) then
+        if(flux .lt. zero) then
+          isurf_org(1) = iele
+          isurf_org(2) = isf_tgt
+        else
           if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
             isurf_org(1) = surf%iele_4_surf(isurf_end,1,1)
             isurf_org(2) = surf%iele_4_surf(isurf_end,1,2)
@@ -142,9 +147,14 @@
             isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
             isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
           end if
-        else
-          iflag_comm = -2
-          exit
+!
+          if(surf%interior_surf(isurf_end) .eq. izero) then
+            isurf_org(1) = iele
+            isurf_org(2) = isf_tgt
+            iflag_comm = 1
+            write(*,*) 'Exit for external surface', my_rank, inum
+            exit
+          end if
         end if
 !
 !         write(70+my_rank,*) 'isurf_end', icount_line, iele, isf_tgt,  &
@@ -152,17 +162,22 @@
 !         write(70+my_rank,*) 'isurf_nxt', icount_line, isurf_org(1:2), &
 !     &                        surf%isf_4_ele(isurf_org(1),isurf_org(2))
 !
-        if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0) then
-          if(max_line_step .gt. 0                                       &
-     &          .and. icount_line.gt.max_line_step) then
+        if(max_line_step.gt.0 .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
+            write(*,*) 'Exit by trace counts', my_rank, inum
             exit
-          else
-            isurf_org(1) = iele
-            isurf_org(2) = isf_tgt
-            iflag_comm = 1
-            write(*,*) 'complete extend within internal'
-          end if
+        end if
+        if(iflag_used_ele(iele) .eq. 0) then
+          isurf_org(1) = iele
+          isurf_org(2) = isf_tgt
+          iflag_comm = 1
+            write(*,*) 'Exit from tracing area', my_rank, inum
+        end if
+        if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0) then
+          isurf_org(1) = iele
+          isurf_org(2) = isf_tgt
+          iflag_comm = 1
+          write(*,*) 'complete extend within internal', my_rank, inum
         end if
       end do
 !

@@ -91,18 +91,18 @@
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
-     &        fln_tce%iflag_comm_start(inum), fline_lc)
+     &        fln_tce%iflag_comm_start(inum), fline_lc, inum)
         end do
 !
-        if(fln_tce%num_current_fline .gt. 4096) then
+!        if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv                                   &
      &       (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                &
      &        fln_tce, fln_SR, m_SR, nline)
-        else
-          call s_broadcast_trace_data                                   &
-     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                  &
-     &      fln_tce, fln_bcast, nline)
-        end if
+!        else
+!          call s_broadcast_trace_data                                  &
+!     &     (ele, surf, isf_4_ele_dbl, iele_4_surf_dbl,                 &
+!     &      fln_tce, fln_bcast, nline)
+!        end if
 !
        if(nline .le. 0) exit
       end do
