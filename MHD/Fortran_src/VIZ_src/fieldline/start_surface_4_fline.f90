@@ -88,7 +88,7 @@
 !
       fln_tce%istack_current_fline(0) = 0
       call calypso_mpi_allgather_one_int                                &
-     &   (fln_tce%num_current_fline, fln_tce%istack_current_fline)
+     &   (fln_tce%num_current_fline, fln_tce%istack_current_fline(1))
 !
       do i = 1, nprocs
         fln_tce%istack_current_fline(i)                                 &
