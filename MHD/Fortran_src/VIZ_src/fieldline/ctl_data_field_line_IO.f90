@@ -89,6 +89,11 @@
      &      :: hd_fline_output_format = 'fline_output_format'
 !
       character(len=kchara), parameter, private                         &
+     &      :: hd_fline_rst_prefix =   'tracer_restart_prefix'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_fline_rst_format =   'tracer_restart_format'
+!
+      character(len=kchara), parameter, private                         &
      &      :: hd_field_line_field =  'field_line_field_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_coloring_field = 'coloring_field_ctl'
@@ -164,14 +169,14 @@
      &      hd_fline_result_field, fln%fline_field_output_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_fline_file_prefix,           &
-     &      fln%fline_file_head_ctl)
-        call read_chara_ctl_type(c_buf, hd_fline_file_head,             &
-     &      fln%fline_file_head_ctl)
-!
+     &                           fln%fline_file_head_ctl)
         call read_chara_ctl_type(c_buf, hd_fline_output_format,         &
-     &      fln%fline_output_type_ctl)
-        call read_chara_ctl_type(c_buf, hd_fline_output_type,           &
-     &      fln%fline_output_type_ctl)
+     &                           fln%fline_output_type_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_fline_rst_prefix,            &
+     &                           fln%fline_rst_prefix_ctl)
+        call read_chara_ctl_type(c_buf, hd_fline_rst_format,            &
+     &                           fln%fline_rst_format_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_field_line_field,            &
      &      fln%fline_field_ctl )
@@ -195,6 +200,12 @@
 
         call read_real_ctl_type(c_buf, hd_max_trace_length,             &
      &      fln%max_trace_length_ctl)
+!
+! ---------------Deprecated items
+        call read_chara_ctl_type(c_buf, hd_fline_file_head,             &
+     &      fln%fline_file_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_fline_output_type,           &
+     &      fln%fline_output_type_ctl)
       end do
       fln%i_vr_fline_ctl = 1 
 !
@@ -221,6 +232,8 @@
 !
       maxlen = len_trim(hd_fline_file_prefix)
       maxlen = max(maxlen, len_trim(hd_fline_output_format))
+      maxlen = max(maxlen, len_trim(hd_fline_rst_prefix))
+      maxlen = max(maxlen, len_trim(hd_fline_rst_format))
       maxlen = max(maxlen, len_trim(hd_field_line_field))
       maxlen = max(maxlen, len_trim(hd_coloring_field))
       maxlen = max(maxlen, len_trim(hd_coloring_comp))
@@ -290,18 +303,18 @@
      &     (hd_xx_start_point, fln%seed_point_ctl)
         call init_int2_ctl_array_label                                  &
      &     (hd_start_global_surf, fln%seed_surface_ctl)
-        call init_chara2_ctl_array_label                                  &
+        call init_chara2_ctl_array_label                                &
      &     (hd_fline_result_field, fln%fline_field_output_ctl)
 !
         call init_chara_ctl_item_label(hd_fline_file_prefix,            &
-     &      fln%fline_file_head_ctl)
-        call init_chara_ctl_item_label(hd_fline_file_head,              &
-     &      fln%fline_file_head_ctl)
-!
+     &                                 fln%fline_file_head_ctl)
         call init_chara_ctl_item_label(hd_fline_output_format,          &
-     &      fln%fline_output_type_ctl)
-        call init_chara_ctl_item_label(hd_fline_output_type,            &
-     &      fln%fline_output_type_ctl)
+     &                                 fln%fline_output_type_ctl)
+!
+        call init_chara_ctl_item_label(hd_fline_rst_prefix,             &
+     &                                 fln%fline_rst_prefix_ctl)
+        call init_chara_ctl_item_label(hd_fline_rst_format,             &
+     &                                 fln%fline_rst_format_ctl)
 !
         call init_chara_ctl_item_label(hd_field_line_field,             &
      &      fln%fline_field_ctl )
@@ -324,6 +337,12 @@
      &      fln%max_line_stepping_ctl)
         call init_real_ctl_item_label(hd_max_trace_length,              &
      &      fln%max_trace_length_ctl)
+!
+! ---------------Deprecated items
+        call init_chara_ctl_item_label(hd_fline_file_head,              &
+     &      fln%fline_file_head_ctl)
+        call init_chara_ctl_item_label(hd_fline_output_type,            &
+     &      fln%fline_output_type_ctl)
 !
       end subroutine init_field_line_ctl_label
 !

@@ -89,6 +89,9 @@
         type(read_character_item) :: fline_file_head_ctl
         type(read_character_item) :: fline_output_type_ctl
 !
+        type(read_character_item) :: fline_rst_prefix_ctl
+        type(read_character_item) :: fline_rst_format_ctl
+!
         type(read_character_item) :: fline_field_ctl
         type(read_character_item) :: fline_color_field_ctl
         type(read_character_item) :: fline_color_comp_ctl
@@ -160,6 +163,9 @@
       fln%fline_file_head_ctl%iflag = 0
       fln%fline_output_type_ctl%iflag = 0
 !
+      fln%fline_rst_prefix_ctl%iflag = 0
+      fln%fline_rst_format_ctl%iflag = 0
+!
       fln%num_fieldline_ctl%iflag  =     0
       fln%max_line_stepping_ctl%iflag  = 0
       fln%max_trace_length_ctl%iflag  = 0
@@ -193,6 +199,11 @@
      &                    new_fln%fline_file_head_ctl)
       call copy_chara_ctl(org_fln%fline_output_type_ctl,                &
      &                    new_fln%fline_output_type_ctl)
+!
+      call copy_chara_ctl(org_fln%fline_rst_prefix_ctl,                 &
+     &                    new_fln%fline_rst_prefix_ctl)
+      call copy_chara_ctl(org_fln%fline_rst_format_ctl,                 &
+     &                    new_fln%fline_rst_format_ctl)
 !
       call copy_chara_ctl(org_fln%fline_field_ctl,                      &
      &                    new_fln%fline_field_ctl)

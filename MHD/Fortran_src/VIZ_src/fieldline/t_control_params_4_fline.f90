@@ -29,12 +29,16 @@
 !
 !
       integer(kind = kint), parameter :: id_fline_data_code = 11
+      character(len=kchara), parameter                                  &
+     &                      :: default_tracer_prefix = 'tracer'
 !
 !        integer(kind = kint) :: num_fline
 !
       type fieldline_paramter
-!>        File of for field line data file
+!>        File parameters for field line data file
         type(field_IO_params) :: fline_file_IO
+!>        File parameters for tracer restart file
+        type(field_IO_params) :: fline_rst_IO
 !
 !>        Area of seed point
         integer(kind = kint) :: id_fline_seed_type = 0

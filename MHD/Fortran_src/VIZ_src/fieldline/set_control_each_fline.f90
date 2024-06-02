@@ -47,6 +47,7 @@
       use m_control_fline_flags
 !
       use t_source_of_filed_line
+      use set_control_platform_data
       use set_isosurface_file_ctl
       use set_area_4_viz
       use skip_comment_f
@@ -85,6 +86,11 @@
         fln_prm%fline_file_IO%iflag_format                              &
      &      = sel_iso_file_format(fln%fline_output_type_ctl%charavalue)
       end if
+!
+!
+      call set_ctl_parallel_file_w_def(default_tracer_prefix,           &
+     &    fln%fline_rst_prefix_ctl, fln%fline_rst_format_ctl,           &
+     &    fln_prm%fline_rst_IO)
 !
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
