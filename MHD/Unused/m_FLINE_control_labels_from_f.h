@@ -22,7 +22,7 @@ label[14]   max_trace_length_ctl
 label[9]    starting_type_ctl 
 label[10]   selection_type_ctl 
 label[11]   start_surf_grp_ctl 
-label[12]   starting_point_ctl 
+label[12]   seed_point_ctl 
 label[13]   starting_gl_surface_id 
 
 Check fline_ctl_lbls->fline_start_flags

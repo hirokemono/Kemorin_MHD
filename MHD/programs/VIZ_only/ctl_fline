@@ -22,9 +22,9 @@ begin fieldline
 !  selection_type_ctl:    amplitude, area_size
   selection_type_ctl     amplitude
 !
-  array starting_point_ctl  10
-    starting_point_ctl  0.0  0.0  0.0
-  end array
+  array seed_point_ctl  10
+    seed_point_ctl  0.0  0.0  0.0
+  end array seed_point_ctl
 !
   array starting_gl_surface_id  10
     starting_gl_surface_id  12  3

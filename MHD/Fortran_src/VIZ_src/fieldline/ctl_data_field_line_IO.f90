@@ -49,9 +49,9 @@
 !!
 !!    selection_type_ctl:    amplitude, area_size
 !!
-!!    array starting_point_ctl  10
-!!      starting_point_ctl  0.0  0.0  0.0
-!!    end array starting_point_ctl
+!!    array seed_point_ctl  10
+!!      seed_point_ctl  0.0  0.0  0.0
+!!    end array seed_point_ctl
 !!
 !!    array starting_gl_surface_id  10
 !!      starting_gl_surface_id  12  3
@@ -120,7 +120,7 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_selection_type = 'selection_type_ctl'
       character(len=kchara), parameter, private                         &
-     &      :: hd_xx_start_point = 'starting_point_ctl'
+     &      :: hd_xx_start_point = 'seed_point_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_start_global_surf = 'starting_gl_surface_id'
 !
