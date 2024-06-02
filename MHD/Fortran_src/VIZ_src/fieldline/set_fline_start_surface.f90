@@ -17,6 +17,7 @@
       use m_geometry_constants
       use t_geometry_data
       use t_surface_data
+      use t_tracing_data
       use calypso_mpi
 !
       implicit  none
@@ -77,7 +78,7 @@
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then
            fln_tce%iflag_direction(inum1) = 0
            call set_forward_fline_start_surf                            &
-     &        (fln_prm%iflag_outward_flux_fline(i),                     &
+     &        (fln_src%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
      &         fln_tce%isf_dbl_start(1,inum1))
 !
@@ -85,14 +86,14 @@
      &      then
            fln_tce%iflag_direction(inum1) = 1
            call set_backward_fline_start_surf                           &
-     &         (fln_prm%iflag_outward_flux_fline(i),                    &
+     &         (fln_src%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
      &          fln_tce%isf_dbl_start(1,inum1))
 !
         else
            fln_tce%iflag_direction(inum1) = 0
            call set_forward_fline_start_surf                            &
-     &        (fln_prm%iflag_outward_flux_fline(i),                     &
+     &        (fln_src%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
      &         fln_tce%isf_dbl_start(1,inum1))
 !
@@ -104,7 +105,7 @@
      &                                 fln_prm%fline_fields, fln_tce)
 !
            call set_backward_fline_start_surf                           &
-     &         (fln_prm%iflag_outward_flux_fline(i),                    &
+     &         (fln_src%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
      &          fln_tce%isf_dbl_start(1,inum2))
         end if

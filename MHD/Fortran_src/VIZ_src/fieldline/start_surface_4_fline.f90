@@ -27,6 +27,7 @@
       use t_group_data
       use t_control_params_4_fline
       use t_source_of_filed_line
+      use t_tracing_data
 !
       implicit  none
 !
@@ -79,7 +80,7 @@
      &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
         if(fln_src%flux_start_fline(i) .gt. zero) then
-          fln_prm%iflag_outward_flux_fline(i) = 1
+          fln_src%iflag_outward_flux_fline(i) = 1
           fln_src%flux_start_fline(i) = -fln_src%flux_start_fline(i)
         end if
       end do

@@ -71,9 +71,7 @@
 !>        global surface ID for seed points
         integer(kind = kint), allocatable                               &
      &                       :: id_gl_surf_start_fline(:,:)
-!>        outward flux flag
-        integer(kind = kint), allocatable                               &
-     &                       :: iflag_outward_flux_fline(:)
+
 !>        Position list of seed point
         real(kind = kreal), allocatable :: xx_surf_start_fline(:,:)
 !>        Position list of seed point in start element
@@ -119,7 +117,6 @@
       num = fln_prm%num_each_field_line
       allocate(fln_prm%id_surf_start_fline(2,num))
       allocate(fln_prm%id_gl_surf_start_fline(2,num))
-      allocate(fln_prm%iflag_outward_flux_fline(num))
 !
       allocate(fln_prm%xx_surf_start_fline(3,num))
       allocate(fln_prm%xi_surf_start_fline(3,num))
@@ -129,7 +126,6 @@
       if(num .gt. 0) then
         fln_prm%id_surf_start_fline(1:2,1:num) =    0
         fln_prm%id_gl_surf_start_fline(1:2,1:num) = 0
-        fln_prm%iflag_outward_flux_fline(1:num) =   0
         fln_prm%xx_surf_start_fline(1:3,1:num) =    0.0d0
 !
         fln_prm%xi_surf_start_fline(1:3,1:num) =    0.0d0
@@ -171,7 +167,6 @@
 !
       deallocate(fln_prm%id_surf_start_fline)
       deallocate(fln_prm%id_gl_surf_start_fline)
-      deallocate(fln_prm%iflag_outward_flux_fline)
 
       deallocate(fln_prm%xx_surf_start_fline)
       deallocate(fln_prm%xi_surf_start_fline)

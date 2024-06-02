@@ -125,7 +125,7 @@
       use set_to_send_buffer
       use select_copy_from_recv
       use t_solver_SR
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(fieldline_paramter), intent(in) :: fln_prm
 !
@@ -288,7 +288,7 @@
       subroutine count_trace_data_SR_npe(fln_tce, fln_SR)
 !
       use calypso_mpi_int
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(each_fieldline_trace), intent(in) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
@@ -340,7 +340,7 @@
 !
       subroutine count_trace_data_SR_num(fln_SR)
 !
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
@@ -383,7 +383,7 @@
 !
       subroutine set_trace_data_to_SR(fln_tce, fln_SR)
 !
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(each_fieldline_trace), intent(in) :: fln_tce
       type(trace_data_send_recv), intent(inout) :: fln_SR
@@ -431,7 +431,7 @@
       subroutine set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
 !
       use calypso_mpi_int
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(trace_data_send_recv), intent(in) :: fln_SR
       type(fieldline_paramter), intent(in) :: fln_prm

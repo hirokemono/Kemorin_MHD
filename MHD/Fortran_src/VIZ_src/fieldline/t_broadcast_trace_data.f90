@@ -96,7 +96,7 @@
       subroutine s_broadcast_trace_data(fln_prm, fln_tce,               &
      &                                  fln_bcast, nline_global)
 !
-      use t_source_of_filed_line
+      use t_tracing_data
       use calypso_mpi_real
       use calypso_mpi_int
       use transfer_to_long_integers
@@ -140,7 +140,7 @@
 !
       subroutine set_fline_start_2_bcast(i, fln_tce, fln_bcast)
 !
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       integer(kind = kint), intent(in) :: i
       type(each_fieldline_trace), intent(in) :: fln_tce
@@ -179,7 +179,7 @@
       subroutine set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
 !
       use calypso_mpi_int
-      use t_source_of_filed_line
+      use t_tracing_data
 !
       type(broadcast_trace_data), intent(in) :: fln_bcast
       type(fieldline_paramter), intent(in) :: fln_prm

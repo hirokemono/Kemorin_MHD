@@ -32,6 +32,7 @@
       use t_surface_data
       use t_comm_table
       use t_para_double_numbering
+      use t_tracing_data
 !
       implicit  none
 !
@@ -50,7 +51,6 @@
       use t_comm_table
       use t_next_node_ele_4_node
       use t_phys_data
-      use t_source_of_filed_line
       use t_local_fline
       use t_trace_data_send_recv
       use t_broadcast_trace_data
