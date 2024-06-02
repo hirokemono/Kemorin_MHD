@@ -329,8 +329,6 @@
       do i =  1, fln_tce%num_current_fline
         iele = fln_tce%isf_fline_start(1,i)
         isf =  fln_tce%isf_fline_start(2,i)
-        &  fln_tce%iflag_comm_start(i), &
-        &   isf_4_ele_dbl(iele,isf,1:)
         if(isf_4_ele_dbl(iele,isf,1) .eq. my_rank                       &
      &             .and. fln_tce%iflag_comm_start(i) .ne. ione) cycle
 !
@@ -438,7 +436,7 @@
         fln_SR%item_send(icou) = inum
       end do
 !
-!$omp parallel do private(inum,ieke,isf,isurf)
+!$omp parallel do private(inum,iele,isf,isurf)
       do inum = 1, fln_tce%num_current_fline
         iele = fln_tce%isf_fline_start(1,inum)
         isf =  fln_tce%isf_fline_start(2,inum)
@@ -461,6 +459,7 @@
         fln_SR%rSend(9+1:fln_SR%ncomp_export,inum)                      &
     &         = fln_tce%c_fline_start(1:fln_SR%ncomp_export-9,inum)
       end do
+!$omp end parallel do
 !
       end subroutine set_trace_data_to_SR
 !
