@@ -64,6 +64,8 @@
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
         real(kind = kreal), allocatable ::  trace_length(:)
+!
+        integer(kind= kint), allocatable :: isf_dbl_start(:,:)
       end type each_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -141,6 +143,7 @@
       allocate(fln_tce%iflag_comm_start(fln_tce%num_trace_buf))
       allocate(fln_tce%icount_fline(fln_tce%num_trace_buf))
       allocate(fln_tce%isf_fline_start(2,fln_tce%num_trace_buf))
+      allocate(fln_tce%isf_dbl_start(3,fln_tce%num_trace_buf))
 !
       do i = 1, fln_tce%num_trace_buf
         fln_tce%iline_original(i) = i
@@ -157,6 +160,7 @@
       fln_tce%iflag_comm_start =  0
       fln_tce%icount_fline = 0
       fln_tce%isf_fline_start = 0
+      fln_tce%isf_dbl_start = 0
       fln_tce%v_fline_start =  0.0d0
       fln_tce%c_fline_start =  0.0d0
       fln_tce%xx_fline_start = 0.0d0
@@ -236,6 +240,7 @@
       deallocate(fln_tce%iflag_comm_start)
       deallocate(fln_tce%icount_fline)
       deallocate(fln_tce%isf_fline_start)
+      deallocate(fln_tce%isf_dbl_start)
       deallocate(fln_tce%xx_fline_start)
       deallocate(fln_tce%v_fline_start)
       deallocate(fln_tce%c_fline_start)

@@ -50,9 +50,10 @@
 !
       subroutine s_extend_field_line                                    &
      &         (node, ele, surf, nod_fld, viz_fields, max_line_step,    &
-     &          end_trace, iflag_used_ele, iflag_dir,                   &
-     &          i_fline, isurf_org, x4_start, v4_start, c_field,        &
-     &          icount_line, trace_length, iflag_comm, fline_lc, inum)
+     &          end_trace, iflag_used_ele, iflag_dir, i_fline,          &
+     &          isurf_org, isurf_org_dbl, x4_start, v4_start, c_field,  &
+     &          icount_line, trace_length, iflag_comm, fline_lc, inum,  &
+     &          isf_4_ele_dbl, iele_4_surf_dbl)
 !
       use t_local_fline
       use trace_in_element
@@ -60,6 +61,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in)                                  &
+     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
+      integer(kind = kint), intent(in)                                  &
+     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       integer(kind = kint), intent(in) :: i_fline
@@ -70,6 +75,7 @@
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !
       integer(kind = kint), intent(inout) :: isurf_org(2)
+      integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                    :: c_field(viz_fields%ntot_color_comp)
@@ -136,16 +142,19 @@
 !
 !   set backside element and surface 
 !
+        if(isf_4_ele_dbl(iele,isf_tgt,2) .lt. 0) then
+          isurf_org_dbl(1:3) = iele_4_surf_dbl(isurf_end,1,1:3)
+        else
+          isurf_org_dbl(1:3) = iele_4_surf_dbl(isurf_end,2,1:3)
+        end if
         if(flux .lt. zero) then
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
         else
           if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
-            isurf_org(1) = surf%iele_4_surf(isurf_end,1,1)
-            isurf_org(2) = surf%iele_4_surf(isurf_end,1,2)
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
           else
-            isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
-            isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
           end if
 !
           if(surf%interior_surf(isurf_end) .eq. izero) then

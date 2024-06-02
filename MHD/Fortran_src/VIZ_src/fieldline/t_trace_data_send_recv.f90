@@ -463,6 +463,7 @@
         else
           fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,2,1:3)
         end if
+        fln_SR%iRecv(7:9,icou) = fln_tce%isf_dbl_start(1:3,inum)   
         fln_SR%iSend(10,icou) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
@@ -506,6 +507,7 @@
           fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
           fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
           fln_tce%isf_fline_start(1:2,i) = fln_SR%iRecv(5:6,i)
+          fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(7:9,i)
 !
           fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
           fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)

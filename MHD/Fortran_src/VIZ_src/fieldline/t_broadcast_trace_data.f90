@@ -187,6 +187,8 @@
           fln_bcast%id_fline_export(4:6,i+ist)                          &
      &               = iele_4_surf_dbl(isurf, 2, 1:3)
         end if
+        fln_bcast%id_fline_export(7:9,i+ist)                            &
+     &               = fln_tce%isf_dbl_start(1:3,i)
         fln_bcast%id_fline_export(10,i+ist) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_bcast%fline_export(1:4,i+ist)                               &
@@ -250,6 +252,8 @@
           fln_tce%icount_fline(icou) =   fln_bcast%id_fline_export(3,i)
           fln_tce%isf_fline_start(1:2,icou)                             &
      &                               = fln_bcast%id_fline_export(5:6,i)
+          fln_tce%isf_dbl_start(1:3,icou)                               &
+     &                               = fln_bcast%id_fline_export(7:9,i)
 !
           fln_tce%xx_fline_start(1:4,icou)                              &
      &                               = fln_bcast%fline_export(1:4,i)
