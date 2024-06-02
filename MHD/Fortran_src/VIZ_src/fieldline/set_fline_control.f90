@@ -66,9 +66,12 @@
       call set_control_4_fline(fline_ctl_struct,                        &
      &    mesh%ele, group%ele_grp, group%surf_grp, nod_fld,             &
      &    fln_prm, fln_src)
-      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
-&         fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,   &
-&         fln_prm%iflag_fline_used_ele)
+!      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,           &
+!     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,  &
+!     &    fln_prm%iflag_fline_used_ele)
+      call set_iflag_used_ele_w_overlap(mesh%ele, group%ele_grp,        &
+     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,   &
+     &    fln_prm%iflag_fline_used_ele)
       call deallocate_cont_dat_fline(fline_ctl_struct)
 !
       if(iflag_debug .gt. 0) then

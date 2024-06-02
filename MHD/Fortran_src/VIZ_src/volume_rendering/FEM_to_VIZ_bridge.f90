@@ -274,7 +274,8 @@
      &         (surf, iele_dbl, surf_comm, iele_4_surf_dbl, m_SR)
 !
       use m_geometry_constants
-      use  solver_SR_type
+      use reverse_SR_int
+      use solver_SR_type
 !
       type(surface_data), intent(in) :: surf
       type(node_ele_double_number), intent(in) :: iele_dbl
@@ -284,7 +285,9 @@
      &    :: iele_4_surf_dbl(surf%numsurf,2,3)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: isurf, iele
+      integer(kind = kint) :: isurf, iele, inum, k1, k2, ip, ist, ied
+      integer(kind = kint), allocatable :: iflag_backside(:)
+      integer(kind = kint), allocatable :: iflag_backside_check(:,:,:)
 !
 !
 !$omp parallel do private(isurf,iele)
@@ -300,6 +303,57 @@
       end do
 !$omp end parallel do
 !
+
+      allocate(iflag_backside(surf_comm%ntot_import))
+      allocate(iflag_backside_check(surf_comm%ntot_export,2,3))
+!
+      do k2 = 1, 3
+        do k1 = 1, 2
+          do inum = 1, surf_comm%ntot_import
+            isurf = surf_comm%item_import(inum)
+            iflag_backside(inum) = iele_4_surf_dbl(isurf,k1,k2)
+          end do
+
+          call comm_items_send_recv                                     &
+     &     (surf_comm%num_neib, surf_comm%id_neib,                      &
+     &      surf_comm%istack_import, iflag_backside(1),                 &
+     &      surf_comm%num_neib, surf_comm%id_neib,                      &
+     &      surf_comm%istack_export, izero,                             &
+     &      iflag_backside_check(1,k1,k2), m_SR%SR_sig)
+        end do
+      end do
+
+      do ip  = 1, surf_comm%num_neib
+        ist = surf_comm%istack_export(ip-1) + 1
+        ied = surf_comm%istack_export(ip)
+        do inum = ist, ied
+          isurf = surf_comm%item_export(inum)
+          if(iele_4_surf_dbl(isurf,2,3) .eq. 0                          &
+     &        .and. iflag_backside_check(inum,2,3) .gt. 0) then
+            if(     iele_4_surf_dbl(isurf,1,1)                          &
+     &                .eq. iflag_backside_check(inum,1,1)               &
+     &        .and. iele_4_surf_dbl(isurf,1,2)                          &
+     &                .eq. iflag_backside_check(inum,1,2)               &
+     &        .and. iele_4_surf_dbl(isurf,1,3)                          &
+     &                .eq. iflag_backside_check(inum,1,3)) then
+              iele_4_surf_dbl(isurf,2,1:3)                              &
+     &                 = iflag_backside_check(inum,2,1:3)
+            else
+              iele_4_surf_dbl(isurf,2,1:3)                              &
+     &                 = iflag_backside_check(inum,1,1:3)
+            end if
+          end if
+        end do
+      end do
+!
+      deallocate(iflag_backside)
+      deallocate(iflag_backside_check)
+
+
+
+
+
+
       call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
      &    m_SR%SR_sig, m_SR%SR_i, iele_4_surf_dbl(1,1,1))
       call SOLVER_SEND_RECV_int_type(surf%numsurf, surf_comm,           &
