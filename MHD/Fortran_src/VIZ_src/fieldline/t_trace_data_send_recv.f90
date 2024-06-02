@@ -45,7 +45,7 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem_export = 6
+      integer(kind= kint), parameter, private :: nitem_export = 10
 !
       type trace_data_send_recv
         integer(kind = kint) :: npe_send
@@ -179,21 +179,19 @@
      &    fln_SR%istack_recv, 0, fln_SR%rRecv, m_SR%SR_sig)
       call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
 !
-!      do i = 1, nitem_export
-        call resize_iwork_SR_t(fln_SR%npe_send, fln_SR%npe_recv,        &
-     &                         fln_SR%istack_isend(fln_SR%npe_send),    &
-     &                         fln_SR%istack_irecv(fln_SR%npe_recv),    &
-     &                         m_SR%SR_sig, m_SR%SR_i)
-        call calypso_send_recv_intcore                                  &
+      call resize_iwork_SR_t(fln_SR%npe_send, fln_SR%npe_recv,          &
+     &                       fln_SR%istack_isend(fln_SR%npe_send),      &
+     &                       fln_SR%istack_irecv(fln_SR%npe_recv),      &
+     &                       m_SR%SR_sig, m_SR%SR_i)
+      call calypso_send_recv_intcore                                    &
      &   (fln_SR%npe_send, fln_SR%id_pe_send,                           &
      &    fln_SR%istack_isend, fln_SR%iSend(1,1), 0,                    &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
      &    fln_SR%istack_irecv, fln_SR%iRecv(1,1), m_SR%SR_sig)
-        call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
-!      end do
+      call calypso_send_recv_fin(fln_SR%npe_send, 0, m_SR%SR_sig)
 !
       call set_trace_data_from_SR(fln_SR, fln_tce)
-      nline_global = fln_tce%istack_current_fline(nprocs)             &
+      nline_global = fln_tce%istack_current_fline(nprocs)               &
      &              - fln_tce%istack_current_fline(0)
 !
       end subroutine s_trace_data_send_recv
@@ -459,11 +457,11 @@
         fln_SR%iSend(3,icou) = fln_tce%icount_fline(inum)
 !
        if(isf_4_ele_dbl(iele,isf,2) .lt. 0) then
-          fln_SR%iSend(4:5,icou) = iele_4_surf_dbl(isurf, 1, 2:3)
+          fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,1,1:3)
         else
-          fln_SR%iSend(4:5,icou) = iele_4_surf_dbl(isurf, 2, 2:3)
+          fln_SR%iSend(4:6,icou) = iele_4_surf_dbl(isurf,2,1:3)
         end if
-        fln_SR%iSend(6,icou) = isf_4_ele_dbl(iele,isf,1)
+        fln_SR%iSend(10,icou) = isf_4_ele_dbl(iele,isf,1)
 !
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
         fln_SR%rSend(5:8,icou) = fln_tce%v_fline_start(1:4,inum)
@@ -501,7 +499,7 @@
           fln_tce%iline_original(i) =      fln_SR%iRecv(1,i)
           fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
           fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
-          fln_tce%isf_fline_start(1:2,i) = fln_SR%iRecv(4:5,i)
+          fln_tce%isf_fline_start(1:2,i) = fln_SR%iRecv(5:6,i)
 !
           fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
           fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)
