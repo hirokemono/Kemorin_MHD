@@ -36,6 +36,44 @@
 !!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
+!! ----------------------------------------------------------------------
+!!
+!!  begin MHD_control
+!!    begin  data_files_def
+!!      ...
+!!    end    data_files_def
+!!
+!!    file   spherical_shell_ctl
+!!    begin  spherical_shell_ctl
+!!      ...
+!!    end    spherical_shell_ctl
+!!
+!!    begin  model
+!!      ...
+!!    end    model
+!!
+!!    begin  control
+!!      ...
+!!    end    control
+!!
+!!    begin  sph_monitor_ctl
+!!      ...
+!!    end    sph_monitor_ctl
+!!
+!!    begin  visual_control
+!!      ...
+!!    end    visual_control
+!!
+!!    begin  dynamo_vizs_control
+!!      ...
+!!    end    dynamo_vizs_control
+!!
+!!    begin  tracer_control
+!!      ...
+!!    end    tracer_control
+!!  end MHD_control
+!!
+!! ----------------------------------------------------------------------
 !!@endverbatim
 !
       module t_ctl_data_SGS_MHD
@@ -55,6 +93,7 @@
       use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_dynamo_vizs
+      use t_control_data_tracers
 !
       implicit none
 !
@@ -67,6 +106,8 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctls
+!>        Structures of visualization controls
+        type(tracers_control) :: tracer_ctls
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
       end type add_sgs_sph_mhd_ctl
@@ -99,6 +140,9 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_tracer_ctl = 'tracers_control'
+!
 !>      Here is the old label
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
@@ -127,10 +171,12 @@
      &                                   add_SSMHD_ctl, c_buf)
       if(c_buf%iend .gt. 0) return
 !
-      call s_viz_step_ctls_to_time_ctl                                  &
-     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
-      call add_fields_4_vizs_to_fld_ctl                                 &
-     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%model_ctl%fld_ctl%field_ctl)
+      call s_viz_step_ctls_to_time_ctl(add_SSMHD_ctl%viz_ctls,          &
+     &                                 MHD_ctl%smctl_ctl%tctl)
+      call add_fields_4_vizs_to_fld_ctl(add_SSMHD_ctl%viz_ctls,         &
+     &    MHD_ctl%model_ctl%fld_ctl%field_ctl)
+      call add_flds_4_tracers_to_fld_ctl(add_SSMHD_ctl%tracer_ctls,     &
+     &    MHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_control_4_sph_SGS_MHD
 !
@@ -246,9 +292,13 @@
 !
         call s_read_viz_controls(id_control, hd_viz_ctl,                &
      &                           add_SSMHD_ctl%viz_ctls, c_buf)
+        call read_tracer_controls(id_control, hd_tracer_ctl,            &
+     &                           add_SSMHD_ctl%tracer_ctls, c_buf)
 !
         call read_dynamo_viz_control(id_control, hd_dynamo_viz_ctl,     &
      &                               add_SSMHD_ctl%zm_ctls, c_buf)
+
+! -----   Deprecated  ---------
         call read_dynamo_viz_control(id_control, hd_zm_viz_ctl,         &
      &                               add_SSMHD_ctl%zm_ctls, c_buf)
       end do
@@ -301,6 +351,8 @@
 !
       call write_viz_controls(id_control,                               &
      &                        add_SSMHD_ctl%viz_ctls, level)
+      call write_tracer_controls(id_control,                            &
+     &                           add_SSMHD_ctl%tracer_ctls, level)
       call write_dynamo_viz_control                                     &
      &   (id_control, add_SSMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
@@ -339,7 +391,9 @@
      &                                MHD_ctl%smonitor_ctl)
       call init_dynamo_viz_control(hd_dynamo_viz_ctl,                   &
      &                             add_SSMHD_ctl%zm_ctls)
-      call init_viz_ctl_label(hd_viz_ctl, add_SSMHD_ctl%viz_ctls)
+      call init_viz_ctl_label(hd_viz_ctl,    add_SSMHD_ctl%viz_ctls)
+      call init_tracers_ctl_label(hd_tracer_ctl,                        &
+     &                            add_SSMHD_ctl%tracer_ctls)
       call init_monitor_data_ctl_label(hd_monitor_data,                 &
      &                                 MHD_ctl%nmtr_ctl)
 !
@@ -352,6 +406,7 @@
       type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
       call dealloc_viz_controls(add_SSMHD_ctl%viz_ctls)
+      call dealloc_tracer_controls(add_SSMHD_ctl%tracer_ctls)
       call dealloc_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
       end subroutine dealloc_sph_SGS_MHD_viz_ctl
