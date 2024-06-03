@@ -104,6 +104,7 @@
      &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
      &    SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,                         &
      &    add_SSMHD_ctl1%viz_ctls, SVIZ_m%VIZs, SNAPs%m_SR)
+      if(iflag_debug .gt. 0) write(*,*) 'init_zonal_mean_vizs'
       call init_zonal_mean_vizs                                         &
      &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
      &    SVIZ_m%VIZ_FEM%edge_comm, SVIZ_m%FEM_DAT%field,               &

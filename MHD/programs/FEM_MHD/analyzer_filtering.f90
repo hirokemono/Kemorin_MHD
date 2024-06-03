@@ -54,7 +54,8 @@
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FSGSs%SGS_MHD_wk%ele_fld, FMHDs%FEM_MHD%nod_mntr,             &
      &    FMHDs%FEM_model%bc_FEM_IO, FSGSs%FEM_SGS%FEM_filters,         &
-     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG, FMVIZs%vizs_ctl)
+     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG,                    &
+     &    FMVIZs%tracer_ctls, FMVIZs%vizs_ctl)
       call copy_delta_t(FMHDs%MHD_step%init_d, FMHDs%MHD_step%time_d)
 !
 !     --------------------- 

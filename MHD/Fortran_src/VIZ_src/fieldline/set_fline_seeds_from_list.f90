@@ -7,17 +7,24 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine FLINE_initialize                                     &
-!!     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
-!!      subroutine FLINE_visualize                                      &
-!!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
-!!      subroutine FLINE_finalize(fline)
-!!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) :: fem
-!!        type(next_nod_ele_table), intent(in) :: next_tbl
-!!        type(phys_data), intent(in) :: nod_fld
-!!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_module), intent(inout) :: fline
+!!      subroutine alloc_FLINE_element_size(ele, fln_dist)
+!!      subroutine dealloc_FLINE_element_size(fln_dist)
+!!        type(element_data), intent(in) :: ele
+!!        type(FLINE_element_size), intent(inout) :: fln_dist
+!!        type(FLINE_element_size), intent(inout) :: fln_dist
+!!
+!!      subroutine cal_FLINE_element_size(node, ele, fln_dist)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(FLINE_element_size), intent(inout) :: fln_dist
+!!      subroutine init_FLINE_seed_from_list(node, ele,                 &
+!!     &          fln_prm, fln_src, fln_tce, fln_dist)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
+!!        type(each_fieldline_source), intent(inout) :: fln_src
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!        type(FLINE_element_size), intent(inout) :: fln_dist
 !!      subroutine set_FLINE_seed_field_from_list                       &
 !!     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
 !!         type(node_data), intent(in) :: node

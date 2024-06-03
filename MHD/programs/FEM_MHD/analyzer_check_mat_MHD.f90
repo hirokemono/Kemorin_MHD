@@ -12,6 +12,7 @@
       use calypso_mpi
 !
       use t_FEM_SGS_MHD
+      use t_control_data_tracers
       use FEM_check_MHD_matrices
 !
       implicit none
@@ -19,6 +20,7 @@
 !
       type(FEM_MHD), save, private :: FMHDs
       type(FEM_SGS_MHD), save, private ::  FSGSs
+      type(tracers_control), save, private :: tracer_ctls_F
       type(visualization_controls), save, private :: vizs_ctl_F
 !
 ! ----------------------------------------------------------------------
@@ -41,7 +43,8 @@
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FSGSs%SGS_MHD_wk%ele_fld, FMHDs%FEM_MHD%nod_mntr,             &
      &    FMHDs%FEM_model%bc_FEM_IO, FSGSs%FEM_SGS%FEM_filters,         &
-     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG, vizs_ctl_F)
+     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG,                    &
+     &    tracer_ctls_F, vizs_ctl_F)
       call copy_delta_t(FMHDs%MHD_step%init_d, FMHDs%MHD_step%time_d)
 !
       call FEM_check_MHD_mat                                            &

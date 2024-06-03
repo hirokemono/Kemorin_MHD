@@ -60,7 +60,7 @@
 !>        Block name
         character(len=kchara) :: block_name = 'tracers_control'
 !>        Structures of tracer controls
-        type(fieldline_controls) :: tracer_control
+        type(fieldline_controls) :: tracer_controls
 !
 !>   Increment for field line
         type(read_integer_item) :: i_step_tracer_out_ctl
@@ -88,7 +88,7 @@
       type(tracers_control), intent(inout) :: tracer_ctls
 !
 !
-      call dealloc_fline_ctl_struct(tracer_ctls%tracer_control)
+      call dealloc_fline_ctl_struct(tracer_ctls%tracer_controls)
 !
       tracer_ctls%delta_t_tracer_out_ctl%iflag = 0
       tracer_ctls%i_step_tracer_out_ctl%iflag = 0
@@ -107,9 +107,9 @@
       type(tracers_control), intent(in) :: tracer_ctls
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
-      if(tracer_ctls%tracer_control%num_fline_ctl .gt. 0) then
-        call add_fields_4_flines_to_fld_ctl(tracer_ctls%tracer_control, &
-     &                                      field_ctl)
+      if(tracer_ctls%tracer_controls%num_fline_ctl .gt. 0) then
+        call add_fields_4_flines_to_fld_ctl                             &
+     &     (tracer_ctls%tracer_controls, field_ctl)
       end if
 !
       end subroutine add_flds_4_tracers_to_fld_ctl
@@ -134,7 +134,7 @@
       if(tracer_ctls%i_tracers_control .gt. 0) return
       tracer_ctls%block_name = trim(hd_block)
       call init_fline_ctl_struct(hd_tracer_ctl,                         &
-     &                           tracer_ctls%tracer_control)
+     &                           tracer_ctls%tracer_controls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -142,7 +142,7 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_files_4_fline_ctl(id_control, hd_tracer_ctl,          &
-     &                              tracer_ctls%tracer_control, c_buf)
+     &                              tracer_ctls%tracer_controls, c_buf)
 !
         call read_integer_ctl_type(c_buf, hd_i_step_tracer,             &
      &                             tracer_ctls%i_step_tracer_out_ctl)
@@ -181,7 +181,7 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    tracer_ctls%i_step_tracer_out_ctl)
       call write_files_4_fline_ctl(id_control, hd_tracer_ctl,           &
-     &                             tracer_ctls%tracer_control, level)
+     &                             tracer_ctls%tracer_controls, level)
 !
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                             tracer_ctls%block_name)
@@ -200,7 +200,7 @@
 !
       tracer_ctls%block_name = trim(hd_block)
       call init_fline_ctl_struct(hd_tracer_ctl,                         &
-      &                          tracer_ctls%tracer_control)
+      &                          tracer_ctls%tracer_controls)
 !
       call init_int_ctl_item_label(hd_i_step_tracer,                    &
      &                             tracer_ctls%i_step_tracer_out_ctl)
@@ -208,6 +208,26 @@
      &                             tracer_ctls%delta_t_tracer_out_ctl)
 !
       end subroutine init_tracers_ctl_label
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine tracer_step_ctls_to_time_ctl(tracer_ctls, tctl)
+!
+      use t_ctl_data_4_time_steps
+!
+      type(tracers_control), intent(in) :: tracer_ctls
+      type(time_data_control), intent(inout) :: tctl
+!
+      if(tracer_ctls%i_step_tracer_out_ctl%iflag .gt. 0) then
+        call copy_integer_ctl(tracer_ctls%i_step_tracer_out_ctl,        &
+     &     tctl%i_step_tracer_output_ctl)
+      end if
+      if(tracer_ctls%delta_t_tracer_out_ctl%iflag .gt. 0) then
+        call copy_real_ctl(tracer_ctls%delta_t_tracer_out_ctl,          &
+     &                     tctl%delta_t_tracer_output_ctl)
+      end if
+!
+      end subroutine tracer_step_ctls_to_time_ctl
 !
 !  ---------------------------------------------------------------------
 !

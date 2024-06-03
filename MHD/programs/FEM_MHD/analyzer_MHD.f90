@@ -61,7 +61,8 @@
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FSGSs%SGS_MHD_wk%ele_fld, FMHDs%FEM_MHD%nod_mntr,             &
      &    FMHDs%FEM_model%bc_FEM_IO, FSGSs%FEM_SGS%FEM_filters,         &
-     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG, FMVIZs%vizs_ctl)
+     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG,                    &
+     &    FMVIZs%tracer_ctls, FMVIZs%vizs_ctl)
       call copy_delta_t(FMHDs%MHD_step%init_d, FMHDs%MHD_step%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -76,6 +77,13 @@
      &    FSGSs%SGS_MHD_wk%fem_int%next_tbl,                            &
      &    FSGSs%SGS_MHD_wk%fem_int%jcs, FMHDs%FEM_MHD%geofem,           &
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
+!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      call FLINE_initialize(FMHDs%MHD_step%viz_step%FLINE_t%increment,  &
+     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+     &    FMVIZs%tracer_ctls%tracer_controls, FMVIZs%tracers)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+!
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)

@@ -161,9 +161,9 @@
         end if
 !
         if(fln%start_surf_grp_ctl%iflag .gt. 0) then
-          call set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,   &
-     &        fln%start_surf_grp_ctl%charavalue,                        &
-     &        fln_prm%igrp_start_fline_surf_grp)
+          fln_prm%igrp_start_fline_surf_grp                             &
+     &      = set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,    &
+     &                              fln%start_surf_grp_ctl%charavalue)
         end if
 !
         fln_src%nele_start_grp = count_nsurf_for_starting(ele, sf_grp,  &

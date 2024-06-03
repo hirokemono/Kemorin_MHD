@@ -246,4 +246,32 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_fline_controls(mesh, group, nod_fld,               &
+     &          num_fline, fline_ctls, fln_prm, fln_src)
+!
+      use t_control_data_flines
+      use set_fline_control
+
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) ::num_fline
+      type(fieldline_controls), intent(inout) :: fline_ctls
+!
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        call s_set_fline_control                                        &
+     &     (mesh, group, nod_fld, fline_ctls%fline_ctl_struct(i_fln),   &
+     &      fln_prm(i_fln), fln_src(i_fln))
+      end do
+!
+      end subroutine set_fline_controls
+!
+!  ---------------------------------------------------------------------
+!
       end module t_fieldline

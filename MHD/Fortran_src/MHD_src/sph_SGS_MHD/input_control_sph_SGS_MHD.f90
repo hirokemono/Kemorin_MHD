@@ -73,6 +73,7 @@
       use bcast_control_sph_MHD
       use bcast_control_data_vizs
       use bcast_dynamo_viz_control
+      use bcast_control_data_tracers
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -94,6 +95,7 @@
       call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_sgs_ctl(add_SSMHD_ctl%sgs_ctl)
       call bcast_viz_controls(add_SSMHD_ctl%viz_ctls)
+      call bcast_tracer_controls(add_SSMHD_ctl%tracer_ctls)
       call s_bcast_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
       end subroutine load_control_sph_SGS_MHD

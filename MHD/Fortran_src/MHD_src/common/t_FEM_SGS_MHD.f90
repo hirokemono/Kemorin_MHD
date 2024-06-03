@@ -24,7 +24,9 @@
       use t_FEM_MHD_time_stepping
       use t_VIZ_mesh_field
       use t_visualizer
+      use t_fieldline
       use t_control_data_vizs
+      use t_control_data_tracers
       use t_mesh_SR
 !
       implicit  none
@@ -63,10 +65,15 @@
       type FEM_SGS_vizs
 !>        Structures of visualization and repartitioning constrol
         type(visualization_controls) :: vizs_ctl
+!>        Structure of control data for tracers
+        type(tracers_control) :: tracer_ctls
+!
 !>        Structure of data for visualization
         type(VIZ_mesh_field) :: VIZ_DAT
 !>        Structures of visualization
         type(visualize_modules) :: VIZs
+!>        Structures of visualization
+        type(fieldline_module) ::  tracers
       end type FEM_SGS_vizs
 !
       end module t_FEM_SGS_MHD

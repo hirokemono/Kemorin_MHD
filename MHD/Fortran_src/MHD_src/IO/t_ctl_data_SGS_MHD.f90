@@ -106,7 +106,7 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctls
-!>        Structures of visualization controls
+!>        Structures of tracer
         type(tracers_control) :: tracer_ctls
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
@@ -173,6 +173,9 @@
 !
       call s_viz_step_ctls_to_time_ctl(add_SSMHD_ctl%viz_ctls,          &
      &                                 MHD_ctl%smctl_ctl%tctl)
+      call tracer_step_ctls_to_time_ctl(add_SSMHD_ctl%tracer_ctls,      &
+     &                                  MHD_ctl%smctl_ctl%tctl)
+!
       call add_fields_4_vizs_to_fld_ctl(add_SSMHD_ctl%viz_ctls,         &
      &    MHD_ctl%model_ctl%fld_ctl%field_ctl)
       call add_flds_4_tracers_to_fld_ctl(add_SSMHD_ctl%tracer_ctls,     &

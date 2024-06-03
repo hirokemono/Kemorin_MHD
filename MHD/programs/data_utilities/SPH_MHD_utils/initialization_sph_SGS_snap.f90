@@ -85,6 +85,10 @@
       call init_FEM_to_VIZ_bridge(SSNAPs%MHD_step%viz_step,             &
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM, SSNAPs%m_SR)
 !
+      call FLINE_initialize(SSNAPs%MHD_step%viz_step%FLINE_t%increment, &
+     &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field,                    &
+     &    add_SSMHD_ctl1%tracer_ctls%tracer_controls, SVIZs%tracers)
+!
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSNAPs%MHD_step%viz_step,                     &

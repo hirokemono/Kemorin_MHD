@@ -179,6 +179,7 @@
       type(mhd_model_control), intent(in) :: model_ctl
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
+!
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
       type(radial_reference_field), intent(inout) :: refs
@@ -217,8 +218,7 @@
 !   set forces
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
-      call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, MHD_prop)
+      call s_set_control_4_force(model_ctl, MHD_prop)
 !
 !   set parameters for general information
 !
@@ -253,6 +253,9 @@
       call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop)
+!
+!   set tracer parameters
+!
 !
       end subroutine set_control_SGS_SPH_MHD
 !

@@ -7,12 +7,8 @@
 !> @brief Set parameters for forces from control data
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_force                                &
-!!     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl, MHD_prop)
-!!        type(forces_control), intent(in) :: frc_ctl
-!!        type(gravity_control), intent(in) :: g_ctl
-!!        type(coriolis_control), intent(in) :: cor_ctl
-!!        type(magneto_convection_control), intent(in) :: mcv_ctl
+!!      subroutine s_set_control_4_force(model_ctl, MHD_prop)
+!!        type(mhd_model_control), intent(in) :: model_ctl
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!@endverbatim
 !
@@ -35,34 +31,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_force                                  &
-     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl, MHD_prop)
+      subroutine s_set_control_4_force(model_ctl, MHD_prop)
 !
       use t_control_parameter
-      use t_ctl_data_mhd_forces
-      use t_ctl_data_mhd_magne
-      use t_ctl_data_gravity
-      use t_ctl_data_coriolis_force
+      use t_ctl_data_MHD_model
       use skip_comment_f
 !
-      type(forces_control), intent(in) :: frc_ctl
-      type(gravity_control), intent(in) :: g_ctl
-      type(coriolis_control), intent(in) :: cor_ctl
-      type(magneto_convection_control), intent(in) :: mcv_ctl
-!
+      type(mhd_model_control), intent(in) :: model_ctl
       type(MHD_evolution_param), intent(inout) :: MHD_prop
 !
 !
-      call set_control_force_flags(frc_ctl, MHD_prop%fl_prop)
+      call set_control_force_flags(model_ctl%frc_ctl, MHD_prop%fl_prop)
 !
 !  direction of gravity
-      call set_control_4_gravity(g_ctl, MHD_prop%fl_prop)
+      call set_control_4_gravity(model_ctl%g_ctl, MHD_prop%fl_prop)
 !
 !  Set Corilis force settings
-      call set_control_4_Coriolis_force(cor_ctl, MHD_prop%fl_prop)
+      call set_control_4_Coriolis_force(model_ctl%cor_ctl,              &
+     &                                  MHD_prop%fl_prop)
 !
 !  setting for external mangnetic field
-      call set_control_4_induction(mcv_ctl, MHD_prop%cd_prop)
+      call set_control_4_induction(model_ctl%mcv_ctl, MHD_prop%cd_prop)
 !
       end subroutine s_set_control_4_force
 !

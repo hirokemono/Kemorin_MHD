@@ -11,7 +11,7 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_fem_MHD                               &
+!!      subroutine read_control_4_FEM_MHD                               &
 !!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
@@ -43,6 +43,7 @@
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
+      use t_control_data_tracers
       use t_control_data_vizs
 !
       implicit none
@@ -108,8 +109,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
+      subroutine read_control_4_FEM_MHD(file_name, FEM_MHD_ctl,         &
+     &          sgs_ctl, tracer_ctls, viz_ctls, c_buf)
 !
       use t_ctl_data_SGS_model
       use viz_step_ctls_to_time_ctl
@@ -117,6 +118,7 @@
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout) :: c_buf
 !
@@ -132,7 +134,7 @@
         if(c_buf%iend .gt. 0) exit
 !
         call read_fem_mhd_control_data(ctl_file_code, hd_Fmhd_ctl,      &
-     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
+     &      FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(ctl_file_code)
@@ -142,10 +144,13 @@
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
+      call tracer_step_ctls_to_time_ctl(tracer_ctls,                    &
+     &                                  FEM_MHD_ctl%fmctl_ctl%tctl)
+     
       call add_fields_4_vizs_to_fld_ctl(viz_ctls,                       &
      &    FEM_MHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
-      end subroutine read_control_4_fem_MHD
+      end subroutine read_control_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
@@ -182,7 +187,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_fem_mhd_control_data(id_control, hd_block,        &
-     &          FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
+     &          FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf)
 !
       use t_ctl_data_SGS_model
 !
@@ -196,6 +201,7 @@
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(tracers_control), intent(inout) :: tracer_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -221,6 +227,8 @@
      &                             FEM_MHD_ctl%nmtr_ctl, c_buf)
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           viz_ctls, c_buf)
+        call read_tracer_controls(id_control, hd_viz_control,            &
+     &                            tracer_ctls, c_buf)
       end do
       FEM_MHD_ctl%i_mhd_ctl = 1
 !

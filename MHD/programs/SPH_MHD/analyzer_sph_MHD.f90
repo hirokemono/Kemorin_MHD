@@ -104,6 +104,12 @@
       &  (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
      &    SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      call FLINE_initialize(SSMHDs%MHD_step%viz_step%FLINE_t%increment, &
+     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,                  &
+     &    add_SSMHD_ctl1%tracer_ctls%tracer_controls, SVIZ_m%tracers)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+!
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSMHDs%MHD_step%viz_step,                    &
