@@ -57,6 +57,8 @@
         real(kind=kreal) :: elapsed_local
 !>        Maximum elapsed time
         real(kind=kreal) :: elapsed_max
+!>
+        logical :: flag_terminate_by_elapsed = .FALSE.
       end type finish_data
 !
 ! -------------------------------------------------------------------

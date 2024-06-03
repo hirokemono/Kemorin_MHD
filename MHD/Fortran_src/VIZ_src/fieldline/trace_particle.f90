@@ -76,31 +76,19 @@
       integer(kind = kint) :: ist, ied, nline, inum
 !
 !
-      if(i_debug .gt. iflag_full_msg) then
-        write(my_rank+50,*)                                             &
-     &         'num_current_fline', fln_tce%num_current_fline
-        write(my_rank+50,*)                                             &
-     &         'istack_current_fline', fln_tce%istack_current_fline(:)
-        ist = fln_tce%istack_current_fline(my_rank) + 1
-        ied = fln_tce%istack_current_fline(my_rank+1)
-        write(my_rank+50,*) 'isf_dbl_start(1:3,inum)'
-        do inum = ist, ied
-          write(my_rank+50,*) inum, fln_tce%isf_dbl_start(1:3,inum)
-        end do
-      end if
-
       dt = dt_init
       call reset_fline_start(fline_lc)
       do
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
-     &       (dt, node, surf, nod_fld, v_prev,                          &
+     &       (node, ele, surf, para_surf, nod_fld, v_prev,              &
      &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
+     &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        fln_tce%iflag_comm_start(inum))
+     &        dt, fln_tce%iflag_comm_start(inum))
         end do
 !
         if(fln_tce%iflag_comm_start(inum) .eq. 0) then
@@ -119,17 +107,8 @@
           call s_broadcast_trace_data(fln_prm, fln_tce,                 &
      &                                fln_bcast, nline)
         end if
-!
-        if(i_debug .gt. 0) then
-          write(my_rank+50,*) 'istack_current_fline',                   &
-     &                       fln_tce%istack_current_fline(:)
-!
-          write(my_rank+50,*) 'number of lines: ', nline
-          write(*,*) 'number of lines: ', my_rank, nline
-        end if
-       if(nline .le. 0) exit
+        if(nline .le. 0) exit
       end do
-!
 !
       fln_tce%num_current_fline = fline_lc%nnod_line_l
       call resize_line_start_fline(fln_tce%num_current_fline,           &

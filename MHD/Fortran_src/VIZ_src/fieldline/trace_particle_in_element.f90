@@ -7,24 +7,24 @@
 !> @brief extend field line in each domain
 !!
 !!@verbatim
-!!      subroutine s_extend_field_line                                  &
-!!     &         (node, ele, surf, nod_fld, viz_fields,                 &
-!!     &          end_trace, iflag_used_ele, iflag_dir,                 &
-!!     &          i_fline, isurf_org, x4_start, v4_start,               &
-!!     &          c_field, iflag_comm)
-!!        real(kind = kreal), intent(inout) :: dt
+!!      subroutine s_trace_particle_in_element                          &
+!!     &         (node, surf, para_surf, nod_fld, v_prev, viz_fields,   &
+!!     &          i_tracer, iflag_used_ele, isurf_org_dbl,              &
+!!     &          x4_start, v4_start, c_field, dt, iflag_comm)
 !!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
-!!        real(kind = kreal), intent(in) ::   end_trace
-!!        integer(kind = kint), intent(in) :: iflag_dir
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
-!!        integer(kind = kint), intent(inout) :: isurf_org(3)
-!!        integer(kind = kint), intent(inout) :: iflag_comm
+!!        integer(kind = kint), intent(in) :: i_tracer
+!!        integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
 !!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
-!!        real(kind = kreal), intent(inout) ::   c_field(1)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: c_field(viz_fields%ntot_color_comp)
+!!        real(kind = kreal), intent(inout) :: dt
+!!        real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
+!!        integer(kind = kint), intent(inout) :: iflag_comm
 !!@endverbatim
 !
       module trace_particle_in_element
@@ -37,6 +37,7 @@
 !
       use t_geometry_data
       use t_surface_data
+      use t_paralell_surface_indices
       use t_phys_data
       use t_ctl_params_viz_fields
 !
@@ -50,21 +51,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle_in_element                            &
-     &         (dt, node, surf, nod_fld, v_prev, viz_fields,            &
-     &          i_fline, isurf_org, x4_start, v4_start, c_field,        &
-     &          iflag_comm)
+      subroutine s_trace_particle_in_element(node, ele, surf,           &
+     &          para_surf, nod_fld, v_prev, viz_fields,                 &
+     &          i_tracer, iflag_used_ele, isurf_org_dbl,                &
+     &          x4_start, v4_start, c_field, dt, iflag_comm)
 !
       use t_local_fline
       use trace_in_element
 !
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      integer(kind = kint), intent(in) :: i_fline
+      integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
+      integer(kind = kint), intent(in) :: i_tracer
 !
-      integer(kind = kint), intent(inout) :: isurf_org(2)
+      integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                    :: c_field(viz_fields%ntot_color_comp)
@@ -73,101 +77,86 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       integer(kind = kint), intent(inout) :: iflag_comm
 !
-      real(kind = kreal) :: end_trace, trace_length, trace_pre
-      real(kind = kreal) :: flux, p_ratio, vmag
+      real(kind = kreal) :: flux
 !
-      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
+      integer(kind = kint) :: isurf_org(2)
+      integer(kind = kint) :: isf_tgt, isurf_end
 
 !
-      if(isurf_org(1) .eq. 0) then
+      if(isurf_org_dbl(2) .eq. 0) then
         iflag_comm = 0
+!        write(*,*) 'Exit at initial tracing', my_rank, inum
         return
       end if
-!
-      iele =    isurf_org(1)
-      isf_org = isurf_org(2)
+      isurf_org(1:2) = isurf_org_dbl(2:3)
 !
       iflag_comm = 0
       do
-        iele =    isurf_org(1)
-        isf_org = isurf_org(2)
 !
 !   extend in the middle of element
-        vmag = sqrt(v4_start(1)*v4_start(1) + v4_start(2)*v4_start(2)   &
-     &             + v4_start(3)*v4_start(3))
-        end_trace = vmag * dt
-        trace_pre = zero
-        call s_trace_in_element(half, end_trace, trace_length,          &
-     &      iele, isf_org, iflag_forward, node, surf, nod_fld,          &
-     &      v_prev, viz_fields, isurf_end, isf_tgt,                     &
-     &      x4_start, v4_start, c_field, iflag_comm)
+        call s_trace_in_element                                         &
+     &     (half, isurf_org(1), isurf_org(2), node, surf,               &
+     &      nod_fld,  viz_fields, isurf_end, isf_tgt, v_prev, i_tracer, &
+     &      x4_start, v4_start, c_field, dt, iflag_comm)
         if(iflag_comm .eq. -1) return
-        if(trace_length.ge.end_trace) return
-
-        p_ratio = (trace_length - trace_pre) / (vmag * dt)
-!$parallel workshare
-        v_prev(1:nod_fld%n_point,1)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,1)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline)
-        v_prev(1:nod_fld%n_point,3)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,2)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline+1)
-        v_prev(1:nod_fld%n_point,3)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,3)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline+2)
-!$end parallel workshare
-        dt = (one - p_ratio) * dt
 !
 !   extend to surface of element
-        vmag = sqrt(v4_start(1)*v4_start(1) + v4_start(2)*v4_start(2)   &
-     &             + v4_start(3)*v4_start(3))
-        end_trace = vmag * dt
-        trace_pre = zero
-        call s_trace_in_element(one, end_trace, trace_length,           &
-     &      iele, izero, iflag_forward, node, surf, nod_fld,            &
-     &      v_prev, viz_fields, isurf_end, isf_tgt,                     &
-     &      x4_start, v4_start, c_field, iflag_comm)
+        call s_trace_in_element(one, isurf_org(1), izero, node, surf,   &
+     &      nod_fld, viz_fields, isurf_end, isf_tgt, v_prev, i_tracer,  &
+     &      x4_start, v4_start, c_field, dt, iflag_comm)
         if(iflag_comm .eq. -1) return
-
-        p_ratio = (trace_length - trace_pre) / (vmag * dt)
-!$parallel workshare
-        v_prev(1:nod_fld%n_point,1)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,1)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline)
-        v_prev(1:nod_fld%n_point,3)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,2)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline+1)
-        v_prev(1:nod_fld%n_point,3)                                     &
-     &       = (one - p_ratio) * v_prev(1:nod_fld%n_point,3)            &
-     &        + p_ratio * nod_fld%d_fld(1:nod_fld%n_point, i_fline+2)
-!$end parallel workshare
-        dt = (one - p_ratio) * dt
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(iele,isf_tgt) / isurf_end)         &
+     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
      &         *(-one)**iflag_forward
 !
-        if(surf%interior_surf(isurf_end) .eq. izero) then
-          isurf_org(1) = iele
+!   set backside element and surface 
+        if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
+          isurf_org_dbl(1:3)                                            &
+     &         = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
+        else
+          isurf_org_dbl(1:3)                                            &
+     &         = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
+        end if
+        if(flux .lt. zero) then
+!          isurf_org(1) = isurf_org(1)
           isurf_org(2) = isf_tgt
-          iflag_comm = 1
-          exit
+        else
+          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+          else
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+          end if
+!
+!          if(surf%interior_surf(isurf_end) .eq. izero) then
+          if(isurf_org_dbl(1) .ne. my_rank                              &
+     &        .or. isurf_org_dbl(3) .eq. 0) then
+!            isurf_org(1) = isurf_org(1)
+            isurf_org(2) = isf_tgt
+            iflag_comm = 1
+!            write(*,*) 'Exit for external surface', my_rank, inum
+!       &            ': ', isurf_org_dbl(1:3), ': ',  &
+!       &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
+            exit
+          end if
         end if
 !
-!   set backside element and surface 
-!
-        if(flux.ge.zero) then
-          if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
-            isurf_org(1) = surf%iele_4_surf(isurf_end,1,1)
-            isurf_org(2) = surf%iele_4_surf(isurf_end,1,2)
-          else
-            isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
-            isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
-          end if
-        else
+        if(dt .le. 0) then
+            iflag_comm = 0
+!            write(*,*) 'Exit by trace counts', my_rank, inum
+            exit
+        end if
+        if(iflag_used_ele(isurf_org(1)) .eq. 0) then
+!          isurf_org(2) = isf_tgt
+          iflag_comm = 1
+!          write(*,*) 'Exit from tracing area', my_rank, inum
+          exit
+        end if
+        if(isurf_org(1) .eq. 0) then
           iflag_comm = -2
+!          write(*,*) 'Trace leaves from domain', my_rank, inum
           exit
         end if
       end do

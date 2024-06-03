@@ -7,7 +7,7 @@
 !>@brief  Choose mesh file to read
 !!
 !!@verbatim
-!!      subroutine output_tracer_restart(i_step, tracer_file_prm,       &
+!!      subroutine output_tracer_restart(tracer_file_prm,               &
 !!     &         time_d, rst_step, viz_fields, fln_tce, fline_lc)
 !!        integer(kind = kint), intent(in) :: i_step
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
@@ -46,18 +46,77 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_tracer_restart(i_step, tracer_file_prm,         &
-     &         time_d, rst_step, viz_fields, fln_tce, fline_lc)
+      subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      type(time_data), intent(in) :: time_d
+      type(finish_data), intent(in) :: finish_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+      if(output_IO_flag(time_d%i_time_step, rst_step)) then
+        istep_rst = set_IO_step(time_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      if(finish_d%flag_terminate_by_elapsed) then
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      end subroutine output_tracer_restarts
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine input_tracer_restarts(init_d, rst_step,                &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
+     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+!
+      end subroutine input_tracer_restarts
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine output_tracer_restart(tracer_file_prm, i_step_w_elps,  &
+     &          time_d, viz_fields, fln_tce, fline_lc)
 !
       use set_sph_restart_IO
       use field_IO_select
       use local_fline_restart_IO
       use particle_MPI_IO_select
 !
-      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: i_step_w_elps
       type(field_IO_params), intent(in) :: tracer_file_prm
       type(time_data), intent(in) :: time_d
-      type(IO_step_param), intent(in) :: rst_step
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(in) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
@@ -68,7 +127,6 @@
       integer(kind = kint) :: istep_rst
 !
 !
-      istep_rst = set_IO_step(i_step, rst_step)
       call copy_time_step_size_data(time_d, time_IO)
       call set_particles_to_trace_list(viz_fields, fln_tce, fline_lc)
       call count_global_num_of_tracer(fline_lc)
@@ -94,8 +152,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine input_tracer_restart(tracer_file_prm, init_d,          &
-     &          rst_step,  viz_fields, fln_tce, fline_lc)
+      subroutine input_tracer_restart(tracer_file_prm, istep_rst,       &
+     &          init_d, viz_fields, fln_tce, fline_lc)
 !
       use set_sph_restart_IO
       use field_IO_select
@@ -104,19 +162,17 @@
 !
       type(field_IO_params), intent(in) :: tracer_file_prm
 !
-      type(time_data), intent(inout) :: init_d
-      type(IO_step_param), intent(inout) :: rst_step
+      integer(kind = kint), intent(in) :: istep_rst
+      type(time_data), intent(in) :: init_d
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      type(each_fieldline_trace), intent(in) :: fln_tce
+      type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
 !
-      integer(kind = kint) :: istep_rst
       type(surf_edge_IO_file) :: particle_IO
       type(time_data) :: time_IO
       type(field_IO) :: fld_IO
 !
 !
-      istep_rst = set_IO_step(init_d%i_time_step, rst_step)
       call sel_mpi_read_particle_file(tracer_file_prm, istep_rst,       &
      &                                time_IO, particle_IO)
       call copy_local_tracer_from_IO(particle_IO, fline_lc)
@@ -132,9 +188,23 @@
      &    istep_rst, tracer_file_prm, time_IO, fld_IO)
       call field_on_local_tracer_from_IO(fld_IO, viz_fields, fline_lc)
 
-      call copy_time_step_data(time_IO, init_d)
+!      call copy_time_step_data(time_IO, init_d)
       call dealloc_phys_data_IO(fld_IO)
       call dealloc_phys_name_IO(fld_IO)
+!
+      if(my_rank .ne. 0) return 
+      if(init_d%i_time_step .ne. time_IO%i_time_step) then
+        write(*,*) 'Time step in particle restart does not match ',     &
+     &             'with field restaart data. But ignore.'
+      end if
+      if(init_d%time .ne. time_IO%time) then
+        write(*,*) 'Time in particle restart does not match ',          &
+     &             'with field restaart data. But ignore.'
+      end if
+      if(init_d%dt .ne. time_IO%dt) then
+        write(*,*) 'Delta t in particle restart does not match ',       &
+     &             'with field restaart data. But ignore.'
+      end if
 !
       end subroutine input_tracer_restart
 !

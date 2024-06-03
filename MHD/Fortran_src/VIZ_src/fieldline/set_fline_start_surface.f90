@@ -42,6 +42,7 @@
 !
       use cal_field_on_surf_viz
       use trace_in_element
+      use tracer_field_interpolate
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf

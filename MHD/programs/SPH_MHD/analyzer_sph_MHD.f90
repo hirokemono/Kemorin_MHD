@@ -175,7 +175,7 @@
      &      SVIZ_m%SPH_SGS, SSMHDs%SPH_MHD,                             &
      &      SSMHDs%SPH_WK, SSMHDs%m_SR)
 !*
-!*  -----------  output field data --------------
+!*  -----------  Send field data to FEM mesh --------------
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
         if(lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step,     &
@@ -192,7 +192,14 @@
      &      SSMHDs%MHD_IO, SVIZ_m%FEM_DAT, SSMHDs%m_SR)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
-!
+!*
+!*  ----------- Move tracer --------------
+!*
+!        call TRACER_evolution                                          &
+!     &     (SSMHDs%MHD_step%time_d, SVIZ_m%FEM_DAT%geofem,             &
+!     &      SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,            &
+!     &      SVIZ_m%tracers, SSMHDs%m_SR)
+!*
 !*  ----------- Visualization --------------
 !*
         if(iflag_vizs_w_fix_step(SSMHDs%MHD_step%time_d%i_time_step,    &

@@ -117,7 +117,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
       call read_alloc_sph_restart_data(MHD_files%fst_file_IO,           &
-     &    MHD_step%init_d, SPH_MHD%fld, MHD_step%rst_step)
+     &    MHD_step%init_d, MHD_step%time_d, SPH_MHD%fld,                &
+     &    MHD_step%rst_step)
 !
 ! ---------------------------------
 !
@@ -172,14 +173,12 @@
 !
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (MHD_step%time_d%i_time_step, MHD_files%org_rj_file_IO,        &
-     &    MHD_files, MHD_step%rst_step, MHD_step%init_d,                &
+     &    MHD_files, MHD_step%rst_step, MHD_step%time_d,                &
      &    SPH_MHD, SPH_SGS, SPH_WK%rj_itp)
       call extend_by_potential_with_j                                   &
      &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
      &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
      &    SPH_MHD%fld)
-
-      call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &

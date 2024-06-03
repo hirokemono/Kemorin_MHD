@@ -151,7 +151,7 @@
       call read_alloc_sph_rst_4_snap(MHD_step%time_d%i_time_step,       &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
-     &    MHD_step%init_d, SPH_WK%rj_itp)
+     &    MHD_step%time_d, SPH_WK%rj_itp)
       call extend_by_potential_with_j                                   &
      &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
      &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
@@ -167,7 +167,6 @@
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
 !
       if(output_IO_flag(MHD_step%time_d%i_time_step,                    &

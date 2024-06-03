@@ -105,7 +105,7 @@
      &     (SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
      &      SVIZ_m%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
 !*
-!*  -----------  output field data --------------
+!*  -----------  Send field data to FEM mesh --------------
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
 !

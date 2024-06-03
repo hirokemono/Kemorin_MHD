@@ -288,18 +288,21 @@
      &      MHD_step%rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
       end if
 !
-      MHD_step%finish_d%elapsed_local                                   &
+      if(MHD_step%finish_d%i_end_step .eq. -1) then
+        MHD_step%finish_d%elapsed_local                                 &
      &    = MPI_WTIME() - MHD_step%finish_d%started_time
-      call calypso_mpi_allreduce_one_real                               &
-     &   (MHD_step%finish_d%elapsed_local,                              &
-     &    MHD_step%finish_d%elapsed_max, MPI_MAX)
-      if      (MHD_step%finish_d%i_end_step .eq. -1                     &
-     &   .and. MHD_step%finish_d%elapsed_max                            &
-     &        .gt. MHD_step%finish_d%elapsed_time) then
-        iflag_finish = 1
-        call output_sph_SGS_MHD_rst_control                             &
+        call calypso_mpi_allreduce_one_real                             &
+     &     (MHD_step%finish_d%elapsed_local,                            &
+     &      MHD_step%finish_d%elapsed_max, MPI_MAX)
+        MHD_step%finish_d%flag_terminate_by_elapsed                     &
+     &     = (MHD_step%finish_d%elapsed_max                             &
+     &          .gt. MHD_step%finish_d%elapsed_time)
+        if(MHD_step%finish_d%flag_terminate_by_elapsed) then
+          iflag_finish = 1
+          call output_sph_SGS_MHD_rst_control                           &
      &     (MHD_step%finish_d%i_end_step, MHD_files, MHD_step%time_d,   &
      &      MHD_step%rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
+        end if
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+6)
 !

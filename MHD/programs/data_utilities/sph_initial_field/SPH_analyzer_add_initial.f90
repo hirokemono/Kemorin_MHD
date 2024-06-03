@@ -140,7 +140,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
       call read_alloc_sph_restart_data(MHD_files%fst_file_IO,           &
-     &    MHD_step%init_d, SPH_MHD%fld, MHD_step%rst_step)
+     &    MHD_step%init_d, MHD_step%time_d, SPH_MHD%fld,                &
+     &    MHD_step%rst_step)
 !
 ! ---------------------------------
 !

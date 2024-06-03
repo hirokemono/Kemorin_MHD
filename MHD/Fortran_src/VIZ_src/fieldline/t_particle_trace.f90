@@ -43,6 +43,7 @@
       use t_tracing_data
       use t_local_fline
       use t_ucd_data
+      use t_IO_step_parameter
 !
       implicit  none
 !
@@ -66,7 +67,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_initialize(increment_fline, geofem, para_surf,  &
+      subroutine TRACER_initialize(init_d, finish_d, rst_step,   &
+     &                             geofem, para_surf,  &
      &                             nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
@@ -77,7 +79,10 @@
       use set_fline_control
       use set_fline_seeds_from_list
 !
-      integer(kind = kint), intent(in) :: increment_fline
+      type(time_data), intent(in) :: init_d
+      type(finish_data), intent(in) :: finish_d
+      type(IO_step_param), intent(in) :: rst_step
+!
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -89,7 +94,6 @@
       logical :: flag_fln_dist
 !
       fline%num_fline = fline_ctls%num_fline_ctl
-      if(increment_fline .le. 0) fline%num_fline = 0
       if(fline%num_fline .le. 0) return
 !
       allocate(fline%fln_prm(fline%num_fline))
@@ -160,6 +164,10 @@
      &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
         end if
       end do
+      
+      call input_tracer_restarts(init_d, rst_step,                      &
+     &   fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
+!
 !
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
 !
@@ -167,7 +175,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_evolution(increment_output, time_d, geofem,     &
+      subroutine TRACER_evolution(time_d, finish_d, rst_step, geofem,   &
      &          para_surf, nod_fld, fline, v_prev, m_SR)
 !
       use t_mesh_SR
@@ -176,10 +184,12 @@
       use collect_fline_data
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list
+      use tracer_restart_file_IO
 !
 !
-      integer(kind = kint), intent(in) :: increment_output
       type(time_data), intent(in) :: time_d
+      type(finish_data), intent(in) :: finish_d
+      type(IO_step_param), intent(in) :: rst_step
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -188,8 +198,7 @@
       type(fieldline_module), intent(inout) :: fline
       type(mesh_SR), intent(inout) :: m_SR
 !
-      type(time_data) :: t_IO
-      integer(kind = kint) :: i_fln, istep_fline
+      integer(kind = kint) :: i_fln
 !  
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
@@ -200,6 +209,9 @@
      &      fline%fline_lc(i_fln), fline%fln_SR(i_fln),                 &
      &      fline%fln_bcast(i_fln), v_prev, m_SR)
       end do
+!
+      call output_tracer_restarts(time_d, finish_d, rst_step,           &
+     &   fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
 !
       end subroutine TRACER_evolution
 !

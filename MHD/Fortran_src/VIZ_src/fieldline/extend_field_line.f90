@@ -103,7 +103,7 @@
         icount_line = icount_line + 1
 !
 !   extend in the middle of element
-        call s_trace_in_element(half, end_trace, trace_length,          &
+        call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(1), isurf_org(2), iflag_dir, node, surf, nod_fld, &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
@@ -117,7 +117,7 @@
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
-        call s_trace_in_element(one, end_trace, trace_length,           &
+        call fline_trace_in_element(one, end_trace, trace_length,       &
      &      isurf_org(1), izero, iflag_dir, node, surf, nod_fld,        &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
@@ -137,7 +137,6 @@
      &         *(-one)**iflag_dir
 !
 !   set backside element and surface 
-!
         if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
           isurf_org_dbl(1:3)                                            &
      &         = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
