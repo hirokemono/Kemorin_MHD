@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine FLINE_initialize                                     &
-!!     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
-!!      subroutine FLINE_visualize                                      &
-!!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
+!!     &         (increment_fline, geofem, nod_fld, fline_ctls, fline)
+!!      subroutine FLINE_visualize(istep_fline, time_d, geofem,         &
+!!     &                           para_surf, nod_fld, fline, m_SR)
 !!      subroutine FLINE_finalize(fline)
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) :: fem
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
@@ -29,7 +30,7 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_next_node_ele_4_node
+      use t_paralell_surface_indices
       use t_control_params_4_fline
       use t_source_of_filed_line
       use t_trace_data_send_recv
@@ -61,7 +62,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_initialize                                       &
-     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
+     &         (increment_fline, geofem, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -72,7 +73,7 @@
       use set_fline_seeds_from_list
 !
       integer(kind = kint), intent(in) :: increment_fline
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
@@ -93,7 +94,7 @@
       allocate(fline%fline_lc(fline%num_fline))
 !
       do i_fln = 1, fline%num_fline
-        call s_set_fline_control(fem%mesh, fem%group, nod_fld,          &
+        call s_set_fline_control(geofem%mesh, geofem%group, nod_fld,    &
      &      fline_ctls%fline_ctl_struct(i_fln), fline%fln_prm(i_fln),   &
      &      fline%fln_src(i_fln))
       end do
@@ -122,8 +123,8 @@
      &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
       end do
       if(flag_fln_dist) then
-        call alloc_FLINE_element_size(fem%mesh%ele, fln_dist)
-        call cal_FLINE_element_size(fem%mesh%node, fem%mesh%ele,        &
+        call alloc_FLINE_element_size(geofem%mesh%ele, fln_dist)
+        call cal_FLINE_element_size(geofem%mesh%node, geofem%mesh%ele,  &
      &                              fln_dist)
       end if
       do i_fln = 1, fline%num_fline
@@ -131,7 +132,8 @@
      &                       .eq. iflag_position_list) then
           call alloc_init_tracer_position(fline%fln_prm(i_fln),         &
      &                                    fline%fln_src(i_fln))
-          call init_FLINE_seed_from_list(fem%mesh%node, fem%mesh%ele,   &
+          call init_FLINE_seed_from_list                                &
+     &       (geofem%mesh%node, geofem%mesh%ele,                        &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln), fln_dist)
         end if
@@ -142,8 +144,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_visualize(istep_fline, time_d, fem,              &
-     &          isf_4_ele_dbl, iele_4_surf_dbl, nod_fld, fline, m_SR)
+      subroutine FLINE_visualize(istep_fline, time_d, geofem,           &
+     &                           para_surf, nod_fld, fline, m_SR)
 !
       use set_fields_for_fieldline
       use const_field_lines
@@ -155,12 +157,9 @@
 !
       integer(kind = kint), intent(in) :: istep_fline
       type(time_data), intent(in) :: time_d
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: geofem
+      type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in)                                  &
-     &               :: isf_4_ele_dbl(fem%mesh%ele%numele,3)
-      integer(kind = kint), intent(in)                                  &
-     &               :: iele_4_surf_dbl(fem%mesh%surf%numsurf,2,3)
 !
       type(fieldline_module), intent(inout) :: fline
       type(mesh_SR), intent(inout) :: m_SR
@@ -175,23 +174,21 @@
         if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
      &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &
-     &       (fem%mesh%node, fem%mesh%ele, nod_fld,                     &
+     &       (geofem%mesh%node, geofem%mesh%ele, nod_fld,               &
      &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
      &        fline%fln_tce(i_fln))
           call dealloc_init_tracer_position(fline%fln_src(i_fln))
         else
           if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline                               &
-     &       (fem%mesh, fem%group, nod_fld, isf_4_ele_dbl,              &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln))
+          call s_set_fields_for_fieldline(geofem%mesh, geofem%group,    &
+     &        para_surf, nod_fld, fline%fln_prm(i_fln),                 &
+     &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
         end if
       end do
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
-     &      fem%mesh%surf, isf_4_ele_dbl, iele_4_surf_dbl, nod_fld,     &
+        call s_const_field_lines(geofem%mesh, para_surf, nod_fld,       &
      &      fline%fln_prm(i_fln), fline%fln_tce(i_fln),                 &
      &      fline%fln_SR(i_fln), fline%fln_bcast(i_fln),                &
      &      fline%fline_lc(i_fln), m_SR)

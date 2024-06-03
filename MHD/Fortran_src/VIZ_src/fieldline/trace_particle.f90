@@ -7,13 +7,13 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine s_trace_particle(dt_init, node, ele, surf,           &
-!!     &          isf_4_ele_dbl, iele_4_surf_dbl,                       &
+!!      subroutine s_trace_particle(dt_init, node, ele, surf, para_surf,&
 !!     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev)
 !!        real(kind = kreal), intent(in) :: dt_init
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -31,7 +31,7 @@
       use t_geometry_data
       use t_surface_data
       use t_comm_table
-      use t_para_double_numbering
+      use t_paralell_surface_indices
       use t_tracing_data
 !
       implicit  none
@@ -42,8 +42,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle(dt_init, node, ele, surf,             &
-     &          isf_4_ele_dbl, iele_4_surf_dbl,                         &
+      subroutine s_trace_particle(dt_init, node, ele, surf, para_surf,  &
      &          nod_fld, fln_prm, fln_tce, fline_lc,                    &
      &          fln_SR, fln_bcast, v_prev, m_SR)
 !
@@ -62,11 +61,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in)                                  &
-     &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
-      integer(kind = kint), intent(in)                                  &
-     &               :: iele_4_surf_dbl(surf%numsurf,2,3)
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
