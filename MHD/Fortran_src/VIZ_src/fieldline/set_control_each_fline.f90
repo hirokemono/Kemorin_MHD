@@ -101,6 +101,7 @@
      &  call calypso_MPI_abort(ierr_mesh, 'set correct element group')
 !
 !
+!
       character_256 = fln%starting_type_ctl%charavalue
       if     (cmp_no_case(character_256, cflag_surface_group)) then
         fln_prm%id_fline_seed_type =  iflag_surface_group
@@ -176,6 +177,14 @@
         if(fln%seed_point_ctl%num .gt. 0) then
           fln_prm%num_each_field_line = fln%seed_point_ctl%num
         end if
+        if(fln%seed_geological_ctl%num .gt. 0) then
+          fln_prm%num_each_field_line = fln_prm%num_each_field_line     &
+    &                                  + fln%seed_geological_ctl%num
+        end if
+        if(fln%seed_spherical_ctl%num .gt. 0) then
+          fln_prm%num_each_field_line = fln_prm%num_each_field_line     &
+    &                                  + fln%seed_spherical_ctl%num
+        end if
       end if
 !
       end subroutine count_control_4_fline
@@ -188,6 +197,7 @@
       use t_source_of_filed_line
       use set_components_flags
       use set_area_4_viz
+      use coordinate_converter
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
@@ -199,13 +209,18 @@
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
-      integer(kind = kint) :: i, ncomp(1), ncomp_org(1)
+      real(kind = kreal) :: rr(1), theta(1), phi(1)
+      integer(kind = kint) :: i, icou
+      integer(kind = kint) :: ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
       character(len=kchara) :: tmpfield(1)
       character(len=kchara) :: tmpcomp(1)
       character(len=kchara) :: tmpchara(1)
 !
+      real(kind = kreal) :: pi
 !
+      pi = four * atan(one)
+    !
       tmpfield(1) = fln%fline_field_ctl%charavalue
       tmpcomp(1) =  'vector'
       call set_components_4_viz                                         &
@@ -242,6 +257,28 @@
           fln_prm%xx_surf_start_fline(1,i) = fln%seed_point_ctl%vec1(i)
           fln_prm%xx_surf_start_fline(2,i) = fln%seed_point_ctl%vec2(i)
           fln_prm%xx_surf_start_fline(3,i) = fln%seed_point_ctl%vec3(i)
+        end do
+        do i = 1, fln%seed_geological_ctl%num
+          icou = i + fln%seed_point_ctl%num
+          rr(1) =              fln%seed_spherical_ctl%vec1(i)
+          theta(1) = (90.0d0 - fln%seed_spherical_ctl%vec2(i))          &
+    &            * pi / 180.0d0
+          phi(1) =   fln%seed_spherical_ctl%vec3(i) * pi / 180.0d0
+          call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
+    &                         fln_prm%xx_surf_start_fline(1,icou),      &
+    &                         fln_prm%xx_surf_start_fline(2,icou),      &
+    &                         fln_prm%xx_surf_start_fline(3,icou))
+        end do
+        do i = 1, fln%seed_spherical_ctl%num
+          icou = i + fln%seed_point_ctl%num                             &
+    &              + fln%seed_geological_ctl%num
+          rr(1) =    fln%seed_spherical_ctl%vec1(i)
+          theta(1) = fln%seed_spherical_ctl%vec2(i)
+          phi(1) =   fln%seed_spherical_ctl%vec3(i)
+          call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
+    &                         fln_prm%xx_surf_start_fline(1,icou),      &
+    &                         fln_prm%xx_surf_start_fline(2,icou),      &
+    &                         fln_prm%xx_surf_start_fline(3,icou))
         end do
       end if
 !

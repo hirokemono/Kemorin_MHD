@@ -75,8 +75,10 @@
       call bcast_ctl_array_c1(fln%fline_area_grp_ctl)
 !
       call bcast_ctl_array_r3(fln%seed_point_ctl)
-      call bcast_ctl_array_i2(fln%seed_surface_ctl)
+      call bcast_ctl_array_r3(fln%seed_geological_ctl)
+      call bcast_ctl_array_r3(fln%seed_spherical_ctl)
 !
+      call bcast_ctl_array_i2(fln%seed_surface_ctl)
 !
       call bcast_ctl_type_c1(fln%fline_file_head_ctl)
       call bcast_ctl_type_c1(fln%fline_output_type_ctl)

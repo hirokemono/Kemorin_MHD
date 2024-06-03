@@ -52,6 +52,12 @@
 !!    array seed_point_ctl  10
 !!      seed_point_ctl  0.0  0.0  0.0
 !!    end array seed_point_ctl
+!!    array seed_geological_ctl  10
+!!      seed_geological_ctl  1.03    36.5    140.0
+!!    end array seed_geological_ctl
+!!    array seed_spherical_ctl  10
+!!      seed_geological_ctl 0.75    -1.047197551196598    3.141592653589793
+!!    end array seed_spherical_ctl
 !!
 !!    array starting_gl_surface_id  10
 !!      starting_gl_surface_id  12  3
@@ -119,8 +125,14 @@
      &      :: hd_num_fieldline = 'num_fieldline_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_selection_type = 'selection_type_ctl'
+!
       character(len=kchara), parameter, private                         &
-     &      :: hd_xx_start_point = 'seed_point_ctl'
+     &      :: hd_xx_start_point =  'seed_point_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_geo_start_point = 'seed_geological_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_rtp_start_point = 'seed_spherical_ctl'
+!
       character(len=kchara), parameter, private                         &
      &      :: hd_start_global_surf = 'starting_gl_surface_id'
 !
@@ -162,6 +174,11 @@
 !
         call read_control_array_r3(id_control,                          &
      &      hd_xx_start_point, fln%seed_point_ctl, c_buf)
+        call read_control_array_r3(id_control,                          &
+     &      hd_geo_start_point, fln%seed_geological_ctl, c_buf)
+        call read_control_array_r3(id_control,                          &
+     &      hd_rtp_start_point, fln%seed_spherical_ctl, c_buf)
+!
         call read_control_array_i2(id_control,                          &
      &      hd_start_global_surf, fln%seed_surface_ctl, c_buf)
 !
@@ -278,9 +295,13 @@
      &    fln%selection_type_ctl)
 !
       call write_control_array_r3(id_control, level,                    &
-     &    fln%seed_point_ctl)
+     &                            fln%seed_point_ctl)
+      call write_control_array_r3(id_control, level,                    &
+     &                            fln%seed_geological_ctl)
+      call write_control_array_r3(id_control, level,                    &
+     &                            fln%seed_spherical_ctl)
       call write_control_array_i2 (id_control, level,                   &
-     &    fln%seed_surface_ctl)
+     &                             fln%seed_surface_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
@@ -300,7 +321,12 @@
      &     (hd_fline_grp, fln%fline_area_grp_ctl)
 !
         call init_r3_ctl_array_label                                    &
-     &     (hd_xx_start_point, fln%seed_point_ctl)
+     &     (hd_xx_start_point,  fln%seed_point_ctl)
+        call init_r3_ctl_array_label                                    &
+     &     (hd_geo_start_point, fln%seed_geological_ctl)
+        call init_r3_ctl_array_label                                    &
+     &     (hd_rtp_start_point, fln%seed_spherical_ctl)
+!
         call init_int2_ctl_array_label                                  &
      &     (hd_start_global_surf, fln%seed_surface_ctl)
         call init_chara2_ctl_array_label                                &

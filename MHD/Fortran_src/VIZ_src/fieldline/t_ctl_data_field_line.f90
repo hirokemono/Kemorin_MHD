@@ -44,6 +44,12 @@
 !!    array seed_point_ctl  10
 !!      seed_point_ctl  0.0  0.0  0.0
 !!    end array seed_point_ctl
+!!    array seed_geological_ctl  10
+!!      seed_geological_ctl  1.03    36.5    140.0
+!!    end array seed_geological_ctl
+!!    array seed_spherical_ctl  10
+!!      seed_geological_ctl 0.75    -1.047197551196598    3.141592653589793
+!!    end array seed_spherical_ctl
 !!
 !!    array starting_gl_surface_id  10
 !!      starting_gl_surface_id  12  3
@@ -120,6 +126,16 @@
 !!@n      seed_point_ctl%vec2:  Y-component of seed points
 !!@n      seed_point_ctl%vec3:  Z-component of seed points
         type(ctl_array_r3) :: seed_point_ctl
+!>      Structure for seed points
+!!@n      seed_geological_ctl%vec1:  r-component of seed points
+!!@n      seed_geological_ctl%vec2:  latitude of seed points in degree
+!!@n      seed_geological_ctl%vec3:  longitude of seed points in degree
+        type(ctl_array_r3) :: seed_geological_ctl
+!>      Structure for seed points
+!!@n      seed_spherical_ctl%vec1:  r-component of seed points
+!!@n      seed_spherical_ctl%vec2:  theta-component of seed points
+!!@n      seed_spherical_ctl%vec3:  phi-component of seed points
+        type(ctl_array_r3) :: seed_spherical_ctl
 !
 !>      Structure for seed points on center of the surfaces
 !!@n      seed_surface_ctl%int1:  element ID for seed points
@@ -142,6 +158,8 @@
 !
       call dealloc_control_array_i2(fln%seed_surface_ctl)
       call dealloc_control_array_r3(fln%seed_point_ctl)
+      call dealloc_control_array_r3(fln%seed_geological_ctl)
+      call dealloc_control_array_r3(fln%seed_spherical_ctl)
       call dealloc_control_array_chara(fln%fline_area_grp_ctl)
 !
       call reset_fline_control_flags(fln)
@@ -156,9 +174,11 @@
       type(fline_ctl), intent(inout) :: fln
 !
 !
-      fln%fline_area_grp_ctl%num = 0
-      fln%seed_point_ctl%num =     0
-      fln%seed_surface_ctl%num =   0
+      fln%fline_area_grp_ctl%num =  0
+      fln%seed_point_ctl%num =      0
+      fln%seed_geological_ctl%num = 0
+      fln%seed_spherical_ctl%num =  0
+      fln%seed_surface_ctl%num =    0
 !
       fln%fline_file_head_ctl%iflag = 0
       fln%fline_output_type_ctl%iflag = 0
@@ -175,9 +195,11 @@
 !
       fln%i_vr_fline_ctl = 0
 !
-      fln%fline_area_grp_ctl%icou = 0
-      fln%seed_point_ctl%icou =     0
-      fln%seed_surface_ctl%icou =   0
+      fln%fline_area_grp_ctl%icou =  0
+      fln%seed_point_ctl%icou =      0
+      fln%seed_geological_ctl%icou = 0
+      fln%seed_spherical_ctl%icou =  0
+      fln%seed_surface_ctl%icou =    0
       fln%fline_field_output_ctl%icou = 0
 !
       fln%fline_color_field_ctl%iflag =   0
@@ -231,8 +253,14 @@
 !
       call dup_control_array_c1(org_fln%fline_area_grp_ctl,             &
      &                          new_fln%fline_area_grp_ctl)
+!
       call dup_control_array_r3(org_fln%seed_point_ctl,                 &
      &                          new_fln%seed_point_ctl)
+      call dup_control_array_r3(org_fln%seed_geological_ctl,            &
+     &                          new_fln%seed_geological_ctl)
+      call dup_control_array_r3(org_fln%seed_spherical_ctl,             &
+     &                          new_fln%seed_spherical_ctl)
+!
       call dup_control_array_i2(org_fln%seed_surface_ctl,               &
      &                          new_fln%seed_surface_ctl)
       call dup_control_array_c2(org_fln%fline_field_output_ctl,         &
