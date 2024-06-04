@@ -229,6 +229,10 @@
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
      &    isf_tgt_8, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
+      if(isf_tgt .eq. 0) then
+        iflag_comm = -1
+        return
+      end if
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, x4_start,             &
@@ -270,24 +274,6 @@
        if(sum(abs(c_tgt2(:) - c_tgt(:))) .gt. 1.0d-13) &
      &    write(*,*) 'c_tgt2:',(c_tgt2(1:viz_fields%ntot_color_comp) &
      &            - c_tgt(1:viz_fields%ntot_color_comp))
-
-      call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
-     &                                  x4_tgt, x4_start2,               &
-     &                                  ratio, trace_length)
-      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
-     &                           x4_tgt, v4_tgt, c_tgt,                 &
-     &                           x4_start2, v4_start2, c_field2)
-!
-       if((ratio2 - ratio) .gt. 1.0d-13) &
-     &    write(*,*) 'ratio2:',(ratio2 - ratio)
-       if(sum(abs(x4_start2(:) - x4_start(:))) .gt. 1.0d-13) &
-     &    write(*,*) 'x4_start2:',(x4_start2(1:4) - x4_start(1:4))
-       if(sum(abs(v4_start2(:) - v4_start(:))) .gt. 1.0d-13) &
-     &    write(*,*) 'v4_start2:',(v4_start2(1:4) - v4_start(1:4))
-       if(sum(abs(c_field2(:) - c_field(:))) .gt. 1.0d-13) &
-     &    write(*,*) 'c_field2:',(c_field2(1:viz_fields%ntot_color_comp) &
-     &            - c_field(1:viz_fields%ntot_color_comp))
-!
 !
       end subroutine fline_trace_in_element
 !
