@@ -62,8 +62,6 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: num, i
-!
 !
       allocate(fln_tce%istack_current_fline(0:num_pe))
       fln_tce%istack_current_fline = 0

@@ -104,7 +104,7 @@
 !
 !   extend in the middle of element
         call fline_trace_in_element(half, end_trace, trace_length,      &
-     &      isurf_org(1), isurf_org(2), iflag_dir, node, surf, nod_fld, &
+     &      isurf_org(1), isurf_org(2), iflag_dir, node, ele, surf, nod_fld, &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then
@@ -118,7 +118,7 @@
 !
 !   extend to surface of element
         call fline_trace_in_element(one, end_trace, trace_length,       &
-     &      isurf_org(1), izero, iflag_dir, node, surf, nod_fld,        &
+     &      isurf_org(1), izero, iflag_dir, node, ele, surf, nod_fld,        &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
      &      x4_start, v4_start, c_field, iflag_comm)
         if(iflag_comm .eq. -1) then

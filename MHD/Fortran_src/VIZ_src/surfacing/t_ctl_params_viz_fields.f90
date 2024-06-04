@@ -44,8 +44,13 @@
         integer(kind = kint), allocatable :: istack_color_field(:)
 !>        number of component for fieldline color
         integer(kind = kint), allocatable :: ncomp_color_field(:)
+!
 !>        number of component for fieldline color
         integer(kind = kint), allocatable :: ncomp_org_color_field(:)
+!>        number of component for fieldline color
+        integer(kind = kint), allocatable :: istack_org_ncomp(:)
+!>        number of field for coloring
+        integer(kind = kint) :: ntot_org_comp =  0
       end type ctl_params_viz_fields
 !
       private :: alloc_ctl_params_viz_fields
@@ -68,6 +73,7 @@
       allocate(viz_fields%istack_color_field(0:num_field))
       allocate(viz_fields%ncomp_color_field(num_field))
       allocate(viz_fields%ncomp_org_color_field(num_field))
+      allocate(viz_fields%istack_org_ncomp(0:num_field))
 !
       end subroutine alloc_ctl_params_viz_fields
 !
@@ -83,6 +89,7 @@
       deallocate(viz_fields%istack_color_field)
       deallocate(viz_fields%ncomp_color_field)
       deallocate(viz_fields%ncomp_org_color_field)
+      deallocate(viz_fields%istack_org_ncomp)
 !
       end subroutine dealloc_ctl_params_viz_fields
 !
@@ -122,7 +129,12 @@
       viz_fields%istack_color_field(new_num_fields)                     &
      &    = viz_fields%istack_color_field(new_num_fields-1) + num_comp
       viz_fields%ncomp_color_field(new_num_fields) =      num_comp
+
+      viz_fields%ntot_org_comp                                          &
+     &    = viz_fields%ntot_org_comp + ncomp_org
       viz_fields%ncomp_org_color_field(new_num_fields) = ncomp_org
+      viz_fields%istack_org_ncomp(new_num_fields)                       &
+     &    = viz_fields%istack_org_ncomp(new_num_fields-1) + ncomp_org
 !
       end subroutine append_ctl_params_viz_fields
 !
@@ -136,6 +148,11 @@
       type(ctl_params_viz_fields), intent(inout) :: new_viz_fields
 !
       new_viz_fields%ntot_color_comp = viz_fields%ntot_color_comp
+      new_viz_fields%ntot_org_comp =   viz_fields%ntot_org_comp
+      new_viz_fields%istack_color_field(0)                              &
+     &       = viz_fields%istack_color_field(0)
+      new_viz_fields%istack_org_ncomp(0)                                &
+     &       = viz_fields%istack_org_ncomp(0)
 !$omp parallel workshare
       new_viz_fields%color_field_name(1:num_field)                      &
      &       = viz_fields%color_field_name(1:num_field)
@@ -149,6 +166,8 @@
      &       = viz_fields%ncomp_color_field(1:num_field)
       new_viz_fields%ncomp_org_color_field(1:num_field)                 &
      &       = viz_fields%ncomp_org_color_field(1:num_field)
+      new_viz_fields%istack_org_ncomp(1:num_field)                      &
+     &       = viz_fields%istack_org_ncomp(1:num_field)
 !$omp end parallel workshare
 !
       end subroutine copy_ctl_params_viz_fields
@@ -181,7 +200,7 @@
         viz_fields%color_field_name(1) = 'data'
         viz_fields%ifleld_color_field = -1
         viz_fields%icomp_color_field =  -1
-        viz_fields%ncomp_color_field = 1
+        viz_fields%ncomp_color_field =   1
         viz_fields%ncomp_org_color_field = 0
       else
         call set_components_4_viz                                       &
@@ -193,13 +212,19 @@
      &      viz_fields%color_field_name)
       end if
       viz_fields%istack_color_field(0) = 0
+      viz_fields%istack_org_ncomp(0) = 0
       do i = 1, viz_fields%num_color_fields
         viz_fields%istack_color_field(i)                                &
      &        = viz_fields%istack_color_field(i-1)                      &
      &         + viz_fields%ncomp_color_field(i)
+        viz_fields%istack_org_ncomp(i)                                  &
+     &        = viz_fields%istack_org_ncomp(i-1)                        &
+     &         + viz_fields%ncomp_org_color_field(i)
       end do
       viz_fields%ntot_color_comp                                        &
      &     = viz_fields%istack_color_field(viz_fields%num_color_fields)
+      viz_fields%ntot_org_comp                                          &
+     &     = viz_fields%istack_org_ncomp(viz_fields%num_color_fields)
 !
       end subroutine set_ctl_params_viz_fields
 !

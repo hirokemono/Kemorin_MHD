@@ -114,6 +114,84 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine find_line_end_in_ele_8(iflag_dir, isf_org,             &
+     &          nnod_4_ele, nnod_4_surf, node_on_sf, fline,             &
+     &          x0, xx4_ele, isf_tgt, x4_tgt, xi)
+!
+      integer(kind = kint), intent(in) :: iflag_dir
+      integer(kind = kint), intent(in) :: isf_org
+      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+      integer(kind = kint), intent(in)                               &
+     &                  :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+      real(kind = kreal), intent(in) :: fline(4), x0(4)
+      real(kind = kreal), intent(in) :: xx4_ele(4,nnod_4_ele)
+!
+      integer(kind = kint), intent(inout) :: isf_tgt
+      real(kind = kreal), intent(inout) :: x4_tgt(4)
+      real(kind = kreal), intent(inout) :: xi(2)
+!
+      real(kind = kreal) :: xx_surf(4,4), b_ray(4)
+      integer(kind = kint) :: inod(4)
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ist, ied, inc, k, ksf
+!
+!
+      if(iflag_dir .eq. iflag_forward_line) then
+        b_ray(1:4) = -fline(1:4)
+      else
+        b_ray(1:4) =  fline(1:4)
+      end if
+!
+      if(isf_org .eq. 0) then
+        ist =  1
+        ied =  nsurf_4_ele
+        inc =  1
+      else if(mod(isf_org,itwo) .eq. ione) then
+        ist =  1
+        ied =  nsurf_4_ele-1
+        inc =  1
+      else
+        ist =  nsurf_4_ele-1
+        ied =  1
+        inc = -1
+      end if
+!
+      isf_tgt = izero
+      do k = ist, ied, inc
+        ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
+        inod(1:nnod_4_surf) = node_on_sf(1:nnod_4_surf,ksf)
+        xx_surf(1:4,1) = xx4_ele(1:4,inod(1))
+        xx_surf(1:4,2) = xx4_ele(1:4,inod(2))
+        xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
+        xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
+        call cal_fline_to_square(x0, b_ray, xx_surf,                    &
+     &                           x4_tgt, xi, ierr)
+        if(ierr.eq.zero) then
+          isf_tgt = ksf
+          exit
+        end if
+      end do
+!
+      if(isf_tgt .gt. izero) return
+!
+!      write(my_rank+60,'(i3,1p3e16.7)') (-ione), b_ray(1:4)
+!      write(my_rank+60,'(i3,1p3e16.7)') izero, x0(1:4)
+!
+      do k = ist, ied, inc
+        ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
+        inod(1:nnod_4_surf) = node_on_sf(1:nnod_4_surf,ksf)
+        xx_surf(1:4,1) = xx4_ele(1:4,inod(1))
+        xx_surf(1:4,2) = xx4_ele(1:4,inod(2))
+        xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
+        xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
+        call cal_fline_to_square(x0, b_ray, xx_surf,                    &
+     &                           x4_tgt, xi, ierr)
+      end do
+!
+      end subroutine find_line_end_in_ele_8
+!
+!------------------------------------------------------------------
+!
       subroutine find_line_end_in_1ele(iflag_dir, isf_org, fline, x0,   &
      &          xx4_ele_surf, isf_tgt, x4_tgt, xi)
 !

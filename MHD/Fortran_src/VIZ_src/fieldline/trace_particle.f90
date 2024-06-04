@@ -28,11 +28,17 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
-      use t_geometry_data
-      use t_surface_data
-      use t_comm_table
+      use t_time_data
+      use t_mesh_data
+      use t_phys_data
       use t_paralell_surface_indices
       use t_tracing_data
+      use t_control_params_4_fline
+      use t_source_of_filed_line
+      use t_trace_data_send_recv
+      use t_broadcast_trace_data
+      use t_mesh_SR
+      use t_local_fline
 !
       implicit  none
 !
@@ -42,25 +48,75 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle(dt_init, node, ele, surf, para_surf,  &
-     &          nod_fld, fln_prm, fln_tce, fline_lc,                    &
-     &          fln_SR, fln_bcast, v_prev, m_SR)
+      subroutine trace_particle_sets(time_d, mesh, para_surf, nod_fld,  &
+     &          num_fline, fln_prm, fln_src, fln_tce, fline_lc,         &
+     &          fln_SR, fln_bcast, m_SR)
 !
-      use t_control_params_4_fline
-      use t_comm_table
-      use t_next_node_ele_4_node
-      use t_phys_data
-      use t_local_fline
-      use t_trace_data_send_recv
-      use t_broadcast_trace_data
-      use t_mesh_SR
+!
+      type(time_data), intent(in) :: time_d
+      type(mesh_geometry), intent(in) :: mesh
+      type(paralell_surface_indices), intent(in) :: para_surf
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
+      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: i_fln
+!  
+      do i_fln = 1, num_fline
+        if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
+        call s_trace_particle(time_d%dt, mesh, para_surf, nod_fld,      &
+     &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
+     &      fln_SR(i_fln), fln_bcast(i_fln), fln_src(i_fln)%v_prev,     &
+     &      m_SR)
+      end do
+!
+      end subroutine trace_particle_sets
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_velocity_as_previous(nod_fld, num_fline,          &
+     &                                     fln_prm, fln_src)
+!
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!
+      integer(kind = kint) :: i_fln, i_fline
+!  
+      do i_fln = 1, num_fline
+        i_fline = fln_prm(i_fln)%iphys_4_fline
+!$omp parallel workshare
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,1)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,2)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,3)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+!$omp end parallel workshare
+      end do
+!
+      end subroutine copy_velocity_as_previous
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine s_trace_particle(dt_init, mesh, para_surf, nod_fld,    &
+     &          fln_prm, fln_tce, fline_lc, fln_SR, fln_bcast,          &
+     &          v_prev, m_SR)
+!
       use transfer_to_long_integers
       use trace_particle_in_element
 !
       real(kind = kreal), intent(in) :: dt_init
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
 !
@@ -73,7 +129,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       real(kind = kreal) :: dt
-      integer(kind = kint) :: ist, ied, nline, inum
+      integer(kind = kint) :: nline, inum
 !
 !
       dt = dt_init
@@ -81,24 +137,24 @@
       do
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
-     &       (node, ele, surf, para_surf, nod_fld, v_prev,              &
-     &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
+     &       (mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,       &
+     &        v_prev, fln_prm%fline_fields, fln_prm%iphys_4_fline,      &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
      &        dt, fln_tce%iflag_comm_start(inum))
-        end do
 !
-        if(fln_tce%iflag_comm_start(inum) .eq. 0) then
-          call add_traced_list(fln_tce%isf_dbl_start(1,inum),           &
+          if(fln_tce%iflag_comm_start(inum) .eq. 0) then
+            call add_traced_list(fln_tce%isf_dbl_start(1,inum),         &
      &                         fln_tce%xx_fline_start(1,inum),          &
      &                         fln_tce%v_fline_start(1,inum),           &
      &                         fln_prm%fline_fields%ntot_color_comp,    &
      &                         fln_tce%c_fline_start(1,inum),           &
      &                         fline_lc)
-        end if
+          end if
+        end do
 !
         if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
@@ -110,17 +166,69 @@
         if(nline .le. 0) exit
       end do
 !
+      call return_to_trace_list(fln_prm, fline_lc, fln_tce)
+!
+      end subroutine s_trace_particle
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine add_traced_list(isf_dbl_start, xx4_add, v4_add,        &
+     &                           ntot_comp, col_add, fline_lc)
+!
+      integer(kind = kint), intent(in) :: ntot_comp
+      integer(kind = kint), intent(in) :: isf_dbl_start(3)
+      real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
+      real(kind = kreal), intent(in) :: col_add(ntot_comp)
+      type(local_fieldline), intent(inout) :: fline_lc
+!
+!
+      if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
+         call raise_local_fline_connect(fline_lc)
+      end if
+      if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
+        call raise_local_fline_data(fline_lc)
+      end if
+!
+      fline_lc%nele_line_l = fline_lc%nele_line_l + 1
+      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
+!
+      fline_lc%iedge_line_l(1,fline_lc%nele_line_l) = isf_dbl_start(2)
+      fline_lc%iedge_line_l(2,fline_lc%nele_line_l) = isf_dbl_start(3)
+!
+      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
+      fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
+      fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
+     &      = col_add(1:ntot_comp)
+!
+      end subroutine add_traced_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine return_to_trace_list(fln_prm, fline_lc, fln_tce)
+!
+      type(fieldline_paramter), intent(in) :: fln_prm
+      type(local_fieldline), intent(in) :: fline_lc
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      integer(kind = kint) :: i, ntot_comp
+!
       fln_tce%num_current_fline = fline_lc%nnod_line_l
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
-      do inum = 1, fline_lc%nnod_line_l
-        call return_to_trace_list(inum, fline_lc,                       &
-     &      fln_tce%isf_dbl_start(1,inum),                              &
-     &      fln_tce%xx_fline_start(1,inum),                             &
-     &      fln_tce%v_fline_start(1,inum),                              &
-     &      fln_tce%c_fline_start(1,inum))
-        end do
-      end subroutine s_trace_particle
+     
+      ntot_comp = fln_prm%fline_fields%ntot_color_comp
+      do i = 1, fln_tce%num_current_fline
+        fln_tce%xx_fline_start(1:3,i) = fline_lc%xx_line_l(1:3,i)
+        fln_tce%v_fline_start(1:3,i) = fline_lc%v_line_l(1:3,i)
+        fln_tce%c_fline_start(1:ntot_comp,i)                            &
+     &                = fline_lc%col_line_l(1:ntot_comp,i)
+      end do
+      do i = 1, fln_tce%num_current_fline
+        fln_tce%isf_dbl_start(1,i) =    my_rank
+        fln_tce%isf_dbl_start(2:3,i) =  fline_lc%iedge_line_l(1:2,i)
+      end do
+!
+      end subroutine return_to_trace_list
 !
 !  ---------------------------------------------------------------------
 !
