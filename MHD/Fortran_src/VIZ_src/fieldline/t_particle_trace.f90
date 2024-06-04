@@ -14,7 +14,7 @@
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_module), intent(inout) :: fline
+!!        type(tracer_module), intent(inout) :: fline
 !!      subroutine TRACER_visualize                                     &
 !!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
 !!      subroutine TRACER_finalize(fline)
@@ -23,7 +23,7 @@
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_module), intent(inout) :: fline
+!!        type(fieldline_module), intent(inout) :: tracer
 !!@endverbatim
 !
       module t_particle_trace
@@ -47,7 +47,7 @@
 !
       implicit  none
 !
-      type fieldline_module
+      type tracer_module
         integer(kind = kint) :: num_fline
 !
         type(fieldline_paramter), allocatable :: fln_prm(:)
@@ -57,7 +57,7 @@
         type(local_fieldline), allocatable  :: fline_lc(:)
         type(broadcast_trace_data), allocatable :: fln_bcast(:)
         type(trace_data_send_recv), allocatable :: fln_SR(:)
-      end type fieldline_module
+      end type tracer_module
 !
 !  ---------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@
 !
       subroutine TRACER_initialize(init_d, finish_d, rst_step,          &
      &                             geofem, para_surf,                   &
-     &                             nod_fld, fline_ctls, fline)
+     &                             nod_fld, fline_ctls, tracer)
 !
       use t_control_data_flines
       use m_connect_hexa_2_tetra
@@ -81,32 +81,27 @@
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_controls), intent(inout) :: fline_ctls
-      type(fieldline_module), intent(inout) :: fline
+      type(tracer_module), intent(inout) :: tracer
 !
       integer(kind = kint) :: i_fln
 !
-      fline%num_fline = fline_ctls%num_fline_ctl
-      if(fline%num_fline .le. 0) return
+      tracer%num_fline = fline_ctls%num_fline_ctl
+      if(tracer%num_fline .le. 0) return
 !
-      allocate(fline%fln_prm(fline%num_fline))
-      allocate(fline%fln_src(fline%num_fline))
-      allocate(fline%fln_tce(fline%num_fline))
-      allocate(fline%fln_SR(fline%num_fline))
-      allocate(fline%fln_bcast(fline%num_fline))
-      allocate(fline%fline_lc(fline%num_fline))
-!
+      call alloc_TRACER_modules(tracer)
       call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
-     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
+     &    tracer%num_fline, fline_ctls, tracer%fln_prm, tracer%fln_src)
       call dealloc_fline_ctl_struct(fline_ctls)
 !
-      call alloc_each_FLINE_data                                        &
-     &   (fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce, &
-     &    fline%fline_lc, fline%fln_SR, fline%fln_bcast)
-      call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
-     &    fline%fln_prm, fline%fln_src, fline%fln_tce)
+      call alloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,      &
+     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
+     &    tracer%fln_SR, tracer%fln_bcast)
+      call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_fline,   &
+     &    tracer%fln_prm, tracer%fln_src, tracer%fln_tce)
       call set_FLINE_seed_fields                                        &
      &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
-     &   fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce)
+     &    tracer%num_fline, tracer%fln_prm, tracer%fln_src,             &
+     &    tracer%fln_tce)
 !
       end subroutine TRACER_initialize
 !
@@ -114,7 +109,7 @@
 !
       subroutine TRACER_evolution                                       &
      &         (increment_output, time_d, finish_d, rst_step, geofem,   &
-     &          para_surf, nod_fld, fline, m_SR)
+     &          para_surf, nod_fld, tracer, m_SR)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
@@ -133,21 +128,22 @@
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
 !
-      type(fieldline_module), intent(inout) :: fline
+      type(tracer_module), intent(inout) :: tracer
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_fln
 !  
       call trace_particle_sets(time_d, geofem%mesh, para_surf,          &
-     &    nod_fld, fline%num_fline, fline%fln_prm, fline%fln_src,       &
-     &    fline%fln_tce, fline%fline_lc, fline%fln_SR, fline%fln_bcast, &
-     &    m_SR)
+     &    nod_fld, tracer%num_fline, tracer%fln_prm,                    &
+     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
+     &    tracer%fln_SR, tracer%fln_bcast, m_SR)
 !
       call output_tracer_restarts(time_d, finish_d, rst_step,           &
-     &    fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
+     &    tracer%num_fline, tracer%fln_prm, tracer%fln_tce,             &
+     &    tracer%fline_lc)
 !
       call TRACER_visualize(increment_output, time_d,                   &
-     &    fline%num_fline, fline%fln_prm, fline%fline_lc)
+     &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
 !
       end subroutine TRACER_evolution
 !
@@ -181,10 +177,10 @@
       do i_fln = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO                                 &
-     &     (fln_prm(i_fln)%fline_fields, fline_lc(i_fln),   &
+     &     (fln_prm(i_fln)%fline_fields, fline_lc(i_fln),               &
      &      fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO,      &
+     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO,            &
      &      fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
       end do
@@ -193,21 +189,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_finalize(fline)
+      subroutine alloc_TRACER_modules(tracer)
 !
-      type(fieldline_module), intent(inout) :: fline
+      type(tracer_module), intent(inout) :: tracer
+!
+      allocate(tracer%fln_prm(tracer%num_fline))
+      allocate(tracer%fln_src(tracer%num_fline))
+      allocate(tracer%fln_tce(tracer%num_fline))
+      allocate(tracer%fln_SR(tracer%num_fline))
+      allocate(tracer%fln_bcast(tracer%num_fline))
+      allocate(tracer%fline_lc(tracer%num_fline))
+!
+      end subroutine alloc_TRACER_modules
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine TRACER_finalize(tracer)
+!
+      type(tracer_module), intent(inout) :: tracer
 !
       integer(kind = kint) :: i_fln
 !
 !
-      if (fline%num_fline .le. 0) return
+      if (tracer%num_fline .le. 0) return
 !
 !
-      call dealloc_each_FLINE_data(fline%num_fline, fline%fln_prm,      &
-     &    fline%fln_src, fline%fln_tce, fline%fline_lc,                 &
-     &    fline%fln_SR, fline%fln_bcast)           
-      deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
-      deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
+      call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
+     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
+     &    tracer%fln_SR, tracer%fln_bcast)           
+      deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
+      deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
 !
       end subroutine TRACER_finalize
 !
