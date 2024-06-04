@@ -79,6 +79,10 @@
 !
       real(kind = kreal) :: flux
 !
+      real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal)                                                &
+     &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       integer(kind = kint) :: isurf_org(2)
       integer(kind = kint) :: isf_tgt, isurf_end
 
@@ -92,19 +96,29 @@
 !
       iflag_comm = 0
       do
+        call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
+     &      nod_fld, v_prev, viz_fields, x4_ele, v4_ele, color_ele)
 !
 !   extend in the middle of element
         call s_trace_in_element                                         &
-     &     (half, isurf_org(1), isurf_org(2), node, surf,               &
-     &      nod_fld,  viz_fields, isurf_end, isf_tgt, v_prev, i_tracer, &
-     &      x4_start, v4_start, c_field, dt, iflag_comm)
-        if(iflag_comm .eq. -1) return
+     &     (half, isurf_org(2), node, ele, surf, viz_fields,            &
+     &      x4_ele, v4_ele, color_ele,              &
+     &      isf_tgt, x4_start, v4_start, c_field, dt)
+        if(isf_tgt .eq. 0) then
+          iflag_comm = -1
+          exit
+        end if
 !
 !   extend to surface of element
-        call s_trace_in_element(one, isurf_org(1), izero, node, surf,   &
-     &      nod_fld, viz_fields, isurf_end, isf_tgt, v_prev, i_tracer,  &
-     &      x4_start, v4_start, c_field, dt, iflag_comm)
-        if(iflag_comm .eq. -1) return
+        call s_trace_in_element                                         &
+     &     (one, izero, node, ele, surf, viz_fields,                    &
+     &      x4_ele, v4_ele, color_ele,               &
+     &      isf_tgt, x4_start, v4_start, c_field, dt)
+        if(isf_tgt .eq. 0) then
+          iflag_comm = -1
+          exit
+        end if
+        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
 !
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
