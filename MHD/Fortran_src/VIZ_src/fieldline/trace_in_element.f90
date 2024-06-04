@@ -172,7 +172,8 @@
      &         (trace_ratio, end_trace, trace_length,                   &
      &          iele, isf_org, iflag_dir, node, ele, surf, nod_fld,     &
      &          v_trace, viz_fields, isurf_end, isf_tgt,                &
-     &          x4_start, v4_start, c_field, iflag_comm)
+     &          x4_start, v4_start, c_field, iflag_comm, &
+     &          x4_ele, v4_ele, c_ele)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -209,9 +210,9 @@
       real(kind = kreal) :: xi_surf(2), ratio
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
-      real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal)                                                &
+      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in)                                  &
      &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       real(kind = kreal) :: v4_tgt2(4)
       real(kind = kreal) :: c_tgt2(viz_fields%ntot_color_comp)
@@ -225,8 +226,6 @@
       x4_start2(1:4) = x4_start(1:4)
       v4_start2(1:4) = v4_start(1:4)
       c_field2(:) = c_field(:)
-      call fline_fields_at_one_elemnt(iele, node, ele, nod_fld,         &
-     &    v_trace, viz_fields, x4_ele, v4_ele, c_ele)
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start2, v4_start,       &
      &    isf_tgt_8, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)

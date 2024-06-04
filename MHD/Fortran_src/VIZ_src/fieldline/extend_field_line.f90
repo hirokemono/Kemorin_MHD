@@ -82,6 +82,10 @@
 !
       real(kind = kreal) :: flux
 !
+      real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal)                                                &
+     &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       integer(kind = kint) :: isf_tgt, isurf_end, jcou
       integer(kind = kint) :: isurf_org(2)
 !
@@ -101,12 +105,15 @@
       do
         jcou = jcou + 1
         icount_line = icount_line + 1
+        call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
+     &      nod_fld, nod_fld%d_fld(1,i_fline), viz_fields,              &
+     &      x4_ele, v4_ele, color_ele)
 !
 !   extend in the middle of element
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(1), isurf_org(2), iflag_dir, node, ele, surf, nod_fld, &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
-     &      x4_start, v4_start, c_field, iflag_comm)
+     &      x4_start, v4_start, c_field, iflag_comm, x4_ele, v4_ele, color_ele)
         if(iflag_comm .eq. -1) then
 !          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
@@ -120,7 +127,7 @@
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      isurf_org(1), izero, iflag_dir, node, ele, surf, nod_fld,        &
      &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
-     &      x4_start, v4_start, c_field, iflag_comm)
+     &      x4_start, v4_start, c_field, iflag_comm, x4_ele, v4_ele, color_ele)
         if(iflag_comm .eq. -1) then
 !          write(*,*) 'Error at trace to end point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
