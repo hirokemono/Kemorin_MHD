@@ -68,9 +68,7 @@
       use calypso_mpi_int
       use m_connect_hexa_2_tetra
       use t_control_data_flines
-      use t_find_interpolate_in_ele
-      use set_fline_control
-      use set_fline_seeds_from_list
+      use multi_tracer_fieldline
 !
       integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: geofem
@@ -84,36 +82,15 @@
       if(increment_fline .le. 0) fline%num_fline = 0
       if(fline%num_fline .le. 0) return
 !
-      allocate(fline%fln_prm(fline%num_fline))
-      allocate(fline%fln_src(fline%num_fline))
-      allocate(fline%fln_tce(fline%num_fline))
-      allocate(fline%fln_SR(fline%num_fline))
-      allocate(fline%fln_bcast(fline%num_fline))
-      allocate(fline%fline_lc(fline%num_fline))
+      call alloc_FLINE_modules(fline)
 !
-      do i_fln = 1, fline%num_fline
-        call s_set_fline_control(geofem%mesh, geofem%group, nod_fld,    &
-     &      fline_ctls%fline_ctl_struct(i_fln), fline%fln_prm(i_fln),   &
-     &      fline%fln_src(i_fln))
-      end do
-!
+      call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
+     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
       call dealloc_fline_ctl_struct(fline_ctls)
 !
-      do i_fln = 1, fline%num_fline
-        call alloc_start_point_fline(nprocs, fline%fln_prm(i_fln),      &
-     &                               fline%fln_src(i_fln))
-        call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i_fln)%fline_fields,                          &
-     &      fline%fln_tce(i_fln))
-        call alloc_broadcast_trace_data                                 &
-     &     (fline%fln_prm(i_fln)%num_each_field_line,                   &
-     &      fline%fln_prm(i_fln)%fline_fields, fline%fln_bcast(i_fln))
-        call alloc_local_fline(fline%fln_prm(i_fln)%fline_fields,       &
-     &                         fline%fline_lc(i_fln))
-        call alloc_trace_data_SR_num(fline%fln_prm(i_fln)%fline_fields, &
-     &                               fline%fln_SR(i_fln))
-      end do
-!
+      call alloc_each_FLINE_data                                        &
+     &   (fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce, &
+     &    fline%fline_lc, fline%fln_SR, fline%fln_bcast)
       call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
      &    fline%fln_prm, fline%fln_src, fline%fln_tce)
 !
@@ -121,61 +98,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
-     &                                      fln_prm, fln_src, fln_tce)
+      subroutine alloc_FLINE_modules(fline)
 !
-      use calypso_mpi
-      use calypso_mpi_int
-      use m_connect_hexa_2_tetra
-      use t_control_data_flines
-      use t_find_interpolate_in_ele
-      use set_fline_control
-      use set_fline_seeds_from_list
+      type(fieldline_module), intent(inout) :: fline
 !
-      type(mesh_geometry), intent(in) :: mesh
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      allocate(fline%fln_prm(fline%num_fline))
+      allocate(fline%fln_src(fline%num_fline))
+      allocate(fline%fln_tce(fline%num_fline))
+      allocate(fline%fln_SR(fline%num_fline))
+      allocate(fline%fln_bcast(fline%num_fline))
+      allocate(fline%fline_lc(fline%num_fline))
 !
-!
-      integer(kind = kint) :: i_fln
-      type(FLINE_element_size) :: fln_dist
-      logical :: flag_fln_dist
-!
-!
-      flag_fln_dist = .FALSE.
-      do i_fln = 1, num_fline
-        if(fln_prm(i_fln)%id_fline_seed_type                            &
-     &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
-      end do
-      if(flag_fln_dist) then
-        call alloc_FLINE_element_size(mesh%ele, fln_dist)
-        call cal_FLINE_element_size(mesh%node, mesh%ele, fln_dist)
-      end if
-      do i_fln = 1, num_fline
-        if(fln_prm(i_fln)%id_fline_seed_type                            &
-     &                       .eq. iflag_position_list) then
-          call alloc_init_tracer_position(fln_prm(i_fln),               &
-     &                                    fln_src(i_fln))
-          call init_FLINE_seed_from_list(mesh%node, mesh%ele,           &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln), fln_dist)
-        end if
-      end do
-      if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
-!
-      end subroutine set_fixed_FLINE_seed_points
+      end subroutine alloc_FLINE_modules
 !
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize(istep_fline, time_d, geofem,           &
      &                           para_surf, nod_fld, fline, m_SR)
 !
-      use set_fields_for_fieldline
-      use const_field_lines
-      use collect_fline_data
-      use parallel_ucd_IO_select
-      use set_fline_seeds_from_list
+      use multi_tracer_fieldline
       use t_mesh_SR
 !
 !
@@ -209,46 +150,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_FLINE_seed_fields(mesh, group, para_surf, nod_fld, &
-     &          num_fline, fln_prm, fln_src, fln_tce)
-!
-      use set_fields_for_fieldline
-      use const_field_lines
-      use collect_fline_data
-      use parallel_ucd_IO_select
-      use set_fline_seeds_from_list
-!
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(paralell_surface_indices), intent(in) :: para_surf
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!
-      integer(kind = kint) :: i_fln
-!  
-      do i_fln = 1, num_fline
-        if(fln_prm(i_fln)%id_fline_seed_type                          &
-     &                       .eq. iflag_position_list) then
-          call set_FLINE_seed_field_from_list                         &
-     &       (mesh%node, mesh%ele, nod_fld,                           &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
-          call dealloc_init_tracer_position(fln_src(i_fln))
-        else
-          call s_set_fields_for_fieldline                             &
-     &       (mesh, group, para_surf, nod_fld,                        &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
-        end if
-      end do
-!
-      end subroutine set_FLINE_seed_fields
-!
-!  ---------------------------------------------------------------------
-!
       subroutine FLINE_finalize(fline)
 !
       type(fieldline_module), intent(inout) :: fline
@@ -275,34 +176,6 @@
       deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !
       end subroutine FLINE_finalize
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_fline_controls(mesh, group, nod_fld,               &
-     &          num_fline, fline_ctls, fln_prm, fln_src)
-!
-      use t_control_data_flines
-      use set_fline_control
-
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) ::num_fline
-      type(fieldline_controls), intent(inout) :: fline_ctls
-!
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-!
-      integer(kind = kint) :: i_fln
-!
-      do i_fln = 1, num_fline
-        call s_set_fline_control                                        &
-     &     (mesh, group, nod_fld, fline_ctls%fline_ctl_struct(i_fln),   &
-     &      fln_prm(i_fln), fln_src(i_fln))
-      end do
-!
-      end subroutine set_fline_controls
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -335,47 +208,6 @@
       end do
 !
       end subroutine s_const_field_lines
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine output_field_lines                                     &
-     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
-!
-      use set_fields_for_fieldline
-      use collect_fline_data
-      use parallel_ucd_IO_select
-      use set_fline_seeds_from_list
-      use parallel_ucd_IO_select
-!
-      integer(kind = kint), intent(in) :: istep_fline
-      type(time_data), intent(in) :: time_d
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      type(time_data) :: t_IO
-      type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln
-!  
-!
-      do i_fln = 1, num_fline
-        call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_fieldline_to_IO(fln_prm(i_fln)%fline_fields,    &
-     &                                  fline_lc(i_fln), fline_ucd)
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline_ucd)
-!
-        call copy_local_particles_to_IO(fln_prm(i_fln)%fline_fields,    &
-     &                                  fline_lc(i_fln), fline_ucd)
-        fln_prm(i_fln)%fline_file_IO%iflag_format = iflag_sgl_ucd
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline_ucd)
-        call calypso_mpi_barrier
-      end do
-!
-      end subroutine output_field_lines
 !
 !  ---------------------------------------------------------------------
 !
