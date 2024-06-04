@@ -98,6 +98,8 @@
       do
         call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
      &      nod_fld, v_prev, viz_fields, x4_ele, v4_ele, color_ele)
+        call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
+     &      nod_fld, v_prev, viz_fields, x4_ele, v4_ele, color_ele)
 !
 !   extend in the middle of element
         call s_trace_in_element                                         &
