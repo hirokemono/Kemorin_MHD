@@ -173,29 +173,16 @@
 
       call fline_fields_at_one_elemnt(iele, node, ele, nod_fld,         &
      &    v_trace, viz_fields, x4_ele, v4_ele, c_ele)
-!
+      call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
+     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
+     &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)
       call position_on_each_ele_surfs                                   &
      &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-     
-      go to 99
-      do j = 1, 6
-        if(surf%isf_4_ele(iele,j) .lt. 0) then
-            write(*,*) j, 1,   &
-     &       x4_ele(1:3,surf%node_on_sf(1,j)) - xx4_ele_surf(1:3,1,j)
-            write(*,*) j, 2,   &
-     &       x4_ele(1:3,surf%node_on_sf(4,j)) - xx4_ele_surf(1:3,2,j)
-            write(*,*) j, 3,   &
-     &       x4_ele(1:3,surf%node_on_sf(3,j)) - xx4_ele_surf(1:3,3,j)
-            write(*,*) j, 4,   &
-     &       x4_ele(1:3,surf%node_on_sf(2,j)) - xx4_ele_surf(1:3,4,j)
-        else
-          do k1 = 1, 4
-            write(*,*) j, k1,   &
-     &       x4_ele(1:3,surf%node_on_sf(k1,j)) - xx4_ele_surf(1:3,k1,j)
-          end do
-         end if
-      end do
-  99  continue
+!
+      call fields_on_surf_from_one_ele                                  &
+     &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
+     &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt2, c_tgt2)
+!
      
 !      if(v4_start(1) .eq. zero .and. v4_start(2).eq.zero .and. v4_start(3).eq. zero) then
 !        iflag_comm = -1
@@ -204,9 +191,7 @@
       call find_line_end_in_1ele(iflag_dir,                             &
      &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
      &    isf_tgt, x4_tgt, xi_surf)
-      call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
-     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
-     &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)
+
 !
       go to 98
        write(*,*) (isf_tgt_8 - isf_tgt), &
@@ -223,40 +208,18 @@
       call cal_field_on_surf_vect4                                      &
      &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
      &    isurf_end, xi_surf, v_trace, v4_tgt)
+
       call cal_fields_on_line(isurf_end, xi_surf, x4_tgt,               &
      &                        surf, nod_fld, viz_fields, c_tgt)
-!
-      call fields_on_surf_from_one_ele                                  &
-     &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
-     &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt2, c_tgt2)
 !
 !
        if(sum(abs(x4_tgt_8(1:4) - x4_tgt(1:4))) .gt. 1.0d-13) &
      &     write(*,*) 'x4_tgt_8:', x4_tgt_8(1:3), ': ', x4_tgt(1:3)
-       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13) then
-          write(*,*) 'x4_start:', x4_start(1:3), 'v4_start:', v4_start(1:3)
-          write(*,*) 'x4_tgt_8:', x4_tgt_8(1:3), ': ', x4_tgt(1:3)
-          write(*,*) 'v4_tgt2:', v4_tgt2(1:3), ': ', v4_tgt(1:3)
-          write(*,*) 'isf_tgt_8', (isf_tgt_8 - isf_tgt), &
-     &           (xi_surf_8(1:2) - xi_surf(1:2))
-         write(*,*) 'isurf',  &
-     &          ele%ie(iele,surf%node_on_sf(:,isf_tgt_8)),&
-     &          'ie_surf: ', surf%ie_surf(isurf_end,:), &
-     &          'x4_ele: ', x4_ele(1,surf%node_on_sf(:,isf_tgt_8)), &
-     &          'xx4_ele_surf: ', xx4_ele_surf(1,:,isf_tgt_8),   &
-     &          'v4_ele: ', v4_ele(1,surf%node_on_sf(:,isf_tgt_8)), &
-     &          'v_trace: ', v_trace(surf%ie_surf(isurf_end,:),1)
-    
-     end if
+       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13)  &
+     &     write(*,*) 'v4_tgt2:', (v4_tgt2(1:3) - v4_tgt(1:3))
        if(sum(abs(c_tgt2(:) - c_tgt(:))) .gt. 1.0d-13) &
-     &    write(*,*) 'c_tgt2:',(c_tgt2(1:viz_fields%ntot_color_comp)&
+     &    write(*,*) 'c_tgt2:',(c_tgt2(1:viz_fields%ntot_color_comp) &
      &            - c_tgt(1:viz_fields%ntot_color_comp))
-
-
-       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13) &
-     &     write(*,*) 'v4_tgt2:', v4_tgt2(1:3), ': ', v4_tgt(1:3)
-
-
 
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt, x4_start,               &
