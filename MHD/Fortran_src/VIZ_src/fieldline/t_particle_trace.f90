@@ -289,4 +289,124 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      type(time_data), intent(in) :: time_d
+      type(finish_data), intent(in) :: finish_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+      if(output_IO_flag(time_d%i_time_step, rst_step)) then
+        istep_rst = set_IO_step(time_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      if(finish_d%flag_terminate_by_elapsed) then
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      end subroutine output_tracer_restarts
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine input_tracer_restarts(init_d, rst_step,                &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
+     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+!
+      end subroutine input_tracer_restarts
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine trace_particle_sets(time_d, mesh, para_surf, nod_fld,  &
+     &          num_fline, fln_prm, fln_src, fln_tce, fline_lc,         &
+     &          fln_SR, fln_bcast, m_SR)
+!
+!
+      type(time_data), intent(in) :: time_d
+      type(mesh_geometry), intent(in) :: mesh
+      type(paralell_surface_indices), intent(in) :: para_surf
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
+      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: i_fln
+!  
+      do i_fln = 1, num_fline
+        if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
+        call s_trace_particle(time_d%dt, mesh, para_surf, nod_fld,      &
+     &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
+     &      fln_SR(i_fln), fln_bcast(i_fln), fln_src(i_fln)%v_prev,     &
+     &      m_SR)
+      end do
+!
+      end subroutine trace_particle_sets
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_velocity_as_previous(nod_fld, num_fline,          &
+     &                                     fln_prm, fln_src)
+!
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!
+      integer(kind = kint) :: i_fln, i_fline
+!  
+      do i_fln = 1, num_fline
+        i_fline = fln_prm(i_fln)%iphys_4_fline
+!$omp parallel workshare
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,1)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,2)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+        fln_src(i_fln)%v_prev(1:nod_fld%n_point,3)                      &
+     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
+!$omp end parallel workshare
+      end do
+!
+      end subroutine copy_velocity_as_previous
+!
+!  ---------------------------------------------------------------------
+!
       end module t_particle_trace

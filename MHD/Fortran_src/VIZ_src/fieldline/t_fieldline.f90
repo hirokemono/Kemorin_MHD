@@ -168,22 +168,10 @@
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-     &                       .eq. iflag_position_list) then
-          call set_FLINE_seed_field_from_list                           &
-     &       (geofem%mesh%node, geofem%mesh%ele, nod_fld,               &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln))
-          call dealloc_init_tracer_position(fline%fln_src(i_fln))
-        else
-          if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline(geofem%mesh, geofem%group,    &
-     &        para_surf, nod_fld, fline%fln_prm(i_fln),                 &
-     &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
-        end if
-      end do
+      call set_FLINE_seed_fields                                        &
+     &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
+     &   fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce)
+
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
       call s_const_field_lines(geofem%mesh, para_surf, nod_fld,         &
@@ -194,6 +182,46 @@
      &                         fline%fln_prm, fline%fline_lc)
 !
       end subroutine FLINE_visualize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_FLINE_seed_fields(mesh, group, para_surf, nod_fld, &
+     &          num_fline, fln_prm, fln_src, fln_tce)
+!
+      use set_fields_for_fieldline
+      use const_field_lines
+      use collect_fline_data
+      use parallel_ucd_IO_select
+      use set_fline_seeds_from_list
+!
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(paralell_surface_indices), intent(in) :: para_surf
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!  
+      do i_fln = 1, num_fline
+        if(fln_prm(i_fln)%id_fline_seed_type                          &
+     &                       .eq. iflag_position_list) then
+          call set_FLINE_seed_field_from_list                         &
+     &       (mesh%node, mesh%ele, nod_fld,                           &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+          call dealloc_init_tracer_position(fln_src(i_fln))
+        else
+          call s_set_fields_for_fieldline                             &
+     &       (mesh, group, para_surf, nod_fld,                        &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+        end if
+      end do
+!
+      end subroutine set_FLINE_seed_fields
 !
 !  ---------------------------------------------------------------------
 !
@@ -251,6 +279,79 @@
       end do
 !
       end subroutine set_fline_controls
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine s_const_field_lines                                    &
+     &         (mesh, para_surf, nod_fld, num_fline, fln_prm, fln_tce,  &
+     &          fln_SR, fln_bcast, fline_lc, m_SR)
+!
+      use const_field_lines
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(paralell_surface_indices), intent(in) :: para_surf
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
+      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
+        call const_field_line(mesh, para_surf, nod_fld, fln_prm(i_fln), &
+     &      fln_tce(i_fln), fln_SR(i_fln), fln_bcast(i_fln),            &
+     &      fline_lc(i_fln), m_SR)
+      end do
+!
+      end subroutine s_const_field_lines
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine output_field_lines                                     &
+     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
+!
+      use set_fields_for_fieldline
+      use collect_fline_data
+      use parallel_ucd_IO_select
+      use set_fline_seeds_from_list
+      use parallel_ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: istep_fline
+      type(time_data), intent(in) :: time_d
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      type(time_data) :: t_IO
+      type(ucd_data) :: fline_ucd
+      integer(kind = kint) :: i_fln
+!  
+!
+      do i_fln = 1, num_fline
+        call copy_time_step_size_data(time_d, t_IO)
+        call copy_local_fieldline_to_IO(fln_prm(i_fln)%fline_fields,    &
+     &                                  fline_lc(i_fln), fline_ucd)
+        call sel_write_parallel_ucd_file                                &
+     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+        call deallocate_parallel_ucd_mesh(fline_ucd)
+!
+        call copy_local_particles_to_IO(fln_prm(i_fln)%fline_fields,    &
+     &                                  fline_lc(i_fln), fline_ucd)
+        fln_prm(i_fln)%fline_file_IO%iflag_format = iflag_sgl_ucd
+        call sel_write_parallel_ucd_file                                &
+     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+        call deallocate_parallel_ucd_mesh(fline_ucd)
+        call calypso_mpi_barrier
+      end do
+!
+      end subroutine output_field_lines
 !
 !  ---------------------------------------------------------------------
 !

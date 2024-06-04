@@ -48,66 +48,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trace_particle_sets(time_d, mesh, para_surf, nod_fld,  &
-     &          num_fline, fln_prm, fln_src, fln_tce, fline_lc,         &
-     &          fln_SR, fln_bcast, m_SR)
-!
-!
-      type(time_data), intent(in) :: time_d
-      type(mesh_geometry), intent(in) :: mesh
-      type(paralell_surface_indices), intent(in) :: para_surf
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
-      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
-      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
-      type(mesh_SR), intent(inout) :: m_SR
-!
-      integer(kind = kint) :: i_fln
-!  
-      do i_fln = 1, num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
-        call s_trace_particle(time_d%dt, mesh, para_surf, nod_fld,      &
-     &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
-     &      fln_SR(i_fln), fln_bcast(i_fln), fln_src(i_fln)%v_prev,     &
-     &      m_SR)
-      end do
-!
-      end subroutine trace_particle_sets
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_velocity_as_previous(nod_fld, num_fline,          &
-     &                                     fln_prm, fln_src)
-!
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-!
-      integer(kind = kint) :: i_fln, i_fline
-!  
-      do i_fln = 1, num_fline
-        i_fline = fln_prm(i_fln)%iphys_4_fline
-!$omp parallel workshare
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,1)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,2)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,3)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-!$omp end parallel workshare
-      end do
-!
-      end subroutine copy_velocity_as_previous
-!
-!  ---------------------------------------------------------------------
-!
       subroutine s_trace_particle(dt_init, mesh, para_surf, nod_fld,    &
      &          fln_prm, fln_tce, fline_lc, fln_SR, fln_bcast,          &
      &          v_prev, m_SR)

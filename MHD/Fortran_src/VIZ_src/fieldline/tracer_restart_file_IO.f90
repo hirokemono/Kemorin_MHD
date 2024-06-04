@@ -46,66 +46,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
-     &          num_fline, fln_prm, fln_tce, fline_lc)
-!
-      type(time_data), intent(in) :: time_d
-      type(finish_data), intent(in) :: finish_d
-      type(IO_step_param), intent(in) :: rst_step
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      integer(kind = kint) :: i_fln, istep_rst
-!
-      if(output_IO_flag(time_d%i_time_step, rst_step)) then
-        istep_rst = set_IO_step(time_d%i_time_step, rst_step)
-        do i_fln = 1, num_fline
-          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
-     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-      end if
-!
-      if(finish_d%flag_terminate_by_elapsed) then
-        do i_fln = 1, num_fline
-          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
-     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-      end if
-!
-      end subroutine output_tracer_restarts
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine input_tracer_restarts(init_d, rst_step,                &
-     &          num_fline, fln_prm, fln_tce, fline_lc)
-!
-      type(time_data), intent(in) :: init_d
-      type(IO_step_param), intent(in) :: rst_step
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      integer(kind = kint) :: i_fln, istep_rst
-!
-        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
-        do i_fln = 1, num_fline
-          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
-     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-!
-      end subroutine input_tracer_restarts
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine output_tracer_restart(tracer_file_prm, i_step_w_elps,  &
      &          time_d, viz_fields, fln_tce, fline_lc)
 !

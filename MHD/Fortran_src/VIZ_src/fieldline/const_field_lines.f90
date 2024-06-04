@@ -50,35 +50,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines                                    &
-     &         (mesh, para_surf, nod_fld, num_fline, fln_prm, fln_tce,  &
-     &          fln_SR, fln_bcast, fline_lc, m_SR)
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(paralell_surface_indices), intent(in) :: para_surf
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
-      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
-      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
-      type(mesh_SR), intent(inout) :: m_SR
-!
-      integer(kind = kint) :: i_fln
-!
-      do i_fln = 1, num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call const_field_line(mesh, para_surf, nod_fld, fln_prm(i_fln), &
-     &      fln_tce(i_fln), fln_SR(i_fln), fln_bcast(i_fln),            &
-     &      fline_lc(i_fln), m_SR)
-      end do
-!
-      end subroutine s_const_field_lines
-!
-!  ---------------------------------------------------------------------
-!
       subroutine output_field_lines                                     &
      &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
 !
