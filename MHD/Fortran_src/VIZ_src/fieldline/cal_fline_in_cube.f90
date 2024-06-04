@@ -131,8 +131,7 @@
       real(kind = kreal), intent(inout) :: xi(2)
 !
       real(kind = kreal) :: xx_surf(4,4), b_ray(4)
-      real(kind = kreal) :: x4_tri(4,num_triangle)
-      real(kind = kreal) :: sol_q(4,2)
+      real(kind = kreal) :: quad_wk(4*(2+num_triangle))
       real(kind = kreal) :: tri_wk(4+3*3)
       integer(kind = kint) :: inod(4)
       integer(kind = kint) :: ierr
@@ -168,7 +167,7 @@
         xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
         xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
         call cal_fline_to_square(x0, b_ray, xx_surf,                    &
-     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
+     &      x4_tgt, xi, quad_wk(9), quad_wk(1), tri_wk, ierr)
         if(ierr.eq.zero) then
           isf_tgt = ksf
           exit
@@ -188,7 +187,7 @@
         xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
         xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
         call cal_fline_to_square(x0, b_ray, xx_surf,                    &
-     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
+     &      x4_tgt, xi, quad_wk(9), quad_wk(1), tri_wk, ierr)
       end do
 !
       end subroutine find_line_end_in_ele_8
@@ -209,8 +208,7 @@
       real(kind = kreal), intent(inout) :: xi(2)
 !
       real(kind = kreal) :: b_ray(4)
-      real(kind = kreal) :: x4_tri(4,num_triangle)
-      real(kind = kreal) :: sol_q(4,2)
+      real(kind = kreal) :: quad_wk(4*(2+num_triangle))
       real(kind = kreal) :: tri_wk(4+3*3)
       integer(kind = kint) :: ierr
       integer(kind = kint) :: ist, ied, inc, k, ksf
@@ -240,7 +238,7 @@
       do k = ist, ied, inc
         ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
         call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
-     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
+     &      x4_tgt, xi, quad_wk(9), quad_wk(1), tri_wk, ierr)
         if(ierr.eq.zero) then
           isf_tgt = ksf
           exit
@@ -255,7 +253,7 @@
       do k = ist, ied, inc
         ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
         call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
-     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
+     &      x4_tgt, xi, quad_wk(9), quad_wk(1), tri_wk, ierr)
       end do
 !
       end subroutine find_line_end_in_1ele
