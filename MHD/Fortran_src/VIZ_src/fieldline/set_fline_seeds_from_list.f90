@@ -195,7 +195,7 @@
         fln_src%xi_surf_start_fline(1:3,i) = -2.0
         do inum = 1, num_search
           iele = fln_dist%index(inum)
-          if(ele%ie(iele,1) .gt. node%internal_node) cycle
+          if(ele%interior_ele(iele) .le. 0) cycle
           ierr_inter = 0
           xi(1:3) = -2.0
           call find_interpolate_in_ele                                  &

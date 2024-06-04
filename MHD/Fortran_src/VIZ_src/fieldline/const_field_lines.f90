@@ -65,7 +65,7 @@
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: nline, inum
+      integer(kind = kint) :: nline, inum, ip
 !
 !
       call reset_fline_start(fline_lc)

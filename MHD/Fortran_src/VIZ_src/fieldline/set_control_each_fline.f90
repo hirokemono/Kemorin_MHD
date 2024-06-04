@@ -253,17 +253,17 @@
      &          = fln%seed_surface_ctl%int2(i)
         end do
       else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
-        do i = 1, fln_prm%num_each_field_line
+        do i = 1, fln%seed_point_ctl%num
           fln_prm%xx_surf_start_fline(1,i) = fln%seed_point_ctl%vec1(i)
           fln_prm%xx_surf_start_fline(2,i) = fln%seed_point_ctl%vec2(i)
           fln_prm%xx_surf_start_fline(3,i) = fln%seed_point_ctl%vec3(i)
         end do
         do i = 1, fln%seed_geological_ctl%num
           icou = i + fln%seed_point_ctl%num
-          rr(1) =              fln%seed_spherical_ctl%vec1(i)
-          theta(1) = (90.0d0 - fln%seed_spherical_ctl%vec2(i))          &
-    &            * pi / 180.0d0
-          phi(1) =   fln%seed_spherical_ctl%vec3(i) * pi / 180.0d0
+          rr(1) =              fln%seed_geological_ctl%vec1(i)
+          theta(1) = (90.0d0 - fln%seed_geological_ctl%vec2(i))         &
+    &               * pi / 180.0d0
+          phi(1) =   fln%seed_geological_ctl%vec3(i) * pi / 180.0d0
           call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
     &                         fln_prm%xx_surf_start_fline(1,icou),      &
     &                         fln_prm%xx_surf_start_fline(2,icou),      &
@@ -275,11 +275,21 @@
           rr(1) =    fln%seed_spherical_ctl%vec1(i)
           theta(1) = fln%seed_spherical_ctl%vec2(i)
           phi(1) =   fln%seed_spherical_ctl%vec3(i)
+          write(*,*) my_rank, i, 'seed_spherical_ctl', &
+     &        fln%seed_spherical_ctl%vec1(i),  &
+     &        fln%seed_spherical_ctl%vec2(i),  &
+     &        fln%seed_spherical_ctl%vec3(i)
+          write(*,*) my_rank, i, 'seed_spherical_ctl', rr(1), theta(1), phi(1)
           call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
     &                         fln_prm%xx_surf_start_fline(1,icou),      &
     &                         fln_prm%xx_surf_start_fline(2,icou),      &
     &                         fln_prm%xx_surf_start_fline(3,icou))
+          write(*,*) my_rank, i, icou, 'xx_surf_start_fline', fln_prm%xx_surf_start_fline(:,icou)
         end do
+!       
+!        do i = 1, fln_prm%num_each_field_line
+!          write(*,*) i, 'fln_prm%xx_surf_start_fline', fln_prm%xx_surf_start_fline(:,i)
+!        end do
       end if
 !
       end subroutine set_control_4_fline
