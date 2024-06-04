@@ -110,11 +110,12 @@
      &      x4_ele, v4_ele, color_ele)
 !
 !   extend in the middle of element
-        call fline_trace_in_element(half, end_trace, trace_length,      &
-     &      isurf_org(1), isurf_org(2), iflag_dir, node, ele, surf, nod_fld, &
-     &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
-     &      x4_start, v4_start, c_field, iflag_comm, x4_ele, v4_ele, color_ele)
-        if(iflag_comm .eq. -1) then
+        call fline_trace_in_element                                     &
+     &     (half, end_trace, trace_length, isurf_org(2), iflag_dir,     &
+     &      node, ele, surf, nod_fld, nod_fld%d_fld(1,i_fline),         &
+     &      viz_fields, x4_start, v4_start, c_field,                    &
+     &      isf_tgt, x4_ele, v4_ele, color_ele)
+        if(isf_tgt .eq. 0) then
 !          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
@@ -124,19 +125,21 @@
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
-        call fline_trace_in_element(one, end_trace, trace_length,       &
-     &      isurf_org(1), izero, iflag_dir, node, ele, surf, nod_fld,        &
-     &      nod_fld%d_fld(1,i_fline), viz_fields, isurf_end, isf_tgt,   &
-     &      x4_start, v4_start, c_field, iflag_comm, x4_ele, v4_ele, color_ele)
-        if(iflag_comm .eq. -1) then
+        call fline_trace_in_element                                     &
+     &     (one, end_trace, trace_length, izero, iflag_dir,             &
+     &      node, ele, surf, nod_fld, nod_fld%d_fld(1,i_fline),         &
+     &      viz_fields, x4_start, v4_start, c_field,                    &
+     &      isf_tgt, x4_ele, v4_ele, color_ele)
+        if(isf_tgt .eq. 0) then
 !          write(*,*) 'Error at trace to end point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
         call add_fline_list(x4_start, v4_start,                         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
-        if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
+        if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
+        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &

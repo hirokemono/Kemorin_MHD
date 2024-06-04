@@ -124,7 +124,7 @@
       subroutine trace_to_element_wall                                  &
      &         (isf_org, iflag_dir, ele, surf, viz_fields,              &
      &          x4_ele, v4_ele, c_ele, x4_start, v4_start,              &
-     &          isf_tgt_8, x4_tgt_8, v4_tgt_8, c_tgt_8, iflag_comm)
+     &          isf_tgt_8, x4_tgt_8, v4_tgt_8, c_tgt_8)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -151,7 +151,6 @@
       real(kind = kreal), intent(inout) :: v4_tgt_8(4)
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_tgt_8(viz_fields%ntot_color_comp)
-      integer(kind = kint), intent(inout) :: iflag_comm
 !
       real(kind = kreal) :: xi_surf_8(2)
 !
@@ -170,10 +169,9 @@
 !
       subroutine fline_trace_in_element                                 &
      &         (trace_ratio, end_trace, trace_length,                   &
-     &          iele, isf_org, iflag_dir, node, ele, surf, nod_fld,     &
-     &          v_trace, viz_fields, isurf_end, isf_tgt,                &
-     &          x4_start, v4_start, c_field, iflag_comm, &
-     &          x4_ele, v4_ele, c_ele)
+     &          isf_org, iflag_dir, node, ele, surf, nod_fld,           &
+     &          v_trace, viz_fields, x4_start, v4_start, c_field,       &
+     &          isf_tgt, x4_ele, v4_ele, c_ele)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -185,7 +183,7 @@
       real(kind = kreal), intent(in) ::   end_trace
       real(kind = kreal), intent(inout) :: trace_length
 !
-      integer(kind = kint), intent(in) :: iele, isf_org
+      integer(kind = kint), intent(in) :: isf_org
       integer(kind = kint), intent(in) :: iflag_dir
 !
       type(node_data), intent(in) :: node
@@ -195,14 +193,12 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
 !
-      integer(kind = kint), intent(inout) :: isurf_end, isf_tgt
+      integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: x4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_field(viz_fields%ntot_color_comp)
-      integer(kind = kint), intent(inout) :: iflag_comm
 !
-      integer(kind = kint) :: isf_tgt_8
       real(kind = kreal) :: x4_tgt_8(4), xi_surf_8(2)
 !
       real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
@@ -212,7 +208,7 @@
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in)                                  &
+      real(kind = kreal), intent(in)                                    &
      &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       real(kind = kreal) :: v4_tgt2(4)
       real(kind = kreal) :: c_tgt2(viz_fields%ntot_color_comp)
@@ -228,7 +224,7 @@
       c_field2(:) = c_field(:)
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
-     &    isf_tgt, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
+     &    isf_tgt, x4_tgt_8, v4_tgt2, c_tgt2)
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, x4_start,             &
@@ -237,12 +233,6 @@
      &                           x4_tgt_8, v4_tgt2, c_tgt2,             &
      &                           x4_start, v4_start, c_field)
 !
-      if(isf_tgt .eq. 0) then
-        iflag_comm = -1
-        return
-      end if
-      isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
-
       end subroutine fline_trace_in_element
 !
 !  ---------------------------------------------------------------------
