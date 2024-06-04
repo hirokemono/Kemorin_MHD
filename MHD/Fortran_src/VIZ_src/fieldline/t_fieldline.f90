@@ -152,6 +152,8 @@
 !
       subroutine FLINE_finalize(fline)
 !
+      use multi_tracer_fieldline
+!
       type(fieldline_module), intent(inout) :: fline
 !
       integer(kind = kint) :: i_fln
@@ -160,18 +162,9 @@
       if (fline%num_fline .le. 0) return
 !
 !
-      do i_fln = 1, fline%num_fline
-        call dealloc_local_fline(fline%fline_lc(i_fln))
-        call dealloc_iflag_fline_used_ele(fline%fln_prm(i_fln))
-        call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
-!
-        call dealloc_local_start_grp_item(fline%fln_src(i_fln))
-        call dealloc_start_point_fline(fline%fln_src(i_fln))
-        call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
-        call dealloc_broadcast_trace_data(fline%fln_bcast(i_fln))
-        call dealloc_trace_data_SR_num(fline%fln_SR(i_fln))
-      end do
-!
+      call dealloc_each_FLINE_data(fline%num_fline, fline%fln_prm,      &
+     &    fline%fln_src, fline%fln_tce, fline%fline_lc,                 &
+     &    fline%fln_SR, fline%fln_bcast)           
       deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
       deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !

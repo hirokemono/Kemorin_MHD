@@ -51,6 +51,10 @@
      &                                   t_IO, particle_IO, ierr)
 !
       use gzip_file_access
+      use gz_domain_data_IO_b
+      use gz_node_geometry_IO_b
+      use gz_element_connect_IO_b
+      use gz_field_data_IO_b
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -84,8 +88,8 @@
      &                                 particle_IO%sfed)
       if(zbuf_p%ierr_zlib .ne. 0) return
 !
-      call gz_read_step_data_b(FPz_p, zbuf_p, t_IO%i_time_step,         &
-     &                         t_IO%time, t_IO%dt)
+      call gz_read_step_data_b(FPz_p, zbuf_p, id_rank,                  &
+     &                         t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
   99  continue
       call close_gzfile_b(FPz_p)
@@ -99,6 +103,10 @@
      &         (id_rank, file_name, t_IO, particle_IO)
 !
       use gzip_file_access
+      use gz_domain_data_IO_b
+      use gz_node_geometry_IO_b
+      use gz_element_connect_IO_b
+      use gz_field_data_IO_b
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -124,8 +132,8 @@
       call gz_write_scalar_in_element_b(FPz_p, particle_IO%node,        &
      &                                  particle_IO%sfed, zbuf_p)
 !
-      call gz_write_step_data_b(FPz_p, t_IO%i_time_step, t_IO%time,     &
-     &                          t_IO%dt, zbuf_p)
+      call gz_write_step_data_b(FPz_p, id_rank, t_IO%i_time_step,       &
+     &                          t_IO%time, t_IO%dt, zbuf_p)
       call close_gzfile_b(FPz_p)
 !
       end subroutine gz_write_particle_file_b

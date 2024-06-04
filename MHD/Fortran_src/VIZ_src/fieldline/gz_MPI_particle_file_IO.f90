@@ -12,7 +12,7 @@
 !!        integer, intent(in) :: num_pe, id_rank
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(time_data), intent(inout) :: t_IO
-!!        type(surf_edge_IO_file), intent(in) :: particle_IO
+!!        type(surf_edge_IO_file), intent(inout) :: particle_IO
 !!      subroutine gz_mpi_write_particle_file(file_name,                &
 !!     &                                      t_IO, particle_IO)
 !!        character(len=kchara), intent(in) :: file_name
@@ -47,11 +47,17 @@
 !
       use m_fem_mesh_labels
       use local_fline_restart_IO
+      use MPI_ascii_data_IO
+      use gz_MPI_ascii_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_element_connect_IO
+      use gz_MPI_node_geometry_IO
+      use gz_field_block_MPI_IO
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
-      type(time_data), intent(in) :: t_IO
-      type(surf_edge_IO_file), intent(in) :: particle_IO
+      type(time_data), intent(inout) :: t_IO
+      type(surf_edge_IO_file), intent(inout) :: particle_IO
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -77,8 +83,8 @@
       call gz_mpi_read_scl_in_ele(IO_param, particle_IO%node,           &
      &                            particle_IO%sfed)
 !
-      call read_field_step_gz_mpi(IO_param%id_file, IO_param%ioff_gl,   &
-     &                            t_IO)
+      call read_field_step_gz_mpi(IO_param%id_file, nprocs,             &
+     &                            IO_param%ioff_gl,t_IO)
       call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_particle_file
@@ -91,6 +97,11 @@
       use m_fem_mesh_labels
       use time_data_IO
       use local_fline_restart_IO
+      use MPI_ascii_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_element_connect_IO
+      use gz_MPI_node_geometry_IO
+      use gz_field_block_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
       type(time_data), intent(in) :: t_IO

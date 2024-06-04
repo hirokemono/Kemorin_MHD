@@ -51,6 +51,7 @@
 !
       use m_fem_mesh_labels
       use mesh_data_IO
+      use time_data_IO
       use local_fline_restart_IO
 !
       integer, intent(in) :: id_rank
@@ -98,6 +99,7 @@
 !
       use m_fem_mesh_labels
       use mesh_data_IO
+      use time_data_IO
       use local_fline_restart_IO
 !
       integer, intent(in) :: id_rank
@@ -128,7 +130,7 @@
       call write_scalar_in_element(input_file_code, particle_IO%node,   &
      &                            particle_IO%sfed)
 !
-      call write_step_data(input_file_code, t_IO)
+      call write_step_data(input_file_code, id_rank, t_IO)
 !
       close(input_file_code)
 !

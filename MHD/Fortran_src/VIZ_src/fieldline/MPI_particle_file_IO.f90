@@ -48,6 +48,12 @@
       use mesh_data_IO
       use groups_IO
       use local_fline_restart_IO
+      use MPI_domain_data_IO
+      use MPI_ascii_data_IO
+      use MPI_node_geometry_IO
+      use MPI_element_connect_IO
+      use field_data_MPI_IO
+
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
@@ -78,8 +84,8 @@
       call mpi_read_scl_in_ele(IO_param, particle_IO%node,              &
      &                         particle_IO%sfed)
 !
-      call read_field_time_mpi(IO_param%id_file, IO_param%ioff_gl,      &
-     &                         t_IO)
+      call read_field_time_mpi(IO_param%id_file, nprocs,                &
+     &                         IO_param%ioff_gl, t_IO)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_perticle_file
@@ -92,6 +98,11 @@
       use mesh_data_IO
       use time_data_IO
       use local_fline_restart_IO
+      use MPI_domain_data_IO
+      use MPI_ascii_data_IO
+      use MPI_node_geometry_IO
+      use MPI_element_connect_IO
+      use field_data_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
       type(time_data), intent(in) :: t_IO

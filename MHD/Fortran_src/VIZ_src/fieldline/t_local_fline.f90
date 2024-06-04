@@ -50,7 +50,6 @@
       private :: allocate_local_fline_data_tmp
       private :: deallocate_local_fline_conn_tmp
       private :: deallocate_local_fline_data_tmp
-      private :: raise_local_fline_data, raise_local_fline_connect
 !
 !  ---------------------------------------------------------------------
 !

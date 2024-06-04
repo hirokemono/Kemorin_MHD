@@ -69,13 +69,9 @@
      &                             geofem, para_surf,                   &
      &                             nod_fld, fline_ctls, fline)
 !
-      use calypso_mpi
-      use calypso_mpi_int
-      use m_connect_hexa_2_tetra
       use t_control_data_flines
-      use t_find_interpolate_in_ele
-      use set_fline_control
-      use set_fline_seeds_from_list
+      use m_connect_hexa_2_tetra
+      use multi_tracer_fieldline
 !
       type(time_data), intent(in) :: init_d
       type(finish_data), intent(in) :: finish_d
@@ -88,8 +84,6 @@
       type(fieldline_module), intent(inout) :: fline
 !
       integer(kind = kint) :: i_fln
-      type(FLINE_element_size) :: fln_dist
-      logical :: flag_fln_dist
 !
       fline%num_fline = fline_ctls%num_fline_ctl
       if(fline%num_fline .le. 0) return
@@ -101,77 +95,18 @@
       allocate(fline%fln_bcast(fline%num_fline))
       allocate(fline%fline_lc(fline%num_fline))
 !
-      do i_fln = 1, fline%num_fline
-        call s_set_fline_control(geofem%mesh, geofem%group, nod_fld,    &
-     &      fline_ctls%fline_ctl_struct(i_fln), fline%fln_prm(i_fln),   &
-     &      fline%fln_src(i_fln))
-      end do
-!
+      call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
+     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
       call dealloc_fline_ctl_struct(fline_ctls)
 !
-      do i_fln = 1, fline%num_fline
-        call alloc_start_point_fline(nprocs, fline%fln_prm(i_fln),      &
-     &                               fline%fln_src(i_fln))
-        call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i_fln)%fline_fields,                          &
-     &      fline%fln_tce(i_fln))
-        call alloc_broadcast_trace_data                                 &
-     &     (fline%fln_prm(i_fln)%num_each_field_line,                   &
-     &      fline%fln_prm(i_fln)%fline_fields, fline%fln_bcast(i_fln))
-        call alloc_local_fline(fline%fln_prm(i_fln)%fline_fields,       &
-     &                         fline%fline_lc(i_fln))
-        call alloc_trace_data_SR_num(fline%fln_prm(i_fln)%fline_fields, &
-     &                               fline%fln_SR(i_fln))
-        call alloc_velocity_at_previous(nod_fld%n_point,                &
-     &                                  fline%fln_src(i_fln))
-      end do
-!
-!
-      flag_fln_dist = .FALSE.
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-     &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
-      end do
-      if(flag_fln_dist) then
-        call alloc_FLINE_element_size(geofem%mesh%ele, fln_dist)
-        call cal_FLINE_element_size(geofem%mesh%node, geofem%mesh%ele,  &
-     &                              fln_dist)
-      end if
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-     &                       .eq. iflag_position_list) then
-          call alloc_init_tracer_position(fline%fln_prm(i_fln),         &
-     &                                    fline%fln_src(i_fln))
-          call init_FLINE_seed_from_list                                &
-     &       (geofem%mesh%node, geofem%mesh%ele,                        &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln), fln_dist)
-        end if
-      end do
-      if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
-     &                       .eq. iflag_position_list) then
-          call set_FLINE_seed_field_from_list                           &
-     &       (geofem%mesh%node, geofem%mesh%ele, nod_fld,               &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln))
-          call dealloc_init_tracer_position(fline%fln_src(i_fln))
-        else
-          if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
-          call s_set_fields_for_fieldline(geofem%mesh, geofem%group,    &
-     &        para_surf, nod_fld, fline%fln_prm(i_fln),                 &
-     &        fline%fln_src(i_fln), fline%fln_tce(i_fln))
-        end if
-      end do
-      
-      call input_tracer_restarts(init_d, rst_step,                      &
-     &   fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
-
-      call copy_velocity_as_previous(nod_fld, fline%num_fline,          &
-     &                               fline%fln_prm, fline%fln_src)
-!
-      if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
+      call alloc_each_FLINE_data                                        &
+     &   (fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce, &
+     &    fline%fline_lc, fline%fln_SR, fline%fln_bcast)
+      call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
+     &    fline%fln_prm, fline%fln_src, fline%fln_tce)
+      call set_FLINE_seed_fields                                        &
+     &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
+     &   fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce)
 !
       end subroutine TRACER_initialize
 !
@@ -207,8 +142,6 @@
      &    nod_fld, fline%num_fline, fline%fln_prm, fline%fln_src,       &
      &    fline%fln_tce, fline%fline_lc, fline%fln_SR, fline%fln_bcast, &
      &    m_SR)
-      call copy_velocity_as_previous(nod_fld, fline%num_fline,          &
-     &                               fline%fln_prm, fline%fln_src)
 !
       call output_tracer_restarts(time_d, finish_d, rst_step,           &
      &    fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
@@ -270,81 +203,13 @@
       if (fline%num_fline .le. 0) return
 !
 !
-      do i_fln = 1, fline%num_fline
-        call dealloc_local_fline(fline%fline_lc(i_fln))
-        call dealloc_iflag_fline_used_ele(fline%fln_prm(i_fln))
-        call dealloc_fline_starts_ctl(fline%fln_prm(i_fln))
-!
-        call dealloc_local_start_grp_item(fline%fln_src(i_fln))
-        call dealloc_start_point_fline(fline%fln_src(i_fln))
-        call dealloc_num_gl_start_fline(fline%fln_tce(i_fln))
-        call dealloc_broadcast_trace_data(fline%fln_bcast(i_fln))
-        call dealloc_trace_data_SR_num(fline%fln_SR(i_fln))
-      end do
-!
+      call dealloc_each_FLINE_data(fline%num_fline, fline%fln_prm,      &
+     &    fline%fln_src, fline%fln_tce, fline%fline_lc,                 &
+     &    fline%fln_SR, fline%fln_bcast)           
       deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
       deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !
       end subroutine TRACER_finalize
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
-     &          num_fline, fln_prm, fln_tce, fline_lc)
-!
-      type(time_data), intent(in) :: time_d
-      type(finish_data), intent(in) :: finish_d
-      type(IO_step_param), intent(in) :: rst_step
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      integer(kind = kint) :: i_fln, istep_rst
-!
-      if(output_IO_flag(time_d%i_time_step, rst_step)) then
-        istep_rst = set_IO_step(time_d%i_time_step, rst_step)
-        do i_fln = 1, num_fline
-          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
-     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-      end if
-!
-      if(finish_d%flag_terminate_by_elapsed) then
-        do i_fln = 1, num_fline
-          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
-     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-      end if
-!
-      end subroutine output_tracer_restarts
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine input_tracer_restarts(init_d, rst_step,                &
-     &          num_fline, fln_prm, fln_tce, fline_lc)
-!
-      type(time_data), intent(in) :: init_d
-      type(IO_step_param), intent(in) :: rst_step
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      integer(kind = kint) :: i_fln, istep_rst
-!
-        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
-        do i_fln = 1, num_fline
-          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
-     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
-        end do
-!
-      end subroutine input_tracer_restarts
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -379,33 +244,6 @@
       end do
 !
       end subroutine trace_particle_sets
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_velocity_as_previous(nod_fld, num_fline,          &
-     &                                     fln_prm, fln_src)
-!
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) ::      fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-!
-      integer(kind = kint) :: i_fln, i_fline
-!  
-      do i_fln = 1, num_fline
-        i_fline = fln_prm(i_fln)%iphys_4_fline
-!$omp parallel workshare
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,1)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,2)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-        fln_src(i_fln)%v_prev(1:nod_fld%n_point,3)                      &
-     &      = nod_fld%d_fld(1:nod_fld%n_point,i_fline)
-!$omp end parallel workshare
-      end do
-!
-      end subroutine copy_velocity_as_previous
 !
 !  ---------------------------------------------------------------------
 !

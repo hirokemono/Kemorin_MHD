@@ -48,6 +48,8 @@
       use m_machine_parameter
       use gz_MPI_binary_datum_IO
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
+      use gz_field_block_MPI_IO_b
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
@@ -87,6 +89,8 @@
       use m_machine_parameter
       use gz_MPI_binary_datum_IO
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
+      use gz_field_block_MPI_IO_b
 !
       character(len=kchara), intent(in) :: file_name
       type(surf_edge_IO_file), intent(in) :: particle_IO

@@ -7,9 +7,12 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_src, &
-!!     &                                 fln_tce, fline_lc,           &
+!!      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_src,   &
+!!     &                                 fln_tce, fline_lc,             &
 !!     &                                 fln_SR, fln_bcast)
+!!      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_src, &
+!!     &                                   fln_tce, fline_lc,           &
+!!     &                                   fln_SR, fln_bcast)
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
@@ -17,6 +20,7 @@
 !!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
 !!        type(broadcast_trace_data),intent(inout):: fln_bcast(num_fline)
+!!
 !!      subroutine set_fline_controls(mesh, group, nod_fld,             &
 !!     &          num_fline, fline_ctls, fln_prm, fln_src)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -41,8 +45,16 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-!!        type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+!!
+!!      subroutine output_field_lines                                   &
+!!     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
+!!        integer(kind = kint), intent(in) :: istep_fline
+!!        type(time_data), intent(in) :: time_d
+!!        integer(kind = kint), intent(in) :: num_fline
+!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!@endverbatim
 !
       module multi_tracer_fieldline
@@ -61,6 +73,7 @@
       use t_broadcast_trace_data
       use t_tracing_data
       use t_local_fline
+      use t_IO_step_parameter
       use t_ucd_data
 !
       implicit  none
@@ -103,6 +116,41 @@
 !
       end subroutine alloc_each_FLINE_data
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_src,   &
+     &                                   fln_tce, fline_lc,             &
+     &                                   fln_SR, fln_bcast)
+!
+      integer(kind = kint), intent(in) :: num_fline
+!
+      type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
+      type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+!
+      if (num_fline .le. 0) return
+!
+      do i_fln = 1, num_fline
+        call dealloc_local_fline(fline_lc(i_fln))
+        call dealloc_iflag_fline_used_ele(fln_prm(i_fln))
+        call dealloc_fline_starts_ctl(fln_prm(i_fln))
+!
+        call dealloc_local_start_grp_item(fln_src(i_fln))
+        call dealloc_start_point_fline(fln_src(i_fln))
+        call dealloc_num_gl_start_fline(fln_tce(i_fln))
+        call dealloc_broadcast_trace_data(fln_bcast(i_fln))
+        call dealloc_trace_data_SR_num(fln_SR(i_fln))
+      end do
+!
+      end subroutine dealloc_each_FLINE_data
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_controls(mesh, group, nod_fld,               &
@@ -256,6 +304,69 @@
       end do
 !
       end subroutine output_field_lines
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      use tracer_restart_file_IO
+!
+      type(time_data), intent(in) :: time_d
+      type(finish_data), intent(in) :: finish_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+      if(output_IO_flag(time_d%i_time_step, rst_step)) then
+        istep_rst = set_IO_step(time_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      if(finish_d%flag_terminate_by_elapsed) then
+        do i_fln = 1, num_fline
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
+     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+      end if
+!
+      end subroutine output_tracer_restarts
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine input_tracer_restarts(init_d, rst_step,                &
+     &          num_fline, fln_prm, fln_tce, fline_lc)
+!
+      use tracer_restart_file_IO
+!
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!
+      integer(kind = kint) :: i_fln, istep_rst
+!
+        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
+        do i_fln = 1, num_fline
+          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
+     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
+     &        fln_tce(i_fln), fline_lc(i_fln))
+        end do
+!
+      end subroutine input_tracer_restarts
 !
 !  ---------------------------------------------------------------------
 !

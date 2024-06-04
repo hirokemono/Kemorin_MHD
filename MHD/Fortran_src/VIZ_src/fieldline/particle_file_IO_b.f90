@@ -52,6 +52,11 @@
       subroutine read_particle_file_b(id_rank, file_name,               &
      &                                t_IO, particle_IO, ierr)
 !
+      use domain_data_IO_b
+      use node_geometry_IO_b
+      use element_connect_IO_b
+      use field_data_IO_b
+!
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
@@ -93,6 +98,11 @@
       subroutine write_particle_file_b                                  &
      &         (id_rank, file_name, t_IO, particle_IO, ierr)
 !
+      use domain_data_IO_b
+      use field_data_IO_b
+      use node_geometry_IO_b
+      use element_connect_IO_b
+!
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
@@ -121,7 +131,7 @@
      &                               particle_IO%sfed, bbuf_p)
       if(bbuf_p%ierr_bin .ne. 0) go to 99
 !
-      call write_step_data_b(t_IO, bbuf_p)
+      call write_step_data_b(id_rank, t_IO, bbuf_p)
 !
   99  continue
       call close_binary_file(bbuf_p)

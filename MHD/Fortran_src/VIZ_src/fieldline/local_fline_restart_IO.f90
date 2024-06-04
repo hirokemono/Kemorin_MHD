@@ -140,7 +140,7 @@
 !
       fline_lc%nnod_line_l = particle_IO%node%numnod
       if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
-        call raise_local_fline_data(fline_lc%nnod_line_l, fline_lc)
+        call raise_local_fline_data(fline_lc)
       end if
 !
 !$omp parallel do
@@ -157,7 +157,7 @@
 !
       fline_lc%nele_line_l = particle_IO%ele%numele
       if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
-         call raise_local_fline_connect(fline_lc%nele_line_l, fline_lc)
+         call raise_local_fline_connect(fline_lc)
       end if
 !
 !$omp parallel do

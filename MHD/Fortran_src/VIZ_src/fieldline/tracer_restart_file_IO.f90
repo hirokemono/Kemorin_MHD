@@ -53,6 +53,7 @@
       use field_IO_select
       use local_fline_restart_IO
       use particle_MPI_IO_select
+      use local_fline_restart_IO
 !
       integer(kind = kint), intent(in) :: i_step_w_elps
       type(field_IO_params), intent(in) :: tracer_file_prm
@@ -68,8 +69,8 @@
 !
 !
       call copy_time_step_size_data(time_d, time_IO)
-      call set_particles_to_trace_list(viz_fields, fln_tce, fline_lc)
-      call count_global_num_of_tracer(fline_lc)
+!      call set_particles_to_trace_list(viz_fields, fln_tce, fline_lc)
+!      call count_global_num_of_tracer(fline_lc)
       call copy_local_tracer_to_IO(fline_lc, particle_IO)
 
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
@@ -120,7 +121,7 @@
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_surf_geometry_data(particle_IO)
 !
-      call return_particles_to_trace_list(fline_lc, fln_tce)
+!      call return_particles_to_trace_list(fline_lc, fln_tce)
 !
       if(viz_fields%num_color_fields .le. 1) return
 !
