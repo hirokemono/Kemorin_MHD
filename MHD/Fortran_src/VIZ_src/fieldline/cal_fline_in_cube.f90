@@ -131,6 +131,9 @@
       real(kind = kreal), intent(inout) :: xi(2)
 !
       real(kind = kreal) :: xx_surf(4,4), b_ray(4)
+      real(kind = kreal) :: x4_tri(4,num_triangle)
+      real(kind = kreal) :: sol_q(4,2)
+      real(kind = kreal) :: tri_wk(4+3*3)
       integer(kind = kint) :: inod(4)
       integer(kind = kint) :: ierr
       integer(kind = kint) :: ist, ied, inc, k, ksf
@@ -165,7 +168,7 @@
         xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
         xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
         call cal_fline_to_square(x0, b_ray, xx_surf,                    &
-     &                           x4_tgt, xi, ierr)
+     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
         if(ierr.eq.zero) then
           isf_tgt = ksf
           exit
@@ -185,7 +188,7 @@
         xx_surf(1:4,3) = xx4_ele(1:4,inod(3))
         xx_surf(1:4,4) = xx4_ele(1:4,inod(4))
         call cal_fline_to_square(x0, b_ray, xx_surf,                    &
-     &                           x4_tgt, xi, ierr)
+     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
       end do
 !
       end subroutine find_line_end_in_ele_8
@@ -206,6 +209,9 @@
       real(kind = kreal), intent(inout) :: xi(2)
 !
       real(kind = kreal) :: b_ray(4)
+      real(kind = kreal) :: x4_tri(4,num_triangle)
+      real(kind = kreal) :: sol_q(4,2)
+      real(kind = kreal) :: tri_wk(4+3*3)
       integer(kind = kint) :: ierr
       integer(kind = kint) :: ist, ied, inc, k, ksf
 !
@@ -234,7 +240,7 @@
       do k = ist, ied, inc
         ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
         call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
-     &                           x4_tgt, xi, ierr)
+     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
         if(ierr.eq.zero) then
           isf_tgt = ksf
           exit
@@ -249,21 +255,22 @@
       do k = ist, ied, inc
         ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
         call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
-     &                           x4_tgt, xi, ierr)
+     &      x4_tgt, xi, x4_tri, sol_q, tri_wk, ierr)
       end do
 !
       end subroutine find_line_end_in_1ele
 !
 !------------------------------------------------------------------
 !
-      subroutine cal_fline_to_square(x0, vec, x_quad, x4_tgt, xi, ierr)
+      subroutine cal_fline_to_square(x0, vec, x_quad, x4_tgt, xi,       &
+     &          x4_tri, sol_q, tri_wk, ierr)
 !
       real(kind = kreal), intent(in) :: x_quad(4,num_linear_sf)
       real(kind = kreal), intent(in) :: vec(4), x0(4)
       real(kind = kreal), intent(inout) :: x4_tgt(4), xi(2)
-      real(kind = kreal) :: x4_tri(4,num_triangle)
-      real(kind = kreal) :: sol(4,2)
-      real(kind = kreal) :: tri_wk(4+3*3)
+      real(kind = kreal), intent(inout) :: x4_tri(4,num_triangle)
+      real(kind = kreal), intent(inout) :: sol_q(4,2)
+      real(kind = kreal), intent(inout) :: tri_wk(4+3*3)
 
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -272,11 +279,11 @@
       x4_tri(1:4,3) = x_quad(1:4,4)
 !
       call cal_filne_to_triangle(x0, vec, x4_tri, x4_tgt,               &
-     &                           sol(1,1), tri_wk(1), tri_wk(5), ierr)
+     &    sol_q(1,1), tri_wk(1), tri_wk(5), ierr)
 !
       if(ierr .eq. izero) then
-        xi(1) = -one + two*sol(1,1)
-        xi(2) = -one + two*sol(2,1)
+        xi(1) = -one + two*sol_q(1,1)
+        xi(2) = -one + two*sol_q(2,1)
         return
       end if
 !
@@ -285,10 +292,10 @@
       x4_tri(1:4,3) = x_quad(1:4,4)
 !
       call cal_filne_to_triangle(x0, vec, x4_tri, x4_tgt,               &
-     &    sol(1,2), tri_wk(1), tri_wk(5), ierr)
+     &    sol_q(1,2), tri_wk(1), tri_wk(5), ierr)
       if(ierr .eq. izero) then
-        xi(1) = one - two*sol(2,2)
-        xi(2) = one - two*sol(1,2)
+        xi(1) = one - two*sol_q(2,2)
+        xi(2) = one - two*sol_q(1,2)
       end if
 !
       end subroutine cal_fline_to_square
