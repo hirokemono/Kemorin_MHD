@@ -193,44 +193,31 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
 !
+      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in)                                    &
+     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
+!
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: x4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_field(viz_fields%ntot_color_comp)
 !
-      real(kind = kreal) :: x4_tgt_8(4), xi_surf_8(2)
-!
-      real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
+      real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
       real(kind = kreal) :: xi_surf(2), ratio
-      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
-      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in)                                    &
-     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
-      real(kind = kreal) :: v4_tgt2(4)
-      real(kind = kreal) :: c_tgt2(viz_fields%ntot_color_comp)
-      real(kind = kreal) :: x4_start2(4), ratio2
-      real(kind = kreal) :: v4_start2(4)
-      real(kind = kreal)                                                &
-     &           :: c_field2(viz_fields%ntot_org_comp)
 !
-      integer :: j, k1
-
-      x4_start2(1:4) = x4_start(1:4)
-      v4_start2(1:4) = v4_start(1:4)
-      c_field2(:) = c_field(:)
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
-     &    isf_tgt, x4_tgt_8, v4_tgt2, c_tgt2)
+     &    isf_tgt, x4_tgt_8, v4_tgt, c_tgt)
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, x4_start,             &
-     &                                  ratio2, trace_length)
-      call update_fline_position(ratio2, viz_fields%ntot_color_comp,    &
-     &                           x4_tgt_8, v4_tgt2, c_tgt2,             &
+     &                                  ratio, trace_length)
+      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
+     &                           x4_tgt_8, v4_tgt, c_tgt,               &
      &                           x4_start, v4_start, c_field)
 !
       end subroutine fline_trace_in_element
