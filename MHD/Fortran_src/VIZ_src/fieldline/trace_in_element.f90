@@ -176,8 +176,6 @@
       call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
      &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
      &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)
-      call position_on_each_ele_surfs                                   &
-     &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
 !
       call fields_on_surf_from_one_ele                                  &
      &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
@@ -188,6 +186,8 @@
 !        iflag_comm = -1
 !        return
 !      end if
+      call position_on_each_ele_surfs                                   &
+     &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
       call find_line_end_in_1ele(iflag_dir,                             &
      &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
      &    isf_tgt, x4_tgt, xi_surf)
