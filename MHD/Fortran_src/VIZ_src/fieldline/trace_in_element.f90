@@ -227,15 +227,15 @@
       v4_start2(1:4) = v4_start(1:4)
       c_field2(:) = c_field(:)
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
-     &    viz_fields, x4_ele, v4_ele, c_ele, x4_start2, v4_start,       &
+     &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
      &    isf_tgt_8, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
-     &                                  x4_tgt_8, x4_start2,            &
+     &                                  x4_tgt_8, x4_start,             &
      &                                  ratio2, trace_length)
       call update_fline_position(ratio2, viz_fields%ntot_color_comp,    &
      &                           x4_tgt_8, v4_tgt2, c_tgt2,             &
-     &                           x4_start2, v4_start2, c_field2)
+     &                           x4_start, v4_start, c_field)
 !
      
 !      if(v4_start(1) .eq. zero .and. v4_start(2).eq.zero .and. v4_start(3).eq. zero) then
@@ -245,7 +245,7 @@
       call position_on_each_ele_surfs                                   &
      &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
       call find_line_end_in_1ele(iflag_dir,                             &
-     &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
+     &    isf_org, v4_start2, x4_start2, xx4_ele_surf,                  &
      &    isf_tgt, x4_tgt, xi_surf)
 
 !
@@ -272,11 +272,11 @@
      &            - c_tgt(1:viz_fields%ntot_color_comp))
 
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
-     &                                  x4_tgt, x4_start,               &
+     &                                  x4_tgt, x4_start2,               &
      &                                  ratio, trace_length)
       call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
      &                           x4_tgt, v4_tgt, c_tgt,                 &
-     &                           x4_start, v4_start, c_field)
+     &                           x4_start2, v4_start2, c_field2)
 !
        if((ratio2 - ratio) .gt. 1.0d-13) &
      &    write(*,*) 'ratio2:',(ratio2 - ratio)
