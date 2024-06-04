@@ -121,6 +121,53 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine trace_to_element_wall                                  &
+     &         (isf_org, iflag_dir, ele, surf, viz_fields,              &
+     &          x4_ele, v4_ele, c_ele, x4_start, v4_start,              &
+     &          isf_tgt_8, x4_tgt_8, v4_tgt_8, c_tgt_8, iflag_comm)
+!
+      use coordinate_converter
+      use convert_components_4_viz
+      use cal_field_on_surf_viz
+      use cal_fline_in_cube
+      use tracer_field_interpolate
+!
+      integer(kind = kint), intent(in) :: isf_org
+      integer(kind = kint), intent(in) :: iflag_dir
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in)                                    &
+     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
+!
+      integer(kind = kint), intent(inout) :: isf_tgt_8
+      real(kind = kreal), intent(in) :: x4_start(4)
+      real(kind = kreal), intent(in) :: v4_start(4)
+!
+      real(kind = kreal), intent(inout) :: x4_tgt_8(4)
+      real(kind = kreal), intent(inout) :: v4_tgt_8(4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_tgt_8(viz_fields%ntot_color_comp)
+      integer(kind = kint), intent(inout) :: iflag_comm
+!
+      real(kind = kreal) :: xi_surf_8(2)
+!
+
+      call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
+     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
+     &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)
+!
+      call fields_on_surf_from_one_ele                                  &
+     &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
+     &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt_8, c_tgt_8)
+!
+      end subroutine trace_to_element_wall
+!
+!  ---------------------------------------------------------------------
+!
       subroutine fline_trace_in_element                                 &
      &         (trace_ratio, end_trace, trace_length,                   &
      &          iele, isf_org, iflag_dir, node, ele, surf, nod_fld,     &
@@ -173,13 +220,10 @@
 
       call fline_fields_at_one_elemnt(iele, node, ele, nod_fld,         &
      &    v_trace, viz_fields, x4_ele, v4_ele, c_ele)
-      call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
-     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
-     &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)
+      call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
+     &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
+     &    isf_tgt_8, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
 !
-      call fields_on_surf_from_one_ele                                  &
-     &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
-     &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt2, c_tgt2)
 !
      
 !      if(v4_start(1) .eq. zero .and. v4_start(2).eq.zero .and. v4_start(3).eq. zero) then
@@ -192,12 +236,6 @@
      &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
      &    isf_tgt, x4_tgt, xi_surf)
 
-!
-      go to 98
-       write(*,*) (isf_tgt_8 - isf_tgt), &
-     &           (x4_tgt_8(1:4) - x4_tgt(1:4)), ':  ',   &
-     &           (xi_surf_8(1:2) - xi_surf(1:2))
-  98  continue
 !
       if(isf_tgt .eq. 0) then
         iflag_comm = -1
