@@ -228,11 +228,7 @@
       c_field2(:) = c_field(:)
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
-     &    isf_tgt_8, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
-      if(isf_tgt .eq. 0) then
-        iflag_comm = -1
-        return
-      end if
+     &    isf_tgt, x4_tgt_8, v4_tgt2, c_tgt2, iflag_comm)
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, x4_start,             &
@@ -241,40 +237,12 @@
      &                           x4_tgt_8, v4_tgt2, c_tgt2,             &
      &                           x4_start, v4_start, c_field)
 !
-     
-!      if(v4_start(1) .eq. zero .and. v4_start(2).eq.zero .and. v4_start(3).eq. zero) then
-!        iflag_comm = -1
-!        return
-!      end if
-      call position_on_each_ele_surfs                                   &
-     &   (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-      call find_line_end_in_1ele(iflag_dir,                             &
-     &    isf_org, v4_start2, x4_start2, xx4_ele_surf,                  &
-     &    isf_tgt, x4_tgt, xi_surf)
-
-!
       if(isf_tgt .eq. 0) then
         iflag_comm = -1
         return
       end if
-!
       isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
-      call cal_field_on_surf_vect4                                      &
-     &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
-     &    isurf_end, xi_surf, v_trace, v4_tgt)
 
-      call cal_fields_on_line(isurf_end, xi_surf, x4_tgt,               &
-     &                        surf, nod_fld, viz_fields, c_tgt)
-!
-!
-       if(sum(abs(x4_tgt_8(1:4) - x4_tgt(1:4))) .gt. 1.0d-13) &
-     &     write(*,*) 'x4_tgt_8:', x4_tgt_8(1:3), ': ', x4_tgt(1:3)
-       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13)  &
-     &     write(*,*) 'v4_tgt2:', (v4_tgt2(1:3) - v4_tgt(1:3))
-       if(sum(abs(c_tgt2(:) - c_tgt(:))) .gt. 1.0d-13) &
-     &    write(*,*) 'c_tgt2:',(c_tgt2(1:viz_fields%ntot_color_comp) &
-     &            - c_tgt(1:viz_fields%ntot_color_comp))
-!
       end subroutine fline_trace_in_element
 !
 !  ---------------------------------------------------------------------
