@@ -261,16 +261,18 @@
       real(kind = kreal), intent(in) :: x_quad(4,num_linear_sf)
       real(kind = kreal), intent(in) :: vec(4), x0(4)
       real(kind = kreal), intent(inout) :: x4_tgt(4), xi(2)
+      real(kind = kreal) :: x4_tri(4,num_triangle)
+      real(kind = kreal) :: sol(4,2)
+      real(kind = kreal) :: tri_wk(4+3*3)
+
       integer(kind = kint), intent(inout) :: ierr
-!
-      real(kind = kreal) :: x4_tri(4,num_triangle), sol(4,2)
 !
       x4_tri(1:4,1) = x_quad(1:4,1)
       x4_tri(1:4,2) = x_quad(1:4,2)
       x4_tri(1:4,3) = x_quad(1:4,4)
 !
-      call cal_filne_to_triangle                                        &
-     &   (x0, vec, x4_tri, x4_tgt, sol(1,1), ierr)
+      call cal_filne_to_triangle(x0, vec, x4_tri, x4_tgt,               &
+     &                           sol(1,1), tri_wk(1), tri_wk(5), ierr)
 !
       if(ierr .eq. izero) then
         xi(1) = -one + two*sol(1,1)
@@ -282,8 +284,8 @@
       x4_tri(1:4,2) = x_quad(1:4,2)
       x4_tri(1:4,3) = x_quad(1:4,4)
 !
-      call cal_filne_to_triangle                                        &
-     &   (x0, vec, x4_tri, x4_tgt, sol(1,2), ierr)
+      call cal_filne_to_triangle(x0, vec, x4_tri, x4_tgt,               &
+     &    sol(1,2), tri_wk(1), tri_wk(5), ierr)
       if(ierr .eq. izero) then
         xi(1) = one - two*sol(2,2)
         xi(2) = one - two*sol(1,2)
@@ -293,16 +295,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine cal_filne_to_triangle(x0, v, x4_tri, x4_tgt, sol, ierr)
+      subroutine cal_filne_to_triangle(x0, v, x4_tri, x4_tgt, sol,      &
+     &                                 rvec, mat, ierr)
 !
       use solver_33_array
 !
       real(kind = kreal), intent(in) :: x4_tri(4,num_triangle)
       real(kind = kreal), intent(in) :: v(4), x0(4)
+
       real(kind = kreal), intent(inout) :: x4_tgt(4), sol(4)
+      real(kind = kreal), intent(inout) :: rvec(4)
+      real(kind = kreal), intent(inout) :: mat(3,3)
       integer(kind = kint), intent(inout) :: ierr
 !
-      real(kind = kreal) :: rvec(4), mat(3,3)
 !
 !
       rvec(1:4) = x0(1:4) - x4_tri(1:4,1)
