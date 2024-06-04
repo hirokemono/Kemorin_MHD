@@ -79,8 +79,6 @@
       type(fieldline_module), intent(inout) :: fline
 !
       integer(kind = kint) :: i_fln
-      type(FLINE_element_size) :: fln_dist
-      logical :: flag_fln_dist
 !
       fline%num_fline = fline_ctls%num_fline_ctl
       if(increment_fline .le. 0) fline%num_fline = 0
@@ -116,31 +114,57 @@
      &                               fline%fln_SR(i_fln))
       end do
 !
+      call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
+     &    fline%fln_prm, fline%fln_src, fline%fln_tce)
+!
+      end subroutine FLINE_initialize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
+     &                                      fln_prm, fln_src, fln_tce)
+!
+      use calypso_mpi
+      use calypso_mpi_int
+      use m_connect_hexa_2_tetra
+      use t_control_data_flines
+      use t_find_interpolate_in_ele
+      use set_fline_control
+      use set_fline_seeds_from_list
+!
+      type(mesh_geometry), intent(in) :: mesh
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+!
+!
+      integer(kind = kint) :: i_fln
+      type(FLINE_element_size) :: fln_dist
+      logical :: flag_fln_dist
+!
 !
       flag_fln_dist = .FALSE.
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
+      do i_fln = 1, num_fline
+        if(fln_prm(i_fln)%id_fline_seed_type                            &
      &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
       end do
       if(flag_fln_dist) then
-        call alloc_FLINE_element_size(geofem%mesh%ele, fln_dist)
-        call cal_FLINE_element_size(geofem%mesh%node, geofem%mesh%ele,  &
-     &                              fln_dist)
+        call alloc_FLINE_element_size(mesh%ele, fln_dist)
+        call cal_FLINE_element_size(mesh%node, mesh%ele, fln_dist)
       end if
-      do i_fln = 1, fline%num_fline
-        if(fline%fln_prm(i_fln)%id_fline_seed_type                      &
+      do i_fln = 1, num_fline
+        if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then
-          call alloc_init_tracer_position(fline%fln_prm(i_fln),         &
-     &                                    fline%fln_src(i_fln))
-          call init_FLINE_seed_from_list                                &
-     &       (geofem%mesh%node, geofem%mesh%ele,                        &
-     &        fline%fln_prm(i_fln), fline%fln_src(i_fln),               &
-     &        fline%fln_tce(i_fln), fln_dist)
+          call alloc_init_tracer_position(fln_prm(i_fln),               &
+     &                                    fln_src(i_fln))
+          call init_FLINE_seed_from_list(mesh%node, mesh%ele,           &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln), fln_dist)
         end if
       end do
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
 !
-      end subroutine FLINE_initialize
+      end subroutine set_fixed_FLINE_seed_points
 !
 !  ---------------------------------------------------------------------
 !
