@@ -148,7 +148,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_backward_fline_start_surf                          &
-     &         (iflag_outward_flux, iele, isf_1ele, isurf,       &
+     &         (iflag_outward_flux, iele, isf_1ele, isurf,              &
      &          ele, surf, isf_4_ele_dbl, isf_dbl_start)
 !
       type(element_data), intent(in) :: ele

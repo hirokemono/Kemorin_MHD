@@ -197,6 +197,10 @@
       end do
   99  continue
      
+!      if(v4_start(1) .eq. zero .and. v4_start(2).eq.zero .and. v4_start(3).eq. zero) then
+!        iflag_comm = -1
+!        return
+!      end if
       call find_line_end_in_1ele(iflag_dir,                             &
      &    isf_org, v4_start, x4_start, xx4_ele_surf,                    &
      &    isf_tgt, x4_tgt, xi_surf)
@@ -226,12 +230,32 @@
      &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
      &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt2, c_tgt2)
 !
-      go to 97
-       write(*,*) (v4_tgt2(1:4) - v4_tgt(1:4))
-  97  continue
-!      go to 96
-       write(*,*) (c_tgt2(1:viz_fields%ntot_color_comp) - c_tgt(1:viz_fields%ntot_color_comp))
-  96  continue
+!
+       if(sum(abs(x4_tgt_8(1:4) - x4_tgt(1:4))) .gt. 1.0d-13) &
+     &     write(*,*) 'x4_tgt_8:', x4_tgt_8(1:3), ': ', x4_tgt(1:3)
+       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13) then
+          write(*,*) 'x4_start:', x4_start(1:3), 'v4_start:', v4_start(1:3)
+          write(*,*) 'x4_tgt_8:', x4_tgt_8(1:3), ': ', x4_tgt(1:3)
+          write(*,*) 'v4_tgt2:', v4_tgt2(1:3), ': ', v4_tgt(1:3)
+          write(*,*) 'isf_tgt_8', (isf_tgt_8 - isf_tgt), &
+     &           (xi_surf_8(1:2) - xi_surf(1:2))
+         write(*,*) 'isurf',  &
+     &          ele%ie(iele,surf%node_on_sf(:,isf_tgt_8)),&
+     &          'ie_surf: ', surf%ie_surf(isurf_end,:), &
+     &          'x4_ele: ', x4_ele(1,surf%node_on_sf(:,isf_tgt_8)), &
+     &          'xx4_ele_surf: ', xx4_ele_surf(1,:,isf_tgt_8),   &
+     &          'v4_ele: ', v4_ele(1,surf%node_on_sf(:,isf_tgt_8)), &
+     &          'v_trace: ', v_trace(surf%ie_surf(isurf_end,:),1)
+    
+     end if
+       if(sum(abs(c_tgt2(:) - c_tgt(:))) .gt. 1.0d-13) &
+     &    write(*,*) 'c_tgt2:',(c_tgt2(1:viz_fields%ntot_color_comp)&
+     &            - c_tgt(1:viz_fields%ntot_color_comp))
+
+
+       if(sum(abs(v4_tgt2(1:4) - v4_tgt(1:4))) .gt. 1.0d-13) &
+     &     write(*,*) 'v4_tgt2:', v4_tgt2(1:3), ': ', v4_tgt(1:3)
+
 
 
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
