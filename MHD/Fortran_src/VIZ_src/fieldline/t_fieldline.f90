@@ -164,7 +164,6 @@
       type(fieldline_module), intent(inout) :: fline
       type(mesh_SR), intent(inout) :: m_SR
 !
-      type(time_data) :: t_IO
       integer(kind = kint) :: i_fln
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
@@ -186,32 +185,13 @@
         end if
       end do
 !
-      do i_fln = 1, fline%num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call s_const_field_lines(geofem%mesh, para_surf, nod_fld,       &
-     &      fline%fln_prm(i_fln), fline%fln_tce(i_fln),                 &
-     &      fline%fln_SR(i_fln), fline%fln_bcast(i_fln),                &
-     &      fline%fline_lc(i_fln), m_SR)
-!
-        call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_fieldline_to_IO                                 &
-     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),   &
-     &      fline%fline_ucd)
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
-     &      fline%fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
-!
-        call copy_local_particles_to_IO                                 &
-     &     (fline%fln_prm(i_fln)%fline_fields, fline%fline_lc(i_fln),   &
-     &      fline%fline_ucd)
-        fline%fln_prm(i_fln)%fline_file_IO%iflag_format = iflag_sgl_ucd
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fline%fln_prm(i_fln)%fline_file_IO, t_IO,      &
-     &      fline%fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline%fline_ucd)
-        call calypso_mpi_barrier
-      end do
+      if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
+      call s_const_field_lines(geofem%mesh, para_surf, nod_fld,         &
+     &    fline%num_fline, fline%fln_prm, fline%fln_tce,                &
+     &    fline%fln_SR, fline%fln_bcast, fline%fline_lc, m_SR)
+      if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
+      call output_field_lines(istep_fline, time_d, fline%num_fline,     &
+     &                         fline%fln_prm, fline%fline_lc)
 !
       end subroutine FLINE_visualize
 !
