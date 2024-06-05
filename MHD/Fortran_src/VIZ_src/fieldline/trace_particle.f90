@@ -145,6 +145,8 @@
 !
       subroutine return_to_trace_list(fln_prm, fline_lc, fln_tce)
 !
+      use calypso_mpi_int
+!
       type(fieldline_paramter), intent(in) :: fln_prm
       type(local_fieldline), intent(in) :: fline_lc
       type(each_fieldline_trace), intent(inout) :: fln_tce
