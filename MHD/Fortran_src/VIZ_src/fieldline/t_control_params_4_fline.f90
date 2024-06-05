@@ -85,6 +85,7 @@
       integer(kind = kint), parameter :: iflag_surface_list =    1
       integer(kind = kint), parameter :: iflag_position_list =   2
       integer(kind = kint), parameter :: iflag_spray_in_domain = 3
+      integer(kind = kint), parameter :: iflag_read_reastart =  10
 !
 !
       integer(kind = kint), parameter :: iflag_backward_trace = -1

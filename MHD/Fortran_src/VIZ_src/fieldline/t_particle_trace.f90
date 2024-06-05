@@ -100,12 +100,12 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(tracer_module), intent(inout) :: tracer
 !
-      integer(kind = kint) :: i_fln
 !
       tracer%num_fline = fline_ctls%num_fline_ctl
       if(tracer%num_fline .le. 0) return
 !
       call alloc_TRACER_modules(tracer)
+
       call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
      &    tracer%num_fline, fline_ctls, tracer%fln_prm, tracer%fln_src)
       call dealloc_fline_ctl_struct(fline_ctls)
@@ -113,12 +113,21 @@
       call alloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,      &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast)
+
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_fline,   &
      &    tracer%fln_prm, tracer%fln_src, tracer%fln_tce)
+
       call set_FLINE_seed_fields                                        &
      &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
      &    tracer%num_fline, tracer%fln_prm, tracer%fln_src,             &
      &    tracer%fln_tce)
+!
+      call input_tracer_restarts(init_d, rst_step, tracer%num_fline,    &
+     &    tracer%fln_prm, tracer%fln_tce, tracer%fline_lc)
+!
+!
+
+!
 !
       end subroutine TRACER_initialize
 !
@@ -146,7 +155,6 @@
       type(tracer_module), intent(inout) :: tracer
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_fln
 !  
       call trace_particle_sets(time_d, geofem%mesh, para_surf,          &
      &    nod_fld, tracer%num_fline, tracer%fln_prm,                    &
@@ -218,7 +226,6 @@
 !
       type(tracer_module), intent(inout) :: tracer
 !
-      integer(kind = kint) :: i_fln
 !
       if (tracer%num_fline .le. 0) return
       call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
@@ -255,7 +262,7 @@
       integer(kind = kint) :: i_fln
 !  
       do i_fln = 1, num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_trace_particle', i_fln
+        if (iflag_debug.eq.1) write(*,*) 's_trace_particle start', i_fln
         call s_trace_particle(time_d%dt, mesh, para_surf, nod_fld,      &
      &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
      &      fln_SR(i_fln), fln_bcast(i_fln), fln_src(i_fln)%v_prev,     &
