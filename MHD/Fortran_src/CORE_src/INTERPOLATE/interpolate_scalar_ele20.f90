@@ -8,6 +8,14 @@
 !> @brief Interpolation for scaslar in quardorature element
 !!
 !!@verbatim
+!!      subroutine single_interpolate_scalar_ele20(numnod, numele, ie,  &
+!!     &          v_org, iele_gauss, xi_gauss, scalar)
+!!        integer (kind = kint), intent(in) :: numnod, numele
+!!        integer (kind = kint), intent(in) :: ie(numele,20)
+!!        integer (kind = kint), intent(in) :: iele_gauss
+!!        real (kind=kreal), intent(in) :: xi_gauss(3)
+!!        real (kind=kreal), intent(in) :: v_org(numnod)
+!!        real (kind=kreal), intent(inout) :: scalar
 !!      subroutine s_interpolate_scalar_ele20(np_smp, numnod,           &
 !!     &          numele, ie, v_org, istack_smp, num_points, iele_gauss,&
 !!     &          xi_gauss, vect)
@@ -27,6 +35,109 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine single_interpolate_scalar_ele20(numnod, numele, ie,    &
+     &          v_org, iele_gauss, xi_gauss, scalar)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: numnod, numele
+      integer (kind = kint), intent(in) :: ie(numele,20)
+      integer (kind = kint), intent(in) :: iele_gauss
+      real (kind=kreal), intent(in) :: xi_gauss(3)
+      real (kind=kreal), intent(in) :: v_org(numnod)
+!
+      real (kind=kreal), intent(inout) :: scalar
+!
+      real (kind=kreal) :: xi, ei, zi
+      real (kind=kreal) :: xi_nega, ei_nega, zi_nega
+      real (kind=kreal) :: xi_posi, ei_posi, zi_posi
+      real (kind=kreal) :: xi_sqre, ei_sqre, zi_sqre
+!
+      real (kind=kreal) :: an1, an2, an3, an4, an5, an6, an7, an8
+      real (kind=kreal) :: an9,  an10, an11, an12, an13, an14
+      real (kind=kreal) :: an15, an16, an17, an18, an19, an20
+!
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
+      integer (kind = kint) :: i9, i10, i11, i12, i13, i14, i15, i16
+      integer (kind = kint) :: i17, i18, i19, i20
+!
+          i1 = ie(iele_gauss,1)
+          i2 = ie(iele_gauss,2)
+          i3 = ie(iele_gauss,3)
+          i4 = ie(iele_gauss,4)
+          i5 = ie(iele_gauss,5)
+          i6 = ie(iele_gauss,6)
+          i7 = ie(iele_gauss,7)
+          i8 = ie(iele_gauss,8)
+          i9  = ie(iele_gauss,9 )
+          i10 = ie(iele_gauss,10)
+          i11 = ie(iele_gauss,11)
+          i12 = ie(iele_gauss,12)
+          i13 = ie(iele_gauss,13)
+          i14 = ie(iele_gauss,14)
+          i15 = ie(iele_gauss,15)
+          i16 = ie(iele_gauss,16)
+          i17 = ie(iele_gauss,17)
+          i18 = ie(iele_gauss,18)
+          i19 = ie(iele_gauss,19)
+          i20 = ie(iele_gauss,20)
+!
+          xi = xi_gauss(1)
+          ei = xi_gauss(2)
+          zi = xi_gauss(3)
+!
+          xi_nega = one - xi
+          xi_posi = one + xi
+          xi_sqre = one - xi * xi
+!
+          ei_nega = one - ei
+          ei_posi = one + ei
+          ei_sqre = one - ei * ei
+!
+          zi_nega = one - zi
+          zi_posi = one + zi
+          zi_sqre = one - zi * zi
+!
+          an1  = r125 * xi_nega * ei_nega * zi_nega * (-xi-ei-zi-two)
+          an2  = r125 * xi_posi * ei_nega * zi_nega * ( xi-ei-zi-two)
+          an3  = r125 * xi_posi * ei_posi * zi_nega * ( xi+ei-zi-two)
+          an4  = r125 * xi_nega * ei_posi * zi_nega * (-xi+ei-zi-two)
+          an5  = r125 * xi_nega * ei_nega * zi_posi * (-xi-ei+zi-two)
+          an6  = r125 * xi_posi * ei_nega * zi_posi * ( xi-ei+zi-two)
+          an7  = r125 * xi_posi * ei_posi * zi_posi * ( xi+ei+zi-two)
+          an8  = r125 * xi_nega * ei_posi * zi_posi * (-xi+ei+zi-two)
+!
+          an9  =  quad * xi_sqre * ei_nega * zi_nega
+          an10 =  quad * xi_posi * ei_sqre * zi_nega
+          an11 =  quad * xi_sqre * ei_posi * zi_nega
+          an12 =  quad * xi_nega * ei_sqre * zi_nega
+!
+          an13 =  quad * xi_sqre * ei_nega * zi_posi
+          an14 =  quad * xi_posi * ei_sqre * zi_posi
+          an15 =  quad * xi_sqre * ei_posi * zi_posi
+          an16 =  quad * xi_nega * ei_sqre * zi_posi
+!
+          an17 =  quad * xi_nega * ei_nega * zi_sqre
+          an18 =  quad * xi_posi * ei_nega * zi_sqre
+          an19 =  quad * xi_posi * ei_posi * zi_sqre
+          an20 =  quad * xi_nega * ei_posi * zi_sqre
+!
+!
+          scalar     =  an1  * v_org(i1 ) + an2  * v_org(i2 )           &
+     &                + an3  * v_org(i3 ) + an4  * v_org(i4 )           &
+     &                + an5  * v_org(i5 ) + an6  * v_org(i6 )           &
+     &                + an7  * v_org(i7 ) + an8  * v_org(i8 )           &
+     &                + an9  * v_org(i9 ) + an10 * v_org(i10)           &
+     &                + an11 * v_org(i11) + an12 * v_org(i12)           &
+     &                + an13 * v_org(i13) + an14 * v_org(i14)           &
+     &                + an15 * v_org(i15) + an16 * v_org(i16)           &
+     &                + an17 * v_org(i17) + an18 * v_org(i18)           &
+     &                + an19 * v_org(i19) + an20 * v_org(i20)
+!
+      end subroutine single_interpolate_scalar_ele20
 !
 ! ----------------------------------------------------------------------
 !

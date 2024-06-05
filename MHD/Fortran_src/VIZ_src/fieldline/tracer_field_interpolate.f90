@@ -114,8 +114,6 @@
       real(kind = kreal) :: r(1), theta(1), phi(1)
       real(kind = kreal) :: a_r(1), rs(1), a_rs(1)
       real(kind = kreal) :: c_xyz(9)
-      integer(kind = kint), parameter                                   &
-     &                   :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
       integer(kind = kint), parameter :: istack_single(0:1) = (/0,1/)
 !
       integer(kind = kint) :: inum, ifield, ist, jst, nd
@@ -218,8 +216,6 @@
       real(kind = kreal) :: r(1), theta(1), phi(1)
       real(kind = kreal) :: a_r(1), rs(1), a_rs(1)
       real(kind = kreal) :: c_xyz(9)
-      integer(kind = kint), parameter                                   &
-     &                   :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
       integer(kind = kint), parameter :: istack_single(0:1) = (/0,1/)
 !
       integer(kind = kint) :: inum, ifield, ist, jst, nd
@@ -235,10 +231,9 @@
           ist = nod_fld%istack_component(ifield-1)
           jst = viz_fields%istack_color_field(inum-1)
           do nd = 1, viz_fields%ncomp_org_color_field(inum)
-            call s_sel_interpolate_scalar_ele                           &
-     &         (1, nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie, &
-     &          nod_fld%d_fld(1,ist+nd), istack_single, ione,           &
-     &          iele, xi_cube, c_xyz(nd))
+            call sel_sgl_interpolate_scalar_ele                         &
+     &         (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,    &
+     &          nod_fld%d_fld(1,ist+nd), iele(1), xi_cube, c_xyz(nd))
           end do
           call convert_comps_4_viz                                      &
      &       (ione, istack_single, xyz(1), r, a_r, rs, a_rs,            &

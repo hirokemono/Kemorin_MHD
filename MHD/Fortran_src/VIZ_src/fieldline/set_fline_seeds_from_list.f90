@@ -364,23 +364,19 @@
       real(kind = kreal), intent(inout)                                 &
      &         :: c_fline_start(fline_fields%ntot_color_comp)
 !
-      integer(kind = kint) :: istack_tbl_wtype_smp(0:4) = (/0,0,0,0,1/)
 !      real(kind = kreal) :: position_check(3)
 ! 
-      call s_sel_interpolate_scalar_ele                                 &
-     &   (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,           &
-     &    nod_fld%d_fld(1,iphys_4_fline),                               &
-     &    istack_tbl_wtype_smp(3), ione, iele_surf_start_fline(1),      &
+      call sel_sgl_interpolate_scalar_ele                               &
+     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &    nod_fld%d_fld(1,iphys_4_fline), iele_surf_start_fline(1),     &
      &    xi_surf_start_fline, v_fline_start(1))
-      call s_sel_interpolate_scalar_ele                                 &
-     &   (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,           &
-     &    nod_fld%d_fld(1,iphys_4_fline+1),                             &
-     &    istack_tbl_wtype_smp(3), ione, iele_surf_start_fline(1),      &
+      call sel_sgl_interpolate_scalar_ele                               &
+     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &    nod_fld%d_fld(1,iphys_4_fline+1), iele_surf_start_fline(1),   &
      &    xi_surf_start_fline, v_fline_start(2))
-      call s_sel_interpolate_scalar_ele                                 &
-     &   (1, node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,           &
-     &    nod_fld%d_fld(1,iphys_4_fline+2),                             &
-     &    istack_tbl_wtype_smp(3), ione, iele_surf_start_fline(1),      &
+      call sel_sgl_interpolate_scalar_ele                               &
+     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &    nod_fld%d_fld(1,iphys_4_fline+2), iele_surf_start_fline(1),   &
      &    xi_surf_start_fline, v_fline_start(3))
       v_fline_start(4) = one
 !

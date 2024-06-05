@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine itp_matvec_scalar_edge2(np_smp, numnod, v_org,       &
 !!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!      subroutine single_interpolate_scalar_ele8(numnod, numele, ie,   &
+!!     &          v_org, iele_gauss, xi_gauss, scalar)
 !!      subroutine s_interpolate_scalar_ele8(np_smp, numnod, numele, ie,&
 !!     &          v_org, istack_smp, num_points, iele_gauss,            &
 !!     &          xi_gauss, vect)
@@ -70,6 +72,66 @@
 !$omp end parallel do
 !
       end subroutine itp_matvec_scalar_edge2
+!
+! ----------------------------------------------------------------------
+!
+      subroutine single_interpolate_scalar_ele8(numnod, numele, ie,     &
+     &          v_org, iele_gauss, xi_gauss, scalar)
+!
+      integer (kind = kint), intent(in) :: numnod, numele
+      integer (kind = kint), intent(in) :: ie(numele,8)
+      integer (kind = kint), intent(in) :: iele_gauss
+      real (kind=kreal), intent(in) :: xi_gauss(3)
+      real (kind=kreal), intent(in) :: v_org(numnod)
+!
+      real (kind=kreal), intent(inout) :: scalar
+!
+      real (kind=kreal) :: xi, ei, zi
+      real (kind=kreal) :: xi_nega, ei_nega, zi_nega
+      real (kind=kreal) :: xi_posi, ei_posi, zi_posi
+!
+      real (kind=kreal) :: an1, an2, an3, an4, an5, an6, an7, an8
+!
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
+!
+          i1 = ie(iele_gauss,1)
+          i2 = ie(iele_gauss,2)
+          i3 = ie(iele_gauss,3)
+          i4 = ie(iele_gauss,4)
+          i5 = ie(iele_gauss,5)
+          i6 = ie(iele_gauss,6)
+          i7 = ie(iele_gauss,7)
+          i8 = ie(iele_gauss,8)
+!
+          xi = xi_gauss(1)
+          ei = xi_gauss(2)
+          zi = xi_gauss(3)
+!
+          xi_nega = one - xi
+          xi_posi = one + xi
+!
+          ei_nega = one - ei
+          ei_posi = one + ei
+!
+          zi_nega = one - zi
+          zi_posi = one + zi
+!
+          an1  = r125 * xi_nega * ei_nega * zi_nega
+          an2  = r125 * xi_posi * ei_nega * zi_nega
+          an3  = r125 * xi_posi * ei_posi * zi_nega
+          an4  = r125 * xi_nega * ei_posi * zi_nega
+          an5  = r125 * xi_nega * ei_nega * zi_posi
+          an6  = r125 * xi_posi * ei_nega * zi_posi
+          an7  = r125 * xi_posi * ei_posi * zi_posi
+          an8  = r125 * xi_nega * ei_posi * zi_posi
+!
+!
+          scalar     =  an1  * v_org(i1 ) + an2  * v_org(i2 )           &
+     &                + an3  * v_org(i3 ) + an4  * v_org(i4 )           &
+     &                + an5  * v_org(i5 ) + an6  * v_org(i6 )           &
+     &                + an7  * v_org(i7 ) + an8  * v_org(i8 )
+!
+      end subroutine single_interpolate_scalar_ele8
 !
 ! ----------------------------------------------------------------------
 !
