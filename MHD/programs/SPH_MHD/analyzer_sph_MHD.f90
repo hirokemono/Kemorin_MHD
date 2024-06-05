@@ -105,6 +105,15 @@
       &  (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
       &   SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
 !
+      if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
+        call SPH_to_FEM_bridge_SGS_MHD                                  &
+     &     (SVIZ_m%SPH_SGS%SGS_par, SSMHDs%SPH_MHD%sph,                 &
+     &      SSMHDs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS%trns_WK_LES,          &
+     &      SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
+      call FEM_analyze_sph_SGS_MHD(SSMHDs%MHD_files, SSMHDs%MHD_step,   &
+     &    SSMHDs%MHD_IO, SVIZ_m%FEM_DAT, SSMHDs%m_SR)
+!
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call TRACER_initialize                                            &
      &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
@@ -115,8 +124,8 @@
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(SSMHDs%MHD_step%viz_step,                    &
-     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM, &
+      call init_visualize(SSMHDs%MHD_step%viz_step,                     &
+     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,  &
      &    add_SSMHD_ctl1%viz_ctls, SVIZ_m%VIZs, SSMHDs%m_SR)
       call init_zonal_mean_vizs                                         &
      &   (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
