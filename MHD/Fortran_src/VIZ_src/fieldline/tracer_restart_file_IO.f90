@@ -7,9 +7,9 @@
 !>@brief  Choose mesh file to read
 !!
 !!@verbatim
-!!      subroutine output_tracer_restart(tracer_file_prm,               &
+!!      subroutine output_tracer_restart(tracer_file_prm, istep_rst,    &
 !!     &         time_d, rst_step, viz_fields, fln_tce, fline_lc)
-!!        integer(kind = kint), intent(in) :: i_step
+!!        integer(kind = kint), intent(in) :: istep_rst
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
@@ -46,7 +46,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_tracer_restart(tracer_file_prm, i_step_w_elps,  &
+      subroutine output_tracer_restart(tracer_file_prm, istep_rst,      &
      &          time_d, viz_fields, fln_tce, fline_lc)
 !
       use set_sph_restart_IO
@@ -56,7 +56,7 @@
       use local_fline_restart_IO
       use const_global_element_ids
 !
-      integer(kind = kint), intent(in) :: i_step_w_elps
+      integer(kind = kint), intent(in) :: istep_rst
       type(field_IO_params), intent(in) :: tracer_file_prm
       type(time_data), intent(in) :: time_d
       type(ctl_params_viz_fields), intent(in) :: viz_fields
@@ -66,7 +66,6 @@
       type(surf_edge_IO_file) :: particle_IO
       type(field_IO) :: fld_IO
       type(time_data) :: time_IO
-      integer(kind = kint) :: istep_rst
 !
 !
       call copy_time_step_size_data(time_d, time_IO)
