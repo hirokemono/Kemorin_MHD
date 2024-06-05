@@ -13,7 +13,7 @@
 !!     &          x4_start, v4_start, c_field, dt, iflag_comm)
 !!      subroutine fline_trace_in_element                               &
 !!     &         (trace_ratio, end_trace, trace_length,                 &
-!!     &          iele, isf_org, iflag_dir, node, surf, nod_fld,        &
+!!     &          isf_org, iflag_dir, ele, surf,                        &
 !!     &          v_trace, viz_fields, isurf_end, isf_tgt,              &
 !!     &          x4_start, v4_start, c_field, iflag_comm)
 !!        real(kind = kreal), intent(in) :: trace_ratio
@@ -58,7 +58,7 @@
 !
       subroutine s_trace_in_element                                     &
      &         (trace_ratio, isf_org, node, ele, surf, viz_fields,      &
-     &          x4_ele, v4_ele, c_ele,               &
+     &          x4_ele, v4_ele, c_ele,                                  &
      &          isf_tgt, x4_start, v4_start, c_field, dt)
 !
       use coordinate_converter
@@ -91,12 +91,11 @@
 !
       real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
-      real(kind = kreal) :: xi_surf(2), ratio
-      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+      real(kind = kreal) :: ratio
 !
 !
       if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
-        isf_tgt = -1
+        isf_tgt = -3
         return
       end if
 !
@@ -120,7 +119,7 @@
 !
       subroutine fline_trace_in_element                                 &
      &         (trace_ratio, end_trace, trace_length,                   &
-     &          isf_org, iflag_dir, node, ele, surf, nod_fld,           &
+     &          isf_org, iflag_dir, ele, surf,                          &
      &          viz_fields, x4_ele, v4_ele, c_ele,                      &
      &          isf_tgt, x4_start, v4_start, c_field)
 !
@@ -137,10 +136,8 @@
       integer(kind = kint), intent(in) :: isf_org
       integer(kind = kint), intent(in) :: iflag_dir
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
@@ -160,7 +157,7 @@
 !
 !
       if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
-        isf_tgt = -1
+        isf_tgt = -3
         return
       end if
 !
@@ -217,7 +214,7 @@
 !
       call fields_on_surf_from_one_ele                                  &
      &   (isf_tgt_8, xi_surf_8, ele, surf, viz_fields,                  &
-     &    x4_ele, v4_ele, c_ele, x4_tgt_8, v4_tgt_8, c_tgt_8)
+     &    v4_ele, c_ele, x4_tgt_8, v4_tgt_8, c_tgt_8)
 !
       end subroutine trace_to_element_wall
 !
@@ -359,7 +356,7 @@
 !
       subroutine fields_on_surf_from_one_ele                            &
      &         (isf_tgt, xi_surf, ele, surf, viz_fields,                &
-     &          x4_ele, v4_ele, c_ele, x4_tgt, v4_tgt, c_tgt)
+     &          v4_ele, c_ele, x4_tgt, v4_tgt, c_tgt)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -371,7 +368,6 @@
       type(surface_data), intent(in) :: surf
       type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
-      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in)                                    &
      &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)

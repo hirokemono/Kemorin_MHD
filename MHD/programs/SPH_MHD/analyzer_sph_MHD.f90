@@ -184,9 +184,9 @@
 !*  -----------  Send field data to FEM mesh --------------
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-        if(lead_field_data_flag(SVIZ_m%tracers%num_fline .gt. 0) then
+        if(SVIZ_m%tracers%num_fline .gt. 0) then
           call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,         &
-     &        SSMHDs%SPH_MHD%comm, SSMHDs%SPH_MHD%fld,                  &
+     &        SSMHDs%SPH_MHD%comms, SSMHDs%SPH_MHD%fld,                 &
      &        SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK%trns_MHD,    &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SSMHDs%m_SR)
         end if

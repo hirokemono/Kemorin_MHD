@@ -108,7 +108,7 @@
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
      &      isf_tgt, x4_start, v4_start, c_field, dt)
         if(isf_tgt .lt. 0) then
-          iflag_comm = 0
+          iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
      &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
@@ -125,7 +125,7 @@
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
      &      isf_tgt, x4_start, v4_start, c_field, dt)
         if(isf_tgt .lt. 0) then
-          iflag_comm = 0
+          iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
