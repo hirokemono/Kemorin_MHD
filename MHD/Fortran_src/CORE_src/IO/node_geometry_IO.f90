@@ -110,7 +110,7 @@
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
       do i = 1, nod_IO%numnod
-        write(id_file,'(1p3e23.15)') sfed_IO%ele_scalar(i)
+        write(id_file,'(1p3E25.15e3)') sfed_IO%ele_scalar(i)
       end do
 !
       end subroutine write_scalar_in_element
@@ -127,7 +127,7 @@
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
       do i = 1, nod_IO%numnod
-        write(id_file,'(1p3e23.15)') sfed_IO%ele_vector(i,1:3)
+        write(id_file,'(1p3E25.15e3)') sfed_IO%ele_vector(i,1:3)
       end do
 !
       end subroutine write_vector_in_element

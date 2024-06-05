@@ -349,6 +349,7 @@
       subroutine input_tracer_restarts(init_d, rst_step,                &
      &          num_fline, fln_prm, fln_tce, fline_lc)
 !
+      use trace_particle
       use tracer_restart_file_IO
 !
       type(time_data), intent(in) :: init_d
@@ -363,55 +364,24 @@
 !
       ntot_comp = fln_prm(i_fln)%fline_fields%ntot_color_comp
 !
-        istep_rst = set_IO_step(init_d%i_time_step, rst_step)
-        write(*,*) 'istep_rst', istep_rst, init_d%i_time_step
-        do i_fln = 1, num_fline
-          fline_lc(i_fln)%nnod_line_l     &
-     &          = fln_tce(i_fln)%num_current_fline
-          fline_lc(i_fln)%nele_line_l     &
-     &          = fln_tce(i_fln)%num_current_fline
-          if(fline_lc(i_fln)%nele_line_l &
-     &          .ge. fline_lc(i_fln)%nele_line_buf) then
-            call raise_local_fline_connect(fline_lc(i_fln))
-          end if
-          if(fline_lc(i_fln)%nnod_line_l   &
-     &         .ge. fline_lc(i_fln)%nnod_line_buf) then
-            call raise_local_fline_data(fline_lc(i_fln))
-          end if
+      istep_rst = set_IO_step(init_d%i_time_step, rst_step)
+      write(*,*) 'istep_rst', istep_rst, init_d%i_time_step
+      do i_fln = 1, num_fline
 !
-          write(*,*) my_rank, 'num_current_fline', &
-     &         fln_tce(i_fln)%num_current_fline,    &
-     &         size(fline_lc(i_fln)%xx_line_l)
-          write(*,*) my_rank, 'istack_current_fline', &
-     &         fln_tce(i_fln)%istack_current_fline,    &
-     &         size(fline_lc(i_fln)%iedge_line_l)
-!
-          do i = 1, fln_tce(i_fln)%num_current_fline
-            fline_lc(i_fln)%xx_line_l(1:3,i)   &
-     &        = fln_tce(i_fln)%xx_fline_start(1:3,i)
-            fline_lc(i_fln)%v_line_l(1:3,i)   &
-     &        = fln_tce(i_fln)%v_fline_start(1:3,i)
-            fline_lc(i_fln)%col_line_l(1:ntot_comp,i)   &
-     &        = fln_tce(i_fln)%c_fline_start(1:ntot_comp,i)
-!
-            fline_lc(i_fln)%iedge_line_l(1,i)   &
-     &        = fln_tce(i_fln)%isf_dbl_start(2,i)
-            fline_lc(i_fln)%iedge_line_l(2,i)   &
-     &        = fln_tce(i_fln)%isf_dbl_start(3,i)
-          end do
-!
-          if(fln_prm(i_fln)%id_fline_seed_type                          &
+        if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_read_reastart) then
-            call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,      &
+          call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fln_tce(i_fln), fline_lc(i_fln))
-          else
-            call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,     &
+        else
+          call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
+     &                                 fline_lc(i_fln))
+          call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fln_tce(i_fln), fline_lc(i_fln))
-          endif
-        end do
-        write(*,*) 'restart output done'
+        end if
+      end do
+      write(*,*) 'restart output done'
 !
       end subroutine input_tracer_restarts
 !

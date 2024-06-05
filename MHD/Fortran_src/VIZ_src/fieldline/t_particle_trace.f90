@@ -125,10 +125,6 @@
       call input_tracer_restarts(init_d, rst_step, tracer%num_fline,    &
      &    tracer%fln_prm, tracer%fln_tce, tracer%fline_lc)
 !
-!
-
-!
-!
       end subroutine TRACER_initialize
 !
 !  ---------------------------------------------------------------------

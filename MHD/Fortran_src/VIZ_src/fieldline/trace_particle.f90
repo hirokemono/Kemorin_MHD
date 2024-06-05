@@ -73,6 +73,7 @@
 !
 !
       dt = dt_init
+      call return_to_trace_list(fln_prm, fline_lc, fln_tce)
       call reset_fline_start(fline_lc)
       do
         do inum = 1, fln_tce%num_current_fline
@@ -105,8 +106,6 @@
         end if
         if(nline .le. 0) exit
       end do
-!
-      call return_to_trace_list(fln_prm, fline_lc, fln_tce)
 !
       end subroutine s_trace_particle
 !
@@ -150,13 +149,25 @@
       type(local_fieldline), intent(in) :: fline_lc
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, ntot_comp
+      integer(kind = kint) :: i, ip, ntot_comp
 !
+      ntot_comp = fln_prm%fline_fields%ntot_color_comp
       fln_tce%num_current_fline = fline_lc%nnod_line_l
+!
+      fln_tce%istack_current_fline(0) = 0
+      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
+     &                                 fln_tce%istack_current_fline(1))
+!
+      do ip = 1, nprocs
+        fln_tce%istack_current_fline(ip)                                &
+     &                   = fln_tce%istack_current_fline(ip-1)           &
+     &                    + fln_tce%istack_current_fline(ip)
+      end do
+!
+!
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
-     
-      ntot_comp = fln_prm%fline_fields%ntot_color_comp
+!
       do i = 1, fln_tce%num_current_fline
         fln_tce%xx_fline_start(1:3,i) = fline_lc%xx_line_l(1:3,i)
         fln_tce%v_fline_start(1:3,i) = fline_lc%v_line_l(1:3,i)
@@ -169,6 +180,40 @@
       end do
 !
       end subroutine return_to_trace_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine local_tracer_from_seeds(fln_prm, fln_tce, fline_lc)
+!
+      type(fieldline_paramter), intent(in) :: fln_prm
+      type(each_fieldline_trace), intent(in) :: fln_tce
+      type(local_fieldline), intent(inout) :: fline_lc
+!
+      integer(kind = kint) :: i, ntot_comp
+!
+!
+      ntot_comp = fln_prm%fline_fields%ntot_color_comp
+!
+      fline_lc%nnod_line_l = fln_tce%num_current_fline
+      fline_lc%nele_line_l = fln_tce%num_current_fline
+      if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
+        call raise_local_fline_connect(fline_lc)
+      end if
+      if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
+        call raise_local_fline_data(fline_lc)
+      end if
+!
+      do i = 1, fln_tce%num_current_fline
+        fline_lc%xx_line_l(1:3,i) = fln_tce%xx_fline_start(1:3,i)
+        fline_lc%v_line_l(1:3,i)  = fln_tce%v_fline_start(1:3,i)
+        fline_lc%col_line_l(1:ntot_comp,i)                              &
+     &       = fln_tce%c_fline_start(1:ntot_comp,i)
+!
+        fline_lc%iedge_line_l(1,i) = fln_tce%isf_dbl_start(2,i)
+        fline_lc%iedge_line_l(2,i) = fln_tce%isf_dbl_start(3,i)
+      end do
+!
+      end subroutine local_tracer_from_seeds
 !
 !  ---------------------------------------------------------------------
 !

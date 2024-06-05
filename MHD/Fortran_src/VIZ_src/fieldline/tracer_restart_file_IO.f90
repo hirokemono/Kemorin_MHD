@@ -78,14 +78,19 @@
       call dealloc_surf_geometry_data(particle_IO)
       call dealloc_ele_connect(particle_IO%ele)
 !
+!
       if(viz_fields%num_color_fields .le. 1) return
 !
       call field_on_local_tracer_to_IO(viz_fields, fline_lc, fld_IO)
+!
+      call alloc_merged_field_stack(nprocs, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
       call sel_write_step_FEM_field_file                                &
      &   (istep_rst, tracer_file_prm, time_IO, fld_IO)
+!
+      call dealloc_merged_field_stack(fld_IO)
       call dealloc_phys_data_IO(fld_IO)
       call dealloc_phys_name_IO(fld_IO)
 !
@@ -134,7 +139,7 @@
       call dealloc_phys_data_IO(fld_IO)
       call dealloc_phys_name_IO(fld_IO)
 !
-      if(my_rank .ne. 0) return 
+      if(my_rank .ne. 0) return
       if(init_d%i_time_step .ne. time_IO%i_time_step) then
         write(*,*) 'Time step in particle restart does not match ',     &
      &             'with field restaart data. But ignore.'

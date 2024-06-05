@@ -110,19 +110,20 @@
 !
       integer(kind = kint) :: inod
 !
-      write(id_file,*) '#'
-      write(id_file,*) '#  number of domain of target'
-      write(id_file,*) '#   domain IDs'
-      write(id_file,*) '#'
+      write(id_file,'(a)') '#'
+      write(id_file,'(a)') '#  number of domain of target'
+      write(id_file,'(a)') '#   domain IDs'
+      write(id_file,'(a)') '#'
 !
       write(id_file,'(i16)') itp_dest%num_org_domain
       write(id_file,'(10i16)')                                          &
      &       itp_dest%id_org_domain(1:itp_dest%num_org_domain)
 !
-      write(id_file,*) '#'
-      write(id_file,*) '#  node, domain for original, belonged element'
-      write(id_file,*) '#   coefficients'
-      write(id_file,*) '#'
+      write(id_file,'(a)') '#'
+      write(id_file,'(a)')                                              &
+     &                 '#  node, domain for original, belonged element'
+      write(id_file,'(a)') '#   coefficients'
+      write(id_file,'(a)') '#'
 !
       write(id_file,'(10i16)')                                          &
      &        itp_dest%istack_nod_tbl_dest(1:itp_dest%num_org_domain)
