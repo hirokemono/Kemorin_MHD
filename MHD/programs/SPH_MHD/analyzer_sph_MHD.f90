@@ -187,7 +187,7 @@
         if(lead_field_data_flag(SVIZ_m%tracers%num_fline .gt. 0) then
           call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,         &
      &        SSMHDs%SPH_MHD%comm, SSMHDs%SPH_MHD%fld,                  &
-     &        SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK,             &
+     &        SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK%trns_MHD,    &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SSMHDs%m_SR)
         end if
         if(lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step,     &

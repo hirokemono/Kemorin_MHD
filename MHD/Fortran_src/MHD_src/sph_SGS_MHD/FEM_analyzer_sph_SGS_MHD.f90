@@ -26,13 +26,13 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine SPH_to_TRACER_bridge_SGS_MHD(sph, comms_sph, rj_fld, &
-!!     &          trans_p, WK, geofem, nod_fld, m_SR)
+!!     &          trans_p, trns_MHD, geofem, nod_fld, m_SR)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
@@ -161,7 +161,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_TRACER_bridge_SGS_MHD(sph, comms_sph, rj_fld,   &
-     &          trans_p, WK, geofem, nod_fld, m_SR)
+     &          trans_p, trns_MHD, geofem, nod_fld, m_SR)
 !
       use t_work_4_sph_trans
       use sph_transforms_4_MHD
@@ -171,17 +171,17 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(phys_data), intent(in) :: rj_fld
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(works_4_sph_trans_MHD), intent(in) :: WK
       type(mesh_data), intent(in) :: geofem
 !
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: nod_fld
       type(mesh_SR), intent(inout) :: m_SR
 !*
       call sph_pole_trans_4_MHD(sph, comms_sph, trans_p, rj_fld,        &
-     &    WK%trns_MHD%backward, m_SR%SR_sig, m_SR%SR_r)
+     &    trns_MHD%backward, m_SR%SR_sig, m_SR%SR_r)
 !
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_MHD%backward, geofem%mesh, nod_fld)
+     &    trns_MHD%backward, geofem%mesh, nod_fld)
 !
       end subroutine SPH_to_TRACER_bridge_SGS_MHD
 !
