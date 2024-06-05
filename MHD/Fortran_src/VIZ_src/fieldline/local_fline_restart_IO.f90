@@ -163,7 +163,7 @@
       do i = 1, fld_IO%num_field_IO
         fld_IO%fld_name(i) =         viz_fields%color_field_name(i)
         fld_IO%num_comp_IO(i) =    viz_fields%ncomp_color_field(i)
-        fld_IO%istack_comp_IO(i) = viz_fields%istack_color_field(i-1)
+        fld_IO%istack_comp_IO(i) = viz_fields%istack_color_field(i)
       end do
       
       fld_IO%nnod_IO =      fline_lc%nnod_line_l

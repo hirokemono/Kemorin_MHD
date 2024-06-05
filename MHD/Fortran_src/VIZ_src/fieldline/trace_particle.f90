@@ -139,15 +139,15 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
+      fline_lc%nele_line_l = fline_lc%nele_line_l + 1
+      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
+!
       if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
          call raise_local_fline_connect(fline_lc)
       end if
       if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
         call raise_local_fline_data(fline_lc)
       end if
-!
-      fline_lc%nele_line_l = fline_lc%nele_line_l + 1
-      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
 !
       fline_lc%iedge_line_l(1,fline_lc%nele_line_l) = isf_dbl_start(2)
       fline_lc%iedge_line_l(2,fline_lc%nele_line_l) = isf_dbl_start(3)
