@@ -226,7 +226,7 @@
 !
 !
       if (tracer%num_fline .le. 0) return
-      call dealloc_each_TRACER_data(tracer%fln_src)
+      call dealloc_each_TRACER_data(tracer%num_fline, tracer%fln_src)
       call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast)           
@@ -289,7 +289,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_TRACER_data(num_fline, fln_src,)
+      subroutine dealloc_each_TRACER_data(num_fline, fln_src)
 !
       integer(kind = kint), intent(in) :: num_fline
 !
