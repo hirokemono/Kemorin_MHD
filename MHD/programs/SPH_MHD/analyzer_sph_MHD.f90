@@ -22,6 +22,7 @@
       use m_elapsed_labels_SEND_RECV
       use t_spherical_MHD
       use t_sph_SGS_MHD
+      use t_particle_trace
 !
       implicit none
 !
@@ -102,11 +103,13 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
       &  (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
-     &    SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
+      &   SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
-      call FLINE_initialize(SSMHDs%MHD_step%viz_step%FLINE_t%increment, &
-     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,                  &
+      call TRACER_initialize                                            &
+     &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
+     &    SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,              &
+     &    SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,               &
      &    add_SSMHD_ctl1%tracer_ctls%tracer_controls, SVIZ_m%tracers)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !

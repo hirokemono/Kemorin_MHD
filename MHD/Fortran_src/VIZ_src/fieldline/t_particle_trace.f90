@@ -7,14 +7,17 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine TRACER_initialize(increment_fline, geofem, para_surf,&
-!!     &                             nod_fld, fline_ctls, fline)
-!!        integer(kind = kint), intent(in) :: increment_fline
+!!      subroutine TRACER_initialize(init_d, finish_d, rst_step,        &
+!!     &                             geofem, para_surf,                 &
+!!     &                             nod_fld, fline_ctls, tracer)
+!!        type(time_data), intent(in) :: init_d
+!!        type(finish_data), intent(in) :: finish_d
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(tracer_module), intent(inout) :: fline
+!!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_visualize                                     &
 !!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
 !!      subroutine TRACER_finalize(fline)

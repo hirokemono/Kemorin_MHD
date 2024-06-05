@@ -22,6 +22,7 @@
       use m_machine_parameter
       use t_spherical_MHD
       use t_sph_SGS_MHD
+      use t_particle_trace
 !
       implicit none
 !
@@ -85,9 +86,13 @@
       call init_FEM_to_VIZ_bridge(SSNAPs%MHD_step%viz_step,             &
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM, SSNAPs%m_SR)
 !
-      call FLINE_initialize(SSNAPs%MHD_step%viz_step%FLINE_t%increment, &
-     &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field,                    &
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      call TRACER_initialize                                            &
+     &   (SSNAPs%MHD_step%init_d,  SSNAPs%MHD_step%finish_d,            &
+     &    SSNAPs%MHD_step%rst_step, SVIZs%FEM_DAT%geofem,               &
+     &    SVIZs%VIZ_FEM%para_surf, SVIZs%FEM_DAT%field,                 &
      &    add_SSMHD_ctl1%tracer_ctls%tracer_controls, SVIZs%tracers)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'

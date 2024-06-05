@@ -49,8 +49,8 @@
       use MPI_domain_data_IO_b
       use MPI_node_geometry_IO_b
       use MPI_element_connect_IO_b
-      use field_block_MPI_IO_b
       use MPI_ascii_data_IO
+      use field_block_MPI_IO_b
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name

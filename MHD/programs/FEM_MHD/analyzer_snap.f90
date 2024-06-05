@@ -18,6 +18,7 @@
       use t_visualizer
       use t_VIZ_mesh_field
       use t_FEM_SGS_MHD
+      use t_particle_trace
 !
       implicit none
 !
@@ -74,10 +75,13 @@
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
-      call FLINE_initialize(FMHDs%MHD_step%viz_step%FLINE_t%increment,  &
-     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+      call TRACER_initialize                                            &
+     &   (FMHDs%MHD_step%init_d,  FMHDs%MHD_step%finish_d,              &
+     &    FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,                &
+     &    FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,                &
      &    FMVIZs%tracer_ctls%tracer_controls, FMVIZs%tracers)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+!
 !
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &

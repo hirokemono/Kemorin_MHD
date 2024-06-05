@@ -10,13 +10,13 @@ FEM_analyzer_vol_average.o: $(MHD_OUT_DIR)/FEM_analyzer_vol_average.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 FEM_check_MHD_matrices.o: $(MHD_OUT_DIR)/FEM_check_MHD_matrices.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_FEM_mesh_field_data.o t_material_property.o t_FEM_MHD_model_data.o t_MHD_file_parameter.o t_MHD_step_parameter.o t_FEM_MHD_time_stepping.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_FEM_MHD_mean_square.o t_MHD_IO_data.o t_mesh_SR.o t_boundary_field_IO.o initialization_4_MHD.o construct_matrices.o write_djds_mat_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_MHD.o: $(MHD_OUT_DIR)/analyzer_MHD.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o FEM_analyzer_MHD.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
+analyzer_MHD.o: $(MHD_OUT_DIR)/analyzer_MHD.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o FEM_analyzer_MHD.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o t_particle_trace.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_check_mat_MHD.o: $(MHD_OUT_DIR)/analyzer_check_mat_MHD.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_FEM_SGS_MHD.o t_control_data_tracers.o FEM_check_MHD_matrices.o input_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_filtering.o: $(MHD_OUT_DIR)/analyzer_filtering.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_SEND_RECV.o FEM_analyzer_filtered.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o FEM_analyzer_snapshot.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_snap.o: $(MHD_OUT_DIR)/analyzer_snap.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o FEM_analyzer_snapshot.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
+analyzer_snap.o: $(MHD_OUT_DIR)/analyzer_snap.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o FEM_analyzer_snapshot.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o t_particle_trace.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_snap_tmp.o: $(MHD_OUT_DIR)/analyzer_snap_tmp.f90 m_precision.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o t_visualizer.o t_VIZ_mesh_field.o t_FEM_SGS_MHD.o FEM_analyzer_snap_tmp.o input_control.o m_elapsed_labels_4_VIZ.o FEM_to_VIZ_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
