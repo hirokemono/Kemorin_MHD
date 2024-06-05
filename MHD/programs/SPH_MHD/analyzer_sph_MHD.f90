@@ -198,16 +198,13 @@
 !*
 !*  ----------- Move tracer --------------
 !*
-!      subroutine TRACER_evolution                                     &
-!!     &         (increment_output, &
-!     &   (SSMHDs%MHD_step%time_d,  SSMHDs%MHD_step%finish_d,            &
-!     &    SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,              &
-!     &    SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,               &
-!     &    SVIZ_m%tracers, SSMHDs%m_SR)
-!        call TRACER_evolution                                          &
-!     &     (SSMHDs%MHD_step%time_d, SVIZ_m%FEM_DAT%geofem,             &
-!     &      SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,            &
-!     &      SVIZ_m%tracers, SSMHDs%m_SR)
+         call TRACER_evolution                                          &
+     &      (SSMHDs%MHD_step%time_d,  SSMHDs%MHD_step%finish_d,         &
+     &       SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,           &
+     &       SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,            &
+     &       SVIZ_m%tracers, SSMHDs%m_SR)
+      call TRACER_visualize(SSMHDs%MHD_step%viz_step%TRACER_t,          &
+     &                      SSMHDs%MHD_step%time_d, SVIZ_m%tracers)
 !*
 !*  ----------- Visualization --------------
 !*

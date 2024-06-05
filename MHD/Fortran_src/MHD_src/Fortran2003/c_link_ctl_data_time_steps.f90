@@ -41,6 +41,8 @@
 !!     &          bind(C, NAME = 'c_time_steps_i_step_iso_ctl')
 !!      type(c_ptr) function c_time_steps_i_step_lic_ctl(c_ctl)         &
 !!     &          bind(C, NAME = 'c_time_steps_i_step_lic_ctl')
+!!      type(c_ptr) function c_time_steps_i_step_tracer_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_time_steps_i_step_tracer_ctl')
 !!      type(c_ptr) function c_time_steps_i_step_fline_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_time_steps_i_step_fline_ctl')
 !!      type(c_ptr) function c_time_steps_i_step_ucd_ctl(c_ctl)         &
@@ -96,6 +98,8 @@
 !!     &          bind(C, NAME = 'c_time_steps_delta_t_fline')
 !!      type(c_ptr) function c_time_steps_delta_t_lic_ctl(c_ctl)        &
 !!     &          bind(C, NAME = 'c_time_steps_delta_t_lic_ctl')
+!!      type(c_ptr) function c_time_steps_delta_t_tracer_ctl(c_ctl)     &
+!!     &          bind(C, NAME = 'c_time_steps_delta_t_tracer_ctl')
 !!
 !!      type(c_ptr) function c_time_steps_delta_t_field(c_ctl)          &
 !!     &          bind(C, NAME = 'c_time_steps_delta_t_field')
@@ -273,6 +277,17 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_time_steps_i_step_lic_ctl= C_loc(f_ctl%i_step_lic_ctl)
       end function c_time_steps_i_step_lic_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_time_steps_i_step_tracer_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_time_steps_i_step_tracer_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(time_data_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_time_steps_i_step_tracer_ctl                                    &
+     &      = C_loc(f_ctl%i_step_tracer_output_ctl)
+      end function c_time_steps_i_step_tracer_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -515,6 +530,17 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_time_steps_delta_t_lic_ctl= C_loc(f_ctl%delta_t_lic_ctl)
       end function c_time_steps_delta_t_lic_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_time_steps_delta_t_tracer_ctl(c_ctl)       &
+     &          bind(C, NAME = 'c_time_steps_delta_t_tracer_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(time_data_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_time_steps_delta_t_tracer_ctl                                   &
+     &       = C_loc(f_ctl%delta_t_tracer_output_ctl)
+      end function c_time_steps_delta_t_tracer_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

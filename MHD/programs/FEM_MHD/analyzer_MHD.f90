@@ -115,6 +115,16 @@
      &      FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%FEM_MHD,             &
      &      FMHDs%MHD_IO, FMHDs%fem_sq, FMHDs%m_SR)
 !
+!*  ----------- Move tracer --------------
+!*
+         call TRACER_evolution                                          &
+     &      (FMHDs%MHD_step%time_d,  FMHDs%MHD_step%finish_d,           &
+     &       FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,             &
+     &       FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,             &
+     &       FMVIZs%tracers, FMHDs%m_SR)
+        call TRACER_visualize(FMHDs%MHD_step%viz_step%TRACER_t,         &
+     &                        FMHDs%MHD_step%time_d, FMVIZs%tracers)
+!
 !  Visualization
         visval = MHD_viz_routine_flag(FMHDs%MHD_step%flex_p,            &
      &                                FMHDs%MHD_step%time_d,            &

@@ -30,8 +30,10 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(tracer_module), intent(inout) :: tracer
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine TRACER_visualize                                     &
-!!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
+!!      subroutine TRACER_visualize(TRACER_d, time_d, tracer)
+!!        type(time_data), intent(in) :: time_d
+!!        type(IO_step_param), intent(in) :: TRACER_d
+!!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_finalize(fline)
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: fem
@@ -122,9 +124,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_evolution                                       &
-     &         (increment_output, time_d, finish_d, rst_step, geofem,   &
-     &          para_surf, nod_fld, tracer, m_SR)
+      subroutine TRACER_evolution(time_d, finish_d, rst_step, geofem,   &
+     &                            para_surf, nod_fld, tracer, m_SR)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
@@ -135,7 +136,6 @@
       use multi_tracer_fieldline
 !
 !
-      integer(kind = kint), intent(in) :: increment_output
       type(time_data), intent(in) :: time_d
       type(finish_data), intent(in) :: finish_d
       type(IO_step_param), intent(in) :: rst_step
@@ -157,15 +157,11 @@
      &    tracer%num_fline, tracer%fln_prm, tracer%fln_tce,             &
      &    tracer%fline_lc)
 !
-      call TRACER_visualize(increment_output, time_d,                   &
-     &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
-!
       end subroutine TRACER_evolution
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_visualize(increment_output, time_d,             &
-     &                            num_fline, fln_prm, fline_lc)
+      subroutine TRACER_visualize(TRACER_d, time_d, tracer)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
@@ -175,27 +171,24 @@
       use set_fline_seeds_from_list
 !
 !
-      integer(kind = kint), intent(in) :: increment_output
       type(time_data), intent(in) :: time_d
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+      type(IO_step_param), intent(in) :: TRACER_d
+      type(tracer_module), intent(inout) :: tracer
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
       integer(kind = kint) :: i_fln, istep_fline
 !  
-      if(mod(time_d%i_time_step, increment_output) .ne. 0) return
-      istep_fline = time_d%i_time_step / increment_output
+      if(mod(time_d%i_time_step, TRACER_d%increment) .ne. 0) return
+      istep_fline = time_d%i_time_step / TRACER_d%increment
 !
-      do i_fln = 1, num_fline
+      do i_fln = 1, tracer%num_fline
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO                                 &
-     &     (fln_prm(i_fln)%fline_fields, fline_lc(i_fln),               &
+     &     (tracer%fln_prm(i_fln)%fline_fields, tracer%fline_lc(i_fln), &
      &      fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO,            &
+     &     (istep_fline, tracer%fln_prm(i_fln)%fline_file_IO, t_IO,     &
      &      fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
       end do

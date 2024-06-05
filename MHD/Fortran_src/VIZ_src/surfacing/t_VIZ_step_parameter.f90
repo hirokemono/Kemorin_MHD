@@ -42,6 +42,8 @@
         type(IO_step_param) :: LIC_t
 !>        time step paremters for field lines
         type(IO_step_param) :: FLINE_t
+!>        time step paremters for tracer
+        type(IO_step_param) :: TRACER_t
 !
 !>        step number for sectioning file
         integer(kind = kint) :: istep_psf = 0
@@ -55,6 +57,8 @@
         integer(kind = kint) :: istep_lic = 0
 !>        step number for field lines file
         integer(kind = kint) :: istep_fline = 0
+!>        step number for field lines file
+        integer(kind = kint) :: istep_tracer_viz = 0
       end type VIZ_step_params
 !
 !-----------------------------------------------------------------------
@@ -168,6 +172,10 @@
      &   (izero, dt, tctl%i_step_lic_ctl, tctl%delta_t_lic_ctl,         &
      &    viz_step%LIC_t)
 !
+      call output_step_4_fixed_step_ctl                                 &
+     &   (izero, dt, tctl%i_step_tracer_output_ctl,                     &
+     &    tctl%delta_t_tracer_output_ctl, viz_step%TRACER_t)
+!
       end subroutine viz_fixed_time_step_params
 !
 ! -----------------------------------------------------------------------
@@ -204,6 +212,10 @@
       call output_step_4_flex_step_ctl                                  &
      &   (izero, dt, tctl%i_step_lic_ctl, tctl%delta_t_lic_ctl,         &
      &    viz_step%LIC_t)
+!
+      call output_step_4_flex_step_ctl                                  &
+     &   (izero, dt, tctl%i_step_tracer_output_ctl,                     &
+     &    tctl%delta_t_tracer_output_ctl, viz_step%TRACER_t)
 !
       end subroutine viz_flex_time_step_controls
 !

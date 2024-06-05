@@ -122,7 +122,8 @@
 !
       integer(kind = kint) :: iflag
 !
-      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment     &
+     &       + viz_step%TRACER_t%increment
       if(iflag .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
 !  -----  Construct Element communication table
@@ -133,7 +134,8 @@
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
       end if
 !
-      if(viz_step%FLINE_t%increment .gt. 0) then
+      iflag = viz_step%FLINE_t%increment + viz_step%TRACER_t%increment
+      if(iflag .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
 !  -----  Construct Surface communication table
         if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'

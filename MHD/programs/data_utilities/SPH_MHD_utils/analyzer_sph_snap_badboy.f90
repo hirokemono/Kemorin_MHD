@@ -105,6 +105,8 @@
         call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,           &
      &                                    SVIZ_m%SPH_SGS%trns_WK_LES)
 !
+        call TRACER_visualize(SSNAPs%MHD_step%viz_step%TRACER_t,        &
+     &                        SSNAPs%MHD_step%time_d, SVIZ_m%tracers)
         SSNAPs%MHD_step%time_d%i_time_step                              &
       &        = SSNAPs%MHD_step%init_d%i_time_step
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
