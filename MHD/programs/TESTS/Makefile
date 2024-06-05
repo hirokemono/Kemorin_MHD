@@ -15,7 +15,6 @@ Legendre_test \
 zlib_test     \
 graphic_test  \
 FFT_test      \
-Sorting_test  \
 \
 BC_file_test
 

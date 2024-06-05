@@ -30,7 +30,7 @@ local_fline_restart_IO.o: $(FIELDLINE_DIR)/local_fline_restart_IO.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 m_control_fline_flags.o: $(FIELDLINE_DIR)/m_control_fline_flags.f90 m_precision.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
-multi_tracer_fieldline.o: $(FIELDLINE_DIR)/multi_tracer_fieldline.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_time_data.o t_mesh_data.o t_phys_data.o t_paralell_surface_indices.o t_control_params_4_fline.o t_source_of_filed_line.o t_trace_data_send_recv.o t_broadcast_trace_data.o t_tracing_data.o t_local_fline.o t_IO_step_parameter.o t_ucd_data.o t_control_data_flines.o set_fline_control.o m_connect_hexa_2_tetra.o t_find_interpolate_in_ele.o set_fline_seeds_from_list.o set_fields_for_fieldline.o const_field_lines.o collect_fline_data.o parallel_ucd_IO_select.o tracer_restart_file_IO.o
+multi_tracer_fieldline.o: $(FIELDLINE_DIR)/multi_tracer_fieldline.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_time_data.o t_mesh_data.o t_phys_data.o t_paralell_surface_indices.o t_control_params_4_fline.o t_source_of_filed_line.o t_trace_data_send_recv.o t_broadcast_trace_data.o t_tracing_data.o t_local_fline.o t_IO_step_parameter.o t_ucd_data.o t_control_data_flines.o set_fline_control.o m_connect_hexa_2_tetra.o t_find_interpolate_in_ele.o set_fline_seeds_from_list.o set_fields_for_fieldline.o const_field_lines.o collect_fline_data.o parallel_ucd_IO_select.o tracer_restart_file_IO.o trace_particle.o
 	$(F90) -c $(F90OPTFLAGS) $<
 particle_MPI_IO_select.o: $(FIELDLINE_DIR)/particle_MPI_IO_select.F90 m_precision.o calypso_mpi.o m_file_format_switch.o t_file_IO_parameter.o t_mesh_data.o t_time_data.o particle_file_IO_select.o MPI_particle_file_IO.o MPI_particle_file_IO_b.o mesh_file_name_by_param.o element_mesh_IO_select.o gz_MPI_particle_file_IO.o gz_MPI_particle_file_IO_b.o set_element_mesh_file_names.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
@@ -82,12 +82,12 @@ t_tracing_data.o: $(FIELDLINE_DIR)/t_tracing_data.f90 m_precision.o m_constants.
 	$(F90) -c $(F90OPTFLAGS) $<
 trace_in_element.o: $(FIELDLINE_DIR)/trace_in_element.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o t_geometry_data.o t_surface_data.o t_phys_data.o t_ctl_params_viz_fields.o coordinate_converter.o convert_components_4_viz.o cal_field_on_surf_viz.o cal_fline_in_cube.o tracer_field_interpolate.o
 	$(F90) -c $(F90OPTFLAGS) $<
-trace_particle.o: $(FIELDLINE_DIR)/trace_particle.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_time_data.o t_mesh_data.o t_phys_data.o t_paralell_surface_indices.o t_tracing_data.o t_control_params_4_fline.o t_source_of_filed_line.o t_trace_data_send_recv.o t_broadcast_trace_data.o t_mesh_SR.o t_local_fline.o transfer_to_long_integers.o trace_particle_in_element.o
+trace_particle.o: $(FIELDLINE_DIR)/trace_particle.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_time_data.o t_mesh_data.o t_phys_data.o t_paralell_surface_indices.o t_tracing_data.o t_control_params_4_fline.o t_source_of_filed_line.o t_trace_data_send_recv.o t_broadcast_trace_data.o t_mesh_SR.o t_local_fline.o transfer_to_long_integers.o trace_particle_in_element.o copy_field_smp.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 trace_particle_in_element.o: $(FIELDLINE_DIR)/trace_particle_in_element.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o t_geometry_data.o t_surface_data.o t_paralell_surface_indices.o t_phys_data.o t_ctl_params_viz_fields.o t_local_fline.o trace_in_element.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tracer_field_interpolate.o: $(FIELDLINE_DIR)/tracer_field_interpolate.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o t_geometry_data.o t_surface_data.o t_phys_data.o t_ctl_params_viz_fields.o coordinate_converter.o convert_components_4_viz.o cal_field_on_surf_viz.o sel_interpolate_scalar.o
 	$(F90) -c $(F90OPTFLAGS) $<
-tracer_restart_file_IO.o: $(FIELDLINE_DIR)/tracer_restart_file_IO.f90 m_precision.o t_time_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_ctl_params_viz_fields.o t_local_fline.o t_read_mesh_data.o t_field_data_IO.o t_tracing_data.o set_sph_restart_IO.o field_IO_select.o local_fline_restart_IO.o particle_MPI_IO_select.o
+tracer_restart_file_IO.o: $(FIELDLINE_DIR)/tracer_restart_file_IO.f90 m_precision.o t_time_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_ctl_params_viz_fields.o t_local_fline.o t_read_mesh_data.o t_field_data_IO.o t_tracing_data.o set_sph_restart_IO.o field_IO_select.o local_fline_restart_IO.o particle_MPI_IO_select.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

@@ -178,7 +178,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !*
       call sph_pole_trans_4_MHD(sph, comms_sph, WK%trans_p, rj_fld,     &
-     &    WK%trns_MHD%b_trns, m_SR%SR_sig, m_SR%SR_r)
+     &    WK%trns_MHD%backward, m_SR%SR_sig, m_SR%SR_r)
 !
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_MHD%backward, geofem%mesh, nod_fld)
