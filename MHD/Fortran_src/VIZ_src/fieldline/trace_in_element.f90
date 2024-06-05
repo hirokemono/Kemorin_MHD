@@ -95,6 +95,11 @@
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !
+      if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
+        isf_tgt = -1
+        return
+      end if
+!
       call trace_to_element_wall                                        &
      &   (isf_org, iflag_forward_line, ele, surf,                       &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
@@ -153,6 +158,11 @@
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
       real(kind = kreal) :: xi_surf(2), ratio
 !
+!
+      if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
+        isf_tgt = -1
+        return
+      end if
 !
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
@@ -246,14 +256,14 @@
       real(kind = kreal), intent(in) :: v_current(numnod,3)
       real(kind = kreal), intent(inout) :: v_prev(numnod,3)
 !
-!$parallel workshare
+!$omp parallel workshare
         v_prev(1:numnod,1) = (one - ratio) * v_prev(1:numnod,1)         &
      &                             + ratio * v_current(1:numnod, 1)
         v_prev(1:numnod,3) = (one - ratio) * v_prev(1:numnod,2)         &
      &                             + ratio * v_current(1:numnod, 2)
         v_prev(1:numnod,3) = (one - ratio) * v_prev(1:numnod,3)         &
      &                             + ratio * v_current(1:numnod, 3)
-!$end parallel workshare
+!$omp end parallel workshare
 !
       end subroutine velocity_at_tracer
 !

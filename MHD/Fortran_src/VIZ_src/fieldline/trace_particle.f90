@@ -54,6 +54,7 @@
 !
       use transfer_to_long_integers
       use trace_particle_in_element
+      use copy_field_smp
 !
       real(kind = kreal), intent(in) :: dt_init
       type(mesh_geometry), intent(in) :: mesh
@@ -74,6 +75,7 @@
 !
       dt = dt_init
       call return_to_trace_list(fln_prm, fline_lc, fln_tce)
+
       call reset_fline_start(fline_lc)
       do
         do inum = 1, fln_tce%num_current_fline
@@ -85,7 +87,7 @@
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        dt, fln_tce%iflag_comm_start(inum))
+     &        dt, fln_tce%iflag_comm_start(inum), inum)
 !
           if(fln_tce%iflag_comm_start(inum) .eq. 0) then
             call add_traced_list(fln_tce%isf_dbl_start(1,inum),         &
@@ -106,6 +108,11 @@
         end if
         if(nline .le. 0) exit
       end do
+!
+!$omp parallel
+      call copy_nod_vector_smp(nod_fld%n_point,                        &
+     &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
+!$omp end parallel
 !
       end subroutine s_trace_particle
 !

@@ -154,6 +154,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !  
+      if(tracer%num_fline .le. 0) return
       call trace_particle_sets(time_d, geofem%mesh, para_surf,          &
      &    nod_fld, tracer%num_fline, tracer%fln_prm,                    &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &

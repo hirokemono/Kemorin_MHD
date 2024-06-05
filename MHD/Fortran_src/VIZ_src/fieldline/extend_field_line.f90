@@ -114,7 +114,14 @@
      &      isurf_org(2), iflag_dir, node, ele, surf, nod_fld,          &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
      &      isf_tgt, x4_start, v4_start, c_field)
+        if(isf_tgt .lt. 0) then
+          iflag_comm = 0
+!          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
+!     &              ' at ', jcou, ': ', isurf_org(1:2)
+          exit
+        end if
         if(isf_tgt .eq. 0) then
+          iflag_comm = -1
 !          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
@@ -128,7 +135,14 @@
      &      izero, iflag_dir, node, ele, surf, nod_fld,                 &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
      &      isf_tgt, x4_start, v4_start, c_field)
+        if(isf_tgt .lt. 0) then
+          iflag_comm = 0
+!          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
+!     &              ' at ', jcou, ': ', isurf_org(1:2)
+          exit
+        end if
         if(isf_tgt .eq. 0) then
+          iflag_comm = -1
 !          write(*,*) 'Error at trace to end point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
