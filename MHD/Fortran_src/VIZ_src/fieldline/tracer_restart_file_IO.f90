@@ -54,6 +54,7 @@
       use local_fline_restart_IO
       use particle_MPI_IO_select
       use local_fline_restart_IO
+      use const_global_element_ids
 !
       integer(kind = kint), intent(in) :: i_step_w_elps
       type(field_IO_params), intent(in) :: tracer_file_prm
@@ -70,7 +71,6 @@
 !
       call copy_time_step_size_data(time_d, time_IO)
 !      call set_particles_to_trace_list(viz_fields, fln_tce, fline_lc)
-!      call count_global_num_of_tracer(fline_lc)
       call copy_local_tracer_to_IO(fline_lc, particle_IO)
 
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
@@ -82,7 +82,9 @@
       if(viz_fields%num_color_fields .le. 1) return
 !
       call field_on_local_tracer_to_IO(viz_fields, fline_lc, fld_IO)
-
+      call count_number_of_node_stack                                   &
+     &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
+!
       call sel_write_step_FEM_field_file                                &
      &   (istep_rst, tracer_file_prm, time_IO, fld_IO)
       call dealloc_phys_data_IO(fld_IO)

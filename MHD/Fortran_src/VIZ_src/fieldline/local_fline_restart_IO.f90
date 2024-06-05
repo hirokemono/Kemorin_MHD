@@ -7,9 +7,6 @@
 !>@brief  tracer or field line data in each domain
 !!
 !!@verbatim
-!!      subroutine count_global_num_of_tracer(fline_lc)
-!!        type(local_fieldline), intent(inout) :: fline_lc
-!!
 !!      subroutine copy_local_tracer_to_IO(fline_lc, particle_IO)
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(surf_edge_IO_file), intent(inout) :: particle_IO
@@ -49,29 +46,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-!      subroutine count_global_num_of_tracer(fline_lc)
-!
-!      use calypso_mpi_int
-!
-!      type(local_fieldline), intent(inout) :: fline_lc
-!
-!
-!      integer(kind = kint) :: i
-!
-!      call calypso_mpi_allgather_one_int                               &
-!     &   (fline_lc%nnod_line_l, fline_lc%istack_nnod_line(1))
-!
-!      fline_lc%istack_nnod_line(0) = 0
-!      do i = 1, nprocs
-!        fline_lc%istack_nnod_line(i) = fline_lc%istack_nnod_line(i-1)  &
-!     &                               + fline_lc%istack_nnod_line(i)
-!      end do
-!
-!      end subroutine count_global_num_of_tracer
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine copy_local_tracer_to_IO(fline_lc, particle_IO)
