@@ -14,7 +14,7 @@
       use t_FEM_mesh_field_data
       use t_VIZ_mesh_field
       use t_visualizer
-      use t_fieldline
+      use t_particle_trace
 !
       implicit none
 !
@@ -32,7 +32,7 @@
 !>        Structures of zonal mean controls
         type(sph_zonal_mean_viz) :: zmeans
 !>        Structures of visualization
-        type(fieldline_module) ::  tracers
+        type(tracer_module) ::  tracers
       end type sph_SGS_MHD
 !
       end module t_sph_SGS_MHD

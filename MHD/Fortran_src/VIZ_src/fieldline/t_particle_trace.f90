@@ -18,6 +18,18 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(tracer_module), intent(inout) :: tracer
+!!      subroutine TRACER_evolution                                     &
+!!     &         (increment_output, time_d, finish_d, rst_step, geofem, &
+!!     &          para_surf, nod_fld, tracer, m_SR)
+!!        integer(kind = kint), intent(in) :: increment_output
+!!        type(time_data), intent(in) :: time_d
+!!        type(finish_data), intent(in) :: finish_d
+!!        type(IO_step_param), intent(in) :: rst_step
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(paralell_surface_indices), intent(in) :: para_surf
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(inout) :: tracer
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine TRACER_visualize                                     &
 !!     &         (istep_fline, time_d, fem, next_tbl, nod_fld, fline)
 !!      subroutine TRACER_finalize(fline)
@@ -120,7 +132,7 @@
       use collect_fline_data
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list
-      use tracer_restart_file_IO
+      use multi_tracer_fieldline
 !
 !
       integer(kind = kint), intent(in) :: increment_output
@@ -209,14 +221,13 @@
 !
       subroutine TRACER_finalize(tracer)
 !
+      use multi_tracer_fieldline
+!
       type(tracer_module), intent(inout) :: tracer
 !
       integer(kind = kint) :: i_fln
 !
-!
       if (tracer%num_fline .le. 0) return
-!
-!
       call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast)           
@@ -232,6 +243,7 @@
      &          num_fline, fln_prm, fln_src, fln_tce, fline_lc,         &
      &          fln_SR, fln_bcast, m_SR)
 !
+      use trace_particle
 !
       type(time_data), intent(in) :: time_d
       type(mesh_geometry), intent(in) :: mesh

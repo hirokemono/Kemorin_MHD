@@ -136,7 +136,7 @@ t_SPH_dynamic_model_coefs.o: $(SGS_MHD_SPH_DIR)/t_SPH_dynamic_model_coefs.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_groups_sph_dynamic.o: $(SGS_MHD_SPH_DIR)/t_groups_sph_dynamic.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtp_data.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_sph_SGS_MHD.o: $(SGS_MHD_SPH_DIR)/t_sph_SGS_MHD.f90 m_precision.o t_SPH_SGS_structure.o t_SPH_MHD_zonal_mean_viz.o t_FEM_mesh_field_data.o t_VIZ_mesh_field.o t_visualizer.o t_fieldline.o
+t_sph_SGS_MHD.o: $(SGS_MHD_SPH_DIR)/t_sph_SGS_MHD.f90 m_precision.o t_SPH_SGS_structure.o t_SPH_MHD_zonal_mean_viz.o t_FEM_mesh_field_data.o t_VIZ_mesh_field.o t_visualizer.o t_particle_trace.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_filter_moment.o: $(SGS_MHD_SPH_DIR)/t_sph_filter_moment.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_parameter.o t_schmidt_poly_on_rtm.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

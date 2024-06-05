@@ -54,7 +54,7 @@ t_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/t_FEM_MHD_model_data.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_time_stepping.o: $(MHD_COMMON_DIR)/t_FEM_MHD_time_stepping.f90 m_precision.o t_flex_delta_t_data.o t_FEM_MHD_mean_square.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_FEM_SGS_MHD.o: $(MHD_COMMON_DIR)/t_FEM_SGS_MHD.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_MHD_IO_data.o t_MHD_step_parameter.o t_MHD_file_parameter.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_VIZ_mesh_field.o t_visualizer.o t_fieldline.o t_control_data_vizs.o t_control_data_tracers.o t_mesh_SR.o
+t_FEM_SGS_MHD.o: $(MHD_COMMON_DIR)/t_FEM_SGS_MHD.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_MHD_IO_data.o t_MHD_step_parameter.o t_MHD_file_parameter.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_VIZ_mesh_field.o t_visualizer.o t_particle_trace.o t_control_data_vizs.o t_control_data_tracers.o t_mesh_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_SGS_model_coefs.o: $(MHD_COMMON_DIR)/t_FEM_SGS_model_coefs.f90 m_precision.o m_constants.o m_machine_parameter.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
