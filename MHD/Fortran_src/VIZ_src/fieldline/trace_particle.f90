@@ -54,6 +54,7 @@
 !
       use transfer_to_long_integers
       use trace_particle_in_element
+      use set_fline_seeds_from_list
       use copy_field_smp
 !
       real(kind = kreal), intent(in) :: dt_init
@@ -88,6 +89,16 @@
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
      &        dt, fln_tce%iflag_comm_start(inum), inum)
+!
+          if(fln_tce%iflag_comm_start(inum) .eq. -3) then
+            call set_field_at_each_seed_point(mesh%node, mesh%ele,      &
+     &          nod_fld, fln_prm%fline_fields, fln_prm%iphys_4_fline,   &
+     &          fln_tce%isf_dbl_start(2,inum),                          &
+     &          fln_tce%xx_fline_start(1,inum),                         &
+     &          fln_tce%v_fline_start(1,inum),                          &
+     &          fln_tce%c_fline_start(1,inum))
+            fln_tce%iflag_comm_start(inum) = 0
+          end if
 !
           if(fln_tce%iflag_comm_start(inum) .eq. 0) then
             call add_traced_list(fln_tce%isf_dbl_start(1,inum),         &
