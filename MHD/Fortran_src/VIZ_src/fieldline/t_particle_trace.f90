@@ -113,6 +113,8 @@
       call alloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,      &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast)
+      call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_fline,   &
+     &                            tracer%fln_src)
 
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_fline,   &
      &    tracer%fln_prm, tracer%fln_src, tracer%fln_tce)
@@ -224,6 +226,7 @@
 !
 !
       if (tracer%num_fline .le. 0) return
+      call dealloc_each_TRACER_data(tracer%fln_src)
       call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast)           
@@ -266,6 +269,40 @@
       end do
 !
       end subroutine trace_particle_sets
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_each_TRACER_data(node, num_fline, fln_src)
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: num_fline
+!
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        call alloc_velocity_at_previous(node%numnod, fln_src(i_fln))
+      end do
+!
+      end subroutine alloc_each_TRACER_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_each_TRACER_data(num_fline, fln_src,)
+!
+      integer(kind = kint), intent(in) :: num_fline
+!
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+      if (num_fline .le. 0) return
+      do i_fln = 1, num_fline
+        call dealloc_velocity_at_previous(fln_src(i_fln))
+      end do
+!
+      end subroutine dealloc_each_TRACER_data
 !
 !  ---------------------------------------------------------------------
 !
