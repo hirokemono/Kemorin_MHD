@@ -301,10 +301,25 @@
      &        fln_tce%v_fline_start(1,icou),                            &
      &        fln_tce%c_fline_start(1,icou))
 !
+!
           fln_tce%isf_dbl_start(1,icou) = my_rank
           fln_tce%isf_dbl_start(2,icou)                                 &
      &      = fln_src%iele_surf_start_fline(inum)
+
           fln_tce%isf_dbl_start(3,icou) = 0
+          if(abs(fln_src%xi_surf_start_fline(1,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 1
+          if(abs(fln_src%xi_surf_start_fline(1,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 2
+          if(abs(fln_src%xi_surf_start_fline(2,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 3
+          if(abs(fln_src%xi_surf_start_fline(2,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 4
+          if(abs(fln_src%xi_surf_start_fline(3,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 5
+          if(abs(fln_src%xi_surf_start_fline(3,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 6
+          
           fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_prm%xx_surf_start_fline(1:3,inum)
           fln_tce%xx_fline_start(4,icou) = one
@@ -326,7 +341,21 @@
             fln_tce%isf_dbl_start(1,icou) = my_rank
             fln_tce%isf_dbl_start(2,icou)                               &
      &            = fln_src%iele_surf_start_fline(inum)
+!
             fln_tce%isf_dbl_start(3,icou) = 0
+            if(abs(fln_src%xi_surf_start_fline(1,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 1
+            if(abs(fln_src%xi_surf_start_fline(1,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 2
+            if(abs(fln_src%xi_surf_start_fline(2,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 3
+            if(abs(fln_src%xi_surf_start_fline(2,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 4
+            if(abs(fln_src%xi_surf_start_fline(3,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 5
+            if(abs(fln_src%xi_surf_start_fline(3,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 6
+!
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
             call copy_global_start_fline(icou, (icou-1),                &
