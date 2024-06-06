@@ -77,7 +77,7 @@
      &                          fln_tce%c_fline_start(1,inum1))
 !
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then
-           fln_tce%iflag_direction(inum1) = 0
+           fln_tce%iflag_direction(inum1) = 1
            call set_forward_fline_start_surf                            &
      &        (fln_src%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
@@ -85,14 +85,14 @@
 !
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
      &      then
-           fln_tce%iflag_direction(inum1) = 1
+           fln_tce%iflag_direction(inum1) = -1
            call set_backward_fline_start_surf                           &
      &         (fln_src%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
      &          fln_tce%isf_dbl_start(1,inum1))
 !
         else
-           fln_tce%iflag_direction(inum1) = 0
+           fln_tce%iflag_direction(inum1) = 1
            call set_forward_fline_start_surf                            &
      &        (fln_src%iflag_outward_flux_fline(i),                     &
      &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
@@ -101,7 +101,7 @@
           inum2 = inum1 + fln_src%num_line_local
           fln_tce%trace_length(inum2) = 0.0d0
           fln_tce%icount_fline(inum2) = 0
-          fln_tce%iflag_direction(inum2) = 1
+          fln_tce%iflag_direction(inum2) = -1
           call copy_global_start_fline(inum2, inum1,                    &
      &                                 fln_prm%fline_fields, fln_tce)
 !

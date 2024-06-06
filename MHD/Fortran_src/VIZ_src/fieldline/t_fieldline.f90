@@ -139,11 +139,9 @@
      &   fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce)
 
 !
-      if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
       call s_const_field_lines(geofem%mesh, para_surf, nod_fld,         &
      &    fline%num_fline, fline%fln_prm, fline%fln_tce,                &
      &    fline%fln_SR, fline%fln_bcast, fline%fline_lc, m_SR)
-      if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
       call output_field_lines(istep_fline, time_d, fline%num_fline,     &
      &                         fline%fln_prm, fline%fline_lc)
 !

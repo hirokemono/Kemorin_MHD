@@ -313,16 +313,16 @@
           
           if     (fln_prm%id_fline_direction                            &
      &                  .eq. iflag_forward_trace) then
-           fln_tce%iflag_direction(icou) = 0
+           fln_tce%iflag_direction(icou) = 1
           else if(fln_prm%id_fline_direction                            &
      &                  .eq. iflag_backward_trace) then
 
-            fln_tce%iflag_direction(icou) = 1
+            fln_tce%iflag_direction(icou) = -1
           else
-            fln_tce%iflag_direction(icou) = 0
+            fln_tce%iflag_direction(icou) = 1
 !
             icou = icou + 1
-            fln_tce%iflag_direction(icou) = 1
+            fln_tce%iflag_direction(icou) = -1
             fln_tce%isf_dbl_start(1,icou) = my_rank
             fln_tce%isf_dbl_start(2,icou)                               &
      &            = fln_src%iele_surf_start_fline(inum)

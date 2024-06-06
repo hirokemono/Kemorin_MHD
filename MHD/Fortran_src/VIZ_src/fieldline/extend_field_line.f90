@@ -159,7 +159,7 @@
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
      &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
-     &         *(-one)**iflag_dir
+     &         * dble(iflag_dir)
 !
 !   set backside element and surface 
         if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
