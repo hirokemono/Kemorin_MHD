@@ -224,11 +224,7 @@
       integer(kind = kint) :: ist, ied, inc, k, ksf
 !
 !
-      if(iflag_dir .eq. iflag_forward_line) then
-        b_ray(1:4) = -fline(1:4)
-      else
-        b_ray(1:4) =  fline(1:4)
-      end if
+      b_ray(1:4) = dble(iflag_dir) * fline(1:4)
 !
       if(isf_org .eq. 0) then
         ist =  1

@@ -185,7 +185,7 @@
      &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
         call project_once_each_element(modelview_mat, projection_mat,   &
      &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
-        call find_line_end_in_1ele(iflag_backward_line,                 &
+        call find_line_end_in_1ele(iflag_forward_line,                  &
      &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
      &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
