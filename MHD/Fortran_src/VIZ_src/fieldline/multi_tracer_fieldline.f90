@@ -47,14 +47,6 @@
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!
-!!      subroutine output_field_lines                                   &
-!!     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
-!!        integer(kind = kint), intent(in) :: istep_fline
-!!        type(time_data), intent(in) :: time_d
-!!        integer(kind = kint), intent(in) :: num_fline
-!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!@endverbatim
 !
       module multi_tracer_fieldline

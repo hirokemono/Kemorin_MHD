@@ -117,6 +117,7 @@
      &                           para_surf, nod_fld, fline, m_SR)
 !
       use multi_tracer_fieldline
+      use const_field_lines
       use t_mesh_SR
 !
 !

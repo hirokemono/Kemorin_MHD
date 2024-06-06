@@ -19,6 +19,13 @@
 !!        type(local_fieldline), intent(inout) ::     fline_lc(num_fline)
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+!!      subroutine output_field_lines                                   &
+!!     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
+!!        integer(kind = kint), intent(in) :: istep_fline
+!!        type(time_data), intent(in) :: time_d
+!!        integer(kind = kint), intent(in) :: num_fline
+!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!@endverbatim
 !
       module const_field_lines
