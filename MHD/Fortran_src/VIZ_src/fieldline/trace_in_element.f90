@@ -103,7 +103,6 @@
      &   (isf_org, iflag_forward_line, ele, surf,                       &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
      &    isf_tgt, x4_tgt, v4_tgt, c_tgt)
-      if(isf_tgt .le. 0) return
 !
       call ratio_of_trace_to_wall_tracer(trace_ratio, v4_start,         &
      &                                   x4_tgt, x4_start, ratio, dt)

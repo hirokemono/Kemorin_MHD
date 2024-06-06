@@ -113,26 +113,19 @@
      &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-        if(isf_tgt .eq. 0) then
-          iflag_comm = -1
-!          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
-!     &              ' at ', jcou, ': ', isurf_org(1:2)
-          exit
-        end if
 !
 !   extend to surface of element
         call s_trace_in_element(one, izero, node, ele, surf,            &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
      &      isf_tgt, x4_start, v4_start, c_field, dt)
+        if(dt .le. 0) then
+            iflag_comm = 0
+!            write(*,*) 'Finish tracing', my_rank, inum
+            exit
+        end if
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
-!     &              ' at ', jcou, ': ', isurf_org(1:2)
-          exit
-        end if
-        if(isf_tgt .eq. 0) then
-          iflag_comm = -1
-!          write(*,*) 'Error at trace to mid point', my_rank, inum,     &
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
@@ -176,11 +169,6 @@
           end if
         end if
 !
-        if(dt .le. 0) then
-            iflag_comm = 0
-!            write(*,*) 'Exit by trace counts', my_rank, inum
-            exit
-        end if
         if(iflag_used_ele(isurf_org(1)) .eq. 0) then
 !          isurf_org(2) = isf_tgt
           iflag_comm = 1
