@@ -17,6 +17,20 @@
 !!        integer(kind = kint), intent(in) :: iele, isf_org
 !!        real(kind = kreal), intent(inout)                             &
 !!     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+!!
+!!      subroutine find_line_end_in_ele_8(iflag_dir, isf_org,           &
+!!     &          nnod_4_ele, nnod_4_surf, node_on_sf, fline,           &
+!!     &          x0, xx4_ele, isf_tgt, x4_tgt, xi)
+!!        integer(kind = kint), intent(in) :: iflag_dir
+!!        integer(kind = kint), intent(in) :: isf_org
+!!        integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+!!        integer(kind = kint), intent(in)                              &
+!!     &                  :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+!!        real(kind = kreal), intent(in) :: fline(4), x0(4)
+!!        real(kind = kreal), intent(in) :: xx4_ele(4,nnod_4_ele)
+!!        integer(kind = kint), intent(inout) :: isf_tgt
+!!        real(kind = kreal), intent(inout) :: x4_tgt(4)
+!!        real(kind = kreal), intent(inout) :: xi(2)
 !!      subroutine find_line_end_in_1ele(iflag_dir, isf_org, fline, x0, &
 !!     &          xx4_ele_surf, isf_tgt, x4_tgt, xi)
 !!        integer(kind = kint), intent(in) :: iflag_dir
@@ -138,11 +152,7 @@
       integer(kind = kint) :: ist, ied, inc, k, ksf
 !
 !
-      if(iflag_dir .eq. iflag_forward_line) then
-        b_ray(1:4) = -fline(1:4)
-      else
-        b_ray(1:4) =  fline(1:4)
-      end if
+      b_ray(1:4) = dble(iflag_dir) * fline(1:4)
 !
       if(isf_org .eq. 0) then
         ist =  1
