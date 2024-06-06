@@ -48,7 +48,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle(dt_init, mesh, para_surf, nod_fld,    &
+      subroutine s_trace_particle(dt, mesh, para_surf, nod_fld,         &
      &          fln_prm, fln_tce, fline_lc, fln_SR, fln_bcast,          &
      &          v_prev, m_SR)
 !
@@ -57,7 +57,7 @@
       use set_fline_seeds_from_list
       use copy_field_smp
 !
-      real(kind = kreal), intent(in) :: dt_init
+      real(kind = kreal), intent(in) :: dt
       type(mesh_geometry), intent(in) :: mesh
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -70,25 +70,25 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      real(kind = kreal) :: dt
       integer(kind = kint) :: nline, inum
 !
 !
-      dt = dt_init
       call return_to_trace_list(fln_prm, fline_lc, fln_tce)
+      fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 
       call reset_fline_start(fline_lc)
       do
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
-     &       (mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,       &
+     &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
      &        v_prev, fln_prm%fline_fields, fln_prm%iphys_4_fline,      &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
-     &        dt, fln_tce%iflag_comm_start(inum), inum)
+     &        fln_tce%trace_length(inum),                               &
+     &        fln_tce%iflag_comm_start(inum), inum)
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
             call set_field_at_each_seed_point(mesh%node, mesh%ele,      &

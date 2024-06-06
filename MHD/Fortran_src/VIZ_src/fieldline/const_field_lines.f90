@@ -112,6 +112,7 @@
       integer(kind = kint) :: nline, inum, ip
 !
 !
+      fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
       call reset_fline_start(fline_lc)
 !
       do

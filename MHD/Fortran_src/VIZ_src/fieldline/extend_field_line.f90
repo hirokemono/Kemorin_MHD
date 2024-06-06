@@ -105,9 +105,12 @@
       do
         jcou = jcou + 1
         icount_line = icount_line + 1
-        call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
-     &      nod_fld, nod_fld%d_fld(1,i_fline), viz_fields,              &
-     &      x4_ele, v4_ele, color_ele)
+        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+     &                                  node%xx, x4_ele)
+        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+     &      nod_fld%d_fld(1,i_fline), v4_ele)
+        call fline_colors_at_one_elemnt(isurf_org(1), ele,              &
+     &                                  nod_fld, viz_fields, color_ele)
 !
 !   extend in the middle of element
         call fline_trace_in_element(half, end_trace, trace_length,      &

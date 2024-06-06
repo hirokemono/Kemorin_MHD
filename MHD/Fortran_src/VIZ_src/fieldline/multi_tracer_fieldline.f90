@@ -266,48 +266,6 @@
       end subroutine set_FLINE_seed_fields
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine output_field_lines                                     &
-     &         (istep_fline, time_d, num_fline, fln_prm, fline_lc)
-!
-      use set_fields_for_fieldline
-      use collect_fline_data
-      use parallel_ucd_IO_select
-      use set_fline_seeds_from_list
-      use parallel_ucd_IO_select
-!
-      integer(kind = kint), intent(in) :: istep_fline
-      type(time_data), intent(in) :: time_d
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!
-      type(time_data) :: t_IO
-      type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln
-!  
-!
-      do i_fln = 1, num_fline
-        call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_fieldline_to_IO(fln_prm(i_fln)%fline_fields,    &
-     &                                  fline_lc(i_fln), fline_ucd)
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline_ucd)
-!
-        call copy_local_particles_to_IO(fln_prm(i_fln)%fline_fields,    &
-     &                                  fline_lc(i_fln), fline_ucd)
-        fln_prm(i_fln)%fline_file_IO%iflag_format = iflag_sgl_ucd
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline_ucd)
-        call calypso_mpi_barrier
-      end do
-!
-      end subroutine output_field_lines
-!
-!  ---------------------------------------------------------------------
 !
       subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
      &          num_fline, fln_prm, fln_tce, fline_lc)

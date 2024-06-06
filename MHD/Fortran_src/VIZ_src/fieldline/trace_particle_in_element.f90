@@ -7,10 +7,11 @@
 !> @brief extend field line in each domain
 !!
 !!@verbatim
-!!      subroutine s_trace_particle_in_element                          &
-!!     &         (node, surf, para_surf, nod_fld, v_prev, viz_fields,   &
+!!      subroutine s_trace_particle_in_element(dt, node, ele, surf,     &
+!!     &          para_surf, nod_fld, v_prev, viz_fields,               &
 !!     &          i_tracer, iflag_used_ele, isurf_org_dbl,              &
-!!     &          x4_start, v4_start, c_field, dt, iflag_comm, inum)
+!!     &          x4_start, v4_start, c_field, progress,                &
+!!     &          iflag_comm, inum)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!        type(paralell_surface_indices), intent(in) :: para_surf
@@ -22,6 +23,7 @@
 !!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: c_field(viz_fields%ntot_color_comp)
+!!        real(kind = kreal), intent(inout) :: progress
 !!        real(kind = kreal), intent(inout) :: dt
 !!        real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
 !!        integer(kind = kint), intent(inout) :: iflag_comm
@@ -51,14 +53,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle_in_element(node, ele, surf,           &
+      subroutine s_trace_particle_in_element(dt, node, ele, surf,       &
      &          para_surf, nod_fld, v_prev, viz_fields,                 &
      &          i_tracer, iflag_used_ele, isurf_org_dbl,                &
-     &          x4_start, v4_start, c_field, dt, iflag_comm, inum)
+     &          x4_start, v4_start, c_field, progress,                  &
+     &          iflag_comm, inum)
 !
       use t_local_fline
       use trace_in_element
 !
+      real(kind = kreal), intent(in) :: dt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -73,13 +77,14 @@
       real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                    :: c_field(viz_fields%ntot_color_comp)
+      real(kind = kreal), intent(inout) :: progress
 !
-      real(kind = kreal), intent(inout) :: dt
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       integer(kind = kint), intent(inout) :: iflag_comm
 !
       real(kind = kreal) :: flux
 !
+      real(kind = kreal) :: v4_pre(4,ele%nnod_4_ele)
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
@@ -100,13 +105,19 @@
       iflag_comm = 0
       do
         jcou = jcou + 1
-        call fline_fields_at_one_elemnt(isurf_org(1), node, ele,        &
-     &      nod_fld, v_prev, viz_fields, x4_ele, v4_ele, color_ele)
+        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+     &                                  node%xx, x4_ele)
+        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+     &                                  v_prev, v4_pre)
+        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+     &      nod_fld%d_fld(1,i_tracer), v4_ele)
+        call fline_colors_at_one_elemnt(isurf_org(1), ele,              &
+     &                                  nod_fld, viz_fields, color_ele)
 !
 !   extend in the middle of element
-        call s_trace_in_element(half, isurf_org(2), node, ele, surf,    &
-     &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, x4_start, v4_start, c_field, dt)
+        call s_trace_in_element(half, dt, isurf_org(2), ele, surf,      &
+     &      viz_fields, x4_ele, v_prev, v4_ele, color_ele,              &
+     &      isf_tgt, x4_start, v4_start, c_field, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -115,10 +126,10 @@
         end if
 !
 !   extend to surface of element
-        call s_trace_in_element(one, izero, node, ele, surf,            &
-     &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, x4_start, v4_start, c_field, dt)
-        if(dt .le. 0) then
+        call s_trace_in_element(one, dt, izero, ele, surf,              &
+     &      viz_fields, x4_ele, v_prev, v4_ele, color_ele,              &
+     &      isf_tgt, x4_start, v4_start, c_field, progress)
+        if(progress .ge. 1.0d0) then
             iflag_comm = 0
 !            write(*,*) 'Finish tracing', my_rank, inum
             exit
