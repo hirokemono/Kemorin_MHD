@@ -123,12 +123,11 @@
      &    viz_fields, x4_ele, v4_current_e, c_ele, x4_start, v4_start,  &
      &    isf_tgt, x4_tgt, v4_tgt, c_tgt)
 !
-      call ratio_of_trace_to_wall_tracer(trace_ratio, progress,         &
-     &    v4_start, x4_tgt, x4_start, dt, ratio)
+      call ratio_of_trace_to_wall_tracer(trace_ratio,                   &
+     &    v4_start, x4_tgt, x4_start, dt, ratio, progress)
       call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
      &                           x4_tgt, v4_tgt, c_tgt,                 &
      &                           x4_start, v4_start, c_field)
-      progress = progress + ratio
 !
       end subroutine s_trace_in_element
 !
@@ -238,25 +237,27 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine ratio_of_trace_to_wall_tracer(trace_ratio, progress,   &
-     &          v4_start, x4_tgt, x4_start, dt, ratio)
+      subroutine ratio_of_trace_to_wall_tracer(trace_ratio,             &
+     &          v4_start, x4_tgt, x4_start, dt, ratio, progress)
 
       real(kind = kreal), intent(in) :: x4_tgt(4), x4_start(4)
       real(kind = kreal), intent(in) :: v4_start(4)
-      real(kind = kreal), intent(in) :: dt, trace_ratio, progress
-      real(kind = kreal), intent(inout) :: ratio
+      real(kind = kreal), intent(in) :: dt, trace_ratio
+      real(kind = kreal), intent(inout) :: ratio, progress
 !
       real(kind = kreal) :: trip, dl
 !
       dl = dt * sqrt(v4_start(1) * v4_start(1)                          &
      &            +  v4_start(2) * v4_start(2)                          &
-     &            +  v4_start(3) * v4_start(3))
+     &            +  v4_start(3) * v4_start(3))                         &
+     &        * (one - progress)
       trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1))   &
      &         + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))    &
-     &         + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))   &
-     &      * (one - progress)
+     &         + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
 !
-      ratio = trace_ratio * min(one, trip/dl)
+      actual = trace_ratio * min(trip, dl)
+      ratio =  actual / trip
+      progress = progress + (one - progress) * actual / dl
 !
       end subroutine ratio_of_trace_to_wall_tracer
 !

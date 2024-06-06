@@ -45,8 +45,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter, private :: iflag_forward = 0
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -141,42 +139,43 @@
           exit
         end if
 
-        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
+        if(isf_tgt .gt. 0) then
+          isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
 !
-        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+          flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
-     &         *(-one)**iflag_forward
+     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end)
 !
-!   set backside element and surface 
-        if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
-          isurf_org_dbl(1:3)                                            &
-     &         = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
-        else
-          isurf_org_dbl(1:3)                                            &
-     &         = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
-        end if
-        if(flux .lt. zero) then
-!          isurf_org(1) = isurf_org(1)
-          isurf_org(2) = isf_tgt
-        else
-          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+!   set backside element and surface
+          if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
+            isurf_org_dbl(1:3)                                            &
+     &           = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
           else
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+            isurf_org_dbl(1:3)                                            &
+     &           = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
           end if
-!
-!          if(surf%interior_surf(isurf_end) .eq. izero) then
-          if(isurf_org_dbl(1) .ne. my_rank                              &
-     &        .or. isurf_org_dbl(3) .eq. 0) then
+          if(flux .lt. zero) then
 !            isurf_org(1) = isurf_org(1)
             isurf_org(2) = isf_tgt
-            iflag_comm = 1
-!            write(*,*) 'Exit for external surface', my_rank, inum
+          else
+            if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
+              isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+            else
+              isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+            end if
+!
+!            if(surf%interior_surf(isurf_end) .eq. izero) then
+            if(isurf_org_dbl(1) .ne. my_rank                              &
+     &          .or. isurf_org_dbl(3) .eq. 0) then
+!              isurf_org(1) = isurf_org(1)
+              isurf_org(2) = isf_tgt
+              iflag_comm = 1
+!              write(*,*) 'Exit for external surface', my_rank, inum
 !       &            ': ', isurf_org_dbl(1:3), ': ',  &
 !       &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
-            exit
+              exit
+            end if
           end if
         end if
 !
