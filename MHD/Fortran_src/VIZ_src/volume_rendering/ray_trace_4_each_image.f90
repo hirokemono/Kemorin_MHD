@@ -135,6 +135,7 @@
       integer(kind = kint) :: i_iso, i_psf, iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
+      real(kind = kreal) :: xx4_model_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
       real(kind = kreal) :: opacity_bc
       logical :: flag_sect
@@ -181,12 +182,20 @@
 !
 !   extend to surface of element
 !
-        call position_on_each_ele_sfs_wone                              &
-     &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
+!        call position_on_each_ele_sfs_wone                              &
+!     &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
+!        call project_once_each_element(modelview_mat, projection_mat,  &
+!     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+!        call find_line_end_in_1ele(iflag_forward_line,                 &
+!     &      isf_org, ray_vec4, screen4_st, xx4_model_sf,               &
+!     &      isf_tgt, screen4_tgt, xi)
+        call fline_vector_at_one_elemnt(iele, node, ele,                &
+     &                                  node%xx, xx4_model_ele(1,1))
         call project_once_each_element(modelview_mat, projection_mat,   &
-     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
-        call find_line_end_in_1ele(iflag_forward_line,                  &
-     &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
+     &      ele%nnod_4_ele, xx4_model_ele(1,1))
+        call find_line_end_in_ele_8(iflag_forward_line, isf_org,        &
+     &      ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,          &
+     &      ray_vec4, screen4_st, xx4_model_ele,                        &
      &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
 !     &         my_rank, screen4_tgt(1:4), ele%interior_ele(iele)
