@@ -1,5 +1,5 @@
-!>@file  trace_in_element.f90
-!!       module trace_in_element
+!>@file  cal_field_on_surf_viz.f90
+!!       module cal_field_on_surf_viz
 !!
 !!@author H. Matsui
 !!@date   Programmed in Aug., 2011

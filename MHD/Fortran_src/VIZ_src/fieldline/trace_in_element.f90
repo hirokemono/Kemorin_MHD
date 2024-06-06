@@ -245,7 +245,7 @@
       real(kind = kreal), intent(in) :: dt, trace_ratio
       real(kind = kreal), intent(inout) :: ratio, progress
 !
-      real(kind = kreal) :: trip, dl
+      real(kind = kreal) :: trip, dl, actual
 !
       dl = dt * sqrt(v4_start(1) * v4_start(1)                          &
      &            +  v4_start(2) * v4_start(2)                          &
