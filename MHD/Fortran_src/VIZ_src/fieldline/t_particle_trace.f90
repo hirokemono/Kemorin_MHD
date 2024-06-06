@@ -185,7 +185,8 @@
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
       integer(kind = kint) :: i_fln, istep_fline
-!  
+!
+      if(TRACER_d%increment .eq. 0) return
       if(mod(time_d%i_time_step, TRACER_d%increment) .ne. 0) return
       istep_fline = time_d%i_time_step / TRACER_d%increment
 !
