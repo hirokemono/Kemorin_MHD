@@ -7,6 +7,13 @@
 !> @brief trace field line in one cube element
 !!
 !!@verbatim
+!!      subroutine vector_at_each_element(iele, node, ele, v_trace,     &
+!!     &                                  v4_ele)
+!!        integer(kind = kint), intent(in) :: iele
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
+!!        real(kind = kreal), intent(inout) :: v4_ele(4,ele%nnod_4_ele)
 !!      subroutine position_on_each_ele_surfs                           &
 !!     &         (surf, numnod, xx, iele, xx4_ele_surf)
 !!      subroutine position_on_each_ele_sfs_wone                        &
@@ -52,6 +59,7 @@
 !
       use m_constants
       use m_geometry_constants
+      use t_geometry_data
       use t_surface_data
 !
 !
@@ -67,6 +75,28 @@
       contains
 !
 !------------------------------------------------------------------
+!
+      subroutine vector_at_each_element(iele, node, ele, v_trace,       &
+     &                                  v4_ele)
+!
+      integer(kind = kint), intent(in) :: iele
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
+!
+      real(kind = kreal), intent(inout) :: v4_ele(4,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: k1, inod
+!
+      do k1 = 1, ele%nnod_4_ele
+        inod = ele%ie(iele,k1)
+        v4_ele(1:3,k1) = v_trace(inod,1:3)
+        v4_ele(4,k1) = one
+      end do
+!
+      end subroutine vector_at_each_element
+!
+!  ---------------------------------------------------------------------
 !
       subroutine position_on_each_ele_surfs                             &
      &         (surf, numnod, xx, iele, xx4_ele_surf)

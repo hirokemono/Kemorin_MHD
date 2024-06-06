@@ -105,14 +105,14 @@
       iflag_comm = 0
       do
         jcou = jcou + 1
-        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &                                  node%xx, x4_ele)
-        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &                                  v_prev, v4_pre)
-        call fline_vector_at_one_elemnt(isurf_org(1), node, ele,        &
+        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &      nod_fld%d_fld(1,i_tracer), v4_ele)
-        call fline_colors_at_one_elemnt(isurf_org(1), ele,              &
-     &                                  nod_fld, viz_fields, color_ele)
+        call fline_colors_at_one_element(isurf_org(1), ele,             &
+     &      nod_fld, viz_fields, color_ele)
 !
 !   extend in the middle of element
         call s_trace_in_element(half, dt, isurf_org(2), ele, surf,      &

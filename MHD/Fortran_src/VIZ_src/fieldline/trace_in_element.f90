@@ -33,10 +33,10 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: c_field(viz_fields%ntot_color_comp)
 !!        integer(kind = kint), intent(inout) :: iflag_comm
-!!      subroutine fline_vector_at_one_elemnt(iele, node, ele, v_trace, &
+!!      subroutine fline_vector_at_one_element(iele, node, ele, v_trace,&
 !!     &                                      v4_ele)
-!!      subroutine fline_colors_at_one_elemnt(iele, ele, nod_fld,       &
-!!     &                                      viz_fields, c_ele)
+!!      subroutine fline_colors_at_one_element(iele, ele, nod_fld,      &
+!!     &                                       viz_fields, c_ele)
 !!        integer(kind = kint), intent(in) :: iele
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -316,7 +316,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine fline_vector_at_one_elemnt(iele, node, ele, v_trace,   &
+      subroutine fline_vector_at_one_element(iele, node, ele, v_trace,  &
      &                                      v4_ele)
 !
       integer(kind = kint), intent(in) :: iele
@@ -334,12 +334,12 @@
         v4_ele(4,k1) = one
       end do
 !
-      end subroutine fline_vector_at_one_elemnt
+      end subroutine fline_vector_at_one_element
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine fline_colors_at_one_elemnt(iele, ele, nod_fld,         &
-     &                                      viz_fields, c_ele)
+      subroutine fline_colors_at_one_element(iele, ele, nod_fld,        &
+     &                                       viz_fields, c_ele)
 !
       use tracer_field_interpolate
 !
@@ -360,7 +360,7 @@
      &                              c_ele(1,k1))
       end do
 !
-      end subroutine fline_colors_at_one_elemnt
+      end subroutine fline_colors_at_one_element
 !
 !  ---------------------------------------------------------------------
 !
