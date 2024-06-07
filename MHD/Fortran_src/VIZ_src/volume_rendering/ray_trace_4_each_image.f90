@@ -132,12 +132,10 @@
 !
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: i_iso, i_psf, iflag_hit
+      integer(kind = kint) :: iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
-      real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
-      real(kind = kreal) :: opacity_bc
-      logical :: flag_sect
+      real(kind = kreal) :: grad_tgt(3), xx4_tgt(4)
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -159,14 +157,10 @@
 !
 !        Set color if starting surface is colourd
       if(ele%interior_ele(iele) .gt. 0) then
-        opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,     &
-     &          sf_grp_4_sf, modelview_mat,                             &
-     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
-        if(opacity_bc .gt. SMALL_RAY_TRACE) then
-          grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
-          call plane_rendering_with_light(viewpoint_vec,                &
-     &        xx4_st, grad_tgt, opacity_bc,  color_param, rgba_ray)
-        end if
+        call rendering_surace_group                                     &
+     &     (isurf_end, surf, surf_grp, sf_grp_4_sf,                     &
+     &      viewpoint_vec, modelview_mat, draw_param, color_param,      &
+     &      xx4_st, rgba_ray)
       end if
 !
       do
@@ -218,31 +212,17 @@
 !
         if(ele%interior_ele(iele) .gt. 0) then
 !    Set color if exit surface is colourd
-          opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,   &
-     &          sf_grp_4_sf, modelview_mat,                             &
-     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
-          if(opacity_bc .gt. SMALL_RAY_TRACE) then
-            grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
-            call plane_rendering_with_light (viewpoint_vec,             &
-     &          xx4_tgt, grad_tgt, opacity_bc,  color_param, rgba_ray)
-          end if
+          call rendering_surace_group                                   &
+     &       (isurf_end, surf, surf_grp, sf_grp_4_sf,                   &
+     &        viewpoint_vec, modelview_mat, draw_param, color_param,    &
+     &        xx4_tgt, rgba_ray)
 !
           call rendering_sections                                       &
-     &         (viewpoint_vec, draw_param, color_param,                 &
-     &          xx4_st, rgba_ray, xx4_tgt, c_org(1), c_tgt(1), iflag_hit)
-!
-          do i_iso = 1, draw_param%num_isosurf
-            rflag =  (c_org(1) - draw_param%iso_value(i_iso))           &
-     &             * (c_tgt(1) - draw_param%iso_value(i_iso))
-            if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero       &
-     &        .or. rflag .lt. zero) then
-              grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
-     &                       * dble(draw_param%itype_isosurf(i_iso))
-              call color_plane_with_light(viewpoint_vec, xx4_tgt,       &
-     &            draw_param%iso_value(i_iso), grad_tgt,                &
-     &            draw_param%iso_opacity(i_iso), color_param, rgba_ray)
-            end if
-          end do
+     &       (viewpoint_vec, draw_param, color_param,                   &
+     &        xx4_st, xx4_tgt, c_org(1), c_tgt(1), rgba_ray, iflag_hit)
+          call rendering_isosurfaces(iele, viewpoint_vec, field_pvr,    &
+     &                               draw_param, color_param,           &
+     &                               xx4_tgt, c_org, c_tgt, rgba_ray)
 !
           grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
@@ -275,7 +255,7 @@
 !
       subroutine rendering_sections                                     &
      &         (viewpoint_vec, draw_param, color_param,                 &
-     &          xx4_st, rgba_ray, xx4_tgt, c_org, c_tgt, iflag_hit)
+     &          xx4_st, xx4_tgt, c_org, c_tgt, rgba_ray, iflag_hit)
 !
       use set_coefs_of_sections
 !
@@ -283,11 +263,11 @@
 !
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
-!
-      real(kind = kreal), intent(inout) :: xx4_st(4)
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(in) :: xx4_st(4)
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
+!
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
       integer(kind = kint), intent(inout) :: iflag_hit
 !
       integer(kind = kint) :: i_psf
@@ -325,6 +305,79 @@
       end do
 !
       end subroutine rendering_sections
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine rendering_isosurfaces(iele, viewpoint_vec, field_pvr,  &
+     &                                draw_param, color_param,          &
+     &                                xx4_tgt, c_org, c_tgt, rgba_ray)
+!
+      integer(kind = kint), intent(in) :: iele
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!
+      type(pvr_field_data), intent(in) :: field_pvr
+      type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
+!
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
+!
+      integer(kind = kint) :: i_iso
+      real(kind = kreal) :: grad_tgt(3), rflag
+!
+!
+      do i_iso = 1, draw_param%num_isosurf
+        rflag =  (c_org(1) - draw_param%iso_value(i_iso))               &
+     &         * (c_tgt(1) - draw_param%iso_value(i_iso))
+        if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero           &
+     &    .or. rflag .lt. zero) then
+          grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)                  &
+     &                   * dble(draw_param%itype_isosurf(i_iso))
+          call color_plane_with_light(viewpoint_vec, xx4_tgt,           &
+     &        draw_param%iso_value(i_iso), grad_tgt,                    &
+     &        draw_param%iso_opacity(i_iso), color_param, rgba_ray)
+        end if
+      end do
+!
+      end subroutine rendering_isosurfaces
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine rendering_surace_group                                 &
+     &         (isurf_end, surf, surf_grp, sf_grp_4_sf,                 &
+     &          viewpoint_vec, modelview_mat, draw_param, color_param,  &
+     &          xx4_tgt, rgba_ray)
+!
+      use pvr_surface_enhancement
+!
+      integer(kind = kint), intent(in) :: isurf_end
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: surf_grp
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!
+      type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+!
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
+!
+      real(kind = kreal) :: grad_tgt(3), opacity_bc
+!
+!
+      opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,       &
+     &                                 sf_grp_4_sf, modelview_mat,      &
+     &                                 draw_param%iflag_enhanse,        &
+     &                                 draw_param%enhansed_opacity)
+      if(opacity_bc .gt. SMALL_RAY_TRACE) then
+        grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
+        call plane_rendering_with_light(viewpoint_vec,                  &
+     &      xx4_tgt, grad_tgt, opacity_bc, color_param, rgba_ray)
+      end if
+!
+      end subroutine rendering_surace_group
 !
 !  ---------------------------------------------------------------------
 !
