@@ -118,7 +118,7 @@
      &      isf_tgt, x4_start, v4_start, c_field, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
-          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
+          write(*,*) 'Trace stops by zero vector', my_rank, inum,       &
      &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
@@ -142,17 +142,17 @@
         if(isf_tgt .gt. 0) then
           isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
 !
-          flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+          flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)            &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
      &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end)
 !
 !   set backside element and surface
           if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
-            isurf_org_dbl(1:3)                                            &
+            isurf_org_dbl(1:3)                                          &
      &           = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
           else
-            isurf_org_dbl(1:3)                                            &
+            isurf_org_dbl(1:3)                                          &
      &           = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
           end if
           if(flux .lt. zero) then
@@ -166,7 +166,7 @@
             end if
 !
 !            if(surf%interior_surf(isurf_end) .eq. izero) then
-            if(isurf_org_dbl(1) .ne. my_rank                              &
+            if(isurf_org_dbl(1) .ne. my_rank                            &
      &          .or. isurf_org_dbl(3) .eq. 0) then
 !              isurf_org(1) = isurf_org(1)
               isurf_org(2) = isf_tgt

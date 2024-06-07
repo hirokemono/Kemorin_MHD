@@ -227,37 +227,9 @@
      &          xx4_tgt, grad_tgt, opacity_bc,  color_param, rgba_ray)
           end if
 !
-          do i_psf = 1, draw_param%num_sections
-            rflag                                                       &
-     &        = side_of_plane(draw_param%coefs(1:10,i_psf), xx4_st(1))
-            rflag2                                                      &
-     &        = side_of_plane(draw_param%coefs(1:10,i_psf), xx4_tgt(1))
-!
-            flag_sect = .FALSE.
-            if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
-              flag_sect = .TRUE.
-              iflag_hit = 1
-            else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
-              flag_sect = .TRUE.
-              iflag_hit = 1
-            end if
-
-            if(flag_sect) then
-              call cal_normal_of_plane                                  &
-     &           (draw_param%coefs(1:10,i_psf), xx4_tgt(1), grad_tgt)
-              call color_plane_with_light                               &
-     &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
-     &            draw_param%sect_opacity(i_psf), color_param,          &
-     &            rgba_ray)
-              if(draw_param%iflag_psf_zeoline(i_psf) .gt. 0             &
-     &            .and. c_org(1)*c_tgt(1) .le. TINY9) then
-                call black_plane_with_light                             &
-     &             (viewpoint_vec, xx4_tgt, grad_tgt,                   &
-     &             draw_param%sect_opacity(i_psf), color_param,         &
-     &             rgba_ray)
-              end if
-            end if
-          end do
+          call rendering_sections                                       &
+     &         (viewpoint_vec, draw_param, color_param,                 &
+     &          xx4_st, rgba_ray, xx4_tgt, c_org(1), c_tgt(1), iflag_hit)
 !
           do i_iso = 1, draw_param%num_isosurf
             rflag =  (c_org(1) - draw_param%iso_value(i_iso))           &
@@ -298,6 +270,61 @@
 !      end if
 !
       end subroutine ray_trace_each_pixel
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine rendering_sections                                     &
+     &         (viewpoint_vec, draw_param, color_param,                 &
+     &          xx4_st, rgba_ray, xx4_tgt, c_org, c_tgt, iflag_hit)
+!
+      use set_coefs_of_sections
+!
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!
+      type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_colormap_parameter), intent(in) :: color_param
+!
+      real(kind = kreal), intent(inout) :: xx4_st(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
+      integer(kind = kint), intent(inout) :: iflag_hit
+!
+      integer(kind = kint) :: i_psf
+      real(kind = kreal) :: grad_tgt(3), rflag1, rflag2
+      logical :: flag_sect
+!
+!
+      do i_psf = 1, draw_param%num_sections
+        rflag1 = side_of_plane(draw_param%coefs(1:10,i_psf), xx4_st(1))
+        rflag2 = side_of_plane(draw_param%coefs(1:10,i_psf), xx4_tgt(1))
+!
+        flag_sect = .FALSE.
+        if     (rflag1 .ge. -TINY9 .and. rflag2 .le. TINY9) then
+          flag_sect = .TRUE.
+          iflag_hit = 1
+        else if(rflag1 .le. TINY9 .and. rflag2 .ge. -TINY9) then
+          flag_sect = .TRUE.
+          iflag_hit = 1
+        end if
+
+        if(flag_sect) then
+          call cal_normal_of_plane                                      &
+     &           (draw_param%coefs(1:10,i_psf), xx4_tgt(1), grad_tgt)
+          call color_plane_with_light                                   &
+     &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
+     &            draw_param%sect_opacity(i_psf), color_param,          &
+     &            rgba_ray)
+          if(draw_param%iflag_psf_zeoline(i_psf) .gt. 0                 &
+     &            .and. c_org(1)*c_tgt(1) .le. TINY9) then
+            call black_plane_with_light                                 &
+     &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
+     &          draw_param%sect_opacity(i_psf), color_param, rgba_ray)
+          end if
+        end if
+      end do
+!
+      end subroutine rendering_sections
 !
 !  ---------------------------------------------------------------------
 !
