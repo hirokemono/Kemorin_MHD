@@ -1,9 +1,12 @@
-!t_local_fline.f90
+!>@file   t_local_fline.f90
+!!@brief  module t_local_fline
+!!
+!!@author H.Matsui
+!!@date      Programmed in June, 2024
 !
-!      module t_local_fline
-!
-!      Written by H. Matsui on Aug., 2011
-!
+!>@brief  local field line and tracer data structure
+!!
+!!@verbatim
 !!      subroutine reset_fline_start(fline_lc)
 !!      subroutine add_fline_start(xx4_add, v4_add, ntot_comp, col_add, &
 !!     &                           fline_lc)
@@ -17,8 +20,13 @@
 !!        real(kind = kreal), intent(in) :: col_add(ntot_comp)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
+!!      subroutine raise_local_fline_connect(fline_lc)
+!!      subroutine raise_local_fline_data(fline_lc)
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!
 !!      subroutine check_local_fline(id_file, fline_lc)
 !!        type(local_fieldline), intent(in) :: fline_lc
+!!@endverbatim
 !
       module t_local_fline
 !

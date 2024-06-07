@@ -8,21 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine output_tracer_restart(tracer_file_prm, istep_rst,    &
-!!     &         time_d, rst_step, viz_fields, fln_tce, fline_lc)
+!!     &         time_d, rst_step, viz_fields, fline_lc)
 !!        integer(kind = kint), intent(in) :: istep_rst
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
-!!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!      subroutine input_tracer_restart(tracer_file_prm, init_d,        &
-!!     &          rst_step,  viz_fields, fln_tce, fline_lc)
+!!     &          rst_step, viz_fields, fline_lc)
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(inout) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
-!!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
@@ -36,7 +34,6 @@
       use t_local_fline
       use t_read_mesh_data
       use t_field_data_IO
-      use t_tracing_data
 !
       implicit none
 !
@@ -47,7 +44,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_tracer_restart(tracer_file_prm, istep_rst,      &
-     &          time_d, viz_fields, fln_tce, fline_lc)
+     &          time_d, viz_fields, fline_lc)
 !
       use set_sph_restart_IO
       use field_IO_select
@@ -60,7 +57,6 @@
       type(field_IO_params), intent(in) :: tracer_file_prm
       type(time_data), intent(in) :: time_d
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      type(each_fieldline_trace), intent(in) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
 !
       type(surf_edge_IO_file) :: particle_IO
@@ -69,7 +65,6 @@
 !
 !
       call copy_time_step_size_data(time_d, time_IO)
-!      call set_particles_to_trace_list(viz_fields, fln_tce, fline_lc)
       call copy_local_tracer_to_IO(fline_lc, particle_IO)
 
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
@@ -100,7 +95,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_tracer_restart(tracer_file_prm, istep_rst,       &
-     &          init_d, viz_fields, fln_tce, fline_lc)
+     &          init_d, viz_fields, fline_lc)
 !
       use set_sph_restart_IO
       use field_IO_select
@@ -112,7 +107,6 @@
       integer(kind = kint), intent(in) :: istep_rst
       type(time_data), intent(in) :: init_d
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
 !
       type(surf_edge_IO_file) :: particle_IO
@@ -126,8 +120,6 @@
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_surf_geometry_data(particle_IO)
-!
-!      call return_particles_to_trace_list(fline_lc, fln_tce)
 !
       if(viz_fields%num_color_fields .le. 1) return
 !

@@ -169,10 +169,12 @@
      &    .or. lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step)                    &
      &    .or. SVIZ_m%tracers%num_fline .gt. 0) then
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+6)
           call alloc_sph_trans_area_snap                                &
      &       (SSMHDs%SPH_MHD%sph, SSMHDs%SPH_WK%trns_WK)
           call alloc_SGS_sph_trns_area_snap                             &
      &       (SSMHDs%SPH_MHD%sph, SVIZ_m%SPH_SGS%trns_WK_LES)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+6)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
@@ -183,17 +185,19 @@
 !*
 !*  -----------  Send field data to FEM mesh --------------
 !*
-        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
         if(SVIZ_m%tracers%num_fline .gt. 0) then
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
           call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,         &
      &        SSMHDs%SPH_MHD%comms, SSMHDs%SPH_MHD%fld,                 &
      &        SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK%trns_MHD,    &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SSMHDs%m_SR)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
         end if
         if(lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step,     &
      &                          SSMHDs%MHD_step)                        &
      &    .or. lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step)) then
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
      &       (SVIZ_m%SPH_SGS%SGS_par, SSMHDs%SPH_MHD%sph,               &
@@ -204,18 +208,22 @@
           call FEM_analyze_sph_SGS_MHD                                  &
      &       (SSMHDs%MHD_files, SSMHDs%MHD_step, SSMHDs%MHD_IO,         &
      &        SVIZ_m%FEM_DAT, SSMHDs%m_SR)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         end if
-        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !*
 !*  ----------- Move tracer --------------
 !*
-         call TRACER_evolution                                          &
-     &      (SSMHDs%MHD_step%time_d,  SSMHDs%MHD_step%finish_d,         &
-     &       SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,           &
-     &       SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,            &
-     &       SVIZ_m%tracers, SSMHDs%m_SR)
-        call TRACER_visualize(SSMHDs%MHD_step%viz_step%TRACER_t,        &
-     &                        SSMHDs%MHD_step%time_d, SVIZ_m%tracers)
+        if(SVIZ_m%tracers%num_fline .gt. 0) then
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
+           call TRACER_evolution                                        &
+     &        (SSMHDs%MHD_step%time_d,  SSMHDs%MHD_step%finish_d,       &
+     &         SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,         &
+     &         SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,          &
+     &         SVIZ_m%tracers, SSMHDs%m_SR)
+          call TRACER_visualize(SSMHDs%MHD_step%viz_step%TRACER_t,      &
+     &                          SSMHDs%MHD_step%time_d, SVIZ_m%tracers)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
+        end if
 !*
 !*  ----------- Visualization --------------
 !*
@@ -248,9 +256,11 @@
      &    .or. lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step)                    &
      &    .or. SVIZ_m%tracers%num_fline .gt. 0) then
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+6)
           call dealloc_sph_trans_area_snap(SSMHDs%SPH_WK%trns_WK)
           call dealloc_SGS_sph_trns_area_snap                           &
      &       (SVIZ_m%SPH_SGS%trns_WK_LES)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+6)
         end if
 !*  -----------  exit loop --------------
 !*

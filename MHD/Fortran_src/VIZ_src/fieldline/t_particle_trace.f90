@@ -184,13 +184,18 @@
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln, istep_fline
+      integer(kind = kint) :: i_fln, istep_fline, istep_rst
 !
       if(TRACER_d%increment .eq. 0) return
       if(mod(time_d%i_time_step, TRACER_d%increment) .ne. 0) return
       istep_fline = time_d%i_time_step / TRACER_d%increment
 !
+      istep_rst = set_IO_step(time_d%i_time_step, rst_step)
       do i_fln = 1, tracer%num_fline
+        call input_tracer_restart(tracer%fln_prm(i_fln)%fline_rst_IO,   &
+     &      istep_rst, time_d, tracer%fln_prm(i_fln)%fline_fields,      &
+     &      tracer%fline_lc(i_fln))
+!
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO                                 &
      &     (tracer%fln_prm(i_fln)%fline_fields, tracer%fline_lc(i_fln), &

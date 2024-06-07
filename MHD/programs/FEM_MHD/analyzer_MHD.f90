@@ -117,13 +117,17 @@
 !
 !*  ----------- Move tracer --------------
 !*
-         call TRACER_evolution                                          &
-     &      (FMHDs%MHD_step%time_d,  FMHDs%MHD_step%finish_d,           &
-     &       FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,             &
-     &       FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,             &
-     &       FMVIZs%tracers, FMHDs%m_SR)
-        call TRACER_visualize(FMHDs%MHD_step%viz_step%TRACER_t,         &
-     &                        FMHDs%MHD_step%time_d, FMVIZs%tracers)
+        if(FMVIZs%tracers%num_fline .gt. 0) then
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
+          call TRACER_evolution                                         &
+     &       (FMHDs%MHD_step%time_d,  FMHDs%MHD_step%finish_d,          &
+     &        FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,            &
+     &        FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,            &
+     &        FMVIZs%tracers, FMHDs%m_SR)
+         call TRACER_visualize(FMHDs%MHD_step%viz_step%TRACER_t,        &
+     &                         FMHDs%MHD_step%time_d, FMVIZs%tracers)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
+        end if
 !
 !  Visualization
         visval = MHD_viz_routine_flag(FMHDs%MHD_step%flex_p,            &

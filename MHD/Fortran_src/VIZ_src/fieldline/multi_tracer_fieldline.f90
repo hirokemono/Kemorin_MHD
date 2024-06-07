@@ -280,7 +280,7 @@
         do i_fln = 1, num_fline
           call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
      &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
+     &        fline_lc(i_fln))
         end do
       end if
 !
@@ -288,7 +288,7 @@
         do i_fln = 1, num_fline
           call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
      &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
-     &        fln_tce(i_fln), fline_lc(i_fln))
+     &        fline_lc(i_fln))
         end do
       end if
 !
@@ -322,13 +322,13 @@
      &                       .eq. iflag_read_reastart) then
           call input_tracer_restart(fln_prm(i_fln)%fline_rst_IO,        &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
+     &        fline_lc(i_fln))
         else
           call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
      &                                 fline_lc(i_fln))
           call output_tracer_restart(fln_prm(i_fln)%fline_rst_IO,       &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fln_tce(i_fln), fline_lc(i_fln))
+     &        fline_lc(i_fln))
         end if
       end do
       write(*,*) 'restart output done'
