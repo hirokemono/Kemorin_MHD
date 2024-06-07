@@ -86,8 +86,7 @@
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !
 !
-      if(MHD_step%flex_p%iflag_flexible_step .ne. iflag_flex_step)      &
-     &   return
+      if(MHD_step%time_d%flag_flex_step .eqv. .FALSE.) return
 !
       call set_ele_rms_4_previous_step                                  &
      &   (MHD_step%time_d, mesh, MHD_mesh%fluid, iphys, nod_fld,        &

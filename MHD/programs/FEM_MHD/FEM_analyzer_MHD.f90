@@ -327,8 +327,7 @@
 !
 !   Finish by specific step
       if(MHD_step%finish_d%i_end_step .ne. -1) then
-        if(MHD_step%flex_p%iflag_flexible_step .eq. iflag_flex_step)    &
-     &   then
+        if(MHD_step%time_d%flag_flex_step) then
           if(MHD_step%time_d%time .gt. MHD_step%flex_p%time_to_finish)  &
      &        retval = 0
         else

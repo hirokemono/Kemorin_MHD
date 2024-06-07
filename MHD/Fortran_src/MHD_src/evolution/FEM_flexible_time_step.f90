@@ -81,8 +81,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
-      if(MHD_step%flex_p%iflag_flexible_step .ne. iflag_flex_step)      &
-     &    return
+      if(MHD_step%time_d%flag_flex_step .eqv. .FALSE.)  return
 !
       if (iflag_debug.eq.1) write(*,*) 'check_flex_time_step_by_sq'
       call check_flex_time_step_by_sq(geofem%mesh, MHD_mesh,            &
@@ -115,7 +114,7 @@
       time_d%time = time_d%time + time_d%dt
       time_d%i_time_step = time_d%i_time_step + 1
 !
-      if (flex_p%iflag_flexible_step .eq. iflag_fixed_step) then
+      if(time_d%flag_flex_step) then
         flex_p%istep_max_dt = time_d%i_time_step
       else
         flex_p%istep_flex_to_max = flex_p%istep_flex_to_max + 1

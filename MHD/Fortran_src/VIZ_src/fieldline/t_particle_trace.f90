@@ -9,14 +9,14 @@
 !!@verbatim
 !!      subroutine TRACER_initialize(init_d, finish_d, rst_step,        &
 !!     &                             geofem, para_surf,                 &
-!!     &                             nod_fld, fline_ctls, tracer)
+!!     &                             nod_fld, tracer_ctls, tracer)
 !!        type(time_data), intent(in) :: init_d
 !!        type(finish_data), intent(in) :: finish_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(fieldline_controls), intent(inout) :: fline_ctls
+!!        type(fieldline_controls), intent(inout) :: tracer_ctls
 !!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_evolution                                     &
 !!     &         (time_d, finish_d, rst_step, istep_tracer,             &
@@ -42,7 +42,7 @@
 !!        type(mesh_data), intent(in) :: fem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(fieldline_controls), intent(inout) :: fline_ctls
+!!        type(fieldline_controls), intent(inout) :: tracer_ctls
 !!        type(fieldline_module), intent(inout) :: tracer
 !!@endverbatim
 !
@@ -86,7 +86,7 @@
 !
       subroutine TRACER_initialize(init_d, finish_d, rst_step,          &
      &                             geofem, para_surf,                   &
-     &                             nod_fld, fline_ctls, tracer)
+     &                             nod_fld, tracer_ctls, tracer)
 !
       use t_control_data_flines
       use m_connect_hexa_2_tetra
@@ -100,18 +100,19 @@
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
-      type(fieldline_controls), intent(inout) :: fline_ctls
+      type(fieldline_controls), intent(inout) :: tracer_ctls
       type(tracer_module), intent(inout) :: tracer
 !
 !
-      tracer%num_fline = fline_ctls%num_fline_ctl
+      tracer%num_fline = tracer_ctls%num_fline_ctl
       if(tracer%num_fline .le. 0) return
 !
       call alloc_TRACER_modules(tracer)
 
       call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
-     &    tracer%num_fline, fline_ctls, tracer%fln_prm, tracer%fln_src)
-      call dealloc_fline_ctl_struct(fline_ctls)
+     &                        tracer%num_fline, tracer_ctls,            &
+     &                        tracer%fln_prm, tracer%fln_src)
+      call dealloc_fline_ctl_struct(tracer_ctls)
 !
       call alloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,      &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &

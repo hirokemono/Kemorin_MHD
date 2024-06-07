@@ -213,7 +213,7 @@
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
-      if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
+      if(time_d%flag_flex_step) then
         call copy_time_steps_from_restart(fem_time_IO, init_d)
         call copy_delta_t(init_d, time_d)
         call cal_num_digit_real                                         &

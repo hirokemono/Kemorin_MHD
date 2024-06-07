@@ -115,7 +115,7 @@
 !
       call copy_time_step_data(init_d, time_d)
 !
-      if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
+      if(time_d%flag_flex_step) then
         flex_p%istep_max_dt = nint(init_d%time / flex_p%dt_max)
         flex_p%interval_flex_2_max = nint(flex_p%dt_max / time_d%dt)
         flex_p%istep_flex_to_max = izero
