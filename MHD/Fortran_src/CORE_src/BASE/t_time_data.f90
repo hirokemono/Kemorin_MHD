@@ -35,6 +35,8 @@
 !
 !>      Structure for time data
       type time_data
+!>        flag for frexible time step
+        logical :: flag_flex_step = .FALSE.
 !>        Time step
         integer(kind = kint) :: i_time_step
 !>        Time                  @f$ t @f$

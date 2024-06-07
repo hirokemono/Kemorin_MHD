@@ -121,9 +121,9 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
           call TRACER_evolution(FMHDs%MHD_step%time_d,                  &
      &        FMHDs%MHD_step%finish_d, FMHDs%MHD_step%rst_step,         &
-     &        FMHDs%MHD_step%viz_step%TRACER_t, FMHDs%FEM_MHD%geofem,   &
-     &        FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,            &
-     &        FMVIZs%tracers, FMHDs%m_SR)
+     &        FMHDs%MHD_step%viz_step%istep_tracer,                     &
+     &        FMHDs%FEM_MHD%geofem, FMVIZs%VIZ_DAT%para_surf,           &
+     &        FMHDs%FEM_MHD%field, FMVIZs%tracers, FMHDs%m_SR)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
         end if
 !

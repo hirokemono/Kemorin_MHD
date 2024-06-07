@@ -126,7 +126,7 @@
 !
 !*  ----------- Visualization --------------
 !*
-        call TRACER_visualize(SSNAPs%MHD_step%viz_step%TRACER_t,        &
+        call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
      &      SVIZ_m%tracers)
 !

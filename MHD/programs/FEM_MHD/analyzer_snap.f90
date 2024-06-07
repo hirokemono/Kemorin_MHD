@@ -110,7 +110,7 @@
      &      FMHDs%MHD_IO, FMHDs%fem_sq, FMHDs%m_SR)
 !
 !  Visualization
-        call TRACER_visualize(FMHDs%MHD_step%viz_step%TRACER_t,         &
+        call TRACER_visualize(FMHDs%MHD_step%viz_step%istep_tracer,     &
      &      FMHDs%MHD_step%time_d, FMHDs%MHD_step%rst_step,             &
      &      FMVIZs%tracers)
 !

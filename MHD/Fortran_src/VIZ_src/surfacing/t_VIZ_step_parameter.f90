@@ -57,6 +57,8 @@
         integer(kind = kint) :: istep_lic = 0
 !>        step number for field lines file
         integer(kind = kint) :: istep_fline = 0
+!>        step number for field lines file
+        integer(kind = kint) :: istep_tracer = 0
       end type VIZ_step_params
 !
 !-----------------------------------------------------------------------
@@ -113,6 +115,8 @@
       viz_step%istep_lic = istep_file_w_fix_dt(i_step, viz_step%LIC_t)
       viz_step%istep_fline                                              &
      &          = istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
+      viz_step%istep_tracer                                             &
+     &          = istep_file_w_fix_dt(i_step, viz_step%TRACER_t)
 !
       end subroutine istep_viz_w_fix_dt
 !
@@ -131,6 +135,8 @@
       viz_step%istep_lic = istep_file_w_flex_dt(time_d, viz_step%LIC_t)
       viz_step%istep_fline                                              &
      &          = istep_file_w_flex_dt(time_d, viz_step%FLINE_t)
+      viz_step%istep_tracer                                             &
+     &          = istep_file_w_flex_dt(time_d, viz_step%TRACER_t)
 !
       end subroutine istep_viz_w_flex_dt
 !

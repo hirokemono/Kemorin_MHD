@@ -105,7 +105,7 @@
         call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,           &
      &                                    SVIZ_m%SPH_SGS%trns_WK_LES)
 !
-        call TRACER_visualize(SSNAPs%MHD_step%viz_step%TRACER_t,        &
+        call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
      &      SVIZ_m%tracers)
         SSNAPs%MHD_step%time_d%i_time_step                              &

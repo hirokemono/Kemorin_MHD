@@ -18,9 +18,10 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(tracer_module), intent(inout) :: tracer
-!!      subroutine TRACER_evolution(time_d, finish_d, rst_step,         &
-!!     &          TRACER_d, geofem, para_surf, nod_fld, tracer, m_SR)
-!!        integer(kind = kint), intent(in) :: increment_output
+!!      subroutine TRACER_evolution                                     &
+!!     &         (time_d, finish_d, rst_step, istep_tracer,             &
+!!     &          geofem, para_surf, nod_fld, tracer, m_SR)
+!!        integer(kind = kint), intent(in) :: istep_tracer
 !!        type(time_data), intent(in) :: time_d
 !!        type(finish_data), intent(in) :: finish_d
 !!        type(IO_step_param), intent(in) :: rst_step
@@ -30,9 +31,10 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(tracer_module), intent(inout) :: tracer
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine TRACER_visualize(TRACER_d, time_d, rst_step, tracer)
+!!      subroutine TRACER_visualize(istep_tracer, time_d, rst_step,     &
+!!     &                            tracer)
+!!        integer(kind = kint), intent(in) :: istep_tracer
 !!        type(time_data), intent(in) :: time_d
-!!        type(IO_step_param), intent(in) :: TRACER_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_finalize(fline)
@@ -61,7 +63,6 @@
       use t_tracing_data
       use t_local_fline
       use t_ucd_data
-      use t_IO_step_parameter
 !
       implicit  none
 !
@@ -134,8 +135,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_evolution(time_d, finish_d, rst_step,           &
-     &          TRACER_d, geofem, para_surf, nod_fld, tracer, m_SR)
+      subroutine TRACER_evolution                                       &
+     &         (time_d, finish_d, rst_step, istep_tracer,               &
+     &          geofem, para_surf, nod_fld, tracer, m_SR)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
@@ -147,10 +149,10 @@
       use multi_tracer_file_IO
 !
 !
+      integer(kind = kint), intent(in) :: istep_tracer
       type(time_data), intent(in) :: time_d
       type(finish_data), intent(in) :: finish_d
       type(IO_step_param), intent(in) :: rst_step
-      type(IO_step_param), intent(in) :: TRACER_d
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -168,23 +170,24 @@
       call output_tracer_restarts(time_d, finish_d, rst_step,           &
      &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
 !
-      if(TRACER_d%increment .eq. 0) return
-      call output_tracer_viz_files(TRACER_d, time_d, tracer%num_fline,  &
-     &                             tracer%fln_prm, tracer%fline_lc)
+      if(istep_tracer .le. 0) return
+      call output_tracer_viz_files(istep_tracer, time_d,                &
+     &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
 !
       end subroutine TRACER_evolution
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_visualize(TRACER_d, time_d, rst_step, tracer)
+      subroutine TRACER_visualize(istep_tracer, time_d, rst_step,       &
+     &                            tracer)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
       use multi_tracer_file_IO
 !
 !
+      integer(kind = kint), intent(in) :: istep_tracer
       type(time_data), intent(in) :: time_d
-      type(IO_step_param), intent(in) :: TRACER_d
       type(IO_step_param), intent(in) :: rst_step
       type(tracer_module), intent(inout) :: tracer
 !
@@ -193,9 +196,9 @@
       call input_tracer_restarts(time_d, rst_step, tracer%num_fline,    &
      &                           tracer%fln_prm, tracer%fline_lc)
 !
-      if(TRACER_d%increment .eq. 0) return
-      call output_tracer_viz_files(TRACER_d, time_d, tracer%num_fline,  &
-     &                             tracer%fln_prm, tracer%fline_lc)
+      if(istep_tracer .le. 0) return
+      call output_tracer_viz_files(istep_tracer, time_d,                &
+     &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
 !
       end subroutine TRACER_visualize
 !

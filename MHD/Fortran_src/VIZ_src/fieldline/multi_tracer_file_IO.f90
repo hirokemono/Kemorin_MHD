@@ -31,16 +31,16 @@
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
 !!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!
-!!      subroutine output_tracer_viz_files(TRACER_d, time_d, num_fline, &
-!!     &                                   fln_prm, fline_lc)
+!!      subroutine output_tracer_viz_files(istep_file, time_d,          &
+!!     &                                   num_fline,fln_prm, fline_lc)
+!!        integer(kind = kint), intent(in) :: istep_file
 !!        type(time_data), intent(in) :: time_d
-!!        type(IO_step_param), intent(in) :: TRACER_d
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(local_fieldline), intent(in) ::    fline_lc(num_fline)
-!!      subroutine output_field_lines(istep_fline, time_d,              &
+!!      subroutine output_field_lines(istep_file, time_d,               &
 !!     &                              num_fline, fln_prm, fline_lc)
-!!        integer(kind = kint), intent(in) :: istep_fline
+!!        integer(kind = kint), intent(in) :: istep_file
 !!        type(time_data), intent(in) :: time_d
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
@@ -178,15 +178,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine output_tracer_viz_files(TRACER_d, time_d, num_fline,   &
-     &                                   fln_prm, fline_lc)
+      subroutine output_tracer_viz_files(istep_file, time_d,            &
+     &                                   num_fline,fln_prm, fline_lc)
 !
       use t_mesh_SR
       use collect_fline_data
       use parallel_ucd_IO_select
 !
+      integer(kind = kint), intent(in) :: istep_file
       type(time_data), intent(in) :: time_d
-      type(IO_step_param), intent(in) :: TRACER_d
 !
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
@@ -194,17 +194,15 @@
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln, istep_fline
+      integer(kind = kint) :: i_fln
 !
-      if(mod(time_d%i_time_step, TRACER_d%increment) .ne. 0) return
-      istep_fline = time_d%i_time_step / TRACER_d%increment
 !
       do i_fln = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO                                 &
      &     (fln_prm(i_fln)%fline_fields, fline_lc(i_fln), fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+     &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
       end do
 !
@@ -212,7 +210,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_field_lines(istep_fline, time_d,                &
+      subroutine output_field_lines(istep_file, time_d,                 &
      &                              num_fline, fln_prm, fline_lc)
 !
       use set_fields_for_fieldline
@@ -221,7 +219,7 @@
       use set_fline_seeds_from_list
       use parallel_ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: istep_fline
+      integer(kind = kint), intent(in) :: istep_file
       type(time_data), intent(in) :: time_d
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
@@ -237,7 +235,7 @@
         call copy_local_fieldline_to_IO(fln_prm(i_fln)%fline_fields,    &
      &                                  fline_lc(i_fln), fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+     &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
         call calypso_mpi_barrier
       end do
