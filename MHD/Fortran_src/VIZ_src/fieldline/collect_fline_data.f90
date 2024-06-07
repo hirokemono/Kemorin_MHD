@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine copy_local_fieldline_to_IO(viz_fields, fline_lc, ucd)
+!!      subroutine copy_local_particles_to_IO(viz_fields, fline_lc, ucd)
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(ucd_data), intent(inout) :: ucd

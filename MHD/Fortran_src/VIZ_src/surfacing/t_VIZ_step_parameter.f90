@@ -57,8 +57,6 @@
         integer(kind = kint) :: istep_lic = 0
 !>        step number for field lines file
         integer(kind = kint) :: istep_fline = 0
-!>        step number for field lines file
-        integer(kind = kint) :: istep_tracer_viz = 0
       end type VIZ_step_params
 !
 !-----------------------------------------------------------------------

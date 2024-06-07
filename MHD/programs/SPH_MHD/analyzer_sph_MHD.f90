@@ -215,13 +215,11 @@
 !*
         if(SVIZ_m%tracers%num_fline .gt. 0) then
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
-           call TRACER_evolution                                        &
-     &        (SSMHDs%MHD_step%time_d,  SSMHDs%MHD_step%finish_d,       &
-     &         SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,         &
-     &         SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,          &
-     &         SVIZ_m%tracers, SSMHDs%m_SR)
-          call TRACER_visualize(SSMHDs%MHD_step%viz_step%TRACER_t,      &
-     &                          SSMHDs%MHD_step%time_d, SVIZ_m%tracers)
+           call TRACER_evolution(SSMHDs%MHD_step%time_d,                &
+     &        SSMHDs%MHD_step%finish_d, SSMHDs%MHD_step%rst_step,       &
+     &        SSMHDs%MHD_step%viz_step%TRACER_t, SVIZ_m%FEM_DAT%geofem, &
+     &        SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,           &
+     &        SVIZ_m%tracers, SSMHDs%m_SR)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
         end if
 !*

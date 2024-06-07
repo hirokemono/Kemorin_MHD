@@ -86,6 +86,7 @@
       use bcast_4_time_step_ctl
       use bcast_control_data_vizs
       use bcast_control_arrays
+      use bcast_control_data_tracers
 !
       type(control_data_vizs), intent(inout) :: vizs_ctl
 !
@@ -94,6 +95,7 @@
       call bcast_ctl_data_4_platform(vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
 !
+      call bcast_tracer_controls(vizs_ctl%tracer_ctls)
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
 !
       call calypso_mpi_bcast_one_int(vizs_ctl%i_viz_only_file, 0)

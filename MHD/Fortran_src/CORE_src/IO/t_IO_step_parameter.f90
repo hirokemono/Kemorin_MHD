@@ -46,6 +46,8 @@
 !
 !
       type IO_step_param
+!>        flag for frexible time step
+        logical :: flag_flex_step
 !>        Increment of time step
         integer(kind=kint) :: increment
 !>        Time interval for output

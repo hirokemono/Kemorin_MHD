@@ -42,6 +42,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_control_data_vizs
+      use t_control_data_tracers
       use t_control_array_character3
 !
       implicit  none
@@ -61,6 +62,8 @@
 !
 !>        Structures of field used in visualization
         type(ctl_array_c3) :: viz_field_ctl
+!>        Structure of control data for tracers
+        type(tracers_control) :: tracer_ctls
 !
         integer(kind=kint) :: i_viz_only_file = 0
       end type control_data_vizs
@@ -77,6 +80,9 @@
 !
       character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
+!
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_tracer_ctl = 'tracers_control'
 !
       private :: viz_ctl_file_code
       private :: read_vizs_control_data, write_vizs_control_data
@@ -169,6 +175,7 @@
       call init_platforms_labels(hd_platform, vizs_ctl%viz_plt)
       call init_ctl_time_step_label(hd_time_step, vizs_ctl%t_viz_ctl)
       call init_viz_ctl_label(hd_viz_control, vizs_ctl%viz_ctl_v)
+      call init_tracers_ctl_label(hd_tracer_ctl, vizs_ctl%tracer_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -182,6 +189,8 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           vizs_ctl%viz_ctl_v, c_buf)
+        call read_tracer_controls(id_control, hd_tracer_ctl,            &
+     &                           vizs_ctl%tracer_ctls, c_buf)
       end do
       vizs_ctl%i_viz_only_file = 1
 !
@@ -213,6 +222,8 @@
       call write_control_time_step_data                                 &
      &   (id_control, vizs_ctl%t_viz_ctl, level)
 !
+      call write_tracer_controls(id_control,                            &
+     &                           vizs_ctl%tracer_ctls, level)
       call write_viz_controls(id_control,                               &
      &                        vizs_ctl%viz_ctl_v, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -229,6 +240,7 @@
       call dealloc_control_array_c3(vizs_ctl%viz_field_ctl)
       call reset_control_platforms(vizs_ctl%viz_plt)
       call reset_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
+      call dealloc_tracer_controls(vizs_ctl%tracer_ctls)
 !
       vizs_ctl%t_viz_ctl%i_tstep = 0
       vizs_ctl%i_viz_only_file =   0

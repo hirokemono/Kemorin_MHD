@@ -127,7 +127,8 @@
 !*  ----------- Visualization --------------
 !*
         call TRACER_visualize(SSNAPs%MHD_step%viz_step%TRACER_t,        &
-     &                        SSNAPs%MHD_step%time_d, SVIZ_m%tracers)
+     &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
+     &      SVIZ_m%tracers)
 !
         if(iflag_vizs_w_fix_step(SSNAPs%MHD_step%time_d%i_time_step,    &
      &                           SSNAPs%MHD_step%viz_step)) then

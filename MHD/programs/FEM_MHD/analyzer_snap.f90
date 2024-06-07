@@ -111,7 +111,8 @@
 !
 !  Visualization
         call TRACER_visualize(FMHDs%MHD_step%viz_step%TRACER_t,         &
-     &                        FMHDs%MHD_step%time_d, FMVIZs%tracers)
+     &      FMHDs%MHD_step%time_d, FMHDs%MHD_step%rst_step,             &
+     &      FMVIZs%tracers)
 !
         visval = MHD_viz_routine_flag(FMHDs%MHD_step%flex_p,            &
      &                                FMHDs%MHD_step%time_d,            &

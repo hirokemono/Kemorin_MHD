@@ -18,21 +18,22 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(tracer_module), intent(inout) :: tracer
-!!      subroutine TRACER_evolution                                     &
-!!     &         (increment_output, time_d, finish_d, rst_step, geofem, &
-!!     &          para_surf, nod_fld, tracer, m_SR)
+!!      subroutine TRACER_evolution(time_d, finish_d, rst_step,         &
+!!     &          TRACER_d, geofem, para_surf, nod_fld, tracer, m_SR)
 !!        integer(kind = kint), intent(in) :: increment_output
 !!        type(time_data), intent(in) :: time_d
 !!        type(finish_data), intent(in) :: finish_d
 !!        type(IO_step_param), intent(in) :: rst_step
+!!        type(IO_step_param), intent(in) :: TRACER_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(tracer_module), intent(inout) :: tracer
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine TRACER_visualize(TRACER_d, time_d, tracer)
+!!      subroutine TRACER_visualize(TRACER_d, time_d, rst_step, tracer)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: TRACER_d
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_finalize(fline)
 !!        type(time_data), intent(in) :: time_d
@@ -89,6 +90,7 @@
       use t_control_data_flines
       use m_connect_hexa_2_tetra
       use multi_tracer_fieldline
+      use multi_tracer_file_IO
 !
       type(time_data), intent(in) :: init_d
       type(finish_data), intent(in) :: finish_d
@@ -124,15 +126,16 @@
      &    tracer%num_fline, tracer%fln_prm, tracer%fln_src,             &
      &    tracer%fln_tce)
 !
-      call input_tracer_restarts(init_d, rst_step, tracer%num_fline,    &
-     &    tracer%fln_prm, tracer%fln_tce, tracer%fline_lc)
+      call sel_input_tracer_restarts(init_d, rst_step,                  &
+     &                               tracer%num_fline, tracer%fln_prm,  &
+     &                               tracer%fln_tce, tracer%fline_lc)
 !
       end subroutine TRACER_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_evolution(time_d, finish_d, rst_step, geofem,   &
-     &                            para_surf, nod_fld, tracer, m_SR)
+      subroutine TRACER_evolution(time_d, finish_d, rst_step,           &
+     &          TRACER_d, geofem, para_surf, nod_fld, tracer, m_SR)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
@@ -141,11 +144,13 @@
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list
       use multi_tracer_fieldline
+      use multi_tracer_file_IO
 !
 !
       type(time_data), intent(in) :: time_d
       type(finish_data), intent(in) :: finish_d
       type(IO_step_param), intent(in) :: rst_step
+      type(IO_step_param), intent(in) :: TRACER_d
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -161,86 +166,38 @@
      &    tracer%fln_SR, tracer%fln_bcast, m_SR)
 !
       call output_tracer_restarts(time_d, finish_d, rst_step,           &
-     &    tracer%num_fline, tracer%fln_prm, tracer%fln_tce,             &
-     &    tracer%fline_lc)
+     &    tracer%num_fline, tracer%fln_prm, tracer%fline_lc)
+!
+      if(TRACER_d%increment .eq. 0) return
+      call output_tracer_viz_files(TRACER_d, time_d, tracer%num_fline,  &
+     &                             tracer%fln_prm, tracer%fline_lc)
 !
       end subroutine TRACER_evolution
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine TRACER_visualize(TRACER_d, time_d, tracer)
+      subroutine TRACER_visualize(TRACER_d, time_d, rst_step, tracer)
 !
       use t_mesh_SR
       use set_fields_for_fieldline
-      use trace_particle
-      use collect_fline_data
-      use parallel_ucd_IO_select
-      use set_fline_seeds_from_list
+      use multi_tracer_file_IO
 !
 !
       type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(in) :: TRACER_d
+      type(IO_step_param), intent(in) :: rst_step
       type(tracer_module), intent(inout) :: tracer
 !
-      type(time_data) :: t_IO
-      type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln, istep_fline, istep_rst
+!
+      if(tracer%num_fline .le. 0) return
+      call input_tracer_restarts(time_d, rst_step, tracer%num_fline,    &
+     &                           tracer%fln_prm, tracer%fline_lc)
 !
       if(TRACER_d%increment .eq. 0) return
-      if(mod(time_d%i_time_step, TRACER_d%increment) .ne. 0) return
-      istep_fline = time_d%i_time_step / TRACER_d%increment
-!
-      istep_rst = set_IO_step(time_d%i_time_step, rst_step)
-      do i_fln = 1, tracer%num_fline
-        call input_tracer_restart(tracer%fln_prm(i_fln)%fline_rst_IO,   &
-     &      istep_rst, time_d, tracer%fln_prm(i_fln)%fline_fields,      &
-     &      tracer%fline_lc(i_fln))
-!
-        call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_particles_to_IO                                 &
-     &     (tracer%fln_prm(i_fln)%fline_fields, tracer%fline_lc(i_fln), &
-     &      fline_ucd)
-        call sel_write_parallel_ucd_file                                &
-     &     (istep_fline, tracer%fln_prm(i_fln)%fline_file_IO, t_IO,     &
-     &      fline_ucd)
-        call deallocate_parallel_ucd_mesh(fline_ucd)
-      end do
+      call output_tracer_viz_files(TRACER_d, time_d, tracer%num_fline,  &
+     &                             tracer%fln_prm, tracer%fline_lc)
 !
       end subroutine TRACER_visualize
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_TRACER_modules(tracer)
-!
-      type(tracer_module), intent(inout) :: tracer
-!
-      allocate(tracer%fln_prm(tracer%num_fline))
-      allocate(tracer%fln_src(tracer%num_fline))
-      allocate(tracer%fln_tce(tracer%num_fline))
-      allocate(tracer%fln_SR(tracer%num_fline))
-      allocate(tracer%fln_bcast(tracer%num_fline))
-      allocate(tracer%fline_lc(tracer%num_fline))
-!
-      end subroutine alloc_TRACER_modules
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine TRACER_finalize(tracer)
-!
-      use multi_tracer_fieldline
-!
-      type(tracer_module), intent(inout) :: tracer
-!
-!
-      if (tracer%num_fline .le. 0) return
-      call dealloc_each_TRACER_data(tracer%num_fline, tracer%fln_src)
-      call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
-     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
-     &    tracer%fln_SR, tracer%fln_bcast)           
-      deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
-      deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
-!
-      end subroutine TRACER_finalize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -276,6 +233,41 @@
       end do
 !
       end subroutine trace_particle_sets
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_TRACER_modules(tracer)
+!
+      type(tracer_module), intent(inout) :: tracer
+!
+      allocate(tracer%fln_prm(tracer%num_fline))
+      allocate(tracer%fln_src(tracer%num_fline))
+      allocate(tracer%fln_tce(tracer%num_fline))
+      allocate(tracer%fln_SR(tracer%num_fline))
+      allocate(tracer%fln_bcast(tracer%num_fline))
+      allocate(tracer%fline_lc(tracer%num_fline))
+!
+      end subroutine alloc_TRACER_modules
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine TRACER_finalize(tracer)
+!
+      use multi_tracer_fieldline
+!
+      type(tracer_module), intent(inout) :: tracer
+!
+!
+      if (tracer%num_fline .le. 0) return
+      call dealloc_each_TRACER_data(tracer%num_fline, tracer%fln_src)
+      call dealloc_each_FLINE_data(tracer%num_fline, tracer%fln_prm,    &
+     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
+     &    tracer%fln_SR, tracer%fln_bcast)           
+      deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
+      deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
+!
+      end subroutine TRACER_finalize
 !
 !  ---------------------------------------------------------------------
 !
