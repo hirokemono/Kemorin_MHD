@@ -27,7 +27,7 @@
 !
       subroutine bcast_viz3_controls(viz3_ctls)
 !
-      use t_control_data_viz3
+      use t_control_data_viz4
       use transfer_to_long_integers
       use calypso_mpi_char
       use calypso_mpi_int

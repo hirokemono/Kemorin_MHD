@@ -67,7 +67,7 @@
 !
 !       load control file
       if(my_rank .eq. 0) then
-        call read_control_file_three_vizs(file_name, viz3_c, c_buf1)
+        call read_control_file_four_vizs(file_name, viz3_c, c_buf1)
       end if
       call bcast_three_vizs_control_data(viz3_c)
 !

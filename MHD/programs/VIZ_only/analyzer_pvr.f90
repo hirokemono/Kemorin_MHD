@@ -13,7 +13,7 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_control_data_three_vizs
+      use input_control_four_vizs
       use t_volume_rendering
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
@@ -30,7 +30,7 @@
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
-      type(control_data_three_vizs), save :: pvr_ctl3
+      type(control_data_four_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of work area for mesh communications
@@ -50,7 +50,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-      use input_control_three_vizs
+      use input_control_four_vizs
       use volume_rendering
 !
 !
@@ -62,7 +62,7 @@
 !
 !  Load controls
       if (iflag_debug.gt.0) write(*,*) 's_inoput_control_four_vizs'
-      call s_input_control_three_vizs(fname_viz_ctl, pvr_ctl3,          &
+      call s_input_control_four_vizs(fname_viz_ctl, pvr_ctl3,           &
      &                                FEM_viz3, t_VIZ3)
 !
 !  FEM Initialization
@@ -72,7 +72,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
-     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz3_ctl%pvr_ctls,  &
+     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz4_ctl%pvr_ctls,  &
      &    vizs_pvr3, m_SR13)
 !
       end subroutine initialize_pvr

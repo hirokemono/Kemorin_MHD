@@ -45,7 +45,7 @@
       use t_ctl_data_sph_MHD_w_vizs
       use t_SPH_mesh_field_data
       use t_SPH_MHD_zonal_mean_viz
-      use t_three_visualizers
+      use t_four_visualizers
       use input_control_sph_MHD
       use set_control_sph_mhd
       use set_control_4_SPH_to_FEM
@@ -100,10 +100,10 @@
 !
 !        Initialize visualization
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_three_visualize'
-      call init_three_visualize(MHDMs%MHD_step%viz_step,                &
+      if(iflag_debug .gt. 0) write(*,*) 'init_four_visualize'
+      call init_four_visualize(MHDMs%MHD_step%viz_step,                 &
      &    MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT,     &
-     &    add_VMHD_ctl1%viz3_ctls, MVIZs%VIZ3s, MHDMs%m_SR)
+     &    add_VMHD_ctl1%viz4_ctls, MVIZs%VIZ4s, MHDMs%m_SR)
 !
       call init_zonal_mean_vizs                                         &
      &   (MHDMs%MHD_step%viz_step, MVIZs%FEM_DAT%geofem,                &
@@ -122,7 +122,7 @@
 !
       use t_time_data
       use t_SPH_MHD_zonal_mean_viz
-      use t_three_visualizers
+      use t_four_visualizers
       use SPH_analyzer_MHD
       use FEM_analyzer_sph_MHD
       use output_viz_file_control
@@ -183,10 +183,10 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHDMs%MHD_step%time_d%i_time_step,    &
      &                            MHDMs%MHD_step%viz_step)
-          call visualize_three                                          &
+          call visualize_four                                           &
      &       (MHDMs%MHD_step%viz_step, MHDMs%MHD_step%time_d,           &
      &        MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field,                &
-     &        MVIZs%VIZ_DAT, MVIZs%VIZ3s, MHDMs%m_SR)
+     &        MVIZs%VIZ_DAT, MVIZs%VIZ4s, MHDMs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*

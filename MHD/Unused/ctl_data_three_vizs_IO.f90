@@ -60,7 +60,7 @@
 !
       use m_machine_parameter
       use calypso_mpi
-      use t_control_data_viz3
+      use t_control_data_viz4
       use t_control_data_sections
       use t_control_data_isosurfaces
       use t_control_data_pvrs

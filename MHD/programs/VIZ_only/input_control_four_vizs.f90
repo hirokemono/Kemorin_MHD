@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine s_input_control_four_vizs                            &
-!!     &         (ctl_file_name, viz4_c, FEM_viz, t_viz_param)
+!!     &         (ctl_file_name, viz4_ctl, FEM_viz, t_viz_param)
 !!        character(len = kchara), intent(in) :: ctl_file_name
-!!        type(control_data_four_vizs), intent(inout) :: viz4_c
+!!        type(control_data_four_vizs), intent(inout) :: viz4_ctl
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!
-!!      subroutine bcast_four_vizs_control_data(viz4_c)
-!!        type(control_data_four_vizs), intent(inout) :: viz4_c
+!!      subroutine bcast_four_vizs_control_data(viz4_ctl)
+!!        type(control_data_four_vizs), intent(inout) :: viz4_ctl
 !!      subroutine set_ctl_params_four_vizs                             &
 !!     &         (pvr_vizs_c, FEM_viz, t_viz_param, ierr)
 !!        type(control_data_four_vizs), intent(in) :: pvr_vizs_c
@@ -35,11 +35,6 @@
 !
       implicit  none
 !
-!
-      integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &         :: fname_viz_ctl = "control_viz"
-!
       private :: bcast_four_vizs_control_data, set_ctl_params_four_vizs
 !
 !   --------------------------------------------------------------------
@@ -49,12 +44,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_input_control_four_vizs                              &
-     &         (ctl_file_name, viz4_c, FEM_viz, t_viz_param)
+     &         (ctl_file_name, viz4_ctl, FEM_viz, t_viz_param)
 !
       use t_read_control_elements
 !
       character(len = kchara), intent(in) :: ctl_file_name
-      type(control_data_four_vizs), intent(inout) :: viz4_c
+      type(control_data_four_vizs), intent(inout) :: viz4_ctl
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
@@ -64,17 +59,19 @@
 !
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_file_four_vizs(ctl_file_name, viz4_c, c_buf1)
+        call read_control_file_four_vizs(ctl_file_name,                 &
+     &                                   viz4_ctl, c_buf1)
       end if
-      call bcast_four_vizs_control_data(viz4_c)
+      call bcast_four_vizs_control_data(viz4_ctl)
 !
       if(c_buf1%iend .gt. 0) then
-        call calypso_MPI_abort(viz4_c%i_viz_only_file,                  &
+        call calypso_MPI_abort(viz4_ctl%i_viz_only_file,                &
      &                             'control file is broken')
       end if
 !
 !       set control data
-      call set_ctl_params_four_vizs(viz4_c, FEM_viz, t_viz_param, ierr)
+      call set_ctl_params_four_vizs(viz4_ctl, FEM_viz,                  &
+     &                              t_viz_param, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine s_input_control_four_vizs
@@ -82,7 +79,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_four_vizs_control_data(viz4_c)
+      subroutine bcast_four_vizs_control_data(viz4_ctl)
 !
       use calypso_mpi_int
       use bcast_4_platform_ctl
@@ -90,16 +87,16 @@
       use bcast_ctl_data_viz4
       use bcast_control_arrays
 !
-      type(control_data_four_vizs), intent(inout) :: viz4_c
+      type(control_data_four_vizs), intent(inout) :: viz4_ctl
 !
 !
-      call bcast_ctl_array_c3(viz4_c%viz_field_ctl)
-      call bcast_ctl_data_4_platform(viz4_c%viz_plt)
-      call bcast_ctl_data_4_time_step(viz4_c%t_viz_ctl)
+      call bcast_ctl_array_c3(viz4_ctl%viz_field_ctl)
+      call bcast_ctl_data_4_platform(viz4_ctl%viz_plt)
+      call bcast_ctl_data_4_time_step(viz4_ctl%t_viz_ctl)
 !
-      call bcast_viz4_controls(viz4_c%viz4_ctl)
+      call bcast_viz4_controls(viz4_ctl%viz4_ctl)
 !
-      call calypso_mpi_bcast_one_int(viz4_c%i_viz_only_file, 0)
+      call calypso_mpi_bcast_one_int(viz4_ctl%i_viz_only_file, 0)
 !
       end subroutine bcast_four_vizs_control_data
 !

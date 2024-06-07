@@ -14,9 +14,7 @@ analyzer_lic.o: $(VIZ_PLUG_DIR)/analyzer_lic.f90 m_precision.o m_machine_paramet
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_psf.o: $(VIZ_PLUG_DIR)/analyzer_psf.f90 m_precision.o m_work_time.o t_viz_sections.o t_VIZ_only_step_parameter.o t_control_data_section_only.o t_FEM_mesh_field_4_viz.o t_mesh_SR.o FEM_analyzer_viz_surf.o calypso_mpi.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_section_only.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_pvr.o: $(VIZ_PLUG_DIR)/analyzer_pvr.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_control_data_three_vizs.o t_volume_rendering.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_three_vizs.o volume_rendering.o t_IO_step_parameter.o
-	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_three_vizs.o: $(VIZ_PLUG_DIR)/analyzer_three_vizs.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_control_data_three_vizs.o t_three_visualizers.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_three_vizs.o
+analyzer_pvr.o: $(VIZ_PLUG_DIR)/analyzer_pvr.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o input_control_four_vizs.o t_volume_rendering.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o volume_rendering.o t_IO_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_viz.o: $(VIZ_PLUG_DIR)/analyzer_viz.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_control_data_all_vizs.o t_visualizer.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_viz.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o m_elapsed_labels_4_REPART.o m_work_time_4_sleeve_extend.o FEM_to_VIZ_bridge.o input_control_all_vizs.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -27,8 +25,6 @@ input_control_all_vizs.o: $(VIZ_PLUG_DIR)/input_control_all_vizs.f90 m_precision
 input_control_four_vizs.o: $(VIZ_PLUG_DIR)/input_control_four_vizs.f90 m_precision.o m_machine_parameter.o t_control_data_four_vizs.o t_FEM_mesh_field_4_viz.o t_VIZ_only_step_parameter.o calypso_mpi.o t_read_control_elements.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_ctl_data_viz4.o bcast_control_arrays.o m_file_format_switch.o m_default_file_prefix.o set_control_platform_item.o set_control_platform_data.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 input_control_section_only.o: $(VIZ_PLUG_DIR)/input_control_section_only.f90 m_precision.o m_machine_parameter.o t_control_data_section_only.o t_FEM_mesh_field_4_viz.o t_VIZ_only_step_parameter.o calypso_mpi.o t_read_control_elements.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_ctl_data_surfacings.o bcast_control_arrays.o t_viz_sections.o m_file_format_switch.o m_default_file_prefix.o set_control_platform_item.o set_control_platform_data.o parallel_ucd_IO_select.o
-	$(F90) -c $(F90OPTFLAGS) $<
-input_control_three_vizs.o: $(VIZ_PLUG_DIR)/input_control_three_vizs.f90 m_precision.o m_machine_parameter.o t_control_data_three_vizs.o t_FEM_mesh_field_4_viz.o t_VIZ_only_step_parameter.o calypso_mpi.o t_read_control_elements.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_ctl_data_viz3.o bcast_control_arrays.o m_file_format_switch.o m_default_file_prefix.o set_control_platform_item.o set_control_platform_data.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_VTK_convert.o: $(VIZ_PLUG_DIR)/main_VTK_convert.f90 m_precision.o calypso_mpi.o analyzer_VTK_convert.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -42,8 +38,6 @@ main_pvr.o: $(VIZ_PLUG_DIR)/main_pvr.f90 m_precision.o calypso_mpi.o analyzer_pv
 	$(F90) -c $(F90OPTFLAGS) $<
 main_surface_rendering.o: $(VIZ_PLUG_DIR)/main_surface_rendering.f90 m_precision.o calypso_mpi.o analyzer_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
-main_three_visualizations.o: $(VIZ_PLUG_DIR)/main_three_visualizations.f90 m_precision.o calypso_mpi.o analyzer_three_vizs.o
-	$(F90) -c $(F90OPTFLAGS) $<
 main_visualization.o: $(VIZ_PLUG_DIR)/main_visualization.f90 m_precision.o calypso_mpi.o analyzer_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_mesh_field_4_viz.o: $(VIZ_PLUG_DIR)/t_FEM_mesh_field_4_viz.f90 m_precision.o t_mesh_data.o t_phys_data.o t_field_list_for_vizs.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o
@@ -53,8 +47,6 @@ t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precisi
 t_control_data_four_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_four_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_viz4.o t_control_array_character3.o skip_comment_f.o viz4_step_ctls_to_time_ctl.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o ctl_data_four_vizs_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_section_only.o: $(VIZ_PLUG_DIR)/t_control_data_section_only.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_surfacings.o t_control_array_character3.o skip_comment_f.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o control_data_surfacing_IO.o write_control_elements.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_three_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_three_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_viz3.o t_control_array_character3.o skip_comment_f.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o ctl_data_three_vizs_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_list_for_vizs.o: $(VIZ_PLUG_DIR)/t_field_list_for_vizs.f90 m_precision.o m_machine_parameter.o t_control_array_character3.o t_phys_data.o set_each_field_name.o
 	$(F90) -c $(F90OPTFLAGS) $<

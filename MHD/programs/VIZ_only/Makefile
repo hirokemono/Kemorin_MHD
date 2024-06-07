@@ -8,7 +8,6 @@ TARGET_VIZ =         viz_kemo
 TARGET_PSF =         sectioning
 
 TARGET_FOUR_VIZS =   four_vizs_kemo
-TARGET_THREE_VIZS =  three_vizs_kemo
 TARGET_PVR =         pvr_kemo
 TARGET_FLINE =       fieldline_kemo
 TARGET_LIC = lic_kemo
@@ -65,23 +64,14 @@ t_control_data_four_vizs.o \
 t_field_list_for_vizs.o \
 input_control_four_vizs.o
 
-MOD_THREE_VIZS_PLUG =  \
-main_three_visualizations.o  \
-analyzer_three_vizs.o \
-FEM_analyzer_four_vizs.o \
-t_FEM_mesh_field_4_viz.o \
-t_control_data_three_vizs.o \
-t_field_list_for_vizs.o \
-input_control_three_vizs.o
-
 MOD_PVR_PLUG =  \
 main_pvr.o  \
 analyzer_pvr.o \
 FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
-t_control_data_three_vizs.o \
+t_control_data_four_vizs.o \
 t_field_list_for_vizs.o \
-input_control_three_vizs.o
+input_control_four_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \
@@ -126,7 +116,6 @@ target_list:
 	@echo 'TARGET_PSF =         $$(BUILDDIR)/$(TARGET_PSF)' >> $(MAKENAME)
 	@echo 'TARGET_VIZ =         $$(BUILDDIR)/$(TARGET_VIZ)' >> $(MAKENAME)
 	@echo 'TARGET_FOUR_VIZS =   $$(BUILDDIR)/$(TARGET_FOUR_VIZS)'  >> $(MAKENAME)
-	@echo 'TARGET_THREE_VIZS =  $$(BUILDDIR)/$(TARGET_THREE_VIZS)' >> $(MAKENAME)
 	@echo 'TARGET_PVR =         $$(BUILDDIR)/$(TARGET_PVR)' >> $(MAKENAME)
 	@echo 'TARGET_FLINE =       $$(BUILDDIR)/$(TARGET_FLINE)' >> $(MAKENAME)
 	@echo 'TARGET_LIC =         $$(BUILDDIR)/$(TARGET_LIC)' >> $(MAKENAME)
@@ -139,7 +128,6 @@ target_task:
 	'$$(TARGET_VIZ)' \
 	'$$(TARGET_PSF)' \
 	'$$(TARGET_FOUR_VIZS)' \
-	'$$(TARGET_THREE_VIZS)' \
 	'$$(TARGET_PVR)' \
 	'$$(TARGET_FLINE)' \
 	'$$(TARGET_LIC)' \
@@ -163,12 +151,6 @@ target_task:
 	'$$(LIB_FILES_VIZ)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_FOUR_VIZS)' '$$(MOD_FOUR_VIZS_PLUG)' \
-	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_THREE_VIZS):  $$(MOD_THREE_VIZS_PLUG)' \
-	'$$(LIB_FILES_VIZ)' >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_THREE_VIZS)' '$$(MOD_THREE_VIZS_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FLINE): $$(MOD_FLINE_PLUG)' \
@@ -217,8 +199,6 @@ mod_list:
 	@echo  $(MOD_VIZ_PLUG)           >> $(MAKENAME)
 	@echo  MOD_FOUR_VIZS_PLUG=  \\   >> $(MAKENAME)
 	@echo  $(MOD_FOUR_VIZS_PLUG)     >> $(MAKENAME)
-	@echo  MOD_THREE_VIZS_PLUG=  \\  >> $(MAKENAME)
-	@echo  $(MOD_THREE_VIZS_PLUG)    >> $(MAKENAME)
 	@echo  MOD_PVR_PLUG=  \\         >> $(MAKENAME)
 	@echo  $(MOD_PVR_PLUG)           >> $(MAKENAME)
 	@echo  MOD_FLINE_PLUG=  \\       >> $(MAKENAME)

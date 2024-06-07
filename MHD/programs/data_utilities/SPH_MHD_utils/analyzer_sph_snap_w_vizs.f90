@@ -87,10 +87,10 @@
      &    SNAPs%MHD_step, SNAPs%SPH_MHD, SNAPs%SPH_WK, SNAPs%m_SR)
 !
 !        Initialize visualization
-      if(iflag_debug .gt. 0) write(*,*) 'init_three_visualize'
-      call init_three_visualize(SNAPs%MHD_step%viz_step,                &
+      if(iflag_debug .gt. 0) write(*,*) 'init_four_visualize'
+      call init_four_visualize(SNAPs%MHD_step%viz_step,                 &
      &    MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT,     &
-     &    add_VMHD_ctl1%viz3_ctls, MVIZs%VIZ3s, SNAPs%m_SR)
+     &    add_VMHD_ctl1%viz4_ctls, MVIZs%VIZ4s, SNAPs%m_SR)
       call init_zonal_mean_vizs(SNAPs%MHD_step%viz_step,                &
      &    MVIZs%FEM_DAT%geofem, MVIZs%VIZ_DAT%edge_comm,                &
      &    MVIZs%FEM_DAT%field, add_VMHD_ctl1%zm_ctls,                   &
@@ -159,10 +159,10 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(SNAPs%MHD_step%time_d%i_time_step,    &
      &                          SNAPs%MHD_step%viz_step)
-          call visualize_three                                          &
+          call visualize_four                                           &
      &       (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
      &        MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT, &
-     &        MVIZs%VIZ3s, SNAPs%m_SR)
+     &        MVIZs%VIZ4s, SNAPs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*
