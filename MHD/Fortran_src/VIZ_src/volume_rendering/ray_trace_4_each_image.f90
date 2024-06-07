@@ -379,6 +379,258 @@
 !
       end subroutine rendering_surace_group
 !
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine rendering_tracers(viewpoint_vec,                       &
+     &          particle_radius, num_tracer, color_param, particle_lc,  &
+     &          xx4_tgt, c_tgt, rgba_ray)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!
+      real(kind = kreal), intent(in) :: particle_radius
+      integer(kind = kint), intent(in) :: num_tracer
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(local_fieldline), intent(in) :: particle_lc(num_tracer)
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      real(kind = kreal), intent(in) :: c_tgt(1)
+!
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
+!
+      integer(kind = kint) :: i_fln, inum
+      real(kind = kreal) :: grad_tgt(3), opacity, distance
+!
+      do i_fln = 1, num_tracer
+        do inum = 1, particle_lc(i_fln)%nnod_line_l
+          distance = distance_from_tracer(xx4_tgt, inum,                &
+     &                                    particle_lc(i_fln))
+          if(distance .ge. particle_radius) cycle
+!
+          opacity = one - sqrt(distance / particle_radius)
+          call normal_of_single_tracer                                  &
+     &       (xx4_tgt, inum, particle_lc(i_fln), grad_tgt)
+          call color_plane_with_light                                   &
+     &       (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,               &
+     &        opacity, color_param, rgba_ray)
+        end do
+      end do
+!
+      end subroutine rendering_tracers
+!
+! ----------------------------------------------------------------------
+!
+      subroutine rendering_fieldlines(viewpoint_vec,                    &
+     &          tube_radius, num_fline, color_param, fline_lc,          &
+     &          xx4_tgt, c_tgt, rgba_ray)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: tube_radius
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(local_fieldline), intent(in) :: fline_lc(num_fline)
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      real(kind = kreal), intent(in) :: c_tgt(1)
+!
+      real(kind = kreal), intent(inout) :: rgba_ray(4)
+!
+      integer(kind = kint) :: i_fln, iedge
+      real(kind = kreal) :: grad_tgt(3), opacity, distance
+!
+      do i_fln = 1, num_fline
+        do iedge = 1, fline_lc(i_fln)%nele_line_l
+          distance = distance_from_fline_segment(xx4_tgt, iedge,        &
+     &                                           fline_lc(i_fln))
+          if(distance .ge. tube_radius) cycle
+!
+          opacity = one - sqrt(distance / tube_radius)
+          call normal_of_single_fline                                   &
+     &       (xx4_tgt, iedge, fline_lc(i_fln), grad_tgt)
+          call color_plane_with_light                                   &
+     &       (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,               &
+     &        opacity, color_param, rgba_ray)
+        end do
+      end do
+!
+      end subroutine rendering_fieldlines
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      real(kind = kreal) function distance_from_tracer(point,           &
+     &                                                 inum, fline_lc)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: point(4)
+      integer(kind = kint), intent(in) :: inum
+      type(local_fieldline), intent(in) :: fline_lc
+!
+      real(kind = kreal) :: xyzw(4)
+!
+      xyzw(1:3) = fline_lc%xx_line_l(1:3,inum)
+      xyzw(4) =   one
+      distance_from_tracer = distance_from_point(point, xyzw(1))
+!
+      end function distance_from_tracer
+!
+! ----------------------------------------------------------------------
+!
+      real(kind = kreal) function distance_from_fline_segment           &
+     &                                     (point, iedge, fline_lc)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: point(4)
+      integer(kind = kint), intent(in) :: iedge
+      type(local_fieldline), intent(in) :: fline_lc
+!
+      real(kind = kreal) :: xyzw_1(4), xyzw_2(4)
+      integer(kind = kint) :: i1, i2
+!
+      i1 = fline_lc%iedge_line_l(1,iedge)
+      i2 = fline_lc%iedge_line_l(2,iedge)
+      xyzw_1(1:3) = fline_lc%xx_line_l(1:3,i1)
+      xyzw_1(4) =   one
+      xyzw_2(1:3) = fline_lc%xx_line_l(1:3,i2)
+      xyzw_2(4) =   one
+!
+      distance_from_fline_segment                                       &
+     &     = distance_from_line_segment(point, xyzw_1(1), xyzw_2(1))
+!
+      end function distance_from_fline_segment
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine normal_of_single_tracer                                &
+     &         (xx4_tgt, inum, fline_lc, norm)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      integer(kind = kint), intent(in) :: inum
+      type(local_fieldline), intent(in) :: fline_lc
+      real(kind = kreal), intent(inout) :: norm(3)
+!
+      norm(1:3) = xx4_tgt(1:3) - fline_lc%xx_line_l(1:3,inum)
+      call single_normalize_vector(norm)
+!
+      end subroutine normal_of_single_tracer
+!
+! ----------------------------------------------------------------------
+!
+      subroutine normal_of_single_fline                                 &
+     &         (xx4_tgt, iedge, fline_lc, norm)
+!
+      use t_local_fline
+!
+      real(kind = kreal), intent(in) :: xx4_tgt(4)
+      integer(kind = kint), intent(in) :: iedge
+      type(local_fieldline), intent(in) :: fline_lc
+      real(kind = kreal), intent(inout) :: norm(3)
+!
+      integer(kind = kint) :: i1, i2
+!
+      i1 = fline_lc%iedge_line_l(1,iedge)
+      i2 = fline_lc%iedge_line_l(2,iedge)
+      norm(1:3) = xx4_tgt(1:3) - half * (fline_lc%xx_line_l(1:3,i1)     &
+     &                                 + fline_lc%xx_line_l(1:3,i1))
+      call single_normalize_vector(norm)
+!
+      end subroutine normal_of_single_fline
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      real(kind = kreal) function distance_from_point(point, xyzw1)
+!
+      real(kind = kreal), intent(in) :: point(4), xyzw1(4)
+      real(kind = kreal) :: x_line(1:4)
+!
+      x_line(1:4) = xyzw1(1:4) - point(1:4)
+      distance_from_point = single_dot_product(x_line(1), x_line(1))
+!
+      end function distance_from_point
+!
+! ----------------------------------------------------------------------
+!
+      real(kind = kreal) function distance_from_line_segment            &
+     &                  (point, xyzw1, xyzw2)
+!
+      real(kind = kreal), intent(in) :: point(4), xyzw1(4), xyzw2(4)
+!
+      real(kind = kreal) :: vec1(1:4), vec2(1:4)
+      real(kind = kreal) :: x_line(1:4), c_prod(1:4)
+      real(kind = kreal) :: dot1, dot2, area
+      real(kind = kreal) :: seg_len, dist_line
+!
+      vec1(1:4) =   point(1:4) - xyzw1(1:4)
+      vec2(1:4) =   xyzw2(1:4) - xyzw1(1:4)
+      dot1 = single_dot_product(vec1(1), vec2(1))
+      vec1(1:4) =   point(1:4) - xyzw2(1:4)
+      vec2(1:4) =   xyzw1(1:4) - xyzw2(1:4)
+      dot2 = single_dot_product(vec1(1), vec2(1))
+!
+      if     (dot1 .le. zero) then
+        vec1(1:4) =   point(1:4) - xyzw1(1:4)
+        dist_line = single_dot_product(vec1(1), vec1(1))
+      else if(dot2 .le. zero) then
+        vec2(1:4) =   point(1:4) - xyzw2(1:4)
+        dist_line = single_dot_product(vec2(1), vec2(1))
+      else
+        x_line(1:4) = xyzw2(1:4) - xyzw1(1:4)
+        seg_len = single_dot_product(x_line(1), x_line(1))
+        call single_cross_product(vec1(1), vec2(1), c_prod)
+        area =    single_dot_product(c_prod(1), c_prod(1))
+        dist_line = area / seg_len
+      end if
+      distance_from_line_segment = dist_line
+!
+      end function distance_from_line_segment
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine single_normalize_vector(vector)
+!
+      real (kind=kreal), intent(inout) :: vector(3)
+      real (kind=kreal) :: length
+!
+      length = max(single_dot_product(vector(1), vector(1)), TINY)
+      vector(1:3) = vector(1:3) / length
+!
+      end subroutine single_normalize_vector
+!
+! ----------------------------------------------------------------------
+!
+      real(kind = kreal) function single_dot_product(vect1, vect2)
+!
+      real (kind=kreal), intent(in) :: vect1(3), vect2(3)
+      real (kind=kreal) :: prod
+!
+      prod = vect1(1)*vect2(1) + vect1(2)*vect2(2) + vect1(3)*vect2(3)
+      single_dot_product = prod
+!
+      end function single_dot_product
+!
+! ----------------------------------------------------------------------
+!
+      subroutine single_cross_product(vect1, vect2, prod)
+!
+      real (kind=kreal), intent(in) :: vect1(3), vect2(3)
+      real (kind=kreal), intent(inout) :: prod(3)
+!
+      prod(1) = (vect1(2)*vect2(3) - vect1(3)*vect2(2))
+      prod(2) = (vect1(3)*vect2(1) - vect1(1)*vect2(3))
+      prod(3) = (vect1(1)*vect2(2) - vect1(2)*vect2(1))
+!
+      end subroutine single_cross_product
+!
+! ----------------------------------------------------------------------
 !
       end module ray_trace_4_each_image
