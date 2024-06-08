@@ -65,9 +65,6 @@
       fln_tce%num_current_fline                                         &
      &        = count_fline_start_surf(node, ele, surf, isf_4_ele_dbl,  &
      &                                nod_fld, fln_prm, fln_src)
-      if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
-        fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
-      end if
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
 !
