@@ -46,6 +46,7 @@
       use t_phys_data
       use t_control_params_4_fline
       use t_source_of_filed_line
+      use cal_field_on_surf_viz
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
