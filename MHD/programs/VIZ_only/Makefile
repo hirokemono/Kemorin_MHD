@@ -67,11 +67,11 @@ input_control_four_vizs.o
 MOD_PVR_PLUG =  \
 main_pvr.o  \
 analyzer_pvr.o \
-FEM_analyzer_four_vizs.o \
+FEM_analyzer_viz.o \
 t_FEM_mesh_field_4_viz.o \
-t_control_data_four_vizs.o \
+t_control_data_all_vizs.o \
 t_field_list_for_vizs.o \
-input_control_four_vizs.o
+input_control_all_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \

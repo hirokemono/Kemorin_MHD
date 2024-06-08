@@ -14,7 +14,7 @@ analyzer_lic.o: $(VIZ_PLUG_DIR)/analyzer_lic.f90 m_precision.o m_machine_paramet
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_psf.o: $(VIZ_PLUG_DIR)/analyzer_psf.f90 m_precision.o m_work_time.o t_viz_sections.o t_VIZ_only_step_parameter.o t_control_data_section_only.o t_FEM_mesh_field_4_viz.o t_mesh_SR.o FEM_analyzer_viz_surf.o calypso_mpi.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_section_only.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_pvr.o: $(VIZ_PLUG_DIR)/analyzer_pvr.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o input_control_four_vizs.o t_volume_rendering.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o volume_rendering.o t_IO_step_parameter.o
+analyzer_pvr.o: $(VIZ_PLUG_DIR)/analyzer_pvr.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o input_control_four_vizs.o t_volume_rendering.o t_particle_trace.o t_fieldline.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o t_control_data_all_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_all_vizs.o volume_rendering.o FEM_analyzer_viz.o FEM_to_VIZ_bridge.o t_IO_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_viz.o: $(VIZ_PLUG_DIR)/analyzer_viz.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_control_data_all_vizs.o t_visualizer.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_viz.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o m_elapsed_labels_4_REPART.o m_work_time_4_sleeve_extend.o FEM_to_VIZ_bridge.o input_control_all_vizs.o
 	$(F90) -c $(F90OPTFLAGS) $<

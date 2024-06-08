@@ -103,6 +103,12 @@
      &    viz_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      call FLINE_initialize                                             &
+     &   (viz_step%FLINE_t%increment, geofem, nod_fld,                  &
+     &    viz_ctls%fline_ctls, vizs%fline)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+!
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
      &                    viz_ctls%pvr_ctls, vizs%pvr, m_SR)
@@ -113,12 +119,6 @@
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, vizs%lic, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
-!
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
-      call FLINE_initialize                                             &
-     &   (viz_step%FLINE_t%increment, geofem, nod_fld,                  &
-     &    viz_ctls%fline_ctls, vizs%fline)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       call calypso_mpi_barrier
 !

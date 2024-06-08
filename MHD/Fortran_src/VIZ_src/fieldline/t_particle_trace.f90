@@ -38,12 +38,7 @@
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(tracer_module), intent(inout) :: tracer
 !!      subroutine TRACER_finalize(fline)
-!!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) :: fem
-!!        type(next_nod_ele_table), intent(in) :: next_tbl
-!!        type(phys_data), intent(in) :: nod_fld
-!!        type(fieldline_controls), intent(inout) :: tracer_ctls
-!!        type(fieldline_module), intent(inout) :: tracer
+!!        type(tracer_module), intent(inout) :: tracer
 !!@endverbatim
 !
       module t_particle_trace
