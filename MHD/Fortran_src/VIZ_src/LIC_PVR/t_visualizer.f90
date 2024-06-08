@@ -7,15 +7,16 @@
 !>@brief Main module to access all visualization programs
 !!
 !!@verbatim
-!!      subroutine init_visualize(viz_step, geofem, nod_fld,            &
+!!      subroutine init_visualize(viz_step, geofem, nod_fld, tracer,    &
 !!     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
-!!      subroutine visualize_all(viz_step, time_d, geofem, nod_fld,     &
-!!     &                         VIZ_DAT, vizs, m_SR)
+!!      subroutine visualize_all(viz_step, time_d, geofem,              &
+!!     &                         nod_fld, tracer, VIZ_DAT, vizs, m_SR)
 !!      subroutine visualize_fin(viz_step, time_d, vizs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(visualize_modules), intent(inout) :: vizs
@@ -37,6 +38,7 @@
       use t_mesh_data
       use t_comm_table
       use t_phys_data
+      use t_particle_trace
       use t_next_node_ele_4_node
       use t_jacobians
 !
@@ -66,7 +68,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(viz_step, geofem, nod_fld,              &
+      subroutine init_visualize(viz_step, geofem, nod_fld, tracer,      &
      &                          VIZ_DAT, viz_ctls, vizs, m_SR)
 !
       use t_fem_gauss_int_coefs
@@ -78,6 +80,7 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
 !
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -126,8 +129,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, time_d, geofem, nod_fld,       &
-     &                         VIZ_DAT, vizs, m_SR)
+      subroutine visualize_all(viz_step, time_d, geofem,                &
+     &                         nod_fld, tracer, VIZ_DAT, vizs, m_SR)
 !
       use volume_rendering
       use map_projection
@@ -137,6 +140,7 @@
       type(mesh_data), intent(in) :: geofem
 !
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(visualize_modules), intent(inout) :: vizs

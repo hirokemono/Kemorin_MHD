@@ -89,7 +89,7 @@
 !
 !  -----   Initialize visualization
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
-     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field, FMVIZs%tracers,    &
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
       call dealloc_viz_controls(FMVIZs%vizs_ctl)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
@@ -140,7 +140,7 @@
           call visualize_all                                            &
      &       (FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,           &
      &        FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                &
-     &        FMVIZs%VIZ_DAT, FMVIZs%VIZs, FMHDs%m_SR)
+     &        FMVIZs%tracers, FMVIZs%VIZ_DAT, FMVIZs%VIZs, FMHDs%m_SR)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         end if
 !

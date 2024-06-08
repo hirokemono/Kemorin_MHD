@@ -105,8 +105,8 @@
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSNAPs%MHD_step%viz_step,                     &
-     &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field, SVIZs%VIZ_FEM,     &
-     &    viz_ctls1, SVIZs%VIZs, SSNAPs%m_SR)
+     &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field, SVIZs%tracers,     &
+     &    SVIZs%VIZ_FEM, viz_ctls1, SVIZs%VIZs, SSNAPs%m_SR)
       call dealloc_viz_controls(viz_ctls1)
 
       call init_zonal_mean_vizs(SSNAPs%MHD_step%viz_step,               &

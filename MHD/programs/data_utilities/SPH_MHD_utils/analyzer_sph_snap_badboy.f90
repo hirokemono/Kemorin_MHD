@@ -142,7 +142,7 @@
         call visualize_all                                              &
      &     (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,           &
      &      SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,                &
-     &      SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
+     &      SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
         call dealloc_pvr_data(SVIZ_m%VIZs%pvr)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
       end if

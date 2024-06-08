@@ -109,7 +109,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
      &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
-     &    SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,                         &
+     &    SVIZ_m%FEM_DAT%field, SVIZ_m%tracers, SVIZ_m%VIZ_FEM,         &
      &    viz_ctls_m, SVIZ_m%VIZs, SNAPs%m_SR)
       call dealloc_viz_controls(viz_ctls_m)
 !
@@ -181,7 +181,7 @@
           call visualize_all                                            &
      &       (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
-     &        SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SNAPs%m_SR)
+     &        SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SNAPs%m_SR)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !

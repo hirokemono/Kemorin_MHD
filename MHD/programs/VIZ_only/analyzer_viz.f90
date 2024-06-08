@@ -19,6 +19,7 @@
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
       use t_mesh_SR
+      use t_particle_trace
       use FEM_analyzer_viz
 !
       implicit none
@@ -40,6 +41,8 @@
       type(VIZ_mesh_field), save :: VIZ_DAT1
 !>      Structure of viualization modules
       type(visualize_modules), save :: vizs_v
+!>      Structure of viualization modules
+      type(tracer_module), save :: tracers_v
 !
 !  ---------------------------------------------------------------------
 !
@@ -74,14 +77,19 @@
       call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
      &                        FEM_viz1, m_SR11)
 !
+!  Tracer Initialization
+      call TRACER_initialize                                            &
+     &   (t_VIZ1%init_d, t_VIZ1%finish_d, t_VIZ1%ucd_step,              &
+     &    FEM_viz1%geofem, VIZ_DAT1%para_surf, FEM_viz1%field,          &
+     &    vizs_ctl1%tracer_ctls%tracer_controls, tracers_v)
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1, m_SR11)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (t_VIZ1%viz_step, FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1,   &
-     &    vizs_ctl1%viz_ctl_v, vizs_v, m_SR11)
+     &   (t_VIZ1%viz_step, FEM_viz1%geofem, FEM_viz1%field, tracers_v,  &
+     &    VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v, m_SR11)
       call dealloc_viz_controls(vizs_ctl1%viz_ctl_v)
 !
       end subroutine initialize_vizs
@@ -109,7 +117,8 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &      FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1, vizs_v, m_SR11)
+     &      FEM_viz1%geofem, FEM_viz1%field, tracers_v, VIZ_DAT1,       &
+     &       vizs_v, m_SR11)
       end do
 !
       call visualize_fin(t_VIZ1%viz_step, t_VIZ1%time_d, vizs_v)

@@ -126,8 +126,8 @@
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSMHDs%MHD_step%viz_step,                     &
-     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,  &
-     &    viz_ctls1, SVIZ_m%VIZs, SSMHDs%m_SR)
+     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%tracers,  &
+     &    SVIZ_m%VIZ_FEM, viz_ctls1, SVIZ_m%VIZs, SSMHDs%m_SR)
       call dealloc_viz_controls(viz_ctls1)
 
       call init_zonal_mean_vizs                                         &
@@ -246,7 +246,7 @@
           call visualize_all                                            &
      &       (SSMHDs%MHD_step%viz_step, SSMHDs%MHD_step%time_d,         &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
-     &        SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSMHDs%m_SR)
+     &        SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSMHDs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*

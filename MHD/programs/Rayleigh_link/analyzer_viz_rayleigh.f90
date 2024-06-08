@@ -118,7 +118,7 @@
 !
 !  Rendering
         if(visval) then
-          if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
+          if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
           call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
           call visualize_four                                           &
      &       (t_VIZ_r%viz_step, t_VIZ_r%time_d, FEM_Rayleigh1%geofem,   &
