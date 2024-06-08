@@ -6,7 +6,7 @@
 !
 !!      integer(kind = kint) function count_fline_start_surf            &
 !!     &                            (node, ele, surf, isf_4_ele_dbl,    &
-!!     &                             fln_prm, fln_src)
+!!     &                             nod_fld, fln_prm, fln_src)
 !!      subroutine set_fline_start_surf(surf, nod_fld,                  &
 !!     &                                fln_prm, fln_src, fln_tce)
 !!        type(element_data), intent(in) :: ele
@@ -39,7 +39,7 @@
 !
       integer(kind = kint) function count_fline_start_surf              &
      &                            (node, ele, surf, isf_4_ele_dbl,      &
-     &                             fln_prm, fln_src)
+     &                             nod_fld, fln_prm, fln_src)
 !
       use m_constants
       use m_geometry_constants
@@ -52,6 +52,7 @@
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in)                                  &
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
+      type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
@@ -77,11 +78,11 @@
         flux = (vec_surf(1) * surf%vnorm_surf(isurf,1)                  &
      &        + vec_surf(2) * surf%vnorm_surf(isurf,2)                  &
      &        + vec_surf(3) * surf%vnorm_surf(isurf,3))                 &
-     &         * dble(surf%isf_4_ele(iele,isf) / isurf)
+     &         * dble(surf%isf_4_ele(iele,isf_1ele) / isurf)
         if(flux .eq. zero) then
            fln_src%iflag_outward_flux_fline(i) =  1
         else
-           fln_src%iflag_outward_flux_fline(i) =  flux / abs(flux)
+           fln_src%iflag_outward_flux_fline(i) =  int(flux / abs(flux))
         end if
 !
         if(fln_prm%id_fline_direction .ne. iflag_both_trace) then
