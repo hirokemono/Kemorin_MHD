@@ -52,7 +52,7 @@
       integer(kind = kint), intent(in)                                  &
      &               :: isf_4_ele_dbl(ele%numele,nsurf_4_ele,2)
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(each_fieldline_source), intent(in) :: fln_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint)  :: icou
       integer(kind = kint)  :: i, iele, isf_1ele, isurf
