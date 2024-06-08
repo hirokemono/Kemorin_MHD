@@ -7,14 +7,20 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_rayleigh_viz(file_name,                &
-!!     &                                      rayleigh_vizs_ctl, c_buf)
-!!      subroutine write_ctl_file_rayleigh_viz(file_name,               &
-!!     &                                       rayleigh_vizs_ctl)
+!!      subroutine read_ctl_file_rayleigh_viz                           &
+!!     &         (file_name, rayleigh_vizs_ctl, viz_ctls, c_buf)
+!!        character(len = kchara), intent(in) :: file_name
+!!        type(control_data_rayleigh_vizs), intent(inout)               &
+!!     &                         :: rayleigh_vizs_ctl
+!!        type(visualization_controls), intent(inout) :: viz_ctls
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!      subroutine write_ctl_file_rayleigh_viz                          &
+!!     &         (file_name, rayleigh_vizs_ctl, viz_ctls)
 !!      subroutine dealloc_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_rayleigh_vizs), intent(inout)               &
 !!     &                     :: vizs_ctlrayleigh_vizs_ctl
+!!        type(visualization_controls), intent(in) :: viz_ctls
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -62,6 +68,7 @@
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
 !
+!>        Structures of Rayleigh convert control data
       type control_data_rayleigh_vizs
 !>      Structure for file settings
         type(platform_data_control) :: viz_plt
@@ -69,9 +76,6 @@
         type(field_control) :: fld_ctl
 !>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
-!
-!>        Structures of visualization controls
-        type(visualization_controls) :: viz_ctl_v
 !
 !>        Structure of spherical shell domain decomposition
         type(sphere_domain_control) :: sdctl
@@ -106,8 +110,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_file_rayleigh_viz(file_name,                  &
-     &                                      rayleigh_vizs_ctl, c_buf)
+      subroutine read_ctl_file_rayleigh_viz                             &
+     &         (file_name, rayleigh_vizs_ctl, viz_ctls, c_buf)
 !
       use skip_comment_f
       use viz_step_ctls_to_time_ctl
@@ -115,6 +119,7 @@
       character(len = kchara), intent(in) :: file_name
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
@@ -127,7 +132,7 @@
 !
         call read_rayleigh_vizs_ctl_data                                &
      &     (viz_ctl_file_code, hd_rayleigh_viz,                         &
-     &      rayleigh_vizs_ctl, c_buf)
+     &      rayleigh_vizs_ctl, viz_ctls, c_buf)
         if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
@@ -136,22 +141,23 @@
       if(c_buf%iend .gt. 0) return
 !
       call s_viz_step_ctls_to_time_ctl                                  &
-     &   (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)
-      call add_fields_4_vizs_to_fld_ctl(rayleigh_vizs_ctl%viz_ctl_v,    &
-     &    rayleigh_vizs_ctl%fld_ctl%field_ctl)
+     &   (viz_ctls, rayleigh_vizs_ctl%t_viz_ctl)
+      call add_fields_4_vizs_to_fld_ctl                                 &
+     &   (viz_ctls, rayleigh_vizs_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_ctl_file_rayleigh_viz
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_ctl_file_rayleigh_viz(file_name,                 &
-     &                                       rayleigh_vizs_ctl)
+      subroutine write_ctl_file_rayleigh_viz                            &
+     &         (file_name, rayleigh_vizs_ctl, viz_ctls)
 !
       use delete_data_files
 !
       character(len = kchara), intent(in) :: file_name
       type(control_data_rayleigh_vizs), intent(in)                      &
      &                         :: rayleigh_vizs_ctl
+      type(visualization_controls), intent(in) :: viz_ctls
 !
       integer(kind = kint) :: level1
 !
@@ -163,7 +169,7 @@
       open (viz_ctl_file_code, file=file_name, status='old')
       level1 = 0
       call write_rayleigh_vizs_ctl_data(viz_ctl_file_code,              &
-     &    hd_rayleigh_viz, rayleigh_vizs_ctl, level1)
+     &    hd_rayleigh_viz, rayleigh_vizs_ctl, viz_ctls, level1)
       close(viz_ctl_file_code)
 !
       end subroutine write_ctl_file_rayleigh_viz
@@ -171,8 +177,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_rayleigh_vizs_ctl_data                            &
-     &         (id_control, hd_block, rayleigh_vizs_ctl, c_buf)
+      subroutine read_rayleigh_vizs_ctl_data(id_control, hd_block,      &
+     &          rayleigh_vizs_ctl, viz_ctls, c_buf)
 !
       use skip_comment_f
       use ctl_data_platforms_IO
@@ -184,6 +190,7 @@
 !
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -196,8 +203,7 @@
      &                              rayleigh_vizs_ctl%fld_ctl)
       call init_ctl_time_step_label(hd_time_step,                       &
      &                              rayleigh_vizs_ctl%t_viz_ctl)
-      call init_viz_ctl_label(hd_viz_control,                           &
-     &                        rayleigh_vizs_ctl%viz_ctl_v)
+      call init_viz_ctl_label(hd_viz_control, viz_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -216,7 +222,7 @@
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           rayleigh_vizs_ctl%viz_ctl_v, c_buf)
+     &                           viz_ctls, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !
@@ -224,8 +230,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_rayleigh_vizs_ctl_data                           &
-     &         (id_control, hd_block, rayleigh_vizs_ctl, level)
+      subroutine write_rayleigh_vizs_ctl_data(id_control, hd_block,     &
+     &          rayleigh_vizs_ctl, viz_ctls, level)
 !
       use skip_comment_f
       use ctl_data_platforms_IO
@@ -236,6 +242,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vizs_ctl
+      type(visualization_controls), intent(in) :: viz_ctls
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -254,8 +261,7 @@
       call write_control_shell_domain                                   &
      &   (id_control, rayleigh_vizs_ctl%sdctl, level)
 !
-      call write_viz_controls(id_control,                               &
-     &                        rayleigh_vizs_ctl%viz_ctl_v, level)
+      call write_viz_controls(id_control, viz_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_rayleigh_vizs_ctl_data

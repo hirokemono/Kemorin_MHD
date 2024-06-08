@@ -40,7 +40,10 @@
 !>      Structure of work area for mesh communications
       type(mesh_SR), save :: m_SR3
 !
+!>        Structures of Rayleigh convert control data
       type(control_data_rayleigh_vizs), save :: rayleigh_vizs_ctl1
+!>        Structures of visualization controls
+      type(visualization_controls), save :: viz_ctls_r1
       type(visualize_modules), save :: vizs_v
       type(VIZ_mesh_field), save :: VIZ_DAT_r
 !
@@ -68,7 +71,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_conrol_rayleigh_viz'
       call input_conrol_rayleigh_viz(fname_viz_ctl, rayleigh_vizs_ctl1, &
-     &                               FEM_Rayleigh1, t_VIZ_r)
+     &    FEM_Rayleigh1, viz_ctls_r1, t_VIZ_r)
 !      call check_rayleigh_field_address(FEM_Rayleigh1%iphys_ftb)
 !
 !  FEM Initialization
@@ -86,7 +89,7 @@
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
-     &    VIZ_DAT_r, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v, m_SR3)
+     &    VIZ_DAT_r, viz_ctls_r1, vizs_v, m_SR3)
 !
       end subroutine init_viz_rayleigh
 !
