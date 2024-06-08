@@ -58,7 +58,7 @@
 !
       integer(kind = kint) :: i, ist, ied, inum
       integer(kind = kint) :: iele, isf, isurf
-      real(kind = kreal) :: vec_surf(3), xi(2)
+      real(kind = kreal) :: vec_surf(3), xi(2), flux
 !
 !
       do i = 1, fln_src%num_line_local
@@ -73,15 +73,15 @@
      &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
      &      vec_surf)
 !
-        fln_src%flux_start_fline(i)                                     &
-     &                     = (vec_surf(1) * surf%vnorm_surf(isurf,1)    &
-     &                      + vec_surf(2) * surf%vnorm_surf(isurf,2)    &
-     &                      + vec_surf(3) * surf%vnorm_surf(isurf,3))   &
-     &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
+        flux = (vec_surf(1) * surf%vnorm_surf(isurf,1)                  &
+     &        + vec_surf(2) * surf%vnorm_surf(isurf,2)                  &
+     &        + vec_surf(3) * surf%vnorm_surf(isurf,3))                 &
+     &         * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
-        if(fln_src%flux_start_fline(i) .gt. zero) then
-          fln_src%iflag_outward_flux_fline(i) = 1
-          fln_src%flux_start_fline(i) = -fln_src%flux_start_fline(i)
+        if(flux .eq. zero) then
+           fln_src%iflag_outward_flux_fline(i) =  1
+        else
+           fln_src%iflag_outward_flux_fline(i) =  flux / abs(flux)
         end if
       end do
 !
@@ -116,8 +116,7 @@
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
      &                  fln_prm%id_surf_start_fline(1:2,i)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
-     &                  fln_src%xx4_initial_fline(1:3,i),               &
-     &                  fln_src%flux_start_fline(i)
+     &                  fln_src%xx4_initial_fline(1:3,i)
         end do
 !
 !

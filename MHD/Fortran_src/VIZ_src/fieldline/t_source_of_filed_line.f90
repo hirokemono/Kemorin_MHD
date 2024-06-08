@@ -35,7 +35,6 @@
 !
         integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx4_initial_fline(:,:)
-        real(kind = kreal), allocatable :: flux_start_fline(:)
 !
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !>        outward flux flag
@@ -115,11 +114,9 @@
       num = fln_prm%num_each_field_line
       allocate(fln_src%iflag_outward_flux_fline(num))
       allocate(fln_src%xx4_initial_fline(4,num))
-      allocate(fln_src%flux_start_fline(num))
 !
       fln_src%iflag_outward_flux_fline(1:num) =   0
       fln_src%xx4_initial_fline = 0.0d0
-      fln_src%flux_start_fline =  0.0d0
 !
       end subroutine alloc_start_point_fline
 !
@@ -164,7 +161,7 @@
 !
       type(each_fieldline_source), intent(inout) :: fln_src
 !
-      deallocate(fln_src%xx4_initial_fline, fln_src%flux_start_fline)
+      deallocate(fln_src%xx4_initial_fline)
       deallocate(fln_src%flux_stack_fline)
       deallocate(fln_src%iflag_outward_flux_fline)
 !
