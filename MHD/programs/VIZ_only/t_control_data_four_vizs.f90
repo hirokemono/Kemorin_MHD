@@ -213,8 +213,7 @@
       call write_control_time_step_data                                 &
      &   (id_control, viz4_c%t_viz_ctl, level)
 !
-      call write_viz4_controls(id_control, hd_viz_control,              &
-     &                         viz4_c%viz4_ctl, level)
+      call write_viz4_controls(id_control, viz4_c%viz4_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_four_vizs_control_data

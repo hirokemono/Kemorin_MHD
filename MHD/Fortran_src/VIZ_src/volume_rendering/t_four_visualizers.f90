@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine init_four_visualize(viz_step, geofem, nod_fld,       &
-!!     &                               VIZ_DAT, viz_ctls, vizs, m_SR)
+!!     &                               VIZ_DAT, viz4_ctls, vizs, m_SR)
 !!      subroutine visualize_four(viz_step, time_d, geofem,             &
 !!     &                          nod_fld, VIZ_DAT, vizs, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
@@ -17,7 +17,7 @@
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
-!!        type(vis4_controls), intent(inout) :: viz_ctls
+!!        type(vis4_controls), intent(inout) :: viz4_ctls
 !!        type(four_visualize_modules), intent(inout) :: vizs
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
@@ -64,7 +64,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_four_visualize(viz_step, geofem, nod_fld,         &
-     &                               VIZ_DAT, viz_ctls, vizs, m_SR)
+     &                               VIZ_DAT, viz4_ctls, vizs, m_SR)
 !
       use volume_rendering
       use map_projection
@@ -74,7 +74,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
-      type(vis4_controls), intent(inout) :: viz_ctls
+      type(vis4_controls), intent(inout) :: viz4_ctls
       type(four_visualize_modules), intent(inout) :: vizs
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -82,33 +82,33 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
-     &    viz_ctls%psf_ctls, vizs%psf, m_SR%SR_sig, m_SR%SR_il)
+     &    viz4_ctls%psf_ctls, vizs%psf, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call ISOSURF_initialize                                           &
      &   (viz_step%ISO_t%increment, geofem, nod_fld,                    &
-     &    viz_ctls%iso_ctls, vizs%iso)
+     &    viz4_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call MAP_PROJECTION_initialize                                    &
      &   (viz_step%MAP_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
-     &    viz_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
+     &    viz4_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call PVR_initialize(viz_step%PVR_t%increment,                     &
-     &    geofem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr, m_SR)
+     &    geofem, nod_fld, viz4_ctls%pvr_ctls, vizs%pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call FLINE_initialize(viz_step%FLINE_t%increment,                 &
-     &    geofem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
+     &    geofem, nod_fld, viz4_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       call calypso_mpi_barrier
-      call dealloc_viz4_controls(viz_ctls)
+      call dealloc_viz4_controls(viz4_ctls)
 !
       end subroutine init_four_visualize
 !

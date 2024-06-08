@@ -20,7 +20,7 @@
       use SPH_analyzer_back_trans_old
       use FEM_analyzer_sph_trans
       use FEM_analyzer_back_trans
-      use t_visualizer
+      use t_four_visualizers
       use t_VIZ_mesh_field
       use t_mesh_SR
 !
@@ -81,10 +81,10 @@
      &                            VIZ_D_STR1, m_SR5)
 !
 !  ------  initialize visualization
-      call init_visualize                                               &
+      call init_four_visualize                                          &
      &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
-     &    VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs, m_SR5)
-      call dealloc_viz_controls(spt_ctl1%viz_ctls)
+     &    VIZ_D_STR1, spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)
+      call dealloc_viz4_controls(spt_ctl1%viz4_ctls)
 !
       end subroutine init_zm_sph_field
 !
@@ -120,14 +120,11 @@
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call visualize_all                                            &
+          call visualize_four                                           &
      &       (FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
-     &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%vizs, m_SR5)
+     &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%four_vizs, m_SR5)
         end if
       end do
-!
-      call visualize_fin(FEM_STR1%viz_step, t_STR%time_d,               &
-     &                   FEM_STR1%vizs)
 !
       call FEM_finalize_sph_trans(t_STR%ucd_step, FEM_STR1)
       call output_elapsed_times

@@ -12,10 +12,8 @@
 !!       character(len=kchara), intent(in) :: hd_block
 !!       type(vis4_controls), intent(inout) :: viz4_ctls
 !!       type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_viz4_controls                                  &
-!!     &         (id_control, hd_block, viz4_ctls, level)
+!!     subroutine write_viz4_controls(id_control, viz4_ctls, level)
 !!       integer(kind = kint), intent(in) :: id_control
-!!       character(len=kchara), intent(in) :: hd_block
 !!       type(vis4_controls), intent(in) :: viz4_ctls
 !!       integer(kind = kint), intent(inout) :: level
 !!      subroutine init_viz4_ctl_label(hd_block, viz4_ctls)
@@ -209,8 +207,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_viz4_controls                                    &
-     &         (id_control, hd_block, viz4_ctls, level)
+      subroutine write_viz4_controls(id_control, viz4_ctls, level)
 !
       use t_read_control_elements
       use ctl_file_sections_IO
@@ -221,7 +218,6 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control 
-      character(len=kchara), intent(in) :: hd_block
       type(vis4_controls), intent(in) :: viz4_ctls
 !
       integer(kind = kint), intent(inout) :: level
@@ -244,7 +240,8 @@
       maxlen = max(maxlen, len_trim(hd_delta_t_ucd))
       maxlen = max(maxlen, len_trim(hd_i_step_ucd))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 viz4_ctls%block_name)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &                         viz4_ctls%delta_t_psf_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -286,7 +283,8 @@
      &    viz4_ctls%i_step_ucd_v_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    viz4_ctls%output_field_file_fmt_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                viz4_ctls%block_name)
 !
       end subroutine write_viz4_controls
 !

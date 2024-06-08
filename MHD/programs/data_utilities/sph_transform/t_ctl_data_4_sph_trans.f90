@@ -33,7 +33,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_ctl_data_gen_sph_shell
-      use t_control_data_vizs
+      use t_control_data_viz4
       use t_control_array_integer
       use t_control_array_character
       use skip_comment_f
@@ -59,7 +59,7 @@
         type(time_data_control) :: t_ctl
 !
 !>        Structures of visualization controls
-        type(visualization_controls) :: viz_ctls
+        type(vis4_controls) :: viz4_ctls
 !
         type(read_character_item) :: zm_spec_file_head_ctl
         type(read_character_item) :: zonal_udt_head_ctl

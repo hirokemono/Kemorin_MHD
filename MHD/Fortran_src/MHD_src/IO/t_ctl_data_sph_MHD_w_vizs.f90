@@ -265,7 +265,7 @@
      &   (id_control, MHD_ctl%smonitor_ctl, level)
 !
       call write_viz4_controls                                          &
-     &   (id_control, hd_viz_ctl, add_VMHD_ctl%viz4_ctls, level)
+     &   (id_control, add_VMHD_ctl%viz4_ctls, level)
 !
       call write_dynamo_viz_control                                     &
      &   (id_control, add_VMHD_ctl%zm_ctls, level)

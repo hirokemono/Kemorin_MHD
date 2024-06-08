@@ -23,7 +23,7 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_phys_name_4_sph_trans
-      use t_visualizer
+      use t_four_visualizers
       use t_field_data_IO
       use t_file_IO_parameter
       use t_solver_SR
@@ -64,7 +64,7 @@
 !>        Increment for visualizations
         type(VIZ_step_params) :: viz_step
 !>        Structure for visualization
-        type(visualize_modules) :: vizs
+        type(four_visualize_modules) :: four_vizs
       end type FEM_for_SPH_transforms
 !
       end module t_FEM_data_4_SPH_trans
