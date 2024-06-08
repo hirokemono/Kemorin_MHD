@@ -92,6 +92,7 @@
       call init_FEM_to_VIZ_bridge(SSNAPs%MHD_step%viz_step,             &
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM, SSNAPs%m_SR)
 !
+!  -----   Initialize tracer
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call TRACER_initialize                                            &
      &   (SSNAPs%MHD_step%init_d,  SSNAPs%MHD_step%finish_d,            &
@@ -101,7 +102,7 @@
       call dealloc_tracer_controls(tracer_ctls1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
-!        Initialize visualization
+!  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSNAPs%MHD_step%viz_step,                     &
      &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field, SVIZs%VIZ_FEM,     &

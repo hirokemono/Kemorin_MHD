@@ -86,6 +86,7 @@
      &   (t_VIZ3%init_d, t_VIZ3%finish_d, t_VIZ3%ucd_step,              &
      &    FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,          &
      &    pvr_ctl3%tracer_ctls%tracer_controls, vizs_tracer3)
+      call dealloc_tracer_controls(pvr_ctl3%tracer_ctls)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FLINE_initialize'
@@ -97,6 +98,7 @@
       call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
      &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls, &
      &    vizs_pvr3, m_SR13)
+      call dealloc_viz_controls(pvr_ctl3%viz_ctl_v)
 !
       end subroutine initialize_pvr
 !

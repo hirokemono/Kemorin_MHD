@@ -87,7 +87,7 @@
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, VIZ_DAT_r, m_SR3)
 !
 !  VIZ Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
+      if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
       call init_four_visualize                                          &
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
      &    VIZ_DAT_r, viz_ctls4_r, vizs4_r, m_SR3)

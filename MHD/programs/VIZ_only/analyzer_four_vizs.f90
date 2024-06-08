@@ -74,6 +74,7 @@
       call init_four_visualize(t_VIZ4%viz_step,                         &
      &    FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4,                    &
      &    vizs_ctl4%viz4_ctl, vizs_m4, m_SR14)
+      call dealloc_viz4_controls(vizs_ctl4%viz4_ctl)
 !
       end subroutine initialize_four_vizs
 !

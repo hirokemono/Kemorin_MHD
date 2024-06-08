@@ -74,15 +74,15 @@
      &    FSGSs%SGS_MHD_wk%fem_int%jcs, FMHDs%FEM_MHD%geofem,           &
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+!  -----   Initialize tracer
       call TRACER_initialize                                            &
      &   (FMHDs%MHD_step%init_d,  FMHDs%MHD_step%finish_d,              &
      &    FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,                &
      &    FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,                &
      &    FMVIZs%tracer_ctls%tracer_controls, FMVIZs%tracers)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+      call dealloc_tracer_controls(FMVIZs%tracer_ctls)
 !
-!
+!  -----   Initialize visualization
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)

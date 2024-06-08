@@ -46,6 +46,7 @@
       use t_map_projection
       use t_volume_rendering
       use t_fieldline
+      use t_particle_trace
 !
       implicit  none
 !
@@ -56,6 +57,8 @@
         type(volume_rendering_module) :: pvr
         type(fieldline_module) :: fline
       end type four_visualize_modules
+!
+      type(tracer_module), save, private :: dummy_tracer
 !
 !  ---------------------------------------------------------------------
 !
@@ -106,6 +109,8 @@
       call FLINE_initialize(viz_step%FLINE_t%increment,                 &
      &    geofem, nod_fld, viz4_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+!
+      dummy_tracer%num_trace = 0
 !
       call calypso_mpi_barrier
       call dealloc_viz4_controls(viz4_ctls)

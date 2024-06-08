@@ -113,6 +113,7 @@
       &  (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
       &   SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
 !
+!  -----   Initialize tracer
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call TRACER_initialize                                            &
      &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
@@ -122,7 +123,7 @@
       call dealloc_tracer_controls(tracer_ctls1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
-!        Initialize visualization
+!  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SSMHDs%MHD_step%viz_step,                     &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,  &
@@ -179,7 +180,7 @@
      &                          SSMHDs%MHD_step)                        &
      &    .or. lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step)                    &
-     &    .or. SVIZ_m%tracers%num_fline .gt. 0) then
+     &    .or. SVIZ_m%tracers%num_trace .gt. 0) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+6)
           call alloc_sph_trans_area_snap                                &
      &       (SSMHDs%SPH_MHD%sph, SSMHDs%SPH_WK%trns_WK)
@@ -196,7 +197,7 @@
 !*
 !*  -----------  Send field data to FEM mesh --------------
 !*
-        if(SVIZ_m%tracers%num_fline .gt. 0) then
+        if(SVIZ_m%tracers%num_trace .gt. 0) then
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
           call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,         &
      &        SSMHDs%SPH_MHD%comms, SSMHDs%SPH_MHD%fld,                 &
@@ -224,7 +225,7 @@
 !*
 !*  ----------- Move tracer --------------
 !*
-        if(SVIZ_m%tracers%num_fline .gt. 0) then
+        if(SVIZ_m%tracers%num_trace .gt. 0) then
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
            call TRACER_evolution(SSMHDs%MHD_step%time_d,                &
      &        SSMHDs%MHD_step%finish_d, SSMHDs%MHD_step%rst_step,       &
@@ -264,7 +265,7 @@
      &                          SSMHDs%MHD_step)                        &
      &    .or. lead_field_data_flag(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step)                    &
-     &    .or. SVIZ_m%tracers%num_fline .gt. 0) then
+     &    .or. SVIZ_m%tracers%num_trace .gt. 0) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+6)
           call dealloc_sph_trans_area_snap(SSMHDs%SPH_WK%trns_WK)
           call dealloc_SGS_sph_trns_area_snap                           &

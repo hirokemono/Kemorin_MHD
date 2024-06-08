@@ -91,6 +91,7 @@
       call init_four_visualize(SNAPs%MHD_step%viz_step,                 &
      &    MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT,     &
      &    add_VMHD_ctl1%viz4_ctls, MVIZs%VIZ4s, SNAPs%m_SR)
+
       call init_zonal_mean_vizs(SNAPs%MHD_step%viz_step,                &
      &    MVIZs%FEM_DAT%geofem, MVIZs%VIZ_DAT%edge_comm,                &
      &    MVIZs%FEM_DAT%field, add_VMHD_ctl1%zm_ctls,                   &

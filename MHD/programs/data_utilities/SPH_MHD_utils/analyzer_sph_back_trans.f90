@@ -77,7 +77,6 @@
      &   (control_file_name, SNAPs%MHD_files, MHD_ctl_t, tracer_ctls_t, &
      &    viz_ctls_t, zm_ctls_t, SNAPs%MHD_step, SNAPs%SPH_model,       &
      &    SNAPs%SPH_WK, SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, SVIZ_m%FEM_DAT)
-      call dealloc_tracer_controls(tracer_ctls_t)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !     --------------------- 
@@ -101,7 +100,11 @@
       call init_FEM_to_VIZ_bridge(SNAPs%MHD_step%viz_step,              &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM, SNAPs%m_SR)
 !
-!        Initialize visualization
+!  -----   Initialize tracer
+      SVIZ_m%tracers%num_trace = 0
+      call dealloc_tracer_controls(tracer_ctls_t)
+!
+!  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(SNAPs%MHD_step%viz_step,                      &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,  &

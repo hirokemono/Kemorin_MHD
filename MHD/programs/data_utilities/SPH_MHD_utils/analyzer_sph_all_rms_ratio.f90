@@ -76,8 +76,6 @@
      &   (control_file_name, SNAPs%MHD_files, MHD_ctl_m, tracer_ctls_m, &
      &    viz_ctls_m, zm_ctls_m, SNAPs%MHD_step, SNAPs%SPH_model,       &
      &    SNAPs%SPH_WK, SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, SVIZ_m%FEM_DAT)
-      call dealloc_tracer_controls(tracer_ctls_m)
-      call dealloc_dynamo_viz_control(zm_ctls_m)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl_m%new_plt, sph_file_param2)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
@@ -103,13 +101,19 @@
       call init_FEM_to_VIZ_bridge(SNAPs%MHD_step%viz_step,              &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM, SNAPs%m_SR)
 !
-!        Initialize visualization
+!  -----   Initialize tracer
+      SVIZ_m%tracers%num_trace = 0
+      call dealloc_tracer_controls(tracer_ctls_m)
+!
+!  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
      &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
      &    SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM,                         &
      &    viz_ctls_m, SVIZ_m%VIZs, SNAPs%m_SR)
       call dealloc_viz_controls(viz_ctls_m)
+!
+      call dealloc_dynamo_viz_control(zm_ctls_m)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier

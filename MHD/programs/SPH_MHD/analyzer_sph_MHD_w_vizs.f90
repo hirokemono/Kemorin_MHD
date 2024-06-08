@@ -104,6 +104,7 @@
       call init_four_visualize(MHDMs%MHD_step%viz_step,                 &
      &    MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT,     &
      &    add_VMHD_ctl1%viz4_ctls, MVIZs%VIZ4s, MHDMs%m_SR)
+      call dealloc_viz4_controls(add_VMHD_ctl1%viz4_ctls)
 !
       call init_zonal_mean_vizs                                         &
      &   (MHDMs%MHD_step%viz_step, MVIZs%FEM_DAT%geofem,                &
