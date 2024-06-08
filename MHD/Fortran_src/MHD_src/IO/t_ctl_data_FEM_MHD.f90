@@ -25,11 +25,9 @@
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!
-!!      subroutine dealloc_fem_mhd_ctl_data                             &
-!!     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!!      subroutine dealloc_fem_mhd_ctl_data(FEM_MHD_ctl, sgs_ctl)
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
       module t_ctl_data_FEM_MHD
@@ -307,13 +305,11 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_fem_mhd_ctl_data                               &
-     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
+      subroutine dealloc_fem_mhd_ctl_data(FEM_MHD_ctl, sgs_ctl)
 !
       use t_ctl_data_SGS_model
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
       type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
@@ -325,8 +321,6 @@
       call dealloc_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !
       call dealloc_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
-!
-      call dealloc_viz_controls(viz_ctls)
 !
       FEM_MHD_ctl%i_mhd_ctl = 0
 !

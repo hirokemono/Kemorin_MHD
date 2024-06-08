@@ -105,6 +105,8 @@
       subroutine read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,      &
      &                                         add_VMHD_ctl, c_buf)
 !
+      use viz4_step_ctls_to_time_ctl
+!
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
@@ -130,8 +132,8 @@
       c_buf%level = c_buf%level - 1
       if(c_buf%iend .gt. 0)  return
 !
-      call viz4_step_ctls_to_time_ctl(add_VMHD_ctl%viz4_ctls,           &
-     &                                MHD_ctl%smctl_ctl%tctl)
+      call s_viz4_step_ctls_to_time_ctl(add_VMHD_ctl%viz4_ctls,         &
+     &                                  MHD_ctl%smctl_ctl%tctl)
       call add_fields_viz4_to_fld_ctl(add_VMHD_ctl%viz4_ctls,           &
      &    MHD_ctl%model_ctl%fld_ctl%field_ctl)
 !

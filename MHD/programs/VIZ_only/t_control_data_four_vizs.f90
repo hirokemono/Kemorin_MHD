@@ -49,6 +49,8 @@
 !
 !>      Structure for visulization program
       type control_data_four_vizs
+!>        Block name
+        character(len=kchara) :: block_name = 'visualizer'
 !>        Structure for file settings
         type(platform_data_control) :: viz_plt
 !>        Structure for time stepping control
@@ -216,6 +218,25 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_four_vizs_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_four_vizs_control_label(hd_block, viz4_c)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_four_vizs_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_four_vizs), intent(inout) :: viz4_c
+!
+!
+      viz4_c%block_name = hd_block
+      call init_platforms_labels(hd_platform, viz4_c%viz_plt)
+      call init_ctl_time_step_label(hd_time_step, viz4_c%t_viz_ctl)
+      call init_viz4_ctl_label(hd_viz_control, viz4_c%viz4_ctl)
+!
+      end subroutine init_four_vizs_control_label
 !
 !   --------------------------------------------------------------------
 !

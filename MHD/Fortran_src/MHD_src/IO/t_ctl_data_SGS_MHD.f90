@@ -408,7 +408,6 @@
 !
       type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
-      call dealloc_viz_controls(add_SSMHD_ctl%viz_ctls)
       call dealloc_tracer_controls(add_SSMHD_ctl%tracer_ctls)
       call dealloc_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
