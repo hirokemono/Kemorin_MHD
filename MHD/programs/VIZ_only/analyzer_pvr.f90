@@ -96,8 +96,8 @@
 !
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
-     &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3, vizs_fline3,   &
-     &    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3, m_SR13)
+     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls, &
+     &    vizs_pvr3, m_SR13)
       call dealloc_viz_controls(pvr_ctl3%viz_ctl_v)
 !
       end subroutine initialize_pvr
@@ -139,7 +139,7 @@
         call PVR_visualize                                              &
      &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
      &     FEM_viz3%geofem, FEM_pvr3%jacobians, FEM_viz3%field,         &
-     &     vizs_tracer3, vizs_fline3, vizs_pvr3, m_SR13)
+     &     vizs_pvr3, m_SR13)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
