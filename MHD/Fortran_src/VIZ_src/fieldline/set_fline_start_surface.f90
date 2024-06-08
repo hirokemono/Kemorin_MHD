@@ -5,8 +5,8 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      integer(kind = kint) function count_fline_start_surf            &
-!!     &                                     (ele, surf, isf_4_ele_dbl, &
-!!     &                                      fln_prm, fln_src)
+!!     &                            (node, ele, surf, isf_4_ele_dbl,    &
+!!     &                             fln_prm, fln_src)
 !!      subroutine set_fline_start_surf(surf, nod_fld,                  &
 !!     &                                fln_prm, fln_src, fln_tce)
 !!        type(element_data), intent(in) :: ele
@@ -38,8 +38,8 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function count_fline_start_surf              &
-     &                                     (ele, surf, isf_4_ele_dbl,   &
-     &                                      fln_prm, fln_src)
+     &                            (node, ele, surf, isf_4_ele_dbl,      &
+     &                             fln_prm, fln_src)
 !
       use m_constants
       use m_geometry_constants
@@ -47,6 +47,7 @@
       use t_control_params_4_fline
       use t_source_of_filed_line
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in)                                  &

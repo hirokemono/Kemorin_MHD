@@ -62,7 +62,7 @@
 !
 !
       fln_tce%num_current_fline                                         &
-     &        = count_fline_start_surf(ele, surf, isf_4_ele_dbl,        &
+     &        = count_fline_start_surf(node, ele, surf, isf_4_ele_dbl,  &
      &                                fln_prm, fln_src)
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
         fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
