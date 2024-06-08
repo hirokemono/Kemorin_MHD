@@ -100,17 +100,18 @@
      &    viz4_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call PVR_initialize(viz_step%PVR_t%increment,                     &
-     &    geofem, nod_fld, viz4_ctls%pvr_ctls, vizs%pvr, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
-!
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call FLINE_initialize(viz_step%FLINE_t%increment,                 &
      &    geofem, nod_fld, viz4_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       dummy_tracer%num_trace = 0
+!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &    dummy_tracer, vizs%fline, viz4_ctls%pvr_ctls, vizs%pvr, m_SR)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
+!
 !
       call calypso_mpi_barrier
       call dealloc_viz4_controls(viz4_ctls)
@@ -158,8 +159,9 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr, m_SR)
+      call PVR_visualize                                                &
+     &   (viz_step%istep_pvr, time_d%time, geofem, VIZ_DAT%jacobians,   &
+     &    nod_fld, dummy_tracer, vizs%fline, vizs%pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       call calypso_mpi_barrier
