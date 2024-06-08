@@ -228,7 +228,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      check_fline_start_surf = 1
+      check_fline_start_surf = 0
       if((iflag_direction*iflag_outward_flux) .le. 0) then
         iflag = isf_1ele
       else if(isf_4_ele_dbl(iele,isf_1ele,2) .le. 0) then

@@ -80,17 +80,6 @@
       call set_fline_start_surf(ele, surf, isf_4_ele_dbl, nod_fld,      &
      &                          fln_prm, fln_src, fln_tce)
 !
-      do i = 1, fln_tce%num_current_fline
-        iele = fln_tce%isf_dbl_start(2,i)
-        isf =  fln_tce%isf_dbl_start(3,i)
-        isurf = abs(surf%isf_4_ele(iele,isf))
-        xi(1:2) = zero
-        call cal_field_on_surf_vector                                   &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
-     &      fln_tce%v_fline_start(1,i))
-      end do
-!
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &
      &                   fln_tce%num_current_fline
