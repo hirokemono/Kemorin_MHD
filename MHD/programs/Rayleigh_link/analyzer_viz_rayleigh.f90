@@ -20,6 +20,7 @@
 !
       use FEM_analyzer_viz_rayleigh
       use t_ctl_data_rayleigh_vizs
+      use t_control_data_vizs
       use t_rayleigh_field_address
       use t_visualizer
       use t_VIZ_mesh_field
@@ -90,6 +91,7 @@
       call init_visualize                                               &
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
      &    VIZ_DAT_r, viz_ctls_r1, vizs_v, m_SR3)
+      call dealloc_viz_controls(viz_ctls_r1)
 !
       end subroutine init_viz_rayleigh
 !

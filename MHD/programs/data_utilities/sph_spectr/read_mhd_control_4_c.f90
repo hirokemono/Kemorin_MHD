@@ -9,8 +9,23 @@
       use t_ctl_data_mhd_evolution
       use t_ctl_data_mhd_evo_area
       use t_ctl_data_gravity
+      use t_control_data_tracers
+      use t_control_data_dynamo_vizs
 !
       implicit none
+!
+!>      Additional structures for spherical SGS MHD dynamo
+      type add_sgs_sph_mhd_ctl
+!>        Structures for SGS controls
+        type(SGS_model_control) :: sgs_ctl
+!
+!>        Structures of visualization controls
+        type(visualization_controls) :: viz_ctls
+!>        Structures of tracer
+        type(tracers_control) :: tracer_ctls
+!>        Structures of zonal mean controls
+        type(sph_dynamo_viz_controls) :: zm_ctls
+      end type add_sgs_sph_mhd_ctl
 !
       type(mhd_simulation_control), save, target :: MHD_ctl_C
       type(add_sgs_sph_mhd_ctl), save, target, private :: add_SSMHD_ctl_C
@@ -616,17 +631,20 @@
       MHD_ctl_name = load_chara_from_cc(name_f)
 !
       c_buf1%level = 0
-      call read_control_file_sph_SGS_MHD(MHD_ctl_name,                  &
-     &    MHD_ctl_C, add_SSMHD_ctl_C, c_buf1)
+      call read_control_file_sph_SGS_MHD(MHD_ctl_name, MHD_ctl_C,       &
+     &    add_SSMHD_ctl_C%sgs_ctl, add_SSMHD_ctl_C%tracer_ctls,         &
+     &    add_SSMHD_ctl_C%viz_ctls,  add_SSMHD_ctl_C%zm_ctls, c_buf1)
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
-      write(*,*) 'smonitor_ctl%pspec_ctl%pick_radius_ctl', &
-      &  MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%num, &
-      &  allocated(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%vect)
+      write(*,*) 'smonitor_ctl%pspec_ctl%pick_radius_ctl',              &
+     &  MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%num,           &
+     & allocated(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%vect)
       
       write(*,'(a,z16)') 'smonitor_ctl', c_loc(MHD_ctl_C%smonitor_ctl)
-      write(*,'(a,z16)') 'pspec_ctl', c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl)
-      write(*,'(a,z16)') 'pick_radius_ctl', c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl)
+      write(*,'(a,z16)') 'pspec_ctl',                                   &
+     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl)
+      write(*,'(a,z16)') 'pick_radius_ctl',                             &
+     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl)
 
       len = len_trim(MHD_ctl_C%block_name) + 1
       write(MHD_ctl_C%block_name(len:len),'(a1)') char(0)
@@ -642,14 +660,16 @@
      &          bind(C, NAME = 'c_view_control_sph_SGS_MHD')
 !
       use write_control_elements
+      use ctl_data_SGS_SPH_MHD_IO
       use ctl_data_platforms_IO
       use ctl_data_4_time_steps_IO
 !
       integer(kind = kint) :: level
 !
       level = 0
-      call write_sph_mhd_control_data(id_monitor,                       &
-    &     MHD_ctl_C, add_SSMHD_ctl_C, level)
+      call write_sph_mhd_control_data(id_monitor, MHD_ctl_C,            &
+    &     add_SSMHD_ctl_C%sgs_ctl, add_SSMHD_ctl_C%tracer_ctls,         &
+    &     add_SSMHD_ctl_C%viz_ctls,  add_SSMHD_ctl_C%zm_ctls, level)
 !
       end subroutine c_view_control_sph_SGS_MHD
 !
@@ -667,7 +687,8 @@
 !
 !
       call write_control_file_sph_SGS_MHD(MHD_ctl_name, MHD_ctl_C,      &
-     &                                    add_SSMHD_ctl_C)
+     &    add_SSMHD_ctl_C%sgs_ctl, add_SSMHD_ctl_C%tracer_ctls,         &
+     &    add_SSMHD_ctl_C%viz_ctls,  add_SSMHD_ctl_C%zm_ctls)
 !
       end subroutine c_write_control_sph_SGS_MHD
 !

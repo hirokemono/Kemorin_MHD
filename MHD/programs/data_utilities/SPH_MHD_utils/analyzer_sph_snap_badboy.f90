@@ -32,6 +32,9 @@
 !>      Structure for visualization in spherical MHD
       type(sph_SGS_MHD), save, private :: SVIZ_m
 !
+!>        Control structures for visualization modules
+      type(visualization_controls), save, private ::  viz_ctls2
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -77,8 +80,6 @@
 !
 !
       integer(kind = kint), parameter :: id_ctl_file = 11
-!>        Additional structures for spherical SGS MHD dynamo
-      type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
 !
       integer(kind = kint) :: iflag_redraw, iflag_failed
       real(kind = kreal) :: total_time
@@ -149,9 +150,8 @@
 !*  ----------- Visualization --------------
 !*
       do
-        call check_PVR_update                                           &
-     &     (id_ctl_file, add_SSMHD_ctl1%viz_ctls%pvr_ctls,              &
-     &      SVIZ_m%VIZs%pvr, iflag_redraw)
+        call check_PVR_update(id_ctl_file, viz_ctls2%pvr_ctls,          &
+     &                        SVIZ_m%VIZs%pvr, iflag_redraw)
         call calypso_mpi_barrier
 !
         if(iflag_redraw .eq. IFLAG_TERMINATE) then
@@ -165,8 +165,8 @@
           end if
 !
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-          call read_ctl_pvr_files_4_update(id_ctl_file,                 &
-     &        add_SSMHD_ctl1%viz_ctls%pvr_ctls, iflag_failed)
+          call read_ctl_pvr_files_4_update                              &
+     &       (id_ctl_file, viz_ctls2%pvr_ctls, iflag_failed)
 !
           if(iflag_failed .ne. 1) then
             call calypso_MPI_abort(iflag_failed,                        &
@@ -175,8 +175,7 @@
 !
           call PVR_initialize(SSNAPs%MHD_step%viz_step%PVR_t%increment, &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
-     &        add_SSMHD_ctl1%viz_ctls%pvr_ctls,                         &
-     &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
+     &        viz_ctls2%pvr_ctls, SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
           call PVR_visualize(SSNAPs%MHD_step%viz_step%istep_pvr,        &
      &        SSNAPs%MHD_step%time_d%time, SVIZ_m%FEM_DAT%geofem,       &
      &        SVIZ_m%VIZ_FEM%jacobians, SVIZ_m%FEM_DAT%field,           &

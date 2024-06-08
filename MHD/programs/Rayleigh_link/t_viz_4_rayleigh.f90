@@ -33,6 +33,7 @@
       use t_rayleigh_field_IO
       use t_rayleigh_field_address
       use t_ctl_data_rayleigh_vizs
+      use t_control_data_vizs
 !
       implicit none
 !

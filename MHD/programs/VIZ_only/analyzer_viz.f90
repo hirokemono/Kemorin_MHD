@@ -82,6 +82,7 @@
       call init_visualize                                               &
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1,   &
      &    vizs_ctl1%viz_ctl_v, vizs_v, m_SR11)
+      call dealloc_viz_controls(vizs_ctl1%viz_ctl_v)
 !
       end subroutine initialize_vizs
 !

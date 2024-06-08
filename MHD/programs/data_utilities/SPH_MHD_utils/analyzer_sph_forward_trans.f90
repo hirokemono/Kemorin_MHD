@@ -24,6 +24,9 @@
       use m_elapsed_labels_SEND_RECV
       use t_spherical_MHD
       use t_sph_SGS_MHD
+      use t_ctl_data_MHD
+      use t_control_data_tracers
+      use t_control_data_dynamo_vizs
 !
       use FEM_analyzer_sph_SGS_MHD
       use SPH_analyzer_SGS_snap
@@ -35,6 +38,15 @@
 !>      Structure for visualization in spherical MHD
       type(sph_SGS_MHD), save, private :: SVIZ_m
 !
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save, private  :: MHD_ctl_t
+!
+      type(tracers_control), save, private :: tracer_ctls_t
+!>        Control structures for visualization modules
+      type(visualization_controls), save, private ::  viz_ctls_t
+!>        Control structures for zonal mean and trancated magnetic field
+      type(sph_dynamo_viz_controls), save, private :: zm_ctls_t
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -43,17 +55,10 @@
 !
       subroutine initialize_sph_forward_trans(control_file_name)
 !
-      use t_ctl_data_MHD
-      use t_ctl_data_SGS_MHD
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
 !
       character(len=kchara), intent(in) :: control_file_name
-!
-!>      Control struture for MHD simulation
-      type(mhd_simulation_control), save :: MHD_ctl1
-!>        Additional structures for spherical SGS MHD dynamo
-      type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -66,11 +71,13 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
-      call input_control_SPH_SGS_dynamo(control_file_name,              &
-     &    SNAPs%MHD_files, MHD_ctl1, add_SSMHD_ctl1, SNAPs%MHD_step,    &
-     &    SNAPs%SPH_model, SNAPs%SPH_WK, SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, &
-     &    SVIZ_m%FEM_DAT)
-      call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
+      call input_control_SPH_SGS_dynamo                                 &
+     &   (control_file_name, SNAPs%MHD_files, MHD_ctl_t, tracer_ctls_t, &
+     &    viz_ctls_t, zm_ctls_t, SNAPs%MHD_step, SNAPs%SPH_model,       &
+     &    SNAPs%SPH_WK, SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, SVIZ_m%FEM_DAT)
+      call dealloc_tracer_controls(tracer_ctls_t)
+      call dealloc_viz_controls(viz_ctls_t)
+      call dealloc_dynamo_viz_control(zm_ctls_t)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !     --------------------- 

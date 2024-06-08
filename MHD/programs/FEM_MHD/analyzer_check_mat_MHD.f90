@@ -14,6 +14,8 @@
       use t_FEM_SGS_MHD
       use t_control_data_tracers
       use FEM_check_MHD_matrices
+      use t_control_data_tracers
+      use t_control_data_vizs
 !
       implicit none
 !

@@ -12,6 +12,7 @@
       use FEM_analyzer_vol_average
       use t_FEM_SGS_MHD
       use t_control_data_tracers
+      use t_control_data_vizs
 !
       implicit none
 !

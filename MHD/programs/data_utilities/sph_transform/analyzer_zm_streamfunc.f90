@@ -86,6 +86,7 @@
       call init_visualize                                               &
      &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
      &    VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs, m_SR5)
+      call dealloc_viz_controls(spt_ctl1%viz_ctls)
 !
       end subroutine init_zm_streamfunc
 !

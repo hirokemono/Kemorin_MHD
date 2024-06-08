@@ -90,6 +90,7 @@
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
+      call dealloc_viz_controls(FMVIZs%vizs_ctl)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       end subroutine initialization_MHD
