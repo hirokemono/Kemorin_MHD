@@ -168,7 +168,7 @@ t_ctl_data_quilt_image.o: $(PVR_DIR)/t_ctl_data_quilt_image.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_view_transfers.o: $(PVR_DIR)/t_ctl_data_view_transfers.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_ctl_data_4_view_transfer.o skip_comment_f.o ctl_file_pvr_modelview_IO.o ctl_data_view_transfer_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_four_visualizers.o: $(PVR_DIR)/t_four_visualizers.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_VIZ_mesh_field.o t_mesh_SR.o t_control_data_viz4.o t_cross_section.o t_isosurface.o t_map_projection.o t_volume_rendering.o t_fieldline.o volume_rendering.o map_projection.o
+t_four_visualizers.o: $(PVR_DIR)/t_four_visualizers.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_VIZ_mesh_field.o t_mesh_SR.o t_control_data_viz4.o t_cross_section.o t_isosurface.o t_map_projection.o t_volume_rendering.o t_fieldline.o t_particle_trace.o volume_rendering.o map_projection.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_geometries_in_pvr_screen.o: $(PVR_DIR)/t_geometries_in_pvr_screen.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_control_params_4_pvr.o set_projection_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -198,7 +198,7 @@ t_volume_rendering.o: $(PVR_DIR)/t_volume_rendering.f90 m_precision.o calypso_mp
 	$(F90) -c $(F90OPTFLAGS) $<
 viz4_step_ctls_to_time_ctl.o: $(PVR_DIR)/viz4_step_ctls_to_time_ctl.f90 m_precision.o m_constants.o t_control_data_viz4.o t_ctl_data_4_time_steps.o t_control_array_real.o t_control_array_character.o t_control_array_integer.o
 	$(F90) -c $(F90OPTFLAGS) $<
-volume_rendering.o: $(PVR_DIR)/volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_phys_data.o t_jacobians.o t_volume_rendering.o t_surf_grp_list_each_surf.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_field_data.o t_geometries_in_pvr_screen.o t_control_data_pvrs.o t_mesh_SR.o t_control_data_pvr_sections.o set_pvr_control.o multi_volume_renderings.o anaglyph_volume_renderings.o cal_pvr_modelview_mat.o write_multi_PVR_image.o
+volume_rendering.o: $(PVR_DIR)/volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_phys_data.o t_jacobians.o t_volume_rendering.o t_surf_grp_list_each_surf.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_field_data.o t_geometries_in_pvr_screen.o t_control_data_pvrs.o t_particle_trace.o t_fieldline.o t_mesh_SR.o t_control_data_pvr_sections.o set_pvr_control.o multi_volume_renderings.o anaglyph_volume_renderings.o cal_pvr_modelview_mat.o write_multi_PVR_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_PVR_image.o: $(PVR_DIR)/write_PVR_image.f90 m_precision.o m_work_time.o calypso_mpi.o m_constants.o m_machine_parameter.o t_MPI_quilt_bitmap_IO.o t_pvr_image_array.o t_control_params_4_pvr.o output_image_sel_4_png.o set_parallel_file_name.o convert_real_rgb_2_bite.o mpi_write_quilt_BMP_file.o
 	$(F90) -c $(F90OPTFLAGS) $<

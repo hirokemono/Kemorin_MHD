@@ -58,6 +58,8 @@
       real(kind = kreal) :: xyz_surf(3)
       real(kind = kreal), parameter :: xi(2) = (/zero, zero/)
 !
+      integer(kind = kint)  :: isf_dbl_st_tmp(2)
+!
 !
       do i = 1, fln_src%num_line_local
         inum1 = i
@@ -65,42 +67,57 @@
         isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf_1ele))
 !
-        fln_tce%xx_fline_start(1:4,inum1)                               &
-     &       = fln_src%xx4_initial_fline(1:4,i)
-        fln_tce%trace_length(inum1) = 0.0d0
-        fln_tce%icount_fline(inum1) = 0
-!
-        xyz_surf(1:3) = surf%x_surf(isurf,1:3)
-        call cal_fields_on_line(isurf, xi, xyz_surf,                    &
-     &                          surf, nod_fld, fln_prm%fline_fields,    &
-     &                          fln_tce%c_fline_start(1,inum1))
-!
         if(fln_prm%id_fline_direction .ne. iflag_both_trace) then
            fln_tce%iflag_direction(inum1) = fln_prm%id_fline_direction
            call choose_fline_start_surf                                 &
      &        (fln_src%iflag_outward_flux_fline(i),                     &
      &         iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,         &
-     &         fln_tce%iflag_direction(inum1),  &
-     &         fln_tce%isf_dbl_start(1,inum1))
+     &         fln_tce%iflag_direction(inum1), isf_dbl_st_tmp)
+!
+          fln_tce%isf_dbl_start(1,inum1) = my_rank
+          fln_tce%isf_dbl_start(2,inum1) = isf_dbl_st_tmp(1)
+          fln_tce%isf_dbl_start(3,inum1) = isf_dbl_st_tmp(2)
+          fln_tce%xx_fline_start(1:4,inum1)                             &
+     &       = fln_src%xx4_initial_fline(1:4,i)
+          fln_tce%trace_length(inum1) = 0.0d0
+          fln_tce%icount_fline(inum1) = 0
+!
+          xyz_surf(1:3) = surf%x_surf(isurf,1:3)
+          call cal_fields_on_line(isurf, xi, xyz_surf,                  &
+     &                          surf, nod_fld, fln_prm%fline_fields,    &
+     &                          fln_tce%c_fline_start(1,inum1))
         else
            fln_tce%iflag_direction(inum1) = iflag_forward_trace
            call choose_fline_start_surf                                 &
      &        (fln_src%iflag_outward_flux_fline(i),                     &
      &         iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,         &
-     &         fln_tce%iflag_direction(inum1),   &
-     &         fln_tce%isf_dbl_start(1,inum1))
+     &         fln_tce%iflag_direction(inum1),isf_dbl_st_tmp)
+          fln_tce%isf_dbl_start(1,inum1) = my_rank
+          fln_tce%isf_dbl_start(2,inum1) = isf_dbl_st_tmp(1)
+          fln_tce%isf_dbl_start(3,inum1) = isf_dbl_st_tmp(2)
+          fln_tce%xx_fline_start(1:4,inum1)                             &
+     &       = fln_src%xx4_initial_fline(1:4,i)
+          fln_tce%trace_length(inum1) = 0.0d0
+          fln_tce%icount_fline(inum1) = 0
+!
+          xyz_surf(1:3) = surf%x_surf(isurf,1:3)
+          call cal_fields_on_line(isurf, xi, xyz_surf,                  &
+     &                          surf, nod_fld, fln_prm%fline_fields,    &
+     &                          fln_tce%c_fline_start(1,inum1))
 !
           inum2 = inum1 + fln_src%num_line_local
+           call choose_fline_start_surf                                 &
+     &         (fln_src%iflag_outward_flux_fline(i),                    &
+     &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
+     &          fln_tce%iflag_direction(inum2), isf_dbl_st_tmp)
+          fln_tce%isf_dbl_start(1,inum2) = my_rank
+          fln_tce%isf_dbl_start(2,inum2) = isf_dbl_st_tmp(1)
+          fln_tce%isf_dbl_start(3,inum2) = isf_dbl_st_tmp(2)
           fln_tce%trace_length(inum2) = 0.0d0
           fln_tce%icount_fline(inum2) = 0
           fln_tce%iflag_direction(inum2) = iflag_backward_trace
           call copy_global_start_fline(inum2, inum1,                    &
      &                                 fln_prm%fline_fields, fln_tce)
-!
-           call choose_fline_start_surf                                 &
-     &         (fln_src%iflag_outward_flux_fline(i),                    &
-     &          iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,        &
-     &          fln_tce%iflag_direction(inum2), fln_tce%isf_dbl_start(1,inum2))
         end if
       end do
 !
@@ -121,19 +138,18 @@
       integer(kind = kint), intent(in) :: iele, isf_1ele, isurf
 !
       integer(kind = kint), intent(in) :: iflag_direction
-      integer(kind = kint), intent(inout) :: isf_dbl_start(3)
+      integer(kind = kint), intent(inout) :: isf_dbl_start(2)
 !
 !
-      isf_dbl_start(1) = my_rank
       if((iflag_direction*iflag_outward_flux) .le. 0) then
-        isf_dbl_start(2) = iele
-        isf_dbl_start(3) = isf_1ele
+        isf_dbl_start(1) = iele
+        isf_dbl_start(2) = isf_1ele
       else if(isf_4_ele_dbl(iele,isf_1ele,2) .le. 0) then
-        isf_dbl_start(2) = surf%iele_4_surf(isurf,1,1)
-        isf_dbl_start(3) = surf%iele_4_surf(isurf,1,2)
+        isf_dbl_start(1) = surf%iele_4_surf(isurf,1,1)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,1,2)
       else
-        isf_dbl_start(2) = surf%iele_4_surf(isurf,2,1)
-        isf_dbl_start(3) = surf%iele_4_surf(isurf,2,2)
+        isf_dbl_start(1) = surf%iele_4_surf(isurf,2,1)
+        isf_dbl_start(2) = surf%iele_4_surf(isurf,2,2)
       end if
 !
       end subroutine choose_fline_start_surf
