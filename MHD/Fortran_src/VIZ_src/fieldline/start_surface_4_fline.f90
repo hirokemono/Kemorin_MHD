@@ -44,6 +44,7 @@
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
+      use cal_field_on_surf_viz
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
