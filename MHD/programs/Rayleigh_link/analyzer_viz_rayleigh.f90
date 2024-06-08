@@ -20,9 +20,9 @@
 !
       use FEM_analyzer_viz_rayleigh
       use t_ctl_data_rayleigh_vizs
-      use t_control_data_vizs
+      use t_control_data_viz4
       use t_rayleigh_field_address
-      use t_visualizer
+      use t_four_visualizers
       use t_VIZ_mesh_field
       use t_VIZ_only_step_parameter
       use t_viz_4_rayleigh
@@ -44,9 +44,9 @@
 !>        Structures of Rayleigh convert control data
       type(control_data_rayleigh_vizs), save :: rayleigh_vizs_ctl1
 !>        Structures of visualization controls
-      type(visualization_controls), save :: viz_ctls_r1
-      type(visualize_modules), save :: vizs_v
-      type(VIZ_mesh_field), save :: VIZ_DAT_r
+      type(vis4_controls), save ::          viz_ctls4_r
+      type(four_visualize_modules), save :: vizs4_r
+      type(VIZ_mesh_field), save ::         VIZ_DAT_r
 !
 !  ---------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_conrol_rayleigh_viz'
       call input_conrol_rayleigh_viz(fname_viz_ctl, rayleigh_vizs_ctl1, &
-     &    FEM_Rayleigh1, viz_ctls_r1, t_VIZ_r)
+     &    FEM_Rayleigh1, viz_ctls4_r, t_VIZ_r)
 !      call check_rayleigh_field_address(FEM_Rayleigh1%iphys_ftb)
 !
 !  FEM Initialization
@@ -88,10 +88,10 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize                                               &
+      call init_four_visualize                                          &
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
-     &    VIZ_DAT_r, viz_ctls_r1, vizs_v, m_SR3)
-      call dealloc_viz_controls(viz_ctls_r1)
+     &    VIZ_DAT_r, viz_ctls4_r, vizs4_r, m_SR3)
+      call dealloc_viz4_controls(viz_ctls4_r)
 !
       end subroutine init_viz_rayleigh
 !
@@ -120,14 +120,12 @@
         if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
-          call visualize_all                                            &
+          call visualize_four                                           &
      &       (t_VIZ_r%viz_step, t_VIZ_r%time_d, FEM_Rayleigh1%geofem,   &
-     &        FEM_Rayleigh1%field, VIZ_DAT_r, vizs_v, m_SR3)
+     &        FEM_Rayleigh1%field, VIZ_DAT_r, vizs4_r, m_SR3)
         end if
       end do
 !
-      if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
-      call visualize_fin(t_VIZ_r%viz_step, t_VIZ_r%time_d, vizs_v)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !

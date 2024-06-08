@@ -12,13 +12,9 @@
 
       implicit none
 !
-!
       call calypso_MPI_init
-!
-      call init_analyzer
-
-      call analyze
-
+      call init_analyzer_gen_z_filter
+      call analyze_gen_z_filter
       call  calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'

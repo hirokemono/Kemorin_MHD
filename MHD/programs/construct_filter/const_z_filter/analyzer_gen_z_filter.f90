@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Aug., 2006 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine init_analyzer_gen_z_filter
+!      subroutine analyze_gen_z_filter
 !
       module analyzer_gen_z_filter
 !
@@ -56,7 +56,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_analyzer_gen_z_filter
 !
       use calypso_mpi
 !
@@ -312,18 +312,18 @@
 !
        if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
-       end subroutine init_analyzer
+       end subroutine init_analyzer_gen_z_filter
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_gen_z_filter
 !
       use calypso_mpi
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
+      if (iflag_debug.eq.1) write(*,*) 'exit analyze_gen_z_filter'
 !
-        end subroutine analyze
+        end subroutine analyze_gen_z_filter
 !
 ! ----------------------------------------------------------------------
 !

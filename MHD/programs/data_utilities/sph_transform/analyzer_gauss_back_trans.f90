@@ -31,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_analyzer_gauss_back_trans
 !
       use t_SPH_mesh_field_data
       use m_elapsed_labels_4_VIZ
@@ -79,11 +79,11 @@
      &    VIZ_D_STR1, spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)
       call dealloc_viz4_controls(spt_ctl1%viz4_ctls)
 !
-      end subroutine init_analyzer
+      end subroutine init_analyzer_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_gauss_back_trans
 !
       use FEM_to_VIZ_bridge
 !
@@ -115,7 +115,7 @@
 !
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !

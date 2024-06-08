@@ -82,7 +82,7 @@
      &                            VIZ_D_STR1, m_SR5)
 !
 !  ------  initialize visualization
-      if (iflag_debug.gt.0) write(*,*) 'init_visualize'
+      if (iflag_debug.gt.0) write(*,*) 'init_four_visualize'
       call init_four_visualize                                          &
      &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
      &    VIZ_D_STR1, spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)

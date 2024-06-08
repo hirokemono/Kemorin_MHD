@@ -19,8 +19,8 @@
 
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call init_analyzer_gauss_back_trans
+      call analyze_gauss_back_trans
 !
       call calypso_MPI_finalize
 !
