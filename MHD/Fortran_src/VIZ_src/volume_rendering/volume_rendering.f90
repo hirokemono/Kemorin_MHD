@@ -8,14 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine PVR_initialize(increment_pvr, geofem, nod_fld,       &
-!!     &                          pvr_ctls, pvr, m_SR)
+!!     &                          tracer, fline, pvr_ctls, pvr, m_SR)
 !!      subroutine PVR_visualize(istep_pvr, time, geofem, jacs,         &
-!!     &                         nod_fld, pvr, m_SR)
+!!     &                         nod_fld, tracer, fline, pvr, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !!        type(volume_rendering_module), intent(inout) :: pvr
@@ -47,6 +49,8 @@
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
+      use t_particle_trace
+      use t_fieldline
       use t_mesh_SR
 !
       implicit  none
@@ -58,7 +62,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_initialize(increment_pvr, geofem, nod_fld,         &
-     &                          pvr_ctls, pvr, m_SR)
+     &                          tracer, fline, pvr_ctls, pvr, m_SR)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -70,6 +74,8 @@
       integer(kind = kint), intent(in) :: increment_pvr
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
 !
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
@@ -135,7 +141,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize(istep_pvr, time, geofem, jacs,           &
-     &                         nod_fld, pvr, m_SR)
+     &                         nod_fld, tracer, fline, pvr, m_SR)
 !
       use cal_pvr_modelview_mat
       use multi_volume_renderings
@@ -146,6 +152,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
 !
       type(volume_rendering_module), intent(inout) :: pvr

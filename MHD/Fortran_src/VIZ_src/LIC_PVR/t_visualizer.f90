@@ -114,7 +114,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
-     &                    viz_ctls%pvr_ctls, vizs%pvr, m_SR)
+     &    tracer, vizs%fline, viz_ctls%pvr_ctls, vizs%pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
@@ -174,8 +174,9 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr, m_SR)
+      call PVR_visualize                                                &
+     &   (viz_step%istep_pvr, time_d%time, geofem, VIZ_DAT%jacobians,   &
+     &    nod_fld, tracer, vizs%fline, vizs%pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
