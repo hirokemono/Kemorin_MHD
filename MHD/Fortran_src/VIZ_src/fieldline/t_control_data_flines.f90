@@ -19,10 +19,6 @@
 !!        integer(kind = kint), intent(in) :: idx_in
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!
-!!      subroutine dup_fline_ctl_struct(org_fline_ctls, new_fline_ctls)
-!!        type(fieldline_controls), intent(in) :: org_fline_ctls
-!!        type(fieldline_controls), intent(inout) :: new_fline_ctls
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  fieldline  1
 !!      file  fieldline  'ctl_fline_magne'
@@ -212,27 +208,6 @@
       end do
 !
       end subroutine add_fields_4_flines_to_fld_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dup_fline_ctl_struct(org_fline_ctls, new_fline_ctls)
-!
-      type(fieldline_controls), intent(in) :: org_fline_ctls
-      type(fieldline_controls), intent(inout) :: new_fline_ctls
-!
-      integer(kind = kint) :: i
-!
-      new_fline_ctls%block_name =    org_fline_ctls%block_name
-      new_fline_ctls%num_fline_ctl = org_fline_ctls%num_fline_ctl
-      call alloc_fline_ctl_struct(new_fline_ctls)
-      do i = 1, new_fline_ctls%num_fline_ctl
-        new_fline_ctls%fname_fline_ctl = org_fline_ctls%fname_fline_ctl
-        call dup_control_4_fline(org_fline_ctls%fline_ctl_struct(i),    &
-     &                           new_fline_ctls%fline_ctl_struct(i))
-      end do
-!
-      end subroutine dup_fline_ctl_struct
 !
 !  ---------------------------------------------------------------------
 !

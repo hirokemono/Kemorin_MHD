@@ -35,7 +35,6 @@
       use bcast_pvr_color_ctl
       use bcast_ctl_data_view_trans
       use bcast_ctl_data_pvr_surfaces
-      use bcast_ctl_data_field_line
       use transfer_to_long_integers
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
@@ -56,8 +55,6 @@
 !
       call bcast_pvr_isosurfs_ctl(pvr%pvr_isos_c)
       call bcast_pvr_sections_ctl(pvr%pvr_scts_c)
-      call bcast_files_4_fline_ctl(pvr%pvr_flines_c)
-      call bcast_files_4_fline_ctl(pvr%pvr_tracers_c)
 !
       call bcast_lighting_ctl(pvr%light)
       

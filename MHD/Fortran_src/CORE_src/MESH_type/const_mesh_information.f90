@@ -102,7 +102,6 @@
       subroutine const_surface_infos(id_rank, node, ele, surf_grp,      &
      &                               surf, surf_nod_grp)
 !
-      use m_connect_hexa_2_tetra
       use t_element_group_table
       use cal_mesh_position
       use const_surface_data
@@ -122,14 +121,6 @@
 !
       integer(kind = kint) :: num_internal_surf
 !
-!
-      if(ele%nnod_4_ele .eq. num_t_linear) then
-        call set_1_hexa_2_5_tetra
-      else if (ele%nnod_4_ele .eq. num_t_quad) then
-        call set_1_hexa_2_21_tetra
-      else if (ele%nnod_4_ele .eq. num_t_lag) then
-        call set_1_hexa_2_40_tetra
-      end if
 !
 !     set connectivity and geometry for surface and edge
       if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'

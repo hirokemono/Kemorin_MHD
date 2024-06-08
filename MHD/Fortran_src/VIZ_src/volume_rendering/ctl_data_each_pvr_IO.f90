@@ -74,26 +74,6 @@
 !!     ...
 !!  end array isosurface_ctl
 !!!
-!!  array fieldline_ctl
-!!    file fieldline_ctl   ctl_fline
-!!    begin fieldline_ctl
-!!      fline_file_prefix   fline_magne
-!!      opacity_ctl             0.9
-!!      randering_radius       0.01
-!!    end fieldline_ctl
-!!     ...
-!!  end array fieldline_ctl
-!!!
-!!  array tracer_ctl
-!!    file tracer_ctl   ctl_tracer
-!!    begin tracer_ctl
-!!      fline_file_prefix   tracer_x
-!!      opacity_ctl             0.9
-!!      randering_radius        0.01
-!!    end tracer_ctl
-!!     ...
-!!  end array tracer_ctl
-!!!
 !!  begin quilt_image_ctl
 !!   ...
 !!  end quilt_image_ctl
@@ -174,10 +154,6 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_fline_ctl =    'fieldline_ctl'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_tracer_ctl =   'tracer_ctl'
-      character(len=kchara), parameter, private                         &
      &             :: hd_quilt_image =  'quilt_image_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_snapshot_movie = 'snapshot_movie_ctl'
@@ -204,7 +180,6 @@
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
       use ctl_data_view_transfer_IO
-      use ctl_file_fieldlines_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -234,10 +209,6 @@
      &                             pvr_ctl%pvr_scts_c, c_buf)
         call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,          &
      &                             pvr_ctl%pvr_isos_c, c_buf)
-        call read_files_4_fline_ctl(id_control, hd_fline_ctl,           &
-     &                              pvr_ctl%pvr_flines_c, c_buf)
-        call read_files_4_fline_ctl(id_control, hd_tracer_ctl,          &
-     &                              pvr_ctl%pvr_tracers_c, c_buf)
 !
         call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
      &                                pvr_ctl%render_area_c, c_buf)
@@ -318,7 +289,6 @@
       use ctl_file_pvr_modelview_IO
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
-      use ctl_file_fieldlines_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -344,31 +314,31 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%updated_ctl)
+     &    pvr_ctl%updated_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%file_head_ctl)
+     &    pvr_ctl%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%file_fmt_ctl)
+     &    pvr_ctl%file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%monitoring_ctl)
+     &    pvr_ctl%monitoring_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%streo_ctl)
+     &    pvr_ctl%streo_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%anaglyph_ctl)
+     &    pvr_ctl%anaglyph_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%quilt_ctl)
+     &    pvr_ctl%quilt_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%pvr_field_ctl)
+     &    pvr_ctl%pvr_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          pvr_ctl%pvr_comp_ctl)
+     &    pvr_ctl%pvr_comp_ctl)
 !
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr_ctl%fname_mat_ctl, pvr_ctl%mat, level)
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
-     &                               pvr_ctl%render_area_c, level)
+     &    pvr_ctl%render_area_c, level)
 !
       call sel_write_ctl_pvr_colormap_file                              &
      &   (id_control, hd_colormap_file, pvr_ctl%fname_cmap_cbar_c,      &
@@ -378,18 +348,13 @@
      &    pvr_ctl%light, level)
 !
       call write_pvr_sections_ctl(id_control, hd_pvr_sections,          &
-     &                            pvr_ctl%pvr_scts_c, level)
+     &    pvr_ctl%pvr_scts_c, level)
       call write_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,           &
-     &                            pvr_ctl%pvr_isos_c, level)
-      call write_files_4_fline_ctl(id_control, hd_fline_ctl,            &
-     &                             pvr_ctl%pvr_flines_c, level)
-      call write_files_4_fline_ctl(id_control, hd_tracer_ctl,           &
-     &                             pvr_ctl%pvr_tracers_c, level)
-!
+     &    pvr_ctl%pvr_isos_c, level)
       call write_quilt_image_ctl(id_control, hd_quilt_image,            &
-     &                           pvr_ctl%quilt_c, level)
+     &    pvr_ctl%quilt_c, level)
       call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &
-     &                            pvr_ctl%movie, level)
+     &    pvr_ctl%movie, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_ctl
@@ -402,7 +367,6 @@
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
       use ctl_data_view_transfer_IO
-      use ctl_file_fieldlines_IO
 !
       character(len=kchara), intent(in) :: hd_block
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
@@ -414,12 +378,8 @@
      &                              pvr_ctl%cmap_cbar_c)
       call init_view_transfer_ctl_label(hd_view_transform, pvr_ctl%mat)
       call init_lighting_ctl_label(hd_pvr_lighting, pvr_ctl%light)
-!
       call init_pvr_sections_ctl(hd_pvr_sections, pvr_ctl%pvr_scts_c)
       call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr_ctl%pvr_isos_c)
-      call init_fline_ctl_struct(hd_fline_ctl,   pvr_ctl%pvr_flines_c)
-      call init_fline_ctl_struct(hd_tracer_ctl,  pvr_ctl%pvr_tracers_c)
-!
       call init_quilt_image_ctl_label(hd_quilt_image, pvr_ctl%quilt_c)
       call init_pvr_rotation_ctl_label(hd_snapshot_movie,               &
      &                                 pvr_ctl%movie)

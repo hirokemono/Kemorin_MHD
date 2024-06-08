@@ -52,10 +52,6 @@
 !!     &          bind(C, NAME = 'c_VIZ_PVR_sections_ctl')
 !!      type(c_ptr) function c_VIZ_PVR_isosurfaces_ctl(c_ctl)           &
 !!     &          bind(C, NAME = 'c_VIZ_PVR_isosurfaces_ctl')
-!!      type(c_ptr) function c_VIZ_PVR_fieldlines_ctl(c_ctl)            &
-!!     &          bind(C, NAME = 'c_VIZ_PVR_fieldlines_ctl')
-!!      type(c_ptr) function c_VIZ_PVR_tracers_ctl(c_ctl)               &
-!!     &          bind(C, NAME = 'c_VIZ_PVR_tracers_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_VIZ_PVR_ctl
@@ -289,26 +285,6 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_PVR_isosurfaces_ctl = C_loc(f_ctl%pvr_isos_c)
       end function c_VIZ_PVR_isosurfaces_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_PVR_fieldlines_ctl(c_ctl)              &
-     &          bind(C, NAME = 'c_VIZ_PVR_fieldlines_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_parameter_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_PVR_fieldlines_ctl = C_loc(f_ctl%pvr_flines_c)
-      end function c_VIZ_PVR_fieldlines_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_PVR_tracers_ctl(c_ctl)                 &
-     &          bind(C, NAME = 'c_VIZ_PVR_tracers_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_parameter_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_PVR_tracers_ctl = C_loc(f_ctl%pvr_tracers_c)
-      end function c_VIZ_PVR_tracers_ctl
 !
 !  ---------------------------------------------------------------------
 !
