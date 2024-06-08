@@ -63,7 +63,7 @@
 !!    end surface_define
 !!  end array section_ctl
 !!!
-!!  array isosurface_ctl  2
+!!  array isosurface_ctl
 !!    begin isosurface_ctl
 !!      isosurf_value       0.3
 !!      opacity_ctl         0.9
@@ -71,6 +71,26 @@
 !!    end isosurface_ctl
 !!     ...
 !!  end array isosurface_ctl
+!!!
+!!  array fieldline_ctl
+!!    file fieldline_ctl   ctl_fline
+!!    begin fieldline_ctl
+!!      fline_file_prefix   fline_magne
+!!      opacity_ctl             0.9
+!!      randering_radius       0.01
+!!    end fieldline_ctl
+!!     ...
+!!  end array fieldline_ctl
+!!!
+!!  array tracer_ctl
+!!    file tracer_ctl   ctl_tracer
+!!    begin tracer_ctl
+!!      fline_file_prefix   tracer_x
+!!      opacity_ctl             0.9
+!!      randering_radius        0.01
+!!    end tracer_ctl
+!!     ...
+!!  end array tracer_ctl
 !!!
 !!  begin snapshot_movie_ctl
 !!   ...
@@ -99,6 +119,7 @@
       use t_ctl_data_quilt_image
       use t_control_data_pvr_isosurfs
       use t_ctl_data_pvr_area
+      use t_control_data_flines
       use skip_comment_f
 !
       implicit  none
@@ -150,10 +171,14 @@
 !>        Structure of component name for rendering
         type(read_character_item) :: pvr_comp_ctl
 !
+!>        Control structure for section renderings
         type(pvr_sections_ctl) :: pvr_scts_c
-!
-!>       constrol structure for isosurfaces in PVR
+!>        Control structure for isosurfaces renderings
         type(pvr_isosurfs_ctl) :: pvr_isos_c
+!>        Control structure for fieldline renderings
+        type(fieldline_controls) :: pvr_flines_c
+!>        Control structure for tracer renderings
+        type(fieldline_controls) :: pvr_tracers_c
 !
 !     Top level flag
         integer(kind = kint) :: i_pvr_ctl = 0
@@ -181,6 +206,8 @@
       call dealloc_pvr_render_area_ctl(pvr_ctl%render_area_c)
       call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
       call dealloc_pvr_sections_ctl(pvr_ctl%pvr_scts_c)
+      call dealloc_fline_ctl_struct(pvr_ctl%pvr_flines_c)
+      call dealloc_fline_ctl_struct(pvr_ctl%pvr_tracers_c)
 !
       pvr_ctl%updated_ctl%iflag =     0
       pvr_ctl%file_head_ctl%iflag =   0
@@ -249,6 +276,12 @@
 !
       call dup_pvr_isosurfs_ctl(org_pvr%pvr_isos_c, new_pvr%pvr_isos_c)
       call dup_pvr_sections_ctl(org_pvr%pvr_scts_c, new_pvr%pvr_scts_c)
+!
+      call dup_fline_ctl_struct(org_pvr%pvr_flines_c,                   &
+     &                          new_pvr%pvr_flines_c)
+      call dup_fline_ctl_struct(org_pvr%pvr_tracers_c,                  &
+     &                          new_pvr%pvr_tracers_c)
+!
 !
       call dup_lighting_ctl(org_pvr%light, new_pvr%light)
       call dup_pvr_cmap_cbar(org_pvr%cmap_cbar_c, new_pvr%cmap_cbar_c)

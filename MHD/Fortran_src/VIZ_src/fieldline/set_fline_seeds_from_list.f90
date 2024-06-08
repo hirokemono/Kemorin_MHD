@@ -112,8 +112,6 @@
 !
       subroutine cal_FLINE_element_size(node, ele, fln_dist)
 !
-      use m_connect_hexa_2_tetra
-!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FLINE_element_size), intent(inout) :: fln_dist
@@ -123,14 +121,6 @@
       real(kind = kreal) :: z(ele%nnod_4_ele)
       real(kind = kreal) :: size_max(3)
       integer(kind = kint) :: inod, iele, k1
-!
-      if(ele%nnod_4_ele .eq. num_t_linear) then
-        call set_1_hexa_2_5_tetra
-      else if (ele%nnod_4_ele .eq. num_t_quad) then
-        call set_1_hexa_2_21_tetra
-      else if (ele%nnod_4_ele .eq. num_t_lag) then
-        call set_1_hexa_2_40_tetra
-      end if
 !
 !$omp parallel do private(iele,k1,inod,x,y,z)
       do iele = 1, ele%numele
