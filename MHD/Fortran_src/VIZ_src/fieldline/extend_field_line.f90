@@ -49,6 +49,38 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine find_backside_by_flux(surf, iflag_dir, v4_start,       &
+     &                                 iele_tgt, isf_tgt, isurf_org)
+!
+      integer(kind = kint), intent(in) :: iflag_dir
+      integer(kind = kint), intent(in) :: iele_tgt, isf_tgt
+      type(surface_data), intent(in) :: surf
+      real(kind = kreal), intent(in) ::   v4_start(4)
+!
+      integer(kind = kint), intent(inout) :: isurf_org(2)
+!
+      integer(kind = kint) :: isurf_end
+      real(kind = kreal) :: flux
+!
+!
+      isurf_end = abs(surf%isf_4_ele(iele_tgt,isf_tgt))
+      flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)                &
+     &      + v4_start(2) * surf%vnorm_surf(isurf_end,2)                &
+     &      + v4_start(3) * surf%vnorm_surf(isurf_end,3))               &
+     &       * dble(surf%isf_4_ele(iele_tgt,isf_tgt) / isurf_end)       &
+     &       * dble(iflag_dir)
+      if(flux .ge. 0) then
+        if(surf%isf_4_ele(iele_tgt,isf_tgt) .lt. 0) then
+          isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+        else
+          isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+        end if
+      end if
+!
+      end subroutine find_backside_by_flux
+!
+!  ---------------------------------------------------------------------
+!
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
      &          nod_fld, viz_fields, max_line_step,                     &
      &          end_trace, iflag_used_ele, iflag_dir, i_fline,          &
@@ -101,21 +133,8 @@
       if(isurf_org(2) .gt. 0) then
         iele_tgt = isurf_org(1)
         isf_tgt =  isurf_org(2)
-        isurf_end = abs(surf%isf_4_ele(iele_tgt,isf_tgt))
-        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
-     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
-     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(iele_tgt,isf_tgt) / isurf_end)     &
-     &         * dble(iflag_dir)
-        if(flux .ge. 0) then
-          write(*,*) my_rank, inum, 'Find wrong side', isurf_org_dbl(1)
-          if(surf%isf_4_ele(iele_tgt,isf_tgt) .lt. 0) then
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
-          else
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
-          end if
-          write(*,*) my_rank, inum, 'fixed isurf_org', isurf_org(1:2)
-        end if
+        call find_backside_by_flux(surf, iflag_dir, v4_start,           &
+     &                                 iele_tgt, isf_tgt, isurf_org)
       end if
 !
 !
@@ -178,7 +197,8 @@
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
-!   set backside element and surface 
+!   Check domain of backside element and surface
+        isurf_org(2) = isf_tgt
         isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
         if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
           isurf_org_dbl(1:3)                                            &
@@ -187,34 +207,18 @@
           isurf_org_dbl(1:3)                                            &
      &         = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
         end if
-!
-        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
-     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
-     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
-     &         * dble(iflag_dir)
-        if(flux .lt. zero) then
-!          isurf_org(1) = isurf_org(1)
-          isurf_org(2) = isf_tgt
-        else
-          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
-          else
-            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
-          end if
-!
-!          if(surf%interior_surf(isurf_end) .eq. izero) then
-          if(isurf_org_dbl(1) .ne. my_rank                              &
+        if(isurf_org_dbl(1) .ne. my_rank                                &
      &        .or. isurf_org_dbl(3) .eq. 0) then
-!            isurf_org(1) = isurf_org(1)
-            isurf_org(2) = isf_tgt
             iflag_comm = 1
 !            write(*,*) 'Exit for external surface', my_rank, inum
 !       &            ': ', isurf_org_dbl(1:3), ': ',  &
 !       &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
-            exit
-          end if
+          exit
         end if
+!
+        iele_tgt = isurf_org(1)
+        call find_backside_by_flux(surf, iflag_dir, v4_start,           &
+     &                             iele_tgt, isf_tgt, isurf_org)
 !
         if(max_line_step.gt.0 .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
@@ -222,7 +226,6 @@
             exit
         end if
         if(iflag_used_ele(isurf_org(1)) .eq. 0) then
-!          isurf_org(2) = isf_tgt
           iflag_comm = 1
 !          write(*,*) 'Exit from tracing area', my_rank, inum
           exit
