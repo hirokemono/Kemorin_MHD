@@ -42,6 +42,8 @@
       use t_mesh_data
       use t_comm_table
       use t_phys_data
+      use t_particle_trace
+      use t_fieldline
       use t_next_node_ele_4_node
 !
       use t_rendering_vr_image
@@ -91,6 +93,9 @@
       character(len=kchara), parameter                                  &
      &             :: hd_lic_ctl = 'LIC_rendering'
       private :: hd_lic_ctl
+!
+      type(tracer_module), save ::  dummy_tracer
+      type(fieldline_module), save:: dummy_fline
 !
 !  ---------------------------------------------------------------------
 !
@@ -198,6 +203,9 @@
       integer(kind = kint) :: i_lic, ist_img, num_img
 !
 !
+      dummy_tracer%num_trace = 0
+      dummy_fline%num_fline =  0
+!
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
       if(increment_lic .le. 0) lic%pvr%num_pvr = 0
 !
@@ -219,8 +227,9 @@
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
       call s_set_lic_controls                                           &
-     &   (geofem%group, nod_fld, lic_ctls%fname_lic_ctl,                &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%lic_param,  &
+     &   (geofem%group, nod_fld, dummy_tracer, dummy_fline,             &
+     &    lic_ctls%fname_lic_ctl, lic_ctls%pvr_ctl_type,                &
+     &    lic_ctls%lic_ctl_type, lic%lic_param,                         &
      &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
       do i_lic = 1, lic%pvr%num_pvr

@@ -98,7 +98,8 @@
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
-      call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
+      call set_from_PVR_control(geofem, nod_fld, tracer, fline,         &
+     &                          pvr_ctls, pvr)
 !
       call dealloc_pvr_ctl_struct(pvr_ctls)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)

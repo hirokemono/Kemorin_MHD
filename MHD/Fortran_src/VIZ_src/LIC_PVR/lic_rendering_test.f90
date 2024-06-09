@@ -8,12 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm, &
-!!     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+!!     &                               next_tbl, nod_fld, tracer, fline,&
+!!     &                               lic_ctls, repart_ctl, lic, m_SR)
 !!      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,&
 !!     &                              next_tb, lnod_fld, lic, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
@@ -62,9 +65,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_initialize_test(increment_lic, geofem, ele_comm,   &
-     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+     &                               next_tbl, nod_fld, tracer, fline,  &
+     &                               lic_ctls, repart_ctl, lic, m_SR)
 !
       use t_control_data_pvr_sections
+      use t_particle_trace
+      use t_fieldline
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
@@ -76,6 +82,8 @@
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(lic_rendering_controls), intent(inout) :: lic_ctls
@@ -108,7 +116,7 @@
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
       call s_set_lic_controls                                           &
-     &   (geofem%group, nod_fld, lic_ctls%fname_lic_ctl,                &
+     &   (geofem%group, nod_fld, tracer, fline, lic_ctls%fname_lic_ctl, &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%lic_param,  &
      &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
