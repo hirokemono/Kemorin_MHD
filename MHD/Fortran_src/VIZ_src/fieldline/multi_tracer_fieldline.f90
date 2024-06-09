@@ -209,7 +209,7 @@
      &                       .eq. iflag_position_list) then
           call alloc_init_tracer_position(fln_prm(i_fln),               &
      &                                    fln_src(i_fln))
-          call init_FLINE_seed_from_list(mesh%node, mesh%ele,           &
+          call init_FLINE_seed_from_list(mesh%node, mesh%ele, nod_fld,  &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln), fln_dist)
         end if
       end do
