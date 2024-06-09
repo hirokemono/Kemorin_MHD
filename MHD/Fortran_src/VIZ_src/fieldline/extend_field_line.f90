@@ -86,7 +86,7 @@
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
      &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
-      integer(kind = kint) :: isf_tgt, isurf_end, jcou
+      integer(kind = kint) :: iele_tgt, isf_tgt, isurf_end, jcou
       integer(kind = kint) :: isurf_org(2)
 !
 !
@@ -99,15 +99,17 @@
 !
 !
       if(isurf_org(2) .gt. 0) then
-        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isurf_org(2)))
+        iele_tgt = isurf_org(1)
+        isf_tgt =  isurf_org(2)
+        isurf_end = abs(surf%isf_4_ele(iele_tgt,isf_tgt))
         flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
      &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
      &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(isurf_org(1),isurf_org(2)) / isurf_end) &
+     &         * dble(surf%isf_4_ele(iele_tgt,isf_tgt) / isurf_end)     &
      &         * dble(iflag_dir)
         if(flux .ge. 0) then
           write(*,*) my_rank, inum, 'Find wrong side', isurf_org_dbl(1)
-          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
+          if(surf%isf_4_ele(iele_tgt,isf_tgt) .lt. 0) then
             isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
           else
             isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
