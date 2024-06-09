@@ -67,7 +67,7 @@
       integer(kind = kint), parameter, private :: maxitr = 20
       real(kind = kreal), parameter, private ::   eps_iter = 1.0d-9
       integer(kind = kint), parameter, private :: iflag_nomessage = 0
-      real(kind = kreal), parameter, private ::   error_level = 0.0d0
+      real(kind = kreal), parameter, private ::   error_level = 1.0d-9
 !
       type FLINE_element_size
         real(kind = kreal), allocatable :: ele_size(:)
