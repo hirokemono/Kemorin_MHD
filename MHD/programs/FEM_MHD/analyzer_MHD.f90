@@ -121,6 +121,9 @@
 !*
         if(FMVIZs%tracers%num_trace .gt. 0) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
+          FMHDs%MHD_step%viz_step%istep_tracer                          &
+     &        = istep_file_w_fix_dt(FMHDs%MHD_step%time_d%i_time_step,  &
+     &                              FMHDs%MHD_step%viz_step%TRACER_t)
           call TRACER_evolution(FMHDs%MHD_step%time_d,                  &
      &        FMHDs%MHD_step%finish_d, FMHDs%MHD_step%rst_step,         &
      &        FMHDs%MHD_step%viz_step%istep_tracer,                     &
