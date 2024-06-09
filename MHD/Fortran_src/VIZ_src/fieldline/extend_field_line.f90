@@ -218,7 +218,7 @@
 !
         isurf_org(2) = isf_tgt
 !
-!   Check domain of backside element and surface
+!   Check domain of new starting surface
         call check_exit_in_double_number(surf, para_surf,               &
      &                                   isurf_org, isurf_org_dbl)
         if(isurf_org_dbl(1) .ne. my_rank                                &
@@ -230,6 +230,7 @@
           exit
         end if
 !
+!   Check domain of backside element and surface
         call find_backside_by_flux(surf, iflag_dir,                     &
      &                             v4_start, isurf_org)
 !
