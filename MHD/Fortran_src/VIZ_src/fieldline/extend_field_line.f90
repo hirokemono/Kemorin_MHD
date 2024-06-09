@@ -43,6 +43,8 @@
 !
       implicit  none
 !
+      private :: fline_trace_in_element, ratio_of_trace_to_wall_fline
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -57,6 +59,7 @@
 !
       use t_local_fline
       use trace_in_element
+      use set_fields_after_tracing
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -195,6 +198,94 @@
       end do
 !
       end subroutine s_extend_field_line
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine fline_trace_in_element                                 &
+     &         (trace_ratio, end_trace, trace_length,                   &
+     &          isf_org, iflag_dir, ele, surf,                          &
+     &          viz_fields, x4_ele, v4_ele, c_ele,                      &
+     &          isf_tgt, x4_start, v4_start, c_field)
+!
+      use coordinate_converter
+      use convert_components_4_viz
+      use cal_field_on_surf_viz
+      use cal_fline_in_cube
+      use trace_in_element
+      use tracer_field_interpolate
+!
+      real(kind = kreal), intent(in) :: trace_ratio
+      real(kind = kreal), intent(in) ::   end_trace
+      real(kind = kreal), intent(inout) :: trace_length
+!
+      integer(kind = kint), intent(in) :: isf_org
+      integer(kind = kint), intent(in) :: iflag_dir
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+!
+      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in)                                    &
+     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
+!
+      integer(kind = kint), intent(inout) :: isf_tgt
+      real(kind = kreal), intent(inout) :: x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_field(viz_fields%ntot_color_comp)
+!
+      real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
+      real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
+      real(kind = kreal) :: ratio
+!
+!
+      if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
+        isf_tgt = -3
+        return
+      end if
+!
+      call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
+     &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
+     &    isf_tgt, x4_tgt_8, v4_tgt, c_tgt)
+      if(isf_tgt .le. 0) return
+!
+      call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
+     &                                  x4_tgt_8, x4_start,             &
+     &                                  ratio, trace_length)
+      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
+     &                           x4_tgt_8, v4_tgt, c_tgt,               &
+     &                           x4_start, v4_start, c_field)
+!
+      end subroutine fline_trace_in_element
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine ratio_of_trace_to_wall_fline(end_trace, trace_ratio,   &
+     &                                        x4_tgt, x4_start,         &
+     &                                        ratio, trace_length)
+
+      real(kind = kreal), intent(in) :: x4_tgt(4), x4_start(4)
+      real(kind = kreal), intent(in) :: end_trace
+      real(kind = kreal), intent(in) :: trace_ratio
+      real(kind = kreal), intent(inout) :: ratio, trace_length
+!
+      real(kind = kreal) :: trip, rest_trace
+!
+!
+      if(trace_length .ge. end_trace .and. end_trace .gt. zero) then
+        rest_trace =  (end_trace - trace_length) 
+        trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1)) &
+     &           + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))  &
+     &           + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
+        ratio = min(rest_trace/trip, trace_ratio)
+        trace_length = trace_length + (one - ratio) * trip
+      else
+        ratio = trace_ratio
+      end if
+!
+      end subroutine ratio_of_trace_to_wall_fline
 !
 !  ---------------------------------------------------------------------
 !

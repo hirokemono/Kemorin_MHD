@@ -45,6 +45,8 @@
 !
       implicit  none
 !
+      private s_trace_in_element, ratio_of_trace_to_wall_tracer
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -60,6 +62,7 @@
       use t_local_fline
       use t_control_params_4_fline
       use trace_in_element
+      use set_fields_after_tracing
 !
       real(kind = kreal), intent(in) :: dt
       type(node_data), intent(in) :: node
@@ -177,6 +180,97 @@
       end do
 !
       end subroutine s_trace_particle_in_element
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine s_trace_in_element                                     &
+     &         (trace_ratio, dt, isf_org, ele, surf, viz_fields,        &
+     &          x4_ele, v4_pre, v4_ele, c_ele,                          &
+     &          isf_tgt, x4_start, v4_start, c_field, progress)
+!
+      use coordinate_converter
+      use convert_components_4_viz
+      use cal_field_on_surf_viz
+      use cal_fline_in_cube
+      use trace_in_element
+      use tracer_field_interpolate
+!
+      real(kind = kreal), intent(in) :: trace_ratio
+      real(kind = kreal), intent(in) :: dt
+!
+      integer(kind = kint), intent(in) :: isf_org
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+!
+      real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_pre(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in)                                    &
+     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
+!
+      integer(kind = kint), intent(inout) :: isf_tgt
+      real(kind = kreal), intent(inout) :: x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: c_field(viz_fields%ntot_color_comp)
+      real(kind = kreal), intent(inout) :: progress
+!
+      real(kind = kreal) :: v4_current_e(4,ele%nnod_4_ele)
+      real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
+      real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
+      real(kind = kreal) :: ratio
+!
+!
+      if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
+        isf_tgt = -3
+        return
+      end if
+!
+!$omp parallel workshare
+      v4_current_e(1:4,1:ele%nnod_4_ele)                                &
+     &   = (one - progress) * v4_pre(1:4,1:ele%nnod_4_ele)              &
+     &           + progress * v4_ele(1:4,1:ele%nnod_4_ele)
+!$omp end parallel workshare
+!
+      call trace_to_element_wall                                        &
+     &   (isf_org, iflag_forward_line, ele, surf,                       &
+     &    viz_fields, x4_ele, v4_current_e, c_ele, x4_start, v4_start,  &
+     &    isf_tgt, x4_tgt, v4_tgt, c_tgt)
+!
+      call ratio_of_trace_to_wall_tracer(trace_ratio,                   &
+     &    v4_start, x4_tgt, x4_start, dt, ratio, progress)
+      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
+     &                           x4_tgt, v4_tgt, c_tgt,                 &
+     &                           x4_start, v4_start, c_field)
+!
+      end subroutine s_trace_in_element
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine ratio_of_trace_to_wall_tracer(trace_ratio,             &
+     &          v4_start, x4_tgt, x4_start, dt, ratio, progress)
+
+      real(kind = kreal), intent(in) :: x4_tgt(4), x4_start(4)
+      real(kind = kreal), intent(in) :: v4_start(4)
+      real(kind = kreal), intent(in) :: dt, trace_ratio
+      real(kind = kreal), intent(inout) :: ratio, progress
+!
+      real(kind = kreal) :: trip, dl, actual
+!
+      dl = dt * sqrt(v4_start(1) * v4_start(1)                          &
+     &            +  v4_start(2) * v4_start(2)                          &
+     &            +  v4_start(3) * v4_start(3))                         &
+     &        * (one - progress)
+      trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1))   &
+     &         + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))    &
+     &         + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
+!
+      actual = trace_ratio * min(trip, dl)
+      ratio =  actual / trip
+      progress = progress + (one - progress) * actual / dl
+!
+      end subroutine ratio_of_trace_to_wall_tracer
 !
 !  ---------------------------------------------------------------------
 !
