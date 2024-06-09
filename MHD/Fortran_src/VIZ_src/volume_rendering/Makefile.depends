@@ -132,6 +132,8 @@ t_control_data_pvr_isosurfs.o: $(PVR_DIR)/t_control_data_pvr_isosurfs.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf_def.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o t_ctl_data_pvr_section.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_pvr_tracers.o: $(PVR_DIR)/t_control_data_pvr_tracers.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_ctl_data_pvr_isosurface.o skip_comment_f.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvrs.o: $(PVR_DIR)/t_control_data_pvrs.f90 m_precision.o m_machine_parameter.o t_control_data_4_pvr.o t_read_control_elements.o skip_comment_f.o write_control_elements.o ctl_file_each_pvr_IO.o t_control_array_character3.o ctl_data_each_pvr_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_viz4.o: $(PVR_DIR)/t_control_data_viz4.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_control_data_isosurfaces.o t_control_data_maps.o t_control_data_pvrs.o t_control_data_flines.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_character3.o
