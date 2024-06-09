@@ -44,6 +44,7 @@
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
+      use cal_field_on_surf_viz
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -57,53 +58,25 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ist, ied, inum
-      integer(kind = kint) :: iele, isf, isurf
-      real(kind = kreal) :: vec_surf(3), xi(2), flux
 !
 !
-      do i = 1, fln_src%num_line_local
-        iele = fln_prm%id_surf_start_fline(1,i)
-        isf =  fln_prm%id_surf_start_fline(2,i)
-        isurf = abs(surf%isf_4_ele(iele,isf))
-        fln_src%xx4_initial_fline(1:3,i) = surf%x_surf(isurf,1:3)
-        fln_src%xx4_initial_fline(4,i) =   1.0d0
-        xi(1:2) = zero
-        call cal_field_on_surf_vector                                   &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
-     &      vec_surf)
-!
-        flux = (vec_surf(1) * surf%vnorm_surf(isurf,1)                  &
-     &        + vec_surf(2) * surf%vnorm_surf(isurf,2)                  &
-     &        + vec_surf(3) * surf%vnorm_surf(isurf,3))                 &
-     &         * dble(surf%isf_4_ele(iele,isf) / isurf)
-!
-        if(flux .eq. zero) then
-           fln_src%iflag_outward_flux_fline(i) =  1
-        else
-           fln_src%iflag_outward_flux_fline(i) =  flux / abs(flux)
-        end if
-      end do
-!
-      fln_tce%num_current_fline = fln_src%num_line_local
-      if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
-        fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
-      end if
+      fln_tce%num_current_fline                                         &
+     &        = count_fline_start_surf(node, ele, surf, isf_4_ele_dbl,  &
+     &                                nod_fld, fln_prm, fln_src)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
 !
       fln_tce%istack_current_fline(0) = 0
       call calypso_mpi_allgather_one_int                                &
      &   (fln_tce%num_current_fline, fln_tce%istack_current_fline(1))
-!
       do i = 1, nprocs
         fln_tce%istack_current_fline(i)                                 &
      &        = fln_tce%istack_current_fline(i-1)                       &
      &         + fln_tce%istack_current_fline(i)
       end do
 !
-      call set_fline_start_surf(ele, surf, isf_4_ele_dbl, nod_fld,      &
-     &                          fln_prm, fln_src, fln_tce)
+      call set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,         &
+     &                          nod_fld, fln_prm, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &
@@ -129,18 +102,6 @@
      &      fln_tce%xx_fline_start(1:4,inum)
         end do
       end if
-!
-      do i = 1, fln_tce%num_current_fline
-        iele = fln_tce%isf_dbl_start(2,i)
-        isf =  fln_tce%isf_dbl_start(3,i)
-        isurf = abs(surf%isf_4_ele(iele,isf))
-        xi(1:2) = zero
-        call cal_field_on_surf_vector                                   &
-     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
-     &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
-     &      fln_tce%v_fline_start(1,i))
-      end do
-
 !
       end subroutine s_start_surface_4_fline
 !
