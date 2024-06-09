@@ -17,11 +17,10 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FLINE_element_size), intent(inout) :: fln_dist
-!!      subroutine init_FLINE_seed_from_list(node, ele, nod_fld,        &
+!!      subroutine init_FLINE_seed_from_list(node, ele,                 &
 !!     &          fln_prm, fln_src, fln_tce, fln_dist)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -67,7 +66,7 @@
       integer(kind = kint), parameter, private :: maxitr = 20
       real(kind = kreal), parameter, private ::   eps_iter = 1.0d-9
       integer(kind = kint), parameter, private :: iflag_nomessage = 0
-      real(kind = kreal), parameter, private ::   error_level = 0.0
+      real(kind = kreal), parameter, private ::   error_level = 0.0d0
 !
       type FLINE_element_size
         real(kind = kreal), allocatable :: ele_size(:)
@@ -145,7 +144,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_FLINE_seed_from_list(node, ele, nod_fld,          &
+      subroutine init_FLINE_seed_from_list(node, ele,                   &
      &          fln_prm, fln_src, fln_tce, fln_dist)
 !
       use calypso_mpi_int
@@ -156,7 +155,6 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -167,7 +165,7 @@
 !
       real(kind = kreal) :: x, y, z
       real(kind = kreal) :: dist_tmp
-      real(kind = kreal) :: xi(3), v_seed(4)
+      real(kind = kreal) :: xi(3)
       integer(kind = kint) :: i, iele, inum
       integer(kind = kint) :: num_search
 !      integer(kind = kint) :: ip, i_fln
@@ -196,9 +194,8 @@
     &         fln_dist%distance(1), ione, num_search, fln_dist%index(1))
         end if
 !
-        fln_src%iele_surf_dbl_seed(1,i) = -1
-        fln_src%iele_surf_dbl_seed(2,i) = 0
-        fln_src%iele_surf_dbl_seed(3,i) = 0
+        fln_src%ip_surf_start_fline(i) = -1
+        fln_src%iele_surf_start_fline(i) = 0
         fln_src%xi_surf_start_fline(1:3,i) = -2.0
         do inum = 1, num_search
           iele = fln_dist%index(inum)
@@ -210,29 +207,9 @@
      &        my_rank, iflag_nomessage, error_level,                    &
      &        node, ele, iele, itp_ele_work_f, xi, ierr_inter)  
           if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
+            fln_src%ip_surf_start_fline(i) = my_rank
+            fln_src%iele_surf_start_fline(i) = iele
             fln_src%xi_surf_start_fline(1:3,i) = xi(1:3)
-            fln_src%iele_surf_dbl_seed(1,i) = my_rank
-            fln_src%iele_surf_dbl_seed(2,i) = iele
-            fln_src%iele_surf_dbl_seed(3,i) = 0
-!
-            call cal_each_seed_vector_in_ele(node, ele, nod_fld,        &
-     &          fln_prm%iphys_4_fline, fln_src%iele_surf_dbl_seed(2,i), &
-     &          xi(1), v_seed(1))
-            if((v_seed(1)**2+v_seed(2)**2+v_seed(3)**2) .eq. zero) then
-              if(abs(fln_src%xi_surf_start_fline(1,i)+one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 1
-              if(abs(fln_src%xi_surf_start_fline(1,i)-one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 2
-              if(abs(fln_src%xi_surf_start_fline(2,i)+one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 3
-              if(abs(fln_src%xi_surf_start_fline(2,i)-one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 4
-              if(abs(fln_src%xi_surf_start_fline(3,i)+one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 5
-              if(abs(fln_src%xi_surf_start_fline(3,i)-one)              &
-     &           .lt. error_level) fln_src%iele_surf_dbl_seed(3,i) = 6
-            end if
-!
             exit
           end if
         end do
@@ -242,9 +219,10 @@
 !        call calypso_mpi_barrier
 !        if(my_rank .ne. ip-1) cycle
 !        do i = 1, fln_prm%num_each_field_line
-!          if(fln_src%iele_surf_dbl_seed(1,i) .ge. 0) then
+!          if(fln_src%ip_surf_start_fline(i) .ge. 0) then
 !          write(*,*) my_rank, i_fln, i, 'fln_prm',                     &
-!     &              fln_src%iele_surf_dbl_seed(1:3,i),                 &
+!     &              fln_src%ip_surf_start_fline(i),                    &
+!     &              fln_src%iele_surf_start_fline(i),                  &
 !     &              fln_src%xi_surf_start_fline(1:3,i),                &
 !     &              ele%numele, ierr_inter
 !          end if
@@ -254,7 +232,7 @@
 !        call calypso_mpi_barrier
       fln_src%num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
-      if(fln_src%iele_surf_dbl_seed(1,i) .eq. my_rank)                  &
+      if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
         fln_src%num_line_local = fln_src%num_line_local + 1
       end do
 !        call calypso_mpi_barrier
@@ -302,20 +280,35 @@
 !
       icou = 0
       do inum = 1, fln_prm%num_each_field_line
-        if(fln_src%iele_surf_dbl_seed(1,inum) .ne. my_rank) cycle
-        icou = icou + 1
+          if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
+          icou = icou + 1
 !
-        call cal_each_seed_vector_in_ele(node, ele, nod_fld,            &
-     &      fln_prm%iphys_4_fline, fln_src%iele_surf_dbl_seed(2,inum),  &
-     &      fln_src%xi_surf_start_fline(1,inum),                        &
-     &      fln_tce%v_fline_start(1,icou))
-        call cal_fields_in_element(fln_src%iele_surf_dbl_seed(2,inum),  &
-     &      fln_src%xi_surf_start_fline(1,inum),                        &
-     &      fln_prm%xx_surf_start_fline(1,inum), ele, nod_fld,          &
-     &      fln_prm%fline_fields, fln_tce%c_fline_start(1,icou))
+          call cal_each_seed_field_in_ele(node, ele, nod_fld,           &
+     &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
+     &        fln_src%iele_surf_start_fline(inum),                      &
+     &        fln_src%xi_surf_start_fline(1,inum),                      &
+     &        fln_prm%xx_surf_start_fline(1,inum),                      &
+     &        fln_tce%v_fline_start(1,icou),                            &
+     &        fln_tce%c_fline_start(1,icou))
 !
-          fln_tce%isf_dbl_start(1:3,icou)                               &
-     &                        = fln_src%iele_surf_dbl_seed(1:3,inum)
+!
+          fln_tce%isf_dbl_start(1,icou) = my_rank
+          fln_tce%isf_dbl_start(2,icou)                                 &
+     &      = fln_src%iele_surf_start_fline(inum)
+
+          fln_tce%isf_dbl_start(3,icou) = 0
+          if(abs(fln_src%xi_surf_start_fline(1,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 1
+          if(abs(fln_src%xi_surf_start_fline(1,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 2
+          if(abs(fln_src%xi_surf_start_fline(2,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 3
+          if(abs(fln_src%xi_surf_start_fline(2,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 4
+          if(abs(fln_src%xi_surf_start_fline(3,inum)+one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 5
+          if(abs(fln_src%xi_surf_start_fline(3,inum)-one)               &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 6
           
           fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_prm%xx_surf_start_fline(1:3,inum)
@@ -335,8 +328,23 @@
 !
             icou = icou + 1
             fln_tce%iflag_direction(icou) = -1
-            fln_tce%isf_dbl_start(1:3,icou)                             &
-     &                        = fln_src%iele_surf_dbl_seed(1:3,inum)
+            fln_tce%isf_dbl_start(1,icou) = my_rank
+            fln_tce%isf_dbl_start(2,icou)                               &
+     &            = fln_src%iele_surf_start_fline(inum)
+!
+            fln_tce%isf_dbl_start(3,icou) = 0
+            if(abs(fln_src%xi_surf_start_fline(1,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 1
+            if(abs(fln_src%xi_surf_start_fline(1,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 2
+            if(abs(fln_src%xi_surf_start_fline(2,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 3
+            if(abs(fln_src%xi_surf_start_fline(2,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 4
+            if(abs(fln_src%xi_surf_start_fline(3,inum)+one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 5
+            if(abs(fln_src%xi_surf_start_fline(3,inum)-one)             &
+     &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 6
 !
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
@@ -350,8 +358,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_each_seed_vector_in_ele(node, ele, nod_fld,        &
-     &          iphys_4_fline, iele_seed, xi_ele, v_fline_start)
+      subroutine cal_each_seed_field_in_ele                             &
+     &         (node, ele, nod_fld, fline_fields, iphys_4_fline,        &
+     &          iele_surf_start_fline, xi_surf_start_fline,             &
+     &          xx_surf_start_fline, v_fline_start, c_fline_start)
 !
       use sel_interpolate_scalar
       use extend_field_line
@@ -362,30 +372,38 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
 !
+      type(ctl_params_viz_fields), intent(in) :: fline_fields
       integer(kind = kint), intent(in) :: iphys_4_fline
 !
-      integer(kind = kint), intent(in) :: iele_seed(1)
-      real(kind = kreal), intent(in) :: xi_ele(3)
+      integer(kind = kint), intent(in) :: iele_surf_start_fline(1)
+      real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
+      real(kind = kreal), intent(in) :: xx_surf_start_fline(3)
 !
       real(kind = kreal), intent(inout) :: v_fline_start(4)
+      real(kind = kreal), intent(inout)                                 &
+     &         :: c_fline_start(fline_fields%ntot_color_comp)
 !
 !      real(kind = kreal) :: position_check(3)
 ! 
       call sel_sgl_interpolate_scalar_ele                               &
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
-     &    nod_fld%d_fld(1,iphys_4_fline), iele_seed(1),                 &
-     &    xi_ele, v_fline_start(1))
+     &    nod_fld%d_fld(1,iphys_4_fline), iele_surf_start_fline(1),     &
+     &    xi_surf_start_fline, v_fline_start(1))
       call sel_sgl_interpolate_scalar_ele                               &
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
-     &    nod_fld%d_fld(1,iphys_4_fline+1), iele_seed(1),               &
-     &    xi_ele, v_fline_start(2))
+     &    nod_fld%d_fld(1,iphys_4_fline+1), iele_surf_start_fline(1),   &
+     &    xi_surf_start_fline, v_fline_start(2))
       call sel_sgl_interpolate_scalar_ele                               &
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
-     &    nod_fld%d_fld(1,iphys_4_fline+2), iele_seed(1),               &
-     &    xi_ele, v_fline_start(3))
+     &    nod_fld%d_fld(1,iphys_4_fline+2), iele_surf_start_fline(1),   &
+     &    xi_surf_start_fline, v_fline_start(3))
       v_fline_start(4) = one
 !
-      end subroutine cal_each_seed_vector_in_ele
+      call cal_fields_in_element(iele_surf_start_fline,                 &
+     &    xi_surf_start_fline, xx_surf_start_fline,                     &
+     &    ele, nod_fld, fline_fields, c_fline_start(1))
+!
+      end subroutine cal_each_seed_field_in_ele
 !
 !  ---------------------------------------------------------------------
 !
@@ -394,9 +412,6 @@
      &          v_fline_start, c_fline_start)
 !
       use t_find_interpolate_in_ele
-      use sel_interpolate_scalar
-      use trace_in_element
-      use tracer_field_interpolate
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -423,10 +438,9 @@
      &    iele_seed(1), itp_ele_work_f, xi_in_ele, ierr_inter)
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-      call cal_each_seed_vector_in_ele(node, ele, nod_fld,              &
-     &    iphys_4_fline, iele_seed, xi_in_ele, v_fline_start)
-      call cal_fields_in_element(iele_seed, xi_in_ele, x4_seed,         &
-     &    ele, nod_fld, fline_fields, c_fline_start(1))
+      call cal_each_seed_field_in_ele                                   &
+     &   (node, ele, nod_fld, fline_fields, iphys_4_fline,              &
+     &    iele_seed, xi_in_ele, x4_seed, v_fline_start, c_fline_start)
 !
       end subroutine set_field_at_each_seed_point
 !

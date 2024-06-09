@@ -86,7 +86,7 @@
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
      &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
-      integer(kind = kint) :: iele_tgt, isf_tgt, isurf_end, jcou
+      integer(kind = kint) :: isf_tgt, isurf_end, jcou
       integer(kind = kint) :: isurf_org(2)
 !
 !
@@ -154,10 +154,43 @@
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
-        iele_tgt = isurf_org(1)
-        call choose_element_to_trace(surf, para_surf, v4_start,         &
-     &      iflag_dir, iele_tgt, isf_tgt, isurf_end, isurf_org, isurf_org_dbl, flux, iflag_comm)
-        if(iflag_comm .eq. 1) exit
+        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
+        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
+     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
+     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
+     &         * dble(iflag_dir)
+!
+!   set backside element and surface 
+        if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
+          isurf_org_dbl(1:3)                                            &
+     &         = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
+        else
+          isurf_org_dbl(1:3)                                            &
+     &         = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
+        end if
+        if(flux .lt. zero) then
+!          isurf_org(1) = isurf_org(1)
+          isurf_org(2) = isf_tgt
+        else
+          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+          else
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+          end if
+!
+!          if(surf%interior_surf(isurf_end) .eq. izero) then
+          if(isurf_org_dbl(1) .ne. my_rank                              &
+     &        .or. isurf_org_dbl(3) .eq. 0) then
+!            isurf_org(1) = isurf_org(1)
+            isurf_org(2) = isf_tgt
+            iflag_comm = 1
+!            write(*,*) 'Exit for external surface', my_rank, inum
+!       &            ': ', isurf_org_dbl(1:3), ': ',  &
+!       &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
+            exit
+          end if
+        end if
 !
         if(max_line_step.gt.0 .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
@@ -178,63 +211,6 @@
       end do
 !
       end subroutine s_extend_field_line
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine choose_element_to_trace(surf, para_surf, v4_start,     &
-     &          iflag_dir, iele_tgt, isf_tgt, isurf_end, isurf_org, isurf_org_dbl, flux, iflag_comm)
-!
-      integer(kind = kint), intent(in) :: iflag_dir
-      integer(kind = kint), intent(in) :: iele_tgt, isf_tgt
-!
-      type(surface_data), intent(in) :: surf
-      type(paralell_surface_indices), intent(in) :: para_surf
-      real(kind = kreal), intent(in) :: v4_start(4)
-!
-      integer(kind = kint), intent(inout) :: isurf_end
-      integer(kind = kint), intent(inout) :: isurf_org(2)
-      integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
-      integer(kind = kint), intent(inout) :: iflag_comm
-      real(kind = kreal), intent(inout) :: flux
-!
-      isurf_end = abs(surf%isf_4_ele(iele_tgt,isf_tgt))
-      flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)                &
-     &      + v4_start(2) * surf%vnorm_surf(isurf_end,2)                &
-     &      + v4_start(3) * surf%vnorm_surf(isurf_end,3))               &
-     &       * dble(surf%isf_4_ele(iele_tgt,isf_tgt) / isurf_end)       &
-     &       * dble(iflag_dir)
-!
-!   set backside element and surface 
-      if(para_surf%isf_4_ele_dbl(iele_tgt,isf_tgt,2) .lt. 0) then
-        isurf_org_dbl(1:3) = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
-      else
-        isurf_org_dbl(1:3) = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
-      end if
-!
-      if(flux .lt. zero) then
-        isurf_org(1) = iele_tgt
-        isurf_org(2) = isf_tgt
-      else
-        if(surf%isf_4_ele(iele_tgt,isf_tgt) .lt. 0) then
-          isurf_org(1:2) = surf%iele_4_surf(isurf_end,1,1:2)
-        else
-          isurf_org(1:2) = surf%iele_4_surf(isurf_end,2,1:2)
-        end if
-!
-!        if(surf%interior_surf(isurf_end) .eq. izero) then
-        if(isurf_org_dbl(1) .ne. my_rank                                &
-     &      .or. isurf_org_dbl(3) .eq. 0) then
-          isurf_org(1) = iele_tgt
-          isurf_org(2) = isf_tgt
-          iflag_comm = 1
-!          write(*,*) 'Exit for external surface', my_rank, inum
-!     &            ': ', isurf_org_dbl(1:3), ': ',  &
-!     &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
-          return
-        end if
-      end if
-!
-      end subroutine choose_element_to_trace
 !
 !  ---------------------------------------------------------------------
 !

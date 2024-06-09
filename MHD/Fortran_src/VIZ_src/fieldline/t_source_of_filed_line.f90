@@ -47,8 +47,10 @@
 !
 !>        Position list of seed point in start element
         real(kind = kreal), allocatable :: xi_surf_start_fline(:,:)
+!>        domain list of seed point
+        integer(kind = kint), allocatable :: ip_surf_start_fline(:)
 !>        element list of seed point
-        integer(kind = kint), allocatable :: iele_surf_dbl_seed(:,:)
+        integer(kind = kint), allocatable :: iele_surf_start_fline(:)
       end type each_fieldline_source
 !
 !  ---------------------------------------------------------------------
@@ -130,11 +132,13 @@
 !
       num = fln_prm%num_each_field_line
       allocate(fln_src%xi_surf_start_fline(3,num))
-      allocate(fln_src%iele_surf_dbl_seed(3,num))
+      allocate(fln_src%ip_surf_start_fline(num))
+      allocate(fln_src%iele_surf_start_fline(num))
 !
       if(num .gt. 0) then
         fln_src%xi_surf_start_fline(1:3,1:num) = 0.0d0
-        fln_src%iele_surf_dbl_seed(:,:) = 0
+        fln_src%ip_surf_start_fline(1:num) =        0
+        fln_src%iele_surf_start_fline(1:num) =      0
       end if
 !
       end subroutine alloc_init_tracer_position
@@ -170,7 +174,8 @@
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       deallocate(fln_src%xi_surf_start_fline)
-      deallocate(fln_src%iele_surf_dbl_seed)
+      deallocate(fln_src%ip_surf_start_fline)
+      deallocate(fln_src%iele_surf_start_fline)
 !
       end subroutine dealloc_init_tracer_position
 !
