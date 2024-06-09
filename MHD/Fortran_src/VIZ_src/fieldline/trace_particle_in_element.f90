@@ -58,6 +58,7 @@
      &          iflag_comm, inum)
 !
       use t_local_fline
+      use t_control_params_4_fline
       use trace_in_element
 !
       real(kind = kreal), intent(in) :: dt
@@ -97,7 +98,12 @@
 !        write(*,*) 'Exit at initial tracing', my_rank, inum
         return
       end if
+!
       isurf_org(1:2) = isurf_org_dbl(2:3)
+      if(isurf_org(2) .gt. 0) then
+        call find_backside_by_flux(surf, iflag_forward_trace,           &
+     &                             v4_start, isurf_org)
+      end if
 !
       jcou = 0
       iflag_comm = 0
@@ -139,44 +145,22 @@
           exit
         end if
 
-        if(isf_tgt .gt. 0) then
-          isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
-!
-          flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)            &
-     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
-     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end)
-!
+        isurf_org(2) = isf_tgt
+        if(isurf_org(2) .gt. 0) then
 !   set backside element and surface
-          if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
-            isurf_org_dbl(1:3)                                          &
-     &           = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
-          else
-            isurf_org_dbl(1:3)                                          &
-     &           = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
-          end if
-          if(flux .lt. zero) then
-!            isurf_org(1) = isurf_org(1)
-            isurf_org(2) = isf_tgt
-          else
-            if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
-              isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
-            else
-              isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
-            end if
-!
-!            if(surf%interior_surf(isurf_end) .eq. izero) then
-            if(isurf_org_dbl(1) .ne. my_rank                            &
+          call check_exit_in_double_number(surf, para_surf,             &
+     &                                     isurf_org, isurf_org_dbl)
+          if(isurf_org_dbl(1) .ne. my_rank                              &
      &          .or. isurf_org_dbl(3) .eq. 0) then
-!              isurf_org(1) = isurf_org(1)
-              isurf_org(2) = isf_tgt
-              iflag_comm = 1
-!              write(*,*) 'Exit for external surface', my_rank, inum
-!       &            ': ', isurf_org_dbl(1:3), ': ',  &
-!       &             para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2)
-              exit
-            end if
+            iflag_comm = 1
+!            write(*,*) 'Exit for external surface', my_rank, inum
+!       &          ': ', isurf_org_dbl(1:3), ': ',  &
+!       &           para_surf%isf_4_ele_dbl(isurf_org(1),isurf_org(2),2)
+            exit
           end if
+!
+          call find_backside_by_flux(surf, iflag_forward_trace,         &
+     &                               v4_start, isurf_org)
         end if
 !
         if(iflag_used_ele(isurf_org(1)) .eq. 0) then
