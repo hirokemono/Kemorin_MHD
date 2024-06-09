@@ -97,6 +97,28 @@
       end if
       isurf_org(1:2) = isurf_org_dbl(2:3)
 !
+!
+      if(isurf_org(2) .gt. 0) then
+        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isurf_org(2)))
+        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
+     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
+     &         * dble(surf%isf_4_ele(isurf_org(1),isurf_org(2)) / isurf_end) &
+     &         * dble(iflag_dir)
+        if(flux .ge. 0) then
+          write(*,*) my_rank, inum, 'Find wrong side', isurf_org_dbl(1)
+          if(surf%isf_4_ele(isurf_org(1),isf_tgt) .lt. 0) then
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
+          else
+            isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
+          end if
+          write(*,*) my_rank, inum, 'fixed isurf_org', isurf_org(1:2)
+        end if
+      end if
+!
+!
+!
+
       call add_fline_start(x4_start, v4_start,                          &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
@@ -154,14 +176,8 @@
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
-        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
-        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
-     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
-     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
-     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
-     &         * dble(iflag_dir)
-!
 !   set backside element and surface 
+        isurf_end = abs(surf%isf_4_ele(isurf_org(1),isf_tgt))
         if(para_surf%isf_4_ele_dbl(isurf_org(1),isf_tgt,2) .lt. 0) then
           isurf_org_dbl(1:3)                                            &
      &         = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
@@ -169,6 +185,12 @@
           isurf_org_dbl(1:3)                                            &
      &         = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
         end if
+!
+        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
+     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
+     &         * dble(surf%isf_4_ele(isurf_org(1),isf_tgt) / isurf_end) &
+     &         * dble(iflag_dir)
         if(flux .lt. zero) then
 !          isurf_org(1) = isurf_org(1)
           isurf_org(2) = isf_tgt
