@@ -38,18 +38,6 @@
 !!        real(kind = kreal), intent(inout) :: v4_tgt(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: c_tgt(viz_fields%ntot_color_comp)
-!!
-!!      subroutine field_on_surf_of_one_ele(isf_in_ele, ele, surf, xi,  &
-!!     &                                    ncomp, v_ele, v_tgt, v_work)
-!!        integer(kind = kint), intent(in) :: isf_in_ele
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
-!!        real(kind = kreal), intent(in) :: xi(2)
-!!        integer(kind = kint), intent(in) :: ncomp
-!!        real(kind = kreal), intent(in) :: v_ele(ncomp,ele%nnod_4_ele)
-!!        real(kind = kreal), intent(inout) :: v_tgt(ncomp)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                   :: v_work(ncomp,surf%nnod_4_surf)
 !!@endverbatim
 !
       module set_fields_after_tracing
@@ -66,6 +54,8 @@
       use t_ctl_params_viz_fields
 !
       implicit  none
+!
+      private :: field_on_surf_of_one_ele
 !
 !  ---------------------------------------------------------------------
 !
