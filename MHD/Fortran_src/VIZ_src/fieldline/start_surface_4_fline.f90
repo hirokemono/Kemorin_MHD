@@ -58,8 +58,6 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ist, ied, inum
-      integer(kind = kint) :: iele, isf, isurf
-      real(kind = kreal) :: xi(2)
 !
 !
       fln_tce%num_current_fline                                         &
