@@ -49,63 +49,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine find_backside_by_flux(surf, iflag_dir,                 &
-     &                                 v4_start, isurf_org)
-!
-      integer(kind = kint), intent(in) :: iflag_dir
-      type(surface_data), intent(in) :: surf
-      real(kind = kreal), intent(in) ::   v4_start(4)
-!
-      integer(kind = kint), intent(inout) :: isurf_org(2)
-!
-      integer(kind = kint) :: isurf_sign, isurf_end
-      real(kind = kreal) :: flux
-!
-!
-      isurf_sign = surf%isf_4_ele(isurf_org(1),isurf_org(2))
-      isurf_end = abs(isurf_sign)
-      flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)                &
-     &      + v4_start(2) * surf%vnorm_surf(isurf_end,2)                &
-     &      + v4_start(3) * surf%vnorm_surf(isurf_end,3))               &
-     &       * dble(iflag_dir) * dble(isurf_end / isurf_sign)
-
-      if(flux .lt. 0) return
-      if(isurf_sign .lt. 0) then
-        isurf_org(1:2) =     surf%iele_4_surf(isurf_end,1,1:2)
-      else
-        isurf_org(1:2) =     surf%iele_4_surf(isurf_end,2,1:2)
-      end if
-!
-      end subroutine find_backside_by_flux
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_exit_in_double_number(surf, para_surf,           &
-     &                                       isurf_org, isurf_org_dbl)
-!
-      type(surface_data), intent(in) :: surf
-      type(paralell_surface_indices), intent(in) :: para_surf
-      integer(kind = kint), intent(in) :: isurf_org(2)
-!
-      integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
-!
-      integer(kind = kint) :: isurf_end
-!
-!
-      isurf_end = abs(surf%isf_4_ele(isurf_org(1),isurf_org(2)))
-      if(para_surf%isf_4_ele_dbl(isurf_org(1),isurf_org(2),2)         &
-     &                                                   .lt. 0) then
-        isurf_org_dbl(1:3)                                            &
-     &       = para_surf%iele_4_surf_dbl(isurf_end,1,1:3)
-      else
-        isurf_org_dbl(1:3)                                            &
-     &       = para_surf%iele_4_surf_dbl(isurf_end,2,1:3)
-      end if
-!
-      end subroutine check_exit_in_double_number
-!
-!  ---------------------------------------------------------------------
-!
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
      &          nod_fld, viz_fields, max_line_step,                     &
      &          end_trace, iflag_used_ele, iflag_dir, i_fline,          &
