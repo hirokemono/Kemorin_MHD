@@ -210,7 +210,7 @@
           fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)
           fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0
-          call copy_global_start_fline((icou-1), icou,                  &
+          call copy_global_start_fline(icou, (icou-1),                  &
      &                                 fln_prm%fline_fields, fln_tce)
         end if
       end do
