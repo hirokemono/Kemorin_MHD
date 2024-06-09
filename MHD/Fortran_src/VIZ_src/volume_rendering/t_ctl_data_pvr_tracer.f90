@@ -63,7 +63,7 @@
 !
 !     3rd level for isosurface
 !
-      character(len=kchara) :: hd_render_radius =  'isosurf_value'
+      character(len=kchara) :: hd_render_radius =  'rendering_radius'
       character(len=kchara) :: hd_tracer_opacity = 'opacity_ctl'
       character(len=kchara) :: hd_tracer_prefix = 'tracer_file_prefix'
 !

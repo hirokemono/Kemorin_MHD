@@ -103,8 +103,8 @@
           call append_pvr_tracers_ctl(n_append, hd_block,               &
      &                                pvr_tracers_c)
           call read_pvr_tracer_ctl(id_control, hd_block,                &
-     &        pvr_tracers_c%pvr_trc_c(pvr_tracers_c%num_pvr_tracer_ctl), &
-     &        c_buf)
+     &       pvr_tracers_c%pvr_trc_c(pvr_tracers_c%num_pvr_tracer_ctl), &
+     &       c_buf)
         end if
       end do
 !
