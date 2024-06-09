@@ -134,7 +134,7 @@
       integer(kind = kint)  :: icou
 !
       integer(kind = kint)  :: i, iele, isf_1ele, isurf
-      real(kind = kreal) :: xyz_surf(3)
+      real(kind = kreal) :: xyz_surf(4), vec_surf(4)
       real(kind = kreal), parameter :: xi(2) = (/zero, zero/)
 !
       integer(kind = kint)  :: isf_dbl_st_tmp(2)
@@ -145,6 +145,14 @@
         iele =     fln_prm%id_surf_start_fline(1,i)
         isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf_1ele))
+!
+        xyz_surf(1:3) = surf%x_surf(isurf,1:3)
+        xyz_surf(4) =   1.0d0
+        call cal_field_on_surf_vector                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf, xi, nod_fld%d_fld(1,fln_prm%iphys_4_fline),          &
+     &      vec_surf(1))
+        vec_surf(4) = one
 !
         if(fln_prm%id_fline_direction .ne. iflag_both_trace) then
           call choose_fline_start_surf                                  &
@@ -158,13 +166,12 @@
           fln_tce%isf_dbl_start(1,icou) = my_rank
           fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
           fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)
-          fln_tce%xx_fline_start(1:4,icou)                              &
-     &       = fln_src%xx4_initial_fline(1:4,i)
+          fln_tce%xx_fline_start(1:4,icou) = xyz_surf(1:4)
+          fln_tce%v_fline_start(1:4,icou) =  v_surf(1:4)
           fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0
 !
-          xyz_surf(1:3) = surf%x_surf(isurf,1:3)
-          call cal_fields_on_line(isurf, xi, xyz_surf,                  &
+          call cal_fields_on_line(isurf, xi, xyz_surf(1),               &
      &                          surf, nod_fld, fln_prm%fline_fields,    &
      &                          fln_tce%c_fline_start(1,icou))
         else
@@ -179,13 +186,12 @@
             fln_tce%isf_dbl_start(1,icou) = my_rank
             fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
             fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)
-            fln_tce%xx_fline_start(1:4,icou)                            &
-     &         = fln_src%xx4_initial_fline(1:4,i)
+            fln_tce%xx_fline_start(1:4,icou) = xyz_surf(1:4)
+            fln_tce%v_fline_start(1:4,icou) =  v_surf(1:4)
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
 !
-            xyz_surf(1:3) = surf%x_surf(isurf,1:3)
-            call cal_fields_on_line(isurf, xi, xyz_surf,                &
+            call cal_fields_on_line(isurf, xi, xyz_surf(1),             &
      &                          surf, nod_fld, fln_prm%fline_fields,    &
      &                          fln_tce%c_fline_start(1,icou))
           end if
