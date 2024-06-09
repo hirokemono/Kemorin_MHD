@@ -77,8 +77,8 @@
      &         + fln_tce%istack_current_fline(i)
       end do
 !
-      call set_fline_start_surf(ele, surf, isf_4_ele_dbl, nod_fld,      &
-     &                          fln_prm, fln_src, fln_tce)
+      call set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,         &
+     &                          nod_fld, fln_prm, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &

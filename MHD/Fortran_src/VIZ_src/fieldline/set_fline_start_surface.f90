@@ -7,8 +7,8 @@
 !!      integer(kind = kint) function count_fline_start_surf            &
 !!     &                            (node, ele, surf, isf_4_ele_dbl,    &
 !!     &                             nod_fld, fln_prm, fln_src)
-!!      subroutine set_fline_start_surf(surf, nod_fld,                  &
-!!     &                                fln_prm, fln_src, fln_tce)
+!!      subroutine set_fline_start_surf(node, ele, surf, isf_4_ele_dbl, &
+!!     &          nod_fld, fln_prm, fln_src, fln_tce)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
@@ -108,8 +108,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_surf(ele, surf, isf_4_ele_dbl, nod_fld,&
-     &                                fln_prm, fln_src, fln_tce)
+      subroutine set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,   &
+     &          nod_fld, fln_prm, fln_src, fln_tce)
 !
       use m_constants
       use m_geometry_constants
@@ -121,6 +121,7 @@
       use trace_in_element
       use tracer_field_interpolate
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in)                                  &
