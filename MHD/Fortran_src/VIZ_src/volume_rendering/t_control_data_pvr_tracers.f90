@@ -14,23 +14,24 @@
 !!         character(len=kchara), intent(in) :: hd_block
 !!         type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
 !!         type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_pvr_isosurfs_ctl                               &
+!!      subroutine write_pvr_tracers_ctl                               &
 !!     &         (id_control, hd_block, pvr_tracers_c, level)
 !!         integer(kind = kint), intent(in) :: id_control
 !!         character(len=kchara), intent(in) :: hd_block
 !!         type(pvr_tracers_ctl), intent(in) :: pvr_tracers_c
 !!         integer(kind = kint), intent(inout) :: level
-!!      subroutine alloc_pvr_isosurfs_ctl(pvr_tracers_c)
-!!      subroutine dealloc_pvr_isosurfs_ctl(pvr_tracers_c)
-!!      subroutine init_pvr_isosurfs_ctl(hd_block, pvr_tracers_c)
+!!      subroutine alloc_pvr_tracers_ctl(pvr_tracers_c)
+!!      subroutine dealloc_pvr_tracers_ctl(pvr_tracers_c)
+!!      subroutine init_pvr_tracerss_ctl(hd_block, pvr_tracers_c)
 !!         type(buffer_for_control), intent(inout)  :: c_buf
 !!
-!!      subroutine dup_pvr_isosurfs_ctl(org_pvr_iso_c, new_pvr_isos_c)
+!!      subroutine dup_pvr_tracers_ctl(org_pvr_iso_c, new_pvr_isos_c)
 !!        type(pvr_tracers_ctl), intent(in) :: org_pvr_iso_c
 !!        type(pvr_tracers_ctl), intent(inout) :: new_pvr_isos_c
 !!
-!!      subroutine append_pvr_isosurf_ctl(idx_in, hd_block, pvr_tracers_c)
-!!      subroutine delete_pvr_isosurf_ctl(idx_in, pvr_tracers_c)
+!!      subroutine append_pvr_tracers_ctl(idx_in, hd_block,             &
+!!     &                                  pvr_tracers_c)
+!!      subroutine delete_pvr_tracers_ctl(idx_in, pvr_tracers_c)
 !!        integer(kind = kint), intent(in) :: idx_in
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
@@ -55,7 +56,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
-      use t_ctl_data_pvr_isosurface
+      use t_ctl_data_pvr_tracer
       use skip_comment_f
 !
       implicit  none
@@ -66,7 +67,7 @@
         character(len = kchara) :: block_name = 'tracers_ctl'
 !
         integer(kind = kint) :: num_pvr_tracer_ctl = 0
-        type(pvr_isosurf_ctl), allocatable :: pvr_tracer_ctl(:)
+        type(pvr_tracer_ctl), allocatable :: pvr_trc_c(:)
       end type pvr_tracers_ctl
 !
       private :: reset_pvr_tracers_ctl
@@ -89,8 +90,8 @@
 !
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(allocated(pvr_tracers_c%pvr_tracer_ctl)) return
-      call alloc_pvr_isosurfs_ctl(pvr_tracers_c)
+      if(allocated(pvr_tracers_c%pvr_trc_c)) return
+      call alloc_pvr_tracers_ctl(pvr_tracers_c)
 !
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -99,10 +100,10 @@
 !
         if(check_begin_flag(c_buf, hd_block)) then
           n_append = pvr_tracers_c%num_pvr_tracer_ctl
-          call append_pvr_isosurf_ctl(n_append, hd_block,               &
+          call append_pvr_tracers_ctl(n_append, hd_block,               &
      &                                pvr_tracers_c)
-          call read_pvr_isosurface_ctl(id_control, hd_block,            &
-     &        pvr_tracers_c%pvr_tracer_ctl(pvr_tracers_c%num_pvr_tracer_ctl), &
+          call read_pvr_tracer_ctl(id_control, hd_block,                &
+     &        pvr_tracers_c%pvr_trc_c(pvr_tracers_c%num_pvr_tracer_ctl), &
      &        c_buf)
         end if
       end do
@@ -111,7 +112,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_pvr_isosurfs_ctl                                 &
+      subroutine write_pvr_tracers_ctl                                  &
      &         (id_control, hd_block, pvr_tracers_c, level)
 !
       use write_control_elements
@@ -128,47 +129,47 @@
 !
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, pvr_tracers_c%num_pvr_tracer_ctl
-        call write_pvr_isosurface_ctl(id_control, hd_block,             &
-     &      pvr_tracers_c%pvr_tracer_ctl(i), level)
+        call write_pvr_tracer_ctl(id_control, hd_block,                 &
+     &      pvr_tracers_c%pvr_trc_c(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level,           &
      &                                     hd_block)
 !
-      end subroutine write_pvr_isosurfs_ctl
+      end subroutine write_pvr_tracers_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_isosurfs_ctl(pvr_tracers_c)
+      subroutine dealloc_pvr_tracers_ctl(pvr_tracers_c)
 !
       type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
 !
 !
-      if(allocated(pvr_tracers_c%pvr_tracer_ctl)) then
+      if(allocated(pvr_tracers_c%pvr_trc_c)) then
         call reset_pvr_tracers_ctl(pvr_tracers_c)
-        deallocate(pvr_tracers_c%pvr_tracer_ctl)
+        deallocate(pvr_tracers_c%pvr_trc_c)
       end if
 !
       pvr_tracers_c%num_pvr_tracer_ctl = 0
 !
-      end subroutine dealloc_pvr_isosurfs_ctl
+      end subroutine dealloc_pvr_tracers_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_isosurfs_ctl(pvr_tracers_c)
+      subroutine alloc_pvr_tracers_ctl(pvr_tracers_c)
 !
       type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
       integer(kind = kint) :: num
 !
       num = pvr_tracers_c%num_pvr_tracer_ctl
-      allocate(pvr_tracers_c%pvr_tracer_ctl(num))
+      allocate(pvr_tracers_c%pvr_trc_c(num))
       call reset_pvr_tracers_ctl(pvr_tracers_c)
 !
-      end subroutine alloc_pvr_isosurfs_ctl
+      end subroutine alloc_pvr_tracers_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_pvr_isosurfs_ctl(hd_block, pvr_tracers_c)
+      subroutine init_pvr_tracerss_ctl(hd_block, pvr_tracers_c)
 !
       character(len=kchara), intent(in) :: hd_block
       type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
@@ -177,108 +178,113 @@
       pvr_tracers_c%block_name = hd_block
       pvr_tracers_c%num_pvr_tracer_ctl = 0
 !
-      end subroutine init_pvr_isosurfs_ctl
+      end subroutine init_pvr_tracerss_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine append_pvr_isosurf_ctl(idx_in, hd_block, pvr_tracers_c)
+      subroutine append_pvr_tracers_ctl(idx_in, hd_block,               &
+     &                                  pvr_tracers_c)
 !
       integer(kind = kint), intent(in) :: idx_in
       character(len=kchara), intent(in) :: hd_block
       type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
 !
-      type(pvr_tracers_ctl) :: tmp_pvr_isos
+      type(pvr_tracers_ctl) :: pvr_trcs_tmp
       integer(kind = kint) :: i
 !
 !
-      if(idx_in.lt.0 .or. idx_in.gt.pvr_tracers_c%num_pvr_tracer_ctl) return
+      if(idx_in.lt.0                                                    &
+     &      .or. idx_in.gt.pvr_tracers_c%num_pvr_tracer_ctl) return
 !
-      tmp_pvr_isos%num_pvr_tracer_ctl = pvr_tracers_c%num_pvr_tracer_ctl
-      call alloc_pvr_isosurfs_ctl(tmp_pvr_isos)
-      do i = 1, tmp_pvr_isos%num_pvr_tracer_ctl
-        call dup_pvr_isosurface_ctl(pvr_tracers_c%pvr_tracer_ctl(i),       &
-     &                              tmp_pvr_isos%pvr_tracer_ctl(i))
+      pvr_trcs_tmp%num_pvr_tracer_ctl                                   &
+     &      = pvr_tracers_c%num_pvr_tracer_ctl
+      call alloc_pvr_tracers_ctl(pvr_trcs_tmp)
+      do i = 1, pvr_trcs_tmp%num_pvr_tracer_ctl
+        call dup_pvr_tracer_ctl(pvr_tracers_c%pvr_trc_c(i),             &
+     &                          pvr_trcs_tmp%pvr_trc_c(i))
       end do
 !
-      call dealloc_pvr_isosurfs_ctl(pvr_tracers_c)
-      pvr_tracers_c%num_pvr_tracer_ctl                                     &
-     &      = tmp_pvr_isos%num_pvr_tracer_ctl + 1
-      call alloc_pvr_isosurfs_ctl(pvr_tracers_c)
+      call dealloc_pvr_tracers_ctl(pvr_tracers_c)
+      pvr_tracers_c%num_pvr_tracer_ctl                                  &
+     &      = pvr_trcs_tmp%num_pvr_tracer_ctl + 1
+      call alloc_pvr_tracers_ctl(pvr_tracers_c)
 !
       do i = 1, idx_in
-        call dup_pvr_isosurface_ctl(tmp_pvr_isos%pvr_tracer_ctl(i),     &
-     &                              pvr_tracers_c%pvr_tracer_ctl(i))
+        call dup_pvr_tracer_ctl(pvr_trcs_tmp%pvr_trc_c(i),              &
+     &                          pvr_tracers_c%pvr_trc_c(i))
       end do
-      call init_pvr_isosurface_ctl_label(hd_block,                      &
-     &    pvr_tracers_c%pvr_tracer_ctl(idx_in+1))
-      do i = idx_in+1, tmp_pvr_isos%num_pvr_tracer_ctl
-        call dup_pvr_isosurface_ctl(tmp_pvr_isos%pvr_tracer_ctl(i),     &
-     &                              pvr_tracers_c%pvr_tracer_ctl(i+1))
+      call init_pvr_tracer_ctl_label(hd_block,                          &
+     &                               pvr_tracers_c%pvr_trc_c(idx_in+1))
+      do i = idx_in+1, pvr_trcs_tmp%num_pvr_tracer_ctl
+        call dup_pvr_tracer_ctl(pvr_trcs_tmp%pvr_trc_c(i),              &
+     &                          pvr_tracers_c%pvr_trc_c(i+1))
       end do
 !
-      call dealloc_pvr_isosurfs_ctl(tmp_pvr_isos)
+      call dealloc_pvr_tracers_ctl(pvr_trcs_tmp)
 !
-      end subroutine append_pvr_isosurf_ctl
+      end subroutine append_pvr_tracers_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_pvr_isosurf_ctl(idx_in, pvr_tracers_c)
+      subroutine delete_pvr_tracers_ctl(idx_in, pvr_tracers_c)
 !
       integer(kind = kint), intent(in) :: idx_in
       type(pvr_tracers_ctl), intent(inout) :: pvr_tracers_c
 !
-      type(pvr_tracers_ctl) :: tmp_pvr_isos
+      type(pvr_tracers_ctl) :: pvr_trcs_tmp
       integer(kind = kint) :: i
 !
 !
-      if(idx_in.le.0 .or. idx_in.gt.pvr_tracers_c%num_pvr_tracer_ctl) return
+      if(idx_in.le.0                                                    &
+     &      .or. idx_in.gt.pvr_tracers_c%num_pvr_tracer_ctl) return
 !
-      tmp_pvr_isos%num_pvr_tracer_ctl = pvr_tracers_c%num_pvr_tracer_ctl
-      call alloc_pvr_isosurfs_ctl(tmp_pvr_isos)
-      do i = 1, tmp_pvr_isos%num_pvr_tracer_ctl
-        call dup_pvr_isosurface_ctl(pvr_tracers_c%pvr_tracer_ctl(i),       &
-     &                              tmp_pvr_isos%pvr_tracer_ctl(i))
+      pvr_trcs_tmp%num_pvr_tracer_ctl                                   &
+     &      = pvr_tracers_c%num_pvr_tracer_ctl
+      call alloc_pvr_tracers_ctl(pvr_trcs_tmp)
+      do i = 1, pvr_trcs_tmp%num_pvr_tracer_ctl
+        call dup_pvr_tracer_ctl(pvr_tracers_c%pvr_trc_c(i),             &
+     &                          pvr_trcs_tmp%pvr_trc_c(i))
       end do
 !
-      call dealloc_pvr_isosurfs_ctl(pvr_tracers_c)
-      pvr_tracers_c%num_pvr_tracer_ctl                                     &
-     &      = tmp_pvr_isos%num_pvr_tracer_ctl - 1
-      call alloc_pvr_isosurfs_ctl(pvr_tracers_c)
+      call dealloc_pvr_tracers_ctl(pvr_tracers_c)
+      pvr_tracers_c%num_pvr_tracer_ctl                                  &
+     &      = pvr_trcs_tmp%num_pvr_tracer_ctl - 1
+      call alloc_pvr_tracers_ctl(pvr_tracers_c)
 !
       do i = 1, idx_in-1
-        call dup_pvr_isosurface_ctl(tmp_pvr_isos%pvr_tracer_ctl(i),     &
-     &                              pvr_tracers_c%pvr_tracer_ctl(i))
+        call dup_pvr_tracer_ctl(pvr_trcs_tmp%pvr_trc_c(i),              &
+     &                          pvr_tracers_c%pvr_trc_c(i))
       end do
-      do i = idx_in, tmp_pvr_isos%num_pvr_tracer_ctl
-        call dup_pvr_isosurface_ctl(tmp_pvr_isos%pvr_tracer_ctl(i+1),   &
-     &                              pvr_tracers_c%pvr_tracer_ctl(i))
+      do i = idx_in, pvr_trcs_tmp%num_pvr_tracer_ctl
+        call dup_pvr_tracer_ctl(pvr_trcs_tmp%pvr_trc_c(i+1),            &
+     &                          pvr_tracers_c%pvr_trc_c(i))
       end do
 !
-      call dealloc_pvr_isosurfs_ctl(tmp_pvr_isos)
+      call dealloc_pvr_tracers_ctl(pvr_trcs_tmp)
 !
-      end subroutine delete_pvr_isosurf_ctl
+      end subroutine delete_pvr_tracers_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_pvr_isosurfs_ctl(org_pvr_isos_c, new_pvr_isos_c)
+      subroutine dup_pvr_tracers_ctl(org_pvr_trcs_c, new_pvr_trcs_c)
 !
-      type(pvr_tracers_ctl), intent(in) :: org_pvr_isos_c
-      type(pvr_tracers_ctl), intent(inout) :: new_pvr_isos_c
+      type(pvr_tracers_ctl), intent(in) :: org_pvr_trcs_c
+      type(pvr_tracers_ctl), intent(inout) :: new_pvr_trcs_c
 !
       integer(kind = kint) :: i
 !
 !
-      new_pvr_isos_c%block_name = org_pvr_isos_c%block_name
-      new_pvr_isos_c%num_pvr_tracer_ctl                                 &
-     &     = org_pvr_isos_c%num_pvr_tracer_ctl
-      call alloc_pvr_isosurfs_ctl(new_pvr_isos_c)
-      do i = 1, org_pvr_isos_c%num_pvr_tracer_ctl
-        call dup_pvr_isosurface_ctl(org_pvr_isos_c%pvr_tracer_ctl(i),   &
-     &                              new_pvr_isos_c%pvr_tracer_ctl(i))
+      new_pvr_trcs_c%block_name = org_pvr_trcs_c%block_name
+      new_pvr_trcs_c%num_pvr_tracer_ctl                                 &
+     &     = org_pvr_trcs_c%num_pvr_tracer_ctl
+      call alloc_pvr_tracers_ctl(new_pvr_trcs_c)
+      do i = 1, org_pvr_trcs_c%num_pvr_tracer_ctl
+        call dup_pvr_tracer_ctl(org_pvr_trcs_c%pvr_trc_c(i),            &
+     &                          new_pvr_trcs_c%pvr_trc_c(i))
       end do
 !
-      end subroutine dup_pvr_isosurfs_ctl
+      end subroutine dup_pvr_tracers_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -289,7 +295,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, pvr_isos_ctl%num_pvr_tracer_ctl
-        call reset_pvr_isosurface_ctl(pvr_isos_ctl%pvr_tracer_ctl(i))
+        call reset_pvr_tracer_ctl(pvr_isos_ctl%pvr_trc_c(i))
       end do
 !
       end subroutine reset_pvr_tracers_ctl
