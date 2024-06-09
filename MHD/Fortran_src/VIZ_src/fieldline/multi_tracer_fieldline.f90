@@ -30,9 +30,10 @@
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source) intent(inout) :: fln_src(num_fline)
-!!      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,         &
+!!      subroutine set_fixed_FLINE_seed_points(mesh, nod_fld, num_fline,&
 !!     &                                      fln_prm, fln_src, fln_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source),intent(inout) :: fln_src(num_fline)
@@ -173,7 +174,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
+      subroutine set_fixed_FLINE_seed_points(mesh, nod_fld, num_fline,  &
      &                                      fln_prm, fln_src, fln_tce)
 !
       use m_connect_hexa_2_tetra
@@ -182,6 +183,7 @@
       use set_fline_seeds_from_list
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)

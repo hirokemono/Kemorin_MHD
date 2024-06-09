@@ -115,8 +115,9 @@
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_src)
 
-      call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_trace,   &
-     &    tracer%fln_prm, tracer%fln_src, tracer%fln_tce)
+      call set_fixed_FLINE_seed_points                                  &
+     &   (geofem%mesh, nod_fld, tracer%num_trace, tracer%fln_prm,       &
+     &    tracer%fln_src, tracer%fln_tce)
 
       call set_FLINE_seed_fields                                        &
      &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
