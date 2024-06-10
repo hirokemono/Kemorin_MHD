@@ -53,7 +53,7 @@ struct kemo_array_control{
 struct psf_menu_val{
 	struct kv_string *viz_prefix_c;
 	int viz_step_c;
-	int iflag_psf_file;
+	int iformat_viz_file;
 	
     int iflag_draw_time;
     double time;

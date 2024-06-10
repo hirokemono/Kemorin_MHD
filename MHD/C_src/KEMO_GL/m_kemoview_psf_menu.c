@@ -255,10 +255,10 @@ int get_PSF_draw_switch(struct kemo_array_control *psf_a){
 };
 
 void set_iflag_draw_time(double time, struct psf_menu_val *psf_m){
-    if(   psf_m->iflag_psf_file == IFLAG_PSF_BIN
-       || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ
-       || psf_m->iflag_psf_file == IFLAG_SURF_SDT
-       || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
+    if(   psf_m->iformat_viz_file == IFLAG_PSF_BIN
+       || psf_m->iformat_viz_file == IFLAG_PSF_BIN_GZ
+       || psf_m->iformat_viz_file == IFLAG_SURF_SDT
+       || psf_m->iformat_viz_file == IFLAG_SURF_SDT_GZ){
 		psf_m->iflag_draw_time = 1;
 		psf_m->time = time;
     }else{

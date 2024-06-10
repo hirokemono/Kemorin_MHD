@@ -106,26 +106,26 @@ static void set_fline_data_by_UCD(struct fline_data *fline_d,
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
     double time = 0.0;
-	if(psf_m->iflag_psf_file == IFLAG_SURF_UDT
-	   || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
-	   || psf_m->iflag_psf_file == IFLAG_SURF_VTD
-	   || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ
-	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT
-	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
-		check_gzip_psf_num_nod_first(psf_m->iflag_psf_file,
+	if(psf_m->iformat_viz_file == IFLAG_SURF_UDT
+	   || psf_m->iformat_viz_file == IFLAG_SURF_UDT_GZ
+	   || psf_m->iformat_viz_file == IFLAG_SURF_VTD
+	   || psf_m->iformat_viz_file == IFLAG_SURF_VTD_GZ
+	   || psf_m->iformat_viz_file == IFLAG_SURF_SDT
+	   || psf_m->iformat_viz_file == IFLAG_SURF_SDT_GZ){
+		check_gzip_psf_num_nod_first(psf_m->iformat_viz_file,
                                      psf_m->viz_prefix_c->string, ucd_tmp);
-		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->viz_step_c, &time, 
+		check_gzip_psf_udt_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
         take_minmax_psf(psf_s);
-	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD
-			  || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
-			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK
-			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ
-			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN
-			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ){
-		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->viz_step_c, &time, 
+	} else if(psf_m->iformat_viz_file == IFLAG_SURF_UCD
+			  || psf_m->iformat_viz_file == IFLAG_SURF_UCD_GZ
+			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK
+			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK_GZ
+			  || psf_m->iformat_viz_file == IFLAG_PSF_BIN
+			  || psf_m->iformat_viz_file == IFLAG_PSF_BIN_GZ){
+		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         deallc_all_psf_data(psf_s);
@@ -142,7 +142,7 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
 	int iflag_datatype;
     double time;
 	
-	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, 
+	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_viz_file, 
                                                    fline_m->viz_step_c, &time, 
                                                    fline_m->viz_prefix_c->string, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
@@ -218,11 +218,11 @@ void set_kemoview_fline_data(struct psf_data *ucd_tmp,
 }
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
+	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
 	return;
 }
 void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->viz_step_c, 
+	alloc_set_ucd_field_file_name(fline_m->iformat_viz_file, fline_m->viz_step_c, 
                                   fline_m->viz_prefix_c->string, ucd_m);
 	return;
 }
