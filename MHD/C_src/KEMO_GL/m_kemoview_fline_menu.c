@@ -70,7 +70,7 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 	fline_m ->iflag_draw_viz =  IZERO;
 	
 	fline_m->if_draw_viz = INIT_IF_DRAW_FLINE;
-	fline_m->ic_draw_fline = INIT_IC_DRAW_FLINE;
+	fline_m->ic_draw_viz = INIT_IC_DRAW_FLINE;
 	fline_m->icomp_draw_fline = INIT_IC_DRAW_FLINE;
 	
 	fline_m->fieldline_color = INIT_FLDLINE_COLOR;
@@ -82,7 +82,7 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 void set_fline_color_field(int selected, struct fline_data *fline_d,
                            struct fline_menu_val *fline_m){
 	fline_m->if_draw_viz = (long) selected;
-	fline_m->ic_draw_fline = IZERO;
+	fline_m->ic_draw_viz = IZERO;
 	fline_m->icomp_draw_fline = fline_d->istack_comp[fline_m->if_draw_viz];
 	printf("selected 1st component of %s, %ld \n", 
            fline_d->data_name[fline_m->if_draw_viz], fline_m->if_draw_viz);
@@ -91,8 +91,8 @@ void set_fline_color_field(int selected, struct fline_data *fline_d,
 
 void set_fline_color_component(int selected, struct fline_data *fline_d,
                                struct fline_menu_val *fline_m){
-	fline_m->ic_draw_fline = (long) selected;
-	fline_m->icomp_draw_fline = fline_d->istack_comp[fline_m->if_draw_viz] + fline_m->ic_draw_fline;
+	fline_m->ic_draw_viz = (long) selected;
+	fline_m->icomp_draw_fline = fline_d->istack_comp[fline_m->if_draw_viz] + fline_m->ic_draw_viz;
 	printf("selected %d  of %s, %ld \n", (selected+1), 
            fline_d->data_name[fline_m->if_draw_viz], fline_m->icomp_draw_fline);
 	return;

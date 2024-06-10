@@ -44,7 +44,7 @@ long get_fline_color_field(struct fline_menu_val *fline_m){
 	return fline_m->if_draw_viz;
 };
 long get_fline_color_component(struct fline_menu_val *fline_m){
-	return fline_m->ic_draw_fline;
+	return fline_m->ic_draw_viz;
 };
 long get_fline_color_data_adress(struct fline_menu_val *fline_m){
 	return fline_m->icomp_draw_fline;

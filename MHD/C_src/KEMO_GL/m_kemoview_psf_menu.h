@@ -59,7 +59,7 @@ struct psf_menu_val{
     double time;
     
 	int if_draw_viz;
-	int ic_draw_psf;
+	int ic_draw_viz;
 	long icomp_draw_psf;
 	
     int iflag_draw_viz;
