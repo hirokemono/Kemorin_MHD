@@ -104,6 +104,8 @@ void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
 void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
 void alloc_fline_field_data_c(struct fline_data *fline_d);
 
+void alloc_fline_color_field_data(struct fline_data *fline_d);
+
 void alloc_fline_data(struct fline_data *fline_d);
 void alloc_fline_work_data(struct fline_data *fline_d);
 void alloc_fline_ave_data(struct fline_data *fline_d);

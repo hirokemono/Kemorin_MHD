@@ -105,7 +105,7 @@ void alloc_points_color_data(struct points_data *points_d){
     }
     return;
 };
-void dealloc_points_color_data(struct points_data *points_d){
+static void dealloc_points_color_data(struct points_data *points_d){
     free(points_d->color_nod);
     return;
 }
@@ -310,14 +310,19 @@ void dealloc_fline_field_data_c(struct fline_data *fline_d){
     free(fline_d->data_name);
 };
 
-void alloc_fline_data(struct fline_data *fline_d){
-
+void alloc_fline_color_field_data(struct fline_data *fline_d){
     fline_d->color_nod = (double *)malloc(4*fline_d->nnod_viz*sizeof(double));
     if(fline_d->color_nod  == NULL){
         printf("malloc error for fline_d->color_nod \n");
         exit(0);
     }
+    return;
+};
+static void dealloc_fline_color_field_data(struct fline_data *fline_d){
+    free(fline_d->color_nod);
+};
 
+void alloc_fline_data(struct fline_data *fline_d){
     fline_d->dir_nod = (double *)malloc(4*fline_d->nnod_viz*sizeof(double));
     if(fline_d->dir_nod  == NULL){
         printf("malloc error for fline_d->dir_nod \n");
@@ -398,7 +403,6 @@ void dealloc_fline_work_data(struct fline_data *fline_d){
 }
 
 static void dealloc_fline_data(struct fline_data *fline_d){
-    free(fline_d->color_nod);
     free(fline_d->dir_nod);
     return;
 }
@@ -418,6 +422,7 @@ static void dealloc_fline_ave_data(struct fline_data *fline_d){
 void deallc_all_fline_data(struct fline_data *fline_d){
     dealloc_fline_ave_data(fline_d);
     dealloc_fline_data(fline_d);
+    dealloc_fline_color_field_data(fline_d);
     
     dealloc_fline_ele_s(fline_d);
     dealloc_fline_field_data_c(fline_d);

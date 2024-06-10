@@ -369,6 +369,6 @@ void set_viewer_data_with_mapping(struct map_interpolate *map_itp,
     set_new_data_for_mapping(map_itp, viz_s->ncomptot,
                              &viz_s->d_nod[0], &viz_s->d_nod[viz_s->ncomptot*ist]);
     dealloc_psf_color_data_c(viz_tmp);
-s    dealloc_psf_data_s(viz_tmp);
+    dealloc_psf_data_s(viz_tmp);
     return;
 }

@@ -506,7 +506,7 @@ void take_length_fline(struct fline_data *fline_d){
     fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_viz, fline_d->xyzw_viz,
                                            fline_d->xmin_psf, fline_d->xmax_psf,
                                            fline_d->center_psf);
-    
+    alloc_fline_color_field_data(fline_d);
     alloc_fline_data(fline_d);
 	take_length_ele_fline(fline_d);
 	return;
