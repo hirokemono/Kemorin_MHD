@@ -29,7 +29,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 			for(nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
         inum_tube = set_tube_strided_buffer(inum_tube, 
-                                            fline_m->fieldline_ncorner, tube_width,
+                                            fline_m->ncorner_viz_line, tube_width,
                                             x_line, dir_line, color_line, strided_buf);
 	};
 	return inum_tube;

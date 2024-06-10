@@ -13,7 +13,7 @@ struct fline_menu_val * init_fline_menu_val(void){
         exit(0);
     }
     
-    fline_m->fieldline_ncorner = ISIX;
+    fline_m->ncorner_viz_line = ISIX;
     return fline_m;
 };
 

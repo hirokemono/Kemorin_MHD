@@ -70,7 +70,8 @@ struct psf_menu_val{
 	
 	int viz_color_mode;
     int polygon_mode_psf;
-    long isoline_type;
+    long viz_line_type;
+    int ncorner_viz_line;
     
     int isoline_ncorner;
 	double isoline_width;

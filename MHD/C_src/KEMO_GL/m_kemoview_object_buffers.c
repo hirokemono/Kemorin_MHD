@@ -103,7 +103,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                                 kemo_psf->psf_a, view_s);
 /* Set isolines thickness*/
     if(view_s->ncorner_tube <= 0){view_s->ncorner_tube = 12;};
-    kemo_fline->fline_m->fieldline_ncorner = view_s->ncorner_tube;
+    kemo_fline->fline_m->ncorner_viz_line = view_s->ncorner_tube;
 
     
     const_PSF_node_stack(kemo_psf->psf_d, kemo_psf->psf_a);
