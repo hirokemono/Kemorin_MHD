@@ -35,7 +35,7 @@ struct fline_menu_val{
     
     long viz_line_type;
     int ncorner_viz_line;
-	double fieldline_thick;
+	double viz_line_width;
 };
 
 /* Prototypes */

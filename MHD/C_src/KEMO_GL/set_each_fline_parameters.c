@@ -59,8 +59,8 @@ void set_fline_type(struct fline_menu_val *fline_m, long iflag) {
 };
 long get_fline_type(struct fline_menu_val *fline_m) {return fline_m->viz_line_type;};
 
-void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->fieldline_thick = value;};
-double get_fline_thickness(struct fline_menu_val *fline_m){return fline_m->fieldline_thick;};
+void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->viz_line_width = value;};
+double get_fline_thickness(struct fline_menu_val *fline_m){return fline_m->viz_line_width;};
 
 double get_fline_data_min(struct fline_data *fline_d, int i){
 	return fline_d->d_min[i];

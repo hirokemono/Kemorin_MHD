@@ -45,10 +45,10 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
 
     double ref_width = 1.5;
     double tube_width;
-    if(fline_m->fieldline_thick <= 0.0){
+    if(fline_m->viz_line_width <= 0.0){
         tube_width = ref_width * set_tube_radius_by_axis(view_s);
     }else{
-        tube_width = fline_m->fieldline_thick;
+        tube_width = fline_m->viz_line_width;
     };
 
     Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;

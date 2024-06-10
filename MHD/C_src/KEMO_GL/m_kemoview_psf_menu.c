@@ -195,7 +195,7 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 	psf_m->viz_color_mode =  RAINBOW_SURFACE;
 	psf_m->isoline_color =   INIT_ISOLINE_COLOR;
 	psf_m->n_isoline =       INIT_N_ISOLINE;
-	psf_m->isoline_width =   INIT_ISOLINE_WIDTH;
+	psf_m->viz_line_width =  INIT_ISOLINE_WIDTH;
 	
 	psf_m->scale_vect =         ONE;
 	psf_m->increment_vect =     IONE;

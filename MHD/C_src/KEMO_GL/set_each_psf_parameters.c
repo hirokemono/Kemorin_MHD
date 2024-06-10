@@ -113,7 +113,7 @@ void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag)     {psf_menu->isoline_color = iflag;};
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline)        {psf_menu->n_isoline = nlline;};
-void set_each_isoline_width(double value, struct psf_menu_val *psf_menu){psf_menu->isoline_width = value;};
+void set_each_isoline_width(double value, struct psf_menu_val *psf_menu){psf_menu->viz_line_width = value;};
 void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag){psf_menu->vector_patch_color = iflag;};
 
 void set_each_increment_vect(int increment, struct psf_menu_val *psf_menu){
@@ -126,7 +126,7 @@ void set_each_vector_thick(double value, struct psf_menu_val *psf_menu){psf_menu
 int send_each_psf_patch_color(struct psf_menu_val *psf_menu)   {return psf_menu->viz_color_mode;};
 int send_each_isoline_color(struct psf_menu_val *psf_menu)     {return psf_menu->isoline_color;};
 int send_num_isoline(struct psf_menu_val *psf_menu)            {return psf_menu->n_isoline;};
-double send_isoline_width(struct psf_menu_val *psf_menu)       {return psf_menu->isoline_width;};
+double send_isoline_width(struct psf_menu_val *psf_menu)       {return psf_menu->viz_line_width;};
 int send_each_vector_patch_color(struct psf_menu_val *psf_menu){return psf_menu->vector_patch_color;};
 
 int send_each_increment_vect(struct psf_menu_val *psf_menu){return psf_menu->increment_vect;};

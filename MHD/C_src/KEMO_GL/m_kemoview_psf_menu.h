@@ -74,7 +74,7 @@ struct psf_menu_val{
     int ncorner_viz_line;
     
     int isoline_ncorner;
-	double isoline_width;
+	double viz_line_width;
 	
 	int isoline_color;
 	int n_isoline;

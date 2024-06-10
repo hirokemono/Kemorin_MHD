@@ -154,7 +154,7 @@ void const_PSF_isotube_buffer(const int nthreads,
 
 
     double ref_width = 1.0;
-    double isoline_width = 1.0;;
+    double viz_line_width = 1.0;;
 	long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
@@ -174,14 +174,14 @@ void const_PSF_isotube_buffer(const int nthreads,
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			if(psf_m[i]->isoline_width <= 0.0){
-                isoline_width = ref_width * set_tube_radius_by_axis(view_s);
+			if(psf_m[i]->viz_line_width <= 0.0){
+                viz_line_width = ref_width * set_tube_radius_by_axis(view_s);
             }else{
-                isoline_width = psf_m[i]->isoline_width;
+                viz_line_width = psf_m[i]->viz_line_width;
             };
 			inum_patch = set_PSF_all_isotubes_to_buf(inum_patch,
                                                      nthreads, istack_smp_psf_iso[i],
-                                                     view_s->ncorner_tube, isoline_width,
+                                                     view_s->ncorner_tube, viz_line_width,
                                                      psf_s[i], psf_m[i], psf_buf);
 		};
 	};

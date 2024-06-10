@@ -75,7 +75,7 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 	
 	fline_m->viz_color_mode =  INIT_FLDLINE_COLOR;
 	fline_m->viz_line_type =   INIT_FLDLINE_TYPE;
-	fline_m->fieldline_thick = INIT_FLDLINE_THICK;
+	fline_m->viz_line_width = INIT_FLDLINE_THICK;
 	return;
 }
 

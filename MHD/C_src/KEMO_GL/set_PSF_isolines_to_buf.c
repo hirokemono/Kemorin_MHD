@@ -238,7 +238,7 @@ long add_PSF_all_isolines_num(const long ist_patch, const int nthreads,
 long set_PSF_all_isotubes_to_buf(const long ist_patch,
                                  const int nthreads,
                                  long *istack_smp_psf_iso,
-                                 int isoline_ncorner, double isoline_width,
+                                 int isoline_ncorner, double viz_line_width,
                                  struct psf_data *psf_s,
                                  struct psf_menu_val *psf_m,
                                  struct gl_strided_buffer *psf_buf){
@@ -249,13 +249,13 @@ long set_PSF_all_isotubes_to_buf(const long ist_patch,
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_PSF_isotubes_to_buf(inum_patch, IZERO, psf_m->ist_positive_line,
                                                  nthreads, istack_smp_psf_iso,
-                                                 isoline_ncorner, isoline_width,
+                                                 isoline_ncorner, viz_line_width,
                                                  psf_s, psf_m, psf_buf);
 		};
 		if(psf_m->ist_positive_line < psf_m->n_isoline){
 			inum_patch = set_PSF_isotubes_to_buf(inum_patch, psf_m->ist_positive_line, psf_m->n_isoline,
                                                  nthreads, istack_smp_psf_iso,
-                                                 isoline_ncorner, isoline_width,
+                                                 isoline_ncorner, viz_line_width,
                                                  psf_s, psf_m, psf_buf);
         };
     };
@@ -264,7 +264,7 @@ long set_PSF_all_isotubes_to_buf(const long ist_patch,
 	if(psf_m->draw_psf_zero  != 0){
         inum_patch = const_PSF_each_isotube_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                                   isoline_ncorner, (2.0*isoline_width),
+                                                   isoline_ncorner, (2.0*viz_line_width),
                                                    ZERO, psf_m->icomp_draw_viz, black,
                                                    psf_s, psf_buf);
     };
