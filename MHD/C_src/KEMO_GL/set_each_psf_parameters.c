@@ -145,29 +145,31 @@ int get_PSF_colormap_id(struct psf_menu_val *psf_menu){
 double send_psf_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
 double send_psf_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
 
-void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
+void delete_each_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_color_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_delete);
 	return;
 }
-void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
+void delete_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_opacity_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_delete);
 	return;
 }
 
-void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color){
-    add_color_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], add_value, add_color);
+void add_each_PSF_color_index_list(struct psf_menu_val *psf_menu,
+                                   double add_value, double add_color){
+    add_color_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
+                           add_value, add_color);
 	return;
 }
-void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity){
-    add_opacity_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], add_value, add_opacity);
+void add_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu,
+                                     double add_value, double add_opacity){
+    add_opacity_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
+                             add_value, add_opacity);
     return;
 }
 
-
-
-void set_PSF_linear_colormap(double minvalue, int i_min_digit, 
-                             double maxvalue, int i_max_digit,
-							 struct psf_menu_val *psf_menu){
+void set_each_PSF_linear_colormap(double minvalue, int i_min_digit,
+                                  double maxvalue, int i_max_digit,
+                                  struct psf_menu_val *psf_menu){
 	set_linear_colormap(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], 
 						const_from_digit_order(minvalue, i_min_digit),
 						const_from_digit_order(maxvalue, i_max_digit));
@@ -193,16 +195,16 @@ void set_each_PSF_constant_opacity(struct psf_data *psf_d,
     return;
 }
 
-void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
-                            double value, double *red, double *green, double *blue){
+void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
+                                 double value, double *red, double *green, double *blue){
     struct colormap_params *cmap_s = psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-	set_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, value,
+    cal_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, value,
                          red, green, blue);
     dealloc_colormap_array(cmap_array);
 	return;
 }
-double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
+double get_each_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
     struct colormap_params *cmap_s = psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz];
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	return set_opacity_from_value_s(omap_array, value);

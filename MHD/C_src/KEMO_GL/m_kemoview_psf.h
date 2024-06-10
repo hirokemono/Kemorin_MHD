@@ -58,6 +58,17 @@ void get_each_PSF_color_w_exp(int selected, struct kemoview_mul_psf *kemo_mul_ps
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf *kemo_mul_psf);
 double get_each_PSF_colormap_range(int selected, struct kemoview_mul_psf *kemo_mul_psf);
 
+void delete_PSF_color_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf);
+void delete_PSF_opacity_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf);
+
+void add_PSF_color_list(double add_value, double add_color,
+                        struct kemoview_mul_psf *kemo_mul_psf);
+void add_PSF_opacity_list(double add_value, double add_opacity,
+                          struct kemoview_mul_psf *kemo_mul_psf);
+void set_PSF_linear_colormap(double minvalue, int i_min_digit,
+                             double maxvalue, int i_max_digit,
+                             struct kemoview_mul_psf *kemo_mul_psf);
+
 void set_draw_time_flag(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 int toggle_draw_time_flag(struct kemoview_mul_psf *kemo_mul_psf);
 int get_draw_time_flag(struct kemoview_mul_psf *kemo_mul_psf);
@@ -75,6 +86,28 @@ void set_PSF_fixed_color(double *rgba,
                          struct kemoview_mul_psf *kemo_mul_psf);
 void set_PSF_constant_opacity(double opacity,
                               struct kemoview_mul_psf *kemo_mul_psf);
+
+void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
+                          double *red, double *green, double *blue);
+double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value);
+void set_PSF_color_data(int i_point, double value, double color,
+                        struct kemoview_mul_psf *kemoview_mul_psf);
+void set_PSF_opacity_data(int i_point, double value, double opacity,
+                          struct kemoview_mul_psf *kemoview_mul_psf);
+
+void get_PSF_color_items(struct kemoview_mul_psf *kemo_mul_psf,
+                         int i_point, double *value, double *color);
+void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
+                           int i_point, double *value, double *opacity);
+void get_PSF_colormap_tables(struct kemoview_mul_psf *kemo_mul_psf,
+                             int *id_cmap, int *num_cmap, int *num_alpha,
+                             float *cmap_data, float *cmap_norm,
+                             float *alpha_data, float *alpha_norm);
+
+void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
+                             struct kemoview_mul_psf *kemo_mul_psf);
+void read_PSF_colormap_file(struct kv_string *filename,
+                            struct kemoview_mul_psf *kemo_mul_psf);
 
 
 int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,

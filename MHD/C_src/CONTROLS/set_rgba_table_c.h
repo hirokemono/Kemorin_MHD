@@ -28,7 +28,7 @@ extern const char color_labels[7][KCHARA_C];
 void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
 			struct chara_ctl_item *colormap_mode);
 
-void set_rgb_from_value_s(struct colormap_array *cmap_array,
+void cal_rgb_from_value_s(struct colormap_array *cmap_array,
                           int id_color_mode, double value,
                           double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,

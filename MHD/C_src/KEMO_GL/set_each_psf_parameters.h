@@ -99,15 +99,17 @@ double send_vector_thick(struct psf_menu_val *psf_menu);
 double send_psf_data_min(struct psf_data *psf_d, int icomp);
 double send_psf_data_max(struct psf_data *psf_d, int icomp);
 
-void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
-void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
+void delete_each_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
+void delete_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
 
-void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color);
-void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity);
+void add_each_PSF_color_index_list(struct psf_menu_val *psf_menu,
+                                   double add_value, double add_color);
+void add_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu,
+                                     double add_value, double add_opacity);
 
-void set_PSF_linear_colormap(double minvalue, int i_min_digit, 
-                             double maxvalue, int i_max_digit,
-                             struct psf_menu_val *psf_menu);
+void set_each_PSF_linear_colormap(double minvalue, int i_min_digit,
+                                  double maxvalue, int i_max_digit,
+                                  struct psf_menu_val *psf_menu);
 
 void set_each_PSF_fixed_color(struct psf_data *psf_d,
                               struct psf_menu_val *psf_menu,
@@ -116,9 +118,9 @@ void set_each_PSF_constant_opacity(struct psf_data *psf_d,
                                    struct psf_menu_val *psf_menu,
                                    double opacity);
 
-void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
-                            double value, double *red, double *green, double *blue);
-double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value);
+void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
+                                 double value, double *red, double *green, double *blue);
+double get_each_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value);
 void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double value, double color);
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity);
 void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel);
