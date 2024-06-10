@@ -28,14 +28,14 @@ struct fline_menu_val{
 	int iflag_draw_viz;
 	int iflag_draw_cbar;
 	
+	struct colormap_params **cmap_viz_comp;
+	struct colormap_params **cmap_fline_fld;
+	
 	int fieldline_color;
 	long fieldline_type;
     
     int fieldline_ncorner;
 	double fieldline_thick;
-	
-	struct colormap_params **cmap_fline_comp;
-	struct colormap_params **cmap_fline_fld;
     
 };
 

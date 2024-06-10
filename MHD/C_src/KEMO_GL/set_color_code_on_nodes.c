@@ -17,7 +17,7 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
 	int inod, nd;
 	double d_patch = 0.0;
 	
-	struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_viz];
+	struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if(psf_m->psf_patch_color == WHITE_SURFACE) {
@@ -99,7 +99,7 @@ void set_color_code_for_fieldlines(struct fline_data *fline_d,
 	int inod, nd;
 	double d_edge;
 	
-	struct colormap_params *cmap_s = fline_m->cmap_fline_comp[fline_m->icomp_draw_viz];
+	struct colormap_params *cmap_s = fline_m->cmap_viz_comp[fline_m->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
 	struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if (fline_m->fieldline_color == WHITE_LINE) {

@@ -156,7 +156,7 @@ void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
 
 void * kemoview_link_active_colormap_param(int i_current, int icomp,
                                            struct kemoviewer_type *kemoviewer){
-    void *current_cmap = kemoviewer->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
+    void *current_cmap = kemoviewer->kemo_psf->psf_m[i_current]->cmap_viz_comp[icomp];
     return current_cmap;
 }
 

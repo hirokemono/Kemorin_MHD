@@ -70,14 +70,14 @@ void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_cbar > 0) {
             icomp = psf_m[i]->icomp_draw_viz;
             set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
-                                  psf_m[i]->cmap_psf_comp[icomp], cbar_wk);
+                                  psf_m[i]->cmap_viz_comp[icomp], cbar_wk);
     
             cbar_buf->num_nod_buf = count_colorbar_box_buffer(cbar_wk->iflag_zero, cbar_wk->num_quad);
             
             long inum_quad = 0;
-            inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+            inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_viz_comp[icomp],
                                                   cbar_wk, cbar_buf);
-            inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+            inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_viz_comp[icomp],
                                                  bg_color, cbar_wk, cbar_buf);
             inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color,
                                               cbar_wk, cbar_buf);

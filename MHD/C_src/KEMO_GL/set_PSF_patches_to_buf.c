@@ -251,7 +251,7 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            struct gl_strided_buffer *strided_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
         
-    struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_viz];
+    struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
     

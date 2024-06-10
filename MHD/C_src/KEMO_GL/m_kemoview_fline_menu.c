@@ -19,19 +19,19 @@ struct fline_menu_val * init_fline_menu_val(void){
 
 void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m){
 	int i;
-	fline_m->cmap_fline_comp
+	fline_m->cmap_viz_comp
 			=  (struct colormap_params **) malloc(fline_d->ncomptot*sizeof(struct colormap_params *));
-	if( fline_m->cmap_fline_comp == NULL ) {
-		printf( "cmap_fline_comp cannot alloc!\n" );
+	if( fline_m->cmap_viz_comp == NULL ) {
+		printf( "cmap_viz_comp cannot alloc!\n" );
 		exit( 1 );
 	}
 	for (i=0;i<fline_d->ncomptot;i++){
-		fline_m->cmap_fline_comp[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
-		if(fline_m->cmap_fline_comp[i] == NULL) {
-			printf( "fline_m->cmap_fline_comp[i] cannot alloc!\n" );
+		fline_m->cmap_viz_comp[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
+		if(fline_m->cmap_viz_comp[i] == NULL) {
+			printf( "fline_m->cmap_viz_comp[i] cannot alloc!\n" );
 			exit( 1 );
 		}
-		alloc_color_index_list_s(fline_m->cmap_fline_comp[i], RAINBOW_MODE);
+		alloc_color_index_list_s(fline_m->cmap_viz_comp[i], RAINBOW_MODE);
 	};
 	
 	fline_m->cmap_fline_fld
@@ -57,8 +57,8 @@ void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val 
 	for (i=0;i<fline_d->nfield;i++){dealloc_color_index_list_s(fline_m->cmap_fline_fld[i]);};
 	free(fline_m->cmap_fline_fld);
 	
-	for (i=0;i<fline_d->ncomptot;i++){dealloc_color_index_list_s(fline_m->cmap_fline_comp[i]);};
-	free(fline_m->cmap_fline_comp);
+	for (i=0;i<fline_d->ncomptot;i++){dealloc_color_index_list_s(fline_m->cmap_viz_comp[i]);};
+	free(fline_m->cmap_viz_comp);
     fline_d->nfield = 0;
     fline_d->ncomptot = 0;
 	dealloc_kvstring(fline_m->viz_prefix_c);

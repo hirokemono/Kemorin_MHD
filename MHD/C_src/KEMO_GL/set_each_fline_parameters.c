@@ -77,19 +77,19 @@ int send_coordinate_id_fline(struct fline_data *fline_d, struct fline_menu_val *
 void set_fline_linear_colormap(double minvalue, int i_min_digit, 
                                double maxvalue, int i_max_digit, 
 							   struct fline_menu_val *fline_m){
-    set_linear_colormap(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz], 
+    set_linear_colormap(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz], 
                         const_from_digit_order(minvalue, i_min_digit), 
                         const_from_digit_order(maxvalue, i_max_digit));
 }
 void set_fline_constant_opacity(struct fline_data *fline_d,
                                 struct fline_menu_val *fline_m, double opacity){
-	set_constant_opacitymap(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+	set_constant_opacitymap(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                             fline_d->d_min[fline_m->icomp_draw_viz],
                             fline_d->d_max[fline_m->icomp_draw_viz], opacity);
 }
 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){
-    struct colormap_params *cmap_s = fline_m->cmap_fline_comp[fline_m->icomp_draw_viz];
+    struct colormap_params *cmap_s = fline_m->cmap_viz_comp[fline_m->icomp_draw_viz];
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	double opacity =  set_opacity_from_value_s(omap_array, value);
     dealloc_colormap_array(omap_array);
@@ -97,61 +97,61 @@ double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){
 }
 void set_fline_color_data(struct fline_menu_val *fline_m, 
 			int i_point, double value, double color){
-    set_each_color_point_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    set_each_color_point_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                            i_point, value, color);
 }
 void set_fline_opacity_data(struct fline_menu_val *fline_m,
 			int i_point, double value, double opacity){
-    set_each_opacity_point_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    set_each_opacity_point_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                              i_point, value, opacity);
 }
 
 void set_fline_color_mode_id(struct fline_menu_val *fline_m, int isel){
-	set_color_mode_by_id(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz], isel);
+	set_color_mode_by_id(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz], isel);
 }
 
 double get_fline_min_color(struct fline_menu_val *fline_m){
 	double d, c;
-    get_color_table_items_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    get_color_table_items_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                             0, &d, &c);
 	return d;
 }
 double get_fline_max_color(struct fline_menu_val *fline_m){
 	double d, c;
-	int n = get_color_table_num_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
-    get_color_table_items_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+	int n = get_color_table_num_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
+    get_color_table_items_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                             n-1, &d, &c);
 	return d;
 }
 double get_fline_min_opacity(struct fline_menu_val *fline_m){
-	return get_minimum_opacity_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+	return get_minimum_opacity_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 };
 double get_fline_max_opacity(struct fline_menu_val *fline_m){
-	return get_maximum_opacity_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+	return get_maximum_opacity_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 };
 
 int get_fline_color_num(struct fline_menu_val *fline_m){
-	return get_color_table_num_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+	return get_color_table_num_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 };
 int get_fline_opacity_num(struct fline_menu_val *fline_m){
-	return get_opacity_table_num_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+	return get_opacity_table_num_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 };
 
 
 void get_fline_color_item(struct fline_menu_val *fline_m,
                           int i_point, double *value, double *color){
-    get_color_table_items_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    get_color_table_items_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                             i_point, value, color);
 }
 void get_fline_opacity_item(struct fline_menu_val *fline_m,
                             int i_point, double *value, double *opacity){
-    get_opacity_table_items_s(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    get_opacity_table_items_s(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                               i_point, value, opacity);
 }
 
 void get_fline_colormap_tables(struct fline_menu_val *fline_m, int *id_cmap, int *num_cmap, int *num_alpha,
                                float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
-    get_colormap_to_tables(fline_m->cmap_fline_comp[fline_m->icomp_draw_viz],
+    get_colormap_to_tables(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                            id_cmap, num_cmap, num_alpha,
                            cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
@@ -160,9 +160,9 @@ void get_fline_colormap_tables(struct fline_menu_val *fline_m, int *id_cmap, int
 void write_fline_colormap_file(struct kv_string *filename, const int iflag_draw_axis,
                                struct fline_menu_val *fline_m){
 	write_colormap_control_file_s(filename->string, fline_m->iflag_draw_time, iflag_draw_axis,
-                                  0, fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+                                  0, fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 }
 void read_fline_colormap_file(struct kv_string *filename, struct fline_menu_val *fline_m){
-	read_colormap_control_file_s(filename->string, fline_m->cmap_fline_comp[fline_m->icomp_draw_viz]);
+	read_colormap_control_file_s(filename->string, fline_m->cmap_viz_comp[fline_m->icomp_draw_viz]);
 }
 
