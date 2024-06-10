@@ -35,10 +35,9 @@ struct psf_data{
     
 	long ncomptot;
 	double *d_nod;
+	double *color_nod;
 	
 	double *d_amp;
-	
-    double *rt_viz;
 	
 	double *d_min;
 	double *d_max;
@@ -47,13 +46,12 @@ struct psf_data{
 	double *amp_min;
 	double *amp_max;
 	
-	double *color_nod;
-    
-    
+    double *rt_viz;
+	
 	double *norm_ele;
 	double *norm_nod;
 	double *area_viz;
-	double area_total;
+	double total_size;
 	    
     double center_psf[3];
     double xmin_psf[3];

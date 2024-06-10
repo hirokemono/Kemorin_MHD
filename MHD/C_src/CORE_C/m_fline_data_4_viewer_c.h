@@ -28,15 +28,14 @@ struct points_data{
     
     long ncomptot;
     double *d_nod;
+    double *color_nod;
     
     double *d_amp;
-    double *color_nod;
     
     double *d_min;
     double *d_max;
     double *d_ave;
     double *d_rms;
-    
     double *amp_min;
     double *amp_max;
 };
@@ -59,6 +58,7 @@ struct fline_data{
     
     long ncomptot;
     double *d_nod;
+    double *color_nod;
     
     double *d_amp;
     
@@ -70,11 +70,9 @@ struct fline_data{
     double *amp_max;
     
     double *dir_nod;
-    double *color_nod;
-    
     double *dir_edge;
     double *length_edge;
-    double length_total;
+    double total_size;
     
     
     double center_psf[3];

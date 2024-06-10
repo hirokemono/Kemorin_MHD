@@ -62,9 +62,9 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
                                                      &viz_s->norm_ele[i*IFOUR]);
 	};
     
-	viz_s->area_total = 0.0;
+	viz_s->total_size = 0.0;
 	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->area_total = viz_s->area_total + viz_s->area_viz[i];
+		viz_s->total_size = viz_s->total_size + viz_s->area_viz[i];
 	};
 	return;
 };
@@ -263,7 +263,7 @@ static void take_length_ele_fline(struct fline_data *fline_d){
 		}
     }
     
-    fline_d->length_total = 0.0;
+    fline_d->total_size = 0.0;
     for (i = 0; i < fline_d->nele_viz; i++){
         fline_d->length_edge[i]
         = sqrt(  fline_d->dir_edge[4*i+0]*fline_d->dir_edge[4*i+0]
@@ -286,7 +286,7 @@ static void take_length_ele_fline(struct fline_data *fline_d){
             fline_d->dir_edge[4*i+3] = 1.0;
 		}
         
-		fline_d->length_total = fline_d->length_total + fline_d->length_edge[i];
+		fline_d->total_size = fline_d->total_size + fline_d->length_edge[i];
     };
     
 	for (i = 0; i < fline_d->nele_viz; i++){
@@ -371,8 +371,8 @@ static void take_rms_ave_psf(struct psf_data *viz_s){
     sum_rms_ave_psf(IZERO, viz_s->nele_viz, viz_s);
     
     for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
-		viz_s->d_rms[icomp] = sqrt(viz_s->d_rms[icomp] / viz_s->area_total );
-		viz_s->d_ave[icomp] = viz_s->d_ave[icomp] / viz_s->area_total;
+		viz_s->d_rms[icomp] = sqrt(viz_s->d_rms[icomp] / viz_s->total_size );
+		viz_s->d_ave[icomp] = viz_s->d_ave[icomp] / viz_s->total_size;
 	}
 	return;
 }
@@ -382,8 +382,8 @@ static void take_rms_ave_fline(struct fline_data *fline_d){
     sum_rms_ave_fline(IZERO, fline_d->nele_viz, fline_d);
 
     for (icomp = 0; icomp < fline_d->ncomptot; icomp++){
-        fline_d->d_rms[icomp] = sqrt(fline_d->d_rms[icomp] / fline_d->length_total );
-        fline_d->d_ave[icomp] = fline_d->d_ave[icomp] / fline_d->length_total;
+        fline_d->d_rms[icomp] = sqrt(fline_d->d_rms[icomp] / fline_d->total_size );
+        fline_d->d_ave[icomp] = fline_d->d_ave[icomp] / fline_d->total_size;
 	}
 	return;
 }

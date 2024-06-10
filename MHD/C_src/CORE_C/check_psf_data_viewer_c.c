@@ -67,7 +67,7 @@ void check_psf_data_c(struct psf_data *tako){
 void check_psf_ave_rms_c(struct psf_data *tako){
 	long i, k, kst, ked;
 	
-	printf("area size: %e \n", tako->area_total);
+	printf("area size: %e \n", tako->total_size);
 	printf("average and RMS value  \n");
 	for (i = 0; i < tako->nfield; i++) {
 		kst = tako->istack_comp[i];
