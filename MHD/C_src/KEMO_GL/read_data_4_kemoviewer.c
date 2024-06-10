@@ -182,8 +182,8 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
     psf_m->vector_thick = INIT_VECTOR_WIDTH;
 	
 	for (i=0;i<psf_s->nfield;i++){
-		set_linear_colormap(psf_m->cmap_psf_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
-		set_full_opacitymap(psf_m->cmap_psf_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
+		set_linear_colormap(psf_m->cmap_viz_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
+		set_full_opacitymap(psf_m->cmap_viz_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
 	};
 	
 	for (i=0;i<psf_s->ncomptot;i++){
@@ -205,8 +205,8 @@ void set_kemoview_fline_data(struct psf_data *ucd_tmp,
 	fline_m->iflag_draw_viz = IONE;
 	
 	for (i=0;i<fline_d->nfield;i++){
-		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
-		set_full_opacitymap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
+		set_linear_colormap(fline_m->cmap_viz_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
+		set_full_opacitymap(fline_m->cmap_viz_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
 	};
 	
 	for (i=0;i<fline_d->ncomptot;i++){

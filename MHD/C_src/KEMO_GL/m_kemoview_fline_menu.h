@@ -29,7 +29,7 @@ struct fline_menu_val{
 	int iflag_draw_cbar;
 	
 	struct colormap_params **cmap_viz_comp;
-	struct colormap_params **cmap_fline_fld;
+	struct colormap_params **cmap_viz_fld;
 	
 	int fieldline_color;
 	long fieldline_type;

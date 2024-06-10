@@ -34,19 +34,19 @@ void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *f
 		alloc_color_index_list_s(fline_m->cmap_viz_comp[i], RAINBOW_MODE);
 	};
 	
-	fline_m->cmap_fline_fld
+	fline_m->cmap_viz_fld
 			=  (struct colormap_params **) malloc(fline_d->nfield*sizeof(struct colormap_params *));
-	if( fline_m->cmap_fline_fld == NULL ) {
-		printf( "cmap_fline_fld cannot alloc!\n" );
+	if( fline_m->cmap_viz_fld == NULL ) {
+		printf( "cmap_viz_fld cannot alloc!\n" );
 		exit( 1 );
 	}
 	for (i=0;i<fline_d->nfield;i++) {
-		fline_m->cmap_fline_fld[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
-		if(fline_m->cmap_fline_fld[i] == NULL) {
-			printf( "fline_m->cmap_fline_fld[i] cannot alloc!\n" );
+		fline_m->cmap_viz_fld[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
+		if(fline_m->cmap_viz_fld[i] == NULL) {
+			printf( "fline_m->cmap_viz_fld[i] cannot alloc!\n" );
 			exit( 1 );
 		}
-		alloc_color_index_list_s(fline_m->cmap_fline_fld[i], RAINBOW_MODE);
+		alloc_color_index_list_s(fline_m->cmap_viz_fld[i], RAINBOW_MODE);
 	}
 	return;
 }
@@ -54,8 +54,8 @@ void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *f
 void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m){
 	int i;
 	
-	for (i=0;i<fline_d->nfield;i++){dealloc_color_index_list_s(fline_m->cmap_fline_fld[i]);};
-	free(fline_m->cmap_fline_fld);
+	for (i=0;i<fline_d->nfield;i++){dealloc_color_index_list_s(fline_m->cmap_viz_fld[i]);};
+	free(fline_m->cmap_viz_fld);
 	
 	for (i=0;i<fline_d->ncomptot;i++){dealloc_color_index_list_s(fline_m->cmap_viz_comp[i]);};
 	free(fline_m->cmap_viz_comp);
