@@ -55,9 +55,9 @@ int get_fline_colormode(struct fline_menu_val *fline_m) {
 
 
 void set_fline_type(struct fline_menu_val *fline_m, long iflag) {
-	fline_m->fieldline_type = iflag;
+	fline_m->viz_line_type = iflag;
 };
-long get_fline_type(struct fline_menu_val *fline_m) {return fline_m->fieldline_type;};
+long get_fline_type(struct fline_menu_val *fline_m) {return fline_m->viz_line_type;};
 
 void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->fieldline_thick = value;};
 double get_fline_thickness(struct fline_menu_val *fline_m){return fline_m->fieldline_thick;};

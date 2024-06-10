@@ -32,7 +32,7 @@ struct fline_menu_val{
 	struct colormap_params **cmap_viz_fld;
 	
 	int viz_color_mode;
-	long fieldline_type;
+	long viz_line_type;
     
     int fieldline_ncorner;
 	double fieldline_thick;

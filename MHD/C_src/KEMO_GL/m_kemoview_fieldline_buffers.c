@@ -52,7 +52,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     };
 
     Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
-    if(fline_m->fieldline_type == IFLAG_PIPE){
+    if(fline_m->viz_line_type == IFLAG_PIPE){
         long num_patch = ITHREE * (ITWO*fline_m->fieldline_ncorner) * num_edge;
         set_buffer_address_4_patch(num_patch, Fline_bufs->FLINE_tube_buf);
         if(Fline_bufs->FLINE_tube_buf->num_nod_buf> 0){
