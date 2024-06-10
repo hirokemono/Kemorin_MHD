@@ -169,8 +169,8 @@ static void read_alloc_psf_data_bin_gz(void *FP_gzip, struct psf_data *psf_z,
     
     double *d_nod_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
 	if (d_nod_gz == NULL) {
-		fprintf(stderr, "Failed allocation for d_nod\n", file_name);
-        exit(1)
+		fprintf(stderr, "Failed allocation for d_nod\n");
+        exit(1);
     };
     
     

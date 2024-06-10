@@ -299,8 +299,6 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
 
     copy_viewer_udt_connect(viz_tmp, fline_d->ie_viz);
 
-    dealloc_psf_color_data_c(viz_tmp);
-	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
     return;
 }
@@ -327,12 +325,12 @@ long set_viewer_mesh_with_mapping(struct map_interpolate *map_itp,
     viz_s->nnod_4_ele_viz = ITHREE;
     viz_s->nnod_viz = ITWO * map_itp->nnod_added_4_map + map_itp->nnod_org;
 
-	alloc_psf_data_s(viz_s);
-    alloc_psf_color_data_c(viz_s);
 	alloc_viz_ele_s(viz_s);
     alloc_psf_field_data_c(viz_s);
 	alloc_viz_node_s(viz_s);
-    
+    alloc_psf_color_data_c(viz_s);
+    alloc_psf_data_s(viz_s);
+
     alloc_psf_cutting_4_map_item(map_itp);
 	
 	copy_viewer_udt_node(viz_tmp, viz_s->inod_viz, viz_s->xyzw_viz);
@@ -368,7 +366,5 @@ void set_viewer_data_with_mapping(struct map_interpolate *map_itp,
     ist = viz_s->nnod_viz - map_itp->nnod_added_4_map;
     set_new_data_for_mapping(map_itp, viz_s->ncomptot,
                              &viz_s->d_nod[0], &viz_s->d_nod[viz_s->ncomptot*ist]);
-    dealloc_psf_color_data_c(viz_tmp);
-    dealloc_psf_data_s(viz_tmp);
     return;
 }

@@ -191,8 +191,8 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
     
     double *d_nod = (double *) calloc(psf_b->nnod_viz,sizeof(double));
 	if (d_nod == NULL) {
-		fprintf(stderr, "Failed allocation for d_nod\n", file_name);
-        exit(1)
+		fprintf(stderr, "Failed allocation for d_nod\n");
+        exit(1);
     };
     
     for(j=0;j<psf_b->ncomptot;j++){

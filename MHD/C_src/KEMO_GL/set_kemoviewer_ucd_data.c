@@ -114,7 +114,8 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 			   || iflag_fileformat == IFLAG_SURF_VTK_GZ){
 		istep = get_index_from_file_head(file_head_w_step->string, ucd_header->string);
 		
-		iflag_datatype = check_gzip_kemoview_ucd_first(iflag_fileformat, istep, &time, ucd_header->string, ucd_tmp);
+		iflag_datatype = check_gzip_kemoview_ucd_first(iflag_fileformat, istep, &time,
+                                                       ucd_header->string, ucd_tmp);
 
         if(iflag_datatype == IFLAG_SURFACES){
             init_draw_mul_psf(kemo_mul_psf, ucd_tmp, iflag_fileformat, istep, time, ucd_header->string);

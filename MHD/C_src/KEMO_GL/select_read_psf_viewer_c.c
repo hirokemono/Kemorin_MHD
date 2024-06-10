@@ -32,8 +32,6 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, double *time,
 	};
 	
 	dealloc_kvstring(ucd_m);
-    alloc_psf_color_data_c(viz_s);
-    alloc_psf_data_s(viz_s);
 	return iflag_datatype;
 }
 
@@ -113,9 +111,6 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time,
         printf("Read error for %s\n", ucd_m->string);
         exit(1);
     };
-    
-    alloc_psf_color_data_c(viz_s);
-    alloc_psf_data_s(viz_s);
-	dealloc_kvstring(ucd_m);
+    dealloc_kvstring(ucd_m);
 	return;
 }
