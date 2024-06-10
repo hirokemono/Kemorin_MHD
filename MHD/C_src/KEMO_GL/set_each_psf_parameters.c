@@ -16,15 +16,15 @@ int send_each_psf_file_header_full(struct psf_menu_val *psf_menu,
 	return psf_menu->viz_step_c;
 };
 
-int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
-			struct kv_string *stripped_dir, struct kv_string *stripped_filehead){
+int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
+                                  struct kv_string *stripped_dir,
+                                  struct kv_string *stripped_filehead){
 	alloc_kvstringitem(strlen(psf_menu->viz_prefix_c->string), stripped_filehead);
 	alloc_kvstringitem(strlen(psf_menu->viz_prefix_c->string), stripped_dir);
 	split_dir_and_file_name_c(psf_menu->viz_prefix_c->string,
 				stripped_dir->string, stripped_filehead->string);
 	return psf_menu->viz_step_c;
 };
-
 
 
 long send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
@@ -174,8 +174,9 @@ void set_PSF_linear_colormap(double minvalue, int i_min_digit,
 	return;
 }
 
-void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
-                         double *rgba){
+void set_each_PSF_fixed_color(struct psf_data *psf_d,
+                              struct psf_menu_val *psf_menu,
+                              double *rgba){
     long icomp = psf_menu->icomp_draw_viz;
     set_rgb_from_rgb(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], rgba[0], rgba[1], rgba[2]);	
     set_constant_opacitymap(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
@@ -183,8 +184,9 @@ void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
     return;
 }
 
-void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
-                                 double opacity){
+void set_each_PSF_constant_opacity(struct psf_data *psf_d,
+                                   struct psf_menu_val *psf_menu,
+                                   double opacity){
 	long icomp = psf_menu->icomp_draw_viz;
 	set_constant_opacitymap(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                             psf_d->d_min[icomp], psf_d->d_max[icomp], opacity);

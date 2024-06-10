@@ -598,13 +598,12 @@ int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
 };
 
 long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-	return send_ncomp_each_psf(kemoviewer->kemo_mul_psf->psf_d[i_psf], i);
+	return send_PSF_num_component(kemoviewer->kemo_mul_psf, i);
 };
 void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
                                  struct kv_string *colorname, int i){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-    send_each_psf_data_name(kemoviewer->kemo_mul_psf->psf_d[i_psf], colorname, i);
+    send_PSF_field_name(kemoviewer->kemo_mul_psf, colorname, i);
+    return;
 };
 
 void kemoview_set_PSF_polygon_mode(int iflag, struct kemoviewer_type *kemoviewer){
@@ -693,18 +692,12 @@ void kemoview_get_each_PSF_color_w_exp(struct kemoviewer_type *kemoviewer,
 
 void kemoview_set_PSF_single_color(double *rgba,
                                    struct kemoviewer_type *kemoviewer){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-    set_PSF_fixed_color(kemoviewer->kemo_mul_psf->psf_d[i_psf],
-                        kemoviewer->kemo_mul_psf->psf_m[i_psf],
-                        rgba);
+    set_PSF_fixed_color(rgba, kemoviewer->kemo_mul_psf);
 }
 
 void kemoview_set_PSF_constant_opacity(double opacity,
                                        struct kemoviewer_type *kemoviewer){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-    set_PSF_constant_opacity(kemoviewer->kemo_mul_psf->psf_d[i_psf],
-                             kemoviewer->kemo_mul_psf->psf_m[i_psf],
-                             opacity);
+    set_PSF_constant_opacity(opacity, kemoviewer->kemo_mul_psf);
 }
 
 void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,

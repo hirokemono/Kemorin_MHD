@@ -223,7 +223,7 @@ static void init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
         if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ipsf) > 0) {
             kemoview_set_PSF_loaded_params(SET_CURRENT, ipsf, kemo_gl->kemoview_data);
             stripped_filehead = kemoview_alloc_kvstring();
-            kemoview_get_PSF_file_prefix(kemo_gl->kemoview_data, stripped_filehead);
+            kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
             sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
             index = append_ci_item_to_tree(index, label_tmp,
                                            ipsf, child_model_psfs);
@@ -271,7 +271,7 @@ GtkWidget * set_psf_menu_box(struct kemoviewer_gl_type *kemo_gl,
     init_psf_draw_field_hbox(kemo_gl, psf_gmenu, itemTEvo);
     
     init_psf_draw_component_hbox(kemo_gl, psf_gmenu, itemTEvo);
-    init_colormap_params_4_viewer(kemo_gl->kemoview_data, psf_gmenu->color_vws);
+    init_colormap_params_4_viewer(kemo_gl, psf_gmenu->color_vws);
     
     init_psf_menu_hbox(kemo_gl, psf_gmenu, psf_gmenu->psfWin);
     

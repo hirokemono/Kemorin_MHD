@@ -68,4 +68,17 @@ int toggle_draw_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 int get_draw_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 
+long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i);
+void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
+                         struct kv_string *colorname, int i);
+void set_PSF_fixed_color(double *rgba,
+                         struct kemoview_mul_psf *kemo_mul_psf);
+void set_PSF_constant_opacity(double opacity,
+                              struct kemoview_mul_psf *kemo_mul_psf);
+
+
+int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
+                             struct kv_string *stripped_dir,
+                             struct kv_string *stripped_filehead);
+struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf);
 #endif

@@ -24,8 +24,9 @@
 
 int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, 
 			struct kv_string *psf_filehead, int *iflag);
-int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu
-			, struct kv_string *stripped_dir, struct kv_string *stripped_filehead);
+int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
+                                  struct kv_string *stripped_dir,
+                                  struct kv_string *stripped_filehead);
 
 
 long send_nfield_each_psf(struct psf_data *psf_d);
@@ -108,10 +109,12 @@ void set_PSF_linear_colormap(double minvalue, int i_min_digit,
                              double maxvalue, int i_max_digit,
                              struct psf_menu_val *psf_menu);
 
-void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
-                         double *rgba);
-void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
-                                 double opacity);
+void set_each_PSF_fixed_color(struct psf_data *psf_d,
+                              struct psf_menu_val *psf_menu,
+                              double *rgba);
+void set_each_PSF_constant_opacity(struct psf_data *psf_d,
+                                   struct psf_menu_val *psf_menu,
+                                   double opacity);
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue);

@@ -137,12 +137,12 @@ void kemoview_add_ext_to_file_name(struct kv_string *file_prefix,
 }
 
 
-int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+
+int kemoview_get_PSF_file_prefix(struct kemoviewer_gl_type *kemo_gl,
                                  struct kv_string *stripped_filehead){
     struct kv_string* stripped_dir = alloc_kvstring();
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-    int istep = send_each_psf_file_dir_head(kemoviewer->kemo_mul_psf->psf_m[i_psf],
-                                            stripped_dir, stripped_filehead);
+    int istep = send_psf_file_dir_prefix(kemo_gl->kemoview_data->kemo_mul_psf,
+                                         stripped_dir, stripped_filehead);
     dealloc_kvstring(stripped_dir);
     return istep;
 }
@@ -154,10 +154,8 @@ void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
     return;
 };
 
-void * kemoview_link_active_colormap_param(int i_current, int icomp,
-                                           struct kemoviewer_type *kemoviewer){
-    void *current_cmap = kemoviewer->kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
-    return current_cmap;
+void * kemoview_link_active_colormap_param(struct kemoviewer_gl_type *kemo_gl){
+    return link_active_colormap_param(kemo_gl->kemoview_data->kemo_mul_psf);
 }
 
 

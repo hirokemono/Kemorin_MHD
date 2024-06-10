@@ -26,7 +26,7 @@ struct kemoview_mul_psf * init_kemoview_mul_psf(void){
         exit(0);
     }
 	for(i=0;i<kemo_mul_psf->psf_a->nlimit_loaded;i++){
-        kemo_mul_psf->psf_d[i] =init_psf_data();
+        kemo_mul_psf->psf_d[i] = init_psf_data();
         kemo_mul_psf->psf_m[i] = init_psf_menu_val();
 		init_psf_parameters(kemo_mul_psf->psf_m[i]);
 	}
@@ -391,3 +391,45 @@ int get_draw_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf){
 int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf){
     return kemo_mul_psf->psf_a->iflag_avail_file_step;
 };
+
+
+long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i){
+    int i_psf = kemo_mul_psf->psf_a->id_current;
+    return send_ncomp_each_psf(kemo_mul_psf->psf_d[i_psf], i);
+};
+void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
+                         struct kv_string *colorname, int i){
+    int i_psf = kemo_mul_psf->psf_a->id_current;
+    send_each_psf_data_name(kemo_mul_psf->psf_d[i_psf], colorname, i);
+};
+
+void set_PSF_fixed_color(double *rgba,
+                         struct kemoview_mul_psf *kemo_mul_psf){
+    int i_psf = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_fixed_color(kemo_mul_psf->psf_d[i_psf],
+                             kemo_mul_psf->psf_m[i_psf],
+                             rgba);
+}
+void set_PSF_constant_opacity(double opacity,
+                              struct kemoview_mul_psf *kemo_mul_psf){
+    int i_psf = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_constant_opacity(kemo_mul_psf->psf_d[i_psf],
+                                  kemo_mul_psf->psf_m[i_psf],
+                                  opacity);
+}
+
+
+int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
+                             struct kv_string *stripped_dir,
+                             struct kv_string *stripped_filehead){
+    int i_psf = kemo_mul_psf->psf_a->id_current;
+    return send_each_psf_file_dir_prefix(kemo_mul_psf->psf_m[i_psf],
+                                         stripped_dir, stripped_filehead);
+};
+
+struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf){
+    int i_current = get_curent_PSF_ID(kemo_mul_psf->psf_a);
+    int icomp =     send_draw_component_psf(kemo_mul_psf->psf_m[i_current]);
+    return kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
+}
+
