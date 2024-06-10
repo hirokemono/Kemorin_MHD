@@ -23,22 +23,24 @@
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_proj)
 !!
 !!      subroutine each_PVR_rendering(istep_pvr, time, num_img,         &
-!!     &          geofem, jacs, nod_fld, sf_grp_4_sf, field_pvr,        &
-!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+!!     &          geofem, jacs, nod_fld, tracer, fline, sf_grp_4_sf,    &
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!      subroutine each_PVR_rendering_w_rot                             &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,  &
-!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld, tracer, fline,&
+!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound, pvr_rgb,&
+!!     &          pvr_proj, SR_sig, SR_r, SR_i)
 !!      subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,      &
-!!     &          num_img, geofem, jacs, nod_fld, sf_grp_4_sf,          &
-!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &          num_img, geofem, jacs, nod_fld, tracer, fline,        &
+!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,         &
+!!     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(inout) :: field_pvr
@@ -63,6 +65,8 @@
       use t_mesh_data
       use t_phys_data
       use t_jacobians
+      use t_particle_trace
+      use t_fieldline
 !
       use t_surf_grp_list_each_surf
       use t_rendering_vr_image
@@ -168,8 +172,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering(istep_pvr, time, num_img,           &
-     &          geofem, jacs, nod_fld, sf_grp_4_sf, field_pvr,          &
-     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+     &          geofem, jacs, nod_fld, tracer, fline, sf_grp_4_sf,      &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
       use rendering_vr_image
@@ -180,6 +184,8 @@
 !
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
 !
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -203,8 +209,9 @@
 !
       do i_img = 1, num_img
         call rendering_with_fixed_view(istep_pvr, time,                 &
-     &      geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,          &
-     &      pvr_param, pvr_proj(i_img), pvr_rgb(i_img), SR_sig, SR_r)
+     &      geofem%mesh, geofem%group, tracer, fline, sf_grp_4_sf,      &
+     &      field_pvr, pvr_param, pvr_proj(i_img), pvr_rgb(i_img),      &
+     &      SR_sig, SR_r)
       end do
 !
       end subroutine each_PVR_rendering
@@ -212,9 +219,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering_w_rot                               &
-     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,    &
-     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          SR_sig, SR_r, SR_i)
+     &         (istep_pvr, time, geofem, jacs, nod_fld, tracer, fline,  &
+     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound, pvr_rgb,  &
+     &          pvr_proj, SR_sig, SR_r, SR_i)
 !
       use cal_pvr_modelview_mat
 !
@@ -223,6 +230,8 @@
 !
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
@@ -247,18 +256,19 @@
      &   (pvr_param%outline, pvr_param%color)
 !
 !
-      call rendering_with_rotation(istep_pvr, time,                     &
-     &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
-     &    pvr_rgb, pvr_param, pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
+      call rendering_with_rotation                                      &
+     &   (istep_pvr, time, geofem%mesh, geofem%group,                   &
+     &    tracer, fline, sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param,    &
+     &    pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
 !
       end subroutine each_PVR_rendering_w_rot
 !
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,        &
-     &          num_img, geofem, jacs, nod_fld, sf_grp_4_sf,            &
-     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          SR_sig, SR_r, SR_i)
+     &          num_img, geofem, jacs, nod_fld, tracer, fline,          &
+     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,           &
+     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -272,6 +282,8 @@
 !
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
@@ -301,7 +313,7 @@
           call rot_multi_view_projection_mats(i_img, i_rot,             &
      &        pvr_param, pvr_proj(i_img)%screen)
           call rendering_at_once(istep_pvr, time,                       &
-     &        geofem%mesh, geofem%group, sf_grp_4_sf,                   &
+     &        geofem%mesh, geofem%group, tracer, fline, sf_grp_4_sf,    &
      &        field_pvr, pvr_param, pvr_bound, pvr_proj(i_img),         &
      &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
         end do

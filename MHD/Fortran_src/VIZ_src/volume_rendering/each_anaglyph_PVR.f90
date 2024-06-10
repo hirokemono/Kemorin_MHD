@@ -7,16 +7,18 @@
 !>@brief Main module for each volume rendering
 !!
 !!@verbatim
-!!      subroutine each_PVR_anaglyph (istep_pvr, time,                  &
-!!     &          mesh, group, jacs, nod_fld, sf_grp_4_sf, field_pvr,   &
+!!      subroutine each_PVR_anaglyph(istep_pvr, time, mesh, group, jacs,&
+!!     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,       &
 !!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!      subroutine anaglyph_rendering_w_rotation(istep_pvr, time,       &
-!!     &          mesh, group, nod_fld, jacs, sf_grp_4_sf, field_pvr,   &
-!!     &          pvr_param, pvr_bound, pvr_proj, pvr_rgb,              &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &          mesh, group, jacs, nod_fld, tracer, fline,            &
+!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,         &
+!!     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(inout) :: field_pvr
@@ -42,6 +44,8 @@
       use t_mesh_data
       use t_phys_data
       use t_jacobians
+      use t_particle_trace
+      use t_fieldline
 !
       use t_surf_grp_list_each_surf
       use t_rendering_vr_image
@@ -67,8 +71,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_anaglyph (istep_pvr, time,                    &
-     &          mesh, group, jacs, nod_fld, sf_grp_4_sf, field_pvr,     &
+      subroutine each_PVR_anaglyph(istep_pvr, time, mesh, group, jacs,  &
+     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,         &
      &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
@@ -80,6 +84,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
@@ -102,13 +108,15 @@
 !
 !   Left eye
       call alloc_pvr_left_eye_image(pvr_rgb)
-      call rendering_with_fixed_view(istep_pvr, time, mesh, group,      &
+      call rendering_with_fixed_view                                    &
+     &   (istep_pvr, time, mesh, group, tracer, fline,                  &
      &    sf_grp_4_sf, field_pvr, pvr_param, pvr_proj(1), pvr_rgb,      &
      &    SR_sig, SR_r)
       call store_left_eye_image(pvr_rgb)
 !
 !   right eye
-      call rendering_with_fixed_view(istep_pvr, time, mesh, group,      &
+      call rendering_with_fixed_view                                    &
+     &   (istep_pvr, time, mesh, group, tracer, fline,                  &
      &    sf_grp_4_sf, field_pvr, pvr_param, pvr_proj(2), pvr_rgb,      &
      &    SR_sig, SR_r)
       call add_left_eye_image(pvr_rgb)
@@ -119,9 +127,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_rendering_w_rotation(istep_pvr, time,         &
-     &          mesh, group, nod_fld, jacs, sf_grp_4_sf, field_pvr,     &
-     &          pvr_param, pvr_bound, pvr_proj, pvr_rgb,                &
-     &          SR_sig, SR_r, SR_i)
+     &          mesh, group, jacs, nod_fld, tracer, fline,              &
+     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,           &
+     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -138,6 +146,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
@@ -173,16 +183,18 @@
 !    Left eye
         call rot_multi_view_projection_mats(ione, i_rot,                &
      &      pvr_param, pvr_proj(1)%screen)
-        call rendering_at_once(istep_pvr, time,                         &
-     &      mesh, group, sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,  &
+        call rendering_at_once                                          &
+     &     (istep_pvr, time, mesh, group, tracer, fline,                &
+     &      sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,               &
      &      pvr_proj(1), pvr_rgb, SR_sig, SR_r, SR_i)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rot_multi_view_projection_mats(itwo, i_rot,                &
      &      pvr_param, pvr_proj(2)%screen)
-        call rendering_at_once (istep_pvr, time,                        &
-     &      mesh, group, sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,  &
+        call rendering_at_once                                          &
+     &     (istep_pvr, time, mesh, group, tracer, fline,                &
+     &      sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,               &
      &      pvr_proj(2), pvr_rgb, SR_sig, SR_r, SR_i)
         call add_left_eye_image(pvr_rgb)
         call copy_pvr_image_data(pvr_rgb, rot_imgs1%rot_pvr_rgb(i_rot))

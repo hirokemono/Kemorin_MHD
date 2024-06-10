@@ -167,7 +167,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_fixview_rendering(istep_pvr, time, geofem, jacs,         &
-     &                           nod_fld, pvr, m_SR)
+     &                           nod_fld, tracer, fline, pvr, m_SR)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
@@ -188,16 +188,17 @@
 !      generate snapshot movie images
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_movie_visualize(istep_pvr, time, geofem, jacs,           &
-     &                         nod_fld, pvr, m_SR)
+     &                         nod_fld, tracer, fline, pvr, m_SR)
 !
 !      generate snapshot quilt movie images
       call PVR_quilt_movie_visualize(istep_pvr, time, geofem, jacs,     &
-     &                               nod_fld, pvr, m_SR)
+     &                               nod_fld, tracer, fline, pvr, m_SR)
 !
       call PVR_anaglyph_rendering(istep_pvr, time, geofem, jacs,        &
-     &                            nod_fld, pvr, m_SR)
+     &                            nod_fld, tracer, fline, pvr, m_SR)
       call PVR_movie_anaglyph_visualize(istep_pvr, time, geofem, jacs,  &
-     &                                  nod_fld, pvr, m_SR)
+     &                                  nod_fld, tracer, fline,         &
+     &                                  pvr, m_SR)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_visualize

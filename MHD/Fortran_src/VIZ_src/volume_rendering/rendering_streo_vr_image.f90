@@ -7,16 +7,19 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_with_rotation(istep_pvr, time, mesh, group,&
-!!     &          sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param, pvr_bound,&
-!!     &          pvr_proj, SR_sig, SR_r, SR_i)
+!!      subroutine rendering_with_rotation                              &
+!!     &         (istep_pvr, time, mesh, group, tracer, fline,          &
+!!     &          sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param,           &
+!!     &          pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
+!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_type), intent(in) :: jacs
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+!!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
-!!        type(pvr_field_data), intent(inout) :: field_pvr
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -60,9 +63,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation(istep_pvr, time, mesh, group,  &
-     &          sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param, pvr_bound,  &
-     &          pvr_proj, SR_sig, SR_r, SR_i)
+      subroutine rendering_with_rotation                                &
+     &         (istep_pvr, time, mesh, group, tracer, fline,            &
+     &          sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param,             &
+     &          pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -77,6 +81,8 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(in) :: field_pvr
       type(pvr_image_type), intent(in) :: pvr_rgb
@@ -98,9 +104,10 @@
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rotation_view_projection_mats(i_rot, pvr_param,            &
      &                                     pvr_proj%screen)
-        call rendering_at_once(istep_pvr, time,                         &
-     &      mesh, group, sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,  &
-     &      pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot), SR_sig, SR_r, SR_i)
+        call rendering_at_once                                          &
+     &     (istep_pvr, time, mesh, group, tracer, fline, sf_grp_4_sf,   &
+     &      field_pvr, pvr_param, pvr_bound, pvr_proj,                  &
+     &      rot_imgs1%rot_pvr_rgb(i_rot), SR_sig, SR_r, SR_i)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

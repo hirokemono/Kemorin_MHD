@@ -7,11 +7,13 @@
 !>@brief structure of control data for multiple volume rendering
 !!
 !!@verbatim
-!!      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,   &
-!!     &          field_pvr, pvr_screen, draw_param, color_param,       &
-!!     &          pvr_start)
+!!      subroutine s_ray_trace_4_each_image(mesh, group, tracer, fline, &
+!!     &          sf_grp_4_sf, field_pvr, pvr_screen,                   &
+!!     &          draw_param, color_param, pvr_start)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
@@ -32,6 +34,8 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_particle_trace
+      use t_fieldline
       use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_pvr_colormap_parameter
@@ -48,14 +52,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
-     &          field_pvr, pvr_screen, draw_param, color_param,         &
-     &          pvr_start)
+      subroutine s_ray_trace_4_each_image(mesh, group, tracer, fline,   &
+     &          sf_grp_4_sf, field_pvr, pvr_screen,                     &
+     &          draw_param, color_param, pvr_start)
 !
       use t_pvr_ray_startpoints
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
       type(pvr_field_data), intent(in) :: field_pvr
@@ -76,7 +82,7 @@
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp,             &
-     &      sf_grp_4_sf, pvr_screen%viewpoint_vec,                      &
+     &      sf_grp_4_sf, tracer, fline, pvr_screen%viewpoint_vec,       &
      &      pvr_screen%modelview_mat, pvr_screen%projection_mat,        &
      &      field_pvr, draw_param, color_param, ray_vec4,               &
      &      pvr_start%id_pixel_check(inum),                             &
@@ -95,7 +101,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel                                   &
-     &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
+     &         (node, ele, surf, surf_grp, sf_grp_4_sf, tracer, fline,  &
      &          viewpoint_vec, modelview_mat, projection_mat,           &
      &          field_pvr, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
@@ -112,6 +118,8 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: surf_grp
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       integer(kind = kint), intent(in) :: iflag_check
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
@@ -223,6 +231,15 @@
           call rendering_isosurfaces(iele, viewpoint_vec, field_pvr,    &
      &                               draw_param, color_param,           &
      &                               xx4_tgt, c_org, c_tgt, rgba_ray)
+!
+          call rendering_tracers                                        &
+     &       (viewpoint_vec, color_param, draw_param%tracer_pvr_prm,    &
+     &        tracer%num_trace, tracer%fline_lc,                        &
+     &        xx4_tgt, c_tgt, rgba_ray)
+          call rendering_fieldlines                                     &
+     &       (viewpoint_vec, color_param, draw_param%fline_pvr_prm,     &
+     &        fline%num_fline, fline%fline_lc,                          &
+     &        xx4_tgt, c_tgt, rgba_ray)
 !
           grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
@@ -382,33 +399,38 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine rendering_tracers(viewpoint_vec,                       &
-     &          particle_radius, num_tracer, color_param, particle_lc,  &
+      subroutine rendering_tracers(viewpoint_vec, color_param,          &
+     &          tracer_pvr_prm, num_tracer, particle_lc,                &
      &          xx4_tgt, c_tgt, rgba_ray)
 !
       use t_local_fline
+      use t_geometries_in_pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-!
-      real(kind = kreal), intent(in) :: particle_radius
-      integer(kind = kint), intent(in) :: num_tracer
+      type(tracer_render_param), intent(in) :: tracer_pvr_prm
       type(pvr_colormap_parameter), intent(in) :: color_param
+!
+      integer(kind = kint), intent(in) :: num_tracer
       type(local_fieldline), intent(in) :: particle_lc(num_tracer)
+!
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
 !
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, inum
-      real(kind = kreal) :: grad_tgt(3), opacity, distance
+      real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
 !
-      do i_fln = 1, num_tracer
+      if(tracer_pvr_prm%num_pvr_tracer) return
+      do i_fln = 1, tracer_pvr_prm%num_pvr_tracer
+        radius =  tracer_pvr_prm%rendering_radius(i_fln)
+        opacity = tracer_pvr_prm%tracer_opacity(i_fln)
         do inum = 1, particle_lc(i_fln)%nnod_line_l
           distance = distance_from_tracer(xx4_tgt, inum,                &
      &                                    particle_lc(i_fln))
-          if(distance .ge. particle_radius) cycle
+          if(distance .ge. radius) cycle
 !
-          opacity = one - sqrt(distance / particle_radius)
+!          opacity = opacity * (one - sqrt(distance / radius))
           call normal_of_single_tracer                                  &
      &       (xx4_tgt, inum, particle_lc(i_fln), grad_tgt)
           call color_plane_with_light                                   &
@@ -421,17 +443,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine rendering_fieldlines(viewpoint_vec,                    &
-     &          tube_radius, num_fline, color_param, fline_lc,          &
+      subroutine rendering_fieldlines(viewpoint_vec, color_param,       &
+     &          fline_pvr_prm, num_fline, fline_lc,                     &
      &          xx4_tgt, c_tgt, rgba_ray)
 !
       use t_local_fline
+      use t_geometries_in_pvr_screen
 !
-      real(kind = kreal), intent(in) :: tube_radius
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(tracer_render_param), intent(in) :: fline_pvr_prm
 !
       integer(kind = kint), intent(in) :: num_fline
-      type(pvr_colormap_parameter), intent(in) :: color_param
       type(local_fieldline), intent(in) :: fline_lc(num_fline)
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
@@ -439,15 +462,19 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, iedge
-      real(kind = kreal) :: grad_tgt(3), opacity, distance
+      real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
 !
-      do i_fln = 1, num_fline
+!
+      if(fline_pvr_prm%num_pvr_tracer) return
+      do i_fln = 1, fline_pvr_prm%num_pvr_tracer
+        radius =  fline_pvr_prm%rendering_radius(i_fln)
+        opacity = fline_pvr_prm%tracer_opacity(i_fln)
         do iedge = 1, fline_lc(i_fln)%nele_line_l
           distance = distance_from_fline_segment(xx4_tgt, iedge,        &
      &                                           fline_lc(i_fln))
-          if(distance .ge. tube_radius) cycle
+          if(distance .ge. radius) cycle
 !
-          opacity = one - sqrt(distance / tube_radius)
+!          opacity = opacity * (one - sqrt(distance / radius))
           call normal_of_single_fline                                   &
      &       (xx4_tgt, iedge, fline_lc(i_fln), grad_tgt)
           call color_plane_with_light                                   &

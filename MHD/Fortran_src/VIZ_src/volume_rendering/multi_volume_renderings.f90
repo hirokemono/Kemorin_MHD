@@ -21,15 +21,20 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine PVR_fixview_rendering(istep_pvr, time, geofem, jacs, &
-!!     &                                 nod_fld, pvr, m_SR)
+!!     &                                 nod_fld, tracer, fline,        &
+!!     &                                 pvr, m_SR)
 !!      subroutine PVR_movie_visualize(istep_pvr, time, geofem, jacs,   &
-!!     &                               nod_fld, pvr, m_SR)
-!!      subroutine PVR_quilt_movie_visualize(istep_pvr, time, geofem,   &
-!!     &                                     jacs, nod_fld, pvr, m_SR)
+!!     &                               nod_fld, tracer, fline,          &
+!!     &                               pvr, m_SR)
+!!      subroutine PVR_quilt_movie_visualize                            &
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
+!!     &          tracer, fline, pvr, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -49,6 +54,8 @@
       use t_mesh_data
       use t_phys_data
       use t_jacobians
+      use t_particle_trace
+      use t_fieldline
 !
       use t_volume_rendering
       use t_surf_grp_list_each_surf
@@ -118,7 +125,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_fixview_rendering(istep_pvr, time, geofem, jacs,   &
-     &                                 nod_fld, pvr, m_SR)
+     &                                 nod_fld, tracer, fline,          &
+     &                                 pvr, m_SR)
 !
       use cal_pvr_modelview_mat
       use each_volume_rendering
@@ -128,6 +136,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
 !
       type(volume_rendering_module), intent(inout) :: pvr
@@ -147,7 +157,7 @@
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         call each_PVR_rendering(istep_pvr, time, num_img,               &
-     &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
+     &      geofem, jacs, nod_fld, tracer, fline, pvr%sf_grp_4_sf,      &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      m_SR%SR_sig, m_SR%SR_r)
@@ -159,7 +169,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_movie_visualize(istep_pvr, time, geofem, jacs,     &
-     &                               nod_fld, pvr, m_SR)
+     &                               nod_fld, tracer, fline,            &
+     &                               pvr, m_SR)
 !
       use each_volume_rendering
 !
@@ -167,6 +178,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
 !
       type(volume_rendering_module), intent(inout) :: pvr
@@ -180,18 +193,19 @@
       do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
         call each_PVR_rendering_w_rot(istep_pvr, time,                  &
-     &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
+     &      geofem, jacs, nod_fld, tracer, fline, pvr%sf_grp_4_sf,      &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
-     &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_rgb(ist_img+1),               &
+     &      pvr%pvr_proj(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
 !
       end subroutine PVR_movie_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_quilt_movie_visualize(istep_pvr, time, geofem,     &
-     &                                     jacs, nod_fld, pvr, m_SR)
+      subroutine PVR_quilt_movie_visualize                              &
+     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
+     &          tracer, fline, pvr, m_SR)
 !
       use each_volume_rendering
 !
@@ -199,6 +213,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(jacobians_type), intent(in) :: jacs
 !
       type(volume_rendering_module), intent(inout) :: pvr
@@ -218,7 +234,7 @@
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
 !
           call each_PVR_quilt_rendering_w_rot(istep_pvr, time, num_img, &
-     &       geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                    &
+     &       geofem, jacs, nod_fld, tracer, fline, pvr%sf_grp_4_sf,     &
      &       pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                &
      &       pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),             &
      &       pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)

@@ -9,18 +9,21 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(i_img, num_stereo,          &
 !!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
-!!      subroutine rendering_with_fixed_view                            &
-!!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+!!      subroutine rendering_with_fixed_view(istep_pvr, time,           &
+!!     &          mesh, group, tracer, fline, sf_grp_4_sf,              &
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb,              &
+!!     &          SR_sig, SR_r)
 !!
-!!      subroutine rendering_at_once(istep_pvr, time,                   &
-!!     &          mesh, group, sf_grp_4_sf, field_pvr, pvr_param,       &
+!!      subroutine rendering_at_once(istep_pvr, time, mesh, group,      &
+!!     &          tracer, fline, sf_grp_4_sf, field_pvr, pvr_param,     &
 !!     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !!        integer(kind = kint), intent(in) :: i_img, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(PVR_control_params), intent(in) :: pvr_param
@@ -43,6 +46,9 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_particle_trace
+      use t_fieldline
+!
       use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_pvr_colormap_parameter
@@ -98,9 +104,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view                              &
-     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+      subroutine rendering_with_fixed_view(istep_pvr, time,             &
+     &          mesh, group, tracer, fline, sf_grp_4_sf,                &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb,                &
+     &          SR_sig, SR_r)
 !
       use write_PVR_image
 !
@@ -108,6 +115,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
@@ -122,7 +131,8 @@
      &   (pvr_proj%start_save, pvr_proj%start_fix)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, mesh, group, sf_grp_4_sf,   &
+      call rendering_image                                              &
+     &   (istep_pvr, time, mesh, group, tracer, fline, sf_grp_4_sf,     &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
@@ -131,8 +141,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, time,                     &
-     &          mesh, group, sf_grp_4_sf, field_pvr, pvr_param,         &
+      subroutine rendering_at_once(istep_pvr, time, mesh, group,        &
+     &          tracer, fline, sf_grp_4_sf, field_pvr, pvr_param,       &
      &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !
       use cal_pvr_projection_mat
@@ -144,6 +154,8 @@
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
@@ -164,8 +176,8 @@
      &    SR_sig, SR_r, SR_i)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, mesh, group, sf_grp_4_sf,   &
-     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
+      call rendering_image(istep_pvr, time, mesh, group, tracer, fline, &
+     &    sf_grp_4_sf, pvr_param%color, pvr_param%colorbar, field_pvr,  &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
       call deallocate_pvr_ray_start(pvr_proj%start_fix)
@@ -176,7 +188,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image(istep_pvr, time, mesh, group,          &
+      subroutine rendering_image                                        &
+     &         (istep_pvr, time, mesh, group, tracer, fline,            &
      &          sf_grp_4_sf, color_param, cbar_param, field_pvr,        &
      &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
      &          pvr_rgb, SR_sig, SR_r)
@@ -195,6 +208,8 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
@@ -212,7 +227,8 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-      call s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,           &
+      call s_ray_trace_4_each_image                                     &
+     &   (mesh, group, tracer, fline, sf_grp_4_sf,                      &
      &    field_pvr, pvr_screen, draw_param, color_param, pvr_start)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
 !
