@@ -161,14 +161,14 @@ int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf, int selected){
 
 void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
                                  struct kv_string *ucd_m){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    alloc_set_ucd_file_name_by_psf(kemo_mul_psf->psf_m[i_psf], ucd_m);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    alloc_set_ucd_file_name_by_psf(kemo_mul_psf->psf_m[i_current], ucd_m);
     return;
 }
 int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
                                   struct kv_string *psf_filehead, int *iflag){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    return send_each_psf_file_header_full(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    return send_each_psf_file_header_full(kemo_mul_psf->psf_m[i_current],
                                           psf_filehead, iflag);
 }
 
@@ -379,33 +379,33 @@ double get_each_PSF_colormap_range(int selected, struct kemoview_mul_psf *kemo_m
 };
 
 void delete_PSF_color_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    delete_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_psf], i_delete);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    delete_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_current], i_delete);
 }
 void delete_PSF_opacity_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    delete_each_PSF_opacity_index_list(kemo_mul_psf->psf_m[i_psf], i_delete);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    delete_each_PSF_opacity_index_list(kemo_mul_psf->psf_m[i_current], i_delete);
 }
 
 void add_PSF_color_list(double add_value, double add_color,
                         struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    add_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    add_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_current],
                                   add_value, add_color);
 }
 void add_PSF_opacity_list(double add_value, double add_opacity,
                           struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    add_each_PSF_opacity_index_list(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    add_each_PSF_opacity_index_list(kemo_mul_psf->psf_m[i_current],
                                     add_value, add_opacity);
 }
 
 void set_PSF_linear_colormap(double minvalue, int i_min_digit,
                              double maxvalue, int i_max_digit,
                              struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
+    int i_current = kemo_mul_psf->psf_a->id_current;
     set_each_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit,
-                                 kemo_mul_psf->psf_m[i_psf]);
+                                 kemo_mul_psf->psf_m[i_current]);
 }
 
 
@@ -439,99 +439,99 @@ int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf){
 
 
 long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    return send_ncomp_each_psf(kemo_mul_psf->psf_d[i_psf], i);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    return send_ncomp_each_psf(kemo_mul_psf->psf_d[i_current], i);
 };
 void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
                          struct kv_string *colorname, int i){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    send_each_psf_data_name(kemo_mul_psf->psf_d[i_psf], colorname, i);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    send_each_psf_data_name(kemo_mul_psf->psf_d[i_current], colorname, i);
 };
 
 void set_PSF_polygon_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_psf_polygon_mode(kemo_mul_psf->psf_m[i_psf], iflag);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_psf_polygon_mode(kemo_mul_psf->psf_m[i_current], iflag);
 };
 void set_PSF_tangential_vec_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_psf_vector_mode(kemo_mul_psf->psf_m[i_psf], iflag);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_psf_vector_mode(kemo_mul_psf->psf_m[i_current], iflag);
 };
 int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    return send_draw_each_psf_refv(kemo_mul_psf->psf_m[i_psf]);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    return send_draw_each_psf_refv(kemo_mul_psf->psf_m[i_current]);
 };
 
 void set_PSF_fixed_color(double *rgba,
                          struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_fixed_color(kemo_mul_psf->psf_d[i_psf],
-                             kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_fixed_color(kemo_mul_psf->psf_d[i_current],
+                             kemo_mul_psf->psf_m[i_current],
                              rgba);
 }
 void set_PSF_constant_opacity(double opacity,
                               struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_constant_opacity(kemo_mul_psf->psf_d[i_psf],
-                                  kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_constant_opacity(kemo_mul_psf->psf_d[i_current],
+                                  kemo_mul_psf->psf_m[i_current],
                                   opacity);
 }
 
 void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
                           double *red, double *green, double *blue){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_rgb_from_value(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    get_each_PSF_rgb_from_value(kemo_mul_psf->psf_m[i_current],
                                 value, red, green, blue);
 }
 double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    return get_each_PSF_opacity_at_value(kemo_mul_psf->psf_m[i_psf], value);
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    return get_each_PSF_opacity_at_value(kemo_mul_psf->psf_m[i_current], value);
 }
 void set_PSF_color_data(int i_point, double value, double color,
                         struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_color_point(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_color_point(kemo_mul_psf->psf_m[i_current],
                              i_point, value, color);
 }
 void set_PSF_opacity_data(int i_point, double value, double opacity,
                           struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_opacity_point(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    set_each_PSF_opacity_point(kemo_mul_psf->psf_m[i_current],
                                i_point, value, opacity);
 }
 
 void get_PSF_color_items(struct kemoview_mul_psf *kemo_mul_psf,
                          int i_point, double *value, double *color){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_color_table_items(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    get_each_PSF_color_table_items(kemo_mul_psf->psf_m[i_current],
                                    i_point, value, color);
 }
 void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
                            int i_point, double *value, double *opacity){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_opacity_table_items(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    get_each_PSF_opacity_table_items(kemo_mul_psf->psf_m[i_current],
                                      i_point, value, opacity);
 }
 void get_PSF_colormap_tables(struct kemoview_mul_psf *kemo_mul_psf,
                              int *id_cmap, int *num_cmap, int *num_alpha,
                              float *cmap_data, float *cmap_norm,
                              float *alpha_data, float *alpha_norm){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_colormap_tables(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    get_each_PSF_colormap_tables(kemo_mul_psf->psf_m[i_current],
                                  id_cmap, num_cmap, num_alpha,
                                  cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
                              struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
+    int i_current = kemo_mul_psf->psf_a->id_current;
     write_each_PSF_colormap_control_file(filename->string,
                                          iflag_draw_axis,
-                                         kemo_mul_psf->psf_m[i_psf]);
+                                         kemo_mul_psf->psf_m[i_current]);
 }
 void read_PSF_colormap_file(struct kv_string *filename,
                             struct kemoview_mul_psf *kemo_mul_psf){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    read_each_PSF_colormap_control_file(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    read_each_PSF_colormap_control_file(kemo_mul_psf->psf_m[i_current],
                                         filename->string);
 }
 
@@ -541,8 +541,8 @@ void read_PSF_colormap_file(struct kv_string *filename,
 int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
                              struct kv_string *stripped_dir,
                              struct kv_string *stripped_filehead){
-    int i_psf = kemo_mul_psf->psf_a->id_current;
-    return send_each_psf_file_dir_prefix(kemo_mul_psf->psf_m[i_psf],
+    int i_current = kemo_mul_psf->psf_a->id_current;
+    return send_each_psf_file_dir_prefix(kemo_mul_psf->psf_m[i_current],
                                          stripped_dir, stripped_filehead);
 };
 

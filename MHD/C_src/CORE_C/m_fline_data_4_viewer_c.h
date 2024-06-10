@@ -46,11 +46,6 @@ struct fline_data{
     long nnod_4_edge_fline;
     long **iedge_fline;
     
-    double *xyzw_edge_fline;
-    double *dir_edge;
-    double *length_edge;
-    double length_total;
-    
     long nnod_fline;
     long *inod_fline;
     double *xyzw_fline;
@@ -67,15 +62,19 @@ struct fline_data{
     double *d_amp;
     double *color_nod;
     
-    double *dir_nod;
-    
     double *d_min;
     double *d_max;
     double *d_ave;
     double *d_rms;
-    
     double *amp_min;
     double *amp_max;
+    
+    double *xyzw_edge_fline;
+    double *dir_edge;
+    double *dir_nod;
+    double *length_edge;
+    double length_total;
+    
     
     double center_psf[3];
     double xmin_psf[3];
