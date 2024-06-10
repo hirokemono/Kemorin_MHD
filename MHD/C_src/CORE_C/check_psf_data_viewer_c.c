@@ -53,7 +53,7 @@ void check_psf_data_c(struct psf_data *tako){
 	for (i = 0; i < tako->nele_viz; i++) {
 		printf(" %d %.12e %.12e %.12e %.12e \n", i, 
 				tako->norm_ele[4*i  ], tako->norm_ele[4*i+1],
-				tako->norm_ele[4*i+2], tako->area_viz[i]);
+				tako->norm_ele[4*i+2], tako->size_ele[i]);
 	};
 	 printf("node normal \n");
 	for (i = 0; i < tako->nnod_viz; i++) {

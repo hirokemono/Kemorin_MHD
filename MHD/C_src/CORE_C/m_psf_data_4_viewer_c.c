@@ -167,9 +167,9 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 };
 
 void alloc_psf_norm_s(struct psf_data *psf_s){
-    psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
-    if(psf_s->area_viz  == NULL){
-        printf("malloc error for psf_s->area_viz \n");
+    psf_s->size_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
+    if(psf_s->size_ele  == NULL){
+        printf("malloc error for psf_s->size_ele \n");
         exit(0);
     }
 
@@ -193,7 +193,7 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
 void dealloc_psf_norm_s(struct psf_data *psf_s){
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
-	free(psf_s->area_viz);
+	free(psf_s->size_ele);
 	return;
 };
 

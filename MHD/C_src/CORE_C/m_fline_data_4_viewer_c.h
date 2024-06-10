@@ -71,7 +71,7 @@ struct fline_data{
     
     double *dir_nod;
     double *dir_edge;
-    double *length_edge;
+    double *size_ele;
     double total_size;
     
     

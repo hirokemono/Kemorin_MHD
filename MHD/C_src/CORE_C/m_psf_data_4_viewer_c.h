@@ -50,7 +50,7 @@ struct psf_data{
 	
 	double *norm_ele;
 	double *norm_nod;
-	double *area_viz;
+	double *size_ele;
 	double total_size;
 	    
     double center_psf[3];

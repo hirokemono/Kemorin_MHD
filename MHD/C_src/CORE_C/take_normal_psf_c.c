@@ -56,7 +56,7 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
                                 &viz_s->xyzw_viz[i2*IFOUR],
                                 &viz_s->xyzw_viz[i3*IFOUR],
 								&viz_s->xyzw_ele_viz[i*IFOUR]);
-		viz_s->area_viz[i] = cal_normal_4_triangle_c(&viz_s->xyzw_viz[i1*IFOUR],
+		viz_s->size_ele[i] = cal_normal_4_triangle_c(&viz_s->xyzw_viz[i1*IFOUR],
                                                      &viz_s->xyzw_viz[i2*IFOUR],
 													 &viz_s->xyzw_viz[i3*IFOUR],
                                                      &viz_s->norm_ele[i*IFOUR]);
@@ -64,7 +64,7 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
     
 	viz_s->total_size = 0.0;
 	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->total_size = viz_s->total_size + viz_s->area_viz[i];
+		viz_s->total_size = viz_s->total_size + viz_s->size_ele[i];
 	};
 	return;
 };
@@ -265,12 +265,12 @@ static void take_length_ele_fline(struct fline_data *fline_d){
     
     fline_d->total_size = 0.0;
     for (i = 0; i < fline_d->nele_viz; i++){
-        fline_d->length_edge[i]
+        fline_d->size_ele[i]
         = sqrt(  fline_d->dir_edge[4*i+0]*fline_d->dir_edge[4*i+0]
                + fline_d->dir_edge[4*i+1]*fline_d->dir_edge[4*i+1]
                + fline_d->dir_edge[4*i+2]*fline_d->dir_edge[4*i+2] );
 		
-		if (fline_d->length_edge[i] == 0.0){
+		if (fline_d->size_ele[i] == 0.0){
             fline_d->dir_edge[4*i+0] = 0.0;
             fline_d->dir_edge[4*i+1] = 0.0;
             fline_d->dir_edge[4*i+2] = 0.0;
@@ -278,15 +278,15 @@ static void take_length_ele_fline(struct fline_data *fline_d){
 		}
 		else{
             fline_d->dir_edge[4*i+0]
-                = fline_d->dir_edge[4*i+0] / fline_d->length_edge[i];
+                = fline_d->dir_edge[4*i+0] / fline_d->size_ele[i];
             fline_d->dir_edge[4*i+1]
-                = fline_d->dir_edge[4*i+1] / fline_d->length_edge[i];
+                = fline_d->dir_edge[4*i+1] / fline_d->size_ele[i];
             fline_d->dir_edge[4*i+2]
-                = fline_d->dir_edge[4*i+2] / fline_d->length_edge[i];
+                = fline_d->dir_edge[4*i+2] / fline_d->size_ele[i];
             fline_d->dir_edge[4*i+3] = 1.0;
 		}
         
-		fline_d->total_size = fline_d->total_size + fline_d->length_edge[i];
+		fline_d->total_size = fline_d->total_size + fline_d->size_ele[i];
     };
     
 	for (i = 0; i < fline_d->nele_viz; i++){
@@ -333,9 +333,9 @@ static void sum_rms_ave_psf(long ist, long ied,
                  + viz_s->d_nod[i3*viz_s->ncomptot + icomp] ) / 3.0;
             
             viz_s->d_rms[icomp] = viz_s->d_rms[icomp]
-            + d * d * viz_s->area_viz[i];
+            + d * d * viz_s->size_ele[i];
             viz_s->d_ave[icomp] = viz_s->d_ave[icomp]
-            + d * viz_s->area_viz[i];
+            + d * viz_s->size_ele[i];
         }
     }
     return;
@@ -357,9 +357,9 @@ static void sum_rms_ave_fline(long ist, long ied,
                  + fline_d->d_nod[i2*fline_d->ncomptot + icomp]) / 2.0;
             
             fline_d->d_rms[icomp] = fline_d->d_rms[icomp]
-                + d * d * fline_d->length_edge[i];
+                + d * d * fline_d->size_ele[i];
             fline_d->d_ave[icomp] = fline_d->d_ave[icomp]
-                + d * fline_d->length_edge[i];
+                + d * fline_d->size_ele[i];
         }
     }
     return;
