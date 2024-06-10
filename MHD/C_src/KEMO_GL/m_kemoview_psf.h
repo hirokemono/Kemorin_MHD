@@ -23,6 +23,7 @@ struct kemoview_psf{
 struct kemoview_mul_psf{
     struct kemo_array_control   *psf_a;
     struct psf_data            **psf_d;
+    struct psf_normals         **psf_n;
     struct psf_menu_val        **psf_m;
 };
 

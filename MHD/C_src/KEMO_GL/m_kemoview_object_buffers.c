@@ -135,22 +135,27 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
         
         iflag_psf = iflag_psf + check_draw_psf(kemo_mul_psf->psf_a);
 
-        const_PSF_node_buffer(kemo_buffers->nthreads, kemo_mul_psf->psf_d,
+        const_PSF_node_buffer(kemo_buffers->nthreads,
+                              kemo_mul_psf->psf_d, kemo_mul_psf->psf_n,
                               kemo_mul_psf->psf_a, kemo_buffers->PSF_node_buf);
         
-        const_PSF_solid_objects_buffer(kemo_buffers->nthreads,
-                                       view_s, kemo_mul_psf->psf_d,
-                                       kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
+        const_PSF_solid_objects_buffer(kemo_buffers->nthreads, view_s,
+                                       kemo_mul_psf->psf_d,
+                                       kemo_mul_psf->psf_n,
+                                       kemo_mul_psf->psf_m,
+                                       kemo_mul_psf->psf_a,
                                        kemo_buffers->PSF_solids);
-        const_PSF_isolines_buffer(kemo_buffers->nthreads, 
-                                  view_s, kemo_mul_psf->psf_d,
+        const_PSF_isolines_buffer(kemo_buffers->nthreads, view_s,
+                                  kemo_mul_psf->psf_d, kemo_mul_psf->psf_n,
                                   kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
                                   kemo_mesh->mesh_m,
                                   kemo_buffers->PSF_lines);
 
-        const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
-                                       view_s, kemo_mul_psf->psf_d,
-                                       kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
+        const_PSF_trans_objects_buffer(kemo_buffers->nthreads, view_s,
+                                       kemo_mul_psf->psf_d,
+                                       kemo_mul_psf->psf_n,
+                                       kemo_mul_psf->psf_m,
+                                       kemo_mul_psf->psf_a,
                                        kemo_buffers->PSF_transes);
         
         const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
@@ -192,9 +197,11 @@ void set_transparent_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                                                 kemo_mul_psf->psf_a, view_s);
     iflag_psf = iflag_psf + check_draw_psf(kemo_mul_psf->psf_a);
     
-    const_PSF_trans_objects_buffer(kemo_buffers->nthreads,
-                                   view_s, kemo_mul_psf->psf_d,
-                                   kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
+    const_PSF_trans_objects_buffer(kemo_buffers->nthreads, view_s,
+                                   kemo_mul_psf->psf_d,
+                                   kemo_mul_psf->psf_n,
+                                   kemo_mul_psf->psf_m,
+                                   kemo_mul_psf->psf_a,
                                    kemo_buffers->PSF_transes);
 
     const_trans_mesh_buffer(kemo_buffers->nthreads,

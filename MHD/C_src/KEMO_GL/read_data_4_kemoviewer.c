@@ -71,22 +71,24 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
-                                struct psf_data *psf_s, struct psf_data *ucd_tmp) {
+                                struct psf_data *psf_s, struct psf_normals *psf_n,
+                                struct psf_data *ucd_tmp) {
     cal_colat_and_longitude(0, ucd_tmp);
 
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
     set_viewer_data_with_mapping(map_itp, ucd_tmp, psf_s);
 
-	take_normal_psf(nadded_for_phi0, psf_s);
-    take_minmax_psf(psf_s);
+    alloc_psf_norm_s(psf_s, psf_n);
+	take_normal_psf(nadded_for_phi0, psf_s, psf_n);
+    take_minmax_psf(psf_s, psf_n);
     psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
-                                          psf_s->xyzw_viz, psf_s->norm_nod);
+                                          psf_s->xyzw_viz, psf_n->norm_nod);
 
-    /*
-     check_psf_ave_rms_c(psf_s);
+/*
+     check_psf_ave_rms_c(psf_s,psf_n);
      check_psf_min_max_c(psf_s);
-     */
+*/
 	return nadded_for_phi0;
 }
 
@@ -103,7 +105,10 @@ static void set_fline_data_by_UCD(struct fline_data *fline_d,
 	return;
 };
 
-void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
+void evolution_PSF_data(struct psf_data *psf_s,
+                        struct psf_normals *psf_n,
+                        struct psf_data *ucd_tmp,
+                        struct psf_menu_val *psf_m){
 	int iflag_datatype;
     double time = 0.0;
 	if(psf_m->iformat_viz_file == IFLAG_SURF_UDT
@@ -118,7 +123,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
-        take_minmax_psf(psf_s);
+        take_minmax_psf(psf_s, psf_n);
 	} else if(psf_m->iformat_viz_file == IFLAG_SURF_UCD
 			  || psf_m->iformat_viz_file == IFLAG_SURF_UCD_GZ
 			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK
@@ -128,9 +133,11 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
+        dealloc_psf_norm_s(psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
-        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp, psf_s, ucd_tmp);
+        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
+                                                     psf_s, psf_n, ucd_tmp);
 	}
     
     return;
@@ -168,12 +175,14 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 	return;
 }
 
-void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
+void set_kemoview_psf_data(struct psf_data *psf_s,
+                           struct psf_normals *psf_n,
+                           struct psf_data *ucd_tmp,
                            struct psf_menu_val *psf_m){
 	int i;
     psf_m->map_itp = alloc_psf_cutting_4_map();
     psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
-                                                 psf_s, ucd_tmp);
+                                                 psf_s, psf_n, ucd_tmp);
 	
 	alloc_draw_psf_flags(psf_s, psf_m);
 	

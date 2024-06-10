@@ -28,6 +28,7 @@ long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,
                               double v_line, long icomp,
                               struct psf_data *psf_s,
+                              struct psf_normals *psf_n,
                               struct isoline_line_work *wk_iso_line);
 long set_each_map_isoline_to_list(const long ist_line,
                                   const long ist, const long ied,

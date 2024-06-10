@@ -20,6 +20,11 @@ struct kemoview_mul_psf * init_kemoview_mul_psf(void){
         printf("malloc error for kemo_mul_psf->psf_d\n");
         exit(0);
     }
+    kemo_mul_psf->psf_n =  (struct psf_normals **)     malloc(NMAX_PSF*sizeof(struct psf_normals *));
+    if(kemo_mul_psf->psf_n == NULL){
+        printf("malloc error for kemo_mul_psf->psf_n\n");
+        exit(0);
+    }
     kemo_mul_psf->psf_m =  (struct psf_menu_val **) malloc(NMAX_PSF*sizeof(struct psf_menu_val *));
     if(kemo_mul_psf->psf_m == NULL){
         printf("malloc error for kemo_mul_psf->psf_m\n");
@@ -27,7 +32,9 @@ struct kemoview_mul_psf * init_kemoview_mul_psf(void){
     }
 	for(i=0;i<kemo_mul_psf->psf_a->nlimit_loaded;i++){
         kemo_mul_psf->psf_d[i] = init_psf_data();
+        kemo_mul_psf->psf_n[i] = init_psf_normals();
         kemo_mul_psf->psf_m[i] = init_psf_menu_val();
+
 		init_psf_parameters(kemo_mul_psf->psf_m[i]);
 	}
 	return kemo_mul_psf;
@@ -93,10 +100,13 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
     
 	if(kemo_mul_psf->psf_a->num_loaded == kemo_mul_psf->psf_a->nlimit_loaded){
 		dealloc_draw_psf_flags(kemo_mul_psf->psf_d[id_load], kemo_mul_psf->psf_m[id_load]);
+        dealloc_psf_norm_s(kemo_mul_psf->psf_n[id_load]);
 		deallc_all_psf_data(kemo_mul_psf->psf_d[id_load]);
 	};
 	
-	set_kemoview_psf_data(kemo_mul_psf->psf_d[id_load], ucd_tmp, kemo_mul_psf->psf_m[id_load]);
+	set_kemoview_psf_data(kemo_mul_psf->psf_d[id_load],
+                          kemo_mul_psf->psf_n[id_load],
+                          ucd_tmp, kemo_mul_psf->psf_m[id_load]);
     set_avail_time_flag(kemo_mul_psf);
     set_avail_file_step_flag(kemo_mul_psf);
     return;
@@ -105,6 +115,7 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
 void close_PSF_view(struct kemoview_mul_psf *kemo_mul_psf){
 	dealloc_draw_psf_flags(kemo_mul_psf->psf_d[kemo_mul_psf->psf_a->id_current],
                            kemo_mul_psf->psf_m[kemo_mul_psf->psf_a->id_current]);
+    dealloc_psf_norm_s(kemo_mul_psf->psf_n[kemo_mul_psf->psf_a->id_current]);
 	deallc_all_psf_data(kemo_mul_psf->psf_d[kemo_mul_psf->psf_a->id_current]);
 	
 	set_close_current_kemoview_array(kemo_mul_psf->psf_a);
@@ -123,8 +134,9 @@ void evolution_psf_viewer(struct psf_data *psf_ucd_tmp,
                    kemo_mul_psf->psf_m[id_load]->iformat_viz_file,
                    kemo_mul_psf->psf_m[id_load]->viz_prefix_c->string);
             kemo_mul_psf->psf_m[id_load]->viz_step_c = kemo_mul_psf->psf_a->istep_sync;
-			evolution_PSF_data(kemo_mul_psf->psf_d[id_load], psf_ucd_tmp,
-                               kemo_mul_psf->psf_m[id_load]);
+			evolution_PSF_data(kemo_mul_psf->psf_d[id_load],
+                               kemo_mul_psf->psf_n[id_load],
+                               psf_ucd_tmp, kemo_mul_psf->psf_m[id_load]);
 		};
     };
 	set_avail_time_flag(kemo_mul_psf);

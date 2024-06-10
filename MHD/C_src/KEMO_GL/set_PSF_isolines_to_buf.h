@@ -28,10 +28,13 @@ long set_PSF_all_isotubes_to_buf(const long ist_patch,
                                  long *istack_smp_psf_iso,
                                  int isoline_ncorner, double viz_line_width,
                                  struct psf_data *psf_s,
+                                 struct psf_normals *psf_n,
                                  struct psf_menu_val *psf_m,
                                 struct gl_strided_buffer *psf_buf);
 long set_PSF_all_isolines_to_buf(const long ist_patch,
                                  const int nthreads, long *istack_smp_psf_iso,
-                                 struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                 struct psf_data *psf_s,
+                                 struct psf_normals *psf_n,
+                                 struct psf_menu_val *psf_m,
                                  struct gl_strided_buffer *psf_buf);
 #endif

@@ -17,6 +17,19 @@ void dealloc_psf_data(struct psf_data *psf_s){
     return;
 };
 
+struct psf_normals * init_psf_normals(void){
+    struct psf_normals *psf_n = (struct psf_normals *) malloc(sizeof(struct psf_normals));
+    if(psf_n  == NULL){
+        printf("malloc error for psf_normals \n");
+        exit(0);
+    }
+    return psf_n;
+};
+void dealloc_psf_normals(struct psf_normals *psf_n){
+    free(psf_n);
+    return;
+};
+
 
 void alloc_viz_node_s(struct psf_data *psf_s){
 	/* allocate memory  xyzw_viz[node #][direction]*/
@@ -166,37 +179,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 	return;
 };
 
-void alloc_psf_norm_s(struct psf_data *psf_s){
-    psf_s->size_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
-    if(psf_s->size_ele  == NULL){
-        printf("malloc error for psf_s->size_ele \n");
-        exit(0);
-    }
-
-	/* allocate memory  norm_ele[patch #][component]*/
-	psf_s->norm_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
-    if(psf_s->norm_ele  == NULL){
-        printf("malloc error for psf_s->norm_ele \n");
-        exit(0);
-    }
-
-	/* allocate memory  norm_nod[node #][component]*/
-	psf_s->norm_nod = (double *)malloc(4*psf_s->nnod_viz*sizeof(double));
-    if(psf_s->norm_nod  == NULL){
-        printf("malloc error for psf_s->norm_nod \n");
-        exit(0);
-    }
-
-	return;
-};
-
-void dealloc_psf_norm_s(struct psf_data *psf_s){
-	free(psf_s->norm_nod);
-	free(psf_s->norm_ele);
-	free(psf_s->size_ele);
-	return;
-};
-
 void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	free(psf_s->d_nod);
 	free(psf_s->ncomp);
@@ -242,8 +224,7 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 
 void deallc_all_psf_data(struct psf_data *psf_s){
     dealloc_edge_data_4_psf(psf_s->nele_viz, psf_s->psf_edge);
-
-    dealloc_psf_norm_s(psf_s);
+    
 	dealloc_psf_data_s(psf_s);
     dealloc_psf_color_data_c(psf_s);
 	dealloc_psf_mesh_c(psf_s);
@@ -469,3 +450,37 @@ void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z){
 	printf("\n");
 	return;
 };
+
+
+void alloc_psf_norm_s(struct psf_data *psf_s,
+                      struct psf_normals *psf_n){
+    psf_n->area_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
+    if(psf_n->area_ele  == NULL){
+        printf("malloc error for psf_n->area_ele \n");
+        exit(0);
+    }
+
+	/* allocate memory  norm_ele[patch #][component]*/
+	psf_n->norm_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
+    if(psf_n->norm_ele  == NULL){
+        printf("malloc error for psf_n->norm_ele \n");
+        exit(0);
+    }
+
+	/* allocate memory  norm_nod[node #][component]*/
+	psf_n->norm_nod = (double *)malloc(4*psf_s->nnod_viz*sizeof(double));
+    if(psf_n->norm_nod  == NULL){
+        printf("malloc error for psf_n->norm_nod \n");
+        exit(0);
+    }
+
+	return;
+};
+
+void dealloc_psf_norm_s(struct psf_normals *psf_n){
+	free(psf_n->norm_nod);
+	free(psf_n->norm_ele);
+	free(psf_n->area_ele);
+	return;
+};
+

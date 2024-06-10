@@ -23,7 +23,7 @@ long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthread
 
 long sel_each_isoline_to_list_pthread(const int nthreads, long *istack_threads,
                                       double v_line, long icomp,
-                                      struct psf_data *psf_s,
+                                      struct psf_data *psf_s, struct psf_normals *psf_n,
                                       struct isoline_line_work *wk_iso_line);
 long sel_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threads,
                                           double v_line, long icomp,

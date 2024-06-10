@@ -333,9 +333,9 @@ void alloc_fline_data(struct fline_data *fline_d){
 
 void alloc_fline_work_data(struct fline_data *fline_d){
     /* allocate memory  dir_edge[patch #][component]*/
-    fline_d->size_ele = (double *)calloc(fline_d->nele_viz,sizeof(double));
-    if(fline_d->size_ele  == NULL){
-        printf("malloc error for fline_d->size_ele \n");
+    fline_d->length_edge = (double *)calloc(fline_d->nele_viz,sizeof(double));
+    if(fline_d->length_edge  == NULL){
+        printf("malloc error for fline_d->length_edge \n");
         exit(0);
     }
     fline_d->dir_edge = (double *)malloc(4*fline_d->nele_viz*sizeof(double));
@@ -398,7 +398,7 @@ void alloc_fline_ave_data(struct fline_data *fline_d){
 
 void dealloc_fline_work_data(struct fline_data *fline_d){
     free(fline_d->dir_edge);
-    free(fline_d->size_ele);
+    free(fline_d->length_edge);
     return;
 }
 

@@ -32,8 +32,8 @@ struct PSF_line_buffers{
 struct PSF_line_buffers * init_PSF_line_buffers(void);
 void dealloc_PSF_line_buffers(struct PSF_line_buffers *PSF_lines);
 
-void const_PSF_isolines_buffer(const int nthreads,
-                               struct view_element *view_s, struct psf_data **psf_s,
+void const_PSF_isolines_buffer(const int nthreads, struct view_element *view_s,
+                               struct psf_data **psf_s, struct psf_normals **psf_n,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                struct mesh_menu_val *mesh_m, 
                                struct PSF_line_buffers *PSF_lines);

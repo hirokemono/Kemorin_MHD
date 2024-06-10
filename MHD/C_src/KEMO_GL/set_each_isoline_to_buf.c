@@ -122,6 +122,7 @@ long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,
                               double v_line, long icomp,
                               struct psf_data *psf_s,
+                              struct psf_normals *psf_n, 
                               struct isoline_line_work *wk_iso_line){
     long iedge_out[2];
 	double d_tri[3], xyzw_out[8];
@@ -133,7 +134,7 @@ long set_each_isoline_to_list(const long ist_line,
 	long num_line = ist_line;
 	for (iele = ist; iele < ied; iele++) {
 		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                        psf_s->xyzw_viz, psf_s->norm_nod,
+                                        psf_s->xyzw_viz, psf_n->norm_nod,
 										psf_s->d_nod, icomp, xyzw_tri, d_tri);
 		/*  find isoline */
         idraw = set_isoline_on_triangle(iedge_out, xyzw_out, 
