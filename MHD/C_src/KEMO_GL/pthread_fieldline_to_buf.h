@@ -20,6 +20,7 @@
 long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads, 
                                    double tube_width,
                                    struct fline_data *fline_d,
+                                   struct fline_directions *fline_dir,
                                    struct fline_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf);
 long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 

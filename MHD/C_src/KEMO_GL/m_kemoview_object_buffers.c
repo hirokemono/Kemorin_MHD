@@ -159,7 +159,9 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                                        kemo_buffers->PSF_transes);
         
         const_fieldlines_buffer(kemo_buffers->nthreads, view_s,
-                                kemo_fline->fline_d, kemo_fline->fline_m,
+                                kemo_fline->fline_d,
+                                kemo_fline->fline_dir,
+                                kemo_fline->fline_m,
                                 kemo_buffers->Fline_bufs);
         
         const_solid_mesh_buffer(kemo_buffers->nthreads,

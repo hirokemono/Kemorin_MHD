@@ -20,6 +20,7 @@ long count_fieldlines_to_buf(struct fline_data *fline_d);
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            double tube_width,
                            struct fline_data *fline_d,
+                           struct fline_directions *fline_dir,
                            struct fline_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf);
 long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,

@@ -27,7 +27,9 @@ void take_normal_psf(long nadded_for_phi0,
 void take_minmax_psf(struct psf_data *viz_s,
                      struct psf_normals *psf_n);
 
-void take_length_fline(struct fline_data *fline_d);
-void take_minmax_fline(struct fline_data *fline_d);
+void take_length_fline(struct fline_data *fline_d,
+                       struct fline_directions *fline_dir);
+void take_minmax_fline(struct fline_directions *fline_dir,
+                       struct fline_data *fline_d);
 
 #endif

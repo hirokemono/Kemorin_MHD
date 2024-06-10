@@ -16,8 +16,9 @@ struct kemoview_fline * init_kemoview_fline(void){
 		exit(0);
 	}
 	
-    kemo_fline->fline_d = init_fline_data();
-    kemo_fline->fline_m = init_fline_menu_val();
+    kemo_fline->fline_d =   init_fline_data();
+    kemo_fline->fline_dir = init_fline_directions();
+    kemo_fline->fline_m =   init_fline_menu_val();
 	return kemo_fline;
 };
 
@@ -32,6 +33,7 @@ void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_viz = IZERO;
 	dealloc_draw_fline_flags(kemo_fline->fline_d, kemo_fline->fline_m);
     
+    dealloc_fline_direction_data(kemo_fline->fline_dir);
 	deallc_all_fline_data(kemo_fline->fline_d);
     return;
 }
@@ -45,7 +47,10 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
     
 	if(kemo_fline->fline_m->iflag_draw_viz > 0) close_fieldline_view(kemo_fline);
 
-	set_kemoview_fline_data(ucd_tmp, kemo_fline->fline_d, kemo_fline->fline_m);
+	set_kemoview_fline_data(ucd_tmp,
+                            kemo_fline->fline_d,
+                            kemo_fline->fline_dir,
+                            kemo_fline->fline_m);
     return;
 };
 
@@ -57,6 +62,7 @@ int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 		kemo_fline->fline_m->viz_step_c = istep_sync;
 		ierr = refresh_FLINE_data(psf_ucd_tmp,
                                   kemo_fline->fline_d,
+                                  kemo_fline->fline_dir,
                                   kemo_fline->fline_m);
 	}
 	return ierr;

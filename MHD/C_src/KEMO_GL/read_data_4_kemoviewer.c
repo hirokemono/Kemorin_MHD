@@ -95,15 +95,16 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
 }
 
 static void set_fline_data_by_UCD(struct fline_data *fline_d,
+                                  struct fline_directions *fline_dir,
                                   struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
     
-    alloc_fline_work_data(fline_d);
-    take_length_fline(fline_d);
+    alloc_fline_work_data(fline_d, fline_dir);
+    take_length_fline(fline_d, fline_dir);
     
     alloc_fline_ave_data(fline_d);
-	take_minmax_fline(fline_d);
-    dealloc_fline_work_data(fline_d);
+	take_minmax_fline(fline_dir, fline_d);
+    dealloc_fline_work_data(fline_dir);
 	return;
 };
 
@@ -149,13 +150,15 @@ void evolution_PSF_data(struct psf_data *psf_s,
 
 int refresh_FLINE_data(struct psf_data *ucd_tmp,
                        struct fline_data *fline_d,
+                       struct fline_directions *fline_dir,
                        struct fline_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
 	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_viz_file, 
                                                    fline_m->viz_step_c, &time, 
-                                                   fline_m->viz_prefix_c->string, ucd_tmp);
+                                                   fline_m->viz_prefix_c->string,
+                                                   ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
         dealloc_psf_color_data_c(ucd_tmp);
 		dealloc_psf_data_s(ucd_tmp);
@@ -163,8 +166,9 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
 		return iflag_datatype;
 	}
     
+    dealloc_fline_direction_data(fline_dir);
 	deallc_all_fline_data(fline_d);
-	set_fline_data_by_UCD(fline_d, ucd_tmp);
+	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
 	return 0;
 }
 
@@ -210,10 +214,11 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
 
 void set_kemoview_fline_data(struct psf_data *ucd_tmp,
                              struct fline_data *fline_d,
+                             struct fline_directions *fline_dir,
                              struct fline_menu_val *fline_m){
 	int i;
 	
-	set_fline_data_by_UCD(fline_d, ucd_tmp);
+	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
 	alloc_draw_fline_flags(fline_d, fline_m);
 	
 	fline_m->iflag_draw_viz = IONE;
