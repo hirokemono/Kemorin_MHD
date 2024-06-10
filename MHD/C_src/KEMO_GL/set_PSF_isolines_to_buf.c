@@ -13,7 +13,7 @@ long const_PSF_each_isotube_to_buf(const long ist_patch,
                                    double v_line, long icomp, double *f_color,
                                    struct psf_data *psf_s, struct psf_normals *psf_n,
                                    struct gl_strided_buffer *strided_buf){
-    struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_s->psf_edge);
+    struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_n->psf_edge);
     struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads,
                                                                    istack_threads);
     wk_iso_line->width =   width;
@@ -26,10 +26,10 @@ long const_PSF_each_isotube_to_buf(const long ist_patch,
     set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
     
     set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
-    set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
+    set_direction_for_isoline(psf_n->psf_edge, wk_iso_mesh, wk_iso_line);
     adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
     
-    set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
+    set_normal_for_isoline(psf_s->xyzw_viz, psf_n->psf_edge,
                            wk_iso_mesh, wk_iso_line);
     set_isoline_color_in_wk(f_color, wk_iso_line);
     dealloc_isoline_mesh_work(wk_iso_mesh);
@@ -48,7 +48,7 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
                                    double v_line, long icomp, double *f_color,
                                    struct psf_data *psf_s, struct psf_normals *psf_n,
                                    struct gl_strided_buffer *strided_buf){
-    struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_s->psf_edge);
+    struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_n->psf_edge);
     struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads,
                                                                    istack_threads);
     
@@ -59,10 +59,10 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
     set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
     
     set_isoline_position_on_edge(wk_iso_line, wk_iso_mesh);
-    set_direction_for_isoline(psf_s->psf_edge, wk_iso_mesh, wk_iso_line);
+    set_direction_for_isoline(psf_n->psf_edge, wk_iso_mesh, wk_iso_line);
     adjust_direction_by_neighbor(wk_iso_mesh, wk_iso_line->dir_line);
     
-    set_normal_for_isoline(psf_s->xyzw_viz, psf_s->psf_edge,
+    set_normal_for_isoline(psf_s->xyzw_viz, psf_n->psf_edge,
                            wk_iso_mesh, wk_iso_line);
     set_isoline_color_in_wk(f_color, wk_iso_line);
     dealloc_isoline_mesh_work(wk_iso_mesh);

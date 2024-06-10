@@ -223,8 +223,6 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 }
 
 void deallc_all_psf_data(struct psf_data *psf_s){
-    dealloc_edge_data_4_psf(psf_s->nele_viz, psf_s->psf_edge);
-    
 	dealloc_psf_data_s(psf_s);
     dealloc_psf_color_data_c(psf_s);
 	dealloc_psf_mesh_c(psf_s);
@@ -477,8 +475,11 @@ void alloc_psf_norm_s(struct psf_data *psf_s,
 	return;
 };
 
-void dealloc_psf_norm_s(struct psf_normals *psf_n){
-	free(psf_n->norm_nod);
+void dealloc_psf_norm_s(struct psf_data *psf_s,
+                        struct psf_normals *psf_n){
+    dealloc_edge_data_4_psf(psf_s->nele_viz, psf_n->psf_edge);
+
+    free(psf_n->norm_nod);
 	free(psf_n->norm_ele);
 	free(psf_n->area_ele);
 	return;

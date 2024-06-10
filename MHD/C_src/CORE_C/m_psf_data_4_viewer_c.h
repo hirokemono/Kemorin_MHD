@@ -52,7 +52,6 @@ struct psf_data{
     double xmin_psf[3];
     double xmax_psf[3];
     double rmax_psf;
-    struct psf_edge_data_c *psf_edge;
 };
 
 struct psf_normals{
@@ -60,6 +59,8 @@ struct psf_normals{
     double *norm_nod;
 	double *area_ele;
 	double total_area;
+    
+    struct psf_edge_data_c *psf_edge;
 };
 
 typedef struct vtk_fields_list vtk_fields_t;
@@ -124,6 +125,7 @@ void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z);
 
 void alloc_psf_norm_s(struct psf_data *psf_s,
                       struct psf_normals *psf_n);
-void dealloc_psf_norm_s(struct psf_normals *psf_n);
+void dealloc_psf_norm_s(struct psf_data *psf_s,
+                        struct psf_normals *psf_n);
 
 #endif

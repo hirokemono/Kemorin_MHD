@@ -81,7 +81,7 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
     alloc_psf_norm_s(psf_s, psf_n);
 	take_normal_psf(nadded_for_phi0, psf_s, psf_n);
     take_minmax_psf(psf_s, psf_n);
-    psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
+    psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
                                           psf_s->xyzw_viz, psf_n->norm_nod);
 
@@ -133,7 +133,7 @@ void evolution_PSF_data(struct psf_data *psf_s,
 		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
-        dealloc_psf_norm_s(psf_n);
+        dealloc_psf_norm_s(psf_s, psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
         psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,

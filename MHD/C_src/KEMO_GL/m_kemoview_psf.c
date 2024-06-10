@@ -100,7 +100,8 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
     
 	if(kemo_mul_psf->psf_a->num_loaded == kemo_mul_psf->psf_a->nlimit_loaded){
 		dealloc_draw_psf_flags(kemo_mul_psf->psf_d[id_load], kemo_mul_psf->psf_m[id_load]);
-        dealloc_psf_norm_s(kemo_mul_psf->psf_n[id_load]);
+        dealloc_psf_norm_s(kemo_mul_psf->psf_d[id_load],
+                           kemo_mul_psf->psf_n[id_load]);
 		deallc_all_psf_data(kemo_mul_psf->psf_d[id_load]);
 	};
 	
@@ -115,7 +116,8 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
 void close_PSF_view(struct kemoview_mul_psf *kemo_mul_psf){
 	dealloc_draw_psf_flags(kemo_mul_psf->psf_d[kemo_mul_psf->psf_a->id_current],
                            kemo_mul_psf->psf_m[kemo_mul_psf->psf_a->id_current]);
-    dealloc_psf_norm_s(kemo_mul_psf->psf_n[kemo_mul_psf->psf_a->id_current]);
+    dealloc_psf_norm_s(kemo_mul_psf->psf_d[kemo_mul_psf->psf_a->id_current],
+                       kemo_mul_psf->psf_n[kemo_mul_psf->psf_a->id_current]);
 	deallc_all_psf_data(kemo_mul_psf->psf_d[kemo_mul_psf->psf_a->id_current]);
 	
 	set_close_current_kemoview_array(kemo_mul_psf->psf_a);

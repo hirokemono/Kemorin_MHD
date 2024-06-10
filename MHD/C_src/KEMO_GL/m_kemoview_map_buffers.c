@@ -59,9 +59,9 @@ void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_mul_psf,
     }
     
     
-    set_map_PSF_isolines_buffer(nthreads,
-                                kemo_mul_psf->psf_d, kemo_mul_psf->psf_m,
-                                kemo_mul_psf->psf_a, view_s,
+    set_map_PSF_isolines_buffer(nthreads, view_s,
+                                kemo_mul_psf->psf_d, kemo_mul_psf->psf_n,
+                                kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
                                 MAP_bufs->MAP_isoline_buf);
     
     set_map_coastline_line_buffer(mesh_m, MAP_bufs->MAP_coast_line_buf);

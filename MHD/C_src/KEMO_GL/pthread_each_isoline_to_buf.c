@@ -82,7 +82,8 @@ static void * set_each_map_isoline_to_list_1thread(void *args)
     
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
     struct psf_data *psf_s = p->psf_s;
-    
+    struct psf_normals *psf_n = p->psf_n;
+
     long icomp =      p->icomp;
     double v_line =   p->v_line;
     
@@ -93,7 +94,7 @@ static void * set_each_map_isoline_to_list_1thread(void *args)
     long hi = psf_s->nele_viz * (id+1) / nthreads;
     
     num_line[id] = set_each_map_isoline_to_list(ist_patch, lo, hi, v_line, icomp,
-                                                psf_s, wk_iso_line);
+                                                psf_s, psf_n, wk_iso_line);
     return 0;
 }
 
@@ -214,7 +215,7 @@ static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_th
 
 static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threads,
                                                  double v_line, long icomp,
-                                                 struct psf_data *psf_s,
+                                                 struct psf_data *psf_s, struct psf_normals *psf_n,
                                                  struct isoline_line_work *wk_iso_line){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
@@ -232,6 +233,7 @@ static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istac
         
         args[ip].wk_iso_line = wk_iso_line;
         args[ip].psf_s = psf_s;
+        args[ip].psf_n = psf_n;
 
         args[ip].icomp = icomp;
         args[ip].v_line = v_line;
@@ -365,14 +367,15 @@ long sel_each_isoline_to_list_pthread(const int nthreads, long *istack_threads,
 long sel_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threads,
                                           double v_line, long icomp,
                                           struct psf_data *psf_s,
+                                          struct psf_normals *psf_n,
                                           struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
     if(nthreads > 1){
         num_patch = set_each_map_isoline_to_list_pthread(nthreads, istack_threads,
-                                                     v_line, icomp, psf_s, wk_iso_line);
+                                                     v_line, icomp, psf_s, psf_n, wk_iso_line);
     }else{
         num_patch = set_each_map_isoline_to_list(IZERO, IZERO, psf_s->nele_viz,
-                                                 v_line, icomp, psf_s, wk_iso_line);
+                                                 v_line, icomp, psf_s, psf_n, wk_iso_line);
     }
     return num_patch;
 };
