@@ -205,7 +205,10 @@
      &   (pvr_tracer_c%block_name, cast_long(kchara), 0)
 !
       call bcast_ctl_type_c1(pvr_tracer_c%tracer_file_prefix)
+      call bcast_ctl_type_i1(pvr_tracer_c%render_increment_ctl)
       call bcast_ctl_type_r1(pvr_tracer_c%render_radius_ctl)
+      call bcast_ctl_type_c1(pvr_tracer_c%color_mode_ctl)
+      call bcast_ctl_type_r3(pvr_tracer_c%rgb_color_ctl)
       call bcast_ctl_type_r1(pvr_tracer_c%opacity_ctl)
 !
       end subroutine bcast_pvr_tracer_ctl

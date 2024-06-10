@@ -419,12 +419,14 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, inum
-      real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
+      real(kind = kreal) :: grad_tgt(3), radius, distance
+      real(kind = kreal) :: rgb_color(3), opacity
 !
       if(tracer_pvr_prm%num_pvr_tracer .le. 0) return
       do i_fln = 1, tracer_pvr_prm%num_pvr_tracer
-        radius =  tracer_pvr_prm%rendering_radius(i_fln)
-        opacity = tracer_pvr_prm%tracer_opacity(i_fln)
+        radius =         tracer_pvr_prm%rendering_radius(i_fln)
+        opacity =        tracer_pvr_prm%tracer_opacity(i_fln)
+        rgb_color(1:3) = tracer_pvr_prm%tracer_RGB(1:3,i_fln)
         do inum = 1, particle_lc(i_fln)%nnod_line_l
           distance = distance_from_tracer(xx4_tgt, inum,                &
      &                                    particle_lc(i_fln))
@@ -433,9 +435,18 @@
 !          opacity = opacity * (one - sqrt(distance / radius))
           call normal_of_single_tracer                                  &
      &       (xx4_tgt, inum, particle_lc(i_fln), grad_tgt)
-          call color_plane_with_light                                   &
-     &       (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,               &
-     &        opacity, color_param, rgba_ray)
+!
+          if(tracer_pvr_prm%iflag_color_mode(i_fln)                     &
+     &                          .eq. iflag_single_color) then
+            call surface_rendering_with_light                           &
+     &         (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,            &
+     &          opacity, color_param, rgba_ray)
+          else
+            call color_plane_with_light                                 &
+     &         (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,             &
+     &          opacity, color_param, rgba_ray)
+          end if
+!
         end do
       end do
 !
@@ -462,13 +473,15 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, iedge
-      real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
+      real(kind = kreal) :: grad_tgt(3), radius, distance
+      real(kind = kreal) :: rgb_color(3), opacity
 !
 !
       if(fline_pvr_prm%num_pvr_tracer .le. 0) return
       do i_fln = 1, fline_pvr_prm%num_pvr_tracer
         radius =  fline_pvr_prm%rendering_radius(i_fln)
         opacity = fline_pvr_prm%tracer_opacity(i_fln)
+        rgb_color(1:3) = fline_pvr_prm%tracer_RGB(1:3,i_fln)
         do iedge = 1, fline_lc(i_fln)%nele_line_l
           distance = distance_from_fline_segment(xx4_tgt, iedge,        &
      &                                           fline_lc(i_fln))
@@ -477,9 +490,18 @@
 !          opacity = opacity * (one - sqrt(distance / radius))
           call normal_of_single_fline                                   &
      &       (xx4_tgt, iedge, fline_lc(i_fln), grad_tgt)
-          call color_plane_with_light                                   &
-     &       (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,               &
-     &        opacity, color_param, rgba_ray)
+!
+          if(fline_pvr_prm%iflag_color_mode(i_fln)                      &
+     &                          .eq. iflag_single_color) then
+            call surface_rendering_with_light                           &
+     &         (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,            &
+     &          opacity, color_param, rgba_ray)
+          else
+            call color_plane_with_light                                 &
+     &         (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,             &
+     &          opacity, color_param, rgba_ray)
+          end if
+!
         end do
       end do
 !

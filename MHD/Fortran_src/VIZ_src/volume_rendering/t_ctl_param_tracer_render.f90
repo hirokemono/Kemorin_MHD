@@ -25,6 +25,14 @@
 !
       implicit  none
 !
+      character(len = kchara), parameter, private                       &
+     &                   :: hd_single_color = 'single_color'
+      character(len = kchara), parameter, private                       &
+     &                   :: hd_colored =      'colormap'
+!
+      integer(kind = kint), parameter :: iflag_single_color = 0
+      integer(kind = kint), parameter :: iflag_colored =      1
+!
 !>  Structure for tracer rendering
       type tracer_render_param
 !>    Number of isosurfaces
@@ -33,8 +41,16 @@
         character(len = kchara), allocatable :: tracer_prefix(:)
 !>    Number of isosurfaces
         integer(kind = kint), allocatable :: id_tracer_model(:)
+!
+!>    Number of isosurfaces
+        integer(kind = kint), allocatable :: increment(:)
 !>    fiale value for isosurfaces
         real(kind = kreal), allocatable :: rendering_radius(:)
+!
+!>    Number of isosurfaces
+        integer(kind = kint), allocatable :: iflag_color_mode(:)
+!>    RGB value for isosurfaces
+        real(kind = kreal), allocatable :: tracer_RGB(:,:)
 !>    Opacity value for isosurfaces
         real(kind = kreal), allocatable :: tracer_opacity(:)
       end type tracer_render_param
@@ -66,8 +82,6 @@
       character(len = kchara) :: fname_model, fname_ctl
       character(len = kchara) :: tmpchara
 !
-      integer(kind = kint) :: iflag
-!
 !
       icou = 0
       do i = 1, num_pvr_tracer_ctl
@@ -98,18 +112,40 @@
         end do
       end do
 !
+      do i = 1, tracer_pvr_prm%num_pvr_tracer
+        tracer_pvr_prm%increment(i) = 1
+        tracer_pvr_prm%rendering_radius(i) = 1.0d-3
+        tracer_pvr_prm%tracer_RGB(1:3,i) = (/one, one, one/)
+        tracer_pvr_prm%tracer_opacity(i) = one
+        tracer_pvr_prm%iflag_color_mode(i)  = iflag_colored
+      end do
 !
       do i = 1, tracer_pvr_prm%num_pvr_tracer
-        iflag = pvr_trc_c(i)%render_radius_ctl%iflag
-        if(iflag .gt. 0) then
+        if(pvr_trc_c(i)%render_increment_ctl%iflag .gt. 0) then
+          tracer_pvr_prm%increment(i)                                   &
+     &       = pvr_trc_c(i)%render_increment_ctl%intvalue
+        end if
+!
+        if(pvr_trc_c(i)%render_radius_ctl%iflag .gt. 0) then
           tracer_pvr_prm%rendering_radius(i)                            &
      &       = pvr_trc_c(i)%render_radius_ctl%realvalue
         end if
 !
-        iflag = pvr_trc_c(i)%opacity_ctl%iflag
-        if(iflag .gt. 0) then
+        if(pvr_trc_c(i)%rgb_color_ctl%iflag .gt. 0) then
+          tracer_pvr_prm%tracer_RGB(1:3,i)                              &
+     &        = pvr_trc_c(i)%rgb_color_ctl%realvalue(1:3)
+        end if
+!
+        if(pvr_trc_c(i)%opacity_ctl%iflag .gt. 0) then
           tracer_pvr_prm%tracer_opacity(i)                              &
      &        = pvr_trc_c(i)%opacity_ctl%realvalue
+        end if
+!
+        if(pvr_trc_c(i)%color_mode_ctl%iflag .gt. 0) then
+          tmpchara = pvr_trc_c(i)%color_mode_ctl%charavalue
+          if(tmpchara .eq. hd_single_color) then
+            tracer_pvr_prm%iflag_color_mode(i)  = iflag_single_color
+          end if
         end if
       end do
 !
@@ -124,7 +160,12 @@
 !
       deallocate(tracer_pvr_prm%tracer_prefix)
       deallocate(tracer_pvr_prm%id_tracer_model)
+!
+      deallocate(tracer_pvr_prm%increment)
       deallocate(tracer_pvr_prm%rendering_radius)
+!
+      deallocate(tracer_pvr_prm%iflag_color_mode)
+      deallocate(tracer_pvr_prm%tracer_RGB)
       deallocate(tracer_pvr_prm%tracer_opacity)
 !
       end subroutine dealloc_pvr_tracer_param
@@ -140,12 +181,20 @@
       tracer_pvr_prm%num_pvr_tracer = num
       allocate(tracer_pvr_prm%tracer_prefix(num))
       allocate(tracer_pvr_prm%id_tracer_model(num))
+!
+      allocate(tracer_pvr_prm%increment(num))
       allocate(tracer_pvr_prm%rendering_radius(num))
+!
+      allocate(tracer_pvr_prm%iflag_color_mode(num))
+      allocate(tracer_pvr_prm%tracer_RGB(3,num))
       allocate(tracer_pvr_prm%tracer_opacity(num))
 !
       if(num .le. 0) return
       tracer_pvr_prm%id_tracer_model(:) =  0
+      tracer_pvr_prm%increment(:) =        1
       tracer_pvr_prm%rendering_radius(:) = zero
+      tracer_pvr_prm%iflag_color_mode(:) = 0
+      tracer_pvr_prm%tracer_RGB(:,:) =     zero
       tracer_pvr_prm%tracer_opacity(:) =   zero
 !
       end subroutine alloc_pvr_tracer_param

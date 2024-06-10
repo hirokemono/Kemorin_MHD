@@ -29,9 +29,14 @@
 !!        type(pvr_tracer_ctl), intent(inout) :: pvr_tracer_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    begin isosurface_ctl
-!!      isosurf_value       0.3
+!!      tracer_file_prefix       tracer_out
+!!
+!!      tracer_increment          10
+!!      rendering_radius          3.0e-3
+!!
+!!      color_mode_ctl      'single_color' or 'colormap'
+!!      RGB_color_ctl       0.7   0.2   0.3
 !!      opacity_ctl         0.9
-!!      surface_direction   normal
 !!    end isosurface_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -44,7 +49,9 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_control_array_character
+      use t_control_array_integer
       use t_control_array_real
+      use t_control_array_real3
       use skip_comment_f
 !
       implicit  none
@@ -54,8 +61,19 @@
 !>        Control block name
         character(len = kchara) :: block_name = 'tracer_ctl'
 !
+!>        File prefix for output tracer data
         type(read_character_item) :: tracer_file_prefix
-        type(read_real_item) :: render_radius_ctl
+!
+!>        Tracer increment of perticle rendering
+        type(read_integer_item) ::   render_increment_ctl
+!>        Radius of renderingperticle
+        type(read_real_item) ::      render_radius_ctl
+!
+!>        Color mode for tracer rendering
+        type(read_character_item) :: color_mode_ctl
+!>        RGB value of tracer color
+        type(read_real3_item) :: rgb_color_ctl
+!>        Tracer opacity
         type(read_real_item) :: opacity_ctl
 !
         integer(kind = kint) :: i_pvr_tracer_ctl = 0
@@ -63,11 +81,18 @@
 !
 !     3rd level for isosurface
 !
-      character(len=kchara) :: hd_render_radius =  'rendering_radius'
-      character(len=kchara) :: hd_tracer_opacity = 'opacity_ctl'
-      character(len=kchara) :: hd_tracer_prefix = 'tracer_file_prefix'
-!
-      private :: hd_render_radius, hd_tracer_opacity, hd_tracer_prefix
+      character(len=kchara), private                                    &
+     &              :: hd_tracer_prefix =    'tracer_file_prefix'
+      character(len=kchara), private                                    &
+     &              :: hd_tracer_increment = 'tracer_increment'
+      character(len=kchara), private                                    &
+     &              :: hd_render_radius =    'rendering_radius'
+      character(len=kchara), private                                    &
+     &              :: hd_color_mode =       'color_mode_ctl'
+      character(len=kchara), private                                    &
+     &              :: hd_tracer_RGB =       'RGB_color_ctl'
+      character(len=kchara), private                                    &
+     &              :: hd_tracer_opacity =   'opacity_ctl'
 !
 !  ---------------------------------------------------------------------
 !
@@ -91,8 +116,16 @@
 !
         call read_chara_ctl_type(c_buf, hd_tracer_prefix,               &
      &                           pvr_tracer_c%tracer_file_prefix)
+!
+        call read_integer_ctl_type(c_buf, hd_tracer_increment,          &
+     &                             pvr_tracer_c%render_increment_ctl)
         call read_real_ctl_type(c_buf, hd_render_radius,                &
      &                          pvr_tracer_c%render_radius_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_color_mode,                  &
+     &                           pvr_tracer_c%color_mode_ctl)
+        call read_real3_ctl_type(c_buf, hd_tracer_RGB,                  &
+     &                          pvr_tracer_c%rgb_color_ctl)
         call read_real_ctl_type(c_buf, hd_tracer_opacity,               &
      &                          pvr_tracer_c%opacity_ctl)
       end do
@@ -119,13 +152,24 @@
 !
       maxlen = len_trim(hd_tracer_prefix)
       maxlen = max(maxlen, len_trim(hd_render_radius))
+      maxlen = max(maxlen, len_trim(hd_tracer_increment))
+      maxlen = max(maxlen, len_trim(hd_color_mode))
+      maxlen = max(maxlen, len_trim(hd_tracer_RGB))
       maxlen = max(maxlen, len_trim(hd_tracer_opacity))
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                          pvr_tracer_c%tracer_file_prefix)
+!
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &                            pvr_tracer_c%render_increment_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &                         pvr_tracer_c%render_radius_ctl)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &                          pvr_tracer_c%color_mode_ctl)
+      call write_real3_ctl_type(id_control, level, maxlen,              &
+     &                          pvr_tracer_c%rgb_color_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &                         pvr_tracer_c%opacity_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -143,8 +187,16 @@
       pvr_tracer_c%block_name = hd_block
         call init_chara_ctl_item_label(hd_tracer_prefix,                &
      &                                 pvr_tracer_c%tracer_file_prefix)
+!
+        call init_int_ctl_item_label(hd_tracer_increment,               &
+     &                               pvr_tracer_c%render_increment_ctl)
         call init_real_ctl_item_label(hd_render_radius,                 &
      &                                pvr_tracer_c%render_radius_ctl)
+!
+        call init_chara_ctl_item_label(hd_color_mode,                   &
+     &                                 pvr_tracer_c%color_mode_ctl)
+        call init_real3_ctl_item_label(hd_tracer_RGB,                   &
+     &                                pvr_tracer_c%rgb_color_ctl)
         call init_real_ctl_item_label(hd_tracer_opacity,                &
      &                                pvr_tracer_c%opacity_ctl)
 !
@@ -161,8 +213,16 @@
 !
       call copy_chara_ctl(org_pvr_iso_c%tracer_file_prefix,             &
      &                    new_pvr_iso_c%tracer_file_prefix)
+!
+      call copy_integer_ctl(org_pvr_iso_c%render_increment_ctl,         &
+     &                      new_pvr_iso_c%render_increment_ctl)
       call copy_real_ctl(org_pvr_iso_c%render_radius_ctl,               &
      &                   new_pvr_iso_c%render_radius_ctl)
+!
+      call copy_chara_ctl(org_pvr_iso_c%color_mode_ctl,                 &
+     &                    new_pvr_iso_c%color_mode_ctl)
+      call copy_real3_ctl(org_pvr_iso_c%rgb_color_ctl,                  &
+     &                    new_pvr_iso_c%rgb_color_ctl)
       call copy_real_ctl(org_pvr_iso_c%opacity_ctl,                     &
      &                   new_pvr_iso_c%opacity_ctl)
 !
@@ -176,10 +236,15 @@
 !
 !
       pvr_tracer_c%tracer_file_prefix%iflag =  0
-      pvr_tracer_c%render_radius_ctl%iflag =   0
-      pvr_tracer_c%opacity_ctl%iflag =         0
 !
-      pvr_tracer_c%i_pvr_tracer_ctl =         0
+      pvr_tracer_c%render_increment_ctl%iflag =  0
+      pvr_tracer_c%render_radius_ctl%iflag =     0
+!
+      pvr_tracer_c%color_mode_ctl%iflag =   0
+      pvr_tracer_c%rgb_color_ctl%iflag =    0
+      pvr_tracer_c%opacity_ctl%iflag =      0
+!
+      pvr_tracer_c%i_pvr_tracer_ctl =       0
 !
       end subroutine reset_pvr_tracer_ctl
 !
