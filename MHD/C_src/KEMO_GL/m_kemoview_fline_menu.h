@@ -15,7 +15,7 @@
 
 struct fline_menu_val{
 	struct kv_string *viz_prefix_c;
-	int fline_step;
+	int viz_step_c;
 	int iformat_fline_file;
 	
     int iflag_draw_time;

@@ -17,10 +17,10 @@ void get_fline_full_path_file_name(struct fline_menu_val *fline_m, struct kv_str
 }
 int get_fline_file_step_prefix(struct fline_menu_val *fline_m, struct kv_string *fline_filehead){
 	alloc_copy_string(fline_m->viz_prefix_c->string, fline_filehead);
-	return fline_m->fline_step;
+	return fline_m->viz_step_c;
 };
 void set_fline_file_step(struct fline_menu_val *fline_m, int istep){
-	fline_m->fline_step = istep;
+	fline_m->viz_step_c = istep;
 };
 
 void set_fline_switch(struct fline_menu_val *fline_m, int iflag) {

@@ -40,7 +40,7 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
 			int iformat_ucd_file, int istep, const char *ucd_header){
     kemo_fline->fline_m->viz_prefix_c = alloc_kvstring();
     alloc_copy_string(ucd_header, kemo_fline->fline_m->viz_prefix_c);
-	kemo_fline->fline_m->fline_step = istep;
+	kemo_fline->fline_m->viz_step_c = istep;
 	kemo_fline->fline_m->iformat_fline_file = iformat_ucd_file;
     
 	if(kemo_fline->fline_m->iflag_draw_fline > 0) close_fieldline_view(kemo_fline);
@@ -53,7 +53,7 @@ int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 			struct psf_data *psf_ucd_tmp, int istep_sync){
 	int ierr = 0;
 	if (kemo_fline->fline_m->iflag_draw_fline > 0) {
-		kemo_fline->fline_m->fline_step = istep_sync;
+		kemo_fline->fline_m->viz_step_c = istep_sync;
 		ierr = refresh_FLINE_data(psf_ucd_tmp,
                                   kemo_fline->fline_d,
                                   kemo_fline->fline_m);

@@ -13,7 +13,7 @@ int send_each_psf_file_header_full(struct psf_menu_val *psf_menu,
 			struct kv_string *psf_filehead, int *iflag){
 	alloc_copy_string(psf_menu->viz_prefix_c->string, psf_filehead);
 	*iflag = psf_menu->iflag_psf_file;
-	return psf_menu->psf_step;
+	return psf_menu->viz_step_c;
 };
 
 int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
@@ -22,7 +22,7 @@ int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
 	alloc_kvstringitem(strlen(psf_menu->viz_prefix_c->string), stripped_dir);
 	split_dir_and_file_name_c(psf_menu->viz_prefix_c->string,
 				stripped_dir->string, stripped_filehead->string);
-	return psf_menu->psf_step;
+	return psf_menu->viz_step_c;
 };
 
 

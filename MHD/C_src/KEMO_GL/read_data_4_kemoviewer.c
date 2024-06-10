@@ -114,7 +114,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
 		check_gzip_psf_num_nod_first(psf_m->iflag_psf_file,
                                      psf_m->viz_prefix_c->string, ucd_tmp);
-		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, &time, 
+		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->viz_step_c, &time, 
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
@@ -125,7 +125,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ
 			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN
 			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ){
-		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, &time, 
+		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         deallc_all_psf_data(psf_s);
@@ -142,7 +142,8 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
 	int iflag_datatype;
     double time;
 	
-	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, &time, 
+	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, 
+                                                   fline_m->viz_step_c, &time, 
                                                    fline_m->viz_prefix_c->string, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
 		dealloc_psf_data_s(ucd_tmp);
@@ -217,11 +218,11 @@ void set_kemoview_fline_data(struct psf_data *ucd_tmp,
 }
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->viz_prefix_c->string, ucd_m);
+	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
 	return;
 }
 void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->fline_step, 
+	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->viz_step_c, 
                                   fline_m->viz_prefix_c->string, ucd_m);
 	return;
 }
