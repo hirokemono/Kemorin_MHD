@@ -37,6 +37,7 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
 
 long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                           struct psf_data *psf_s,
+                          struct psf_normals *psf_n,
                           struct gl_strided_buffer *strided_buf);
 long set_map_patch_to_buf(long ist_patch, long ist_psf, long ied_psf,
                           struct psf_data **psf_s,

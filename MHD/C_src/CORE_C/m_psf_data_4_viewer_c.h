@@ -46,8 +46,6 @@ struct psf_data{
 	double *amp_min;
 	double *amp_max;
 	
-    double *rt_viz;
-	    
     double center_psf[3];
     double xmin_psf[3];
     double xmax_psf[3];
@@ -55,6 +53,8 @@ struct psf_data{
 };
 
 struct psf_normals{
+    double *rt_viz;
+    
 	double *norm_ele;
     double *norm_nod;
 	double *area_ele;
@@ -125,7 +125,6 @@ void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z);
 
 void alloc_psf_norm_s(struct psf_data *psf_s,
                       struct psf_normals *psf_n);
-void dealloc_psf_norm_s(struct psf_data *psf_s,
-                        struct psf_normals *psf_n);
+void dealloc_psf_norm_s(struct psf_normals *psf_n);
 
 #endif

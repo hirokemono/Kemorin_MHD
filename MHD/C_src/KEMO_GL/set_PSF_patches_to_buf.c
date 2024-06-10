@@ -84,7 +84,7 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                          &psf_s->xyzw_viz[IFOUR*ist_nod],
                                          &psf_n->norm_nod[IFOUR*ist_nod],
                                          &psf_s->color_nod[IFOUR*ist_nod],
-                                         &psf_s->rt_viz[ITWO*ist_nod],
+                                         &psf_n->rt_viz[ITWO*ist_nod],
                                          strided_buf);
     return inum_nod;
 }
@@ -145,20 +145,21 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
 
 long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                           struct psf_data *psf_s,
+                          struct psf_normals *psf_n,
                           struct gl_strided_buffer *strided_buf){
     double rtpw[4] =   {1.0, 0.0, 0.0, 1.0};
     double map_xy[4] = {0.0, 0.0, 0.0002, 1.0};;
     double normal[4] = {0.0, 0.0, 1.0, 1.0};
     long inum_nod = ipatch_in;
     for(long inod=ist_nod;inod<ist_nod+num ;inod++){
-        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
+        rtpw[1] = psf_n->rt_viz[ITWO*inod  ];
+        rtpw[2] = psf_n->rt_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
                                              map_xy, normal,
                                              &psf_s->color_nod[IFOUR*inod],
-                                             &psf_s->rt_viz[ITWO*inod],
+                                             &psf_n->rt_viz[ITWO*inod],
                                              strided_buf);
     }
     return inum_nod;

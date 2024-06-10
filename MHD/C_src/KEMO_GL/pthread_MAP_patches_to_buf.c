@@ -18,6 +18,7 @@ typedef struct{
     struct gl_strided_buffer        *strided_buf;
 
     struct psf_data     **psf_s;
+    struct psf_normals  **psf_n;
     struct kemo_array_control *psf_a;
     int i_psf;
 
@@ -34,7 +35,8 @@ static void * set_map_nodes_to_buf_1thread(void *args)
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct psf_data     **psf_s =       p->psf_s;
+    struct psf_data     **psf_s = p->psf_s;
+    struct psf_normals  **psf_n = p->psf_n;
     int i_psf = p->i_psf;
        
     long ist_psf = p->ist_psf;
@@ -44,13 +46,15 @@ static void * set_map_nodes_to_buf_1thread(void *args)
     long lo = (ied_psf-ist_psf) * id /     nthreads;
     long hi = (ied_psf-ist_psf) * (id+1) / nthreads;
     num_patch[id] = set_map_nodes_to_buf(lo, (lo+ist_psf), (hi-lo),
-                                         psf_s[i_psf], strided_buf);
+                                         psf_s[i_psf], psf_n[i_psf],
+                                         strided_buf);
     return 0;
 }
 
 static long set_map_nodes_to_buf_pthread(long ipatch_in, int nthreads,
-                                         long ist_psf, long ied_psf,
-                                         int i_psf, struct psf_data **psf_s,
+                                         long ist_psf, long ied_psf, int i_psf,
+                                         struct psf_data **psf_s,
+                                         struct psf_normals  **psf_n,
                                          struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_MAP_Patch *args
@@ -68,6 +72,7 @@ static long set_map_nodes_to_buf_pthread(long ipatch_in, int nthreads,
         
         args[ip].strided_buf = strided_buf;
         args[ip].psf_s = psf_s;
+        args[ip].psf_n = psf_n;
         args[ip].i_psf = i_psf;
 
         args[ip].ist_psf = ist_psf;
@@ -88,16 +93,17 @@ static long set_map_nodes_to_buf_pthread(long ipatch_in, int nthreads,
 };
 
 long sel_map_nodes_to_buf_pthread(long ipatch_in, int nthreads,
-                                  long ist_psf, long ied_psf,
-                                  int i_psf, struct psf_data **psf_s,
+                                  long ist_psf, long ied_psf, int i_psf,
+                                  struct psf_data **psf_s, struct psf_normals **psf_n,
                                   struct gl_strided_buffer *strided_buf){
     long num_patch = ipatch_in;
     if(nthreads > 1){
             num_patch = set_map_nodes_to_buf_pthread(num_patch, nthreads, ist_psf, ied_psf,
-                                                     i_psf, psf_s, strided_buf);
+                                                     i_psf, psf_s, psf_n, strided_buf);
         }else{
             num_patch = set_map_nodes_to_buf(num_patch, ist_psf, ied_psf,
-                                             psf_s[i_psf], strided_buf);
+                                             psf_s[i_psf], psf_n[i_psf],
+                                             strided_buf);
     };
     return num_patch;
 }

@@ -43,7 +43,7 @@ void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_mul_psf,
                        struct gl_strided_buffer *PSF_node_buf, struct MAP_buffers *MAP_bufs)
 {
     if(view_s->shading_mode == SMOOTH_SHADE){
-        set_map_node_buffer(nthreads, kemo_mul_psf->psf_d,
+        set_map_node_buffer(nthreads, kemo_mul_psf->psf_d, kemo_mul_psf->psf_n,
                             kemo_mul_psf->psf_a, PSF_node_buf);
         const_PSF_patch_index_buffer(nthreads,
                                      IZERO, kemo_mul_psf->psf_a->istack_solid_psf_patch,

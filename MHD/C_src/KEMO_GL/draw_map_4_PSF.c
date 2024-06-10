@@ -14,7 +14,9 @@ int check_draw_map(struct kemo_array_control *psf_a){
 
 
 
-void set_map_node_buffer(const int nthreads, struct psf_data **psf_s,
+void set_map_node_buffer(const int nthreads,
+                         struct psf_data **psf_s,
+                         struct psf_normals **psf_n,
                          struct kemo_array_control *psf_a,
                          struct gl_strided_buffer *map_buf){
     set_buffer_address_4_patch(psf_a->istack_all_psf_node[psf_a->nmax_loaded], map_buf);
@@ -27,7 +29,7 @@ void set_map_node_buffer(const int nthreads, struct psf_data **psf_s,
         if(psf_a->iflag_loaded[i_psf] == 0) continue;
         num_patch = sel_map_nodes_to_buf_pthread(num_patch, nthreads,
                                                  0, psf_s[i_psf]->nnod_viz,
-                                                 i_psf, psf_s, map_buf);
+                                                 i_psf, psf_s, psf_n, map_buf);
     }
     return;
 }

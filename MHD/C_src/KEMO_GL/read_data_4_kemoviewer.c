@@ -73,7 +73,9 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
                                 struct psf_data *psf_s, struct psf_normals *psf_n,
                                 struct psf_data *ucd_tmp) {
-    cal_colat_and_longitude(0, ucd_tmp);
+    alloc_psf_norm_s(ucd_tmp, psf_n);
+    cal_colat_and_longitude(0, ucd_tmp, psf_n);
+    dealloc_psf_norm_s(psf_n);
 
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
     set_viewer_data_with_mapping(map_itp, ucd_tmp, psf_s);
@@ -133,7 +135,9 @@ void evolution_PSF_data(struct psf_data *psf_s,
 		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
-        dealloc_psf_norm_s(psf_s, psf_n);
+        
+        dealloc_edge_data_4_psf(psf_s->nele_viz, psf_n->psf_edge);
+        dealloc_psf_norm_s(psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
         psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
