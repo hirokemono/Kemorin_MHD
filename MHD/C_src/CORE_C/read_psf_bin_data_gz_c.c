@@ -166,9 +166,13 @@ static void read_alloc_psf_data_bin_gz(void *FP_gzip, struct psf_data *psf_z,
     psf_z->ncomptot = psf_z->istack_comp[psf_z->nfield];
     
     alloc_psf_field_data_c(psf_z);
-    alloc_psf_color_data_c(psf_z);
-    alloc_psf_data_s(psf_z);
+    
     double *d_nod_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
+	if (d_nod_gz == NULL) {
+		fprintf(stderr, "Failed allocation for d_nod\n", file_name);
+        exit(1)
+    };
+    
     
     for(j=0;j<psf_z->ncomptot;j++){
         psf_z_WK->ilength = psf_z_WK->nprocs*sizeof(long);

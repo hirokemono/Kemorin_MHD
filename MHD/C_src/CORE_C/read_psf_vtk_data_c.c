@@ -222,8 +222,6 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     copy_vtk_list_2_udt_data(viz_s, &vtk_tmp);
     
     dealloc_vtk_fields_list_c(&vtk_tmp);
-    alloc_psf_color_data_c(viz_s);
-    alloc_psf_data_s(viz_s);
 	return;
 };
 
@@ -270,12 +268,11 @@ int read_psf_vtd(const char *file_name, struct psf_data *viz_s){
 	if ((fp_vtk = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
-	};
-	
-	read_psf_vtk_field_data(viz_s);
+    };
     
-	fclose(fp_vtk);
-	return 0;
+    read_psf_vtk_field_data(viz_s);
+    fclose(fp_vtk);
+    return 0;
 }
 
 int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
@@ -292,7 +289,7 @@ int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
 	read_psf_vtk_node_data(viz_s);
 	iflag_datatype = read_psf_vtk_connect_data(viz_s);
 	
-	read_psf_vtk_field_data(viz_s);
-	fclose(fp_vtk);
-	return iflag_datatype;
+    read_psf_vtk_field_data(viz_s);
+    fclose(fp_vtk);
+    return iflag_datatype;
 }

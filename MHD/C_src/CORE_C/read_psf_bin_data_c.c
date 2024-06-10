@@ -188,9 +188,12 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
     psf_b->ncomptot = psf_b->istack_comp[psf_b->nfield];
     
     alloc_psf_field_data_c(psf_b);
-    alloc_psf_color_data_c(psf_b);
-    alloc_psf_data_s(psf_b);
+    
     double *d_nod = (double *) calloc(psf_b->nnod_viz,sizeof(double));
+	if (d_nod == NULL) {
+		fprintf(stderr, "Failed allocation for d_nod\n", file_name);
+        exit(1)
+    };
     
     for(j=0;j<psf_b->ncomptot;j++){
         psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
@@ -201,6 +204,7 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
             psf_b->d_nod[i*psf_b->ncomptot + j] = d_nod[i];
         };
     };
+    free(d_nod);
     return;
 };
 
