@@ -26,6 +26,6 @@ void dealloc_FieldLine_buffers(struct FieldLine_buffers *Fline_bufs);
 void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_data *fline_d,
                              struct fline_directions *fline_dir,
-                             struct fline_menu_val *fline_m,
+                             struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs);
 #endif   /* M_KEMOVIEW_FIELDLINE_BUFFERS_ */

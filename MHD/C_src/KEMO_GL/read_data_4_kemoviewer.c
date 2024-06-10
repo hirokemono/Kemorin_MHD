@@ -152,7 +152,7 @@ void evolution_PSF_data(struct psf_data *psf_s,
 int refresh_FLINE_data(struct psf_data *ucd_tmp,
                        struct fline_data *fline_d,
                        struct fline_directions *fline_dir,
-                       struct fline_menu_val *fline_m){
+                       struct psf_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
@@ -216,7 +216,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
 void set_kemoview_fline_data(struct psf_data *ucd_tmp,
                              struct fline_data *fline_d,
                              struct fline_directions *fline_dir,
-                             struct fline_menu_val *fline_m){
+                             struct psf_menu_val *fline_m){
 	int i;
 	
 	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
@@ -241,7 +241,7 @@ void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string
 	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
 	return;
 }
-void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
+void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m){
 	alloc_set_ucd_field_file_name(fline_m->iformat_viz_file, fline_m->viz_step_c, 
                                   fline_m->viz_prefix_c->string, ucd_m);
 	return;

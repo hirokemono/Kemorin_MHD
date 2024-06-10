@@ -48,7 +48,7 @@ void evolution_PSF_data(struct psf_data *psf_s,
 int refresh_FLINE_data(struct psf_data *ucd_tmp,
                        struct fline_data *fline_d,
                        struct fline_directions *fline_dir,
-                       struct fline_menu_val *fline_m);
+                       struct psf_menu_val *fline_m);
 
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view);
@@ -61,9 +61,9 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
 void set_kemoview_fline_data(struct psf_data *ucd_tmp,
                              struct fline_data *fline_d,
                              struct fline_directions *fline_dir,
-                             struct fline_menu_val *fline_m);
+                             struct psf_menu_val *fline_m);
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m);
-void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m);
+void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m);
 
 #endif

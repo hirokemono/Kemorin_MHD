@@ -668,12 +668,13 @@ m_kemoview_fieldline_buffers.o: \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
- $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
- $(C_SRCDIR)/KEMO_GL/trackball.h \
- $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
- $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
@@ -689,12 +690,6 @@ m_kemoview_fieldline_buffers.o: \
  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
- $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
- $(C_SRCDIR)/CORE_C/ysglfontdata.h \
- $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
@@ -703,6 +698,11 @@ m_kemoview_fieldline_buffers.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
+ $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+ $(C_SRCDIR)/KEMO_GL/trackball.h \
+ $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
+ $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
  $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
@@ -733,7 +733,11 @@ m_kemoview_fline.o: \
  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+ $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
@@ -749,12 +753,6 @@ m_kemoview_fline.o: \
  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
- $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
- $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
- $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
- $(C_SRCDIR)/CORE_C/ysglfontdata.h \
- $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
@@ -763,6 +761,8 @@ m_kemoview_fline.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
  $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/trackball.h \
@@ -835,7 +835,36 @@ m_kemoview_fline_menu.o: \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
- $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+ $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+ $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+ $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
+ $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
+ $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+ $(C_SRCDIR)/CORE_C/colormap_space_c.h \
+ $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
+ $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
+ $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_kemoview_map_buffers.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.c \
@@ -2099,10 +2128,12 @@ pthread_fieldline_to_buf.o: \
  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
- $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
@@ -2118,11 +2149,6 @@ pthread_fieldline_to_buf.o: \
  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
- $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
- $(C_SRCDIR)/CORE_C/ysglfontdata.h \
- $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
@@ -2131,6 +2157,9 @@ pthread_fieldline_to_buf.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
+ $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
@@ -2661,7 +2690,13 @@ set_each_fline_parameters.o: \
  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+ $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
+ $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
@@ -2677,13 +2712,6 @@ set_each_fline_parameters.o: \
  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
- $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
- $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
- $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
- $(C_SRCDIR)/CORE_C/ysglfontdata.h \
- $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
@@ -2692,6 +2720,7 @@ set_each_fline_parameters.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
+ $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
  $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/trackball.h \
@@ -2838,9 +2867,13 @@ set_fieldline_to_buf.o: \
  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
- $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+ $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
+ $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+ $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
@@ -2856,12 +2889,6 @@ set_fieldline_to_buf.o: \
  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
- $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
- $(C_SRCDIR)/CORE_C/ysglfontdata.h \
- $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
  $(C_SRCDIR)/CORE_C/set_psf_viewer.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
@@ -2870,6 +2897,8 @@ set_fieldline_to_buf.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
+ $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
  $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<

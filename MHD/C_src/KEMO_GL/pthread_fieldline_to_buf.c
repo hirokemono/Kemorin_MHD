@@ -19,7 +19,7 @@ typedef struct{
 
     struct fline_data       *fline_d;
     struct fline_directions *fline_dir;
-    struct fline_menu_val   *fline_m;
+    struct psf_menu_val     *fline_m;
     double tube_width;
 
     long *num_patch;
@@ -35,7 +35,7 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
     
     struct fline_data       *fline_d =   p->fline_d;
     struct fline_directions *fline_dir = p->fline_dir;
-    struct fline_menu_val   *fline_m =   p->fline_m;
+    struct psf_menu_val   *fline_m =   p->fline_m;
     double tube_width = p->tube_width;
 
     long *num_patch =  p->num_patch;
@@ -57,7 +57,7 @@ static void * set_fieldlines_to_buf_1thread(void *args){
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     
     struct fline_data     *fline_d = p->fline_d;
-    struct fline_menu_val *fline_m = p->fline_m;
+    struct psf_menu_val *fline_m = p->fline_m;
     
     long *num_patch =  p->num_patch;
     
@@ -72,7 +72,7 @@ static long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
                                           double tube_width,
                                           struct fline_data *fline_d,
                                           struct fline_directions *fline_dir,
-                                          struct fline_menu_val *fline_m,
+                                          struct psf_menu_val *fline_m,
                                           struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_fieldline *args
@@ -109,7 +109,7 @@ static long set_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
 
 static long set_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
                                           struct fline_data *fline_d,
-                                          struct fline_menu_val *fline_m,
+                                          struct psf_menu_val *fline_m,
                                           struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
     args_pthread_fieldline *args
@@ -147,7 +147,7 @@ long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
                                    double tube_width,
                                    struct fline_data *fline_d,
                                    struct fline_directions *fline_dir,
-                                   struct fline_menu_val *fline_m,
+                                   struct psf_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf){
     long num_tube = ist_patch;
     if(nthreads > 1){
@@ -163,7 +163,7 @@ long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
 
 long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
                                    struct fline_data *fline_d,
-                                   struct fline_menu_val *fline_m,
+                                   struct psf_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf){
     long num_patch = ist_patch;
     if(nthreads > 1){

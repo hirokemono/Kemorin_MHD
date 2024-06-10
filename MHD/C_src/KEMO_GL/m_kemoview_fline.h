@@ -21,7 +21,7 @@
 struct kemoview_fline{
     struct fline_data         *fline_d;
     struct fline_directions   *fline_dir;
-    struct fline_menu_val     *fline_m;
+    struct psf_menu_val       *fline_m;
 };
 
 /* prototypes */ 

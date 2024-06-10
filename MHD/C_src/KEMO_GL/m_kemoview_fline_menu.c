@@ -5,11 +5,11 @@
 #include "m_kemoview_fline_menu.h"
 
 
-struct fline_menu_val * init_fline_menu_val(void){
-    struct fline_menu_val *fline_m
-            = (struct fline_menu_val *) malloc(sizeof(struct fline_menu_val));
+struct psf_menu_val * init_fline_menu_val(void){
+    struct psf_menu_val *fline_m
+            = (struct psf_menu_val *) malloc(sizeof(struct psf_menu_val));
     if(fline_m == NULL){
-        printf("malloc error for fline_menu_val\n");
+        printf("malloc error for psf_menu_val\n");
         exit(0);
     }
     
@@ -17,7 +17,7 @@ struct fline_menu_val * init_fline_menu_val(void){
     return fline_m;
 };
 
-void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m){
+void alloc_draw_fline_flags(struct fline_data *fline_d, struct psf_menu_val *fline_m){
 	int i;
 	fline_m->cmap_viz_comp
 			=  (struct colormap_params **) malloc(fline_d->ncomptot*sizeof(struct colormap_params *));
@@ -51,7 +51,7 @@ void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *f
 	return;
 }
 
-void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *fline_m){
+void dealloc_draw_fline_flags(struct fline_data *fline_d, struct psf_menu_val *fline_m){
 	int i;
 	
 	for (i=0;i<fline_d->nfield;i++){dealloc_color_index_list_s(fline_m->cmap_viz_fld[i]);};
@@ -66,7 +66,7 @@ void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val 
 }
 
 
-void init_fline_parameters(struct fline_menu_val *fline_m){
+void init_fline_parameters(struct psf_menu_val *fline_m){
 	fline_m ->iflag_draw_viz =  IZERO;
 	
 	fline_m->if_draw_viz =    INIT_IF_DRAW_FLINE;
@@ -80,7 +80,7 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 }
 
 void set_fline_color_field(int selected, struct fline_data *fline_d,
-                           struct fline_menu_val *fline_m){
+                           struct psf_menu_val *fline_m){
 	fline_m->if_draw_viz = (long) selected;
 	fline_m->ic_draw_viz = IZERO;
 	fline_m->icomp_draw_viz = fline_d->istack_comp[fline_m->if_draw_viz];
@@ -90,7 +90,7 @@ void set_fline_color_field(int selected, struct fline_data *fline_d,
 }
 
 void set_fline_color_component(int selected, struct fline_data *fline_d,
-                               struct fline_menu_val *fline_m){
+                               struct psf_menu_val *fline_m){
 	fline_m->ic_draw_viz = (long) selected;
 	fline_m->icomp_draw_viz = fline_d->istack_comp[fline_m->if_draw_viz] + fline_m->ic_draw_viz;
 	printf("selected %d  of %s, %ld \n", (selected+1), 

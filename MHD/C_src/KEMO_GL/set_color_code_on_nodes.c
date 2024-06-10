@@ -95,7 +95,7 @@ void set_color_code_for_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_
 
 
 void set_color_code_for_fieldlines(struct fline_data *fline_d,
-								   struct fline_menu_val *fline_m){
+								   struct psf_menu_val *fline_m){
 	int inod, nd;
 	double d_edge;
 	
