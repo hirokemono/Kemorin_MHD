@@ -94,7 +94,7 @@ void set_initial_cube_drawing(int iflag, struct view_element *view_s,
     return;
 };
 
-void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers)
 {
@@ -178,7 +178,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     return;
 };
 
-void set_transparent_buffers(struct kemoview_psf *kemo_psf,
+void set_transparent_buffers(struct kemoview_mul_psf *kemo_psf,
                              struct kemoview_mesh *kemo_mesh,
                              struct view_element *view_s,
                              struct kemoview_buffers *kemo_buffers)
@@ -198,7 +198,7 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf,
     return;
 };
 
-void set_fast_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+void set_fast_buffers(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                       struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                       struct kemoview_buffers *kemo_buffers)
 {

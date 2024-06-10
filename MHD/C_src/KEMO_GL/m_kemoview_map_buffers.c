@@ -38,7 +38,7 @@ void dealloc_MAP_buffers(struct MAP_buffers *MAP_bufs)
     free(MAP_bufs);
 };
 
-void const_map_buffers(int nthreads, struct kemoview_psf *kemo_psf,
+void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_psf,
                        struct mesh_menu_val *mesh_m, struct view_element *view_s,
                        struct gl_strided_buffer *PSF_node_buf, struct MAP_buffers *MAP_bufs)
 {

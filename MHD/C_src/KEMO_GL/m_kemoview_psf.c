@@ -3,12 +3,12 @@
 
 #include "m_kemoview_psf.h"
 
-struct kemoview_psf * init_kemoview_psf(void){
+struct kemoview_mul_psf * init_kemoview_psf(void){
 	int i;
-	struct kemoview_psf *kemo_psf
-			= (struct kemoview_psf *) malloc(sizeof(struct kemoview_psf));
+	struct kemoview_mul_psf *kemo_psf
+			= (struct kemoview_mul_psf *) malloc(sizeof(struct kemoview_mul_psf));
 	if(kemo_psf == NULL){
-		printf("malloc error for kemoview_psf\n");
+		printf("malloc error for kemoview_mul_psf\n");
 		exit(0);
 	}
 	
@@ -33,7 +33,7 @@ struct kemoview_psf * init_kemoview_psf(void){
 	return kemo_psf;
 };
 
-void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf){
+void dealloc_kemoview_psf(struct kemoview_mul_psf *kemo_psf){
 	int i;
 	
 	for(i=0;i<kemo_psf->psf_a->nlimit_loaded;i++){
@@ -47,7 +47,7 @@ void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf){
 	return;
 };
 
-static void set_avail_time_flag(struct kemoview_psf *kemo_psf){
+static void set_avail_time_flag(struct kemoview_mul_psf *kemo_psf){
 	int id_load;
     kemo_psf->psf_a->iflag_avail_time = 0;
     kemo_psf->psf_a->iflag_avail_file_step = 0;
@@ -65,7 +65,7 @@ static void set_avail_time_flag(struct kemoview_psf *kemo_psf){
 	return;
 }
 
-static void set_avail_file_step_flag(struct kemoview_psf *kemo_psf){
+static void set_avail_file_step_flag(struct kemoview_mul_psf *kemo_psf){
 	int id_load;
     if(kemo_psf->psf_a->iflag_avail_time != 0) return;
 	
@@ -79,7 +79,7 @@ static void set_avail_file_step_flag(struct kemoview_psf *kemo_psf){
 	return;
 }
 
-void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
+void init_draw_psf(struct kemoview_mul_psf *kemo_psf, struct psf_data *ucd_tmp,
 			int iflag_fileformat, int istep, double time, const char *ucd_header){
     int id_load;
     id_load = add_new_kemoview_array(kemo_psf->psf_a);
@@ -102,7 +102,7 @@ void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
     return;
 };
 
-void close_PSF_view(struct kemoview_psf *kemo_psf){
+void close_PSF_view(struct kemoview_mul_psf *kemo_psf){
 	dealloc_draw_psf_flags(kemo_psf->psf_d[kemo_psf->psf_a->id_current],
                            kemo_psf->psf_m[kemo_psf->psf_a->id_current]);
 	deallc_all_psf_data(kemo_psf->psf_d[kemo_psf->psf_a->id_current]);
@@ -113,7 +113,7 @@ void close_PSF_view(struct kemoview_psf *kemo_psf){
 	return;
 }
 
-void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kemo_psf){
+void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_mul_psf *kemo_psf){
 	int id_load;
 	printf("Loading PSF %d \n",kemo_psf->psf_a->nmax_loaded);
 	for(id_load=0; id_load<kemo_psf->psf_a->nmax_loaded; id_load++){
@@ -131,7 +131,7 @@ void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kem
 	return;
 }
 
-void set_PSF_loaded_params(int selected, int input, struct kemoview_psf *kemo_psf){
+void set_PSF_loaded_params(int selected, int input, struct kemoview_mul_psf *kemo_psf){
 	if(selected == NUM_LOADED){
 		set_PSF_num_loaded(input, kemo_psf->psf_a);
 	}else if(selected == MAX_LOADED){
@@ -142,7 +142,7 @@ void set_PSF_loaded_params(int selected, int input, struct kemoview_psf *kemo_ps
 	return;
 }
 
-int get_PSF_loaded_params(struct kemoview_psf *kemo_psf, int selected){
+int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_psf, int selected){
 	int output = 0;
 	if(selected == NUM_LOADED){
 		output= get_PSF_num_loaded(kemo_psf->psf_a);
@@ -156,7 +156,7 @@ int get_PSF_loaded_params(struct kemoview_psf *kemo_psf, int selected){
 	return output;
 }
 
-void set_each_PSF_field_param(int selected, int input, struct kemoview_psf *kemo_psf){
+void set_each_PSF_field_param(int selected, int input, struct kemoview_mul_psf *kemo_psf){
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == FIELD_SEL_FLAG){
 		set_PSF_field(input, kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
@@ -166,7 +166,7 @@ void set_each_PSF_field_param(int selected, int input, struct kemoview_psf *kemo
 	return;
 };
 
-int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
+int get_each_PSF_field_param(int selected, struct kemoview_mul_psf *kemo_psf){
 	int output = 0;
 	int i_current = kemo_psf->psf_a->id_current;
 	
@@ -187,7 +187,7 @@ int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
 	return output;
 };
 
-int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
+int toggle_each_PSF_draw_switch(int selected, struct kemoview_mul_psf *kemo_psf){
 	int i_current = kemo_psf->psf_a->id_current;
 	int toggle = 0;
 	
@@ -211,7 +211,7 @@ int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 	return toggle;
 }
 
-void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_psf *kemo_psf){
+void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *kemo_psf){
     int i_current = kemo_psf->psf_a->id_current;
     if      (selected == PSFSOLID_TOGGLE){
         set_draw_psf_solid(iflag, kemo_psf->psf_m[i_current]);
@@ -227,7 +227,7 @@ void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_psf *kemo
     return;
 }
 
-int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
+int get_each_PSF_draw_switch(int selected, struct kemoview_mul_psf *kemo_psf){
 	int i_current = kemo_psf->psf_a->id_current;
 	int iflag = 0;
 	if      (selected == PSFSOLID_TOGGLE){
@@ -248,7 +248,7 @@ int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 	return iflag;
 }
 
-void update_PSF_textured_id(struct kemoview_psf *kemo_psf){
+void update_PSF_textured_id(struct kemoview_mul_psf *kemo_psf){
     int i;
     int i_current = kemo_psf->psf_a->id_current;
     for(i=0;i<kemo_psf->psf_a->nmax_loaded;i++){
@@ -262,7 +262,7 @@ void update_PSF_textured_id(struct kemoview_psf *kemo_psf){
     release_texture_4_psf(kemo_psf->psf_a);
 };
 
-void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf){
+void set_each_PSF_color_param(int selected, int input, struct kemoview_mul_psf *kemo_psf){
     int i_current = kemo_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
 		set_psf_patch_color_mode(kemo_psf->psf_a,
@@ -279,7 +279,7 @@ void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo
 	return;
 };
 
-int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
+int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_psf){
 	int iflag = 0;
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
@@ -301,7 +301,7 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 };
 
 void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
-							  struct kemoview_psf *kemo_psf){
+							  struct kemoview_mul_psf *kemo_psf){
 	double data = const_from_digit_order(value, i_digit);
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == ISET_WIDTH){
@@ -315,7 +315,7 @@ void set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 	};
 	return;
 };
-void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
+void get_each_PSF_color_w_exp(int selected, struct kemoview_mul_psf *kemo_psf,
 							   double *value, int *i_digit){
 	double data = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
@@ -336,7 +336,7 @@ void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
 	return;
 };
 
-double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf){
+double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf *kemo_psf){
 	double value = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == ISET_COLOR_MIN){
@@ -347,7 +347,7 @@ double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kem
 	return value;
 }
 
-double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
+double get_each_PSF_colormap_range(int selected, struct kemoview_mul_psf *kemo_psf){
 	double value = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == ISET_OPACITY_MIN){
@@ -359,28 +359,29 @@ double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
 };
 
 
-void set_draw_time_flag(int iflag, struct kemoview_psf *kemo_psf){
+void set_draw_time_flag(int iflag, struct kemoview_mul_psf *kemo_psf){
     kemo_psf->psf_a->iflag_draw_time = iflag;
 };
-int toggle_draw_time_flag(struct kemoview_psf *kemo_psf){
-    return kemo_psf->psf_a->iflag_draw_time = toggle_value_c(kemo_psf->psf_a->iflag_draw_time);
+int toggle_draw_time_flag(struct kemoview_mul_psf *kemo_psf){
+    return kemo_psf->psf_a->iflag_draw_time
+            = toggle_value_c(kemo_psf->psf_a->iflag_draw_time);
 };
-int get_draw_time_flag(struct kemoview_psf *kemo_psf){
+int get_draw_time_flag(struct kemoview_mul_psf *kemo_psf){
     return kemo_psf->psf_a->iflag_draw_time;
 };
-int get_avail_time_flag(struct kemoview_psf *kemo_psf){
+int get_avail_time_flag(struct kemoview_mul_psf *kemo_psf){
     return kemo_psf->psf_a->iflag_avail_time;
 };
 
-void set_draw_file_step_flag(int iflag, struct kemoview_psf *kemo_psf){
+void set_draw_file_step_flag(int iflag, struct kemoview_mul_psf *kemo_psf){
     kemo_psf->psf_a->iflag_draw_file_step = iflag;
 };
-int toggle_draw_file_step_flag(struct kemoview_psf *kemo_psf){
+int toggle_draw_file_step_flag(struct kemoview_mul_psf *kemo_psf){
     return kemo_psf->psf_a->iflag_draw_file_step = toggle_value_c(kemo_psf->psf_a->iflag_draw_file_step);
 };
-int get_draw_file_step_flag(struct kemoview_psf *kemo_psf){
+int get_draw_file_step_flag(struct kemoview_mul_psf *kemo_psf){
     return kemo_psf->psf_a->iflag_draw_file_step;
 };
-int get_avail_file_step_flag(struct kemoview_psf *kemo_psf){
+int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_psf){
     return kemo_psf->psf_a->iflag_avail_file_step;
 };

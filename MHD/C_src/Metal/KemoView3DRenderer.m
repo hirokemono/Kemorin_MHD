@@ -34,7 +34,7 @@
                   metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
                    psfBuffers:(struct PSF_trans_buffers *_Nonnull) PSF_transes
                   meshBbuffer:(struct gl_strided_buffer *_Nonnull) mesh_trns_buf
-                         PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
+                         PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_psf
 {
     /*  Set transparent vertexs */
     kemoView3DMetalBuf->numPSFTransTexurePixsel = [_kemo3DMetalBufBase setPSFTexture:device
@@ -76,7 +76,7 @@
               metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
            isoLineBuffers:(struct PSF_line_buffers *_Nonnull) PSF_lines
           fileLineBuffers:(struct FieldLine_buffers *_Nonnull) Fline_bufs
-                     PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
+                     PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_psf
 {
     kemoView3DMetalBuf->numPSFTubesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:PSF_lines->PSF_isotube_buf
@@ -138,7 +138,7 @@
                metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
                nodeBuffers:(struct gl_strided_buffer *_Nonnull) PSF_node_buf
               patchBuffers:(struct PSF_solid_buffers *_Nonnull) PSF_solids
-                      PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
+                      PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_psf
 {
     kemoView3DMetalBuf->numPSFSolidTexurePixsel = [_kemo3DMetalBufBase setPSFTexture:device
                                                                                image:kemo_psf->psf_a->psf_texure

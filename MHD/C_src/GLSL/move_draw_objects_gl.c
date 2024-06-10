@@ -18,7 +18,7 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 }
 
 
-static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+static void full_draw_objects(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                               struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                               struct phong_lights *lights, struct kemoview_VAOs *kemo_VAOs,
                               struct kemoview_shaders *kemo_shaders){
@@ -98,7 +98,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
     return;
 }
 
-void update_draw_objects_gl(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+void update_draw_objects_gl(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers,
                             struct kemoview_VAOs *kemo_VAOs,
