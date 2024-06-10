@@ -84,8 +84,8 @@ void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
     int id_load;
     id_load = add_new_kemoview_array(kemo_psf->psf_a);
 
-    kemo_psf->psf_m[id_load]->psf_header = alloc_kvstring();
-    alloc_copy_string(ucd_header, kemo_psf->psf_m[id_load]->psf_header);
+    kemo_psf->psf_m[id_load]->ucd_prefix = alloc_kvstring();
+    alloc_copy_string(ucd_header, kemo_psf->psf_m[id_load]->ucd_prefix);
 	kemo_psf->psf_m[id_load]->psf_step = istep;
 	kemo_psf->psf_m[id_load]->iflag_psf_file = iflag_fileformat;
 	
@@ -120,7 +120,7 @@ void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kem
 		if(kemo_psf->psf_a->iflag_loaded[id_load] > 0){
 			printf("Loaded PSF file %d %d %s\n", id_load, 
 						kemo_psf->psf_m[id_load]->iflag_psf_file,
-						kemo_psf->psf_m[id_load]->psf_header->string);
+						kemo_psf->psf_m[id_load]->ucd_prefix->string);
 			kemo_psf->psf_m[id_load]->psf_step = kemo_psf->psf_a->istep_sync;
 			evolution_PSF_data(kemo_psf->psf_d[id_load], psf_ucd_tmp, 
 							   kemo_psf->psf_m[id_load]);

@@ -14,7 +14,7 @@
 #include "kemoviewer_base.h"
 
 struct fline_menu_val{
-	struct kv_string *fline_header;
+	struct kv_string *ucd_prefix;
 	int fline_step;
 	int iformat_fline_file;
 	

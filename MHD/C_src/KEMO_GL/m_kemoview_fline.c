@@ -38,8 +38,8 @@ void close_fieldline_view(struct kemoview_fline *kemo_fline){
 
 void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp,
 			int iformat_ucd_file, int istep, const char *ucd_header){
-    kemo_fline->fline_m->fline_header = alloc_kvstring();
-    alloc_copy_string(ucd_header, kemo_fline->fline_m->fline_header);
+    kemo_fline->fline_m->ucd_prefix = alloc_kvstring();
+    alloc_copy_string(ucd_header, kemo_fline->fline_m->ucd_prefix);
 	kemo_fline->fline_m->fline_step = istep;
 	kemo_fline->fline_m->iformat_fline_file = iformat_ucd_file;
     
