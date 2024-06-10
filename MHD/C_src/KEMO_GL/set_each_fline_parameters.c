@@ -16,7 +16,7 @@ void get_fline_full_path_file_name(struct fline_menu_val *fline_m, struct kv_str
 	return;
 }
 int get_fline_file_step_prefix(struct fline_menu_val *fline_m, struct kv_string *fline_filehead){
-	alloc_copy_string(fline_m->ucd_prefix->string, fline_filehead);
+	alloc_copy_string(fline_m->viz_prefix_c->string, fline_filehead);
 	return fline_m->fline_step;
 };
 void set_fline_file_step(struct fline_menu_val *fline_m, int istep){

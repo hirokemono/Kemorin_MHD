@@ -128,7 +128,7 @@ void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	
 	for (i=0;i<psf_s->ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_psf_comp[i]);};
 	free(psf_m->cmap_psf_comp);
-	dealloc_kvstring(psf_m->ucd_prefix);
+	dealloc_kvstring(psf_m->viz_prefix_c);
 	return;
 }
 

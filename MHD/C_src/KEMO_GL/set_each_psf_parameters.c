@@ -11,16 +11,16 @@
 
 int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, 
 			struct kv_string *psf_filehead, int *iflag){
-	alloc_copy_string(psf_menu->ucd_prefix->string, psf_filehead);
+	alloc_copy_string(psf_menu->viz_prefix_c->string, psf_filehead);
 	*iflag = psf_menu->iflag_psf_file;
 	return psf_menu->psf_step;
 };
 
 int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
 			struct kv_string *stripped_dir, struct kv_string *stripped_filehead){
-	alloc_kvstringitem(strlen(psf_menu->ucd_prefix->string), stripped_filehead);
-	alloc_kvstringitem(strlen(psf_menu->ucd_prefix->string), stripped_dir);
-	split_dir_and_file_name_c(psf_menu->ucd_prefix->string,
+	alloc_kvstringitem(strlen(psf_menu->viz_prefix_c->string), stripped_filehead);
+	alloc_kvstringitem(strlen(psf_menu->viz_prefix_c->string), stripped_dir);
+	split_dir_and_file_name_c(psf_menu->viz_prefix_c->string,
 				stripped_dir->string, stripped_filehead->string);
 	return psf_menu->psf_step;
 };

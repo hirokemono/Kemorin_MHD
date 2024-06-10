@@ -51,7 +51,7 @@ struct kemo_array_control{
 };
 
 struct psf_menu_val{
-	struct kv_string *ucd_prefix;
+	struct kv_string *viz_prefix_c;
 	int psf_step;
 	int iflag_psf_file;
 	
