@@ -18,36 +18,36 @@
 #include "t_psf_edge_connect_c.h"
 
 struct psf_data{
-	long nnod_viz;
 	long nele_viz;
 	long nnod_4_ele_viz;
-	
-	long nfield;
-	long ncomptot;
-	
-	long *inod_viz;
 	long **ie_viz;
 	
-	int *id_coord;
+	long nnod_viz;
+	long *inod_viz;
+	double *xyzw_viz;
+	
+	long nfield;
 	long *ncomp;
 	long *istack_comp;
-	
-	double *xyzw_viz;
-    double *rt_viz;
+	int *id_coord;
+    char **data_name;
+    
+	long ncomptot;
 	double *d_nod;
-	double *d_amp;
 	
-	double *d_ave;
-	double *d_rms;
+	double *d_amp;
+	double *color_nod;
+	
+    double *rt_viz;
+	
 	double *d_min;
 	double *d_max;
+	double *d_ave;
+	double *d_rms;
 	double *amp_min;
 	double *amp_max;
 	
-	char **data_name;
-	
 	double *xyzw_ele_viz;
-	
 	double *norm_ele;
 	double *norm_nod;
 	double *area_viz;
@@ -57,10 +57,6 @@ struct psf_data{
     double xmin_psf[3];
     double xmax_psf[3];
     double rmax_psf;
-	
-	double *color_nod;
-	
-
     struct psf_edge_data_c *psf_edge;
 };
 
