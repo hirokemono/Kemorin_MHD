@@ -67,7 +67,7 @@ void dealloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val 
 
 
 void init_fline_parameters(struct fline_menu_val *fline_m){
-	fline_m ->iflag_draw_fline =  IZERO;
+	fline_m ->iflag_draw_viz =  IZERO;
 	
 	fline_m->if_draw_fline = INIT_IF_DRAW_FLINE;
 	fline_m->ic_draw_fline = INIT_IC_DRAW_FLINE;

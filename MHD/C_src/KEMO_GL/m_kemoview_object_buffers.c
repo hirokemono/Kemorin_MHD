@@ -173,7 +173,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     /* draw example cube for empty data */
     
     iflag = kemo_mesh->mesh_m->iflag_draw_mesh 
-            + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
+            + iflag_psf + kemo_fline->fline_m->iflag_draw_viz;
     set_initial_cube_drawing(iflag, view_s, kemo_buffers->initial_bufs);
     return;
 };

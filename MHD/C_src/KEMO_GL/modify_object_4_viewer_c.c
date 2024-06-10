@@ -48,7 +48,7 @@ void cal_psf_viewer_range(struct psf_data **psf_s, struct kemo_array_control *ps
 	};
     view->r_max = ZERO;
     
-    if (fline_m->iflag_draw_fline > 0) {
+    if (fline_m->iflag_draw_viz > 0) {
         set_center_4_draw_c(view, fline_d->xmin_psf, fline_d->xmax_psf,
                             fline_d->center_psf, fline_d->rmax_psf);
     };

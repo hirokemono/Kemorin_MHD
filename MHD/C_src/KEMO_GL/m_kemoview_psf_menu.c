@@ -186,7 +186,7 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
     psf_m->vector_thick = INIT_VECTOR_WIDTH;
 
-	psf_m->draw_psf_solid = IONE;
+	psf_m->iflag_draw_viz = IONE;
 	psf_m->draw_psf_grid = IZERO;
 	psf_m->draw_psf_zero = IZERO;
 	psf_m->draw_psf_cbar = IZERO;

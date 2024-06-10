@@ -63,11 +63,11 @@ int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu){
 	return psf_menu->ivect_tangential;
 };
 
-void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_solid = iflag;};
-int send_draw_psf_solid(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_solid;};
+void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_viz = iflag;};
+int send_draw_psf_solid(struct psf_menu_val *psf_menu){return psf_menu->iflag_draw_viz;};
 int toggle_draw_psf_solid(struct psf_menu_val *psf_menu){
-	psf_menu->draw_psf_solid = toggle_value_c(psf_menu->draw_psf_solid);
-	return psf_menu->draw_psf_solid;
+	psf_menu->iflag_draw_viz = toggle_value_c(psf_menu->iflag_draw_viz);
+	return psf_menu->iflag_draw_viz;
 };
 
 void set_draw_psf_grid(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_grid = iflag;};

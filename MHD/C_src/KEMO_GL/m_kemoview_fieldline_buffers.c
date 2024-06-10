@@ -30,7 +30,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_data *fline_d, struct fline_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs){
     Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
-    if(fline_m->iflag_draw_fline <= 0) return;
+    if(fline_m->iflag_draw_viz <= 0) return;
         
     set_color_code_for_fieldlines(fline_d, fline_m);
 

@@ -176,7 +176,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 	
 	alloc_draw_psf_flags(psf_s, psf_m);
 	
-	psf_m->draw_psf_solid =   IONE;
+	psf_m->iflag_draw_viz =   IONE;
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
 	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
     psf_m->vector_thick = INIT_VECTOR_WIDTH;
@@ -202,7 +202,7 @@ void set_kemoview_fline_data(struct psf_data *ucd_tmp,
 	set_fline_data_by_UCD(fline_d, ucd_tmp);
 	alloc_draw_fline_flags(fline_d, fline_m);
 	
-	fline_m->iflag_draw_fline = IONE;
+	fline_m->iflag_draw_viz = IONE;
 	
 	for (i=0;i<fline_d->nfield;i++){
 		set_linear_colormap(fline_m->cmap_fline_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);

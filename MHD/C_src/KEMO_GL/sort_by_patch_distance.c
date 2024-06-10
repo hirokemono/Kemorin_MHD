@@ -17,7 +17,7 @@ void count_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **ps
     psf_a->istack_trans_psf_patch = 0;
     psf_a->istack_trans_psf_txtur = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_solid != 0){ 
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_viz != 0){ 
             if(psf_m[i]->cmap_psf_comp[psf_m[i]->icomp_draw_psf]->min_opacity >= 1.0){
                 if(psf_m[i]->psf_patch_color == TEXTURED_SURFACE){
                     psf_a->istack_solid_psf_txtur = psf_a->istack_solid_psf_txtur + psf_s[i]->nele_viz;
@@ -58,7 +58,7 @@ void set_patch_indices_for_psfs(struct psf_data **psf_s,
     icou_trans_txt = psf_a->istack_solid_psf_patch;
     icou_trans_psf = psf_a->istack_trans_psf_txtur;
     for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_solid != 0){ 
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_viz != 0){ 
             if(psf_m[i]->cmap_psf_comp[psf_m[i]->icomp_draw_psf]->min_opacity >= 1.0){
                 if(psf_m[i]->psf_patch_color == TEXTURED_SURFACE){
                     icou = icou_solid_txt;

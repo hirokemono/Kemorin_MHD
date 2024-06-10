@@ -24,14 +24,14 @@ void set_fline_file_step(struct fline_menu_val *fline_m, int istep){
 };
 
 void set_fline_switch(struct fline_menu_val *fline_m, int iflag) {
-	fline_m->iflag_draw_fline = iflag;
+	fline_m->iflag_draw_viz = iflag;
 };
 void set_fline_color_type(struct fline_menu_val *fline_m, int iflag) {
 	fline_m->fieldline_color = iflag;
 };
 
 
-int get_fline_switch(struct fline_menu_val *fline_m){return fline_m->iflag_draw_fline;};
+int get_fline_switch(struct fline_menu_val *fline_m){return fline_m->iflag_draw_viz;};
 long get_fline_color_num_field(struct fline_data *fline_d){return fline_d->nfield;};
 long get_fline_color_ncomptot(struct fline_data *fline_d){return fline_d->ncomptot;};
 long fline_color_num_comps(struct fline_data *fline_d, int i){return fline_d->ncomp[i];};

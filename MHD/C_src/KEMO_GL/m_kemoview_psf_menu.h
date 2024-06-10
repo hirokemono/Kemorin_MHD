@@ -62,7 +62,7 @@ struct psf_menu_val{
 	int ic_draw_psf;
 	long icomp_draw_psf;
 	
-    int draw_psf_solid;
+    int iflag_draw_viz;
 	int draw_psf_cbar;
     
 	struct colormap_params **cmap_psf_comp;
