@@ -23,7 +23,7 @@ struct fline_menu_val{
     
     long if_draw_viz;
     long ic_draw_viz;
-	long icomp_draw_fline;
+	long icomp_draw_viz;
 	
 	int iflag_draw_viz;
 	int iflag_draw_cbar;

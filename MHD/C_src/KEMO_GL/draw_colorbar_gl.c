@@ -68,7 +68,7 @@ void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
     cbar_buf->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_cbar > 0) {
-            icomp = psf_m[i]->icomp_draw_psf;
+            icomp = psf_m[i]->icomp_draw_viz;
             set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
                                   psf_m[i]->cmap_psf_comp[icomp], cbar_wk);
     
