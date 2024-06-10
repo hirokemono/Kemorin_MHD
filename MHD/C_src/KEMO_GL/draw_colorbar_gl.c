@@ -67,7 +67,7 @@ void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
     long icomp;
     cbar_buf->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_cbar > 0) {
             icomp = psf_m[i]->icomp_draw_psf;
             set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
                                   psf_m[i]->cmap_psf_comp[icomp], cbar_wk);
@@ -98,7 +98,7 @@ void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
     cbar_max_buf->vertex->num_nod_buf =  0;
     cbar_zero_buf->vertex->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0){
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->iflag_draw_cbar > 0){
             set_colorbar_text_image(text_color, cbar_wk->psf_min, cbar_min_buf);
             set_colorbar_text_image(text_color, cbar_wk->psf_max, cbar_max_buf);
             if(cbar_wk->iflag_zero == 1){

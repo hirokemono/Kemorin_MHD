@@ -22,6 +22,7 @@ struct fline_menu_val{
     double time;
 
 	int iflag_draw_viz;
+	int iflag_draw_cbar;
 	
     long if_draw_fline;
     long ic_draw_fline;

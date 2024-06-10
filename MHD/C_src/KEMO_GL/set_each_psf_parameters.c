@@ -84,11 +84,11 @@ int toggle_draw_psf_zero(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_zero;
 };
 
-void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_cbar = iflag;};
-int send_draw_psf_cbar(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_cbar;};
+void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_cbar = iflag;};
+int send_draw_psf_cbar(struct psf_menu_val *psf_menu) {return psf_menu->iflag_draw_cbar;};
 int toggle_draw_psf_cbar(struct psf_menu_val *psf_menu){
-	psf_menu->draw_psf_cbar = toggle_value_c(psf_menu->draw_psf_cbar);
-	return psf_menu->draw_psf_cbar;
+	psf_menu->iflag_draw_cbar = toggle_value_c(psf_menu->iflag_draw_cbar);
+	return psf_menu->iflag_draw_cbar;
 };
 
 void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_vect = iflag;};
@@ -260,7 +260,8 @@ void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, i
 
 void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
                                           struct psf_menu_val *psf_menu){
-	write_colormap_control_file_s(file_name, psf_menu->iflag_draw_time, iflag_draw_axis, psf_menu->draw_psf_cbar,
+	write_colormap_control_file_s(file_name, psf_menu->iflag_draw_time, 
+                                  iflag_draw_axis, psf_menu->iflag_draw_cbar,
                                   psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
 void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name){
@@ -268,6 +269,7 @@ void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const ch
 }
 
 void check_each_PSF_colormap_control(int iflag_draw_axis, struct psf_menu_val *psf_menu){
-	check_colormap_control_file_s(psf_menu->iflag_draw_time, iflag_draw_axis, psf_menu->draw_psf_cbar, 
+	check_colormap_control_file_s(psf_menu->iflag_draw_time, iflag_draw_axis, 
+                                  psf_menu->iflag_draw_cbar, 
                                   psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
