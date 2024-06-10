@@ -27,7 +27,7 @@ void set_fline_switch(struct fline_menu_val *fline_m, int iflag) {
 	fline_m->iflag_draw_viz = iflag;
 };
 void set_fline_color_type(struct fline_menu_val *fline_m, int iflag) {
-	fline_m->fieldline_color = iflag;
+	fline_m->viz_color_mode = iflag;
 };
 
 
@@ -50,7 +50,7 @@ long get_fline_color_data_adress(struct fline_menu_val *fline_m){
 	return fline_m->icomp_draw_viz;
 };
 int get_fline_colormode(struct fline_menu_val *fline_m) {
-	return fline_m->fieldline_color;
+	return fline_m->viz_color_mode;
 };
 
 

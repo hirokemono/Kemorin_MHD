@@ -73,7 +73,7 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 	fline_m->ic_draw_viz =    INIT_IC_DRAW_FLINE;
 	fline_m->icomp_draw_viz = INIT_IC_DRAW_FLINE;
 	
-	fline_m->fieldline_color = INIT_FLDLINE_COLOR;
+	fline_m->viz_color_mode =  INIT_FLDLINE_COLOR;
 	fline_m->fieldline_type =  INIT_FLDLINE_TYPE;
 	fline_m->fieldline_thick = INIT_FLDLINE_THICK;
 	return;

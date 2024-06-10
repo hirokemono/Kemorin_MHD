@@ -68,7 +68,7 @@ struct psf_menu_val{
 	struct colormap_params **cmap_viz_comp;
 	struct colormap_params **cmap_viz_fld;
 	
-	int psf_patch_color;
+	int viz_color_mode;
     int polygon_mode_psf;
     long isoline_type;
     
