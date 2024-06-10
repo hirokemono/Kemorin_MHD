@@ -3,7 +3,7 @@
 
 #include "m_kemoview_psf.h"
 
-struct kemoview_mul_psf * init_kemoview_psf(void){
+struct kemoview_mul_psf * init_kemoview_mul_psf(void){
 	int i;
 	struct kemoview_mul_psf *kemo_psf
 			= (struct kemoview_mul_psf *) malloc(sizeof(struct kemoview_mul_psf));
@@ -33,7 +33,7 @@ struct kemoview_mul_psf * init_kemoview_psf(void){
 	return kemo_psf;
 };
 
-void dealloc_kemoview_psf(struct kemoview_mul_psf *kemo_psf){
+void dealloc_kemoview_mul_psf(struct kemoview_mul_psf *kemo_psf){
 	int i;
 	
 	for(i=0;i<kemo_psf->psf_a->nlimit_loaded;i++){
@@ -79,8 +79,8 @@ static void set_avail_file_step_flag(struct kemoview_mul_psf *kemo_psf){
 	return;
 }
 
-void init_draw_psf(struct kemoview_mul_psf *kemo_psf, struct psf_data *ucd_tmp,
-			int iflag_fileformat, int istep, double time, const char *ucd_header){
+void init_draw_mul_psf(struct kemoview_mul_psf *kemo_psf, struct psf_data *ucd_tmp,
+                       int iflag_fileformat, int istep, double time, const char *ucd_header){
     int id_load;
     id_load = add_new_kemoview_array(kemo_psf->psf_a);
 

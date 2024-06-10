@@ -10,7 +10,7 @@ static void kemoview_allocate_pointers(struct kemoviewer_type *kemoviewer_data){
 
     kemoviewer_data->kemo_mesh =  init_kemoview_mesh();
     kemoviewer_data->kemo_fline = init_kemoview_fline();
-    kemoviewer_data->kemo_psf =   init_kemoview_psf();
+    kemoviewer_data->kemo_psf =   init_kemoview_mul_psf();
 	
     kemoviewer_data->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
     return;
@@ -40,7 +40,7 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	
 	dealloc_kemoview_mesh(kemoviewer_data->kemo_mesh);
 	dealloc_kemoview_fline(kemoviewer_data->kemo_fline);
-	dealloc_kemoview_psf(kemoviewer_data->kemo_psf);
+    dealloc_kemoview_mul_psf(kemoviewer_data->kemo_psf);
 	
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;

@@ -100,7 +100,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 		iflag_datatype = check_gzip_psf_grd_first(iflag_fileformat, ucd_header->string, ucd_tmp);
 		if(iflag_datatype != 0){
 			check_gzip_psf_udt_first(iflag_fileformat, istep, &time, ucd_header->string, ucd_tmp);
-			init_draw_psf(kemo_psf, ucd_tmp, iflag_fileformat, istep, time, ucd_header->string);
+            init_draw_mul_psf(kemo_psf, ucd_tmp, iflag_fileformat, istep, time, ucd_header->string);
 			view->iflag_view_type = VIEW_3D;
 		} else{
 			dealloc_psf_mesh_c(ucd_tmp);
@@ -117,7 +117,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 		iflag_datatype = check_gzip_kemoview_ucd_first(iflag_fileformat, istep, &time, ucd_header->string, ucd_tmp);
 
         if(iflag_datatype == IFLAG_SURFACES){
-			init_draw_psf(kemo_psf, ucd_tmp, iflag_fileformat, istep, time, ucd_header->string);
+            init_draw_mul_psf(kemo_psf, ucd_tmp, iflag_fileformat, istep, time, ucd_header->string);
 			view->iflag_view_type =   VIEW_3D;
 		} else if(iflag_datatype == IFLAG_LINES){
 			init_draw_fline(kemo_fline, ucd_tmp, iflag_fileformat, istep, ucd_header->string);

@@ -14,6 +14,12 @@
 #include "psf_data_array_manager.h"
 #include "set_each_psf_parameters.h"
 
+
+struct kemoview_psf{
+    struct psf_data      *psf_d;
+    struct psf_menu_val  *psf_m;
+};
+
 struct kemoview_mul_psf{
     struct kemo_array_control   *psf_a;
     struct psf_data            **psf_d;
@@ -21,11 +27,11 @@ struct kemoview_mul_psf{
 };
 
 /* prototypes */ 
-struct kemoview_mul_psf * init_kemoview_psf(void);
-void dealloc_kemoview_psf(struct kemoview_mul_psf *kemo_psf);
+struct kemoview_mul_psf * init_kemoview_mul_psf(void);
+void dealloc_kemoview_mul_psf(struct kemoview_mul_psf *kemo_psf);
 
-void init_draw_psf(struct kemoview_mul_psf *kemo_psf, struct psf_data *ucd_tmp,
-			int iflag_fileformat, int istep, double time, const char *ucd_header);
+void init_draw_mul_psf(struct kemoview_mul_psf *kemo_psf, struct psf_data *ucd_tmp,
+                       int iflag_fileformat, int istep, double time, const char *ucd_header);
 void close_PSF_view(struct kemoview_mul_psf *kemo_psf);
 
 void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_mul_psf *kemo_psf);
