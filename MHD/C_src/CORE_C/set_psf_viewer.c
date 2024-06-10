@@ -293,8 +293,8 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
 
     alloc_fline_field_data_c(fline_d);
 
-	copy_viewer_udt_node(viz_tmp, fline_d->inod_fline, fline_d->xyzw_fline);
-	copy_viewer_udt_data(viz_tmp, fline_d->nnod_fline, fline_d->ncomptot, fline_d->d_nod);
+	copy_viewer_udt_node(viz_tmp, fline_d->inod_viz, fline_d->xyzw_viz);
+	copy_viewer_udt_data(viz_tmp, fline_d->nnod_viz, fline_d->ncomptot, fline_d->d_nod);
 
     copy_viewer_udt_connect(viz_tmp, fline_d->iedge_fline);
 

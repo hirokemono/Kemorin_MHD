@@ -247,7 +247,7 @@ static void take_length_ele_fline(struct fline_data *fline_d){
     int nd;
 	double len2;
 
-	for (i = 0; i < fline_d->nnod_fline; i++){
+	for (i = 0; i < fline_d->nnod_viz; i++){
         fline_d->dir_nod[4*i  ] = 0.0;
         fline_d->dir_nod[4*i+1] = 0.0;
         fline_d->dir_nod[4*i+2] = 0.0;
@@ -258,8 +258,8 @@ static void take_length_ele_fline(struct fline_data *fline_d){
 		i1 = fline_d->iedge_fline[i][0] - 1;
 		i2 = fline_d->iedge_fline[i][1] - 1;
 		for (nd=0; nd<3; nd++) {
-            fline_d->dir_edge[4*i+nd] = fline_d->xyzw_fline[i2*IFOUR + nd]
-                                        - fline_d->xyzw_fline[i1*IFOUR + nd];
+            fline_d->dir_edge[4*i+nd] = fline_d->xyzw_viz[i2*IFOUR + nd]
+                                        - fline_d->xyzw_viz[i1*IFOUR + nd];
 		}
     }
     
@@ -293,8 +293,8 @@ static void take_length_ele_fline(struct fline_data *fline_d){
 		i1 = fline_d->iedge_fline[i][0] - 1;
 		i2 = fline_d->iedge_fline[i][1] - 1;
 		for (nd=0; nd<3; nd++) {
-            fline_d->xyzw_edge_fline[4*i+nd] = (fline_d->xyzw_fline[i1*IFOUR + nd]
-                                                + fline_d->xyzw_fline[i2*IFOUR + nd])*HALF;
+            fline_d->xyzw_edge_fline[4*i+nd] = (fline_d->xyzw_viz[i1*IFOUR + nd]
+                                                + fline_d->xyzw_viz[i2*IFOUR + nd])*HALF;
             
             fline_d->dir_nod[4*i1+nd] = fline_d->dir_nod[4*i1+nd] + fline_d->dir_edge[4*i+nd];
             fline_d->dir_nod[4*i2+nd] = fline_d->dir_nod[4*i2+nd] + fline_d->dir_edge[4*i+nd];
@@ -302,7 +302,7 @@ static void take_length_ele_fline(struct fline_data *fline_d){
         
 	};
     
-	for (i = 0; i < fline_d->nnod_fline; i++){
+	for (i = 0; i < fline_d->nnod_viz; i++){
 		len2= sqrt(  fline_d->dir_nod[4*i+0]*fline_d->dir_nod[4*i+0]
                    + fline_d->dir_nod[4*i+1]*fline_d->dir_nod[4*i+1]
                    + fline_d->dir_nod[4*i+2]*fline_d->dir_nod[4*i+2] );
@@ -503,7 +503,7 @@ void take_normal_psf(long nadded_for_phi0, struct psf_data *viz_s){
 }
 
 void take_length_fline(struct fline_data *fline_d){
-    fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_fline, fline_d->xyzw_fline,
+    fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_viz, fline_d->xyzw_viz,
                                            fline_d->xmin_psf, fline_d->xmax_psf,
                                            fline_d->center_psf);
     
@@ -527,7 +527,7 @@ void take_minmax_psf(struct psf_data *viz_s){
 
 void take_minmax_fline(struct fline_data *fline_d){
 	take_rms_ave_fline(fline_d);
-    take_minmax_psf_each_component(fline_d->nnod_fline,
+    take_minmax_psf_each_component(fline_d->nnod_viz,
                                    fline_d->nfield, fline_d->ncomptot,
                                    fline_d->istack_comp,
                                    fline_d->d_nod, fline_d->d_amp,

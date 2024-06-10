@@ -46,9 +46,9 @@ struct fline_data{
     long nnod_4_edge_fline;
     long **iedge_fline;
     
-    long nnod_fline;
-    long *inod_fline;
-    double *xyzw_fline;
+    long nnod_viz;
+    long *inod_viz;
+    double *xyzw_viz;
     
     long nfield;
     long *ncomp;

@@ -103,24 +103,24 @@ void set_color_code_for_fieldlines(struct fline_data *fline_d,
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
 	struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if (fline_m->viz_color_mode == WHITE_LINE) {
-		for (inod=0; inod< fline_d->nnod_fline; inod++){
+		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = white[nd];};
 		};
 	}
 	else if (fline_m->viz_color_mode == BLACK_LINE) {
-		for (inod=0; inod< fline_d->nnod_fline; inod++){
+		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = black[nd];};
 		};
 	}
 	else if (fline_m->viz_color_mode == RAINBOW_LINE) {
-		for (inod=0; inod< fline_d->nnod_fline; inod++){
+		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			d_edge =  fline_d->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_viz];
 			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
                                    d_edge, &fline_d->color_nod[4*inod]);
 		};
 	}
 	else if (fline_m->viz_color_mode == TWO_COLOR_LINE) {
-		for (inod=0; inod< fline_d->nnod_fline; inod++){
+		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			d_edge =  fline_d->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_viz];
 			set_two_color_scale_c(d_edge, &fline_d->color_nod[4*inod]);
             
@@ -128,7 +128,7 @@ void set_color_code_for_fieldlines(struct fline_data *fline_d,
 		};
 	}
 	else if (fline_m->viz_color_mode == TWO_GRAY_LINE) {
-		for (inod=0; inod< fline_d->nnod_fline; inod++){
+		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			d_edge =  fline_d->d_nod[inod*fline_d->ncomptot + fline_m->icomp_draw_viz];
 			set_two_color_scale_g(d_edge, &fline_d->color_nod[4*inod]);
             

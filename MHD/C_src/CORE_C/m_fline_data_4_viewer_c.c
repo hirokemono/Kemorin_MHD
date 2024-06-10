@@ -196,25 +196,25 @@ struct fline_data * init_fline_data(void){
 };
 
 void alloc_fline_node_s(long nnod, struct fline_data *fline_d){
-    fline_d->nnod_fline = nnod;
-    /* allocate memory  xyzw_fline[node #][direction]*/
-    fline_d->xyzw_fline = (double *)malloc(IFOUR*fline_d->nnod_fline*sizeof(double));
-    if(fline_d->xyzw_fline  == NULL){
+    fline_d->nnod_viz = nnod;
+    /* allocate memory  xyzw_viz[node #][direction]*/
+    fline_d->xyzw_viz = (double *)malloc(IFOUR*fline_d->nnod_viz*sizeof(double));
+    if(fline_d->xyzw_viz  == NULL){
         printf("malloc error for fline_d->xyzw_viz \n");
         exit(0);
     }
     
-    fline_d->inod_fline = (long *)calloc(fline_d->nnod_fline,sizeof(long));
-    if(fline_d->inod_fline  == NULL){
-        printf("malloc error for fline_d->inod_fline \n");
+    fline_d->inod_viz = (long *)calloc(fline_d->nnod_viz,sizeof(long));
+    if(fline_d->inod_viz  == NULL){
+        printf("malloc error for fline_d->inod_viz \n");
         exit(0);
     }
     return;
 };
 
 static void dealloc_fline_node_s(struct fline_data *fline_d){
-    free(fline_d->inod_fline);
-    free(fline_d->xyzw_fline);
+    free(fline_d->inod_viz);
+    free(fline_d->xyzw_viz);
 }
 
 void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
@@ -284,7 +284,7 @@ void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d){
 
 void alloc_fline_field_data_c(struct fline_data *fline_d){
     /* allocate memory  d_nod[node #][component]*/
-    long num = fline_d->ncomptot * fline_d->nnod_fline;
+    long num = fline_d->ncomptot * fline_d->nnod_viz;
     fline_d->d_nod = (double *)malloc(num*sizeof(double));
     if(fline_d->d_nod  == NULL){
         printf("malloc error for fline_d->d_nod \n");
@@ -304,13 +304,13 @@ void dealloc_fline_field_data_c(struct fline_data *fline_d){
 
 void alloc_fline_data(struct fline_data *fline_d){
 
-    fline_d->color_nod = (double *)malloc(4*fline_d->nnod_fline*sizeof(double));
+    fline_d->color_nod = (double *)malloc(4*fline_d->nnod_viz*sizeof(double));
     if(fline_d->color_nod  == NULL){
         printf("malloc error for fline_d->color_nod \n");
         exit(0);
     }
 
-    fline_d->dir_nod = (double *)malloc(4*fline_d->nnod_fline*sizeof(double));
+    fline_d->dir_nod = (double *)malloc(4*fline_d->nnod_viz*sizeof(double));
     if(fline_d->dir_nod  == NULL){
         printf("malloc error for fline_d->dir_nod \n");
         exit(0);
@@ -344,7 +344,7 @@ void alloc_fline_ave_data(struct fline_data *fline_d){
     long num;
 
     /* allocate memory  d_amp[node #][field]*/
-    num = fline_d->nfield * fline_d->nnod_fline;
+    num = fline_d->nfield * fline_d->nnod_viz;
     fline_d->d_amp = (double *)malloc(num*sizeof(double));
     if(fline_d->d_amp  == NULL){
         printf("malloc error for psf_s->d_amp \n");

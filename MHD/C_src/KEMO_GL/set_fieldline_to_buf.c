@@ -23,7 +23,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 		for(long k = 0; k < 2; k++) {
 			inod = fline_d->iedge_fline[iele][k] - 1;
 			for(nd=0; nd<3; nd++) {
-				x_line[4*k+nd] =   (float) fline_d->xyzw_fline[4*inod + nd];
+				x_line[4*k+nd] =   (float) fline_d->xyzw_viz[4*inod + nd];
 				dir_line[4*k+nd] = (float) fline_d->dir_nod[4*inod + nd];
 			};
 			for(nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
@@ -49,7 +49,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
 		for(k=0;k<ITWO;k++){
 			inod = fline_d->iedge_fline[iele][k] - 1;
 			for(nd=0;nd<4;nd++){
-                xyzw_line[4*k+nd] =  fline_d->xyzw_fline[4*inod + nd];
+                xyzw_line[4*k+nd] =  fline_d->xyzw_viz[4*inod + nd];
                 color_line[4*k+nd] = fline_d->color_nod[4*inod + nd];
             };
 		};
