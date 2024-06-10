@@ -421,7 +421,7 @@
       integer(kind = kint) :: i_fln, inum
       real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
 !
-      if(tracer_pvr_prm%num_pvr_tracer) return
+      if(tracer_pvr_prm%num_pvr_tracer .le. 0) return
       do i_fln = 1, tracer_pvr_prm%num_pvr_tracer
         radius =  tracer_pvr_prm%rendering_radius(i_fln)
         opacity = tracer_pvr_prm%tracer_opacity(i_fln)
@@ -465,7 +465,7 @@
       real(kind = kreal) :: grad_tgt(3), opacity, radius, distance
 !
 !
-      if(fline_pvr_prm%num_pvr_tracer) return
+      if(fline_pvr_prm%num_pvr_tracer .le. 0) return
       do i_fln = 1, fline_pvr_prm%num_pvr_tracer
         radius =  fline_pvr_prm%rendering_radius(i_fln)
         opacity = fline_pvr_prm%tracer_opacity(i_fln)
