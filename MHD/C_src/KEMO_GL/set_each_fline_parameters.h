@@ -69,26 +69,4 @@ void set_fline_color_data(struct psf_menu_val *fline_m,
 void set_fline_opacity_data(struct psf_menu_val *fline_m,
 			int i_point, double value, double opacity);
 void set_fline_color_mode_id(struct psf_menu_val *fline_m, int isel);
-
-double get_fline_min_color(struct psf_menu_val *fline_m);
-double get_fline_max_color(struct psf_menu_val *fline_m);
-double get_fline_min_opacity(struct psf_menu_val *fline_m);
-double get_fline_max_opacity(struct psf_menu_val *fline_m);
-
-int get_fline_color_num(struct psf_menu_val *fline_m);
-int get_fline_opacity_num(struct psf_menu_val *fline_m);
-
-
-void get_fline_color_item(struct psf_menu_val *fline_m,
-			int i_point, double *value, double *color);
-void get_fline_opacity_item(struct psf_menu_val *fline_m,
-			int i_point, double *value, double *opacity);
-
-void get_fline_colormap_tables(struct psf_menu_val *fline_m, int *id_cmap, int *num_cmap, int *num_alpha,
-                               float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
-
-void write_fline_colormap_file(struct kv_string *filename, const int iflag_draw_axis, 
-                               struct psf_menu_val *fline_m);
-void read_fline_colormap_file(struct kv_string *filename, struct psf_menu_val *fline_m);
-
 #endif

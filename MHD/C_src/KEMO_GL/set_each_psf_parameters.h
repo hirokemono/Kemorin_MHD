@@ -133,15 +133,18 @@ double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu);
 int get_each_PSF_color_table_num(struct psf_menu_val *psf_menu);
 int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu);
 
-void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color);
-void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity);
+void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                    double *value, double *color);
+void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                      double *value, double *opacity);
 
 void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, int *num_cmap, int *num_alpha,
                                   float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
 
-void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
+void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
                                           struct psf_menu_val *psf_menu);
-void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name);
+void read_each_PSF_colormap_control_file(struct kv_string *filename,
+                                         struct psf_menu_val *psf_menu);
 void check_each_PSF_colormap_control(int iflag_draw_axis, struct psf_menu_val *psf_menu);
 
 #endif

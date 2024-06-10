@@ -553,15 +553,14 @@ void get_PSF_colormap_tables(struct kemoview_mul_psf *kemo_mul_psf,
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
                              struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
-    write_each_PSF_colormap_control_file(filename->string,
+    write_each_PSF_colormap_control_file(filename,
                                          iflag_draw_axis,
                                          kemo_mul_psf->psf_m[i_current]);
 }
 void read_PSF_colormap_file(struct kv_string *filename,
                             struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
-    read_each_PSF_colormap_control_file(kemo_mul_psf->psf_m[i_current],
-                                        filename->string);
+    read_each_PSF_colormap_control_file(filename, kemo_mul_psf->psf_m[i_current]);
 }
 
 

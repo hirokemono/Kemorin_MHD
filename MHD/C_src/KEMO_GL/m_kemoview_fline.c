@@ -141,9 +141,9 @@ int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline){
 	}else if(selected == ISET_COLORMAP){
 		iflag = get_fline_colormode(kemo_fline->fline_m);
 	}else if(selected == ISET_NUM_COLOR){
-		iflag = get_fline_color_num(kemo_fline->fline_m);
+		iflag = get_each_PSF_color_table_num(kemo_fline->fline_m);
 	}else if(selected == ISET_NUM_OPACITY){
-		iflag = get_fline_opacity_num(kemo_fline->fline_m);
+		iflag = get_each_PSF_opacity_table_num(kemo_fline->fline_m);
 	}else if(selected == ISET_VECTOR_COLOR){
 	};
 	return iflag;
@@ -162,9 +162,9 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 							   double *value, int *i_digit){
 	double data = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		data = get_fline_min_color(kemo_fline->fline_m);
+		data = get_each_PSF_color_table_min(kemo_fline->fline_m);
 	}else if(selected == ISET_COLOR_MAX){
-		data = get_fline_max_color(kemo_fline->fline_m);
+		data = get_each_PSF_color_table_max(kemo_fline->fline_m);
 	}else if(selected == ISET_WIDTH){
 		data = get_fline_thickness(kemo_fline->fline_m);
 	};
@@ -185,9 +185,9 @@ double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo
 double get_fline_colormap_range(int selected, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
 	if(selected == ISET_OPACITY_MIN){
-		value = get_fline_min_opacity(kemo_fline->fline_m);
+		value = get_each_PSF_minimum_opacity(kemo_fline->fline_m);
 	}else if(selected == ISET_OPACITY_MAX){
-		value = get_fline_max_opacity(kemo_fline->fline_m);
+		value = get_each_PSF_maximum_opacity(kemo_fline->fline_m);
 	};
 	return value;
 };

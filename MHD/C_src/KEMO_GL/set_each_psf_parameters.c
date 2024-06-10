@@ -247,11 +247,13 @@ int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
 	return get_opacity_table_num_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 
-void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color){
+void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                    double *value, double *color){
     get_color_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                             i_point, value, color);
 }
-void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity){
+void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                      double *value, double *opacity){
     get_opacity_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_point, value, opacity);
 }
 
@@ -262,14 +264,15 @@ void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, i
                            cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
-void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
+void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
                                           struct psf_menu_val *psf_menu){
-	write_colormap_control_file_s(file_name, psf_menu->iflag_draw_time, 
+	write_colormap_control_file_s(filename->string, psf_menu->iflag_draw_time,
                                   iflag_draw_axis, psf_menu->iflag_draw_cbar,
                                   psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
-void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name){
-	read_colormap_control_file_s(file_name, psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
+void read_each_PSF_colormap_control_file(struct kv_string *filename,
+                                         struct psf_menu_val *psf_menu){
+	read_colormap_control_file_s(filename->string, psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 
 void check_each_PSF_colormap_control(int iflag_draw_axis, struct psf_menu_val *psf_menu){

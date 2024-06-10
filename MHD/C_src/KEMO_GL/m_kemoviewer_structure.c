@@ -843,30 +843,31 @@ double kemoview_get_fline_colormap_range(struct kemoviewer_type *kemoviewer,
 
 void kemoview_get_fline_color_item(struct kemoviewer_type *kemoviewer,
                                    int i_point, double *value, double *color){
-	get_fline_color_item(kemoviewer->kemo_fline->fline_m,
-                         i_point, value, color);
+    get_each_PSF_color_table_items(kemoviewer->kemo_fline->fline_m,
+                                   i_point, value, color);
 }
 void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                      int i_point, double *value, double *opacity){
-	get_fline_opacity_item(kemoviewer->kemo_fline->fline_m,
-                           i_point, value, opacity);
+    get_each_PSF_opacity_table_items(kemoviewer->kemo_fline->fline_m,
+                                     i_point, value, opacity);
 }
 void kemoview_get_fline_colormap_tables(struct kemoviewer_type *kemoviewer, 
                                         int *id_cmap, int *num_cmap, int *num_alpha,
                                         float *cmap_data, float *cmap_norm,
                                         float *alpha_data, float *alpha_norm){
-    get_fline_colormap_tables(kemoviewer->kemo_fline->fline_m, id_cmap, num_cmap, num_alpha,
-                              cmap_data, cmap_norm, alpha_data, alpha_norm);
+    get_each_PSF_colormap_tables(kemoviewer->kemo_fline->fline_m, id_cmap, num_cmap, num_alpha,
+                                 cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void kemoview_write_fline_colormap_file(struct kv_string *filename,
                                         struct kemoviewer_type *kemoviewer){
-	write_fline_colormap_file(filename, kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+    kemoviewer->kemo_fline->fline_m->iflag_draw_cbar = 0;
+    write_each_PSF_colormap_control_file(filename, kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
                               kemoviewer->kemo_fline->fline_m);
 }
 void kemoview_read_fline_colormap_file(struct kv_string *filename,
                                        struct kemoviewer_type *kemoviewer){
-	read_fline_colormap_file(filename, kemoviewer->kemo_fline->fline_m);
+    read_each_PSF_colormap_control_file(filename, kemoviewer->kemo_fline->fline_m);
 }
 
 
