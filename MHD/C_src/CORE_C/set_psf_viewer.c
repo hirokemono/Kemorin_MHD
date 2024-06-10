@@ -273,8 +273,8 @@ void set_viewer_points_data(struct points_data *points_d,
     alloc_points_node_s(viz_tmp->nnod_viz, points_d);
     alloc_points_field_data_c(points_d);
 
-	copy_viewer_udt_node(viz_tmp, points_d->inod_points, points_d->xyzw_points);
-	copy_viewer_udt_data(viz_tmp, points_d->nnod_points, points_d->ncomptot, points_d->d_nod);
+	copy_viewer_udt_node(viz_tmp, points_d->inod_viz, points_d->xyzw_viz);
+	copy_viewer_udt_data(viz_tmp, points_d->nnod_viz, points_d->ncomptot, points_d->d_nod);
 
 	dealloc_psf_data_s(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);

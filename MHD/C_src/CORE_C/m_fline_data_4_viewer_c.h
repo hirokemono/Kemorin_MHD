@@ -16,9 +16,9 @@
 #include "m_psf_data_4_viewer_c.h"
 
 struct points_data{
-    long nnod_points;
-    long *inod_points;
-    double *xyzw_points;
+    long nnod_viz;
+    long *inod_viz;
+    double *xyzw_viz;
 
     long nfield;
     long *ncomp;

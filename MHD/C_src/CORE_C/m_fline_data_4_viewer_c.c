@@ -19,25 +19,25 @@ struct points_data * init_points_data(void){
 };
 
 void alloc_points_node_s(long nnod, struct points_data *points_d){
-    points_d->nnod_points = nnod;
-    /* allocate memory  xyzw_points[node #][direction]*/
-    points_d->xyzw_points = (double *)malloc(IFOUR*points_d->nnod_points*sizeof(double));
-    if(points_d->xyzw_points  == NULL){
+    points_d->nnod_viz = nnod;
+    /* allocate memory  xyzw_viz[node #][direction]*/
+    points_d->xyzw_viz = (double *)malloc(IFOUR*points_d->nnod_viz*sizeof(double));
+    if(points_d->xyzw_viz  == NULL){
         printf("malloc error for points_d->xyzw_viz \n");
         exit(0);
     }
     
-    points_d->inod_points = (long *)calloc(points_d->nnod_points,sizeof(long));
-    if(points_d->inod_points  == NULL){
-        printf("malloc error for points_d->inod_points \n");
+    points_d->inod_viz = (long *)calloc(points_d->nnod_viz,sizeof(long));
+    if(points_d->inod_viz  == NULL){
+        printf("malloc error for points_d->inod_viz \n");
         exit(0);
     }
     return;
 };
 
 static void dealloc_points_node_s(struct points_data *points_d){
-    free(points_d->inod_points);
-    free(points_d->xyzw_points);
+    free(points_d->inod_viz);
+    free(points_d->xyzw_viz);
 }
 
 
@@ -79,7 +79,7 @@ void alloc_points_field_name_c(long nfield, struct points_data *points_d){
 
 void alloc_points_field_data_c(struct points_data *points_d){
     /* allocate memory  d_nod[node #][component]*/
-    long num = points_d->ncomptot * points_d->nnod_points;
+    long num = points_d->ncomptot * points_d->nnod_viz;
     points_d->d_nod = (double *)malloc(num*sizeof(double));
     if(points_d->d_nod  == NULL){
         printf("malloc error for points_d->d_nod \n");
@@ -98,7 +98,7 @@ void dealloc_points_field_data_c(struct points_data *points_d){
 };
 
 void alloc_points_color_data(struct points_data *points_d){
-    points_d->color_nod = (double *)malloc(4*points_d->nnod_points*sizeof(double));
+    points_d->color_nod = (double *)malloc(4*points_d->nnod_viz*sizeof(double));
     if(points_d->color_nod  == NULL){
         printf("malloc error for points_d->color_nod \n");
         exit(0);
@@ -114,7 +114,7 @@ void alloc_points_ave_data(struct points_data *points_d){
     long num;
 
     /* allocate memory  d_amp[node #][field]*/
-    num = points_d->nfield * points_d->nnod_points;
+    num = points_d->nfield * points_d->nnod_viz;
     points_d->d_amp = (double *)malloc(num*sizeof(double));
     if(points_d->d_amp  == NULL){
         printf("malloc error for psf_s->d_amp \n");
