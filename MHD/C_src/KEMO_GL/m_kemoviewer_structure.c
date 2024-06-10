@@ -577,15 +577,12 @@ int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf)
 
 void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
                                           struct kv_string *ucd_m){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-	alloc_set_ucd_file_name_by_psf(kemoviewer->kemo_mul_psf->psf_m[i_psf], ucd_m);
-	return;
+    get_PSF_full_path_file_name(kemoviewer->kemo_mul_psf, ucd_m);
 }
 int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
                                            struct kv_string *psf_filehead, int *iflag){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-    return send_each_psf_file_header_full(kemoviewer->kemo_mul_psf->psf_m[i_psf],
-										  psf_filehead, iflag);
+    get_PSF_full_path_file_prefix(kemoviewer->kemo_mul_psf,
+                                  psf_filehead, iflag);
 }
 
 void kemoview_set_each_PSF_field_param(int selected, int input,
@@ -607,17 +604,14 @@ void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
 };
 
 void kemoview_set_PSF_polygon_mode(int iflag, struct kemoviewer_type *kemoviewer){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-	set_psf_polygon_mode(kemoviewer->kemo_mul_psf->psf_m[i_psf], iflag);
+    set_PSF_polygon_mode(iflag, kemoviewer->kemo_mul_psf);
 };
 void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kemoviewer){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-	set_psf_vector_mode(kemoviewer->kemo_mul_psf->psf_m[i_psf], iflag);
+    set_PSF_tangential_vec_mode(iflag, kemoviewer->kemo_mul_psf);
 };
 
 int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
-    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
-	return send_draw_psf_refv(kemoviewer->kemo_mul_psf->psf_m[i_psf]);
+    get_PSF_draw_refv(kemoviewer->kemo_mul_psf);
 };
 
 int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,

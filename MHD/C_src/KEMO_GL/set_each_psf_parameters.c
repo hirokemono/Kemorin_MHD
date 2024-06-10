@@ -49,14 +49,14 @@ void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
     set_texture_4_psf(width, height, bgra_in, psf_a->psf_texure);
 };
 
-void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->polygon_mode_psf = iflag;};
+void set_each_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->polygon_mode_psf = iflag;};
 int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu){return psf_menu->polygon_mode_psf;};
 int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu){
 	psf_menu->polygon_mode_psf = toggle_value_c(psf_menu->polygon_mode_psf);
 	return psf_menu->polygon_mode_psf;
 };
 
-void set_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->ivect_tangential = iflag;};
+void set_each_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->ivect_tangential = iflag;};
 int send_each_psf_vector_mode(struct psf_menu_val *psf_menu){return psf_menu->ivect_tangential;};
 int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu){
 	psf_menu->ivect_tangential = toggle_value_c(psf_menu->ivect_tangential);
@@ -98,7 +98,7 @@ int toggle_draw_psf_vect(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_vect;
 };
 
-int send_draw_psf_refv(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_refv;};
+int send_draw_each_psf_refv(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_refv;};
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 	psf_menu->draw_psf_refv = toggle_value_c(psf_menu->draw_psf_refv);
 	return psf_menu->draw_psf_refv;

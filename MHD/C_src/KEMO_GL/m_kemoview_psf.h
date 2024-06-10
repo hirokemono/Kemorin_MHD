@@ -39,6 +39,11 @@ void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_mul_psf 
 void set_PSF_loaded_params(int selected, int input, struct kemoview_mul_psf *kemo_mul_psf);
 int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf, int selected);
 
+void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
+                                 struct kv_string *ucd_m);
+int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
+                                  struct kv_string *psf_filehead, int *iflag);
+
 void set_each_PSF_field_param(int selected, int input, struct kemoview_mul_psf *kemo_mul_psf);
 int get_each_PSF_field_param(int selected, struct kemoview_mul_psf *kemo_mul_psf);
 
@@ -82,8 +87,11 @@ int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i);
 void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
                          struct kv_string *colorname, int i);
-void set_PSF_fixed_color(double *rgba,
-                         struct kemoview_mul_psf *kemo_mul_psf);
+void set_PSF_polygon_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
+void set_PSF_tangential_vec_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
+int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf);
+
+void set_PSF_fixed_color(double *rgba, struct kemoview_mul_psf *kemo_mul_psf);
 void set_PSF_constant_opacity(double opacity,
                               struct kemoview_mul_psf *kemo_mul_psf);
 

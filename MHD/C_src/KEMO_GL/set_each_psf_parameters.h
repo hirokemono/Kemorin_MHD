@@ -44,11 +44,11 @@ int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu
 void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
                                int width, int height, const unsigned char *bgra_in);
 
-void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag);
+void set_each_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag);
 int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 
-void set_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag);
+void set_each_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag);
 int send_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 
@@ -72,7 +72,7 @@ void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_vect(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 
-int send_draw_psf_refv(struct psf_menu_val *psf_menu);
+int send_draw_each_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);
 
 void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
