@@ -99,7 +99,7 @@ void set_color_code_for_fieldlines(struct fline_data *fline_d,
 	int inod, nd;
 	double d_edge;
 	
-	struct colormap_params *cmap_s = fline_m->cmap_fline;
+	struct colormap_params *cmap_s = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
 	struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if (fline_m->fieldline_color == WHITE_LINE) {

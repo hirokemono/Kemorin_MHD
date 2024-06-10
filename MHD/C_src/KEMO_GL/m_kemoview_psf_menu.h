@@ -57,32 +57,36 @@ struct psf_menu_val{
 	
     int iflag_draw_time;
     double time;
-
-    int polygon_mode_psf;
-    int ivect_tangential;
-	
-	int draw_psf_solid;
-	int draw_psf_grid;
-	int draw_psf_zero;
-	int draw_psf_cbar;
-	
+    
 	int if_draw_psf;
 	int ic_draw_psf;
 	long icomp_draw_psf;
 	
-	int psf_patch_color;
-	int isoline_color;
-	int n_isoline;
-	double isoline_width;
-	
-	int ist_positive_line;
-	
+    int draw_psf_solid;
+	int draw_psf_cbar;
+    
 	struct colormap_params **cmap_psf_comp;
 	struct colormap_params **cmap_psf_fld;
+	
+	int psf_patch_color;
+    int polygon_mode_psf;
+    long isoline_type;
+    
+    int isoline_ncorner;
+	double isoline_width;
+	
+	int isoline_color;
+	int n_isoline;
+	
+	int draw_psf_grid;
+	int draw_psf_zero;
+	
+	int ist_positive_line;
 	
 	int draw_psf_vect;
 	int draw_psf_refv;
 	int vector_patch_color;
+    int ivect_tangential;
 	int increment_vect;
 	double scale_vect;
 	double vector_thick;

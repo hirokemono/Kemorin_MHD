@@ -104,8 +104,9 @@ void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
 void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color);
 void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity);
 
-void set_PSF_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit,
-							 struct psf_menu_val *psf_menu);
+void set_PSF_linear_colormap(double minvalue, int i_min_digit, 
+                             double maxvalue, int i_max_digit,
+                             struct psf_menu_val *psf_menu);
 
 void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                          double *rgba);

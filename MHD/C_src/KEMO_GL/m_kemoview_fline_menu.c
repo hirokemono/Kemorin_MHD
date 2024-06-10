@@ -48,8 +48,6 @@ void alloc_draw_fline_flags(struct fline_data *fline_d, struct fline_menu_val *f
 		}
 		alloc_color_index_list_s(fline_m->cmap_fline_fld[i], RAINBOW_MODE);
 	}
-	
-	fline_m->cmap_fline = fline_m->cmap_fline_comp[0];
 	return;
 }
 
@@ -86,7 +84,6 @@ void set_fline_color_field(int selected, struct fline_data *fline_d,
 	fline_m->if_draw_fline = (long) selected;
 	fline_m->ic_draw_fline = IZERO;
 	fline_m->icomp_draw_fline = fline_d->istack_comp[fline_m->if_draw_fline];
-	fline_m->cmap_fline = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
 	printf("selected 1st component of %s, %ld \n", 
            fline_d->data_name[fline_m->if_draw_fline], fline_m->if_draw_fline);
 	return;
@@ -96,7 +93,6 @@ void set_fline_color_component(int selected, struct fline_data *fline_d,
                                struct fline_menu_val *fline_m){
 	fline_m->ic_draw_fline = (long) selected;
 	fline_m->icomp_draw_fline = fline_d->istack_comp[fline_m->if_draw_fline] + fline_m->ic_draw_fline;
-	fline_m->cmap_fline = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
 	printf("selected %d  of %s, %ld \n", (selected+1), 
            fline_d->data_name[fline_m->if_draw_fline], fline_m->icomp_draw_fline);
 	return;

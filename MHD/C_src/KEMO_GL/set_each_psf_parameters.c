@@ -165,7 +165,8 @@ void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value,
 
 
 
-void set_PSF_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit,
+void set_PSF_linear_colormap(double minvalue, int i_min_digit, 
+                             double maxvalue, int i_max_digit,
 							 struct psf_menu_val *psf_menu){
 	set_linear_colormap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 
 						const_from_digit_order(minvalue, i_min_digit),
@@ -206,23 +207,27 @@ double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
     dealloc_colormap_array(omap_array);
 }
 void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double value, double color){
-	set_each_color_point_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, color);
+    set_each_color_point_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                           i_point, value, color);
 	return;
 }
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity){
-	set_each_opacity_point_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, opacity);
+    set_each_opacity_point_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                             i_point, value, opacity);
 	return;
 }
 
 double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu){
 	double d, c;
-    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 0, &d, &c);
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                            0, &d, &c);
 	return d;
 }
 double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu){
 	double d, c;
 	int n = get_color_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
-    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], n-1, &d, &c);
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                            n-1, &d, &c);
 	return d;
 }
 double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu){
@@ -239,7 +244,8 @@ int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
 }
 
 void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color){
-    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, color);
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                            i_point, value, color);
 }
 void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity){
     get_opacity_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, opacity);
