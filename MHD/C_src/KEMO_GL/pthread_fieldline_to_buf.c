@@ -38,8 +38,8 @@ static void * set_fieldtubes_to_buf_1thread(void *args){
 
     long *num_patch =  p->num_patch;
     
-    long lo = fline_d->nedge_fline * id /     nthreads;
-    long hi = fline_d->nedge_fline * (id+1) / nthreads;
+    long lo = fline_d->nele_viz * id /     nthreads;
+    long hi = fline_d->nele_viz * (id+1) / nthreads;
         
     num_patch[id] = set_fieldtubes_to_buf(lo, lo, hi, tube_width,
                                           fline_d, fline_m, strided_buf);
@@ -58,8 +58,8 @@ static void * set_fieldlines_to_buf_1thread(void *args){
     
     long *num_patch =  p->num_patch;
     
-    long lo = fline_d->nedge_fline * id /     nthreads;
-    long hi = fline_d->nedge_fline * (id+1) / nthreads;
+    long lo = fline_d->nele_viz * id /     nthreads;
+    long hi = fline_d->nele_viz * (id+1) / nthreads;
     num_patch[id] = set_fieldlines_to_buf(lo, lo, hi, fline_d, fline_m, strided_buf);
     return 0;
 }
@@ -148,7 +148,7 @@ long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads,
         num_tube = set_fieldtubes_to_buf_pthread(num_tube, nthreads, tube_width,
                                                  fline_d, fline_m, strided_buf);
     }else{
-        num_tube = set_fieldtubes_to_buf(num_tube, IZERO, fline_d->nedge_fline,
+        num_tube = set_fieldtubes_to_buf(num_tube, IZERO, fline_d->nele_viz,
                                          tube_width, fline_d, fline_m, strided_buf);
     };
     return num_tube;
@@ -163,7 +163,7 @@ long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads,
         num_patch = set_fieldlines_to_buf_pthread(num_patch, nthreads,
                                                   fline_d, fline_m, strided_buf);
     }else{
-        num_patch = set_fieldlines_to_buf(num_patch, IZERO, fline_d->nedge_fline,
+        num_patch = set_fieldlines_to_buf(num_patch, IZERO, fline_d->nele_viz,
                                           fline_d, fline_m, strided_buf);
     };
     return num_patch;

@@ -221,27 +221,35 @@ void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
                        struct fline_data *fline_d){
     int i;
     
-    fline_d->nedge_fline =       n_ele;
-    fline_d->nnod_4_edge_fline = nnod_4_ele;
+    fline_d->nele_viz =       n_ele;
+    fline_d->nnod_4_ele_viz = nnod_4_ele;
     /* allocate memory  ie_viz[patch #][connection]*/
-    fline_d->iedge_fline = (long **) malloc(fline_d->nedge_fline*sizeof(long *));
-    if(fline_d->iedge_fline  == NULL){
-        printf("malloc error for fline_d->iedge_fline \n");
+    fline_d->ie_viz = (long **) malloc(fline_d->nele_viz*sizeof(long *));
+    if(fline_d->ie_viz  == NULL){
+        printf("malloc error for fline_d->ie_viz \n");
         exit(0);
     }
 
-    for (i = 0; i < fline_d->nedge_fline; i++){
-        fline_d->iedge_fline[i] = (long *)calloc(fline_d->nnod_4_edge_fline,sizeof(long));
-        if(fline_d->iedge_fline[i]  == NULL){
-            printf("malloc error for fline_d->iedge_fline[i], %d \n", i);
+    for (i = 0; i < fline_d->nele_viz; i++){
+        fline_d->ie_viz[i] = (long *)calloc(fline_d->nnod_4_ele_viz,sizeof(long));
+        if(fline_d->ie_viz[i]  == NULL){
+            printf("malloc error for fline_d->ie_viz[i], %d \n", i);
             exit(0);
         }
     };
+
+    /* allocate memory  xyzw_ele_viz[patch #][direction]*/
+    fline_d->xyzw_ele_viz = (double *) malloc(4*fline_d->nele_viz*sizeof(double));
+    if(fline_d->xyzw_ele_viz  == NULL){
+        printf("malloc error for fline_d->xyzw_ele_viz \n");
+        exit(0);
+    }
     return;
 };
 
 void dealloc_fline_ele_s(struct fline_data *fline_d){
-    free(fline_d->iedge_fline);
+    free(fline_d->xyzw_ele_viz);
+    free(fline_d->ie_viz);
 };
 
 
@@ -315,24 +323,17 @@ void alloc_fline_data(struct fline_data *fline_d){
         printf("malloc error for fline_d->dir_nod \n");
         exit(0);
     }
-
-    /* allocate memory  xyzw_ele_viz[patch #][direction]*/
-    fline_d->xyzw_edge_fline = (double *) malloc(4*fline_d->nedge_fline*sizeof(double));
-    if(fline_d->xyzw_edge_fline  == NULL){
-        printf("malloc error for fline_d->xyzw_edge_fline \n");
-        exit(0);
-    }
     return;
 };
 
 void alloc_fline_work_data(struct fline_data *fline_d){
     /* allocate memory  dir_edge[patch #][component]*/
-    fline_d->length_edge = (double *)calloc(fline_d->nedge_fline,sizeof(double));
+    fline_d->length_edge = (double *)calloc(fline_d->nele_viz,sizeof(double));
     if(fline_d->length_edge  == NULL){
         printf("malloc error for fline_d->length_edge \n");
         exit(0);
     }
-    fline_d->dir_edge = (double *)malloc(4*fline_d->nedge_fline*sizeof(double));
+    fline_d->dir_edge = (double *)malloc(4*fline_d->nele_viz*sizeof(double));
     if(fline_d->dir_edge  == NULL){
         printf("malloc error for psf_s->dir_edge \n");
         exit(0);
@@ -399,7 +400,6 @@ void dealloc_fline_work_data(struct fline_data *fline_d){
 static void dealloc_fline_data(struct fline_data *fline_d){
     free(fline_d->color_nod);
     free(fline_d->dir_nod);
-    free(fline_d->xyzw_edge_fline);
     return;
 }
 

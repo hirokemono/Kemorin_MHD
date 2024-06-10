@@ -123,6 +123,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 			init_draw_fline(kemo_fline, ucd_tmp, iflag_fileformat, istep, ucd_header->string);
 			view->iflag_view_type =   VIEW_3D;
 		} else {
+            dealloc_psf_color_data_c(ucd_tmp);
 			dealloc_psf_data_s(ucd_tmp);
 			dealloc_psf_mesh_c(ucd_tmp);
 		}

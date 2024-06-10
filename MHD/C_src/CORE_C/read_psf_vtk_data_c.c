@@ -222,6 +222,7 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     copy_vtk_list_2_udt_data(viz_s, &vtk_tmp);
     
     dealloc_vtk_fields_list_c(&vtk_tmp);
+    alloc_psf_color_data_c(viz_s);
     alloc_psf_data_s(viz_s);
 	return;
 };

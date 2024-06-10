@@ -154,6 +154,7 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 	viz_s->ncomptot = viz_s->istack_comp[viz_s->nfield];
 	
     alloc_psf_field_data_c(viz_s);
+    alloc_psf_color_data_c(viz_s);
 	alloc_psf_data_s(viz_s);
 	
 	/* read field name */

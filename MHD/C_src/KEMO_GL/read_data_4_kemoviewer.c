@@ -146,6 +146,7 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
                                                    fline_m->viz_step_c, &time, 
                                                    fline_m->viz_prefix_c->string, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
+        dealloc_psf_color_data_c(ucd_tmp);
 		dealloc_psf_data_s(ucd_tmp);
 		dealloc_psf_mesh_c(ucd_tmp);
 		return iflag_datatype;

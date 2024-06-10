@@ -5,7 +5,7 @@
 
 
 long count_fieldlines_to_buf(struct fline_data *fline_d){
-	return fline_d->nedge_fline;
+	return fline_d->nele_viz;
 }
 
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
@@ -21,7 +21,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 	long inum_tube = ist_patch;
 	for(long iele=ist_line; iele<ied_line; iele++) {
 		for(long k = 0; k < 2; k++) {
-			inod = fline_d->iedge_fline[iele][k] - 1;
+			inod = fline_d->ie_viz[iele][k] - 1;
 			for(nd=0; nd<3; nd++) {
 				x_line[4*k+nd] =   (float) fline_d->xyzw_viz[4*inod + nd];
 				dir_line[4*k+nd] = (float) fline_d->dir_nod[4*inod + nd];
@@ -47,7 +47,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
     long inum_line = ist_patch;
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
-			inod = fline_d->iedge_fline[iele][k] - 1;
+			inod = fline_d->ie_viz[iele][k] - 1;
 			for(nd=0;nd<4;nd++){
                 xyzw_line[4*k+nd] =  fline_d->xyzw_viz[4*inod + nd];
                 color_line[4*k+nd] = fline_d->color_nod[4*inod + nd];
@@ -57,5 +57,5 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
                                             strided_buf);
 	};
 	
-	return fline_d->nedge_fline;
+	return fline_d->nele_viz;
 }

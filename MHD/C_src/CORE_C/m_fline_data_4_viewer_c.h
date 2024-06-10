@@ -42,9 +42,10 @@ struct points_data{
 };
 
 struct fline_data{
-    long nedge_fline;
-    long nnod_4_edge_fline;
-    long **iedge_fline;
+    long nele_viz;
+    long nnod_4_ele_viz;
+    long **ie_viz;
+    double *xyzw_ele_viz;
     
     long nnod_viz;
     long *inod_viz;
@@ -60,7 +61,6 @@ struct fline_data{
     double *d_nod;
     
     double *d_amp;
-    double *color_nod;
     
     double *d_min;
     double *d_max;
@@ -69,9 +69,10 @@ struct fline_data{
     double *amp_min;
     double *amp_max;
     
-    double *xyzw_edge_fline;
-    double *dir_edge;
     double *dir_nod;
+    double *color_nod;
+    
+    double *dir_edge;
     double *length_edge;
     double length_total;
     

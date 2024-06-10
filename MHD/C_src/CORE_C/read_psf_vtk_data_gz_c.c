@@ -218,6 +218,7 @@ static void read_psf_vtk_field_data_gz(void *FP_gzip, int lbuf, char *buf,
 
 
     dealloc_vtk_fields_list_c(&vtk_tmp);
+    alloc_psf_color_data_c(viz_s);
     alloc_psf_data_s(viz_s);
     
 	return;

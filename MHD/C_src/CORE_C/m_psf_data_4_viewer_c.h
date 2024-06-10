@@ -21,6 +21,7 @@ struct psf_data{
 	long nele_viz;
 	long nnod_4_ele_viz;
 	long **ie_viz;
+    double *xyzw_ele_viz;
 	
 	long nnod_viz;
 	long *inod_viz;
@@ -36,7 +37,6 @@ struct psf_data{
 	double *d_nod;
 	
 	double *d_amp;
-	double *color_nod;
 	
     double *rt_viz;
 	
@@ -47,7 +47,9 @@ struct psf_data{
 	double *amp_min;
 	double *amp_max;
 	
-	double *xyzw_ele_viz;
+	double *color_nod;
+    
+    
 	double *norm_ele;
 	double *norm_nod;
 	double *area_viz;
@@ -86,13 +88,15 @@ void dealloc_psf_data(struct psf_data *psf_s);
 void alloc_viz_node_s(struct psf_data *psf_s);
 void alloc_viz_ele_s(struct psf_data *psf_s);
 void alloc_psf_field_name_c(struct psf_data *psf_s);
-void alloc_psf_data_s(struct psf_data *psf_s);
 void alloc_psf_field_data_c(struct psf_data *psf_s);
+void alloc_psf_color_data_c(struct psf_data *psf_s);
+void alloc_psf_data_s(struct psf_data *psf_s);
 
 void alloc_psf_norm_s(struct psf_data *psf_s);
 
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);
+void dealloc_psf_color_data_c(struct psf_data *psf_s);
 void dealloc_psf_data_s(struct psf_data *psf_s);
 void dealloc_psf_norm_s(struct psf_data *psf_s);
 void deallc_all_psf_data(struct psf_data *psf_s);
