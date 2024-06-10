@@ -195,10 +195,10 @@ static void set_line_for_psf_arrow(int icomp, long inod,
     
     for (nd=0; nd<3; nd++) v_tmp[nd] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+nd];
 
-    if(psf_s->id_coord[psf_m->if_draw_psf]==1){
+    if(psf_s->id_coord[psf_m->if_draw_viz]==1){
         position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
         sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
-    } else if(psf_s->id_coord[psf_m->if_draw_psf]==2){
+    } else if(psf_s->id_coord[psf_m->if_draw_viz]==2){
         position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
         cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
     } else {
@@ -264,7 +264,7 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
             if(   psf_s->norm_nod[4*inod  ] != 0.0
                || psf_s->norm_nod[4*inod+1] !=0.0
                || psf_s->norm_nod[4*inod+2] !=0.0){
-                set_line_for_psf_arrow(psf_s->istack_comp[psf_m->if_draw_psf], 
+                set_line_for_psf_arrow(psf_s->istack_comp[psf_m->if_draw_viz], 
                                        inod, psf_s, psf_m,
                                        xyzw_line, dir_line, color_line);
                         

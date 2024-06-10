@@ -20,13 +20,13 @@ struct fline_menu_val{
 	
     int iflag_draw_time;
     double time;
-
-	int iflag_draw_viz;
-	int iflag_draw_cbar;
-	
-    long if_draw_fline;
+    
+    long if_draw_viz;
     long ic_draw_fline;
 	long icomp_draw_fline;
+	
+	int iflag_draw_viz;
+	int iflag_draw_cbar;
 	
 	int fieldline_color;
 	long fieldline_type;

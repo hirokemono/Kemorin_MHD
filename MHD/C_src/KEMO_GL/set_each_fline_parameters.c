@@ -41,7 +41,7 @@ void get_fline_color_data_name(struct fline_data *fline_d,
     alloc_copy_string(fline_d->data_name[i], colorname);
 };
 long get_fline_color_field(struct fline_menu_val *fline_m){
-	return fline_m->if_draw_fline;
+	return fline_m->if_draw_viz;
 };
 long get_fline_color_component(struct fline_menu_val *fline_m){
 	return fline_m->ic_draw_fline;
@@ -70,7 +70,7 @@ double get_fline_data_max(struct fline_data *fline_d, int i){
 };
 
 int send_coordinate_id_fline(struct fline_data *fline_d, struct fline_menu_val *fline_m){
-    long id_current = fline_m->if_draw_fline;
+    long id_current = fline_m->if_draw_viz;
     return fline_d->id_coord[id_current];
 };
 

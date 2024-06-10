@@ -177,7 +177,7 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
 
 
 void init_psf_parameters(struct psf_menu_val *psf_m){
-	psf_m->if_draw_psf = INIT_IF_DRAW_PSF;
+	psf_m->if_draw_viz = INIT_IF_DRAW_PSF;
 	psf_m->ic_draw_psf = INIT_IC_DRAW_PSF;
 	psf_m->icomp_draw_psf = INIT_IC_DRAW_PSF;
 	
@@ -204,20 +204,20 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 };
 
 void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
-	psf_m->if_draw_psf = selected;
+	psf_m->if_draw_viz = selected;
 	psf_m->ic_draw_psf = IZERO;
 	if(psf_s->ncomp[selected] != 3) psf_m->draw_psf_vect = IZERO;
-	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_psf];
+	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_viz];
 	printf("selected 1st component of %s, %d \n", 
-			psf_s->data_name[psf_m->if_draw_psf], psf_m->if_draw_psf);
+			psf_s->data_name[psf_m->if_draw_viz], psf_m->if_draw_viz);
 	return;
 }
 
 void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	psf_m->ic_draw_psf = selected;
-	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_psf] + psf_m->ic_draw_psf;
+	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_viz] + psf_m->ic_draw_psf;
 	printf("component %d  of %s, %ld \n", (psf_m->ic_draw_psf+1),
-			psf_s->data_name[psf_m->if_draw_psf], psf_m->icomp_draw_psf);
+			psf_s->data_name[psf_m->if_draw_viz], psf_m->icomp_draw_psf);
 	return;
 }
 

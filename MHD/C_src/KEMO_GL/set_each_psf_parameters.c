@@ -36,11 +36,11 @@ void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname
 };
 
 
-int send_field_draw_each_psf(struct psf_menu_val *psf_menu){return psf_menu->if_draw_psf;};
+int send_field_draw_each_psf(struct psf_menu_val *psf_menu){return psf_menu->if_draw_viz;};
 int send_draw_comp_id_psf(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_psf;};
 long send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_psf;};
 int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
-	int id_current = psf_menu->if_draw_psf;
+	int id_current = psf_menu->if_draw_viz;
 	return psf_d->id_coord[id_current];
 };
 
