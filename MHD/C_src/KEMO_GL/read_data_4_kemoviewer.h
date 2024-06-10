@@ -30,9 +30,11 @@
 #include "set_psf_viewer.h"
 #include "set_rgba_table_c.h"
 #include "take_normal_surf_mesh_c.h"
+#include "fline_edge_direction_c.h"
 #include "set_surface_mesh_data.h"
 #include "set_normal_on_node_4_mesh.h"
 #include "modify_object_4_viewer_c.h"
+#include "cal_viz_field_ranges.h"
 
 /* prototypes */
 

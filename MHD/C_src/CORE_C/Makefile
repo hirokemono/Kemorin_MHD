@@ -53,6 +53,8 @@ OBJ_KEMO_C = \
  projection_patch_to_map.o \
  set_new_patch_4_map_c.o \
  set_map_data_4_viewer_c.o \
+ cal_viz_field_ranges.o \
+ fline_edge_direction_c.o \
  take_normal_psf_c.o \
  \
  colormap_rainbow_c.o \

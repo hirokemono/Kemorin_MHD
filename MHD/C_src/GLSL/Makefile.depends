@@ -58,6 +58,7 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -107,10 +108,12 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -207,6 +210,7 @@ draw_PSF_patches_by_VAO.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/trackball.h \
@@ -266,10 +270,12 @@ draw_PSF_patches_by_VAO.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
@@ -386,6 +392,7 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -435,10 +442,12 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -547,6 +556,7 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -596,10 +606,12 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -712,6 +724,7 @@ init_gl_lighting_c.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -761,10 +774,12 @@ init_gl_lighting_c.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
@@ -876,6 +891,7 @@ kemoview_gl_draw_objects.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -925,10 +941,12 @@ kemoview_gl_draw_objects.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1038,6 +1056,7 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1087,10 +1106,12 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1203,6 +1224,7 @@ m_kemoview_gl_VAOs.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1252,10 +1274,12 @@ m_kemoview_gl_VAOs.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1367,6 +1391,7 @@ move_draw_objects_gl.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1416,10 +1441,12 @@ move_draw_objects_gl.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1531,6 +1558,7 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1580,10 +1608,12 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1692,6 +1722,7 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1741,10 +1772,12 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -1855,6 +1888,7 @@ vartex_array_object_gl.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -1904,10 +1938,12 @@ vartex_array_object_gl.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
@@ -2022,6 +2058,7 @@ write_gl_window_to_file.o: \
  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/m_fline_data_4_viewer_c.h \
@@ -2071,10 +2108,12 @@ write_gl_window_to_file.o: \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
+ $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \

@@ -306,7 +306,7 @@ void set_viewer_fieldline_data(struct fline_data *fline_d,
 long set_viewer_mesh_with_mapping(struct map_interpolate *map_itp,
                                   struct psf_data *viz_s,
                                   struct psf_data *viz_tmp){
-//    shift_longitude(0.00, viz_tmp);
+//    shift_longitude(0.00, viz_tmp->nnod_viz, viz_tmp->xyzw_viz);
 
 	viz_s->nfield = viz_tmp->nfield;
 	alloc_psf_field_name_c(viz_s);

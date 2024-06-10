@@ -16,6 +16,7 @@
 #include "skip_comment_c.h"
 #include "set_new_patch_4_map_c.h"
 #include "take_normal_psf_c.h"
+#include "cal_viz_field_ranges.h"
 
 struct map_interpolate{
     long nnod_org;

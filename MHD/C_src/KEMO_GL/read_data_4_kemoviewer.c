@@ -74,7 +74,8 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
                                 struct psf_data *psf_s, struct psf_normals *psf_n,
                                 struct psf_data *ucd_tmp) {
     alloc_psf_norm_s(ucd_tmp, psf_n);
-    cal_colat_and_longitude(0, ucd_tmp, psf_n);
+    cal_colat_and_longitude(0, ucd_tmp->nnod_viz, ucd_tmp->xyzw_viz, 
+                            psf_n->rt_viz);
     dealloc_psf_norm_s(psf_n);
 
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
