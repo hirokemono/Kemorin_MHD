@@ -59,15 +59,19 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
 void set_number_of_threads(int input, struct kemoview_buffers *kemo_buffers);
 int send_number_of_threads(struct kemoview_buffers *kemo_buffers);
 
-void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
-                            struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
+                            struct kemoview_fline *kemo_fline,
+                            struct kemoview_mesh *kemo_mesh,
+                            struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers);
-void set_transparent_buffers(struct kemoview_mul_psf *kemo_psf,
+void set_transparent_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                              struct kemoview_mesh *kemo_mesh,
                              struct view_element *view_s,
                              struct kemoview_buffers *kemo_buffers);
-void set_fast_buffers(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
-                      struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+void set_fast_buffers(struct kemoview_mul_psf *kemo_mul_psf,
+                      struct kemoview_fline *kemo_fline,
+                      struct kemoview_mesh *kemo_mesh,
+                      struct view_element *view_s,
                       struct kemoview_buffers *kemo_buffers);
 
 #endif /* m_kemoview_object_buffers_h_ */

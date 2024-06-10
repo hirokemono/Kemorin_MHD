@@ -18,7 +18,7 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 }
 
 
-static void full_draw_objects(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
                               struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                               struct phong_lights *lights, struct kemoview_VAOs *kemo_VAOs,
                               struct kemoview_shaders *kemo_shaders){
@@ -98,7 +98,7 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_psf, struct kemoview
     return;
 }
 
-void update_draw_objects_gl(struct kemoview_mul_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers,
                             struct kemoview_VAOs *kemo_VAOs,
@@ -106,7 +106,7 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_psf, struct kemoview_f
 /* Set Vertex buffers */
     if(view_s->iflag_draw_mode == MOVIE_DRAW
        && view_s->iflag_view_type != VIEW_MAP){
-        set_fast_buffers(kemo_psf, kemo_fline, kemo_mesh,
+        set_fast_buffers(kemo_mul_psf, kemo_fline, kemo_mesh,
                          view_s, kemo_buffers);
         
         Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
@@ -118,14 +118,14 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_psf, struct kemoview_f
             kemo_VAOs->mesh_solid_VAO[2]->npoint_draw =  0;
             Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
 
-            set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
+            set_transparent_buffers(kemo_mul_psf, kemo_mesh, view_s, kemo_buffers);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     }else{
-            set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
-            set_draw_objects_to_VAO(kemo_psf, view_s, kemo_buffers,
+            set_kemoviewer_buffers(kemo_mul_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
+            set_draw_objects_to_VAO(kemo_mul_psf, view_s, kemo_buffers,
                                     kemo_VAOs, kemo_shaders);
     }
-    full_draw_objects(kemo_psf, kemo_fline, kemo_mesh, view_s,
+    full_draw_objects(kemo_mul_psf, kemo_fline, kemo_mesh, view_s,
                       kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
 	return;
 }

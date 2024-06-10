@@ -38,29 +38,30 @@ void dealloc_MAP_buffers(struct MAP_buffers *MAP_bufs)
     free(MAP_bufs);
 };
 
-void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_psf,
+void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_mul_psf,
                        struct mesh_menu_val *mesh_m, struct view_element *view_s,
                        struct gl_strided_buffer *PSF_node_buf, struct MAP_buffers *MAP_bufs)
 {
     if(view_s->shading_mode == SMOOTH_SHADE){
-        set_map_node_buffer(nthreads, kemo_psf->psf_d, kemo_psf->psf_a, PSF_node_buf);
+        set_map_node_buffer(nthreads, kemo_mul_psf->psf_d,
+                            kemo_mul_psf->psf_a, PSF_node_buf);
         const_PSF_patch_index_buffer(nthreads,
-                                     IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
-                                     kemo_psf->psf_d, kemo_psf->psf_a,
+                                     IZERO, kemo_mul_psf->psf_a->istack_solid_psf_patch,
+                                     kemo_mul_psf->psf_d, kemo_mul_psf->psf_a,
                                      MAP_bufs->MAP_solid_index_buf);
         MAP_bufs->MAP_solid_buf->num_nod_buf = 0;
     }else{
         set_map_patch_buffer(nthreads,
-                             IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
-                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                             IZERO, kemo_mul_psf->psf_a->istack_solid_psf_patch,
+                             kemo_mul_psf->psf_d, kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
                              MAP_bufs->MAP_solid_buf);
         MAP_bufs->MAP_solid_index_buf->ntot_vertex = 0;
     }
     
     
     set_map_PSF_isolines_buffer(nthreads,
-                                kemo_psf->psf_d, kemo_psf->psf_m,
-                                kemo_psf->psf_a, view_s,
+                                kemo_mul_psf->psf_d, kemo_mul_psf->psf_m,
+                                kemo_mul_psf->psf_a, view_s,
                                 MAP_bufs->MAP_isoline_buf);
     
     set_map_coastline_line_buffer(mesh_m, MAP_bufs->MAP_coast_line_buf);

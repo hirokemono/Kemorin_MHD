@@ -61,7 +61,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 
 void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers,
                                     struct kemoview_VAOs *kemo_VAOs);
-void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_psf,
+void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                              struct view_element *view_s,
                              struct kemoview_buffers *kemo_buffers,
                              struct kemoview_VAOs *kemo_VAOs,

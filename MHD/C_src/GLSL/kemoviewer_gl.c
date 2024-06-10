@@ -140,8 +140,8 @@ void kemoview_add_ext_to_file_name(struct kv_string *file_prefix,
 int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
                                  struct kv_string *stripped_filehead){
     struct kv_string* stripped_dir = alloc_kvstring();
-    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    int istep = send_each_psf_file_dir_head(kemoviewer->kemo_psf->psf_m[i_psf],
+    int i_psf = kemoviewer->kemo_mul_psf->psf_a->id_current;
+    int istep = send_each_psf_file_dir_head(kemoviewer->kemo_mul_psf->psf_m[i_psf],
                                             stripped_dir, stripped_filehead);
     dealloc_kvstring(stripped_dir);
     return istep;
@@ -149,14 +149,14 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
 
 void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                      struct kemoviewer_gl_type *kemo_gl){
-    int iflag = kemo_gl->kemoview_data->kemo_psf->psf_a->ipsf_texured;
+    int iflag = kemo_gl->kemoview_data->kemo_mul_psf->psf_a->ipsf_texured;
     release_PSF_texture_from_gl(iflag, kemo_gl->kemo_shaders);
     return;
 };
 
 void * kemoview_link_active_colormap_param(int i_current, int icomp,
                                            struct kemoviewer_type *kemoviewer){
-    void *current_cmap = kemoviewer->kemo_psf->psf_m[i_current]->cmap_viz_comp[icomp];
+    void *current_cmap = kemoviewer->kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
     return current_cmap;
 }
 
@@ -181,7 +181,7 @@ void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
                                  struct kemoviewer_type *kemo_sgl,
                                  struct kemoviewer_gl_type *kemo_gl){
     int iflag = set_texture_to_psf(img_fmt, image_prefix->string,
-                                   kemo_gl->kemoview_data->kemo_psf->psf_a->psf_texure);
+                                   kemo_gl->kemoview_data->kemo_mul_psf->psf_a->psf_texure);
     if(iflag > 0){glGenTextures(1 , &kemo_gl->kemo_shaders->texture_name);};
 };
 #endif
