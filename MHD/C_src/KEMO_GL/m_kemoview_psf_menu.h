@@ -106,8 +106,10 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 struct psf_menu_val *  init_psf_menu_val(void);
 void dealloc_psf_menu_val(struct psf_menu_val *psf_m);
 
-void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
-void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
+void alloc_draw_psf_flags(long nfield, long ncomptot,
+                          struct psf_menu_val *psf_m);
+void dealloc_draw_psf_flags(long nfield, long ncomptot,
+                            struct psf_menu_val *psf_m);
 
 void alloc_kemoview_array(struct kemo_array_control *psf_a);
 void set_max_psf_loading(int ntot_psf_data, struct kemo_array_control *psf_a);
@@ -116,10 +118,12 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a);
 
 void init_psf_parameters(struct psf_menu_val *psf_m);
 
-void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-
-
+void set_PSF_field(int selected,
+                   char *data_name, long *istack_comp,
+                   struct psf_menu_val *psf_m);
+void set_PSF_component(int selected,
+                       char *data_name, long *istack_comp,
+                       struct psf_menu_val *psf_m);
 
 int get_PSF_maximum_load(struct kemo_array_control *psf_a);
 

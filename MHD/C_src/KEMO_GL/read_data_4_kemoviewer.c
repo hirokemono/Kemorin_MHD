@@ -193,7 +193,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
     psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
                                                  psf_s, psf_n, ucd_tmp);
 	
-	alloc_draw_psf_flags(psf_s, psf_m);
+	alloc_draw_psf_flags(psf_s->nfield, psf_s->ncomptot, psf_m);
 	
 	psf_m->iflag_draw_viz =   IONE;
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
@@ -220,7 +220,8 @@ void set_kemoview_fline_data(struct psf_data *ucd_tmp,
 	int i;
 	
 	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
-	alloc_draw_fline_flags(fline_d, fline_m);
+    alloc_draw_psf_flags(fline_d->nfield, fline_d->ncomptot,
+                         fline_m);
 	
 	fline_m->iflag_draw_viz = IONE;
 	

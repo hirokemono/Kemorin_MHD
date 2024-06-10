@@ -14,6 +14,7 @@
 #include "kemoviewer.h"
 #include "kemoviewer_base.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_kemoview_fline_menu.h"
 #include "set_each_fline_parameters.h"
 #include "read_data_4_kemoviewer.h"

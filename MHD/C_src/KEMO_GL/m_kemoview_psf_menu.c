@@ -74,9 +74,11 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
 struct psf_menu_val *  init_psf_menu_val(void){
     struct psf_menu_val *psf_m = (struct psf_menu_val *) malloc(sizeof(struct psf_menu_val));
     if(psf_m  == NULL) {
-        printf( "psf_m cannot alloc!\n" );
-        exit( 1 );
+        printf("malloc error for psf_menu_val\n");
+        exit(1);
     }
+    
+    psf_m->ncorner_viz_line = ISIX;
     return psf_m;
 }
 
@@ -84,14 +86,15 @@ void dealloc_psf_menu_val(struct psf_menu_val *psf_m){
     free(psf_m);
 }
 
-void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
+void alloc_draw_psf_flags(long nfield, long ncomptot, 
+                          struct psf_menu_val *psf_m){
 	int i;
-	psf_m->cmap_viz_comp =  (struct colormap_params **) malloc(psf_s->ncomptot*sizeof(struct colormap_params *));
-	if( psf_m->cmap_viz_comp == NULL ) {
+	psf_m->cmap_viz_comp =  (struct colormap_params **) malloc(ncomptot*sizeof(struct colormap_params *));
+	if(psf_m->cmap_viz_comp == NULL ) {
 		printf( "cmap_viz_comp cannot alloc!\n" );
 		exit( 1 );
 	}
-	for (i=0;i<psf_s->ncomptot;i++){
+	for(i=0;i<ncomptot;i++){
 		psf_m->cmap_viz_comp[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
 		if(psf_m->cmap_viz_comp[i] == NULL) {
 			printf( "psf_m->cmap_viz_comp[i] cannot alloc!\n" );
@@ -100,12 +103,12 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 		alloc_color_index_list_s(psf_m->cmap_viz_comp[i], RAINBOW_MODE);
 	};
 	
-	psf_m->cmap_viz_fld =  (struct colormap_params **) malloc(psf_s->nfield*sizeof(struct colormap_params *));
+	psf_m->cmap_viz_fld =  (struct colormap_params **) malloc(nfield*sizeof(struct colormap_params *));
 	if( psf_m->cmap_viz_fld == NULL ) {
 		printf( "cmap_viz_fld cannot alloc!\n" );
 		exit( 1 );
 	}
-	for (i=0;i<psf_s->nfield;i++) {
+	for (i=0;i<nfield;i++) {
 		psf_m->cmap_viz_fld[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
 		if(psf_m->cmap_viz_fld[i] == NULL) {
 			printf( "psf_m->cmap_viz_fld[i] cannot alloc!\n" );
@@ -118,15 +121,13 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	return;
 }
 
-void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
+void dealloc_draw_psf_flags(long nfield, long ncomptot, 
+                            struct psf_menu_val *psf_m){
 	int i;
-	
-    dealloc_psf_cutting_4_map(psf_m->map_itp);
-        
-	for (i=0;i<psf_s->nfield;i++){dealloc_color_index_list_s(psf_m->cmap_viz_fld[i]);};
+	for (i=0;i<nfield;i++){dealloc_color_index_list_s(psf_m->cmap_viz_fld[i]);};
 	free(psf_m->cmap_viz_fld);
 	
-	for (i=0;i<psf_s->ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_viz_comp[i]);};
+	for (i=0;i<ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_viz_comp[i]);};
 	free(psf_m->cmap_viz_comp);
 	dealloc_kvstring(psf_m->viz_prefix_c);
 	return;
@@ -144,7 +145,6 @@ void alloc_kemoview_array(struct kemo_array_control *psf_a){
         printf( "Failed allocation for psf_a->istack_all_psf_node\n" );
         exit( 1 );
     }
-
     
     psf_a->ntot_psf_patch = 0;
     psf_a->istack_solid_psf_txtur = 0;
@@ -203,21 +203,26 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 	return;
 };
 
-void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
-	psf_m->if_draw_viz = selected;
-	psf_m->ic_draw_viz = IZERO;
-	if(psf_s->ncomp[selected] != 3) psf_m->draw_psf_vect = IZERO;
-	psf_m->icomp_draw_viz = psf_s->istack_comp[psf_m->if_draw_viz];
-	printf("selected 1st component of %s, %d \n", 
-			psf_s->data_name[psf_m->if_draw_viz], psf_m->if_draw_viz);
+void set_PSF_field(int selected,
+                   char *data_name, long *istack_comp,
+                   struct psf_menu_val *psf_m){
+	psf_m->if_draw_viz = (long) selected;
+    psf_m->ic_draw_viz = IZERO;
+    int ncomp = istack_comp[selected] - istack_comp[selected-1];
+	if(ncomp != 3) psf_m->draw_psf_vect = IZERO;
+	psf_m->icomp_draw_viz = istack_comp[selected];
+    printf("selected 1st component of %s, %d \n", 
+           data_name, psf_m->if_draw_viz);
 	return;
 }
 
-void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
+void set_PSF_component(int selected, 
+                       char *data_name, long *istack_comp,
+                       struct psf_menu_val *psf_m){
 	psf_m->ic_draw_viz = selected;
-	psf_m->icomp_draw_viz = psf_s->istack_comp[psf_m->if_draw_viz] + psf_m->ic_draw_viz;
+	psf_m->icomp_draw_viz = istack_comp[psf_m->if_draw_viz] + psf_m->ic_draw_viz;
 	printf("component %d  of %s, %ld \n", (psf_m->ic_draw_viz+1),
-			psf_s->data_name[psf_m->if_draw_viz], psf_m->icomp_draw_viz);
+			data_name, psf_m->icomp_draw_viz);
 	return;
 }
 

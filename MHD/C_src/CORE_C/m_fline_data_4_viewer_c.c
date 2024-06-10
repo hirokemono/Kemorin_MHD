@@ -309,6 +309,9 @@ void dealloc_fline_field_data_c(struct fline_data *fline_d){
 
     for(int i = 0; i < fline_d->nfield; i++) free(fline_d->data_name[i]);
     free(fline_d->data_name);
+    
+    fline_d->nfield = 0;
+    fline_d->ncomptot = 0;
 };
 
 void alloc_fline_color_field_data(struct fline_data *fline_d){

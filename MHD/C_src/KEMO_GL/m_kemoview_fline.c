@@ -18,7 +18,7 @@ struct kemoview_fline * init_kemoview_fline(void){
 	
     kemo_fline->fline_d =   init_fline_data();
     kemo_fline->fline_dir = init_fline_directions();
-    kemo_fline->fline_m =   init_fline_menu_val();
+    kemo_fline->fline_m =   init_psf_menu_val();
 	return kemo_fline;
 };
 
@@ -31,8 +31,10 @@ void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
 
 void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_viz = IZERO;
-	dealloc_draw_fline_flags(kemo_fline->fline_d, kemo_fline->fline_m);
-    
+    dealloc_draw_psf_flags(kemo_fline->fline_d->nfield,
+                           kemo_fline->fline_d->ncomptot,
+                           kemo_fline->fline_m);
+
     dealloc_fline_direction_data(kemo_fline->fline_dir);
 	deallc_all_fline_data(kemo_fline->fline_d);
     return;
@@ -86,9 +88,16 @@ int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected){
 
 void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_fline){
 	if(selected == FIELD_SEL_FLAG){
-		set_fline_color_field(input, kemo_fline->fline_d, kemo_fline->fline_m);
+        set_PSF_field(input,
+                      kemo_fline->fline_d->data_name[selected],
+                      kemo_fline->fline_d->istack_comp,
+                      kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
-		set_fline_color_component(input, kemo_fline->fline_d, kemo_fline->fline_m);
+        int i_field = kemo_fline->fline_m->if_draw_viz;
+        set_PSF_component(input,
+                          kemo_fline->fline_d->data_name[i_field],
+                          kemo_fline->fline_d->istack_comp,
+                          kemo_fline->fline_m);
 	}else if(selected == LINETYPE_FLAG){
 		set_fline_type(kemo_fline->fline_m, (long) input);
 	};
