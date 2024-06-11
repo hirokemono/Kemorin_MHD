@@ -314,8 +314,8 @@ void set_each_PSF_color_param(int selected, int input,
                               struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
-		set_psf_patch_color_mode(kemo_mul_psf->psf_a,
-                                 kemo_mul_psf->psf_m[i_current], input);
+		set_psf_patch_color_mode(kemo_mul_psf->psf_m[i_current], input);
+        if(input != TEXTURED_SURFACE){kemo_mul_psf->psf_a->ipsf_texured = -1;};
 	}else if(selected == PSFGRID_TOGGLE){
 		set_each_isoline_color(kemo_mul_psf->psf_m[i_current], input);
 	}else if(selected == ISET_NLINE){
@@ -332,7 +332,7 @@ int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_mul_psf
 	int iflag = 0;
 	int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
-		iflag = send_each_psf_patch_color(kemo_mul_psf->psf_m[i_current]);
+		iflag = send_each_psf_patch_color_mode(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == PSFGRID_TOGGLE){
 		iflag = send_each_isoline_color(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_NLINE){
@@ -576,7 +576,7 @@ int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
 
 struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = get_curent_PSF_ID(kemo_mul_psf->psf_a);
-    int icomp =     send_draw_component_psf(kemo_mul_psf->psf_m[i_current]);
+    long icomp =    send_draw_component_psf(kemo_mul_psf->psf_m[i_current]);
     return kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
 }
 

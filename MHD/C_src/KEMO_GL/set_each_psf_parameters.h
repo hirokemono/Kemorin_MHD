@@ -75,8 +75,7 @@ int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);
 
-void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
-                              struct psf_menu_val *psf_menu, int iflag);
+void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline);
@@ -86,7 +85,7 @@ void set_each_increment_vect(int increment, struct psf_menu_val *psf_menu);
 void set_each_scale_vect(double value, struct psf_menu_val *psf_menu);
 void set_each_vector_thick(double value, struct psf_menu_val *psf_menu);
 
-int send_each_psf_patch_color(struct psf_menu_val *psf_menu);
+int send_each_psf_patch_color_mode(struct psf_menu_val *psf_menu);
 int send_each_isoline_color(struct psf_menu_val *psf_menu);
 int send_num_isoline(struct psf_menu_val *psf_menu);
 double send_isoline_width(struct psf_menu_val *psf_menu);
@@ -121,8 +120,10 @@ void set_each_PSF_constant_opacity(struct psf_data *psf_d,
 void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                                  double value, double *red, double *green, double *blue);
 double get_each_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value);
-void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double value, double color);
-void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity);
+void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point,
+                              double value, double color);
+void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point,
+                                double value, double opacity);
 void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel);
 
 int get_PSF_colormap_id(struct psf_menu_val *psf_menu);

@@ -73,7 +73,7 @@ int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 
 void set_fline_parameters(int selected, int input, struct kemoview_fline *kemo_fline){
 	if(selected == DRAW_SWITCH){
-		set_fline_switch(kemo_fline->fline_m, input);
+        set_draw_psf_solid(input, kemo_fline->fline_m);
 	};
 	return;
 }
@@ -81,7 +81,7 @@ void set_fline_parameters(int selected, int input, struct kemoview_fline *kemo_f
 int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected){
 	int output = 0;
 	if(selected == DRAW_SWITCH){
-		output =  get_fline_switch(kemo_fline->fline_m);
+		output =  send_draw_psf_solid(kemo_fline->fline_m);
 	};
 	return output;
 }
@@ -112,11 +112,11 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 	}else if(selected == NTOT_COMPONENT_FLAG){
 		output = get_fline_color_ncomptot(kemo_fline->fline_d);
 	}else if(selected == FIELD_SEL_FLAG){
-		output = get_fline_color_field(kemo_fline->fline_m);
+		output = send_field_draw_each_psf(kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
-		output = get_fline_color_component(kemo_fline->fline_m);
+		output = send_draw_comp_id_psf(kemo_fline->fline_m);
 	}else if(selected == DRAW_ADDRESS_FLAG){
-		output = get_fline_color_data_adress(kemo_fline->fline_m);
+		output = send_draw_component_psf(kemo_fline->fline_m);
 	}else if(selected == LINETYPE_FLAG){
 		output = get_fline_type(kemo_fline->fline_m);
     }else if(selected == COORDINATE_FLAG){
@@ -129,7 +129,7 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 void set_fline_color_param(int selected, int input, struct kemoview_fline *kemo_fline){
 	if(selected == PSFSOLID_TOGGLE){
 	}else if(selected == ISET_COLORMAP){
-		set_fline_color_type(kemo_fline->fline_m, input);
+        set_psf_patch_color_mode(kemo_fline->fline_m, input);
 	}else if(selected == ISET_VECTOR_COLOR){
 	};
 	return;
@@ -139,7 +139,7 @@ int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline){
 	int iflag = 0;
 	if(selected == PSFSOLID_TOGGLE){
 	}else if(selected == ISET_COLORMAP){
-		iflag = get_fline_colormode(kemo_fline->fline_m);
+		iflag = send_each_psf_patch_color_mode(kemo_fline->fline_m);
 	}else if(selected == ISET_NUM_COLOR){
 		iflag = get_each_PSF_color_table_num(kemo_fline->fline_m);
 	}else if(selected == ISET_NUM_OPACITY){
@@ -153,7 +153,7 @@ void set_fline_color_w_exp(int selected, double value, int i_digit,
 						   struct kemoview_fline *kemo_fline){
 	double data = const_from_digit_order(value, i_digit);
 	if(selected == ISET_WIDTH){
-		set_fline_thickness(data, kemo_fline->fline_m);
+        set_each_isoline_width(data, kemo_fline->fline_m);
 	};
 	return;
 };
@@ -166,7 +166,7 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 	}else if(selected == ISET_COLOR_MAX){
 		data = get_each_PSF_color_table_max(kemo_fline->fline_m);
 	}else if(selected == ISET_WIDTH){
-		data = get_fline_thickness(kemo_fline->fline_m);
+		data = send_isoline_width(kemo_fline->fline_m);
 	};
 	find_order_digit(data, value, i_digit);
 	return;

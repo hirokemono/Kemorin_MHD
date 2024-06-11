@@ -797,8 +797,8 @@ int kemoview_get_fline_field_param(struct kemoviewer_type *kemoviewer,
 void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
 										double maxvalue, int i_max_digit,
                                         struct kemoviewer_type *kemoviewer){
-	set_fline_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
-                              kemoviewer->kemo_fline->fline_m);
+    set_each_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit,
+                                 kemoviewer->kemo_fline->fline_m);
 }
 void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
                                     struct kemoviewer_type *kemoviewer){
@@ -818,17 +818,17 @@ void kemoview_set_fline_constant_opacity(double opacity,
 
 double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                            double value){
-	return get_fline_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
+	return get_each_PSF_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
 }
 void kemoview_set_fline_color_data(int i_point, double value, double color,
                                    struct kemoviewer_type *kemoviewer){
-	set_fline_color_data(kemoviewer->kemo_fline->fline_m,
-                         i_point, value, color);
+    set_each_PSF_color_point(kemoviewer->kemo_fline->fline_m,
+                             i_point, value, color);
 }
 void kemoview_set_fline_opacity_data(int i_point, double value, double opacity,
                                      struct kemoviewer_type *kemoviewer){
-	set_fline_opacity_data(kemoviewer->kemo_fline->fline_m,
-                           i_point, value, opacity);
+    set_each_PSF_opacity_point(kemoviewer->kemo_fline->fline_m,
+                               i_point, value, opacity);
 }
 
 double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,

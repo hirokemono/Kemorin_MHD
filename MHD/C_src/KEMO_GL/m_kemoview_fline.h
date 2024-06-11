@@ -18,6 +18,7 @@
 #include "m_kemoview_fline_menu.h"
 #include "set_each_fline_parameters.h"
 #include "read_data_4_kemoviewer.h"
+#include "set_each_psf_parameters.h"
 
 struct kemoview_fline{
     struct fline_data         *fline_d;
