@@ -9,16 +9,16 @@
 
 #include "m_fline_data_4_viewer_c.h"
 
-struct points_data * init_points_data(void){
-    struct points_data *points_d = (struct points_data *) malloc(sizeof(struct points_data));
+struct psf_data * init_points_data(void){
+    struct psf_data *points_d = (struct psf_data *) malloc(sizeof(struct psf_data));
     if(points_d  == NULL){
-        printf("malloc error for points_data \n");
+        printf("malloc error for psf_data \n");
         exit(0);
     }
     return points_d;
 };
 
-void alloc_points_node_s(long nnod, struct points_data *points_d){
+void alloc_points_node_s(long nnod, struct psf_data *points_d){
     points_d->nnod_viz = nnod;
     /* allocate memory  xyzw_viz[node #][direction]*/
     points_d->xyzw_viz = (double *)malloc(IFOUR*points_d->nnod_viz*sizeof(double));
@@ -35,13 +35,13 @@ void alloc_points_node_s(long nnod, struct points_data *points_d){
     return;
 };
 
-static void dealloc_points_node_s(struct points_data *points_d){
+static void dealloc_points_node_s(struct psf_data *points_d){
     free(points_d->inod_viz);
     free(points_d->xyzw_viz);
 }
 
 
-void alloc_points_field_name_c(long nfield, struct points_data *points_d){
+void alloc_points_field_name_c(long nfield, struct psf_data *points_d){
     int i;
     
     points_d->nfield = nfield;
@@ -77,7 +77,7 @@ void alloc_points_field_name_c(long nfield, struct points_data *points_d){
     };
 };
 
-void alloc_points_field_data_c(struct points_data *points_d){
+void alloc_points_field_data_c(struct psf_data *points_d){
     /* allocate memory  d_nod[node #][component]*/
     long num = points_d->ncomptot * points_d->nnod_viz;
     points_d->d_nod = (double *)malloc(num*sizeof(double));
@@ -87,7 +87,7 @@ void alloc_points_field_data_c(struct points_data *points_d){
     }
 };
 
-void dealloc_points_field_data_c(struct points_data *points_d){
+void dealloc_points_field_data_c(struct psf_data *points_d){
     free(points_d->d_nod);
     free(points_d->ncomp);
     free(points_d->istack_comp);
@@ -97,7 +97,7 @@ void dealloc_points_field_data_c(struct points_data *points_d){
     free(points_d->data_name);
 };
 
-void alloc_points_color_data(struct points_data *points_d){
+void alloc_points_color_data(struct psf_data *points_d){
     points_d->color_nod = (double *)malloc(4*points_d->nnod_viz*sizeof(double));
     if(points_d->color_nod  == NULL){
         printf("malloc error for points_d->color_nod \n");
@@ -105,12 +105,12 @@ void alloc_points_color_data(struct points_data *points_d){
     }
     return;
 };
-static void dealloc_points_color_data(struct points_data *points_d){
+static void dealloc_points_color_data(struct psf_data *points_d){
     free(points_d->color_nod);
     return;
 }
 
-void alloc_points_ave_data(struct points_data *points_d){
+void alloc_points_ave_data(struct psf_data *points_d){
     long num;
 
     /* allocate memory  d_amp[node #][field]*/
@@ -160,7 +160,7 @@ void alloc_points_ave_data(struct points_data *points_d){
     return;
 };
 
-static void dealloc_points_ave_data(struct points_data *points_d){
+static void dealloc_points_ave_data(struct psf_data *points_d){
     free(points_d->d_amp);
     
     free(points_d->amp_min);
@@ -172,7 +172,7 @@ static void dealloc_points_ave_data(struct points_data *points_d){
     return;
 }
 
-void deallc_all_points_data(struct points_data *points_d){
+void deallc_all_points_data(struct psf_data *points_d){
     dealloc_points_ave_data(points_d);
     dealloc_points_color_data(points_d);
     

@@ -15,32 +15,6 @@
 #include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 
-struct points_data{
-    long nnod_viz;
-    long *inod_viz;
-    double *xyzw_viz;
-
-    long nfield;
-    long *ncomp;
-    long *istack_comp;
-    int *id_coord;
-    char **data_name;
-    
-    long ncomptot;
-    double *d_nod;
-    double *color_nod;
-    
-    double *d_amp;
-    
-    double *d_min;
-    double *d_max;
-    double *d_ave;
-    double *d_rms;
-    double *amp_min;
-    double *amp_max;
-};
-
-
 struct fline_directions{
     double *dir_nod;
     double *dir_edge;
@@ -50,15 +24,15 @@ struct fline_directions{
 
 
 /* prototypes */
-struct points_data * init_points_data(void);
+struct psf_data * init_points_data(void);
 
 
-void alloc_points_node_s(long nnod, struct points_data *points_d);
-void alloc_points_field_name_c(long nfield, struct points_data *points_d);
-void alloc_points_field_data_c(struct points_data *points_d);
-void alloc_points_color_data(struct points_data *points_d);
-void alloc_points_ave_data(struct points_data *points_d);
-void deallc_all_points_data(struct points_data *points_d);
+void alloc_points_node_s(long nnod, struct psf_data *points_d);
+void alloc_points_field_name_c(long nfield, struct psf_data *points_d);
+void alloc_points_field_data_c(struct psf_data *points_d);
+void alloc_points_color_data(struct psf_data *points_d);
+void alloc_points_ave_data(struct psf_data *points_d);
+void deallc_all_points_data(struct psf_data *points_d);
 
 
 struct fline_directions * init_fline_directions(void);

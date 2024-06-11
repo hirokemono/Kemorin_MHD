@@ -263,7 +263,7 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp,
 };
 
 
-void set_viewer_points_data(struct points_data *points_d,
+void set_viewer_points_data(struct psf_data *points_d,
                             struct psf_data *viz_tmp){
 	alloc_points_field_name_c(viz_tmp->nfield, points_d);
     points_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, points_d->nfield,
