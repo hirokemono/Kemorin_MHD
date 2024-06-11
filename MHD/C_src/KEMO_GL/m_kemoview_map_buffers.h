@@ -17,6 +17,7 @@
 
 #include "draw_map_4_PSF.h"
 #include "draw_coastline.h"
+#include "draw_patches_4_PSF.h"
 
 struct MAP_buffers{
     struct gl_index_buffer   *MAP_solid_index_buf;

@@ -10,6 +10,9 @@
 #include "m_vertex_buffer.h"
 
 /* prototypes */
+long num_icosahedron_patch(void);
+
+
 void init_icosahedron_c(void);
 long set_icosahedron_patch(double size, double x_draw[3], 
                            double *xyzw_draw, double *norm_draw);

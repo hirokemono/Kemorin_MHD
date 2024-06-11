@@ -96,6 +96,8 @@ void alloc_psf_color_data_c(struct psf_data *psf_s);
 void alloc_psf_data_s(struct psf_data *psf_s);
 
 
+void dealloc_viz_node_s(struct psf_data *psf_s);
+void dealloc_viz_ele_s(struct psf_data *psf_s);
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);
 void dealloc_psf_color_data_c(struct psf_data *psf_s);

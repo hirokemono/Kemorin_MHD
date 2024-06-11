@@ -35,6 +35,11 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->fline_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
+    kemo_VAOs->tracer_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
+    for(i=0;i<2;i++){
+        kemo_VAOs->tracer_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    };
+
     kemo_VAOs->psf_solid_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
     for(i=0;i<4;i++){
         kemo_VAOs->psf_solid_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -90,6 +95,9 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	for(i=0;i<2;i++){free(kemo_VAOs->fline_VAO[i]);};
 	free(kemo_VAOs->fline_VAO);
 	
+    for(i=0;i<2;i++){free(kemo_VAOs->tracer_VAO[i]);};
+    free(kemo_VAOs->tracer_VAO);
+
     for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_index_VAO[i]);};
     free(kemo_VAOs->psf_solid_index_VAO);
     for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_index_VAO[i]);};
@@ -125,6 +133,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     glGenVertexArrays(1, &(kemo_VAOs->grid_line_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->grid_tube_VAO->id_VAO));
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->tracer_VAO[i]->id_VAO));};
 
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_index_VAO[i]->id_VAO));};
@@ -153,6 +162,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     Destroy_VAO(kemo_VAOs->grid_line_VAO);
     Destroy_VAO(kemo_VAOs->grid_tube_VAO);
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
+    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->tracer_VAO[i]);};
     
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_index_VAO[i]);};
@@ -202,6 +212,12 @@ static void set_fieldline_buffer_to_VAO(struct FieldLine_buffers *Fline_bufs,
     Const_Simple_VAO(fline_VAO[1], Fline_bufs->FLINE_line_buf);
 }
 
+static void set_tracer_buffer_to_VAO(struct gl_strided_buffer *Tracedr_buffer,
+                                     struct VAO_ids **tracer_VAO){
+    Const_Phong_VAO(tracer_VAO[0], Tracedr_buffer);
+//    Const_Simple_VAO(tracer_VAO[1], Fline_bufs->FLINE_line_buf);
+}
+
 static void set_draw_messages_to_VAO(struct MESSAGE_buffers *MESSAGE_bufs,
                                      struct kemoview_VAOs *kemo_VAOs){
     Const_Simple_VAO(kemo_VAOs->cbar_VAO[0], MESSAGE_bufs->cbar_buf);
@@ -234,7 +250,9 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                               kemo_buffers->MAP_bufs,
                               kemo_VAOs);
     }else{
+        set_tracer_buffer_to_VAO(kemo_buffers->Tracer_buf, kemo_VAOs->tracer_VAO);
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
+
         const_PSF_gl_texure_name(kemo_mul_psf->psf_a->ipsf_texured,
                                  kemo_mul_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solids,

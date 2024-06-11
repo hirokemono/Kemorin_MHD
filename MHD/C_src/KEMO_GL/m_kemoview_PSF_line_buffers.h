@@ -17,6 +17,7 @@
 #include "m_vertex_buffer.h"
 
 #include "draw_coastline.h"
+#include "draw_patches_4_PSF.h"
 
 struct PSF_line_buffers{
     struct gl_strided_buffer *PSF_isoline_buf;

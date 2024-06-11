@@ -30,7 +30,6 @@ void dealloc_psf_normals(struct psf_normals *psf_n){
     return;
 };
 
-
 void alloc_viz_node_s(struct psf_data *psf_s){
 	/* allocate memory  xyzw_viz[node #][direction]*/
 	psf_s->xyzw_viz = (double *)malloc(IFOUR*psf_s->nnod_viz*sizeof(double));
@@ -211,14 +210,19 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	return;
 };
 
-void dealloc_psf_mesh_c(struct psf_data *psf_s){
-	int i;
-	free(psf_s->xyzw_ele_viz);
-	
-	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
-	free(psf_s->ie_viz);
-	free(psf_s->inod_viz);
-	free(psf_s->xyzw_viz);
+void dealloc_viz_node_s(struct psf_data *psf_s){
+    free(psf_s->inod_viz);
+    free(psf_s->xyzw_viz);
+}
+void dealloc_viz_ele_s(struct psf_data *psf_s){
+    for(int i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
+    free(psf_s->ie_viz);
+    free(psf_s->xyzw_ele_viz);
+}
+
+void dealloc_psf_mesh_c(struct psf_data *psf_s){;
+    dealloc_viz_node_s(psf_s);
+    dealloc_viz_ele_s(psf_s);
     return;
 }
 

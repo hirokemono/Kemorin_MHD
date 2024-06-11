@@ -9,12 +9,6 @@
 
 #include "set_mesh_patch_2_gl_buf.h"
 
-const int ntri_ico = 20;
-
-long num_icosahedron_patch(void){
-    return ntri_ico;
-}
-
 static long count_each_grp_node_ico_to_buf(int iflag_domain, int *istack_grp){
     if(iflag_domain == 0) return 0;
     long num_patch = istack_grp[1] - istack_grp[0];

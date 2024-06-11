@@ -58,7 +58,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
     viz_s->nnod_4_ele_viz = (num_index / viz_s->nele_viz) - 1;
 	alloc_viz_ele_s(viz_s);
     
-	iflag_datatype = 0;
+	iflag_datatype = -1;
     if(viz_s->nnod_4_ele_viz == 4){
 		printf("Quad patch data \n");
 		iflag_datatype = IFLAG_SURFACES;

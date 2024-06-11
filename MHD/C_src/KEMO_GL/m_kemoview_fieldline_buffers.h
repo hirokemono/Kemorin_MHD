@@ -14,6 +14,9 @@
 #include "pthread_fieldline_to_buf.h"
 #include "set_axis_to_buf.h"
 
+#include "icosahedron_c.h"
+
+
 struct FieldLine_buffers{
     struct gl_strided_buffer *FLINE_line_buf;
     struct gl_strided_buffer *FLINE_tube_buf;
@@ -28,4 +31,10 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs);
+
+void const_tracer_buffer(const int nthreads, struct view_element *view_s,
+                         struct psf_data *tracer_d,
+                         struct psf_menu_val *tracer_m,
+                         struct gl_strided_buffer *Tracer_buf);
+
 #endif   /* M_KEMOVIEW_FIELDLINE_BUFFERS_ */

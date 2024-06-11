@@ -12,6 +12,7 @@
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
 #include "set_primitives_to_gl_buffer.h"
+#include "set_each_arrow_line_c.h"
 
 /* prptotypes */
 

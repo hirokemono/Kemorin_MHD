@@ -70,9 +70,9 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	return;
 }
 
-static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
-                                struct psf_data *psf_s, struct psf_normals *psf_n,
-                                struct psf_data *ucd_tmp) {
+long set_psf_data_by_UCD(struct map_interpolate *map_itp,
+                         struct psf_data *psf_s, struct psf_normals *psf_n,
+                         struct psf_data *ucd_tmp) {
     alloc_psf_norm_s(ucd_tmp, psf_n);
     cal_colat_and_longitude(0, ucd_tmp->nnod_viz, ucd_tmp->xyzw_viz, 
                             psf_n->rt_viz);
@@ -87,7 +87,7 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
     psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
                                           psf_s->xyzw_viz, psf_n->norm_nod);
-
+    alloc_psf_color_data_c(psf_s);
 /*
      check_psf_ave_rms_c(psf_s,psf_n);
      check_psf_min_max_c(psf_s);
@@ -95,9 +95,9 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
 	return nadded_for_phi0;
 }
 
-static void set_fline_data_by_UCD(struct psf_data *fline_d,
-                                  struct fline_directions *fline_dir,
-                                  struct psf_data *ucd_tmp){
+void set_fline_data_by_UCD(struct psf_data *fline_d,
+                           struct fline_directions *fline_dir,
+                           struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
     
     alloc_fline_work_data(fline_d, fline_dir);
@@ -106,6 +106,19 @@ static void set_fline_data_by_UCD(struct psf_data *fline_d,
     alloc_psf_data_s(fline_d);
 	take_minmax_fline(fline_dir, fline_d);
     dealloc_fline_work_data(fline_dir);
+    
+    alloc_psf_color_data_c(fline_d);
+	return;
+};
+
+void set_points_data_by_UCD(struct psf_data *points_d,
+                            struct psf_data *ucd_tmp){
+    set_viewer_points_data(points_d, ucd_tmp);
+    
+    alloc_psf_data_s(points_d);
+	take_minmax_points(points_d);
+
+    alloc_psf_color_data_c(points_d);
 	return;
 };
 
@@ -182,59 +195,36 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 	return;
 }
 
-void set_kemoview_psf_data(struct psf_data *psf_s,
-                           struct psf_normals *psf_n,
-                           struct psf_data *ucd_tmp,
-                           struct psf_menu_val *psf_m){
+
+void set_kemoview_viz_color_data(struct psf_data *viz_d,
+                                struct psf_menu_val *viz_menu){
 	int i;
-    psf_m->map_itp = alloc_psf_cutting_4_map();
-    psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
-                                                 psf_s, psf_n, ucd_tmp);
+    alloc_draw_psf_flags(viz_d->nfield, viz_d->ncomptot, viz_menu);
 	
-	alloc_draw_psf_flags(psf_s->nfield, psf_s->ncomptot, psf_m);
-	
-	psf_m->iflag_draw_viz =   IONE;
-	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
-	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
-    psf_m->vector_thick = INIT_VECTOR_WIDTH;
-	
-	for (i=0;i<psf_s->nfield;i++){
-		set_linear_colormap(psf_m->cmap_viz_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
-		set_full_opacitymap(psf_m->cmap_viz_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);
+	viz_menu->iflag_draw_viz = IONE;	
+	for (i=0;i<viz_d->nfield;i++){
+		set_linear_colormap(viz_menu->cmap_viz_fld[i], viz_d->amp_min[i], viz_d->amp_max[i]);
+		set_full_opacitymap(viz_menu->cmap_viz_fld[i], viz_d->amp_min[i], viz_d->amp_max[i]);
 	};
 	
-	for (i=0;i<psf_s->ncomptot;i++){
-		set_linear_colormap(psf_m->cmap_viz_comp[i], psf_s->d_min[i], psf_s->d_max[i]);
-		set_full_opacitymap(psf_m->cmap_viz_comp[i], psf_s->d_min[i], psf_s->d_max[i]);
+	for (i=0;i<viz_d->ncomptot;i++){
+		set_linear_colormap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);
+		set_full_opacitymap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);
 	};
 	
 	return;
 }
 
-void set_kemoview_fline_data(struct psf_data *ucd_tmp,
-                             struct psf_data *fline_d,
-                             struct fline_directions *fline_dir,
-                             struct psf_menu_val *fline_m){
-	int i;
-	
-	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
-    alloc_draw_psf_flags(fline_d->nfield, fline_d->ncomptot,
-                         fline_m);
-	
-	fline_m->iflag_draw_viz = IONE;
-	
-	for (i=0;i<fline_d->nfield;i++){
-		set_linear_colormap(fline_m->cmap_viz_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
-		set_full_opacitymap(fline_m->cmap_viz_fld[i], fline_d->amp_min[i], fline_d->amp_max[i]);
-	};
-	
-	for (i=0;i<fline_d->ncomptot;i++){
-		set_linear_colormap(fline_m->cmap_viz_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
-		set_full_opacitymap(fline_m->cmap_viz_comp[i], fline_d->d_min[i], fline_d->d_max[i]);
-	};
-	
+void set_kemoview_psf_data(struct psf_data *psf_s,
+                           struct psf_menu_val *psf_m){
+    set_kemoview_viz_color_data(psf_s, psf_m);
+    
+	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
+	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
+    psf_m->vector_thick = INIT_VECTOR_WIDTH;
 	return;
 }
+
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
 	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);

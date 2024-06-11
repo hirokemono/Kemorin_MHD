@@ -13,6 +13,28 @@
 
 #include "fline_edge_direction_c.h"
 
+static void take_rms_ave_points(struct psf_data *point_d){
+    int icomp;
+    long i;
+    double d;
+    for(icomp = 0; icomp < point_d->ncomptot; icomp++){
+        point_d->d_rms[icomp] = 0.0;
+        point_d->d_ave[icomp] = 0.0;
+        for(i = 0; i < point_d->nnod_viz; i++){
+            d = point_d->d_nod[i*point_d->ncomptot + icomp];
+            
+            point_d->d_rms[icomp] = point_d->d_rms[icomp] + d * d;
+            point_d->d_ave[icomp] = point_d->d_ave[icomp] + d;
+        }
+    }
+
+    for (icomp = 0; icomp < point_d->ncomptot; icomp++){
+        point_d->d_rms[icomp] = sqrt(point_d->d_rms[icomp] / (double) point_d->nnod_viz );
+        point_d->d_ave[icomp] = point_d->d_ave[icomp] / (double) point_d->nnod_viz;
+    }
+    return;
+}
+
 static void take_length_ele_fline(struct psf_data *fline_d,
                                   struct fline_directions *fline_dir){
     long i, i1, i2;
@@ -131,7 +153,6 @@ void take_length_fline(struct psf_data *fline_d,
     fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_viz, fline_d->xyzw_viz,
                                            fline_d->xmin_psf, fline_d->xmax_psf,
                                            fline_d->center_psf);
-    alloc_psf_color_data_c(fline_d);
     alloc_fline_direction_data(fline_d, fline_dir);
 	take_length_ele_fline(fline_d, fline_dir);
 	return;
@@ -151,3 +172,22 @@ void take_minmax_fline(struct fline_directions *fline_dir,
                            fline_d->amp_min, fline_d->amp_max);
 	return;
 }
+
+void take_minmax_points(struct psf_data *point_d){
+    point_d->rmax_psf = cal_psf_grid_range(point_d->nnod_viz, point_d->xyzw_viz,
+                                           point_d->xmin_psf, point_d->xmax_psf,
+                                           point_d->center_psf);
+
+    
+	take_rms_ave_points(point_d);
+    take_minmax_psf_each_component(point_d->nnod_viz,
+                                   point_d->nfield, point_d->ncomptot,
+                                   point_d->istack_comp,
+                                   point_d->d_nod, point_d->d_amp,
+                                   point_d->d_min, point_d->d_max);
+    take_minmax_viz_fields(point_d->nfield, point_d->istack_comp,
+                           point_d->d_min, point_d->d_max,
+                           point_d->amp_min, point_d->amp_max);
+	return;
+}
+

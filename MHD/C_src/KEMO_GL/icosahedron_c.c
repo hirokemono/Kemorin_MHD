@@ -6,6 +6,12 @@
 static int ifac_poi[20][3];
 static double xyz_ico[12][3];
 
+const int ntri_ico = 20;
+
+long num_icosahedron_patch(void){
+    return ntri_ico;
+}
+
 void init_icosahedron_c(void){
 	int icosa_connect[60]
 		= { 1,  3,  2,     1,  4,  3,     1,  5,  4,    1,  6,  5,

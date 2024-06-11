@@ -59,6 +59,7 @@ typedef struct
     /*  Vertex buffer for PSF arrows */
     id<MTLBuffer> _Nullable psfArrowVertice;
     NSUInteger numPSFArrowVertice;
+    
     /*  Vertex buffer for PSF isolines */
     id<MTLBuffer> _Nullable psfLinesVertice;
     NSUInteger numPSFLinesVertice;
@@ -77,7 +78,11 @@ typedef struct
     NSUInteger numFieldTubeVertice;
     /*  Vertex buffer for field lines  */
     id<MTLBuffer> _Nullable fieldLineVertice;
-    NSUInteger numFfieldLineVertice;
+    NSUInteger numFieldLineVertice;
+
+    /*  Vertex buffer for tracer icosaheron patch */
+    id<MTLBuffer> _Nullable tracerIcoVertice;
+    NSUInteger numTracerIcoVertice;
 
     /*  Vertex buffer for mesh solid patch */
     id<MTLBuffer> _Nullable meshSolidVertice;

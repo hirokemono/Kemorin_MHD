@@ -278,8 +278,6 @@ void set_viewer_points_data(struct psf_data *points_d,
 	copy_viewer_udt_node(viz_tmp, points_d->inod_viz, points_d->xyzw_viz);
 	copy_viewer_udt_data(viz_tmp, points_d->nnod_viz, points_d->ncomptot, points_d->d_nod);
 
-    dealloc_psf_data_s(viz_tmp);
-    dealloc_psf_color_data_c(viz_tmp);
     dealloc_psf_field_data_c(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
     return;
@@ -335,7 +333,6 @@ long set_viewer_mesh_with_mapping(struct map_interpolate *map_itp,
 	alloc_viz_ele_s(viz_s);
     alloc_psf_field_data_c(viz_s);
 	alloc_viz_node_s(viz_s);
-    alloc_psf_color_data_c(viz_s);
     alloc_psf_data_s(viz_s);
 
     alloc_psf_cutting_4_map_item(map_itp);

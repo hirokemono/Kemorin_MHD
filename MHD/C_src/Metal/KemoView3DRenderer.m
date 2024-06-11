@@ -76,8 +76,11 @@
               metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
            isoLineBuffers:(struct PSF_line_buffers *_Nonnull) PSF_lines
           fileLineBuffers:(struct FieldLine_buffers *_Nonnull) Fline_bufs
+            tracerBuffers:(struct gl_strided_buffer *_Nonnull) Tracer_buf
                      PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_mul_psf
 {
+    
+    
     kemoView3DMetalBuf->numPSFTubesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:PSF_lines->PSF_isotube_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfTubesVertice)];
@@ -89,9 +92,13 @@
     kemoView3DMetalBuf->numFieldTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:Fline_bufs->FLINE_tube_buf
                                                                             vertex:&(kemoView3DMetalBuf->fieldTubeVertice)];
-    kemoView3DMetalBuf->numFfieldLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                             buffer:Fline_bufs->FLINE_line_buf
-                                                                             vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
+    kemoView3DMetalBuf->numFieldLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:Fline_bufs->FLINE_line_buf
+                                                                            vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
+
+    kemoView3DMetalBuf->numTracerIcoVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:Tracer_buf
+                                                                            vertex:&(kemoView3DMetalBuf->tracerIcoVertice)];
 
     kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:PSF_lines->coast_line_buf
@@ -103,7 +110,7 @@
     kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:PSF_lines->PSF_arrow_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
-        return;
+    return;
 }
 
 - (void) set3DMeshBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
@@ -193,7 +200,9 @@
     if(kemoView3DMetalBuf->numPSFTubesVertice > 0) {[kemoView3DMetalBuf->psfTubesVertice release];};
 
     if(kemoView3DMetalBuf->numFieldTubeVertice >  0) {[kemoView3DMetalBuf->fieldTubeVertice release];};
-    if(kemoView3DMetalBuf->numFfieldLineVertice > 0) {[kemoView3DMetalBuf->fieldLineVertice release];};
+    if(kemoView3DMetalBuf->numFieldLineVertice > 0) {[kemoView3DMetalBuf->fieldLineVertice release];};
+
+    if(kemoView3DMetalBuf->numTracerIcoVertice > 0) {[kemoView3DMetalBuf->tracerIcoVertice release];};
     
     if(kemoView3DMetalBuf->numCoastTubeVertice > 0)    {[kemoView3DMetalBuf->coastTubeVertice   release];};
     if(kemoView3DMetalBuf->numCoastLineVertice > 0)    {[kemoView3DMetalBuf->coastLineVertice   release];};
@@ -278,6 +287,7 @@
                metalbuffer:&_kemoViewMetalBuf
             isoLineBuffers:kemo_sgl->kemo_buffers->PSF_lines
            fileLineBuffers:kemo_sgl->kemo_buffers->Fline_bufs
+             tracerBuffers:kemo_sgl->kemo_buffers->Tracer_buf
                       PSFs:kemo_sgl->kemo_mul_psf];
     [self set3DMetalBuffers:device
                 metalbuffer:&_kemoViewMetalBuf
@@ -453,11 +463,18 @@
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
                                       depth:depthState
-                                  numVertex:kemoView3DMetalBuf->numFfieldLineVertice
+                                  numVertex:kemoView3DMetalBuf->numFieldLineVertice
                                      vertex:&(kemoView3DMetalBuf->fieldLineVertice)
                                      unites:monoViewUnites];
     }
-    
+
+    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
+                                  pipelines:kemo3DPipelines
+                                      depth:depthState
+                                  numVertex:kemoView3DMetalBuf->numTracerIcoVertice
+                                     vertex:&(kemoView3DMetalBuf->tracerIcoVertice)
+                                     unites:monoViewUnites
+                                      sides:BOTH_SURFACES];
     /* Draw coastlines */
     
     [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder

@@ -58,9 +58,13 @@ int set_data_format_flag(const char *file_name, char *file_head, char *file_ext)
 	return ifile_type;
 }
 
-int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_mesh, 
-                         struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
-                         struct psf_data *ucd_tmp, struct view_element *view){
+int kemoviewer_open_data(struct kv_string *filename, 
+                         struct kemoview_mesh *kemo_mesh, 
+                         struct kemoview_mul_psf *kemo_mul_psf, 
+                         struct kemoview_fline *kemo_fline,
+                         struct kemoview_tracer *kemo_tracer,
+                         struct psf_data *ucd_tmp,
+                         struct view_element *view){
 	int iflag_datatype;
 	int iflag_fileformat;
 	int istep;
@@ -123,6 +127,9 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 		} else if(iflag_datatype == IFLAG_LINES){
 			init_draw_fline(kemo_fline, ucd_tmp, iflag_fileformat, istep, ucd_header->string);
 			view->iflag_view_type =   VIEW_3D;
+        } else if(iflag_datatype == IFLAG_POINTS){
+            init_draw_tracer(kemo_tracer, ucd_tmp, iflag_fileformat, istep, ucd_header->string);
+            view->iflag_view_type =   VIEW_3D;
 		} else {
 			dealloc_psf_data_s(ucd_tmp);
             dealloc_psf_field_data_c(ucd_tmp);
@@ -133,8 +140,10 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 	};
     
     if (kemo_mesh->mesh_m->iflag_draw_mesh == IZERO ) {
-		cal_psf_viewer_range(kemo_mul_psf->psf_d, kemo_mul_psf->psf_a, 
-                             kemo_fline->fline_d, kemo_fline->fline_m, view);
+		cal_psf_viewer_range(kemo_mul_psf->psf_d,   kemo_mul_psf->psf_a, 
+                             kemo_fline->fline_d,   kemo_fline->fline_m,
+                             kemo_tracer->tracer_d, kemo_tracer->tracer_m,
+                             view);
         reset_to_init_angle(view);
     };
 	

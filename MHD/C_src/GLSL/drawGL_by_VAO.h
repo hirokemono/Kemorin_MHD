@@ -30,6 +30,8 @@ void drawgl_textured_elements_VAO(GLuint *texture_name,
 void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct phong_lights *lights,
                                 struct kemoview_shaders *kemo_shaders, struct VAO_ids *VAO);
 
+void drawgl_points(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                   struct kemoview_shaders *kemo_shaders);
 void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders);
 

@@ -31,12 +31,11 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->PSF_node_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_transes =  init_PSF_trans_buffers();
     kemo_buffers->PSF_solids =   init_PSF_solid_buffers();
-    
     kemo_buffers->PSF_lines = init_PSF_line_buffers();
-    
     kemo_buffers->MAP_bufs = init_MAP_buffers();
     
     kemo_buffers->Fline_bufs = init_FieldLine_buffers();
+    kemo_buffers->Tracer_buf = init_strided_buffer(n_point);
 
     kemo_buffers->MESH_bufs =     init_MESH_buffers();
     kemo_buffers->mesh_trns_buf = init_strided_buffer(n_point);
@@ -64,9 +63,10 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_PSF_trans_buffers(kemo_buffers->PSF_transes);
     dealloc_PSF_solid_buffers(kemo_buffers->PSF_solids);
     dealloc_strided_buffer(kemo_buffers->PSF_node_buf);
+    dealloc_MAP_buffers(kemo_buffers->MAP_bufs);
     
     dealloc_PSF_line_buffers(kemo_buffers->PSF_lines);
-    dealloc_MAP_buffers(kemo_buffers->MAP_bufs);
+    dealloc_strided_buffer(kemo_buffers->Tracer_buf);
 
     dealloc_strided_buffer(kemo_buffers->screen_buf);
     dealloc_strided_buffer(kemo_buffers->axis_buf);
@@ -96,6 +96,7 @@ void set_initial_cube_drawing(int iflag, struct view_element *view_s,
 
 void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                             struct kemoview_fline *kemo_fline,
+                            struct kemoview_tracer *kemo_tracer,
                             struct kemoview_mesh *kemo_mesh,
                             struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers)
@@ -164,6 +165,11 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                                 kemo_fline->fline_m,
                                 kemo_buffers->Fline_bufs);
         
+        const_tracer_buffer(kemo_buffers->nthreads, view_s,
+                            kemo_tracer->tracer_d,
+                            kemo_tracer->tracer_m,
+                            kemo_buffers->Tracer_buf);
+        
         const_solid_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->MESH_bufs);
@@ -184,8 +190,9 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
 
     /* draw example cube for empty data */
     
-    iflag = kemo_mesh->mesh_m->iflag_draw_mesh 
-            + iflag_psf + kemo_fline->fline_m->iflag_draw_viz;
+    iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf
+            + kemo_fline->fline_m->iflag_draw_viz
+            + kemo_tracer->tracer_m->iflag_draw_viz;
     set_initial_cube_drawing(iflag, view_s, kemo_buffers->initial_bufs);
     return;
 };

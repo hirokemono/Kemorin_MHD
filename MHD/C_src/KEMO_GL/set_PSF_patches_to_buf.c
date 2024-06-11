@@ -188,51 +188,6 @@ long set_map_patch_to_buf(long ist_patch, long ist_psf, long ied_psf,
 }
 
 
-static void set_line_for_psf_arrow(int icomp, long inod, 
-                                   struct psf_data *psf_s,
-                                   struct psf_normals *psf_n,
-                                   struct psf_menu_val *psf_m,
-                                   double xyzw_line[8], double dir_line[8], 
-                                   double color_line[8]){
-    int nd;
-    double v_xyz[3], v_tmp[3], x_rtp[3];
-    
-	double ascale = ONE / psf_m->scale_vect;
-    
-    for (nd=0; nd<3; nd++) v_tmp[nd] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+nd];
-
-    if(psf_s->id_coord[psf_m->if_draw_viz]==1){
-        position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
-        sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
-    } else if(psf_s->id_coord[psf_m->if_draw_viz]==2){
-        position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
-        cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
-    } else {
-        for (nd=0; nd<3; nd++) v_xyz[nd] = v_tmp[nd];
-    };
-
-    if(psf_m->ivect_tangential==TANGENTIAL_COMPONENT){
-        for (nd=0; nd<3; nd++) {
-            v_xyz[nd] = v_xyz[nd] - psf_n->norm_nod[4*inod+nd]
-                    * (  v_xyz[0]*psf_n->norm_nod[4*inod  ]
-                       + v_xyz[1]*psf_n->norm_nod[4*inod+1]
-                       + v_xyz[2]*psf_n->norm_nod[4*inod+2]);
-        };
-    };
-    
-    for (nd=0; nd<3; nd++){
-        xyzw_line[nd  ] = psf_s->xyzw_viz[4*inod + nd];
-        xyzw_line[nd+4] = psf_s->xyzw_viz[4*inod + nd] + v_xyz[nd]*ascale;
-        dir_line[nd  ] =  v_xyz[nd];
-        dir_line[nd+4] =  v_xyz[nd];
-    };
-    xyzw_line[3] = 1.0;
-    xyzw_line[7] = 1.0;
-    dir_line[3] = 1.0;
-    dir_line[7] = 1.0;
-    return;
-}
-
 long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
                         struct psf_data *psf_s, struct psf_normals *psf_n,
                         struct psf_menu_val *psf_m){
@@ -275,7 +230,7 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                || psf_n->norm_nod[4*inod+2] !=0.0){
                 set_line_for_psf_arrow((int) psf_s->istack_comp[psf_m->if_draw_viz], 
                                        inod, psf_s, psf_n, psf_m,
-                                       xyzw_line, dir_line, color_line);
+                                       xyzw_line, dir_line);
                         
                 if(psf_m->vector_patch_color == RAINBOW_SURFACE){
                     d_mag = sqrt(dir_line[0]*dir_line[0] + dir_line[1]*dir_line[1] + dir_line[2]*dir_line[2]);

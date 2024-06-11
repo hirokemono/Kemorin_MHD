@@ -16,7 +16,6 @@
 #include "m_vertex_buffer.h"
 #include "set_primitives_to_gl_buffer.h"
 
-long num_icosahedron_patch(void);
 long add_mesh_node_ico_to_buf(long ist_patch, int *istack_grp, int num_pe_sf,
                               int *iflag_domain, long *istack_patch_pe);
 long set_each_group_node_ico_to_buf(const long ist_tri, 

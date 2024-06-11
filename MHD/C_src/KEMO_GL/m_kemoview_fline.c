@@ -24,6 +24,7 @@ struct kemoview_fline * init_kemoview_fline(void){
 
 void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
     free(kemo_fline->fline_d);
+    free(kemo_fline->fline_dir);
 	free(kemo_fline->fline_m);
 	free(kemo_fline);
 	return;
@@ -49,10 +50,8 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
     
 	if(kemo_fline->fline_m->iflag_draw_viz > 0) close_fieldline_view(kemo_fline);
 
-	set_kemoview_fline_data(ucd_tmp,
-                            kemo_fline->fline_d,
-                            kemo_fline->fline_dir,
-                            kemo_fline->fline_m);
+	set_fline_data_by_UCD(kemo_fline->fline_d, kemo_fline->fline_dir, ucd_tmp);
+	set_kemoview_viz_color_data(kemo_fline->fline_d, kemo_fline->fline_m);
     return;
 };
 

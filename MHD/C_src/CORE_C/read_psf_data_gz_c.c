@@ -42,7 +42,7 @@ static int read_gz_kemoview_connect_data(void *FP_gzip, struct psf_data *viz_s){
 
     get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 	sscanf(buf, "%d %d %4s", &itmp, &itmp, celllabel);
-	iflag_datatype = 0;
+	iflag_datatype = -1;
     if(cmp_no_case_c(celllabel, "tri")){
 		printf("Triangle patch data \n");
 		iflag_datatype = IFLAG_SURFACES;

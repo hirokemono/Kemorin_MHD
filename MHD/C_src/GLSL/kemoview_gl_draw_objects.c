@@ -13,9 +13,13 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                              struct kemoview_VAOs *kemo_VAOs,
                              struct kemoview_shaders *kemo_shaders){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects_gl(kemoview->kemo_mul_psf, kemoview->kemo_fline,
-                           kemoview->kemo_mesh, kemoview->view_s,
-                           kemoview->kemo_buffers, kemo_VAOs, kemo_shaders);
+    update_draw_objects_gl(kemoview->kemo_mul_psf,
+                           kemoview->kemo_fline,
+                           kemoview->kemo_tracer, 
+                           kemoview->kemo_mesh,
+                           kemoview->view_s,
+                           kemoview->kemo_buffers,
+                           kemo_VAOs, kemo_shaders);
 	return;
 }
 

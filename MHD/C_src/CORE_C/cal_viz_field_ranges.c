@@ -112,7 +112,7 @@ void take_minmax_viz_fields(long nfield, long *istack_comp,
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
                              double *rt_viz){
-    long i, i1, i2;
+    long i;
     double pi = FOUR * atan(ONE);
     double rtpw[4];
     

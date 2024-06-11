@@ -32,6 +32,8 @@ struct map_interpolate * alloc_psf_cutting_4_map(void);
 void alloc_psf_cutting_4_map_item(struct map_interpolate *map_itp);
 void dealloc_psf_cutting_4_map(struct map_interpolate *map_itp);
 
+void set_viewer_points_data(struct psf_data *points_d,
+                            struct psf_data *viz_tmp);
 void set_viewer_fieldline_data(struct psf_data *fline_d,
                                struct psf_data *viz_tmp);
 long set_viewer_mesh_with_mapping(struct map_interpolate *map_itp,

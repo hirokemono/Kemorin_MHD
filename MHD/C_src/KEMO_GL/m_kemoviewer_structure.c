@@ -9,8 +9,9 @@ static void kemoview_allocate_pointers(struct kemoviewer_type *kemoviewer_data){
     kemoviewer_data->kemo_buffers = init_kemoview_buffers();
 
     kemoviewer_data->kemo_mesh =  init_kemoview_mesh();
-    kemoviewer_data->kemo_fline = init_kemoview_fline();
     kemoviewer_data->kemo_mul_psf =   init_kemoview_mul_psf();
+    kemoviewer_data->kemo_fline =  init_kemoview_fline();
+    kemoviewer_data->kemo_tracer = init_kemoview_tracer();
 	
     kemoviewer_data->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
     return;
@@ -30,6 +31,7 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
                     kemoviewer_data->kemo_mesh->mesh_m,
                     kemoviewer_data->view_s);
 	init_fline_parameters(kemoviewer_data->kemo_fline->fline_m);
+    init_fline_parameters(kemoviewer_data->kemo_tracer->tracer_m);
 
     return kemoviewer_data;
 }
@@ -39,6 +41,7 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	free(kemoviewer_data->psf_ucd_tmp);
 	
 	dealloc_kemoview_mesh(kemoviewer_data->kemo_mesh);
+    dealloc_kemoview_tracer(kemoviewer_data->kemo_tracer);
 	dealloc_kemoview_fline(kemoviewer_data->kemo_fline);
     dealloc_kemoview_mul_psf(kemoviewer_data->kemo_mul_psf);
 	
@@ -111,6 +114,7 @@ int kemoview_open_data(struct kv_string *filename,
                                               kemoviewer->kemo_mesh,
                                               kemoviewer->kemo_mul_psf,
                                               kemoviewer->kemo_fline,
+                                              kemoviewer->kemo_tracer,
                                               kemoviewer->psf_ucd_tmp,
                                               kemoviewer->view_s);
 	return iflag_datatype;
@@ -321,8 +325,11 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height,
 };
 
 void kemoview_const_buffers(struct kemoviewer_type *kemoviewer){
-    set_kemoviewer_buffers(kemoviewer->kemo_mul_psf, kemoviewer->kemo_fline,
-                           kemoviewer->kemo_mesh, kemoviewer->view_s,
+    set_kemoviewer_buffers(kemoviewer->kemo_mul_psf,
+                           kemoviewer->kemo_fline,
+                           kemoviewer->kemo_tracer,
+                           kemoviewer->kemo_mesh,
+                           kemoviewer->view_s,
                            kemoviewer->kemo_buffers);
     return;
 };

@@ -41,6 +41,15 @@
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
                      struct mesh_menu_val *mesh_m, struct view_element *view);
 
+long set_psf_data_by_UCD(struct map_interpolate *map_itp,
+                         struct psf_data *psf_s, struct psf_normals *psf_n,
+                         struct psf_data *ucd_tmp);
+void set_fline_data_by_UCD(struct psf_data *fline_d,
+                           struct fline_directions *fline_dir,
+                           struct psf_data *ucd_tmp);
+void set_points_data_by_UCD(struct psf_data *points_d,
+                            struct psf_data *ucd_tmp);
+
 void evolution_PSF_data(struct psf_data *psf_s,
                         struct psf_normals *psf_n,
                         struct psf_data *ucd_tmp,
@@ -53,15 +62,10 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view);
 
+void set_kemoview_viz_color_data(struct psf_data *viz_d,
+                                struct psf_menu_val *viz_menu);
 void set_kemoview_psf_data(struct psf_data *psf_s,
-                           struct psf_normals *psf_n,
-                           struct psf_data *ucd_tmp,
                            struct psf_menu_val *psf_m);
-
-void set_kemoview_fline_data(struct psf_data *ucd_tmp,
-                             struct psf_data *fline_d,
-                             struct fline_directions *fline_dir,
-                             struct psf_menu_val *fline_m);
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m);
 void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m);

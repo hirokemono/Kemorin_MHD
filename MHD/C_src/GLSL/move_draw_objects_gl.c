@@ -54,9 +54,13 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
         if(kemo_VAOs->fline_VAO[0]->npoint_draw == 0){
             drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
         };
+        if(kemo_VAOs->tracer_VAO[0]->npoint_draw == 0){
+            drawgl_points(view_matrices, kemo_VAOs->tracer_VAO[1], kemo_shaders);
+        };
 
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->fline_VAO[0]);
+        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->tracer_VAO[0]);
         
         draw_PSF_solid_objects_VAO(view_matrices, lights,
                                    kemo_VAOs->psf_solid_VAO,
@@ -98,8 +102,11 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
     return;
 }
 
-void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
-                            struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf, 
+                            struct kemoview_fline *kemo_fline,
+                            struct kemoview_tracer *kemo_tracer,
+                            struct kemoview_mesh *kemo_mesh, 
+                            struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers,
                             struct kemoview_VAOs *kemo_VAOs,
                             struct kemoview_shaders *kemo_shaders){
@@ -114,6 +121,7 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf, struct kemovi
     }else if(view_s->iflag_draw_mode == SIMPLE_DRAW){
             kemo_VAOs->psf_solid_VAO[2]->npoint_draw =   0;
             kemo_VAOs->fline_VAO[0]->npoint_draw =       0;
+            kemo_VAOs->tracer_VAO[0]->npoint_draw =      0;
             kemo_VAOs->grid_tube_VAO->npoint_draw =      0;
             kemo_VAOs->mesh_solid_VAO[2]->npoint_draw =  0;
             Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
@@ -121,7 +129,8 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf, struct kemovi
             set_transparent_buffers(kemo_mul_psf, kemo_mesh, view_s, kemo_buffers);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     }else{
-            set_kemoviewer_buffers(kemo_mul_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
+            set_kemoviewer_buffers(kemo_mul_psf, kemo_fline, kemo_tracer,
+                                   kemo_mesh, view_s, kemo_buffers);
             set_draw_objects_to_VAO(kemo_mul_psf, view_s, kemo_buffers,
                                     kemo_VAOs, kemo_shaders);
     }

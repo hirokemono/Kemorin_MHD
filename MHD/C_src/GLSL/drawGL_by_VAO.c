@@ -81,6 +81,19 @@ void drawgl_textured_elements_VAO(GLuint *texture_name,
 
 
 
+void drawgl_points(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                   struct kemoview_shaders *kemo_shaders){
+    if(VAO->npoint_draw <= 0) return;
+    
+    glDisable(GL_CULL_FACE);
+    glUseProgram(kemo_shaders->simple->programId);
+    transfer_matrix_to_GL(kemo_shaders->simple, matrices);
+
+    glBindVertexArray(VAO->id_VAO);
+    glDrawArrays(GL_POINTS, IZERO, VAO->npoint_draw);
+    return;
+};
+
 void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;

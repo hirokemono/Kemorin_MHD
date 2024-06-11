@@ -14,6 +14,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
+#include "m_kemoview_tracer.h"
 #include "m_phong_light_table_c.h"
 #include "m_kemoview_PSF_buffers.h"
 #include "m_kemoview_PSF_line_buffers.h"
@@ -37,7 +38,10 @@ struct kemoview_buffers{
     struct PSF_trans_buffers *PSF_transes;
     struct PSF_line_buffers  *PSF_lines;
     struct MAP_buffers       *MAP_bufs;
+    
     struct FieldLine_buffers *Fline_bufs;
+
+    struct gl_strided_buffer *Tracer_buf;
     
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
@@ -61,6 +65,7 @@ int send_number_of_threads(struct kemoview_buffers *kemo_buffers);
 
 void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
                             struct kemoview_fline *kemo_fline,
+                            struct kemoview_tracer *kemo_tracer,
                             struct kemoview_mesh *kemo_mesh,
                             struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers);

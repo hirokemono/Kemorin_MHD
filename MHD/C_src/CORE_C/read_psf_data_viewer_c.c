@@ -39,7 +39,7 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 	char celllabel[5];      /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-	iflag_datatype = 0;
+	iflag_datatype = -1;
 	fgets(buf, LENGTHBUF, fp_psf);
 	sscanf(buf, "%d %d %4s", &itmp, &itmp, celllabel);
     if(cmp_no_case_c(celllabel, "tri")){
