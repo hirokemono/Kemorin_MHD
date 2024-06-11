@@ -282,7 +282,7 @@ void set_viewer_points_data(struct points_data *points_d,
     return;
 }
 
-void set_viewer_fieldline_data(struct fline_data *fline_d,
+void set_viewer_fieldline_data(struct psf_data *fline_d,
                                struct psf_data *viz_tmp){
 	alloc_fline_field_name_c(viz_tmp->nfield, fline_d);
     fline_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, fline_d->nfield,

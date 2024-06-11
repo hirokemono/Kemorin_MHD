@@ -21,7 +21,7 @@
 #include "set_each_psf_parameters.h"
 
 struct kemoview_fline{
-    struct fline_data         *fline_d;
+    struct psf_data           *fline_d;
     struct fline_directions   *fline_dir;
     struct psf_menu_val       *fline_m;
 };

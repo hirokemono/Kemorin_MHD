@@ -40,40 +40,6 @@ struct points_data{
     double *amp_max;
 };
 
-struct fline_data{
-    long nele_viz;
-    long nnod_4_ele_viz;
-    long **ie_viz;
-    double *xyzw_ele_viz;
-    
-    long nnod_viz;
-    long *inod_viz;
-    double *xyzw_viz;
-    
-    long nfield;
-    long *ncomp;
-    long *istack_comp;
-    int *id_coord;
-    char **data_name;
-    
-    long ncomptot;
-    double *d_nod;
-    double *color_nod;
-    
-    double *d_amp;
-    
-    double *d_min;
-    double *d_max;
-    double *d_ave;
-    double *d_rms;
-    double *amp_min;
-    double *amp_max;
-    
-    double center_psf[3];
-    double xmin_psf[3];
-    double xmax_psf[3];
-    double rmax_psf;
-};
 
 struct fline_directions{
     double *dir_nod;
@@ -96,24 +62,24 @@ void deallc_all_points_data(struct points_data *points_d);
 
 
 
-struct fline_data * init_fline_data(void);
+struct psf_data * init_fline_data(void);
 
-void alloc_fline_node_s(long nnod, struct fline_data *fline_d);
+void alloc_fline_node_s(long nnod, struct psf_data *fline_d);
 
 void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
-                       struct fline_data *fline_d);
+                       struct psf_data *fline_d);
 
-void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
-void alloc_fline_field_data_c(struct fline_data *fline_d);
+void alloc_fline_field_name_c(long nfield, struct psf_data *fline_d);
+void alloc_fline_field_data_c(struct psf_data *fline_d);
 
-void alloc_fline_color_field_data(struct fline_data *fline_d);
-void alloc_fline_ave_data(struct fline_data *fline_d);
-void deallc_all_fline_data(struct fline_data *fline_d);
+void alloc_fline_color_field_data(struct psf_data *fline_d);
+void alloc_fline_ave_data(struct psf_data *fline_d);
+void deallc_all_fline_data(struct psf_data *fline_d);
 
 struct fline_directions * init_fline_directions(void);
-void alloc_fline_direction_data(struct fline_data *fline_d,
+void alloc_fline_direction_data(struct psf_data *fline_d,
                                 struct fline_directions *fline_dir);
-void alloc_fline_work_data(struct fline_data *fline_d,
+void alloc_fline_work_data(struct psf_data *fline_d,
                            struct fline_directions *fline_dir);
 void dealloc_fline_direction_data(struct fline_directions *fline_dir);
 void dealloc_fline_work_data(struct fline_directions *fline_dir);

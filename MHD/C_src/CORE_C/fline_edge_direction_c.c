@@ -13,7 +13,7 @@
 
 #include "fline_edge_direction_c.h"
 
-static void take_length_ele_fline(struct fline_data *fline_d,
+static void take_length_ele_fline(struct psf_data *fline_d,
                                   struct fline_directions *fline_dir){
     long i, i1, i2;
     int nd;
@@ -90,7 +90,7 @@ static void take_length_ele_fline(struct fline_data *fline_d,
 
 static void sum_rms_ave_fline(long ist, long ied,
                               struct fline_directions *fline_dir,
-                              struct fline_data *fline_d){
+                              struct psf_data *fline_d){
     int icomp;
     long i, i1, i2;
     double d;
@@ -114,7 +114,7 @@ static void sum_rms_ave_fline(long ist, long ied,
 }
 
 static void take_rms_ave_fline(struct fline_directions *fline_dir,
-                               struct fline_data *fline_d){
+                               struct psf_data *fline_d){
     int icomp;
     sum_rms_ave_fline(IZERO, fline_d->nele_viz, fline_dir, fline_d);
 
@@ -126,7 +126,7 @@ static void take_rms_ave_fline(struct fline_directions *fline_dir,
 }
 
 
-void take_length_fline(struct fline_data *fline_d,
+void take_length_fline(struct psf_data *fline_d,
                        struct fline_directions *fline_dir){
     fline_d->rmax_psf = cal_psf_grid_range(fline_d->nnod_viz, fline_d->xyzw_viz,
                                            fline_d->xmin_psf, fline_d->xmax_psf,
@@ -139,7 +139,7 @@ void take_length_fline(struct fline_data *fline_d,
 
 
 void take_minmax_fline(struct fline_directions *fline_dir,
-                       struct fline_data *fline_d){
+                       struct psf_data *fline_d){
 	take_rms_ave_fline(fline_dir, fline_d);
     take_minmax_psf_each_component(fline_d->nnod_viz,
                                    fline_d->nfield, fline_d->ncomptot,

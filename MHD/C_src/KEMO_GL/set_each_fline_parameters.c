@@ -24,11 +24,11 @@ void set_fline_file_step(struct psf_menu_val *fline_m, int istep){
 };
 
 
-long get_fline_color_num_field(struct fline_data *fline_d){return fline_d->nfield;};
-long get_fline_color_ncomptot(struct fline_data *fline_d){return fline_d->ncomptot;};
-long fline_color_num_comps(struct fline_data *fline_d, int i){return fline_d->ncomp[i];};
-long get_fline_color_istack(struct fline_data *fline_d, int i){return fline_d->istack_comp[i];};
-void get_fline_color_data_name(struct fline_data *fline_d,
+long get_fline_color_num_field(struct psf_data *fline_d){return fline_d->nfield;};
+long get_fline_color_ncomptot(struct psf_data *fline_d){return fline_d->ncomptot;};
+long fline_color_num_comps(struct psf_data *fline_d, int i){return fline_d->ncomp[i];};
+long get_fline_color_istack(struct psf_data *fline_d, int i){return fline_d->istack_comp[i];};
+void get_fline_color_data_name(struct psf_data *fline_d,
                                struct kv_string *colorname, int i){
     alloc_copy_string(fline_d->data_name[i], colorname);
 };
@@ -40,20 +40,20 @@ long get_fline_type(struct psf_menu_val *fline_m) {return fline_m->viz_line_type
 
 
 
-double get_fline_data_min(struct fline_data *fline_d, int i){
+double get_fline_data_min(struct psf_data *fline_d, int i){
 	return fline_d->d_min[i];
 };
-double get_fline_data_max(struct fline_data *fline_d, int i){
+double get_fline_data_max(struct psf_data *fline_d, int i){
 	return fline_d->d_max[i];
 };
 
-int send_coordinate_id_fline(struct fline_data *fline_d, struct psf_menu_val *fline_m){
+int send_coordinate_id_fline(struct psf_data *fline_d, struct psf_menu_val *fline_m){
     long id_current = fline_m->if_draw_viz;
     return fline_d->id_coord[id_current];
 };
 
 
-void set_fline_constant_opacity(struct fline_data *fline_d,
+void set_fline_constant_opacity(struct psf_data *fline_d,
                                 struct psf_menu_val *fline_m, double opacity){
 	set_constant_opacitymap(fline_m->cmap_viz_comp[fline_m->icomp_draw_viz],
                             fline_d->d_min[fline_m->icomp_draw_viz],

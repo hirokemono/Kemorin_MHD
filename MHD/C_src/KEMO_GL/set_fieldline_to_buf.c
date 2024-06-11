@@ -4,13 +4,13 @@
 #include "set_fieldline_to_buf.h"
 
 
-long count_fieldlines_to_buf(struct fline_data *fline_d){
+long count_fieldlines_to_buf(struct psf_data *fline_d){
 	return fline_d->nele_viz;
 }
 
 long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            double tube_width,
-                           struct fline_data *fline_d,
+                           struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
@@ -37,7 +37,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 };
 
 long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
-                           struct fline_data *fline_d,
+                           struct psf_data *fline_d,
                            struct psf_menu_val *fline_m,
                            struct gl_strided_buffer *strided_buf){
     double xyzw_line[8], color_line[8];

@@ -105,7 +105,7 @@ void check_psf_min_max_c(struct psf_data *psf_s){
 }
 
 void check_fline_min_max_c(struct psf_data *psf_s,
-                           struct fline_data *fline_d){
+                           struct psf_data *fline_d){
     check_min_max_data_c(psf_s->nfield, psf_s->istack_comp,
                          psf_s->data_name, fline_d->d_min, psf_s->d_max);
     return;

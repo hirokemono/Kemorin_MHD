@@ -30,11 +30,11 @@ int get_fline_file_step_prefix(struct psf_menu_val *fline_m,
 			struct kv_string *fline_filehead);
 void set_fline_file_step(struct psf_menu_val *fline_m, int istep);
 
-long get_fline_color_num_field(struct fline_data *fline_d);
-long get_fline_color_ncomptot(struct fline_data *fline_d);
-long fline_color_num_comps(struct fline_data *fline_d, int i);
-long get_fline_color_istack(struct fline_data *fline_d, int i);
-void get_fline_color_data_name(struct fline_data *fline_d,
+long get_fline_color_num_field(struct psf_data *fline_d);
+long get_fline_color_ncomptot(struct psf_data *fline_d);
+long fline_color_num_comps(struct psf_data *fline_d, int i);
+long get_fline_color_istack(struct psf_data *fline_d, int i);
+void get_fline_color_data_name(struct psf_data *fline_d,
 			struct kv_string *colorname, int i);
 
 
@@ -42,13 +42,13 @@ void set_fline_type(struct psf_menu_val *fline_m, long iflag);
 long get_fline_type(struct psf_menu_val *fline_m);
 
 
-double get_fline_data_min(struct fline_data *fline_d, int i);
-double get_fline_data_max(struct fline_data *fline_d, int i);
+double get_fline_data_min(struct psf_data *fline_d, int i);
+double get_fline_data_max(struct psf_data *fline_d, int i);
 
-int send_coordinate_id_fline(struct fline_data *fline_d, struct psf_menu_val *fline_m);
+int send_coordinate_id_fline(struct psf_data *fline_d, struct psf_menu_val *fline_m);
 
 
-void set_fline_constant_opacity(struct fline_data *fline_d,
+void set_fline_constant_opacity(struct psf_data *fline_d,
                                 struct psf_menu_val *fline_m,
                                 double opacity);
 

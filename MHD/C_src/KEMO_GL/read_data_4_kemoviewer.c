@@ -95,7 +95,7 @@ static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
 	return nadded_for_phi0;
 }
 
-static void set_fline_data_by_UCD(struct fline_data *fline_d,
+static void set_fline_data_by_UCD(struct psf_data *fline_d,
                                   struct fline_directions *fline_dir,
                                   struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
@@ -150,7 +150,7 @@ void evolution_PSF_data(struct psf_data *psf_s,
 }
 
 int refresh_FLINE_data(struct psf_data *ucd_tmp,
-                       struct fline_data *fline_d,
+                       struct psf_data *fline_d,
                        struct fline_directions *fline_dir,
                        struct psf_menu_val *fline_m){
 	int iflag_datatype;
@@ -214,7 +214,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
 }
 
 void set_kemoview_fline_data(struct psf_data *ucd_tmp,
-                             struct fline_data *fline_d,
+                             struct psf_data *fline_d,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m){
 	int i;
