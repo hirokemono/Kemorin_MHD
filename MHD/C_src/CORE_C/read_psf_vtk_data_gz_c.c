@@ -82,7 +82,7 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
         };
     }else if(viz_s->nnod_4_ele_viz == 1){
 		printf("Points data \n");
-		iflag_datatype = IFLAG_LINES;
+		iflag_datatype = IFLAG_POINTS;
         for (i = 0; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%d %ld", &itmp, &viz_s->ie_viz[i][0]);
