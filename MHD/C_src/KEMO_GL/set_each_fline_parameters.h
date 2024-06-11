@@ -16,9 +16,6 @@
 #include "m_kemoview_fline_menu.h"
 #include "skip_comment_c.h"
 #include "kemoviewer_base.h"
-#include "set_rgba_table_c.h"
-#include "set_texture_4_psf.h"
-#include "draw_patches_4_PSF.h"
 #include "read_data_4_kemoviewer.h"
 
 /* prototypes */
@@ -30,26 +27,8 @@ int get_fline_file_step_prefix(struct psf_menu_val *fline_m,
 			struct kv_string *fline_filehead);
 void set_fline_file_step(struct psf_menu_val *fline_m, int istep);
 
-long get_fline_color_num_field(struct psf_data *fline_d);
-long get_fline_color_ncomptot(struct psf_data *fline_d);
-long fline_color_num_comps(struct psf_data *fline_d, int i);
-long get_fline_color_istack(struct psf_data *fline_d, int i);
-void get_fline_color_data_name(struct psf_data *fline_d,
-			struct kv_string *colorname, int i);
-
 
 void set_fline_type(struct psf_menu_val *fline_m, long iflag);
 long get_fline_type(struct psf_menu_val *fline_m);
-
-
-double get_fline_data_min(struct psf_data *fline_d, int i);
-double get_fline_data_max(struct psf_data *fline_d, int i);
-
-int send_coordinate_id_fline(struct psf_data *fline_d, struct psf_menu_val *fline_m);
-
-
-void set_fline_constant_opacity(struct psf_data *fline_d,
-                                struct psf_menu_val *fline_m,
-                                double opacity);
 
 #endif

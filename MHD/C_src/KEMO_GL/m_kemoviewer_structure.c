@@ -581,8 +581,8 @@ void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
 }
 int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
                                            struct kv_string *psf_filehead, int *iflag){
-    get_PSF_full_path_file_prefix(kemoviewer->kemo_mul_psf,
-                                  psf_filehead, iflag);
+    return get_PSF_full_path_file_prefix(kemoviewer->kemo_mul_psf,
+                                         psf_filehead, iflag);
 }
 
 void kemoview_set_each_PSF_field_param(int selected, int input,
@@ -611,7 +611,7 @@ void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kem
 };
 
 int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
-    get_PSF_draw_refv(kemoviewer->kemo_mul_psf);
+    return get_PSF_draw_refv(kemoviewer->kemo_mul_psf);
 };
 
 int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
@@ -777,12 +777,12 @@ int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
 
 
 int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i){
-	return (int) fline_color_num_comps(kemoviewer->kemo_fline->fline_d, i);
+	return (int) send_ncomp_each_psf(kemoviewer->kemo_fline->fline_d, i);
 };
 void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
                                         struct kv_string *colorname, int i){
-	get_fline_color_data_name(kemoviewer->kemo_fline->fline_d,
-                              colorname, i);
+    send_each_psf_data_name(kemoviewer->kemo_fline->fline_d,
+                            colorname, i);
 };
 
 void kemoview_set_fline_field_param(int selected, int input,
@@ -812,8 +812,8 @@ void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
 
 void kemoview_set_fline_constant_opacity(double opacity,
                                          struct kemoviewer_type *kemoviewer){
-	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_d, 
-                               kemoviewer->kemo_fline->fline_m, opacity);
+    set_each_PSF_constant_opacity(kemoviewer->kemo_fline->fline_d,
+                                  kemoviewer->kemo_fline->fline_m, opacity);
 }
 
 double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,

@@ -108,9 +108,9 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
     long output = 0;
 	
 	if(selected == NUM_FIELD_FLAG){
-		output = get_fline_color_num_field(kemo_fline->fline_d);
+		output = send_nfield_each_psf(kemo_fline->fline_d);
 	}else if(selected == NTOT_COMPONENT_FLAG){
-		output = get_fline_color_ncomptot(kemo_fline->fline_d);
+		output = send_ncomptot_each_psf(kemo_fline->fline_d);
 	}else if(selected == FIELD_SEL_FLAG){
 		output = send_field_draw_each_psf(kemo_fline->fline_m);
 	}else if(selected == COMPONENT_SEL_FLAG){
@@ -120,8 +120,8 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 	}else if(selected == LINETYPE_FLAG){
 		output = get_fline_type(kemo_fline->fline_m);
     }else if(selected == COORDINATE_FLAG){
-        output = send_coordinate_id_fline(kemo_fline->fline_d,
-                                          kemo_fline->fline_m);
+        output = send_coordinate_id_psf(kemo_fline->fline_d,
+                                        kemo_fline->fline_m);
 	};
 	return output;
 };
@@ -175,9 +175,9 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		value = get_fline_data_min(kemo_fline->fline_d, icomp);
+		value = send_psf_data_min(kemo_fline->fline_d, icomp);
 	}else if(selected == ISET_COLOR_MAX){
-		value = get_fline_data_max(kemo_fline->fline_d, icomp);
+		value = send_psf_data_max(kemo_fline->fline_d, icomp);
 	};
 	return value;
 }

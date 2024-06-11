@@ -71,26 +71,10 @@ kemoview_gtk_Fline_window.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -109,16 +93,18 @@ kemoview_gtk_Fline_window.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -136,6 +122,20 @@ kemoview_gtk_Fline_window.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -268,26 +268,10 @@ kemoview_gtk_PSF_isoline_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -306,16 +290,18 @@ kemoview_gtk_PSF_isoline_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -333,6 +319,20 @@ kemoview_gtk_PSF_isoline_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -458,26 +458,10 @@ kemoview_gtk_PSF_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -496,16 +480,18 @@ kemoview_gtk_PSF_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -523,6 +509,20 @@ kemoview_gtk_PSF_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -658,26 +658,10 @@ kemoview_gtk_PSF_surface_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -696,16 +680,18 @@ kemoview_gtk_PSF_surface_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -723,6 +709,20 @@ kemoview_gtk_PSF_surface_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -849,26 +849,10 @@ kemoview_gtk_PSF_vector_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -887,16 +871,18 @@ kemoview_gtk_PSF_vector_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -914,6 +900,20 @@ kemoview_gtk_PSF_vector_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1039,26 +1039,10 @@ kemoview_gtk_PSF_window.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1077,16 +1061,18 @@ kemoview_gtk_PSF_window.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1104,6 +1090,20 @@ kemoview_gtk_PSF_window.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1244,26 +1244,10 @@ kemoview_gtk_axis_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1282,16 +1266,18 @@ kemoview_gtk_axis_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1309,6 +1295,20 @@ kemoview_gtk_axis_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1427,26 +1427,10 @@ kemoview_gtk_axis_prefs_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1465,16 +1449,18 @@ kemoview_gtk_axis_prefs_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1492,6 +1478,20 @@ kemoview_gtk_axis_prefs_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1608,26 +1608,10 @@ kemoview_gtk_evolution_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1646,16 +1630,18 @@ kemoview_gtk_evolution_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1673,6 +1659,20 @@ kemoview_gtk_evolution_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1791,26 +1791,10 @@ kemoview_gtk_fieldline_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -1829,16 +1813,18 @@ kemoview_gtk_fieldline_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1856,6 +1842,20 @@ kemoview_gtk_fieldline_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -1980,26 +1980,10 @@ kemoview_gtk_fline_selectors.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -2018,16 +2002,18 @@ kemoview_gtk_fline_selectors.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -2045,6 +2031,20 @@ kemoview_gtk_fline_selectors.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -2162,26 +2162,10 @@ kemoview_gtk_lighting_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -2200,16 +2184,18 @@ kemoview_gtk_lighting_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -2227,6 +2213,20 @@ kemoview_gtk_lighting_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -2346,26 +2346,10 @@ kemoview_gtk_main_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -2384,16 +2368,18 @@ kemoview_gtk_main_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -2411,6 +2397,20 @@ kemoview_gtk_main_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -2582,26 +2582,10 @@ kemoview_gtk_menu_button.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -2620,16 +2604,18 @@ kemoview_gtk_menu_button.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -2647,6 +2633,20 @@ kemoview_gtk_menu_button.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -2796,27 +2796,10 @@ kemoview_gtk_mesh_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
- $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -2835,16 +2818,18 @@ kemoview_gtk_mesh_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GLUT/tree_view_4_viewer_mesh.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
@@ -2862,6 +2847,7 @@ kemoview_gtk_mesh_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
+ $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
  $(C_SRCDIR)/GLSL/shaders.h \
  $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/GLSL/vartex_array_object_gl.h \
@@ -2883,6 +2869,20 @@ kemoview_gtk_mesh_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -2996,26 +2996,10 @@ kemoview_gtk_performance_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3034,16 +3018,18 @@ kemoview_gtk_performance_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3061,6 +3047,20 @@ kemoview_gtk_performance_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -3175,26 +3175,10 @@ kemoview_gtk_preference_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3213,16 +3197,18 @@ kemoview_gtk_preference_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3240,6 +3226,20 @@ kemoview_gtk_preference_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -3377,26 +3377,10 @@ kemoview_gtk_quilt_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3415,16 +3399,18 @@ kemoview_gtk_quilt_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3442,6 +3428,20 @@ kemoview_gtk_quilt_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -3561,26 +3561,10 @@ kemoview_gtk_rotation_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3599,16 +3583,18 @@ kemoview_gtk_rotation_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3626,6 +3612,20 @@ kemoview_gtk_rotation_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -3744,26 +3744,10 @@ kemoview_gtk_shading_mode_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3782,16 +3766,18 @@ kemoview_gtk_shading_mode_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3809,6 +3795,20 @@ kemoview_gtk_shading_mode_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -3925,26 +3925,10 @@ kemoview_gtk_tube_pref_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -3963,16 +3947,18 @@ kemoview_gtk_tube_pref_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -3990,6 +3976,20 @@ kemoview_gtk_tube_pref_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -4104,26 +4104,10 @@ kemoview_gtk_viewmatrix_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -4142,16 +4126,18 @@ kemoview_gtk_viewmatrix_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -4169,6 +4155,20 @@ kemoview_gtk_viewmatrix_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -4284,26 +4284,10 @@ kemoview_gtk_viewmode_menu.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -4322,16 +4306,18 @@ kemoview_gtk_viewmode_menu.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -4349,6 +4335,20 @@ kemoview_gtk_viewmode_menu.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -4478,26 +4478,10 @@ tree_view_4_domain_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -4516,16 +4500,18 @@ tree_view_4_domain_viewer.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -4543,6 +4529,20 @@ tree_view_4_domain_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -4664,26 +4664,10 @@ tree_view_4_ele_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -4702,16 +4686,18 @@ tree_view_4_ele_group_viewer.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -4729,6 +4715,20 @@ tree_view_4_ele_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -4874,26 +4874,10 @@ tree_view_4_nod_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -4912,16 +4896,18 @@ tree_view_4_nod_group_viewer.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -4939,6 +4925,20 @@ tree_view_4_nod_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5060,26 +5060,10 @@ tree_view_4_surf_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -5098,16 +5082,18 @@ tree_view_4_surf_group_viewer.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -5125,6 +5111,20 @@ tree_view_4_surf_group_viewer.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5267,26 +5267,10 @@ tree_view_kemoview_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -5305,16 +5289,18 @@ tree_view_kemoview_colormap.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -5332,6 +5318,20 @@ tree_view_kemoview_colormap.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5453,26 +5453,10 @@ view_modifier_glfw.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -5491,16 +5475,18 @@ view_modifier_glfw.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -5518,6 +5504,20 @@ view_modifier_glfw.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5625,26 +5625,10 @@ render_on_GLFW.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -5663,16 +5647,18 @@ render_on_GLFW.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -5690,6 +5676,20 @@ render_on_GLFW.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5794,26 +5794,10 @@ movie_from_GLFW_by_FFMPEG.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -5832,16 +5816,18 @@ movie_from_GLFW_by_FFMPEG.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -5859,6 +5845,20 @@ movie_from_GLFW_by_FFMPEG.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
@@ -5965,26 +5965,10 @@ kemoview_FFMPEG_encoder.o: \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline.h \
  $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
- $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
- $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
- $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
- $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
- $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
- $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
- $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
- $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
- $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
- $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
- $(C_SRCDIR)/CORE_C/transfer_matvec.h \
+ $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
@@ -6003,16 +5987,18 @@ kemoview_FFMPEG_encoder.o: \
  $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
  $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
  $(C_SRCDIR)/KEMO_GL/set_coastline_to_buf.h \
+ $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
  $(C_SRCDIR)/KEMO_GL/coastline_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_primitives_to_gl_buffer.h \
  $(C_SRCDIR)/CORE_C/take_normal_surf_mesh_c.h \
  $(C_SRCDIR)/CORE_C/fline_edge_direction_c.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
  $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.h \
  $(C_SRCDIR)/CORE_C/set_normal_on_node_4_mesh.h \
  $(C_SRCDIR)/CORE_C/set_surface_mesh_data.h \
+ $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
- $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
  $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -6030,6 +6016,20 @@ kemoview_FFMPEG_encoder.o: \
  $(C_SRCDIR)/KEMO_GL/set_cube_to_buf.h \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_buffers.h \
+ $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
+ $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
+ $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_PSF_arrows_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/t_PSF_each_isoline_edge_list.h \
+ $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+ $(C_SRCDIR)/KEMO_GL/pthread_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
+ $(C_SRCDIR)/KEMO_GL/set_axis_to_buf.h \
+ $(C_SRCDIR)/CORE_C/transfer_matvec.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_PSF_line_buffers.h \
  $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_map_buffers.h \
