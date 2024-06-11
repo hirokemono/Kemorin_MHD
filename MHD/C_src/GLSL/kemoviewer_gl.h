@@ -78,12 +78,11 @@ struct kemoviewer_gl_type{
                                        struct kv_string *file_name);
 
 /* subroutines for surafces */
-    int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+    int kemoview_get_PSF_file_prefix(struct kemoviewer_gl_type *kemo_gl,
                                      struct kv_string *stripped_filehead);
     void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                          struct kemoviewer_gl_type *kemo_gl);
-    void * kemoview_link_active_colormap_param(int i_current, int icomp,
-                                               struct kemoviewer_type *kemoviewer);
+    void * kemoview_link_active_colormap_param(struct kemoviewer_gl_type *kemo_gl);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */

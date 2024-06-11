@@ -14,13 +14,16 @@
 #include "kemoviewer.h"
 #include "kemoviewer_base.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_kemoview_fline_menu.h"
 #include "set_each_fline_parameters.h"
 #include "read_data_4_kemoviewer.h"
+#include "set_each_psf_parameters.h"
 
 struct kemoview_fline{
-    struct fline_data         *fline_d;
-    struct fline_menu_val     *fline_m;
+    struct psf_data           *fline_d;
+    struct fline_directions   *fline_dir;
+    struct psf_menu_val       *fline_m;
 };
 
 /* prototypes */ 

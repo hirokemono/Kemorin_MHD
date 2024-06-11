@@ -26,6 +26,6 @@
 
 int set_data_format_flag(const char *file_name, char *file_head, char *file_ext);
 int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_mesh, 
-			struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
-			struct psf_data *ucd_tmp, struct view_element *view);
+                         struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
+                         struct psf_data *ucd_tmp, struct view_element *view);
 #endif

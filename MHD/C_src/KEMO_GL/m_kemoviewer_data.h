@@ -22,7 +22,7 @@ struct kemoviewer_type{
 
 	
 	struct kemoview_mesh      *kemo_mesh;
-	struct kemoview_psf       *kemo_psf;
+	struct kemoview_mul_psf   *kemo_mul_psf                                                                                                                                                                                                                                                                                                                                                                                      ;
     struct kemoview_fline     *kemo_fline;
     struct psf_data           *psf_ucd_tmp;
 

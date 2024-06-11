@@ -38,7 +38,7 @@ void cal_range_4_mesh_c(struct viewer_mesh *mesh_s, struct view_element *view){
 }
 
 void cal_psf_viewer_range(struct psf_data **psf_s, struct kemo_array_control *psf_a,  
-                          struct fline_data *fline_d, struct fline_menu_val *fline_m, 
+                          struct psf_data *fline_d, struct psf_menu_val *fline_m, 
                           struct view_element *view){
     int i, nd;
     

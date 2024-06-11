@@ -224,7 +224,7 @@ void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers,
 };
 
 
-void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
+void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                              struct view_element *view_s,
                              struct kemoview_buffers *kemo_buffers,
                              struct kemoview_VAOs *kemo_VAOs,
@@ -235,8 +235,8 @@ void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                               kemo_VAOs);
     }else{
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
-        const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
-                                 kemo_psf->psf_a->psf_texure, kemo_shaders);
+        const_PSF_gl_texure_name(kemo_mul_psf->psf_a->ipsf_texured,
+                                 kemo_mul_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_node_buf, kemo_buffers->PSF_solids,
                                   kemo_VAOs->psf_solid_VAO, kemo_VAOs->psf_solid_index_VAO);
         set_PSF_line_objects_VAO(kemo_buffers->PSF_lines,

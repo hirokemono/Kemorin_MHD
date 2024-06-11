@@ -173,7 +173,6 @@ static void read_gz_viz_phys_data(void *FP_gzip, struct psf_data *viz_s){
 	viz_s->ncomptot = viz_s->istack_comp[viz_s->nfield];
 	
     alloc_psf_field_data_c(viz_s);
-	alloc_psf_data_s(viz_s);
 	
 	/* read field name */
 	
@@ -238,7 +237,7 @@ int read_psf_udt_gz(const char *file_name, struct psf_data *viz_s){
 	
 	read_gz_viz_phys_data(FP_gzip1, viz_s);
     close_gzfile_c(FP_gzip1);
-	return 0;
+    return 0;
 }
 
 int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
@@ -257,6 +256,5 @@ int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
 
     read_gz_viz_phys_data(FP_gzip1, viz_s);
     close_gzfile_c(FP_gzip1);
-    
-	return iflag_datatype;
+    return iflag_datatype;
 }

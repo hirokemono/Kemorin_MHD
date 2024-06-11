@@ -36,18 +36,19 @@ void dealloc_PSF_line_buffers(struct PSF_line_buffers *PSF_lines)
     free(PSF_lines);
 };
 
-void const_PSF_isolines_buffer(const int nthreads,
-                               struct view_element *view_s, struct psf_data **psf_s,
+void const_PSF_isolines_buffer(const int nthreads, struct view_element *view_s,
+                               struct psf_data **psf_s, struct psf_normals **psf_n,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                struct mesh_menu_val *mesh_m, 
                                struct PSF_line_buffers *PSF_lines){
-    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a, 
+    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_n, psf_m, psf_a, 
                              PSF_lines->PSF_isoline_buf);
 
-    const_PSF_isotube_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
+    const_PSF_isotube_buffer(nthreads, view_s,
+                             psf_s, psf_n, psf_m, psf_a,
                              PSF_lines->PSF_isotube_buf);
 
-    const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
+    const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_n, psf_m, psf_a,
                            PSF_lines->PSF_arrow_buf);
     
     

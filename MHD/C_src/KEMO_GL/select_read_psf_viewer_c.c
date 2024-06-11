@@ -111,7 +111,6 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time,
         printf("Read error for %s\n", ucd_m->string);
         exit(1);
     };
-    
-	dealloc_kvstring(ucd_m);
+    dealloc_kvstring(ucd_m);
 	return;
 }

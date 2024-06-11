@@ -7,12 +7,10 @@
 
 #include "tree_view_viewer_colormap.h"
 
-void update_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
+void update_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
                                      struct colormap_view *color_vws){
-    int i_current = kemoview_get_PSF_loaded_params(kemo_sgl, SET_CURRENT);
-    int icomp = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
     color_vws->cmap_param
-        = (struct colormap_params *) kemoview_link_active_colormap_param(i_current, icomp, kemo_sgl);
+        = (struct colormap_params *) kemoview_link_active_colormap_param(kemo_gl);
     
     sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
@@ -43,19 +41,19 @@ void update_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
     return;
 }
 
-void init_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
+void init_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
                                    struct colormap_view *color_vws){
 	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
     color_vws->cmap_vws =    alloc_r2_clist_views();
     color_vws->opacity_vws = alloc_r2_clist_views();
     
-    update_colormap_params_4_viewer(kemo_sgl, color_vws);
+    update_colormap_params_4_viewer(kemo_gl, color_vws);
     return;
 };
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,
 			struct colormap_view *color_vws){
-	long icomp = psf_current_menu->icomp_draw_psf;
+	long icomp = psf_current_menu->icomp_draw_viz;
 	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk,
 					psf_current_menu->cmap_viz_comp[icomp]->colormap);
 	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk,

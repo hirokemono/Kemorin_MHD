@@ -71,39 +71,48 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static long set_psf_data_by_UCD(struct map_interpolate *map_itp,
-                                struct psf_data *psf_s, struct psf_data *ucd_tmp) {
-    cal_colat_and_longitude(0, ucd_tmp);
+                                struct psf_data *psf_s, struct psf_normals *psf_n,
+                                struct psf_data *ucd_tmp) {
+    alloc_psf_norm_s(ucd_tmp, psf_n);
+    cal_colat_and_longitude(0, ucd_tmp->nnod_viz, ucd_tmp->xyzw_viz, 
+                            psf_n->rt_viz);
+    dealloc_psf_norm_s(psf_n);
 
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
     set_viewer_data_with_mapping(map_itp, ucd_tmp, psf_s);
 
-	take_normal_psf(nadded_for_phi0, psf_s);
-    take_minmax_psf(psf_s);
-    psf_s->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
+    alloc_psf_norm_s(psf_s, psf_n);
+	take_normal_psf(nadded_for_phi0, psf_s, psf_n);
+    take_minmax_psf(psf_s, psf_n);
+    psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
-                                          psf_s->xyzw_viz, psf_s->norm_nod);
+                                          psf_s->xyzw_viz, psf_n->norm_nod);
 
-    /*
-     check_psf_ave_rms_c(psf_s);
+/*
+     check_psf_ave_rms_c(psf_s,psf_n);
      check_psf_min_max_c(psf_s);
-     */
+*/
 	return nadded_for_phi0;
 }
 
-static void set_fline_data_by_UCD(struct fline_data *fline_d,
+static void set_fline_data_by_UCD(struct psf_data *fline_d,
+                                  struct fline_directions *fline_dir,
                                   struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
     
-    alloc_fline_work_data(fline_d);
-    take_length_fline(fline_d);
+    alloc_fline_work_data(fline_d, fline_dir);
+    take_length_fline(fline_d, fline_dir);
     
-    alloc_fline_ave_data(fline_d);
-	take_minmax_fline(fline_d);
-    dealloc_fline_work_data(fline_d);
+    alloc_psf_data_s(fline_d);
+	take_minmax_fline(fline_dir, fline_d);
+    dealloc_fline_work_data(fline_dir);
 	return;
 };
 
-void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
+void evolution_PSF_data(struct psf_data *psf_s,
+                        struct psf_normals *psf_n,
+                        struct psf_data *ucd_tmp,
+                        struct psf_menu_val *psf_m){
 	int iflag_datatype;
     double time = 0.0;
 	if(psf_m->iformat_viz_file == IFLAG_SURF_UDT
@@ -118,7 +127,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
-        take_minmax_psf(psf_s);
+        take_minmax_psf(psf_s, psf_n);
 	} else if(psf_m->iformat_viz_file == IFLAG_SURF_UCD
 			  || psf_m->iformat_viz_file == IFLAG_SURF_UCD_GZ
 			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK
@@ -128,31 +137,37 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iformat_viz_file, psf_m->viz_step_c, &time, 
                                                        psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
+        
+        dealloc_edge_data_4_psf(psf_s->nele_viz, psf_n->psf_edge);
+        dealloc_psf_norm_s(psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
-        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp, psf_s, ucd_tmp);
+        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
+                                                     psf_s, psf_n, ucd_tmp);
 	}
     
     return;
 }
 
 int refresh_FLINE_data(struct psf_data *ucd_tmp,
-                       struct fline_data *fline_d,
-                       struct fline_menu_val *fline_m){
+                       struct psf_data *fline_d,
+                       struct fline_directions *fline_dir,
+                       struct psf_menu_val *fline_m){
 	int iflag_datatype;
     double time;
 	
 	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_viz_file, 
                                                    fline_m->viz_step_c, &time, 
-                                                   fline_m->viz_prefix_c->string, ucd_tmp);
+                                                   fline_m->viz_prefix_c->string,
+                                                   ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
-		dealloc_psf_data_s(ucd_tmp);
-		dealloc_psf_mesh_c(ucd_tmp);
+        deallc_all_psf_data(ucd_tmp);
 		return iflag_datatype;
 	}
     
-	deallc_all_fline_data(fline_d);
-	set_fline_data_by_UCD(fline_d, ucd_tmp);
+    dealloc_fline_direction_data(fline_dir);
+    deallc_all_psf_data(fline_d);
+	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
 	return 0;
 }
 
@@ -167,14 +182,16 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 	return;
 }
 
-void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
+void set_kemoview_psf_data(struct psf_data *psf_s,
+                           struct psf_normals *psf_n,
+                           struct psf_data *ucd_tmp,
                            struct psf_menu_val *psf_m){
 	int i;
     psf_m->map_itp = alloc_psf_cutting_4_map();
     psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
-                                                 psf_s, ucd_tmp);
+                                                 psf_s, psf_n, ucd_tmp);
 	
-	alloc_draw_psf_flags(psf_s, psf_m);
+	alloc_draw_psf_flags(psf_s->nfield, psf_s->ncomptot, psf_m);
 	
 	psf_m->iflag_draw_viz =   IONE;
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
@@ -195,12 +212,14 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 }
 
 void set_kemoview_fline_data(struct psf_data *ucd_tmp,
-                             struct fline_data *fline_d,
-                             struct fline_menu_val *fline_m){
+                             struct psf_data *fline_d,
+                             struct fline_directions *fline_dir,
+                             struct psf_menu_val *fline_m){
 	int i;
 	
-	set_fline_data_by_UCD(fline_d, ucd_tmp);
-	alloc_draw_fline_flags(fline_d, fline_m);
+	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
+    alloc_draw_psf_flags(fline_d->nfield, fline_d->ncomptot,
+                         fline_m);
 	
 	fline_m->iflag_draw_viz = IONE;
 	
@@ -221,7 +240,7 @@ void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string
 	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
 	return;
 }
-void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
+void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m){
 	alloc_set_ucd_field_file_name(fline_m->iformat_viz_file, fline_m->viz_step_c, 
                                   fline_m->viz_prefix_c->string, ucd_m);
 	return;

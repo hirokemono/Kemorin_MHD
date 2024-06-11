@@ -12,14 +12,15 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 };
 
 static void set_psf_nodes_to_tri(long ipsf, long iele,
-                                 struct psf_data **psf_s, double xyzw_tri[12],
-                                 double norm_tri[12], double color_tri[12]){
+                                 struct psf_data **psf_s, struct psf_normals **psf_n,
+                                 double xyzw_tri[12], double norm_tri[12],
+                                 double color_tri[12]){
     long inod, nd;
     for(long k = 0; k < ITHREE; k++) {
         inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
         for(nd=0;nd<4;nd++){xyzw_tri[4*k+nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
         for(nd=0;nd<4;nd++){color_tri[4*k+nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
-        for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
+        for(nd=0;nd<4;nd++){norm_tri[4*k+nd] = psf_n[ipsf]->norm_ele[IFOUR*iele+nd];};
         xyzw_tri[4*k+3] = 1.0;
         norm_tri[4*k+3] = 1.0;
     };
@@ -76,14 +77,14 @@ static void set_psf_map_to_tri(long ipsf, long iele, struct psf_data **psf_s,
 
 
 long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
-                          struct psf_data *psf_s,
+                          struct psf_data *psf_s, struct psf_normals *psf_n,
                           struct gl_strided_buffer *strided_buf){
     long inum_nod = ipatch_in;
     inum_nod =  set_nodes_strided_buffer(inum_nod, num,
                                          &psf_s->xyzw_viz[IFOUR*ist_nod],
-                                         &psf_s->norm_nod[IFOUR*ist_nod],
+                                         &psf_n->norm_nod[IFOUR*ist_nod],
                                          &psf_s->color_nod[IFOUR*ist_nod],
-                                         &psf_s->rt_viz[ITWO*ist_nod],
+                                         &psf_n->rt_viz[ITWO*ist_nod],
                                          strided_buf);
     return inum_nod;
 }
@@ -106,7 +107,9 @@ long set_psf_patch_indices_to_buf(long ipatch_in, long ist_psf, long ied_psf,
 }
 
 long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf,
-                            struct psf_data **psf_s, struct kemo_array_control *psf_a,
+                            struct psf_data **psf_s,
+                            struct psf_normals **psf_n,
+                            struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *strided_buf){
     double xyzw_tri[12], norm_tri[12], color_tri[12];
     long iele, ipsf;
@@ -114,7 +117,7 @@ long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf,
 	for(long inum=ist_psf;inum<ied_psf;inum++){
 		ipsf = psf_a->ipsf_viz_far[inum]-1;
 		iele = psf_a->iele_viz_far[inum]-1;
-        set_psf_nodes_to_tri(ipsf, iele, psf_s,
+        set_psf_nodes_to_tri(ipsf, iele, psf_s, psf_n,
                              xyzw_tri, norm_tri, color_tri);
         ipatch = set_patch_strided_buffer(ipatch, xyzw_tri, norm_tri, color_tri,
                                           strided_buf);
@@ -142,20 +145,21 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
 
 long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                           struct psf_data *psf_s,
+                          struct psf_normals *psf_n,
                           struct gl_strided_buffer *strided_buf){
     double rtpw[4] =   {1.0, 0.0, 0.0, 1.0};
     double map_xy[4] = {0.0, 0.0, 0.0002, 1.0};;
     double normal[4] = {0.0, 0.0, 1.0, 1.0};
     long inum_nod = ipatch_in;
     for(long inod=ist_nod;inod<ist_nod+num ;inod++){
-        rtpw[1] = psf_s->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_s->rt_viz[ITWO*inod+1];
+        rtpw[1] = psf_n->rt_viz[ITWO*inod  ];
+        rtpw[2] = psf_n->rt_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
                                              map_xy, normal,
                                              &psf_s->color_nod[IFOUR*inod],
-                                             &psf_s->rt_viz[ITWO*inod],
+                                             &psf_n->rt_viz[ITWO*inod],
                                              strided_buf);
     }
     return inum_nod;
@@ -185,7 +189,9 @@ long set_map_patch_to_buf(long ist_patch, long ist_psf, long ied_psf,
 
 
 static void set_line_for_psf_arrow(int icomp, long inod, 
-                                   struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                   struct psf_data *psf_s,
+                                   struct psf_normals *psf_n,
+                                   struct psf_menu_val *psf_m,
                                    double xyzw_line[8], double dir_line[8], 
                                    double color_line[8]){
     int nd;
@@ -207,10 +213,10 @@ static void set_line_for_psf_arrow(int icomp, long inod,
 
     if(psf_m->ivect_tangential==TANGENTIAL_COMPONENT){
         for (nd=0; nd<3; nd++) {
-            v_xyz[nd] = v_xyz[nd] - psf_s->norm_nod[4*inod+nd]
-                    * (  v_xyz[0]*psf_s->norm_nod[4*inod  ]
-                       + v_xyz[1]*psf_s->norm_nod[4*inod+1]
-                       + v_xyz[2]*psf_s->norm_nod[4*inod+2]);
+            v_xyz[nd] = v_xyz[nd] - psf_n->norm_nod[4*inod+nd]
+                    * (  v_xyz[0]*psf_n->norm_nod[4*inod  ]
+                       + v_xyz[1]*psf_n->norm_nod[4*inod+1]
+                       + v_xyz[2]*psf_n->norm_nod[4*inod+2]);
         };
     };
     
@@ -228,14 +234,15 @@ static void set_line_for_psf_arrow(int icomp, long inod,
 }
 
 long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
-                        struct psf_data *psf_s, struct psf_menu_val *psf_m){
+                        struct psf_data *psf_s, struct psf_normals *psf_n,
+                        struct psf_menu_val *psf_m){
     long inod;
     long inum_cone = ist_cone;
     for(inod = ist; inod < ied; inod++){
         if (inod % psf_m->increment_vect == 0) {
-            if(psf_s->norm_nod[4*inod  ] != 0.0
-                        || psf_s->norm_nod[4*inod+1] !=0.0
-                        || psf_s->norm_nod[4*inod+2] !=0.0){
+            if(psf_n->norm_nod[4*inod  ] != 0.0
+                        || psf_n->norm_nod[4*inod+1] !=0.0
+                        || psf_n->norm_nod[4*inod+2] !=0.0){
                 inum_cone = inum_cone + 1;
             };
         };
@@ -247,7 +254,9 @@ long add_num_psf_arrows(long ist_cone, long ist, long ied, int ncorner,
 
 long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            int ncorner, double radius,
-                           struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                           struct psf_data *psf_s,
+                           struct psf_normals *psf_n,
+                           struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
         
@@ -261,11 +270,11 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
     long inum_cone = ist_cone;
     for(inod = ist; inod < ied; inod++){
 		if (inod % psf_m->increment_vect == 0) {
-            if(   psf_s->norm_nod[4*inod  ] != 0.0
-               || psf_s->norm_nod[4*inod+1] !=0.0
-               || psf_s->norm_nod[4*inod+2] !=0.0){
+            if(   psf_n->norm_nod[4*inod  ] != 0.0
+               || psf_n->norm_nod[4*inod+1] !=0.0
+               || psf_n->norm_nod[4*inod+2] !=0.0){
                 set_line_for_psf_arrow((int) psf_s->istack_comp[psf_m->if_draw_viz], 
-                                       inod, psf_s, psf_m,
+                                       inod, psf_s, psf_n, psf_m,
                                        xyzw_line, dir_line, color_line);
                         
                 if(psf_m->vector_patch_color == RAINBOW_SURFACE){

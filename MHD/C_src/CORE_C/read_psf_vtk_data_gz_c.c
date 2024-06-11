@@ -215,10 +215,8 @@ static void read_psf_vtk_field_data_gz(void *FP_gzip, int lbuf, char *buf,
     
     alloc_psf_field_data_c(viz_s);
     copy_vtk_list_2_udt_data(viz_s, &vtk_tmp);
-
-
+    
     dealloc_vtk_fields_list_c(&vtk_tmp);
-    alloc_psf_data_s(viz_s);
     
 	return;
 };
@@ -271,10 +269,9 @@ int read_psf_vtd_gz(const char *file_name, struct psf_data *viz_s){
     void *FP_gzip1 = open_rd_gzfile_c(file_name);
 	if (FP_gzip1 == NULL){return 1;};     /* terminate with error message */
 	
-	read_psf_vtk_field_data_gz(FP_gzip1, lbuf, buf, viz_s);
-	
+    read_psf_vtk_field_data_gz(FP_gzip1, lbuf, buf, viz_s);
     close_gzfile_c(FP_gzip1);
-	return 0;
+    return 0;
 }
 
 int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
@@ -290,9 +287,9 @@ int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
     read_psf_vtk_num_node_gz(FP_gzip1, lbuf, buf, viz_s);
 	read_psf_vtk_node_data_gz(FP_gzip1, lbuf, buf, viz_s);
 	int iflag_datatype = read_psf_vtk_connect_data_gz(FP_gzip1, lbuf, buf, viz_s);
-
+    
     read_psf_vtk_field_data_gz(FP_gzip1, lbuf, buf, viz_s);
-
+    
     close_gzfile_c(FP_gzip1);
 	return iflag_datatype;
 }

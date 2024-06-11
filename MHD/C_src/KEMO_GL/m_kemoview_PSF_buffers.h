@@ -44,12 +44,14 @@ void dealloc_PSF_trans_buffers(struct PSF_trans_buffers *PSF_transes);
 void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct view_element *view_s,
                                     struct psf_data **psf_s,
+                                    struct psf_normals **psf_n,
                                     struct psf_menu_val **psf_m,
                                     struct kemo_array_control *psf_a,
                                     struct PSF_solid_buffers *PSF_solids);
 void const_PSF_trans_objects_buffer(const int nthreads, 
                                     struct view_element *view_s,
                                     struct psf_data **psf_s,
+                                    struct psf_normals **psf_n,
                                     struct psf_menu_val **psf_m, 
                                     struct kemo_array_control *psf_a,
                                     struct PSF_trans_buffers *PSF_transes);

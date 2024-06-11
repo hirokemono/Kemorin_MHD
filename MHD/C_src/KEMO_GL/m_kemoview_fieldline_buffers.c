@@ -27,7 +27,9 @@ void dealloc_FieldLine_buffers(struct FieldLine_buffers *Fline_bufs)
 
 
 void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
-                             struct fline_data *fline_d, struct fline_menu_val *fline_m,
+                             struct psf_data *fline_d,
+                             struct fline_directions *fline_dir,
+                             struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs){
     Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
@@ -58,7 +60,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
         if(Fline_bufs->FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(Fline_bufs->FLINE_tube_buf);
             num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads, tube_width,
-                                                      fline_d, fline_m,
+                                                      fline_d, fline_dir, fline_m,
                                                       Fline_bufs->FLINE_tube_buf);
         };
     };
