@@ -1,5 +1,10 @@
-
-/* m_kemoview_fieldline_buffers.h */
+/*
+//  m_kemoview_fieldline_buffers.h
+//  Kemoview_Cocoa
+//
+//  Created by Hiroaki Matsui on 12/08/13.
+//
+*/
 
 #ifndef M_KEMOVIEW_FIELDLINE_BUFFERS_
 #define M_KEMOVIEW_FIELDLINE_BUFFERS_
@@ -31,10 +36,5 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs);
-
-void const_tracer_buffer(const int nthreads, struct view_element *view_s,
-                         struct psf_data *tracer_d,
-                         struct psf_menu_val *tracer_m,
-                         struct gl_strided_buffer *Tracer_buf);
 
 #endif   /* M_KEMOVIEW_FIELDLINE_BUFFERS_ */

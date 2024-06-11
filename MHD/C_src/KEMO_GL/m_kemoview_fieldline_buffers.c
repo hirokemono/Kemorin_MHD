@@ -1,5 +1,10 @@
-
-/* m_kemoview_fieldline_buffers.c */
+/*
+//  m_kemoview_fieldline_buffers.c
+//  Kemoview_Cocoa
+//
+//  Created by Hiroaki Matsui on 12/08/13.
+//
+*/
 
 #include "m_kemoview_fieldline_buffers.h"
 
@@ -33,6 +38,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs){
+    Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
     Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
         
@@ -54,8 +60,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     }else{
         tube_width = fline_m->viz_line_width;
     };
-
-    Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
+    
     if(fline_m->viz_line_type == IFLAG_PIPE){
         long num_patch = ITHREE * (ITWO*fline_m->ncorner_viz_line) * num_edge;
         set_buffer_address_4_patch(num_patch, Fline_bufs->FLINE_tube_buf);
@@ -68,57 +73,4 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     };
 
 	return;
-}
-
-
-
-long set_tracer_ico_to_buf(const long ist_tri, 
-                                    long ist_nod, long ied_nod,
-                                    struct psf_data *tracer_d, 
-                                    struct psf_menu_val *tracer_m,
-                                    struct gl_strided_buffer *Tracer_buf){
-    long inum_tri = ist_tri;
-    for(long inod = ist_nod; inod < ied_nod; inod++){
-        inum_tri = set_icosahedron_strided_buffer(inum_tri, 
-                                                  tracer_m->viz_line_width,
-                                                  &tracer_d->xyzw_viz[4*inod],
-                                                  &tracer_d->color_nod[4*inod],
-                                                  Tracer_buf);
-    };
-    return inum_tri;
-}
-
-long set_tracer_arrow_to_buf(const long ist_tri, 
-                             long ist_nod, long ied_nod,
-                             struct psf_data *tracer_d, 
-                             struct psf_menu_val *tracer_m,
-                             struct gl_strided_buffer *Tracer_buf){
-    double xyzw_line[8], dir_line[8];
-    long inum_tri = ist_tri;
-    for(long inod = ist_nod; inod < ied_nod; inod++){
-        set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
-                                  inod, tracer_d, tracer_m,
-                                  xyzw_line, dir_line);
-
-        inum_tri = set_cone_strided_buffer(inum_tri, tracer_m->ncorner_viz_line,
-                                           tracer_m->viz_line_width,
-                                           xyzw_line, dir_line,
-                                           &tracer_d->color_nod[4*inod],
-                                           Tracer_buf);
-    };
-    return inum_tri;
-}
-
-void const_tracer_buffer(const int nthreads, struct view_element *view_s,
-                         struct psf_data *tracer_d,
-                         struct psf_menu_val *tracer_m,
-                         struct gl_strided_buffer *Tracer_buf){
-    Tracer_buf->num_nod_buf = 0;
-    if(tracer_m->iflag_draw_viz <= 0) return;
-    long num_patch = ITHREE * num_icosahedron_patch() * tracer_d->nnod_viz;
-    set_buffer_address_4_patch(num_patch, Tracer_buf);
-    set_color_code_for_fieldlines(tracer_d, tracer_m);
-    num_patch = set_tracer_ico_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
-                                      tracer_d, tracer_m, Tracer_buf);
-    return;
 }

@@ -95,7 +95,7 @@ typedef struct
                           depth:(id<MTLDepthStencilState> _Nullable *_Nullable) depthState
                       numVertex:(NSUInteger) numVertex
                          vertex:(id<MTLBuffer> _Nullable *_Nullable) vertices
-                           index:(id<MTLBuffer> _Nullable *_Nullable) indices
+                          index:(id<MTLBuffer> _Nullable *_Nullable) indices
                          unites:(KemoViewUnites *_Nullable) monoViewUnites
                           sides:(int) iflag_surface;
 - (void)drawIndexTexureWithPhong:(id<MTLRenderCommandEncoder> _Nullable *_Nullable) renderEncoder
@@ -114,6 +114,12 @@ typedef struct
              numVertex:(NSUInteger) numVertex
                 vertex:(id<MTLBuffer> _Nullable *_Nullable) vertices
                 unites:(KemoViewUnites *_Nullable) monoViewUnites;
-;
+
+- (void)drawPointObject:(id<MTLRenderCommandEncoder> _Nullable *_Nullable) renderEncoder
+              pipelines:(KemoView3DPipelines *_Nullable) kemo3DPipelines
+                  depth:(id<MTLDepthStencilState> _Nullable *_Nullable) depthState
+              numVertex:(NSUInteger) numVertex
+                 vertex:(id<MTLBuffer> _Nullable *_Nullable) vertices
+                 unites:(KemoViewUnites *_Nullable) monoViewUnites;
 @end
 #endif /* KemoView3DBaseRenderer_h_ */

@@ -47,6 +47,7 @@
 		1849CD8F2BEACAD0003865EF /* bitonic_sort_float_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1849CD8E2BEACAD0003865EF /* bitonic_sort_float_pthread.c */; };
 		184B2CFC2C18ACA900D03251 /* m_kemoview_tracer.c in Sources */ = {isa = PBXBuildFile; fileRef = 184B2CFB2C18ACA800D03251 /* m_kemoview_tracer.c */; };
 		184B2CFF2C18D52500D03251 /* set_each_arrow_line_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 184B2CFE2C18D52500D03251 /* set_each_arrow_line_c.c */; };
+		184B2D022C18F07D00D03251 /* m_kemoview_tracer_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 184B2D012C18F07D00D03251 /* m_kemoview_tracer_buffers.c */; };
 		1852CFB2236B7B790043C983 /* m_color_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1852CFB1236B7B780043C983 /* m_color_table_c.c */; };
 		185CB9AA212F593D00BB3C0B /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB93C212F593C00BB3C0B /* control_elements_IO_c.c */; };
 		185CB9AD212F593D00BB3C0B /* t_control_chara2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB941212F593C00BB3C0B /* t_control_chara2_IO.c */; };
@@ -291,6 +292,8 @@
 		184B2CFB2C18ACA800D03251 /* m_kemoview_tracer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_tracer.c; sourceTree = "<group>"; };
 		184B2CFD2C18D51B00D03251 /* set_each_arrow_line_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = set_each_arrow_line_c.h; sourceTree = "<group>"; };
 		184B2CFE2C18D52500D03251 /* set_each_arrow_line_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_arrow_line_c.c; sourceTree = "<group>"; };
+		184B2D002C18F07300D03251 /* m_kemoview_tracer_buffers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_kemoview_tracer_buffers.h; sourceTree = "<group>"; };
+		184B2D012C18F07D00D03251 /* m_kemoview_tracer_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_tracer_buffers.c; sourceTree = "<group>"; };
 		1852CFB0236B7B780043C983 /* m_color_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_color_table_c.h; sourceTree = "<group>"; };
 		1852CFB1236B7B780043C983 /* m_color_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_color_table_c.c; sourceTree = "<group>"; };
 		185CB93C212F593C00BB3C0B /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = control_elements_IO_c.c; sourceTree = "<group>"; };
@@ -923,6 +926,8 @@
 				18DA6FEF2BFE790900D0E417 /* m_kemoview_map_buffers.h */,
 				18D7E6A51562D359009B05FF /* m_kemoview_fieldline_buffers.c */,
 				18D7E6A61562D359009B05FF /* m_kemoview_fieldline_buffers.h */,
+				184B2D012C18F07D00D03251 /* m_kemoview_tracer_buffers.c */,
+				184B2D002C18F07300D03251 /* m_kemoview_tracer_buffers.h */,
 				18DA6FD42BFE60A400D0E417 /* m_kemoview_message_buffers.c */,
 				18DA6FD32BFE608F00D0E417 /* m_kemoview_message_buffers.h */,
 				180999AB2B14576100F83574 /* m_vertex_buffer.c */,
@@ -1362,6 +1367,7 @@
 				1895A3392BDC625000701DEB /* color_normalize.metal in Sources */,
 				188FFD932308E50000F5A0DE /* set_PSF_patches_to_buf.c in Sources */,
 				1838708D2BCF4A7E00933367 /* colormap_sym_gray_c.c in Sources */,
+				184B2D022C18F07D00D03251 /* m_kemoview_tracer_buffers.c in Sources */,
 				1802DFE72C17A4A900B0DB3D /* cal_viz_field_ranges.c in Sources */,
 				18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */,
 				1885C3632B06B81600A6AED5 /* PhongTexureShader.metal in Sources */,

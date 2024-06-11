@@ -20,6 +20,7 @@
 #include "m_kemoview_PSF_line_buffers.h"
 #include "m_kemoview_map_buffers.h"
 #include "m_kemoview_fieldline_buffers.h"
+#include "m_kemoview_tracer_buffers.h"
 #include "m_kemoview_mesh_buffers.h"
 #include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
@@ -41,7 +42,7 @@ struct kemoview_buffers{
     
     struct FieldLine_buffers *Fline_bufs;
 
-    struct gl_strided_buffer *Tracer_buf;
+    struct Tracer_buffers *Tracer_bufs;
     
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;
