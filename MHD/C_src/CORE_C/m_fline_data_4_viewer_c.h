@@ -24,14 +24,11 @@ struct fline_directions{
 
 
 /* prototypes */
-struct psf_data * init_points_data(void);
+
+void deallc_all_points_data(struct psf_data *points_d);
 
 
-void alloc_points_node_s(long nnod, struct psf_data *points_d);
-void alloc_points_field_name_c(long nfield, struct psf_data *points_d);
-void alloc_points_field_data_c(struct psf_data *points_d);
 void alloc_points_color_data(struct psf_data *points_d);
-void alloc_points_ave_data(struct psf_data *points_d);
 void deallc_all_points_data(struct psf_data *points_d);
 
 

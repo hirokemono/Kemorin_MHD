@@ -265,13 +265,15 @@ static void set_new_data_for_mapping(struct map_interpolate *map_itp,
 
 void set_viewer_points_data(struct psf_data *points_d,
                             struct psf_data *viz_tmp){
-	alloc_points_field_name_c(viz_tmp->nfield, points_d);
+    points_d->nfield = viz_tmp->nfield;
+    alloc_psf_field_name_c(points_d);
     points_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, points_d->nfield,
                                                     points_d->ncomp,  points_d->istack_comp,
                                                     points_d->id_coord, points_d->data_name);
 
-    alloc_points_node_s(viz_tmp->nnod_viz, points_d);
-    alloc_points_field_data_c(points_d);
+    points_d->nnod_viz = viz_tmp->nnod_viz;
+    alloc_viz_node_s(points_d);
+    alloc_psf_field_data_c(points_d);
 
 	copy_viewer_udt_node(viz_tmp, points_d->inod_viz, points_d->xyzw_viz);
 	copy_viewer_udt_data(viz_tmp, points_d->nnod_viz, points_d->ncomptot, points_d->d_nod);
