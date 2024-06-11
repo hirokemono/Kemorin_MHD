@@ -125,6 +125,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 			view->iflag_view_type =   VIEW_3D;
 		} else {
 			dealloc_psf_data_s(ucd_tmp);
+            dealloc_psf_field_data_c(ucd_tmp);
 			dealloc_psf_mesh_c(ucd_tmp);
 		}
 	} else {

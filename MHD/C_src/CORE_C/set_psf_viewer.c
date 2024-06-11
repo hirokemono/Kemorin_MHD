@@ -276,23 +276,28 @@ void set_viewer_points_data(struct points_data *points_d,
 	copy_viewer_udt_node(viz_tmp, points_d->inod_viz, points_d->xyzw_viz);
 	copy_viewer_udt_data(viz_tmp, points_d->nnod_viz, points_d->ncomptot, points_d->d_nod);
 
+    dealloc_psf_data_s(viz_tmp);
     dealloc_psf_color_data_c(viz_tmp);
-	dealloc_psf_data_s(viz_tmp);
+    dealloc_psf_field_data_c(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
     return;
 }
 
 void set_viewer_fieldline_data(struct psf_data *fline_d,
                                struct psf_data *viz_tmp){
-	alloc_fline_field_name_c(viz_tmp->nfield, fline_d);
+    fline_d->nfield = viz_tmp->nfield;
+    alloc_psf_field_name_c(fline_d);
     fline_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, fline_d->nfield,
                                                    fline_d->ncomp,  fline_d->istack_comp,
                                                    fline_d->id_coord, fline_d->data_name);
 
-    alloc_fline_node_s(viz_tmp->nnod_viz, fline_d);
-    alloc_fline_ele_s(viz_tmp->nele_viz, viz_tmp->nnod_4_ele_viz, fline_d);
+    fline_d->nnod_viz =       viz_tmp->nnod_viz;
+    fline_d->nele_viz =       viz_tmp->nele_viz;
+    fline_d->nnod_4_ele_viz = viz_tmp->nnod_4_ele_viz;
+    alloc_viz_node_s(fline_d);
+    alloc_viz_ele_s(fline_d);
 
-    alloc_fline_field_data_c(fline_d);
+    alloc_psf_field_data_c(fline_d);
 
 	copy_viewer_udt_node(viz_tmp, fline_d->inod_viz, fline_d->xyzw_viz);
 	copy_viewer_udt_data(viz_tmp, fline_d->nnod_viz, fline_d->ncomptot, fline_d->d_nod);

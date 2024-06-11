@@ -16,7 +16,7 @@ struct kemoview_fline * init_kemoview_fline(void){
 		exit(0);
 	}
 	
-    kemo_fline->fline_d =   init_fline_data();
+    kemo_fline->fline_d =   init_psf_data();
     kemo_fline->fline_dir = init_fline_directions();
     kemo_fline->fline_m =   init_psf_menu_val();
 	return kemo_fline;
@@ -36,7 +36,7 @@ void close_fieldline_view(struct kemoview_fline *kemo_fline){
                            kemo_fline->fline_m);
 
     dealloc_fline_direction_data(kemo_fline->fline_dir);
-	deallc_all_fline_data(kemo_fline->fline_d);
+    deallc_all_psf_data(kemo_fline->fline_d);
     return;
 }
 

@@ -78,9 +78,21 @@ void alloc_psf_field_name_c(struct psf_data *psf_s){
 	int i;
 	
 	psf_s->ncomp =       (long *)calloc(psf_s->nfield,sizeof(long));
+    if(psf_s->ncomp  == NULL){
+        printf("malloc error for psf_s->ncomp \n");
+        exit(0);
+    }
 	psf_s->istack_comp = (long *)calloc(psf_s->nfield+1,sizeof(long));
-
+    if(psf_s->ncomp  == NULL){
+        printf("malloc error for psf_s->ncomp \n");
+        exit(0);
+    }
+    
 	psf_s->id_coord =    (int *)calloc(psf_s->nfield,sizeof(int));
+    if(psf_s->ncomp  == NULL){
+        printf("malloc error for psf_s->ncomp \n");
+        exit(0);
+    }
 	
 	psf_s->data_name = (char **)malloc(psf_s->nfield*sizeof(char *));
     if(psf_s->data_name  == NULL){
@@ -180,7 +192,9 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	
 	for(int i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
 	free(psf_s->data_name);
-	
+    
+    psf_s->nfield = 0;
+    psf_s->ncomptot = 0;
 	return;
 };
 
@@ -194,11 +208,6 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_min);
 	
 	free(psf_s->d_amp);
-		
-    dealloc_psf_field_data_c(psf_s);
-		
-	psf_s->ncomptot = 0;
-	psf_s->nfield =   0;
 	return;
 };
 
@@ -216,6 +225,7 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 void deallc_all_psf_data(struct psf_data *psf_s){
 	dealloc_psf_data_s(psf_s);
     dealloc_psf_color_data_c(psf_s);
+    dealloc_psf_field_data_c(psf_s);
 	dealloc_psf_mesh_c(psf_s);
 	return;
 };

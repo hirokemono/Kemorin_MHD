@@ -61,21 +61,6 @@ void alloc_points_ave_data(struct points_data *points_d);
 void deallc_all_points_data(struct points_data *points_d);
 
 
-
-struct psf_data * init_fline_data(void);
-
-void alloc_fline_node_s(long nnod, struct psf_data *fline_d);
-
-void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
-                       struct psf_data *fline_d);
-
-void alloc_fline_field_name_c(long nfield, struct psf_data *fline_d);
-void alloc_fline_field_data_c(struct psf_data *fline_d);
-
-void alloc_fline_color_field_data(struct psf_data *fline_d);
-void alloc_fline_ave_data(struct psf_data *fline_d);
-void deallc_all_fline_data(struct psf_data *fline_d);
-
 struct fline_directions * init_fline_directions(void);
 void alloc_fline_direction_data(struct psf_data *fline_d,
                                 struct fline_directions *fline_dir);
