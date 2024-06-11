@@ -641,7 +641,9 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_sgl);
     [self SetCurrentPSFFile:kemo_sgl];
+    
     [self UpdateCurrentPsfMenu:kemo_sgl];
+    [_fillRectView UpdateColorbar];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -655,6 +657,7 @@
 	
     [self SetPsfRanges:kemo_sgl];
     
+    [_fillRectView UpdateColorbar];
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -666,6 +669,7 @@
 	
     [self SetPsfRanges:kemo_sgl];
     
+    [_fillRectView UpdateColorbar];
 	[_metalView UpdateImage:kemo_sgl];
 }
 

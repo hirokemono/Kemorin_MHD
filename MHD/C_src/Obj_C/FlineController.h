@@ -11,6 +11,7 @@
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 #import "KemoViewerObject.h"
+#import "fillRectView.h"
 
 #include "Kemoviewer.h"
 
@@ -19,6 +20,7 @@
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet fillRectView* _fillRectView;
     IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger DrawFlineFlag;

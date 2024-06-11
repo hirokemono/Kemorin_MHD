@@ -15,6 +15,7 @@
 #import "RGBAMapController.h"
 #import "ElasticMenuWindow.h"
 #import "KemoViewerObject.h"
+#import "fillRectView.h"
 
 #include "Kemoviewer.h"
 
@@ -23,6 +24,7 @@
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet fillRectView* _fillRectView;
     IBOutlet KemoViewerObject *_kmv;
 
     IBOutlet NSPathControl *_psfPathControl;
