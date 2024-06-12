@@ -103,24 +103,3 @@ void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_
 	return;
 };
 
-long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
-    long output = 0;
-	
-	if(selected == NUM_FIELD_FLAG){
-		output = send_nfield_each_psf(kemo_fline->fline_d);
-	}else if(selected == NTOT_COMPONENT_FLAG){
-		output = send_ncomptot_each_psf(kemo_fline->fline_d);
-	}else if(selected == FIELD_SEL_FLAG){
-		output = send_field_draw_each_psf(kemo_fline->fline_m);
-	}else if(selected == COMPONENT_SEL_FLAG){
-		output = send_draw_comp_id_psf(kemo_fline->fline_m);
-	}else if(selected == DRAW_ADDRESS_FLAG){
-		output = send_draw_component_psf(kemo_fline->fline_m);
-	}else if(selected == LINETYPE_FLAG){
-		output = get_fline_type(kemo_fline->fline_m);
-    }else if(selected == COORDINATE_FLAG){
-        output = send_coordinate_id_psf(kemo_fline->fline_d,
-                                        kemo_fline->fline_m);
-	};
-	return output;
-};

@@ -41,6 +41,5 @@ void set_fline_parameters(int selected, int input, struct kemoview_fline *kemo_f
 int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected);
 
 void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_fline);
-long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline);
 
 #endif

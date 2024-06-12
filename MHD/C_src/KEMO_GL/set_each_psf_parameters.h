@@ -29,17 +29,17 @@ int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
                                   struct kv_string *stripped_filehead);
 
 
-long send_nfield_each_psf(struct psf_data *psf_d);
-long send_ncomptot_each_psf(struct psf_data *psf_d);
+long send_nfield_each_VIZ(struct psf_data *psf_d);
+long send_ncomptot_each_VIZ(struct psf_data *psf_d);
 long send_ncomp_each_psf(struct psf_data *psf_d, int i);
 long send_istack_each_comp_psf(struct psf_data *psf_d, int i);
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i);
 
 
-int send_field_draw_each_psf(struct psf_menu_val *psf_menu);
-int send_draw_comp_id_psf(struct psf_menu_val *psf_menu);
-long send_draw_component_psf(struct psf_menu_val *psf_menu);
-int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu);
+int send_field_draw_each_VIZ(struct psf_menu_val *psf_menu);
+int send_draw_comp_id_VIZ(struct psf_menu_val *psf_menu);
+long send_draw_component_VIZ(struct psf_menu_val *psf_menu);
+int send_coordinate_id_VIZ(struct psf_data *psf_d, struct psf_menu_val *psf_menu);
 
 void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
                                int width, int height, const unsigned char *bgra_in);
@@ -54,23 +54,18 @@ int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_solid(struct psf_menu_val *psf_menu);
-int toggle_draw_psf_solid(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_grid(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_grid(struct psf_menu_val *psf_menu);
-int toggle_draw_psf_grid(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_zero(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_zero(struct psf_menu_val *psf_menu);
-int toggle_draw_psf_zero(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_cbar(struct psf_menu_val *psf_menu);
-int toggle_draw_psf_cbar(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_vect(struct psf_menu_val *psf_menu);
-int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);

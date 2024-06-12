@@ -134,10 +134,12 @@
 	NSNumber *stnum;
     struct kv_string *colorname;
 	
-	PsfNumberOfField
-        =  kemoview_get_each_PSF_field_param(kemo_sgl, NUM_FIELD_FLAG);
-	PsfTotalComponent
-        = kemoview_get_each_PSF_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
+	PsfNumberOfField = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                    SURFACE_RENDERING,
+                                                    NUM_FIELD_FLAG);
+	PsfTotalComponent = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                     SURFACE_RENDERING,
+                                                     NTOT_COMPONENT_FLAG);
 	[PsfFieldName removeAllObjects];	
 	[PsfNumberOfComponent removeAllObjects];
     
@@ -162,12 +164,16 @@
 	double current_value;
 	int i_digit;
 	
-	self.PSFSelectedField
-        = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
-	self.PSFSelectedComponent
-        = kemoview_get_each_PSF_field_param(kemo_sgl, COMPONENT_SEL_FLAG);
+	self.PSFSelectedField = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                         SURFACE_RENDERING,
+                                                         FIELD_SEL_FLAG);
+	self.PSFSelectedComponent = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                             SURFACE_RENDERING,
+                                                             COMPONENT_SEL_FLAG);
     
-	int iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                SURFACE_RENDERING,
+                                                DRAW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch 
         =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
@@ -265,7 +271,7 @@
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent,
                                       kemo_sgl);
     /*   
-     int iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+     int iplotted = kemoview_get_VIZ_field_param(kemo_sgl, SURFACE_RENDERING, DRAW_ADDRESS_FLAG);
      
      self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
@@ -449,7 +455,9 @@
 		};
 		
         
-		iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+		iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                SURFACE_RENDERING,
+                                                DRAW_ADDRESS_FLAG);
 		self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
                                                            SURFACE_RENDERING,
                                                            ISET_COLOR_MIN,
@@ -468,7 +476,9 @@
 	int i_digit;
 	int iplotted;
     
-	iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                            SURFACE_RENDERING,
+                                            DRAW_ADDRESS_FLAG);
     
  	self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
                                                        SURFACE_RENDERING,

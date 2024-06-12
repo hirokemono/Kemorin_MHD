@@ -21,7 +21,9 @@
 
 - (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl
 {
-    int i_comp = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+    int i_comp = kemoview_get_VIZ_field_param(kemo_sgl,
+                                              SURFACE_RENDERING,
+                                              DRAW_ADDRESS_FLAG);
 	self.DataMinimum = kemoview_get_VIZ_data_range(kemo_sgl,
                                                    SURFACE_RENDERING,
                                                    ISET_COLOR_MIN, i_comp);

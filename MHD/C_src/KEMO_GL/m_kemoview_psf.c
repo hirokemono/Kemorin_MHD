@@ -218,51 +218,26 @@ void set_each_PSF_field_param(int selected, int input,
 	return;
 };
 
-int get_each_PSF_field_param(int selected, struct kemoview_mul_psf *kemo_mul_psf){
-	int output = 0;
-	int i_current = kemo_mul_psf->psf_a->id_current;
-	
-	if(selected == NUM_FIELD_FLAG){
-		output = (int) send_nfield_each_psf(kemo_mul_psf->psf_d[i_current]);
-	} else if(selected == NTOT_COMPONENT_FLAG){
-		output = (int) send_ncomptot_each_psf(kemo_mul_psf->psf_d[i_current]);
-	} else if(selected == FIELD_SEL_FLAG){
-		output =  send_field_draw_each_psf(kemo_mul_psf->psf_m[i_current]);
-	} else if(selected == COMPONENT_SEL_FLAG){
-		output =  send_draw_comp_id_psf(kemo_mul_psf->psf_m[i_current]);
-	} else if(selected == DRAW_ADDRESS_FLAG){
-		output =  (int) send_draw_component_psf(kemo_mul_psf->psf_m[i_current]);
-	} else if(selected == COORDINATE_FLAG){
-		output =  send_coordinate_id_psf(kemo_mul_psf->psf_d[i_current],
-                                         kemo_mul_psf->psf_m[i_current]);
-	};
-	return output;
+long get_VIZ_field_param(int selected,
+                         struct psf_data *viz_data,
+                         struct psf_menu_val *viz_menu){
+    long output = 0;
+    
+    if(selected == NUM_FIELD_FLAG){
+        output = send_nfield_each_VIZ(viz_data);
+    }else if(selected == NTOT_COMPONENT_FLAG){
+        output = send_ncomptot_each_VIZ(viz_data);
+    }else if(selected == FIELD_SEL_FLAG){
+        output = send_field_draw_each_VIZ(viz_menu);
+    }else if(selected == COMPONENT_SEL_FLAG){
+        output = send_draw_comp_id_VIZ(viz_menu);
+    }else if(selected == DRAW_ADDRESS_FLAG){
+        output = send_draw_component_VIZ(viz_menu);
+    }else if(selected == COORDINATE_FLAG){
+        output = send_coordinate_id_VIZ(viz_data, viz_menu);
+    };
+    return output;
 };
-
-int toggle_each_PSF_draw_switch(int selected,
-                                struct kemoview_mul_psf *kemo_mul_psf){
-	int i_current = kemo_mul_psf->psf_a->id_current;
-	int toggle = 0;
-	
-	if      (selected == PSFSOLID_TOGGLE){
-		return toggle_draw_psf_solid(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSFGRID_TOGGLE){
-		return toggle_draw_psf_grid(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == ZEROGRID_TOGGLE){
-		return toggle_draw_psf_zero(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == COLORBAR_TOGGLE){
-		return toggle_draw_psf_cbar(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSF_POLYGON_SWITCH){
-		return toggle_each_psf_polygon_mode(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSFVECT_TOGGLE){
-		return toggle_draw_psf_vect(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSFREFV_TOGGLE){
-		return toggle_draw_psf_refv(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSFTANVEC_TOGGLE){
-		return toggle_each_psf_vector_mode(kemo_mul_psf->psf_m[i_current]);
-	};
-	return toggle;
-}
 
 void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
@@ -530,7 +505,7 @@ int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
 
 struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = get_curent_PSF_ID(kemo_mul_psf->psf_a);
-    long icomp =    send_draw_component_psf(kemo_mul_psf->psf_m[i_current]);
+    long icomp =    send_draw_component_VIZ(kemo_mul_psf->psf_m[i_current]);
     return kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
 }
 

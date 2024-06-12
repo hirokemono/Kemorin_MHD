@@ -153,21 +153,14 @@ void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
 	int i_min_digit, i_max_digit;
 	double current_thick;
 	int int_thick, current_digit;
-/*
-    int ifield =  kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                 FIELD_SEL_FLAG);
-	int num_fld = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                 NUM_FIELD_FLAG);
-	int num_comp = kemoview_get_fline_color_num_comps(kemo_gl->kemoview_data,
-                                                      ifield);
-*/
+
     int icolor_mode = kemoview_get_VIZ_patch_color_mode(kemo_gl->kemoview_data,
                                                         FIELDLINE_RENDERING);
-	int itype_fline = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                     LINETYPE_FLAG);
+	int itype_fline = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
 	
-	int icomp =   kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                 DRAW_ADDRESS_FLAG);
+	int icomp =   kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                               FIELDLINE_RENDERING,
+                                               DRAW_ADDRESS_FLAG);
 	double value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                                    FIELDLINE_RENDERING,
                                                    ISET_COLOR_MIN, icomp);
@@ -255,7 +248,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     
     fline_menu->switch_tube = gtk_switch_new();
-    int iflag = get_fline_field_param(LINETYPE_FLAG, kemo_gl->kemoview_data);
+    int iflag = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
     gtk_switch_set_state(GTK_SWITCH(fline_menu->switch_tube), iflag);
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",

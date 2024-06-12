@@ -248,8 +248,9 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 0);
 	};
 
-	icomp = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                              DRAW_ADDRESS_FLAG);
+	icomp = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                         SURFACE_RENDERING,
+                                         DRAW_ADDRESS_FLAG);
 	value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                             SURFACE_RENDERING,
                                             ISET_COLOR_MIN, icomp);

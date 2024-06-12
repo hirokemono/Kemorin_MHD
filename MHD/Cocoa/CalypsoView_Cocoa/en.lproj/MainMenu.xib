@@ -6778,7 +6778,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
-                                                        <rect key="frame" x="0.0" y="0.0" width="165.5" height="126"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="166" height="126"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -6823,7 +6823,7 @@
                                                 <constraint firstAttribute="width" constant="154" id="Hr7-yv-vjL"/>
                                                 <constraint firstAttribute="height" constant="145" id="VUh-Wg-cYV"/>
                                             </constraints>
-                                            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.29629629629629628" horizontal="YES" id="2595">
+                                            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.2857142857142857" horizontal="YES" id="2595">
                                                 <rect key="frame" x="1" y="128" width="152" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -6832,7 +6832,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <tableHeaderView key="headerView" wantsLayer="YES" id="2597">
-                                                <rect key="frame" x="0.0" y="0.0" width="165.5" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="166" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>

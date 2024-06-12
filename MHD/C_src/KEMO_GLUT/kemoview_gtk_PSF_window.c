@@ -60,8 +60,9 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     int index_mode = gtk_selected_combobox_index(combobox_field);
-    int num_fld = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                    NUM_FIELD_FLAG);
+    int num_fld = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                               SURFACE_RENDERING,
+                                               NUM_FIELD_FLAG);
     if(index_mode >= num_fld || index_mode < 0){
         index_mode = 0;
     }
@@ -86,7 +87,9 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     int index_mode = gtk_selected_combobox_index(combobox_comp);
-    int if_psf = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data, FIELD_SEL_FLAG);
+    int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              SURFACE_RENDERING,
+                                              FIELD_SEL_FLAG);
     int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data, if_psf);
     if(index_mode >= ncomp || index_mode < 0){
         index_mode = 0;
@@ -106,8 +109,9 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 static void init_psf_draw_component_hbox(struct kemoviewer_gl_type *kemo_gl,
                                          struct psf_gtk_menu *psf_gmenu, GtkWidget *itemTEvo){
 	char comp_name[1024];
-	int if_psf = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                   FIELD_SEL_FLAG);
+	int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              SURFACE_RENDERING,
+                                              FIELD_SEL_FLAG);
 	int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data,
                                                      if_psf);
 	int icomp;
@@ -116,16 +120,18 @@ static void init_psf_draw_component_hbox(struct kemoviewer_gl_type *kemo_gl,
 	GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(psf_gmenu->comp_label_tree_view));
 	GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
 	
-	int id_coord = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                     COORDINATE_FLAG);
+	int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                SURFACE_RENDERING,
+                                                COORDINATE_FLAG);
 	int index = 0;
 	for(icomp=0;icomp<ncomp;icomp++){
 		set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
 		index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
 	};
 	
-	icomp = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                              COMPONENT_SEL_FLAG);
+	icomp = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                         SURFACE_RENDERING,
+                                         COMPONENT_SEL_FLAG);
     psf_gmenu->renderer_comp = gtk_cell_renderer_text_new();
     psf_gmenu->combobox_comp = gtk_combo_box_new();
     gtk_combo_box_set_model(GTK_COMBO_BOX(psf_gmenu->combobox_comp), child_model_comp);
@@ -151,10 +157,12 @@ static void init_psf_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl,
                                      struct psf_gtk_menu *psf_gmenu,
                                      GtkWidget *itemTEvo){
 	struct kv_string *colorname = kemoview_alloc_kvstring();
-	int num_field = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                      NUM_FIELD_FLAG);
-	int if_psf =    kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                      FIELD_SEL_FLAG);
+	int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                 SURFACE_RENDERING,
+                                                 NUM_FIELD_FLAG);
+	int if_psf =    kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                 SURFACE_RENDERING,
+                                                 FIELD_SEL_FLAG);
 	int ifld;
 	
     psf_gmenu->field_label_tree_view = create_fixed_label_w_index_tree();

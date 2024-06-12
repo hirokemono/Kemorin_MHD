@@ -73,7 +73,7 @@
 -(void) awakeFromNib
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.Flinetype =       kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
+    self.Flinetype = kemoview_get_line_type_flag(kemo_sgl);
     return;
 }
 
@@ -87,10 +87,12 @@
     NSString *stname;
 	NSNumber *stnum;
 	
-	FlineNumberOfField 
-        =  kemoview_get_fline_field_param(kemo_sgl, NUM_FIELD_FLAG);
-	FlineTotalComponent 
-        = kemoview_get_fline_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
+	FlineNumberOfField =  kemoview_get_VIZ_field_param(kemo_sgl,
+                                                       FIELDLINE_RENDERING,
+                                                       NUM_FIELD_FLAG);
+	FlineTotalComponent = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                       FIELDLINE_RENDERING,
+                                                       NTOT_COMPONENT_FLAG);
 	
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                  FIELDLINE_RENDERING, ISET_WIDTH,
@@ -239,8 +241,9 @@
 	kemoview_set_fline_field_param(FIELD_SEL_FLAG, (int) isel,
                                    kemo_sgl);
 	
-    int iplotted
-        = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+    int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue
         = kemoview_get_VIZ_data_range(kemo_sgl,
                                       FIELDLINE_RENDERING,
@@ -275,8 +278,9 @@
                                    (int) [_FlineComponentMenu indexOfSelectedItem],
                                    kemo_sgl);
 	
-	int iplotted
-        = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue 
         = kemoview_get_VIZ_data_range(kemo_sgl,
                                       FIELDLINE_RENDERING,
@@ -364,8 +368,9 @@
 			}
 		}
 
-		iplotted
-            = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+		iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                DRAW_ADDRESS_FLAG);
 		self.FlineMinimumValue
             = kemoview_get_VIZ_data_range(kemo_sgl,
                                           FIELDLINE_RENDERING,

@@ -110,8 +110,9 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 
 void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_gtk_menu *psf_gmenu){
-    int if_psf = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
-                                                   FIELD_SEL_FLAG);
+    int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              SURFACE_RENDERING,
+                                              FIELD_SEL_FLAG);
     int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data,
                                                      if_psf);
     if(ncomp == 3){

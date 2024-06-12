@@ -596,9 +596,25 @@ void kemoview_set_each_PSF_field_param(int selected, int input,
                                        struct kemoviewer_type *kemoviewer){
 	return set_each_PSF_field_param(selected, input, kemoviewer->kemo_mul_psf);
 };
-int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
-                                      int selected){
-	return get_each_PSF_field_param(selected, kemoviewer->kemo_mul_psf);
+
+int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
+                                 int id_model, int selected){
+    long index = 0;
+    if(id_model == FIELDLINE_RENDERING){
+        index = get_VIZ_field_param(selected,
+                                    kemoviewer->kemo_fline->fline_d,
+                                    kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        index = get_VIZ_field_param(selected,
+                                    kemoviewer->kemo_tracer->tracer_d,
+                                    kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        index = get_VIZ_field_param(selected,
+                                    kemoviewer->kemo_mul_psf->psf_d[i_current],
+                                    kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+    return (int) index;
 };
 
 long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
@@ -620,11 +636,6 @@ void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kem
 int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
     return get_PSF_draw_refv(kemoviewer->kemo_mul_psf);
 };
-
-int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
-                                    int selected){
-	return toggle_each_PSF_draw_switch(selected, kemoviewer->kemo_mul_psf);
-}
 
 void kemoview_set_PSF_draw_flags(int selected, int iflag,
                                  struct kemoviewer_type *kemoviewer){
@@ -1017,15 +1028,10 @@ void kemoview_set_fline_field_param(int selected, int input,
                                     struct kemoviewer_type *kemoviewer){
 	return set_fline_field_param(selected, input, kemoviewer->kemo_fline);
 };
-int kemoview_get_fline_field_param(struct kemoviewer_type *kemoviewer,
-                                   int selected){
-	return (int) get_fline_field_param(selected, kemoviewer->kemo_fline);
-};
 
-double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
-                                           double value){
-	return get_each_PSF_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
-}
+int kemoview_get_line_type_flag(struct kemoviewer_type *kemoviewer){
+    return (int) get_fline_type(kemoviewer->kemo_fline->fline_m);
+};
 
 
 /* mesh controls  */

@@ -44,10 +44,12 @@ GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
 	int index = 0;
 	
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	int num_field = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                   NUM_FIELD_FLAG);
-	int if_fline =  kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                   FIELD_SEL_FLAG);
+	int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                 FIELDLINE_RENDERING,
+                                                 NUM_FIELD_FLAG);
+	int if_fline =  kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                 FIELDLINE_RENDERING,
+                                                 FIELD_SEL_FLAG);
 	int ifld;
 	
 	label_tree_field = create_fixed_label_w_index_tree();
@@ -84,18 +86,21 @@ GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
 	
 	char comp_name[128];
 	int icomp, id_coord;
-	int if_fline = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                  FIELD_SEL_FLAG);
-	int ic_fline = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                                  COMPONENT_SEL_FLAG);
+	int if_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                FIELDLINE_RENDERING,
+                                                FIELD_SEL_FLAG);
+	int ic_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                FIELDLINE_RENDERING,
+                                                COMPONENT_SEL_FLAG);
 	int ncomp =  kemoview_get_fline_color_num_comps(kemo_gl->kemoview_data,
                                                     if_fline);
 	
     label_tree_comp = create_fixed_label_w_index_tree();
     model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
     child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-    id_coord = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
-                                              COORDINATE_FLAG);
+    id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                            FIELDLINE_RENDERING,
+                                            COORDINATE_FLAG);
     index = 0;
     for(icomp=0;icomp<ncomp;icomp++){
         set_PSF_component_name(ncomp, id_coord, icomp, comp_name);

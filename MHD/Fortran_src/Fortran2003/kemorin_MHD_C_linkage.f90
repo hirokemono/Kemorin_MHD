@@ -165,8 +165,8 @@
 !    void kemoview_set_each_PSF_field_param(int selected, int input,
 !                                           struct kemoviewer_type *kemoviewer);
 !
-!    int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
-!                                          int selected);
+!    int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
+!                                     int id_model, int selected);
 !    long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
 !    void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
 !                                     struct kv_string *colorname, int i);
@@ -203,8 +203,6 @@
 !
 !    int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
 !                                    int selected);
-!    int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
-!                                        int selected);
 !    
 !    double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
 !                                       int id_model, int selected, int icomp);
@@ -264,8 +262,6 @@
 !
 !    void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
 !                                    struct fieldline_gtk_menu *fline_menu){
-!    double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
-!                                               double value);
 !
 !    void kemoview_get_rgb_color(int i_point, double *value, double *color);
         subroutine kemoview_get_rgb_color                               &

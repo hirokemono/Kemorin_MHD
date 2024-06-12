@@ -27,8 +27,8 @@ int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
 };
 
 
-long send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
-long send_ncomptot_each_psf(struct psf_data *psf_d){return psf_d->ncomptot;};
+long send_nfield_each_VIZ(struct psf_data *psf_d){return psf_d->nfield;};
+long send_ncomptot_each_VIZ(struct psf_data *psf_d){return psf_d->ncomptot;};
 long send_ncomp_each_psf(struct psf_data *psf_d, int i){return psf_d->ncomp[i];};
 long send_istack_each_comp_psf(struct psf_data *psf_d, int i){return psf_d->istack_comp[i];};
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i){
@@ -36,10 +36,10 @@ void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname
 };
 
 
-int send_field_draw_each_psf(struct psf_menu_val *psf_menu){return psf_menu->if_draw_viz;};
-int send_draw_comp_id_psf(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_viz;};
-long send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_viz;};
-int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
+int send_field_draw_each_VIZ(struct psf_menu_val *psf_menu){return psf_menu->if_draw_viz;};
+int send_draw_comp_id_VIZ(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_viz;};
+long send_draw_component_VIZ(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_viz;};
+int send_coordinate_id_VIZ(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
 	int id_current = psf_menu->if_draw_viz;
 	return psf_d->id_coord[id_current];
 };
@@ -65,38 +65,18 @@ int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu){
 
 void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_viz = iflag;};
 int send_draw_psf_solid(struct psf_menu_val *psf_menu){return psf_menu->iflag_draw_viz;};
-int toggle_draw_psf_solid(struct psf_menu_val *psf_menu){
-	psf_menu->iflag_draw_viz = toggle_value_c(psf_menu->iflag_draw_viz);
-	return psf_menu->iflag_draw_viz;
-};
 
 void set_draw_psf_grid(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_grid = iflag;};
 int send_draw_psf_grid(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_grid;};
-int toggle_draw_psf_grid(struct psf_menu_val *psf_menu){
-	psf_menu->draw_psf_grid = toggle_value_c(psf_menu->draw_psf_grid);
-	return psf_menu->draw_psf_grid;
-};
 
 void set_draw_psf_zero(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_zero = iflag;};
 int send_draw_psf_zero(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_zero;};
-int toggle_draw_psf_zero(struct psf_menu_val *psf_menu){
-	psf_menu->draw_psf_zero = toggle_value_c(psf_menu->draw_psf_zero);
-	return psf_menu->draw_psf_zero;
-};
 
 void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_cbar = iflag;};
 int send_draw_psf_cbar(struct psf_menu_val *psf_menu) {return psf_menu->iflag_draw_cbar;};
-int toggle_draw_psf_cbar(struct psf_menu_val *psf_menu){
-	psf_menu->iflag_draw_cbar = toggle_value_c(psf_menu->iflag_draw_cbar);
-	return psf_menu->iflag_draw_cbar;
-};
 
 void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_vect = iflag;};
 int send_draw_psf_vect(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_vect;};
-int toggle_draw_psf_vect(struct psf_menu_val *psf_menu){
-	psf_menu->draw_psf_vect = toggle_value_c(psf_menu->draw_psf_vect);
-	return psf_menu->draw_psf_vect;
-};
 
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_refv;};
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){

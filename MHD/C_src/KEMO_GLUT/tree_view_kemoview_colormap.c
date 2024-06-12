@@ -65,7 +65,7 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
 
     int n_color = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data,
                                                   SURFACE_RENDERING,
-                                                  ISET_NUM_COLOR)
+                                                  ISET_NUM_COLOR);
     if(n_color > 16) return;
     add_colormap_list_items_CB(color_vws);
 	
