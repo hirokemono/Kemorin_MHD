@@ -16,7 +16,8 @@ static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_dat
 	struct kv_string *filename = kemoview_save_file_panel(window);
 	
 	if(filename->string[0] != '\0'){
-        kemoview_write_PSF_colormap_file(filename, kemo_gl->kemoview_data);
+        kemoview_write_colormap_file(filename, SURFACE_RENDERING,
+                                     kemo_gl->kemoview_data);
     };
 	kemoview_free_kvstring(filename);
     draw_full_gl(kemo_gl);
@@ -30,7 +31,8 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 	struct kv_string *filename = kemoview_read_file_panel(window);
 	
 	if(filename->string[0] != '\0'){
-        kemoview_read_PSF_colormap_file(filename, kemo_gl->kemoview_data);
+        kemoview_read_colormap_file(filename, SURFACE_RENDERING,
+                                    kemo_gl->kemoview_data);
     };
 	kemoview_free_kvstring(filename);
 	

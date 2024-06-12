@@ -405,13 +405,13 @@ void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
 	return;
 };
 
-double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf *kemo_mul_psf){
+double get_VIZ_data_range(int selected, int icomp,
+                          struct psf_menu_val *viz_menu){
 	double value = 0.0;
-	int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == ISET_COLOR_MIN){
-		value = send_psf_data_min(kemo_mul_psf->psf_d[i_current], icomp);
+		value = send_VIZ_data_min(kemo_mul_psf->psf_d[i_current], icomp);
 	}else if(selected == ISET_COLOR_MAX){
-		value = send_psf_data_max(kemo_mul_psf->psf_d[i_current], icomp);
+		value = send_VIZ_data_max(kemo_mul_psf->psf_d[i_current], icomp);
 	};
 	return value;
 }
@@ -519,18 +519,9 @@ double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double va
 }
 
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
-                             struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    write_each_PSF_colormap_control_file(filename,
-                                         iflag_draw_axis,
-                                         kemo_mul_psf->psf_m[i_current]);
+                             struct psf_menu_val *viz_menu){
+    write_VIZ_colormap_control_file(filename, iflag_draw_axis, viz_menu);
 }
-void read_PSF_colormap_file(struct kv_string *filename,
-                            struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    read_each_PSF_colormap_control_file(filename, kemo_mul_psf->psf_m[i_current]);
-}
-
 
 
 

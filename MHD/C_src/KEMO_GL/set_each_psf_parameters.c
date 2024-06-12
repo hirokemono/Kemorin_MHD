@@ -137,8 +137,8 @@ int get_PSF_colormap_id(struct psf_menu_val *psf_menu){
 	return get_color_mode_id_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 };
 
-double send_psf_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
-double send_psf_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
+double send_VIZ_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
+double send_VIZ_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
 
 void delete_VIZ_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_color_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_delete);
@@ -254,14 +254,14 @@ void get_VIZ_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
     get_opacity_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_point, value, opacity);
 }
 
-void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
-                                          struct psf_menu_val *psf_menu){
+void write_VIZ_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
+                                     struct psf_menu_val *psf_menu){
 	write_colormap_control_file_s(filename->string, psf_menu->iflag_draw_time,
                                   iflag_draw_axis, psf_menu->iflag_draw_cbar,
                                   psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
-void read_each_PSF_colormap_control_file(struct kv_string *filename,
-                                         struct psf_menu_val *psf_menu){
+void read_VIZ_colormap_control_file(struct kv_string *filename,
+                                    struct psf_menu_val *psf_menu){
 	read_colormap_control_file_s(filename->string, psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 

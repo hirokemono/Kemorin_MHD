@@ -509,8 +509,8 @@ extern "C" {
     double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
                                              double value);
     
-	double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
-                                            int selected, int icomp);
+	double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
+                                       int id_model, int selected, int icomp){
     double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,
                                           int id_model, int selected);
 
@@ -519,10 +519,10 @@ extern "C" {
     void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer, int id_model,
                                         int i_point, double *value, double *opacity);
 
-    void kemoview_write_PSF_colormap_file(struct kv_string *filename,
-                                          struct kemoviewer_type *kemoviewer);
-    void kemoview_read_PSF_colormap_file(struct kv_string *filename,
-                                         struct kemoviewer_type *kemoviewer);
+    void kemoview_write_colormap_file(struct kv_string *filename, int id_model,
+                                      struct kemoviewer_type *kemoviewer);
+    void kemoview_read_colormap_file(struct kv_string *filename, int id_model,
+                                     struct kemoviewer_type *kemoviewer);
     
     
     /* Subroutines for field lines */
@@ -555,16 +555,7 @@ extern "C" {
     double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                                double value);
     
-	double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
-                                         int selected, int icomp);
-
 	
-    void kemoview_write_fline_colormap_file(struct kv_string *filename,
-                                            struct kemoviewer_type *kemoviewer);
-    void kemoview_read_fline_colormap_file(struct kv_string *filename,
-                                           struct kemoviewer_type *kemoviewer);
-
-
 /* subroutines for mesh */
     void kemoview_draw_with_modified_domain_distance(struct kemoviewer_type *kemoviewer);
 

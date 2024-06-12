@@ -95,8 +95,8 @@ int send_each_increment_vect(struct psf_menu_val *psf_menu);
 double send_scale_vector(struct psf_menu_val *psf_menu);
 double send_vector_thick(struct psf_menu_val *psf_menu);
 
-double send_psf_data_min(struct psf_data *psf_d, int icomp);
-double send_psf_data_max(struct psf_data *psf_d, int icomp);
+double send_VIZ_data_min(struct psf_data *psf_d, int icomp);
+double send_VIZ_data_max(struct psf_data *psf_d, int icomp);
 
 void delete_VIZ_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
 void delete_VIZ_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
@@ -139,10 +139,10 @@ void get_VIZ_color_RGB_value(struct psf_menu_val *psf_menu, int i_point,
 void get_VIZ_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
                                  double *value, double *opacity);
 
-void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
-                                          struct psf_menu_val *psf_menu);
-void read_each_PSF_colormap_control_file(struct kv_string *filename,
-                                         struct psf_menu_val *psf_menu);
+void write_VIZ_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
+                                     struct psf_menu_val *psf_menu);
+void read_VIZ_colormap_control_file(struct kv_string *filename,
+                                    struct psf_menu_val *psf_menu);
 void check_each_PSF_colormap_control(int iflag_draw_axis, struct psf_menu_val *psf_menu);
 
 #endif

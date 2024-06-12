@@ -891,6 +891,51 @@ void kemoview_set_linear_colormap(double minvalue, int i_min_digit,
     }
 }
 
+void kemoview_read_colormap_file(struct kv_string *filename, int id_model,
+                                 struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        read_VIZ_colormap_control_file(filename, kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        read_VIZ_colormap_control_file(filename, kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        read_VIZ_colormap_control_file(filename, kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+}
+
+void kemoview_write_colormap_file(struct kv_string *filename, int id_model,
+                                  struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        write_VIZ_colormap_control_file(filename,
+                                        kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+                                        kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        write_VIZ_colormap_control_file(filename,
+                                        kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+                                        kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        write_VIZ_colormap_control_file(filename,
+                                        kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+                                        kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+}
+
+double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
+                                   int id_model, int selected, int icomp){
+    if(id_model == FIELDLINE_RENDERING){
+        return get_VIZ_data_range(selected, icomp,
+                                  kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        return get_VIZ_data_range(selected, icomp,
+                                  kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        return get_VIZ_data_range(selected, icomp,
+                                  kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+};
+
 
 void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
                                    double *red, double *green, double *blue){
@@ -901,21 +946,7 @@ double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer,
     return get_PSF_opacity_at_value(kemoviewer->kemo_mul_psf, value);
 }
 
-double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
-                                        int selected, int icomp){
-	return get_each_PSF_data_range(selected, icomp, kemoviewer->kemo_mul_psf);
-};
 
-void kemoview_write_PSF_colormap_file(struct kv_string *filename,
-                                      struct kemoviewer_type *kemoviewer){
-    write_PSF_colormap_file(filename,
-                            kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
-                            kemoviewer->kemo_mul_psf);
-}
-void kemoview_read_PSF_colormap_file(struct kv_string *filename,
-                                     struct kemoviewer_type *kemoviewer){
-    read_PSF_colormap_file(filename, kemoviewer->kemo_mul_psf);
-}
 
 /* Subroutines for field lines */
 
@@ -972,23 +1003,6 @@ int kemoview_get_fline_field_param(struct kemoviewer_type *kemoviewer,
 double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                            double value){
 	return get_each_PSF_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
-}
-
-double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
-                                     int selected, int icomp){
-	return get_fline_data_range(selected, icomp, 
-                                kemoviewer->kemo_fline);
-};
-
-void kemoview_write_fline_colormap_file(struct kv_string *filename,
-                                        struct kemoviewer_type *kemoviewer){
-    kemoviewer->kemo_fline->fline_m->iflag_draw_cbar = 0;
-    write_each_PSF_colormap_control_file(filename, kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
-                              kemoviewer->kemo_fline->fline_m);
-}
-void kemoview_read_fline_colormap_file(struct kv_string *filename,
-                                       struct kemoviewer_type *kemoviewer){
-    read_each_PSF_colormap_control_file(filename, kemoviewer->kemo_fline->fline_m);
 }
 
 

@@ -177,10 +177,14 @@
         = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch 
         = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
-	self.PsfMinimumValue 
-        = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
-	self.PsfMaximumValue 
-        = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+	self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                       SURFACE_RENDERING,
+                                                       ISET_COLOR_MIN,
+                                                       iplotted);
+	self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                       SURFACE_RENDERING,
+                                                       ISET_COLOR_MAX,
+                                                       iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
@@ -266,8 +270,8 @@
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
      self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
-     self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
-     self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+     self.PsfMinimumValue =   kemoview_get_VIZ_data_range(kemo_sgl, SURFACE_RENDERING, ISET_COLOR_MIN, iplotted);
+     self.PsfMaximumValue =   kemoview_get_VIZ_data_range(kemo_sgl, SURFACE_RENDERING, ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
@@ -445,10 +449,14 @@
 		
         
 		iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
-		self.PsfMinimumValue 
-            = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
-		self.PsfMaximumValue
-            = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+		self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                           SURFACE_RENDERING,
+                                                           ISET_COLOR_MIN,
+                                                           iplotted);
+		self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                           SURFACE_RENDERING,
+                                                           ISET_COLOR_MAX,
+                                                           iplotted);
 	}
 	
 	return;
@@ -461,10 +469,14 @@
     
 	iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
     
- 	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(kemo_sgl, 
-                                                            ISET_COLOR_MIN, iplotted);
-	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(kemo_sgl,
-                                                            ISET_COLOR_MAX, iplotted);
+ 	self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                       SURFACE_RENDERING,
+                                                       ISET_COLOR_MIN,
+                                                       iplotted);
+	self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                       SURFACE_RENDERING,
+                                                       ISET_COLOR_MAX,
+                                                       iplotted);
 
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                  SURFACE_RENDERING, ISET_COLOR_MIN,

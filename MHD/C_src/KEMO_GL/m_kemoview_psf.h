@@ -68,7 +68,8 @@ void set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
                          double *value, int *i_digit);
 
-double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf *kemo_mul_psf);
+double get_VIZ_data_range(int selected, int icomp,
+                          struct psf_menu_val *viz_menu);
 
 double get_VIZ_opacity_range(int selected, struct psf_menu_val *viz_menu);
 
@@ -100,9 +101,7 @@ void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
 double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value);
 
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
-                             struct kemoview_mul_psf *kemo_mul_psf);
-void read_PSF_colormap_file(struct kv_string *filename,
-                            struct kemoview_mul_psf *kemo_mul_psf);
+                             struct psf_menu_val *viz_menu);
 
 
 int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,

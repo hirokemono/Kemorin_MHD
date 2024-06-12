@@ -253,10 +253,12 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 
 	icomp = kemoview_get_each_PSF_field_param(kemo_gl->kemoview_data,
                                               DRAW_ADDRESS_FLAG);
-	value_min = kemoview_get_each_PSF_data_range(kemo_gl->kemoview_data,
-                                                 ISET_COLOR_MIN, icomp);
-	value_max = kemoview_get_each_PSF_data_range(kemo_gl->kemoview_data,
-                                                 ISET_COLOR_MAX, icomp);
+	value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                            SURFACE_RENDERING,
+                                            ISET_COLOR_MIN, icomp);
+	value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                            SURFACE_RENDERING,
+                                            ISET_COLOR_MAX, icomp);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);

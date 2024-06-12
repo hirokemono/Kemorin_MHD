@@ -117,12 +117,16 @@
     kemoview_free_kvstring(colorname);
     
 	for(i = 0; i < FlineTotalComponent; i++){
-		minmax = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, i);
+		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
+                                             FIELDLINE_RENDERING,
+                                             ISET_COLOR_MIN, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMinimum      addObject:stnum];
 		[stnum release];	
 		
-		minmax = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, i);
+		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
+                                             FIELDLINE_RENDERING,
+                                             SET_COLOR_MAX, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMaximum      addObject:stnum];
 		[stnum release];	
@@ -238,9 +242,14 @@
     int iplotted
         = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue
-        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+        = kemoview_get_VIZ_data_range(kemo_sgl,
+                                      FIELDLINE_RENDERING,
+                                      ISET_COLOR_MIN, iplotted);
 	self.FlineMaximumValue
-        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+        = kemoview_get_VIZ_data_range(kemo_sgl,
+                                      FIELDLINE_RENDERING,
+                                      ISET_COLOR_MAX,
+                                      iplotted);
 	
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                    FIELDLINE_RENDERING, ISET_COLOR_MIN,
@@ -269,9 +278,15 @@
 	int iplotted
         = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue 
-        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+        = kemoview_get_VIZ_data_range(kemo_sgl,
+                                      FIELDLINE_RENDERING,
+                                      ISET_COLOR_MIN,
+                                      iplotted);
 	self.FlineMaximumValue 
-        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+        = kemoview_get_VIZ_data_range(kemo_sgl,
+                                      FIELDLINE_RENDERING,
+                                      ISET_COLOR_MAX,
+                                      iplotted);
 
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                    FIELDLINE_RENDERING, ISET_COLOR_MIN,
@@ -352,9 +367,15 @@
 		iplotted
             = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 		self.FlineMinimumValue
-            = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+            = kemoview_get_VIZ_data_range(kemo_sgl,
+                                          FIELDLINE_RENDERING,
+                                          ISET_COLOR_MIN,
+                                          iplotted);
 		self.FlineMaximumValue
-            = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
+            = kemoview_get_VIZ_data_range(kemo_sgl,
+                                          FIELDLINE_RENDERING,
+                                          ISET_COLOR_MAX,
+                                          iplotted);
 
         kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                      FIELDLINE_RENDERING, ISET_COLOR_MIN,
@@ -374,7 +395,7 @@
 {
 	NSInteger tag = [[FieldlineColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_color_param(ISET_COLORMAP, (int) tag, kemo_sgl);
+	kemoview_set_fline_color_param(PSFSOLID_TOGGLE, (int) tag, kemo_sgl);
 	
 	[_metalView UpdateImage:kemo_sgl];
 }

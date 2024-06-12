@@ -138,7 +138,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer data)
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	kemoview_set_fline_color_param(ISET_COLORMAP, index_mode,
+	kemoview_set_fline_color_param(PSFSOLID_TOGGLE, index_mode,
                                    kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
@@ -162,16 +162,18 @@ void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
                                                       ifield);
 */
     int icolor_mode = kemoview_get_fline_color_param(kemo_gl->kemoview_data,
-                                                     ISET_COLORMAP);
+                                                     PSFSOLID_TOGGLE);
 	int itype_fline = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
                                                      LINETYPE_FLAG);
 	
 	int icomp =   kemoview_get_fline_field_param(kemo_gl->kemoview_data,
                                                  DRAW_ADDRESS_FLAG);
-	double value_min = kemoview_get_fline_data_range(kemo_gl->kemoview_data,
-                                                     ISET_COLOR_MIN, icomp);
-	double value_max = kemoview_get_fline_data_range(kemo_gl->kemoview_data,
-                                                     ISET_COLOR_MAX, icomp);
+	double value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                                   FIELDLINE_RENDERING,
+                                                   ISET_COLOR_MIN, icomp);
+	double value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                                   FIELDLINE_RENDERING,
+                                                   ISET_COLOR_MAX, icomp);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	

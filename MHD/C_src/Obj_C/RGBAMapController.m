@@ -22,10 +22,12 @@
 - (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl
 {
     int i_comp = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
-	self.DataMinimum = kemoview_get_each_PSF_data_range(kemo_sgl,
-                                                        ISET_COLOR_MIN, i_comp);
-	self.DataMaximum = kemoview_get_each_PSF_data_range(kemo_sgl, 
-                                                        ISET_COLOR_MAX, i_comp);
+	self.DataMinimum = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                   SURFACE_RENDERING,
+                                                   ISET_COLOR_MIN, i_comp);
+	self.DataMaximum = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                   SURFACE_RENDERING,
+                                                   ISET_COLOR_MAX, i_comp);
 }
 
 - (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
@@ -51,7 +53,8 @@
 		
         struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
         struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-		kemoview_write_PSF_colormap_file(filename, kemo_sgl);
+        kemoview_write_colormap_file(filename, SURFACE_RENDERING,
+                                     kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                     }];
@@ -75,7 +78,9 @@
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
                                            struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
-                                           kemoview_read_PSF_colormap_file(filename, kemo_sgl);
+                                           kemoview_read_colormap_file(filename,
+                                                                       SURFACE_RENDERING,
+                                                                       kemo_sgl);
                                            kemoview_free_kvstring(filename);
                                            
                                            [_metalView UpdateImage:kemo_sgl];
