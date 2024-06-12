@@ -108,10 +108,6 @@ void get_PSF_color_items(struct kemoview_mul_psf *kemo_mul_psf,
                          int i_point, double *value, double *color);
 void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
                            int i_point, double *value, double *opacity);
-void get_PSF_colormap_tables(struct kemoview_mul_psf *kemo_mul_psf,
-                             int *id_cmap, int *num_cmap, int *num_alpha,
-                             float *cmap_data, float *cmap_norm,
-                             float *alpha_data, float *alpha_norm);
 
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
                              struct kemoview_mul_psf *kemo_mul_psf);

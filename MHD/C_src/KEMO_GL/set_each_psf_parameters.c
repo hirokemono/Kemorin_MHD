@@ -254,13 +254,6 @@ void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point
     get_opacity_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_point, value, opacity);
 }
 
-void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, int *num_cmap, int *num_alpha,
-                                  float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
-    get_colormap_to_tables(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], 
-                           id_cmap, num_cmap, num_alpha,
-                           cmap_data, cmap_norm, alpha_data, alpha_norm);
-}
-
 void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
                                           struct psf_menu_val *psf_menu){
 	write_colormap_control_file_s(filename->string, psf_menu->iflag_draw_time,

@@ -151,29 +151,6 @@ void get_opacity_table_items_s(struct colormap_params *cmap_s,
 	return;
 }
 
-void get_colormap_to_tables(struct colormap_params *cmap_s, int *id_cmap, int *num_cmap, int *num_alpha,
-                            float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
-    int i;
-    double value, color, opacity;
-    
-    *num_cmap = get_color_table_num_s(cmap_s);
-    for(i=0;i<*num_cmap;i++){
-        get_color_table_items_s(cmap_s, i, &value, &color);
-        cmap_data[i] =  (float) value;
-        cmap_norm[i] = (float) color;
-    }
-    
-    *num_alpha = get_opacity_table_num_s(cmap_s);
-    for(i=0;i<*num_alpha;i++) {
-        get_opacity_table_items_s(cmap_s, i, &value, &opacity);
-        alpha_data[i] =  (float) value;
-        alpha_norm[i] = (float)  opacity;
-    }
-    
-    *id_cmap = get_color_mode_id_s(cmap_s);
-    return;
-};
-
 void set_linear_colormap(struct colormap_params *cmap_s,
                          double val_min, double val_max){
 	clear_real2_clist(cmap_s->colormap);

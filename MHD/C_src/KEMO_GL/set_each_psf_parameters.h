@@ -139,9 +139,6 @@ void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
 void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
                                       double *value, double *opacity);
 
-void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, int *num_cmap, int *num_alpha,
-                                  float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
-
 void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
                                           struct psf_menu_val *psf_menu);
 void read_each_PSF_colormap_control_file(struct kv_string *filename,

@@ -55,9 +55,6 @@ void get_color_table_items_s(struct colormap_params *cmap_s,
 void get_opacity_table_items_s(struct colormap_params *cmap_s, 
                                int i_point, double *value, double *opacity);
 
-void get_colormap_to_tables(struct colormap_params *cmap_s, int *id_cmap, int *num_cmap, int *num_alpha,
-                            float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
-
 void set_linear_colormap(struct colormap_params *cmap_s, double val_min, double val_max);
 void set_constant_opacitymap(struct colormap_params *cmap_s,
                              double val_min, double val_max, double opacity);
