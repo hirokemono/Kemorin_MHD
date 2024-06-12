@@ -126,7 +126,7 @@
 #define BW_ALPHA    11
 #define B_AND_W     10
 
-#define RAINBOW_SURFACE  0
+#define COLORED_BY_DATA  0
 #define WHITE_SURFACE    1
 #define GREEN_SURFACE    2
 #define DOMAIN_COLOR     3

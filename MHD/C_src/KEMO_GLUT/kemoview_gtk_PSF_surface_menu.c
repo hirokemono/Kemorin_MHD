@@ -123,7 +123,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
     */
 	}else if (index_mode == RAINBOW_PSF_SURF){
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE,
+		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, COLORED_BY_DATA,
                                      kemo_gl->kemoview_data);
 	}else if (index_mode == TEXTURE_PSF_SURF){
 		load_texture_handler(kemo_gl, parent_window);

@@ -149,7 +149,7 @@ void glut_PSF_comps_select() {
 void glut_PSF_patchcolor_select(){
 	int iflag_p_color = kemoview_get_PSF_patch_color_mode();
 
-	if (iflag_p_color != RAINBOW_SURFACE) {
+	if (iflag_p_color != COLORED_BY_DATA) {
 		glutAddMenuEntry("Rainbow surface", RAINBOW_PSF_SURF);
 	};
 	if (iflag_p_color != WHITE_SURFACE) {
@@ -318,7 +318,7 @@ void glut_PSF_range_menu(){
 			glutAddMenuEntry("show Vector Reference",PSFREFV_TOGGLE);
 		};
 		*/
-		if (iflag_v_color == RAINBOW_SURFACE) {
+		if (iflag_v_color == COLORED_BY_DATA) {
 			glutAddMenuEntry("Black Vector",          WHITE_PSF_VECT);
 		}else{
 			glutAddMenuEntry("Rainbow Vector",        RAINBOW_PSF_VECT);

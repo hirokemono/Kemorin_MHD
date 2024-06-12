@@ -350,7 +350,7 @@ static void set_psf_comp_handler(int sel){
 static void set_psf_patchcolor_handler(int sel){
 	if (sel == WHITE_PSF_SURF)          {kemoview_set_PSF_patch_color_mode(WHITE_SURFACE);}
     else if (sel == SGL_COLOR_PSF_SURF) {set_psf_single_color_console();}
-	else if (sel == RAINBOW_PSF_SURF)   {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
+	else if (sel == RAINBOW_PSF_SURF)   {kemoview_set_PSF_patch_color_mode(COLORED_BY_DATA);}
 	else if (sel == TEXTURE_PSF_SURF) {load_texture_handler();};
 	
 	draw_mesh_w_menu();

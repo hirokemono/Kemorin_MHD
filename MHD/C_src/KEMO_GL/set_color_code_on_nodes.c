@@ -53,7 +53,7 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
 			for(nd=0;nd<4;nd++){psf_s->color_nod[4*inod+nd] = black[nd];};
 		};
 */
-	}else if(psf_m->viz_color_mode == RAINBOW_SURFACE) {
+	}else if(psf_m->viz_color_mode == COLORED_BY_DATA) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
 			d_patch =  psf_s->d_nod[inod*psf_s->ncomptot + psf_m->icomp_draw_viz];
 			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,

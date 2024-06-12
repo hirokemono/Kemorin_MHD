@@ -308,7 +308,7 @@ void update_PSF_textured_id(struct kemoview_mul_psf *kemo_mul_psf){
         if(kemo_mul_psf->psf_a->iflag_loaded[i] != 0
            && kemo_mul_psf->psf_m[i]->viz_color_mode == TEXTURED_SURFACE
            && i != i_current){
-            kemo_mul_psf->psf_m[i]->viz_color_mode = RAINBOW_SURFACE;
+            kemo_mul_psf->psf_m[i]->viz_color_mode = COLORED_BY_DATA;
         };
     };
     kemo_mul_psf->psf_a->ipsf_texured = i_current;

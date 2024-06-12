@@ -219,7 +219,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl, GtkWidg
 	model_veccolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_veccolor));  
 	child_model_veccolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_veccolor));
 	index = 0;
-	index = append_ci_item_to_tree(index, "Colored", RAINBOW_SURFACE, child_model_veccolor);
+	index = append_ci_item_to_tree(index, "Colored", COLORED_BY_DATA, child_model_veccolor);
 	index = append_ci_item_to_tree(index, "White",   WHITE_SURFACE, child_model_veccolor);
 	
 	renderer_veccolor = gtk_cell_renderer_text_new();

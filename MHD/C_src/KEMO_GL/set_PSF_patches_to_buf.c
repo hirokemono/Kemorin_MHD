@@ -232,7 +232,7 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                                        inod, psf_s, psf_n, psf_m,
                                        xyzw_line, dir_line);
                         
-                if(psf_m->vector_patch_color == RAINBOW_SURFACE){
+                if(psf_m->vector_patch_color == COLORED_BY_DATA){
                     d_mag = sqrt(dir_line[0]*dir_line[0] + dir_line[1]*dir_line[1] + dir_line[2]*dir_line[2]);
                     set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
                                            d_mag, color_line);
