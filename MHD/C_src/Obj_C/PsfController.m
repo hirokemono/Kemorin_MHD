@@ -478,7 +478,6 @@
 	
     
     [self.rgbaMapObject updateColormapParameter:kemo_sgl];
-    [self.colorMapObject InitColorTables:kemo_sgl];
     [self.colorMapObject SetColorTables:kemo_sgl];
     [self.opacityMapObject InitOpacityTables:kemo_sgl];
     [self.opacityMapObject SetOpacityTables:kemo_sgl];

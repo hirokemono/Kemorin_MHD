@@ -27,7 +27,6 @@
 
 - (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
 {
-    [_colorMapObject InitColorTables:kemo_sgl];
     [_colorMapObject SetColorTables:kemo_sgl];
     [_opacityMapObject InitOpacityTables:kemo_sgl];
     [_opacityMapObject SetOpacityTables:kemo_sgl];

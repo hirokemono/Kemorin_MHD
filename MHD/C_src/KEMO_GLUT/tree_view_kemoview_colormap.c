@@ -27,7 +27,9 @@ static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *p
 	
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_color_point(i, value, color,
+                                     SURFACE_RENDERING,
+                                     kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -47,7 +49,9 @@ static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *
 	
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_color_point(i, value, color,
+                                     SURFACE_RENDERING,
+                                     kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -65,13 +69,17 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
     if(n_color > 16) return;
     add_colormap_list_items_CB(color_vws);
 	
-	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_gl->kemoview_data);
+    kemoview_add_VIZ_color_list(ZERO, ZERO,
+                                SURFACE_RENDERING,
+                                kemo_gl->kemoview_data);
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_color_point(i, value, color,
+                                     SURFACE_RENDERING,
+                                     kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -89,10 +97,16 @@ static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer u
 	
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	if(num > 2) kemoview_delete_PSF_color_list(num, kemo_gl->kemoview_data);
+    if(num > 2){
+        kemoview_delete_VIZ_color_list(num,
+                                       SURFACE_RENDERING,
+                                       kemo_gl->kemoview_data);
+    };
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_color_point(i, value, color,
+                                     SURFACE_RENDERING,
+                                     kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);

@@ -427,21 +427,11 @@ double get_each_PSF_colormap_range(int selected, struct kemoview_mul_psf *kemo_m
 	return value;
 };
 
-void delete_PSF_color_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    delete_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_current], i_delete);
-}
 void delete_PSF_opacity_list(int i_delete, struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
     delete_each_PSF_opacity_index_list(kemo_mul_psf->psf_m[i_current], i_delete);
 }
 
-void add_PSF_color_list(double add_value, double add_color,
-                        struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    add_each_PSF_color_index_list(kemo_mul_psf->psf_m[i_current],
-                                  add_value, add_color);
-}
 void add_PSF_opacity_list(double add_value, double add_opacity,
                           struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
@@ -534,12 +524,6 @@ void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
 double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value){
     int i_current = kemo_mul_psf->psf_a->id_current;
     return get_each_PSF_opacity_at_value(kemo_mul_psf->psf_m[i_current], value);
-}
-void set_PSF_color_data(int i_point, double value, double color,
-                        struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_color_point(kemo_mul_psf->psf_m[i_current],
-                             i_point, value, color);
 }
 void set_PSF_opacity_data(int i_point, double value, double opacity,
                           struct kemoview_mul_psf *kemo_mul_psf){
