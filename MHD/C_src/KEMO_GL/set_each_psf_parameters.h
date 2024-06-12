@@ -75,7 +75,7 @@ int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);
 
-void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
+void set_VIZ_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline);
@@ -85,7 +85,7 @@ void set_each_increment_vect(int increment, struct psf_menu_val *psf_menu);
 void set_each_scale_vect(double value, struct psf_menu_val *psf_menu);
 void set_each_vector_thick(double value, struct psf_menu_val *psf_menu);
 
-int send_each_psf_patch_color_mode(struct psf_menu_val *psf_menu);
+int send_VIZ_patch_color_mode(struct psf_menu_val *psf_menu);
 int send_each_isoline_color(struct psf_menu_val *psf_menu);
 int send_num_isoline(struct psf_menu_val *psf_menu);
 double get_VIZ_line_width(struct psf_menu_val *psf_menu);

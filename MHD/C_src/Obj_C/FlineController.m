@@ -126,7 +126,7 @@
 		
 		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
                                              FIELDLINE_RENDERING,
-                                             SET_COLOR_MAX, i);
+                                             ISET_COLOR_MAX, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMaximum      addObject:stnum];
 		[stnum release];	
@@ -395,7 +395,8 @@
 {
 	NSInteger tag = [[FieldlineColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_color_param(PSFSOLID_TOGGLE, (int) tag, kemo_sgl);
+    kemoview_set_VIZ_patch_color_mode(FIELDLINE_RENDERING,
+                                      (int) tag, kemo_sgl);
 	
 	[_metalView UpdateImage:kemo_sgl];
 }

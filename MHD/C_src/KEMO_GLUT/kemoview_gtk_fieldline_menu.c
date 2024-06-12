@@ -138,8 +138,8 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer data)
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	kemoview_set_fline_color_param(PSFSOLID_TOGGLE, index_mode,
-                                   kemo_gl->kemoview_data);
+    kemoview_set_VIZ_patch_color_mode(FIELDLINE_RENDERING, index_mode,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -161,8 +161,8 @@ void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
 	int num_comp = kemoview_get_fline_color_num_comps(kemo_gl->kemoview_data,
                                                       ifield);
 */
-    int icolor_mode = kemoview_get_fline_color_param(kemo_gl->kemoview_data,
-                                                     PSFSOLID_TOGGLE);
+    int icolor_mode = kemoview_get_VIZ_patch_color_mode(kemo_gl->kemoview_data,
+                                                        FIELDLINE_RENDERING);
 	int itype_fline = kemoview_get_fline_field_param(kemo_gl->kemoview_data,
                                                      LINETYPE_FLAG);
 	

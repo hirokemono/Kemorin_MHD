@@ -234,9 +234,10 @@
 	self.psfTangentialVectorTag 
         = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	
+    self.psfPatchColorTag = kemoview_get_VIZ_patch_color_mode(kemo_sgl,
+                                                              SURFACE_RENDERING);
 	self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
-	self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
-	
+
 	self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
 	
     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
@@ -313,9 +314,9 @@
      self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
      
+     self.psfPatchColorTag = kemoview_get_VIZ_patch_color_mode(kemo_sgl, SURFACE_RENDERING);
      self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
-     self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
-     
+
      self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
      
      [self CopyPsfDisplayFlagsFromC:kemo_sgl];
@@ -733,9 +734,8 @@
     else if(self.psfPatchColorTag == SINGLE_COLOR){
         [self SetPSFColorFromColorWell:kemo_sgl];
     };
-	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE,
-                                 (int) self.psfPatchColorTag,
-                                 kemo_sgl);
+    kemoview_set_PSF_patch_color_mode((int) self.psfPatchColorTag,
+                                      kemo_sgl);
     
 	[_metalView UpdateImage:kemo_sgl];
 }

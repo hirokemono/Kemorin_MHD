@@ -124,20 +124,3 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
 	};
 	return output;
 };
-
-void set_fline_color_param(int selected, int input, struct kemoview_fline *kemo_fline){
-	if(selected == PSFSOLID_TOGGLE){
-        set_psf_patch_color_mode(kemo_fline->fline_m, input);
-	}else if(selected == ISET_VECTOR_COLOR){
-	};
-	return;
-};
-
-int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline){
-	int iflag = 0;
-	if(selected == PSFSOLID_TOGGLE){
-		iflag = send_each_psf_patch_color_mode(kemo_fline->fline_m);
-	}else if(selected == ISET_VECTOR_COLOR){
-	};
-	return iflag;
-};

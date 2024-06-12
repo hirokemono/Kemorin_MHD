@@ -45,8 +45,7 @@ static void set_PSFcolor_GTK(struct kemoviewer_gl_type *kemo_gl,
                                                          SURFACE_RENDERING,
                                                          ISET_OPACITY_MAX);
 	kemoview_set_PSF_single_color(dcolor, kemo_gl->kemoview_data);
-	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR,
-                                 kemo_gl->kemoview_data);
+    kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -98,8 +97,7 @@ static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
         kemoview_release_PSF_gl_texture(kemo_gl->kemoview_data, kemo_gl);
         kemoview_update_PSF_textured_id(kemo_gl->kemoview_data);
 		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_gl->kemoview_data, kemo_gl);
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE,
-                                     kemo_gl->kemoview_data);
+        kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE, kemo_gl->kemoview_data);
         kemoview_free_kvstring(image_prefix);
 	};
 	
@@ -115,8 +113,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == WHITE_SURFACE){
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, WHITE_SURFACE,
-                                     kemo_gl->kemoview_data);
+        kemoview_set_PSF_patch_color_mode(WHITE_SURFACE, kemo_gl->kemoview_data);
 	}else if (index_mode == SINGLE_COLOR) {
 		kemoview_gtk_surfcolorsel(kemo_gl, parent_window);
     /*
@@ -124,8 +121,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
     */
 	}else if (index_mode == RAINBOW_PSF_SURF){
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, COLORED_BY_DATA,
-                                     kemo_gl->kemoview_data);
+        kemoview_set_PSF_patch_color_mode(COLORED_BY_DATA, kemo_gl->kemoview_data);
 	}else if (index_mode == TEXTURE_PSF_SURF){
 		load_texture_handler(kemo_gl, parent_window);
 	};
@@ -240,7 +236,8 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), TRUE);
 	};
 
-	iflag_sfcolor = kemoview_get_PSF_color_param(kemo_gl->kemoview_data, PSFSOLID_TOGGLE);
+	iflag_sfcolor = kemoview_get_VIZ_patch_color_mode(kemo_gl->kemoview_data,
+                                                      SURFACE_RENDERING);
 	if(iflag_sfcolor == TEXTURE_PSF_SURF){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 4);
 	} else 	if(iflag_sfcolor == SINGLE_COLOR){

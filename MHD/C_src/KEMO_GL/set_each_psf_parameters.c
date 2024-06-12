@@ -104,7 +104,7 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_refv;
 };
 
-void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->viz_color_mode = iflag;};
+void set_VIZ_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->viz_color_mode = iflag;};
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag)     {psf_menu->isoline_color = iflag;};
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline)        {psf_menu->n_isoline = nlline;};
@@ -118,7 +118,7 @@ void set_each_increment_vect(int increment, struct psf_menu_val *psf_menu){
 void set_each_scale_vect(double value, struct psf_menu_val *psf_menu)  {psf_menu->scale_vect = value;};
 void set_each_vector_thick(double value, struct psf_menu_val *psf_menu){psf_menu->vector_thick = value;};
 
-int send_each_psf_patch_color_mode(struct psf_menu_val *psf_menu)   {return psf_menu->viz_color_mode;};
+int send_VIZ_patch_color_mode(struct psf_menu_val *psf_menu)   {return psf_menu->viz_color_mode;};
 int send_each_isoline_color(struct psf_menu_val *psf_menu)     {return psf_menu->isoline_color;};
 int send_num_isoline(struct psf_menu_val *psf_menu)            {return psf_menu->n_isoline;};
 double get_VIZ_line_width(struct psf_menu_val *psf_menu)       {return psf_menu->viz_line_width;};

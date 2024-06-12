@@ -178,10 +178,10 @@
 !    
 !    int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_set_PSF_color_param(int selected, int input,
-!                                      struct kemoviewer_type *kemoviewer);
 !    int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
 !                                     int selected);
+!    int kemoview_get_VIZ_patch_color_mode(struct kemoviewer_type *kemoviewer,
+!                                          int id_model);
 !
 !    void kemoview_set_colormap_param(int id_model, int selected, int input,
 !                                     struct kemoviewer_type *kemoviewer);

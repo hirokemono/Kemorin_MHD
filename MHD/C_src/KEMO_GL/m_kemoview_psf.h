@@ -69,7 +69,7 @@ void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
                          double *value, int *i_digit);
 
 double get_VIZ_data_range(int selected, int icomp,
-                          struct psf_menu_val *viz_menu);
+                          struct psf_data *viz_d);
 
 double get_VIZ_opacity_range(int selected, struct psf_menu_val *viz_menu);
 

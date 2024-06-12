@@ -458,7 +458,15 @@ extern "C" {
     void kemoview_update_PSF_textured_id(struct kemoviewer_type *kemoviewer);
 	void kemoview_set_PSF_color_param(int selected, int input,
                                       struct kemoviewer_type *kemoviewer);
-	int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
+
+    void kemoview_set_PSF_patch_color_mode(int input, struct kemoviewer_type *kemoviewer);
+    void kemoview_set_VIZ_patch_color_mode(int id_model, int input,
+                                           struct kemoviewer_type *kemoviewer);
+    
+    int kemoview_get_VIZ_patch_color_mode(struct kemoviewer_type *kemoviewer,
+                                          int id_model);
+
+    int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
                                      int selected);
 
     void kemoview_set_colormap_param(int id_model, int selected, int input,
@@ -510,7 +518,7 @@ extern "C" {
                                              double value);
     
 	double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
-                                       int id_model, int selected, int icomp){
+                                       int id_model, int selected, int icomp);
     double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,
                                           int id_model, int selected);
 
@@ -538,11 +546,6 @@ extern "C" {
 	int kemoview_get_fline_parameters(struct kemoviewer_type *kemoviewer,
                                       int selected);
 	
-	void kemoview_set_fline_color_param(int selected, int input,
-                                        struct kemoviewer_type *kemoviewer);
-	int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
-                                       int selected);
-	    
     int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i);
     void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
                                             struct kv_string *colorname, int i);

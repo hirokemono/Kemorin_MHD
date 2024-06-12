@@ -318,10 +318,7 @@ void update_PSF_textured_id(struct kemoview_mul_psf *kemo_mul_psf){
 void set_each_PSF_color_param(int selected, int input,
                               struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
-	if(selected == PSFSOLID_TOGGLE){
-		set_psf_patch_color_mode(kemo_mul_psf->psf_m[i_current], input);
-        if(input != TEXTURED_SURFACE){kemo_mul_psf->psf_a->ipsf_texured = -1;};
-	}else if(selected == PSFGRID_TOGGLE){
+    if(selected == PSFGRID_TOGGLE){
 		set_each_isoline_color(kemo_mul_psf->psf_m[i_current], input);
 	}else if(selected == ISET_NLINE){
 		set_each_n_isoline(kemo_mul_psf->psf_m[i_current], input);
@@ -355,9 +352,7 @@ int get_viz_colormap_param(int selected,
 int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_mul_psf){
 	int iflag = 0;
 	int i_current = kemo_mul_psf->psf_a->id_current;
-	if(selected == PSFSOLID_TOGGLE){
-		iflag = send_each_psf_patch_color_mode(kemo_mul_psf->psf_m[i_current]);
-	}else if(selected == PSFGRID_TOGGLE){
+	if(selected == PSFGRID_TOGGLE){
 		iflag = send_each_isoline_color(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_NLINE){
 		iflag = send_num_isoline(kemo_mul_psf->psf_m[i_current]);
@@ -406,12 +401,12 @@ void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
 };
 
 double get_VIZ_data_range(int selected, int icomp,
-                          struct psf_menu_val *viz_menu){
+                          struct psf_data *viz_d){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		value = send_VIZ_data_min(kemo_mul_psf->psf_d[i_current], icomp);
+		value = send_VIZ_data_min(viz_d, icomp);
 	}else if(selected == ISET_COLOR_MAX){
-		value = send_VIZ_data_max(kemo_mul_psf->psf_d[i_current], icomp);
+		value = send_VIZ_data_max(viz_d, icomp);
 	};
 	return value;
 }
