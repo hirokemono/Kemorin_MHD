@@ -111,8 +111,6 @@ void set_PSF_color_data(int i_point, double value, double color,
 void set_PSF_opacity_data(int i_point, double value, double opacity,
                           struct kemoview_mul_psf *kemoview_mul_psf);
 
-void get_PSF_color_items(struct kemoview_mul_psf *kemo_mul_psf,
-                         int i_point, double *value, double *color);
 void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
                            int i_point, double *value, double *opacity);
 

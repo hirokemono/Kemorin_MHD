@@ -134,8 +134,8 @@ double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu);
 int get_each_PSF_color_table_num(struct psf_menu_val *psf_menu);
 int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu);
 
-void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
-                                    double *value, double *color);
+void get_VIZ_color_RGB_value(struct psf_menu_val *psf_menu, int i_point,
+                             double *value, double *color);
 void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
                                       double *value, double *opacity);
 

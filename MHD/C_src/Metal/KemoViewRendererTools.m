@@ -123,7 +123,8 @@
     
     metalColormap->num_normalize[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
     for(i=0;i<metalColormap->num_normalize[0];i++){
-        kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
+                                         i, &value, &color);
         metalColormap->data_reference[i] =  (float) value;
         metalColormap->data_normalized[i] = (float) color;
     }

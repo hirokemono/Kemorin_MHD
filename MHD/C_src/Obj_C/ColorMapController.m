@@ -162,14 +162,16 @@
 	[ColorTableColor removeAllObjects];
 	NumColorTable = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
 	for(i=0;i<NumColorTable;i++){
-		kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
+                                         i, &value, &color);
 		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
 	}
 	[_colorTableView reloadData];
 
 	[_colorModeItem selectItemAtIndex:kemoview_get_colormap_param(kemo_sgl,
-                                                                  SURFACE_RENDERING, ISET_COLORMAP)];
+                                                                  SURFACE_RENDERING,
+                                                                  ISET_COLORMAP)];
     return;
 }
 

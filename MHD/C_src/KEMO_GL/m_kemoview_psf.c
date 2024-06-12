@@ -548,12 +548,6 @@ void set_PSF_opacity_data(int i_point, double value, double opacity,
                                i_point, value, opacity);
 }
 
-void get_PSF_color_items(struct kemoview_mul_psf *kemo_mul_psf,
-                         int i_point, double *value, double *color){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_color_table_items(kemo_mul_psf->psf_m[i_current],
-                                   i_point, value, color);
-}
 void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
                            int i_point, double *value, double *opacity){
     int i_current = kemo_mul_psf->psf_a->id_current;

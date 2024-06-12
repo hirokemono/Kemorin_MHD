@@ -187,6 +187,13 @@
 !                                     struct kemoviewer_type *kemoviewer);
 !    int kemoview_get_colormap_param(int id_model, int selected,
 !                                    struct kemoviewer_type *kemoviewer);
+!    void kemoview_get_VIZ_color_RGB_value(struct kemoviewer_type *kemoviewer, int id_model,
+!                                          int i_point, double *value, double *color);
+!
+!    void kemoview_get_rgb_color(struct kemoviewer_type *kemoviewer, int id_model,
+!                                int i_point, double *value, double *color);
+!    double kemoview_get_viz_colormap_range(struct kemoviewer_type *kemoviewer,
+!                                           int id_model, int selected);
 !
 !    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 !                                           struct kemoviewer_type *kemoviewer);
@@ -229,8 +236,6 @@
 !    double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
 !                                                int selected);
 !    
-!    void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
-!                                      int i_point, double *value, double *color);
 !    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
 !                                        int i_point, double *value, double *opacity);
 !    
@@ -298,12 +303,12 @@
           integer(c_int) :: selected
         END function
 !
-!    void kemoview_get_fline_color_item(int i_point, double *value, double *color);
-        subroutine kemoview_get_fline_color_item                        &
-     &           (i_point, value, color)                                &
-     &            BIND(C, name = "kemoview_get_fline_color_item")
+!    void kemoview_get_rgb_color(int i_point, double *value, double *color);
+        subroutine kemoview_get_rgb_color                               &
+     &           (i_model, i_point, value, color)                       &
+     &            BIND(C, name = "kemoview_get_rgb_color")
 !          IMPORT C_DOUBLE, c_int
-          integer(c_int), VALUE :: i_point
+          integer(c_int), VALUE :: i_model, i_point
           REAL(C_DOUBLE), intent(inout) :: value(i_point)
           REAL(C_DOUBLE), intent(inout) :: color(i_point)
         END subroutine

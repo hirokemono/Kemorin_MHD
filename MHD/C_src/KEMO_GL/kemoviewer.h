@@ -465,6 +465,8 @@ extern "C" {
                                      struct kemoviewer_type *kemoviewer);
     int kemoview_get_colormap_param(struct kemoviewer_type *kemoviewer,
                                     int id_model, int selected);
+    void kemoview_get_VIZ_color_RGB_value(struct kemoviewer_type *kemoviewer, int id_model,
+                                          int i_point, double *value, double *color);
 
 
 	void kemoview_delete_PSF_color_list(int i_delete,
@@ -565,8 +567,6 @@ extern "C" {
                                              int selected);
 
 	
-	void kemoview_get_fline_color_item(struct kemoviewer_type *kemoviewer,
-                                       int i_point, double *value, double *color);
     void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                          int i_point, double *value, double *opacity);
     

@@ -244,8 +244,8 @@ int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
 	return get_opacity_table_num_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 
-void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
-                                    double *value, double *color){
+void get_VIZ_color_RGB_value(struct psf_menu_val *psf_menu, int i_point,
+                             double *value, double *color){
     get_color_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                             i_point, value, color);
 }
