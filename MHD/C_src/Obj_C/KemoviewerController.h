@@ -21,6 +21,8 @@
 	IBOutlet id _streoViewTypeMenu;
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	
+    NSInteger activeControlFlag;
+
 	CGFloat coastlineRadius;
 	NSInteger ShadingMode;
 	NSInteger PolygonMode;
@@ -74,6 +76,7 @@
     NSInteger CoastlineDigit;
 }
 
+@property NSInteger activeControlFlag;
 @property CGFloat ColorLoopCount;
 @property CGFloat NodeSizeFactor;
 @property CGFloat NodeSizedigits;
@@ -105,6 +108,8 @@
 - (id)init;
 - (void)awakeFromNib;
 - (id)dealloc;
+
+- (NSInteger) CurrentControlModel;
 
 - (void)SetViewTypeMenu:(NSInteger) selected
                kemoview:(struct kemoviewer_type *) kemo_sgl;

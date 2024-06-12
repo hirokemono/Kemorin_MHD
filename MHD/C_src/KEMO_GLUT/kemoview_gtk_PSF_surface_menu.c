@@ -44,7 +44,9 @@ static void set_PSFcolor_GTK(struct kemoviewer_gl_type *kemo_gl,
 	dcolor[3] = (gdouble) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
                                                          SURFACE_RENDERING,
                                                          ISET_OPACITY_MAX);
-	kemoview_set_PSF_single_color(dcolor, kemo_gl->kemoview_data);
+    kemoview_set_VIZ_single_color(dcolor,
+                                  SURFACE_RENDERING,
+                                  kemo_gl->kemoview_data);
     kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;

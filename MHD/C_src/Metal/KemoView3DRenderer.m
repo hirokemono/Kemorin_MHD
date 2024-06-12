@@ -264,7 +264,7 @@
     
     _kemoViewMetalBuf.numCoastTubeVertice = 0;
     _kemoViewMetalBuf.numFieldTubeVertice = 0;
-    _kemoViewMetalBuf.numTracerIcoVertice = 0;
+//    _kemoViewMetalBuf.numTracerIcoVertice = 0;
     _kemoViewMetalBuf.numPSFTubesVertice =  0;
     _kemoViewMetalBuf.numMeshNodeVertice =  0;
 

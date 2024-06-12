@@ -213,7 +213,7 @@
 !                                       struct kemoviewer_type *kemoviewer);
 !	
 !
-!    void kemoview_set_PSF_single_color(double *rgba,
+!    void kemoview_set_VIZ_single_color(double *rgba, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_constant_opacity(double opacity, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1802DFE72C17A4A900B0DB3D /* cal_viz_field_ranges.c in Sources */ = {isa = PBXBuildFile; fileRef = 1802DFE62C17A4A900B0DB3D /* cal_viz_field_ranges.c */; };
 		1802DFEA2C17A65D00B0DB3D /* fline_edge_direction_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1802DFE92C17A65D00B0DB3D /* fline_edge_direction_c.c */; };
+		1802DFED2C1A100900B0DB3D /* TracerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1802DFEC2C1A100900B0DB3D /* TracerController.m */; };
 		1804E5C3125F025100EC8EAA /* CalypsoView.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* CalypsoView.icns */; };
 		180999A02B13C14100F83574 /* m_transfer_matrices.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809999F2B13C14100F83574 /* m_transfer_matrices.c */; };
 		180999A32B13C5CF00F83574 /* m_kemoview_object_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */; };
@@ -225,6 +226,8 @@
 		1802DFE62C17A4A900B0DB3D /* cal_viz_field_ranges.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_viz_field_ranges.c; sourceTree = "<group>"; };
 		1802DFE82C17A64D00B0DB3D /* fline_edge_direction_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fline_edge_direction_c.h; sourceTree = "<group>"; };
 		1802DFE92C17A65D00B0DB3D /* fline_edge_direction_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fline_edge_direction_c.c; sourceTree = "<group>"; };
+		1802DFEB2C1A100900B0DB3D /* TracerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TracerController.h; sourceTree = "<group>"; };
+		1802DFEC2C1A100900B0DB3D /* TracerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TracerController.m; sourceTree = "<group>"; };
 		1804E5C2125F025100EC8EAA /* CalypsoView.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CalypsoView.icns; sourceTree = "<group>"; };
 		1809999E2B13C14100F83574 /* m_transfer_matrices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_transfer_matrices.h; sourceTree = "<group>"; };
 		1809999F2B13C14100F83574 /* m_transfer_matrices.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_transfer_matrices.c; sourceTree = "<group>"; };
@@ -1031,6 +1034,8 @@
 				18D7E71E1562D359009B05FF /* OpacityMapController.m */,
 				18D7E7211562D359009B05FF /* PsfController.h */,
 				18D7E7221562D359009B05FF /* PsfController.m */,
+				1802DFEB2C1A100900B0DB3D /* TracerController.h */,
+				1802DFEC2C1A100900B0DB3D /* TracerController.m */,
 				18D7E7231562D359009B05FF /* ResetViewControll.h */,
 				18D7E7241562D359009B05FF /* ResetViewControll.m */,
 				18D7E7251562D359009B05FF /* RGBAMapController.h */,
@@ -1337,6 +1342,7 @@
 				18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */,
 				18D7E7671562D359009B05FF /* kemoviewer_param_c.c in Sources */,
 				18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */,
+				1802DFED2C1A100900B0DB3D /* TracerController.m in Sources */,
 				18DD112B2BF0192D009C0A06 /* pthread_PSF_arrows_to_buf.c in Sources */,
 				18D7E76A1562D359009B05FF /* m_kemoviewer_structure.c in Sources */,
 				18D7E76C1562D359009B05FF /* modify_object_4_viewer_c.c in Sources */,

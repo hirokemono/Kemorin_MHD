@@ -462,14 +462,6 @@ int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf){
     return send_draw_each_psf_refv(kemo_mul_psf->psf_m[i_current]);
 };
 
-void set_PSF_fixed_color(double *rgba,
-                         struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_fixed_color(kemo_mul_psf->psf_d[i_current],
-                             kemo_mul_psf->psf_m[i_current],
-                             rgba);
-}
-
 void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
                           double *red, double *green, double *blue){
     int i_current = kemo_mul_psf->psf_a->id_current;

@@ -9,6 +9,7 @@
 #include "kemoviewer.h"
 
 @implementation KemoviewerController
+@synthesize activeControlFlag;
 @synthesize ColorLoopCount;
 @synthesize NodeSizeFactor;
 @synthesize NodeSizedigits;
@@ -104,6 +105,11 @@
 {
     [super dealloc];
 	return self;
+}
+
+- (NSInteger) CurrentControlModel
+{
+    return self.activeControlFlag;
 }
 
 - (void)SetViewTypeMenu:(NSInteger) selected

@@ -1,16 +1,16 @@
 //
-//  FlineController.m
+//  TracerController.m
 //  Kemoview_Cocoa
 //
 //  Created by Hiroaki Matsui on 11/08/17.
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import "FlineController.h"
+#import "TracerController.h"
 #include "kemoviewer.h"
 
 
-@implementation FlineController
+@implementation TracerController
 
 @synthesize FlineWindowlabel;
 
@@ -199,43 +199,6 @@
 	[_metalView UpdateImage:kemo_sgl];
     return;
 };
-
-- (IBAction) DrawFlineFile:(id)pId{
-	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
-	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
-	[flineOpenPanelObj setTitle:@"Choose field line data"];
-    [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
-    [flineOpenPanelObj beginSheetModalForWindow:window 
-                                   completionHandler:^(NSInteger FlineOpenInteger){
-	if(FlineOpenInteger == NSModalResponseOK){
-		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-		NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
-		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);
-        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadFlineFile:FlineOpenFilename
-                   kemoview:kemo_sgl];
-	};
-                                   }];
-}
-
-- (IBAction) CloseFlineFile:(id)pId{
-    NSInteger current_model = [_kemoviewControl CurrentControlModel];
-    
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    
-    if(current_model == FIELDLINE_RENDERING){
-        kemoview_close_fieldline_view(kemo_sgl);
-    }else if(current_model == TRACER_RENDERING){
-        kemoview_close_tracer_view(kemo_sgl);
-    };
-    
-	self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
-                                                     (int) current_model);
-    [self CopyFlineDisplayFlagsFromC:kemo_sgl];
-	
-	[_metalView UpdateImage:kemo_sgl];
-	
-}
 
 - (IBAction) FlineFieldAction:(id)sender
 {	

@@ -99,8 +99,6 @@ void set_PSF_polygon_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 void set_PSF_tangential_vec_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf);
 
-void set_PSF_fixed_color(double *rgba, struct kemoview_mul_psf *kemo_mul_psf);
-
 void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
                           double *red, double *green, double *blue);
 double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value);

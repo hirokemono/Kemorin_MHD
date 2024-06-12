@@ -306,10 +306,12 @@ extern "C" {
     
     int kemoview_open_data(struct kv_string *filename,
                            struct kemoviewer_type *kemoviewer);
+
     void kemoview_close_mesh_view(struct kemoviewer_type *kemoviewer);
     int  kemoview_close_PSF_view(struct kemoviewer_type *kemoviewer);
     void kemoview_close_fieldline_view(struct kemoviewer_type *kemoviewer);
-    
+    void kemoview_close_tracer_view(struct kemoviewer_type *kemoviewer);
+
     void kemoview_set_viewtype(int sel, struct kemoviewer_type *kemoviewer);
     
     
@@ -503,7 +505,7 @@ extern "C" {
     void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_model,
                                       int selected, double *value, int *i_digit);
 	
-    void kemoview_set_PSF_single_color(double *rgba,
+    void kemoview_set_VIZ_single_color(double *rgba, int id_model,
                                        struct kemoviewer_type *kemoviewer);
     void kemoview_set_constant_opacity(double opacity, int id_model,
                                        struct kemoviewer_type *kemoviewer);

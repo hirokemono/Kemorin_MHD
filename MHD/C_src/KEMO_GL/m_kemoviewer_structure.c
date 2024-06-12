@@ -134,6 +134,10 @@ void kemoview_close_fieldline_view(struct kemoviewer_type *kemoviewer){
 	close_fieldline_view(kemoviewer->kemo_fline);
 	return;
 }
+void kemoview_close_tracer_view(struct kemoviewer_type *kemoviewer){
+    close_tracer_view(kemoviewer->kemo_tracer);
+    return;
+}
 
 void kemoview_write_modelview_file(struct kv_string *filename,
                                    struct kemoviewer_type *kemoviewer){
@@ -935,9 +939,22 @@ void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_mod
 	return;
 };
 
-void kemoview_set_PSF_single_color(double *rgba,
+void kemoview_set_VIZ_single_color(double *rgba, int id_model,
                                    struct kemoviewer_type *kemoviewer){
-    set_PSF_fixed_color(rgba, kemoviewer->kemo_mul_psf);
+    if(id_model == FIELDLINE_RENDERING){
+        set_VIZ_fixed_color(kemoviewer->kemo_fline->fline_d,
+                            kemoviewer->kemo_fline->fline_m,
+                            rgba);
+    }else if(id_model == TRACER_RENDERING){
+        set_VIZ_fixed_color(kemoviewer->kemo_tracer->tracer_d,
+                            kemoviewer->kemo_tracer->tracer_m,
+                            rgba);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_VIZ_fixed_color(kemoviewer->kemo_mul_psf->psf_d[i_current],
+                            kemoviewer->kemo_mul_psf->psf_m[i_current],
+                            rgba);
+    }
 }
 
 void kemoview_set_constant_opacity(double opacity, int id_model,

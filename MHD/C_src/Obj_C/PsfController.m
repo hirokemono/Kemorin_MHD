@@ -659,7 +659,9 @@
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE, (int) self.PSFZerolineSwitch, kemo_sgl);
+    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE,
+                                (int) self.PSFZerolineSwitch,
+                                kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
@@ -668,7 +670,9 @@
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE, (int) self.PSFColorbarSwitch, kemo_sgl);
+    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE,
+                                (int) self.PSFColorbarSwitch,
+                                kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -739,7 +743,8 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_color_value_w_exp(SURFACE_RENDERING, ISET_WIDTH,
                                        (double) self.IsolineWidth,
-                                       (int) self.IsolineDigit, kemo_sgl);
+                                       (int) self.IsolineDigit,
+                                       kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -765,15 +770,19 @@
 
 - (IBAction)SetVectorIncrement:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement,
-                                      (int) self.PSFVectorIncDigit, kemo_sgl);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC,
+                                      (double) self.PSFVectorIncrement,
+                                      (int) self.PSFVectorIncDigit,
+                                      kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness,
-                                      (int) self.VectorDigit, kemo_sgl);
+    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK,
+                                      (double) self.VectorThickness,
+                                      (int) self.VectorDigit,
+                                      kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
     
@@ -798,7 +807,7 @@
     rgba[3] = (double) opacityBG;
     self.PSFOpacity = opacityBG;
     
-    kemoview_set_PSF_single_color(rgba, kemo_sgl);
+    kemoview_set_VIZ_single_color(rgba, SURFACE_RENDERING, kemo_sgl);
 }
 
 - (IBAction)SetPSFPatchColorAction:(id)sender
