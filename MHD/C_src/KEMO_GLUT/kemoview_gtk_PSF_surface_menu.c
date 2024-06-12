@@ -138,7 +138,9 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_constant_opacity(gtk_floatvalue, kemo_gl->kemoview_data);
+    kemoview_set_constant_opacity(gtk_floatvalue,
+                                  SURFACE_RENDERING,
+                                  kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -149,13 +151,16 @@ static void MinRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,
-                                      &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MAX,
-                                      &value_max, &i_max_digit);
-	kemoview_set_PSF_linear_colormap(gtk_floatvalue, i_min_digit, 
-									 value_max, i_max_digit,
-                                     kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &value_min, &i_min_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &value_max, &i_max_digit);
+    kemoview_set_linear_colormap(gtk_floatvalue, i_min_digit,
+                                 value_max, i_max_digit,
+                                 SURFACE_RENDERING,
+                                 kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 }
 
@@ -165,13 +170,16 @@ static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,
-                                      &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MAX,
-                                      &value_max, &i_max_digit);
-	kemoview_set_PSF_linear_colormap(value_min, gtk_intvalue, 
-									 value_max, i_max_digit,
-                                     kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &value_min, &i_min_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &value_max, &i_max_digit);
+    kemoview_set_linear_colormap(value_min, gtk_intvalue,
+                                 value_max, i_max_digit,
+                                 SURFACE_RENDERING,
+                                 kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 }
 
@@ -181,13 +189,16 @@ static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,
-                                      &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MAX,
-                                      &value_max, &i_max_digit);
-	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
-									 gtk_floatvalue, i_max_digit,
-                                     kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &value_min, &i_min_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &value_max, &i_max_digit);
+    kemoview_set_linear_colormap(value_min, i_min_digit,
+                                 gtk_floatvalue, i_max_digit,
+                                 SURFACE_RENDERING,
+                                 kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 }
 
@@ -197,13 +208,16 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,
-                                      &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MAX,
-                                      &value_max, &i_max_digit);
-	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
-									 value_max, gtk_intvalue,
-                                     kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &value_min, &i_min_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &value_max, &i_max_digit);
+    kemoview_set_linear_colormap(value_min, i_min_digit,
+                                 value_max, gtk_intvalue,
+                                 SURFACE_RENDERING,
+                                 kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 }
 
@@ -253,13 +267,15 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                                    ISET_OPACITY_MAX);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_opacity1), current_value);
 	
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_range_min), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_digit_min), i_digit);
 	
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MAX,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_range_max), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_digit_max), i_digit);
 };

@@ -103,7 +103,6 @@
                   material:(MaterialParameters *) mats
                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int i, j;
     [self setMetalColorbuffer:lights
                      material:mats
                      kemoview:kemo_sgl];

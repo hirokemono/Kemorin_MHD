@@ -144,29 +144,6 @@ int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline){
 	return iflag;
 };
 
-void set_fline_color_w_exp(int selected, double value, int i_digit, 
-						   struct kemoview_fline *kemo_fline){
-	double data = const_from_digit_order(value, i_digit);
-	if(selected == ISET_WIDTH){
-        set_each_isoline_width(data, kemo_fline->fline_m);
-	};
-	return;
-};
-
-void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
-							   double *value, int *i_digit){
-	double data = 0.0;
-	if(selected == ISET_COLOR_MIN){
-		data = get_each_PSF_color_table_min(kemo_fline->fline_m);
-	}else if(selected == ISET_COLOR_MAX){
-		data = get_each_PSF_color_table_max(kemo_fline->fline_m);
-	}else if(selected == ISET_WIDTH){
-		data = send_isoline_width(kemo_fline->fline_m);
-	};
-	find_order_digit(data, value, i_digit);
-	return;
-};
-
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){

@@ -482,20 +482,27 @@ extern "C" {
     void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,
                                        int id_model, struct kemoviewer_type *kemoviewer);
 
+    void kemoview_set_VIZ_color_value_w_exp(int id_model, int selected,
+                                            double value, int i_digit,
+                                            struct kemoviewer_type *kemoviewer);
 
 
-	void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
-										  double maxvalue, int i_max_digit,
-                                          struct kemoviewer_type *kemoviewer);
 	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
                                            struct kemoviewer_type *kemoviewer);
-	void kemoview_get_each_PSF_color_w_exp(struct kemoviewer_type *kemoviewer,
-                                           int selected, double *value, int *i_digit);
+
+    void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_model,
+                                      int selected, double *value, int *i_digit);
 	
     void kemoview_set_PSF_single_color(double *rgba,
                                        struct kemoviewer_type *kemoviewer);
-    void kemoview_set_PSF_constant_opacity(double opacity,
-                                           struct kemoviewer_type *kemoviewer);
+    void kemoview_set_constant_opacity(double opacity, int id_model,
+                                       struct kemoviewer_type *kemoviewer);
+
+    void kemoview_set_linear_colormap(double minvalue, int i_min_digit,
+                                      double maxvalue, int i_max_digit,
+                                      int id_model,
+                                      struct kemoviewer_type *kemoviewer);
+
     
     void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
                                        double *red, double *green, double *blue);
@@ -545,16 +552,6 @@ extern "C" {
 	int kemoview_get_fline_field_param(struct kemoviewer_type *kemoviewer,
                                        int selected);
 
-    void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
-											double maxvalue, int i_max_digit,
-                                            struct kemoviewer_type *kemoviewer);
-	void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
-                                        struct kemoviewer_type *kemoviewer);
-	void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
-                                        int selected, double *value, int *i_digit);
-
-	void kemoview_set_fline_constant_opacity(double opacity,
-                                             struct kemoviewer_type *kemoviewer);
     double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                                double value);
     

@@ -130,7 +130,6 @@
 - (void) CopyPsfDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
 	int i;
-	double minmax;
 	NSString *stname;
 	NSNumber *stnum;
     struct kv_string *colorname;
@@ -185,17 +184,20 @@
 	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_WIDTH,
+                                 &current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
 	self.PSFOpacity = kemoview_get_VIZ_opacity_range(kemo_sgl,
@@ -205,18 +207,21 @@
 	self.DrawPSFVectorFlag
         = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, 
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_PSF_REFVECT,
+                                 &current_value, &i_digit);
 	self.ScaleVector =      (CGFloat) current_value;
 	self.ScaleDigit =       (CGFloat) i_digit;
 
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_VECTOR_INC,
+                                 &current_value, &i_digit);
 	self.PSFVectorIncrement = (CGFloat) current_value;
 	self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_V_THICK, 
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_PSF_V_THICK,
+                                 &current_value, &i_digit);
     self.VectorThickness = (CGFloat) current_value;
 	self.VectorDigit =     (CGFloat) i_digit;
 	
@@ -266,14 +271,20 @@
      self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
-	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN, &current_value, &i_digit);
+     kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING, ISET_COLOR_MIN,
+                                  &current_value, &i_digit);
 	 self.PsfMinimumRange =      (CGFloat) current_value;
 	 self.PsfMinimumDigit =      (CGFloat) i_digit;
-	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, &current_value, &i_digit);
+     kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING, ISET_COLOR_MAX,
+                                  &current_value, &i_digit);
 	 self.PsfMaximumRange =      (CGFloat) current_value;
 	 self.PsfMaximumDigit =      (CGFloat) i_digit;
 	 
-	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH, &current_value, &i_digit);
+     kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING, ISET_WIDTH,
+                                  &current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
 
@@ -283,11 +294,13 @@
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 
-	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, &current_value, &i_digit);
+     kemoview_get_VIZ_color_w_exp(kemo_sgl, SURFACE_RENDERING, ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
 	 self.ScaleVector =      (CGFloat) current_value;
 	 self.ScaleDigit =       (CGFloat) i_digit;
 
-	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC, &current_value, &i_digit);
+     kemoview_get_VIZ_color_w_exp(kemo_sgl, SURFACE_RENDERING, ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
 	 self.PSFVectorIncrement = (CGFloat) current_value;
 	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	 
@@ -453,12 +466,14 @@
 	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(kemo_sgl,
                                                             ISET_COLOR_MAX, iplotted);
 
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
-                                      &current_value, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 SURFACE_RENDERING, ISET_COLOR_MAX,
+                                 &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 	
@@ -636,7 +651,8 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[self SetPsfComponentMenu:self.PSFSelectedField
                      kemoview:kemo_sgl];
-    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField,
+    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG,
+                                      (int) self.PSFSelectedField,
                                       kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
@@ -648,7 +664,8 @@
 - (IBAction) PsfComponentAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent,
+	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG,
+                                      (int) self.PSFSelectedComponent,
                                       kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
@@ -661,7 +678,8 @@
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFSOLID_TOGGLE, self.PSFSurfaceSwitch ,
+    kemoview_set_PSF_draw_flags(PSFSOLID_TOGGLE,
+                                (int) self.PSFSurfaceSwitch ,
                                 kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
@@ -669,7 +687,9 @@
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE, self.PSFIsolineSwitch, kemo_sgl);
+    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE,
+                                (int) self.PSFIsolineSwitch,
+                                kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
@@ -739,9 +759,9 @@
 - (IBAction) SetPSFDisplayrange:(id)pSender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
-									 self.PsfMaximumRange, (int) self.PsfMaximumDigit,
-                                     kemo_sgl);
+    kemoview_set_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
+                                 self.PsfMaximumRange, (int) self.PsfMaximumDigit,
+                                 SURFACE_RENDERING, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -757,15 +777,18 @@
 - (IBAction) SetIsolineWidth:(id)pSender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth,
-                                      (int) self.IsolineDigit, kemo_sgl);
+    kemoview_set_VIZ_color_value_w_exp(SURFACE_RENDERING, ISET_WIDTH,
+                                       (double) self.IsolineWidth,
+                                       (int) self.IsolineDigit, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE, self.DrawPSFVectorFlag, kemo_sgl);
+    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE,
+                                (int) self.DrawPSFVectorFlag,
+                                kemo_sgl);
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};
@@ -828,7 +851,8 @@
 - (IBAction)SetPSFSingleOpacityAction:(id)sender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_constant_opacity((double) self.PSFOpacity, kemo_sgl);
+    kemoview_set_constant_opacity((double) self.PSFOpacity,
+                                  SURFACE_RENDERING, kemo_sgl);
 
     NSColor *OriginalWellColor = [PSFPatchColorWell color];
     NSColor *NewWellColor = [OriginalWellColor colorWithAlphaComponent:self.PSFOpacity];

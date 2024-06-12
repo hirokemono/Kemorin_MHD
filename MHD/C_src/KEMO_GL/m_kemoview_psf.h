@@ -65,8 +65,8 @@ int get_viz_colormap_param(int selected,
 
 void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
 							  struct kemoview_mul_psf *kemo_mul_psf);
-void get_each_PSF_color_w_exp(int selected, struct kemoview_mul_psf *kemo_mul_psf,
-							  double *value, int *i_digit);
+void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
+                         double *value, int *i_digit);
 
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf *kemo_mul_psf);
 
@@ -94,8 +94,6 @@ void set_PSF_tangential_vec_mode(int iflag, struct kemoview_mul_psf *kemo_mul_ps
 int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf);
 
 void set_PSF_fixed_color(double *rgba, struct kemoview_mul_psf *kemo_mul_psf);
-void set_PSF_constant_opacity(double opacity,
-                              struct kemoview_mul_psf *kemo_mul_psf);
 
 void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
                           double *red, double *green, double *blue);

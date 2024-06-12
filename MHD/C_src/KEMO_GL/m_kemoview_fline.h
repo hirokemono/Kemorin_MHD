@@ -46,10 +46,5 @@ long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline);
 void set_fline_color_param(int selected, int input, struct kemoview_fline *kemo_fline);
 int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline);
 
-void set_fline_color_w_exp(int selected, double value, int i_digit, 
-						   struct kemoview_fline *kemo_fline);
-void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
-						   double *value, int *i_digit);
-
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline);
 #endif

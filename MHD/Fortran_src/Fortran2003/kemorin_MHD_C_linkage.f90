@@ -201,9 +201,6 @@
 !    double kemoview_get_viz_colormap_range(struct kemoviewer_type *kemoviewer,
 !                                           int id_model, int selected);
 !
-!    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
-!                                           struct kemoviewer_type *kemoviewer);
-!    
 !    int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
 !                                    int selected);
 !    int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
@@ -217,14 +214,11 @@
 !    void kemoview_add_VIZ_opacity_list(double add_value, double add_opacity, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);
 !	
-!    void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
-!                                          double maxvalue, int i_max_digit,
-!                                          struct kemoviewer_type *kemoviewer);
 !
 !    void kemoview_set_PSF_single_color(double *rgba,
 !                                       struct kemoviewer_type *kemoviewer);
-!    void kemoview_set_PSF_constant_opacity(double opacity,
-!                                           struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_constant_opacity(double opacity, int id_model,
+!                                       struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
 !                                       double *red, double *green, double *blue);
@@ -264,13 +258,12 @@
 !    void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
 !                                            struct kv_string *colorname, int i);
 !    
-!    void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
+!    void kemoview_set_VIZ_color_value_w_exp(int selected, double value, int i_digit,
 !                                        struct kemoviewer_type *kemoviewer);
-!    void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
-!                                            double maxvalue, int i_max_digit,
-!                                            struct kemoviewer_type *kemoviewer);
-!    void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
-!                                        int selected, double *value, int *i_digit);
+!    void kemoview_set_linear_colormap(double minvalue, int i_min_digit,
+!                                      double maxvalue, int i_max_digit,
+!                                      int id_model,
+!                                      struct kemoviewer_type *kemoviewer);
 !
 !    void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
 !                                    struct fieldline_gtk_menu *fline_menu){

@@ -79,7 +79,7 @@ void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline);
-void set_each_isoline_width(double value, struct psf_menu_val *psf_menu);
+void set_VIZ_line_width(double value, struct psf_menu_val *psf_menu);
 void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_increment_vect(int increment, struct psf_menu_val *psf_menu);
 void set_each_scale_vect(double value, struct psf_menu_val *psf_menu);
@@ -88,7 +88,7 @@ void set_each_vector_thick(double value, struct psf_menu_val *psf_menu);
 int send_each_psf_patch_color_mode(struct psf_menu_val *psf_menu);
 int send_each_isoline_color(struct psf_menu_val *psf_menu);
 int send_num_isoline(struct psf_menu_val *psf_menu);
-double send_isoline_width(struct psf_menu_val *psf_menu);
+double get_VIZ_line_width(struct psf_menu_val *psf_menu);
 int send_each_vector_patch_color(struct psf_menu_val *psf_menu);
 
 int send_each_increment_vect(struct psf_menu_val *psf_menu);
@@ -106,16 +106,16 @@ void add_VIZ_color_index_list(struct psf_menu_val *psf_menu,
 void add_VIZ_opacity_index_list(struct psf_menu_val *psf_menu,
                                 double add_value, double add_opacity);
 
-void set_each_PSF_linear_colormap(double minvalue, int i_min_digit,
-                                  double maxvalue, int i_max_digit,
-                                  struct psf_menu_val *psf_menu);
+void set_VIZ_linear_colormap(double minvalue, int i_min_digit,
+                             double maxvalue, int i_max_digit,
+                             struct psf_menu_val *psf_menu);
 
 void set_each_PSF_fixed_color(struct psf_data *psf_d,
                               struct psf_menu_val *psf_menu,
                               double *rgba);
-void set_each_PSF_constant_opacity(struct psf_data *psf_d,
-                                   struct psf_menu_val *psf_menu,
-                                   double opacity);
+void set_VIZ_constant_opacity(struct psf_data *psf_d,
+                              struct psf_menu_val *psf_menu,
+                              double opacity);
 
 void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                                  double value, double *red, double *green, double *blue);

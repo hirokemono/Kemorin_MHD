@@ -66,10 +66,12 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 	int i_digit;
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
 	double gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_WIDTH,
-                                      &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, 
-                                      i_digit, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_WIDTH,
+                                 &current_width, &i_digit);
+    kemoview_set_VIZ_color_value_w_exp(SURFACE_RENDERING, ISET_WIDTH,
+                                       gtk_value, i_digit,
+                                       kemo_gl->kemoview_data);
 	
     draw_full_gl(kemo_gl);
 	return;
@@ -81,10 +83,12 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 	int i_digit;
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
 	int gtk_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_WIDTH,
-                                      &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, 
-                                      gtk_value, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_WIDTH,
+                                 &current_width, &i_digit);
+    kemoview_set_VIZ_color_value_w_exp(SURFACE_RENDERING, ISET_WIDTH,
+                                       current_width, gtk_value,
+                                       kemo_gl->kemoview_data);
 	
     draw_full_gl(kemo_gl);
 	return;
@@ -98,8 +102,9 @@ void set_gtk_isoline_menu_values(struct kemoviewer_gl_type *kemo_gl,
 	int current_nline = kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_NLINE);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_nline), (double) current_nline);
 
-	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_WIDTH,
-                                      &current_width, &i_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
+                                 SURFACE_RENDERING, ISET_WIDTH,
+                                 &current_width, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_width), current_width);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_digit), (double) i_digit);
 

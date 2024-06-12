@@ -92,8 +92,9 @@
 	FlineTotalComponent 
         = kemoview_get_fline_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
 	
-	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH, 
-                                   &current_thick, &current_digit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 FIELDLINE_RENDERING, ISET_WIDTH,
+                                 &current_thick, &current_digit);
 	self.FlineThickFactor = (CGFloat) current_thick;
 	self.FlineThickDigit = (CGFloat) current_digit;
 
@@ -241,11 +242,13 @@
 	self.FlineMaximumValue
         = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 	
-	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                   FIELDLINE_RENDERING, ISET_COLOR_MIN,
                                    &value, &i_digit);
 	self.FlineDisplayMinimum =  (CGFloat) value;
 	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                   FIELDLINE_RENDERING, ISET_COLOR_MAX,
                                    &value, &i_digit);
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
@@ -270,11 +273,13 @@
 	self.FlineMaximumValue 
         = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 
-	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                   FIELDLINE_RENDERING, ISET_COLOR_MIN,
                                    &value, &i_digit);
 	self.FlineDisplayMinimum =  (CGFloat) value;
 	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                   FIELDLINE_RENDERING, ISET_COLOR_MAX,
                                    &value, &i_digit);
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
@@ -351,12 +356,14 @@
 		self.FlineMaximumValue
             = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 
-		kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
-                                       &value, &i_digit);
+        kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                     FIELDLINE_RENDERING, ISET_COLOR_MIN,
+                                     &value, &i_digit);
 		self.FlineDisplayMinimum =  (CGFloat) value;
 		self.FlineDisplayMinDigit = (CGFloat) i_digit;
-		kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
-                                       &value, &i_digit);
+        kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                     FIELDLINE_RENDERING, ISET_COLOR_MAX,
+                                     &value, &i_digit);
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
@@ -374,11 +381,12 @@
 
 - (IBAction) ShowFlineRange:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, 
-                                       (int) self.FlineDisplayMinDigit,
-									   self.FlineDisplayMaximum, 
-                                       (int) self.FlineDisplayMaxDigit,
-                                       kemo_sgl);
+    kemoview_set_linear_colormap(self.FlineDisplayMinimum,
+                                 (int) self.FlineDisplayMinDigit,
+                                 self.FlineDisplayMaximum,
+                                 (int) self.FlineDisplayMaxDigit,
+                                 FIELDLINE_RENDERING,
+                                kemo_sgl);
 //	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -396,8 +404,10 @@
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor,
-                                   (int) self.FlineThickDigit, kemo_sgl);
+    kemoview_set_VIZ_color_value_w_exp(FIELDLINE_RENDERING, ISET_WIDTH,
+                                       (double) self.FlineThickFactor,
+                                       (int) self.FlineThickDigit,
+                                       kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 

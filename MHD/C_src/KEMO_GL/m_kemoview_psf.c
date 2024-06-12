@@ -374,7 +374,7 @@ void set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 	double data = const_from_digit_order(value, i_digit);
 	int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == ISET_WIDTH){
-		set_each_isoline_width(data, kemo_mul_psf->psf_m[i_current]);
+        set_VIZ_line_width(data, kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_PSF_REFVECT){
 		set_each_scale_vect(data, kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_PSF_V_THICK){
@@ -384,22 +384,22 @@ void set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 	};
 	return;
 };
-void get_each_PSF_color_w_exp(int selected, struct kemoview_mul_psf *kemo_mul_psf,
-							   double *value, int *i_digit){
+
+void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
+                         double *value, int *i_digit){
 	double data = 0.0;
-	int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == ISET_COLOR_MIN){
-		data = get_each_PSF_color_table_min(kemo_mul_psf->psf_m[i_current]);
+		data = get_each_PSF_color_table_min(viz_menu);
 	}else if(selected == ISET_COLOR_MAX){
-		data = get_each_PSF_color_table_max(kemo_mul_psf->psf_m[i_current]);
+		data = get_each_PSF_color_table_max(viz_menu);
 	}else if(selected == ISET_WIDTH){
-		data = send_isoline_width(kemo_mul_psf->psf_m[i_current]);
+		data = get_VIZ_line_width(viz_menu);
 	}else if(selected == ISET_PSF_REFVECT){
-		data = send_scale_vector(kemo_mul_psf->psf_m[i_current]);
+		data = send_scale_vector(viz_menu);
 	}else if(selected == ISET_PSF_V_THICK){
-		data = send_vector_thick(kemo_mul_psf->psf_m[i_current]);
+		data = send_vector_thick(viz_menu);
 	}else if(selected == ISET_VECTOR_INC){
-		data = (double) send_each_increment_vect(kemo_mul_psf->psf_m[i_current]);
+		data = (double) send_each_increment_vect(viz_menu);
 	};
 	find_order_digit(data, value, i_digit);
 	return;
@@ -442,7 +442,7 @@ void set_PSF_linear_colormap(double minvalue, int i_min_digit,
                              double maxvalue, int i_max_digit,
                              struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit,
+    set_VIZ_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit,
                                  kemo_mul_psf->psf_m[i_current]);
 }
 
@@ -505,13 +505,6 @@ void set_PSF_fixed_color(double *rgba,
     set_each_PSF_fixed_color(kemo_mul_psf->psf_d[i_current],
                              kemo_mul_psf->psf_m[i_current],
                              rgba);
-}
-void set_PSF_constant_opacity(double opacity,
-                              struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    set_each_PSF_constant_opacity(kemo_mul_psf->psf_d[i_current],
-                                  kemo_mul_psf->psf_m[i_current],
-                                  opacity);
 }
 
 void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
