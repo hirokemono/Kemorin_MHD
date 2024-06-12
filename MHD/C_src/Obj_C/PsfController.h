@@ -52,7 +52,6 @@
 	NSMutableArray *PsfNumberOfComponent;
 	NSMutableArray *PsfFieldName;
 	NSMutableArray *PsfMinimum;
-	NSMutableArray *PsfMaximum;
 	
 	NSNumber *PsfPatchFlag;
 	NSNumber *PsfIsolineFlag;

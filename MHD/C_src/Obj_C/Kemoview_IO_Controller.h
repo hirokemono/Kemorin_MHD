@@ -43,7 +43,6 @@
 	NSMutableArray *PsfNumberOfComponent;
 	NSMutableArray *PsfFieldName;
 	NSMutableArray *PsfMinimum;
-	NSMutableArray *PsfMaximum;
 }
 @property NSInteger ImageFormatFlag;
 

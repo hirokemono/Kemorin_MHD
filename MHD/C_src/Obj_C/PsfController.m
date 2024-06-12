@@ -74,8 +74,6 @@
     
 	PsfNumberOfComponent =[[NSMutableArray alloc] init];
 	PsfFieldName =        [[NSMutableArray alloc] init];
-	PsfMinimum =          [[NSMutableArray alloc] init];
-	PsfMaximum =          [[NSMutableArray alloc] init];
 	
 	PsfPatchFlag =    [NSNumber alloc];
 	PsfIsolineFlag =  [NSNumber alloc];
@@ -107,8 +105,6 @@
     
 	[PsfNumberOfComponent dealloc];
 	[PsfFieldName         dealloc];
-	[PsfMinimum           dealloc];
-	[PsfMaximum           dealloc];
 	
 	[PsfPatchFlag    dealloc];
 	[PsfIsolineFlag  dealloc];
@@ -145,8 +141,6 @@
         = kemoview_get_each_PSF_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
 	[PsfFieldName removeAllObjects];	
 	[PsfNumberOfComponent removeAllObjects];
-	[PsfMinimum removeAllObjects];
-	[PsfMaximum removeAllObjects];
     
     colorname = kemoview_alloc_kvstring();
 	for(i = 0; i < PsfNumberOfField; i++){
@@ -161,17 +155,6 @@
 		[stnum release];	
 	}
     kemoview_free_kvstring(colorname);
-	for(i = 0; i < PsfTotalComponent; i++){
-		minmax = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[PsfMinimum      addObject:stnum];
-		[stnum release];	
-		
-		minmax = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[PsfMaximum      addObject:stnum];
-		[stnum release];	
-	}
 	return;
 }
 
