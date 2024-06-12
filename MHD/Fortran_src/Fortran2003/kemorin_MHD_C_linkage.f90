@@ -183,6 +183,11 @@
 !    int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
 !                                     int selected);
 !
+!    void kemoview_set_colormap_param(int id_model, int selected, int input,
+!                                     struct kemoviewer_type *kemoviewer);
+!    int kemoview_get_colormap_param(int id_model, int selected,
+!                                    struct kemoviewer_type *kemoviewer);
+!
 !    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 !                                           struct kemoviewer_type *kemoviewer);
 !    

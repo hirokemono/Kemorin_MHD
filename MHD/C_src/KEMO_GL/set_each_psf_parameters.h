@@ -124,7 +124,7 @@ void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point,
                               double value, double color);
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point,
                                 double value, double opacity);
-void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel);
+void set_viz_colormap_id(struct psf_menu_val *psf_menu, int isel);
 
 int get_PSF_colormap_id(struct psf_menu_val *psf_menu);
 double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu);

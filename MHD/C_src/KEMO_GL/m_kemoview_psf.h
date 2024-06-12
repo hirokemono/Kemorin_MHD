@@ -56,6 +56,13 @@ void update_PSF_textured_id(struct kemoview_mul_psf *kemo_mul_psf);
 void set_each_PSF_color_param(int selected, int input, struct kemoview_mul_psf *kemo_mul_psf);
 int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_mul_psf);
 
+void set_viz_colormap_param(int selected, int input,
+                            struct psf_menu_val *viz_menu);
+int get_viz_colormap_param(int selected,
+                           struct psf_menu_val *viz_menu);
+
+
+
 void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
 							  struct kemoview_mul_psf *kemo_mul_psf);
 void get_each_PSF_color_w_exp(int selected, struct kemoview_mul_psf *kemo_mul_psf,

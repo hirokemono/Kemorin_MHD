@@ -129,7 +129,7 @@ double send_scale_vector(struct psf_menu_val *psf_menu){return psf_menu->scale_v
 double send_vector_thick(struct psf_menu_val *psf_menu){return psf_menu->vector_thick;};
 
 
-void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel){
+void set_viz_colormap_id(struct psf_menu_val *psf_menu, int isel){
 	set_color_mode_by_id(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], isel);
 	return;
 }

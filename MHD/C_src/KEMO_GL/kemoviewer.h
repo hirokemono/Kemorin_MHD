@@ -24,6 +24,11 @@
 #define TWO_CENT   0.02
 #define TWO_MILI   0.002
 
+#define SURFACE_RENDERING     0
+#define FIELDLINE_RENDERING   1
+#define TRACER_RENDERING      2
+
+
 #define TRIPLE_UPDATE 99
 #define FULL_DRAW      0
 #define MOVIE_DRAW     1
@@ -455,7 +460,13 @@ extern "C" {
                                       struct kemoviewer_type *kemoviewer);
 	int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
                                      int selected);
-	
+
+    void kemoview_set_colormap_param(int id_model, int selected, int input,
+                                     struct kemoviewer_type *kemoviewer);
+    int kemoview_get_colormap_param(struct kemoviewer_type *kemoviewer,
+                                    int id_model, int selected);
+
+
 	void kemoview_delete_PSF_color_list(int i_delete,
                                         struct kemoviewer_type *kemoviewer);
 	void kemoview_delete_PSF_opacity_list(int i_delete,

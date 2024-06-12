@@ -325,13 +325,28 @@ void set_each_PSF_color_param(int selected, int input,
 		set_each_isoline_color(kemo_mul_psf->psf_m[i_current], input);
 	}else if(selected == ISET_NLINE){
 		set_each_n_isoline(kemo_mul_psf->psf_m[i_current], input);
-	}else if(selected == ISET_COLORMAP){
-		set_PSF_colormap_id(kemo_mul_psf->psf_m[i_current], input);
 	}else if(selected == ISET_VECTOR_COLOR){
 		set_each_vector_patch_color(kemo_mul_psf->psf_m[i_current], input);
 	};
 	return;
 };
+
+void set_viz_colormap_param(int selected, int input,
+                            struct psf_menu_val *viz_menu){
+    if(selected == ISET_COLORMAP){
+        set_viz_colormap_id(viz_menu, input);
+    }
+}
+
+int get_viz_colormap_param(int selected,
+                           struct psf_menu_val *viz_menu){
+    int iflag = 0;
+    if(selected == ISET_COLORMAP){
+        iflag = get_PSF_colormap_id(viz_menu);
+    }
+    return iflag;
+}
+
 
 int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_mul_psf){
 	int iflag = 0;

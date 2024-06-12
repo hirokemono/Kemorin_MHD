@@ -168,7 +168,8 @@
 	}
 	[_colorTableView reloadData];
 
-	[_colorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP)];
+	[_colorModeItem selectItemAtIndex:kemoview_get_colormap_param(kemo_sgl,
+                                                                  SURFACE_RENDERING, ISET_COLORMAP)];
     return;
 }
 
@@ -205,9 +206,9 @@
 - (IBAction)SetColorMode:(id)pId;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_PSF_color_param(ISET_COLORMAP, 
-                                 (int) [_colorModeItem indexOfSelectedItem],
-                                 kemo_sgl);
+    kemoview_set_colormap_param(SURFACE_RENDERING, ISET_COLORMAP,
+                                (int) [_colorModeItem indexOfSelectedItem],
+                                kemo_sgl);
 	[_fillRectView UpdateColorbar];
     [_metalView UpdateImage:kemo_sgl];
 }

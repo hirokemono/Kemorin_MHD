@@ -64,7 +64,8 @@ void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,
 GtkWidget * add_pvr_colormap_list_box(struct kemoviewer_type *kemo_sgl,
                                       struct colormap_view *color_vws){
     GtkWidget *frame_cmap;
-	int iflag = kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP);
+	int iflag = kemoview_get_colormap_param(kemo_sgl,
+                                            SURFACE_RENDERING, ISET_COLORMAP);
     color_vws->combobox_cmap = init_combobox_cmap(iflag);
     g_signal_connect(G_OBJECT(color_vws->combobox_cmap), "changed",
                      G_CALLBACK(set_pvr_color_mode_CB), (gpointer) color_vws);

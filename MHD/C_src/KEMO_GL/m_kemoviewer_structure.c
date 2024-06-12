@@ -650,6 +650,41 @@ int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
 	return get_each_PSF_color_param(selected, kemoviewer->kemo_mul_psf);
 };
 
+void kemoview_set_colormap_param(int id_model, int selected, int input,
+                                 struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        set_viz_colormap_param(selected, input,
+                               kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        set_viz_colormap_param(selected, input,
+                               kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_viz_colormap_param(selected, input,
+                               kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+    return;
+};
+
+int kemoview_get_colormap_param(struct kemoviewer_type *kemoviewer,
+                                int id_model, int selected){
+    int iflag = 0;
+    if(id_model == FIELDLINE_RENDERING){
+        iflag = get_viz_colormap_param(selected,
+                                       kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        iflag = get_viz_colormap_param(selected,
+                                       kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        iflag = get_viz_colormap_param(selected,
+                                       kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+    return iflag;
+};
+
+
+
 void kemoview_delete_PSF_color_list(int i_delete,
                                     struct kemoviewer_type *kemoviewer){
     delete_PSF_color_list(i_delete, kemoviewer->kemo_mul_psf);
