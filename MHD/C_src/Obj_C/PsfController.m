@@ -249,7 +249,8 @@
     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
 	[self SetPsfComponentMenu:self.PSFSelectedField
-                     kemoview:kemo_sgl];
+                     kemoview:kemo_sgl
+                componentMenu:_psfComponentMenu];
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
@@ -340,24 +341,25 @@
 
 - (void) SetPsfComponentMenu:(NSInteger)isel
                     kemoview:(struct kemoviewer_type *) kemo_sgl
+               componentMenu:(NSPopUpButton *) psfComponentMenu
 {
 	int iplotted;
 	
-	[_psfComponentMenu removeAllItems];
+	[psfComponentMenu removeAllItems];
 	// NSLog ([NSString stringWithFormat:@"component %@\n", [PsfNumberOfComponent objectAtIndex:isel]]);	
 	
 	if(PsfNumberOfField < 1){
-		[_psfComponentMenu addItemWithTitle:@"No data"];
+		[psfComponentMenu addItemWithTitle:@"No data"];
 	} else {
 		if([[PsfNumberOfComponent objectAtIndex:isel] intValue] == 1){
-			[_psfComponentMenu addItemWithTitle:@"Scalar"];
+			[psfComponentMenu addItemWithTitle:@"Scalar"];
 		} else if([[PsfNumberOfComponent objectAtIndex:isel] intValue] == 6){
-			[_psfComponentMenu addItemWithTitle:@"xx"];
-			[_psfComponentMenu addItemWithTitle:@"xy"];
-			[_psfComponentMenu addItemWithTitle:@"xz"];
-			[_psfComponentMenu addItemWithTitle:@"yy"];
-			[_psfComponentMenu addItemWithTitle:@"yz"];
-			[_psfComponentMenu addItemWithTitle:@"zz"];
+			[psfComponentMenu addItemWithTitle:@"xx"];
+			[psfComponentMenu addItemWithTitle:@"xy"];
+			[psfComponentMenu addItemWithTitle:@"xz"];
+			[psfComponentMenu addItemWithTitle:@"yy"];
+			[psfComponentMenu addItemWithTitle:@"yz"];
+			[psfComponentMenu addItemWithTitle:@"zz"];
 		}
 		else if([[PsfNumberOfComponent objectAtIndex:isel] intValue] == 3){			
 			NSInteger charalen = [[PsfFieldName objectAtIndex:isel] length];
@@ -365,22 +367,22 @@
 				NSString *stname = [[PsfFieldName objectAtIndex:isel] substringFromIndex:charalen-4];
 				// NSLog ([NSString stringWithFormat:@"end is %@\n",stname ]);
 				if([stname compare:@"_sph"] == NSOrderedSame){
-					[_psfComponentMenu addItemWithTitle:@"r"];
-					[_psfComponentMenu addItemWithTitle:@"θ"];
-					[_psfComponentMenu addItemWithTitle:@"φ"];
+					[psfComponentMenu addItemWithTitle:@"r"];
+					[psfComponentMenu addItemWithTitle:@"θ"];
+					[psfComponentMenu addItemWithTitle:@"φ"];
 				}else if([stname compare:@"_cyl"] == NSOrderedSame){
-					[_psfComponentMenu addItemWithTitle:@"s"];
-					[_psfComponentMenu addItemWithTitle:@"φ"];
-					[_psfComponentMenu addItemWithTitle:@"z"];
+					[psfComponentMenu addItemWithTitle:@"s"];
+					[psfComponentMenu addItemWithTitle:@"φ"];
+					[psfComponentMenu addItemWithTitle:@"z"];
 				}else{
-					[_psfComponentMenu addItemWithTitle:@"x"];
-					[_psfComponentMenu addItemWithTitle:@"y"];
-					[_psfComponentMenu addItemWithTitle:@"z"];
+					[psfComponentMenu addItemWithTitle:@"x"];
+					[psfComponentMenu addItemWithTitle:@"y"];
+					[psfComponentMenu addItemWithTitle:@"z"];
 				}
 			} else {
-				[_psfComponentMenu addItemWithTitle:@"x"];
-				[_psfComponentMenu addItemWithTitle:@"y"];
-				[_psfComponentMenu addItemWithTitle:@"z"];
+				[psfComponentMenu addItemWithTitle:@"x"];
+				[psfComponentMenu addItemWithTitle:@"y"];
+				[psfComponentMenu addItemWithTitle:@"z"];
 			}
 		}
         
@@ -459,7 +461,8 @@
     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
 	[self SetPsfComponentMenu:0
-                     kemoview:kemo_sgl];
+                     kemoview:kemo_sgl
+                componentMenu:_psfComponentMenu];
     [self SetCurrentPsfMenu:kemo_sgl];
     [self SetPsfRanges:kemo_sgl];
 	
@@ -609,7 +612,8 @@
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[self SetPsfComponentMenu:self.PSFSelectedField
-                     kemoview:kemo_sgl];
+                     kemoview:kemo_sgl
+                componentMenu:_psfComponentMenu];
     kemoview_set_VIZ_field_param(SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
                                  (int) self.PSFSelectedField,

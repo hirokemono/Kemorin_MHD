@@ -382,16 +382,14 @@
 		iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
                                                 DRAW_ADDRESS_FLAG);
-		self.FlineMinimumValue
-            = kemoview_get_VIZ_data_range(kemo_sgl,
-                                          FIELDLINE_RENDERING,
-                                          ISET_COLOR_MIN,
-                                          iplotted);
-		self.FlineMaximumValue
-            = kemoview_get_VIZ_data_range(kemo_sgl,
-                                          FIELDLINE_RENDERING,
-                                          ISET_COLOR_MAX,
-                                          iplotted);
+		self.FlineMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                             FIELDLINE_RENDERING,
+                                                             ISET_COLOR_MIN,
+                                                             iplotted);
+		self.FlineMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
+                                                             FIELDLINE_RENDERING,
+                                                             ISET_COLOR_MAX,
+                                                             iplotted);
 
         kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                      FIELDLINE_RENDERING,

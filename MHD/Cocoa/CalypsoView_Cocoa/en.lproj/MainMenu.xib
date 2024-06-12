@@ -783,7 +783,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -4152,7 +4152,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="5Nr-Wa-LQ8">
                                                             <rect key="frame" x="1" y="1" width="227" height="725"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsF-pz-RKX">
                                                                     <rect key="frame" x="0.0" y="0.0" width="214" height="712"/>
@@ -4289,8 +4289,8 @@
                                                                                                 </items>
                                                                                             </menu>
                                                                                             <connections>
-                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="Q20-0H-hFN"/>
                                                                                                 <binding destination="2714" name="selectedTag" keyPath="selection.self.psfLineColorTag" id="tLa-pF-9sz"/>
+                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="Q20-0H-hFN"/>
                                                                                             </connections>
                                                                                         </popUpButtonCell>
                                                                                         <connections>
@@ -4413,8 +4413,8 @@
                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                             <connections>
                                                                                                 <action selector="SetIsolineWidth:" target="1157" id="ibs-17-yMK"/>
-                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="aXp-aK-NP8"/>
                                                                                                 <binding destination="1157" name="value" keyPath="self.IsolineDigit" id="xOR-qy-Tbd"/>
+                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="aXp-aK-NP8"/>
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
@@ -4441,8 +4441,8 @@
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="se1-TN-0Jb">
                                                                                             <connections>
                                                                                                 <action selector="SetIsolineWidth:" target="1157" id="ai5-lp-ggG"/>
-                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="mSg-b5-ktd"/>
                                                                                                 <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="lty-zT-6DW"/>
+                                                                                                <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="mSg-b5-ktd"/>
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
@@ -4851,8 +4851,8 @@
                                                                                         <sliderCell key="cell" controlSize="small" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="LgF-4e-TJo"/>
                                                                                         <connections>
                                                                                             <action selector="SetPSFSingleOpacityAction:" target="1157" id="0b2-Ga-trL"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="cGm-5r-UJh"/>
                                                                                             <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="IIS-QP-0rL"/>
+                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="cGm-5r-UJh"/>
                                                                                         </connections>
                                                                                     </slider>
                                                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rIo-fd-YPs">
@@ -4984,7 +4984,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="Cvx-up-T9C">
                                                             <rect key="frame" x="1" y="1" width="227" height="725"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="muZ-Zk-uXx">
                                                                     <rect key="frame" x="0.0" y="0.0" width="214" height="712"/>
@@ -5407,8 +5407,8 @@
                                                                                         <sliderCell key="cell" controlSize="small" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="91H-pq-Zhg"/>
                                                                                         <connections>
                                                                                             <action selector="SetPSFSingleOpacityAction:" target="1157" id="DbM-cv-CyZ"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="Dtu-U1-bj4"/>
                                                                                             <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="xqi-X7-15Q"/>
+                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="Dtu-U1-bj4"/>
                                                                                         </connections>
                                                                                     </slider>
                                                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2py-PI-9Gn">
@@ -5444,8 +5444,8 @@
                                                                                         </buttonCell>
                                                                                         <connections>
                                                                                             <action selector="DrawPSFVectorAction:" target="1157" id="QXz-zl-hi1"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3dF-zY-xaw"/>
                                                                                             <binding destination="1157" name="value" keyPath="self.DrawPSFVectorFlag" id="P5g-G8-rFi"/>
+                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3dF-zY-xaw"/>
                                                                                         </connections>
                                                                                     </button>
                                                                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zaM-5J-KS1">
@@ -5493,8 +5493,8 @@
                                                                                         </popUpButtonCell>
                                                                                         <connections>
                                                                                             <action selector="ChoosePsfVectorModeAction:" target="1157" id="AUn-7Y-nXs"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="rl4-p2-c56"/>
                                                                                             <binding destination="2714" name="selectedTag" keyPath="selection.self.psfTangentialVectorTag" id="VUl-AY-yEI"/>
+                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="rl4-p2-c56"/>
                                                                                         </connections>
                                                                                     </popUpButton>
                                                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g0l-W8-Bdg">
@@ -5897,12 +5897,12 @@
                                                                                 </constraints>
                                                                             </view>
                                                                             <connections>
-                                                                                <binding destination="1157" name="hidden" keyPath="self.PSFVectorMenuAcrive" id="J0B-Gh-LLh">
+                                                                                <binding destination="1157" name="transparent" keyPath="self.PSFVectorMenuAcrive" id="Gxf-pL-77m">
                                                                                     <dictionary key="options">
                                                                                         <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                                                     </dictionary>
                                                                                 </binding>
-                                                                                <binding destination="1157" name="transparent" keyPath="self.PSFVectorMenuAcrive" id="Gxf-pL-77m">
+                                                                                <binding destination="1157" name="hidden" keyPath="self.PSFVectorMenuAcrive" id="J0B-Gh-LLh">
                                                                                     <dictionary key="options">
                                                                                         <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                                                     </dictionary>
@@ -6603,7 +6603,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <clipView key="contentView" id="H51-CE-nj3">
                             <rect key="frame" x="1" y="1" width="299" height="1013"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view id="iRy-vr-6IA">
                                     <rect key="frame" x="0.0" y="0.0" width="284" height="1010"/>
@@ -7069,7 +7069,7 @@
                                                         <rect key="frame" x="10" y="170" width="229" height="118"/>
                                                         <clipView key="contentView" ambiguous="YES" id="Vae-Vq-U6W">
                                                             <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
@@ -7872,7 +7872,7 @@
                         <rect key="frame" x="8" y="122" width="216" height="554"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                             <rect key="frame" x="0.0" y="0.0" width="216" height="554"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                     <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -8397,7 +8397,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3346">
-                                                        <rect key="frame" x="148" y="72" width="19" height="25"/>
+                                                        <rect key="frame" x="148" y="71" width="19" height="27"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="NXg-dJ-WSA"/>
                                                             <constraint firstAttribute="height" constant="19" id="V6R-qg-05f"/>
@@ -8413,7 +8413,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3517">
-                                                        <rect key="frame" x="148" y="41" width="19" height="25"/>
+                                                        <rect key="frame" x="148" y="40" width="19" height="27"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="H68-Ey-TyI"/>
                                                             <constraint firstAttribute="height" constant="19" id="Q2y-Ay-AQp"/>
@@ -8462,7 +8462,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WQ1-6O-FaN">
-                                                        <rect key="frame" x="148" y="12" width="19" height="23"/>
+                                                        <rect key="frame" x="148" y="11" width="19" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="QJI-PZ-JcP"/>
                                                             <constraint firstAttribute="height" constant="17" id="i2K-Ur-twG"/>
@@ -8628,7 +8628,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
                         <clipView key="contentView" id="zjy-Ve-9jn">
                             <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view translatesAutoresizingMaskIntoConstraints="NO" id="3767">
                                     <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
@@ -8647,10 +8647,10 @@
                                             <rect key="frame" x="20" y="244" width="154" height="145"/>
                                             <clipView key="contentView" id="sgn-Z0-9rw">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
-                                                        <rect key="frame" x="0.0" y="0.0" width="166" height="126"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="165.5" height="126"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -8695,7 +8695,7 @@
                                                 <constraint firstAttribute="width" constant="154" id="Hr7-yv-vjL"/>
                                                 <constraint firstAttribute="height" constant="145" id="VUh-Wg-cYV"/>
                                             </constraints>
-                                            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.2857142857142857" horizontal="YES" id="2595">
+                                            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="2595">
                                                 <rect key="frame" x="1" y="128" width="152" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -8704,7 +8704,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <tableHeaderView key="headerView" wantsLayer="YES" id="2597">
-                                                <rect key="frame" x="0.0" y="0.0" width="166" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="165.5" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
@@ -8740,7 +8740,7 @@
                                             <rect key="frame" x="20" y="71" width="154" height="145"/>
                                             <clipView key="contentView" id="xhk-53-bjR">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                         <rect key="frame" x="0.0" y="0.0" width="152" height="126"/>
@@ -8762,7 +8762,7 @@
                                                                 </textFieldCell>
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             </tableColumn>
-                                                            <tableColumn identifier="Opacity" width="65.5" minWidth="10" maxWidth="3.4028229999999999e+38" id="2588" userLabel="XCollumn3">
+                                                            <tableColumn identifier="Opacity" width="36.5" minWidth="10" maxWidth="3.4028229999999999e+38" id="2588" userLabel="XCollumn3">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Opacity">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
