@@ -144,7 +144,7 @@ void delete_VIZ_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_color_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_delete);
 	return;
 }
-void delete_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
+void delete_VIZ_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_opacity_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_delete);
 	return;
 }
@@ -155,8 +155,8 @@ void add_VIZ_color_index_list(struct psf_menu_val *psf_menu,
                            add_value, add_color);
 	return;
 }
-void add_each_PSF_opacity_index_list(struct psf_menu_val *psf_menu,
-                                     double add_value, double add_opacity){
+void add_VIZ_opacity_index_list(struct psf_menu_val *psf_menu,
+                                double add_value, double add_opacity){
     add_opacity_index_list_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                              add_value, add_opacity);
     return;
@@ -211,8 +211,8 @@ void set_VIZ_color_point(struct psf_menu_val *psf_menu, int i_point,
                            i_point, value, color);
 	return;
 }
-void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point,
-                                double value, double opacity){
+void set_VIZ_opacity_point(struct psf_menu_val *psf_menu, int i_point,
+                           double value, double opacity){
     set_each_opacity_point_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                              i_point, value, opacity);
 	return;
@@ -237,10 +237,10 @@ double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu){
 double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu){
 	return get_maximum_opacity_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
-int get_each_PSF_color_table_num(struct psf_menu_val *psf_menu){
+int get_VIZ_color_table_num(struct psf_menu_val *psf_menu){
 	return get_color_table_num_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
-int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
+int get_VIZ_opacity_table_num(struct psf_menu_val *psf_menu){
 	return get_opacity_table_num_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 

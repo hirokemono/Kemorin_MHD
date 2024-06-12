@@ -132,7 +132,9 @@
         metalColormap->data_normalized[i] = (float) color;
     }
     
-    metalColormap->num_opacity[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
+    metalColormap->num_opacity[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                    SURFACE_RENDERING,
+                                                                    ISET_NUM_OPACITY);
     for(i=0;i<metalColormap->num_opacity[0];i++) {
         kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
         metalColormap->alpha_reference[i] =  (float) value;

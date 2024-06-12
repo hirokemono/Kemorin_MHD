@@ -31,7 +31,10 @@
 	NSInteger isel = [idOpacityTableView selectedRow];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 
-    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
+    int n_opacity = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                    SURFACE_RENDERING,
+                                                    ISET_NUM_OPACITY);
+    if(n_opacity > 16) return;
 
 	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
@@ -40,7 +43,9 @@
 		opacity2 = [[self.OpacityTableOpacity objectAtIndex:isel] doubleValue];
 		value =   (value1 + value2)*HALF;
 		opacity = (opacity1 + opacity2)*HALF;
-		kemoview_add_PSF_opacity_list(value, opacity, kemo_sgl);
+        kemoview_add_VIZ_opacity_list(value, opacity,
+                                      SURFACE_RENDERING,
+                                      kemo_sgl);
 		
         [self SetOpacityTables:kemo_sgl];
 	}
@@ -57,7 +62,8 @@
     if ([idOpacityTableView numberOfSelectedRows] > 0) {
         for(i = (int) [self.OpacityTableField count]-1;i>1;i--){
             if([SelectedList containsIndex:i] == TRUE){
-                kemoview_delete_PSF_opacity_list(i, kemo_sgl);
+                kemoview_delete_VIZ_opacity_list(i, SURFACE_RENDERING,
+                                                 kemo_sgl);
             }
         }
     }
@@ -120,7 +126,9 @@
 	}
 	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
+    kemoview_set_VIZ_opacity_data((int) pRowIndex, value, opacity,
+                                  SURFACE_RENDERING,
+                                  kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 	[_fillRectView UpdateColorbar];
     return;
@@ -148,7 +156,9 @@
 	
 	[OpacityTableField removeAllObjects];
 	[OpacityTableOpacity removeAllObjects];
-	NumOpacityTable = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
+	NumOpacityTable = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                      SURFACE_RENDERING,
+                                                      ISET_NUM_OPACITY);
 	for(i=0;i<NumOpacityTable;i++){
 		kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
 		[OpacityTableField    addObject:[[NSNumber alloc ] initWithDouble:value] ];

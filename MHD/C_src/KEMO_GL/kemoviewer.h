@@ -471,15 +471,19 @@ extern "C" {
                                       int id_model, struct kemoviewer_type *kemoviewer);
     void kemoview_add_VIZ_color_list(double add_value, double add_color, int id_model,
                                      struct kemoviewer_type *kemoviewer);
-
+    void kemoview_add_VIZ_opacity_list(double add_value, double add_opacity, int id_model,
+                                       struct kemoviewer_type *kemoviewer);
 
 	void kemoview_delete_VIZ_color_list(int i_delete, int id_model,
                                         struct kemoviewer_type *kemoviewer);
-	void kemoview_delete_PSF_opacity_list(int i_delete,
+	void kemoview_delete_VIZ_opacity_list(int i_delete, int id_model,
                                           struct kemoviewer_type *kemoviewer);
-	void kemoview_add_PSF_opacity_list(double add_value, double add_opacity,
-                                       struct kemoviewer_type *kemoviewer);
 	
+    void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,
+                                       int id_model, struct kemoviewer_type *kemoviewer);
+
+
+
 	void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 										  double maxvalue, int i_max_digit,
                                           struct kemoviewer_type *kemoviewer);
@@ -493,8 +497,6 @@ extern "C" {
     void kemoview_set_PSF_constant_opacity(double opacity,
                                            struct kemoviewer_type *kemoviewer);
     
-    void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity,
-                                       struct kemoviewer_type *kemoviewer);
     void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
                                        double *red, double *green, double *blue);
     double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
@@ -555,9 +557,6 @@ extern "C" {
                                              struct kemoviewer_type *kemoviewer);
     double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                                double value);
-    
-    void kemoview_set_fline_opacity_data(int i_point, double value, double opacity,
-                                         struct kemoviewer_type *kemoviewer);
     
 	double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
                                          int selected, int icomp);

@@ -726,7 +726,7 @@ void kemoview_delete_VIZ_color_list(int i_delete, int id_model,
     }
 }
 
-void kemoview_add_VIZ_color_list(double add_value, double add_color, int id_model, 
+void kemoview_add_VIZ_color_list(double add_value, double add_color, int id_model,
                                  struct kemoviewer_type *kemoviewer){
     if(id_model == FIELDLINE_RENDERING){
         add_VIZ_color_index_list(kemoviewer->kemo_fline->fline_m,
@@ -740,15 +740,53 @@ void kemoview_add_VIZ_color_list(double add_value, double add_color, int id_mode
                                  add_value, add_color);
     }
 }
-
-void kemoview_delete_PSF_opacity_list(int i_delete,
-                                      struct kemoviewer_type *kemoviewer){
-    delete_PSF_opacity_list(i_delete, kemoviewer->kemo_mul_psf);
-}
-void kemoview_add_PSF_opacity_list(double add_value, double add_opacity,
+void kemoview_add_VIZ_opacity_list(double add_value, double add_opacity, int id_model,
                                    struct kemoviewer_type *kemoviewer){
-    add_PSF_opacity_list(add_value, add_opacity, kemoviewer->kemo_mul_psf);
+    if(id_model == FIELDLINE_RENDERING){
+        add_VIZ_opacity_index_list(kemoviewer->kemo_fline->fline_m,
+                                   add_value, add_opacity);
+    }else if(id_model == TRACER_RENDERING){
+        add_VIZ_opacity_index_list(kemoviewer->kemo_tracer->tracer_m,
+                                   add_value, add_opacity);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        add_VIZ_opacity_index_list(kemoviewer->kemo_mul_psf->psf_m[i_current],
+                                   add_value, add_opacity);
+    }
 }
+
+void kemoview_delete_VIZ_opacity_list(int i_delete, int id_model,
+                                      struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        delete_VIZ_opacity_index_list(kemoviewer->kemo_fline->fline_m,
+                                      i_delete);
+    }else if(id_model == TRACER_RENDERING){
+        delete_VIZ_opacity_index_list(kemoviewer->kemo_tracer->tracer_m,
+                                      i_delete);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        delete_VIZ_opacity_index_list(kemoviewer->kemo_mul_psf->psf_m[i_current],
+                                      i_delete);
+    }
+
+}
+
+void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,
+                                   int id_model, struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        set_VIZ_opacity_point(kemoviewer->kemo_fline->fline_m,
+                              i_point, value, opacity);
+    }else if(id_model == TRACER_RENDERING){
+        set_VIZ_opacity_point(kemoviewer->kemo_tracer->tracer_m,
+                              i_point, value, opacity);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_VIZ_opacity_point(kemoviewer->kemo_mul_psf->psf_m[i_current],
+                              i_point, value, opacity);
+    }
+
+}
+
 
 void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 									  double maxvalue, int i_max_digit,
@@ -784,10 +822,6 @@ void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double va
 double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
                                          double value){
     return get_PSF_opacity_at_value(kemoviewer->kemo_mul_psf, value);
-}
-void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity,
-                                   struct kemoviewer_type *kemoviewer){
-    set_PSF_opacity_data(i_point, value, opacity, kemoviewer->kemo_mul_psf);
 }
 
 double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
@@ -892,12 +926,6 @@ void kemoview_set_fline_constant_opacity(double opacity,
 double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
                                            double value){
 	return get_each_PSF_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
-}
-
-void kemoview_set_fline_opacity_data(int i_point, double value, double opacity,
-                                     struct kemoviewer_type *kemoviewer){
-    set_each_PSF_opacity_point(kemoviewer->kemo_fline->fline_m,
-                               i_point, value, opacity);
 }
 
 double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,

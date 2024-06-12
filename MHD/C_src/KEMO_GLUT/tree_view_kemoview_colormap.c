@@ -130,7 +130,9 @@ static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *pa
 	
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_opacity_data(i, value, opacity,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -152,7 +154,9 @@ static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *p
 	
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_opacity_data(i, value, opacity,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -164,7 +168,10 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    if(kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_NUM_OPACITY) > 16) return;
+    int num_opacity = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data,
+                                                      SURFACE_RENDERING,
+                                                      ISET_NUM_OPACITY);
+    if(num_opacity > 16) return;
 
     add_opacity_list_items_CB(color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -173,10 +180,14 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	kemoview_add_PSF_opacity_list(ZERO, ZERO, kemo_gl->kemoview_data);
+    kemoview_add_VIZ_opacity_list(ZERO, ZERO,
+                                  SURFACE_RENDERING,
+                                  kemo_gl->kemoview_data);
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_opacity_data(i, value, opacity,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);
@@ -194,10 +205,13 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 	
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-	if(num > 2) kemoview_delete_PSF_opacity_list(num, kemo_gl->kemoview_data);
+	if(num > 2) kemoview_delete_VIZ_opacity_list(num, SURFACE_RENDERING,
+                                                 kemo_gl->kemoview_data);
 	for(int i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
-		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_gl->kemoview_data);
+        kemoview_set_VIZ_opacity_data(i, value, opacity,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     draw_full_gl(kemo_gl);

@@ -139,10 +139,6 @@ int get_fline_color_param(int selected, struct kemoview_fline *kemo_fline){
 	if(selected == PSFSOLID_TOGGLE){
 	}else if(selected == ISET_COLORMAP){
 		iflag = send_each_psf_patch_color_mode(kemo_fline->fline_m);
-	}else if(selected == ISET_NUM_COLOR){
-		iflag = get_each_PSF_color_table_num(kemo_fline->fline_m);
-	}else if(selected == ISET_NUM_OPACITY){
-		iflag = get_each_PSF_opacity_table_num(kemo_fline->fline_m);
 	}else if(selected == ISET_VECTOR_COLOR){
 	};
 	return iflag;
