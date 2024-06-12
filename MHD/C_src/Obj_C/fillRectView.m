@@ -43,7 +43,10 @@ BOOL appearanceIsDark(NSAppearance * appearance)
     int		i, npoint;
     
     if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) < 1) return;
-	npoint = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
+    
+    npoint = kemoview_get_viz_colormap_param(kemo_sgl,
+                                             SURFACE_RENDERING,
+                                             ISET_NUM_COLOR);
     kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
                                      IZERO, &colorMin, &color);
     kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
@@ -78,7 +81,10 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 
 	str = [NSString stringWithFormat:@"Color"];
 	[self drawString:str x:105 y:265];
-	for(i = 0; i < kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR); i++) {
+    int n_color = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                  SURFACE_RENDERING,
+                                                  ISET_NUM_COLOR);
+	for(i = 0; i<n_color; i++) {
         kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
                                          i, &value, &color);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);

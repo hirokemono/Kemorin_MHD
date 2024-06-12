@@ -343,6 +343,8 @@ int get_viz_colormap_param(int selected,
     int iflag = 0;
     if(selected == ISET_COLORMAP){
         iflag = get_PSF_colormap_id(viz_menu);
+    }else if(selected == ISET_NUM_COLOR){
+        iflag = get_each_PSF_color_table_num(viz_menu);
     }
     return iflag;
 }
@@ -359,8 +361,6 @@ int get_each_PSF_color_param(int selected, struct kemoview_mul_psf *kemo_mul_psf
 		iflag = send_num_isoline(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_COLORMAP){
 		iflag = get_PSF_colormap_id(kemo_mul_psf->psf_m[i_current]);
-	}else if(selected == ISET_NUM_COLOR){
-		iflag = get_each_PSF_color_table_num(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_NUM_OPACITY){
 		iflag = get_each_PSF_opacity_table_num(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_VECTOR_COLOR){

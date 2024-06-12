@@ -666,8 +666,8 @@ void kemoview_set_colormap_param(int id_model, int selected, int input,
     return;
 };
 
-int kemoview_get_colormap_param(struct kemoviewer_type *kemoviewer,
-                                int id_model, int selected){
+int kemoview_get_viz_colormap_param(struct kemoviewer_type *kemoviewer,
+                                    int id_model, int selected){
     int iflag = 0;
     if(id_model == FIELDLINE_RENDERING){
         iflag = get_viz_colormap_param(selected,

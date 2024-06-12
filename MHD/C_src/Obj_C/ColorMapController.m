@@ -45,7 +45,10 @@
 	NSInteger isel = [idColorTableView selectedRow];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     
-    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR) > 16) return;
+    int n_color = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                  SURFACE_RENDERING,
+                                                  ISET_NUM_COLOR);
+    if(n_color > 16) return;
         
 	if(isel > 0) {
 		value1 = [[self.ColorTableField objectAtIndex:isel-1] doubleValue];
@@ -160,18 +163,21 @@
 	
 	[ColorTableField removeAllObjects];
 	[ColorTableColor removeAllObjects];
-	NumColorTable = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
+	NumColorTable = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                    SURFACE_RENDERING,
+                                                    ISET_NUM_COLOR);
 	for(i=0;i<NumColorTable;i++){
-        kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl,
+                                         SURFACE_RENDERING,
                                          i, &value, &color);
 		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
 	}
 	[_colorTableView reloadData];
 
-	[_colorModeItem selectItemAtIndex:kemoview_get_colormap_param(kemo_sgl,
-                                                                  SURFACE_RENDERING,
-                                                                  ISET_COLORMAP)];
+	[_colorModeItem selectItemAtIndex:kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                      SURFACE_RENDERING,
+                                                                      ISET_COLORMAP)];
     return;
 }
 

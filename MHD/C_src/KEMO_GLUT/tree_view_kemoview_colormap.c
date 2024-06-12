@@ -59,7 +59,10 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    if(kemoview_get_PSF_color_param(kemo_gl->kemoview_data, ISET_NUM_COLOR) > 16) return;
+    int n_color = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data,
+                                                  SURFACE_RENDERING,
+                                                  ISET_NUM_COLOR)
+    if(n_color > 16) return;
     add_colormap_list_items_CB(color_vws);
 	
 	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_gl->kemoview_data);
@@ -279,8 +282,9 @@ GtkWidget * init_kemoview_colormap_list_vbox(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(dummy_enty), "colormap_view",  (gpointer) color_vws);
 
     GtkWidget *frame_cmap;
-    int iflag = kemoview_get_colormap_param(kemo_gl->kemoview_data,
-                                            SURFACE_RENDERING, ISET_COLORMAP);
+    int iflag = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data,
+                                                SURFACE_RENDERING,
+                                                ISET_COLORMAP);
     color_vws->combobox_cmap = init_combobox_cmap(iflag);
     g_signal_connect(G_OBJECT(color_vws->combobox_cmap), "changed",
                      G_CALLBACK(set_kemoview_color_mode_CB), (gpointer) dummy_enty);

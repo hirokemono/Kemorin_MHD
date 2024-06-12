@@ -118,10 +118,13 @@
     int i;
     double value, color, opacity;
     
-    metalColormap->id_cmap[0] = kemoview_get_colormap_param(kemo_sgl,
-                                                            SURFACE_RENDERING, ISET_COLORMAP);
+    metalColormap->id_cmap[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                SURFACE_RENDERING,
+                                                                ISET_COLORMAP);
     
-    metalColormap->num_normalize[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
+    metalColormap->num_normalize[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                      SURFACE_RENDERING,
+                                                                      ISET_NUM_COLOR);
     for(i=0;i<metalColormap->num_normalize[0];i++){
         kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
                                          i, &value, &color);

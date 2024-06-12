@@ -463,8 +463,8 @@ extern "C" {
 
     void kemoview_set_colormap_param(int id_model, int selected, int input,
                                      struct kemoviewer_type *kemoviewer);
-    int kemoview_get_colormap_param(struct kemoviewer_type *kemoviewer,
-                                    int id_model, int selected);
+    int kemoview_get_viz_colormap_param(struct kemoviewer_type *kemoviewer,
+                                        int id_model, int selected);
     void kemoview_get_VIZ_color_RGB_value(struct kemoviewer_type *kemoviewer, int id_model,
                                           int i_point, double *value, double *color);
 
