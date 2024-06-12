@@ -416,13 +416,24 @@ double get_each_PSF_data_range(int selected, int icomp, struct kemoview_mul_psf 
 	return value;
 }
 
+
+double get_VIZ_opacity_range(int selected, struct psf_menu_val *viz_menu){
+    double value = 0.0;
+    if(selected == ISET_OPACITY_MIN){
+        value = get_VIZ_minimum_opacity(viz_menu);
+    }else if(selected == ISET_OPACITY_MAX){
+        value = get_VIZ_maximum_opacity(viz_menu);
+    };
+    return value;
+};
+
 double get_each_PSF_colormap_range(int selected, struct kemoview_mul_psf *kemo_mul_psf){
 	double value = 0.0;
 	int i_current = kemo_mul_psf->psf_a->id_current;
 	if(selected == ISET_OPACITY_MIN){
-		value = get_each_PSF_minimum_opacity(kemo_mul_psf->psf_m[i_current]);
+		value = get_VIZ_minimum_opacity(kemo_mul_psf->psf_m[i_current]);
 	}else if(selected == ISET_OPACITY_MAX){
-		value = get_each_PSF_maximum_opacity(kemo_mul_psf->psf_m[i_current]);
+		value = get_VIZ_maximum_opacity(kemo_mul_psf->psf_m[i_current]);
 	};
 	return value;
 };
@@ -512,13 +523,6 @@ void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
 double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value){
     int i_current = kemo_mul_psf->psf_a->id_current;
     return get_each_PSF_opacity_at_value(kemo_mul_psf->psf_m[i_current], value);
-}
-
-void get_PSF_opacity_items(struct kemoview_mul_psf *kemo_mul_psf,
-                           int i_point, double *value, double *opacity){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_opacity_table_items(kemo_mul_psf->psf_m[i_current],
-                                     i_point, value, opacity);
 }
 
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,

@@ -42,7 +42,8 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 	float ylabel;
     int		i, npoint;
     
-    if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) < 1) return;
+    int n_loaded = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
+    if(n_loaded < 1) return;
     
     npoint = kemoview_get_viz_colormap_param(kemo_sgl,
                                              SURFACE_RENDERING,
@@ -54,12 +55,18 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 	npoint = kemoview_get_viz_colormap_param(kemo_sgl,
                                              SURFACE_RENDERING,
                                              ISET_NUM_OPACITY);
-	kemoview_get_PSF_opacity_items(kemo_sgl, IZERO, &dataMin, &opacity);
-	kemoview_get_PSF_opacity_items(kemo_sgl, (npoint-1), &dataMax, &opacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl,
+                                   SURFACE_RENDERING,
+                                   IZERO, &dataMin, &opacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl,
+                                   SURFACE_RENDERING,
+                                   (npoint-1), &dataMax, &opacity);
 	if (dataMin > colorMin) {dataMin = colorMin;};
 	if (dataMax < colorMax) {dataMax = colorMax;};
 
-	maxOpacity = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
+	maxOpacity = kemoview_get_VIZ_opacity_range(kemo_sgl,
+                                                SURFACE_RENDERING,
+                                                ISET_OPACITY_MAX);
 	
     // Set rectList
     for(i = 0; i < RECTCOUNT; i++) {
@@ -100,7 +107,9 @@ BOOL appearanceIsDark(NSAppearance * appearance)
                                                     SURFACE_RENDERING,
                                                     ISET_NUM_OPACITY);
 	for(i = 0; i < n_opacity; i++) {
-		kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+		kemoview_get_PSF_opacity_items(kemo_sgl,
+                                       SURFACE_RENDERING,
+                                       i, &value, &opacity);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
 		[self drawString:str x:0 y:ylabel];

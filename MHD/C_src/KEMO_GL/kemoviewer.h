@@ -504,14 +504,14 @@ extern "C" {
     
 	double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
                                             int selected, int icomp);
-	double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
-                                                int selected);
-    
+    double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,
+                                          int id_model, int selected);
+
     void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
                                       int i_point, double *value, double *color);
-    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
+    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer, int id_model,
                                         int i_point, double *value, double *opacity);
-    
+
     void kemoview_write_PSF_colormap_file(struct kv_string *filename,
                                           struct kemoviewer_type *kemoviewer);
     void kemoview_read_PSF_colormap_file(struct kv_string *filename,
@@ -560,13 +560,8 @@ extern "C" {
     
 	double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
                                          int selected, int icomp);
-	double kemoview_get_fline_colormap_range(struct kemoviewer_type *kemoviewer,
-                                             int selected);
 
 	
-    void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
-                                         int i_point, double *value, double *opacity);
-    
     void kemoview_write_fline_colormap_file(struct kv_string *filename,
                                             struct kemoviewer_type *kemoviewer);
     void kemoview_read_fline_colormap_file(struct kv_string *filename,

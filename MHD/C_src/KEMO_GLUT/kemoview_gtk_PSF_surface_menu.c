@@ -41,8 +41,9 @@ static void set_PSFcolor_GTK(struct kemoviewer_gl_type *kemo_gl,
 	dcolor[0] = gcolor.red;
 	dcolor[1] = gcolor.green;
 	dcolor[2] = gcolor.blue;
-	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(kemo_gl->kemoview_data,
-                                                               ISET_OPACITY_MAX);
+	dcolor[3] = (gdouble) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
+                                                         SURFACE_RENDERING,
+                                                         ISET_OPACITY_MAX);
 	kemoview_set_PSF_single_color(dcolor, kemo_gl->kemoview_data);
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR,
                                  kemo_gl->kemoview_data);
@@ -247,8 +248,9 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);
 	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_max), max_text);
 	
-	current_value = kemoview_get_each_PSF_colormap_range(kemo_gl->kemoview_data,
-                                                         ISET_OPACITY_MAX);
+	current_value = kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
+                                                   SURFACE_RENDERING,
+                                                   ISET_OPACITY_MAX);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_opacity1), current_value);
 	
 	kemoview_get_each_PSF_color_w_exp(kemo_gl->kemoview_data, ISET_COLOR_MIN,

@@ -176,13 +176,3 @@ double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo
 	};
 	return value;
 }
-
-double get_fline_colormap_range(int selected, struct kemoview_fline *kemo_fline){
-	double value = 0.0;
-	if(selected == ISET_OPACITY_MIN){
-		value = get_each_PSF_minimum_opacity(kemo_fline->fline_m);
-	}else if(selected == ISET_OPACITY_MAX){
-		value = get_each_PSF_maximum_opacity(kemo_fline->fline_m);
-	};
-	return value;
-};

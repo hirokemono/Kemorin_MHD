@@ -138,17 +138,6 @@
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
-- (void)InitOpacityTables:(struct kemoviewer_type *) kemo_sgl
-{
-	double d_min, d_max;
-	
-	NumOpacityTable = 2;
-	d_min = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MIN);
-	d_max = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MAX);
-	
-    [self SetOpacityTables:kemo_sgl];
-}
-
 - (void) SetOpacityTables:(struct kemoviewer_type *) kemo_sgl
 {
 	int i;
@@ -160,7 +149,9 @@
                                                       SURFACE_RENDERING,
                                                       ISET_NUM_OPACITY);
 	for(i=0;i<NumOpacityTable;i++){
-		kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+		kemoview_get_PSF_opacity_items(kemo_sgl,
+                                       SURFACE_RENDERING,
+                                       i, &value, &opacity);
 		[OpacityTableField    addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[OpacityTableOpacity addObject:[[NSNumber alloc ] initWithDouble:opacity] ];
 	}

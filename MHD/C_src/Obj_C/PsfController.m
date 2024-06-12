@@ -215,8 +215,9 @@
                                       &current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
-	self.PSFOpacity
-        = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
+	self.PSFOpacity = kemoview_get_VIZ_opacity_range(kemo_sgl,
+                                                     SURFACE_RENDERING,
+                                                     ISET_OPACITY_MAX);
 	
 	self.DrawPSFVectorFlag
         = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
@@ -293,7 +294,9 @@
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
 
-	 self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
+	 self.PSFOpacity =        kemoview_get_VIZ_opacity_range(kemo_sgl,
+                                                             SURFACE_RENDERING,
+                                                             ISET_OPACITY_MAX);
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 
@@ -479,7 +482,6 @@
     
     [self.rgbaMapObject updateColormapParameter:kemo_sgl];
     [self.colorMapObject SetColorTables:kemo_sgl];
-    [self.opacityMapObject InitOpacityTables:kemo_sgl];
     [self.opacityMapObject SetOpacityTables:kemo_sgl];
 }
 

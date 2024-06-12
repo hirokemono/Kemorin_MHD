@@ -52,5 +52,4 @@ void get_fline_color_w_exp(int selected, struct kemoview_fline *kemo_fline,
 						   double *value, int *i_digit);
 
 double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo_fline);
-double get_fline_colormap_range(int selected, struct kemoview_fline *kemo_fline);
 #endif

@@ -136,7 +136,9 @@
                                                                     SURFACE_RENDERING,
                                                                     ISET_NUM_OPACITY);
     for(i=0;i<metalColormap->num_opacity[0];i++) {
-        kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+        kemoview_get_PSF_opacity_items(kemo_sgl,
+                                       SURFACE_RENDERING,
+                                       i, &value, &opacity);
         metalColormap->alpha_reference[i] =  (float) value;
         metalColormap->alpha_output[i] = (float) opacity;
     }

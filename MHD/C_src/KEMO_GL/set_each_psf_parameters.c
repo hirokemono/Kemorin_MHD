@@ -231,10 +231,10 @@ double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu){
                             n-1, &d, &c);
 	return d;
 }
-double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu){
+double get_VIZ_minimum_opacity(struct psf_menu_val *psf_menu){
 	return get_minimum_opacity_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
-double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu){
+double get_VIZ_maximum_opacity(struct psf_menu_val *psf_menu){
 	return get_maximum_opacity_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz]);
 }
 int get_VIZ_color_table_num(struct psf_menu_val *psf_menu){
@@ -249,8 +249,8 @@ void get_VIZ_color_RGB_value(struct psf_menu_val *psf_menu, int i_point,
     get_color_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                             i_point, value, color);
 }
-void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
-                                      double *value, double *opacity){
+void get_VIZ_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                 double *value, double *opacity){
     get_opacity_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz], i_point, value, opacity);
 }
 

@@ -129,15 +129,15 @@ void set_viz_colormap_id(struct psf_menu_val *psf_menu, int isel);
 int get_PSF_colormap_id(struct psf_menu_val *psf_menu);
 double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
 double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
-double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu);
-double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu);
+double get_VIZ_minimum_opacity(struct psf_menu_val *psf_menu);
+double get_VIZ_maximum_opacity(struct psf_menu_val *psf_menu);
 int get_VIZ_color_table_num(struct psf_menu_val *psf_menu);
 int get_VIZ_opacity_table_num(struct psf_menu_val *psf_menu);
 
 void get_VIZ_color_RGB_value(struct psf_menu_val *psf_menu, int i_point,
                              double *value, double *color);
-void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
-                                      double *value, double *opacity);
+void get_VIZ_opacity_table_items(struct psf_menu_val *psf_menu, int i_point,
+                                 double *value, double *opacity);
 
 void write_each_PSF_colormap_control_file(struct kv_string *filename, const int iflag_draw_axis,
                                           struct psf_menu_val *psf_menu);

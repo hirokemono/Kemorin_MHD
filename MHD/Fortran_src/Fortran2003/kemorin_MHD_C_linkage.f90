@@ -233,10 +233,10 @@
 !    void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,
 !                                       int id_model, struct kemoviewer_type *kemoviewer);
 !    
-!    double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
-!                                                int selected);
+!    double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,
+!                                          int id_model, int selected);
 !    
-!    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
+!    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer, int id_model,
 !                                        int i_point, double *value, double *opacity);
 !    
 !    void kemoview_write_PSF_colormap_file(struct kv_string *filename,
@@ -279,16 +279,7 @@
 !    
 !    double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
 !                                         int selected, int icomp);
-!    double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
-!                                         int selected, int icomp){
 !
-        function kemoview_get_fline_colormap_range(selected)            &
-     &          BIND(C, name = "kemoview_get_fline_colormap_range")
-!          IMPORT C_DOUBLE, c_int
-          integer(c_int) :: kemoview_get_fline_maximum_opacity
-          integer(c_int) :: selected
-        END function
-!    
 !    int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
 !                                       int selected);
         function kemoview_get_fline_color_param(selected)               &
@@ -306,16 +297,6 @@
           integer(c_int), VALUE :: i_model, i_point
           REAL(C_DOUBLE), intent(inout) :: value(i_point)
           REAL(C_DOUBLE), intent(inout) :: color(i_point)
-        END subroutine
-!
-!    void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity);
-        subroutine kemoview_get_fline_opacity_item                      &
-     &           (i_point, value, opacity)                              &
-     &            BIND(C, name = "kemoview_get_fline_opacity_item")
-!          IMPORT C_DOUBLE, c_int
-          integer(c_int), VALUE :: i_point
-          REAL(C_DOUBLE), intent(inout) :: value(i_point)
-          REAL(C_DOUBLE), intent(inout) :: opacity(i_point)
         END subroutine
 !
 !    void kemoview_write_fline_colormap_file(struct kv_string *filename,

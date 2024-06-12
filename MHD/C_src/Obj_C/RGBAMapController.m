@@ -21,14 +21,16 @@
 
 - (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl
 {
-	self.DataMinimum = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MIN);
-	self.DataMaximum = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MAX);
+    int i_comp = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	self.DataMinimum = kemoview_get_each_PSF_data_range(kemo_sgl,
+                                                        ISET_COLOR_MIN, i_comp);
+	self.DataMaximum = kemoview_get_each_PSF_data_range(kemo_sgl, 
+                                                        ISET_COLOR_MAX, i_comp);
 }
 
 - (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
 {
     [_colorMapObject SetColorTables:kemo_sgl];
-    [_opacityMapObject InitOpacityTables:kemo_sgl];
     [_opacityMapObject SetOpacityTables:kemo_sgl];
 }
 
