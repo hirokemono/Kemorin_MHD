@@ -127,8 +127,7 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int istate = gtk_switch_get_state(GTK_SWITCH(switch_1));
-    kemoview_set_fline_field_param(LINETYPE_FLAG, istate,
-                                   kemo_gl->kemoview_data);
+    kemoview_set_line_type_flag(istate, kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 };

@@ -37,8 +37,10 @@ void close_PSF_view(struct kemoview_mul_psf *kemo_mul_psf);
 
 void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_mul_psf *kemo_mul_psf);
 
-void set_PSF_loaded_params(int selected, int input, struct kemoview_mul_psf *kemo_mul_psf);
-int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf, int selected);
+void set_PSF_loaded_params(int selected, int input,
+                           struct kemoview_mul_psf *kemo_mul_psf);
+int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf,
+                          int selected);
 
 void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
                                  struct kv_string *ucd_m);
@@ -48,7 +50,9 @@ int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
 long get_VIZ_field_param(int selected,
                          struct psf_data *viz_data,
                          struct psf_menu_val *viz_menu);
-void set_each_PSF_field_param(int selected, int input, struct kemoview_mul_psf *kemo_mul_psf);
+void set_each_PSF_field_param(int selected, int input,
+                              struct psf_data *viz_data,
+                              struct psf_menu_val *viz_menu);
 
 void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 int get_each_PSF_draw_switch(int selected, struct kemoview_mul_psf *kemo_mul_psf);

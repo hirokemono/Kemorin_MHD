@@ -20,10 +20,12 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
     if(index_mode < 0){index_mode = 0;};
     kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode, kemo_gl->kemoview_data);
 
-    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, IZERO,
-                                      kemo_gl->kemoview_data);
-    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO,
-                                      kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 FIELD_SEL_FLAG,
+                                 IZERO, kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 IZERO, kemo_gl->kemoview_data);
     set_vector_plot_availablity(kemo_gl, psf_gmenu);
 
     gtk_widget_destroy(psf_gmenu->psf_frame);
@@ -67,8 +69,13 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
         index_mode = 0;
     }
 
-	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode, kemo_gl->kemoview_data);
-    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO, kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 FIELD_SEL_FLAG,
+                                 index_mode,
+                                 kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 IZERO, kemo_gl->kemoview_data);
 
     gtk_widget_destroy(psf_gmenu->psf_frame);
     psf_gmenu->psf_frame = set_psf_menu_box(kemo_gl, psf_gmenu, itemTEvo);
@@ -95,7 +102,10 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
         index_mode = 0;
     }
 	
-	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode, kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 index_mode,
+                                 kemo_gl->kemoview_data);
     
     gtk_widget_destroy(psf_gmenu->psf_frame);
     psf_gmenu->psf_frame = set_psf_menu_box(kemo_gl, psf_gmenu, itemTEvo);

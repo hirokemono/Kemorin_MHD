@@ -119,10 +119,10 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a);
 
 void init_psf_parameters(struct psf_menu_val *psf_m);
 
-void set_PSF_field(int selected,
+void set_VIZ_field(int selected,
                    char *data_name, long *istack_comp,
                    struct psf_menu_val *psf_m);
-void set_PSF_component(int selected,
+void set_VIZ_component(int selected,
                        char *data_name, long *istack_comp,
                        struct psf_menu_val *psf_m);
 

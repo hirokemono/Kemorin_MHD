@@ -160,7 +160,7 @@
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
 							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
 
-	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
+	self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl, FIELDLINE_RENDERING);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
@@ -221,7 +221,7 @@
 - (IBAction) CloseFlineFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_close_fieldline_view(kemo_sgl);
-	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
+	self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl, FIELDLINE_RENDERING);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
 	[_metalView UpdateImage:kemo_sgl];
@@ -238,8 +238,9 @@
     [self SetFlineComponentMenu:isel
                        kemoview:kemo_sgl];
     
-	kemoview_set_fline_field_param(FIELD_SEL_FLAG, (int) isel,
-                                   kemo_sgl);
+    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+                                 FIELD_SEL_FLAG,
+                                 (int) isel, kemo_sgl);
 	
     int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
@@ -274,9 +275,10 @@
 	double value;
 	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, 
-                                   (int) [_FlineComponentMenu indexOfSelectedItem],
-                                   kemo_sgl);
+    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 (int) [_FlineComponentMenu indexOfSelectedItem],
+                                 kemo_sgl);
 	
 	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
@@ -383,12 +385,14 @@
                                           iplotted);
 
         kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                     FIELDLINE_RENDERING, ISET_COLOR_MIN,
+                                     FIELDLINE_RENDERING,
+                                     ISET_COLOR_MIN,
                                      &value, &i_digit);
 		self.FlineDisplayMinimum =  (CGFloat) value;
 		self.FlineDisplayMinDigit = (CGFloat) i_digit;
         kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                     FIELDLINE_RENDERING, ISET_COLOR_MAX,
+                                     FIELDLINE_RENDERING,
+                                     ISET_COLOR_MAX,
                                      &value, &i_digit);
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
@@ -421,9 +425,7 @@
 {
 	self.Flinetype = [[_flinetype_matrix selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_field_param(LINETYPE_FLAG,
-                                   (int) self.Flinetype,
-                                   kemo_sgl);
+    kemoview_set_line_type_flag((int) self.Flinetype, kemo_sgl);
 	
 	[_metalView UpdateImage:kemo_sgl];
 }

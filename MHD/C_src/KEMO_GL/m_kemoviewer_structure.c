@@ -592,9 +592,23 @@ int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
                                          psf_filehead, iflag);
 }
 
-void kemoview_set_each_PSF_field_param(int selected, int input,
-                                       struct kemoviewer_type *kemoviewer){
-	return set_each_PSF_field_param(selected, input, kemoviewer->kemo_mul_psf);
+void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
+                                  struct kemoviewer_type *kemoviewer){
+    long index = 0;
+    if(id_model == FIELDLINE_RENDERING){
+        set_each_PSF_field_param(selected, input,
+                                 kemoviewer->kemo_fline->fline_d,
+                                 kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        set_each_PSF_field_param(selected, input,
+                                 kemoviewer->kemo_tracer->tracer_d,
+                                 kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_each_PSF_field_param(selected, input,
+                                 kemoviewer->kemo_mul_psf->psf_d[i_current],
+                                 kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
 };
 
 int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
@@ -616,6 +630,34 @@ int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
     }
     return (int) index;
 };
+
+void kemoview_set_VIZ_draw_flag(int id_model, int iflag,
+                                struct kemoviewer_type *kemoviewer){
+    if(id_model == FIELDLINE_RENDERING){
+        set_draw_psf_solid(iflag, kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        set_draw_psf_solid(iflag, kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_draw_psf_solid(iflag, kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+}
+
+int kemoview_get_VIZ_draw_flags(struct kemoviewer_type *kemoviewer,
+                                int id_model){
+    int iflag = 0;
+    
+    if(id_model == FIELDLINE_RENDERING){
+        iflag =  send_draw_psf_solid(kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        iflag =  send_draw_psf_solid(kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        iflag =  send_draw_psf_solid(kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    }
+    return iflag;
+}
+
 
 long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
 	return send_PSF_num_component(kemoviewer->kemo_mul_psf, i);
@@ -1005,16 +1047,6 @@ void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer)
 	set_fline_file_step(kemoviewer->kemo_fline->fline_m, istep);
 };
 
-void kemoview_set_fline_parameters(int selected, int iflag,
-                                   struct kemoviewer_type *kemoviewer){
-	set_fline_parameters(selected, iflag, kemoviewer->kemo_fline);
-};
-int kemoview_get_fline_parameters(struct kemoviewer_type *kemoviewer,
-                                  int selected){
-	return get_fline_parameters(kemoviewer->kemo_fline, selected);
-};
-
-
 int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i){
 	return (int) send_ncomp_each_psf(kemoviewer->kemo_fline->fline_d, i);
 };
@@ -1024,11 +1056,9 @@ void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
                             colorname, i);
 };
 
-void kemoview_set_fline_field_param(int selected, int input,
-                                    struct kemoviewer_type *kemoviewer){
-	return set_fline_field_param(selected, input, kemoviewer->kemo_fline);
+void kemoview_set_line_type_flag(int input, struct kemoviewer_type *kemoviewer){
+    return set_fline_type(kemoviewer->kemo_fline->fline_m, input);
 };
-
 int kemoview_get_line_type_flag(struct kemoviewer_type *kemoviewer){
     return (int) get_fline_type(kemoviewer->kemo_fline->fline_m);
 };

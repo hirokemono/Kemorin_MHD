@@ -176,7 +176,7 @@
                                                 DRAW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch 
-        =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+        =  kemoview_get_VIZ_draw_flags(kemo_sgl, SURFACE_RENDERING);
 	self.PSFIsolineSwitch 
         =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	self.PSFZerolineSwitch
@@ -266,78 +266,14 @@
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
-	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField,
-                                      kemo_sgl);
-    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent,
-                                      kemo_sgl);
-    /*   
-     int iplotted = kemoview_get_VIZ_field_param(kemo_sgl, SURFACE_RENDERING, DRAW_ADDRESS_FLAG);
-     
-     self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
-     self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
-     self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
-     self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
-     self.PsfMinimumValue =   kemoview_get_VIZ_data_range(kemo_sgl, SURFACE_RENDERING, ISET_COLOR_MIN, iplotted);
-     self.PsfMaximumValue =   kemoview_get_VIZ_data_range(kemo_sgl, SURFACE_RENDERING, ISET_COLOR_MAX, iplotted);
-     self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
-	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
-
-     kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                  SURFACE_RENDERING, ISET_COLOR_MIN,
-                                  &current_value, &i_digit);
-	 self.PsfMinimumRange =      (CGFloat) current_value;
-	 self.PsfMinimumDigit =      (CGFloat) i_digit;
-     kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                  SURFACE_RENDERING, ISET_COLOR_MAX,
-                                  &current_value, &i_digit);
-	 self.PsfMaximumRange =      (CGFloat) current_value;
-	 self.PsfMaximumDigit =      (CGFloat) i_digit;
-	 
-     kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                  SURFACE_RENDERING, ISET_WIDTH,
-                                  &current_value, &i_digit);
-	 self.IsolineWidth =      (CGFloat) current_value;
-	 self.IsolineDigit =      (CGFloat) i_digit;
-
-	 self.PSFOpacity =        kemoview_get_VIZ_opacity_range(kemo_sgl,
-                                                             SURFACE_RENDERING,
-                                                             ISET_OPACITY_MAX);
-     
-     self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
-
-     kemoview_get_VIZ_color_w_exp(kemo_sgl, SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                  &current_value, &i_digit);
-	 self.ScaleVector =      (CGFloat) current_value;
-	 self.ScaleDigit =       (CGFloat) i_digit;
-
-     kemoview_get_VIZ_color_w_exp(kemo_sgl, SURFACE_RENDERING, ISET_VECTOR_INC,
-                                  &current_value, &i_digit);
-	 self.PSFVectorIncrement = (CGFloat) current_value;
-	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
-	 
-     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
-     
-     self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
-     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
-     
-     self.psfPatchColorTag = kemoview_get_VIZ_patch_color_mode(kemo_sgl, SURFACE_RENDERING);
-     self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
-
-     self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
-     
-     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
-     [self SetPsfFieldMenu];
-     [_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
-     [_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
-     
-     [colorMapObject SetColorTables:kemo_sgl];
-     [opacityMapObject SetOpacityTables:kemo_sgl];
-     
-     [_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
-     
-     if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
-     else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};
-     */
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 FIELD_SEL_FLAG,
+                                 (int) self.PSFSelectedField,
+                                 kemo_sgl);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 (int) self.PSFSelectedComponent,
+                                 kemo_sgl);
 }
 
 - (void) SetCurrentPsfMenu:(struct kemoviewer_type *) kemo_sgl
@@ -674,9 +610,10 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[self SetPsfComponentMenu:self.PSFSelectedField
                      kemoview:kemo_sgl];
-    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG,
-                                      (int) self.PSFSelectedField,
-                                      kemo_sgl);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 FIELD_SEL_FLAG,
+                                 (int) self.PSFSelectedField,
+                                 kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
     
@@ -687,9 +624,10 @@
 - (IBAction) PsfComponentAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG,
-                                      (int) self.PSFSelectedComponent,
-                                      kemo_sgl);
+    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
+                                 (int) self.PSFSelectedComponent,
+                                 kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
     
@@ -701,9 +639,9 @@
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFSOLID_TOGGLE,
-                                (int) self.PSFSurfaceSwitch ,
-                                kemo_sgl);
+    kemoview_set_VIZ_draw_flag(SURFACE_RENDERING,
+                               (int) self.PSFSurfaceSwitch ,
+                               kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 

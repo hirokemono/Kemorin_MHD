@@ -171,7 +171,8 @@ void set_PSF_loaded_params(int selected, int input,
 	return;
 }
 
-int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf, int selected){
+int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf,
+                          int selected){
 	int output = 0;
 	if(selected == NUM_LOADED){
 		output= get_PSF_num_loaded(kemo_mul_psf->psf_a);
@@ -201,19 +202,15 @@ int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
 
 
 void set_each_PSF_field_param(int selected, int input,
-                              struct kemoview_mul_psf *kemo_mul_psf){
-	int i_current = kemo_mul_psf->psf_a->id_current;
+                              struct psf_data *viz_data,
+                              struct psf_menu_val *viz_menu){
 	if(selected == FIELD_SEL_FLAG){
-		set_PSF_field(input,
-                      kemo_mul_psf->psf_d[i_current]->data_name[selected],
-                      kemo_mul_psf->psf_d[i_current]->istack_comp,
-                      kemo_mul_psf->psf_m[i_current]);
+        set_VIZ_field(input, viz_data->data_name[selected],
+                      viz_data->istack_comp, viz_menu);
 	}else if(selected == COMPONENT_SEL_FLAG){
-        int i_field = kemo_mul_psf->psf_m[i_current]->if_draw_viz;
-		set_PSF_component(input,
-                          kemo_mul_psf->psf_d[i_current]->data_name[i_field],
-                          kemo_mul_psf->psf_d[i_current]->istack_comp,
-                          kemo_mul_psf->psf_m[i_current]);
+        int i_field = viz_menu->if_draw_viz;
+        set_VIZ_component(input, viz_data->data_name[i_field],
+                          viz_data->istack_comp, viz_menu);
 	};
 	return;
 };
@@ -241,9 +238,7 @@ long get_VIZ_field_param(int selected,
 
 void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
-    if      (selected == PSFSOLID_TOGGLE){
-        set_draw_psf_solid(iflag, kemo_mul_psf->psf_m[i_current]);
-    } else if (selected == PSFGRID_TOGGLE){
+    if      (selected == PSFGRID_TOGGLE){
         set_draw_psf_grid(iflag, kemo_mul_psf->psf_m[i_current]);
     } else if (selected == ZEROGRID_TOGGLE){
         set_draw_psf_zero(iflag, kemo_mul_psf->psf_m[i_current]);
@@ -258,9 +253,7 @@ void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *
 int get_each_PSF_draw_switch(int selected, struct kemoview_mul_psf *kemo_mul_psf){
 	int i_current = kemo_mul_psf->psf_a->id_current;
 	int iflag = 0;
-	if      (selected == PSFSOLID_TOGGLE){
-		iflag = send_draw_psf_solid(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == PSFGRID_TOGGLE){
+	if      (selected == PSFGRID_TOGGLE){
 		iflag = send_draw_psf_grid(kemo_mul_psf->psf_m[i_current]);
 	} else if (selected == ZEROGRID_TOGGLE){
 		iflag = send_draw_psf_zero(kemo_mul_psf->psf_m[i_current]);

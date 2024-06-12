@@ -162,8 +162,8 @@
 !    int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
 !                                               struct kv_string *psf_filehead, int *iflag);
 !
-!    void kemoview_set_each_PSF_field_param(int selected, int input,
-!                                           struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
+!                                      struct kemoviewer_type *kemoviewer);
 !
 !    int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
 !                                     int id_model, int selected);
@@ -243,12 +243,6 @@
 !                                            struct kv_string *fline_filehead);
 !    void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_set_fline_field_param(int selected, int input);
-!    
-!    void kemoview_set_fline_parameters(int selected, int iflag, 
-!                                       struct kemoviewer_type *kemoviewer);
-!    int kemoview_get_fline_parameters(int selected);
-!
 !    int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i);
 !    void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
 !                                            struct kv_string *colorname, int i);

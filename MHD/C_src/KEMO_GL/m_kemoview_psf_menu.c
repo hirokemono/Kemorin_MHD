@@ -203,7 +203,7 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 	return;
 };
 
-void set_PSF_field(int selected,
+void set_VIZ_field(int selected,
                    char *data_name, long *istack_comp,
                    struct psf_menu_val *psf_m){
 	psf_m->if_draw_viz = (long) selected;
@@ -216,7 +216,7 @@ void set_PSF_field(int selected,
 	return;
 }
 
-void set_PSF_component(int selected, 
+void set_VIZ_component(int selected, 
                        char *data_name, long *istack_comp,
                        struct psf_menu_val *psf_m){
 	psf_m->ic_draw_viz = selected;

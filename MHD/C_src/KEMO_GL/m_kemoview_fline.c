@@ -68,38 +68,3 @@ int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 	}
 	return ierr;
 }
-
-
-void set_fline_parameters(int selected, int input, struct kemoview_fline *kemo_fline){
-	if(selected == DRAW_SWITCH){
-        set_draw_psf_solid(input, kemo_fline->fline_m);
-	};
-	return;
-}
-
-int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected){
-	int output = 0;
-	if(selected == DRAW_SWITCH){
-		output =  send_draw_psf_solid(kemo_fline->fline_m);
-	};
-	return output;
-}
-
-void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_fline){
-	if(selected == FIELD_SEL_FLAG){
-        set_PSF_field(input,
-                      kemo_fline->fline_d->data_name[selected],
-                      kemo_fline->fline_d->istack_comp,
-                      kemo_fline->fline_m);
-	}else if(selected == COMPONENT_SEL_FLAG){
-        int i_field = kemo_fline->fline_m->if_draw_viz;
-        set_PSF_component(input,
-                          kemo_fline->fline_d->data_name[i_field],
-                          kemo_fline->fline_d->istack_comp,
-                          kemo_fline->fline_m);
-	}else if(selected == LINETYPE_FLAG){
-		set_fline_type(kemo_fline->fline_m, (long) input);
-	};
-	return;
-};
-

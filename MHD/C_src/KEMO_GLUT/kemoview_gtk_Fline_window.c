@@ -42,8 +42,8 @@ static void set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
 void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
                        struct fieldline_gtk_menu *fline_menu,
                        GtkWidget *main_window, GtkWidget *itemTEvo){
-    fline_menu->iflag_flineBox = kemoview_get_fline_parameters(kemo_gl->kemoview_data,
-                                                               DRAW_SWITCH);
+    fline_menu->iflag_flineBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
+                                                             FIELDLINE_RENDERING);
     if(fline_menu->iflag_flineBox == 0){return;};
 
     gint win_upperleft[2], size_xy[2];

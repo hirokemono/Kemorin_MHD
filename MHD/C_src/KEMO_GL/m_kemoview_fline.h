@@ -37,9 +37,4 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
 int evolution_fline_viewer(struct kemoview_fline *kemo_fline,
 			struct psf_data *psf_ucd_tmp, int istep_sync);
 
-void set_fline_parameters(int selected, int input, struct kemoview_fline *kemo_fline);
-int get_fline_parameters(struct kemoview_fline *kemo_fline, int selected);
-
-void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_fline);
-
 #endif
