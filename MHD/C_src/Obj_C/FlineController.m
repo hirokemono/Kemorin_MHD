@@ -29,27 +29,15 @@
 	self.FlineThickFactor = 1;
 	self.FlineThickDigit = -2;
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
-
-	FlineDrawFieldId =     [NSNumber alloc];
-	FlineDrawComponentId = [NSNumber alloc];
 	
 	FieldlineColor =      [NSNumber alloc];
-	
-	FlineMinimumRange = [NSNumber alloc];
-	FlineMaximumRange = [NSNumber alloc];
 	
 	return self;
 }
 
 - (id)dealloc
 {
-	[FlineDrawFieldId      dealloc];
-	[FlineDrawComponentId  dealloc];
-	
 	[FieldlineColor      dealloc];
-
-	[FlineMinimumRange dealloc];
-	[FlineMaximumRange dealloc];
 	
     [super dealloc];
 	return self;
@@ -132,10 +120,10 @@
                                    completionHandler:^(NSInteger FlineOpenInteger){
 	if(FlineOpenInteger == NSModalResponseOK){
 		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-		NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
+		NSString *OpenFilename =  [[flineOpenPanelObj URL] path];
 		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);
         struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadFlineFile:FlineOpenFilename
+        [self ReadFlineFile:OpenFilename
                    kemoview:kemo_sgl];
 	};
                                    }];

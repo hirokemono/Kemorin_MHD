@@ -22,8 +22,9 @@
 
 /* prototypes */
 
-int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, 
-			struct kv_string *psf_filehead, int *iflag);
+int send_VIZ_file_prefix_step_format(struct psf_menu_val *psf_menu,
+                                     struct kv_string *psf_filehead,
+                                     int *i_file_step);
 int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
                                   struct kv_string *stripped_dir,
                                   struct kv_string *stripped_filehead);

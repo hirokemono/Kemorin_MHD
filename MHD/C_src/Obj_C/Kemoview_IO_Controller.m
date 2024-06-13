@@ -37,13 +37,20 @@
 	else if(iflag_datatype==IFLAG_SURFACES) {
 		[_psfController DrawPsfFile:kemoviewOpenFilehead
                            kemoview:kemo_sgl];
-        [_movieMakerController InitEvolutionStepByPSF:kemo_sgl];
+        [_movieMakerController InitEvolutionStepByPSF:SURFACE_RENDERING
+                                             kemoview:kemo_sgl];
 	}
-	else if(iflag_datatype==IFLAG_LINES) {
-		[_flineController OpenFieldlineFile:kemoviewOpenFilehead
+    else if(iflag_datatype==IFLAG_LINES) {
+        [_flineController OpenFieldlineFile:kemoviewOpenFilehead
                                    kemoview:kemo_sgl];
-        [_movieMakerController InitEvolutionStepByFline:kemo_sgl];
-	};
+        [_movieMakerController InitEvolutionStepByPSF:FIELDLINE_RENDERING
+                                             kemoview:kemo_sgl];
+    }else if(iflag_datatype==IFLAG_POINTS){
+        [_tracerController OpenTracerFile:kemoviewOpenFilehead
+                                 kemoview:kemo_sgl];
+        [_movieMakerController InitEvolutionStepByPSF:TRACER_RENDERING
+                                             kemoview:kemo_sgl];
+    };
 	
 }
 

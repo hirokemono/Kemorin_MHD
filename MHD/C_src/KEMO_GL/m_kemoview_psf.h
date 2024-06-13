@@ -44,8 +44,6 @@ int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf,
 
 void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
                                  struct kv_string *ucd_m);
-int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
-                                  struct kv_string *psf_filehead, int *iflag);
 
 long get_VIZ_field_param(int selected,
                          struct psf_data *viz_data,

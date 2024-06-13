@@ -194,10 +194,11 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_gl_type *kemo_gl, Gtk
     g_signal_connect(G_OBJECT(evo_gmenu->evoSave_Button), "clicked",
                      G_CALLBACK(evolution_save_CB), (gpointer) evo_gmenu->entry_evo_file);
     
-    int file_fmt;
     struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
-    evo_gmenu->istart_evo = kemoview_get_PSF_full_path_file_prefix(kemo_gl->kemoview_data,
-                                                                   image_prefix, &file_fmt);
+    int file_fmt = kemoview_get_full_path_file_prefix_step(kemo_gl->kemoview_data,
+                                                           SURFACE_RENDERING,
+                                                           image_prefix,
+                                                           &evo_gmenu->istart_evo);
     evo_gmenu->iend_evo = evo_gmenu->istart_evo;
     evo_gmenu->inc_evo = 1;
     kemoview_free_kvstring(image_prefix);

@@ -26,32 +26,20 @@
     IBOutlet KemoViewerObject *_kmv;
 
     NSInteger DrawFlineFlag;
-    NSString *FlineOpenDirectory;
-    NSString *FlineOpenFilehead;
-    NSString *FlineOpenFileext;
-    NSString *FlineOpenFileheadExStep;
-    
-    NSString *FlineWindowlabel;
-    
-    NSNumber *FlineDrawFieldId;
-    NSNumber *FlineDrawComponentId;
+    NSString *TracerOpenFilehead;
+        
     NSNumber *FieldlineColor;
 
     IBOutlet NSMatrix *_flinetype_matrix;
     NSInteger Flinetype;
 
-    
-    NSNumber *FlineMinimumRange;
-    NSNumber *FlineMaximumRange;
-    
-    IBOutlet NSPopUpButton * _FlineFieldMenu;
-    IBOutlet NSPopUpButton * _FlineComponentMenu;
+    IBOutlet NSPopUpButton * _TracerFieldMenu;
+    IBOutlet NSPopUpButton * _TracerComponentMenu;
     
     CGFloat TracerColorMinimum;
     CGFloat TracerColorMaximum;
     CGFloat TracerColorMinDigit;
     CGFloat TracerColorMaxDigit;
-    
     
     CGFloat TracerMinimumValue;
     CGFloat FlineMaximumValue;
@@ -61,8 +49,6 @@
 
     IBOutlet id FieldlineColorItem;
 }
-
-@property(retain) NSString* FlineWindowlabel;
 
 @property NSInteger DrawFlineFlag;
 @property CGFloat TracerColorMinimum;
@@ -81,14 +67,14 @@
 - (id)dealloc;
 -(void) awakeFromNib;
 
-- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
-                  kemoview:(struct kemoviewer_type *) kemo_sgl;
+- (void) OpenTracerFile:(NSString*) TracerFilehead
+               kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 
 - (IBAction) CloseFlineFile:(id)pId;
-- (IBAction) FlineFieldAction:(id)sender;
-- (IBAction) FlineComponentAction:(id)sender;
+- (IBAction) TracerFieldAction:(id)sender;
+- (IBAction) TracerComponentAction:(id)sender;
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 

@@ -40,27 +40,22 @@
 }
 
 
--(void) InitEvolutionStepByPSF:(struct kemoviewer_type *) kemo_sgl
+-(void) InitEvolutionStepByPSF:(int) id_model
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int iflag;
     struct kv_string *psf_filehead = kemoview_alloc_kvstring();
     
-    self.CurrentStep
-        = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, psf_filehead, &iflag);
-    self.EvolutionStartStep = self.CurrentStep;
-    self.EvolutionEndStep =   self.CurrentStep;
+    int i_file_step;
+    int iflag = kemoview_get_full_path_file_prefix_step(kemo_sgl,
+                                                        id_model,
+                                                        psf_filehead,
+                                                        &i_file_step);
+    self.CurrentStep =        i_file_step;
+    self.EvolutionStartStep = i_file_step;
+    self.EvolutionEndStep =   i_file_step;
     
     kemoview_free_kvstring(psf_filehead);
 };
-
--(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl
-{
-    struct kv_string *fline_filehead = kemoview_alloc_kvstring();
-    self.CurrentStep = kemoview_get_fline_file_step_prefix(kemo_sgl, fline_filehead);
-    self.EvolutionStartStep = self.CurrentStep;
-    self.EvolutionEndStep =   self.CurrentStep;
-    kemoview_free_kvstring(fline_filehead);
-}
 
 // ---------------------------------
 -(id) setRotation:(NSInteger) int_degree

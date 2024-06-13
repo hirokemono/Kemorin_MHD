@@ -590,10 +590,22 @@ void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
                                           struct kv_string *ucd_m){
     get_PSF_full_path_file_name(kemoviewer->kemo_mul_psf, ucd_m);
 }
-int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
-                                           struct kv_string *psf_filehead, int *iflag){
-    return get_PSF_full_path_file_prefix(kemoviewer->kemo_mul_psf,
-                                         psf_filehead, iflag);
+
+int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, int id_model,
+                                            struct kv_string *psf_filehead, int *i_file_step){
+    long i_format = 0;
+    if(id_model == FIELDLINE_RENDERING){
+        i_format = send_VIZ_file_prefix_step_format(kemoviewer->kemo_fline->fline_m,
+                                                    psf_filehead, i_file_step);
+    }else if(id_model == TRACER_RENDERING){
+        i_format = send_VIZ_file_prefix_step_format(kemoviewer->kemo_tracer->tracer_m,
+                                                    psf_filehead, i_file_step);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        i_format = send_VIZ_file_prefix_step_format(kemoviewer->kemo_mul_psf->psf_m[i_current],
+                                                    psf_filehead, i_file_step);
+    }
+    return i_format;
 }
 
 void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
@@ -1074,10 +1086,6 @@ void kemoview_get_fline_full_path_file_name(struct kemoviewer_type *kemoviewer,
 	get_fline_full_path_file_name(kemoviewer->kemo_fline->fline_m, ucd_m);
 	return;
 }
-int kemoview_get_fline_file_step_prefix(struct kemoviewer_type *kemoviewer,
-                                        struct kv_string *fline_filehead){
-	return get_fline_file_step_prefix(kemoviewer->kemo_fline->fline_m, fline_filehead);
-};
 void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer){
 	set_fline_file_step(kemoviewer->kemo_fline->fline_m, istep);
 };

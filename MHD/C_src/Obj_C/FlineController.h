@@ -29,21 +29,14 @@
 	NSString *FlineOpenDirectory;
 	NSString *FlineOpenFilehead;
 	NSString *FlineOpenFileext;
-	NSString *FlineOpenFileheadExStep;
 	
 	NSString *FlineWindowlabel;
 	
-	NSNumber *FlineDrawFieldId;
-	NSNumber *FlineDrawComponentId;
 	NSNumber *FieldlineColor;
 
 	IBOutlet NSMatrix *_flinetype_matrix;
 	NSInteger Flinetype;
 
-	
-	NSNumber *FlineMinimumRange;
-	NSNumber *FlineMaximumRange;
-	
 	IBOutlet NSPopUpButton * _FlineFieldMenu;
 	IBOutlet NSPopUpButton * _FlineComponentMenu;
 	

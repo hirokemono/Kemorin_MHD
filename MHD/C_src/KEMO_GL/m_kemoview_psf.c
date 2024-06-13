@@ -193,13 +193,6 @@ void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
     alloc_set_ucd_file_name_by_psf(kemo_mul_psf->psf_m[i_current], ucd_m);
     return;
 }
-int get_PSF_full_path_file_prefix(struct kemoview_mul_psf *kemo_mul_psf,
-                                  struct kv_string *psf_filehead, int *iflag){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    return send_each_psf_file_header_full(kemo_mul_psf->psf_m[i_current],
-                                          psf_filehead, iflag);
-}
-
 
 void set_each_PSF_field_param(int selected, int input,
                               struct psf_data *viz_data,

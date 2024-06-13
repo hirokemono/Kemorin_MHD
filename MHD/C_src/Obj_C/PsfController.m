@@ -258,7 +258,8 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (void) SetCurrentPsfMenu:(struct kemoviewer_type *) kemo_sgl
 {
-	int i, j, istep, ifmt;
+    int i_file_step;
+	int i, j, ifmt;
     struct kv_string *psf_filehead;
 	NSString *PsfNumberTxt;
 	NSString *PsfFileHeader;
@@ -271,11 +272,12 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 			kemoview_set_PSF_loaded_params(SET_CURRENT, i, kemo_sgl);
 
             psf_filehead = kemoview_alloc_kvstring();
-			istep = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, psf_filehead, &ifmt);
+            ifmt = kemoview_get_full_path_file_prefix_step(kemo_sgl, SURFACE_RENDERING,
+                                                           psf_filehead, &i_file_step);
 			PsfNumberTxt = [[NSString alloc] initWithFormat:@"%d: ",i+1];
 			PsfFileHeader = [[[NSString alloc] initWithUTF8String:psf_filehead->string] lastPathComponent];
 			PsfFileHeader = [PsfNumberTxt stringByAppendingString:PsfFileHeader];
-			self.currentPSFStep = istep;
+			self.currentPSFStep = i_file_step;
 			[LoadedPsfFileHead addObject:PsfFileHeader];
 			[LoadedPsfID addObject:[[NSNumber alloc] initWithInt:i]];
             
@@ -647,7 +649,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_draw_flag(SURFACE_RENDERING,
-                               (int) self.PSFSurfaceSwitch ,
+                               (int) self.PSFSurfaceSwitch,
                                kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }

@@ -79,8 +79,8 @@
 
 -(id) init;
 
--(void) InitEvolutionStepByPSF:(struct kemoviewer_type *) kemo_sgl;
--(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl;
+-(void) InitEvolutionStepByPSF:(int) id_model
+                      kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)SendToClipAsTIFF:(id)sender;
 

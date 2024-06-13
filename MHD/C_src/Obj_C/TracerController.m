@@ -12,8 +12,6 @@
 
 @implementation TracerController
 
-@synthesize FlineWindowlabel;
-
 @synthesize DrawFlineFlag;
 @synthesize TracerMinimumValue;
 @synthesize TracerMaximumValue;
@@ -28,29 +26,16 @@
 {
     self.TracerRadiusFactor = 1;
     self.TracerRadiusDigit = -2;
-    self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
 
-    FlineDrawFieldId =     [NSNumber alloc];
-    FlineDrawComponentId = [NSNumber alloc];
-    
     FieldlineColor =      [NSNumber alloc];
-    
-    FlineMinimumRange = [NSNumber alloc];
-    FlineMaximumRange = [NSNumber alloc];
     
     return self;
 }
 
 - (id)dealloc
 {
-    [FlineDrawFieldId      dealloc];
-    [FlineDrawComponentId  dealloc];
-    
     [FieldlineColor      dealloc];
 
-    [FlineMinimumRange dealloc];
-    [FlineMaximumRange dealloc];
-    
     [super dealloc];
     return self;
 }
@@ -62,31 +47,28 @@
     return;
 }
 
-- (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
+- (id) CopyTracerDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
     self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
                                                      TRACER_RENDERING);
     [_psfController SetFieldMenuItems:TRACER_RENDERING
                              kemoview:kemo_sgl
-                            fieldMenu:_FlineFieldMenu];
+                            fieldMenu:_TracerFieldMenu];
     [_psfController SetComponentMenuItems:0
                               activeModel:TRACER_RENDERING
                                 kemoview:kemo_sgl
-                            componentMenu:_FlineComponentMenu];
+                            componentMenu:_TracerComponentMenu];
     [self SetFlineDataRanges:0
                     kemoview:kemo_sgl];
     return self;
 }
 
-- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
-                  kemoview:(struct kemoviewer_type *) kemo_sgl
+- (void) OpenTracerFile:(NSString*) TracerFilehead
+               kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     int id_viewtype;
     
-    self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
-                             [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
-
-    [self CopyFlineDisplayFlagsFromC:kemo_sgl];
+    [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
     id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     [_kemoviewControl SetViewTypeMenu:id_viewtype
@@ -95,26 +77,23 @@
     [_metalView UpdateImage:kemo_sgl];
 };
 
-- (void) ReadFlineFile:(NSString *) FlineFileName
-              kemoview:(struct kemoviewer_type *) kemo_sgl
+- (void) ReadTracerFile:(NSString *) FlineFileName
+               kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    FlineOpenFileext =   [FlineFileName pathExtension];
-    FlineOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
-    // NSLog(@"PSF file name =      %@",FlineFileName);
-    // NSLog(@"PSF file header =    %@",FlineOpenFilehead);
-    // NSLog(@"self.FlineWindowlabel = %@",self.FlineWindowlabel);
+    NSString *TracerOpenFileext = [FlineFileName pathExtension];
+    TracerOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
     
-    if([FlineOpenFileext isEqualToString:@"gz"] || [FlineOpenFileext isEqualToString:@"GZ"]){
-        FlineOpenFileext =    [FlineOpenFilehead pathExtension];
-        FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
+    if([TracerOpenFileext isEqualToString:@"gz"] || [TracerOpenFileext isEqualToString:@"GZ"]){
+        TracerOpenFileext =     [TracerOpenFilehead pathExtension];
+        TracerOpenFilehead =    [TracerOpenFilehead stringByDeletingPathExtension];
     };
     
     struct kv_string *filename = kemoview_init_kvstring_by_string([FlineFileName UTF8String]);
     int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
     
-    if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead
-                                                     kemoview:kemo_sgl];
+    if(iflag_datatype == IFLAG_POINTS) [self OpenTracerFile:(NSString *)TracerOpenFilehead
+                                                   kemoview:kemo_sgl];
 }
 
 - (IBAction) UpdateFieldline:(id)pId{
@@ -131,11 +110,10 @@
     [flineOpenPanelObj beginSheetModalForWindow:window
                                    completionHandler:^(NSInteger FlineOpenInteger){
     if(FlineOpenInteger == NSModalResponseOK){
-        FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-        NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
-        // NSLog(@"PSF file directory = %@",FlineOpenDirectory);
+        NSString *TracerOpenDirectory = [[flineOpenPanelObj directoryURL] path];
+        NSString *OpenFilename =  [[flineOpenPanelObj URL] path];
         struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadFlineFile:FlineOpenFilename
+        [self ReadTracerFile:OpenFilename
                    kemoview:kemo_sgl];
     };
                                    }];
@@ -152,13 +130,13 @@
         kemoview_close_tracer_view(kemo_sgl);
     };
     
-    [self CopyFlineDisplayFlagsFromC:kemo_sgl];
+    [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
     [_metalView UpdateImage:kemo_sgl];
     
 }
 
-- (void) setSelectedFlineComponentRanges:(struct kemoviewer_type *) kemo_sgl
+- (void) setSelectedTracerComponentRanges:(struct kemoviewer_type *) kemo_sgl
 {
     double dataMin, dataMax;
     double cmapMinValue, cmapMaxValue;
@@ -173,17 +151,15 @@
 	self.TracerColorMaxDigit = (CGFloat) cmapMaxDigit;
 }
 
-- (IBAction) FlineFieldAction:(id)sender
+- (IBAction) TracerFieldAction:(id)sender
 {
-    int i_digit;
-    double value;
-    NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
+    NSInteger isel = [_TracerFieldMenu indexOfSelectedItem];
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_psfController SetComponentMenuItems:isel
                               activeModel:TRACER_RENDERING
                                 kemoview:kemo_sgl
-                            componentMenu:_FlineComponentMenu];
+                            componentMenu:_TracerComponentMenu];
     [self SetFlineDataRanges:isel
                     kemoview:kemo_sgl];
     
@@ -191,21 +167,18 @@
                                  FIELD_SEL_FLAG,
                                  (int) isel, kemo_sgl);
     
-    [self setSelectedFlineComponentRanges:kemo_sgl];
+    [self setSelectedTracerComponentRanges:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction) FlineComponentAction:(id)sender
+- (IBAction) TracerComponentAction:(id)sender
 {
-    int i_digit;
-    double value;
-    
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_field_param(TRACER_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 (int) [_FlineComponentMenu indexOfSelectedItem],
+                                 (int) [_TracerComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
-    [self setSelectedFlineComponentRanges:kemo_sgl];
+    [self setSelectedTracerComponentRanges:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -214,14 +187,12 @@
 {
     double current_thick;
     int current_digit;
-    int i_digit;
-    double value;
 
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
                                                 TRACER_RENDERING,
                                                 NUM_FIELD_FLAG);
     if (n_field > 0) {
-        [self setSelectedFlineComponentRanges:kemo_sgl];
+        [self setSelectedTracerComponentRanges:kemo_sgl];
     }
     
     kemoview_get_VIZ_color_w_exp(kemo_sgl,

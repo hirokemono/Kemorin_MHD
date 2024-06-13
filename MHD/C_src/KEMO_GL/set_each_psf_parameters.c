@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include "set_each_psf_parameters.h"
 
-int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, 
-			struct kv_string *psf_filehead, int *iflag){
+int send_VIZ_file_prefix_step_format(struct psf_menu_val *psf_menu,
+                                     struct kv_string *psf_filehead,
+                                     int *i_file_step){
 	alloc_copy_string(psf_menu->viz_prefix_c->string, psf_filehead);
-	*iflag = psf_menu->iformat_viz_file;
-	return psf_menu->viz_step_c;
+    *i_file_step = psf_menu->viz_step_c;
+	return psf_menu->iformat_viz_file;
 };
 
 int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
