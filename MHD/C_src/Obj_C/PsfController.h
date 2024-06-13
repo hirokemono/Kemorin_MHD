@@ -168,6 +168,12 @@
 @property CGFloat VectorDigit;
 
 
+void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
+                   double *dataMin, double *dataMax,
+                   double *cmapMinValue, int *cmapMinDigit,
+                   double *cmapMaxValue, int *cmapMaxDigit);
+
+
 - (id)init;
 - (id)dealloc;
 

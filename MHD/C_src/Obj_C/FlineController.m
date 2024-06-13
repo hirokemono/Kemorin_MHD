@@ -158,12 +158,25 @@
 	
 }
 
-- (IBAction) FlineFieldAction:(id)sender
-{	
-	int i_digit;
-	double value;
-	NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
+- (void) setSelectedFlineComponentRanges:(struct kemoviewer_type *) kemo_sgl
+{
+    double dataMin, dataMax;
+    double cmapMinValue, cmapMaxValue;
+    int cmapMinDigit, cmapMaxDigit;
+    SetDataRanges(FIELDLINE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
+                  &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
+    self.FlineMinimumValue = (CGFloat) dataMin;
+    self.FlineMaximumValue = (CGFloat) dataMax;
+	self.FlineDisplayMinimum = (CGFloat) cmapMinValue;
+	self.FlineDisplayMinDigit = (CGFloat) cmapMinDigit;
+	self.FlineDisplayMaximum = (CGFloat) cmapMaxValue;
+	self.FlineDisplayMaxDigit = (CGFloat) cmapMaxDigit;
+}
 
+- (IBAction) FlineFieldAction:(id)sender
+{
+	NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
+    
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_psfController SetComponentMenuItems:isel
                               activeModel:FIELDLINE_RENDERING
@@ -175,70 +188,19 @@
     kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
                                  FIELD_SEL_FLAG,
                                  (int) isel, kemo_sgl);
-	
-    int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
-                                                DRAW_ADDRESS_FLAG);
-	self.FlineMinimumValue
-        = kemoview_get_VIZ_data_range(kemo_sgl,
-                                      FIELDLINE_RENDERING,
-                                      ISET_COLOR_MIN, iplotted);
-	self.FlineMaximumValue
-        = kemoview_get_VIZ_data_range(kemo_sgl,
-                                      FIELDLINE_RENDERING,
-                                      ISET_COLOR_MAX,
-                                      iplotted);
-	
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                   FIELDLINE_RENDERING, ISET_COLOR_MIN,
-                                   &value, &i_digit);
-	self.FlineDisplayMinimum =  (CGFloat) value;
-	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                   FIELDLINE_RENDERING, ISET_COLOR_MAX,
-                                   &value, &i_digit);
-	self.FlineDisplayMaximum =  (CGFloat) value;
-	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
-
+    
+    [self setSelectedFlineComponentRanges:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) FlineComponentAction:(id)sender
 {	
-	int i_digit;
-	double value;
-	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
                                  COMPONENT_SEL_FLAG,
                                  (int) [_FlineComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
-	
-	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
-                                                DRAW_ADDRESS_FLAG);
-	self.FlineMinimumValue 
-        = kemoview_get_VIZ_data_range(kemo_sgl,
-                                      FIELDLINE_RENDERING,
-                                      ISET_COLOR_MIN,
-                                      iplotted);
-	self.FlineMaximumValue 
-        = kemoview_get_VIZ_data_range(kemo_sgl,
-                                      FIELDLINE_RENDERING,
-                                      ISET_COLOR_MAX,
-                                      iplotted);
-
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                   FIELDLINE_RENDERING, ISET_COLOR_MIN,
-                                   &value, &i_digit);
-	self.FlineDisplayMinimum =  (CGFloat) value;
-	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                   FIELDLINE_RENDERING, ISET_COLOR_MAX,
-                                   &value, &i_digit);
-	self.FlineDisplayMaximum =  (CGFloat) value;
-	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
-
+    [self setSelectedFlineComponentRanges:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -253,31 +215,8 @@
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
                                                 NUM_FIELD_FLAG);
-    if (n_field > 0) {
-		int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                    FIELDLINE_RENDERING,
-                                                    DRAW_ADDRESS_FLAG);
-		self.FlineMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                             FIELDLINE_RENDERING,
-                                                             ISET_COLOR_MIN,
-                                                             iplotted);
-		self.FlineMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                             FIELDLINE_RENDERING,
-                                                             ISET_COLOR_MAX,
-                                                             iplotted);
-
-        kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                     FIELDLINE_RENDERING,
-                                     ISET_COLOR_MIN,
-                                     &value, &i_digit);
-		self.FlineDisplayMinimum =  (CGFloat) value;
-		self.FlineDisplayMinDigit = (CGFloat) i_digit;
-        kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                     FIELDLINE_RENDERING,
-                                     ISET_COLOR_MAX,
-                                     &value, &i_digit);
-		self.FlineDisplayMaximum =  (CGFloat) value;
-		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
+    if (n_field > 0) {  
+        [self setSelectedFlineComponentRanges:kemo_sgl];
 	}
     
     kemoview_get_VIZ_color_w_exp(kemo_sgl,

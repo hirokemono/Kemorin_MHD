@@ -20,8 +20,6 @@
 @synthesize PsfWindowlabel;
 
 @synthesize DrawPsfFlag;
-@synthesize PsfMinimumValue;
-@synthesize PsfMaximumValue;
 @synthesize IsolineNumber;
 @synthesize IsolineWidth;
 @synthesize IsolineDigit;
@@ -48,6 +46,8 @@
 @synthesize PSFLineSwitch;
 @synthesize PSFColorbarSwitch;
 
+@synthesize PsfMinimumValue;
+@synthesize PsfMaximumValue;
 @synthesize PsfMinimumRange;
 @synthesize PsfMaximumRange;
 @synthesize PsfMinimumDigit;
@@ -61,6 +61,26 @@
 @synthesize VectorDigit;
 @synthesize PSFVectorIncrement;
 @synthesize PSFVectorIncDigit;
+
+void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
+                   double *dataMin, double *dataMax, 
+                   double *cmapMinValue, int *cmapMinDigit,
+                   double *cmapMaxValue, int *cmapMaxDigit)
+{
+	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
+                                                DRAW_ADDRESS_FLAG);
+ 	*dataMin = kemoview_get_VIZ_data_range(kemo_sgl, id_model,
+                                           ISET_COLOR_MIN, iplotted);
+	*dataMax = kemoview_get_VIZ_data_range(kemo_sgl, id_model,
+                                           ISET_COLOR_MAX, iplotted);
+    
+    kemoview_get_VIZ_color_w_exp(kemo_sgl, id_model, ISET_COLOR_MIN,
+                                 cmapMinValue, cmapMinDigit);
+    kemoview_get_VIZ_color_w_exp(kemo_sgl, id_model, ISET_COLOR_MAX,
+                                 cmapMaxValue, cmapMaxDigit);
+}
+
+
 - (id)init;
 {
     self.rgbaMapObject =    [RGBAMapController alloc];
@@ -121,6 +141,21 @@
     [_ElasticControl UpdateWindow:0];
 }
 
+- (void) setSelectedPSFComponentRanges:(struct kemoviewer_type *) kemo_sgl
+{
+    double dataMin, dataMax;
+    double cmapMinValue, cmapMaxValue;
+    int cmapMinDigit, cmapMaxDigit;
+    SetDataRanges(SURFACE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
+                  &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
+    self.PsfMinimumValue = (CGFloat) dataMin;
+    self.PsfMaximumValue = (CGFloat) dataMax;
+	self.PsfMinimumRange = (CGFloat) cmapMinValue;
+	self.PsfMinimumDigit = (CGFloat) cmapMinDigit;
+	self.PsfMaximumRange = (CGFloat) cmapMaxValue;
+	self.PsfMaximumDigit = (CGFloat) cmapMaxDigit;
+}
+
 - (void) UpdateCurrentPsfMenu:(struct kemoviewer_type *) kemo_sgl
 {
 	double current_value;
@@ -133,9 +168,6 @@
                                                              SURFACE_RENDERING,
                                                              COMPONENT_SEL_FLAG);
     
-	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                SURFACE_RENDERING,
-                                                DRAW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch 
         =  kemoview_get_VIZ_draw_flags(kemo_sgl, SURFACE_RENDERING);
@@ -144,29 +176,9 @@
 	self.PSFZerolineSwitch
         = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch 
-        = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
-	self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                       SURFACE_RENDERING,
-                                                       ISET_COLOR_MIN,
-                                                       iplotted);
-	self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                       SURFACE_RENDERING,
-                                                       ISET_COLOR_MAX,
-                                                       iplotted);
-	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
-	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
-
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_COLOR_MIN,
-                                 &current_value, &i_digit);
-	self.PsfMinimumRange =      (CGFloat) current_value;
-	self.PsfMinimumDigit =      (CGFloat) i_digit;
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_COLOR_MAX,
-                                 &current_value, &i_digit);
-	self.PsfMaximumRange =      (CGFloat) current_value;
-	self.PsfMaximumDigit =      (CGFloat) i_digit;
-
+            = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
+    
+    [self setSelectedPSFComponentRanges:kemo_sgl];
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                  SURFACE_RENDERING, ISET_WIDTH,
                                  &current_value, &i_digit);
@@ -412,35 +424,15 @@
 	return;
 }
 
-- (void) SetPsfRanges:(struct kemoviewer_type *) kemo_sgl{
+- (void) SetPsfRanges:(struct kemoviewer_type *) kemo_sgl
+{
 	double current_value;
 	int i_digit;
-	int iplotted;
     
-	iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                            SURFACE_RENDERING,
-                                            DRAW_ADDRESS_FLAG);
+    [self setSelectedPSFComponentRanges:kemo_sgl];
     
- 	self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                       SURFACE_RENDERING,
-                                                       ISET_COLOR_MIN,
-                                                       iplotted);
-	self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                       SURFACE_RENDERING,
-                                                       ISET_COLOR_MAX,
-                                                       iplotted);
-
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_COLOR_MIN,
-                                 &current_value, &i_digit);
-	self.PsfMinimumRange =      (CGFloat) current_value;
-	self.PsfMinimumDigit =      (CGFloat) i_digit;
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_COLOR_MAX,
-                                 &current_value, &i_digit);
-	self.PsfMaximumRange =      (CGFloat) current_value;
-	self.PsfMaximumDigit =      (CGFloat) i_digit;
-	
+	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
+	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     
     [self.rgbaMapObject updateColormapParameter:kemo_sgl];
     [self.colorMapObject SetColorTables:kemo_sgl];

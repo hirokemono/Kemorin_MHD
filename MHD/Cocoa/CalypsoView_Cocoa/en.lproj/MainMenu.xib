@@ -2746,7 +2746,7 @@
                     </box>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pin-um-o1A">
                         <rect key="frame" x="230" y="-12" width="263" height="888"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Surface" identifier="" id="up6-qY-OaA">
@@ -2834,7 +2834,7 @@
                                                     </textField>
                                                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iY0-Bt-wXq">
                                                         <rect key="frame" x="1" y="20" width="229" height="727"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="qPk-6n-CsU">
                                                             <rect key="frame" x="1" y="1" width="227" height="725"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4150,7 +4150,7 @@
                                                     </textField>
                                                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4yt-ny-AUp">
                                                         <rect key="frame" x="1" y="20" width="229" height="727"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="5Nr-Wa-LQ8">
                                                             <rect key="frame" x="1" y="1" width="227" height="725"/>
                                                             <autoresizingMask key="autoresizingMask"/>
@@ -4981,8 +4981,8 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vO3-eu-UU7">
-                                                        <rect key="frame" x="1" y="20" width="229" height="727"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                                        <rect key="frame" x="0.0" y="20" width="229" height="727"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="Cvx-up-T9C">
                                                             <rect key="frame" x="1" y="1" width="227" height="725"/>
                                                             <autoresizingMask key="autoresizingMask"/>
