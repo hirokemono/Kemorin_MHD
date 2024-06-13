@@ -46,14 +46,7 @@
 	NSMutableArray *LoadedPsfID;
 	NSMutableArray *LoadedPsfFileHead;
     
-	
-	NSInteger PsfNumberOfField;
-	NSInteger PsfTotalComponent;
-	NSMutableArray *PsfNumberOfComponent;
-	NSMutableArray *PsfFieldName;
-	NSMutableArray *PsfMinimum;
-	
-	NSNumber *PsfPatchFlag;
+    NSNumber *PsfPatchFlag;
 	NSNumber *PsfIsolineFlag;
 	NSNumber *PsfZerolineFlag;
 	NSNumber *PsfDrawFieldId;

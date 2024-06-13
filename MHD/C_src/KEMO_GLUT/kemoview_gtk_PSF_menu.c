@@ -113,8 +113,8 @@ void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
     int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               SURFACE_RENDERING,
                                               FIELD_SEL_FLAG);
-    int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data,
-                                                     if_psf);
+    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
+                                                     SURFACE_RENDERING, if_psf);
     if(ncomp == 3){
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, TRUE);
     } else {

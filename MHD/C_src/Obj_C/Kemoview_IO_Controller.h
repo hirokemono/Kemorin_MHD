@@ -38,11 +38,6 @@
 	IBOutlet id _ImageFormat_item;
 
 	NSString *ImageFileExt;
-
-	NSInteger PsfNumberOfField;
-	NSMutableArray *PsfNumberOfComponent;
-	NSMutableArray *PsfFieldName;
-	NSMutableArray *PsfMinimum;
 }
 @property NSInteger ImageFormatFlag;
 

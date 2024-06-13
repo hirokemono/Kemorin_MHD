@@ -29,14 +29,7 @@
 	self.FlineThickFactor = 1;
 	self.FlineThickDigit = -2;
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
-	
-	FlineNumberOfComponent =[[NSMutableArray alloc] init];
-	FlineFieldName =        [[NSMutableArray alloc] init];
-	FlineMinimum =          [[NSMutableArray alloc] init];
-	FlineMaximum =          [[NSMutableArray alloc] init];
-	
-	FieldlineFlag =  [NSNumber alloc];
-	
+
 	FlineDrawFieldId =     [NSNumber alloc];
 	FlineDrawComponentId = [NSNumber alloc];
 	
@@ -50,14 +43,6 @@
 
 - (id)dealloc
 {
-	
-	[FlineNumberOfComponent dealloc];
-	[FlineFieldName         dealloc];
-	[FlineMinimum           dealloc];
-	[FlineMaximum           dealloc];
-	
-	[FieldlineFlag    dealloc];
-	
 	[FlineDrawFieldId      dealloc];
 	[FlineDrawComponentId  dealloc];
 	
@@ -83,16 +68,6 @@
 	double minmax;
 	double current_thick;
 	int current_digit;
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-    NSString *stname;
-	NSNumber *stnum;
-	
-	FlineNumberOfField =  kemoview_get_VIZ_field_param(kemo_sgl,
-                                                       FIELDLINE_RENDERING,
-                                                       NUM_FIELD_FLAG);
-	FlineTotalComponent = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                       FIELDLINE_RENDERING,
-                                                       NTOT_COMPONENT_FLAG);
 	
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                  FIELDLINE_RENDERING, ISET_WIDTH,
@@ -100,53 +75,7 @@
 	self.FlineThickFactor = (CGFloat) current_thick;
 	self.FlineThickDigit = (CGFloat) current_digit;
 
-
-	[FlineFieldName removeAllObjects];	
-	[FlineNumberOfComponent removeAllObjects];
-	[FlineMinimum removeAllObjects];
-	[FlineMaximum removeAllObjects];
-	for(i = 0; i < FlineNumberOfField; i++){
-		kemoview_get_fline_color_data_name(kemo_sgl, colorname,i);
-		stname = [[NSString alloc] initWithUTF8String:colorname->string];
-		[FlineFieldName      addObject:stname];
-		[stname release];
-		
-		iflag = kemoview_get_fline_color_num_comps(kemo_sgl, i);
-		stnum = [[NSNumber alloc] initWithInt:iflag];
-		[FlineNumberOfComponent addObject:stnum];
-		[stnum release];	
-	}
-    kemoview_free_kvstring(colorname);
-    
-	for(i = 0; i < FlineTotalComponent; i++){
-		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
-                                             FIELDLINE_RENDERING,
-                                             ISET_COLOR_MIN, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[FlineMinimum      addObject:stnum];
-		[stnum release];	
-		
-		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
-                                             FIELDLINE_RENDERING,
-                                             ISET_COLOR_MAX, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[FlineMaximum      addObject:stnum];
-		[stnum release];	
-	}
-
-	for(i = 0; i < FlineNumberOfField; i++){
-		NSLog(@"FlineNumberOfComponent = %d %@\n",i, [FlineNumberOfComponent objectAtIndex: i]);
-		NSLog(@"FlineFieldName = %d %@\n",i, [FlineFieldName objectAtIndex: i]);
-	}
-	/*
-	NSLog(@"FlineTotalComponent = %d\n",FlineTotalComponent);
-	for(i = 0; i < FlineTotalComponent; i++){
-		NSLog(@"FlineMinimum = %d %@\n",i, [FlineMinimum objectAtIndex: i]);
-		NSLog(@"FlineMaximum = %d %@\n",i, [FlineMaximum objectAtIndex: i]);
-	}
-	*/
-
-	[self SetFlineFieldMenu];
+    [self SetFlineFieldMenu:kemo_sgl];
 	[self SetFlineComponentMenu:0
                        kemoview:kemo_sgl];
 	return self;
@@ -317,36 +246,57 @@
 	[_metalView UpdateImage:kemo_sgl];
 }
 
-- (void) SetFlineFieldMenu{
-	int i;
+- (void) SetFlineFieldMenu:(struct kemoviewer_type *) kemo_sgl
+{
+    struct kv_string *colorname = kemoview_alloc_kvstring();
+    NSString *stname;
 	
-	if(FlineNumberOfField > 0) [_FlineFieldMenu removeAllItems];
-	if(FlineNumberOfField < 1){
+    int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                NUM_FIELD_FLAG);
+	if(n_field > 0) [_FlineFieldMenu removeAllItems];
+	if(n_field < 1){
 		[_FlineFieldMenu addItemWithTitle:@"No Field"];
 	} else {
-		for(i = 0; i < FlineNumberOfField; i++){
-			[_FlineFieldMenu addItemWithTitle:[FlineFieldName objectAtIndex: i]];
+		for(int i = 0; i < n_field; i++){
+            kemoview_get_VIZ_field_name(kemo_sgl,
+                                        FIELDLINE_RENDERING,
+                                        colorname, i);
+            stname = [[NSString alloc] initWithUTF8String:colorname->string];
+			[_FlineFieldMenu addItemWithTitle:stname];
+            [stname release];
 		};
 	}
+    kemoview_free_kvstring(colorname);
 }
 
 - (void) SetFlineComponentMenu:(NSInteger)isel
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
+    struct kv_string *colorname = kemoview_alloc_kvstring();
 	int i_digit;
 	double value;
 	int iplotted;
 
 	[_FlineComponentMenu removeAllItems];
-	// NSLog ([NSString stringWithFormat:@"component %@\n", [FlineNumberOfComponent objectAtIndex:isel]]);	
-	
-	if (FlineNumberOfField < 1) {
+    int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                NUM_FIELD_FLAG);
+    long n_comp = kemoview_get_VIZ_num_component(kemo_sgl,
+                                                 FIELDLINE_RENDERING,
+                                                 (int) isel);
+    kemoview_get_VIZ_field_name(kemo_sgl,
+                                FIELDLINE_RENDERING,
+                                colorname, (int) isel);
+    NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
+
+	if (n_field < 1) {
 		[_FlineComponentMenu addItemWithTitle:@"No Field"];
 	} else {
-		if([[FlineNumberOfComponent objectAtIndex:isel] intValue] == 1){
+		if(n_comp == 1){
 			[_FlineComponentMenu addItemWithTitle:@"Scalar"];
 		}
-		else if([[FlineNumberOfComponent objectAtIndex:isel] intValue] == 6){
+		else if(n_comp == 6){
 			[_FlineComponentMenu addItemWithTitle:@"xx"];
 			[_FlineComponentMenu addItemWithTitle:@"xy"];
 			[_FlineComponentMenu addItemWithTitle:@"xz"];
@@ -354,16 +304,15 @@
 			[_FlineComponentMenu addItemWithTitle:@"yz"];
 			[_FlineComponentMenu addItemWithTitle:@"zz"];
 		}
-		else if([[FlineNumberOfComponent objectAtIndex:isel] intValue] == 3){
-			NSInteger charalen = [[FlineFieldName objectAtIndex:isel] length];
+		else if(n_comp == 3){
+			NSInteger charalen = [stname length];
 			if(charalen > 4){
-				NSString *stname = [[FlineFieldName objectAtIndex:isel] substringFromIndex:charalen-4];
-				// NSLog ([NSString stringWithFormat:@"end is %@\n",stname ]);
-				if([stname compare:@"_sph"] == NSOrderedSame){
+				NSString *partname = [stname substringFromIndex:charalen-4];
+				if([partname compare:@"_sph"] == NSOrderedSame){
 					[_FlineComponentMenu addItemWithTitle:@"r"];
 					[_FlineComponentMenu addItemWithTitle:@"θ"];
 					[_FlineComponentMenu addItemWithTitle:@"φ"];
-				} else if([stname compare:@"_cyl"] == NSOrderedSame){
+				} else if([partname compare:@"_cyl"] == NSOrderedSame){
 					[_FlineComponentMenu addItemWithTitle:@"s"];
 					[_FlineComponentMenu addItemWithTitle:@"φ"];
 					[_FlineComponentMenu addItemWithTitle:@"z"];
@@ -372,6 +321,7 @@
 					[_FlineComponentMenu addItemWithTitle:@"y"];
 					[_FlineComponentMenu addItemWithTitle:@"z"];
 				}
+                [partname release];
 			} else {
 				[_FlineComponentMenu addItemWithTitle:@"x"];
 				[_FlineComponentMenu addItemWithTitle:@"y"];
@@ -404,6 +354,8 @@
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
+    [stname release];
+    kemoview_free_kvstring(colorname);
 	return;
 }
 

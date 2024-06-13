@@ -31,14 +31,6 @@
 	
 	NSString *FlineWindowlabel;
 	
-	NSInteger FlineNumberOfField;
-	NSInteger FlineTotalComponent;
-	NSMutableArray *FlineNumberOfComponent;
-	NSMutableArray *FlineFieldName;
-	NSMutableArray *FlineMinimum;
-	NSMutableArray *FlineMaximum;
-	
-	NSNumber *FieldlineFlag;
 	NSNumber *FlineDrawFieldId;
 	NSNumber *FlineDrawComponentId;
 	NSNumber *FieldlineColor;
@@ -96,7 +88,7 @@
 - (IBAction) FlineFieldAction:(id)sender;
 - (IBAction) FlineComponentAction:(id)sender;
 
-- (void) SetFlineFieldMenu;
+- (void) SetFlineFieldMenu:(struct kemoviewer_type *) kemo_sgl;
 - (void) SetFlineComponentMenu:(NSInteger)isel
                       kemoview:(struct kemoviewer_type *) kemo_sgl;
 

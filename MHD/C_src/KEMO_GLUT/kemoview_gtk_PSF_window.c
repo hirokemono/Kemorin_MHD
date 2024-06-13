@@ -97,7 +97,8 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               SURFACE_RENDERING,
                                               FIELD_SEL_FLAG);
-    int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data, if_psf);
+    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data
+                                                     SURFACE_RENDERING, if_psf);
     if(index_mode >= ncomp || index_mode < 0){
         index_mode = 0;
     }
@@ -122,8 +123,8 @@ static void init_psf_draw_component_hbox(struct kemoviewer_gl_type *kemo_gl,
 	int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               SURFACE_RENDERING,
                                               FIELD_SEL_FLAG);
-	int ncomp = (int) kemoview_get_PSF_num_component(kemo_gl->kemoview_data,
-                                                     if_psf);
+	int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
+                                                     SURFACE_RENDERING, if_psf);
 	int icomp;
 	
     psf_gmenu->comp_label_tree_view = create_fixed_label_w_index_tree();
@@ -181,7 +182,9 @@ static void init_psf_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl,
 	
 	int index = 0;
 	for(ifld=0;ifld<num_field;ifld++){
-		kemoview_get_PSF_field_name(kemo_gl->kemoview_data, colorname, ifld);
+        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data,
+                                    SURFACE_RENDERING,
+                                    colorname, ifld);
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
 

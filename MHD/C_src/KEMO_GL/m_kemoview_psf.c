@@ -439,16 +439,6 @@ int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf){
 };
 
 
-long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    return send_ncomp_each_psf(kemo_mul_psf->psf_d[i_current], i);
-};
-void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
-                         struct kv_string *colorname, int i){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    send_each_psf_data_name(kemo_mul_psf->psf_d[i_current], colorname, i);
-};
-
 void set_PSF_polygon_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
     set_each_psf_polygon_mode(kemo_mul_psf->psf_m[i_current], iflag);

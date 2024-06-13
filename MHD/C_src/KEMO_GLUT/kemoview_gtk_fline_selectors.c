@@ -61,7 +61,9 @@ GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
 	child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
 	index = 0;
 	for(ifld=0;ifld<num_field;ifld++){
-		kemoview_get_fline_color_data_name(kemo_gl->kemoview_data, colorname, ifld);
+        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data,
+                                    FIELDLINE_RENDERING,
+                                    colorname, ifld);
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
 	
@@ -96,8 +98,8 @@ GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
 	int ic_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                                 FIELDLINE_RENDERING,
                                                 COMPONENT_SEL_FLAG);
-	int ncomp =  kemoview_get_fline_color_num_comps(kemo_gl->kemoview_data,
-                                                    if_fline);
+	int ncomp =  kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
+                                                FIELDLINE_RENDERING, if_fline);
 	
     label_tree_comp = create_fixed_label_w_index_tree();
     model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));

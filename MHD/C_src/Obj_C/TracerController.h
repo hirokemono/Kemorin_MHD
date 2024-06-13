@@ -35,8 +35,6 @@
 	NSInteger FlineTotalComponent;
 	NSMutableArray *FlineNumberOfComponent;
 	NSMutableArray *FlineFieldName;
-	NSMutableArray *FlineMinimum;
-	NSMutableArray *FlineMaximum;
 	
 	NSNumber *FieldlineFlag;
 	NSNumber *FlineDrawFieldId;

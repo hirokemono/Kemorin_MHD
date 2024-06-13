@@ -32,8 +32,6 @@
 	
 	FlineNumberOfComponent =[[NSMutableArray alloc] init];
 	FlineFieldName =        [[NSMutableArray alloc] init];
-	FlineMinimum =          [[NSMutableArray alloc] init];
-	FlineMaximum =          [[NSMutableArray alloc] init];
 	
 	FieldlineFlag =  [NSNumber alloc];
 	
@@ -53,8 +51,6 @@
 	
 	[FlineNumberOfComponent dealloc];
 	[FlineFieldName         dealloc];
-	[FlineMinimum           dealloc];
-	[FlineMaximum           dealloc];
 	
 	[FieldlineFlag    dealloc];
 	
@@ -103,49 +99,21 @@
 
 	[FlineFieldName removeAllObjects];	
 	[FlineNumberOfComponent removeAllObjects];
-	[FlineMinimum removeAllObjects];
-	[FlineMaximum removeAllObjects];
 	for(i = 0; i < FlineNumberOfField; i++){
-		kemoview_get_fline_color_data_name(kemo_sgl, colorname,i);
+        kemoview_get_VIZ_field_name(kemo_sgl,
+                                    FIELDLINE_RENDERING,
+                                    colorname,i);
 		stname = [[NSString alloc] initWithUTF8String:colorname->string];
 		[FlineFieldName      addObject:stname];
 		[stname release];
 		
-		iflag = kemoview_get_fline_color_num_comps(kemo_sgl, i);
+		iflag = kemoview_get_VIZ_num_component(kemo_sgl, FIELDLINE_RENDERING, i);
 		stnum = [[NSNumber alloc] initWithInt:iflag];
 		[FlineNumberOfComponent addObject:stnum];
 		[stnum release];	
 	}
     kemoview_free_kvstring(colorname);
     
-	for(i = 0; i < FlineTotalComponent; i++){
-		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
-                                             FIELDLINE_RENDERING,
-                                             ISET_COLOR_MIN, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[FlineMinimum      addObject:stnum];
-		[stnum release];	
-		
-		minmax = kemoview_get_VIZ_data_range(kemo_sgl,
-                                             FIELDLINE_RENDERING,
-                                             ISET_COLOR_MAX, i);
-		stnum = [[NSNumber alloc] initWithDouble:minmax];
-		[FlineMaximum      addObject:stnum];
-		[stnum release];	
-	}
-
-	for(i = 0; i < FlineNumberOfField; i++){
-		NSLog(@"FlineNumberOfComponent = %d %@\n",i, [FlineNumberOfComponent objectAtIndex: i]);
-		NSLog(@"FlineFieldName = %d %@\n",i, [FlineFieldName objectAtIndex: i]);
-	}
-	/*
-	NSLog(@"FlineTotalComponent = %d\n",FlineTotalComponent);
-	for(i = 0; i < FlineTotalComponent; i++){
-		NSLog(@"FlineMinimum = %d %@\n",i, [FlineMinimum objectAtIndex: i]);
-		NSLog(@"FlineMaximum = %d %@\n",i, [FlineMaximum objectAtIndex: i]);
-	}
-	*/
-
 	[self SetFlineFieldMenu];
 	[self SetFlineComponentMenu:0
                        kemoview:kemo_sgl];

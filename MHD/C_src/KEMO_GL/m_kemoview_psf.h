@@ -92,9 +92,6 @@ int toggle_draw_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 int get_draw_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 int get_avail_file_step_flag(struct kemoview_mul_psf *kemo_mul_psf);
 
-long send_PSF_num_component(struct kemoview_mul_psf *kemo_mul_psf, int i);
-void send_PSF_field_name(struct kemoview_mul_psf *kemo_mul_psf,
-                         struct kv_string *colorname, int i);
 void set_PSF_polygon_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 void set_PSF_tangential_vec_mode(int iflag, struct kemoview_mul_psf *kemo_mul_psf);
 int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf);

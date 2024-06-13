@@ -663,12 +663,30 @@ int kemoview_get_VIZ_draw_flags(struct kemoviewer_type *kemoviewer,
 }
 
 
-long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
-	return send_PSF_num_component(kemoviewer->kemo_mul_psf, i);
+long kemoview_get_VIZ_num_component(struct kemoviewer_type *kemoviewer,
+                                    int id_model, int i){
+    long ncomp;
+    if(id_model == FIELDLINE_RENDERING){
+        ncomp =  send_VIZ_num_component(kemoviewer->kemo_fline->fline_d, i);
+    }else if(id_model == TRACER_RENDERING){
+        ncomp =  send_VIZ_num_component(kemoviewer->kemo_tracer->tracer_d, i);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        ncomp =  send_VIZ_num_component(kemoviewer->kemo_mul_psf->psf_d[i_current], i);
+    }
+    return ncomp;
 };
-void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
+void kemoview_get_VIZ_field_name(struct kemoviewer_type *kemoviewer, int id_model,
                                  struct kv_string *colorname, int i){
-    send_PSF_field_name(kemoviewer->kemo_mul_psf, colorname, i);
+    if(id_model == FIELDLINE_RENDERING){
+        send_VIZ_field_name(kemoviewer->kemo_fline->fline_d, colorname, i);
+    }else if(id_model == TRACER_RENDERING){
+        send_VIZ_field_name(kemoviewer->kemo_tracer->tracer_d, colorname, i);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        send_VIZ_field_name(kemoviewer->kemo_mul_psf->psf_d[i_current], colorname, i);
+    }
+
     return;
 };
 
@@ -1062,15 +1080,6 @@ int kemoview_get_fline_file_step_prefix(struct kemoviewer_type *kemoviewer,
 };
 void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer){
 	set_fline_file_step(kemoviewer->kemo_fline->fline_m, istep);
-};
-
-int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i){
-	return (int) send_ncomp_each_psf(kemoviewer->kemo_fline->fline_d, i);
-};
-void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
-                                        struct kv_string *colorname, int i){
-    send_each_psf_data_name(kemoviewer->kemo_fline->fline_d,
-                            colorname, i);
 };
 
 void kemoview_set_line_type_flag(int input, struct kemoviewer_type *kemoviewer){

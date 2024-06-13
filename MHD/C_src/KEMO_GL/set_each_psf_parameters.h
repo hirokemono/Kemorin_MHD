@@ -31,9 +31,9 @@ int send_each_psf_file_dir_prefix(struct psf_menu_val *psf_menu,
 
 long send_nfield_each_VIZ(struct psf_data *psf_d);
 long send_ncomptot_each_VIZ(struct psf_data *psf_d);
-long send_ncomp_each_psf(struct psf_data *psf_d, int i);
+long send_VIZ_num_component(struct psf_data *psf_d, int i);
 long send_istack_each_comp_psf(struct psf_data *psf_d, int i);
-void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i);
+void send_VIZ_field_name(struct psf_data *psf_d, struct kv_string *colorname, int i);
 
 
 int send_field_draw_each_VIZ(struct psf_menu_val *psf_menu);
