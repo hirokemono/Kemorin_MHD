@@ -178,6 +178,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (void)awakeFromNib;
 
+- (int) SetCurrentPSFFile:(int) id_model
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                 pathTree:(NSPathControl *) pathControl;
 
 - (void) SetFieldMenuItems:(int) id_model
                   kemoview:(struct kemoviewer_type *) kemo_sgl
@@ -192,9 +195,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
             kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) OpenPsfFile:(id)pId;
-
 - (IBAction) ClosePsfFile:(id)pId;
-- (IBAction) UpdatePsfAction:(id)sender;
 
 - (IBAction) CurrentPsfAction:(id)sender;
 - (IBAction) PsfFieldAction:(id)sender;

@@ -14,6 +14,7 @@
 
 @synthesize FlineWindowlabel;
 
+@synthesize currentFlineStep;
 @synthesize DrawFlineFlag;
 @synthesize FlineMinimumValue;
 @synthesize FlineMaximumValue;
@@ -113,15 +114,20 @@
 
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
-	id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
+    self.currentFlineStep = [_psfController SetCurrentPSFFile:FIELDLINE_RENDERING
+                                                     kemoview:kemo_sgl
+                                                     pathTree:_flinePathControl];
+
+    id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
 	[_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
-	[_metalView UpdateImage:kemo_sgl];
 };
 
 - (IBAction) DrawFlineFile:(id)pId{
-	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+
+    NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
 	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
 	[flineOpenPanelObj setTitle:@"Choose field line data"];
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
@@ -139,7 +145,6 @@
                 OpenFilePrefix =   [OpenFilePrefix stringByDeletingPathExtension];
             };
             
-            struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
             struct kv_string *filename
             = kemoview_init_kvstring_by_string([OpenFilename UTF8String]);
             int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
@@ -151,21 +156,20 @@
             }
         };
     }];
+    NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
+    [_ElasticControl UpdateWindow:WindowExpandFlag];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) CloseFlineFile:(id)pId{
     NSInteger current_model = [_kemoviewControl CurrentControlModel];
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    
-    if(current_model == FIELDLINE_RENDERING){
-        kemoview_close_fieldline_view(kemo_sgl);
-    }else if(current_model == TRACER_RENDERING){
-        kemoview_close_tracer_view(kemo_sgl);
-    };
-    
+    kemoview_close_fieldline_view(kemo_sgl);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
+    NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
+    [_ElasticControl UpdateWindow:WindowExpandFlag];
 	[_metalView UpdateImage:kemo_sgl];
 }
 

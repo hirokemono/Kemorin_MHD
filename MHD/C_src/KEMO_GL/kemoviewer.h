@@ -427,8 +427,8 @@ extern "C" {
 	int kemoview_get_PSF_loaded_params(struct kemoviewer_type *kemoviewer, int selected);
     int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf);
     
-    void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
-                                              struct kv_string *ucd_m);
+    void kemoview_get_full_path_file_name(struct kemoviewer_type *kemoviewer,
+                                          int id_model, struct kv_string *ucd_m);
     int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, int id_model,
                                                 struct kv_string *psf_filehead, int *i_file_step);
     
@@ -440,6 +440,7 @@ extern "C" {
                                     struct kemoviewer_type *kemoviewer);
     int kemoview_get_VIZ_draw_flags(struct kemoviewer_type *kemoviewer,
                                     int id_model);
+    int kemoview_check_all_VIZ_draw_flags(struct kemoviewer_type *kemoviewer);
 
     long kemoview_get_VIZ_num_component(struct kemoviewer_type *kemoviewer,
                                         int id_model, int i);
@@ -540,8 +541,6 @@ extern "C" {
     
     /* Subroutines for field lines */
     
-    void kemoview_get_fline_full_path_file_name(struct kemoviewer_type *kemoviewer,
-                                                struct kv_string *ucd_m);
     void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer);
     
     void kemoview_set_line_type_flag(int input, struct kemoviewer_type *kemoviewer);

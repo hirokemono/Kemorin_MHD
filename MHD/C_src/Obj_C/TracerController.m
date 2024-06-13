@@ -12,6 +12,7 @@
 
 @implementation TracerController
 
+@synthesize currentTracerStep;
 @synthesize DrawTracerFlag;
 @synthesize TracerMinimumValue;
 @synthesize TracerMaximumValue;
@@ -70,20 +71,19 @@
     
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
+    self.currentTracerStep = [_psfController SetCurrentPSFFile:TRACER_RENDERING
+                                                      kemoview:kemo_sgl
+                                                      pathTree:_tracerPathControl];
+
     id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     [_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
-    [_metalView UpdateImage:kemo_sgl];
 };
 
-- (IBAction) UpdateFieldline:(id)pId{
+- (IBAction) DrawTracerFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [_metalView UpdateImage:kemo_sgl];
-    return;
-};
 
-- (IBAction) DrawFlineFile:(id)pId{
     NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
     NSOpenPanel *flineOpenPanelObj    = [NSOpenPanel openPanel];
     [flineOpenPanelObj setTitle:@"Choose field line data"];
@@ -101,7 +101,6 @@
                 OpenFilPerefix = [OpenFilPerefix stringByDeletingPathExtension];
             };
         
-            struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
             struct kv_string *filename = kemoview_init_kvstring_by_string([OpenFilename UTF8String]);
             int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
             kemoview_free_kvstring(filename);
@@ -112,23 +111,20 @@
             }
         };
     }];
+    NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
+    [_ElasticControl UpdateWindow:WindowExpandFlag];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction) CloseFlineFile:(id)pId{
+- (IBAction) CloseTracerFile:(id)pId{
     NSInteger current_model = [_kemoviewControl CurrentControlModel];
-    
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    
-    if(current_model == TRACER_RENDERING){
-        kemoview_close_fieldline_view(kemo_sgl);
-    }else if(current_model == TRACER_RENDERING){
-        kemoview_close_tracer_view(kemo_sgl);
-    };
-    
+    kemoview_close_tracer_view(kemo_sgl);
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
+    NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
+    [_ElasticControl UpdateWindow:WindowExpandFlag];
     [_metalView UpdateImage:kemo_sgl];
-    
 }
 
 - (void) setSelectedTracerComponentRanges:(struct kemoviewer_type *) kemo_sgl

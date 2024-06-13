@@ -186,14 +186,6 @@ int get_PSF_loaded_params(struct kemoview_mul_psf *kemo_mul_psf,
 	return output;
 }
 
-
-void get_PSF_full_path_file_name(struct kemoview_mul_psf *kemo_mul_psf,
-                                 struct kv_string *ucd_m){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    alloc_set_ucd_file_name_by_psf(kemo_mul_psf->psf_m[i_current], ucd_m);
-    return;
-}
-
 void set_each_PSF_field_param(int selected, int input,
                               struct psf_data *viz_data,
                               struct psf_menu_val *viz_menu){

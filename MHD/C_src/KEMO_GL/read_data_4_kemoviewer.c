@@ -227,12 +227,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
 
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c, psf_m->viz_prefix_c->string, ucd_m);
+	alloc_set_ucd_field_file_name(psf_m->iformat_viz_file, psf_m->viz_step_c,
+                                  psf_m->viz_prefix_c->string, ucd_m);
 	return;
 }
-void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(fline_m->iformat_viz_file, fline_m->viz_step_c, 
-                                  fline_m->viz_prefix_c->string, ucd_m);
-	return;
-}
-

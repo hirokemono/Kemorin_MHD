@@ -68,6 +68,5 @@ void set_kemoview_psf_data(struct psf_data *psf_s,
                            struct psf_menu_val *psf_m);
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m);
-void alloc_set_ucd_file_name_by_fline(struct psf_menu_val *fline_m, struct kv_string *ucd_m);
 
 #endif

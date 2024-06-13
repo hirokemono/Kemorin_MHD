@@ -11,10 +11,6 @@
 
 /* Subroutines for field lines */
 
-void get_fline_full_path_file_name(struct psf_menu_val *fline_m, struct kv_string *ucd_m){
-	alloc_set_ucd_file_name_by_fline(fline_m, ucd_m);
-	return;
-}
 void set_fline_file_step(struct psf_menu_val *fline_m, int istep){
 	fline_m->viz_step_c = istep;
 };

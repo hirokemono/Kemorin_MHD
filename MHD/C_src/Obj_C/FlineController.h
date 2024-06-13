@@ -11,6 +11,7 @@
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 #import "KemoViewerObject.h"
+#import "ElasticMenuWindow.h"
 #import "PsfController.h"
 #import "fillRectView.h"
 
@@ -19,12 +20,18 @@
 @interface FlineController : NSObject {
 
     IBOutlet NSWindow*  window;
-    IBOutlet KemoViewerMetalView * _metalView;
-	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet KemoViewerMetalView   * _metalView;
+	IBOutlet KemoviewerController  * _kemoviewControl;
     IBOutlet PsfController         * _psfController;
-    IBOutlet fillRectView* _fillRectView;
+    IBOutlet fillRectView          * _fillRectView;
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
+    
     IBOutlet KemoViewerObject *_kmv;
 
+    IBOutlet NSPathControl *_flinePathControl;
+    NSInteger currentFlineStep;
+
+    
 	NSInteger DrawFlineFlag;
 	
 	NSString *FlineWindowlabel;
@@ -54,6 +61,7 @@
 
 @property(retain) NSString* FlineWindowlabel;
 
+@property NSInteger currentFlineStep;
 @property NSInteger DrawFlineFlag;
 @property CGFloat FlineDisplayMinimum;
 @property CGFloat FlineDisplayMaximum;

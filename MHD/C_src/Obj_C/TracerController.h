@@ -11,6 +11,7 @@
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 #import "KemoViewerObject.h"
+#import "ElasticMenuWindow.h"
 #import "PsfController.h"
 #import "fillRectView.h"
 
@@ -23,8 +24,14 @@
     IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet PsfController         * _psfController;
     IBOutlet fillRectView* _fillRectView;
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
+    
     IBOutlet KemoViewerObject *_kmv;
 
+    IBOutlet NSPathControl *_tracerPathControl;
+    NSInteger currentTracerStep;
+ 
+    
     NSInteger DrawTracerFlag;
         
     NSNumber *FieldlineColor;
@@ -49,6 +56,7 @@
     IBOutlet id FieldlineColorItem;
 }
 
+@property NSInteger currentTracerStep;
 @property NSInteger DrawTracerFlag;
 @property CGFloat TracerColorMinimum;
 @property CGFloat TracerColorMaximum;
@@ -69,7 +77,8 @@
 - (void) OpenTracerFile:(NSString*) TracerFilehead
                kemoview:(struct kemoviewer_type *) kemo_sgl;
 
-- (IBAction) CloseFlineFile:(id)pId;
+- (IBAction) DrawTracerFile:(id)pId;
+- (IBAction) CloseTracerFile:(id)pId;
 - (IBAction) TracerFieldAction:(id)sender;
 - (IBAction) TracerComponentAction:(id)sender;
 

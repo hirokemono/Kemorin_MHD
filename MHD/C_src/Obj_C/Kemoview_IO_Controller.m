@@ -39,19 +39,20 @@
                            kemoview:kemo_sgl];
         [_movieMakerController InitEvolutionStepByPSF:SURFACE_RENDERING
                                              kemoview:kemo_sgl];
-	}
-    else if(iflag_datatype==IFLAG_LINES) {
+	}else if(iflag_datatype==IFLAG_LINES) {
         [_flineController OpenFieldlineFile:kemoviewOpenFilehead
                                    kemoview:kemo_sgl];
         [_movieMakerController InitEvolutionStepByPSF:FIELDLINE_RENDERING
                                              kemoview:kemo_sgl];
-    }else if(iflag_datatype==IFLAG_POINTS){
+   }else if(iflag_datatype==IFLAG_POINTS){
         [_tracerController OpenTracerFile:kemoviewOpenFilehead
                                  kemoview:kemo_sgl];
         [_movieMakerController InitEvolutionStepByPSF:TRACER_RENDERING
                                              kemoview:kemo_sgl];
     };
-	
+    NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
+    [_ElasticControl UpdateWindow:WindowExpandFlag];
+    [_metalView UpdateImage:kemo_sgl];	
 }
 
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;

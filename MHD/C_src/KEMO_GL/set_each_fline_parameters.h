@@ -21,8 +21,6 @@
 /* prototypes */
 
 
-void get_fline_full_path_file_name(struct psf_menu_val *fline_m,
-			struct kv_string *ucd_m);
 void set_fline_file_step(struct psf_menu_val *fline_m, int istep);
 
 

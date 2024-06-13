@@ -16,6 +16,7 @@
 #import "KemoviewerImageMaker.h"
 #import "KemoviewerMovieMaker.h"
 #import "KemoViewerObject.h"
+#import "ElasticMenuWindow.h"
 
 #include "kemoviewer.h"
 
@@ -32,6 +33,8 @@
     IBOutlet TracerController      * _tracerController;
     IBOutlet KemoviewerImageMaker  * _kemoImageMaker;
 	IBOutlet KemoviewerMovieMaker  * _movieMakerController;
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
+
     IBOutlet KemoViewerObject      * _kmv;
     
 
