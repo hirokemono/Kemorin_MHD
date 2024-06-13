@@ -107,9 +107,9 @@
 	return self;
 }
 
-- (NSInteger) CurrentControlModel
+- (int) CurrentControlModel
 {
-    return self.activeControlFlag;
+    return (int) self.activeControlFlag;
 }
 
 - (void)SetViewTypeMenu:(NSInteger) selected

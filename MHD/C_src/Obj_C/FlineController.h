@@ -31,6 +31,8 @@
     IBOutlet NSPathControl *_flinePathControl;
     NSInteger currentFlineStep;
 
+    IBOutlet NSColorWell *_flineColorWell;
+
     
 	NSInteger DrawFlineFlag;
 	

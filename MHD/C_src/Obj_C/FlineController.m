@@ -27,21 +27,21 @@
 @synthesize FlineThickDigit;
 - (id)init;
 {
-	self.FlineThickFactor = 1;
-	self.FlineThickDigit = -2;
-	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
-	
-	FieldlineColor =      [NSNumber alloc];
-	
-	return self;
+    self.FlineThickFactor = 1;
+    self.FlineThickDigit = -2;
+    self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
+    
+    FieldlineColor =      [NSNumber alloc];
+    
+    return self;
 }
 
 - (id)dealloc
 {
-	[FieldlineColor      dealloc];
-	
+    [FieldlineColor      dealloc];
+    
     [super dealloc];
-	return self;
+    return self;
 }
 
 -(void) awakeFromNib
@@ -71,7 +71,7 @@
 {
     double current_thick;
     int current_digit;
-
+    
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
                                                 NUM_FIELD_FLAG);
@@ -84,7 +84,7 @@
                                  &current_thick, &current_digit);
     self.FlineThickFactor = (CGFloat) current_thick;
     self.FlineThickDigit = (CGFloat) current_digit;
-
+    
     return;
 }
 
@@ -97,42 +97,42 @@
                             fieldMenu:_FlineFieldMenu];
     [_psfController SetComponentMenuItems:0
                               activeModel:FIELDLINE_RENDERING
-                                kemoview:kemo_sgl
+                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
-	[self SetFlineDataRanges:0
+    [self SetFlineDataRanges:0
                     kemoview:kemo_sgl];
-	return self;
+    return self;
 }
 
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-	int id_viewtype;
-	
-	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
-							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
-
+    int id_viewtype;
+    
+    self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
+                             [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
+    
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
-	
+    
     self.currentFlineStep = [_psfController SetCurrentPSFFile:FIELDLINE_RENDERING
                                                      kemoview:kemo_sgl
                                                      pathTree:_flinePathControl];
-
+    
     id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
-	[_kemoviewControl SetViewTypeMenu:id_viewtype
+    [_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
 };
 
 - (IBAction) DrawFlineFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-
+    
     NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
-	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
-	[flineOpenPanelObj setTitle:@"Choose field line data"];
+    NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
+    [flineOpenPanelObj setTitle:@"Choose field line data"];
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
     [flineOpenPanelObj beginSheetModalForWindow:window 
-                                   completionHandler:^(NSInteger FlineOpenInteger){
+                              completionHandler:^(NSInteger FlineOpenInteger){
         
         if(FlineOpenInteger == NSModalResponseOK){
             //        NSString *FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
@@ -162,25 +162,25 @@
 }
 
 - (IBAction) CloseFlineFile:(id)pId{
-    NSInteger current_model = [_kemoviewControl CurrentControlModel];
+    int current_model = [_kemoviewControl CurrentControlModel];
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_close_fieldline_view(kemo_sgl);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
-	
+    
     NSInteger WindowExpandFlag = kemoview_check_all_VIZ_draw_flags(kemo_sgl);
     [_ElasticControl UpdateWindow:WindowExpandFlag];
-	[_metalView UpdateImage:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) FlineFieldAction:(id)sender
 {
-	NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
+    NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_psfController SetComponentMenuItems:isel
                               activeModel:FIELDLINE_RENDERING
-                                kemoview:kemo_sgl
+                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
     [self SetFlineDataRanges:isel
                     kemoview:kemo_sgl];
@@ -190,7 +190,7 @@
                                  (int) isel, kemo_sgl);
     
     [self setSelectedFlineComponentRanges:kemo_sgl];
-	[_metalView UpdateImage:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) FlineComponentAction:(id)sender
@@ -201,17 +201,17 @@
                                  (int) [_FlineComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
     [self setSelectedFlineComponentRanges:kemo_sgl];
-	[_metalView UpdateImage:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 {
-	NSInteger tag = [[FieldlineColorItem selectedCell] tag];
+    NSInteger tag = [[FieldlineColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_patch_color_mode(FIELDLINE_RENDERING,
                                       (int) tag, kemo_sgl);
-	
-	[_metalView UpdateImage:kemo_sgl];
+    
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowFlineRange:(id)pSender {
@@ -221,17 +221,17 @@
                                  self.FlineDisplayMaximum,
                                  (int) self.FlineDisplayMaxDigit,
                                  FIELDLINE_RENDERING,
-                                kemo_sgl);
+                                 kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 {
-	self.Flinetype = [[_flinetype_matrix selectedCell] tag];
+    self.Flinetype = [[_flinetype_matrix selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_line_type_flag((int) self.Flinetype, kemo_sgl);
-	
-	[_metalView UpdateImage:kemo_sgl];
+    
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
@@ -241,7 +241,15 @@
                                        (double) self.FlineThickFactor,
                                        (int) self.FlineThickDigit,
                                        kemo_sgl);
-	[_metalView UpdateImage:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetFlineColorAction:(id)sender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetPSFColorFromColorWell:kemo_sgl
+                         colorwell:_flineColorWell];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 @end

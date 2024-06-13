@@ -222,7 +222,12 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
-- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl;
+- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl
+                       colorwell:(NSColorWell *) viewColorWell;
+- (void)SetPSFSingleOpacity:(struct kemoviewer_type *) kemo_sgl
+                    opacity:(CGFloat) const_opacity
+                  colorwell:(NSColorWell *) viewColorWell;
+
 - (IBAction)SetPSFPatchColorAction:(id)sender;
 - (IBAction)SetPSFSingleOpacityAction:(id)sender;
 @end

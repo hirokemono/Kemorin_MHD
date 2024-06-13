@@ -31,7 +31,8 @@
     IBOutlet NSPathControl *_tracerPathControl;
     NSInteger currentTracerStep;
  
-    
+    IBOutlet NSColorWell *_tracerColorWell;
+   
     NSInteger DrawTracerFlag;
         
     NSNumber *FieldlineColor;
@@ -53,7 +54,7 @@
     CGFloat TracerRadiusFactor;
     CGFloat TracerRadiusDigit;
 
-    IBOutlet id FieldlineColorItem;
+    IBOutlet id TracerColorItem;
 }
 
 @property NSInteger currentTracerStep;
@@ -82,7 +83,7 @@
 - (IBAction) TracerFieldAction:(id)sender;
 - (IBAction) TracerComponentAction:(id)sender;
 
-- (IBAction)ChooseFieldlineColorAction:(id)sender;
+- (IBAction)ChooseTracerColorAction:(id)sender;
 
 - (IBAction)ShowTracerRange:(id)pSender;
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;

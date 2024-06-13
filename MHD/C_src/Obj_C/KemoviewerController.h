@@ -109,7 +109,7 @@
 - (void)awakeFromNib;
 - (id)dealloc;
 
-- (NSInteger) CurrentControlModel;
+- (int) CurrentControlModel;
 
 - (void)SetViewTypeMenu:(NSInteger) selected
                kemoview:(struct kemoviewer_type *) kemo_sgl;

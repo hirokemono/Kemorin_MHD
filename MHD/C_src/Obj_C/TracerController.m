@@ -117,7 +117,7 @@
 }
 
 - (IBAction) CloseTracerFile:(id)pId{
-    NSInteger current_model = [_kemoviewControl CurrentControlModel];
+    int current_model = [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_close_tracer_view(kemo_sgl);
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
@@ -195,9 +195,9 @@
     return;
 }
 
-- (IBAction)ChooseFieldlineColorAction:(id)sender;
+- (IBAction)ChooseTracerColorAction:(id)sender;
 {
-    NSInteger tag = [[FieldlineColorItem selectedCell] tag];
+    NSInteger tag = [[TracerColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_patch_color_mode(TRACER_RENDERING,
                                       (int) tag, kemo_sgl);
@@ -232,6 +232,14 @@
                                        (double) self.TracerRadiusFactor,
                                        (int) self.TracerRadiusDigit,
                                        kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetFlineColorAction:(id)sender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetPSFColorFromColorWell:kemo_sgl
+                         colorwell:_tracerColorWell];
     [_metalView UpdateImage:kemo_sgl];
 }
 
