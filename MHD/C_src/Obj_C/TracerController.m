@@ -22,12 +22,12 @@
 @synthesize TracerColorMinDigit;
 @synthesize TracerColorMaxDigit;
 @synthesize Flinetype;
-@synthesize FlineThickFactor;
-@synthesize FlineThickDigit;
+@synthesize TracerRadiusFactor;
+@synthesize TracerRadiusDigit;
 - (id)init;
 {
-    self.FlineThickFactor = 1;
-    self.FlineThickDigit = -2;
+    self.TracerRadiusFactor = 1;
+    self.TracerRadiusDigit = -2;
     self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
 
     FlineDrawFieldId =     [NSNumber alloc];
@@ -65,12 +65,12 @@
 - (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
     self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
-                                                     FIELDLINE_RENDERING);
-    [_psfController SetFieldMenuItems:FIELDLINE_RENDERING
+                                                     TRACER_RENDERING);
+    [_psfController SetFieldMenuItems:TRACER_RENDERING
                              kemoview:kemo_sgl
                             fieldMenu:_FlineFieldMenu];
     [_psfController SetComponentMenuItems:0
-                              activeModel:FIELDLINE_RENDERING
+                              activeModel:TRACER_RENDERING
                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
     [self SetFlineDataRanges:0
@@ -146,7 +146,7 @@
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     
-    if(current_model == FIELDLINE_RENDERING){
+    if(current_model == TRACER_RENDERING){
         kemoview_close_fieldline_view(kemo_sgl);
     }else if(current_model == TRACER_RENDERING){
         kemoview_close_tracer_view(kemo_sgl);
@@ -163,7 +163,7 @@
     double dataMin, dataMax;
     double cmapMinValue, cmapMaxValue;
     int cmapMinDigit, cmapMaxDigit;
-    SetDataRanges(FIELDLINE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
+    SetDataRanges(TRACER_RENDERING, kemo_sgl, &dataMin, &dataMax,
                   &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
     self.TracerMinimumValue = (CGFloat) dataMin;
     self.TracerMaximumValue = (CGFloat) dataMax;
@@ -181,13 +181,13 @@
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_psfController SetComponentMenuItems:isel
-                              activeModel:FIELDLINE_RENDERING
+                              activeModel:TRACER_RENDERING
                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
     [self SetFlineDataRanges:isel
                     kemoview:kemo_sgl];
     
-    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+    kemoview_set_VIZ_field_param(TRACER_RENDERING,
                                  FIELD_SEL_FLAG,
                                  (int) isel, kemo_sgl);
     
@@ -201,7 +201,7 @@
     double value;
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+    kemoview_set_VIZ_field_param(TRACER_RENDERING,
                                  COMPONENT_SEL_FLAG,
                                  (int) [_FlineComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
@@ -218,17 +218,17 @@
     double value;
 
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
+                                                TRACER_RENDERING,
                                                 NUM_FIELD_FLAG);
     if (n_field > 0) {
         [self setSelectedFlineComponentRanges:kemo_sgl];
     }
     
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 FIELDLINE_RENDERING, ISET_WIDTH,
+                                 TRACER_RENDERING, ISET_WIDTH,
                                  &current_thick, &current_digit);
-    self.FlineThickFactor = (CGFloat) current_thick;
-    self.FlineThickDigit = (CGFloat) current_digit;
+    self.TracerRadiusFactor = (CGFloat) current_thick;
+    self.TracerRadiusDigit = (CGFloat) current_digit;
 
     return;
 }
@@ -237,19 +237,19 @@
 {
     NSInteger tag = [[FieldlineColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_patch_color_mode(FIELDLINE_RENDERING,
+    kemoview_set_VIZ_patch_color_mode(TRACER_RENDERING,
                                       (int) tag, kemo_sgl);
     
     [_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction) ShowFlineRange:(id)pSender {
+- (IBAction) ShowTracerRange:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_linear_colormap(self.TracerColorMinimum,
                                  (int) self.TracerColorMinDigit,
                                  self.TracerColorMaximum,
                                  (int) self.TracerColorMaxDigit,
-                                 FIELDLINE_RENDERING,
+                                 TRACER_RENDERING,
                                 kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
@@ -263,12 +263,12 @@
     [_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction)SetFieldlineThicknessAction:(id)sender;
+- (IBAction)SetTracerRadiusAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_color_value_w_exp(FIELDLINE_RENDERING, ISET_WIDTH,
-                                       (double) self.FlineThickFactor,
-                                       (int) self.FlineThickDigit,
+    kemoview_set_VIZ_color_value_w_exp(TRACER_RENDERING, ISET_WIDTH,
+                                       (double) self.TracerRadiusFactor,
+                                       (int) self.TracerRadiusDigit,
                                        kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }

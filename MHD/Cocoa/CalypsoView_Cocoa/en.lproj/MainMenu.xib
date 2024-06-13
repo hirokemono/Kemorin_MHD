@@ -2746,7 +2746,7 @@
                     </box>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pin-um-o1A">
                         <rect key="frame" x="230" y="-12" width="263" height="888"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Surface" identifier="" id="up6-qY-OaA">
@@ -4649,7 +4649,6 @@
                                                                                         </textFieldCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="nRQ-Oe-AMN"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="f1D-yt-Bsh"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Keg-BM-Z5G">
@@ -4691,7 +4690,6 @@
                                                                                         </textFieldCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="pQu-53-0Zm"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="u9N-om-vuh"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U0C-V3-kwl">
@@ -4704,7 +4702,6 @@
                                                                                         </stepperCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="CCc-LX-eWq"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="j3M-Q7-z0n"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7kz-Tb-GPd">
@@ -4727,7 +4724,6 @@
                                                                                         </stepperCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="8Ev-ny-e6B"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="4KS-vz-ry5"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BiR-8t-hq3">
@@ -4747,7 +4743,6 @@
                                                                                         </textFieldCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="DH1-Sb-v6N"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="fxS-wS-Eir"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6wk-e4-Gtp">
@@ -4767,7 +4762,6 @@
                                                                                         </textFieldCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="wZT-JS-pct"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="yX6-aI-cq2"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oxQ-Xt-nch">
@@ -4779,9 +4773,6 @@
                                                                                                 <binding destination="1932" name="value" keyPath="self.FlineDisplayMinimum" id="IEs-7W-0Zk"/>
                                                                                             </connections>
                                                                                         </stepperCell>
-                                                                                        <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="TVo-vx-8VF"/>
-                                                                                        </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VwB-gv-jGC">
                                                                                         <rect key="frame" x="122" y="69" width="26" height="18"/>
@@ -4803,7 +4794,6 @@
                                                                                         </stepperCell>
                                                                                         <connections>
                                                                                             <action selector="ShowFlineRange:" target="1932" id="lvK-vu-1x7"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="Fx1-8J-yiK"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oIs-Qi-yQ2">
@@ -5204,8 +5194,7 @@
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="2mc-sQ-Lwy"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="Oc6-Z5-p2b"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="To3-nj-LGX"/>
                                                                                             <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerColorMaximum" id="lOY-rp-jj9"/>
                                                                                         </connections>
                                                                                     </textField>
@@ -5243,12 +5232,11 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <action selector="SetPSFDisplayrange:" target="1157" id="1WJ-Rw-knx"/>
                                                                                                 <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerColorMaxDigit" id="9LS-9a-G6U"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="GzY-t3-CY4"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="JvR-8i-jKn"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eU9-Ea-AQv">
@@ -5260,8 +5248,7 @@
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="CaV-vI-ElO"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="p0A-Gu-obI"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="mA6-fK-nF9"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q1r-ve-IJC">
@@ -5283,8 +5270,7 @@
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="uz0-6I-RQP"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="7r9-ge-xEF"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="xBQ-5u-ITI"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9t-ul-bWt">
@@ -5303,8 +5289,7 @@
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="Quv-7Z-seJ"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="5ht-4E-RAc"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="aqr-vq-84u"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QQP-sd-4y0">
@@ -5319,12 +5304,11 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <action selector="SetPSFDisplayrange:" target="1157" id="Cae-kX-KQz"/>
                                                                                                 <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerColorMinDigit" id="fUt-xl-4sk"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="evl-iU-TrC"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="Y3y-ZP-cue"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ZG-xg-ICI">
@@ -5336,8 +5320,7 @@
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="HPY-Gj-nEO"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="HAp-CT-kar"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="AG5-Rp-AsF"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p7C-eP-M0z">
@@ -5359,8 +5342,7 @@
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <action selector="SetPSFDisplayrange:" target="1157" id="l5s-Ya-og3"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="9GO-PG-THt"/>
+                                                                                            <action selector="ShowTracerRange:" target="ld6-u3-7Oq" id="NnO-Wa-PMb"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JfL-0p-9rB">
@@ -5910,6 +5892,157 @@
                                                                                     </dictionary>
                                                                                 </binding>
                                                                             </connections>
+                                                                        </box>
+                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color" translatesAutoresizingMaskIntoConstraints="NO" id="N9Q-sy-NJK">
+                                                                            <rect key="frame" x="8" y="3" width="209" height="123"/>
+                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                            <view key="contentView" id="3HR-Fo-fAC">
+                                                                                <rect key="frame" x="3" y="3" width="203" height="105"/>
+                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                <subviews>
+                                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7c9-bk-G7X">
+                                                                                        <rect key="frame" x="86" y="10" width="108" height="25"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <popUpButtonCell key="cell" type="push" title="Black" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="UIw-9Z-ZNU" id="rDP-AT-0K6">
+                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                            <font key="font" metaFont="menu"/>
+                                                                                            <menu key="menu" title="OtherViews" id="gYJ-Qf-WaQ">
+                                                                                                <items>
+                                                                                                    <menuItem title="Rainbow" tag="3" id="uGi-UW-I01"/>
+                                                                                                    <menuItem title="Two Color" tag="4" id="9Oh-YD-KNe"/>
+                                                                                                    <menuItem title="Two Grayscale" tag="5" id="cdG-FS-PpA"/>
+                                                                                                    <menuItem title="Black" state="on" tag="1" id="UIw-9Z-ZNU"/>
+                                                                                                    <menuItem title="White" tag="6" id="R5v-UO-fVc"/>
+                                                                                                </items>
+                                                                                            </menu>
+                                                                                        </popUpButtonCell>
+                                                                                        <connections>
+                                                                                            <action selector="ChooseFieldlineColorAction:" target="1932" id="4k2-CW-sns"/>
+                                                                                        </connections>
+                                                                                    </popUpButton>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1z-aw-Bqh">
+                                                                                        <rect key="frame" x="15" y="16" width="70" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line color:" id="vOK-Si-lpq">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dxX-Mo-Vjr">
+                                                                                        <rect key="frame" x="15" y="45" width="70" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thickness:" id="6Un-mc-2ga">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MTk-vK-Cvo">
+                                                                                        <rect key="frame" x="20" y="77" width="162" height="18"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        <size key="cellSize" width="79" height="18"/>
+                                                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="BYf-uY-No5">
+                                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                        </buttonCell>
+                                                                                        <cells>
+                                                                                            <column>
+                                                                                                <buttonCell type="radio" title="Line" imagePosition="left" alignment="left" state="on" inset="2" id="Wvp-JS-ENn">
+                                                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                                    <font key="font" metaFont="system"/>
+                                                                                                    <connections>
+                                                                                                        <action selector="ChooseFieldlineTypeAction:" target="1932" id="o8H-eu-UTT"/>
+                                                                                                    </connections>
+                                                                                                </buttonCell>
+                                                                                            </column>
+                                                                                            <column>
+                                                                                                <buttonCell type="radio" title="Tube" imagePosition="left" alignment="left" tag="1" inset="2" id="a5i-gT-cyb">
+                                                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                                    <font key="font" metaFont="system"/>
+                                                                                                    <connections>
+                                                                                                        <action selector="ChooseFieldlineTypeAction:" target="1932" id="To8-K5-Bxw"/>
+                                                                                                    </connections>
+                                                                                                </buttonCell>
+                                                                                            </column>
+                                                                                        </cells>
+                                                                                    </matrix>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gGb-Vl-RIs">
+                                                                                        <rect key="frame" x="105" y="39" width="19" height="28"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="Nr4-fg-MWi">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="fgQ-Ns-xRs"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="WUG-vQ-gLl"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sqe-Ja-66u">
+                                                                                        <rect key="frame" x="91" y="43" width="17" height="21"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="juQ-wa-Oxc">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2M8-GG-U54">
+                                                                                                <real key="minimum" value="0.0"/>
+                                                                                                <real key="maximum" value="9"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="tsZ-QV-Mqk"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="0xC-KK-JMh"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4gc-ir-7Uo">
+                                                                                        <rect key="frame" x="151" y="51" width="29" height="19"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="7Bp-b1-3RM">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="e0x-SY-MV6">
+                                                                                                <real key="minimum" value="-30"/>
+                                                                                                <real key="maximum" value="30"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="QSQ-ZZ-t4H"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="ZN4-Q2-b4m"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="64C-aQ-Vu1">
+                                                                                        <rect key="frame" x="177" y="49" width="15" height="22"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="zoL-90-0CJ">
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="wVS-sX-1oN"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="0tq-fU-o4p"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zWC-w7-mX7">
+                                                                                        <rect key="frame" x="124" y="45" width="25" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="ZYl-oS-Ujl">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                </subviews>
+                                                                            </view>
                                                                         </box>
                                                                     </subviews>
                                                                 </view>
@@ -7367,7 +7500,17 @@
                 <outlet property="window" destination="mUS-wv-uCM" id="c1P-Gb-hQ7"/>
             </connections>
         </customObject>
-        <customObject id="ld6-u3-7Oq" userLabel="Tracer Controller" customClass="TracerController"/>
+        <customObject id="ld6-u3-7Oq" userLabel="Tracer Controller" customClass="TracerController">
+            <connections>
+                <outlet property="_FlineComponentMenu" destination="DKy-H9-YSS" id="Qdr-Ga-1ie"/>
+                <outlet property="_FlineFieldMenu" destination="p3R-x9-aYT" id="42X-2a-ZIp"/>
+                <outlet property="_fillRectView" destination="2560" id="wbF-lt-JR2"/>
+                <outlet property="_kemoviewControl" destination="964" id="VHN-sJ-Kwg"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="52T-kJ-8R7"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="7CY-zg-khn"/>
+                <outlet property="_psfController" destination="1157" id="o5t-SS-Ggt"/>
+            </connections>
+        </customObject>
         <customObject id="1157" customClass="PsfController">
             <connections>
                 <outlet property="PSFPatchColorWell" destination="StT-jt-Xhd" id="xeY-3f-W9P"/>

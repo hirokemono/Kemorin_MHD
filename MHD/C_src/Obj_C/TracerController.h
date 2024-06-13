@@ -56,8 +56,8 @@
     CGFloat TracerMinimumValue;
     CGFloat FlineMaximumValue;
     
-    CGFloat FlineThickFactor;
-    CGFloat FlineThickDigit;
+    CGFloat TracerRadiusFactor;
+    CGFloat TracerRadiusDigit;
 
     IBOutlet id FieldlineColorItem;
 }
@@ -74,8 +74,8 @@
 @property CGFloat TracerMaximumValue;
 
 @property NSInteger Flinetype;
-@property CGFloat FlineThickFactor;
-@property CGFloat FlineThickDigit;
+@property CGFloat TracerRadiusFactor;
+@property CGFloat TracerRadiusDigit;
 
 - (id)init;
 - (id)dealloc;
@@ -92,8 +92,8 @@
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 
-- (IBAction)ShowFlineRange:(id)pSender;
+- (IBAction)ShowTracerRange:(id)pSender;
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
-- (IBAction)SetFieldlineThicknessAction:(id)sender;
+- (IBAction)SetTracerRadiusAction:(id)sender;
 
 @end
