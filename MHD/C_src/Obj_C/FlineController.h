@@ -11,6 +11,7 @@
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 #import "KemoViewerObject.h"
+#import "PsfController.h"
 #import "fillRectView.h"
 
 #include "Kemoviewer.h"
@@ -20,6 +21,7 @@
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet PsfController         * _psfController;
     IBOutlet fillRectView* _fillRectView;
     IBOutlet KemoViewerObject *_kmv;
 
@@ -42,8 +44,8 @@
 	NSNumber *FlineMinimumRange;
 	NSNumber *FlineMaximumRange;
 	
-	IBOutlet id _FlineFieldMenu;
-	IBOutlet id _FlineComponentMenu;
+	IBOutlet NSPopUpButton * _FlineFieldMenu;
+	IBOutlet NSPopUpButton * _FlineComponentMenu;
 	
 	CGFloat FlineDisplayMinimum;
 	CGFloat FlineDisplayMaximum;
@@ -88,7 +90,6 @@
 - (IBAction) FlineFieldAction:(id)sender;
 - (IBAction) FlineComponentAction:(id)sender;
 
-- (void) SetFlineFieldMenu:(struct kemoviewer_type *) kemo_sgl;
 - (void) SetFlineComponentMenu:(NSInteger)isel
                       kemoview:(struct kemoviewer_type *) kemo_sgl;
 

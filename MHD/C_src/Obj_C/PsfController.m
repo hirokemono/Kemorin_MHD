@@ -208,10 +208,16 @@
 
 	self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
 	
-    [self SetPsfFieldMenu:kemo_sgl];
-	[self SetPsfComponentMenu:self.PSFSelectedField
-                     kemoview:kemo_sgl
-                componentMenu:_psfComponentMenu];
+    [self SetFieldMenuItems:SURFACE_RENDERING
+                   kemoview:kemo_sgl
+                  fieldMenu:_psfFieldMenu];
+	[self SetComponentMenuItems:self.PSFSelectedField
+                    activeModel:SURFACE_RENDERING
+                       kemoview:kemo_sgl
+                  componentMenu:_psfComponentMenu];
+    [self SetPsfSelectedRange:self.PSFSelectedField
+                  activeModel:SURFACE_RENDERING
+                     kemoview:kemo_sgl];
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
@@ -288,88 +294,102 @@
     return;
 }
 
-- (void) SetPsfFieldMenu:(struct kemoviewer_type *) kemo_sgl
+- (void) SetFieldMenuItems:(int) id_model
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
+                 fieldMenu:(NSPopUpButton *) psfFieldMenu
 {
     NSString *stname;
     struct kv_string *colorname = kemoview_alloc_kvstring();
 
-	[_psfFieldMenu removeAllItems];
+	[psfFieldMenu removeAllItems];
     
     int n_field = kemoview_get_VIZ_field_param(kemo_sgl,
-                                               SURFACE_RENDERING,
+                                               id_model,
                                                NUM_FIELD_FLAG);
 	if(n_field < 1){
-		[_psfFieldMenu addItemWithTitle:@"No field"];
+		[psfFieldMenu addItemWithTitle:@"No field"];
 	} else {
 		for(int i = 0; i < n_field; i++){
             kemoview_get_VIZ_field_name(kemo_sgl,
-                                        SURFACE_RENDERING,
+                                        id_model,
                                         colorname, i);
             stname = [[NSString alloc] initWithUTF8String:colorname->string];
-			[_psfFieldMenu addItemWithTitle:stname];
+			[psfFieldMenu addItemWithTitle:stname];
             [stname release];
 		};
 	}
     kemoview_free_kvstring(colorname);
 }
 
-- (void) SetPsfComponentMenu:(NSInteger)isel
-                    kemoview:(struct kemoviewer_type *) kemo_sgl
-               componentMenu:(NSPopUpButton *) psfComponentMenu
+- (void) SetComponentMenuItems:(NSInteger) isel
+                   activeModel:(NSInteger) id_model
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
+                 componentMenu:(NSPopUpButton *) psfComponentMenu
 {
-	int iplotted;
-	
-	[psfComponentMenu removeAllItems];
-	
-    int n_field = kemoview_get_VIZ_field_param(kemo_sgl,
-                                               SURFACE_RENDERING,
+    
+    [psfComponentMenu removeAllItems];
+    
+    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
                                                NUM_FIELD_FLAG);
-    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl,
-                                                   SURFACE_RENDERING,
+    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, id_model,
                                                    (int) isel);
     struct kv_string *colorname = kemoview_alloc_kvstring();
-    kemoview_get_VIZ_field_name(kemo_sgl,
-                                SURFACE_RENDERING,
+    kemoview_get_VIZ_field_name(kemo_sgl, id_model,
                                 colorname, (int) isel);
     NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
-
+    
     if(n_field < 1){
-		[psfComponentMenu addItemWithTitle:@"No data"];
-	} else {
-		if(num_comp == 1){
-			[psfComponentMenu addItemWithTitle:@"Scalar"];
-		} else if(num_comp == 6){
-			[psfComponentMenu addItemWithTitle:@"xx"];
-			[psfComponentMenu addItemWithTitle:@"xy"];
-			[psfComponentMenu addItemWithTitle:@"xz"];
-			[psfComponentMenu addItemWithTitle:@"yy"];
-			[psfComponentMenu addItemWithTitle:@"yz"];
-			[psfComponentMenu addItemWithTitle:@"zz"];
-		}
-		else if(num_comp == 3){
-			NSInteger charalen = [stname length];
-			if(charalen > 4){
-				NSString *partname = [stname substringFromIndex:charalen-4];
-				if([partname compare:@"_sph"] == NSOrderedSame){
-					[psfComponentMenu addItemWithTitle:@"r"];
-					[psfComponentMenu addItemWithTitle:@"θ"];
-					[psfComponentMenu addItemWithTitle:@"φ"];
-				}else if([partname compare:@"_cyl"] == NSOrderedSame){
-					[psfComponentMenu addItemWithTitle:@"s"];
-					[psfComponentMenu addItemWithTitle:@"φ"];
-					[psfComponentMenu addItemWithTitle:@"z"];
-				}else{
-					[psfComponentMenu addItemWithTitle:@"x"];
-					[psfComponentMenu addItemWithTitle:@"y"];
-					[psfComponentMenu addItemWithTitle:@"z"];
-				}
-			} else {
-				[psfComponentMenu addItemWithTitle:@"x"];
-				[psfComponentMenu addItemWithTitle:@"y"];
-				[psfComponentMenu addItemWithTitle:@"z"];
-			}
-		}
-        
+        [psfComponentMenu addItemWithTitle:@"No data"];
+    } else {
+        if(num_comp == 1){
+            [psfComponentMenu addItemWithTitle:@"Scalar"];
+        } else if(num_comp == 6){
+            [psfComponentMenu addItemWithTitle:@"xx"];
+            [psfComponentMenu addItemWithTitle:@"xy"];
+            [psfComponentMenu addItemWithTitle:@"xz"];
+            [psfComponentMenu addItemWithTitle:@"yy"];
+            [psfComponentMenu addItemWithTitle:@"yz"];
+            [psfComponentMenu addItemWithTitle:@"zz"];
+        }
+        else if(num_comp == 3){
+            NSInteger charalen = [stname length];
+            if(charalen > 4){
+                NSString *partname = [stname substringFromIndex:charalen-4];
+                if([partname compare:@"_sph"] == NSOrderedSame){
+                    [psfComponentMenu addItemWithTitle:@"r"];
+                    [psfComponentMenu addItemWithTitle:@"θ"];
+                    [psfComponentMenu addItemWithTitle:@"φ"];
+                }else if([partname compare:@"_cyl"] == NSOrderedSame){
+                    [psfComponentMenu addItemWithTitle:@"s"];
+                    [psfComponentMenu addItemWithTitle:@"φ"];
+                    [psfComponentMenu addItemWithTitle:@"z"];
+                }else{
+                    [psfComponentMenu addItemWithTitle:@"x"];
+                    [psfComponentMenu addItemWithTitle:@"y"];
+                    [psfComponentMenu addItemWithTitle:@"z"];
+                }
+            } else {
+                [psfComponentMenu addItemWithTitle:@"x"];
+                [psfComponentMenu addItemWithTitle:@"y"];
+                [psfComponentMenu addItemWithTitle:@"z"];
+            }
+        }
+    }
+    [stname release];
+    kemoview_free_kvstring(colorname);
+    return;
+}
+
+- (void) SetPsfSelectedRange:(NSInteger) isel
+                 activeModel:(NSInteger) id_model
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    int iplotted;
+    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
+                                               NUM_FIELD_FLAG);
+    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, id_model,
+                                                   (int) isel);
+    if(n_field > 0){
 		if(num_comp == 3){
 			self.PSFVectorMenuAcrive = 1;
 		} else {
@@ -389,8 +409,6 @@
                                                            ISET_COLOR_MAX,
                                                            iplotted);
 	}
-    [stname release];
-    kemoview_free_kvstring(colorname);
 	return;
 }
 
@@ -443,10 +461,16 @@
 	
 	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(kemo_sgl, DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
-    [self SetPsfFieldMenu:kemo_sgl];
-	[self SetPsfComponentMenu:0
-                     kemoview:kemo_sgl
-                componentMenu:_psfComponentMenu];
+    [self SetFieldMenuItems:SURFACE_RENDERING
+                   kemoview:kemo_sgl
+                  fieldMenu:_psfFieldMenu];
+    [self SetComponentMenuItems:0
+                    activeModel:SURFACE_RENDERING
+                       kemoview:kemo_sgl
+                  componentMenu:_psfComponentMenu];
+    [self SetPsfSelectedRange:0
+                  activeModel:SURFACE_RENDERING
+                     kemoview:kemo_sgl];
     [self SetCurrentPsfMenu:kemo_sgl];
     [self SetPsfRanges:kemo_sgl];
 	
@@ -594,9 +618,13 @@
 - (IBAction) PsfFieldAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	[self SetPsfComponentMenu:self.PSFSelectedField
-                     kemoview:kemo_sgl
-                componentMenu:_psfComponentMenu];
+	[self SetComponentMenuItems:self.PSFSelectedField
+                    activeModel:SURFACE_RENDERING
+                       kemoview:kemo_sgl
+                  componentMenu:_psfComponentMenu];
+    [self SetPsfSelectedRange:self.PSFSelectedField
+                  activeModel:SURFACE_RENDERING
+                     kemoview:kemo_sgl];
     kemoview_set_VIZ_field_param(SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
                                  (int) self.PSFSelectedField,

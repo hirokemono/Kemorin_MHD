@@ -57,8 +57,8 @@
 	NSNumber *PsfIsolineNumber;
 	
 	IBOutlet id _currentPsfMenu;
-	IBOutlet id _psfFieldMenu;
-	IBOutlet NSPopUpButton *_psfComponentMenu;
+	IBOutlet NSPopUpButton * _psfFieldMenu;
+	IBOutlet NSPopUpButton * _psfComponentMenu;
     
 	IBOutlet id _psfLineColorMenu;
 	IBOutlet id _psfPatchColorMenu;
@@ -174,10 +174,14 @@
 - (void)awakeFromNib;
 
 
-- (void) SetPsfFieldMenu;
-- (void) SetPsfComponentMenu:(NSInteger)isel
-                    kemoview:(struct kemoviewer_type *) kemo_sgl
-               componentMenu:(NSPopUpButton *) psfComponentMenu;
+- (void) SetFieldMenuItems:(int) id_model
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
+                 fieldMenu:(NSPopUpButton *) psfFieldMenu;
+
+- (void) SetComponentMenuItems:(NSInteger) isel
+                   activeModel:(NSInteger) id_model
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
+                 componentMenu:(NSPopUpButton *) psfComponentMenu;
 
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead
             kemoview:(struct kemoviewer_type *) kemo_sgl;

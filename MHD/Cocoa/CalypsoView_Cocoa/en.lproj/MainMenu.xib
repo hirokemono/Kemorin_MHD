@@ -1814,6 +1814,7 @@
                 <outlet property="_kemoviewControl" destination="964" id="3542"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="Fb6-iQ-ybe"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="WpY-a9-ua0"/>
+                <outlet property="_psfController" destination="1157" id="J0H-la-kPP"/>
                 <outlet property="window" destination="mUS-wv-uCM" id="XXk-bq-Vfp"/>
             </connections>
         </customObject>

@@ -64,8 +64,6 @@
 
 - (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
-	int i, iflag;
-	double minmax;
 	double current_thick;
 	int current_digit;
 	
@@ -75,7 +73,13 @@
 	self.FlineThickFactor = (CGFloat) current_thick;
 	self.FlineThickDigit = (CGFloat) current_digit;
 
-    [self SetFlineFieldMenu:kemo_sgl];
+    [_psfController SetFieldMenuItems:FIELDLINE_RENDERING
+                             kemoview:kemo_sgl
+                            fieldMenu:_FlineFieldMenu];
+    [_psfController SetComponentMenuItems:0
+                              activeModel:FIELDLINE_RENDERING
+                                kemoview:kemo_sgl
+                            componentMenu:_FlineComponentMenu];
 	[self SetFlineComponentMenu:0
                        kemoview:kemo_sgl];
 	return self;
@@ -173,6 +177,10 @@
 	NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [_psfController SetComponentMenuItems:isel
+                              activeModel:FIELDLINE_RENDERING
+                                kemoview:kemo_sgl
+                            componentMenu:_FlineComponentMenu];
     [self SetFlineComponentMenu:isel
                        kemoview:kemo_sgl];
     
@@ -246,92 +254,19 @@
 	[_metalView UpdateImage:kemo_sgl];
 }
 
-- (void) SetFlineFieldMenu:(struct kemoviewer_type *) kemo_sgl
-{
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-    NSString *stname;
-	
-    int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
-                                                NUM_FIELD_FLAG);
-	if(n_field > 0) [_FlineFieldMenu removeAllItems];
-	if(n_field < 1){
-		[_FlineFieldMenu addItemWithTitle:@"No Field"];
-	} else {
-		for(int i = 0; i < n_field; i++){
-            kemoview_get_VIZ_field_name(kemo_sgl,
-                                        FIELDLINE_RENDERING,
-                                        colorname, i);
-            stname = [[NSString alloc] initWithUTF8String:colorname->string];
-			[_FlineFieldMenu addItemWithTitle:stname];
-            [stname release];
-		};
-	}
-    kemoview_free_kvstring(colorname);
-}
-
 - (void) SetFlineComponentMenu:(NSInteger)isel
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    struct kv_string *colorname = kemoview_alloc_kvstring();
 	int i_digit;
 	double value;
-	int iplotted;
 
-	[_FlineComponentMenu removeAllItems];
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
                                                 FIELDLINE_RENDERING,
                                                 NUM_FIELD_FLAG);
-    long n_comp = kemoview_get_VIZ_num_component(kemo_sgl,
-                                                 FIELDLINE_RENDERING,
-                                                 (int) isel);
-    kemoview_get_VIZ_field_name(kemo_sgl,
-                                FIELDLINE_RENDERING,
-                                colorname, (int) isel);
-    NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
-
-	if (n_field < 1) {
-		[_FlineComponentMenu addItemWithTitle:@"No Field"];
-	} else {
-		if(n_comp == 1){
-			[_FlineComponentMenu addItemWithTitle:@"Scalar"];
-		}
-		else if(n_comp == 6){
-			[_FlineComponentMenu addItemWithTitle:@"xx"];
-			[_FlineComponentMenu addItemWithTitle:@"xy"];
-			[_FlineComponentMenu addItemWithTitle:@"xz"];
-			[_FlineComponentMenu addItemWithTitle:@"yy"];
-			[_FlineComponentMenu addItemWithTitle:@"yz"];
-			[_FlineComponentMenu addItemWithTitle:@"zz"];
-		}
-		else if(n_comp == 3){
-			NSInteger charalen = [stname length];
-			if(charalen > 4){
-				NSString *partname = [stname substringFromIndex:charalen-4];
-				if([partname compare:@"_sph"] == NSOrderedSame){
-					[_FlineComponentMenu addItemWithTitle:@"r"];
-					[_FlineComponentMenu addItemWithTitle:@"θ"];
-					[_FlineComponentMenu addItemWithTitle:@"φ"];
-				} else if([partname compare:@"_cyl"] == NSOrderedSame){
-					[_FlineComponentMenu addItemWithTitle:@"s"];
-					[_FlineComponentMenu addItemWithTitle:@"φ"];
-					[_FlineComponentMenu addItemWithTitle:@"z"];
-				} else{
-					[_FlineComponentMenu addItemWithTitle:@"x"];
-					[_FlineComponentMenu addItemWithTitle:@"y"];
-					[_FlineComponentMenu addItemWithTitle:@"z"];
-				}
-                [partname release];
-			} else {
-				[_FlineComponentMenu addItemWithTitle:@"x"];
-				[_FlineComponentMenu addItemWithTitle:@"y"];
-				[_FlineComponentMenu addItemWithTitle:@"z"];
-			}
-		}
-
-		iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
-                                                DRAW_ADDRESS_FLAG);
+    if (n_field > 0) {
+		int iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
+                                                    FIELDLINE_RENDERING,
+                                                    DRAW_ADDRESS_FLAG);
 		self.FlineMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
                                                              FIELDLINE_RENDERING,
                                                              ISET_COLOR_MIN,
@@ -354,8 +289,6 @@
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
-    [stname release];
-    kemoview_free_kvstring(colorname);
 	return;
 }
 
