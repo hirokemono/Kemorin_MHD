@@ -15,12 +15,12 @@
 @synthesize FlineWindowlabel;
 
 @synthesize DrawFlineFlag;
-@synthesize FlineMinimumValue;
-@synthesize FlineMaximumValue;
-@synthesize FlineDisplayMinimum;
-@synthesize FlineDisplayMaximum;
-@synthesize FlineDisplayMinDigit;
-@synthesize FlineDisplayMaxDigit;
+@synthesize TracerMinimumValue;
+@synthesize TracerMaximumValue;
+@synthesize TracerColorMinimum;
+@synthesize TracerColorMaximum;
+@synthesize TracerColorMinDigit;
+@synthesize TracerColorMaxDigit;
 @synthesize Flinetype;
 @synthesize FlineThickFactor;
 @synthesize FlineThickDigit;
@@ -58,7 +58,7 @@
 -(void) awakeFromNib
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.Flinetype = kemoview_get_line_type_flag(kemo_sgl);
+//    self.Flinetype = kemoview_get_line_type_flag(kemo_sgl);
     return;
 }
 
@@ -165,12 +165,12 @@
     int cmapMinDigit, cmapMaxDigit;
     SetDataRanges(FIELDLINE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
                   &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
-    self.FlineMinimumValue = (CGFloat) dataMin;
-    self.FlineMaximumValue = (CGFloat) dataMax;
-	self.FlineDisplayMinimum = (CGFloat) cmapMinValue;
-	self.FlineDisplayMinDigit = (CGFloat) cmapMinDigit;
-	self.FlineDisplayMaximum = (CGFloat) cmapMaxValue;
-	self.FlineDisplayMaxDigit = (CGFloat) cmapMaxDigit;
+    self.TracerMinimumValue = (CGFloat) dataMin;
+    self.TracerMaximumValue = (CGFloat) dataMax;
+	self.TracerColorMinimum =   (CGFloat) cmapMinValue;
+	self.TracerColorMinDigit = (CGFloat) cmapMinDigit;
+	self.TracerColorMaximum =   (CGFloat) cmapMaxValue;
+	self.TracerColorMaxDigit = (CGFloat) cmapMaxDigit;
 }
 
 - (IBAction) FlineFieldAction:(id)sender
@@ -245,10 +245,10 @@
 
 - (IBAction) ShowFlineRange:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_linear_colormap(self.FlineDisplayMinimum,
-                                 (int) self.FlineDisplayMinDigit,
-                                 self.FlineDisplayMaximum,
-                                 (int) self.FlineDisplayMaxDigit,
+    kemoview_set_linear_colormap(self.TracerColorMinimum,
+                                 (int) self.TracerColorMinDigit,
+                                 self.TracerColorMaximum,
+                                 (int) self.TracerColorMaxDigit,
                                  FIELDLINE_RENDERING,
                                 kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];

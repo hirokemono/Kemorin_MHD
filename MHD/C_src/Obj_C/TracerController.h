@@ -47,13 +47,13 @@
     IBOutlet NSPopUpButton * _FlineFieldMenu;
     IBOutlet NSPopUpButton * _FlineComponentMenu;
     
-    CGFloat FlineDisplayMinimum;
-    CGFloat FlineDisplayMaximum;
-    CGFloat FlineDisplayMinDigit;
-    CGFloat FlineDisplayMaxDigit;
+    CGFloat TracerColorMinimum;
+    CGFloat TracerColorMaximum;
+    CGFloat TracerColorMinDigit;
+    CGFloat TracerColorMaxDigit;
     
     
-    CGFloat FlineMinimumValue;
+    CGFloat TracerMinimumValue;
     CGFloat FlineMaximumValue;
     
     CGFloat FlineThickFactor;
@@ -65,13 +65,13 @@
 @property(retain) NSString* FlineWindowlabel;
 
 @property NSInteger DrawFlineFlag;
-@property CGFloat FlineDisplayMinimum;
-@property CGFloat FlineDisplayMaximum;
-@property CGFloat FlineDisplayMinDigit;
-@property CGFloat FlineDisplayMaxDigit;
+@property CGFloat TracerColorMinimum;
+@property CGFloat TracerColorMaximum;
+@property CGFloat TracerColorMinDigit;
+@property CGFloat TracerColorMaxDigit;
 
-@property CGFloat FlineMinimumValue;
-@property CGFloat FlineMaximumValue;
+@property CGFloat TracerMinimumValue;
+@property CGFloat TracerMaximumValue;
 
 @property NSInteger Flinetype;
 @property CGFloat FlineThickFactor;
