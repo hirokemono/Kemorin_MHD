@@ -64,15 +64,8 @@
 
 - (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
-	double current_thick;
-	int current_digit;
-	
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 FIELDLINE_RENDERING, ISET_WIDTH,
-                                 &current_thick, &current_digit);
-	self.FlineThickFactor = (CGFloat) current_thick;
-	self.FlineThickDigit = (CGFloat) current_digit;
-
+    self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
+                                                     FIELDLINE_RENDERING);
     [_psfController SetFieldMenuItems:FIELDLINE_RENDERING
                              kemoview:kemo_sgl
                             fieldMenu:_FlineFieldMenu];
@@ -80,8 +73,8 @@
                               activeModel:FIELDLINE_RENDERING
                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
-	[self SetFlineComponentMenu:0
-                       kemoview:kemo_sgl];
+	[self SetFlineDataRanges:0
+                    kemoview:kemo_sgl];
 	return self;
 }
 
@@ -93,10 +86,7 @@
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
 							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
 
-	self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl, FIELDLINE_RENDERING);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
-	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
-	//		self.EvolutionEndStep =    self.EvolutionStartStep;
 	
 	id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
 	[_kemoviewControl SetViewTypeMenu:id_viewtype
@@ -162,8 +152,6 @@
         kemoview_close_tracer_view(kemo_sgl);
     };
     
-	self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
-                                                     (int) current_model);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
 	[_metalView UpdateImage:kemo_sgl];
@@ -181,8 +169,8 @@
                               activeModel:FIELDLINE_RENDERING
                                 kemoview:kemo_sgl
                             componentMenu:_FlineComponentMenu];
-    [self SetFlineComponentMenu:isel
-                       kemoview:kemo_sgl];
+    [self SetFlineDataRanges:isel
+                    kemoview:kemo_sgl];
     
     kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
                                  FIELD_SEL_FLAG,
@@ -254,9 +242,11 @@
 	[_metalView UpdateImage:kemo_sgl];
 }
 
-- (void) SetFlineComponentMenu:(NSInteger)isel
-                      kemoview:(struct kemoviewer_type *) kemo_sgl
+- (void) SetFlineDataRanges:(NSInteger)isel
+                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
+    double current_thick;
+    int current_digit;
 	int i_digit;
 	double value;
 
@@ -289,6 +279,13 @@
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
+    
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 FIELDLINE_RENDERING, ISET_WIDTH,
+                                 &current_thick, &current_digit);
+    self.FlineThickFactor = (CGFloat) current_thick;
+    self.FlineThickDigit = (CGFloat) current_digit;
+
 	return;
 }
 

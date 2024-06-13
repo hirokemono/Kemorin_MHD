@@ -90,9 +90,6 @@
 - (IBAction) FlineFieldAction:(id)sender;
 - (IBAction) FlineComponentAction:(id)sender;
 
-- (void) SetFlineComponentMenu:(NSInteger)isel
-                      kemoview:(struct kemoviewer_type *) kemo_sgl;
-
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 
 - (IBAction)ShowFlineRange:(id)pSender;
