@@ -171,8 +171,8 @@ void set_VIZ_constant_opacity(struct psf_data *psf_d,
     return;
 }
 
-void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
-                                 double value, double *red, double *green, double *blue){
+void get_VIZ_rgb_from_value(struct psf_menu_val *psf_menu,
+                            double value, double *red, double *green, double *blue){
     struct colormap_params *cmap_s = psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
     cal_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, value,
@@ -180,7 +180,7 @@ void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
     dealloc_colormap_array(cmap_array);
 	return;
 }
-double get_each_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
+double get_VIZ_opacity_at_value(struct psf_menu_val *psf_menu, double value){
     struct colormap_params *cmap_s = psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz];
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	return set_opacity_from_value_s(omap_array, value);

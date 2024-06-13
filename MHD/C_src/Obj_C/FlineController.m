@@ -114,14 +114,15 @@
     
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
     
-    self.currentFlineStep = [_psfController SetCurrentPSFFile:FIELDLINE_RENDERING
-                                                     kemoview:kemo_sgl
-                                                     pathTree:_flinePathControl];
+    self.currentFlineStep = [_kemoviewControl SetCurrentPSFFile:FIELDLINE_RENDERING
+                                                       kemoview:kemo_sgl
+                                                       pathTree:_flinePathControl];
     
     id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     [_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 };
 
 - (IBAction) DrawFlineFile:(id)pId{
@@ -190,6 +191,7 @@
                                  (int) isel, kemo_sgl);
     
     [self setSelectedFlineComponentRanges:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -201,6 +203,7 @@
                                  (int) [_FlineComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
     [self setSelectedFlineComponentRanges:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -247,8 +250,8 @@
 - (IBAction)SetFlineColorAction:(id)sender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SetPSFColorFromColorWell:kemo_sgl
-                         colorwell:_flineColorWell];
+    [_psfController SetPSFColorFromColorWell:kemo_sgl
+                                   colorwell:_flineColorWell];
     [_metalView UpdateImage:kemo_sgl];
 }
 

@@ -111,6 +111,10 @@
 
 - (int) CurrentControlModel;
 
+- (int) SetCurrentPSFFile:(int) id_model
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                 pathTree:(NSPathControl *) pathControl;
+
 - (void)SetViewTypeMenu:(NSInteger) selected
                kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (void)UpdateViewtype:(NSInteger) selected

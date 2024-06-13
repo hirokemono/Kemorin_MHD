@@ -112,6 +112,28 @@
     return (int) self.activeControlFlag;
 }
 
+- (int) SetCurrentPSFFile:(int) id_model
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                 pathTree:(NSPathControl *) pathControl
+{
+    int i_file_step;
+    struct kv_string *ucd_m;
+
+    ucd_m = kemoview_alloc_kvstring();
+    kemoview_get_full_path_file_prefix_step(kemo_sgl, id_model,
+                                            ucd_m, &i_file_step);
+    kemoview_free_kvstring(ucd_m);
+
+    ucd_m = kemoview_alloc_kvstring();
+    kemoview_get_full_path_file_name(kemo_sgl, id_model, ucd_m);
+    NSString *str = [NSString stringWithCString:ucd_m->string encoding:NSUTF8StringEncoding];
+    NSURL *urlReadPSF = [NSURL fileURLWithPath:str];
+    [pathControl setURL:urlReadPSF];
+
+    kemoview_free_kvstring(ucd_m);
+    return i_file_step;
+}
+
 - (void)SetViewTypeMenu:(NSInteger) selected
                kemoview:(struct kemoviewer_type *) kemo_sgl
 {

@@ -11,33 +11,12 @@
 
 
 @implementation RGBAMapController
-@synthesize DataMaximum;
-@synthesize DataMinimum;
-
-- (void)awakeFromNib {
-	self.DataMinimum = ZERO;
-	self.DataMaximum = ONE;
-}
-
-- (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl
-{
-    int i_comp = kemoview_get_VIZ_field_param(kemo_sgl,
-                                              SURFACE_RENDERING,
-                                              DRAW_ADDRESS_FLAG);
-	self.DataMinimum = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                   SURFACE_RENDERING,
-                                                   ISET_COLOR_MIN, i_comp);
-	self.DataMaximum = kemoview_get_VIZ_data_range(kemo_sgl,
-                                                   SURFACE_RENDERING,
-                                                   ISET_COLOR_MAX, i_comp);
-}
-
-- (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
+- (void) UpdateColormapView:(struct kemoviewer_type *) kemo_sgl
 {
     [_colorMapObject SetColorTables:kemo_sgl];
     [_opacityMapObject SetOpacityTables:kemo_sgl];
+    [_fillRectView UpdateColorbar];
 }
-
 
 - (IBAction) SaveColormapFile:(id)pId;{
 	
@@ -54,9 +33,9 @@
 		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
         struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
+        int current_model = (int) [_kemoviewControl CurrentControlModel];
         struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        kemoview_write_colormap_file(filename, SURFACE_RENDERING,
-                                     kemo_sgl);
+        kemoview_write_colormap_file(filename, current_model, kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                     }];
@@ -64,7 +43,9 @@
 
 - (IBAction) LoadColormapFile:(id)pId;{
 /*    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil]; */
+    int current_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    
     NSOpenPanel *ColormapOpenPanelObj	= [NSOpenPanel openPanel];
     [ColormapOpenPanelObj setTitle:@"Choose colormap data"];
 /*    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes]; */
@@ -81,7 +62,7 @@
                                            
                                            struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
                                            kemoview_read_colormap_file(filename,
-                                                                       SURFACE_RENDERING,
+                                                                       current_model,
                                                                        kemo_sgl);
                                            kemoview_free_kvstring(filename);
                                            

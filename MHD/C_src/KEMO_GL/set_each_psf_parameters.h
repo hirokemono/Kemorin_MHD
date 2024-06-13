@@ -113,9 +113,9 @@ void set_VIZ_constant_opacity(struct psf_data *psf_d,
                               struct psf_menu_val *psf_menu,
                               double opacity);
 
-void get_each_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
-                                 double value, double *red, double *green, double *blue);
-double get_each_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value);
+void get_VIZ_rgb_from_value(struct psf_menu_val *psf_menu,
+                            double value, double *red, double *green, double *blue);
+double get_VIZ_opacity_at_value(struct psf_menu_val *psf_menu, double value);
 void set_VIZ_color_point(struct psf_menu_val *psf_menu, int i_point,
                          double value, double color);
 void set_VIZ_opacity_point(struct psf_menu_val *psf_menu, int i_point,

@@ -13,12 +13,7 @@
 @implementation PsfController
 
 @synthesize psfMoreOpenFlag;
-@synthesize rgbaMapObject;
-@synthesize colorMapObject;
-@synthesize opacityMapObject;
-
 @synthesize PsfWindowlabel;
-
 @synthesize DrawPsfFlag;
 @synthesize IsolineNumber;
 @synthesize IsolineWidth;
@@ -83,10 +78,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (id)init;
 {
-    self.rgbaMapObject =    [RGBAMapController alloc];
-    self.colorMapObject =   [[ColorMapController alloc] init];
-    self.opacityMapObject = [OpacityMapController alloc];
-
     self.PsfWindowlabel = [NSString stringWithFormat:@"PSF View"];
     
 	LoadedPsfID =      [[NSMutableArray alloc] init];
@@ -233,9 +224,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
-    [colorMapObject SetColorTables:kemo_sgl];
-    [opacityMapObject SetOpacityTables:kemo_sgl];
-	
 	[_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
@@ -293,28 +281,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 		if(j == kemoview_get_PSF_loaded_params(kemo_sgl, SET_CURRENT)) self.currentPSFID = i;
 	};
     [self UpdateCurrentPsfMenu:kemo_sgl];
-}
-
-- (int) SetCurrentPSFFile:(int) id_model
-                 kemoview:(struct kemoviewer_type *) kemo_sgl
-                 pathTree:(NSPathControl *) pathControl
-{
-    int i_file_step;
-    struct kv_string *ucd_m;
-
-    ucd_m = kemoview_alloc_kvstring();
-    kemoview_get_full_path_file_prefix_step(kemo_sgl, id_model,
-                                            ucd_m, &i_file_step);
-    kemoview_free_kvstring(ucd_m);
-
-    ucd_m = kemoview_alloc_kvstring();
-    kemoview_get_full_path_file_name(kemo_sgl, id_model, ucd_m);
-    NSString *str = [NSString stringWithCString:ucd_m->string encoding:NSUTF8StringEncoding];
-    NSURL *urlReadPSF = [NSURL fileURLWithPath:str]; 
-    [pathControl setURL:urlReadPSF];
-
-    kemoview_free_kvstring(ucd_m);
-    return i_file_step;
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 }
 
 - (void) SetFieldMenuItems:(int) id_model
@@ -442,9 +409,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     
-    [self.rgbaMapObject updateColormapParameter:kemo_sgl];
-    [self.colorMapObject SetColorTables:kemo_sgl];
-    [self.opacityMapObject SetOpacityTables:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 }
 
 
@@ -486,9 +451,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
     
-    self.currentPSFStep = [self SetCurrentPSFFile:SURFACE_RENDERING
-                                         kemoview:kemo_sgl
-                                         pathTree:_psfPathControl];
+    self.currentPSFStep = [_kemoviewControl SetCurrentPSFFile:SURFACE_RENDERING
+                                                     kemoview:kemo_sgl
+                                                     pathTree:_psfPathControl];
 };
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
@@ -603,12 +568,12 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	int id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_sgl);
-    self.currentPSFStep = [self SetCurrentPSFFile:SURFACE_RENDERING
-                                         kemoview:kemo_sgl
-                                         pathTree:_psfPathControl];
+    self.currentPSFStep = [_kemoviewControl SetCurrentPSFFile:SURFACE_RENDERING
+                                                     kemoview:kemo_sgl
+                                                     pathTree:_psfPathControl];
     
     [self UpdateCurrentPsfMenu:kemo_sgl];
-    [_fillRectView UpdateColorbar];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -629,7 +594,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	
     [self SetPsfRanges:kemo_sgl];
     
-    [_fillRectView UpdateColorbar];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
 }
 
@@ -643,7 +608,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	
     [self SetPsfRanges:kemo_sgl];
     
-    [_fillRectView UpdateColorbar];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
 }
 

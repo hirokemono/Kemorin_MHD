@@ -1085,13 +1085,34 @@ double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
 };
 
 
-void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
+void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer,
+                                   int id_model, double value,
                                    double *red, double *green, double *blue){
-    get_PSF_rgb_at_value(kemoviewer->kemo_mul_psf, value, red, green, blue);
+    if(id_model == FIELDLINE_RENDERING){
+        get_VIZ_rgb_from_value(kemoviewer->kemo_fline->fline_m,
+                               value, red, green, blue);
+    }else if(id_model == TRACER_RENDERING){
+        get_VIZ_rgb_from_value(kemoviewer->kemo_tracer->tracer_m,
+                               value, red, green, blue);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        get_VIZ_rgb_from_value(kemoviewer->kemo_mul_psf->psf_m[i_current],
+                               value, red, green, blue);
+    }
+
 }
 double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
-                                         double value){
-    return get_PSF_opacity_at_value(kemoviewer->kemo_mul_psf, value);
+                                         int id_model, double value){
+    double opacity;
+    if(id_model == FIELDLINE_RENDERING){
+        opacity = get_VIZ_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
+    }else if(id_model == TRACER_RENDERING){
+        opacity = get_VIZ_opacity_at_value(kemoviewer->kemo_tracer->tracer_m, value);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        opacity = get_VIZ_opacity_at_value(kemoviewer->kemo_mul_psf->psf_m[i_current], value);
+    };
+    return opacity;
 }
 
 

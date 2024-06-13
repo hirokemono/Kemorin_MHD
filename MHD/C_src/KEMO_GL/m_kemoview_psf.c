@@ -437,17 +437,6 @@ int get_PSF_draw_refv(struct kemoview_mul_psf *kemo_mul_psf){
     return send_draw_each_psf_refv(kemo_mul_psf->psf_m[i_current]);
 };
 
-void get_PSF_rgb_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value,
-                          double *red, double *green, double *blue){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    get_each_PSF_rgb_from_value(kemo_mul_psf->psf_m[i_current],
-                                value, red, green, blue);
-}
-double get_PSF_opacity_at_value(struct kemoview_mul_psf *kemo_mul_psf, double value){
-    int i_current = kemo_mul_psf->psf_a->id_current;
-    return get_each_PSF_opacity_at_value(kemo_mul_psf->psf_m[i_current], value);
-}
-
 void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
                              struct psf_menu_val *viz_menu){
     write_VIZ_colormap_control_file(filename, iflag_draw_axis, viz_menu);

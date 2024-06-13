@@ -38,15 +38,52 @@
 	[backgroundColorWell setColor:theColor];
 } // end awakeFromNib
 
+
+- (void)SetColorTables:(struct kemoviewer_type *) kemo_sgl
+{
+    int i;
+    double value, color;
+    //    double value, color, color;
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
+    int currentStep = [_kemoviewControl SetCurrentPSFFile:id_model
+                                                 kemoview:kemo_sgl
+                                                 pathTree:_cmapPathControl];
+
+    [ColorTableField removeAllObjects];
+    [ColorTableColor removeAllObjects];
+    NumColorTable = kemoview_get_viz_colormap_param(kemo_sgl, id_model,
+                                                    ISET_NUM_COLOR);
+    for(i=0;i<NumColorTable;i++){
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl, id_model,
+                                         i, &value, &color);
+        [ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
+        [ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
+    }
+    [_colorTableView reloadData];
+
+    [_colorModeItem selectItemAtIndex:kemoview_get_viz_colormap_param(kemo_sgl, id_model,
+                                                                      ISET_COLORMAP)];
+    return;
+}
+
+- (IBAction)UpdateColorTables:(id)pID
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetColorTables:kemo_sgl];
+    [_fillRectView UpdateColorbar];
+}
+
+
 - (IBAction)addAtSelectedRow:(id)pId {
 	double value, color;
 	double value1, color1;
 	double value2, color2;
 	NSInteger isel = [idColorTableView selectedRow];
+    
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     
-    int n_color = kemoview_get_viz_colormap_param(kemo_sgl,
-                                                  SURFACE_RENDERING,
+    int n_color = kemoview_get_viz_colormap_param(kemo_sgl, id_model,
                                                   ISET_NUM_COLOR);
     if(n_color > 16) return;
         
@@ -58,8 +95,7 @@
 		value = (value1 + value2)*HALF;
 		color = (color1 + color2)*HALF;
         kemoview_add_VIZ_color_list(value, color,
-                                    SURFACE_RENDERING,
-                                    kemo_sgl);
+                                    id_model, kemo_sgl);
 		
         [self SetColorTables:kemo_sgl];
 	}
@@ -68,6 +104,7 @@
 
 - (IBAction)deleteSelectedRow:(id)pId {
 	int i;
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	NSIndexSet *SelectedList = [idColorTableView selectedRowIndexes];
 	if([self.ColorTableField count] < 3) return;
@@ -75,7 +112,7 @@
 	if ([idColorTableView numberOfSelectedRows] > 0) {
 		for(i = (int) [self.ColorTableField count]-1;i>1;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-                kemoview_delete_VIZ_color_list(i, SURFACE_RENDERING, kemo_sgl);
+                kemoview_delete_VIZ_color_list(i, id_model, kemo_sgl);
 			}
 		};
 	}
@@ -140,9 +177,10 @@
 											withObject:[[NSNumber alloc] initWithDouble:color]];
 	}
 	
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_color_point(pRowIndex, value, color,
-                                 SURFACE_RENDERING,
+                                 id_model,
                                  kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 	[_fillRectView UpdateColorbar];
@@ -154,38 +192,6 @@
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
-- (void)SetColorTables:(struct kemoviewer_type *) kemo_sgl
-{
-	int i;
-	double value, color;
-	//	double value, color, color;
-	
-	[ColorTableField removeAllObjects];
-	[ColorTableColor removeAllObjects];
-	NumColorTable = kemoview_get_viz_colormap_param(kemo_sgl,
-                                                    SURFACE_RENDERING,
-                                                    ISET_NUM_COLOR);
-	for(i=0;i<NumColorTable;i++){
-        kemoview_get_VIZ_color_RGB_value(kemo_sgl,
-                                         SURFACE_RENDERING,
-                                         i, &value, &color);
-		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
-		[ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
-	}
-	[_colorTableView reloadData];
-
-	[_colorModeItem selectItemAtIndex:kemoview_get_viz_colormap_param(kemo_sgl,
-                                                                      SURFACE_RENDERING,
-                                                                      ISET_COLORMAP)];
-    return;
-}
-
-- (IBAction)UpdateColorTables:(id)pID
-{
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SetColorTables:kemo_sgl];
-	[_fillRectView UpdateColorbar];
-}
 
 - (IBAction)ChooseBackgroundColorAction: (id) sender;
 {
@@ -212,8 +218,9 @@
 
 - (IBAction)SetColorMode:(id)pId;
 {
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_colormap_param(SURFACE_RENDERING, ISET_COLORMAP,
+    kemoview_set_colormap_param(id_model, ISET_COLORMAP,
                                 (int) [_colorModeItem indexOfSelectedItem],
                                 kemo_sgl);
 	[_fillRectView UpdateColorbar];

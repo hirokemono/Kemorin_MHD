@@ -518,11 +518,12 @@ extern "C" {
                                       struct kemoviewer_type *kemoviewer);
 
     
-    void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
+    void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer,
+                                       int id_model, double value,
                                        double *red, double *green, double *blue);
-    double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
-                                             double value);
-    
+    double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer,
+                                             int id_model, double value);
+
 	double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
                                        int id_model, int selected, int icomp);
     double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,

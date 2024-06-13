@@ -13,7 +13,7 @@
 #import "KemoViewerObject.h"
 #import "ElasticMenuWindow.h"
 #import "PsfController.h"
-#import "fillRectView.h"
+#import "RGBAMapController.h"
 
 #include "Kemoviewer.h"
 
@@ -23,9 +23,9 @@
     IBOutlet KemoViewerMetalView * _metalView;
     IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet PsfController         * _psfController;
-    IBOutlet fillRectView* _fillRectView;
     IBOutlet ElasticMenuWindowController * _ElasticControl;
-    
+    IBOutlet RGBAMapController * _rgbaMapObject;
+
     IBOutlet KemoViewerObject *_kmv;
 
     IBOutlet NSPathControl *_tracerPathControl;

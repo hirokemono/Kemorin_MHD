@@ -71,14 +71,15 @@
     
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
-    self.currentTracerStep = [_psfController SetCurrentPSFFile:TRACER_RENDERING
-                                                      kemoview:kemo_sgl
-                                                      pathTree:_tracerPathControl];
+    self.currentTracerStep = [_kemoviewControl SetCurrentPSFFile:TRACER_RENDERING
+                                                        kemoview:kemo_sgl
+                                                        pathTree:_tracerPathControl];
 
     id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     [_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
 };
 
 - (IBAction) DrawTracerFile:(id)pId{
@@ -117,7 +118,7 @@
 }
 
 - (IBAction) CloseTracerFile:(id)pId{
-    int current_model = [_kemoviewControl CurrentControlModel];
+    int current_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_close_tracer_view(kemo_sgl);
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
@@ -159,6 +160,7 @@
                                  (int) isel, kemo_sgl);
     
     [self setSelectedTracerComponentRanges:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -170,6 +172,7 @@
                                  (int) [_TracerComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
     [self setSelectedTracerComponentRanges:kemo_sgl];
+    [_rgbaMapObject UpdateColormapView:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -238,8 +241,8 @@
 - (IBAction)SetFlineColorAction:(id)sender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SetPSFColorFromColorWell:kemo_sgl
-                         colorwell:_tracerColorWell];
+    [_psfController SetPSFColorFromColorWell:kemo_sgl
+                                   colorwell:_tracerColorWell];
     [_metalView UpdateImage:kemo_sgl];
 }
 

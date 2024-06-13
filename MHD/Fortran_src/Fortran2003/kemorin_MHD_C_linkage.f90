@@ -212,10 +212,6 @@
 !    void kemoview_set_constant_opacity(double opacity, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
-!                                       double *red, double *green, double *blue);
-!    double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
-!                                             double value);
 !    void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,
 !                                       int id_model, struct kemoviewer_type *kemoviewer);
 !    

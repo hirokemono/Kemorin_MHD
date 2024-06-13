@@ -32,9 +32,7 @@
     
     IBOutlet ElasticMenuWindowController * _ElasticControl;
     
-	RGBAMapController * rgbaMapObject;
-	ColorMapController * colorMapObject;
-	OpacityMapController * opacityMapObject;
+    IBOutlet RGBAMapController * _rgbaMapObject;
 	
 	NSInteger psfMoreOpenFlag;
 	NSInteger DrawPsfFlag;
@@ -119,10 +117,6 @@
 @property NSInteger psfMoreOpenFlag;
 @property NSInteger EvolutionStartStep;
 
-@property (assign) RGBAMapController * rgbaMapObject;
-@property (assign) ColorMapController * colorMapObject;
-@property (assign) OpacityMapController * opacityMapObject;
-
 @property(retain) NSString* PsfWindowlabel;
 
 @property NSInteger DrawPsfFlag;
@@ -177,10 +171,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (id)dealloc;
 
 - (void)awakeFromNib;
-
-- (int) SetCurrentPSFFile:(int) id_model
-                 kemoview:(struct kemoviewer_type *) kemo_sgl
-                 pathTree:(NSPathControl *) pathControl;
 
 - (void) SetFieldMenuItems:(int) id_model
                   kemoview:(struct kemoviewer_type *) kemo_sgl
