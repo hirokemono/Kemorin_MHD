@@ -38,7 +38,6 @@
 	
 	NSInteger psfMoreOpenFlag;
 	NSInteger DrawPsfFlag;
-	NSString *PsfOpenDirectory;
     
 	NSString *PsfWindowlabel;
     

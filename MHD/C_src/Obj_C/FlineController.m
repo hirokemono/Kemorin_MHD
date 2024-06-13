@@ -50,6 +50,43 @@
     return;
 }
 
+- (void) setSelectedFlineComponentRanges:(struct kemoviewer_type *) kemo_sgl
+{
+    double dataMin, dataMax;
+    double cmapMinValue, cmapMaxValue;
+    int cmapMinDigit, cmapMaxDigit;
+    SetDataRanges(FIELDLINE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
+                  &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
+    self.FlineMinimumValue = (CGFloat) dataMin;
+    self.FlineMaximumValue = (CGFloat) dataMax;
+    self.FlineDisplayMinimum = (CGFloat) cmapMinValue;
+    self.FlineDisplayMinDigit = (CGFloat) cmapMinDigit;
+    self.FlineDisplayMaximum = (CGFloat) cmapMaxValue;
+    self.FlineDisplayMaxDigit = (CGFloat) cmapMaxDigit;
+}
+
+- (void) SetFlineDataRanges:(NSInteger)isel
+                   kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    double current_thick;
+    int current_digit;
+
+    int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
+                                                FIELDLINE_RENDERING,
+                                                NUM_FIELD_FLAG);
+    if (n_field > 0) {  
+        [self setSelectedFlineComponentRanges:kemo_sgl];
+    }
+    
+    kemoview_get_VIZ_color_w_exp(kemo_sgl,
+                                 FIELDLINE_RENDERING, ISET_WIDTH,
+                                 &current_thick, &current_digit);
+    self.FlineThickFactor = (CGFloat) current_thick;
+    self.FlineThickDigit = (CGFloat) current_digit;
+
+    return;
+}
+
 - (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
     self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
@@ -83,34 +120,6 @@
 	[_metalView UpdateImage:kemo_sgl];
 };
 
-- (void) ReadFlineFile:(NSString *) FlineFileName
-              kemoview:(struct kemoviewer_type *) kemo_sgl
-{
-    FlineOpenFileext =   [FlineFileName pathExtension];
-    FlineOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
-    // NSLog(@"PSF file name =      %@",FlineFileName);
-    // NSLog(@"PSF file header =    %@",FlineOpenFilehead);
-    // NSLog(@"self.FlineWindowlabel = %@",self.FlineWindowlabel);
-    
-    if([FlineOpenFileext isEqualToString:@"gz"] || [FlineOpenFileext isEqualToString:@"GZ"]){
-        FlineOpenFileext =    [FlineOpenFilehead pathExtension];
-        FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
-    };
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string([FlineFileName UTF8String]);
-    int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
-    kemoview_free_kvstring(filename);
-    
-    if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead
-                                                     kemoview:kemo_sgl];
-}
-
-- (IBAction) UpdateFieldline:(id)pId{
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	[_metalView UpdateImage:kemo_sgl];
-    return;
-};
-
 - (IBAction) DrawFlineFile:(id)pId{
 	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
 	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
@@ -118,15 +127,30 @@
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
     [flineOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger FlineOpenInteger){
-	if(FlineOpenInteger == NSModalResponseOK){
-		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-		NSString *OpenFilename =  [[flineOpenPanelObj URL] path];
-		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);
-        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadFlineFile:OpenFilename
-                   kemoview:kemo_sgl];
-	};
-                                   }];
+        
+        if(FlineOpenInteger == NSModalResponseOK){
+            //        NSString *FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
+            // NSLog(@"PSF file directory = %@",FlineOpenDirectory);
+            NSString *OpenFilename =  [[flineOpenPanelObj URL] path];
+            NSString *OpenFileExtension = [OpenFilename pathExtension];
+            NSString *OpenFilePrefix =    [OpenFilename stringByDeletingPathExtension];
+            if([OpenFileExtension isEqualToString:@"gz"]
+               || [OpenFileExtension isEqualToString:@"GZ"]){
+                OpenFilePrefix =   [OpenFilePrefix stringByDeletingPathExtension];
+            };
+            
+            struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+            struct kv_string *filename
+            = kemoview_init_kvstring_by_string([OpenFilename UTF8String]);
+            int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
+            kemoview_free_kvstring(filename);
+            
+            if(iflag_datatype == IFLAG_LINES){
+                [self OpenFieldlineFile:(NSString *)OpenFilePrefix
+                               kemoview:kemo_sgl];
+            }
+        };
+    }];
 }
 
 - (IBAction) CloseFlineFile:(id)pId{
@@ -143,22 +167,6 @@
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
 	[_metalView UpdateImage:kemo_sgl];
-	
-}
-
-- (void) setSelectedFlineComponentRanges:(struct kemoviewer_type *) kemo_sgl
-{
-    double dataMin, dataMax;
-    double cmapMinValue, cmapMaxValue;
-    int cmapMinDigit, cmapMaxDigit;
-    SetDataRanges(FIELDLINE_RENDERING, kemo_sgl, &dataMin, &dataMax, 
-                  &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
-    self.FlineMinimumValue = (CGFloat) dataMin;
-    self.FlineMaximumValue = (CGFloat) dataMax;
-	self.FlineDisplayMinimum = (CGFloat) cmapMinValue;
-	self.FlineDisplayMinDigit = (CGFloat) cmapMinDigit;
-	self.FlineDisplayMaximum = (CGFloat) cmapMaxValue;
-	self.FlineDisplayMaxDigit = (CGFloat) cmapMaxDigit;
 }
 
 - (IBAction) FlineFieldAction:(id)sender
@@ -190,30 +198,6 @@
                                  kemo_sgl);
     [self setSelectedFlineComponentRanges:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
-}
-
-- (void) SetFlineDataRanges:(NSInteger)isel
-                   kemoview:(struct kemoviewer_type *) kemo_sgl
-{
-    double current_thick;
-    int current_digit;
-	int i_digit;
-	double value;
-
-    int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
-                                                FIELDLINE_RENDERING,
-                                                NUM_FIELD_FLAG);
-    if (n_field > 0) {  
-        [self setSelectedFlineComponentRanges:kemo_sgl];
-	}
-    
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 FIELDLINE_RENDERING, ISET_WIDTH,
-                                 &current_thick, &current_digit);
-    self.FlineThickFactor = (CGFloat) current_thick;
-    self.FlineThickDigit = (CGFloat) current_digit;
-
-	return;
 }
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;

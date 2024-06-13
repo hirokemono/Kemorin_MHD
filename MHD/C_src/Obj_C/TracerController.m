@@ -12,14 +12,14 @@
 
 @implementation TracerController
 
-@synthesize DrawFlineFlag;
+@synthesize DrawTracerFlag;
 @synthesize TracerMinimumValue;
 @synthesize TracerMaximumValue;
 @synthesize TracerColorMinimum;
 @synthesize TracerColorMaximum;
 @synthesize TracerColorMinDigit;
 @synthesize TracerColorMaxDigit;
-@synthesize Flinetype;
+@synthesize Tracertype;
 @synthesize TracerRadiusFactor;
 @synthesize TracerRadiusDigit;
 - (id)init;
@@ -43,14 +43,14 @@
 -(void) awakeFromNib
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-//    self.Flinetype = kemoview_get_line_type_flag(kemo_sgl);
+//    self.Tracertype = kemoview_get_line_type_flag(kemo_sgl);
     return;
 }
 
 - (id) CopyTracerDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
-    self.DrawFlineFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
-                                                     TRACER_RENDERING);
+    self.DrawTracerFlag = kemoview_get_VIZ_draw_flags(kemo_sgl,
+                                                      TRACER_RENDERING);
     [_psfController SetFieldMenuItems:TRACER_RENDERING
                              kemoview:kemo_sgl
                             fieldMenu:_TracerFieldMenu];
@@ -77,25 +77,6 @@
     [_metalView UpdateImage:kemo_sgl];
 };
 
-- (void) ReadTracerFile:(NSString *) FlineFileName
-               kemoview:(struct kemoviewer_type *) kemo_sgl
-{
-    NSString *TracerOpenFileext = [FlineFileName pathExtension];
-    TracerOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
-    
-    if([TracerOpenFileext isEqualToString:@"gz"] || [TracerOpenFileext isEqualToString:@"GZ"]){
-        TracerOpenFileext =     [TracerOpenFilehead pathExtension];
-        TracerOpenFilehead =    [TracerOpenFilehead stringByDeletingPathExtension];
-    };
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string([FlineFileName UTF8String]);
-    int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
-    kemoview_free_kvstring(filename);
-    
-    if(iflag_datatype == IFLAG_POINTS) [self OpenTracerFile:(NSString *)TracerOpenFilehead
-                                                   kemoview:kemo_sgl];
-}
-
 - (IBAction) UpdateFieldline:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_metalView UpdateImage:kemo_sgl];
@@ -108,15 +89,29 @@
     [flineOpenPanelObj setTitle:@"Choose field line data"];
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
     [flineOpenPanelObj beginSheetModalForWindow:window
-                                   completionHandler:^(NSInteger FlineOpenInteger){
-    if(FlineOpenInteger == NSModalResponseOK){
-        NSString *TracerOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-        NSString *OpenFilename =  [[flineOpenPanelObj URL] path];
-        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadTracerFile:OpenFilename
-                   kemoview:kemo_sgl];
-    };
-                                   }];
+                              completionHandler:^(NSInteger FlineOpenInteger){
+
+        if(FlineOpenInteger == NSModalResponseOK){
+//            NSString *TracerOpenDirectory = [[flineOpenPanelObj directoryURL] path];
+            NSString *OpenFilename =        [[flineOpenPanelObj URL] path];
+            NSString *OpenFileExtention =   [OpenFilename pathExtension];
+            NSString *OpenFilPerefix =      [OpenFilename stringByDeletingPathExtension];
+            if([OpenFileExtention isEqualToString:@"gz"]
+               || [OpenFileExtention isEqualToString:@"GZ"]){
+                OpenFilPerefix = [OpenFilPerefix stringByDeletingPathExtension];
+            };
+        
+            struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+            struct kv_string *filename = kemoview_init_kvstring_by_string([OpenFilename UTF8String]);
+            int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
+            kemoview_free_kvstring(filename);
+        
+            if(iflag_datatype == IFLAG_POINTS){
+                [self OpenTracerFile:(NSString *)OpenFilPerefix
+                            kemoview:kemo_sgl];
+            }
+        };
+    }];
 }
 
 - (IBAction) CloseFlineFile:(id)pId{
@@ -227,9 +222,9 @@
 
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 {
-    self.Flinetype = [[_flinetype_matrix selectedCell] tag];
+    self.Tracertype = [[_flinetype_matrix selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_line_type_flag((int) self.Flinetype, kemo_sgl);
+    kemoview_set_line_type_flag((int) self.Tracertype, kemo_sgl);
     
     [_metalView UpdateImage:kemo_sgl];
 }

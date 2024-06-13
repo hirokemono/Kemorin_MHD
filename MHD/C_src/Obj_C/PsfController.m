@@ -428,9 +428,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (void) SetPsfRanges:(struct kemoviewer_type *) kemo_sgl
 {
-	double current_value;
-	int i_digit;
-    
     [self setSelectedPSFComponentRanges:kemo_sgl];
     
 	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
@@ -509,29 +506,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     [img release];
 }
 
-- (void) ReadPsfFile:(NSString *) PsfOpenFilename
-            kemoview:(struct kemoviewer_type *) kemo_sgl
-{
-    NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
-    NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
-    // NSLog(@"PSF file name =      %@",PsfOpenFilename);
-    // NSLog(@"PSF file header =    %@",PsfOpenFilehead);
-    // NSLog(@"self.PsfWindowlabel =    %@",self.PsfWindowlabel);
-    
-    if([PsfOpenFileext isEqualToString:@"gz"] || [PsfOpenFileext isEqualToString:@"GZ"]){
-        //			NSString *PsfOpenFileext_gz = [self.PsfOpenFilename pathExtension];
-        PsfOpenFileext =    [PsfOpenFilehead pathExtension];
-        PsfOpenFilehead =   [PsfOpenFilehead stringByDeletingPathExtension];
-    };
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string([PsfOpenFilename UTF8String]);
-    int iflag_datatype = kemoview_open_data(filename, kemo_sgl);
-    kemoview_free_kvstring(filename);
-    
-    if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead
-                                                  kemoview:kemo_sgl];
-}
-
 - (void) ChooseTextureFile:(struct kemoviewer_type *) kemo_sgl
 {
     
@@ -542,7 +516,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
     
     if(PsfOpenInteger == NSModalResponseOK){
-        PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
+//        NSString *PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
         NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
         [self ReadTextureFile:PsfOpenFilename
                      kemoview:kemo_sgl];
@@ -561,15 +535,33 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     [PsfOpenPanelObj beginSheetModalForWindow:window 
                                  completionHandler:^(NSInteger PsfOpenInteger){
 	
-	if(PsfOpenInteger == NSModalResponseOK){
-		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
-        PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
-        // NSLog(@"PSF file directory = %@",PsfOpenDirectory);
-        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-        [self ReadPsfFile:PsfOpenFilename
-                 kemoview:kemo_sgl];
-	};	
-                                 }];
+        if(PsfOpenInteger == NSModalResponseOK){
+            // NSString *PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
+            // NSLog(@"PSF file directory = %@",PsfOpenDirectory);
+            NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
+            NSString *PsfOpenFileExtension = [PsfOpenFilename pathExtension];
+            NSString *PsfOpenFileprefix =    [PsfOpenFilename stringByDeletingPathExtension];
+            if([PsfOpenFileExtension isEqualToString:@"gz"]
+               || [PsfOpenFileExtension isEqualToString:@"GZ"]){
+                // NSString *PsfOpenFileext_gz = [self.PsfOpenFilename pathExtension];
+                // PsfOpenFileext =    [PsfOpenFileprefix pathExtension];
+                PsfOpenFileprefix =   [PsfOpenFileprefix stringByDeletingPathExtension];
+            };
+            // NSLog(@"PSF file name =      %@",PsfOpenFilename);
+            // NSLog(@"PSF file header =    %@",PsfOpenFileprefix);
+            // NSLog(@"self.PsfWindowlabel =    %@",self.PsfWindowlabel);
+            
+            struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+            struct kv_string *filename = kemoview_init_kvstring_by_string([PsfOpenFilename UTF8String]);
+            int iflag_datatype = kemoview_open_data(filename, kemo_sgl);
+            kemoview_free_kvstring(filename);
+        
+            if(iflag_datatype == IFLAG_SURFACES){
+                [self DrawPsfFile:PsfOpenFileprefix
+                         kemoview:kemo_sgl];
+            };
+        };	
+    }];
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
 }

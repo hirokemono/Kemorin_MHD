@@ -25,8 +25,7 @@
     IBOutlet fillRectView* _fillRectView;
     IBOutlet KemoViewerObject *_kmv;
 
-    NSInteger DrawFlineFlag;
-    NSString *TracerOpenFilehead;
+    NSInteger DrawTracerFlag;
         
     NSNumber *FieldlineColor;
 
@@ -50,7 +49,7 @@
     IBOutlet id FieldlineColorItem;
 }
 
-@property NSInteger DrawFlineFlag;
+@property NSInteger DrawTracerFlag;
 @property CGFloat TracerColorMinimum;
 @property CGFloat TracerColorMaximum;
 @property CGFloat TracerColorMinDigit;
@@ -59,7 +58,7 @@
 @property CGFloat TracerMinimumValue;
 @property CGFloat TracerMaximumValue;
 
-@property NSInteger Flinetype;
+@property NSInteger Tracertype;
 @property CGFloat TracerRadiusFactor;
 @property CGFloat TracerRadiusDigit;
 
@@ -69,8 +68,6 @@
 
 - (void) OpenTracerFile:(NSString*) TracerFilehead
                kemoview:(struct kemoviewer_type *) kemo_sgl;
-- (IBAction) UpdateFieldline:(id)pId;
-- (IBAction) DrawFlineFile:(id)pId;
 
 - (IBAction) CloseFlineFile:(id)pId;
 - (IBAction) TracerFieldAction:(id)sender;

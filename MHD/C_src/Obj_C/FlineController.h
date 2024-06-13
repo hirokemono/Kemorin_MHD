@@ -26,9 +26,6 @@
     IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger DrawFlineFlag;
-	NSString *FlineOpenDirectory;
-	NSString *FlineOpenFilehead;
-	NSString *FlineOpenFileext;
 	
 	NSString *FlineWindowlabel;
 	
@@ -76,7 +73,6 @@
 
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
                   kemoview:(struct kemoviewer_type *) kemo_sgl;
-- (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 
 - (IBAction) CloseFlineFile:(id)pId;
