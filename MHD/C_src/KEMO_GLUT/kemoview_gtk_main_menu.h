@@ -39,8 +39,9 @@
 struct main_buttons{
     int id_current[1];
     struct psf_gtk_menu *psf_gmenu;
-    struct fieldline_gtk_menu *fline_menu;
-    
+    struct fieldline_gtk_menu *fline_gmenu;
+    struct fieldline_gtk_menu *tracer_gmenu;
+
     GtkWidget *meshWin;
     struct kemoview_mesh_view *mesh_vws;
     

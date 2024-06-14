@@ -52,10 +52,10 @@ struct fieldline_gtk_menu{
 /*  prototypes */
 
 void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
-                            struct fieldline_gtk_menu *fline_menu);
+                            struct fieldline_gtk_menu *fline_gmenu);
 void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
-                              struct fieldline_gtk_menu *fline_menu);
+                              struct fieldline_gtk_menu *fline_gmenu);
 
-GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);
+GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_gmenu);
 
 #endif

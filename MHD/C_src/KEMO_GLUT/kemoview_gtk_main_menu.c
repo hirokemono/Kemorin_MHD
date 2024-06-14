@@ -18,7 +18,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
     }
 
     mbot->psf_gmenu = alloc_psf_gtk_menu();
-    mbot->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->fline_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
     mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
 
@@ -32,7 +32,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
 void dealloc_main_buttons(struct main_buttons *mbot){
     dealloc_psf_gtk_menu(mbot->psf_gmenu);
-    free(mbot->fline_menu);
+    free(mbot->fline_gmenu);
     free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
 
@@ -63,7 +63,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(filename);
 	
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
-    init_fline_window(kemo_gl, mbot->fline_menu, main_window, mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_gmenu, main_window, mbot->itemTEvo);
     init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
 
     activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
