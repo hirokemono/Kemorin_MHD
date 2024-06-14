@@ -23,10 +23,12 @@
 @synthesize Tracertype;
 @synthesize TracerRadiusFactor;
 @synthesize TracerRadiusDigit;
+@synthesize tracerVectorMenuAcrive;
 - (id)init;
 {
     self.TracerRadiusFactor = 1;
     self.TracerRadiusDigit = -2;
+    self.tracerVectorMenuAcrive = 0;
 
     FieldlineColor =      [NSNumber alloc];
     
@@ -138,10 +140,10 @@
                   &cmapMinValue, &cmapMinDigit, &cmapMaxValue, &cmapMaxDigit);
     self.TracerMinimumValue = (CGFloat) dataMin;
     self.TracerMaximumValue = (CGFloat) dataMax;
-	self.TracerColorMinimum =   (CGFloat) cmapMinValue;
-	self.TracerColorMinDigit = (CGFloat) cmapMinDigit;
-	self.TracerColorMaximum =   (CGFloat) cmapMaxValue;
-	self.TracerColorMaxDigit = (CGFloat) cmapMaxDigit;
+    self.TracerColorMinimum =   (CGFloat) cmapMinValue;
+    self.TracerColorMinDigit = (CGFloat) cmapMinDigit;
+    self.TracerColorMaximum =   (CGFloat) cmapMaxValue;
+    self.TracerColorMaxDigit = (CGFloat) cmapMaxDigit;
 }
 
 - (IBAction) TracerFieldAction:(id)sender
@@ -186,6 +188,15 @@
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
                                                 TRACER_RENDERING,
                                                 NUM_FIELD_FLAG);
+    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl,
+                                                   TRACER_RENDERING,
+                                                   (int) isel);
+    if(num_comp == 3){
+        self.tracerVectorMenuAcrive = 1;
+    } else {
+        self.tracerVectorMenuAcrive = 0;
+    };
+    
     if (n_field > 0) {
         [self setSelectedTracerComponentRanges:kemo_sgl];
     }

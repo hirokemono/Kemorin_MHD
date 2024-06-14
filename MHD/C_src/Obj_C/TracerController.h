@@ -56,8 +56,9 @@
     CGFloat TracerRadiusDigit;
 
     IBOutlet id TracerColorItem;
+    
+    NSInteger tracerVectorMenuAcrive;
 }
-
 @property NSInteger currentTracerStep;
 @property NSInteger DrawTracerFlag;
 @property CGFloat TracerColorMinimum;
@@ -71,6 +72,9 @@
 @property NSInteger Tracertype;
 @property CGFloat TracerRadiusFactor;
 @property CGFloat TracerRadiusDigit;
+
+@property NSInteger tracerVectorMenuAcrive;
+
 
 - (id)init;
 - (id)dealloc;
