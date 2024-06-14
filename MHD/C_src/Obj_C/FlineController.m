@@ -109,6 +109,7 @@
 {
     int id_viewtype;
     
+    [_controlTabView selectTabViewItemAtIndex:FIELDLINE_RENDERING];
     self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
                              [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
     

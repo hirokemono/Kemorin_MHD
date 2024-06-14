@@ -39,12 +39,12 @@
 } // end awakeFromNib
 
 
-- (void)SetColorTables:(struct kemoviewer_type *) kemo_sgl
+- (void)SetColorTables:(int) id_model
+              kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     int i;
     double value, color;
     //    double value, color, color;
-    int id_model = (int) [_kemoviewControl CurrentControlModel];
     int currentStep = [_kemoviewControl SetCurrentPSFFile:id_model
                                                  kemoview:kemo_sgl
                                                  pathTree:_cmapPathControl];
@@ -68,8 +68,10 @@
 
 - (IBAction)UpdateColorTables:(id)pID
 {
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [self SetColorTables:kemo_sgl];
+    [self SetColorTables:id_model
+                kemoview:kemo_sgl];
     [_fillRectView UpdateColorbar];
 }
 
@@ -97,7 +99,8 @@
         kemoview_add_VIZ_color_list(value, color,
                                     id_model, kemo_sgl);
 		
-        [self SetColorTables:kemo_sgl];
+        [self SetColorTables:id_model
+                    kemoview:kemo_sgl];
 	}
 	[_metalView UpdateImage:kemo_sgl];
 }
@@ -117,7 +120,8 @@
 		};
 	}
 	
-    [self SetColorTables:kemo_sgl];
+    [self SetColorTables:id_model
+                kemoview:kemo_sgl];
     [_metalView UpdateImage:kemo_sgl];
 }
 

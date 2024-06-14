@@ -45,7 +45,8 @@
 
 	IBOutlet NSPopUpButton * _FlineFieldMenu;
 	IBOutlet NSPopUpButton * _FlineComponentMenu;
-	
+    IBOutlet NSTabView     * _controlTabView;
+
 	CGFloat FlineDisplayMinimum;
 	CGFloat FlineDisplayMaximum;
 	CGFloat FlineDisplayMinDigit;

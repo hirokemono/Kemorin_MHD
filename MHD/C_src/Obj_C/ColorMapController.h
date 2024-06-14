@@ -48,7 +48,8 @@
 - (id)init;
 - (void)awakeFromNib;
 
-- (void)SetColorTables:(struct kemoviewer_type *) kemo_sgl;
+- (void)SetColorTables:(int) id_model
+              kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction)UpdateColorTables:(id)pID;
 
 - (IBAction)addAtSelectedRow:(id)pId;

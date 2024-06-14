@@ -1825,7 +1825,7 @@
                 <outlet property="_ElasticControl" destination="kna-bd-AJC" id="xdr-Xm-aJ4"/>
                 <outlet property="_FlineComponentMenu" destination="1954" id="2183"/>
                 <outlet property="_FlineFieldMenu" destination="1955" id="2197"/>
-                <outlet property="_fillRectView" destination="2560" id="6gy-z7-z3E"/>
+                <outlet property="_controlTabView" destination="pin-um-o1A" id="CKn-0O-m3M"/>
                 <outlet property="_flineColorWell" destination="roB-8X-C8M" id="yT0-jx-xwQ"/>
                 <outlet property="_flinePathControl" destination="gbU-zV-UWT" id="H2j-mt-rI2"/>
                 <outlet property="_flinetype_matrix" destination="3125" id="3157"/>
@@ -6869,6 +6869,7 @@
                 <outlet property="_ElasticControl" destination="kna-bd-AJC" id="eY9-w7-gtW"/>
                 <outlet property="_TracerComponentMenu" destination="SCf-96-R43" id="GRx-uo-DTM"/>
                 <outlet property="_TracerFieldMenu" destination="S1r-RF-5SC" id="Zf3-gF-M3h"/>
+                <outlet property="_controlTabView" destination="pin-um-o1A" id="Kpi-2y-3PT"/>
                 <outlet property="_kemoviewControl" destination="964" id="VHN-sJ-Kwg"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="52T-kJ-8R7"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="7CY-zg-khn"/>
@@ -6887,6 +6888,7 @@
                 <outlet property="_PsfLineSwitchOutlet" destination="1069" id="1161"/>
                 <outlet property="_PsfSurfSwitchOutlet" destination="1080" id="1163"/>
                 <outlet property="_PsfZeroLineSwitchOutlet" destination="1070" id="1164"/>
+                <outlet property="_controlTabView" destination="pin-um-o1A" id="VrT-4H-YbW"/>
                 <outlet property="_currentPsfMenu" destination="2848" id="2866"/>
                 <outlet property="_fillRectView" destination="2560" id="mz1-qQ-8F3"/>
                 <outlet property="_kemoviewControl" destination="964" id="3541"/>
@@ -7819,14 +7821,15 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="130" width="194" height="725"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
-            <view key="contentView" misplaced="YES" id="9Ms-do-edR">
+            <view key="contentView" id="9Ms-do-edR">
                 <rect key="frame" x="0.0" y="0.0" width="194" height="725"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="3766">
-                        <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
+                    <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="3766">
+                        <rect key="frame" x="0.0" y="0.0" width="194" height="725"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="zjy-Ve-9jn">
-                            <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
+                            <rect key="frame" x="0.0" y="0.0" width="194" height="725"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view translatesAutoresizingMaskIntoConstraints="NO" id="3767">
@@ -8149,12 +8152,6 @@
                         </scroller>
                     </scrollView>
                 </subviews>
-                <constraints>
-                    <constraint firstAttribute="trailing" secondItem="3766" secondAttribute="trailing" id="4TS-UF-cid"/>
-                    <constraint firstAttribute="bottom" secondItem="3766" secondAttribute="bottom" id="5cg-By-n12"/>
-                    <constraint firstItem="3766" firstAttribute="top" secondItem="9Ms-do-edR" secondAttribute="top" id="cqg-bW-RQk"/>
-                    <constraint firstItem="3766" firstAttribute="leading" secondItem="9Ms-do-edR" secondAttribute="leading" id="iP7-AH-taF"/>
-                </constraints>
             </view>
             <point key="canvasLocation" x="112" y="-253.5"/>
         </window>

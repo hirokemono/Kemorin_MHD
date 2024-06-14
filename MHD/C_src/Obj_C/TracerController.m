@@ -69,6 +69,7 @@
 {
     int id_viewtype;
     
+    [_controlTabView selectTabViewItemAtIndex:TRACER_RENDERING];
     [self CopyTracerDisplayFlagsFromC:kemo_sgl];
     
     self.currentTracerStep = [_kemoviewControl SetCurrentPSFFile:TRACER_RENDERING

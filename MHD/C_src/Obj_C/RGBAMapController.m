@@ -13,7 +13,9 @@
 @implementation RGBAMapController
 - (void) UpdateColormapView:(struct kemoviewer_type *) kemo_sgl
 {
-    [_colorMapObject SetColorTables:kemo_sgl];
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
+    [_colorMapObject SetColorTables:id_model
+                           kemoview:kemo_sgl];
     [_opacityMapObject SetOpacityTables:kemo_sgl];
     [_fillRectView UpdateColorbar];
 }
@@ -67,7 +69,8 @@
                                            kemoview_free_kvstring(filename);
                                            
                                            [_metalView UpdateImage:kemo_sgl];
-                                           [_colorMapObject SetColorTables:kemo_sgl];
+                                           [_colorMapObject SetColorTables:current_model
+                                                                  kemoview:kemo_sgl];
                                            [_opacityMapObject SetOpacityTables:kemo_sgl];
                                        };
                                    }];

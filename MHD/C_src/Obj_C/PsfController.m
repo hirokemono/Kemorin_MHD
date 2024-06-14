@@ -416,6 +416,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead
             kemoview:(struct kemoviewer_type *) kemo_sgl
 {
+    [_controlTabView selectTabViewItemAtIndex:SURFACE_RENDERING];
 	int id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     
 	self.currentPSFStep = [[PsfOpenFilehead pathExtension] intValue];

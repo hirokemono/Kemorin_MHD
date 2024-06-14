@@ -56,6 +56,7 @@
 	IBOutlet id _currentPsfMenu;
 	IBOutlet NSPopUpButton * _psfFieldMenu;
 	IBOutlet NSPopUpButton * _psfComponentMenu;
+    IBOutlet NSTabView     * _controlTabView;
     
 	IBOutlet id _psfLineColorMenu;
 	IBOutlet id _psfPatchColorMenu;

@@ -42,7 +42,8 @@
 
     IBOutlet NSPopUpButton * _TracerFieldMenu;
     IBOutlet NSPopUpButton * _TracerComponentMenu;
-    
+    IBOutlet NSTabView     * _controlTabView;
+
     CGFloat TracerColorMinimum;
     CGFloat TracerColorMaximum;
     CGFloat TracerColorMinDigit;
