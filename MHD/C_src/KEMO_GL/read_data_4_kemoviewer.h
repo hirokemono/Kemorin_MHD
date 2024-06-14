@@ -62,8 +62,9 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view);
 
-void set_kemoview_viz_color_data(struct psf_data *viz_d,
-                                struct psf_menu_val *viz_menu);
+void set_kemoview_viz_color_data(int id_color_mode,
+                                 struct psf_data *viz_d,
+                                 struct psf_menu_val *viz_menu);
 void set_kemoview_psf_data(struct psf_data *psf_s,
                            struct psf_menu_val *psf_m);
 

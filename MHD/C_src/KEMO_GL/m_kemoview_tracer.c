@@ -51,7 +51,9 @@ void init_draw_tracer(struct kemoview_tracer *kemo_tracer, struct psf_data *ucd_
 	if(kemo_tracer->tracer_m->iflag_draw_viz > 0) close_tracer_view(kemo_tracer);
 
     set_points_data_by_UCD(kemo_tracer->tracer_d, ucd_tmp);
-	set_kemoview_viz_color_data(kemo_tracer->tracer_d, kemo_tracer->tracer_m);
+	set_kemoview_viz_color_data(ORANGE_CYAN_MODE,
+                                kemo_tracer->tracer_d,
+                                kemo_tracer->tracer_m);
     return;
 };
 

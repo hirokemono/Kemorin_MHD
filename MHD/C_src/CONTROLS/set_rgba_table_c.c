@@ -58,13 +58,8 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 	return;
 };
 
-void cal_rgb_from_value_s(struct colormap_array *cmap_array,
-                          int id_color_mode, double value,
+void cal_rgb_from_value_s(int id_color_mode, double rnorm,
                           double *red, double *green, double *blue){
-    double rnorm = color_normalize_linear_segment_c(cmap_array->num,
-                                                    cmap_array->data,
-                                                    cmap_array->value, value);
-	
 	if(id_color_mode == GRAYSCALE_MODE){
 		colormap_grayscale_c(rnorm, red, green, blue);
 	} else if(id_color_mode == SYM_GRAY_MODE){

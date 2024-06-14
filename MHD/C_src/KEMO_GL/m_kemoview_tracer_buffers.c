@@ -86,8 +86,6 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
     Tracer_bufs->Tracer_dot_buf->num_nod_buf = 0;
     if(tracer_m->iflag_draw_viz <= 0) return;
     
-    set_color_code_for_fieldlines(tracer_d, tracer_m);
-    
     long num_points = tracer_d->nnod_viz;
     set_buffer_address_4_patch(num_points, Tracer_bufs->Tracer_dot_buf);
     if(Tracer_bufs->Tracer_dot_buf->num_nod_buf>0){

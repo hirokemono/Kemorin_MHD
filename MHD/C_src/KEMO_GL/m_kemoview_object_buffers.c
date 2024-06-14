@@ -111,10 +111,18 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
     kemo_fline->fline_m->ncorner_viz_line = view_s->ncorner_tube;
 
     
+/* Set Colors for PSF patches*/
     const_PSF_node_stack(kemo_mul_psf->psf_d, kemo_mul_psf->psf_a);
     set_color_code_for_psfs(kemo_mul_psf->psf_d, kemo_mul_psf->psf_m,
                             kemo_mul_psf->psf_a);
-    
+
+    if(kemo_fline->fline_m->iflag_draw_viz > 0){
+        set_color_code_for_fieldlines(kemo_fline->fline_d, kemo_fline->fline_m);
+    }
+    if(kemo_tracer->tracer_m->iflag_draw_viz > 0){
+        set_color_code_for_fieldlines(kemo_tracer->tracer_d, kemo_tracer->tracer_m);
+    }
+
     if(view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = check_draw_map(kemo_mul_psf->psf_a);
         const_map_buffers(kemo_buffers->nthreads, kemo_mul_psf,

@@ -196,10 +196,14 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 }
 
 
-void set_kemoview_viz_color_data(struct psf_data *viz_d,
-                                struct psf_menu_val *viz_menu){
+void set_kemoview_viz_color_data(int id_color_mode,
+                                 struct psf_data *viz_d,
+                                 struct psf_menu_val *viz_menu){
 	int i;
-    alloc_draw_psf_flags(viz_d->nfield, viz_d->ncomptot, viz_menu);
+    alloc_draw_psf_flags(id_color_mode,
+                         viz_d->nfield,
+                         viz_d->ncomptot,
+                         viz_menu);
 	
 	viz_menu->iflag_draw_viz = IONE;	
 	for (i=0;i<viz_d->nfield;i++){
@@ -217,7 +221,7 @@ void set_kemoview_viz_color_data(struct psf_data *viz_d,
 
 void set_kemoview_psf_data(struct psf_data *psf_s,
                            struct psf_menu_val *psf_m){
-    set_kemoview_viz_color_data(psf_s, psf_m);
+    set_kemoview_viz_color_data(RAINBOW_MODE, psf_s, psf_m);
     
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
 	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;

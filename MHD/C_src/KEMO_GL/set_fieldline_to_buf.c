@@ -16,9 +16,7 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct gl_strided_buffer *strided_buf){
     long inod, nd;
 	double x_line[8], dir_line[8], color_line[8];
-	
-    set_color_code_for_fieldlines(fline_d, fline_m);
-	
+    
 	long inum_tube = ist_patch;
 	for(long iele=ist_line; iele<ied_line; iele++) {
 		for(long k = 0; k < 2; k++) {
@@ -42,9 +40,7 @@ long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct gl_strided_buffer *strided_buf){
     double xyzw_line[8], color_line[8];
 	long iele, k, nd, inod;
-	
-	set_color_code_for_fieldlines(fline_d, fline_m);
-	
+
     long inum_line = ist_patch;
 	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){

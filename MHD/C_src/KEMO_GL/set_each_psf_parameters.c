@@ -175,7 +175,10 @@ void get_VIZ_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue){
     struct colormap_params *cmap_s = psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz];
     struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-    cal_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, value,
+    double rnorm = color_normalize_linear_segment_c(cmap_array->num,
+                                                    cmap_array->data,
+                                                    cmap_array->value, value);
+    cal_rgb_from_value_s(cmap_s->id_color_mode, rnorm,
                          red, green, blue);
     dealloc_colormap_array(cmap_array);
 	return;
@@ -199,7 +202,7 @@ void set_VIZ_opacity_point(struct psf_menu_val *psf_menu, int i_point,
 	return;
 }
 
-double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu){
+double get_VIZ_color_table_min(struct psf_menu_val *psf_menu){
 	double d, c;
     get_color_table_items_s(psf_menu->cmap_viz_comp[psf_menu->icomp_draw_viz],
                             0, &d, &c);

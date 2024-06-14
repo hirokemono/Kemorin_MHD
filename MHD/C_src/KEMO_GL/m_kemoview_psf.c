@@ -337,7 +337,7 @@ void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
                          double *value, int *i_digit){
 	double data = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		data = get_each_PSF_color_table_min(viz_menu);
+		data = get_VIZ_color_table_min(viz_menu);
 	}else if(selected == ISET_COLOR_MAX){
 		data = get_each_PSF_color_table_max(viz_menu);
 	}else if(selected == ISET_WIDTH){

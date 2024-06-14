@@ -41,9 +41,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
     Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
-        
-    set_color_code_for_fieldlines(fline_d, fline_m);
-
+    
     long num_edge = count_fieldlines_to_buf(fline_d);
     set_buffer_address_4_patch(ITWO*num_edge, Fline_bufs->FLINE_line_buf);
     if(Fline_bufs->FLINE_line_buf->num_nod_buf>0){

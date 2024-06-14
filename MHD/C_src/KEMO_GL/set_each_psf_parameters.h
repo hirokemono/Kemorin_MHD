@@ -123,7 +123,7 @@ void set_VIZ_opacity_point(struct psf_menu_val *psf_menu, int i_point,
 void set_viz_colormap_id(struct psf_menu_val *psf_menu, int isel);
 
 int get_PSF_colormap_id(struct psf_menu_val *psf_menu);
-double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
+double get_VIZ_color_table_min(struct psf_menu_val *psf_menu);
 double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
 double get_VIZ_minimum_opacity(struct psf_menu_val *psf_menu);
 double get_VIZ_maximum_opacity(struct psf_menu_val *psf_menu);

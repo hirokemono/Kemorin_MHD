@@ -107,7 +107,7 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 struct psf_menu_val *  init_psf_menu_val(void);
 void dealloc_psf_menu_val(struct psf_menu_val *psf_m);
 
-void alloc_draw_psf_flags(long nfield, long ncomptot,
+void alloc_draw_psf_flags(int id_color_mode, long nfield, long ncomptot,
                           struct psf_menu_val *psf_m);
 void dealloc_draw_psf_flags(long nfield, long ncomptot,
                             struct psf_menu_val *psf_m);
