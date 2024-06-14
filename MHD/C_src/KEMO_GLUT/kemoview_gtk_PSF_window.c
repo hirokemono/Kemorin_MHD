@@ -97,7 +97,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               SURFACE_RENDERING,
                                               FIELD_SEL_FLAG);
-    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data
+    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
                                                      SURFACE_RENDERING, if_psf);
     if(index_mode >= ncomp || index_mode < 0){
         index_mode = 0;

@@ -71,7 +71,7 @@ static void MinDigitChange_CB(GtkWidget *entry, gpointer data)
 	int i_min_digit, i_max_digit;
 	double minvalue, maxvalue;
     kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                 SURFACE_RENDERING, ISET_COLOR_MIN,
+                                 FIELDLINE_RENDERING, ISET_COLOR_MIN,
                                  &minvalue, &i_min_digit);
     kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
                                  FIELDLINE_RENDERING, ISET_COLOR_MAX,
