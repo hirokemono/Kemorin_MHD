@@ -189,7 +189,7 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
     const_message_buffers(view_s->iflag_retina,
                           view_s->nx_frame, view_s->ny_frame,
                           kemo_mesh->text_color, kemo_mesh->bg_color,
-                          kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
+                          kemo_mul_psf, kemo_fline, kemo_tracer,
                           kemo_mesh, view_s,
                           kemo_buffers->MESSAGE_bufs);
     
