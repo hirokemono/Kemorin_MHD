@@ -196,8 +196,8 @@
     }
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_colorbar_draw_flag(current_model,
-                                    ColorbarSwitchFlag,
+    kemoview_set_colorbar_draw_flag(ColorbarSwitchFlag,
+                                    current_model,
                                     kemo_sgl);
 
     ColorbarSwitchFlag = kemoview_get_colorbar_draw_flag(kemo_sgl, TRACER_RENDERING);

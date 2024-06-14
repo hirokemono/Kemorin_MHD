@@ -132,6 +132,16 @@ static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpoint
 	return;
 };
 
+static void fline_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer user_data){
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
+    kemoview_set_colorbar_draw_flag(iflag, FIELDLINE_RENDERING,
+                                    kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+    return;
+};
+
+
 static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer data)
 {
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
@@ -215,7 +225,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     GtkCellRenderer *renderer_color;
     GtkTreeModel *model_color;
     GtkTreeModel *child_model_color;
-    
+    int iflag = 0;
     int index = 0;
     
     GtkAdjustment *adj_thick, *adj_digit;
@@ -246,14 +256,30 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(psf_fline_colormode_CB), (gpointer) kemo_gl);
     
     
+    fline_menu->fline_switch_bar = gtk_switch_new();
+    iflag = kemoview_get_colorbar_draw_flag(kemo_gl->kemoview_data,
+                                            FIELDLINE_RENDERING);
+    gtk_switch_set_state(GTK_SWITCH(fline_menu->fline_switch_bar), iflag);
+    gtk_switch_set_active(GTK_SWITCH(fline_menu->fline_switch_bar), FALSE);
+    g_signal_connect(G_OBJECT(fline_menu->fline_switch_bar), "notify::active",
+                     G_CALLBACK(fline_colorbar_switch_CB), (gpointer) kemo_gl);
+
+    if(kemoview_get_colorbar_draw_flag(kemo_gl->kemoview_data,
+                                       FIELDLINE_RENDERING) == 0){
+        gtk_switch_set_active(GTK_SWITCH(fline_menu->fline_switch_bar), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(fline_menu->fline_switch_bar), TRUE);
+    };
+
+    
     fline_menu->switch_tube = gtk_switch_new();
-    int iflag = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
+    iflag = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
     gtk_switch_set_state(GTK_SWITCH(fline_menu->switch_tube), iflag);
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
                      G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_gl);
     
-    adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0.0);
+    adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
     adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
     fline_menu->spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     fline_menu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
@@ -261,7 +287,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(fline_thickness_CB), (gpointer) kemo_gl);
     g_signal_connect(fline_menu->spin_digit, "value-changed",
                      G_CALLBACK(fline_digit_CB), (gpointer) kemo_gl);
-    
+ 
     adj_min_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
     adj_min_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_menu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_value),0,2);
@@ -331,19 +357,25 @@ GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu){
     gtk_box_pack_start(GTK_BOX(hbox_comp), fline_menu->combobox_comp, FALSE, FALSE, 0);
     
 
+    GtkWidget *hbox_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_bar), gtk_label_new("Draw color bar: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_bar), fline_menu->fline_switch_bar, FALSE, FALSE, 0);
+    
+
     GtkWidget *menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(menu_box), fline_menu->closeButton, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_field, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_comp, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_color, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(menu_box), hbox_bar, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_tube, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_thickness, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(menu_box), fline_menu->expander_fline_color, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_min, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_max, TRUE, TRUE, 0);
     
+    gtk_box_pack_start(GTK_BOX(menu_box), fline_menu->expander_fline_color, TRUE, TRUE, 0);
     frame = wrap_into_frame_gtk("Fieldline", menu_box);
     return frame;
 }

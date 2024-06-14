@@ -738,7 +738,7 @@ static void reset_colorbar_flag(struct kemoview_mul_psf *kemo_mul_psf,
     return;
 }
 
-void kemoview_set_colorbar_draw_flag(int id_model, int iflag,
+void kemoview_set_colorbar_draw_flag(int iflag, int id_model, 
                                      struct kemoviewer_type *kemoviewer){
     reset_colorbar_flag(kemoviewer->kemo_mul_psf,
                         kemoviewer->kemo_fline,

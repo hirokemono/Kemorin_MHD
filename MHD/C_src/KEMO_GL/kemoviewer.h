@@ -454,7 +454,7 @@ extern "C" {
     
     int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_set_colorbar_draw_flag(int id_model, int iflag,
+    void kemoview_set_colorbar_draw_flag(int iflag, int id_model, 
                                          struct kemoviewer_type *kemoviewer);
     int kemoview_get_colorbar_draw_flag(struct kemoviewer_type *kemoviewer,
                                         int id_model);
