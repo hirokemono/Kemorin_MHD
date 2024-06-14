@@ -178,24 +178,27 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                                                      SURFACE_RENDERING,
                                                      ISET_OPACITY_MAX);
 	
-	self.DrawPSFVectorFlag
-        = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+	self.DrawPSFVectorFlag = kemoview_get_VIZ_vector_draw_flags(kemo_sgl,
+                                                                SURFACE_RENDERING);
 
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
 	self.ScaleVector =      (CGFloat) current_value;
 	self.ScaleDigit =       (CGFloat) i_digit;
 
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_VECTOR_INC,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
 	self.PSFVectorIncrement = (CGFloat) current_value;
 	self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	
-    kemoview_get_VIZ_color_w_exp(kemo_sgl,
-                                 SURFACE_RENDERING, ISET_PSF_V_THICK,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_sgl,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_V_THICK,
+                                  &current_value, &i_digit);
     self.VectorThickness = (CGFloat) current_value;
 	self.VectorDigit =     (CGFloat) i_digit;
 	
@@ -499,6 +502,17 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     return;
 }
 
+- (int) PSFColorbarSwitchStatus
+{
+    return (int) self.PSFColorbarSwitch;
+}
+- (void) setPSFColorbarSwitchStatus:(int) isel
+{
+    self.PSFColorbarSwitch = isel;
+}
+
+
+
 - (IBAction) OpenPsfFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	NSArray *psfFileTypes = [NSArray arrayWithObjects:
@@ -644,14 +658,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	[_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction)PsfColorbarSwitchAction:(id)sender;
-{
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_colorbar_draw_flag((int) self.PSFColorbarSwitch,
-                                    SURFACE_RENDERING, kemo_sgl);
-	[_metalView UpdateImage:kemo_sgl];
-}
-
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
@@ -728,9 +734,8 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction)DrawPSFVectorAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE,
-                                (int) self.DrawPSFVectorFlag,
-                                kemo_sgl);
+    kemoview_set_VIZ_vector_draw_flags((int) self.DrawPSFVectorFlag,
+                                       SURFACE_RENDERING, kemo_sgl);
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};
@@ -740,26 +745,28 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 
 - (IBAction)SetReferenceVector:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, 
-                                      (int) self.ScaleDigit, kemo_sgl);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                      (double) self.ScaleVector,
+                                      (int) self.ScaleDigit,
+                                      SURFACE_RENDERING, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC,
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
                                       (double) self.PSFVectorIncrement,
                                       (int) self.PSFVectorIncDigit,
-                                      kemo_sgl);
+                                      SURFACE_RENDERING, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK,
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_V_THICK,
                                       (double) self.VectorThickness,
                                       (int) self.VectorDigit,
-                                      kemo_sgl);
+                                      SURFACE_RENDERING, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
     

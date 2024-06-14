@@ -25,6 +25,7 @@
 @synthesize Flinetype;
 @synthesize FlineThickFactor;
 @synthesize FlineThickDigit;
+@synthesize FlineColorbarSwitch;
 - (id)init;
 {
     self.FlineThickFactor = 1;
@@ -254,6 +255,15 @@
     [_psfController SetPSFColorFromColorWell:kemo_sgl
                                    colorwell:_flineColorWell];
     [_metalView UpdateImage:kemo_sgl];
+}
+
+- (int) FlineColorbarSwitchStatus
+{
+    return (int) self.FlineColorbarSwitch;
+}
+- (void) setFlineColorbarSwitchStatus:(int) isel
+{
+    self.FlineColorbarSwitch = isel;
 }
 
 @end

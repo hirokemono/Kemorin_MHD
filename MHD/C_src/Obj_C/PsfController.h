@@ -185,6 +185,10 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead
             kemoview:(struct kemoviewer_type *) kemo_sgl;
 
+- (int) PSFColorbarSwitchStatus;
+- (void) setPSFColorbarSwitchStatus:(int) isel;
+
+
 - (IBAction) OpenPsfFile:(id)pId;
 - (IBAction) ClosePsfFile:(id)pId;
 
@@ -195,7 +199,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 - (IBAction)PsfLineSwitchAction:(id)sender;
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
-- (IBAction)PsfColorbarSwitchAction:(id)sender;
 
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 - (IBAction)ChoosePsfLineColorAction:(id)sender;

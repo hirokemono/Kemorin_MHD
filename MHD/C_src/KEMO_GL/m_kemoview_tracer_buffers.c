@@ -58,17 +58,20 @@ long set_tracer_arrow_to_buf(const long ist_tri,
                              struct psf_data *tracer_d, 
                              struct psf_menu_val *tracer_m,
                              struct gl_strided_buffer *Tracer_ico_buf){
-    double xyzw_line[8], dir_line[8];
+    double xyzw_line[8], dir_line[8], color_line[8];
     long inum_tri = ist_tri;
     for(long inod = ist_nod; inod < ied_nod; inod++){
         set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
                                   inod, tracer_d, tracer_m,
                                   xyzw_line, dir_line);
+        for(int nd=0;nd<4;nd++){
+            color_line[  nd] = tracer_d->color_nod[4*inod+nd];
+            color_line[4+nd] = tracer_d->color_nod[4*inod+nd];
+        }
             
         inum_tri = set_cone_strided_buffer(inum_tri, tracer_m->ncorner_viz_line,
                                            tracer_m->viz_line_width,
-                                           xyzw_line, dir_line,
-                                           &tracer_d->color_nod[4*inod],
+                                           xyzw_line, dir_line, color_line,
                                            Tracer_ico_buf);
     };
     return inum_tri;
@@ -97,23 +100,34 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                                  tracer_d->xyzw_viz, Tracer_bufs->Tracer_dot_buf);
     };
     
-    double ref_width = 1.5;
+    double ref_width = 8.0;
     double tube_width;
     if(tracer_m->viz_line_width <= 0.0){
         tube_width = ref_width * set_tube_radius_by_axis(view_s);
     }else{
         tube_width = tracer_m->viz_line_width;
     };
-    
+
+    long num_patch;
     Tracer_bufs->Tracer_ico_buf->num_nod_buf = 0;
-    long num_patch = ITHREE * num_icosahedron_patch() * tracer_d->nnod_viz;
+    if(tracer_m->draw_psf_vect > 0){
+        num_patch = ITHREE * tracer_m->ncorner_viz_line * tracer_d->nnod_viz;
+    }else{
+        num_patch = ITHREE * num_icosahedron_patch() * tracer_d->nnod_viz;
+    };
     set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
-    
-    if(Tracer_bufs->Tracer_ico_buf->num_nod_buf> 0){
+
+    if(Tracer_bufs->Tracer_ico_buf->num_nod_buf <= 0) return;
     resize_strided_buffer(Tracer_bufs->Tracer_ico_buf);
-    num_patch = set_tracer_ico_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
-                                      tracer_d, tracer_m,
-                                      Tracer_bufs->Tracer_ico_buf);
+
+    if(tracer_m->draw_psf_vect > 0){
+        num_patch = set_tracer_arrow_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
+                                            tracer_d, tracer_m,
+                                            Tracer_bufs->Tracer_ico_buf);
+    }else{
+        num_patch = set_tracer_ico_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
+                                          tracer_d, tracer_m,
+                                          Tracer_bufs->Tracer_ico_buf);
     };
 	return;
 }

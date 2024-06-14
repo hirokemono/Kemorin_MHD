@@ -58,7 +58,7 @@ int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu){
 };
 
 void set_each_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->ivect_tangential = iflag;};
-int send_each_psf_vector_mode(struct psf_menu_val *psf_menu){return psf_menu->ivect_tangential;};
+int send_VIZ_vector_mode(struct psf_menu_val *psf_menu){return psf_menu->ivect_tangential;};
 int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu){
 	psf_menu->ivect_tangential = toggle_value_c(psf_menu->ivect_tangential);
 	return psf_menu->ivect_tangential;
@@ -76,8 +76,8 @@ int send_draw_psf_zero(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf
 void set_draw_VIZ_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_cbar = iflag;};
 int send_draw_VIZ_cbar(struct psf_menu_val *psf_menu) {return psf_menu->iflag_draw_cbar;};
 
-void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_vect = iflag;};
-int send_draw_psf_vect(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_vect;};
+void set_draw_VIZ_vector(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_vect = iflag;};
+int send_draw_VIZ_vector(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_vect;};
 
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_refv;};
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){

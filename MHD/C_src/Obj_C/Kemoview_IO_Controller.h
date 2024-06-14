@@ -9,40 +9,42 @@
 @import Cocoa;
 
 #import "KemoViewerMetalView.h"
+#import "KemoviewerController.h"
 #import "DomainTableController.h"
+#import "ElasticMenuWindow.h"
 #import "PsfController.h"
 #import "FlineController.h"
 #import "TracerController.h"
 #import "KemoviewerImageMaker.h"
 #import "KemoviewerMovieMaker.h"
 #import "KemoViewerObject.h"
-#import "ElasticMenuWindow.h"
 
 #include "kemoviewer.h"
 
 // ==================================
 
 @interface Kemoview_IO_Controller : NSObject {
-
-	IBOutlet NSUserDefaultsController* _user_defaults_controller;
+    
+    IBOutlet NSUserDefaultsController* _user_defaults_controller;
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView   * _metalView;
-	IBOutlet DomainTableController * _domainTableController;
-	IBOutlet PsfController         * _psfController;
-	IBOutlet FlineController       * _flineController;
+    IBOutlet KemoviewerController  * _kemoviewControl;
+    IBOutlet DomainTableController * _domainTableController;
+    IBOutlet PsfController         * _psfController;
+    IBOutlet FlineController       * _flineController;
     IBOutlet TracerController      * _tracerController;
     IBOutlet KemoviewerImageMaker  * _kemoImageMaker;
-	IBOutlet KemoviewerMovieMaker  * _movieMakerController;
+    IBOutlet KemoviewerMovieMaker  * _movieMakerController;
     IBOutlet ElasticMenuWindowController * _ElasticControl;
-
+    
     IBOutlet KemoViewerObject      * _kmv;
     
-
-	NSInteger ImageFormatFlag;
-	NSInteger CurrentImageFormat;
-	IBOutlet id _ImageFormat_item;
-
-	NSString *ImageFileExt;
+    
+    NSInteger ImageFormatFlag;
+    NSInteger CurrentImageFormat;
+    IBOutlet id _ImageFormat_item;
+    
+    NSString *ImageFileExt;
 }
 @property NSInteger ImageFormatFlag;
 
@@ -55,4 +57,6 @@
 - (IBAction) SaveImageFile:(id)pId;
 
 - (IBAction)ChooseImageFormatAction:(id)sender;
+
+- (IBAction)ColorbarSwitchAction:(id)sender;
 @end

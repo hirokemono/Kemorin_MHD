@@ -60,6 +60,8 @@
 	CGFloat FlineThickDigit;
 
 	IBOutlet id FieldlineColorItem;
+    
+    NSInteger FlineColorbarSwitch;
 }
 
 @property(retain) NSString* FlineWindowlabel;
@@ -77,6 +79,9 @@
 @property NSInteger Flinetype;
 @property CGFloat FlineThickFactor;
 @property CGFloat FlineThickDigit;
+
+@property NSInteger FlineColorbarSwitch;
+
 
 - (id)init;
 - (id)dealloc;
@@ -96,4 +101,6 @@
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 
+- (int) FlineColorbarSwitchStatus;
+- (void) setFlineColorbarSwitchStatus:(int) isel;
 @end

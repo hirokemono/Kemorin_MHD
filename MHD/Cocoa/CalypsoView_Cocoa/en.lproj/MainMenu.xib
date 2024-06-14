@@ -430,6 +430,7 @@
                 <outlet property="_domainTableController" destination="703" id="3578"/>
                 <outlet property="_flineController" destination="1932" id="3579"/>
                 <outlet property="_kemoImageMaker" destination="shz-wW-1CK" id="lLe-q2-Ntg"/>
+                <outlet property="_kemoviewControl" destination="964" id="s22-ua-96D"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="UQo-9i-5Nl"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="oW7-4t-FPV"/>
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
@@ -533,10 +534,10 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1001" y="451" width="388" height="644"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="644"/>
-                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="723">
                         <rect key="frame" x="13" y="92" width="362" height="494"/>
@@ -798,7 +799,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -1842,7 +1843,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="27" y="154" width="485" height="870"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="1065">
                 <rect key="frame" x="0.0" y="0.0" width="485" height="870"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1866,7 +1867,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1119">
-                                                        <rect key="frame" x="67" y="151" width="73" height="21"/>
+                                                        <rect key="frame" x="67" y="150" width="73" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="73" id="fEw-1S-jhZ"/>
                                                         </constraints>
@@ -1884,7 +1885,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1118">
-                                                        <rect key="frame" x="67" y="120" width="73" height="21"/>
+                                                        <rect key="frame" x="67" y="117" width="73" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="73" id="64t-Pb-0JL"/>
                                                         </constraints>
@@ -1902,7 +1903,7 @@
                                                         </connections>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1112">
-                                                        <rect key="frame" x="67" y="89" width="73" height="21"/>
+                                                        <rect key="frame" x="67" y="84" width="73" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="73" id="HFd-tC-ocs"/>
                                                         </constraints>
@@ -1921,7 +1922,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1117">
-                                                        <rect key="frame" x="145" y="85" width="19" height="28"/>
+                                                        <rect key="frame" x="145" y="80" width="19" height="28"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="L2w-l4-qxc"/>
                                                         </constraints>
@@ -1936,7 +1937,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1116">
-                                                        <rect key="frame" x="145" y="116" width="19" height="28"/>
+                                                        <rect key="frame" x="145" y="113" width="19" height="28"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="Faf-Z0-4wH"/>
                                                         </constraints>
@@ -1951,7 +1952,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1115">
-                                                        <rect key="frame" x="145" y="147" width="19" height="28"/>
+                                                        <rect key="frame" x="145" y="146" width="19" height="28"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="sQj-hy-ACc"/>
                                                         </constraints>
@@ -1966,7 +1967,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1123">
-                                                        <rect key="frame" x="10" y="153" width="38" height="16"/>
+                                                        <rect key="frame" x="10" y="152" width="38" height="16"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Start:" id="1124">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1974,7 +1975,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1122">
-                                                        <rect key="frame" x="10" y="122" width="31" height="16"/>
+                                                        <rect key="frame" x="10" y="119" width="31" height="16"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="End:" id="1125">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1982,7 +1983,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1121">
-                                                        <rect key="frame" x="10" y="91" width="36" height="16"/>
+                                                        <rect key="frame" x="10" y="86" width="36" height="16"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Step:" id="1126">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1990,7 +1991,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1640">
-                                                        <rect key="frame" x="10" y="63" width="32" height="16"/>
+                                                        <rect key="frame" x="10" y="56" width="32" height="16"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="FPS:" id="1646">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1998,7 +1999,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1641">
-                                                        <rect key="frame" x="145" y="57" width="19" height="28"/>
+                                                        <rect key="frame" x="145" y="50" width="19" height="28"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="4QJ-8i-dSc"/>
                                                         </constraints>
@@ -2010,7 +2011,7 @@
                                                         </stepperCell>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1642">
-                                                        <rect key="frame" x="98" y="61" width="42" height="21"/>
+                                                        <rect key="frame" x="98" y="54" width="42" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="42" id="etI-bo-0N6"/>
                                                         </constraints>
@@ -2227,7 +2228,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1553">
-                                                        <rect key="frame" x="144" y="64" width="19" height="31"/>
+                                                        <rect key="frame" x="144" y="65" width="19" height="29"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="23" id="6p2-kR-xRC"/>
                                                             <constraint firstAttribute="width" constant="13" id="veY-4v-Ket"/>
@@ -2268,7 +2269,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2956">
-                                                        <rect key="frame" x="144" y="35" width="19" height="31"/>
+                                                        <rect key="frame" x="144" y="36" width="19" height="29"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="Bvh-xm-cn4"/>
                                                             <constraint firstAttribute="height" constant="23" id="GXB-RW-3VA"/>
@@ -2392,7 +2393,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="woq-qt-83m">
-                                                        <rect key="frame" x="149" y="35" width="19" height="23"/>
+                                                        <rect key="frame" x="149" y="36" width="19" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="15" id="b1X-6U-Q3i"/>
                                                             <constraint firstAttribute="width" constant="13" id="fSO-QJ-r23"/>
@@ -2431,7 +2432,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9Z9-Eo-Ar0">
-                                                        <rect key="frame" x="149" y="6" width="19" height="21"/>
+                                                        <rect key="frame" x="149" y="7" width="19" height="19"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="13" id="HX1-jr-b39"/>
                                                             <constraint firstAttribute="width" constant="13" id="alz-Uu-UG3"/>
@@ -2675,7 +2676,7 @@
                                     </connections>
                                 </button>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3645">
-                                    <rect key="frame" x="171" y="68" width="19" height="38"/>
+                                    <rect key="frame" x="171" y="69" width="19" height="36"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10000" doubleValue="19.499999999999993" id="3646">
                                         <connections>
@@ -2710,7 +2711,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7O3-wM-xjz">
-                                    <rect key="frame" x="171" y="3" width="19" height="38"/>
+                                    <rect key="frame" x="171" y="4" width="19" height="36"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10000" doubleValue="19.499999999999993" id="ZRT-FX-fwA">
                                         <connections>
@@ -2946,7 +2947,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1090">
-                                                                                        <rect key="frame" x="174" y="37" width="19" height="30"/>
+                                                                                        <rect key="frame" x="174" y="38" width="19" height="28"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="13" id="7Zx-UG-4Nm"/>
                                                                                             <constraint firstAttribute="height" constant="22" id="LO9-XW-uuO"/>
@@ -3093,7 +3094,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-6J-G5f">
-                                                                                        <rect key="frame" x="183" y="13" width="15" height="25"/>
+                                                                                        <rect key="frame" x="183" y="15" width="15" height="22"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="11" id="Qws-RI-KSQ"/>
                                                                                             <constraint firstAttribute="height" constant="19" id="d6D-JK-2dR"/>
@@ -3122,7 +3123,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Icf-zd-ULQ">
-                                                                                        <rect key="frame" x="107" y="3" width="19" height="30"/>
+                                                                                        <rect key="frame" x="107" y="4" width="19" height="28"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="height" constant="22" id="l0b-wZ-uwJ"/>
                                                                                             <constraint firstAttribute="width" constant="13" id="ysq-3L-mzZ"/>
@@ -3311,11 +3312,11 @@
                                                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                                             <font key="font" metaFont="system"/>
                                                                                             <connections>
-                                                                                                <action selector="PsfColorbarSwitchAction:" target="1157" id="2871"/>
                                                                                                 <binding destination="2714" name="value" keyPath="selection.self.PSFColorbarSwitch" id="2895"/>
                                                                                             </connections>
                                                                                         </buttonCell>
                                                                                         <connections>
+                                                                                            <action selector="ColorbarSwitchAction:" target="1215" id="GYg-oa-EOM"/>
                                                                                             <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="2856"/>
                                                                                             <binding destination="1157" name="value" keyPath="self.PSFColorbarSwitch" id="bio-PX-EIg"/>
                                                                                         </connections>
@@ -3383,7 +3384,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Uo-3n-eZQ">
-                                                                                        <rect key="frame" x="107" y="30" width="19" height="32"/>
+                                                                                        <rect key="frame" x="107" y="31" width="19" height="30"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="3DZ-3h-THO">
                                                                                             <connections>
@@ -3405,7 +3406,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JEO-wB-XDf">
-                                                                                        <rect key="frame" x="173" y="39" width="15" height="31"/>
+                                                                                        <rect key="frame" x="173" y="41" width="15" height="28"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="9fe-XA-fYr">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -3459,7 +3460,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v5r-sW-X2f">
-                                                                                        <rect key="frame" x="107" y="62" width="19" height="32"/>
+                                                                                        <rect key="frame" x="107" y="63" width="19" height="30"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="gsc-xA-GOF">
                                                                                             <connections>
@@ -3481,7 +3482,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5YQ-O5-cw8">
-                                                                                        <rect key="frame" x="173" y="70" width="15" height="31"/>
+                                                                                        <rect key="frame" x="173" y="72" width="15" height="28"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="c5g-wp-gl7">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -3718,7 +3719,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qg8-bp-njZ">
-                                                                                        <rect key="frame" x="110" y="0.0" width="19" height="31"/>
+                                                                                        <rect key="frame" x="110" y="1" width="19" height="29"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="13" id="PEW-0Q-AiF"/>
                                                                                             <constraint firstAttribute="height" constant="23" id="ccj-i6-tK9"/>
@@ -3734,7 +3735,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dZe-Qs-fjv">
-                                                                                        <rect key="frame" x="176" y="13" width="15" height="22"/>
+                                                                                        <rect key="frame" x="176" y="15" width="15" height="19"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="11" id="lxR-4H-Nox"/>
                                                                                             <constraint firstAttribute="height" constant="16" id="oPZ-XA-jrk"/>
@@ -3797,7 +3798,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kWw-Mj-v7v">
-                                                                                        <rect key="frame" x="110" y="60" width="19" height="31"/>
+                                                                                        <rect key="frame" x="110" y="61" width="19" height="29"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="13" id="CqD-nu-USb"/>
                                                                                             <constraint firstAttribute="height" constant="23" id="lUQ-nt-eN0"/>
@@ -3813,7 +3814,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8Zq-RM-yS4">
-                                                                                        <rect key="frame" x="176" y="70" width="15" height="26"/>
+                                                                                        <rect key="frame" x="176" y="72" width="15" height="23"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="11" id="AWM-5b-SIM"/>
                                                                                         </constraints>
@@ -3887,7 +3888,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pCV-xs-Xq5">
-                                                                                        <rect key="frame" x="176" y="39" width="15" height="28"/>
+                                                                                        <rect key="frame" x="176" y="41" width="15" height="25"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="11" id="Xco-C6-HkB"/>
                                                                                             <constraint firstAttribute="height" constant="22" id="gDg-4m-eg7"/>
@@ -4257,7 +4258,7 @@
                                                                                         </cells>
                                                                                     </matrix>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3133">
-                                                                                        <rect key="frame" x="100" y="8" width="19" height="27"/>
+                                                                                        <rect key="frame" x="100" y="9" width="19" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="3138">
                                                                                             <connections>
@@ -4310,7 +4311,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3134">
-                                                                                        <rect key="frame" x="168" y="18" width="15" height="22"/>
+                                                                                        <rect key="frame" x="168" y="20" width="15" height="19"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="3137">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -4360,25 +4361,6 @@
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
                                                                                     </textField>
-                                                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fss-rQ-oOv">
-                                                                                        <rect key="frame" x="17" y="189" width="78" height="18"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <buttonCell key="cell" type="check" title="Patch" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="JJz-o0-T0p">
-                                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <connections>
-                                                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFSurfaceSwitch" id="R9b-7Z-eLX">
-                                                                                                    <dictionary key="options">
-                                                                                                        <bool key="NSValidatesImmediately" value="YES"/>
-                                                                                                    </dictionary>
-                                                                                                </binding>
-                                                                                            </connections>
-                                                                                        </buttonCell>
-                                                                                        <connections>
-                                                                                            <action selector="PsfSurfSwitchAction:" target="1157" id="hzs-uM-B1F"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="yPO-ec-jfQ"/>
-                                                                                        </connections>
-                                                                                    </button>
                                                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="di7-f1-vvh">
                                                                                         <rect key="frame" x="99" y="189" width="81" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -4386,13 +4368,12 @@
                                                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                                             <font key="font" metaFont="system"/>
                                                                                             <connections>
-                                                                                                <action selector="PsfColorbarSwitchAction:" target="1157" id="ZNe-Lk-Rjy"/>
-                                                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFColorbarSwitch" id="ZP0-eb-QzQ"/>
+                                                                                                <binding destination="1932" name="value" keyPath="self.FlineColorbarSwitch" id="fJL-TB-SIx"/>
                                                                                             </connections>
                                                                                         </buttonCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="umV-Hp-Gsh"/>
-                                                                                            <binding destination="1157" name="value" keyPath="self.PSFColorbarSwitch" id="kOe-HX-U3y"/>
+                                                                                            <action selector="ColorbarSwitchAction:" target="1215" id="tJC-R8-voV"/>
+                                                                                            <binding destination="1932" name="value" keyPath="self.FlineColorbarSwitch" id="0fJ-Gv-rLm"/>
                                                                                         </connections>
                                                                                     </button>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lNm-0b-3Ff">
@@ -4431,9 +4412,6 @@
                                                                                         <rect key="frame" x="128" y="130" width="54" height="23"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <color key="color" red="0.1194670463" green="0.021984556839999999" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                                                        <connections>
-                                                                                            <action selector="SetFlineColorAction:" target="1932" id="ufx-bh-FlV"/>
-                                                                                        </connections>
                                                                                     </colorWell>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i1R-LN-MD2">
                                                                                         <rect key="frame" x="146" y="47" width="28" height="18"/>
@@ -4455,7 +4433,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U0C-V3-kwl">
-                                                                                        <rect key="frame" x="107" y="32" width="19" height="28"/>
+                                                                                        <rect key="frame" x="107" y="33" width="19" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="3BY-uU-KVI">
                                                                                             <connections>
@@ -4476,7 +4454,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q9h-7X-Xa7">
-                                                                                        <rect key="frame" x="173" y="43" width="15" height="25"/>
+                                                                                        <rect key="frame" x="173" y="45" width="15" height="22"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="0Yf-td-azL">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -4527,7 +4505,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oxQ-Xt-nch">
-                                                                                        <rect key="frame" x="107" y="64" width="19" height="28"/>
+                                                                                        <rect key="frame" x="107" y="65" width="19" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="2IZ-g8-4tl">
                                                                                             <connections>
@@ -4546,7 +4524,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sYG-R3-Ekf">
-                                                                                        <rect key="frame" x="173" y="74" width="15" height="25"/>
+                                                                                        <rect key="frame" x="173" y="76" width="15" height="22"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="sYG-Hj-oQ2">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -4759,10 +4737,10 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vO3-eu-UU7">
-                                                        <rect key="frame" x="-4" y="175" width="229" height="572"/>
+                                                        <rect key="frame" x="-4" y="20" width="229" height="727"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="Cvx-up-T9C">
-                                                            <rect key="frame" x="1" y="1" width="227" height="570"/>
+                                                            <rect key="frame" x="1" y="1" width="227" height="725"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="muZ-Zk-uXx">
@@ -4770,14 +4748,23 @@
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color" translatesAutoresizingMaskIntoConstraints="NO" id="guA-AV-673">
-                                                                            <rect key="frame" x="3" y="122" width="209" height="241"/>
+                                                                            <rect key="frame" x="3" y="248" width="209" height="241"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                             <view key="contentView" id="Xp3-0R-d2O">
                                                                                 <rect key="frame" x="3" y="3" width="203" height="223"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41h-hk-5bi">
+                                                                                        <rect key="frame" x="25" y="140" width="42" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="GCJ-9V-529">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lbd-9w-97a">
-                                                                                        <rect key="frame" x="7" y="73" width="34" height="16"/>
+                                                                                        <rect key="frame" x="7" y="76" width="34" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Min: " id="feq-Ey-NqL">
                                                                                             <font key="font" metaFont="system"/>
@@ -4786,7 +4773,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dbm-1M-Lbp">
-                                                                                        <rect key="frame" x="5" y="41" width="37" height="16"/>
+                                                                                        <rect key="frame" x="5" y="44" width="37" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max: " id="Ruk-KM-Wzl">
                                                                                             <font key="font" metaFont="system"/>
@@ -4795,7 +4782,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aHd-SB-3Eq">
-                                                                                        <rect key="frame" x="54" y="38" width="48" height="22"/>
+                                                                                        <rect key="frame" x="54" y="41" width="48" height="22"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="Ayy-9q-XAj">
                                                                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="QSJ-zn-dnK">
@@ -4815,7 +4802,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ejk-5A-M3p">
-                                                                                        <rect key="frame" x="41" y="104" width="68" height="20"/>
+                                                                                        <rect key="frame" x="41" y="107" width="68" height="20"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="border" alignment="center" id="1Wt-qJ-MDW">
                                                                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="scientific" usesGroupingSeparator="NO" formatWidth="-1" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="2" id="LtU-nz-KfC"/>
@@ -4828,7 +4815,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BLU-JA-d4L">
-                                                                                        <rect key="frame" x="117" y="152" width="59" height="23"/>
+                                                                                        <rect key="frame" x="121" y="136" width="54" height="23"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <color key="color" red="0.1194670463" green="0.021984556839999999" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <connections>
@@ -4836,7 +4823,7 @@
                                                                                         </connections>
                                                                                     </colorWell>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s2w-F6-WHR">
-                                                                                        <rect key="frame" x="139" y="50" width="28" height="18"/>
+                                                                                        <rect key="frame" x="139" y="53" width="28" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="in0-Xe-dh9">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="twY-p9-2XM">
@@ -4855,7 +4842,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eU9-Ea-AQv">
-                                                                                        <rect key="frame" x="100" y="37" width="19" height="24"/>
+                                                                                        <rect key="frame" x="100" y="41" width="19" height="22"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="I8I-Zq-elw">
                                                                                             <connections>
@@ -4867,7 +4854,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q1r-ve-IJC">
-                                                                                        <rect key="frame" x="115" y="41" width="26" height="16"/>
+                                                                                        <rect key="frame" x="115" y="44" width="26" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="li1-oB-PJQ">
                                                                                             <font key="font" metaFont="system"/>
@@ -4876,7 +4863,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nss-yO-Jxj">
-                                                                                        <rect key="frame" x="166" y="50" width="15" height="19"/>
+                                                                                        <rect key="frame" x="166" y="55" width="15" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="8LL-DD-kcc">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -4889,7 +4876,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9t-ul-bWt">
-                                                                                        <rect key="frame" x="54" y="71" width="48" height="21"/>
+                                                                                        <rect key="frame" x="54" y="74" width="48" height="21"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="9bO-1y-r4m">
                                                                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="X6g-t5-Gaf">
@@ -4908,7 +4895,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QQP-sd-4y0">
-                                                                                        <rect key="frame" x="139" y="81" width="28" height="18"/>
+                                                                                        <rect key="frame" x="139" y="84" width="28" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="Hvn-50-aYo">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1lo-wA-y6D">
@@ -4927,7 +4914,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ZG-xg-ICI">
-                                                                                        <rect key="frame" x="100" y="69" width="19" height="24"/>
+                                                                                        <rect key="frame" x="100" y="73" width="19" height="22"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="tsx-7f-uiW">
                                                                                             <connections>
@@ -4939,7 +4926,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p7C-eP-M0z">
-                                                                                        <rect key="frame" x="115" y="72" width="26" height="18"/>
+                                                                                        <rect key="frame" x="115" y="75" width="26" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="1Sx-qn-I3R">
                                                                                             <font key="font" metaFont="system"/>
@@ -4948,7 +4935,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kEh-EI-eBy">
-                                                                                        <rect key="frame" x="166" y="81" width="15" height="19"/>
+                                                                                        <rect key="frame" x="166" y="86" width="15" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="736-RD-8a0">
                                                                                             <font key="font" metaFont="smallSystem"/>
@@ -4961,7 +4948,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lcc-Bq-tY1">
-                                                                                        <rect key="frame" x="128" y="105" width="68" height="20"/>
+                                                                                        <rect key="frame" x="128" y="108" width="68" height="20"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="border" alignment="center" id="TcO-dC-7yi">
                                                                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="Tym-kO-z9t"/>
@@ -4974,7 +4961,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pss-Ef-IaC">
-                                                                                        <rect key="frame" x="107" y="107" width="24" height="16"/>
+                                                                                        <rect key="frame" x="107" y="110" width="24" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title=" to " id="CNc-Dd-iLh">
                                                                                             <font key="font" metaFont="system"/>
@@ -4983,7 +4970,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="slp-Qi-fHh">
-                                                                                        <rect key="frame" x="4" y="107" width="36" height="16"/>
+                                                                                        <rect key="frame" x="4" y="110" width="36" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Data:" id="A2q-ip-5NN">
                                                                                             <font key="font" metaFont="system"/>
@@ -4992,7 +4979,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2py-PI-9Gn">
-                                                                                        <rect key="frame" x="82" y="10" width="103" height="24"/>
+                                                                                        <rect key="frame" x="82" y="13" width="103" height="24"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <buttonCell key="cell" type="push" title="Color Map" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DJI-5H-00r">
                                                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -5003,7 +4990,7 @@
                                                                                         </connections>
                                                                                     </button>
                                                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gYF-4Y-lvd">
-                                                                                        <rect key="frame" x="82" y="179" width="98" height="25"/>
+                                                                                        <rect key="frame" x="82" y="163" width="98" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <popUpButtonCell key="cell" type="push" title="Black" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="vgC-AG-yow" id="emb-K8-IAC">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -5023,7 +5010,7 @@
                                                                                         </connections>
                                                                                     </popUpButton>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q8S-CV-tWE">
-                                                                                        <rect key="frame" x="11" y="185" width="70" height="17"/>
+                                                                                        <rect key="frame" x="11" y="169" width="70" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line color:" id="jhQ-d0-zrz">
                                                                                             <font key="font" metaFont="system"/>
@@ -5031,58 +5018,72 @@
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
                                                                                     </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41h-hk-5bi">
-                                                                                        <rect key="frame" x="16" y="156" width="42" height="16"/>
+                                                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TER-is-e2h">
+                                                                                        <rect key="frame" x="94" y="198" width="81" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="GCJ-9V-529">
+                                                                                        <buttonCell key="cell" type="check" title="Color bar" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bDo-mH-1Eh">
+                                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                                             <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerColorbarSwitch" id="o0K-Jz-R6g"/>
+                                                                                            </connections>
+                                                                                        </buttonCell>
+                                                                                        <connections>
+                                                                                            <action selector="ColorbarSwitchAction:" target="1215" id="x87-iS-Jgp"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerColorbarSwitch" id="jq5-TO-a9P"/>
+                                                                                        </connections>
+                                                                                    </button>
                                                                                 </subviews>
                                                                             </view>
                                                                         </box>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Vector" translatesAutoresizingMaskIntoConstraints="NO" id="MQS-qF-IwS">
-                                                                            <rect key="frame" x="3" y="-4" width="209" height="122"/>
+                                                                            <rect key="frame" x="3" y="153" width="209" height="91"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                             <view key="contentView" id="e2b-EB-Qt0">
-                                                                                <rect key="frame" x="3" y="3" width="203" height="104"/>
+                                                                                <rect key="frame" x="3" y="3" width="203" height="73"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="taS-IG-4CR">
-                                                                                        <rect key="frame" x="100" y="70" width="96" height="32"/>
+                                                                                        <rect key="frame" x="100" y="39" width="96" height="32"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <buttonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zVR-nu-0lb">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                                                                             <font key="font" metaFont="system"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.DrawTracerVectorFlag" id="o0a-yr-VZL"/>
+                                                                                            </connections>
                                                                                         </buttonCell>
                                                                                         <connections>
-                                                                                            <action selector="DrawPSFVectorAction:" target="1157" id="QXz-zl-hi1"/>
-                                                                                            <binding destination="1157" name="value" keyPath="self.DrawPSFVectorFlag" id="P5g-G8-rFi"/>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3dF-zY-xaw"/>
+                                                                                            <action selector="DrawTracerVectorAction:" target="ld6-u3-7Oq" id="3Hp-kE-quT"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="JZE-lo-UGW"/>
                                                                                         </connections>
                                                                                     </button>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mMr-BH-XG2">
-                                                                                        <rect key="frame" x="12" y="79" width="44" height="16"/>
+                                                                                        <rect key="frame" x="12" y="48" width="44" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Vector" id="Ah3-Zp-k7N">
                                                                                             <font key="font" metaFont="system"/>
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="Fvh-xi-6kU"/>
+                                                                                        </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wU9-Ze-ngd">
-                                                                                        <rect key="frame" x="12" y="45" width="66" height="16"/>
+                                                                                        <rect key="frame" x="12" y="14" width="66" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Reference" id="J0k-au-7CW">
                                                                                             <font key="font" metaFont="system"/>
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="KJT-dZ-qTv"/>
+                                                                                        </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I5s-gA-syb">
-                                                                                        <rect key="frame" x="96" y="42" width="17" height="21"/>
+                                                                                        <rect key="frame" x="96" y="11" width="17" height="21"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="i4g-EG-8GY">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="W3I-cg-v6Q">
@@ -5093,16 +5094,16 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <action selector="SetReferenceVector:" target="1157" id="5ge-jm-SI2"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.ScaleVector" id="At6-xE-kQS"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="Ozl-lj-mgZ"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="hWc-v4-OmQ"/>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="BQ5-PJ-Bkj"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="wVO-6S-RuD"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qBV-zf-AA0">
-                                                                                        <rect key="frame" x="149" y="52" width="28" height="18"/>
+                                                                                        <rect key="frame" x="149" y="21" width="28" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="MeK-tZ-Xfz">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="zib-ET-n4e">
@@ -5113,139 +5114,57 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <action selector="SetReferenceVector:" target="1157" id="Zab-HB-Zkv"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.ScaleDigit" id="uHy-YD-NS3"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="SUN-Bd-2Jn"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="DSk-9G-0ri"/>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="6y3-pM-ACi"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="SBl-AL-cva"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gNi-2c-3iM">
-                                                                                        <rect key="frame" x="110" y="38" width="19" height="29"/>
+                                                                                        <rect key="frame" x="110" y="8" width="19" height="27"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="QGn-fb-J6n">
                                                                                             <connections>
-                                                                                                <action selector="SetReferenceVector:" target="1157" id="2Nz-B0-GFs"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.ScaleVector" id="H5k-0q-w1g"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="hQy-jf-CeV"/>
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="AzM-Nn-L1g"/>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="pI9-4D-fO6"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="tyl-92-q2U"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5sc-II-9eZ">
-                                                                                        <rect key="frame" x="176" y="49" width="15" height="23"/>
+                                                                                        <rect key="frame" x="176" y="20" width="15" height="20"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="t5c-JR-4fB">
                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                             <connections>
-                                                                                                <action selector="SetReferenceVector:" target="1157" id="FqS-kU-2zx"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.ScaleDigit" id="ZDa-BM-Xyt"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="Vch-00-IxJ"/>
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="Y7g-is-cMq"/>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="MNG-uY-MyR"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="EzJ-kj-ITp"/>
                                                                                         </connections>
                                                                                     </stepper>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OKu-za-t9y">
-                                                                                        <rect key="frame" x="96" y="13" width="17" height="21"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="5zR-Gg-gcB">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="Har-jC-gWq">
-                                                                                                <real key="minimum" value="0.0"/>
-                                                                                                <real key="maximum" value="9"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <action selector="SetVectorThickness:" target="1157" id="233-26-Agw"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="4Ua-9O-uFn"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="VQM-dt-Hdz"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-5b-FlO">
-                                                                                        <rect key="frame" x="149" y="22" width="28" height="18"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="fyl-yp-oFD">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="YtC-Fc-rhl">
-                                                                                                <real key="minimum" value="-30"/>
-                                                                                                <real key="maximum" value="30"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <action selector="SetVectorThickness:" target="1157" id="Xz4-Dp-hi8"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="Fni-Ew-BCj"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="nej-VX-5Yo"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aDz-Kr-9Xd">
-                                                                                        <rect key="frame" x="110" y="9" width="19" height="28"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="d98-Vo-I4o">
-                                                                                            <connections>
-                                                                                                <action selector="SetVectorThickness:" target="1157" id="Z1X-xi-jTH"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="hBx-Vc-4f6"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="Wsr-TX-f04"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="voA-Sz-cwm">
-                                                                                        <rect key="frame" x="176" y="18" width="15" height="25"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="Kd9-me-8yV">
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <connections>
-                                                                                                <action selector="SetVectorThickness:" target="1157" id="9Cd-Ft-ofP"/>
-                                                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="ZUH-a0-b4F"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="bZ5-G1-Ceb"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wIe-nJ-uCc">
-                                                                                        <rect key="frame" x="12" y="15" width="40" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="rNC-me-mvp">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XdG-R6-njy">
-                                                                                        <rect key="frame" x="126" y="44" width="25" height="17"/>
+                                                                                        <rect key="frame" x="126" y="13" width="25" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Qab-h2-UEj">
                                                                                             <font key="font" metaFont="system"/>
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nes-Vl-zri">
-                                                                                        <rect key="frame" x="125" y="15" width="26" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="dMn-In-oYS">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="z8a-3s-kL3"/>
+                                                                                        </connections>
                                                                                     </textField>
                                                                                 </subviews>
                                                                             </view>
                                                                             <connections>
-                                                                                <binding destination="ld6-u3-7Oq" name="hidden" keyPath="self.tracerVectorMenuAcrive" id="lvW-mK-Ohr">
+                                                                                <binding destination="ld6-u3-7Oq" name="hidden" keyPath="self.tracerVectorMenuActive" id="biO-0f-9KG">
                                                                                     <dictionary key="options">
                                                                                         <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                                                     </dictionary>
@@ -5253,14 +5172,14 @@
                                                                             </connections>
                                                                         </box>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Size" translatesAutoresizingMaskIntoConstraints="NO" id="N9Q-sy-NJK">
-                                                                            <rect key="frame" x="3" y="367" width="209" height="105"/>
+                                                                            <rect key="frame" x="3" y="493" width="209" height="105"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <view key="contentView" id="3HR-Fo-fAC">
                                                                                 <rect key="frame" x="3" y="3" width="203" height="87"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dxX-Mo-Vjr">
-                                                                                        <rect key="frame" x="13" y="55" width="70" height="17"/>
+                                                                                        <rect key="frame" x="13" y="52" width="70" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thickness:" id="6Un-mc-2ga">
                                                                                             <font key="font" metaFont="system"/>
@@ -5269,7 +5188,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gGb-Vl-RIs">
-                                                                                        <rect key="frame" x="103" y="52" width="19" height="22"/>
+                                                                                        <rect key="frame" x="103" y="50" width="19" height="20"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="Nr4-fg-MWi">
                                                                                             <connections>
@@ -5281,7 +5200,7 @@
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sqe-Ja-66u">
-                                                                                        <rect key="frame" x="89" y="53" width="17" height="21"/>
+                                                                                        <rect key="frame" x="89" y="50" width="17" height="21"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="juQ-wa-Oxc">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2M8-GG-U54">
@@ -5300,7 +5219,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4gc-ir-7Uo">
-                                                                                        <rect key="frame" x="149" y="61" width="29" height="19"/>
+                                                                                        <rect key="frame" x="149" y="58" width="29" height="19"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="7Bp-b1-3RM">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="e0x-SY-MV6">
@@ -5318,21 +5237,8 @@
                                                                                             <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="ZN4-Q2-b4m"/>
                                                                                         </connections>
                                                                                     </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="64C-aQ-Vu1">
-                                                                                        <rect key="frame" x="175" y="65" width="15" height="13"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="zoL-90-0CJ">
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="wVS-sX-1oN"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="0tq-fU-o4p"/>
-                                                                                        </connections>
-                                                                                    </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zWC-w7-mX7">
-                                                                                        <rect key="frame" x="122" y="55" width="25" height="16"/>
+                                                                                        <rect key="frame" x="122" y="52" width="25" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="ZYl-oS-Ujl">
                                                                                             <font key="font" metaFont="system"/>
@@ -5341,7 +5247,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d8h-KU-8gZ">
-                                                                                        <rect key="frame" x="13" y="20" width="70" height="17"/>
+                                                                                        <rect key="frame" x="13" y="17" width="70" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="jIZ-P1-Tey">
                                                                                             <font key="font" metaFont="system"/>
@@ -5350,19 +5256,19 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GM6-Ia-bzI">
-                                                                                        <rect key="frame" x="103" y="18" width="19" height="20"/>
+                                                                                        <rect key="frame" x="103" y="16" width="19" height="18"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="O7N-5P-AyZ">
                                                                                             <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="2UR-Cu-POy"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="Sqf-f4-Vfm"/>
                                                                                             </connections>
                                                                                         </stepperCell>
                                                                                         <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="mFH-mc-zpC"/>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="zF1-al-gfY"/>
                                                                                         </connections>
                                                                                     </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nEb-R4-xlV">
-                                                                                        <rect key="frame" x="89" y="18" width="17" height="21"/>
+                                                                                        <rect key="frame" x="89" y="15" width="17" height="21"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hmb-Bl-pqm">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="DAP-3K-vOC">
@@ -5373,15 +5279,15 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="mzj-0S-wS7"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="T3E-uL-zWR"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="Vxx-yE-hwH"/>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="tpB-wV-xSh"/>
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bVH-FA-YeJ">
-                                                                                        <rect key="frame" x="149" y="26" width="29" height="19"/>
+                                                                                        <rect key="frame" x="149" y="23" width="29" height="19"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="BPg-PO-wJF">
                                                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jNP-DZ-Kb8">
@@ -5392,28 +5298,15 @@
                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                             <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="Hgq-TD-U7h"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="4oP-rV-szW"/>
                                                                                             </connections>
                                                                                         </textFieldCell>
                                                                                         <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="AIS-lI-fb8"/>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="ffI-Ax-9p2"/>
                                                                                         </connections>
                                                                                     </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TYC-PF-XP0">
-                                                                                        <rect key="frame" x="175" y="32" width="15" height="10"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="NIF-tU-0yY">
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="EME-MP-U38"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="jLp-Bf-zCI"/>
-                                                                                        </connections>
-                                                                                    </stepper>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wqF-zD-9JN">
-                                                                                        <rect key="frame" x="122" y="20" width="25" height="16"/>
+                                                                                        <rect key="frame" x="122" y="17" width="25" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Z2Z-p0-DIN">
                                                                                             <font key="font" metaFont="system"/>
@@ -5421,11 +5314,35 @@
                                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                         </textFieldCell>
                                                                                     </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1p6-Z6-WSc">
+                                                                                        <rect key="frame" x="175" y="23" width="15" height="19"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="zTs-Vl-jMT">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="2Z1-5F-5Hk"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="DBN-62-6Gt"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qi9-DX-9xK">
+                                                                                        <rect key="frame" x="175" y="58" width="15" height="19"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-3" id="o02-c3-9bv">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="Wan-PG-ymp"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="6wE-y7-d7i"/>
+                                                                                        </connections>
+                                                                                    </stepper>
                                                                                 </subviews>
                                                                             </view>
                                                                         </box>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Field to Colur" translatesAutoresizingMaskIntoConstraints="NO" id="1e2-e4-t0E">
-                                                                            <rect key="frame" x="3" y="476" width="209" height="90"/>
+                                                                            <rect key="frame" x="3" y="602" width="209" height="90"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <view key="contentView" id="bEv-Jd-oK5">
                                                                                 <rect key="frame" x="3" y="3" width="203" height="72"/>
@@ -5472,11 +5389,11 @@
                                                             <color key="backgroundColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         </clipView>
                                                         <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="NJA-KI-4mP">
-                                                            <rect key="frame" x="1" y="555" width="227" height="16"/>
+                                                            <rect key="frame" x="1" y="710" width="227" height="16"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Yhz-th-U63">
-                                                            <rect key="frame" x="212" y="1" width="16" height="570"/>
+                                                            <rect key="frame" x="212" y="1" width="16" height="725"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                     </scrollView>
@@ -5511,7 +5428,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="123" y="299" width="299" height="1011"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="2203">
                 <rect key="frame" x="0.0" y="0.0" width="299" height="1011"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -5521,7 +5438,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <clipView key="contentView" id="H51-CE-nj3">
                             <rect key="frame" x="1" y="1" width="299" height="1013"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="iRy-vr-6IA">
                                     <rect key="frame" x="0.0" y="0.0" width="284" height="1010"/>
@@ -5987,7 +5904,7 @@
                                                         <rect key="frame" x="10" y="170" width="229" height="118"/>
                                                         <clipView key="contentView" ambiguous="YES" id="Vae-Vq-U6W">
                                                             <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
@@ -6609,6 +6526,7 @@
                 <outlet property="_ElasticControl" destination="kna-bd-AJC" id="eY9-w7-gtW"/>
                 <outlet property="_TracerComponentMenu" destination="SCf-96-R43" id="GRx-uo-DTM"/>
                 <outlet property="_TracerFieldMenu" destination="S1r-RF-5SC" id="Zf3-gF-M3h"/>
+                <outlet property="_TracerVectorSwitchOutlet" destination="taS-IG-4CR" id="eeR-a9-EHS"/>
                 <outlet property="_controlTabView" destination="pin-um-o1A" id="Kpi-2y-3PT"/>
                 <outlet property="_kemoviewControl" destination="964" id="VHN-sJ-Kwg"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="52T-kJ-8R7"/>
@@ -6732,7 +6650,7 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="458" y="120" width="960" height="720"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="BeK-5P-Wgc">
                 <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -6804,7 +6722,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1015" y="235" width="232" height="676"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="8yB-vy-asK">
                 <rect key="frame" x="0.0" y="0.0" width="232" height="676"/>
                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
@@ -6813,7 +6731,7 @@
                         <rect key="frame" x="8" y="122" width="216" height="554"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                             <rect key="frame" x="0.0" y="0.0" width="216" height="554"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                     <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -7338,7 +7256,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3346">
-                                                        <rect key="frame" x="148" y="71" width="19" height="27"/>
+                                                        <rect key="frame" x="148" y="72" width="19" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="NXg-dJ-WSA"/>
                                                             <constraint firstAttribute="height" constant="19" id="V6R-qg-05f"/>
@@ -7354,7 +7272,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3517">
-                                                        <rect key="frame" x="148" y="40" width="19" height="27"/>
+                                                        <rect key="frame" x="148" y="41" width="19" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="H68-Ey-TyI"/>
                                                             <constraint firstAttribute="height" constant="19" id="Q2y-Ay-AQp"/>
@@ -7403,7 +7321,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WQ1-6O-FaN">
-                                                        <rect key="frame" x="148" y="11" width="19" height="25"/>
+                                                        <rect key="frame" x="148" y="12" width="19" height="23"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="QJI-PZ-JcP"/>
                                                             <constraint firstAttribute="height" constant="17" id="i2K-Ur-twG"/>
@@ -7560,7 +7478,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="130" width="194" height="725"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="9Ms-do-edR">
                 <rect key="frame" x="0.0" y="0.0" width="194" height="725"/>
                 <autoresizingMask key="autoresizingMask"/>

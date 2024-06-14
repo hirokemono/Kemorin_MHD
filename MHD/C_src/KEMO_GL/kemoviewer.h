@@ -99,7 +99,6 @@
 #define WHITE_PSF_LINE      22
 
 #define PSF_OFF             30
-#define PSFVECT_TOGGLE      40
 #define PSFREFV_TOGGLE      41
 #define ISET_PSF_VEC_INC    44
 #define PSFTANVEC_TOGGLE    47
@@ -460,6 +459,11 @@ extern "C" {
     int kemoview_get_colorbar_draw_flag(struct kemoviewer_type *kemoviewer,
                                         int id_model);
 
+    void kemoview_set_VIZ_vector_draw_flags(int iflag, int id_model,
+                                            struct kemoviewer_type *kemoviewer);
+    int kemoview_get_VIZ_vector_draw_flags(struct kemoviewer_type *kemoviewer,
+                                           int id_model);
+
     void kemoview_set_PSF_draw_flags(int selected, int iflag,
                                      struct kemoviewer_type *kemoviewer);
 	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
@@ -505,8 +509,10 @@ extern "C" {
                                             struct kemoviewer_type *kemoviewer);
 
 
-	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
-                                           struct kemoviewer_type *kemoviewer);
+	void kemoview_set_each_VIZ_vector_w_exp(int selected, double value, int i_digit,
+                                            int id_model, struct kemoviewer_type *kemoviewer);
+    void kemoview_get_VIZ_vector_w_exp(struct kemoviewer_type *kemoviewer, int id_model,
+                                       int selected, double *value, int *i_digit);
 
     void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_model,
                                       int selected, double *value, int *i_digit);

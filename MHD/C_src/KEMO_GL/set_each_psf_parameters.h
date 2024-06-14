@@ -50,7 +50,7 @@ int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 
 void set_each_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag);
-int send_each_psf_vector_mode(struct psf_menu_val *psf_menu);
+int send_VIZ_vector_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_solid(int iflag, struct psf_menu_val *psf_menu);
@@ -65,8 +65,8 @@ int send_draw_psf_zero(struct psf_menu_val *psf_menu);
 void set_draw_VIZ_cbar(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_VIZ_cbar(struct psf_menu_val *psf_menu);
 
-void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu);
-int send_draw_psf_vect(struct psf_menu_val *psf_menu);
+void set_draw_VIZ_vector(int iflag, struct psf_menu_val *psf_menu);
+int send_draw_VIZ_vector(struct psf_menu_val *psf_menu);
 
 int send_draw_each_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);

@@ -23,12 +23,21 @@
 @synthesize Tracertype;
 @synthesize TracerRadiusFactor;
 @synthesize TracerRadiusDigit;
-@synthesize tracerVectorMenuAcrive;
+
+@synthesize tracerVectorMenuActive;
+@synthesize DrawTracerVectorFlag;
+@synthesize TracerVectorIncrement;
+@synthesize TracerVectorIncDigit;
+@synthesize TracerScaleVector;
+@synthesize TracerScaleDigit;
+@synthesize TracerColorbarSwitch;
 - (id)init;
 {
     self.TracerRadiusFactor = 1;
     self.TracerRadiusDigit = -2;
-    self.tracerVectorMenuAcrive = 0;
+    self.tracerVectorMenuActive = 0;
+
+    self.tracerVectorMenuActive = 0;
 
     FieldlineColor =      [NSNumber alloc];
     
@@ -179,10 +188,19 @@
     [_metalView UpdateImage:kemo_sgl];
 }
 
+- (void) SetDrawTracerVector:(struct kemoviewer_type *) kemo_sgl
+{
+    kemoview_set_VIZ_vector_draw_flags((int) self.DrawTracerVectorFlag,
+                                       TRACER_RENDERING, kemo_sgl);
+    
+    if(self.DrawTracerVectorFlag == 0) {[_TracerVectorSwitchOutlet setTitle:@"Off"];}
+    else{ [_TracerVectorSwitchOutlet setTitle:@"On"];};
+}
+
 - (void) SetFlineDataRanges:(NSInteger)isel
                    kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    double current_thick;
+    double current_value;
     int current_digit;
 
     int n_field =  kemoview_get_VIZ_field_param(kemo_sgl,
@@ -192,9 +210,11 @@
                                                    TRACER_RENDERING,
                                                    (int) isel);
     if(num_comp == 3){
-        self.tracerVectorMenuAcrive = 1;
+        self.tracerVectorMenuActive = 1;
     } else {
-        self.tracerVectorMenuAcrive = 0;
+        self.tracerVectorMenuActive = 0;
+        self.DrawTracerVectorFlag = 0;
+        [self SetDrawTracerVector:kemo_sgl];
     };
     
     if (n_field > 0) {
@@ -203,14 +223,41 @@
     
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
                                  TRACER_RENDERING, ISET_WIDTH,
-                                 &current_thick, &current_digit);
-    self.TracerRadiusFactor = (CGFloat) current_thick;
+                                 &current_value, &current_digit);
+    self.TracerRadiusFactor = (CGFloat) current_value;
     self.TracerRadiusDigit = (CGFloat) current_digit;
 
+    
+    self.DrawTracerVectorFlag = kemoview_get_VIZ_vector_draw_flags(kemo_sgl,
+                                                                   TRACER_RENDERING);
+    kemoview_get_VIZ_vector_w_exp(kemo_sgl,
+                                  TRACER_RENDERING,
+                                  ISET_PSF_REFVECT,
+                                  &current_value, &current_digit);
+    self.TracerScaleVector =      (CGFloat) current_value;
+    self.TracerScaleDigit =       (CGFloat) current_digit;
+
+    kemoview_get_VIZ_vector_w_exp(kemo_sgl,
+                                  TRACER_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &current_digit);
+    self.TracerVectorIncrement = (CGFloat) current_value;
+    self.TracerVectorIncDigit =  (CGFloat) current_digit;
+    
     return;
 }
 
-- (IBAction)ChooseTracerColorAction:(id)sender;
+- (int) TracerColorbarSwitchStatus
+{
+    return (int) self.TracerColorbarSwitch;
+}
+- (void) setTracerColorbarSwitchStatus:(int) isel
+{
+    self.TracerColorbarSwitch = isel;
+}
+
+
+- (IBAction)ChooseTracerColorAction:(id)sender
 {
     NSInteger tag = [[TracerColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
@@ -231,22 +278,38 @@
     [_metalView UpdateImage:kemo_sgl];
 }
 
-- (IBAction)ChooseFieldlineTypeAction:(id)sender;
-{
-    self.Tracertype = [[_flinetype_matrix selectedCell] tag];
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_line_type_flag((int) self.Tracertype, kemo_sgl);
-    
-    [_metalView UpdateImage:kemo_sgl];
-}
-
-- (IBAction)SetTracerRadiusAction:(id)sender;
+- (IBAction)SetTracerRadiusAction:(id)sender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_VIZ_color_value_w_exp(TRACER_RENDERING, ISET_WIDTH,
                                        (double) self.TracerRadiusFactor,
                                        (int) self.TracerRadiusDigit,
                                        kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)DrawTracerVectorAction:(id)sender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetDrawTracerVector:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetTracerReferenceVector:(id)pSender {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                      (double) self.TracerScaleVector,
+                                      (int) self.TracerScaleDigit,
+                                      TRACER_RENDERING, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+}
+
+- (IBAction)SetTracerVectorIncrement:(id)pSender {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
+                                      (double) self.TracerVectorIncrement,
+                                      (int) self.TracerVectorIncDigit,
+                                      TRACER_RENDERING, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 

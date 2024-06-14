@@ -12,7 +12,8 @@
 static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_vect));
-    kemoview_set_PSF_draw_flags(PSFVECT_TOGGLE, iflag, kemo_gl->kemoview_data);
+    kemoview_set_VIZ_vector_draw_flags(iflag, SURFACE_RENDERING,
+                                       kemo_gl->kemoview_data);
 
     draw_full_gl(kemo_gl);
 	return;
@@ -46,11 +47,13 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, gtk_floatvalue,
-                                      i_digit, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING, ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                       gtk_floatvalue, i_digit,
+                                       SURFACE_RENDERING,
+                                       kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -61,11 +64,14 @@ static void set_ref_digit_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, current_value,
-                                      gtk_intvalue, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                      current_value, gtk_intvalue,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -76,11 +82,14 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_VECTOR_INC,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, gtk_floatvalue,
-                                      i_digit, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
+                                      gtk_floatvalue, i_digit,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -91,11 +100,14 @@ static void set_increment_digit_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_VECTOR_INC,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, current_value,
-                                      gtk_intvalue, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
+                                      current_value, gtk_intvalue,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -106,11 +118,14 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_PSF_V_THICK,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, gtk_floatvalue,
-                                      i_digit, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_V_THICK,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_V_THICK,
+                                      gtk_floatvalue, i_digit,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -120,11 +135,14 @@ static void set_width_digit_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                      SURFACE_RENDERING, ISET_PSF_V_THICK,
-                                      &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, current_value,
-                                      gtk_intvalue, kemo_gl->kemoview_data);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_V_THICK,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_V_THICK,
+                                      current_value, gtk_intvalue,
+                                      SURFACE_RENDERING,
+                                      kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
@@ -135,7 +153,8 @@ void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
 	int i_digit;
 	double current_value;
 	
-	if(kemoview_get_PSF_draw_flags(kemo_gl->kemoview_data, PSFVECT_TOGGLE) == 0){
+	if(kemoview_get_VIZ_vector_draw_flags(kemo_gl->kemoview_data,
+                                          SURFACE_RENDERING) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), TRUE);
@@ -155,21 +174,24 @@ void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_vector_menu->combobox_veccolor), 0);
 	};
 	
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                 SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_ref_vect), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_ref_digit), i_digit);
 	
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                 SURFACE_RENDERING, ISET_VECTOR_INC,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_vect_inc), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_inc_digit), i_digit);
 	
-    kemoview_get_VIZ_color_w_exp(kemo_gl->kemoview_data,
-                                 SURFACE_RENDERING, ISET_PSF_V_THICK,
-                                 &current_value, &i_digit);
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  SURFACE_RENDERING,
+                                  ISET_PSF_V_THICK,
+                                  &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_vect_width), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_vector_menu->spin_width_digit), i_digit);
 	return;
@@ -203,7 +225,8 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl, GtkWidg
 	
 	
 	psf_vector_menu->switch_vect = gtk_switch_new();
-    iflag = kemoview_get_PSF_draw_flags(kemo_gl->kemoview_data, PSFVECT_TOGGLE);
+    iflag = kemoview_get_VIZ_vector_draw_flags(kemo_gl->kemoview_data,
+                                               SURFACE_RENDERING);
     gtk_switch_set_state(GTK_SWITCH(psf_vector_menu->switch_vect), iflag);
 	g_signal_connect(G_OBJECT(psf_vector_menu->switch_vect), "notify::active",
 				G_CALLBACK(psf_vector_switch_CB), (gpointer) kemo_gl);

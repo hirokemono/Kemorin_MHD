@@ -57,7 +57,15 @@
 
     IBOutlet id TracerColorItem;
     
-    NSInteger tracerVectorMenuAcrive;
+    IBOutlet id _TracerVectorSwitchOutlet;
+    NSInteger tracerVectorMenuActive;
+    NSInteger DrawTracerVectorFlag;
+    CGFloat TracerVectorIncrement;
+    CGFloat TracerVectorIncDigit;
+    CGFloat TracerScaleVector;
+    CGFloat TracerScaleDigit;
+
+    NSInteger TracerColorbarSwitch;
 }
 @property NSInteger currentTracerStep;
 @property NSInteger DrawTracerFlag;
@@ -73,7 +81,14 @@
 @property CGFloat TracerRadiusFactor;
 @property CGFloat TracerRadiusDigit;
 
-@property NSInteger tracerVectorMenuAcrive;
+@property NSInteger tracerVectorMenuActive;
+@property NSInteger DrawTracerVectorFlag;
+@property CGFloat TracerVectorIncrement;
+@property CGFloat TracerVectorIncDigit;
+@property CGFloat TracerScaleVector;
+@property CGFloat TracerScaleDigit;
+
+@property NSInteger TracerColorbarSwitch;
 
 
 - (id)init;
@@ -83,6 +98,9 @@
 - (void) OpenTracerFile:(NSString*) TracerFilehead
                kemoview:(struct kemoviewer_type *) kemo_sgl;
 
+- (int) TracerColorbarSwitchStatus;
+- (void) setTracerColorbarSwitchStatus:(int) isel;
+
 - (IBAction) DrawTracerFile:(id)pId;
 - (IBAction) CloseTracerFile:(id)pId;
 - (IBAction) TracerFieldAction:(id)sender;
@@ -91,7 +109,9 @@
 - (IBAction)ChooseTracerColorAction:(id)sender;
 
 - (IBAction)ShowTracerRange:(id)pSender;
-- (IBAction)ChooseFieldlineTypeAction:(id)sender;
+- (IBAction)DrawTracerVectorAction:(id)sender;
 - (IBAction)SetTracerRadiusAction:(id)sender;
+- (IBAction)SetTracerReferenceVector:(id)pSender;
+- (IBAction)SetTracerVectorIncrement:(id)pSender;
 
 @end

@@ -14,6 +14,8 @@ void init_fline_parameters(struct psf_menu_val *fline_m){
 	fline_m->viz_color_mode =  INIT_FLDLINE_COLOR;
 	fline_m->viz_line_type =   INIT_FLDLINE_TYPE;
 	fline_m->viz_line_width = INIT_FLDLINE_THICK;
+    
+    fline_m->scale_vect = ONE;
 	return;
 }
 

@@ -61,10 +61,11 @@ void set_viz_colormap_param(int selected, int input,
 int get_viz_colormap_param(int selected,
                            struct psf_menu_val *viz_menu);
 
+void set_VIZ_vector_w_exp(int selected, double value, int i_digit, 
+                          struct psf_menu_val *viz_menu);
+void get_VIZ_vector_w_exp(int selected, struct psf_menu_val *viz_menu,
+                          double *value, int *i_digit);
 
-
-void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
-							  struct kemoview_mul_psf *kemo_mul_psf);
 void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
                          double *value, int *i_digit);
 
