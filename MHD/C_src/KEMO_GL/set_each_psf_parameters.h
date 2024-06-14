@@ -62,8 +62,8 @@ int send_draw_psf_grid(struct psf_menu_val *psf_menu);
 void set_draw_psf_zero(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_zero(struct psf_menu_val *psf_menu);
 
-void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu);
-int send_draw_psf_cbar(struct psf_menu_val *psf_menu);
+void set_draw_VIZ_cbar(int iflag, struct psf_menu_val *psf_menu);
+int send_draw_VIZ_cbar(struct psf_menu_val *psf_menu);
 
 void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu);
 int send_draw_psf_vect(struct psf_menu_val *psf_menu);

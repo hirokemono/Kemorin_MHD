@@ -195,9 +195,6 @@
 !    double kemoview_get_viz_colormap_range(struct kemoviewer_type *kemoviewer,
 !                                           int id_model, int selected);
 !
-!    int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
-!                                    int selected);
-!    
 !    double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
 !                                       int id_model, int selected, int icomp);
 !

@@ -82,7 +82,6 @@
 #define ISET_RANGE           4
 #define ISET_NLINE           5
 #define ISET_PSF_OPACITY     7
-#define COLORBAR_TOGGLE      8
 #define PSF_POLYGON_SWITCH   9
 #define ISET_COLORMAP       31
 #define ISET_NUM_COLOR      32
@@ -455,6 +454,11 @@ extern "C" {
     void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kemoviewer);
     
     int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer);
+
+    void kemoview_set_colorbar_draw_flag(int id_model, int iflag,
+                                         struct kemoviewer_type *kemoviewer);
+    int kemoview_get_colorbar_draw_flag(struct kemoviewer_type *kemoviewer,
+                                        int id_model);
 
     void kemoview_set_PSF_draw_flags(int selected, int iflag,
                                      struct kemoviewer_type *kemoviewer);

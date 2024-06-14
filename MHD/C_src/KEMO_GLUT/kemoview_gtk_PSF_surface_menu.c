@@ -23,8 +23,8 @@ static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpoin
 static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE, iflag,
-                                kemo_gl->kemoview_data);
+    kemoview_set_colorbar_draw_flag(iflag, SURFACE_RENDERING,
+                                    kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -232,7 +232,8 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_draw), TRUE);
 	};
-	if(kemoview_get_PSF_draw_flags(kemo_gl->kemoview_data, COLORBAR_TOGGLE) == 0){
+	if(kemoview_get_colorbar_draw_flag(kemo_gl->kemoview_data,
+                                       SURFACE_RENDERING) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), TRUE);
@@ -297,7 +298,8 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_g
 				G_CALLBACK(psf_surface_switch_CB), (gpointer) kemo_gl);
 	
 	psf_surface_menu->switch_bar = gtk_switch_new();
-    iflag = kemoview_get_PSF_draw_flags(kemo_gl->kemoview_data, COLORBAR_TOGGLE);
+    iflag = kemoview_get_colorbar_draw_flag(kemo_gl->kemoview_data, 
+                                            SURFACE_RENDERING);
     gtk_switch_set_state(GTK_SWITCH(psf_surface_menu->switch_bar), iflag);
 	gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), FALSE);
 	g_signal_connect(G_OBJECT(psf_surface_menu->switch_bar), "notify::active",

@@ -227,8 +227,6 @@ void set_each_PSF_draw_switch(int selected, int iflag, struct kemoview_mul_psf *
         set_draw_psf_grid(iflag, kemo_mul_psf->psf_m[i_current]);
     } else if (selected == ZEROGRID_TOGGLE){
         set_draw_psf_zero(iflag, kemo_mul_psf->psf_m[i_current]);
-    } else if (selected == COLORBAR_TOGGLE){
-        set_draw_psf_cbar(iflag, kemo_mul_psf->psf_m[i_current]);
     } else if (selected == PSFVECT_TOGGLE){
         set_draw_psf_vect(iflag, kemo_mul_psf->psf_m[i_current]);
     }
@@ -242,8 +240,6 @@ int get_each_PSF_draw_switch(int selected, struct kemoview_mul_psf *kemo_mul_psf
 		iflag = send_draw_psf_grid(kemo_mul_psf->psf_m[i_current]);
 	} else if (selected == ZEROGRID_TOGGLE){
 		iflag = send_draw_psf_zero(kemo_mul_psf->psf_m[i_current]);
-	} else if (selected == COLORBAR_TOGGLE){
-		iflag = send_draw_psf_cbar(kemo_mul_psf->psf_m[i_current]);
 	} else if (selected == PSF_POLYGON_SWITCH){
 		iflag = send_each_psf_polygon_mode(kemo_mul_psf->psf_m[i_current]);
 	} else if (selected == PSFVECT_TOGGLE){

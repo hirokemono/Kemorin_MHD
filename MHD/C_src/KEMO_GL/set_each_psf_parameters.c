@@ -73,8 +73,8 @@ int send_draw_psf_grid(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf
 void set_draw_psf_zero(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_zero = iflag;};
 int send_draw_psf_zero(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_zero;};
 
-void set_draw_psf_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_cbar = iflag;};
-int send_draw_psf_cbar(struct psf_menu_val *psf_menu) {return psf_menu->iflag_draw_cbar;};
+void set_draw_VIZ_cbar(int iflag, struct psf_menu_val *psf_menu){psf_menu->iflag_draw_cbar = iflag;};
+int send_draw_VIZ_cbar(struct psf_menu_val *psf_menu) {return psf_menu->iflag_draw_cbar;};
 
 void set_draw_psf_vect(int iflag, struct psf_menu_val *psf_menu){psf_menu->draw_psf_vect = iflag;};
 int send_draw_psf_vect(struct psf_menu_val *psf_menu) {return psf_menu->draw_psf_vect;};

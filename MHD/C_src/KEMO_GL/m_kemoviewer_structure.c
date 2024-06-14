@@ -730,9 +730,51 @@ int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
     return get_PSF_draw_refv(kemoviewer->kemo_mul_psf);
 };
 
-void kemoview_set_PSF_draw_flags(int selected, int iflag,
-                                 struct kemoviewer_type *kemoviewer){
+static void reset_colorbar_flag(struct kemoview_mul_psf *kemo_mul_psf,
+                                struct kemoview_fline *kemo_fline,
+                                struct kemoview_tracer *kemo_tracer){
+    kemo_fline->fline_m->iflag_draw_cbar =   0;
+    kemo_tracer->tracer_m->iflag_draw_cbar = 0;
+    for(int i=0; i< kemo_mul_psf->psf_a->nmax_loaded; i++){
+        kemo_mul_psf->psf_m[i]->iflag_draw_cbar = 0;
+    }
+    return;
+}
+
+void kemoview_set_colorbar_draw_flag(int id_model, int iflag,
+                                     struct kemoviewer_type *kemoviewer){
+    reset_colorbar_flag(kemoviewer->kemo_mul_psf,
+                        kemoviewer->kemo_fline,
+                        kemoviewer->kemo_tracer);
     
+    if(id_model == FIELDLINE_RENDERING){
+        set_draw_VIZ_cbar(iflag, kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        set_draw_VIZ_cbar(iflag, kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        set_draw_VIZ_cbar(iflag, kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    };
+}
+
+int kemoview_get_colorbar_draw_flag(struct kemoviewer_type *kemoviewer,
+                                    int id_model){
+    int iflag;
+    if(id_model == FIELDLINE_RENDERING){
+        iflag = send_draw_VIZ_cbar(kemoviewer->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        iflag = send_draw_VIZ_cbar(kemoviewer->kemo_tracer->tracer_m);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        iflag = send_draw_VIZ_cbar(kemoviewer->kemo_mul_psf->psf_m[i_current]);
+    };
+    return iflag;
+}
+
+
+
+void kemoview_set_PSF_draw_flags(int iflag, int selected, 
+                                 struct kemoviewer_type *kemoviewer){    
     set_each_PSF_draw_switch(selected, iflag, kemoviewer->kemo_mul_psf);
 }
 int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,

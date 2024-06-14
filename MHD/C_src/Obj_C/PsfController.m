@@ -159,7 +159,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                                                              SURFACE_RENDERING,
                                                              COMPONENT_SEL_FLAG);
     
-	
 	self.PSFSurfaceSwitch 
         =  kemoview_get_VIZ_draw_flags(kemo_sgl, SURFACE_RENDERING);
 	self.PSFIsolineSwitch 
@@ -167,7 +166,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	self.PSFZerolineSwitch
         = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch 
-            = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
+        = kemoview_get_colorbar_draw_flag(kemo_sgl, SURFACE_RENDERING);
     
     [self setSelectedPSFComponentRanges:kemo_sgl];
     kemoview_get_VIZ_color_w_exp(kemo_sgl,
@@ -648,9 +647,8 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(COLORBAR_TOGGLE,
-                                (int) self.PSFColorbarSwitch,
-                                kemo_sgl);
+    kemoview_set_colorbar_draw_flag((int) self.PSFColorbarSwitch,
+                                    SURFACE_RENDERING, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 

@@ -2,6 +2,7 @@
 /* const_viewer_menu_glut.c */
 
 #include "const_viewer_menu_glut.h"
+#define COLORBAR_TOGGLE      8
 
 void glut_drawing_select() {
 	int iflag_shade = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
