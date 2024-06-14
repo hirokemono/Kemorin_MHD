@@ -449,9 +449,8 @@ int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
                                          stripped_dir, stripped_filehead);
 };
 
-struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf){
-    int i_current = get_curent_PSF_ID(kemo_mul_psf->psf_a);
-    long icomp =    send_draw_component_VIZ(kemo_mul_psf->psf_m[i_current]);
-    return kemo_mul_psf->psf_m[i_current]->cmap_viz_comp[icomp];
+struct colormap_params * link_active_colormap_param(struct psf_menu_val *viz_menu){
+    long icomp =    send_draw_component_VIZ(viz_menu);
+    return viz_menu->cmap_viz_comp[icomp];
 }
 

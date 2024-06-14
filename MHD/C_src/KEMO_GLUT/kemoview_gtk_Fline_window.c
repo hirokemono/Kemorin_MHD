@@ -57,6 +57,7 @@ void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
     gtk_widget_set_size_request(fline_menu->flineWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(fline_menu->flineWin), 5);
 
+    fline_menu->fline_color_vws = alloc_colormap_view();
     set_fieldline_menu_box(kemo_gl, fline_menu, itemTEvo);
     GtkWidget *flineFrame = pack_fieldline_menu_frame(fline_menu);
     

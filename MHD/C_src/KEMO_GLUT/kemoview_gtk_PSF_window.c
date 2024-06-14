@@ -26,7 +26,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
     kemoview_set_VIZ_field_param(SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
                                  IZERO, kemo_gl->kemoview_data);
-    set_vector_plot_availablity(kemo_gl, psf_gmenu);
+    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu);
 
     gtk_widget_destroy(psf_gmenu->psf_frame);
     psf_gmenu->psf_frame = set_psf_menu_box(kemo_gl, psf_gmenu, itemTEvo);
@@ -292,10 +292,7 @@ GtkWidget * set_psf_menu_box(struct kemoviewer_gl_type *kemo_gl,
     init_psf_draw_field_hbox(kemo_gl, psf_gmenu, itemTEvo);
     
     init_psf_draw_component_hbox(kemo_gl, psf_gmenu, itemTEvo);
-    init_colormap_params_4_viewer(kemo_gl, psf_gmenu->color_vws);
-    
-    init_psf_menu_hbox(kemo_gl, psf_gmenu, psf_gmenu->psfWin);
-    
+    init_psf_menu_hbox(kemo_gl, psf_gmenu);
     
     GtkWidget *psf_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(psf_vbox), psf_gmenu->closeButton, FALSE, FALSE, 0);

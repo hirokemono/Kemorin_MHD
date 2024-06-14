@@ -325,14 +325,14 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                                                NUM_FIELD_FLAG);
     long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, id_model,
                                                    (int) isel);
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-    kemoview_get_VIZ_field_name(kemo_sgl, id_model,
-                                colorname, (int) isel);
-    NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
-    
     if(n_field < 1){
         [psfComponentMenu addItemWithTitle:@"No data"];
     } else {
+        struct kv_string *colorname = kemoview_alloc_kvstring();
+        kemoview_get_VIZ_field_name(kemo_sgl, id_model,
+                                    colorname, (int) isel);
+        NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
+        
         if(num_comp == 1){
             [psfComponentMenu addItemWithTitle:@"Scalar"];
         } else if(num_comp == 6){
@@ -366,9 +366,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                 [psfComponentMenu addItemWithTitle:@"z"];
             }
         }
+        [stname release];
+        kemoview_free_kvstring(colorname);
     }
-    [stname release];
-    kemoview_free_kvstring(colorname);
     return;
 }
 

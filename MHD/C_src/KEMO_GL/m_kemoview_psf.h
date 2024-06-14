@@ -99,5 +99,6 @@ void write_PSF_colormap_file(struct kv_string *filename, int iflag_draw_axis,
 int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
                              struct kv_string *stripped_dir,
                              struct kv_string *stripped_filehead);
-struct colormap_params * link_active_colormap_param(struct kemoview_mul_psf *kemo_mul_psf);
+
+struct colormap_params * link_active_colormap_param(struct psf_menu_val *viz_menu);
 #endif

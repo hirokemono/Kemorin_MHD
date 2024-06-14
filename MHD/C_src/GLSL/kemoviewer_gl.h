@@ -82,7 +82,8 @@ struct kemoviewer_gl_type{
                                      struct kv_string *stripped_filehead);
     void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                          struct kemoviewer_gl_type *kemo_gl);
-    void * kemoview_link_active_colormap_param(struct kemoviewer_gl_type *kemo_gl);
+    void * kemoview_link_active_colormap_param(int id_model,
+                                               struct kemoviewer_gl_type *kemo_gl);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */

@@ -7,10 +7,11 @@
 
 #include "tree_view_viewer_colormap.h"
 
-void update_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
-                                     struct colormap_view *color_vws){
+static void update_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
+                                            struct colormap_view *color_vws){
     color_vws->cmap_param
-        = (struct colormap_params *) kemoview_link_active_colormap_param(kemo_gl);
+        = (struct colormap_params *) kemoview_link_active_colormap_param(color_vws->iflag_current_model,
+                                                                         kemo_gl);
     
     sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
@@ -41,12 +42,14 @@ void update_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
     return;
 }
 
-void init_colormap_params_4_viewer(struct kemoviewer_gl_type *kemo_gl,
+void init_colormap_params_4_viewer(int id_model,
+                                   struct kemoviewer_gl_type *kemo_gl,
                                    struct colormap_view *color_vws){
 	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
     color_vws->cmap_vws =    alloc_r2_clist_views();
     color_vws->opacity_vws = alloc_r2_clist_views();
     
+    color_vws->iflag_current_model = id_model;
     update_colormap_params_4_viewer(kemo_gl, color_vws);
     return;
 };

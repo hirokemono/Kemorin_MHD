@@ -154,8 +154,18 @@ void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
     return;
 };
 
-void * kemoview_link_active_colormap_param(struct kemoviewer_gl_type *kemo_gl){
-    return link_active_colormap_param(kemo_gl->kemoview_data->kemo_mul_psf);
+void * kemoview_link_active_colormap_param(int id_model,
+                                           struct kemoviewer_gl_type *kemo_gl){
+    struct colormap_params * cmap_params;
+    if(id_model == FIELDLINE_RENDERING){
+        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        cmap_params =  link_active_colormap_param(kemo_gl->kemoview_data->kemo_tracer->tracer_m);
+    }else{
+        int i_current = get_curent_PSF_ID(kemo_gl->kemoview_data->kemo_mul_psf->psf_a);
+        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_mul_psf->psf_m[i_current]);
+    }
+    return (void *) cmap_params;
 }
 
 

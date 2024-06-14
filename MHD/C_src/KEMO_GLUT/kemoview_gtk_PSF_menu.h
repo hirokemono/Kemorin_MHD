@@ -22,6 +22,7 @@
 #include "tree_view_4_colormap.h"
 #include "tree_view_kemoview_colormap.h"
 #include "tree_view_4_light_position.h"
+#include "tree_view_viewer_colormap.h"
 #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_PSF_surface_menu.h"
 #include "kemoview_gtk_PSF_isoline_menu.h"
@@ -85,10 +86,14 @@ struct psf_gtk_menu{
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
+GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *window,
+                                           struct colormap_view *color_vws);
+
+void set_vector_plot_availablity(int iflag_current_model,
+                                 struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_gtk_menu *psf_gmenu);
 void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
-                        struct psf_gtk_menu *psf_gmenu,
-                        GtkWidget *window);
+                        struct psf_gtk_menu *psf_gmenu);
 
 #endif

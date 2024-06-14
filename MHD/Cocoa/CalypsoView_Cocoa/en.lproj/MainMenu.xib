@@ -2861,7 +2861,7 @@
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2r5-Q1-lji">
                                                                     <rect key="frame" x="0.0" y="0.0" width="214" height="725"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                                     <subviews>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Field to Display" translatesAutoresizingMaskIntoConstraints="NO" id="1892">
                                                                             <rect key="frame" x="8" y="633" width="209" height="92"/>
@@ -4163,7 +4163,7 @@
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsF-pz-RKX">
                                                                     <rect key="frame" x="0.0" y="0.0" width="214" height="727"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                                     <subviews>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Field to Colur" translatesAutoresizingMaskIntoConstraints="NO" id="1951">
                                                                             <rect key="frame" x="8" y="637" width="209" height="90"/>

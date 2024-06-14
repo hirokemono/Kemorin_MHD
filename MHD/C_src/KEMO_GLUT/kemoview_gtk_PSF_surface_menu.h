@@ -41,6 +41,5 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_surface_gtk_menu *gtk_psf_surface);
 GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                                GtkWidget *window, 
-                                               struct colormap_view *color_vws, 
                                                struct psf_surface_gtk_menu *psf_surface_menu);
 #endif

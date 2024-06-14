@@ -17,13 +17,15 @@
 #include "kemoviewer_gl.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "kemoview_gtk_fline_selectors.h"
+#include "tree_view_viewer_colormap.h"
+#include "kemoview_gtk_PSF_menu.h"
 
 #include "view_modifier_glfw.h"
 
 struct fieldline_gtk_menu{
     int iflag_flineBox;
     GtkWidget *flineWin;
-
+    
     GtkWidget *closeButton;
     GtkWidget *combobox_color;
     GtkWidget *switch_tube;
@@ -36,10 +38,13 @@ struct fieldline_gtk_menu{
     GtkWidget *combobox_field;
     GtkWidget *label_tree_field;
     GtkCellRenderer *renderer_field;
-
+    
     GtkWidget *combobox_comp;
     GtkWidget *label_tree_comp;
     GtkCellRenderer *renderer_comp;
+    
+    struct colormap_view *fline_color_vws;
+    GtkWidget *expander_fline_color;
 };
 
 

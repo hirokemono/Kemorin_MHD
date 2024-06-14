@@ -286,6 +286,10 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     fline_menu->combobox_comp = fline_draw_component_combobox(kemo_gl,
                                                               fline_menu->label_tree_comp,
                                                               fline_menu->renderer_comp);
+    
+    init_colormap_params_4_viewer(FIELDLINE_RENDERING, kemo_gl, fline_menu->fline_color_vws);
+    fline_menu->expander_fline_color = init_gtk_psf_colormap_expander(kemo_gl, fline_menu->flineWin,
+                                                                      fline_menu->fline_color_vws);
     return;
 }
 
@@ -334,7 +338,8 @@ GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu){
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_color, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_tube, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_thickness, TRUE, TRUE, 0);
-	
+    gtk_box_pack_start(GTK_BOX(menu_box), fline_menu->expander_fline_color, TRUE, TRUE, 0);
+
 	gtk_box_pack_start(GTK_BOX(menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_min, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_max, TRUE, TRUE, 0);

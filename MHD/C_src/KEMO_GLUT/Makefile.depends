@@ -198,6 +198,16 @@ kemoview_gtk_Fline_window.o: \
  $(C_SRCDIR)/KEMO_GLUT/render_on_GLFW.h \
  $(C_SRCDIR)/KEMO_GLUT/movie_from_GLFW_by_FFMPEG.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_FFMPEG_encoder.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
+ $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_kemoview_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_surface_menu.h \
+ $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_evolution_menu.h
 	$(CC) -c  $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(FFMPEG_CFLAGS)  $<
 kemoview_gtk_PSF_isoline_menu.o: \
@@ -590,10 +600,13 @@ kemoview_gtk_PSF_menu.o: \
  $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
  $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
+ $(C_SRCDIR)/GTK/tree_view_viewer_colormap.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
+ $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+ $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_fileselector.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_surface_menu.h \
  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
- $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.h
@@ -991,8 +1004,8 @@ kemoview_gtk_PSF_window.o: \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_window.c \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_window.h \
  $(C_SRCDIR)/GTK/calypso_GTK.h \
- $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+ $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
  $(C_SRCDIR)/GLSL/glsl.h \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
@@ -1940,7 +1953,29 @@ kemoview_gtk_fieldline_menu.o: \
  $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
  $(C_SRCDIR)/KEMO_GLUT/render_on_GLFW.h \
  $(C_SRCDIR)/KEMO_GLUT/movie_from_GLFW_by_FFMPEG.h \
- $(C_SRCDIR)/KEMO_GLUT/kemoview_FFMPEG_encoder.h
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_FFMPEG_encoder.h \
+ $(C_SRCDIR)/GTK/tree_view_viewer_colormap.h \
+ $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
+ $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+ $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+ $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+ $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+ $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
+ $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+ $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
+ $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_kemoview_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
+ $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+ $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_fileselector.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_surface_menu.h \
+ $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h \
+ $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.h
 	$(CC) -c  $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(FFMPEG_CFLAGS)  $<
 kemoview_gtk_fileselector.o: \
  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_fileselector.c \
