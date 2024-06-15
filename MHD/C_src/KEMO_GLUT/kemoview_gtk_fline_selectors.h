@@ -26,13 +26,13 @@
 
 /*  prototypes */
 
-GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
+GtkWidget * tracer_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *dummy_entry,
                                  GtkWidget *label_tree_field,
                                  GtkCellRenderer *renderer_field);
 
-GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
-                                          GtkWidget *dummy_entry,
-                                          GtkWidget *label_tree_comp,
-                                          GtkCellRenderer *renderer_comp);
+GtkWidget * tracer_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *dummy_entry,
+                                           GtkWidget *label_tree_comp,
+                                           GtkCellRenderer *renderer_comp);
 #endif

@@ -27,9 +27,15 @@
 void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
                        struct fieldline_gtk_menu *fline_gmenu,
                        GtkWidget *main_window, GtkWidget *itemTEvo);
-
+void replace_fline_frame(struct kemoviewer_gl_type *kemo_gl,
+                         struct fieldline_gtk_menu *fline_gmenu,
+                         GtkWidget *itemTEvo);
+ 
 void init_tracer_window(struct kemoviewer_gl_type *kemo_gl,
                         struct fieldline_gtk_menu *fline_gmenu,
                         GtkWidget *main_window, GtkWidget *itemTEvo);
+void replace_tracer_frame(struct kemoviewer_gl_type *kemo_gl,
+                          struct fieldline_gtk_menu *tracer_gmenu,
+                          GtkWidget *itemTEvo);
 
 #endif /*  KEMOVIEW_GTK_FLINE_WINDOW_  */

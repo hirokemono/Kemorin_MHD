@@ -27,7 +27,8 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer user_data)
     kemoview_set_VIZ_color_value_w_exp(fline_gmenu->iflag_flinemode, ISET_WIDTH,
                                        thick_in, current_digit,
                                        kemo_gl->kemoview_data);
-
+    
+    
     draw_full_gl(kemo_gl);
 }
 static void fline_digit_CB(GtkWidget *entry, gpointer user_data)
@@ -338,13 +339,6 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(fline_gmenu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) dummy_entry);
     
-    fline_gmenu->combobox_field = fline_draw_field_box(kemo_gl, dummy_entry,
-                                                       fline_gmenu->label_tree_field,
-                                                       fline_gmenu->renderer_field);
-    fline_gmenu->combobox_comp = fline_draw_component_combobox(kemo_gl, dummy_entry,
-                                                               fline_gmenu->label_tree_comp,
-                                                               fline_gmenu->renderer_comp);
-    
     init_colormap_params_4_viewer(fline_gmenu->iflag_flinemode, kemo_gl,
                                   fline_gmenu->fline_color_vws);
     fline_gmenu->expander_fline_color = init_gtk_psf_colormap_expander(kemo_gl, fline_gmenu->flineWin,
@@ -499,13 +493,6 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(MaxValueChange_CB), (gpointer) dummy_entry);
     g_signal_connect(fline_gmenu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) dummy_entry);
-    
-    fline_gmenu->combobox_field = fline_draw_field_box(kemo_gl, dummy_entry,
-                                                       fline_gmenu->label_tree_field,
-                                                       fline_gmenu->renderer_field);
-    fline_gmenu->combobox_comp = fline_draw_component_combobox(kemo_gl, dummy_entry,
-                                                               fline_gmenu->label_tree_comp,
-                                                               fline_gmenu->renderer_comp);
     
     init_colormap_params_4_viewer(fline_gmenu->iflag_flinemode, kemo_gl,
                                   fline_gmenu->fline_color_vws);

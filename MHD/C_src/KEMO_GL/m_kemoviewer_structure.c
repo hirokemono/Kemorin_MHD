@@ -151,10 +151,9 @@ void kemoview_load_modelview_file(struct kv_string *filename,
 
 
 void kemoview_viewer_evolution(int istep, struct kemoviewer_type *kemoviewer){
-	int ierr = 0;
 	psf_viewer_evolution(istep, kemoviewer->kemo_mul_psf->psf_a);
-	ierr = evolution_fline_viewer(kemoviewer->kemo_fline, kemoviewer->psf_ucd_tmp,
-                                  kemoviewer->kemo_mul_psf->psf_a->istep_sync);
+	evolution_fline_viewer(kemoviewer->kemo_fline, kemoviewer->psf_ucd_tmp,
+                           kemoviewer->kemo_mul_psf->psf_a->istep_sync);
     evolution_psf_viewer(kemoviewer->psf_ucd_tmp, kemoviewer->kemo_mul_psf);
 	return;
 }
@@ -614,7 +613,6 @@ int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, 
 
 void kemoview_set_VIZ_field_param(int input, int id_model, int selected,
                                   struct kemoviewer_type *kemoviewer){
-    long index = 0;
     if(id_model == FIELDLINE_RENDERING){
         set_each_PSF_field_param(selected, input,
                                  kemoviewer->kemo_fline->fline_d,

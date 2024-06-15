@@ -21,7 +21,12 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
                                  fline_gmenu->iflag_flinemode,
                                  FIELD_SEL_FLAG,
                                  kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(index_mode,
+                                 fline_gmenu->iflag_flinemode,
+                                 COMPONENT_SEL_FLAG,
+                                 kemo_gl->kemoview_data);
 	
+//    fline_gmenu->fline_frame = replace_fline_frame(kemo_gl, fline_gmenu, itemTEvo);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -43,7 +48,7 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
 };
 
 
-GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
+GtkWidget * tracer_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *dummy_entry,
                                  GtkWidget *label_tree_field,
                                  GtkCellRenderer *renderer_field){
@@ -83,10 +88,10 @@ GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
 }
 
 
-GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
-                                          GtkWidget *dummy_entry,
-                                          GtkWidget *label_tree_comp,
-                                          GtkCellRenderer *renderer_comp){
+GtkWidget * tracer_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *dummy_entry,
+                                           GtkWidget *label_tree_comp,
+                                           GtkCellRenderer *renderer_comp){
     struct fieldline_gtk_menu *fline_gmenu
             = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(dummy_entry), "fline_view");
 	char comp_name[128];
