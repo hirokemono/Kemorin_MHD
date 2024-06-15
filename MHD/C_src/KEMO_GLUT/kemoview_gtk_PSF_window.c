@@ -70,7 +70,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     if(index_mode >= num_fld || index_mode < 0){
         index_mode = 0;
     }
-
+    
     kemoview_set_VIZ_field_param(index_mode,
                                  SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,

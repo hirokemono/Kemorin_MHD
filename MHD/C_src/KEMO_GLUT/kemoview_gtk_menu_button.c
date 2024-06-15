@@ -88,7 +88,6 @@ GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), menu_widget);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
 
-    itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
     g_signal_connect(itemTEvo, "activate", G_CALLBACK (evo_menu_CB), menu_widget);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemTEvo);
 

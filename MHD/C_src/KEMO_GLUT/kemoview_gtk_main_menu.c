@@ -225,6 +225,7 @@ GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
 
+    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
     GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
                                                mbot->lightparams_vws,
                                                mbot->evo_gmenu,
