@@ -4749,8 +4749,341 @@
                                                                     <rect key="frame" x="0.0" y="0.0" width="214" height="727"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                                     <subviews>
+                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Shape" translatesAutoresizingMaskIntoConstraints="NO" id="N9Q-sy-NJK">
+                                                                            <rect key="frame" x="8" y="472" width="209" height="161"/>
+                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                            <view key="contentView" id="3HR-Fo-fAC">
+                                                                                <rect key="frame" x="3" y="3" width="203" height="143"/>
+                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                <subviews>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dxX-Mo-Vjr">
+                                                                                        <rect key="frame" x="13" y="113" width="70" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Radius:" id="6Un-mc-2ga">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gGb-Vl-RIs">
+                                                                                        <rect key="frame" x="103" y="110" width="19" height="22"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="Nr4-fg-MWi">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="fgQ-Ns-xRs"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="WUG-vQ-gLl"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sqe-Ja-66u">
+                                                                                        <rect key="frame" x="89" y="111" width="17" height="21"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="juQ-wa-Oxc">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2M8-GG-U54">
+                                                                                                <real key="minimum" value="0.0"/>
+                                                                                                <real key="maximum" value="9"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="tsZ-QV-Mqk"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="0xC-KK-JMh"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4gc-ir-7Uo">
+                                                                                        <rect key="frame" x="149" y="119" width="29" height="19"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="7Bp-b1-3RM">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="e0x-SY-MV6">
+                                                                                                <real key="minimum" value="-30"/>
+                                                                                                <real key="maximum" value="30"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="QSQ-ZZ-t4H"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="ZN4-Q2-b4m"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zWC-w7-mX7">
+                                                                                        <rect key="frame" x="122" y="113" width="25" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="ZYl-oS-Ujl">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d8h-KU-8gZ">
+                                                                                        <rect key="frame" x="13" y="78" width="70" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment:" id="jIZ-P1-Tey">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GM6-Ia-bzI">
+                                                                                        <rect key="frame" x="103" y="76" width="19" height="20"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="O7N-5P-AyZ">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="Sqf-f4-Vfm"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="zF1-al-gfY"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nEb-R4-xlV">
+                                                                                        <rect key="frame" x="89" y="76" width="17" height="21"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hmb-Bl-pqm">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="DAP-3K-vOC">
+                                                                                                <real key="minimum" value="0.0"/>
+                                                                                                <real key="maximum" value="9"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="T3E-uL-zWR"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="tpB-wV-xSh"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bVH-FA-YeJ">
+                                                                                        <rect key="frame" x="149" y="84" width="29" height="19"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="BPg-PO-wJF">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jNP-DZ-Kb8">
+                                                                                                <real key="minimum" value="-30"/>
+                                                                                                <real key="maximum" value="30"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="4oP-rV-szW"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="ffI-Ax-9p2"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wqF-zD-9JN">
+                                                                                        <rect key="frame" x="122" y="78" width="25" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Z2Z-p0-DIN">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                    </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1p6-Z6-WSc">
+                                                                                        <rect key="frame" x="175" y="82" width="15" height="22"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="zTs-Vl-jMT">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="2Z1-5F-5Hk"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="DBN-62-6Gt"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qi9-DX-9xK">
+                                                                                        <rect key="frame" x="175" y="117" width="15" height="22"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-3" id="o02-c3-9bv">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="Wan-PG-ymp"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="6wE-y7-d7i"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="taS-IG-4CR">
+                                                                                        <rect key="frame" x="100" y="41" width="96" height="32"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <buttonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zVR-nu-0lb">
+                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="rOS-yR-qK2"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.DrawTracerVectorFlag" id="o0a-yr-VZL"/>
+                                                                                            </connections>
+                                                                                        </buttonCell>
+                                                                                        <connections>
+                                                                                            <action selector="DrawTracerVectorAction:" target="ld6-u3-7Oq" id="3Hp-kE-quT"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="JZE-lo-UGW"/>
+                                                                                        </connections>
+                                                                                    </button>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mMr-BH-XG2">
+                                                                                        <rect key="frame" x="13" y="50" width="44" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Vector" id="Ah3-Zp-k7N">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="Fvh-xi-6kU"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wU9-Ze-ngd">
+                                                                                        <rect key="frame" x="13" y="16" width="66" height="16"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Reference" id="J0k-au-7CW">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="KJT-dZ-qTv"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I5s-gA-syb">
+                                                                                        <rect key="frame" x="96" y="13" width="17" height="21"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="i4g-EG-8GY">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="W3I-cg-v6Q">
+                                                                                                <real key="minimum" value="1"/>
+                                                                                                <real key="maximum" value="9"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="Ozl-lj-mgZ"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="BQ5-PJ-Bkj"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="wVO-6S-RuD"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qBV-zf-AA0">
+                                                                                        <rect key="frame" x="149" y="23" width="28" height="18"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="MeK-tZ-Xfz">
+                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="zib-ET-n4e">
+                                                                                                <real key="minimum" value="-30"/>
+                                                                                                <real key="maximum" value="30"/>
+                                                                                            </numberFormatter>
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="SUN-Bd-2Jn"/>
+                                                                                            </connections>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="6y3-pM-ACi"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="SBl-AL-cva"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gNi-2c-3iM">
+                                                                                        <rect key="frame" x="110" y="11" width="19" height="25"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="QGn-fb-J6n">
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="jxA-r3-tBX"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="hQy-jf-CeV"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="pI9-4D-fO6"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="tyl-92-q2U"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5sc-II-9eZ">
+                                                                                        <rect key="frame" x="176" y="24" width="15" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="t5c-JR-4fB">
+                                                                                            <font key="font" metaFont="smallSystem"/>
+                                                                                            <connections>
+                                                                                                <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="Mb2-k4-JWz"/>
+                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="Vch-00-IxJ"/>
+                                                                                            </connections>
+                                                                                        </stepperCell>
+                                                                                        <connections>
+                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="MNG-uY-MyR"/>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="EzJ-kj-ITp"/>
+                                                                                        </connections>
+                                                                                    </stepper>
+                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XdG-R6-njy">
+                                                                                        <rect key="frame" x="126" y="15" width="25" height="17"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Qab-h2-UEj">
+                                                                                            <font key="font" metaFont="system"/>
+                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                        </textFieldCell>
+                                                                                        <connections>
+                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="z8a-3s-kL3"/>
+                                                                                        </connections>
+                                                                                    </textField>
+                                                                                </subviews>
+                                                                            </view>
+                                                                        </box>
+                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Field to Colur" translatesAutoresizingMaskIntoConstraints="NO" id="1e2-e4-t0E">
+                                                                            <rect key="frame" x="8" y="637" width="209" height="90"/>
+                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                            <view key="contentView" id="bEv-Jd-oK5">
+                                                                                <rect key="frame" x="3" y="3" width="203" height="72"/>
+                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                <subviews>
+                                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SCf-96-R43">
+                                                                                        <rect key="frame" x="17" y="7" width="170" height="26"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1Ji-q4-2n0" id="K28-en-3VW">
+                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                            <font key="font" metaFont="menu"/>
+                                                                                            <menu key="menu" title="OtherViews" id="efF-gj-mZQ">
+                                                                                                <items>
+                                                                                                    <menuItem title="Component" state="on" id="1Ji-q4-2n0"/>
+                                                                                                </items>
+                                                                                            </menu>
+                                                                                        </popUpButtonCell>
+                                                                                        <connections>
+                                                                                            <action selector="TracerComponentAction:" target="ld6-u3-7Oq" id="LDB-UA-N6R"/>
+                                                                                        </connections>
+                                                                                    </popUpButton>
+                                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S1r-RF-5SC">
+                                                                                        <rect key="frame" x="17" y="38" width="170" height="25"/>
+                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="DSB-mV-jhz" id="2PF-SW-HqE">
+                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                            <font key="font" metaFont="menu"/>
+                                                                                            <menu key="menu" title="OtherViews" id="rZX-E6-JoC">
+                                                                                                <items>
+                                                                                                    <menuItem title="Field" state="on" id="DSB-mV-jhz"/>
+                                                                                                </items>
+                                                                                            </menu>
+                                                                                        </popUpButtonCell>
+                                                                                        <connections>
+                                                                                            <action selector="TracerFieldAction:" target="ld6-u3-7Oq" id="q5Z-zJ-x65"/>
+                                                                                        </connections>
+                                                                                    </popUpButton>
+                                                                                </subviews>
+                                                                            </view>
+                                                                        </box>
                                                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color" translatesAutoresizingMaskIntoConstraints="NO" id="guA-AV-673">
-                                                                            <rect key="frame" x="8" y="283" width="209" height="241"/>
+                                                                            <rect key="frame" x="8" y="227" width="209" height="241"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                             <view key="contentView" id="Xp3-0R-d2O">
                                                                                 <rect key="frame" x="3" y="3" width="203" height="223"/>
@@ -5038,353 +5371,6 @@
                                                                                 </subviews>
                                                                             </view>
                                                                         </box>
-                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Size" translatesAutoresizingMaskIntoConstraints="NO" id="N9Q-sy-NJK">
-                                                                            <rect key="frame" x="8" y="528" width="209" height="105"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <view key="contentView" id="3HR-Fo-fAC">
-                                                                                <rect key="frame" x="3" y="3" width="203" height="87"/>
-                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                                <subviews>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dxX-Mo-Vjr">
-                                                                                        <rect key="frame" x="13" y="52" width="70" height="17"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thickness:" id="6Un-mc-2ga">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gGb-Vl-RIs">
-                                                                                        <rect key="frame" x="103" y="49" width="19" height="22"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="Nr4-fg-MWi">
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="fgQ-Ns-xRs"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="WUG-vQ-gLl"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sqe-Ja-66u">
-                                                                                        <rect key="frame" x="89" y="50" width="17" height="21"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="juQ-wa-Oxc">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2M8-GG-U54">
-                                                                                                <real key="minimum" value="0.0"/>
-                                                                                                <real key="maximum" value="9"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusFactor" id="tsZ-QV-Mqk"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="0xC-KK-JMh"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4gc-ir-7Uo">
-                                                                                        <rect key="frame" x="149" y="58" width="29" height="19"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="7Bp-b1-3RM">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="e0x-SY-MV6">
-                                                                                                <real key="minimum" value="-30"/>
-                                                                                                <real key="maximum" value="30"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="QSQ-ZZ-t4H"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="ZN4-Q2-b4m"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zWC-w7-mX7">
-                                                                                        <rect key="frame" x="122" y="52" width="25" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="ZYl-oS-Ujl">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d8h-KU-8gZ">
-                                                                                        <rect key="frame" x="13" y="17" width="70" height="17"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="jIZ-P1-Tey">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GM6-Ia-bzI">
-                                                                                        <rect key="frame" x="103" y="15" width="19" height="20"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="9" doubleValue="3" id="O7N-5P-AyZ">
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="Sqf-f4-Vfm"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="zF1-al-gfY"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nEb-R4-xlV">
-                                                                                        <rect key="frame" x="89" y="15" width="17" height="21"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hmb-Bl-pqm">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="DAP-3K-vOC">
-                                                                                                <real key="minimum" value="0.0"/>
-                                                                                                <real key="maximum" value="9"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncrement" id="T3E-uL-zWR"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="tpB-wV-xSh"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bVH-FA-YeJ">
-                                                                                        <rect key="frame" x="149" y="23" width="29" height="19"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="BPg-PO-wJF">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jNP-DZ-Kb8">
-                                                                                                <real key="minimum" value="-30"/>
-                                                                                                <real key="maximum" value="30"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="4oP-rV-szW"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="ffI-Ax-9p2"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wqF-zD-9JN">
-                                                                                        <rect key="frame" x="122" y="17" width="25" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Z2Z-p0-DIN">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                    </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1p6-Z6-WSc">
-                                                                                        <rect key="frame" x="175" y="21" width="15" height="22"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="zTs-Vl-jMT">
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerVectorIncDigit" id="2Z1-5F-5Hk"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerVectorIncrement:" target="ld6-u3-7Oq" id="DBN-62-6Gt"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qi9-DX-9xK">
-                                                                                        <rect key="frame" x="175" y="56" width="15" height="22"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-3" id="o02-c3-9bv">
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerRadiusDigit" id="Wan-PG-ymp"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerRadiusAction:" target="ld6-u3-7Oq" id="6wE-y7-d7i"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                </subviews>
-                                                                            </view>
-                                                                        </box>
-                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Field to Colur" translatesAutoresizingMaskIntoConstraints="NO" id="1e2-e4-t0E">
-                                                                            <rect key="frame" x="8" y="637" width="209" height="90"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <view key="contentView" id="bEv-Jd-oK5">
-                                                                                <rect key="frame" x="3" y="3" width="203" height="72"/>
-                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                                <subviews>
-                                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SCf-96-R43">
-                                                                                        <rect key="frame" x="17" y="7" width="170" height="26"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1Ji-q4-2n0" id="K28-en-3VW">
-                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                                            <font key="font" metaFont="menu"/>
-                                                                                            <menu key="menu" title="OtherViews" id="efF-gj-mZQ">
-                                                                                                <items>
-                                                                                                    <menuItem title="Component" state="on" id="1Ji-q4-2n0"/>
-                                                                                                </items>
-                                                                                            </menu>
-                                                                                        </popUpButtonCell>
-                                                                                        <connections>
-                                                                                            <action selector="TracerComponentAction:" target="ld6-u3-7Oq" id="LDB-UA-N6R"/>
-                                                                                        </connections>
-                                                                                    </popUpButton>
-                                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S1r-RF-5SC">
-                                                                                        <rect key="frame" x="17" y="38" width="170" height="25"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="DSB-mV-jhz" id="2PF-SW-HqE">
-                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                                            <font key="font" metaFont="menu"/>
-                                                                                            <menu key="menu" title="OtherViews" id="rZX-E6-JoC">
-                                                                                                <items>
-                                                                                                    <menuItem title="Field" state="on" id="DSB-mV-jhz"/>
-                                                                                                </items>
-                                                                                            </menu>
-                                                                                        </popUpButtonCell>
-                                                                                        <connections>
-                                                                                            <action selector="TracerFieldAction:" target="ld6-u3-7Oq" id="q5Z-zJ-x65"/>
-                                                                                        </connections>
-                                                                                    </popUpButton>
-                                                                                </subviews>
-                                                                            </view>
-                                                                        </box>
-                                                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Vector" translatesAutoresizingMaskIntoConstraints="NO" id="MQS-qF-IwS">
-                                                                            <rect key="frame" x="8" y="188" width="209" height="91"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                                            <view key="contentView" id="e2b-EB-Qt0">
-                                                                                <rect key="frame" x="3" y="3" width="203" height="73"/>
-                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                                <subviews>
-                                                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="taS-IG-4CR">
-                                                                                        <rect key="frame" x="100" y="39" width="96" height="32"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <buttonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zVR-nu-0lb">
-                                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.DrawTracerVectorFlag" id="o0a-yr-VZL"/>
-                                                                                            </connections>
-                                                                                        </buttonCell>
-                                                                                        <connections>
-                                                                                            <action selector="DrawTracerVectorAction:" target="ld6-u3-7Oq" id="3Hp-kE-quT"/>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="JZE-lo-UGW"/>
-                                                                                        </connections>
-                                                                                    </button>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mMr-BH-XG2">
-                                                                                        <rect key="frame" x="12" y="48" width="44" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Vector" id="Ah3-Zp-k7N">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="Fvh-xi-6kU"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wU9-Ze-ngd">
-                                                                                        <rect key="frame" x="12" y="14" width="66" height="16"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Reference" id="J0k-au-7CW">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="KJT-dZ-qTv"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I5s-gA-syb">
-                                                                                        <rect key="frame" x="96" y="11" width="17" height="21"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="i4g-EG-8GY">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="W3I-cg-v6Q">
-                                                                                                <real key="minimum" value="1"/>
-                                                                                                <real key="maximum" value="9"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="Ozl-lj-mgZ"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="BQ5-PJ-Bkj"/>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="wVO-6S-RuD"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qBV-zf-AA0">
-                                                                                        <rect key="frame" x="149" y="21" width="28" height="18"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="MeK-tZ-Xfz">
-                                                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="zib-ET-n4e">
-                                                                                                <real key="minimum" value="-30"/>
-                                                                                                <real key="maximum" value="30"/>
-                                                                                            </numberFormatter>
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="SUN-Bd-2Jn"/>
-                                                                                            </connections>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="6y3-pM-ACi"/>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="SBl-AL-cva"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gNi-2c-3iM">
-                                                                                        <rect key="frame" x="110" y="7" width="19" height="29"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="QGn-fb-J6n">
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleVector" id="hQy-jf-CeV"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="pI9-4D-fO6"/>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="tyl-92-q2U"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5sc-II-9eZ">
-                                                                                        <rect key="frame" x="176" y="18" width="15" height="23"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="t5c-JR-4fB">
-                                                                                            <font key="font" metaFont="smallSystem"/>
-                                                                                            <connections>
-                                                                                                <binding destination="ld6-u3-7Oq" name="value" keyPath="self.TracerScaleDigit" id="Vch-00-IxJ"/>
-                                                                                            </connections>
-                                                                                        </stepperCell>
-                                                                                        <connections>
-                                                                                            <action selector="SetTracerReferenceVector:" target="ld6-u3-7Oq" id="MNG-uY-MyR"/>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="EzJ-kj-ITp"/>
-                                                                                        </connections>
-                                                                                    </stepper>
-                                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XdG-R6-njy">
-                                                                                        <rect key="frame" x="126" y="13" width="25" height="17"/>
-                                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Qab-h2-UEj">
-                                                                                            <font key="font" metaFont="system"/>
-                                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                                        </textFieldCell>
-                                                                                        <connections>
-                                                                                            <binding destination="ld6-u3-7Oq" name="enabled" keyPath="self.tracerVectorMenuActive" id="z8a-3s-kL3"/>
-                                                                                        </connections>
-                                                                                    </textField>
-                                                                                </subviews>
-                                                                            </view>
-                                                                            <connections>
-                                                                                <binding destination="ld6-u3-7Oq" name="hidden" keyPath="self.tracerVectorMenuActive" id="biO-0f-9KG">
-                                                                                    <dictionary key="options">
-                                                                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                                                                    </dictionary>
-                                                                                </binding>
-                                                                            </connections>
-                                                                        </box>
                                                                     </subviews>
                                                                 </view>
                                                             </subviews>
@@ -5440,7 +5426,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <clipView key="contentView" id="H51-CE-nj3">
                             <rect key="frame" x="1" y="1" width="299" height="1013"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="iRy-vr-6IA">
                                     <rect key="frame" x="0.0" y="0.0" width="284" height="1010"/>
@@ -5906,7 +5892,7 @@
                                                         <rect key="frame" x="10" y="170" width="229" height="118"/>
                                                         <clipView key="contentView" ambiguous="YES" id="Vae-Vq-U6W">
                                                             <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
