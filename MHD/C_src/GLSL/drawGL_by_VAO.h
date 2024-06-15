@@ -3,11 +3,11 @@
 
 #include <math.h>
 
-#include "kemoviewer_gl.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_transfer_matrices.h"
 #include "m_phong_light_table_c.h"
-#include "vartex_array_object_gl.h"
 #include "glsl.h"
+#include "vartex_array_object_gl.h"
 
 #ifndef DRAWGL_BY_VAO_
 #define DRAWGL_BY_VAO_

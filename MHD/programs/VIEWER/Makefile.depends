@@ -16,7 +16,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
  $(MHDDIR)/C_src/GLSL/shaders.h \
- $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
  $(MHDDIR)/C_src/GLSL/vartex_array_object_gl.h \
@@ -230,7 +229,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
  $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
@@ -253,7 +251,6 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
  $(MHDDIR)/C_src/GLSL/shaders.h \
- $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
  $(MHDDIR)/C_src/GLSL/vartex_array_object_gl.h \
@@ -467,7 +464,6 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(FFMPEG_CFLAGS) $<

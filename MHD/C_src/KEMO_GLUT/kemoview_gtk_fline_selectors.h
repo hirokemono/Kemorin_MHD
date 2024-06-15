@@ -20,16 +20,19 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_routines.h"
+#include "kemoview_gtk_fieldline_menu.h"
 
 #include "view_modifier_glfw.h"
 
 /*  prototypes */
 
 GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
+                                 GtkWidget *dummy_entry,
                                  GtkWidget *label_tree_field,
                                  GtkCellRenderer *renderer_field);
 
 GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
+                                          GtkWidget *dummy_entry,
                                           GtkWidget *label_tree_comp,
                                           GtkCellRenderer *renderer_comp);
 #endif

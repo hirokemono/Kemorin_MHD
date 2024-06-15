@@ -16,7 +16,6 @@
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "kemoview_gtk_routines.h"
-#include "kemoview_gtk_main_menu.h"
 #include "kemoview_gtk_preference_menu.h"
 #include "kemoview_gtk_evolution_menu.h"
 #include "view_modifier_glfw.h"
@@ -25,6 +24,8 @@
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
                                 GtkWidget *main_window, 
-                                struct main_buttons *mbot);
+                                struct lightparams_view *lightparams_vws,
+                                struct evolution_gtk_menu *evo_gmenu,
+                                GtkWidget *itemTEvo);
 
 #endif /* KEMOVIEW_GTK_MENU_BUTTON_ */

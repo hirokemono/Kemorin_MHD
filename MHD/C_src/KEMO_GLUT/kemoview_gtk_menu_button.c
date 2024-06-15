@@ -75,20 +75,22 @@ static void evo_menu_CB(GtkWidget *menu_item, gpointer user_data)
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
                                 GtkWidget *main_window,
-                                struct main_buttons *mbot){
+                                struct lightparams_view *lightparams_vws,
+                                struct evolution_gtk_menu *evo_gmenu,
+                                GtkWidget *itemTEvo){
     GtkWidget *menu_widget = gtk_menu_new();
     g_object_set_data(G_OBJECT(menu_widget), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(menu_widget), "parent_win",  (gpointer) main_window);
-    g_object_set_data(G_OBJECT(menu_widget), "lights", (gpointer) mbot->lightparams_vws);
-    g_object_set_data(G_OBJECT(menu_widget), "tevo_menu", (gpointer) mbot->evo_gmenu);
+    g_object_set_data(G_OBJECT(menu_widget), "lights", (gpointer) lightparams_vws);
+    g_object_set_data(G_OBJECT(menu_widget), "tevo_menu", (gpointer) evo_gmenu);
 
     GtkWidget *itemPref = gtk_menu_item_new_with_mnemonic("Preferences...");
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), menu_widget);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
 
-    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
-    g_signal_connect(mbot->itemTEvo, "activate", G_CALLBACK (evo_menu_CB), menu_widget);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), mbot->itemTEvo);
+    itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
+    g_signal_connect(itemTEvo, "activate", G_CALLBACK (evo_menu_CB), menu_widget);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemTEvo);
 
 
     GtkWidget *menuButton = gtk_menu_button_new();

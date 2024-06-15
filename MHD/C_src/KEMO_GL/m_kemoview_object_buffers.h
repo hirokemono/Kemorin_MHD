@@ -28,6 +28,7 @@
 #include "draw_map_4_PSF.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
+#include "draw_colorbar_gl.h"
 
 struct kemoview_buffers{
     int nthreads;

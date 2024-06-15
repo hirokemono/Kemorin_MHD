@@ -30,5 +30,6 @@
 #include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
+#include "draw_colorbar_gl.h"
 
 #endif

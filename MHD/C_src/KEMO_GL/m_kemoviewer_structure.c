@@ -612,7 +612,7 @@ int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, 
     return i_format;
 }
 
-void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
+void kemoview_set_VIZ_field_param(int input, int id_model, int selected,
                                   struct kemoviewer_type *kemoviewer){
     long index = 0;
     if(id_model == FIELDLINE_RENDERING){
@@ -819,7 +819,7 @@ void kemoview_set_PSF_patch_color_mode(int input, struct kemoviewer_type *kemovi
     if(input != TEXTURED_SURFACE){kemoviewer->kemo_mul_psf->psf_a->ipsf_texured = -1;};
 };
 
-void kemoview_set_VIZ_patch_color_mode(int id_model, int input,
+void kemoview_set_VIZ_patch_color_mode(int input, int id_model,
                                        struct kemoviewer_type *kemoviewer){
     if(id_model == FIELDLINE_RENDERING){
         set_VIZ_patch_color_mode(kemoviewer->kemo_fline->fline_m, input);

@@ -1984,10 +1984,10 @@ m_kemoviewer_structure.o: \
 m_phong_light_table_c.o: \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.c \
  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
- $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
  $(C_SRCDIR)/KEMO_GL/trackball.h \
  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<

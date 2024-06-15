@@ -159,7 +159,7 @@
 !    int kemoview_get_PSF_loaded_params(struct kemoviewer_type *kemoviewer, int selected);
 !    int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf);
 !
-!    void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
+!    void kemoview_set_VIZ_field_param(int input,int id_model, int selected, 
 !                                      struct kemoviewer_type *kemoviewer);
 !
 !    int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,

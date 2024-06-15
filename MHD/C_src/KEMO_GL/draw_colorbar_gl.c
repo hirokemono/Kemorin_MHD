@@ -57,14 +57,14 @@ int count_colorbar_box_buffer(int iflag_zero, int num_quad){
     return (ITHREE * num_patch);
 };
 
-static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
-                                      float text_color[4], float bg_color[4],
-                                      struct psf_menu_val *psf_m,
-                                      struct cbar_work *cbar_wk,
-                                      struct gl_strided_buffer *cbar_buf,
-                                      struct gl_textbox_buffer *cbar_min_buf,
-                                      struct gl_textbox_buffer *cbar_max_buf,
-                                      struct gl_textbox_buffer *cbar_zero_buf){
+void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                               float text_color[4], float bg_color[4],
+                               struct psf_menu_val *psf_m,
+                               struct cbar_work *cbar_wk,
+                               struct gl_strided_buffer *cbar_buf,
+                               struct gl_textbox_buffer *cbar_min_buf,
+                               struct gl_textbox_buffer *cbar_max_buf,
+                               struct gl_textbox_buffer *cbar_zero_buf){
     long icomp = psf_m->icomp_draw_viz;
     set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
                           psf_m->cmap_viz_comp[icomp], cbar_wk);
@@ -94,57 +94,6 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
     colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk,
                          cbar_min_buf->vertex, cbar_max_buf->vertex,
                          cbar_zero_buf->vertex);
-    return;
-};
-
-void select_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
-                                float text_color[4], float bg_color[4],
-                                struct kemoview_mul_psf *kemo_mul_psf,
-                                struct kemoview_fline *kemo_fline,
-                                struct kemoview_tracer *kemo_tracer,
-                                struct MESSAGE_buffers *MESSAGE_bufs,
-                                struct cbar_work *cbar_wk){
-    int i;
-    MESSAGE_bufs->cbar_buf->num_nod_buf = 0;
-    MESSAGE_bufs->cbar_min_buf->vertex->num_nod_buf =  0;
-    MESSAGE_bufs->cbar_max_buf->vertex->num_nod_buf =  0;
-    MESSAGE_bufs->cbar_zero_buf->vertex->num_nod_buf = 0;
-    
-    if(kemo_fline->fline_m->iflag_draw_cbar > 0){
-        const_colorbar_box_buffer(iflag_retina, nx_win, ny_win,
-                                  text_color, bg_color,
-                                  kemo_fline->fline_m, cbar_wk, 
-                                  MESSAGE_bufs->cbar_buf,
-                                  MESSAGE_bufs->cbar_min_buf,
-                                  MESSAGE_bufs->cbar_max_buf,
-                                  MESSAGE_bufs->cbar_zero_buf);
-        return;
-    }
-    
-    if(kemo_tracer->tracer_m->iflag_draw_cbar > 0){
-        const_colorbar_box_buffer(iflag_retina, nx_win, ny_win,
-                                  text_color, bg_color,
-                                  kemo_tracer->tracer_m, cbar_wk, 
-                                  MESSAGE_bufs->cbar_buf,
-                                  MESSAGE_bufs->cbar_min_buf,
-                                  MESSAGE_bufs->cbar_max_buf,
-                                  MESSAGE_bufs->cbar_zero_buf);
-        return;
-    }
-    
-    for(i=0; i< kemo_mul_psf->psf_a->nmax_loaded; i++){
-        if(kemo_mul_psf->psf_a->iflag_loaded[i] != 0
-           && kemo_mul_psf->psf_m[i]->iflag_draw_cbar > 0) {
-            const_colorbar_box_buffer(iflag_retina, nx_win, ny_win,
-                                      text_color, bg_color,
-                                      kemo_mul_psf->psf_m[i], cbar_wk, 
-                                      MESSAGE_bufs->cbar_buf,
-                                      MESSAGE_bufs->cbar_min_buf,
-                                      MESSAGE_bufs->cbar_max_buf,
-                                      MESSAGE_bufs->cbar_zero_buf);
-            break;
-        };
-    };
     return;
 };
 

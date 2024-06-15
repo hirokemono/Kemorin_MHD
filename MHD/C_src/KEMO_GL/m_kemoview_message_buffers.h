@@ -16,9 +16,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_kemoview_tracer.h"
-#include "m_kemoview_message_buffers.h"
 #include "m_vertex_buffer.h"
-
 #include "draw_colorbar_gl.h"
 
 struct MESSAGE_buffers{
@@ -36,6 +34,15 @@ struct MESSAGE_buffers{
 
 struct MESSAGE_buffers * init_MESSAGE_buffers(void);
 void dealloc_MESSAGE_buffers(struct MESSAGE_buffers *MESSAGE_bufs);
+
+
+void select_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                                float text_color[4], float bg_color[4],
+                                struct kemoview_mul_psf *kemo_mul_psf,
+                                struct kemoview_fline *kemo_fline,
+                                struct kemoview_tracer *kemo_tracer,
+                                struct MESSAGE_buffers *MESSAGE_bufs,
+                                struct cbar_work *cbar_wk);
 
 void const_message_buffers(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],

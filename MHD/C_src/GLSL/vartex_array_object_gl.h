@@ -10,7 +10,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "kemoviewer_gl.h"
+
+#include "glsl.h"
 #include "m_vertex_buffer.h"
 
 struct VAO_ids{

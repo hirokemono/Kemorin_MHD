@@ -167,9 +167,10 @@
     [self SetFlineDataRanges:isel
                     kemoview:kemo_sgl];
     
-    kemoview_set_VIZ_field_param(TRACER_RENDERING,
+    kemoview_set_VIZ_field_param((int) isel,
+                                 TRACER_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 (int) isel, kemo_sgl);
+                                 kemo_sgl);
     
     [self setSelectedTracerComponentRanges:kemo_sgl];
     [_rgbaMapObject UpdateColormapView:kemo_sgl];
@@ -179,9 +180,9 @@
 - (IBAction) TracerComponentAction:(id)sender
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_field_param(TRACER_RENDERING,
+    kemoview_set_VIZ_field_param((int) [_TracerComponentMenu indexOfSelectedItem],
+                                 TRACER_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 (int) [_TracerComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
     [self setSelectedTracerComponentRanges:kemo_sgl];
     [_rgbaMapObject UpdateColormapView:kemo_sgl];
@@ -261,8 +262,9 @@
 {
     NSInteger tag = [[TracerColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_patch_color_mode(TRACER_RENDERING,
-                                      (int) tag, kemo_sgl);
+    kemoview_set_VIZ_patch_color_mode((int) tag,
+                                      TRACER_RENDERING,
+                                      kemo_sgl);
     
     [_metalView UpdateImage:kemo_sgl];
 }

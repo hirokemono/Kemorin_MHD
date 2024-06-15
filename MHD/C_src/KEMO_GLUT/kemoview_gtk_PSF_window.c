@@ -20,12 +20,14 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
     if(index_mode < 0){index_mode = 0;};
     kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode, kemo_gl->kemoview_data);
 
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param(IZERO,
+                                 SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 IZERO, kemo_gl->kemoview_data);
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+                                 kemo_gl->kemoview_data);
+    kemoview_set_VIZ_field_param(IZERO,
+                                 SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 IZERO, kemo_gl->kemoview_data);
+                                 kemo_gl->kemoview_data);
     set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu);
 
     gtk_widget_destroy(psf_gmenu->psf_frame);
@@ -69,13 +71,14 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
         index_mode = 0;
     }
 
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param(index_mode,
+                                 SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 index_mode,
                                  kemo_gl->kemoview_data);
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param(IZERO,
+                                 SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 IZERO, kemo_gl->kemoview_data);
+                                 kemo_gl->kemoview_data);
 
     gtk_widget_destroy(psf_gmenu->psf_frame);
     psf_gmenu->psf_frame = set_psf_menu_box(kemo_gl, psf_gmenu, itemTEvo);
@@ -103,9 +106,9 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
         index_mode = 0;
     }
 	
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param(index_mode,
+                                 SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 index_mode,
                                  kemo_gl->kemoview_data);
     
     gtk_widget_destroy(psf_gmenu->psf_frame);
@@ -223,7 +226,7 @@ static void init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
                                       struct psf_gtk_menu *psf_gmenu,
                                       GtkWidget *itemTEvo){
 	int index = 0;
-    int ipsf, icou;;
+    int ipsf;
 	
 	struct kv_string *stripped_filehead;
 	char label_tmp[512];
@@ -237,7 +240,6 @@ static void init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
     GtkTreeModel *model_psfs = gtk_tree_view_get_model(GTK_TREE_VIEW(psf_gmenu->psf_label_tree_view));
     GtkTreeModel *child_model_psfs = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_psfs));
     index = 0;
-    icou = 0;
     for (ipsf=0; ipsf< kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
                                                       MAX_LOADED); ipsf++){
         if(ipsf == id_current) {index_current = index;};

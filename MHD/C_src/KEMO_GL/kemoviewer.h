@@ -430,7 +430,7 @@ extern "C" {
     int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, int id_model,
                                                 struct kv_string *psf_filehead, int *i_file_step);
     
-    void kemoview_set_VIZ_field_param(int id_model, int selected, int input,
+    void kemoview_set_VIZ_field_param(int input, int id_model, int selected, 
                                       struct kemoviewer_type *kemoviewer);
     int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
                                      int id_model, int selected);
@@ -454,7 +454,7 @@ extern "C" {
     
     int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_set_colorbar_draw_flag(int iflag, int id_model, 
+    void kemoview_set_colorbar_draw_flag(int iflag, int id_model,
                                          struct kemoviewer_type *kemoviewer);
     int kemoview_get_colorbar_draw_flag(struct kemoviewer_type *kemoviewer,
                                         int id_model);
@@ -474,7 +474,7 @@ extern "C" {
                                       struct kemoviewer_type *kemoviewer);
 
     void kemoview_set_PSF_patch_color_mode(int input, struct kemoviewer_type *kemoviewer);
-    void kemoview_set_VIZ_patch_color_mode(int id_model, int input,
+    void kemoview_set_VIZ_patch_color_mode(int input, int id_model,
                                            struct kemoviewer_type *kemoviewer);
     
     int kemoview_get_VIZ_patch_color_mode(struct kemoviewer_type *kemoviewer,

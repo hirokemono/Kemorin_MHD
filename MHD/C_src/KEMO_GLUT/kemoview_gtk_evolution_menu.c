@@ -41,8 +41,6 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 };
 
 static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-	struct evolution_gtk_menu *evo_gmenu 
-			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
@@ -53,8 +51,6 @@ static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
 	return;
 };
 static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-	struct evolution_gtk_menu *evo_gmenu 
-			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));

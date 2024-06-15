@@ -23,6 +23,8 @@
 #include "view_modifier_glfw.h"
 
 struct fieldline_gtk_menu{
+    int iflag_flinemode;
+    
     int iflag_flineBox;
     GtkWidget *flineWin;
     
@@ -55,7 +57,10 @@ void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct fieldline_gtk_menu *fline_gmenu);
 void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                               struct fieldline_gtk_menu *fline_gmenu);
-
 GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_gmenu);
+
+void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
+                           struct fieldline_gtk_menu *fline_gmenu);
+GtkWidget * pack_tracer_menu_frame(struct fieldline_gtk_menu *fline_gmenu);
 
 #endif

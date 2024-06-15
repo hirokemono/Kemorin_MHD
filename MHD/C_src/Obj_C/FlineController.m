@@ -188,9 +188,10 @@
     [self SetFlineDataRanges:isel
                     kemoview:kemo_sgl];
     
-    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+    kemoview_set_VIZ_field_param((int) isel,
+                                 FIELDLINE_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 (int) isel, kemo_sgl);
+                                 kemo_sgl);
     
     [self setSelectedFlineComponentRanges:kemo_sgl];
     [_rgbaMapObject UpdateColormapView:kemo_sgl];
@@ -200,9 +201,9 @@
 - (IBAction) FlineComponentAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_field_param(FIELDLINE_RENDERING,
+    kemoview_set_VIZ_field_param((int) [_FlineComponentMenu indexOfSelectedItem],
+                                 FIELDLINE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 (int) [_FlineComponentMenu indexOfSelectedItem],
                                  kemo_sgl);
     [self setSelectedFlineComponentRanges:kemo_sgl];
     [_rgbaMapObject UpdateColormapView:kemo_sgl];
@@ -213,8 +214,9 @@
 {
     NSInteger tag = [[FieldlineColorItem selectedCell] tag];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_patch_color_mode(FIELDLINE_RENDERING,
-                                      (int) tag, kemo_sgl);
+    kemoview_set_VIZ_patch_color_mode((int) tag,
+                                      FIELDLINE_RENDERING,
+                                      kemo_sgl);
     
     [_metalView UpdateImage:kemo_sgl];
 }

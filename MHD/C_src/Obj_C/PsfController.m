@@ -236,13 +236,13 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param((int) self.PSFSelectedField,
+                                 SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 (int) self.PSFSelectedField,
                                  kemo_sgl);
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param((int) self.PSFSelectedComponent,
+                                 SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 (int) self.PSFSelectedComponent,
                                  kemo_sgl);
 }
 
@@ -601,9 +601,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     [self SetPsfSelectedRange:self.PSFSelectedField
                   activeModel:SURFACE_RENDERING
                      kemoview:kemo_sgl];
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param((int) self.PSFSelectedField,
+                                 SURFACE_RENDERING,
                                  FIELD_SEL_FLAG,
-                                 (int) self.PSFSelectedField,
                                  kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
@@ -615,9 +615,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction) PsfComponentAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_VIZ_field_param(SURFACE_RENDERING,
+    kemoview_set_VIZ_field_param((int) self.PSFSelectedComponent,
+                                 SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
-                                 (int) self.PSFSelectedComponent,
                                  kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];

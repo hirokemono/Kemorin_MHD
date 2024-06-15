@@ -18,7 +18,8 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
     }
 
     mbot->psf_gmenu = alloc_psf_gtk_menu();
-    mbot->fline_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->fline_gmenu =  (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->tracer_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
     mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
 
@@ -32,6 +33,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
 void dealloc_main_buttons(struct main_buttons *mbot){
     dealloc_psf_gtk_menu(mbot->psf_gmenu);
+    free(mbot->tracer_gmenu);
     free(mbot->fline_gmenu);
     free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
@@ -63,7 +65,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(filename);
 	
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
-    init_fline_window(kemo_gl, mbot->fline_gmenu, main_window, mbot->itemTEvo);
+    init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
     init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
 
     activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
@@ -148,7 +151,7 @@ static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
 
 static void image_save_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int iflag_set = kemoview_gtk_save_file_select(button, user_data);
     int id_imagefmt_by_input;
     int i_quilt;
@@ -222,7 +225,10 @@ GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
 
-    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window, mbot);
+    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
+                                               mbot->lightparams_vws,
+                                               mbot->evo_gmenu,
+                                               mbot->itemTEvo);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",

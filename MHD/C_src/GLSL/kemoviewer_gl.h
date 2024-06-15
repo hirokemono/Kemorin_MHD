@@ -8,12 +8,6 @@
 #ifndef kemoviewer_gl_h_
 #define kemoviewer_gl_h_
 
-#ifdef __APPLE__
-#include<OpenGL/gl3.h>
-#else
-#include<GL/gl.h>
-#endif
-
 #include "kemoviewer.h"
 
 #include "glsl.h"
@@ -28,6 +22,7 @@
 #include "move_draw_objects_gl.h"
 #include "write_gl_window_to_file.h"
 #include "set_kemoviewer_ucd_data.h"
+#include "draw_colorbar_gl.h"
 
 #ifdef PNG_OUTPUT
     #include "set_psf_texture_by_png.h"

@@ -13,7 +13,6 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_kemoview_tracer.h"
-#include "m_kemoview_message_buffers.h"
 #include "coordinate_converter_c.h"
 #include "rainbow_color_code_c.h"
 #include "set_colorbar_to_buffer.h"
@@ -32,13 +31,15 @@ void set_bg_color_kemoview(float bg_color[4], float text_color[4]);
 struct initial_cube_lighting * init_inital_cube_lighting(void);
 
 int count_colorbar_box_buffer(int iflag_zero, int num_quad);
-void select_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
-                                float text_color[4], float bg_color[4],
-                                struct kemoview_mul_psf *kemo_mul_psf,
-                                struct kemoview_fline *kemo_fline,
-                                struct kemoview_tracer *kemo_tracer,
-                                struct MESSAGE_buffers *MESSAGE_bufs,
-                                struct cbar_work *cbar_wk);
+
+void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                               float text_color[4], float bg_color[4],
+                               struct psf_menu_val *psf_m,
+                               struct cbar_work *cbar_wk,
+                               struct gl_strided_buffer *cbar_buf,
+                               struct gl_textbox_buffer *cbar_min_buf,
+                               struct gl_textbox_buffer *cbar_max_buf,
+                               struct gl_textbox_buffer *cbar_zero_buf);
 
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],

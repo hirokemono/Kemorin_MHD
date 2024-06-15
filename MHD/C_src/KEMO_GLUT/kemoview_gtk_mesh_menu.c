@@ -11,8 +11,6 @@
 
 static void close_mesh_CB(GtkButton *button, gpointer user_data){
     GtkWidget *meshWin = GTK_WIDGET(user_data);
-    struct kemoview_mesh_view *mesh_vws
-        = (struct kemoview_mesh_view *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
         = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 

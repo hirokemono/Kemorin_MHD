@@ -6,7 +6,6 @@
 #define shaders_
 
 #include <string.h>
-#include "kemoviewer_gl.h"
 #include "skip_comment_c.h"
 
 

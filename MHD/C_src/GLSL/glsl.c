@@ -248,8 +248,8 @@ void LoadShaderFromStrings(struct shader_ids *shader,
 	shader->fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 	
 	/* reader shader source */
-	glShaderSource(shader->vertexID,   1, &shader->vetex_text,    0);
-	glShaderSource(shader->fragmentID, 1, &shader->fragment_text, 0);
+	glShaderSource(shader->vertexID,   1, (char **) &shader->vetex_text,    0);
+	glShaderSource(shader->fragmentID, 1, (char **) &shader->fragment_text, 0);
 	
 	/* Compile and link  shader */
 	CompileLinkShader(shader);
