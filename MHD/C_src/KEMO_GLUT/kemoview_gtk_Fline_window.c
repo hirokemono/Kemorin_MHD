@@ -166,6 +166,7 @@ void replace_fline_frame(struct kemoviewer_gl_type *kemo_gl,
 void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
                        struct fieldline_gtk_menu *fline_gmenu,
                        GtkWidget *main_window, GtkWidget *itemTEvo){
+    if(fline_gmenu->iflag_flineBox > 0){gtk_widget_destroy(fline_gmenu->flineWin);};
     fline_gmenu->iflag_flineBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
                                                              FIELDLINE_RENDERING);
     if(fline_gmenu->iflag_flineBox == 0){return;};
@@ -213,6 +214,7 @@ void replace_tracer_frame(struct kemoviewer_gl_type *kemo_gl,
 void init_tracer_window(struct kemoviewer_gl_type *kemo_gl,
                         struct fieldline_gtk_menu *tracer_gmenu,
                         GtkWidget *main_window, GtkWidget *itemTEvo){
+    if(tracer_gmenu->iflag_flineBox > 0){gtk_widget_destroy(psf_gmenu->flineWin);};
     tracer_gmenu->iflag_flineBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
                                                                TRACER_RENDERING);
     if(tracer_gmenu->iflag_flineBox == 0){return;};
