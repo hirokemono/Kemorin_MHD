@@ -40,11 +40,8 @@ struct fieldline_gtk_menu{
     
     GtkWidget *combobox_field;
     GtkWidget *label_tree_field;
-    GtkCellRenderer *renderer_field;
     
     GtkWidget *combobox_comp;
-    GtkWidget *label_tree_comp;
-    GtkCellRenderer *renderer_comp;
     
     struct colormap_view *fline_color_vws;
     GtkWidget *expander_fline_color;

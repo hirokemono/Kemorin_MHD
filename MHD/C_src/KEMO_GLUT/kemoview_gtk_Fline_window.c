@@ -31,17 +31,7 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
             = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "fline_view");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int index_mode = gtk_selected_combobox_index(combobox_field);
-    
-    kemoview_set_VIZ_field_param(index_mode,
-                                 fline_gmenu->iflag_flinemode,
-                                 FIELD_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    kemoview_set_VIZ_field_param(index_mode,
-                                 fline_gmenu->iflag_flinemode,
-                                 COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    
+    kemoview_field_select_CB(combobox_field, fline_gmenu->iflag_flinemode, kemo_gl);
     replace_fline_frame(kemo_gl, fline_gmenu, itemTEvo);
     draw_full_gl(kemo_gl);
     return;
@@ -49,18 +39,9 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
 
 static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_data)
 {
-    GtkWidget *itemTEvo = GTK_WIDGET(user_data);
-    struct fieldline_gtk_menu *fline_gmenu
-            = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "fline_view");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int index_mode = gtk_selected_combobox_index(combobox_comp);
-    kemoview_set_VIZ_field_param(index_mode,
-                                 fline_gmenu->iflag_flinemode,
-                                 COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    
-    replace_fline_frame(kemo_gl, fline_gmenu, itemTEvo);
+    kemoview_component_select_CB(combobox_comp, FIELDLINE_RENDERING, kemo_gl);
     draw_full_gl(kemo_gl);
     return;
 };
@@ -73,17 +54,7 @@ static void tracer_field_select_CB(GtkComboBox *combobox_field, gpointer user_da
             = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "tracerMenu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int index_mode = gtk_selected_combobox_index(combobox_field);
-    
-    kemoview_set_VIZ_field_param(index_mode,
-                                 tracer_gmenu->iflag_flinemode,
-                                 FIELD_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    kemoview_set_VIZ_field_param(index_mode,
-                                 tracer_gmenu->iflag_flinemode,
-                                 COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    
+    kemoview_field_select_CB(combobox_field, tracer_gmenu->iflag_flinemode, kemo_gl);
     replace_tracer_frame(kemo_gl, tracer_gmenu, itemTEvo);
     draw_full_gl(kemo_gl);
     return;
@@ -91,90 +62,12 @@ static void tracer_field_select_CB(GtkComboBox *combobox_field, gpointer user_da
 
 static void tracer_component_select_CB(GtkComboBox *combobox_comp, gpointer user_data)
 {
-    GtkWidget *itemTEvo = GTK_WIDGET(user_data);
-    struct fieldline_gtk_menu *tracer_gmenu
-            = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "tracerMenu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int index_mode = gtk_selected_combobox_index(combobox_comp);
-    kemoview_set_VIZ_field_param(index_mode,
-                                 tracer_gmenu->iflag_flinemode,
-                                 COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    
-    replace_tracer_frame(kemo_gl, tracer_gmenu, itemTEvo);
+    kemoview_component_select_CB(combobox_comp, TRACER_RENDERING, kemo_gl);
     draw_full_gl(kemo_gl);
     return;
 };
-
-
-GtkWidget * fline_draw_field_box(struct kemoviewer_gl_type *kemo_gl,
-                                 struct fieldline_gtk_menu *fline_gmenu){
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-    int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                 fline_gmenu->iflag_flinemode,
-                                                 NUM_FIELD_FLAG);
-    int if_fline =  kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                 fline_gmenu->iflag_flinemode,
-                                                 FIELD_SEL_FLAG);
-    fline_gmenu->label_tree_field = create_fixed_label_w_index_tree();
-    GtkTreeModel *model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(fline_gmenu->label_tree_field));
-    GtkTreeModel *child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
-    int index = 0;
-    for(int ifld=0;ifld<num_field;ifld++){
-        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data,
-                                    fline_gmenu->iflag_flinemode,
-                                    colorname, ifld);
-        index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
-    };
-    
-    fline_gmenu->renderer_field = gtk_cell_renderer_text_new();
-    GtkWidget *combobox_field = gtk_combo_box_new();
-    gtk_combo_box_set_model(GTK_COMBO_BOX(combobox_field), child_model_field);
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), if_fline);
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), 
-                               fline_gmenu->renderer_field, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), 
-                                   fline_gmenu->renderer_field,
-                                   "text", COLUMN_FIELD_NAME, NULL);
-    return combobox_field;
-}
-
-GtkWidget * fline_draw_component_combobox(struct kemoviewer_gl_type *kemo_gl,
-                                          struct fieldline_gtk_menu *fline_gmenu){
-    char comp_name[128];
-    
-    int if_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                fline_gmenu->iflag_flinemode,
-                                                FIELD_SEL_FLAG);
-    int ic_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                fline_gmenu->iflag_flinemode,
-                                                COMPONENT_SEL_FLAG);
-    int ncomp =  kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
-                                                fline_gmenu->iflag_flinemode, if_fline);
-    
-    fline_gmenu->label_tree_comp = create_fixed_label_w_index_tree();
-    GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(fline_gmenu->label_tree_comp));
-    GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-    int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                fline_gmenu->iflag_flinemode,
-                                                COORDINATE_FLAG);
-    int index = 0;
-    for(int icomp=0;icomp<ncomp;icomp++){
-        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
-        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
-    };
-    
-    GtkWidget *combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
-    fline_gmenu->renderer_comp = gtk_cell_renderer_text_new();
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp),
-                               fline_gmenu->renderer_comp, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp),
-                                   fline_gmenu->renderer_comp,
-                                   "text", COLUMN_FIELD_NAME, NULL);
-    return combobox_comp;
-}
 
 
 static void set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
@@ -191,12 +84,12 @@ static void set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
     
     g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(itemTEvo), "flinemenu", (gpointer) fline_gmenu);
-    fline_gmenu->combobox_field = fline_draw_field_box(kemo_gl, fline_gmenu);
-    fline_gmenu->combobox_comp = fline_draw_component_combobox(kemo_gl, fline_gmenu);
+    fline_gmenu->combobox_field = draw_viz_field_gtk_box(kemo_gl, fline_gmenu->iflag_flinemode);
+    fline_gmenu->combobox_comp = draw_viz_component_gtk_box(kemo_gl, fline_gmenu->iflag_flinemode);
     g_signal_connect(G_OBJECT(fline_gmenu->combobox_field), "changed",
-                G_CALLBACK(fline_field_select_CB), (gpointer) itemTEvo);
+                     G_CALLBACK(fline_field_select_CB), (gpointer) itemTEvo);
     g_signal_connect(G_OBJECT(fline_gmenu->combobox_comp), "changed",
-                G_CALLBACK(fline_component_select_CB), (gpointer) itemTEvo);
+                     G_CALLBACK(fline_component_select_CB), (gpointer) itemTEvo);
     
     int itype_fline = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
     if(itype_fline == 0){
@@ -223,8 +116,8 @@ static void set_tracer_menu_box(struct kemoviewer_gl_type *kemo_gl,
     
     g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(itemTEvo), "tracerMenu", (gpointer) tracer_gmenu);
-    tracer_gmenu->combobox_field = fline_draw_field_box(kemo_gl, tracer_gmenu);
-    tracer_gmenu->combobox_comp = fline_draw_component_combobox(kemo_gl, tracer_gmenu);
+    tracer_gmenu->combobox_field = draw_viz_field_gtk_box(kemo_gl, tracer_gmenu->iflag_flinemode);
+    tracer_gmenu->combobox_comp = draw_viz_component_gtk_box(kemo_gl, tracer_gmenu->iflag_flinemode);
     g_signal_connect(G_OBJECT(tracer_gmenu->combobox_field), "changed",
                 G_CALLBACK(tracer_field_select_CB), (gpointer) itemTEvo);
     g_signal_connect(G_OBJECT(tracer_gmenu->combobox_comp), "changed",

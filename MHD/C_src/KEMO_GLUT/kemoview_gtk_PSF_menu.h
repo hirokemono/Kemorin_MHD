@@ -51,18 +51,12 @@ struct psf_gtk_menu{
 	GtkWidget *closeButton;
     
     GtkWidget *combobox_psfs;
-    GtkWidget *psf_label_tree_view;
-    GtkCellRenderer *renderer_psfs;
     GtkWidget *psf_vbox;
 
     GtkWidget *combobox_field;
-    GtkWidget *field_label_tree_view;
-    GtkCellRenderer *renderer_field;
     GtkWidget *hbox_field;
 
 	GtkWidget *combobox_comp;
-    GtkWidget *comp_label_tree_view;
-    GtkCellRenderer *renderer_comp;
     GtkWidget *hbox_comp;
 
     int num_psfs;
