@@ -272,8 +272,6 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_tracer.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_message_buffers.h \
- $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
  $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
  $(C_SRCDIR)/GLSL/set_cube_VAO.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<

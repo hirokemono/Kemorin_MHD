@@ -189,6 +189,93 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 
 
 
+
+
+static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	int i_digit;
+	double current_value;
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  TRACER_RENDERING, ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                       gtk_floatvalue, i_digit,
+                                       TRACER_RENDERING,
+                                       kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+	return;
+}
+
+static void set_ref_digit_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+	double gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	int i_digit;
+	double current_value;
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  TRACER_RENDERING,
+                                  ISET_PSF_REFVECT,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
+                                      current_value, gtk_intvalue,
+                                      TRACER_RENDERING,
+                                      kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+	return;
+}
+
+static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	int i_digit;
+	double current_value;
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  TRACER_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
+                                      gtk_floatvalue, i_digit,
+                                      TRACER_RENDERING,
+                                      kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+	return;
+}
+
+static void set_increment_digit_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	int i_digit;
+	double current_value;
+    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
+                                  TRACER_RENDERING,
+                                  ISET_VECTOR_INC,
+                                  &current_value, &i_digit);
+    kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
+                                      current_value, gtk_intvalue,
+                                      TRACER_RENDERING,
+                                      kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+	return;
+}
+
+
+static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpointer user_data){
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+    int iflag = gtk_switch_get_state(GTK_SWITCH(switch_vect));
+    kemoview_set_VIZ_vector_draw_flags(iflag, TRACER_RENDERING,
+                                       kemo_gl->kemoview_data);
+
+    draw_full_gl(kemo_gl);
+	return;
+};
+
+
+
+
 void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct fieldline_gtk_menu *fline_gmenu){
 	char min_text[40], max_text[40];
@@ -418,11 +505,6 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     int iflag = 0;
     int index = 0;
     
-    GtkAdjustment *adj_thick, *adj_digit;
-    
-    GtkAdjustment *adj_min_value, *adj_min_digit;
-    GtkAdjustment *adj_max_value, *adj_max_digit;
-    
     fline_gmenu->iflag_flinemode = TRACER_RENDERING;
     GtkWidget *dummy_entry = gtk_entry_new();
     g_object_set_data(G_OBJECT(dummy_entry),
@@ -452,6 +534,22 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(psf_fline_colormode_CB), (gpointer) dummy_entry);
     
     
+    
+	fline_gmenu->switch_vect = gtk_switch_new();
+    iflag = kemoview_get_VIZ_vector_draw_flags(kemo_gl->kemoview_data,
+                                               TRACER_RENDERING);
+    gtk_switch_set_state(GTK_SWITCH(fline_gmenu->switch_vect), iflag);
+	g_signal_connect(G_OBJECT(fline_gmenu->switch_vect), "notify::active",
+				G_CALLBACK(psf_vector_switch_CB), (gpointer) kemo_gl);
+	
+	if(kemoview_get_VIZ_vector_draw_flags(kemo_gl->kemoview_data,
+                                          TRACER_RENDERING) == 0){
+		gtk_switch_set_active(GTK_SWITCH(fline_gmenu->switch_vect), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(fline_gmenu->switch_vect), TRUE);
+	};
+	
+    
     fline_gmenu->fline_switch_bar = gtk_switch_new();
     iflag = kemoview_get_colorbar_draw_flag(kemo_gl->kemoview_data,
                                             fline_gmenu->iflag_flinemode);
@@ -467,8 +565,8 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
         gtk_switch_set_active(GTK_SWITCH(fline_gmenu->fline_switch_bar), TRUE);
     };
     
-    adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
-    adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
+    GtkAdjustment *adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
+    GtkAdjustment *adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
     fline_gmenu->spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     fline_gmenu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
     g_signal_connect(fline_gmenu->spin_thick, "value-changed",
@@ -476,8 +574,8 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(fline_gmenu->spin_digit, "value-changed",
                      G_CALLBACK(fline_digit_CB), (gpointer) dummy_entry);
  
-    adj_min_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
-    adj_min_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
+    GtkAdjustment *adj_min_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
+    GtkAdjustment *adj_min_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_gmenu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_value),0,2);
     fline_gmenu->spin_min_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_digit),0,0);
     g_signal_connect(fline_gmenu->spin_range_min, "value-changed",
@@ -485,14 +583,36 @@ void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(fline_gmenu->spin_min_digit, "value-changed",
                      G_CALLBACK(MinDigitChange_CB), (gpointer) dummy_entry);
 
-    adj_max_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
-    adj_max_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
+    GtkAdjustment *adj_max_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
+    GtkAdjustment *adj_max_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_gmenu->spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_value),0,2);
     fline_gmenu->spin_max_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_digit),0,0);
     g_signal_connect(fline_gmenu->spin_range_max, "value-changed",
                      G_CALLBACK(MaxValueChange_CB), (gpointer) dummy_entry);
     g_signal_connect(fline_gmenu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) dummy_entry);
+    
+    
+	GtkAdjustment *adj_ref_vect = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
+	fline_gmenu->spin_ref_vect = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_vect), 0, 0);
+	g_signal_connect(fline_gmenu->spin_ref_vect, "value-changed", 
+                     G_CALLBACK(set_ref_vector_CB), (gpointer) kemo_gl);
+	
+	GtkAdjustment *adj_ref_digit = gtk_adjustment_new(0, -10, 10, 1, 1, 0);
+	fline_gmenu->spin_ref_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_digit), 0, 0);
+	g_signal_connect(fline_gmenu->spin_ref_digit, "value-changed",
+                     G_CALLBACK(set_ref_digit_CB), (gpointer) kemo_gl);
+	
+	GtkAdjustment *adj_vect_inc = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
+	fline_gmenu->spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 0);
+	g_signal_connect(fline_gmenu->spin_vect_inc, "value-changed",
+					 G_CALLBACK(set_vect_increment_CB), (gpointer) kemo_gl);
+	
+	GtkAdjustment *adj_inc_digit = gtk_adjustment_new(0, 0, 10, 1, 1, 0);
+	fline_gmenu->spin_inc_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_inc_digit), 0, 0);
+	g_signal_connect(fline_gmenu->spin_inc_digit, "value-changed",
+					 G_CALLBACK(set_increment_digit_CB), (gpointer) kemo_gl);
+	
     
     init_colormap_params_4_viewer(fline_gmenu->iflag_flinemode, kemo_gl,
                                   fline_gmenu->fline_color_vws);
@@ -539,7 +659,23 @@ GtkWidget * pack_tracer_menu_frame(struct fieldline_gtk_menu *fline_gmenu){
     gtk_box_pack_start(GTK_BOX(hbox_bar), gtk_label_new("Draw color bar: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_bar), fline_gmenu->fline_switch_bar, FALSE, FALSE, 0);
     
-
+	GtkWidget *hbox_vec = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_vec), gtk_label_new("Draw vector: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_vec), fline_gmenu->switch_vect, FALSE, FALSE, 0);
+	
+	GtkWidget *hbox_22 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Increment: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), fline_gmenu->spin_vect_inc, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("X 10^"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), fline_gmenu->spin_inc_digit, TRUE, TRUE, 0);
+	
+	GtkWidget *hbox_12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_12), gtk_label_new("Reference: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_12), fline_gmenu->spin_ref_vect, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_12), gtk_label_new("X 10^"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_12), fline_gmenu->spin_ref_digit, TRUE, TRUE, 0);
+    
+    
     GtkWidget *menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(menu_box), fline_gmenu->closeButton, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_field, TRUE, TRUE, 0);
@@ -547,6 +683,9 @@ GtkWidget * pack_tracer_menu_frame(struct fieldline_gtk_menu *fline_gmenu){
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_color, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_bar, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_thickness, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_vec, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_22, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_12, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_min, TRUE, TRUE, 0);

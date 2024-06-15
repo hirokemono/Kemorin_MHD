@@ -47,6 +47,21 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
 };
 
 
+static void close_tracer_CB(GtkButton *button, gpointer user_data){
+    GtkWidget *itemTEvo = GTK_WIDGET(user_data);
+    struct fieldline_gtk_menu *fline_gmenu
+            = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(button), "flinemenu");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(button), "kemoview_gl");
+
+    kemoview_close_tracer_view(kemo_gl->kemoview_data);
+    
+    gtk_widget_destroy(fline_gmenu->flineWin);
+    activate_evolution_menu(kemo_gl->kemoview_data, itemTEvo);
+    draw_full_gl(kemo_gl);
+};
+
+
 static void tracer_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 {
     GtkWidget *itemTEvo = GTK_WIDGET(user_data);
@@ -110,7 +125,7 @@ static void set_tracer_menu_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(tracer_gmenu->closeButton), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(tracer_gmenu->closeButton), "flinemenu", (gpointer) tracer_gmenu);
     g_signal_connect(G_OBJECT(tracer_gmenu->closeButton), "clicked",
-                     G_CALLBACK(close_fline_CB), itemTEvo);
+                     G_CALLBACK(close_tracer_CB), itemTEvo);
         
     init_tracer_menu_hbox(kemo_gl, tracer_gmenu);
     

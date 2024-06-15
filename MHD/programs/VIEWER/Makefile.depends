@@ -224,9 +224,9 @@ kemo_mesh_viewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_mesh_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
@@ -459,9 +459,9 @@ kemoviewer_glfw_gtk.o: \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_mesh_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
+ $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_Fline_window.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
- $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmode_menu.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_menu_button.h \
  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \

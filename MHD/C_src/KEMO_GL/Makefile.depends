@@ -198,7 +198,6 @@ draw_colorbar_gl.o: \
  $(C_SRCDIR)/CORE_C/cal_viz_field_ranges.h \
  $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
  $(C_SRCDIR)/KEMO_GL/m_kemoview_tracer.h \
- $(C_SRCDIR)/KEMO_GL/m_kemoview_message_buffers.h \
  $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_map_4_PSF.o: \

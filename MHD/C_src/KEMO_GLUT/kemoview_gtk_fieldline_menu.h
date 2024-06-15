@@ -47,6 +47,13 @@ struct fieldline_gtk_menu{
     GtkWidget *expander_fline_color;
     
     GtkWidget *fline_frame;
+    
+    GtkWidget *switch_vect;
+    GtkWidget *spin_vect_inc;
+    GtkWidget *spin_inc_digit;
+    GtkWidget *spin_ref_vect;
+    GtkWidget *spin_ref_digit;
+
 };
 
 
