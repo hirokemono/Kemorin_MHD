@@ -29,8 +29,8 @@
 !
 !
       type each_fieldline_source
-        integer(kind = kint) :: nele_start_grp = 0
-        integer(kind = kint), allocatable :: iele_start_item(:,:)
+        integer(kind = kint) :: nsf_start_grp = 0
+        integer(kind = kint), allocatable :: isf_grp_start_item(:,:)
         real(kind = kreal),   allocatable :: flux_start(:)
 !
         integer(kind = kint) :: num_line_local = 0
@@ -91,9 +91,9 @@
       type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      allocate(fln_src%iele_start_item(2,fln_src%nele_start_grp))
-      allocate(fln_src%flux_start(fln_src%nele_start_grp))
-      if(fln_src%nele_start_grp .gt. 0) fln_src%iele_start_item = 0
+      allocate(fln_src%isf_grp_start_item(2,fln_src%nsf_start_grp))
+      allocate(fln_src%flux_start(fln_src%nsf_start_grp))
+      if(fln_src%nsf_start_grp .gt. 0) fln_src%isf_grp_start_item = 0
 !
       end subroutine alloc_local_start_grp_item
 !
@@ -151,7 +151,7 @@
       type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      deallocate(fln_src%iele_start_item, fln_src%flux_start)
+      deallocate(fln_src%isf_grp_start_item, fln_src%flux_start)
 !
       end subroutine dealloc_local_start_grp_item
 !

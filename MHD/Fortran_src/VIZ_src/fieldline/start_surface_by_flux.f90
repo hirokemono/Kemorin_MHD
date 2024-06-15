@@ -70,20 +70,20 @@
         if(iflag_debug .gt. 0) write(*,*) 'cal_area_for_1sgrp'
         call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
      &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
-     &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
+     &      fln_src%nsf_start_grp, fln_src%isf_grp_start_item,          &
      &      fln_src%flux_start)
       else
         if(iflag_debug .gt. 0) write(*,*) 'cal_flux_for_1sgrp'
         call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
      &      ele%interior_ele, surf%vnorm_surf, surf%area_surf,          &
-     &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
+     &      fln_src%nsf_start_grp, fln_src%isf_grp_start_item,          &
      &      nod_fld%d_fld(1,fln_prm%iphys_4_fline), fln_src%flux_start)
       end if
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
-      do i = 1, fln_src%nele_start_grp
+      do i = 1, fln_src%nsf_start_grp
         abs_flux_start_l                                                &
      &            = abs_flux_start_l + abs(fln_src%flux_start(i))
         tot_flux_start_l                                                &
@@ -295,14 +295,14 @@
           rnd_flux(i) = r_rnd(i) * abs_flux_start_l
 !
           flux = 0.0d0
-          do inum = 1, fln_src%nele_start_grp
+          do inum = 1, fln_src%nsf_start_grp
             flux_new = flux + abs(fln_src%flux_start(inum))
             if(rnd_flux(i) .gt. flux                                    &
      &           .and. rnd_flux(i) .le. flux_new) exit
             flux = flux_new
           end do
-          id_surf_start_fline(1,i) = fln_src%iele_start_item(1,inum)
-          id_surf_start_fline(2,i) = fln_src%iele_start_item(2,inum)
+          id_surf_start_fline(1:2,i)                                    &
+     &           = fln_src%isf_grp_start_item(1:2,inum)
         end do
       end if
 !
@@ -335,22 +335,22 @@
       ref_flux = abs_flux_start_l / dble(fln_src%num_line_local+1)
       icou = 0
       flux = 0.0d0
-      do inum = 1, fln_src%nele_start_grp
+      do inum = 1, fln_src%nsf_start_grp
         flux = flux + abs(fln_src%flux_start(inum))
         if(flux .ge. ref_flux) then
           icou = icou + 1
-          id_surf_start_fline(1,icou)                                  &
-     &               = fln_src%iele_start_item(1,inum)
-          id_surf_start_fline(2,icou)                                  &
-     &               = fln_src%iele_start_item(2,inum)
+          id_surf_start_fline(1:2,icou)                                 &
+     &               = fln_src%isf_grp_start_item(1:2,inum)
           flux = 0.0d0
         end if
         if(icou .ge. fln_src%num_line_local) exit
       end do
 !
-      write(*,*) 'icou', my_rank, icou, num_line, fln_src%num_line_local
-      write(50+my_rank,*) 'nele_start_grp', fln_src%nele_start_grp
-      write(50+my_rank,*) 'id_surf_start_fline', id_surf_start_fline(1,:)
+      write(*,*) 'icou', my_rank, icou, num_line,                       &
+    &           fln_src%num_line_local
+      write(50+my_rank,*) 'nsf_start_grp', fln_src%nsf_start_grp
+      write(50+my_rank,*) 'id_surf_start_fline',                        &
+    &                     id_surf_start_fline(1,:)
 !
 !
       end subroutine start_surface_witout_random

@@ -1,9 +1,12 @@
-!set_fields_for_fieldline.f90
+!>@file   set_fields_for_fieldline.f90
+!!@brief  module set_fields_for_fieldline
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!      module set_fields_for_fieldline
-!
-!      Written by H. Matsui on Aug., 2011
-!
+!> @brief Main routine for field line module
+!!
+!!@verbatim
 !!      integer(kind = kint) function count_nsurf_for_starting          &
 !!     &                            (ele, sf_grp, igrp_seed)
 !!      subroutine set_isurf_for_starting                               &
@@ -20,6 +23,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!@endverbatim
 !
       module set_fields_for_fieldline
 !
@@ -91,8 +95,8 @@
         iele = sf_grp%item_sf_grp(1,isurf)
         if(ele%interior_ele(iele) .ne. izero) then
           inum = inum + 1
-          fln_src%iele_start_item(1,inum) = sf_grp%item_sf_grp(1,isurf)
-          fln_src%iele_start_item(2,inum) = sf_grp%item_sf_grp(2,isurf)
+          fln_src%isf_grp_start_item(1:2,inum)                          &
+    &                 = sf_grp%item_sf_grp(1:2,isurf)
         end if
       end do
 !

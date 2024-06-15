@@ -7,18 +7,17 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine s_const_field_lines                                  &
-!!     &         (mesh, para_surf, nod_fld, num_fline, fln_prm, fln_tce,&
-!!     &          fln_SR, fln_bcast, fline_lc, m_SR)
+!!      subroutine const_each_field_line(mesh, para_surf, nod_fld,      &
+!!     &          fln_prm, fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
-!!        integer(kind = kint), intent(in) :: num_fline
-!!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-!!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!        type(local_fieldline), intent(inout) ::     fline_lc(num_fline)
-!!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
-!!        type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!        type(trace_data_send_recv), intent(inout) :: fln_SR
+!!        type(broadcast_trace_data), intent(inout) :: fln_bcast
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module const_field_lines
@@ -50,7 +49,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_field_line(mesh, para_surf, nod_fld,             &
+      subroutine const_each_field_line(mesh, para_surf, nod_fld,        &
      &          fln_prm, fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
 !
       use calypso_SR
@@ -100,7 +99,7 @@
        if(nline .le. 0) exit
       end do
 !
-      end subroutine const_field_line
+      end subroutine const_each_field_line
 !
 !  ---------------------------------------------------------------------
 !

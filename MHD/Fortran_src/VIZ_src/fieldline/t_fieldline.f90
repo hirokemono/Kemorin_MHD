@@ -55,6 +55,8 @@
         type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
+      private :: s_const_field_lines
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -195,9 +197,9 @@
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call const_field_line(mesh, para_surf, nod_fld, fln_prm(i_fln), &
-     &      fln_tce(i_fln), fln_SR(i_fln), fln_bcast(i_fln),            &
-     &      fline_lc(i_fln), m_SR)
+        call const_each_field_line(mesh, para_surf, nod_fld,            &
+     &      fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),              &
+     &      fln_bcast(i_fln), fline_lc(i_fln), m_SR)
       end do
 !
       end subroutine s_const_field_lines

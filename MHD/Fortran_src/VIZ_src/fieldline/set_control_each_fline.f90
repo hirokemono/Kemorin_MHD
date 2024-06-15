@@ -166,8 +166,8 @@
      &                              fln%start_surf_grp_ctl%charavalue)
         end if
 !
-        fln_src%nele_start_grp = count_nsurf_for_starting(ele, sf_grp,  &
-     &                          fln_prm%igrp_start_fline_surf_grp)
+        fln_src%nsf_start_grp = count_nsurf_for_starting(ele, sf_grp,   &
+     &                         fln_prm%igrp_start_fline_surf_grp)
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
