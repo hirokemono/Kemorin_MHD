@@ -83,9 +83,9 @@ void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
 
     fline_gmenu->fline_color_vws = alloc_colormap_view();
     set_fieldline_menu_box(kemo_gl, fline_gmenu, itemTEvo);
-    GtkWidget *flineFrame = pack_fieldline_menu_frame(fline_gmenu);
+    fline_gmenu->fline_frame = pack_fieldline_menu_frame(fline_gmenu);
     
-    gtk_container_add(GTK_CONTAINER(fline_gmenu->flineWin), flineFrame);
+    gtk_container_add(GTK_CONTAINER(fline_gmenu->flineWin), fline_gmenu->fline_frame);
     gtk_widget_show_all(fline_gmenu->flineWin);
     return;
 }
@@ -111,9 +111,9 @@ void init_tracer_window(struct kemoviewer_gl_type *kemo_gl,
 
     tracer_gmenu->fline_color_vws = alloc_colormap_view();
     set_tracer_menu_box(kemo_gl, tracer_gmenu, itemTEvo);
-    GtkWidget *flineFrame = pack_tracer_menu_frame(tracer_gmenu);
+    tracer_gmenu->fline_frame = pack_tracer_menu_frame(tracer_gmenu);
     
-    gtk_container_add(GTK_CONTAINER(tracer_gmenu->flineWin), flineFrame);
+    gtk_container_add(GTK_CONTAINER(tracer_gmenu->flineWin), tracer_gmenu->fline_frame);
     gtk_widget_show_all(tracer_gmenu->flineWin);
     return;
 }

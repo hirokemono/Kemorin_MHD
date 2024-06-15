@@ -32,7 +32,7 @@ struct fieldline_gtk_menu{
     GtkWidget *combobox_color;
     GtkWidget *switch_tube;
     GtkWidget *fline_switch_bar;
-
+    
     GtkWidget *label_min, *label_max;
     GtkWidget *spin_range_min, *spin_min_digit;
     GtkWidget *spin_range_max, *spin_max_digit;
@@ -48,6 +48,8 @@ struct fieldline_gtk_menu{
     
     struct colormap_view *fline_color_vws;
     GtkWidget *expander_fline_color;
+    
+    GtkWidget *fline_frame;
 };
 
 
