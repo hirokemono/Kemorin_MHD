@@ -419,6 +419,7 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, inum, increment
+      integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
       real(kind = kreal) :: rgb_color(3), opacity
 !
@@ -428,7 +429,10 @@
         radius =         tracer_pvr_prm%rendering_radius(i_fln)
         opacity =        tracer_pvr_prm%tracer_opacity(i_fln)
         rgb_color(1:3) = tracer_pvr_prm%tracer_RGB(1:3,i_fln)
-        do inum = 1, particle_lc(i_fln)%nnod_line_l, increment
+        do inum = 1, particle_lc(i_fln)%nnod_line_l
+          i_global = particle_lc(i_fln)%iglobal_fline(inum)
+          if(mod(i_global-1,increment) .ne. 0) cycle
+!
           distance = distance_from_tracer(xx4_tgt, inum,                &
      &                                    particle_lc(i_fln))
           if(distance .ge. radius) cycle
@@ -473,18 +477,23 @@
 !
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      integer(kind = kint) :: i_fln, iedge, increment
+      integer(kind = kint) :: i_fln, iedge, inod, increment
+      integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
       real(kind = kreal) :: rgb_color(3), opacity
 !
 !
       if(fline_pvr_prm%num_pvr_tracer .le. 0) return
-      do i_fln = 1, fline_pvr_prm%num_pvr_tracer, increment
+      do i_fln = 1, fline_pvr_prm%num_pvr_tracer
         increment = fline_pvr_prm%increment(i_fln)
         radius =    fline_pvr_prm%rendering_radius(i_fln)
         opacity =   fline_pvr_prm%tracer_opacity(i_fln)
         rgb_color(1:3) = fline_pvr_prm%tracer_RGB(1:3,i_fln)
         do iedge = 1, fline_lc(i_fln)%nele_line_l
+          inod =     fline_lc(i_fln)%iedge_line_l(1,iedge)
+          i_global = fline_lc(i_fln)%iglobal_fline(inod)
+          if(mod(i_global-1,increment) .ne. 0) cycle
+!
           distance = distance_from_fline_segment(xx4_tgt, iedge,        &
      &                                           fline_lc(i_fln))
           if(distance .ge. radius) cycle

@@ -310,6 +310,7 @@
           if(abs(fln_src%xi_surf_start_fline(3,inum)-one)               &
      &              .lt. error_level) fln_tce%isf_dbl_start(3,icou) = 6
           
+          fln_tce%iline_original(icou) = inum
           fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_prm%xx_surf_start_fline(1:3,inum)
           fln_tce%xx_fline_start(4,icou) = one

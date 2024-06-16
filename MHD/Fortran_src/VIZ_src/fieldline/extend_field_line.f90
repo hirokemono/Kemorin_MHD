@@ -7,9 +7,9 @@
 !> @brief extend field line in each domain
 !!
 !!@verbatim
-!!      subroutine s_extend_field_line                                  &
-!!     &         (node, ele, surf, nod_fld, viz_fields, max_line_step,  &
-!!     &          end_trace, iflag_used_ele, iflag_dir, i_fline,        &
+!!      subroutine s_extend_field_line(node, ele, surf, para_surf,      &
+!!     &          nod_fld, viz_fields, max_line_step, end_trace,        &
+!!     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,    &
 !!     &          isurf_org_dbl, x4_start, v4_start, c_field,           &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
@@ -18,6 +18,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        real(kind = kreal), intent(in) ::   end_trace
+!!        integer(kind = kint_gl), intent(in) :: iglobal_fline
 !!        integer(kind = kint), intent(in) :: iflag_dir, max_line_step
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !!        integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
@@ -52,8 +53,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
-     &          nod_fld, viz_fields, max_line_step,                     &
-     &          end_trace, iflag_used_ele, iflag_dir, i_fline,          &
+     &          nod_fld, viz_fields, max_line_step, end_trace,          &
+     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,      &
      &          isurf_org_dbl, x4_start, v4_start, c_field,             &
      &          icount_line, trace_length, iflag_comm, fline_lc, inum)
 !
@@ -68,6 +69,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       integer(kind = kint), intent(in) :: i_fline
+      integer(kind = kint_gl), intent(in) :: iglobal_fline
 !
       integer(kind = kint), intent(in) :: inum
       real(kind = kreal), intent(in) ::   end_trace
@@ -135,7 +137,7 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-        call add_fline_list(x4_start, v4_start,                         &
+        call add_fline_list(iglobal_fline, x4_start, v4_start,          &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
@@ -156,7 +158,7 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-        call add_fline_list(x4_start, v4_start,                         &
+        call add_fline_list(iglobal_fline, x4_start, v4_start,          &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !

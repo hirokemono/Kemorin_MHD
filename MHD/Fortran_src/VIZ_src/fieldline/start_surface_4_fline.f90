@@ -98,7 +98,8 @@
         do inum = ist, ied
           write(50+my_rank,*) 'isf_dbl_start', inum,                    &
      &                         fln_tce%isf_dbl_start(1:3,inum)
-          write(50+my_rank,'(a,1p4e16.5)') 'start_point',               &
+          write(50+my_rank,'(a,i16, 1p4e16.5)') 'start_point',          &
+     &      fln_tce%iline_original(inum),                               &
      &      fln_tce%xx_fline_start(1:4,inum)
         end do
       end if

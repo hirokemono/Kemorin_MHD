@@ -39,7 +39,7 @@
         integer(kind = kint), allocatable :: istack_current_fline(:)
 !
         integer(kind = kint) :: num_trace_buf
-        integer(kind= kint), allocatable :: iline_original(:)
+        integer(kind= kint_gl), allocatable :: iline_original(:)
         integer(kind= kint), allocatable :: iflag_direction(:)
         integer(kind= kint), allocatable :: icount_fline(:)
         integer(kind= kint), allocatable :: iflag_comm_start(:)

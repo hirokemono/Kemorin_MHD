@@ -42,10 +42,12 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem_bcast = 6
+      integer(kind= kint), parameter, private :: nitem8_bcast = 1
+      integer(kind= kint), parameter, private :: nitem_bcast =  6
 !
       type broadcast_trace_data
         integer(kind= kint) :: ncomp_bcast
+        integer(kind= kint_gl), allocatable :: igl_fline_export(:,:)
         integer(kind= kint), allocatable :: id_fline_export(:,:)
         real(kind = kreal), allocatable ::  fline_export(:,:)
       end type broadcast_trace_data
@@ -72,6 +74,7 @@
 !
       num = 2 * num_each_field_line
       fln_bcast%ncomp_bcast = 9 + viz_fields%ntot_color_comp
+      allocate(fln_bcast%igl_fline_export(nitem8_bcast,num))
       allocate(fln_bcast%id_fline_export(nitem_bcast,num))
       allocate(fln_bcast%fline_export(fln_bcast%ncomp_bcast,num))
       fln_bcast%id_fline_export = 0
@@ -85,6 +88,7 @@
 !
       type(broadcast_trace_data), intent(inout) :: fln_bcast
 !
+      deallocate(fln_bcast%igl_fline_export)
       deallocate(fln_bcast%id_fline_export)
       deallocate(fln_bcast%fline_export)
 !
@@ -99,6 +103,7 @@
       use t_tracing_data
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_int8
       use transfer_to_long_integers
 !
       type(fieldline_paramter), intent(in) :: fln_prm
@@ -121,6 +126,9 @@
           ist = fln_tce%istack_current_fline(ip-1)
           num64 = fln_tce%istack_current_fline(ip) - ist
           if(num64 .le. 0) cycle
+            call calypso_mpi_bcast_int8                                 &
+     &         (fln_bcast%igl_fline_export(1,ist+1),                    &
+     &          (num64*nitem8_bcast), src_rank)
             call calypso_mpi_bcast_int                                  &
      &         (fln_bcast%id_fline_export(1,ist+1),                     &
      &          (num64*nitem_bcast), src_rank)
@@ -152,7 +160,9 @@
 !
       ist = fln_tce%istack_current_fline(my_rank)
       if(fln_tce%iflag_comm_start(i) .eq. ione) then
-        fln_bcast%id_fline_export(1,i+ist) = fln_tce%iline_original(i)
+        fln_bcast%igl_fline_export(1,i+ist)                             &
+     &                                      = fln_tce%iline_original(i)
+        fln_bcast%id_fline_export(1,i+ist) = my_rank
         fln_bcast%id_fline_export(2,i+ist) = fln_tce%iflag_direction(i)
         fln_bcast%id_fline_export(3,i+ist) = fln_tce%icount_fline(i)
 !
@@ -215,7 +225,8 @@
         if(fln_bcast%id_fline_export(4,i) .ne. my_rank) cycle
 !
           icou = icou + 1
-          fln_tce%iline_original(icou) = fln_bcast%id_fline_export(1,i)
+          fln_tce%iline_original(icou)                                  &
+     &               = fln_bcast%igl_fline_export(1,i)
           fln_tce%iflag_direction(icou)                                 &
      &                                 = fln_bcast%id_fline_export(2,i)
           fln_tce%icount_fline(icou) =   fln_bcast%id_fline_export(3,i)

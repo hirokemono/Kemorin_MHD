@@ -163,6 +163,8 @@
           if(isf_dbl_st_tmp(2) .le. 0) cycle
 !
           icou = icou + 1
+          fln_tce%iline_original(icou) = i                              &
+     &          + fln_tce%istack_current_fline(my_rank)
           fln_tce%iflag_direction(icou) = fln_prm%id_fline_direction
           fln_tce%isf_dbl_start(1,icou) = my_rank
           fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
@@ -183,6 +185,8 @@
 !
           if(isf_dbl_st_tmp(2) .gt. 0) then
             icou = icou + 1
+            fln_tce%iline_original(icou) = i                            &
+     &            + fln_tce%istack_current_fline(my_rank)
             fln_tce%iflag_direction(icou) = iflag_forward_trace
             fln_tce%isf_dbl_start(1,icou) = my_rank
             fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)

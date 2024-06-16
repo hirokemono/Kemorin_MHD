@@ -29,7 +29,8 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem_export = 6
+      integer(kind= kint), parameter, private :: nitem8_export = 1
+      integer(kind= kint), parameter, private :: nitem_export =  6
 !
       type trace_data_send_recv
         integer(kind = kint) :: npe_send
@@ -51,14 +52,16 @@
         integer(kind = kint) :: ncomp_export
         integer(kind = kint) :: ntot_send
         integer(kind = kint) :: ntot_sendbuf
-        integer(kind = kint), allocatable :: item_send(:)
-        integer(kind = kint), allocatable :: iSend(:,:)
-        real(kind = kreal),   allocatable :: rSend(:,:)
+        integer(kind = kint), allocatable ::    item_send(:)
+        integer(kind = kint_gl), allocatable :: i8Send(:,:)
+        integer(kind = kint), allocatable ::    iSend(:,:)
+        real(kind = kreal),   allocatable ::    rSend(:,:)
         integer(kind = kint) :: ntot_recv
         integer(kind = kint) :: ntot_recvbuf
-        integer(kind = kint), allocatable :: item_recv(:)
-        integer(kind = kint), allocatable :: iRecv(:,:)
-        real(kind = kreal),   allocatable :: rRecv(:,:)
+        integer(kind = kint), allocatable ::    item_recv(:)
+        integer(kind = kint_gl), allocatable :: i8Recv(:,:)
+        integer(kind = kint), allocatable ::    iRecv(:,:)
+        real(kind = kreal),   allocatable ::    rRecv(:,:)
       end type trace_data_send_recv
 !
 !  ---------------------------------------------------------------------
@@ -122,6 +125,7 @@
       use calypso_SR_core
       use set_to_send_buffer
       use solver_SR_int
+      use solver_SR_int8
       use set_to_send_buffer
       use select_copy_from_recv
       use t_solver_SR
@@ -134,12 +138,11 @@
       type(trace_data_send_recv), intent(inout) :: fln_SR
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: i
+!      integer(kind = kint) :: i
 !
       call count_trace_data_SR_npe(fln_tce, fln_SR)
       call count_trace_data_SR_num(fln_SR)
-      call raise_trace_SR_export(fln_SR%ntot_send,             &
-     &                           fln_SR)
+      call raise_trace_SR_export(fln_SR%ntot_send, fln_SR)
       call raise_trace_SR_import(fln_SR)
 
       call set_trace_data_to_SR(fln_tce, fln_SR)
@@ -157,6 +160,13 @@
      &    fln_SR%istack_isend, fln_SR%iSend(1,1), 0,                    &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
      &    fln_SR%istack_irecv, fln_SR%iRecv(1,1), SR_sig)
+      call calypso_send_recv_fin(fln_SR%npe_send, 0, SR_sig)
+!
+      call calypso_send_recv_i8core                                     &
+     &   (fln_SR%npe_send, fln_SR%id_pe_send,                           &
+     &    fln_SR%istack_isend, fln_SR%i8Send(1,1), 0,                   &
+     &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
+     &    fln_SR%istack_irecv, fln_SR%i8Recv(1,1), SR_sig)
       call calypso_send_recv_fin(fln_SR%npe_send, 0, SR_sig)
 !
       call set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
@@ -221,13 +231,16 @@
 !
       if(ntot .le. 0) return
 !$omp parallel workshare
-      fln_SR%item_send(1:ntot) = 0
+      fln_SR%item_send(:) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      fln_SR%iSend(1:nitem_export,1:ntot) = 0
+      fln_SR%iSend(:,:) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      fln_SR%rSend(1:fln_SR%ncomp_export,1:ntot) = 0
+      fln_SR%i8Send(:,:) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%rSend(:,:) = 0
 !$omp end parallel workshare
 !
       end subroutine alloc_trace_SR_export
@@ -242,18 +255,22 @@
       fln_SR%ntot_recvbuf = ntot
       allocate(fln_SR%item_recv(ntot))
       allocate(fln_SR%iRecv(nitem_export,ntot))
+      allocate(fln_SR%i8Recv(nitem8_export,ntot))
       allocate(fln_SR%rRecv(fln_SR%ncomp_export,ntot))
       return
 !
       if(ntot .le. 0) return
 !$omp parallel workshare
-      fln_SR%item_recv(1:fln_SR%ntot_recvbuf) =          0
+      fln_SR%item_recv(:) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      fln_SR%iRecv(nitem_export,1:fln_SR%ntot_recvbuf) = 0
+      fln_SR%iRecv(:,:) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      fln_SR%rRecv(1:fln_SR%ncomp_export,1:fln_SR%ntot_recvbuf) = 0.0d0
+      fln_SR%i8Recv(:,:) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      fln_SR%rRecv(:,:) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_trace_SR_import
@@ -266,6 +283,7 @@
       if(allocated(fln_SR%item_send) .eqv. .FALSE.) return
       deallocate(fln_SR%item_send)
       deallocate(fln_SR%iSend)
+      deallocate(fln_SR%i8Send)
       deallocate(fln_SR%rSend)
 !
       end subroutine dealloc_trace_SR_export
@@ -278,6 +296,7 @@
       if(allocated(fln_SR%item_recv) .eqv. .FALSE.) return
       deallocate(fln_SR%item_recv)
       deallocate(fln_SR%rRecv)
+      deallocate(fln_SR%i8Recv)
       deallocate(fln_SR%iRecv)
 !
       end subroutine dealloc_trace_SR_import
@@ -411,7 +430,9 @@
       do icou = 1, fln_SR%ntot_send
         inum = fln_SR%item_send(icou)
 !
-        fln_SR%iSend(1,icou) =   fln_tce%iline_original(inum)
+        fln_SR%i8Send(1,icou) =  fln_tce%iline_original(inum)
+!
+        fln_SR%iSend(1,icou) =   my_rank
         fln_SR%iSend(2,icou) =   fln_tce%iflag_direction(inum)
         fln_SR%iSend(3,icou) =   fln_tce%icount_fline(inum)
         fln_SR%iSend(4:6,icou) = fln_tce%isf_dbl_start(1:3,inum)   
@@ -453,7 +474,8 @@
      &                    + fln_tce%istack_current_fline(ip)
       end do
       do i = 1, fln_SR%ntot_recv
-          fln_tce%iline_original(i) =      fln_SR%iRecv(1,i)
+          fln_tce%iline_original(i) =      fln_SR%i8Recv(1,i)
+!
           fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
           fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
           fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(4:6,i)

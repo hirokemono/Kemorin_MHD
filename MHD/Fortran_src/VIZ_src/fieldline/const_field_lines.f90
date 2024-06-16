@@ -79,6 +79,7 @@
      &        para_surf, nod_fld, fln_prm%fline_fields,                 &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
      &        fln_prm%iflag_fline_used_ele,                             &
+     &        fln_tce%iline_original(inum),                             &
      &        fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,     &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &

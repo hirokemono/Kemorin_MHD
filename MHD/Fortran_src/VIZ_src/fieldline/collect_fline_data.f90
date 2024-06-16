@@ -66,7 +66,7 @@
       call allocate_ucd_node(ucd)
 !$omp parallel do
       do i = 1, ucd%nnod
-        ucd%inod_global(i) = i + ucd%istack_merged_nod(my_rank)
+        ucd%inod_global(i) = fline_lc%iglobal_fline(i)
         ucd%xx(i,1) = fline_lc%xx_line_l(1,i)
         ucd%xx(i,2) = fline_lc%xx_line_l(2,i)
         ucd%xx(i,3) = fline_lc%xx_line_l(3,i)
@@ -138,7 +138,7 @@
       call allocate_ucd_node(ucd)
 !$omp parallel do
       do i = 1, ucd%nnod
-        ucd%inod_global(i) = i + ucd%istack_merged_nod(my_rank)
+        ucd%inod_global(i) = fline_lc%iglobal_fline(i)
         ucd%xx(i,1) = fline_lc%xx_line_l(1,i)
         ucd%xx(i,2) = fline_lc%xx_line_l(2,i)
         ucd%xx(i,3) = fline_lc%xx_line_l(3,i)
@@ -149,7 +149,7 @@
 !$omp parallel do
       do i = 1, ucd%nele
         ucd%iele_global(i) = ucd%inod_global(i)
-        ucd%ie(i,1) =        ucd%inod_global(i)
+        ucd%ie(i,1) =        fline_lc%iglobal_fline(i)
       end do
 !$omp end parallel do
       

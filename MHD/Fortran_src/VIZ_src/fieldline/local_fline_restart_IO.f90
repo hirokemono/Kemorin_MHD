@@ -68,7 +68,7 @@
 !
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
-        particle_IO%node%inod_global(i) = my_rank
+        particle_IO%node%inod_global(i) = fline_lc%iglobal_fline(i)
         particle_IO%node%xx(i,1) = fline_lc%xx_line_l(1,i)
         particle_IO%node%xx(i,2) = fline_lc%xx_line_l(2,i)
         particle_IO%node%xx(i,3) = fline_lc%xx_line_l(3,i)
@@ -117,6 +117,7 @@
 !
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
+        fline_lc%iglobal_fline(i) = particle_IO%node%inod_global(i)
         fline_lc%xx_line_l(1,i) = particle_IO%node%xx(i,1)
         fline_lc%xx_line_l(2,i) = particle_IO%node%xx(i,2)
         fline_lc%xx_line_l(3,i) = particle_IO%node%xx(i,3)
