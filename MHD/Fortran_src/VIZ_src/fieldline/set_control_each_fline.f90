@@ -1,19 +1,27 @@
-!set_control_each_fline.f90
-!      module set_control_each_fline
+!>@file   set_control_each_fline.f90
+!!@brief  module set_control_each_fline
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!        programmed by H.Matsui on May. 2006
-!
-!!      subroutine count_control_4_fline                                &
-!!     &         (fln, ele, ele_grp, sf_grp, fln_prm, fln_src)
-!!      subroutine set_control_4_fline                                  &
-!!     &         (fln, ele, ele_grp, sf_grp, nod_fld, fln_prm, fln_src)
-!!        type(element_data), intent(in) :: ele
+!> @brief Set control parameter for fieldlines
+!!
+!!@verbatim
+!!      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
+!!      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
-!!        type(each_fieldline_source), intent(inout) :: fln_src
+!!      subroutine set_fline_ctl_4_tracer_seed(num_tracer, tracer_prm,  &
+!!     &                                       fln, fln_prm)
+!!        integer(kind = kint), intent(in) :: num_tracer
+!!        type(fieldline_paramter), intent(in) :: tracer_prm(num_tracer)
+!!        type(fline_ctl), intent(in) :: fln
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
+!!@endverbatim
 !
       module set_control_each_fline
 !
@@ -40,8 +48,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_4_fline                                  &
-     &         (fln, ele, ele_grp, sf_grp, fln_prm, fln_src)
+      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
 !
       use m_field_file_format
       use m_control_fline_flags
@@ -53,14 +60,12 @@
       use skip_comment_f
       use delete_data_files
 !
-      type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
 !
       type(fline_ctl), intent(in) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(each_fieldline_source), intent(inout) :: fln_src
 !
       character(len=kchara) :: character_256
 !
@@ -87,7 +92,6 @@
      &      = sel_iso_file_format(fln%fline_output_type_ctl%charavalue)
       end if
 !
-!
       call set_ctl_parallel_file_w_def(default_tracer_prefix,           &
      &    fln%fline_rst_prefix_ctl, fln%fline_rst_format_ctl,           &
      &    fln_prm%fline_rst_IO)
@@ -111,6 +115,8 @@
         fln_prm%id_fline_seed_type =  iflag_position_list
       else if(cmp_no_case(character_256, cflag_spray_in_domain)) then 
         fln_prm%id_fline_seed_type =  iflag_spray_in_domain
+      else if(cmp_no_case(character_256, cflag_seed_from_tracer)) then 
+        fln_prm%id_fline_seed_type =  iflag_tracer_seeds
       end if
 !
 !
@@ -124,7 +130,9 @@
       end if
 !
 !
-      if     (fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
+      if     (fln_prm%id_fline_seed_type .eq. iflag_surface_group       &
+     &   .or. fln_prm%id_fline_seed_type .eq. iflag_spray_in_domain)    &
+     &                                                            then
         fln_prm%id_seed_distribution =  iflag_random_by_amp
         character_256 = fln%selection_type_ctl%charavalue
         if     (cmp_no_case(character_256, cflag_random_by_amp)) then
@@ -134,9 +142,6 @@
         else if(cmp_no_case(character_256, cflag_no_random)) then 
           fln_prm%id_seed_distribution =  iflag_no_random
         end if
-      else if(fln_prm%id_fline_seed_type                                &
-     &                          .eq. iflag_spray_in_domain) then
-        fln_prm%id_seed_distribution =  iflag_no_random
       end if
 !
       fln_prm%max_line_stepping = -1
@@ -160,14 +165,17 @@
           fln_prm%num_each_field_line = 8
         end if
 !
-        if(fln%start_surf_grp_ctl%iflag .gt. 0) then
+        if(fln%seed_surf_grp_ctl%iflag .gt. 0) then
           fln_prm%igrp_start_fline_surf_grp                             &
      &      = set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,    &
-     &                              fln%start_surf_grp_ctl%charavalue)
+     &                              fln%seed_surf_grp_ctl%charavalue)
         end if
 !
-        fln_src%nsf_start_grp = count_nsurf_for_starting(ele, sf_grp,   &
-     &                         fln_prm%igrp_start_fline_surf_grp)
+        if(fln%seed_ele_grp_ctl%iflag .gt. 0) then
+          fln_prm%igrp_start_fline_ele_grp                              &
+     &      = set_surf_grp_id_4_viz(ele_grp%num_grp, ele_grp%grp_name,  &
+     &                              fln%seed_ele_grp_ctl%charavalue)
+        end if
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -191,23 +199,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_fline                                    &
-     &         (fln, ele, ele_grp, sf_grp, nod_fld, fln_prm, fln_src)
+      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
 !
       use t_source_of_filed_line
       use set_components_flags
       use set_area_4_viz
       use coordinate_converter
 !
-      type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
       type(phys_data), intent(in) :: nod_fld
 !
       type(fline_ctl), intent(inout) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(each_fieldline_source), intent(inout) :: fln_src
 !
       real(kind = kreal) :: rr(1), theta(1), phi(1)
       integer(kind = kint) :: i, icou
@@ -220,7 +224,7 @@
       real(kind = kreal) :: pi
 !
       pi = four * atan(one)
-    !
+!
       tmpfield(1) = fln%fline_field_ctl%charavalue
       tmpcomp(1) =  'vector'
       call set_components_4_viz                                         &
@@ -234,6 +238,15 @@
       fln_prm%iphys_4_fline                                             &
      &       = nod_fld%istack_component(ifield_tmp(1)-1) + 1
 !
+!
+      tmpfield(1) = fln%seed_ref_field_ctl%charavalue
+      tmpcomp(1) =  fln%seed_ref_comp_ctl%charavalue
+      call set_components_4_viz                                         &
+     &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp, &
+     &    ione, ifield_tmp, icomp_tmp, ncomp, ncomp_org, tmpchara)
+      fln_prm%ifield_4_density = ifield_tmp(1)
+      fln_prm%icomp_4_density =  icomp_tmp(1)
+!
       call set_ctl_params_viz_fields(fln%fline_field_output_ctl,        &
      &                               nod_fld, fln_prm%fline_fields)
 !
@@ -241,11 +254,7 @@
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)
 !
-!
-      if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
-        call set_isurf_for_starting                                     &
-     &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp, fln_src)
-      else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
+      if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         do i = 1, fln_prm%num_each_field_line
           fln_prm%id_gl_surf_start_fline(1,i)                           &
      &          = fln%seed_surface_ctl%int1(i)
@@ -275,24 +284,65 @@
           rr(1) =    fln%seed_spherical_ctl%vec1(i)
           theta(1) = fln%seed_spherical_ctl%vec2(i)
           phi(1) =   fln%seed_spherical_ctl%vec3(i)
-          write(*,*) my_rank, i, 'seed_spherical_ctl', &
-     &        fln%seed_spherical_ctl%vec1(i),  &
-     &        fln%seed_spherical_ctl%vec2(i),  &
-     &        fln%seed_spherical_ctl%vec3(i)
-          write(*,*) my_rank, i, 'seed_spherical_ctl', rr(1), theta(1), phi(1)
+!          write(*,*) my_rank, i, 'seed_spherical_ctl',  &
+!    &        fln%seed_spherical_ctl%vec1(i),            &
+!    &        fln%seed_spherical_ctl%vec2(i),            &
+!    &        fln%seed_spherical_ctl%vec3(i)
+!          write(*,*) my_rank, i, 'seed_spherical_ctl',                 &
+!    &            rr(1), theta(1), phi(1)
           call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
     &                         fln_prm%xx_surf_start_fline(1,icou),      &
     &                         fln_prm%xx_surf_start_fline(2,icou),      &
     &                         fln_prm%xx_surf_start_fline(3,icou))
-          write(*,*) my_rank, i, icou, 'xx_surf_start_fline', fln_prm%xx_surf_start_fline(:,icou)
+!          write(*,*) my_rank, i, icou, 'xx_surf_start_fline',          &
+!    &              fln_prm%xx_surf_start_fline(:,icou)
         end do
 !       
 !        do i = 1, fln_prm%num_each_field_line
-!          write(*,*) i, 'fln_prm%xx_surf_start_fline', fln_prm%xx_surf_start_fline(:,i)
+!          write(*,*) i, 'fln_prm%xx_surf_start_fline',                 &
+!     &        fln_prm%xx_surf_start_fline(:,i)
 !        end do
       end if
 !
       end subroutine set_control_4_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_fline_ctl_4_tracer_seed(num_tracer, tracer_prm,    &
+     &                                       fln, fln_prm)
+!
+      use m_control_fline_flags
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: num_tracer
+      type(fieldline_paramter), intent(in) :: tracer_prm(num_tracer)
+      type(fline_ctl), intent(in) :: fln
+!
+      type(fieldline_paramter), intent(inout) :: fln_prm
+!
+      integer(kind = kint) :: i
+      character(len=kchara) :: tracer_prefix, character_256
+!
+!
+      fln_prm%id_tracer_for_seed = 0
+      if(fln%seed_file_prefix_ctl%iflag .gt. 0) then
+        tracer_prefix = fln%seed_file_prefix_ctl%charavalue
+        do i = 1, num_tracer
+          character_256 = tracer_prm(i)%fline_file_IO%file_prefix
+          if(cmp_no_case(tracer_prefix, character_256)) then
+            fln_prm%id_tracer_for_seed = i
+            exit
+          end if
+        end do
+      end if
+!
+      if(fln_prm%id_fline_seed_type .eq. iflag_tracer_seeds             &
+     &                .and. fln_prm%id_tracer_for_seed .le. 0) then
+        call calypso_MPI_abort(ierr_mesh,                               &
+     &     'set correct tracer file prefix for seeds')
+      end if
+!
+      end subroutine set_fline_ctl_4_tracer_Seed
 !
 !  ---------------------------------------------------------------------
 !

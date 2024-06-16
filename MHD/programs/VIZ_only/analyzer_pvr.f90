@@ -91,7 +91,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FLINE_initialize'
       call FLINE_initialize(t_VIZ3%viz_step%FLINE_t%increment,          &
-     &    FEM_viz3%geofem, FEM_viz3%field,                              &
+     &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3,                &
      &    pvr_ctl3%viz_ctl_v%fline_ctls, vizs_fline3)
 !
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'

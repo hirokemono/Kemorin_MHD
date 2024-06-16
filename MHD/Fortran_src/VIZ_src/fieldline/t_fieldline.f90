@@ -7,8 +7,8 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine FLINE_initialize                                     &
-!!     &         (increment_fline, geofem, nod_fld, fline_ctls, fline)
+!!      subroutine FLINE_initialize(increment_fline, geofem, nod_fld,   &
+!!     &          tracer, fline_ctls, fline)
 !!      subroutine FLINE_visualize(istep_fline, time_d, geofem,         &
 !!     &                           para_surf, nod_fld, fline, m_SR)
 !!      subroutine FLINE_finalize(fline)
@@ -17,6 +17,7 @@
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fieldline_module), intent(inout) :: fline
 !!@endverbatim
@@ -38,6 +39,7 @@
       use t_tracing_data
       use t_local_fline
       use t_ucd_data
+      use t_particle_trace
 !
       implicit  none
 !
@@ -55,7 +57,7 @@
         type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
-      private :: s_const_field_lines
+      private :: set_fline_controls, s_const_field_lines
 !
 !  ---------------------------------------------------------------------
 !
@@ -63,8 +65,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_initialize                                       &
-     &         (increment_fline, geofem, nod_fld, fline_ctls, fline)
+      subroutine FLINE_initialize(increment_fline, geofem, nod_fld,     &
+     &          tracer, fline_ctls, fline)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -75,6 +77,7 @@
       integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
@@ -86,8 +89,9 @@
 !
       call alloc_FLINE_modules(fline)
 !
-      call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
-     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
+      call set_fline_controls                                           &
+     &   (geofem%mesh, geofem%group, nod_fld, tracer,                   &
+     &    fline%num_fline, fline_ctls, fline%fln_prm)
       call dealloc_fline_ctl_struct(fline_ctls)
 !
       call alloc_each_FLINE_data                                        &
@@ -173,6 +177,33 @@
       end subroutine FLINE_finalize
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_fline_controls(mesh, group, nod_fld, tracer,       &
+     &          num_fline, fline_ctls, fln_prm)
+!
+      use t_control_data_flines
+      use set_fline_control
+
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+!
+      integer(kind = kint), intent(in) ::num_fline
+      type(fieldline_controls), intent(inout) :: fline_ctls
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        call s_set_fline_control(mesh, group, nod_fld,                  &
+     &      tracer%num_trace, tracer%fln_prm,                           &
+     &      fline_ctls%fline_ctl_struct(i_fln), fln_prm(i_fln))
+      end do
+!
+      end subroutine set_fline_controls
+!
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines                                    &

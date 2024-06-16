@@ -7,13 +7,11 @@
 !> @brief Structure of start point data for line tracing iteration
 !!
 !!@verbatim
-!!      subroutine alloc_local_start_grp_item(fln_src)
 !!      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
 !!      subroutine alloc_init_tracer_position(fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!
-!!      subroutine dealloc_local_start_grp_item(fln_src)
 !!      subroutine dealloc_start_point_fline(fln_src)
 !!      subroutine dealloc_init_tracer_position(fln_prm)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -29,10 +27,6 @@
 !
 !
       type each_fieldline_source
-        integer(kind = kint) :: nsf_start_grp = 0
-        integer(kind = kint), allocatable :: isf_grp_start_item(:,:)
-        real(kind = kreal),   allocatable :: flux_start(:)
-!
         integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx4_initial_fline(:,:)
 !
@@ -86,19 +80,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_start_grp_item(fln_src)
-!
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-!
-      allocate(fln_src%isf_grp_start_item(2,fln_src%nsf_start_grp))
-      allocate(fln_src%flux_start(fln_src%nsf_start_grp))
-      if(fln_src%nsf_start_grp .gt. 0) fln_src%isf_grp_start_item = 0
-!
-      end subroutine alloc_local_start_grp_item
-!
-!  ---------------------------------------------------------------------
-!
       subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
 !
       integer, intent(in) :: num_pe
@@ -144,17 +125,6 @@
       end subroutine alloc_init_tracer_position
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_local_start_grp_item(fln_src)
-!
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-!
-      deallocate(fln_src%isf_grp_start_item, fln_src%flux_start)
-!
-      end subroutine dealloc_local_start_grp_item
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_start_point_fline(fln_src)

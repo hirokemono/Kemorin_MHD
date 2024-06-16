@@ -1,15 +1,20 @@
+!>@file   set_area_4_viz.f90
+!!@brief  module set_area_4_viz
+!!
+!!@author H. Matsui
+!!@date Programmed in May, 2006
 !
-!      module set_area_4_viz
-!
-!        programmed by H.Matsui on May, 2006
-!
-!      subroutine count_area_4_viz(num_mat, mat_name,                   &
-!     &          num_area_grp, area_ele_grp, ngrp_area)
-!      subroutine s_set_area_4_viz(num_mat, mat_name,                   &
-!     &          num_area_grp, area_ele_grp, ngrp_area, id_ele_grp_psf)
+!> @brief Choose group IDs to use
+!!
+!!@verbatim
+!!      subroutine count_area_4_viz(num_mat, mat_name,                  &
+!!     &          num_area_grp, area_ele_grp, ngrp_area)
+!!      subroutine s_set_area_4_viz(num_mat, mat_name,                  &
+!!     &          num_area_grp, area_ele_grp, ngrp_area, id_ele_grp_psf)
 !
 !!      integer(kind = kint) function set_surf_grp_id_4_viz             &
 !!     &                          (num_surf, surf_name, chosen_surf_grp)
+!!@endverbatim
 !
       module set_area_4_viz
 !

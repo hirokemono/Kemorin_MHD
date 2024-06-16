@@ -39,6 +39,8 @@
       type(VIZ_mesh_field), save :: VIZ_DAT6
 !>      Structure of field line module
       type(fieldline_module), save :: fline_v6
+!>      Structure of field line module
+      type(tracer_module), save :: tracer_v6
 !
 !  ---------------------------------------------------------------------
 !
@@ -62,7 +64,7 @@
 !
 !  VIZ Initialization
       call FLINE_initialize(t_VIZ6%viz_step%FLINE_t%increment,          &
-     &    FEM_viz6%geofem, FEM_viz6%field,                              &
+     &    FEM_viz6%geofem, FEM_viz6%field, tracer_v6,                   &
      &    vizs_ctl6%viz4_ctl%fline_ctls, fline_v6)
 !
       end subroutine initialize_fline

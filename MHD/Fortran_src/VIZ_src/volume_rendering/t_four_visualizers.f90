@@ -102,7 +102,8 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call FLINE_initialize(viz_step%FLINE_t%increment,                 &
-     &    geofem, nod_fld, viz4_ctls%fline_ctls, vizs%fline)
+     &                      geofem, nod_fld, dummy_tracer,              &
+     &                      viz4_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       dummy_tracer%num_trace = 0

@@ -86,14 +86,22 @@
       call bcast_ctl_type_c1(fln%fline_rst_prefix_ctl)
       call bcast_ctl_type_c1(fln%fline_rst_format_ctl)
 !
-      call bcast_ctl_type_c1(fln%fline_field_ctl )
-      call bcast_ctl_type_c1(fln%fline_color_field_ctl )
-      call bcast_ctl_type_c1(fln%fline_color_comp_ctl )
-      call bcast_ctl_type_c1(fln%starting_type_ctl )
-      call bcast_ctl_type_c1(fln%start_surf_grp_ctl )
-      call bcast_ctl_type_c1(fln%selection_type_ctl )
-      call bcast_ctl_type_c1(fln%line_direction_ctl )
-      call bcast_ctl_array_c2(fln%fline_field_output_ctl )
+      call bcast_ctl_type_c1(fln%fline_field_ctl)
+      call bcast_ctl_type_c1(fln%fline_color_field_ctl)
+      call bcast_ctl_type_c1(fln%fline_color_comp_ctl)
+      call bcast_ctl_type_c1(fln%starting_type_ctl)
+!
+      call bcast_ctl_type_c1(fln%seed_surf_grp_ctl)
+      call bcast_ctl_type_c1(fln%seed_ele_grp_ctl)
+!
+      call bcast_ctl_type_c1(fln%seed_ref_field_ctl)
+      call bcast_ctl_type_c1(fln%seed_ref_comp_ctl)
+!
+      call bcast_ctl_type_c1(fln%seed_file_prefix_ctl)
+!
+      call bcast_ctl_type_c1(fln%selection_type_ctl)
+      call bcast_ctl_type_c1(fln%line_direction_ctl)
+      call bcast_ctl_array_c2(fln%fline_field_output_ctl)
 !
       call bcast_ctl_type_i1(fln%num_fieldline_ctl)
       call bcast_ctl_type_i1(fln%max_line_stepping_ctl)

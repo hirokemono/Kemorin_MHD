@@ -84,15 +84,13 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       integer(kind = kint), intent(inout) :: iflag_comm
 !
-      real(kind = kreal) :: flux
-!
       real(kind = kreal) :: v4_pre(4,ele%nnod_4_ele)
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
      &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       integer(kind = kint) :: isurf_org(2)
-      integer(kind = kint) :: isf_tgt, isurf_end
+      integer(kind = kint) :: isf_tgt
       integer(kind = kint) :: jcou
 
 !

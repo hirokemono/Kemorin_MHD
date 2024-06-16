@@ -26,6 +26,8 @@
      &               :: cflag_position_list = 'position_list'
       character(len = kchara), parameter                                &
      &               :: cflag_spray_in_domain = 'spray_in_domain'
+      character(len = kchara), parameter                                &
+     &               :: cflag_seed_from_tracer = 'tracer'
 !
       character(len = kchara), parameter                                &
      &               :: cflag_forward_trace =  'forward'

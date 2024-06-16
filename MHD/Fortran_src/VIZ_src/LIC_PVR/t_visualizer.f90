@@ -108,7 +108,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
       call FLINE_initialize                                             &
-     &   (viz_step%FLINE_t%increment, geofem, nod_fld,                  &
+     &   (viz_step%FLINE_t%increment, geofem, nod_fld, tracer,          &
      &    viz_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !

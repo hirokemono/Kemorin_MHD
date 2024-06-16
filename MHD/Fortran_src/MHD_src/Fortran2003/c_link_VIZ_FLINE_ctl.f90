@@ -216,7 +216,7 @@
       type(c_ptr), value, intent(in) :: c_ctl
       type(fline_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_start_surf_grp_ctl = C_loc(f_ctl%start_surf_grp_ctl)
+      c_VIZ_FLINE_start_surf_grp_ctl = C_loc(f_ctl%seed_surf_grp_ctl)
       end function c_VIZ_FLINE_start_surf_grp_ctl
 !
 !  ---------------------------------------------------------------------

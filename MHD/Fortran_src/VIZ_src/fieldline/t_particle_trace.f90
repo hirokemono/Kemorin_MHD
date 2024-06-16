@@ -73,6 +73,8 @@
         type(trace_data_send_recv), allocatable :: fln_SR(:)
       end type tracer_module
 !
+      private :: set_tracer_controls
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -104,9 +106,8 @@
 !
       call alloc_TRACER_modules(tracer)
 
-      call set_fline_controls(geofem%mesh, geofem%group, nod_fld,       &
-     &                        tracer%num_trace, tracer_ctls,            &
-     &                        tracer%fln_prm, tracer%fln_src)
+      call set_tracer_controls(geofem%mesh, geofem%group, nod_fld,      &
+     &    tracer%num_trace, tracer_ctls, tracer%fln_prm)
       call dealloc_fline_ctl_struct(tracer_ctls)
 !
       call alloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,      &
@@ -199,6 +200,32 @@
       end subroutine TRACER_visualize
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_tracer_controls(mesh, group, nod_fld,              &
+     &                               num_fline, fline_ctls, fln_prm)
+!
+      use t_control_data_flines
+      use set_fline_control
+
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) ::num_fline
+      type(fieldline_controls), intent(inout) :: fline_ctls
+!
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+!
+      integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        call s_set_tracer_control(mesh, group, nod_fld,                 &
+     &      fline_ctls%fline_ctl_struct(i_fln), fln_prm(i_fln))
+      end do
+!
+      end subroutine set_tracer_controls
+!
 !  ---------------------------------------------------------------------
 !
       subroutine trace_particle_sets(time_d, mesh, para_surf, nod_fld,  &

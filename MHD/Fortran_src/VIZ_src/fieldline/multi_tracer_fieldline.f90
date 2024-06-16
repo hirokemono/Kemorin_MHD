@@ -21,15 +21,6 @@
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
 !!        type(broadcast_trace_data),intent(inout):: fln_bcast(num_fline)
 !!
-!!      subroutine set_fline_controls(mesh, group, nod_fld,             &
-!!     &          num_fline, fline_ctls, fln_prm, fln_src)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
-!!        type(phys_data), intent(in) :: nod_fld
-!!        integer(kind = kint), intent(in) ::num_fline
-!!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-!!        type(each_fieldline_source) intent(inout) :: fln_src(num_fline)
 !!      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,         &
 !!     &                                      fln_prm, fln_src, fln_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -133,7 +124,6 @@
         call dealloc_iflag_fline_used_ele(fln_prm(i_fln))
         call dealloc_fline_starts_ctl(fln_prm(i_fln))
 !
-        call dealloc_local_start_grp_item(fln_src(i_fln))
         call dealloc_start_point_fline(fln_src(i_fln))
         call dealloc_num_gl_start_fline(fln_tce(i_fln))
         call dealloc_broadcast_trace_data(fln_bcast(i_fln))
@@ -143,34 +133,6 @@
       end subroutine dealloc_each_FLINE_data
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_fline_controls(mesh, group, nod_fld,               &
-     &          num_fline, fline_ctls, fln_prm, fln_src)
-!
-      use t_control_data_flines
-      use set_fline_control
-
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(phys_data), intent(in) :: nod_fld
-!
-      integer(kind = kint), intent(in) ::num_fline
-      type(fieldline_controls), intent(inout) :: fline_ctls
-!
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-!
-      integer(kind = kint) :: i_fln
-!
-      do i_fln = 1, num_fline
-        call s_set_fline_control                                        &
-     &     (mesh, group, nod_fld, fline_ctls%fline_ctl_struct(i_fln),   &
-     &      fln_prm(i_fln), fln_src(i_fln))
-      end do
-!
-      end subroutine set_fline_controls
-!
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &

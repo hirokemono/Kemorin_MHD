@@ -46,8 +46,19 @@
         integer(kind = kint) :: id_fline_direction = 0
 !>        Distoribution of seed point
         integer(kind = kint) :: id_seed_distribution = 0
+!
 !>        Surface group ID for seed points
         integer(kind = kint) :: igrp_start_fline_surf_grp = 0
+!
+!>        Element group ID for seed points
+        integer(kind = kint) :: igrp_start_fline_ele_grp = 0
+!>        field ID to find reference density for seed points
+        integer(kind = kint) :: ifield_4_density = 0
+!>        field ID to find reference component for seed points
+        integer(kind = kint) :: icomp_4_density = 0
+!
+!>        Element group ID for seed points
+        integer(kind = kint) :: id_tracer_for_seed = 0
 !
 !>        Maximum step length for line tracing
         integer(kind = kint) :: max_line_stepping = 1000
@@ -86,6 +97,7 @@
       integer(kind = kint), parameter :: iflag_position_list =   2
       integer(kind = kint), parameter :: iflag_spray_in_domain = 3
       integer(kind = kint), parameter :: iflag_read_reastart =  10
+      integer(kind = kint), parameter :: iflag_tracer_seeds =   20
 !
 !
       integer(kind = kint), parameter :: iflag_backward_trace = -1

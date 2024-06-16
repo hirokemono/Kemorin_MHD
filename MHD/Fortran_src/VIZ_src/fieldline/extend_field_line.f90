@@ -83,13 +83,11 @@
       real(kind = kreal), intent(inout) :: trace_length
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !
-      real(kind = kreal) :: flux
-!
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
      &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
-      integer(kind = kint) :: iele_tgt, isf_tgt, isurf_end, jcou
+      integer(kind = kint) :: isf_tgt, jcou
       integer(kind = kint) :: isurf_org(2)
 !
 !
