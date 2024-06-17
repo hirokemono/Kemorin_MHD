@@ -204,6 +204,8 @@
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then
+        else if(fln_prm(i_fln)%id_fline_seed_type                       &
+     &                       .eq. iflag_position_list) then
           call set_FLINE_seed_field_from_list                           &
      &       (mesh%node, mesh%ele, nod_fld,                             &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))

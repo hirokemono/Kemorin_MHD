@@ -1,9 +1,12 @@
-!set_fline_start_surface.f90
+!>@file   set_control_each_fline.f90
+!!@brief  module set_control_each_fline
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!      module set_fline_start_surface
-!
-!      Written by H. Matsui on Aug., 2011
-!
+!> @brief Set seed points on surface
+!!
+!!@verbatim
 !!      integer(kind = kint) function count_fline_start_surf            &
 !!     &                            (node, ele, surf, isf_4_ele_dbl,    &
 !!     &                             nod_fld, fln_prm, fln_src)
@@ -17,6 +20,7 @@
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!@endverbatim
 !
       module set_fline_start_surface
 !
@@ -178,6 +182,8 @@
      &                          surf, nod_fld, fln_prm%fline_fields,    &
      &                          fln_tce%c_fline_start(1,icou))
         else
+          fln_tce%iflag_direction(icou) = iflag_forward_trace
+!
           call choose_fline_start_surf                                  &
      &       (fln_src%iflag_outward_flux_fline(i),                      &
      &        iele, isf_1ele, isurf, ele, surf, isf_4_ele_dbl,          &
@@ -187,7 +193,7 @@
             icou = icou + 1
             fln_tce%iline_original(icou) = i                            &
      &            + fln_tce%istack_current_fline(my_rank)
-            fln_tce%iflag_direction(icou) = iflag_forward_trace
+            fln_tce%iflag_direction(icou) = iflag_backward_trace
             fln_tce%isf_dbl_start(1,icou) = my_rank
             fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
             fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)

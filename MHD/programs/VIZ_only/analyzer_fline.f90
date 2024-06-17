@@ -90,7 +90,8 @@
      &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%FLINE_t)
         call FLINE_visualize                                            &
      &     (istep_fline, t_VIZ6%time_d, FEM_viz6%geofem,                &
-     &      VIZ_DAT6%para_surf, FEM_viz6%field, fline_v6, m_SR16)
+     &      VIZ_DAT6%para_surf, FEM_viz6%field,                         &
+     &      tracer_v6, fline_v6, m_SR16)
       end do
 !
       end subroutine analyze_fline

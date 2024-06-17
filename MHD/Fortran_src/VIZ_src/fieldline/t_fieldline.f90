@@ -10,7 +10,7 @@
 !!      subroutine FLINE_initialize(increment_fline, geofem, nod_fld,   &
 !!     &          tracer, fline_ctls, fline)
 !!      subroutine FLINE_visualize(istep_fline, time_d, geofem,         &
-!!     &                           para_surf, nod_fld, fline, m_SR)
+!!     &          para_surf, nod_fld, tracer, fline, m_SR)
 !!      subroutine FLINE_finalize(fline)
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -120,7 +120,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize(istep_fline, time_d, geofem,           &
-     &                           para_surf, nod_fld, fline, m_SR)
+     &          para_surf, nod_fld, tracer, fline, m_SR)
 !
       use multi_tracer_fieldline
       use const_field_lines
@@ -133,6 +133,7 @@
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
 !
       type(fieldline_module), intent(inout) :: fline
       type(mesh_SR), intent(inout) :: m_SR
@@ -141,13 +142,9 @@
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
-      call set_FLINE_seed_fields                                        &
-     &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
-     &   fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce)
-
-!
-      call s_const_field_lines(geofem%mesh, para_surf, nod_fld,         &
-     &    fline%num_fline, fline%fln_prm, fline%fln_tce,                &
+      call s_const_field_lines(geofem%mesh, geofem%group,               &
+     &    para_surf, nod_fld, tracer, fline%num_fline,                  &
+     &    fline%fln_prm, fline%fln_src, fline%fln_tce,                  &
      &    fline%fln_SR, fline%fln_bcast, fline%fline_lc, m_SR)
       call output_field_lines(istep_fline, time_d, fline%num_fline,     &
      &                         fline%fln_prm, fline%fline_lc)
@@ -206,18 +203,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines                                    &
-     &         (mesh, para_surf, nod_fld, num_fline, fln_prm, fln_tce,  &
+      subroutine s_const_field_lines(mesh, group, para_surf, nod_fld,   &
+     &          tracer, num_fline, fln_prm, fln_src, fln_tce,           &
      &          fln_SR, fln_bcast, fline_lc, m_SR)
 !
       use const_field_lines
+      use set_fline_seed_from_tracer
+      use set_fline_seeds_from_list
+      use set_fields_for_fieldline
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
 !
       integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
@@ -225,6 +228,24 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_fln
+!
+      do i_fln = 1, num_fline
+        if(fln_prm(i_fln)%id_fline_seed_type                            &
+     &                       .eq. iflag_tracer_seeds) then
+          call const_fline_seed_from_tracer(mesh%node, mesh%ele,        &
+     &        nod_fld, tracer%num_trace, tracer%fln_tce,                &
+     &        fln_prm(i_fln), fln_tce(i_fln))
+        else if(fln_prm(i_fln)%id_fline_seed_type                       &
+     &                       .eq. iflag_position_list) then
+          call set_FLINE_seed_field_from_list                           &
+     &       (mesh%node, mesh%ele, nod_fld,                             &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+        else
+          call s_set_fields_for_fieldline                               &
+     &       (mesh, group, para_surf, nod_fld,                          &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+        end if
+      end do
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln

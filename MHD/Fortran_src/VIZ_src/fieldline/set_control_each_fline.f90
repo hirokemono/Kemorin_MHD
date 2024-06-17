@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
 !
-!> @brief Set control parameter for fieldlines
+!> @brief Set seed points from tracers
 !!
 !!@verbatim
 !!      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)

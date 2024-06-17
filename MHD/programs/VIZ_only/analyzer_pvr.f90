@@ -133,7 +133,7 @@
         call FLINE_visualize                                            &
      &     (t_VIZ3%viz_step%istep_fline, t_VIZ3%time_d,                 &
      &      FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,        &
-     &      vizs_fline3, m_SR13)
+     &      vizs_tracer3, vizs_fline3, m_SR13)
 !
 !  Rendering
         call PVR_visualize                                              &
