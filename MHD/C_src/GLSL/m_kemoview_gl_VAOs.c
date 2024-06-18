@@ -177,7 +177,9 @@ static void set_map_buffer_to_VAO(struct gl_strided_buffer *PSF_node_buf,
 
 static void set_fieldline_buffer_to_VAO(struct FieldLine_buffers *Fline_bufs,
                                         struct VAO_ids **fline_VAO){
-    Const_Phong_VAO(fline_VAO[0], Fline_bufs->FLINE_tube_buf);
+    Const_Phong_Index_VAO(fline_VAO[0],
+                          Fline_bufs->FLINE_tube_buf,
+                          Fline_bufs->FLINE_tube_index_buf);
     Const_Simple_VAO(fline_VAO[1], Fline_bufs->FLINE_line_buf);
 }
 

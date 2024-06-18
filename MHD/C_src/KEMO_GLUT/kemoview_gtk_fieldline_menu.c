@@ -482,6 +482,7 @@ GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_gmenu){
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_comp, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_color, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(menu_box), hbox_bar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(menu_box), hbox_tube, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(menu_box), hbox_thickness, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);

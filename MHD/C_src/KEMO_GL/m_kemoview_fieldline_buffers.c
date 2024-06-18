@@ -22,6 +22,7 @@ struct FieldLine_buffers * init_FieldLine_buffers(void)
     long n_point = 1024;
     Fline_bufs->FLINE_line_buf =       init_strided_buffer(n_point);
     Fline_bufs->FLINE_tube_buf =       init_strided_buffer(n_point);
+    Fline_bufs->FLINE_tube_index_buf = init_gl_index_buffer(12, 3);
     return Fline_bufs;
 }
 
@@ -29,6 +30,7 @@ void dealloc_FieldLine_buffers(struct FieldLine_buffers *Fline_bufs)
 {
     dealloc_strided_buffer(Fline_bufs->FLINE_line_buf);
     dealloc_strided_buffer(Fline_bufs->FLINE_tube_buf);
+    dealloc_gl_index_buffer(Fline_bufs->FLINE_tube_index_buf);
     free(Fline_bufs);
 };
 
@@ -38,8 +40,9 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs){
-    Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
-    Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
+    Fline_bufs->FLINE_line_buf->num_nod_buf =       0;
+    Fline_bufs->FLINE_tube_buf->num_nod_buf =       0;
+    Fline_bufs->FLINE_tube_index_buf->ntot_vertex = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
     
     long num_edge = count_fieldlines_to_buf(fline_d);
@@ -60,13 +63,18 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     };
     
     if(fline_m->viz_line_type == IFLAG_PIPE){
-        long num_patch = ITHREE * (ITWO*fline_m->ncorner_viz_line) * num_edge;
-        set_buffer_address_4_patch(num_patch, Fline_bufs->FLINE_tube_buf);
+        long num_node = ITWO*(fline_m->ncorner_viz_line + 1) * num_edge;
+        long num_patch = IFOUR * fline_m->ncorner_viz_line * num_edge;
+        
+        set_buffer_address_4_patch(num_node, Fline_bufs->FLINE_tube_buf);
         if(Fline_bufs->FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(Fline_bufs->FLINE_tube_buf);
+            resize_gl_index_buffer(num_patch, ITHREE, Fline_bufs->FLINE_tube_index_buf);
+
             num_patch = sel_fieldtubes_to_buf_pthread(IZERO, nthreads, tube_width,
                                                       fline_d, fline_dir, fline_m,
-                                                      Fline_bufs->FLINE_tube_buf);
+                                                      Fline_bufs->FLINE_tube_buf,
+                                                      Fline_bufs->FLINE_tube_index_buf);
         };
     };
 

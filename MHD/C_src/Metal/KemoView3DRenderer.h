@@ -79,12 +79,14 @@ typedef struct
     id<MTLTexture> _Nullable psfTransTexure;
     NSUInteger numPSFTransTexurePixsel;
 
-    /*  Vertex buffer for field lines solid patch */
-    id<MTLBuffer> _Nullable fieldTubeVertice;
-    NSUInteger numFieldTubeVertice;
     /*  Vertex buffer for field lines  */
     id<MTLBuffer> _Nullable fieldLineVertice;
     NSUInteger numFieldLineVertice;
+    /*  Vertex buffer for field lines solid patch */
+    id<MTLBuffer> _Nullable fieldTubeVertice;
+    NSUInteger numFieldTubeVertice;
+    id<MTLBuffer> _Nullable fieldTubeIndice;
+    NSUInteger numFieldTubeIndice;
 
     /*  Vertex buffer for tracer dots patch */
     id<MTLBuffer> _Nullable tracerDotVertice;

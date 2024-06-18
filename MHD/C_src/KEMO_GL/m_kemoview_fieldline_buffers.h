@@ -24,7 +24,9 @@
 
 struct FieldLine_buffers{
     struct gl_strided_buffer *FLINE_line_buf;
+    
     struct gl_strided_buffer *FLINE_tube_buf;
+    struct gl_index_buffer *FLINE_tube_index_buf;
 };
 
 /* prototypes */

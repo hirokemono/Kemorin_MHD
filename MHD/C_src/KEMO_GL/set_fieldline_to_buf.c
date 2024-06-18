@@ -13,7 +13,8 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
                            struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf){
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_index_buffer *index_buf){
     long inod, nd;
 	double x_line[8], dir_line[8], color_line[8];
     
@@ -27,9 +28,10 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
 			};
 			for(nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
-        inum_tube = set_tube_strided_buffer(inum_tube, 
-                                            fline_m->ncorner_viz_line, tube_width,
-                                            x_line, dir_line, color_line, strided_buf);
+        inum_tube = set_tube_node_index_buffer(inum_tube,
+                                               fline_m->ncorner_viz_line, tube_width,
+                                               x_line, dir_line, color_line,
+                                               strided_buf, index_buf);
 	};
 	return inum_tube;
 };

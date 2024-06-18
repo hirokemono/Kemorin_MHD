@@ -89,12 +89,15 @@
                                                                             index:&(kemoView3DMetalBuf->psfTubeIndice)];
 
     
-    kemoView3DMetalBuf->numFieldTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:Fline_bufs->FLINE_tube_buf
-                                                                            vertex:&(kemoView3DMetalBuf->fieldTubeVertice)];
     kemoView3DMetalBuf->numFieldLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:Fline_bufs->FLINE_line_buf
                                                                             vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
+    kemoView3DMetalBuf->numFieldTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:Fline_bufs->FLINE_tube_buf
+                                                                            vertex:&(kemoView3DMetalBuf->fieldTubeVertice)];
+    kemoView3DMetalBuf->numFieldTubeIndice =  [_kemo3DMetalBufBase setMetalIndices:device
+                                                                         indexbuf:Fline_bufs->FLINE_tube_index_buf
+                                                                            index:&(kemoView3DMetalBuf->fieldTubeIndice)];
 
     kemoView3DMetalBuf->numCoastLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:PSF_lines->coast_line_buf
@@ -221,8 +224,9 @@
     if(kemoView3DMetalBuf->numPSFTubesVertice > 0) {[kemoView3DMetalBuf->psfTubesVertice release];};
     if(kemoView3DMetalBuf->numPSFTubesIndice > 0)  {[kemoView3DMetalBuf->psfTubeIndice release];};
 
-    if(kemoView3DMetalBuf->numFieldTubeVertice > 0) {[kemoView3DMetalBuf->fieldTubeVertice release];};
     if(kemoView3DMetalBuf->numFieldLineVertice > 0) {[kemoView3DMetalBuf->fieldLineVertice release];};
+    if(kemoView3DMetalBuf->numFieldTubeVertice > 0) {[kemoView3DMetalBuf->fieldTubeVertice release];};
+    if(kemoView3DMetalBuf->numFieldTubeIndice > 0)  {[kemoView3DMetalBuf->fieldTubeIndice release];};
 
     if(kemoView3DMetalBuf->numCoastTubeVertice > 0) {[kemoView3DMetalBuf->coastTubeVertice   release];};
     if(kemoView3DMetalBuf->numCoastLineVertice > 0) {[kemoView3DMetalBuf->coastLineVertice   release];};
@@ -283,7 +287,7 @@
                        buffers:kemo_sgl->kemo_buffers->axis_buf];
     
     _kemoViewMetalBuf.numCoastTubeVertice = 0;
-    _kemoViewMetalBuf.numFieldTubeVertice = 0;
+    _kemoViewMetalBuf.numFieldTubeIndice = 0;
 //    _kemoViewMetalBuf.numTracerIcoVertice = 0;
     _kemoViewMetalBuf.numPSFTubesVertice =  0;
     _kemoViewMetalBuf.numMeshNodeIndice =  0;
@@ -493,14 +497,15 @@
                                      unites:monoViewUnites];
     }
 
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                                  pipelines:kemo3DPipelines
-                                      depth:depthState
-                                  numVertex:kemoView3DMetalBuf->numFieldTubeVertice
-                                     vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
-                                     unites:monoViewUnites
-                                      sides:BOTH_SURFACES];
-    if(kemoView3DMetalBuf->numFieldTubeVertice == 0){
+    [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
+                                       pipelines:kemo3DPipelines
+                                           depth:depthState
+                                       numVertex:kemoView3DMetalBuf->numFieldTubeIndice
+                                          vertex:&(kemoView3DMetalBuf->fieldTubeVertice)
+                                           index:&(kemoView3DMetalBuf->fieldTubeIndice)
+                                          unites:monoViewUnites
+                                           sides:BOTH_SURFACES];
+    if(kemoView3DMetalBuf->numFieldTubeIndice == 0){
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
                                       depth:depthState
@@ -510,13 +515,13 @@
     }
 
     [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
-                     pipelines:kemo3DPipelines
-                         depth:depthState
-                     numVertex:kemoView3DMetalBuf->numTracerIcoIndices
-                        vertex:&(kemoView3DMetalBuf->tracerIcoVertice)
-                         index:&(kemoView3DMetalBuf->tracerIcoIndices)
-                        unites:monoViewUnites
-                         sides:BOTH_SURFACES];
+                                       pipelines:kemo3DPipelines
+                                           depth:depthState
+                                       numVertex:kemoView3DMetalBuf->numTracerIcoIndices
+                                          vertex:&(kemoView3DMetalBuf->tracerIcoVertice)
+                                           index:&(kemoView3DMetalBuf->tracerIcoIndices)
+                                          unites:monoViewUnites
+                                           sides:BOTH_SURFACES];
     if(kemoView3DMetalBuf->numTracerIcoVertice == 0){
         [_Kemo3DBaseRenderer drawPointObject:renderEncoder
                                    pipelines:kemo3DPipelines
