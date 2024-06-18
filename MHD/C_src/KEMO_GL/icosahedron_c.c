@@ -4,7 +4,7 @@
 #include "icosahedron_c.h"
 
 static int ifac_poi[20][3];
-static double xyz_ico[12][4];
+static double xyzw_ico[12][4];
 
 const int nnod_ico = 12;
 const int ntri_ico = 20;
@@ -40,22 +40,22 @@ void init_icosahedron_c(void){
 	theta[3] = theta[2] + pi*0.4;
 	theta[4] = theta[3] + pi*0.4;
 	
-	xyz_ico[0][0] = 0.0;
-	xyz_ico[0][1] = 0.0;
-	xyz_ico[0][2] = radius;
-	xyz_ico[0][3] = 1.0;
+    xyzw_ico[0][0] = 0.0;
+    xyzw_ico[0][1] = 0.0;
+    xyzw_ico[0][2] = radius;
+    xyzw_ico[0][3] = 1.0;
 	
 	for (i = 0; i < 5; i++) {
-        xyz_ico[i+1][0]=  b * cos(theta[i]);
-        xyz_ico[i+1][1]=  b * sin(theta[i]);
-        xyz_ico[i+1][2]=  r;
-        xyz_ico[i+1][3]=  1.0;
+        xyzw_ico[i+1][0]=  b * cos(theta[i]);
+        xyzw_ico[i+1][1]=  b * sin(theta[i]);
+        xyzw_ico[i+1][2]=  r;
+        xyzw_ico[i+1][3]=  1.0;
 	};
 	
-	xyz_ico[6][0] = 0.0;
-	xyz_ico[6][1] = 0.0;
-	xyz_ico[6][2] = -radius;
-	xyz_ico[6][3] = 1.0;
+    xyzw_ico[6][0] = 0.0;
+    xyzw_ico[6][1] = 0.0;
+    xyzw_ico[6][2] = -radius;
+    xyzw_ico[6][3] = 1.0;
 	
 	
 	theta[0] = -0.5 * pi;
@@ -65,10 +65,10 @@ void init_icosahedron_c(void){
 	theta[4] = theta[3] + pi*0.4;
 	
 	for (i = 0; i < 5; i++) {
-        xyz_ico[i+7][0]=  b * cos(theta[i]);
-        xyz_ico[i+7][1]=  b * sin(theta[i]);
-        xyz_ico[i+7][2]= -r;
-        xyz_ico[i+7][3]= 1.0;
+        xyzw_ico[i+7][0]=  b * cos(theta[i]);
+        xyzw_ico[i+7][1]=  b * sin(theta[i]);
+        xyzw_ico[i+7][2]= -r;
+        xyzw_ico[i+7][3]= 1.0;
 	};
 	
 	/* connectivity */
@@ -81,56 +81,20 @@ void init_icosahedron_c(void){
 	return;
 };
 
-long set_icosahedron_node(double size, double x_draw[3],
-                          double *xyzw_draw, double *norm_draw){
-    float xyz_plot[nnod_ico][4];
-	int i;
-    long nd;
-	
-    for (i = 0; i < nnod_ico; i++) {
-        xyz_plot[i][0]=  x_draw[0] + (float) xyz_ico[i][0] * size;
-        xyz_plot[i][1]=  x_draw[1] + (float) xyz_ico[i][1] * size;
-        xyz_plot[i][2]=  x_draw[2] + (float) xyz_ico[i][2] * size;
-        xyz_plot[i][3]=  xyz_ico[i][3];
-        for (nd=0; nd<4; nd++){xyzw_draw[4*i+nd] = (float) xyz_plot[i][nd];}
-        for (nd=0; nd<4; nd++){norm_draw[4*i+nd] = (float) xyz_ico[i][nd];}
-       /*
-        printf("Conts %d %e %e %e\n", i,
-        xyzw_draw[4*i+0], xyzw_draw[4*i+1],
-        xyzw_draw[4*i+2]);
-*/
-        printf("Conts %d %e %e %e\n", i,
-               xyzw_draw[4*i+0], xyzw_draw[4*i+1],
-               xyzw_draw[4*i+2]);
-    };
-	return nnod_ico;
-}
-
-long set_icosahedron_ele(int ico_start, unsigned int *ie_ico){
-/* add a points to the display list */
-	for(int i = 0; i < 20; i++){
-		ie_ico[3*i  ] = ifac_poi[i][0] + nnod_ico*ico_start;
-		ie_ico[3*i+1] = ifac_poi[i][1] + nnod_ico*ico_start;
-		ie_ico[3*i+2] = ifac_poi[i][2] + nnod_ico*ico_start;
-	};
-	return ntri_ico;
-}
-
-
 long set_icosahedron_node_index(double size, double x_draw[3],
                                 double xyzw_draw[48], double norm_draw[48],
                                 unsigned int ie_ico[60]){
     int i;
     
     for(i = 0; i < 12; i++) {
-        xyzw_draw[4*i  ]=  x_draw[0] + xyz_ico[i][0] * size;
-        xyzw_draw[4*i+1]=  x_draw[1] + xyz_ico[i][1] * size;
-        xyzw_draw[4*i+2]=  x_draw[2] + xyz_ico[i][2] * size;
-        xyzw_draw[4*i+3]=  xyz_ico[i][3];
-        norm_draw[4*i  ]=  xyz_ico[i][0];
-        norm_draw[4*i+1]=  xyz_ico[i][1];
-        norm_draw[4*i+2]=  xyz_ico[i][2];
-        norm_draw[4*i+3]=  xyz_ico[i][3];
+        xyzw_draw[4*i  ]=  x_draw[0] + xyzw_ico[i][0] * size;
+        xyzw_draw[4*i+1]=  x_draw[1] + xyzw_ico[i][1] * size;
+        xyzw_draw[4*i+2]=  x_draw[2] + xyzw_ico[i][2] * size;
+        xyzw_draw[4*i+3]=  xyzw_ico[i][3];
+        norm_draw[4*i  ]=  xyzw_ico[i][0];
+        norm_draw[4*i+1]=  xyzw_ico[i][1];
+        norm_draw[4*i+2]=  xyzw_ico[i][2];
+        norm_draw[4*i+3]=  xyzw_ico[i][3];
     };
     
 /* add a points to the display list */
@@ -145,17 +109,17 @@ long set_icosahedron_node_index(double size, double x_draw[3],
 
 long set_icosahedron_patch(double size, double x_draw[3],
                            double *xyzw_draw, double *norm_draw){
-    double xyz_plot[4*12];
+    double xyzw_plot[4*12];
 	int i, j;
     int ie1;
 /*    int ie2, ie3; */
     long icou, nd;
 	
 	for (i = 0; i < 12; i++) {
-		xyz_plot[4*i  ]=  x_draw[0] + xyz_ico[i][0] * size;
-		xyz_plot[4*i+1]=  x_draw[1] + xyz_ico[i][1] * size;
-		xyz_plot[4*i+2]=  x_draw[2] + xyz_ico[i][2] * size;
-		xyz_plot[4*i+3]=  xyz_ico[i][3];
+        xyzw_plot[4*i  ]=  x_draw[0] + xyzw_ico[i][0] * size;
+        xyzw_plot[4*i+1]=  x_draw[1] + xyzw_ico[i][1] * size;
+        xyzw_plot[4*i+2]=  x_draw[2] + xyzw_ico[i][2] * size;
+        xyzw_plot[4*i+3]=  xyzw_ico[i][3];
 	};
 	
 /* add a points to the display list */
@@ -170,8 +134,8 @@ long set_icosahedron_patch(double size, double x_draw[3],
             icou = 3*num_tri + j;
 			for (nd = 0; nd < 4; nd++) {
 				ie1 = ifac_poi[i][j];
-                xyzw_draw[4*icou+nd] =  xyz_plot[4*ie1+nd];
-				norm_draw[4*icou+nd] =  xyz_ico[ie1][nd];
+                xyzw_draw[4*icou+nd] =  xyzw_plot[4*ie1+nd];
+				norm_draw[4*icou+nd] =  xyzw_ico[ie1][nd];
 			};
 		};
         num_tri = num_tri + 1;
@@ -288,6 +252,97 @@ int set_tube_vertex(int ncorner, double radius,
 	return npatch_wall;
 }
 
+int set_tube_node_index(int ncorner, double radius,
+                        double xyzw_line[8], double dir_line[8],
+                        double norm_line[8], double color_line[8],
+                        double *xyzw, double *norm, double *col,
+                        unsingned int *ie_tube){
+    double xx_w1[3*ncorner], norm_w1[3*ncorner];
+    double xx_w2[3*ncorner], norm_w2[3*ncorner];
+    int k, nd;
+    
+    set_circle_of_tube(ncorner, radius, &xyzw_line[0],
+                       &norm_line[0], &dir_line[0],
+                       xx_w1, norm_w1);
+    set_circle_of_tube(ncorner, radius, &xyzw_line[4],
+                       &norm_line[4], &dir_line[4],
+                       xx_w2, norm_w2);
+
+    for (nd=0; nd<3; nd++){
+        xyzw[  nd] = xyzw_line[  nd];
+        norm[  nd] = dir_line[   nd];
+    };
+    for (nd=0; nd<4; nd++) {
+        col[  nd] = color_line[  nd];
+    };
+    for(k=0;k<ncorner;k++){
+        for (nd=0; nd<3; nd++) {
+            xyzw[4*(k+1)+nd] = xx_w1[3*k+ nd];
+            norm[4*(k+1)+nd] = norm_w1[3*k+ nd];
+        }
+    };
+    for(k=0;k<ncorner;k++){
+        for(nd=0; nd<4; nd++){col[4*(k+1)+nd] = color_line[nd];};
+    };
+
+    for(k=0;k<ncorner;k++){
+        for (nd=0; nd<3; nd++) {
+            xyzw[4*(ncorner+k+1)+nd] = xx_w2[3*k+ nd];
+            norm[4*(ncorner+k+1)+nd] = norm_w2[3*k+ nd];
+        }
+    };
+    for(k=0;k<ncorner;k++){
+        for(nd=0; nd<4; nd++){col[4*(ncorner+k+2)+nd] = color_line[4+nd];};
+    };
+
+    for (nd=0; nd<3; nd++){
+        xyzw[4*(2*ncorner+1)+nd] = xyzw_line[4+nd];
+        norm[4*(2*ncorner+1)+nd] = dir_line[ 4+nd];
+    };
+    for (nd=0; nd<4; nd++) {
+        col[4*(2*ncorner+1)+nd] = color_line[4+nd];
+    };
+
+    for(k=0;k<2*ncorner+2;k++){
+        xyzw[4*k+3] = 1.0;
+        norm[4*k+3] = 1.0;
+    }
+
+
+    for(k=0;k<ncorner-1;k++){
+        ie_tube[6*k  ] = k+1;
+        ie_tube[6*k+1] = k+2;
+        ie_tube[6*k+2] = k+2 + (ncorner+1);
+
+        ie_tube[6*k+3] = k+2 + (ncorner+1);
+        ie_tube[6*k+4] = k+1 + (ncorner+1);
+        ie_tube[6*k+5] = k+1;
+    }
+    ie_tube[6*(ncorner-1)  ] = (ncorner-1)+1;
+    ie_tube[6*(ncorner-1)+1] = 1;
+    ie_tube[6*(ncorner-1)+2] = 1 + (ncorner+1);
+
+    ie_tube[6*(ncorner-1)+3] = 1 + (ncorner+1);
+    ie_tube[6*(ncorner-1)+4] = (ncorner-1)+1 + (ncorner+1);
+    ie_tube[6*(ncorner-1)+5] = (ncorner-1)+1;
+
+    for(k=0;k<ncorner-1;k++){
+        ie_tube[6*(k+ncorner)  ] = 0;
+        ie_tube[6*(k+ncorner)+1] = k+2;
+        ie_tube[6*(k+ncorner)+2] = k+1;
+        ie_tube[6*(k+ncorner)+3] = 2*ncorner+1;
+        ie_tube[6*(k+ncorner)+4] = k+1 + (ncorner+1);
+        ie_tube[6*(k+ncorner)+5] = k+2 + (ncorner+1);
+    }
+    ie_tube[6*(2*ncorner-1)  ] = 0;
+    ie_tube[6*(2*ncorner-1)+1] = 1;
+    ie_tube[6*(2*ncorner-1)+2] = ncorner;
+    ie_tube[6*(2*ncorner-1)+3] = 2*ncorner+1;
+    ie_tube[6*(2*ncorner-1)+4] = ncorner + (ncorner+1);
+    ie_tube[6*(2*ncorner-1)+5] = 1 + (ncorner+1);
+    
+    return (4 * ncorner);
+}
 
 int set_cone_node_index(int ncorner, double radius,
                         double xyzw_line[8], double dir_line[8],
@@ -318,7 +373,7 @@ int set_cone_node_index(int ncorner, double radius,
         }
     };
     for(k=0;k<ncorner;k++){
-        for(nd=0; nd<4; nd++){col[4*(k+2)+nd] = color_line[4+nd];};
+        for(nd=0; nd<4; nd++){col[4*(k+2)+nd] = color_line[nd];};
     };
 
     for(k=0;k<ncorner+2;k++){

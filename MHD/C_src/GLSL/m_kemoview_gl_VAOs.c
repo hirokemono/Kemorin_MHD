@@ -35,7 +35,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     kemo_VAOs->psf_solid_index_VAO = init_multi_VAO_ids(6);
     kemo_VAOs->psf_trans_index_VAO = init_multi_VAO_ids(2);
 
-    kemo_VAOs->psf_solid_VAO = init_multi_VAO_ids(4);
+    kemo_VAOs->psf_solid_VAO = init_multi_VAO_ids(3);
 	kemo_VAOs->psf_trans_VAO = init_multi_VAO_ids(2);
     kemo_VAOs->psf_liness_VAO =      init_VAO_ids();
 
@@ -68,7 +68,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 
     dealoc_multi_VAO_ids(6, kemo_VAOs->psf_solid_index_VAO);
     dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_index_VAO);
-    dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_VAO);
+    dealoc_multi_VAO_ids(3, kemo_VAOs->psf_solid_VAO);
     dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_VAO);
 
     dealoc_VAO_ids(kemo_VAOs->psf_liness_VAO);
@@ -100,7 +100,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<6;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_index_VAO[i]->id_VAO));};
 
-    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
+    for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
 
     glGenVertexArrays(1, &(kemo_VAOs->psf_liness_VAO->id_VAO));
 
@@ -131,7 +131,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<6;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_index_VAO[i]);};
 
-    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
+    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
 
     Destroy_VAO(kemo_VAOs->psf_liness_VAO);
 
