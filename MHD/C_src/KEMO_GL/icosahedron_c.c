@@ -144,7 +144,7 @@ long set_icosahedron_patch(double size, double x_draw[3],
 }
 
 static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
-                               double dir_nod[3], double *xx_wall, double *norm_wall) {
+                               double dir_nod[3], double *xyzw_wall, double *norm_wall) {
 	int k, nd;
 	double norm_2nd[3], angle, len, nrm1, nrm2, r_mod, pi;
 	
@@ -168,9 +168,10 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 		for (nd=0; nd<3; nd++) {
 			norm_wall[4*k+nd] = norm_nod[nd] * cos(angle)
 					          + norm_2nd[nd] * sin(angle);
-			xx_wall[3*k+nd] =   xx_line[nd] + radius*norm_wall[4*k+nd];
+            xyzw_wall[4*k+nd] =   xx_line[nd] + radius*norm_wall[4*k+nd];
 		};
         norm_wall[4*k+3] = 1.0;
+        xyzw_wall[4*k+3] = 1.0;
 	};
 	return;
 }
@@ -188,30 +189,30 @@ int set_tube_vertex(int ncorner, double radius,
                     double xyzw_line[8], double dir_line[8], 
                     double norm_line[8], double color_line[8], 
                     double *xyzw, double *norm, double *col) {
-	double xx_w1[3*ncorner], norm_w1[4*ncorner];
-	double xx_w2[3*ncorner], norm_w2[4*ncorner];
+	double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
+	double xyzw_w2[4*ncorner], norm_w2[4*ncorner];
 	int npatch_wall = 0;
 	int k, nd;
 	
     set_circle_of_tube(ncorner, radius, &xyzw_line[0],
                        &norm_line[0], &dir_line[0],
-					   xx_w1, norm_w1);
+                       xyzw_w1, norm_w1);
     set_circle_of_tube(ncorner, radius, &xyzw_line[4],
                        &norm_line[4], &dir_line[4],
-					   xx_w2, norm_w2);
+                       xyzw_w2, norm_w2);
 	
 	for(k=0;k<ncorner-1;k++){
 		for (nd=0; nd<3; nd++) {
-            xyzw[4*(6*k)+  nd] = xx_w1[3*k+  nd];
-            xyzw[4*(6*k+1)+nd] = xx_w1[3*k+3+nd];
-            xyzw[4*(6*k+2)+nd] = xx_w2[3*k+3+nd];
+            xyzw[4*(6*k)+  nd] = xyzw_w1[4*k+  nd];
+            xyzw[4*(6*k+1)+nd] = xyzw_w1[4*k+4+nd];
+            xyzw[4*(6*k+2)+nd] = xyzw_w2[4*k+4+nd];
             norm[4*(6*k)+  nd] = norm_w1[4*k+  nd];
             norm[4*(6*k+1)+nd] = norm_w1[4*k+4+nd];
             norm[4*(6*k+2)+nd] = norm_w2[4*k+4+nd];
 			
-            xyzw[4*(6*k+3)+nd] = xx_w2[3*k+3+nd];
-            xyzw[4*(6*k+4)+nd] = xx_w2[3*k+nd];
-            xyzw[4*(6*k+5)+nd] = xx_w1[3*k+nd];
+            xyzw[4*(6*k+3)+nd] = xyzw_w2[4*k+4+nd];
+            xyzw[4*(6*k+4)+nd] = xyzw_w2[4*k+nd];
+            xyzw[4*(6*k+5)+nd] = xyzw_w1[4*k+nd];
             norm[4*(6*k+3)+nd] = norm_w2[4*k+4+nd];
             norm[4*(6*k+4)+nd] = norm_w2[4*k+nd];
             norm[4*(6*k+5)+nd] = norm_w1[4*k+nd];
@@ -219,16 +220,16 @@ int set_tube_vertex(int ncorner, double radius,
 	};
 	
 	for (nd=0; nd<3; nd++) {
-        xyzw[4*(6*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
-        xyzw[4*(6*(ncorner-1)+1)+nd] = xx_w1[nd];
-        xyzw[4*(6*(ncorner-1)+2)+nd] = xx_w2[nd];
+        xyzw[4*(6*(ncorner-1))+  nd] = xyzw_w1[4*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+1)+nd] = xyzw_w1[nd];
+        xyzw[4*(6*(ncorner-1)+2)+nd] = xyzw_w2[nd];
         norm[4*(6*(ncorner-1))+  nd] = norm_w1[4*(ncorner-1)+nd];
         norm[4*(6*(ncorner-1)+1)+nd] = norm_w1[nd];
         norm[4*(6*(ncorner-1)+2)+nd] = norm_w2[nd];
 		
-        xyzw[4*(6*(ncorner-1)+3)+nd] = xx_w2[nd];
-        xyzw[4*(6*(ncorner-1)+4)+nd] = xx_w2[3*(ncorner-1)+nd];
-        xyzw[4*(6*(ncorner-1)+5)+nd] = xx_w1[3*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+3)+nd] = xyzw_w2[nd];
+        xyzw[4*(6*(ncorner-1)+4)+nd] = xyzw_w2[4*(ncorner-1)+nd];
+        xyzw[4*(6*(ncorner-1)+5)+nd] = xyzw_w1[4*(ncorner-1)+nd];
         norm[4*(6*(ncorner-1)+3)+nd] = norm_w2[nd];
         norm[4*(6*(ncorner-1)+4)+nd] = norm_w2[4*(ncorner-1)+nd];
         norm[4*(6*(ncorner-1)+5)+nd] = norm_w1[4*(ncorner-1)+nd];
@@ -258,16 +259,16 @@ int set_tube_node_index(int ncorner, double radius,
                         double norm_line[8], double color_line[8],
                         double *xyzw, double *norm, double *col,
                         unsigned int *ie_tube){
-    double xx_w1[3*ncorner], norm_w1[4*ncorner];
-    double xx_w2[3*ncorner], norm_w2[4*ncorner];
+    double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
+    double xyzw_w2[4*ncorner], norm_w2[4*ncorner];
     int k, nd;
     
     set_circle_of_tube(ncorner, radius, &xyzw_line[0],
                        &norm_line[0], &dir_line[0],
-                       xx_w1, norm_w1);
+                       xyzw_w1, norm_w1);
     set_circle_of_tube(ncorner, radius, &xyzw_line[4],
                        &norm_line[4], &dir_line[4],
-                       xx_w2, norm_w2);
+                       xyzw_w2, norm_w2);
 
     for (nd=0; nd<3; nd++){
         xyzw[  nd] = xyzw_line[  nd];
@@ -278,7 +279,7 @@ int set_tube_node_index(int ncorner, double radius,
     };
     for(k=0;k<ncorner;k++){
         for (nd=0; nd<3; nd++) {
-            xyzw[4*(k+1)+nd] = xx_w1[3*k+ nd];
+            xyzw[4*(k+1)+nd] = xyzw_w1[4*k+ nd];
             norm[4*(k+1)+nd] = norm_w1[4*k+ nd];
         }
     };
@@ -288,7 +289,7 @@ int set_tube_node_index(int ncorner, double radius,
 
     for(k=0;k<ncorner;k++){
         for (nd=0; nd<3; nd++) {
-            xyzw[4*(ncorner+k+1)+nd] = xx_w2[3*k+ nd];
+            xyzw[4*(ncorner+k+1)+nd] = xyzw_w2[4*k+ nd];
             norm[4*(ncorner+k+1)+nd] = norm_w2[4*k+ nd];
         }
     };
@@ -350,12 +351,12 @@ int set_cone_node_index(int ncorner, double radius,
                         double norm_line[8], double color_line[8],
                         double *xyzw, double *norm, double *col,
                         unsigned int *ie_cone){
-    double xx_w1[3*ncorner], norm_w1[4*ncorner];
+    double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
     int k, nd;
     
     set_circle_of_tube(ncorner, radius,
                        &xyzw_line[0], &norm_line[0], &dir_line[0],
-                       xx_w1, norm_w1);
+                       xyzw_w1, norm_w1);
 
     for (nd=0; nd<3; nd++){
         xyzw[  nd] = xyzw_line[  nd];
@@ -369,7 +370,7 @@ int set_cone_node_index(int ncorner, double radius,
     };
     for(k=0;k<ncorner;k++){
         for (nd=0; nd<3; nd++) {
-            xyzw[4*(k+2)+nd] = xx_w1[3*k+ nd];
+            xyzw[4*(k+2)+nd] = xyzw_w1[4*k+ nd];
             norm[4*(k+2)+nd] = norm_w1[4*k+ nd];
         }
     };
@@ -409,18 +410,18 @@ int set_cone_vertex(int ncorner, double radius,
                     double xyzw_line[8], double dir_line[8],
                     double norm_line[8], double color_line[8], 
                     double *xyzw, double *norm, double *col){
-    double xx_w1[3*ncorner], norm_w1[4*ncorner];
+    double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
     int npatch_wall = 0;
     int k, nd;
     
     set_circle_of_tube(ncorner, radius,
                        &xyzw_line[0], &norm_line[0], &dir_line[0], 
-                       xx_w1, norm_w1);
+                       xyzw_w1, norm_w1);
     
     for(k=0;k<ncorner-1;k++){
         for (nd=0; nd<3; nd++) {
-            xyzw[4*(3*k)+  nd] = xx_w1[3*k+  nd];
-            xyzw[4*(3*k+1)+nd] = xx_w1[3*k+3+nd];
+            xyzw[4*(3*k)+  nd] = xyzw_w1[4*k+  nd];
+            xyzw[4*(3*k+1)+nd] = xyzw_w1[4*k+4+nd];
             xyzw[4*(3*k+2)+nd] = xyzw_line[nd+4];
             norm[4*(3*k)+  nd] = norm_w1[4*k+  nd];
             norm[4*(3*k+1)+nd] = norm_w1[4*k+4+nd];
@@ -438,8 +439,8 @@ int set_cone_vertex(int ncorner, double radius,
     ie_cone[3*(ncorner-1)+2] = 1;
 */
     for (nd=0; nd<3; nd++) {
-        xyzw[4*(3*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
-        xyzw[4*(3*(ncorner-1)+1)+nd] = xx_w1[nd];
+        xyzw[4*(3*(ncorner-1))+  nd] = xyzw_w1[4*(ncorner-1)+nd];
+        xyzw[4*(3*(ncorner-1)+1)+nd] = xyzw_w1[nd];
         xyzw[4*(3*(ncorner-1)+2)+nd] = xyzw_line[nd+4];
         norm[4*(3*(ncorner-1))+  nd] = norm_w1[4*(ncorner-1)+nd];
         norm[4*(3*(ncorner-1)+1)+nd] = norm_w1[nd];
