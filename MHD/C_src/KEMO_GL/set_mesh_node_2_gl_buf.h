@@ -22,6 +22,7 @@ long set_mesh_node_to_buf(const int nthread,
                           long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch,
                           double node_diam, struct viewer_mesh *mesh_s,
                           struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf);
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_index_buffer *index_buf);
 
 #endif

@@ -30,8 +30,9 @@ long sel_each_mesh_grid_to_buf_pthread(long ist_patch, const int nthreads,
 
 long sel_each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
                                          int ist_grp, int ied_grp, int *item_grp,
-                                         struct viewer_mesh *mesh_s, double node_diam,
-                                         double f_color[4],
-                                         struct gl_strided_buffer *mesh_buf);
+                                         struct viewer_mesh *mesh_s,
+                                         double node_diam, double f_color[4],
+                                         struct gl_strided_buffer *mesh_buf,
+                                         struct gl_index_buffer *index_buf);
 
 #endif /* PTHREAD_MESH_PATCH_TO_BUF_ */

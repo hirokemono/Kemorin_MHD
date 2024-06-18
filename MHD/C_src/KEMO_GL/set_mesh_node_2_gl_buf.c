@@ -10,7 +10,8 @@ static long set_mesh_node_ico_to_buf(int nthreads, long *istack_patch_pe,
                                      int node_color, int color_mode,
                                      int color_loop, float single_color[4],
                                      int *iflag_domain,
-                                     struct gl_strided_buffer *mesh_buf){
+                                     struct gl_strided_buffer *mesh_buf,
+                                     struct gl_index_buffer *index_buf){
 	double f_color[4];
     int ip;
     long inum_tri;
@@ -29,7 +30,7 @@ static long set_mesh_node_ico_to_buf(int nthreads, long *istack_patch_pe,
             inum_tri = sel_each_grp_nod_ico_to_buf_pthread(istack_patch_pe[ip], nthreads,
                                                            istack_grp[ip], istack_grp[ip+1],
                                                            item_grp, mesh_s, node_diam, f_color,
-                                                           mesh_buf);
+                                                           mesh_buf, index_buf);
 		}
 	};
 	
@@ -93,7 +94,8 @@ long set_mesh_node_to_buf(const int nthreads,
                           long *istack_node_ele_grp_patch, long *istack_node_surf_grp_patch,
                           double node_diam, struct viewer_mesh *mesh_s,
                           struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf){
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_index_buffer *index_buf){
 	int i, ip_st;
 	long num_tri = 0;
 	
@@ -104,7 +106,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                        node_diam, mesh_m->domain_node_color,
                                        mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                        mesh_m->domain_node_color_code, mesh_m->draw_domains_nod,
-                                       mesh_buf);
+                                       mesh_buf, index_buf);
 	
 	/* ! draw node group */
 	
@@ -117,7 +119,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                node_diam, mesh_m->node_node_color,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->node_node_color_code, mesh_m->always_draw_domains,
-                                               mesh_buf);
+                                               mesh_buf, index_buf);
 	
 		};
 	};
@@ -135,7 +137,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->ele_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf);
+                                               mesh_buf, index_buf);
 	
 		};
 	};
@@ -153,7 +155,7 @@ long set_mesh_node_to_buf(const int nthreads,
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->surf_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf);
+                                               mesh_buf, index_buf);
 	
 		};
 	};

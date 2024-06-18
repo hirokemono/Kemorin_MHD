@@ -60,7 +60,8 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
 
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->fline_VAO[0]);
-        drawgl_elements_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->tracer_index_VAO);
+        drawgl_elements_with_phong(view_matrices, lights, kemo_shaders,
+                                   kemo_VAOs->tracer_index_VAO);
 
         draw_PSF_solid_objects_VAO(view_matrices, lights,
                                    kemo_VAOs->psf_solid_VAO,
@@ -69,8 +70,8 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
 
         glDisable(GL_CULL_FACE);
         drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
-        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders,
-                                kemo_VAOs->mesh_solid_VAO[2]);
+        drawgl_elements_with_phong(view_matrices, lights, kemo_shaders,
+                                   kemo_VAOs->mesh_solid_VAO[2]);
         draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices,
                             lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
 

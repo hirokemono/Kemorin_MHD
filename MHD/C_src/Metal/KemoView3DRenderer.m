@@ -134,6 +134,10 @@
     kemoView3DMetalBuf->numMeshNodeVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:MESH_bufs->mesh_node_buf
                                                                             vertex:&(kemoView3DMetalBuf->meshNodeVertice)];
+    kemoView3DMetalBuf->numMeshNodeIndice =   [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:MESH_bufs->mesh_node_index_buf
+                                                                             index:&(kemoView3DMetalBuf->meshNodeIndice)];
+    
     kemoView3DMetalBuf->numMeshGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:MESH_bufs->mesh_grid_buf
                                                                             vertex:&(kemoView3DMetalBuf->meshGridVertice)];
@@ -243,8 +247,10 @@
     if(kemoView3DMetalBuf->numPSFArrowVertice > 0) {[kemoView3DMetalBuf->psfArrowVertice release];};
     if(kemoView3DMetalBuf->numPSFArrowIndices > 0) {[kemoView3DMetalBuf->psfArrowIndices release];};
 
-    if(kemoView3DMetalBuf->numMeshNodeVertice > 0)  {[kemoView3DMetalBuf->meshNodeVertice   release];};
-    if(kemoView3DMetalBuf->numMeshGridVertice > 0)  {[kemoView3DMetalBuf->meshGridVertice   release];};
+    if(kemoView3DMetalBuf->numMeshNodeVertice > 0) {[kemoView3DMetalBuf->meshNodeVertice  release];};
+    if(kemoView3DMetalBuf->numMeshNodeIndice > 0)  {[kemoView3DMetalBuf->meshNodeIndice   release];};
+
+    if(kemoView3DMetalBuf->numMeshGridVertice > 0)  {[kemoView3DMetalBuf->meshGridVertice  release];};
     if(kemoView3DMetalBuf->numMeshSolidVertice > 0) {[kemoView3DMetalBuf->meshSolidVertice release];};
 
     /*  Set Cube Vertex buffer */
@@ -276,7 +282,7 @@
     _kemoViewMetalBuf.numFieldTubeVertice = 0;
 //    _kemoViewMetalBuf.numTracerIcoVertice = 0;
     _kemoViewMetalBuf.numPSFTubesVertice =  0;
-    _kemoViewMetalBuf.numMeshNodeVertice =  0;
+    _kemoViewMetalBuf.numMeshNodeIndice =  0;
 
     [self setTransMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf
@@ -573,13 +579,15 @@
                    metalbuffer:kemoView3DMetalBuf
                         unites:monoViewUnites];
     
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numMeshNodeVertice
-                      vertex:&(kemoView3DMetalBuf->meshNodeVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES];
+    [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
+                     pipelines:kemo3DPipelines
+                         depth:depthState
+                     numVertex:kemoView3DMetalBuf->numMeshNodeIndice
+                        vertex:&(kemoView3DMetalBuf->meshNodeVertice)
+                         index:&(kemoView3DMetalBuf->meshNodeIndice)
+                        unites:monoViewUnites
+                         sides:BOTH_SURFACES];
+
     [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                pipelines:kemo3DPipelines
                    depth:depthState

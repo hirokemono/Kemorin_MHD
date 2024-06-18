@@ -158,9 +158,12 @@ void const_mesh_grids_buffer(int nthreads,
 }
 
 
-void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
-                                 struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                                 struct gl_strided_buffer *mesh_buf){
+void const_mesh_nodes_ico_buffer(int nthreads,
+                                 struct view_element *view_s,
+                                 struct viewer_mesh *mesh_s,
+                                 struct mesh_menu_val *mesh_m,
+                                 struct gl_strided_buffer *mesh_buf,
+                                 struct gl_index_buffer *index_buf){
     long num;
     num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
     long *istack_node_domain_patch =   (long *) calloc(num, sizeof(long));
@@ -176,7 +179,8 @@ void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
                                             istack_node_nod_grp_patch,
                                             istack_node_ele_grp_patch,
                                             istack_node_surf_grp_patch);
-    long num_patch = ITHREE * num_icosahedron_patch() * num_ico;
+    long num_node =  12 * num_ico;
+    long num_patch = num_icosahedron_patch() * num_ico;
     
     
     double ref_diam = 4.0;
@@ -187,15 +191,17 @@ void const_mesh_nodes_ico_buffer(int nthreads, struct view_element *view_s,
         node_diam = mesh_m->node_diam;
     };
     
-    set_buffer_address_4_patch(num_patch, mesh_buf);
+    set_buffer_address_4_patch(num_node, mesh_buf);
     if(mesh_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_buf);
+        resize_gl_index_buffer(num_patch, ITHREE, index_buf);
         
         set_mesh_node_to_buf(nthreads, istack_node_domain_patch,
                              istack_node_nod_grp_patch,
                              istack_node_ele_grp_patch,
                              istack_node_surf_grp_patch,
-                             node_diam, mesh_s, mesh_m, mesh_buf);
+                             node_diam, mesh_s, mesh_m,
+                             mesh_buf, index_buf);
     };
     free(istack_node_domain_patch);
     free(istack_node_nod_grp_patch);

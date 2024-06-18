@@ -30,9 +30,10 @@ typedef struct{
     int id;
     int nthreads;
     
-    struct gl_strided_buffer        *strided_buf;
+    struct gl_strided_buffer *strided_buf;
+    struct gl_index_buffer   *index_buf;
 
-    struct viewer_mesh *mesh_s;
+    struct viewer_mesh       *mesh_s;
     int ist_grp;
     int ied_grp;
     int  *item_grp;
@@ -100,7 +101,8 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    
+    struct gl_index_buffer   *index_buf =   p->index_buf;
+
     struct viewer_mesh *mesh_s = p->mesh_s;
     int ist_grp =  p->ist_grp;
     int ied_grp =  p->ied_grp;
@@ -118,7 +120,7 @@ static void * each_grp_nod_ico_to_buf_1thread(void *arg){
     num_patch[id] = set_each_group_node_ico_to_buf(ist_patch,
                                                    (lo+ist_grp), (hi+ist_grp), item_grp,
                                                    mesh_s, node_diam, f_color,
-                                                   strided_buf);
+                                                   strided_buf, index_buf);
 
     return 0;
 }
@@ -204,9 +206,10 @@ long set_each_mesh_grid_to_buf_pthread(long ist_patch, const int nthreads,
 
 long each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
                                      int ist_grp, int ied_grp, int *item_grp,
-                                     struct viewer_mesh *mesh_s, double node_diam,
-                                     double f_color[4],
-                                     struct gl_strided_buffer *mesh_buf){
+                                     struct viewer_mesh *mesh_s,
+                                     double node_diam, double f_color[4],
+                                     struct gl_strided_buffer *mesh_buf,
+                                     struct gl_index_buffer *index_buf){
 /* Allocate thread arguments. */
     args_pthread_mesh_node *args
                 = (args_pthread_mesh_node *) malloc (nthreads * sizeof(args_pthread_mesh_node));
@@ -222,7 +225,8 @@ long each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
 
         args[ip].strided_buf = mesh_buf;
-        
+        args[ip].index_buf =   index_buf;
+
         args[ip].mesh_s =    mesh_s;
         args[ip].ist_grp =  ist_grp;
         args[ip].ied_grp =  ied_grp;
@@ -280,18 +284,19 @@ long sel_each_mesh_grid_to_buf_pthread(long ist_patch, const int nthreads,
 
 long sel_each_grp_nod_ico_to_buf_pthread(long ist_patch, const int nthreads,
                                          int ist_grp, int ied_grp, int *item_grp,
-                                         struct viewer_mesh *mesh_s, double node_diam,
-                                         double f_color[4],
-                                         struct gl_strided_buffer *mesh_buf){
+                                         struct viewer_mesh *mesh_s,
+                                         double node_diam, double f_color[4],
+                                         struct gl_strided_buffer *mesh_buf,
+                                         struct gl_index_buffer *index_buf){
     long num_patch = ist_patch;
     if(nthreads > 1){
         num_patch = each_grp_nod_ico_to_buf_pthread(ist_patch, nthreads, ist_grp, ied_grp,
-                                                     item_grp, mesh_s, node_diam, f_color,
-                                                     mesh_buf);
+                                                    item_grp, mesh_s, node_diam, f_color,
+                                                    mesh_buf, index_buf);
       }else{
         num_patch = set_each_group_node_ico_to_buf(ist_patch, ist_grp, ied_grp,
                                                    item_grp, mesh_s, node_diam, f_color,
-                                                   mesh_buf);
+                                                   mesh_buf, index_buf);
       };
     return num_patch;
 }

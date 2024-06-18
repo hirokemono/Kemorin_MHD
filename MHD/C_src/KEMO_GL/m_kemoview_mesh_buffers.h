@@ -19,7 +19,9 @@
 struct MESH_buffers{
     struct gl_strided_buffer *mesh_solid_buf;
     struct gl_strided_buffer *mesh_grid_buf;
+    
     struct gl_strided_buffer *mesh_node_buf;
+    struct gl_index_buffer *mesh_node_index_buf;
 };
 
 /* prototypes */

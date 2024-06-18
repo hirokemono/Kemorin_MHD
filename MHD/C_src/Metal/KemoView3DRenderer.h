@@ -105,6 +105,9 @@ typedef struct
     /*  Vertex buffer for mesh nodes */
     id<MTLBuffer> _Nullable meshNodeVertice;
     NSUInteger numMeshNodeVertice;
+    /*  Index buffer for mesh nodes */
+    id<MTLBuffer> _Nullable meshNodeIndice;
+    NSUInteger numMeshNodeIndice;
 
     /*  Vertex buffer for Coast lines */
     id<MTLBuffer> _Nullable coastLineVertice;

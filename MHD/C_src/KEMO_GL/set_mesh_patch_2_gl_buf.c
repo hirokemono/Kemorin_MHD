@@ -30,7 +30,8 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
                                     long ist_grp, long ied_grp, int *item_grp,
                                     struct viewer_mesh *mesh_s, double node_diam,
                                     double f_color[4], 
-                                    struct gl_strided_buffer *mesh_buf){
+                                    struct gl_strided_buffer *mesh_buf,
+                                    struct gl_index_buffer *index_buf){
     long inod, inum;
     
     long inum_tri = ist_tri;
@@ -38,7 +39,7 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
         inod = item_grp[inum]-1;
         inum_tri = set_icosahedron_strided_buffer(inum_tri, node_diam,
                                                   &mesh_s->xyzw_draw[4*inod  ],
-                                                  f_color, mesh_buf);
+                                                  f_color, mesh_buf, index_buf);
     };
     return inum_tri;
 }

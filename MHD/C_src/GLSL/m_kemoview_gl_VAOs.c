@@ -154,7 +154,10 @@ static void set_mesh_buffer_to_VAO(struct MESH_buffers *MESH_bufs,
                                    struct VAO_ids **mesh_solid_VAO){
     Const_Phong_VAO(mesh_solid_VAO[0],  MESH_bufs->mesh_solid_buf);
     Const_Simple_VAO(mesh_solid_VAO[1], MESH_bufs->mesh_grid_buf);
-    Const_Phong_VAO(mesh_solid_VAO[2],  MESH_bufs->mesh_node_buf);
+    Const_Phong_Index_VAO(mesh_solid_VAO[2],
+                          MESH_bufs->mesh_node_buf,
+                          MESH_bufs->mesh_node_index_buf);
+
 }
 
 static void set_map_buffer_to_VAO(struct gl_strided_buffer *PSF_node_buf,
