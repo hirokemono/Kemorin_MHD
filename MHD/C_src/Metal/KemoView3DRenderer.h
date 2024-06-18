@@ -59,7 +59,10 @@ typedef struct
     /*  Vertex buffer for PSF arrows */
     id<MTLBuffer> _Nullable psfArrowVertice;
     NSUInteger numPSFArrowVertice;
-    
+    /*  Index buffer for PSF arrows */
+    id<MTLBuffer> _Nullable psfArrowIndices;
+    NSUInteger numPSFArrowIndices;
+
     /*  Vertex buffer for PSF isolines */
     id<MTLBuffer> _Nullable psfLinesVertice;
     NSUInteger numPSFLinesVertice;

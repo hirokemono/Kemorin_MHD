@@ -697,7 +697,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if(self.psfTangentialVectorTag == 0){
 		kemoview_set_PSF_tangential_vec_mode(FULL_COMPONENT, kemo_sgl);
-	} else if (self.psfVectorColorTag == 1) {
+	} else if (self.psfTangentialVectorTag == 1) {
 		kemoview_set_PSF_tangential_vec_mode(TANGENTIAL_COMPONENT, kemo_sgl);
 	}
 	[_metalView UpdateImage:kemo_sgl];

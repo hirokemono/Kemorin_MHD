@@ -53,5 +53,6 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            struct psf_data *psf_s,
                            struct psf_normals *psf_n,
                            struct psf_menu_val *psf_m,
-                           struct gl_strided_buffer *strided_buf);
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_index_buffer *index_buf);
 #endif

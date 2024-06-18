@@ -87,7 +87,8 @@ void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
                             struct psf_normals **psf_n,
                             struct psf_menu_val **psf_m,
                             struct kemo_array_control *psf_a,
-                            struct gl_strided_buffer *psf_buf){
+                            struct gl_strided_buffer *psf_buf,
+                            struct gl_index_buffer *psf_index_buf){
     int i;
     long **istack_smp_arrow = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
     if(istack_smp_arrow == NULL) {
@@ -111,12 +112,18 @@ void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
                                                       psf_s[i], psf_n[i], psf_m[i]);
         };
     };
-    long num_vertex = ITHREE * view_s->ncorner_tube * num_cone;
+    long num_vertex = (2 + view_s->ncorner_tube) * num_cone;
     set_buffer_address_4_patch(num_vertex, psf_buf);
+    psf_index_buf->ntot_vertex = (2*psf_m[i]->ncorner_viz_line) * num_cone;
+    
     if(psf_buf->num_nod_buf <= 0) return;
     
     resize_strided_buffer(psf_buf);
     
+    resize_gl_index_buffer(((2*psf_m[i]->ncorner_viz_line) * num_cone),
+                           ITHREE,
+                           psf_index_buf);
+
     double ref_width = 10.0;
     double radius_arrow;
 
@@ -131,7 +138,8 @@ void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
             inum_cone = sel_psf_arrows_to_buf_pthread(inum_cone, nthreads, istack_smp_arrow[i],
                                                       view_s->ncorner_tube, radius_arrow,
-                                                      psf_s[i], psf_n[i], psf_m[i], psf_buf);
+                                                      psf_s[i], psf_n[i], psf_m[i],
+                                                      psf_buf, psf_index_buf);
         };
     };
 

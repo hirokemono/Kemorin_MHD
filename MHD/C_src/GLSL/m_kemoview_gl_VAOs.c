@@ -32,7 +32,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     kemo_VAOs->tracer_index_VAO = init_VAO_ids();
     kemo_VAOs->tracer_VAO =       init_VAO_ids();
 
-    kemo_VAOs->psf_solid_index_VAO = init_multi_VAO_ids(4);
+    kemo_VAOs->psf_solid_index_VAO = init_multi_VAO_ids(6);
     kemo_VAOs->psf_trans_index_VAO = init_multi_VAO_ids(2);
 
     kemo_VAOs->psf_solid_VAO = init_multi_VAO_ids(4);
@@ -66,7 +66,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     dealoc_VAO_ids(kemo_VAOs->tracer_index_VAO);
     dealoc_VAO_ids(kemo_VAOs->tracer_VAO);
 
-    dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_index_VAO);
+    dealoc_multi_VAO_ids(6, kemo_VAOs->psf_solid_index_VAO);
     dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_index_VAO);
     dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_VAO);
     dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_VAO);
@@ -97,7 +97,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     glGenVertexArrays(1, &(kemo_VAOs->tracer_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->tracer_index_VAO->id_VAO));
 
-    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
+    for(i=0;i<6;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_index_VAO[i]->id_VAO));};
 
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
@@ -128,7 +128,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     Destroy_VAO(kemo_VAOs->tracer_VAO);
     Destroy_VAO(kemo_VAOs->tracer_index_VAO);
 
-    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
+    for(i=0;i<6;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_index_VAO[i]);};
 
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
@@ -228,6 +228,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                                   kemo_VAOs->psf_solid_VAO, kemo_VAOs->psf_solid_index_VAO);
         set_PSF_line_objects_VAO(kemo_buffers->PSF_lines,
                                  kemo_VAOs->psf_solid_VAO,
+                                 kemo_VAOs->psf_solid_index_VAO,
                                  kemo_VAOs->grid_line_VAO,
                                  kemo_VAOs->grid_tube_VAO);
 

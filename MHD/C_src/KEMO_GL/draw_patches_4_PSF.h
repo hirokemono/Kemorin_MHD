@@ -63,5 +63,6 @@ void const_PSF_arrow_buffer(const int nthreads, struct view_element *view_s,
                             struct psf_normals **psf_n,
                             struct psf_menu_val **psf_m,
                             struct kemo_array_control *psf_a,
-                            struct gl_strided_buffer *psf_buf);
+                            struct gl_strided_buffer *psf_buf,
+                            struct gl_index_buffer *psf_index_buf);
 #endif

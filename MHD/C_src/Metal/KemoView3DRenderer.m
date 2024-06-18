@@ -103,6 +103,9 @@
     kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:PSF_lines->PSF_arrow_buf
                                                                            vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
+    kemoView3DMetalBuf->numPSFArrowIndices = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                         indexbuf:PSF_lines->PSF_arrow_index_buf
+                                                                            index:&(kemoView3DMetalBuf->psfArrowIndices)];
     return;
 }
 
@@ -238,7 +241,8 @@
     
     if(kemoView3DMetalBuf->numPSFLinesVertice > 0) {[kemoView3DMetalBuf->psfLinesVertice release];};
     if(kemoView3DMetalBuf->numPSFArrowVertice > 0) {[kemoView3DMetalBuf->psfArrowVertice release];};
-    
+    if(kemoView3DMetalBuf->numPSFArrowIndices > 0) {[kemoView3DMetalBuf->psfArrowIndices release];};
+
     if(kemoView3DMetalBuf->numMeshNodeVertice > 0)  {[kemoView3DMetalBuf->meshNodeVertice   release];};
     if(kemoView3DMetalBuf->numMeshGridVertice > 0)  {[kemoView3DMetalBuf->meshGridVertice   release];};
     if(kemoView3DMetalBuf->numMeshSolidVertice > 0) {[kemoView3DMetalBuf->meshSolidVertice release];};
@@ -453,14 +457,15 @@
                   metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numPSFArrowVertice
-                      vertex:&(kemoView3DMetalBuf->psfArrowVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES];
-    
+    [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
+                                       pipelines:kemo3DPipelines
+                                           depth:depthState
+                                       numVertex:kemoView3DMetalBuf->numPSFArrowIndices
+                                          vertex:&(kemoView3DMetalBuf->psfArrowVertice)
+                                           index:&(kemoView3DMetalBuf->psfArrowIndices)
+                                          unites:monoViewUnites
+                                           sides:BOTH_SURFACES];
+
     [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState

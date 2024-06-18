@@ -212,7 +212,8 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            struct psf_data *psf_s,
                            struct psf_normals *psf_n,
                            struct psf_menu_val *psf_m,
-                           struct gl_strided_buffer *strided_buf){
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_index_buffer *index_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
         
     struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
@@ -241,9 +242,9 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                 }
                 for (nd=0; nd<4; nd++){color_line[nd+4] =  color_line[nd];};
                 
-                inum_cone = set_cone_strided_buffer(inum_cone, ncorner, radius,
-                                                    xyzw_line, dir_line, color_line,
-                                                    strided_buf);
+                inum_cone = set_cone_node_index_buffer(inum_cone, ncorner, radius,
+                                                       xyzw_line, dir_line, color_line,
+                                                       strided_buf, index_buf);
 			};
 		};
 	};
