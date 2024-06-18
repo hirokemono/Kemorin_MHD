@@ -106,7 +106,7 @@ long set_tracer_ico_to_buf(const long ist_tri,
     return inum_tri;
 }
 
-long set_tracer_arrow_to_buf(const long ist_tri, 
+long set_tracer_arrow_to_buf(const long ist_tri,
                              long ist_nod, long ied_nod,
                              struct psf_data *tracer_d, 
                              struct psf_menu_val *tracer_m,
@@ -139,6 +139,7 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                          struct psf_data *tracer_d,
                          struct psf_menu_val *tracer_m,
                          struct Tracer_buffers *Tracer_bufs){
+    Tracer_bufs->Tracer_ico_index_buf->ntot_vertex = 0;
     Tracer_bufs->Tracer_ico_node_buf->num_nod_buf = 0;
     Tracer_bufs->Tracer_ico_buf->num_nod_buf = 0;
     Tracer_bufs->Tracer_dot_buf->num_nod_buf = 0;
