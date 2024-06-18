@@ -29,10 +29,12 @@ long set_sph_long_flame_line_to_buf(long ist_buf,  long ist_edge, long ied_edge,
                                     struct gl_strided_buffer *strided_buf);
 long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, long num_grid,
                                    int ncorner, double tube_radius, double radius,
-                                   struct gl_strided_buffer *strided_buf);
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_index_buffer *index_buf);
 long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, long num_grid,
                                     int ncorner, double tube_radius, double radius,
-                                    struct gl_strided_buffer *strided_buf);
+                                    struct gl_strided_buffer *strided_buf,
+                                    struct gl_index_buffer *index_buf);
 
 long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                    long num_grid, struct gl_strided_buffer *strided_buf);
@@ -40,22 +42,26 @@ long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                     long num_grid, struct gl_strided_buffer *strided_buf);
 long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                    long num_grid, int ncorner, double tube_radius,
-                                   struct gl_strided_buffer *strided_buf);
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_index_buffer *index_buf);
 long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                     long num_grid, int ncorner, double tube_radius,
-                                    struct gl_strided_buffer *strided_buf);
+                                    struct gl_strided_buffer *strided_buf,
+                                    struct gl_index_buffer *index_buf);
 
 long set_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
                             double radius, struct gl_strided_buffer *strided_buf);
 long set_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                             int ncorner, double tube_radius, double radius,
-                            struct gl_strided_buffer *strided_buf);
+                            struct gl_strided_buffer *strided_buf,
+                            struct gl_index_buffer *index_buf);
 
 long set_map_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
                                 struct gl_strided_buffer *strided_buf);
 long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                                 int ncorner, double tube_radius,
-                                struct gl_strided_buffer *strided_buf);
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_index_buffer *index_buf);
 
 long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                       long num_grid, double radius, double r_ICB,
@@ -63,6 +69,7 @@ long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge
 long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                       long num_grid, int ncorner, double tube_radius,
                                       double radius, double r_ICB,
-                                      struct gl_strided_buffer *strided_buf);
+                                      struct gl_strided_buffer *strided_buf,
+                                      struct gl_index_buffer *index_buf);
 
 #endif

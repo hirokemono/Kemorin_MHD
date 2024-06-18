@@ -27,6 +27,7 @@ struct MAP_buffers{
     
     struct gl_strided_buffer *MAP_coast_line_buf;
     struct gl_strided_buffer *MAP_coast_tube_buf;
+    struct gl_index_buffer   *MAP_coast_index_buf;
 };
  
 

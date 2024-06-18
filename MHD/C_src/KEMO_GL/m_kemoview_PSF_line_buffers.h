@@ -29,6 +29,7 @@ struct PSF_line_buffers{
 
     struct gl_strided_buffer *coast_line_buf;
     struct gl_strided_buffer *coast_tube_buf;
+    struct gl_index_buffer   *coast_index_buf;
 };
 
 /* prototypes */

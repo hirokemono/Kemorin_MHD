@@ -66,7 +66,9 @@ void set_PSF_line_objects_VAO(struct PSF_line_buffers *PSF_lines,
                                   PSF_lines->PSF_arrow_index_buf);
     
     Const_Simple_VAO(grid_line_VAO, PSF_lines->coast_line_buf);
-    Const_Phong_VAO(grid_tube_VAO,  PSF_lines->coast_tube_buf);
+    Const_VAO_Index_Phong_Texture(grid_tube_VAO,
+                                  PSF_lines->coast_tube_buf,
+                                  PSF_lines->coast_index_buf);
     return;
 };
 

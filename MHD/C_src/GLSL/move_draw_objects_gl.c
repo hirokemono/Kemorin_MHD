@@ -77,7 +77,8 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
                             lights, kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
 
 /*  draw coastlines */
-        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->grid_tube_VAO);
+        drawgl_elements_with_phong(view_matrices, lights, kemo_shaders,
+                                   kemo_VAOs->grid_tube_VAO);
         if(kemo_VAOs->grid_tube_VAO->npoint_draw == 0){
             drawgl_lines(view_matrices, kemo_VAOs->grid_line_VAO, kemo_shaders);
         }

@@ -25,6 +25,7 @@ struct PSF_line_buffers * init_PSF_line_buffers(void)
 
     PSF_lines->coast_line_buf =  init_strided_buffer(n_point);
     PSF_lines->coast_tube_buf =  init_strided_buffer(n_point);
+    PSF_lines->coast_index_buf =  init_gl_index_buffer(12, 3);
     return PSF_lines;
 }
 
@@ -35,8 +36,9 @@ void dealloc_PSF_line_buffers(struct PSF_line_buffers *PSF_lines)
     dealloc_strided_buffer(PSF_lines->coast_line_buf);
     
     dealloc_gl_index_buffer(PSF_lines->PSF_arrow_index_buf);
-
     dealloc_strided_buffer(PSF_lines->PSF_arrow_buf);
+    
+    dealloc_gl_index_buffer(PSF_lines->coast_index_buf);
     dealloc_strided_buffer(PSF_lines->PSF_isotube_buf);
     dealloc_strided_buffer(PSF_lines->PSF_isoline_buf);
     free(PSF_lines);
@@ -63,9 +65,10 @@ void const_PSF_isolines_buffer(const int nthreads, struct view_element *view_s,
     set_coastline_line_buffer(mesh_m, PSF_lines->coast_line_buf);
     if(view_s->iflag_coastline_tube){
         set_coastline_tube_buffer(mesh_m, view_s,
-                                  PSF_lines->coast_tube_buf);
+                                  PSF_lines->coast_tube_buf,
+                                  PSF_lines->coast_index_buf);
     }else{
-        PSF_lines->coast_tube_buf->num_nod_buf = 0;
+        PSF_lines->coast_index_buf->ntot_vertex = 0;
     }
     return;
 }

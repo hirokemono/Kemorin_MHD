@@ -23,12 +23,14 @@ struct MAP_buffers * init_MAP_buffers(void)
 
     MAP_bufs->MAP_coast_line_buf = init_strided_buffer(n_point);
     MAP_bufs->MAP_coast_tube_buf = init_strided_buffer(n_point);
+    MAP_bufs->MAP_coast_index_buf = init_gl_index_buffer(12, 3);
 
     return MAP_bufs;
 }
 
 void dealloc_MAP_buffers(struct MAP_buffers *MAP_bufs)
 {
+    dealloc_gl_index_buffer(MAP_bufs->MAP_coast_index_buf);
     dealloc_strided_buffer(MAP_bufs->MAP_coast_tube_buf);
     dealloc_strided_buffer(MAP_bufs->MAP_coast_line_buf);
 
@@ -70,10 +72,11 @@ void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_mul_psf,
     set_map_coastline_line_buffer(mesh_m, MAP_bufs->MAP_coast_line_buf);
     if(view_s->iflag_coastline_tube){
         set_map_coastline_tube_buffer(mesh_m, view_s,
-                                      MAP_bufs->MAP_coast_tube_buf);
+                                      MAP_bufs->MAP_coast_tube_buf,
+                                      MAP_bufs->MAP_coast_index_buf);
         MAP_bufs->MAP_coast_line_buf->num_nod_buf = 0;
     }else{
-        MAP_bufs->MAP_coast_tube_buf->num_nod_buf = 0;
+        MAP_bufs->MAP_coast_index_buf->ntot_vertex = 0;
     }
     return;
 }

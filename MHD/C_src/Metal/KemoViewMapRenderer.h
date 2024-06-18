@@ -43,6 +43,8 @@ typedef struct
     NSUInteger numCoastLineVertice;
     id<MTLBuffer> _Nullable coastTubeVertice;
     NSUInteger numCoastTubeVertice;
+    id<MTLBuffer> _Nullable coastTubeIndice;
+    NSUInteger numCoastTubeIndice;
 } KemoViewMapMetalBuffers;
 
 @interface KemoViewMapRenderer : NSObject

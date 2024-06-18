@@ -45,6 +45,9 @@
     kemoViewMapMetalBufs->numCoastTubeVertice = [kemo2DMetalBufBase  setMetalVertexs:device
                                                                               buffer:MAP_bufs->MAP_coast_tube_buf
                                                                               vertex:&(kemoViewMapMetalBufs->coastTubeVertice)];
+    kemoViewMapMetalBufs->numCoastTubeIndice =   [kemo2DMetalBufBase setMetalIndices:device
+                                                                            indexbuf:MAP_bufs->MAP_coast_index_buf
+                                                                               index:&(kemoViewMapMetalBufs->coastTubeIndice)];
 };
 
 - (void) releaseMapMetalBuffers:(KemoViewMapMetalBuffers *_Nonnull) kemoViewMapMetalBufs
@@ -57,6 +60,7 @@
     if(kemoViewMapMetalBufs->numMapLinesIndice > 0)   {[kemoViewMapMetalBufs->mapLinesIndice  release];};
     if(kemoViewMapMetalBufs->numCoastLineVertice > 0) {[kemoViewMapMetalBufs->coastLineVertice release];};
     if(kemoViewMapMetalBufs->numCoastTubeVertice > 0) {[kemoViewMapMetalBufs->coastTubeVertice release];};
+    if(kemoViewMapMetalBufs->numCoastTubeIndice > 0)  {[kemoViewMapMetalBufs->coastTubeIndice  release];};
     return;
 }
 
@@ -90,11 +94,12 @@
                                       index:&(kemoViewMapMetalBufs->mapLinesIndice)
                                  projection:map_proj_mat];
     /*  Commands to render Coastline on map */
-    [KemoView2DRenderer draw2DPatchObject:renderEncoder
-                                pipelines:&(kemoView2DPipelines->trans2DPipelineState)
-                                numVertex:kemoViewMapMetalBufs->numCoastTubeVertice
-                                   vertex:&(kemoViewMapMetalBufs->coastTubeVertice)
-                               projection:map_proj_mat];
+    [KemoView2DRenderer draw2DElementObject:renderEncoder
+                                  pipelines:&(kemoView2DPipelines->trans2DPipelineState)
+                                  numVertex:kemoViewMapMetalBufs->numCoastTubeIndice
+                                     vertex:&(kemoViewMapMetalBufs->coastTubeVertice)
+                                      index:&(kemoViewMapMetalBufs->coastTubeIndice)
+                                 projection:map_proj_mat];
 
     [KemoView2DRenderer draw2DLineObject:renderEncoder
                                pipelines:&(kemoView2DPipelines->simple2DPipelineState)

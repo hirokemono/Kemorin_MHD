@@ -119,7 +119,9 @@ typedef struct
     NSUInteger numCoastLineVertice;
     id<MTLBuffer> _Nullable coastTubeVertice;
     NSUInteger numCoastTubeVertice;
-    
+    id<MTLBuffer> _Nullable coastTubeIndice;
+    NSUInteger numCoastTubeIndice;
+
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
     NSUInteger numAxisVertice;

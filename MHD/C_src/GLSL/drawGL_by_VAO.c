@@ -118,7 +118,7 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
 
-    for(i=0;i<2;i++){
+    for(i=0;i<3;i++){
         if(map_index_VAO[i]->npoint_draw > 0){
             glBindVertexArray(map_index_VAO[i]->id_VAO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO[i]->id_index);

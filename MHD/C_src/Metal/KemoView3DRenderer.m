@@ -105,6 +105,9 @@
     kemoView3DMetalBuf->numCoastTubeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:PSF_lines->coast_tube_buf
                                                                             vertex:&(kemoView3DMetalBuf->coastTubeVertice)];
+    kemoView3DMetalBuf->numCoastTubeIndice =  [_kemo3DMetalBufBase setMetalIndices:device
+                                                                          indexbuf:PSF_lines->coast_index_buf
+                                                                             index:&(kemoView3DMetalBuf->coastTubeIndice)];
 
     kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                            buffer:PSF_lines->PSF_arrow_buf
@@ -228,6 +231,7 @@
     if(kemoView3DMetalBuf->numFieldTubeVertice > 0) {[kemoView3DMetalBuf->fieldTubeVertice release];};
     if(kemoView3DMetalBuf->numFieldTubeIndice > 0)  {[kemoView3DMetalBuf->fieldTubeIndice release];};
 
+    if(kemoView3DMetalBuf->numCoastTubeIndice > 0)  {[kemoView3DMetalBuf->coastTubeIndice    release];};
     if(kemoView3DMetalBuf->numCoastTubeVertice > 0) {[kemoView3DMetalBuf->coastTubeVertice   release];};
     if(kemoView3DMetalBuf->numCoastLineVertice > 0) {[kemoView3DMetalBuf->coastLineVertice   release];};
     return;
@@ -532,13 +536,14 @@
     }
     /* Draw coastlines */
     
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numCoastTubeVertice
-                      vertex:&(kemoView3DMetalBuf->coastTubeVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES];
+    [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
+                                       pipelines:kemo3DPipelines
+                                           depth:depthState
+                                       numVertex:kemoView3DMetalBuf->numCoastTubeIndice
+                                          vertex:&(kemoView3DMetalBuf->coastTubeVertice)
+                                           index:&(kemoView3DMetalBuf->coastTubeIndice)
+                                          unites:monoViewUnites
+                                           sides:BOTH_SURFACES];
     if(kemoView3DMetalBuf->numCoastTubeVertice == 0){
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
