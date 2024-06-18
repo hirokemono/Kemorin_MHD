@@ -24,6 +24,10 @@
 struct Tracer_buffers{
     struct gl_strided_buffer *Tracer_dot_buf;
     struct gl_strided_buffer *Tracer_ico_buf;
+    struct gl_strided_buffer *Tracer_ico_node_buf;
+
+    struct gl_index_buffer *Tracer_ico_index_buf;
+
 };
 
 /* prototypes */

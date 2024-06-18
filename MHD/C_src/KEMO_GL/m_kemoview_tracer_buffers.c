@@ -23,6 +23,10 @@ struct Tracer_buffers * init_Tracer_buffers(void)
     long n_point = 1024;
     Tracer_bufs->Tracer_dot_buf =       init_strided_buffer(n_point);
     Tracer_bufs->Tracer_ico_buf =       init_strided_buffer(n_point);
+    Tracer_bufs->Tracer_ico_node_buf =  init_strided_buffer(n_point);
+    
+    Tracer_bufs->Tracer_ico_index_buf =  init_gl_index_buffer(12, 3);
+
     return Tracer_bufs;
 }
 
@@ -30,21 +34,70 @@ void dealloc_Tracer_buffers(struct Tracer_buffers *Tracer_bufs)
 {
     dealloc_strided_buffer(Tracer_bufs->Tracer_dot_buf);
     dealloc_strided_buffer(Tracer_bufs->Tracer_ico_buf);
+    dealloc_strided_buffer(Tracer_bufs->Tracer_ico_node_buf);
+
+    dealloc_gl_index_buffer(Tracer_bufs->Tracer_ico_index_buf);
     free(Tracer_bufs);
 };
 
 
 
 
+long set_tracer_ico_node_buf(const long ist_ico,
+                             long ist_nod, long ied_nod,
+                             struct psf_data *tracer_d,
+                             struct psf_menu_val *tracer_m,
+                             struct gl_strided_buffer *Tracer_ico_node_buf,
+                             struct gl_index_buffer *Tracer_ico_index_buf){
+    long inum_ico = ist_nod;
+    for(long inod = ist_nod; inod < ied_nod; inod++){
+        inum_ico = set_icosahedron_node_buffer(inum_ico,
+                                               tracer_m->viz_line_width,
+                     
+                                               &tracer_d->xyzw_viz[4*inod],
+                                               &tracer_d->color_nod[4*inod],
+                                               Tracer_ico_node_buf,
+                                               Tracer_ico_index_buf->ie_buf);
+    };
+    return inum_ico;
+}
 
-long set_tracer_ico_to_buf(const long ist_tri, 
+long set_tracer_cone_node_buf(const long ist_ico,
+                             long ist_nod, long ied_nod,
+                             struct psf_data *tracer_d,
+                             struct psf_menu_val *tracer_m,
+                             struct gl_strided_buffer *Tracer_ico_node_buf,
+                             struct gl_index_buffer *Tracer_ico_index_buf){
+    double xyzw_line[8], dir_line[8], color_line[8];
+    long inum_ico = ist_nod;
+    for(long inod = ist_nod; inod < ied_nod; inod++){
+        set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
+                                  inod, tracer_d, tracer_m,
+                                  xyzw_line, dir_line);
+        for(int nd=0;nd<4;nd++){
+            color_line[  nd] = tracer_d->color_nod[4*inod+nd];
+            color_line[4+nd] = tracer_d->color_nod[4*inod+nd];
+        }
+            
+        inum_ico = set_cone_node_index_buffer(inum_ico,
+                                              tracer_m->ncorner_viz_line,
+                                              tracer_m->viz_line_width,
+                                              xyzw_line, dir_line, color_line,
+                                              Tracer_ico_node_buf,
+                                              Tracer_ico_index_buf->ie_buf);
+    };
+    return inum_ico;
+}
+
+long set_tracer_ico_to_buf(const long ist_tri,
                                     long ist_nod, long ied_nod,
                                     struct psf_data *tracer_d, 
                                     struct psf_menu_val *tracer_m,
                                     struct gl_strided_buffer *Tracer_ico_buf){
+    double xyzw_line[8], dir_line[8], color_line[8];
     long inum_tri = ist_tri;
     for(long inod = ist_nod; inod < ied_nod; inod++){
-        inum_tri = set_icosahedron_strided_buffer(inum_tri, 
+        inum_tri = set_icosahedron_strided_buffer(inum_tri,
                                                   tracer_m->viz_line_width,
                                                   &tracer_d->xyzw_viz[4*inod],
                                                   &tracer_d->color_nod[4*inod],
@@ -69,7 +122,8 @@ long set_tracer_arrow_to_buf(const long ist_tri,
             color_line[4+nd] = tracer_d->color_nod[4*inod+nd];
         }
             
-        inum_tri = set_cone_strided_buffer(inum_tri, tracer_m->ncorner_viz_line,
+        inum_tri = set_cone_strided_buffer(inum_tri,
+                                           tracer_m->ncorner_viz_line,
                                            tracer_m->viz_line_width,
                                            xyzw_line, dir_line, color_line,
                                            Tracer_ico_buf);
@@ -85,6 +139,7 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                          struct psf_data *tracer_d,
                          struct psf_menu_val *tracer_m,
                          struct Tracer_buffers *Tracer_bufs){
+    Tracer_bufs->Tracer_ico_node_buf->num_nod_buf = 0;
     Tracer_bufs->Tracer_ico_buf->num_nod_buf = 0;
     Tracer_bufs->Tracer_dot_buf->num_nod_buf = 0;
     if(tracer_m->iflag_draw_viz <= 0) return;
@@ -109,25 +164,48 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
     };
 
     long num_patch;
+    Tracer_bufs->Tracer_ico_node_buf->num_nod_buf = 0;
     Tracer_bufs->Tracer_ico_buf->num_nod_buf = 0;
     if(tracer_m->draw_psf_vect > 0){
         num_patch = ITHREE * tracer_m->ncorner_viz_line * tracer_d->nnod_viz;
+        set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
+        
+        num_patch = (2 + tracer_m->ncorner_viz_line) * tracer_d->nnod_viz;
+        set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_node_buf);
     }else{
         num_patch = ITHREE * num_icosahedron_patch() * tracer_d->nnod_viz;
+        set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
+        
+        num_patch = 12 * tracer_d->nnod_viz;
+        set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_node_buf);
     };
-    set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
 
     if(Tracer_bufs->Tracer_ico_buf->num_nod_buf <= 0) return;
     resize_strided_buffer(Tracer_bufs->Tracer_ico_buf);
+    resize_strided_buffer(Tracer_bufs->Tracer_ico_node_buf);
 
     if(tracer_m->draw_psf_vect > 0){
         num_patch = set_tracer_arrow_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
                                             tracer_d, tracer_m,
                                             Tracer_bufs->Tracer_ico_buf);
+        
+        resize_gl_index_buffer(((2*tracer_m->ncorner_viz_line) * tracer_d->nnod_viz), ITHREE,
+                               Tracer_bufs->Tracer_ico_index_buf);
+        num_patch = set_tracer_cone_node_buf(IZERO, IZERO, tracer_d->nnod_viz,
+                                            tracer_d, tracer_m,
+                                            Tracer_bufs->Tracer_ico_node_buf,
+                                            Tracer_bufs->Tracer_ico_index_buf);
     }else{
         num_patch = set_tracer_ico_to_buf(IZERO, IZERO, tracer_d->nnod_viz,
                                           tracer_d, tracer_m,
                                           Tracer_bufs->Tracer_ico_buf);
+        
+        resize_gl_index_buffer((20 * tracer_d->nnod_viz), ITHREE,
+                               Tracer_bufs->Tracer_ico_index_buf);
+        num_patch = set_tracer_ico_node_buf(IZERO, IZERO, tracer_d->nnod_viz,
+                                            tracer_d, tracer_m,
+                                            Tracer_bufs->Tracer_ico_node_buf,
+                                            Tracer_bufs->Tracer_ico_index_buf);
     };
 	return;
 }

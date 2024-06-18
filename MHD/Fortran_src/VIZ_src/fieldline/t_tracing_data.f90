@@ -122,7 +122,7 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       if(num_each_field_line .le. fln_tce%num_trace_buf) return
-      write(*,*) 'change local number of lines for',num_each_field_line
+!      write(*,*) 'change local number of lines for',num_each_field_line
       call dealloc_line_start_fline(fln_tce)
       call alloc_line_start_fline(num_each_field_line,                  &
      &                            viz_fields, fln_tce)

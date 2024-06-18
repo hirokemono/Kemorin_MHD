@@ -24,12 +24,23 @@ long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
 long set_line_strided_buffer(const long ist_line,
                              double xyzw_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
+
 long set_cone_strided_buffer(const long ist_tube, int ncorner, double radius,
                              double xyzw_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
+long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
+                                double xyzw_line[8], double dir_line[8], double color_line[8],
+                                struct gl_strided_buffer *strided_buf,
+                                unsigned int *ie_cone);
+
 long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
                              double xyzw_line[8], double dir_line[8], double color_line[8],
                              struct gl_strided_buffer *strided_buf);
+
+long set_icosahedron_node_buffer(long ist_ico, double node_diam,
+                                 double xyzw_draw[4], double f_color[4],
+                                 struct gl_strided_buffer *strided_buf,
+                                 unsigned int *ie_ico);
 long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
                                     double xyzw_draw[4], double f_color[4],
                                     struct gl_strided_buffer *strided_buf);

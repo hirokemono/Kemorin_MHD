@@ -264,7 +264,7 @@
                         depth:depthState
                        unites:monoViewUnites
                         sides:iflag_surface];
-        
+
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0

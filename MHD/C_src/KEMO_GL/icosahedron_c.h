@@ -14,7 +14,11 @@ long num_icosahedron_patch(void);
 
 
 void init_icosahedron_c(void);
-long set_icosahedron_patch(double size, double x_draw[3], 
+
+long set_icosahedron_node_index(double size, double x_draw[3],
+                                double xyzw_draw[48], double norm_draw[48],
+                                unsigned int ie_ico[60]);
+long set_icosahedron_patch(double size, double x_draw[3],
                            double *xyzw_draw, double *norm_draw);
 
 
@@ -24,7 +28,14 @@ int set_tube_vertex(int ncorner, double radius,
                     double xyzw_line[8], double dir_line[8], 
                     double norm_line[8], double color_line[8], 
                     double *xyzw, double *norm, double *col);
-int set_cone_vertex(int ncorner, double radius, 
+
+
+int set_cone_node_index(int ncorner, double radius,
+                        double xyzw_line[8], double dir_line[8],
+                        double norm_line[8], double color_line[8],
+                        double *xyzw, double *norm, double *col,
+                        unsigned int *ie_cone);
+int set_cone_vertex(int ncorner, double radius,
                     double xyzw_line[8], double dir_line[8],
                     double norm_line[8], double color_line[8], 
                     double *xyzw, double *norm, double *col);

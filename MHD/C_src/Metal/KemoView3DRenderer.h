@@ -80,11 +80,17 @@ typedef struct
     id<MTLBuffer> _Nullable fieldLineVertice;
     NSUInteger numFieldLineVertice;
 
+    /*  Vertex buffer for tracer dots patch */
+    id<MTLBuffer> _Nullable tracerDotVertice;
+    NSUInteger numTracerDotVertice;
     /*  Vertex buffer for tracer icosaheron patch */
     id<MTLBuffer> _Nullable tracerIcoVertice;
     NSUInteger numTracerIcoVertice;
-    id<MTLBuffer> _Nullable tracerDotVertice;
-    NSUInteger numTracerDotVertice;
+    id<MTLBuffer> _Nullable tracerIcoNodeVertice;
+    NSUInteger numTracerIcoNodeVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable tracerIcoIndices;
+    NSUInteger numTracerIcoIndices;
 
     /*  Vertex buffer for mesh solid patch */
     id<MTLBuffer> _Nullable meshSolidVertice;
