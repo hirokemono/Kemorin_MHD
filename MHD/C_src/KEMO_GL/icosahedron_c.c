@@ -189,68 +189,63 @@ int set_tube_vertex(int ncorner, double radius,
                     double xyzw_line[8], double dir_line[8], 
                     double norm_line[8], double color_line[8], 
                     double *xyzw, double *norm, double *col) {
-	double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
-	double xyzw_w2[4*ncorner], norm_w2[4*ncorner];
-	int npatch_wall = 0;
-	int k, nd;
-	
+    double xyzw_w1[4*ncorner], norm_w1[4*ncorner];
+    double xyzw_w2[4*ncorner], norm_w2[4*ncorner];
+    int npatch_wall = 0;
+    int k, nd;
+    
     set_circle_of_tube(ncorner, radius, &xyzw_line[0],
                        &norm_line[0], &dir_line[0],
                        xyzw_w1, norm_w1);
     set_circle_of_tube(ncorner, radius, &xyzw_line[4],
                        &norm_line[4], &dir_line[4],
                        xyzw_w2, norm_w2);
-	
-	for(k=0;k<ncorner-1;k++){
-		for (nd=0; nd<3; nd++) {
-            xyzw[4*(6*k)+  nd] = xyzw_w1[4*k+  nd];
-            xyzw[4*(6*k+1)+nd] = xyzw_w1[4*k+4+nd];
-            xyzw[4*(6*k+2)+nd] = xyzw_w2[4*k+4+nd];
-            norm[4*(6*k)+  nd] = norm_w1[4*k+  nd];
-            norm[4*(6*k+1)+nd] = norm_w1[4*k+4+nd];
-            norm[4*(6*k+2)+nd] = norm_w2[4*k+4+nd];
-			
-            xyzw[4*(6*k+3)+nd] = xyzw_w2[4*k+4+nd];
-            xyzw[4*(6*k+4)+nd] = xyzw_w2[4*k+nd];
-            xyzw[4*(6*k+5)+nd] = xyzw_w1[4*k+nd];
-            norm[4*(6*k+3)+nd] = norm_w2[4*k+4+nd];
-            norm[4*(6*k+4)+nd] = norm_w2[4*k+nd];
-            norm[4*(6*k+5)+nd] = norm_w1[4*k+nd];
-		};
-	};
-	
-	for (nd=0; nd<3; nd++) {
-        xyzw[4*(6*(ncorner-1))+  nd] = xyzw_w1[4*(ncorner-1)+nd];
-        xyzw[4*(6*(ncorner-1)+1)+nd] = xyzw_w1[nd];
-        xyzw[4*(6*(ncorner-1)+2)+nd] = xyzw_w2[nd];
-        norm[4*(6*(ncorner-1))+  nd] = norm_w1[4*(ncorner-1)+nd];
-        norm[4*(6*(ncorner-1)+1)+nd] = norm_w1[nd];
-        norm[4*(6*(ncorner-1)+2)+nd] = norm_w2[nd];
-		
-        xyzw[4*(6*(ncorner-1)+3)+nd] = xyzw_w2[nd];
-        xyzw[4*(6*(ncorner-1)+4)+nd] = xyzw_w2[4*(ncorner-1)+nd];
-        xyzw[4*(6*(ncorner-1)+5)+nd] = xyzw_w1[4*(ncorner-1)+nd];
-        norm[4*(6*(ncorner-1)+3)+nd] = norm_w2[nd];
-        norm[4*(6*(ncorner-1)+4)+nd] = norm_w2[4*(ncorner-1)+nd];
-        norm[4*(6*(ncorner-1)+5)+nd] = norm_w1[4*(ncorner-1)+nd];
-	};
-
-    for(k=0;k<6*ncorner-1;k++){
-        xyzw[4*k+3] = 1.0;
-        norm[4*k+3] = 1.0;
+    xyzw_line[3] = 1.0;
+    xyzw_line[7] = 1.0;
+    
+    for(k=0;k<ncorner-1;k++){
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k)+  nd] = xyzw_w1[4*k+  nd];}
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k+1)+nd] = xyzw_w1[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k+2)+nd] = xyzw_w2[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k)+  nd] = norm_w1[4*k+  nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k+1)+nd] = norm_w1[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k+2)+nd] = norm_w2[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k)+  nd] =  color_line[  nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k+1)+nd] =  color_line[  nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k+2)+nd] =  color_line[4+nd];}
+        
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k+3)+nd] = xyzw_w2[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k+4)+nd] = xyzw_w2[4*k+nd];}
+        for(nd=0; nd<4; nd++){xyzw[4*(6*k+5)+nd] = xyzw_w1[4*k+nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k+3)+nd] = norm_w2[4*k+4+nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k+4)+nd] = norm_w2[4*k+nd];}
+        for(nd=0; nd<4; nd++){norm[4*(6*k+5)+nd] = norm_w1[4*k+nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k+3)+nd] = color_line[4+nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k+4)+nd] = color_line[4+nd];}
+        for(nd=0; nd<4; nd++){col[4*(6*k+5)+nd] = color_line[  nd];}
     };
     
-	for(k=0;k<ncorner;k++){
-		for (nd=0; nd<4; nd++) {
-			col[4*(6*k)+  nd] = color_line[  nd];
-			col[4*(6*k+1)+nd] = color_line[  nd];
-			col[4*(6*k+2)+nd] = color_line[4+nd];
-			col[4*(6*k+3)+nd] = color_line[4+nd];
-			col[4*(6*k+4)+nd] = color_line[4+nd];
-			col[4*(6*k+5)+nd] = color_line[  nd];
-		};
-	};
-	npatch_wall = 2*ncorner;
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1))+  nd] = xyzw_w1[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1)+1)+nd] = xyzw_w1[nd];}
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1)+2)+nd] = xyzw_w2[nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1))+  nd] = norm_w1[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1)+1)+nd] = norm_w1[nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1)+2)+nd] = norm_w2[nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1))+  nd] =  color_line[  nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1)+1)+nd] =  color_line[  nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1)+2)+nd] =  color_line[4+nd];}
+    
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1)+3)+nd] = xyzw_w2[nd];}
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1)+4)+nd] = xyzw_w2[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){xyzw[4*(6*(ncorner-1)+5)+nd] = xyzw_w1[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1)+3)+nd] = norm_w2[nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1)+4)+nd] = norm_w2[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){norm[4*(6*(ncorner-1)+5)+nd] = norm_w1[4*(ncorner-1)+nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1)+3)+nd] =  color_line[4+nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1)+4)+nd] =  color_line[4+nd];}
+    for(nd=0; nd<4; nd++){col[4*(6*(ncorner-1)+5)+nd] =  color_line[  nd];}
+
+    npatch_wall = 2*ncorner;
 	return npatch_wall;
 }
 
@@ -269,47 +264,26 @@ int set_tube_node_index(int ncorner, double radius,
     set_circle_of_tube(ncorner, radius, &xyzw_line[4],
                        &norm_line[4], &dir_line[4],
                        xyzw_w2, norm_w2);
-
-    for (nd=0; nd<3; nd++){
-        xyzw[  nd] = xyzw_line[  nd];
-        norm[  nd] = dir_line[   nd];
-    };
-    for (nd=0; nd<4; nd++) {
-        col[  nd] = color_line[  nd];
-    };
+    
+    for(nd=0; nd<4; nd++){xyzw[  nd] = xyzw_line[  nd];}
+    for(nd=0; nd<4; nd++){norm[  nd] = dir_line[   nd];}
+    for(nd=0; nd<4; nd++){col[  nd] = color_line[  nd];}
+    
     for(k=0;k<ncorner;k++){
-        for (nd=0; nd<3; nd++) {
-            xyzw[4*(k+1)+nd] = xyzw_w1[4*k+ nd];
-            norm[4*(k+1)+nd] = norm_w1[4*k+ nd];
-        }
-    };
-    for(k=0;k<ncorner;k++){
+        for(nd=0; nd<4; nd++){xyzw[4*(k+1)+nd] = xyzw_w1[4*k+ nd];}
+        for(nd=0; nd<4; nd++){norm[4*(k+1)+nd] = norm_w1[4*k+ nd];}
         for(nd=0; nd<4; nd++){col[4*(k+1)+nd] = color_line[nd];};
     };
-
+    
     for(k=0;k<ncorner;k++){
-        for (nd=0; nd<3; nd++) {
-            xyzw[4*(ncorner+k+1)+nd] = xyzw_w2[4*k+ nd];
-            norm[4*(ncorner+k+1)+nd] = norm_w2[4*k+ nd];
-        }
+        for(nd=0; nd<4; nd++){xyzw[4*(ncorner+k+1)+nd] = xyzw_w2[4*k+ nd];}
+        for(nd=0; nd<4; nd++){norm[4*(ncorner+k+1)+nd] = norm_w2[4*k+ nd];}
+        for(nd=0; nd<4; nd++){col[4*(ncorner+k+1)+nd] = color_line[4+nd];};
     };
-    for(k=0;k<ncorner;k++){
-        for(nd=0; nd<4; nd++){col[4*(ncorner+k+2)+nd] = color_line[4+nd];};
-    };
-
-    for (nd=0; nd<3; nd++){
-        xyzw[4*(2*ncorner+1)+nd] = xyzw_line[4+nd];
-        norm[4*(2*ncorner+1)+nd] = dir_line[ 4+nd];
-    };
-    for (nd=0; nd<4; nd++) {
-        col[4*(2*ncorner+1)+nd] = color_line[4+nd];
-    };
-
-    for(k=0;k<2*ncorner+2;k++){
-        xyzw[4*k+3] = 1.0;
-        norm[4*k+3] = 1.0;
-    }
-
+    
+    for(nd=0; nd<4; nd++){xyzw[4*(2*ncorner+1)+nd] = xyzw_line[4+nd];}
+    for(nd=0; nd<4; nd++){norm[4*(2*ncorner+1)+nd] = dir_line[ 4+nd];}
+    for(nd=0; nd<4; nd++){col[4*(2*ncorner+1)+nd] = color_line[4+nd];}
 
     for(k=0;k<ncorner-1;k++){
         ie_tube[6*k  ] = k+1;
@@ -357,49 +331,36 @@ int set_cone_node_index(int ncorner, double radius,
     set_circle_of_tube(ncorner, radius,
                        &xyzw_line[0], &norm_line[0], &dir_line[0],
                        xyzw_w1, norm_w1);
-
-    for (nd=0; nd<3; nd++){
-        xyzw[  nd] = xyzw_line[  nd];
-        norm[  nd] = dir_line[   nd];
-        xyzw[4+nd] = xyzw_line[4+nd];
-        norm[4+nd] = dir_line[ 4+nd];
-    };
-    for (nd=0; nd<4; nd++) {
-        col[  nd] = color_line[  nd];
-        col[4+nd] = color_line[4+nd];
-    };
+    
+    for(nd=0; nd<4; nd++){xyzw[  nd] = xyzw_line[  nd];}
+    for(nd=0; nd<4; nd++){norm[  nd] = dir_line[   nd];}
+    for(nd=0; nd<4; nd++){col[  nd] = color_line[  nd];}
     for(k=0;k<ncorner;k++){
-        for (nd=0; nd<3; nd++) {
-            xyzw[4*(k+2)+nd] = xyzw_w1[4*k+ nd];
-            norm[4*(k+2)+nd] = norm_w1[4*k+ nd];
-        }
+        for(nd=0; nd<4; nd++){xyzw[4*(k+1)+nd] = xyzw_w1[4*k+ nd];};
+        for(nd=0; nd<4; nd++){norm[4*(k+1)+nd] = norm_w1[4*k+ nd];};
+        for(nd=0; nd<4; nd++){col[4*(k+1)+nd] =  color_line[nd];};
     };
-    for(k=0;k<ncorner;k++){
-        for(nd=0; nd<4; nd++){col[4*(k+2)+nd] = color_line[nd];};
-    };
-
-    for(k=0;k<ncorner+2;k++){
-        xyzw[4*k+3] = 1.0;
-        norm[4*k+3] = 1.0;
-    }
+    for(nd=0; nd<4; nd++){xyzw[4*(ncorner+1)+nd] = xyzw_line[4+nd];}
+    for(nd=0; nd<4; nd++){norm[4*(ncorner+1)+nd] = dir_line[ 4+nd];}
+    for(nd=0; nd<4; nd++){col[4*(ncorner+1)+nd] = color_line[4+nd];}
 
     for(k=0;k<ncorner-1;k++){
-        ie_cone[3*k  ] = 1;
-        ie_cone[3*k+1] = k+2;
-        ie_cone[3*k+2] = k+3;
+        ie_cone[3*k  ] = ncorner+1;
+        ie_cone[3*k+1] = k+1;
+        ie_cone[3*k+2] = k+2;
     };
-    ie_cone[3*(ncorner-1)  ] = 1;
-    ie_cone[3*(ncorner-1)+1] = ncorner+1;
-    ie_cone[3*(ncorner-1)+2] = 2;
+    ie_cone[3*(ncorner-1)  ] = ncorner+1;
+    ie_cone[3*(ncorner-1)+1] = ncorner;
+    ie_cone[3*(ncorner-1)+2] = 1;
 
     for(k=0;k<ncorner-1;k++){
         ie_cone[3*(k+ncorner)  ] = 0;
-        ie_cone[3*(k+ncorner)+1] = k+3;
-        ie_cone[3*(k+ncorner)+2] = k+2;
+        ie_cone[3*(k+ncorner)+1] = k+2;
+        ie_cone[3*(k+ncorner)+2] = k+1;
     };
     ie_cone[3*(2*ncorner-1)  ] = 0;
-    ie_cone[3*(2*ncorner-1)+1] = 2;
-    ie_cone[3*(2*ncorner-1)+2] = ncorner+1;
+    ie_cone[3*(2*ncorner-1)+1] = 1;
+    ie_cone[3*(2*ncorner-1)+2] = ncorner;
     
     return (2 * ncorner);
 }
