@@ -290,10 +290,10 @@
                    metalbuffer:&_kemoViewMetalBuf
                        buffers:kemo_sgl->kemo_buffers->axis_buf];
     
-    _kemoViewMetalBuf.numCoastTubeVertice = 0;
+    _kemoViewMetalBuf.numCoastTubeIndice = 0;
     _kemoViewMetalBuf.numFieldTubeIndice = 0;
 //    _kemoViewMetalBuf.numTracerIcoVertice = 0;
-    _kemoViewMetalBuf.numPSFTubesVertice =  0;
+    _kemoViewMetalBuf.numPSFTubesIndice =  0;
     _kemoViewMetalBuf.numMeshNodeIndice =  0;
 
     [self setTransMetalBuffers:device
@@ -544,7 +544,7 @@
                                            index:&(kemoView3DMetalBuf->coastTubeIndice)
                                           unites:monoViewUnites
                                            sides:BOTH_SURFACES];
-    if(kemoView3DMetalBuf->numCoastTubeVertice == 0){
+    if(kemoView3DMetalBuf->numCoastTubeIndice == 0){
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
                                       depth:depthState
