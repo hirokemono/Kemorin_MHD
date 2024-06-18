@@ -116,10 +116,10 @@
                                                                             vertex:&(kemoView3DMetalBuf->tracerDotVertice)];
 
     kemoView3DMetalBuf->numTracerIcoVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:Tracer_bufs->Tracer_ico_node_buf
+                                                                            buffer:Tracer_bufs->Tracer_ico_buf
                                                                             vertex:&(kemoView3DMetalBuf->tracerIcoVertice)];
     kemoView3DMetalBuf->numTracerIcoIndices =   [_kemo3DMetalBufBase setMetalIndices:device
-                                                                            indexbuf:Tracer_bufs->Tracer_ico_index_buf
+                                                                            indexbuf:Tracer_bufs->Tracer_index_buf
                                                                                index:&(kemoView3DMetalBuf->tracerIcoIndices)];
     return;
 }

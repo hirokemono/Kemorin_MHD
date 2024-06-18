@@ -181,8 +181,8 @@ static void set_tracer_buffer_to_VAO(struct Tracer_buffers *Tracer_bufs,
                                      struct VAO_ids *tracer_index_VAO){
     Const_Simple_VAO(tracer_VAO, Tracer_bufs->Tracer_dot_buf);
     Const_Phong_Index_VAO(tracer_index_VAO,
-                          Tracer_bufs->Tracer_ico_node_buf,
-                          Tracer_bufs->Tracer_ico_index_buf);
+                          Tracer_bufs->Tracer_ico_buf,
+                          Tracer_bufs->Tracer_index_buf);
 }
 
 static void set_draw_messages_to_VAO(struct MESSAGE_buffers *MESSAGE_bufs,
