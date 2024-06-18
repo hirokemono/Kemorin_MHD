@@ -220,10 +220,9 @@ static void set_fieldline_buffer_to_VAO(struct FieldLine_buffers *Fline_bufs,
 }
 
 static void set_tracer_buffer_to_VAO(struct Tracer_buffers *Tracer_bufs,
-                                     struct VAO_ids **tracer_VAO,
+                                     struct VAO_ids *tracer_VAO,
                                      struct VAO_ids *tracer_index_VAO){
-    Const_Phong_VAO(tracer_VAO[0],  Tracer_bufs->Tracer_ico_node_buf);
-    Const_Simple_VAO(tracer_VAO[1], Tracer_bufs->Tracer_dot_buf);
+    Const_Simple_VAO(tracer_VAO, Tracer_bufs->Tracer_dot_buf);
     Const_Phong_Index_VAO(tracer_index_VAO,
                           Tracer_bufs->Tracer_ico_node_buf,
                           Tracer_bufs->Tracer_ico_index_buf);
@@ -262,7 +261,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                               kemo_VAOs);
     }else{
         set_tracer_buffer_to_VAO(kemo_buffers->Tracer_bufs,
-                                 kemo_VAOs->tracer_VAO,
+                                 kemo_VAOs->tracer_VAO[0],
                                  kemo_VAOs->tracer_index_VAO);
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
 

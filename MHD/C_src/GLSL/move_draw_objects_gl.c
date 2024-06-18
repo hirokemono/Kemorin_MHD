@@ -54,13 +54,12 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
         if(kemo_VAOs->fline_VAO[0]->npoint_draw == 0){
             drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
         };
-        if(kemo_VAOs->tracer_VAO[0]->npoint_draw == 0){
-            drawgl_points(view_matrices, kemo_VAOs->tracer_VAO[1], kemo_shaders);
+        if(kemo_VAOs->tracer_index_VAO->npoint_draw == 0){
+            drawgl_points(view_matrices, kemo_VAOs->tracer_VAO[0], kemo_shaders);
         };
 
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->fline_VAO[0]);
-//        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->tracer_VAO[0]);
         drawgl_elements_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->tracer_index_VAO);
 
         draw_PSF_solid_objects_VAO(view_matrices, lights,
@@ -122,7 +121,7 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf,
     }else if(view_s->iflag_draw_mode == SIMPLE_DRAW){
             kemo_VAOs->psf_solid_VAO[2]->npoint_draw =   0;
             kemo_VAOs->fline_VAO[0]->npoint_draw =       0;
-//            kemo_VAOs->tracer_VAO[0]->npoint_draw =      0;
+//            kemo_VAOs->tracer_index_VAO->npoint_draw =      0;
             kemo_VAOs->grid_tube_VAO->npoint_draw =      0;
             kemo_VAOs->mesh_solid_VAO[2]->npoint_draw =  0;
             Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
