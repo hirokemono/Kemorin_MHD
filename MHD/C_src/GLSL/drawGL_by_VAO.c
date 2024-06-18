@@ -108,7 +108,7 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 };
 
 void draw_map_objects_VAO(struct transfer_matrices *matrices,
-                          struct VAO_ids **map_VAO, struct VAO_ids *map_index_VAO,
+                          struct VAO_ids **map_VAO, struct VAO_ids **map_index_VAO,
                           struct kemoview_shaders *kemo_shaders){
 	int i;
     /* set shading mode */
@@ -118,12 +118,13 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
 
-    if(map_index_VAO->npoint_draw > 0){
-        glBindVertexArray(map_index_VAO->id_VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO->id_index);
-        glDrawElements(GL_TRIANGLES, map_index_VAO->npoint_draw , GL_UNSIGNED_INT, 0);
-    }
-
+    for(i=0;i<2;i++){
+        if(map_index_VAO[i]->npoint_draw > 0){
+            glBindVertexArray(map_index_VAO[i]->id_VAO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO[i]->id_index);
+            glDrawElements(GL_TRIANGLES, map_index_VAO[i]->npoint_draw , GL_UNSIGNED_INT, 0);
+        }
+    };
     
 	for(i=0;i<3;i++){
 		if(map_VAO[i]->npoint_draw > 0){

@@ -36,7 +36,7 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders);
 
 void draw_map_objects_VAO(struct transfer_matrices *matrices,
-                          struct VAO_ids **map_VAO, struct VAO_ids *map_index_VAO,
+                          struct VAO_ids **map_VAO, struct VAO_ids **map_index_VAO,
                           struct kemoview_shaders *kemo_shaders);
 
 void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices, 

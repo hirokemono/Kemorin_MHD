@@ -54,7 +54,8 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct psf_normals **psf_n,
                                  struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a,
-                                 struct gl_strided_buffer *mline_buf){
+                                 struct gl_strided_buffer *mline_buf,
+                                 struct gl_index_buffer *index_buf){
     int i, iflag;
     
     long **istack_smp_map_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
@@ -71,29 +72,34 @@ void set_map_PSF_isolines_buffer(const int nthreads,
         }
     };
 
-	long num_patch = 0;
+	long num_tube = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			num_patch = add_map_PSF_isoline(num_patch, nthreads,
-                                            psf_s[i], psf_m[i],
-                                            istack_smp_map_iso[i]);
+            num_tube = add_map_PSF_isoline(num_tube, nthreads,
+                                           psf_s[i], psf_m[i],
+                                           istack_smp_map_iso[i]);
 		};
 	};
-    num_patch = ITHREE * (ITWO * view_s->ncorner_tube) * num_patch;
-    set_buffer_address_4_patch(num_patch, mline_buf);
+    long num_node =  ITWO *  (IONE + view_s->ncorner_tube) * num_tube;
+    long num_patch = IFOUR * (view_s->ncorner_tube) * num_tube;
+    set_buffer_address_4_patch(num_node, mline_buf);
+    index_buf->ntot_vertex = num_patch;
 
     if(mline_buf->num_nod_buf <= 0) return;
     resize_strided_buffer(mline_buf);
-    
+    resize_gl_index_buffer(num_patch, ITHREE, index_buf);
+
     long inum_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
         if(iflag > 0){
             inum_patch = set_map_PSF_isoline_to_buf(inum_patch,
                                                     nthreads, istack_smp_map_iso[i],
-                                                    view_s->ncorner_tube, view_s->width_tube,
-                                                    psf_s[i], psf_n[i], psf_m[i], mline_buf);
+                                                    view_s->ncorner_tube,
+                                                    psf_m[i]->viz_line_width,
+                                                    psf_s[i], psf_n[i], psf_m[i],
+                                                    mline_buf, index_buf);
         };
     };
     

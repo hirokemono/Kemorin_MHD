@@ -66,8 +66,11 @@ typedef struct
     /*  Vertex buffer for PSF isolines */
     id<MTLBuffer> _Nullable psfLinesVertice;
     NSUInteger numPSFLinesVertice;
+    /*  Vertex buffer for PSF isotubes */
     id<MTLBuffer> _Nullable psfTubesVertice;
     NSUInteger numPSFTubesVertice;
+    id<MTLBuffer> _Nullable psfTubeIndice;
+    NSUInteger numPSFTubesIndice;
 
     /*  Texure buffer for PSF with texure */
     id<MTLTexture> _Nullable psfSolidTexure;

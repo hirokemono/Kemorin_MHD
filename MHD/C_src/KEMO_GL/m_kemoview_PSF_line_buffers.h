@@ -22,6 +22,7 @@
 struct PSF_line_buffers{
     struct gl_strided_buffer *PSF_isoline_buf;
     struct gl_strided_buffer *PSF_isotube_buf;
+    struct gl_index_buffer   *PSF_isotube_index_buf;
 
     struct gl_strided_buffer *PSF_arrow_buf;
     struct gl_index_buffer   *PSF_arrow_index_buf;

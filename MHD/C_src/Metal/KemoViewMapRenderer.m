@@ -30,9 +30,15 @@
     kemoViewMapMetalBufs->numMapSolidVertice =  [kemo2DMetalBufBase  setMetalVertexs:device
                                                                               buffer:MAP_bufs->MAP_solid_buf
                                                                               vertex:&(kemoViewMapMetalBufs->mapSolidVertice)];
-    kemoViewMapMetalBufs->numMapinesVertice =   [kemo2DMetalBufBase  setMetalVertexs:device
-                                                                              buffer:MAP_bufs->MAP_isoline_buf
-                                                                              vertex:&(kemoViewMapMetalBufs->mapLinesVertice)];
+    
+    kemoViewMapMetalBufs->numMapLinesVertice =   [kemo2DMetalBufBase  setMetalVertexs:device
+                                                                               buffer:MAP_bufs->MAP_isoline_buf
+                                                                               vertex:&(kemoViewMapMetalBufs->mapLinesVertice)];
+    kemoViewMapMetalBufs->numMapLinesIndice =     [kemo2DMetalBufBase setMetalIndices:device
+                                                                             indexbuf:MAP_bufs->MAP_isotube_index_buf
+                                                                                index:&(kemoViewMapMetalBufs->mapLinesIndice)];
+
+    
     kemoViewMapMetalBufs->numCoastLineVertice = [kemo2DMetalBufBase  setMetalVertexs:device
                                                                               buffer:MAP_bufs->MAP_coast_line_buf
                                                                               vertex:&(kemoViewMapMetalBufs->coastLineVertice)];
@@ -47,7 +53,8 @@
     if(kemoViewMapMetalBufs->numMapSolidIndices > 0)  {[kemoViewMapMetalBufs->mapSolidIndices  release];};
     
     if(kemoViewMapMetalBufs->numMapSolidVertice > 0)  {[kemoViewMapMetalBufs->mapSolidVertice  release];};
-    if(kemoViewMapMetalBufs->numMapinesVertice > 0)   {[kemoViewMapMetalBufs->mapLinesVertice  release];};
+    if(kemoViewMapMetalBufs->numMapLinesVertice > 0)  {[kemoViewMapMetalBufs->mapLinesVertice  release];};
+    if(kemoViewMapMetalBufs->numMapLinesIndice > 0)   {[kemoViewMapMetalBufs->mapLinesIndice  release];};
     if(kemoViewMapMetalBufs->numCoastLineVertice > 0) {[kemoViewMapMetalBufs->coastLineVertice release];};
     if(kemoViewMapMetalBufs->numCoastTubeVertice > 0) {[kemoViewMapMetalBufs->coastTubeVertice release];};
     return;
@@ -76,11 +83,12 @@
                                projection:map_proj_mat];
 
     /*  Commands to render isolines on map */
-    [KemoView2DRenderer draw2DPatchObject:renderEncoder
-                                pipelines:&(kemoView2DPipelines->trans2DPipelineState)
-                                numVertex:kemoViewMapMetalBufs->numMapinesVertice
-                                   vertex:&(kemoViewMapMetalBufs->mapLinesVertice)
-                               projection:map_proj_mat];
+    [KemoView2DRenderer draw2DElementObject:renderEncoder
+                                  pipelines:&(kemoView2DPipelines->trans2DPipelineState)
+                                  numVertex:kemoViewMapMetalBufs->numMapLinesIndice
+                                     vertex:&(kemoViewMapMetalBufs->mapLinesVertice)
+                                      index:&(kemoViewMapMetalBufs->mapLinesIndice)
+                                 projection:map_proj_mat];
     /*  Commands to render Coastline on map */
     [KemoView2DRenderer draw2DPatchObject:renderEncoder
                                 pipelines:&(kemoView2DPipelines->trans2DPipelineState)

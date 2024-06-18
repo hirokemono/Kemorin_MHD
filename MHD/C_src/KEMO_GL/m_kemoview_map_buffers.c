@@ -19,7 +19,8 @@ struct MAP_buffers * init_MAP_buffers(void)
     MAP_bufs->MAP_solid_index_buf = init_gl_index_buffer(12, 3);
     MAP_bufs->MAP_solid_buf =       init_strided_buffer(n_point);
     MAP_bufs->MAP_isoline_buf =     init_strided_buffer(n_point);
-    
+    MAP_bufs->MAP_isotube_index_buf = init_gl_index_buffer(12, 3);
+
     MAP_bufs->MAP_coast_line_buf = init_strided_buffer(n_point);
     MAP_bufs->MAP_coast_tube_buf = init_strided_buffer(n_point);
 
@@ -31,6 +32,7 @@ void dealloc_MAP_buffers(struct MAP_buffers *MAP_bufs)
     dealloc_strided_buffer(MAP_bufs->MAP_coast_tube_buf);
     dealloc_strided_buffer(MAP_bufs->MAP_coast_line_buf);
 
+    dealloc_gl_index_buffer(MAP_bufs->MAP_isotube_index_buf);
     dealloc_strided_buffer(MAP_bufs->MAP_isoline_buf);
     dealloc_strided_buffer(MAP_bufs->MAP_solid_buf);
     dealloc_gl_index_buffer(MAP_bufs->MAP_solid_index_buf);
@@ -62,7 +64,8 @@ void const_map_buffers(int nthreads, struct kemoview_mul_psf *kemo_mul_psf,
     set_map_PSF_isolines_buffer(nthreads, view_s,
                                 kemo_mul_psf->psf_d, kemo_mul_psf->psf_n,
                                 kemo_mul_psf->psf_m, kemo_mul_psf->psf_a,
-                                MAP_bufs->MAP_isoline_buf);
+                                MAP_bufs->MAP_isoline_buf,
+                                MAP_bufs->MAP_isotube_index_buf);
     
     set_map_coastline_line_buffer(mesh_m, MAP_bufs->MAP_coast_line_buf);
     if(view_s->iflag_coastline_tube){

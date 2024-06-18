@@ -46,8 +46,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     kemo_VAOs->cbar_VAO = init_multi_VAO_ids(4);
     kemo_VAOs->time_VAO = init_VAO_ids();
 	
-    kemo_VAOs->map_index_VAO = init_VAO_ids();
-    kemo_VAOs->map_VAO = init_multi_VAO_ids(4);
+    kemo_VAOs->map_index_VAO = init_multi_VAO_ids(2);
+    kemo_VAOs->map_VAO =       init_multi_VAO_ids(4);
     
     kemo_VAOs->screen_FBO = init_multi_VAO_ids(3);
     return kemo_VAOs;
@@ -80,7 +80,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     dealoc_multi_VAO_ids(4, kemo_VAOs->cbar_VAO);
     dealoc_VAO_ids(kemo_VAOs->time_VAO);
 
-    dealoc_VAO_ids(kemo_VAOs->map_index_VAO);
+    dealoc_multi_VAO_ids(2, kemo_VAOs->map_index_VAO);
     dealoc_multi_VAO_ids(4, kemo_VAOs->map_VAO);
     dealoc_multi_VAO_ids(3, kemo_VAOs->screen_FBO);
 return;
@@ -110,7 +110,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->time_VAO->id_VAO));
 
-    glGenVertexArrays(1, &(kemo_VAOs->map_index_VAO->id_VAO));
+    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->map_index_VAO[i]->id_VAO));};
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
 
     glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));
@@ -142,7 +142,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->time_VAO);
 
-    Destroy_VAO(kemo_VAOs->map_index_VAO);
+    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->map_index_VAO[i]);};
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
     
     Destroy_VAO(kemo_VAOs->cube_VAO);
@@ -163,11 +163,13 @@ static void set_mesh_buffer_to_VAO(struct MESH_buffers *MESH_bufs,
 static void set_map_buffer_to_VAO(struct gl_strided_buffer *PSF_node_buf,
                                   struct MAP_buffers *MAP_bufs,
                                   struct kemoview_VAOs *kemo_VAOs){
-    Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO, PSF_node_buf,
+    Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO[0], PSF_node_buf,
                            MAP_bufs->MAP_solid_index_buf);
+    Const_Simple_Index_VAO(kemo_VAOs->map_index_VAO[1],
+                           MAP_bufs->MAP_isoline_buf,
+                           MAP_bufs->MAP_isotube_index_buf);
 
     Const_Simple_VAO(kemo_VAOs->map_VAO[0], MAP_bufs->MAP_solid_buf);
-    Const_Simple_VAO(kemo_VAOs->map_VAO[1], MAP_bufs->MAP_isoline_buf);
     
     Const_Simple_VAO(kemo_VAOs->map_VAO[2], MAP_bufs->MAP_coast_tube_buf);
     Const_Simple_VAO(kemo_VAOs->map_VAO[3], MAP_bufs->MAP_coast_line_buf);

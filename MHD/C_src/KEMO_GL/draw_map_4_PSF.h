@@ -31,7 +31,8 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct psf_normals **psf_n,
                                  struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a,
-                                 struct gl_strided_buffer *mline_buf);
+                                 struct gl_strided_buffer *mline_buf,
+                                 struct gl_index_buffer *index_buf);
 
 void set_map_node_buffer(const int nthreads,
                          struct psf_data **psf_s,

@@ -58,7 +58,9 @@ void set_PSF_line_objects_VAO(struct PSF_line_buffers *PSF_lines,
                               struct VAO_ids **psf_solid_index_VAO,
                               struct VAO_ids *grid_line_VAO,
                               struct VAO_ids *grid_tube_VAO){
-    Const_Phong_VAO(psf_solid_VAO[2], PSF_lines->PSF_isotube_buf);
+    Const_VAO_Index_Phong_Texture(psf_solid_index_VAO[4],
+                                  PSF_lines->PSF_isotube_buf,
+                                  PSF_lines->PSF_isotube_index_buf);
     Const_VAO_Index_Phong_Texture(psf_solid_index_VAO[5],
                                   PSF_lines->PSF_arrow_buf,
                                   PSF_lines->PSF_arrow_index_buf);
@@ -84,6 +86,7 @@ void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                  kemo_shaders, psf_solid_index_VAO[1]);
     glDisable(GL_CULL_FACE);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[2]);
+    drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[4]);
     drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[5]);
     return;
 };

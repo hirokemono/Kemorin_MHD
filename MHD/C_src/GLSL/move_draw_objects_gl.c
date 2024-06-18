@@ -120,7 +120,8 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf,
         Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     }else if(view_s->iflag_draw_mode == SIMPLE_DRAW){
-            kemo_VAOs->psf_solid_VAO[2]->npoint_draw =   0;
+            kemo_VAOs->psf_solid_index_VAO[4]->npoint_draw =   0;
+            kemo_VAOs->psf_solid_index_VAO[5]->npoint_draw =   0;
             kemo_VAOs->fline_VAO[0]->npoint_draw =       0;
 //            kemo_VAOs->tracer_index_VAO->npoint_draw =      0;
             kemo_VAOs->grid_tube_VAO->npoint_draw =      0;

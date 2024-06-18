@@ -34,7 +34,9 @@ typedef struct
     NSUInteger numMapSolidVertice;
     /*  Vertex buffer for Map isolines */
     id<MTLBuffer> _Nullable mapLinesVertice;
-    NSUInteger numMapinesVertice;
+    NSUInteger numMapLinesVertice;
+    id<MTLBuffer> _Nullable mapLinesIndice;
+    NSUInteger numMapLinesIndice;
 
     /*  Vertex buffer for Coast lines */
     id<MTLBuffer> _Nullable coastLineVertice;

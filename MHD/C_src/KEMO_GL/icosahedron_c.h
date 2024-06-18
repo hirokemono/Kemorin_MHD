@@ -18,9 +18,6 @@ void init_icosahedron_c(void);
 long set_icosahedron_node_index(double size, double x_draw[3],
                                 double xyzw_draw[48], double norm_draw[48],
                                 unsigned int ie_ico[60]);
-long set_icosahedron_patch(double size, double x_draw[3],
-                           double *xyzw_draw, double *norm_draw);
-
 
 void find_normal_on_line(double norm_line[4],
                          const double dir_line[4]);

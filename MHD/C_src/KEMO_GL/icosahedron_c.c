@@ -107,43 +107,7 @@ long set_icosahedron_node_index(double size, double x_draw[3],
 }
 
 
-long set_icosahedron_patch(double size, double x_draw[3],
-                           double *xyzw_draw, double *norm_draw){
-    double xyzw_plot[4*12];
-	int i, j;
-    int ie1;
-/*    int ie2, ie3; */
-    long icou, nd;
-	
-	for (i = 0; i < 12; i++) {
-        xyzw_plot[4*i  ]=  x_draw[0] + xyzw_ico[i][0] * size;
-        xyzw_plot[4*i+1]=  x_draw[1] + xyzw_ico[i][1] * size;
-        xyzw_plot[4*i+2]=  x_draw[2] + xyzw_ico[i][2] * size;
-        xyzw_plot[4*i+3]=  xyzw_ico[i][3];
-	};
-	
-/* add a points to the display list */
-    long num_tri = 0;
-	for (i = 0; i < 20; i++){
-/*
-		ie1 = ifac_poi[i][0];
-		ie2 = ifac_poi[i][1];
-		ie3 = ifac_poi[i][2];
-*/
-		for (j = 0; j < 3; j++) {
-            icou = 3*num_tri + j;
-			for (nd = 0; nd < 4; nd++) {
-				ie1 = ifac_poi[i][j];
-                xyzw_draw[4*icou+nd] =  xyzw_plot[4*ie1+nd];
-				norm_draw[4*icou+nd] =  xyzw_ico[ie1][nd];
-			};
-		};
-        num_tri = num_tri + 1;
-	};
-	return num_tri;
-}
-
-static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
+static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3],
                                double dir_nod[3], double *xyzw_wall, double *norm_wall) {
 	int k, nd;
 	double norm_2nd[3], angle, len, nrm1, nrm2, r_mod, pi;
@@ -288,18 +252,18 @@ int set_tube_node_index(int ncorner, double radius,
     for(k=0;k<ncorner-1;k++){
         ie_tube[6*k  ] = k+1;
         ie_tube[6*k+1] = k+2;
-        ie_tube[6*k+2] = k+2 + (ncorner+1);
+        ie_tube[6*k+2] = k+2 + ncorner;
 
-        ie_tube[6*k+3] = k+2 + (ncorner+1);
-        ie_tube[6*k+4] = k+1 + (ncorner+1);
+        ie_tube[6*k+3] = k+2 + ncorner;
+        ie_tube[6*k+4] = k+1 + ncorner;
         ie_tube[6*k+5] = k+1;
     }
     ie_tube[6*(ncorner-1)  ] = (ncorner-1)+1;
     ie_tube[6*(ncorner-1)+1] = 1;
-    ie_tube[6*(ncorner-1)+2] = 1 + (ncorner+1);
+    ie_tube[6*(ncorner-1)+2] = 1 + ncorner;
 
-    ie_tube[6*(ncorner-1)+3] = 1 + (ncorner+1);
-    ie_tube[6*(ncorner-1)+4] = (ncorner-1)+1 + (ncorner+1);
+    ie_tube[6*(ncorner-1)+3] = 1 + ncorner;
+    ie_tube[6*(ncorner-1)+4] = ncorner + ncorner;
     ie_tube[6*(ncorner-1)+5] = (ncorner-1)+1;
 
     for(k=0;k<ncorner-1;k++){

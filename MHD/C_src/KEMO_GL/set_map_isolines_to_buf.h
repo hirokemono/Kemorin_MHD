@@ -32,6 +32,7 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
                                 const int isoline_ncorner, const double viz_line_width,
                                 struct psf_data *psf_s, struct psf_normals *psf_n,
                                 struct psf_menu_val *psf_m,
-                                struct gl_strided_buffer *psf_buf);
+                                struct gl_strided_buffer *psf_buf,
+                                struct gl_index_buffer *index_buf);
 
 #endif

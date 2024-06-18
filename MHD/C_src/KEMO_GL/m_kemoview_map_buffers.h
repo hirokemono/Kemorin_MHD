@@ -23,6 +23,7 @@ struct MAP_buffers{
     struct gl_index_buffer   *MAP_solid_index_buf;
     struct gl_strided_buffer *MAP_solid_buf;
     struct gl_strided_buffer *MAP_isoline_buf;
+    struct gl_index_buffer *MAP_isotube_index_buf;
     
     struct gl_strided_buffer *MAP_coast_line_buf;
     struct gl_strided_buffer *MAP_coast_tube_buf;

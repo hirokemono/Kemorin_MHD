@@ -18,8 +18,9 @@ struct PSF_line_buffers * init_PSF_line_buffers(void)
     long n_point = 1024;
     PSF_lines->PSF_isoline_buf = init_strided_buffer(n_point);
     PSF_lines->PSF_isotube_buf = init_strided_buffer(n_point);
-    PSF_lines->PSF_arrow_buf =   init_strided_buffer(n_point);
+    PSF_lines->PSF_isotube_index_buf = init_gl_index_buffer(12, 3);
 
+    PSF_lines->PSF_arrow_buf =   init_strided_buffer(n_point);
     PSF_lines->PSF_arrow_index_buf =  init_gl_index_buffer(12, 3);
 
     PSF_lines->coast_line_buf =  init_strided_buffer(n_point);
@@ -29,6 +30,7 @@ struct PSF_line_buffers * init_PSF_line_buffers(void)
 
 void dealloc_PSF_line_buffers(struct PSF_line_buffers *PSF_lines)
 {
+    dealloc_gl_index_buffer(PSF_lines->PSF_isotube_index_buf);
     dealloc_strided_buffer(PSF_lines->coast_tube_buf);
     dealloc_strided_buffer(PSF_lines->coast_line_buf);
     
@@ -50,7 +52,8 @@ void const_PSF_isolines_buffer(const int nthreads, struct view_element *view_s,
 
     const_PSF_isotube_buffer(nthreads, view_s,
                              psf_s, psf_n, psf_m, psf_a,
-                             PSF_lines->PSF_isotube_buf);
+                             PSF_lines->PSF_isotube_buf,
+                             PSF_lines->PSF_isotube_index_buf);
 
     const_PSF_arrow_buffer(nthreads, view_s, psf_s, psf_n, psf_m, psf_a,
                            PSF_lines->PSF_arrow_buf,
