@@ -28,8 +28,10 @@ struct VAO_ids{
 };
 
 /* Prototypes */
+struct VAO_ids ** init_multi_VAO_ids(int num_VAOs);
 struct VAO_ids * init_VAO_ids(void);
 void dealoc_VAO_ids(struct VAO_ids *VAO);
+void dealoc_multi_VAO_ids(int num_VAOs, struct VAO_ids **VAOs);
 
 
 void Const_Simple_VAO(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);

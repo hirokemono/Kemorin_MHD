@@ -24,108 +24,65 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     kemo_VAOs->msg_VAO =    init_VAO_ids();
     kemo_VAOs->screen_VAO = init_VAO_ids();
 	
-	kemo_VAOs->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
-	for(i=0;i<3;i++){
-        kemo_VAOs->mesh_solid_VAO[i] = init_VAO_ids();
-	};
+    kemo_VAOs->mesh_solid_VAO = init_multi_VAO_ids(3);
     kemo_VAOs->mesh_trans_VAO = init_VAO_ids();
 	
-	kemo_VAOs->fline_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-	for(i=0;i<2;i++){
-        kemo_VAOs->fline_VAO[i] = init_VAO_ids();
-	};
-	
-    kemo_VAOs->tracer_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-    for(i=0;i<2;i++){
-        kemo_VAOs->tracer_VAO[i] = init_VAO_ids();
-    };
+    kemo_VAOs->fline_VAO = init_multi_VAO_ids(2);
+
+    kemo_VAOs->tracer_VAO = init_multi_VAO_ids(2);
     kemo_VAOs->tracer_index_VAO = init_VAO_ids();
 
-    kemo_VAOs->psf_solid_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-    for(i=0;i<4;i++){
-        kemo_VAOs->psf_solid_index_VAO[i] = init_VAO_ids();
-    };
-    kemo_VAOs->psf_trans_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-    for(i=0;i<2;i++){
-        kemo_VAOs->psf_trans_index_VAO[i] = init_VAO_ids();
-    };
+    kemo_VAOs->psf_solid_index_VAO = init_multi_VAO_ids(4);
+    kemo_VAOs->psf_trans_index_VAO = init_multi_VAO_ids(2);
 
-    kemo_VAOs->psf_solid_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-	for(i=0;i<4;i++){
-        kemo_VAOs->psf_solid_VAO[i] = init_VAO_ids();
-	};
-	kemo_VAOs->psf_trans_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-	for(i=0;i<2;i++){
-        kemo_VAOs->psf_trans_VAO[i] = init_VAO_ids();
-	};
+    kemo_VAOs->psf_solid_VAO = init_multi_VAO_ids(4);
+	kemo_VAOs->psf_trans_VAO = init_multi_VAO_ids(2);
     kemo_VAOs->psf_liness_VAO =      init_VAO_ids();
 
     kemo_VAOs->axis_VAO =      init_VAO_ids();
     kemo_VAOs->grid_line_VAO = init_VAO_ids();
     kemo_VAOs->grid_tube_VAO = init_VAO_ids();
 
-	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-	for(i=0;i<4;i++){
-        kemo_VAOs->cbar_VAO[i] = init_VAO_ids();
-	};
-    kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->cbar_VAO = init_multi_VAO_ids(4);
+    kemo_VAOs->time_VAO = init_VAO_ids();
 	
     kemo_VAOs->map_index_VAO = init_VAO_ids();
-	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-	for(i=0;i<4;i++){
-        kemo_VAOs->map_VAO[i] = init_VAO_ids();
-	};
+    kemo_VAOs->map_VAO = init_multi_VAO_ids(4);
     
-    kemo_VAOs->screen_FBO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-    for(i=0;i<3;i++){
-        kemo_VAOs->screen_FBO[i] = init_VAO_ids();
-    };
+    kemo_VAOs->screen_FBO = init_multi_VAO_ids(3);
     return kemo_VAOs;
 };
 
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
-	int i;
-    free(kemo_VAOs->screen_VAO);
-	free(kemo_VAOs->cube_VAO);
-    free(kemo_VAOs->msg_VAO);
+    dealoc_VAO_ids(kemo_VAOs->screen_VAO);
+    dealoc_VAO_ids(kemo_VAOs->cube_VAO);
+    dealoc_VAO_ids(kemo_VAOs->msg_VAO);
 	
-	for(i=0;i<3;i++){free(kemo_VAOs->mesh_solid_VAO[i]);};
-	free(kemo_VAOs->mesh_solid_VAO);
-	free(kemo_VAOs->mesh_trans_VAO);
+    dealoc_multi_VAO_ids(3, kemo_VAOs->mesh_solid_VAO);
+    dealoc_VAO_ids(kemo_VAOs->mesh_trans_VAO);
 	
-	for(i=0;i<2;i++){free(kemo_VAOs->fline_VAO[i]);};
-	free(kemo_VAOs->fline_VAO);
+    dealoc_multi_VAO_ids(2, kemo_VAOs->fline_VAO);
 	
-    for(i=0;i<2;i++){free(kemo_VAOs->tracer_VAO[i]);};
-    free(kemo_VAOs->tracer_VAO);
+    dealoc_multi_VAO_ids(2, kemo_VAOs->tracer_VAO);
     free(kemo_VAOs->tracer_index_VAO);
 
-    for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_index_VAO[i]);};
-    free(kemo_VAOs->psf_solid_index_VAO);
-    for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_index_VAO[i]);};
-    free(kemo_VAOs->psf_trans_index_VAO);
+    dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_index_VAO);
+    dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_index_VAO);
+    dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_VAO);
+    dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_VAO);
 
-    for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_VAO[i]);};
-    free(kemo_VAOs->psf_solid_VAO);
+    dealoc_VAO_ids(kemo_VAOs->psf_liness_VAO);
 
-	for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_VAO[i]);};
-    free(kemo_VAOs->psf_trans_VAO);
-    free(kemo_VAOs->psf_liness_VAO);
+    dealoc_VAO_ids(kemo_VAOs->axis_VAO);
+    dealoc_VAO_ids(kemo_VAOs->grid_line_VAO);
+    dealoc_VAO_ids(kemo_VAOs->grid_tube_VAO);
 
-    free(kemo_VAOs->axis_VAO);
-	free(kemo_VAOs->grid_line_VAO);
-    free(kemo_VAOs->grid_tube_VAO);
+    dealoc_multi_VAO_ids(4, kemo_VAOs->cbar_VAO);
+    dealoc_VAO_ids(kemo_VAOs->time_VAO);
 
-	for(i=0;i<4;i++){free(kemo_VAOs->cbar_VAO[i]);};
-	free(kemo_VAOs->cbar_VAO);
-	free(kemo_VAOs->time_VAO);
-
-    free(kemo_VAOs->map_index_VAO);
-	for(i=0;i<4;i++){free(kemo_VAOs->map_VAO[i]);};
-	free(kemo_VAOs->map_VAO);
-
-    for(i=0;i<3;i++){free(kemo_VAOs->screen_FBO[i]);};
-    free(kemo_VAOs->screen_FBO);
+    dealoc_VAO_ids(kemo_VAOs->map_index_VAO);
+    dealoc_multi_VAO_ids(4, kemo_VAOs->map_VAO);
+    dealoc_multi_VAO_ids(3, kemo_VAOs->screen_FBO);
 return;
 };
 

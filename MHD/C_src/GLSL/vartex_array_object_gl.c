@@ -7,6 +7,14 @@
 
 #include "vartex_array_object_gl.h"
 
+struct VAO_ids ** init_multi_VAO_ids(int num_VAOs){
+    struct VAO_ids **VAOs = (struct VAO_ids **) malloc(num_VAOs*sizeof(struct VAO_ids *));
+    for(int i=0;i<num_VAOs;i++){
+        VAOs[i] = init_VAO_ids();
+    };
+    return VAOs;
+}
+
 
 struct VAO_ids * init_VAO_ids(void){
     struct VAO_ids *VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -18,6 +26,12 @@ struct VAO_ids * init_VAO_ids(void){
 }
 void dealoc_VAO_ids(struct VAO_ids *VAO){
     free(VAO);
+}
+
+void dealoc_multi_VAO_ids(int num_VAOs, struct VAO_ids **VAOs){
+    for(int i=0;i<num_VAOs;i++){free(VAOs[i]);};
+    free(VAOs);
+    return;
 }
 
 
