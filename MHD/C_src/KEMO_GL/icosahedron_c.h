@@ -33,7 +33,7 @@ int set_tube_node_index(int ncorner, double radius,
                         double xyzw_line[8], double dir_line[8],
                         double norm_line[8], double color_line[8],
                         double *xyzw, double *norm, double *col,
-                        unsingned int *ie_tube);
+                        unsigned int *ie_tube);
 
 int set_cone_node_index(int ncorner, double radius,
                         double xyzw_line[8], double dir_line[8],
