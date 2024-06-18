@@ -86,8 +86,6 @@ typedef struct
     /*  Vertex buffer for tracer icosaheron patch */
     id<MTLBuffer> _Nullable tracerIcoVertice;
     NSUInteger numTracerIcoVertice;
-    id<MTLBuffer> _Nullable tracerIcoNodeVertice;
-    NSUInteger numTracerIcoNodeVertice;
     /*  Index buffer for psf solid patch */
     id<MTLBuffer> _Nullable tracerIcoIndices;
     NSUInteger numTracerIcoIndices;

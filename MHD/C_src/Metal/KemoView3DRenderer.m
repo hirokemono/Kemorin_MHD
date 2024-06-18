@@ -111,16 +111,13 @@
               tracerBuffers:(struct Tracer_buffers *_Nonnull) Tracer_bufs
                        PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_mul_psf
 {
-    kemoView3DMetalBuf->numTracerIcoVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                            buffer:Tracer_bufs->Tracer_ico_buf
-                                                                            vertex:&(kemoView3DMetalBuf->tracerIcoVertice)];
     kemoView3DMetalBuf->numTracerDotVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:Tracer_bufs->Tracer_dot_buf
                                                                             vertex:&(kemoView3DMetalBuf->tracerDotVertice)];
 
-    kemoView3DMetalBuf->numTracerIcoNodeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+    kemoView3DMetalBuf->numTracerIcoVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:Tracer_bufs->Tracer_ico_node_buf
-                                                                            vertex:&(kemoView3DMetalBuf->tracerIcoNodeVertice)];
+                                                                            vertex:&(kemoView3DMetalBuf->tracerIcoVertice)];
     kemoView3DMetalBuf->numTracerIcoIndices =   [_kemo3DMetalBufBase setMetalIndices:device
                                                                             indexbuf:Tracer_bufs->Tracer_ico_index_buf
                                                                                index:&(kemoView3DMetalBuf->tracerIcoIndices)];
@@ -223,10 +220,9 @@
 
 - (void) release3DDotBuffers:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
 {
-    if(kemoView3DMetalBuf->numTracerIcoVertice > 0) {[kemoView3DMetalBuf->tracerIcoVertice release];};
     if(kemoView3DMetalBuf->numTracerDotVertice > 0) {[kemoView3DMetalBuf->tracerDotVertice release];};
 
-    if(kemoView3DMetalBuf->numTracerIcoNodeVertice > 0) {[kemoView3DMetalBuf->tracerIcoNodeVertice release];};
+    if(kemoView3DMetalBuf->numTracerIcoVertice > 0) {[kemoView3DMetalBuf->tracerIcoVertice release];};
     if(kemoView3DMetalBuf->numTracerIcoIndices > 0) {[kemoView3DMetalBuf->tracerIcoIndices release];};
     return;
 }
@@ -496,24 +492,15 @@
                                      vertex:&(kemoView3DMetalBuf->fieldLineVertice)
                                      unites:monoViewUnites];
     }
-/*
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                                  pipelines:kemo3DPipelines
-                                      depth:depthState
-                                  numVertex:kemoView3DMetalBuf->numTracerIcoVertice
-                                     vertex:&(kemoView3DMetalBuf->tracerIcoVertice)
-                                     unites:monoViewUnites
-                                      sides:BOTH_SURFACES];
-*/
+
     [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
                      pipelines:kemo3DPipelines
                          depth:depthState
                      numVertex:kemoView3DMetalBuf->numTracerIcoIndices
-                        vertex:&(kemoView3DMetalBuf->tracerIcoNodeVertice)
+                        vertex:&(kemoView3DMetalBuf->tracerIcoVertice)
                          index:&(kemoView3DMetalBuf->tracerIcoIndices)
                         unites:monoViewUnites
                          sides:BOTH_SURFACES];
- 
     if(kemoView3DMetalBuf->numTracerIcoVertice == 0){
         [_Kemo3DBaseRenderer drawPointObject:renderEncoder
                                    pipelines:kemo3DPipelines
