@@ -55,7 +55,7 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
             drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);
         };
         if(kemo_VAOs->tracer_index_VAO->npoint_draw == 0){
-            drawgl_points(view_matrices, kemo_VAOs->tracer_VAO[0], kemo_shaders);
+            drawgl_points(view_matrices, kemo_VAOs->tracer_VAO, kemo_shaders);
         };
 
         glDisable(GL_CULL_FACE);

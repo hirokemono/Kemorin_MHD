@@ -29,8 +29,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	
     kemo_VAOs->fline_VAO = init_multi_VAO_ids(2);
 
-    kemo_VAOs->tracer_VAO = init_multi_VAO_ids(2);
     kemo_VAOs->tracer_index_VAO = init_VAO_ids();
+    kemo_VAOs->tracer_VAO =       init_VAO_ids();
 
     kemo_VAOs->psf_solid_index_VAO = init_multi_VAO_ids(4);
     kemo_VAOs->psf_trans_index_VAO = init_multi_VAO_ids(2);
@@ -63,8 +63,8 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	
     dealoc_multi_VAO_ids(2, kemo_VAOs->fline_VAO);
 	
-    dealoc_multi_VAO_ids(2, kemo_VAOs->tracer_VAO);
-    free(kemo_VAOs->tracer_index_VAO);
+    dealoc_VAO_ids(kemo_VAOs->tracer_index_VAO);
+    dealoc_VAO_ids(kemo_VAOs->tracer_VAO);
 
     dealoc_multi_VAO_ids(4, kemo_VAOs->psf_solid_index_VAO);
     dealoc_multi_VAO_ids(2, kemo_VAOs->psf_trans_index_VAO);
@@ -94,7 +94,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
     
-    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->tracer_VAO[i]->id_VAO));};
+    glGenVertexArrays(1, &(kemo_VAOs->tracer_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->tracer_index_VAO->id_VAO));
 
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_index_VAO[i]->id_VAO));};
@@ -125,7 +125,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     Destroy_VAO(kemo_VAOs->grid_tube_VAO);
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
     
-    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->tracer_VAO[i]);};
+    Destroy_VAO(kemo_VAOs->tracer_VAO);
     Destroy_VAO(kemo_VAOs->tracer_index_VAO);
 
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_index_VAO[i]);};
@@ -218,7 +218,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                               kemo_VAOs);
     }else{
         set_tracer_buffer_to_VAO(kemo_buffers->Tracer_bufs,
-                                 kemo_VAOs->tracer_VAO[0],
+                                 kemo_VAOs->tracer_VAO,
                                  kemo_VAOs->tracer_index_VAO);
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
 
