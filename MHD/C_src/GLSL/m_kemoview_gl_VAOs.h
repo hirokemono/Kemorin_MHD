@@ -32,6 +32,7 @@ struct kemoview_VAOs{
     
     struct VAO_ids **fline_VAO;
     struct VAO_ids **tracer_VAO;
+    struct VAO_ids *tracer_index_VAO;
 
     struct VAO_ids **psf_solid_index_VAO;
     struct VAO_ids **psf_trans_index_VAO;
