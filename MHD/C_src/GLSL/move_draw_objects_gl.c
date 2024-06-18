@@ -48,8 +48,8 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
         glDisable(GL_CULL_FACE);
         drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
 
-        if(kemo_VAOs->psf_solid_VAO[2]->npoint_draw == 0){
-            drawgl_lines(view_matrices, kemo_VAOs->psf_liness_VAO, kemo_shaders);
+        if(kemo_VAOs->psf_solid_index_VAO[4]->npoint_draw == 0){
+            drawgl_lines(view_matrices, kemo_VAOs->psf_lines_VAO, kemo_shaders);
         };
         if(kemo_VAOs->fline_VAO[0]->npoint_draw == 0){
             drawgl_lines(view_matrices, kemo_VAOs->fline_VAO[1], kemo_shaders);

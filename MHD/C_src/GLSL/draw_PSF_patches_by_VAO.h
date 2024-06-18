@@ -38,8 +38,8 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_node_buf,
                                struct VAO_ids **psf_trans_index_VAO);
 
 void set_PSF_line_objects_VAO(struct PSF_line_buffers *PSF_lines,
-                              struct VAO_ids **psf_solid_VAO,
                               struct VAO_ids **psf_solid_index_VAO,
+                              struct VAO_ids *psf_lines_VAO,
                               struct VAO_ids *grid_line_VAO,
                               struct VAO_ids *grid_tube_VAO);
 

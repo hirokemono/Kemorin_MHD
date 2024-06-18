@@ -40,7 +40,7 @@ struct kemoview_VAOs{
 
     struct VAO_ids **psf_solid_VAO;
     struct VAO_ids **psf_trans_VAO;
-    struct VAO_ids *psf_liness_VAO;
+    struct VAO_ids *psf_lines_VAO;
 
     struct VAO_ids *axis_VAO;
     struct VAO_ids *grid_line_VAO;

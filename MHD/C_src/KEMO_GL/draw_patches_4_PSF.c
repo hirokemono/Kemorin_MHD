@@ -209,9 +209,6 @@ void const_PSF_isotube_buffer(const int nthreads,
                                                      psf_buf, index_buf);
 		};
 	};
-    for(i=0;i<48*(view_s->ncorner_tube);i++){
-        printf("tube %d: %d\n", i, index_buf->ie_buf[i]);
-    }
     
     for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_psf_iso[i]);};
     free(istack_smp_psf_iso);

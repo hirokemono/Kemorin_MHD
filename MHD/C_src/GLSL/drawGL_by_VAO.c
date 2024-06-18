@@ -126,17 +126,12 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
         }
     };
     
-	for(i=0;i<3;i++){
+	for(i=0;i<1;i++){
 		if(map_VAO[i]->npoint_draw > 0){
 			glBindVertexArray(map_VAO[i]->id_VAO);
 			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
 		};
 	};	
-		
-    if(map_VAO[3]->npoint_draw > 0){
-        glBindVertexArray(map_VAO[3]->id_VAO);
-        glDrawArrays(GL_LINES, IZERO, map_VAO[3]->npoint_draw);
-    };
 	return;
 }
 

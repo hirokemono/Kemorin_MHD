@@ -54,10 +54,11 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_node_buf,
 };
 
 void set_PSF_line_objects_VAO(struct PSF_line_buffers *PSF_lines,
-                              struct VAO_ids **psf_solid_VAO,
                               struct VAO_ids **psf_solid_index_VAO,
+                              struct VAO_ids *psf_lines_VAO,
                               struct VAO_ids *grid_line_VAO,
                               struct VAO_ids *grid_tube_VAO){
+    Const_Simple_VAO(psf_lines_VAO, PSF_lines->PSF_isoline_buf);
     Const_VAO_Index_Phong_Texture(psf_solid_index_VAO[4],
                                   PSF_lines->PSF_isotube_buf,
                                   PSF_lines->PSF_isotube_index_buf);
