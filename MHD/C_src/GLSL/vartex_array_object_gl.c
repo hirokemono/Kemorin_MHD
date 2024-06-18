@@ -7,6 +7,21 @@
 
 #include "vartex_array_object_gl.h"
 
+
+struct VAO_ids * init_VAO_ids(void){
+    struct VAO_ids *VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    if(VAO == NULL){
+        printf("Failed to allocate VAO_ids\n");
+        exit(1);
+    }
+    return VAO;
+}
+void dealoc_VAO_ids(struct VAO_ids *VAO){
+    free(VAO);
+}
+
+
+
 static void set_simple_vertex_VAO(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
     glDeleteBuffers(1, &VAO->id_vertex);
     

@@ -28,6 +28,10 @@ struct VAO_ids{
 };
 
 /* Prototypes */
+struct VAO_ids * init_VAO_ids(void);
+void dealoc_VAO_ids(struct VAO_ids *VAO);
+
+
 void Const_Simple_VAO(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 void Destroy_Simple_VAO(struct VAO_ids *VAO);
 

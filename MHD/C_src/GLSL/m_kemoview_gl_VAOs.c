@@ -20,65 +20,65 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
         exit(0);
     }
 	
-	kemo_VAOs->cube_VAO =    (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-    kemo_VAOs->msg_VAO =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-    kemo_VAOs->screen_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_VAOs->cube_VAO =   init_VAO_ids();
+    kemo_VAOs->msg_VAO =    init_VAO_ids();
+    kemo_VAOs->screen_VAO = init_VAO_ids();
 	
 	kemo_VAOs->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
 	for(i=0;i<3;i++){
-		kemo_VAOs->mesh_solid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->mesh_solid_VAO[i] = init_VAO_ids();
 	};
-	kemo_VAOs->mesh_trans_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->mesh_trans_VAO = init_VAO_ids();
 	
 	kemo_VAOs->fline_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
 	for(i=0;i<2;i++){
-		kemo_VAOs->fline_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->fline_VAO[i] = init_VAO_ids();
 	};
 	
     kemo_VAOs->tracer_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
     for(i=0;i<2;i++){
-        kemo_VAOs->tracer_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->tracer_VAO[i] = init_VAO_ids();
     };
-    kemo_VAOs->tracer_index_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->tracer_index_VAO = init_VAO_ids();
 
     kemo_VAOs->psf_solid_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
     for(i=0;i<4;i++){
-        kemo_VAOs->psf_solid_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->psf_solid_index_VAO[i] = init_VAO_ids();
     };
     kemo_VAOs->psf_trans_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
     for(i=0;i<2;i++){
-        kemo_VAOs->psf_trans_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->psf_trans_index_VAO[i] = init_VAO_ids();
     };
 
     kemo_VAOs->psf_solid_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
-		kemo_VAOs->psf_solid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->psf_solid_VAO[i] = init_VAO_ids();
 	};
 	kemo_VAOs->psf_trans_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
 	for(i=0;i<2;i++){
-		kemo_VAOs->psf_trans_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->psf_trans_VAO[i] = init_VAO_ids();
 	};
-    kemo_VAOs->psf_liness_VAO =      (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->psf_liness_VAO =      init_VAO_ids();
 
-    kemo_VAOs->axis_VAO =      (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	kemo_VAOs->grid_line_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-    kemo_VAOs->grid_tube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->axis_VAO =      init_VAO_ids();
+    kemo_VAOs->grid_line_VAO = init_VAO_ids();
+    kemo_VAOs->grid_tube_VAO = init_VAO_ids();
 
 	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
-		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->cbar_VAO[i] = init_VAO_ids();
 	};
     kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
-    kemo_VAOs->map_index_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->map_index_VAO = init_VAO_ids();
 	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
-		kemo_VAOs->map_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->map_VAO[i] = init_VAO_ids();
 	};
     
     kemo_VAOs->screen_FBO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
     for(i=0;i<3;i++){
-        kemo_VAOs->screen_FBO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+        kemo_VAOs->screen_FBO[i] = init_VAO_ids();
     };
     return kemo_VAOs;
 };
