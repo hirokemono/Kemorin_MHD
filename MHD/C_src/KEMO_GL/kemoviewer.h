@@ -430,7 +430,7 @@ extern "C" {
     int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, int id_model,
                                                 struct kv_string *psf_filehead, int *i_file_step);
     
-    void kemoview_set_VIZ_field_param(int input, int id_model, int selected, 
+    void kemoview_set_VIZ_field_param(int input, int id_model, int selected,
                                       struct kemoviewer_type *kemoviewer);
     int kemoview_get_VIZ_field_param(struct kemoviewer_type *kemoviewer,
                                      int id_model, int selected);
@@ -464,7 +464,7 @@ extern "C" {
     int kemoview_get_VIZ_vector_draw_flags(struct kemoviewer_type *kemoviewer,
                                            int id_model);
 
-    void kemoview_set_PSF_draw_flags(int selected, int iflag,
+    void kemoview_set_PSF_draw_flags(int iflag, int selected, 
                                      struct kemoviewer_type *kemoviewer);
 	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                     int selected);

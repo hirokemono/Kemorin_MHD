@@ -13,7 +13,7 @@ static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_1));
-    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE, iflag, kemo_gl->kemoview_data);
+    kemoview_set_PSF_draw_flags(iflag, PSFGRID_TOGGLE, kemo_gl->kemoview_data);
 
     draw_full_gl(kemo_gl);
 	return;
@@ -23,7 +23,7 @@ static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_1));
-    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE, iflag, kemo_gl->kemoview_data);
+    kemoview_set_PSF_draw_flags(iflag, ZEROGRID_TOGGLE, kemo_gl->kemoview_data);
 	
     draw_full_gl(kemo_gl);
 	gtk_widget_queue_draw(window);

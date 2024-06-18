@@ -159,11 +159,12 @@ long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
 }
 
 long set_icosahedron_node_buffer(long ist_ico, double node_diam,
-                                 double xyzw_draw[4], double f_color[4],
+                                 double xyzw_draw[4], double color_draw[4],
                                  struct gl_strided_buffer *strided_buf,
                                  struct gl_index_buffer *index_buf){
     struct gl_local_buffer_address point_buf;
     double xyzw_patch[4*12], norm_patch[4*12];
+    double f_color[4];
     long icou, nd;
     
     int ist_nod =   12 * ist_ico;
@@ -171,6 +172,8 @@ long set_icosahedron_node_buffer(long ist_ico, double node_diam,
     long nnod_ico = set_icosahedron_node_index(node_diam, xyzw_draw,
                                                xyzw_patch, norm_patch,
                                                &index_buf->ie_buf[ist_index]);
+    for(nd=0;nd<4;nd++){f_color[nd] = color_draw[nd];};
+    f_color[3] = 1.0;
 
     for(icou=0; icou<60; icou++){
         index_buf->ie_buf[ist_index+icou]

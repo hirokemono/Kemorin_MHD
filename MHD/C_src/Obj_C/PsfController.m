@@ -639,9 +639,8 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(PSFGRID_TOGGLE,
-                                (int) self.PSFIsolineSwitch,
-                                kemo_sgl);
+    kemoview_set_PSF_draw_flags((int) self.PSFIsolineSwitch,
+                                PSFGRID_TOGGLE, kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];
@@ -650,9 +649,8 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_PSF_draw_flags(ZEROGRID_TOGGLE,
-                                (int) self.PSFZerolineSwitch,
-                                kemo_sgl);
+    kemoview_set_PSF_draw_flags((int) self.PSFZerolineSwitch,
+                                ZEROGRID_TOGGLE, kemo_sgl);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage:kemo_sgl];

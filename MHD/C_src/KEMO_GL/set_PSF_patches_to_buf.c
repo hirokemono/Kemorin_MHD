@@ -240,6 +240,7 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                 } else {
                     for(nd=0;nd<4;nd++){color_line[nd] = arrow_c[nd];};
                 }
+                color_line[3] = 1.0;
                 for (nd=0; nd<4; nd++){color_line[nd+4] =  color_line[nd];};
                 
                 inum_cone = set_cone_node_index_buffer(inum_cone, ncorner, radius,

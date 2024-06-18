@@ -73,6 +73,8 @@ long set_tracer_cone_buffer(const long ist_ico,
             color_line[  nd] = tracer_d->color_nod[4*inod+nd];
             color_line[4+nd] = tracer_d->color_nod[4*inod+nd];
         }
+        color_line[3] = 1.0;
+        color_line[7] = 1.0;
             
         inum_ico = set_cone_node_index_buffer(inum_ico,
                                               tracer_m->ncorner_viz_line,

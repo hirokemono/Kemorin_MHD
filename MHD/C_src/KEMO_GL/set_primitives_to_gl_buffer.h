@@ -38,7 +38,7 @@ long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
                              struct gl_strided_buffer *strided_buf);
 
 long set_icosahedron_node_buffer(long ist_ico, double node_diam,
-                                 double xyzw_draw[4], double f_color[4],
+                                 double xyzw_draw[4], double color_draw[4],
                                  struct gl_strided_buffer *strided_buf,
                                  struct gl_index_buffer *index_buf);
 long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
