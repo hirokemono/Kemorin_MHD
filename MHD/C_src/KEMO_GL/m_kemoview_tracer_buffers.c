@@ -52,8 +52,7 @@ long set_tracer_ico_buffer(const long ist_ico,
                                                tracer_m->viz_line_width,
                                                &tracer_d->xyzw_viz[4*inod],
                                                &tracer_d->color_nod[4*inod],
-                                               Tracer_ico_buf,
-                                               Tracer_index_buf->ie_buf);
+                                               Tracer_ico_buf, Tracer_index_buf);
     };
     return inum_ico;
 }
@@ -79,8 +78,7 @@ long set_tracer_cone_buffer(const long ist_ico,
                                               tracer_m->ncorner_viz_line,
                                               tracer_m->viz_line_width,
                                               xyzw_line, dir_line, color_line,
-                                              Tracer_ico_buf,
-                                              Tracer_index_buf->ie_buf);
+                                              Tracer_ico_buf, Tracer_index_buf);
     };
     return inum_ico;
 }

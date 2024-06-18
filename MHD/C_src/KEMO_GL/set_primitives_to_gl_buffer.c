@@ -97,7 +97,7 @@ long set_cone_strided_buffer(const long ist_cone, int ncorner, double radius,
 long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
                                 double xyzw_line[8], double dir_line[8], double color_line[8],
                                 struct gl_strided_buffer *strided_buf,
-                                unsigned int *ie_cone){
+                                struct gl_index_buffer *index_buf){
     struct gl_local_buffer_address point_buf;
     double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
     double norm_line[8];
@@ -111,10 +111,12 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
     npatch_wall = set_cone_node_index(ncorner, radius,
                                       xyzw_line, dir_line,
                                       norm_line, color_line,
-                                      xyzw, norm, col, &ie_cone[ist_index]);
+                                      xyzw, norm, col,
+                                      &index_buf->ie_buf[ist_index]);
     
     for(k=0; k<(6*ncorner); k++){
-        ie_cone[ist_index+k] = ie_cone[ist_index+k] + ist_nod;
+        index_buf->ie_buf[ist_index+k]
+            = index_buf->ie_buf[ist_index+k] + ist_nod;
     };
 
     for (k=0; k<(ncorner + 2); k++) {
@@ -159,7 +161,7 @@ long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
 long set_icosahedron_node_buffer(long ist_ico, double node_diam,
                                  double xyzw_draw[4], double f_color[4],
                                  struct gl_strided_buffer *strided_buf,
-                                 unsigned int *ie_ico){
+                                 struct gl_index_buffer *index_buf){
     struct gl_local_buffer_address point_buf;
     double xyzw_patch[4*12], norm_patch[4*12];
     long icou, nd;
@@ -168,10 +170,11 @@ long set_icosahedron_node_buffer(long ist_ico, double node_diam,
     int ist_index = 60 * ist_ico;
     long nnod_ico = set_icosahedron_node_index(node_diam, xyzw_draw,
                                                xyzw_patch, norm_patch,
-                                               &ie_ico[ist_index]);
+                                               &index_buf->ie_buf[ist_index]);
 
     for(icou=0; icou<60; icou++){
-        ie_ico[ist_index+icou] = ie_ico[ist_index+icou] + ist_nod;
+        index_buf->ie_buf[ist_index+icou]
+            = index_buf->ie_buf[ist_index+icou] + ist_nod;
     };
     for(icou=0; icou<12; icou++){
         set_node_stride_buffer((icou+ist_nod), strided_buf, &point_buf);
