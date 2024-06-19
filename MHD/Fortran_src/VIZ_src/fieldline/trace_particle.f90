@@ -78,6 +78,8 @@
 
       call reset_fline_start(fline_lc)
       do
+        if(iflag_MAP_time)                                              &
+     &              call start_elapsed_time(ist_elapsed_TRACER+2)
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
      &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
@@ -110,7 +112,11 @@
      &                           fline_lc)
           end if
         end do
+        if(iflag_MAP_time)                                              &
+     &              call end_elapsed_time(ist_elapsed_TRACER+2)
 !
+        if(iflag_MAP_time)                                              &
+     &              call start_elapsed_time(ist_elapsed_TRACER+3)
         if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
      &                                m_SR%SR_sig, nline)
@@ -118,6 +124,9 @@
           call s_broadcast_trace_data(fln_prm, fln_tce,                 &
      &                                fln_bcast, nline)
         end if
+        if(iflag_MAP_time)                                              &
+     &              call end_elapsed_time(ist_elapsed_TRACER+3)
+!
         if(nline .le. 0) exit
       end do
 !

@@ -42,6 +42,14 @@
       integer(kind = kint), save :: ist_elapsed_MAP =   0
       integer(kind = kint), save :: ied_elapsed_MAP =   0
 !
+      logical, save :: iflag_FLINE_time = .FALSE.
+      integer(kind = kint), save :: ist_elapsed_FLINE =   0
+      integer(kind = kint), save :: ied_elapsed_FLINE =   0
+!
+      logical, save :: iflag_TRACER_time = .FALSE.
+      integer(kind = kint), save :: ist_elapsed_TRACER =   0
+      integer(kind = kint), save :: ied_elapsed_TRACER =   0
+!
       private :: elpsed_label_4_VIZ_outline
       private :: elpsed_label_4_PVR, elpsed_label_4_LIC
       private :: reset_elapse_after_init_VIZ_top
@@ -51,6 +59,8 @@
       private :: reset_elapse_after_init_PSF
       private :: reset_elapse_after_init_ISO
       private :: reset_elapse_after_init_MAP
+      private :: reset_elapse_after_init_FLINE
+      private :: reset_elapse_after_init_TRACER
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,6 +79,9 @@
       call elpsed_label_4_ISO
       call elpsed_label_4_MAP
 !
+      call elpsed_label_4_FLINE
+      call elpsed_label_4_TRACER
+!
       end subroutine elpsed_label_4_VIZ
 !
 ! ----------------------------------------------------------------------
@@ -83,6 +96,9 @@
       call reset_elapse_after_init_PSF
       call reset_elapse_after_init_ISO
       call reset_elapse_after_init_MAP
+!
+      call reset_elapse_after_init_FLINE
+      call reset_elapse_after_init_TRACER
 !
       end subroutine reset_elapse_after_init_VIZ
 !
@@ -268,18 +284,62 @@
       end subroutine elpsed_label_4_MAP
 !
 !-----------------------------------------------------------------------
+!
+      subroutine elpsed_label_4_FLINE
+!
+      integer(kind = kint), parameter :: num_append = 4
+!
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_FLINE, ied_elapsed_FLINE)
+!
+      elps1%labels(ist_elapsed_FLINE+1)                                 &
+     &                    = 'Set Seed points   '
+      elps1%labels(ist_elapsed_FLINE+2)                                 &
+     &                    = 'Trace field line   '
+      elps1%labels(ist_elapsed_FLINE+3)                                 &
+     &                    = 'Communication for field line   '
+      elps1%labels(ist_elapsed_FLINE+4)                                 &
+     &                    = 'Output field line file   '
+!
+      iflag_FLINE_time = .TRUE.
+!
+      end subroutine elpsed_label_4_FLINE
+!
+!-----------------------------------------------------------------------
+!
+      subroutine elpsed_label_4_TRACER
+!
+      integer(kind = kint), parameter :: num_append = 3
+!
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_TRACER, ied_elapsed_TRACER)
+!
+      elps1%labels(ist_elapsed_TRACER+1)                                &
+     &                    = 'time integration of tracer   '
+      elps1%labels(ist_elapsed_TRACER+2)                                &
+     &                    = 'Communication for tracers  '
+      elps1%labels(ist_elapsed_TRACER+3)                                &
+     &                    = 'Output tracer file   '
+!
+      iflag_TRACER_time = .TRUE.
+!
+      end subroutine elpsed_label_4_TRACER
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine reset_elapse_after_init_VIZ_top
 !
+      integer(kind = kint) :: i, i_viz
 !
       if(iflag_VIZ_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_VIZ+ 2, ist_elapsed_VIZ+ 2)
-      call reset_elapsed_times(ist_elapsed_VIZ+ 4, ist_elapsed_VIZ+ 4)
-      call reset_elapsed_times(ist_elapsed_VIZ+ 6, ist_elapsed_VIZ+ 6)
-      call reset_elapsed_times(ist_elapsed_VIZ+ 8, ist_elapsed_VIZ+ 8)
-      call reset_elapsed_times(ist_elapsed_VIZ+10, ist_elapsed_VIZ+10)
-      call reset_elapsed_times(ist_elapsed_VIZ+12, ist_elapsed_VIZ+12)
+      
+      do i = 1, 8
+        i_viz = 2*i + ist_elapsed_VIZ
+        call reset_elapsed_times(i_viz, i_viz)
+      end do
 !
       end subroutine reset_elapse_after_init_VIZ_top
 !
@@ -328,10 +388,31 @@
       subroutine reset_elapse_after_init_MAP
 !
 !
-      if(iflag_ISO_time .eqv. .FALSE.) return
+      if(iflag_MAP_time .eqv. .FALSE.) return
       call reset_elapsed_times(ist_elapsed_MAP+2, ist_elapsed_MAP+2)
 !
       end subroutine reset_elapse_after_init_MAP
+!
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_FLINE
+!
+!
+      if(iflag_FLINE_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_FLINE+2,                     &
+     &                         ist_elapsed_FLINE+2)
+!
+      end subroutine reset_elapse_after_init_FLINE
+!
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_TRACER
+!
+!
+      if(iflag_TRACER_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_MAP+2, ist_elapsed_MAP+2)
+!
+      end subroutine reset_elapse_after_init_TRACER
 !
 !-----------------------------------------------------------------------
 !

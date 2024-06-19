@@ -82,6 +82,8 @@
      &   (t_VIZ1%init_d, t_VIZ1%finish_d, t_VIZ1%ucd_step,              &
      &    FEM_viz1%geofem, VIZ_DAT1%para_surf, FEM_viz1%field,          &
      &    vizs_ctl1%tracer_ctls%tracer_controls, tracers_v)
+      call dealloc_tracer_controls(vizs_ctl1%tracer_ctls)
+!
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
@@ -118,7 +120,7 @@
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
      &      FEM_viz1%geofem, FEM_viz1%field, tracers_v, VIZ_DAT1,       &
-     &       vizs_v, m_SR11)
+     &      vizs_v, m_SR11)
       end do
 !
       call visualize_fin(t_VIZ1%viz_step, t_VIZ1%time_d, vizs_v)

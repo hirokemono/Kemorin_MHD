@@ -115,7 +115,7 @@
      &    tracer%fln_SR, tracer%fln_bcast)
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_src)
-
+!
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_trace,   &
      &    tracer%fln_prm, tracer%fln_src, tracer%fln_tce)
 
@@ -159,17 +159,22 @@
 !
 !  
       if(tracer%num_trace .le. 0) return
-      call trace_particle_sets(time_d, geofem%mesh, para_surf,          &
+
+      if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_TRACER+1)
+      call numti_trace_particle(time_d, geofem%mesh, para_surf,         &
      &    nod_fld, tracer%num_trace, tracer%fln_prm,                    &
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast, m_SR)
+      if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_TRACER+1)
 !
+!
+      if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_TRACER+4)
       call output_tracer_restarts(time_d, finish_d, rst_step,           &
      &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
-!
       if(istep_tracer .le. 0) return
       call output_tracer_viz_files(istep_tracer, time_d,                &
      &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
+      if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_TRACER+4)
 !
       end subroutine TRACER_evolution
 !
@@ -228,7 +233,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trace_particle_sets(time_d, mesh, para_surf, nod_fld,  &
+      subroutine numti_trace_particle(time_d, mesh, para_surf, nod_fld, &
      &          num_trace, fln_prm, fln_src, fln_tce, fline_lc,         &
      &          fln_SR, fln_bcast, m_SR)
 !
@@ -251,14 +256,15 @@
       integer(kind = kint) :: i_fln
 !  
       do i_fln = 1, num_trace
-        if (iflag_debug.eq.1) write(*,*) 's_trace_particle start', i_fln
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &      's_trace_particle start', i_fln
         call s_trace_particle(time_d%dt, mesh, para_surf, nod_fld,      &
      &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
      &      fln_SR(i_fln), fln_bcast(i_fln), fln_src(i_fln)%v_prev,     &
      &      m_SR)
       end do
 !
-      end subroutine trace_particle_sets
+      end subroutine numti_trace_particle
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
