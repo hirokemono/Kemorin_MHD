@@ -422,8 +422,8 @@ void set_flex_axis_to_buf(struct view_element *view_s,
     strided_buf->num_nod_buf = 0;
     index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
-        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
+        long n_vertex = num_tube_node(view_s->ncorner_tube) * count_axis_to_buf();
+        long n_patch =  num_tube_patch(view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
         resize_gl_index_buffer(n_patch, ITHREE, index_buf);
@@ -460,8 +460,8 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
     strided_buf->num_nod_buf = 0;
     index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
-        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
+        long n_vertex = num_tube_node(view_s->ncorner_tube) * count_axis_to_buf();
+        long n_patch =  num_tube_patch(view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
         resize_gl_index_buffer(n_patch, ITHREE, index_buf);
@@ -561,8 +561,8 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
     strided_buf->num_nod_buf = 0;
     index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
-        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
+        long n_vertex = num_tube_node(view_s->ncorner_tube) * count_axis_to_buf();
+        long n_patch =  num_tube_patch(view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
         resize_gl_index_buffer(n_patch, ITHREE, index_buf);

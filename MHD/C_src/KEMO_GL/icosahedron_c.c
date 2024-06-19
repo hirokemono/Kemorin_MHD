@@ -9,10 +9,6 @@ static double xyzw_ico[12][4];
 const int nnod_ico = 12;
 const int ntri_ico = 20;
 
-long num_icosahedron_patch(void){
-    return ntri_ico;
-}
-
 void init_icosahedron_c(void){
 	int icosa_connect[60]
 		= { 1,  3,  2,     1,  4,  3,     1,  5,  4,    1,  6,  5,
@@ -81,6 +77,8 @@ void init_icosahedron_c(void){
 	return;
 };
 
+int num_icosahedron_node(void){return  nnod_ico;};
+int num_icosahedron_patch(void){return ntri_ico;};
 long set_icosahedron_node_index(double size, double x_draw[3],
                                 double xyzw_draw[48], double norm_draw[48],
                                 unsigned int ie_ico[60]){
@@ -150,6 +148,8 @@ void find_normal_on_line(double norm_line[4],
 };
 
 
+int num_tube_node(int ncorner){return  (2 * (ncorner+1));};
+int num_tube_patch(int ncorner){return (4 * ncorner);};
 int set_tube_node_index(int ncorner, double radius,
                         double xyzw_line[8], double dir_line[8],
                         double norm_line[8], double color_line[8],
@@ -221,6 +221,9 @@ int set_tube_node_index(int ncorner, double radius,
     return (4 * ncorner);
 }
 
+
+int num_cone_node(int ncorner){return  (ncorner + 2);};
+int num_cone_patch(int ncorner){return (2*ncorner);};
 int set_cone_node_index(int ncorner, double radius,
                         double xyzw_line[8], double dir_line[8],
                         double norm_line[8], double color_line[8],
@@ -267,4 +270,61 @@ int set_cone_node_index(int ncorner, double radius,
     ie_cone[3*(2*ncorner-1)+2] = ncorner;
     
     return (2 * ncorner);
+}
+
+
+int num_arrow_node(int ncorner){
+    return (num_tube_node(ncorner) + num_cone_node(ncorner));
+};
+int num_arrow_patch(int ncorner){
+    return (num_tube_patch(ncorner) + num_cone_patch(ncorner));
+};
+int set_arrow_node_index(int ncorner, double radius,
+                         double xyzw_line[8], double dir_line[8],
+                         double norm_line[8], double color_line[8],
+                         double *xyzw, double *norm, double *col,
+                         unsigned int *ie_arrow){
+    double ratio_tube = 0.5;
+    double ratio_cone = 0.3;
+    
+    double xyzw_arrow[12];
+    double color_arrow[12];
+    double norm_arrow[12];
+    int nd;
+    for(nd=0; nd<4; nd++){xyzw_arrow[  nd] =  xyzw_line[  nd];}
+    for(nd=0; nd<4; nd++){color_arrow[  nd] = color_line[  nd];}
+    for(nd=0; nd<4; nd++){norm_arrow[  nd] =  norm_line[  nd];}
+    for(nd=0; nd<4; nd++){
+        xyzw_arrow[  nd] = ratio_cone *         xyzw_line[  nd]
+                         + (1.0 - ratio_cone) * xyzw_line[4+nd];
+    }
+    for(nd=0; nd<4; nd++){
+        color_arrow[  nd] = ratio_cone *         color_line[  nd]
+                          + (1.0 - ratio_cone) * color_line[4+nd];
+    }
+    for(nd=0; nd<4; nd++){
+        norm_arrow[  nd] = ratio_cone *         norm_line[  nd]
+                         + (1.0 - ratio_cone) * norm_line[4+nd];
+    }
+    for(nd=0; nd<4; nd++){xyzw_arrow[8+nd] =  xyzw_line[4+nd];}
+    for(nd=0; nd<4; nd++){color_arrow[8+nd] = color_line[4+nd];}
+    for(nd=0; nd<4; nd++){norm_arrow[8+nd] =  norm_line[4+nd];}
+    
+    set_tube_node_index(ncorner, radius,
+                        &xyzw_arrow[0], dir_line,
+                        &norm_arrow[0], &color_arrow[0],
+                        &xyzw[0], &norm[0], &col[0],
+                        &ie_arrow[0]);
+    int n_node =  2*(ncorner + 1);
+    int n_patch = 4*ncorner;
+    set_cone_node_index(ncorner, radius,
+                        &xyzw_arrow[4], dir_line,
+                        &norm_arrow[4], &color_arrow[4],
+                        &xyzw[n_node], &norm[n_node], &col[n_node],
+                        &ie_arrow[n_patch]);
+    
+    for(nd=0; nd<(2*ncorner); nd++){
+        ie_arrow[nd+n_patch] = ie_arrow[nd+n_patch] + n_node;
+    }
+    return (6*ncorner);
 }

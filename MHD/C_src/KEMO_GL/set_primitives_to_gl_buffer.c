@@ -77,8 +77,9 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
     long npatch_wall;
     long k, nd;
     
-    long ist_nod =   (ncorner + 2) * ist_cone;
-    long ist_index = 6 * ncorner * ist_cone;
+    long n_patch = ITHREE * num_cone_patch(ncorner);
+    long ist_nod = num_cone_node(ncorner) * ist_cone;
+    long ist_index = n_patch * ist_cone;
     find_normal_on_line(&norm_line[0], &dir_line[0]);
     find_normal_on_line(&norm_line[4], &dir_line[4]);
     npatch_wall = set_cone_node_index(ncorner, radius,
@@ -87,12 +88,12 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
                                       xyzw, norm, col,
                                       &index_buf->ie_buf[ist_index]);
     
-    for(k=0; k<(6*ncorner); k++){
+    for(k=0; k<n_patch; k++){
         index_buf->ie_buf[ist_index+k]
             = index_buf->ie_buf[ist_index+k] + ist_nod;
     };
 
-    for (k=0; k<(ncorner + 2); k++) {
+    for (k=0; k<num_cone_node(ncorner); k++) {
         set_node_stride_buffer((ist_nod+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
@@ -120,20 +121,21 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
     find_normal_on_line(&norm_line[0], &dir_line[0]);
     find_normal_on_line(&norm_line[4], &dir_line[4]);
     
-    int ist_nod =   2 * (ncorner + 1) * ist_tube;
-    int ist_index = 4 * ITHREE * ncorner * ist_tube;
+    long n_patch = ITHREE * num_tube_patch(ncorner);
+    long ist_node =  num_tube_node(ncorner) * ist_tube;
+    long ist_index = n_patch * ist_tube;
     npatch_wall = set_tube_node_index(ncorner, radius,
                                       xyzw_line, dir_line,
                                       norm_line, color_line,
                                       xyzw, norm, col,
                                       &index_buf->ie_buf[ist_index]);
 
-    for(k=0; k<(4 * ITHREE * ncorner); k++){
+    for(k=0; k<n_patch; k++){
         index_buf->ie_buf[ist_index+k]
-            = index_buf->ie_buf[ist_index+k] + ist_nod;
+            = index_buf->ie_buf[ist_index+k] + ist_node;
     };
-    for(k=0; k<(2*(ncorner + 1)); k++) {
-        set_node_stride_buffer((ist_nod+k), strided_buf, &point_buf);
+    for(k=0; k<num_tube_node(ncorner); k++) {
+        set_node_stride_buffer((ist_node+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
@@ -153,20 +155,21 @@ long set_icosahedron_node_index_buffer(long ist_ico, double node_diam,
     double f_color[4];
     long icou, nd;
     
-    int ist_nod =   12 * ist_ico;
-    int ist_index = 60 * ist_ico;
+    long n_vertex =  ITHREE * num_icosahedron_patch();
+    long ist_index = n_vertex * ist_ico;
+    long ist_node = num_icosahedron_node() * ist_ico;
     long nnod_ico = set_icosahedron_node_index(node_diam, xyzw_draw,
                                                xyzw_patch, norm_patch,
                                                &index_buf->ie_buf[ist_index]);
     for(nd=0;nd<4;nd++){f_color[nd] = color_draw[nd];};
     f_color[3] = 1.0;
 
-    for(icou=0; icou<60; icou++){
+    for(icou=0; icou<n_vertex; icou++){
         index_buf->ie_buf[ist_index+icou]
-            = index_buf->ie_buf[ist_index+icou] + ist_nod;
+            = index_buf->ie_buf[ist_index+icou] + (unsigned int) ist_node;
     };
-    for(icou=0; icou<12; icou++){
-        set_node_stride_buffer((icou+ist_nod), strided_buf, &point_buf);
+    for(icou=0; icou<num_icosahedron_node(); icou++){
+        set_node_stride_buffer((icou+ist_node), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_patch[4*icou+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_patch[4*icou+nd];
@@ -184,20 +187,21 @@ long set_icosahedron_single_color_buffer(long ist_ico, double node_diam,
     double xyzw_patch[240], norm_patch[240];
     long icou, nd;
     
-    int ist_nod =   12 * ist_ico;
-    int ist_index = 60 * ist_ico;
+    long n_vertex =  ITHREE * num_icosahedron_patch();
+    long ist_index = n_vertex * ist_ico;
+    long ist_node = num_icosahedron_node() * ist_ico;
     long ntri_ico = set_icosahedron_node_index(node_diam, xyzw_draw,
                                                xyzw_patch, norm_patch,
                                                &index_buf->ie_buf[ist_index]);
 
-    for(icou=0; icou<60; icou++){
+    for(icou=0; icou<n_vertex; icou++){
         index_buf->ie_buf[ist_index+icou]
-            = index_buf->ie_buf[ist_index+icou] + ist_nod;
+            = index_buf->ie_buf[ist_index+icou] + (unsigned int) ist_node;
     };
 
     f_color[3] = 1.0;
-    for(icou=0; icou<12; icou++){
-        set_node_stride_buffer((ist_nod+icou), strided_buf, &point_buf);
+    for(icou=0; icou<num_icosahedron_node(); icou++){
+        set_node_stride_buffer((ist_node+icou), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw_patch[4*icou+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] = norm_patch[4*icou+nd];
