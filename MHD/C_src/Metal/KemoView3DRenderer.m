@@ -62,13 +62,17 @@
     return;
 }
 - (void) setAxisMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                  metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
-                      buffers:(struct gl_strided_buffer *_Nonnull) axis_buf
+                 metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
+                vertexBuffer:(struct gl_strided_buffer *_Nonnull) axis_buf
+                 indexBuffer:(struct gl_index_buffer *_Nonnull) index_buf
 {
     /*  Set axis vertexs */
     kemoView3DMetalBuf->numAxisVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                        buffer:axis_buf
                                                                        vertex:&(kemoView3DMetalBuf->axisVertice)];
+    kemoView3DMetalBuf->numAxisIndice = [_kemo3DMetalBufBase setMetalIndices:device
+                                                                    indexbuf:index_buf
+                                                                       index:&(kemoView3DMetalBuf->axisIndice)];
     return;
 }
 
@@ -218,6 +222,7 @@
 - (void) releaseAxisMetalBuffers:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
 {
     if(kemoView3DMetalBuf->numAxisVertice > 0)  {[kemoView3DMetalBuf->axisVertice      release];};
+    if(kemoView3DMetalBuf->numAxisIndice > 0)  {[kemoView3DMetalBuf->axisIndice      release];};
     return;
 }
 
@@ -287,9 +292,10 @@
                         kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self setAxisMetalBuffers:device
-                   metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_sgl->kemo_buffers->axis_buf];
-    
+                  metalbuffer:&_kemoViewMetalBuf
+                 vertexBuffer:kemo_sgl->kemo_buffers->axis_buf
+                  indexBuffer:kemo_sgl->kemo_buffers->axis_index_buf];
+
     _kemoViewMetalBuf.numCoastTubeIndice = 0;
     _kemoViewMetalBuf.numFieldTubeIndice = 0;
 //    _kemoViewMetalBuf.numTracerIcoVertice = 0;
@@ -308,8 +314,9 @@
                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self setAxisMetalBuffers:device
-                   metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_sgl->kemo_buffers->axis_buf];
+                  metalbuffer:&_kemoViewMetalBuf
+                 vertexBuffer:kemo_sgl->kemo_buffers->axis_buf
+                  indexBuffer:kemo_sgl->kemo_buffers->axis_index_buf];
     [self setTransMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf
                     psfBuffers:kemo_sgl->kemo_buffers->PSF_transes
@@ -322,8 +329,9 @@
                           kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self setAxisMetalBuffers:device
-                   metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_sgl->kemo_buffers->axis_buf];
+                  metalbuffer:&_kemoViewMetalBuf
+                 vertexBuffer:kemo_sgl->kemo_buffers->axis_buf
+                  indexBuffer:kemo_sgl->kemo_buffers->axis_index_buf];
 
     [self set3DLineBuffers:device
                metalbuffer:&_kemoViewMetalBuf
@@ -492,7 +500,7 @@
                                            index:&(kemoView3DMetalBuf->psfTubeIndice)
                                           unites:monoViewUnites
                                            sides:BOTH_SURFACES];
-    if(kemoView3DMetalBuf->numPSFTubesVertice == 0){
+    if(kemoView3DMetalBuf->numPSFTubesIndice == 0){
         [_Kemo3DBaseRenderer drawLineObject:renderEncoder
                                   pipelines:kemo3DPipelines
                                       depth:depthState
@@ -574,14 +582,15 @@
     if(kemoView3DMetalBuf->numCubeVertice > 0) return;
 
     /*  Draw solid objects */
-    [_Kemo3DBaseRenderer drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numAxisVertice
-                      vertex:&(kemoView3DMetalBuf->axisVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES];
-    
+    [_Kemo3DBaseRenderer drawIndexPatchWithPhong:renderEncoder
+                                       pipelines:kemo3DPipelines
+                                           depth:depthState
+                                       numVertex:kemoView3DMetalBuf->numAxisIndice
+                                          vertex:&(kemoView3DMetalBuf->axisVertice)
+                                           index:&(kemoView3DMetalBuf->axisIndice)
+                                          unites:monoViewUnites
+                                           sides:BOTH_SURFACES];
+
     [self encodeSolidPSFObjects:renderEncoder
                       pipelines:kemo3DPipelines
                           depth:depthState

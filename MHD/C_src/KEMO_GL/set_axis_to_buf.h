@@ -23,13 +23,16 @@ double set_tube_radius_by_axis(struct view_element *view_s);
 
 void set_flex_axis_to_buf(struct view_element *view_s,
                           int iflag_draw_axis, double dist, double radius,
-                          struct gl_strided_buffer *strided_buf);
+                          struct gl_strided_buffer *strided_buf,
+                          struct gl_index_buffer *index_buf);
 
 void set_lower_flex_axis_to_buf(struct view_element *view_s,
                                 int iflag_draw_axis, double dist_mesh, double radius_ref,
-                                struct gl_strided_buffer *strided_buf);
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_index_buffer *index_buf);
 void set_lower_fixed_axis_to_buf(struct view_element *view_s,
                                  int iflag_draw_axis, double dist, double radius,
-                                 struct gl_strided_buffer *strided_buf);
+                                 struct gl_strided_buffer *strided_buf,
+                                 struct gl_index_buffer *index_buf);
 
 #endif

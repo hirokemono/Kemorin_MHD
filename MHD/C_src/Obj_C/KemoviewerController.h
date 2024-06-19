@@ -68,6 +68,10 @@
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
     NSInteger axisPositionFlag;
+    CGFloat axisWidthFactor;
+    CGFloat axisWidthDigits;
+
+    
     CGFloat ICBRadius;
     
     NSInteger CoastLineTubeFlag;
@@ -97,6 +101,8 @@
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
 @property NSInteger axisPositionFlag;
+@property CGFloat   axisWidthFactor;
+@property CGFloat   axisWidthDigits;
 @property NSInteger TubeNumCorners;
 @property CGFloat   ThreadsCount;
 @property CGFloat   CoastlineWidth;
@@ -153,5 +159,7 @@
 - (IBAction)SetCoastLinETubeAction:(id)sender;
 - (IBAction)SetTubeNumCornersAction:(id)sender;
 - (IBAction)SetCoastlineWidth:(id)pSender;
+
+- (IBAction) SetAxisBarWidth:(id)pSender;
 
 @end

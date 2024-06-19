@@ -48,11 +48,11 @@ long set_tracer_ico_buffer(const long ist_ico,
                            struct gl_index_buffer *Tracer_index_buf){
     long inum_ico = ist_nod;
     for(long inod = ist_nod; inod < ied_nod; inod++){
-        inum_ico = set_icosahedron_node_buffer(inum_ico,
-                                               tracer_m->viz_line_width,
-                                               &tracer_d->xyzw_viz[4*inod],
-                                               &tracer_d->color_nod[4*inod],
-                                               Tracer_ico_buf, Tracer_index_buf);
+        inum_ico = set_icosahedron_node_index_buffer(inum_ico,
+                                                     tracer_m->viz_line_width,
+                                                     &tracer_d->xyzw_viz[4*inod],
+                                                     &tracer_d->color_nod[4*inod],
+                                                     Tracer_ico_buf, Tracer_index_buf);
     };
     return inum_ico;
 }

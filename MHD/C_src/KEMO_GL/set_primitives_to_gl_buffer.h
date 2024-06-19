@@ -34,18 +34,15 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
                                 double xyzw_line[8], double dir_line[8], double color_line[8],
                                 struct gl_strided_buffer *strided_buf,
                                 struct gl_index_buffer *index_buf);
-long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius,
-                             double xyzw_line[8], double dir_line[8], double color_line[8],
-                             struct gl_strided_buffer *strided_buf);
 
-long set_icosahedron_node_buffer(long ist_ico, double node_diam,
-                                 double xyzw_draw[4], double color_draw[4],
-                                 struct gl_strided_buffer *strided_buf,
-                                 struct gl_index_buffer *index_buf);
-long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
-                                    double xyzw_draw[4], double f_color[4],
-                                    struct gl_strided_buffer *strided_buf,
-                                    struct gl_index_buffer *index_buf);
+long set_icosahedron_node_index_buffer(long ist_ico, double node_diam,
+                                       double xyzw_draw[4], double color_draw[4],
+                                       struct gl_strided_buffer *strided_buf,
+                                       struct gl_index_buffer *index_buf);
+long set_icosahedron_single_color_buffer(long ist_ico, double node_diam,
+                                         double xyzw_draw[4], double f_color[4],
+                                         struct gl_strided_buffer *strided_buf,
+                                         struct gl_index_buffer *index_buf);
 
 long set_patch_textur_to_buf(long ist_texture, double xy_txur[6],
                              struct gl_strided_buffer *strided_buf);

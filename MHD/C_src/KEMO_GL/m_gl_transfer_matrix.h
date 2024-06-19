@@ -71,6 +71,7 @@ struct view_element{
     int iflag_coastline_tube;
     int ncorner_tube;
     double width_tube;
+    double width_axis;
 };
 
 /* prototypes */
@@ -199,6 +200,11 @@ void set_coastline_thickness_w_exp(double value, int i_digit,
                                    struct view_element *view_s);
 void get_coastline_thickness_w_exp(struct view_element *view_s,
                                    double *value, int *i_digit);
+
+void set_axis_thickness_w_exp(double value, int i_digit,
+                              struct view_element *view_s);
+void get_axis_thickness_w_exp(struct view_element *view_s,
+                              double *value, int *i_digit);
 
 void set_lighting_check_flag(struct view_element *view_s, int num);
 int send_lighting_check_flag(struct view_element *view_s);

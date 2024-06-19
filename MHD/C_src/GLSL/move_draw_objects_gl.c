@@ -46,7 +46,8 @@ static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemo
 
 
         glDisable(GL_CULL_FACE);
-        drawgl_patch_with_phong(view_matrices, lights, kemo_shaders, kemo_VAOs->axis_VAO);
+        drawgl_elements_with_phong(view_matrices, lights, kemo_shaders,
+                                   kemo_VAOs->axis_VAO);
 
         if(kemo_VAOs->psf_solid_index_VAO[4]->npoint_draw == 0){
             drawgl_lines(view_matrices, kemo_VAOs->psf_lines_VAO, kemo_shaders);
@@ -119,7 +120,8 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf,
         set_fast_buffers(kemo_mul_psf, kemo_fline, kemo_mesh,
                          view_s, kemo_buffers);
         
-        Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
+        Const_Phong_Index_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf,
+                              kemo_buffers->axis_index_buf);
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     }else if(view_s->iflag_draw_mode == SIMPLE_DRAW){
             kemo_VAOs->psf_solid_index_VAO[4]->npoint_draw =   0;
@@ -128,7 +130,8 @@ void update_draw_objects_gl(struct kemoview_mul_psf *kemo_mul_psf,
 //            kemo_VAOs->tracer_index_VAO->npoint_draw =      0;
             kemo_VAOs->grid_tube_VAO->npoint_draw =      0;
             kemo_VAOs->mesh_solid_VAO[2]->npoint_draw =  0;
-            Const_Phong_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf);
+            Const_Phong_Index_VAO(kemo_VAOs->axis_VAO, kemo_buffers->axis_buf,
+                              kemo_buffers->axis_index_buf);
 
             set_transparent_buffers(kemo_mul_psf, kemo_mesh, view_s, kemo_buffers);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);

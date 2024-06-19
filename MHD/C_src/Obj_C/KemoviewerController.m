@@ -30,6 +30,8 @@
 @synthesize axisDrawFlag;
 @synthesize axisPositionFlag;
 @synthesize axisDrawAccess;
+@synthesize axisWidthFactor;
+@synthesize axisWidthDigits;
 @synthesize ThreadsCount;
 @synthesize ShadingMode;
 @synthesize CoastLineTubeFlag;
@@ -97,6 +99,10 @@
     kemoview_get_coastline_thickness_w_exp(kemo_sgl, &value, &idigit);
     self.CoastlineWidth = value;
     self.CoastlineDigit = idigit;
+
+    kemoview_get_axis_thickness_w_exp(kemo_sgl, &value, &idigit);
+    self.axisWidthFactor = value;
+    self.axisWidthDigits = idigit;
 
     return;
 }
@@ -391,5 +397,14 @@
                                            (int) self.CoastlineDigit, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 };
+
+- (IBAction) SetAxisBarWidth:(id)pSender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_axis_thickness_w_exp((double) self.axisWidthFactor,
+                                      (int) self.axisWidthDigits, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
+};
+
 
 @end

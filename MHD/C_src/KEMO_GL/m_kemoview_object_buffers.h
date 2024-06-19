@@ -49,6 +49,7 @@ struct kemoview_buffers{
     struct gl_strided_buffer *mesh_trns_buf;
     
     struct gl_strided_buffer *axis_buf;
+    struct gl_index_buffer   *axis_index_buf;
     struct MESSAGE_buffers *MESSAGE_bufs;
     
     struct initial_cube_buffers *initial_bufs;

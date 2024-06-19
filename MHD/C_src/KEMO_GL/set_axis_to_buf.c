@@ -15,7 +15,7 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
     float ratio;
     float ratio_tmp[2];
 	
-	if ( end_screen[0] < view_s->nx_frame/10 ) { 
+	if(end_screen[0] < view_s->nx_frame/10){
 		ratio_tmp[0] = (float) (view_s->nx_frame/10 - zero_screen[0])
         / (float) (end_screen[0] - zero_screen[0]);
 	} else if  ( end_screen[0] > view_s->nx_frame*9/10 ) {
@@ -24,6 +24,7 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 	} else {
 		ratio_tmp[0] = ONE;
 	};
+    ratio_tmp[0] = fabs(ratio_tmp[0]);
 	
 	if ( end_screen[1] < view_s->ny_frame/10 ) { 
 		ratio_tmp[1] = (float) (view_s->ny_frame/10 - zero_screen[1])
@@ -34,7 +35,8 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 	} else {
 		ratio_tmp[1] = ONE;
 	};
-	
+    ratio_tmp[1] = fabs(ratio_tmp[1]);
+
 	if (ratio_tmp[0] < ratio_tmp[1]) { ratio = ratio_tmp[0]; }
 	else { ratio = ratio_tmp[1]; };
 	
@@ -101,10 +103,10 @@ static double set_minimum_length_view(struct view_element *view_s, double dist_m
 
 static void scale_axis_positions(double dist_mesh,	double axis_org[3],
                                  double fscale,  double label_ratio[3], double min_l_ratio,
-                                double x_arrowx[8],  double x_arrowy[8], 
-                                double x_arrowz[8],  double w_ratio[3],
-                                double x_charax[16], double x_charay[24],
-                                double x_charaz[24]){
+                                 double x_arrowx[8],  double x_arrowy[8], 
+                                 double x_arrowz[8],  double w_ratio[3],
+                                 double x_charax[16], double x_charay[24],
+                                 double x_charaz[24]){
 	double x_text_x1, x_text_x2, x_text_z1, x_text_z2;
 	double y_text_y1, y_text_y2, y_text_z1, y_text_z2;
 	double y_text_y3, y_text_z3;
@@ -261,7 +263,8 @@ static void scale_axis_positions(double dist_mesh,	double axis_org[3],
 static long set_axis_rod_to_buf(long ist_tube, int ncorner, float radius,
                                 double x_arrowx[8], double x_arrowy[8], double x_arrowz[8],
                                 double x_charax[16], double x_charay[24], double x_charaz[24],
-                                struct gl_strided_buffer *strided_buf){
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_index_buffer *index_buf){
 	double dir_line[8];
 	double color_2p[8];
 	int k, nd;
@@ -279,24 +282,27 @@ static long set_axis_rod_to_buf(long ist_tube, int ncorner, float radius,
 	printf("dir_line1 %f %f %f \n", dir_line[0], dir_line[1], dir_line[2]);
 	*/
     long icou_tube = ist_tube;
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowx, 
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, x_arrowx,
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	
     /*draw y axis */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_arrowy[4+nd] - x_arrowy[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowy, 
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, x_arrowy,
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	
     /*draw z axis */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_arrowz[4+nd] - x_arrowz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, x_arrowz,
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, x_arrowz,
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	
 	
 	/*draw 'X' */
@@ -304,80 +310,90 @@ static long set_axis_rod_to_buf(long ist_tube, int ncorner, float radius,
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charax[4+nd] - x_charax[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charax[0],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charax[0],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charax[12+nd] - x_charax[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charax[8],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charax[8],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	
 	/*draw 'Y' */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[4+nd] - x_charay[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[0],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charay[0],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[12+nd] - x_charay[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[8],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charay[8],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charay[20+nd] - x_charay[16+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charay[16],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charay[16],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	
 	/*draw 'Z' */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[ 4+nd] - x_charaz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[0],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charaz[0],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[12+nd] - x_charaz[8+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[8],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charaz[8],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[4*k+nd] =  x_charaz[20+nd] - x_charaz[16+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-	icou_tube = set_tube_strided_buffer(icou_tube, ncorner, radius, &x_charaz[16],
-                                         dir_line, color_2p, strided_buf);
+	icou_tube = set_tube_node_index_buffer(icou_tube, ncorner, radius, &x_charaz[16],
+                                           dir_line, color_2p,
+                                           strided_buf, index_buf);
     
 	return icou_tube;
 }
 
 static double rescale_radius_for_axis(struct view_element *view_s, double min_l_ratio){
-	return (min_l_ratio * (1.0 + (float)view_s->iflag_retina) / (float) view_s->ny_frame);
+    double radius = (1.0 + (float)view_s->iflag_retina) / (float) view_s->ny_frame;
+    return radius;
+//	return (min_l_ratio * (1.0 + (float)view_s->iflag_retina) / (float) view_s->ny_frame);
 }
 
-long count_axis_to_buf(int ncorner){
-	long npatch_wall = 0;
+long count_axis_to_buf(void){
+	long n_tube = 0;
     /*draw x axis */
-	npatch_wall = npatch_wall + 2*ncorner;
+    n_tube = n_tube + 1;
     /*draw y axis */
-	npatch_wall = npatch_wall + 2*ncorner;
+    n_tube = n_tube + 1;
     /*draw z axis */
-	npatch_wall = npatch_wall + 2*ncorner;
-	
+    n_tube = n_tube + 1;
+
 	
 	/*draw 'X' */
-	npatch_wall = npatch_wall + 4*ncorner;
+    n_tube = n_tube + 2;
 	/*draw 'Y' */
-	npatch_wall = npatch_wall + 6*ncorner;
+    n_tube = n_tube + 3;
 	/*draw 'Z' */
-	npatch_wall = npatch_wall + 6*ncorner;
-    
-	return npatch_wall;
+    n_tube = n_tube + 3;
+
+	return n_tube;
 }
 
 double set_tube_radius_by_axis(struct view_element *view_s){
@@ -391,7 +407,8 @@ double set_tube_radius_by_axis(struct view_element *view_s){
 
 void set_flex_axis_to_buf(struct view_element *view_s,
                           int iflag_draw_axis, double dist_mesh, double radius_ref,
-                          struct gl_strided_buffer *strided_buf){
+                          struct gl_strided_buffer *strided_buf,
+                          struct gl_index_buffer *index_buf){
 	double x_arrowx[8], x_arrowy[8], x_arrowz[8];
 	double w_ratio[3];
     double x_charax[16], x_charay[24], x_charaz[24];
@@ -402,21 +419,24 @@ void set_flex_axis_to_buf(struct view_element *view_s,
     
     int i;
     
+    strided_buf->num_nod_buf = 0;
+    index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITHREE * count_axis_to_buf(view_s->ncorner_tube);
+        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
+        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
-        
+        resize_gl_index_buffer(n_patch, ITHREE, index_buf);
+
         min_l_ratio = set_minimum_length_view(view_s, dist_mesh, axis_org, label_ratio);
         scale_axis_positions(dist_mesh, axis_org, 1.0, label_ratio, min_l_ratio,
                              x_arrowx, x_arrowy, x_arrowz, w_ratio,
                              x_charax, x_charay, x_charaz);
         radius = rescale_radius_for_axis(view_s, min_l_ratio);
-        
         icou_patch = set_axis_rod_to_buf(0, view_s->ncorner_tube, (radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz, 
                                          x_charax, x_charay, x_charaz,
-                                         strided_buf);
+                                         strided_buf, index_buf);
     }else{
         strided_buf->num_nod_buf = 0;
     };
@@ -425,7 +445,8 @@ void set_flex_axis_to_buf(struct view_element *view_s,
 
 void set_lower_flex_axis_to_buf(struct view_element *view_s,
                                 int iflag_draw_axis, double dist_mesh, double radius_ref,
-                                struct gl_strided_buffer *strided_buf){
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_index_buffer *index_buf){
 	double x_arrowx[8], x_arrowy[8], x_arrowz[8];
 	double w_ratio[3];
     double x_charax[16], x_charay[24], x_charaz[24];
@@ -436,11 +457,15 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
     
     int i;
     
+    strided_buf->num_nod_buf = 0;
+    index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITHREE * count_axis_to_buf(view_s->ncorner_tube);
+        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
+        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
-        
+        resize_gl_index_buffer(n_patch, ITHREE, index_buf);
+
         
         min_l_ratio = set_minimum_length_view(view_s, dist_mesh, axis_org, label_ratio);
         int nd;
@@ -463,8 +488,8 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
         }
         
 
-        double shift_on_screen[4] = {-0.3*radius*view_s->nx_frame,
-                                     -0.3*radius*view_s->ny_frame,
+        double shift_on_screen[4] = {-0.47*radius*view_s->nx_frame,
+                                     -0.47*radius*view_s->ny_frame,
                                      0.0, 1.0};
         
         double screeen_arrowx[8], screeen_arrowy[8], screeen_arrowz[8];
@@ -507,21 +532,22 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
         icou_patch = set_axis_rod_to_buf(icou_patch, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,
                                          x_charax, x_charay, x_charaz,
-                                         strided_buf);
+                                         strided_buf, index_buf);
     }else{
         strided_buf->num_nod_buf = 0;
     };
     radius_tmp = radius;
-    label_ratio_tmp[0] = label_ratio[0];
-    label_ratio_tmp[1] = label_ratio[1];
-    label_ratio_tmp[2] = label_ratio[2];
+//    label_ratio_tmp[0] = label_ratio[0];
+//    label_ratio_tmp[1] = label_ratio[1];
+//    label_ratio_tmp[2] = label_ratio[2];
 	return;
 };
 
 
 void set_lower_fixed_axis_to_buf(struct view_element *view_s,
                                  int iflag_draw_axis, double dist_mesh, double radius_ref,
-                                 struct gl_strided_buffer *strided_buf){
+                                 struct gl_strided_buffer *strided_buf,
+                                 struct gl_index_buffer *index_buf){
 	double x_arrowx[8], x_arrowy[8], x_arrowz[8];
 	double w_ratio[3];
     double x_charax[16], x_charay[24], x_charaz[24];
@@ -532,11 +558,15 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
     
     int i, nd;
     
+    strided_buf->num_nod_buf = 0;
+    index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
-        long n_vertex = ITHREE * count_axis_to_buf(view_s->ncorner_tube);
+        long n_vertex = ITWO * (view_s->ncorner_tube + 1) * count_axis_to_buf();
+        long n_patch =  IFOUR * (view_s->ncorner_tube) * count_axis_to_buf();
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
-        
+        resize_gl_index_buffer(n_patch, ITHREE, index_buf);
+
         
         min_l_ratio = set_minimum_length_view(view_s, dist_mesh, axis_org, label_ratio);
         scale_axis_positions(dist_mesh, axis_org, 4.0, label_ratio, min_l_ratio,
@@ -544,10 +574,10 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
                              x_charax, x_charay, x_charaz);
         radius = rescale_radius_for_axis(view_s, min_l_ratio);
         
-        label_ratio[0] = label_ratio_tmp[0];
-        label_ratio[1] = label_ratio_tmp[1];
-        label_ratio[2] = label_ratio_tmp[2];
-        radius = radius_tmp;
+//        label_ratio[0] = label_ratio_tmp[0];
+//        label_ratio[1] = label_ratio_tmp[1];
+//        label_ratio[2] = label_ratio_tmp[2];
+//        radius = radius_tmp;
         
 
         for(i=0;i<2;i++){
@@ -564,8 +594,8 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
         }
         
 
-        double shift_on_screen[4] = {-0.3*radius*view_s->nx_frame,
-                                     -0.3*radius*view_s->ny_frame,
+        double shift_on_screen[4] = {-0.47*radius*view_s->nx_frame,
+                                     -0.47*radius*view_s->ny_frame,
                                      0.0, 1.0};
         
         double screeen_arrowx[8], screeen_arrowy[8], screeen_arrowz[8];
@@ -609,7 +639,7 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
         icou_patch = set_axis_rod_to_buf(0, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,
                                          x_charax, x_charay, x_charaz,
-                                         strided_buf);
+                                         strided_buf, index_buf);
     }else{
         strided_buf->num_nod_buf = 0;
     };

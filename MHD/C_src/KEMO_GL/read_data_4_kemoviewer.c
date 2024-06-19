@@ -55,6 +55,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
     view->iflag_coastline_tube = ON;
     view->ncorner_tube = 6;
     view->width_tube =   0.003;
+    view->width_axis =   10.0;
     
     mesh_m->mesh_file_name = init_kvstring_by_string("in.ksm");
 	

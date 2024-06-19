@@ -144,37 +144,10 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
 }
 
 
-long set_tube_strided_buffer(const long ist_tube, int ncorner, double radius, 
-                             double xyzw_line[8], double dir_line[8], double color_line[8],
-                             struct gl_strided_buffer *strided_buf){
-    struct gl_local_buffer_address point_buf;
-	double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
-    double norm_line[8];
-    long npatch_wall;
-	long k, nd;
-	
-	find_normal_on_line(&norm_line[0], &dir_line[0]);
-	find_normal_on_line(&norm_line[4], &dir_line[4]);
-    npatch_wall = set_tube_vertex(ncorner, radius,
-                                  xyzw_line, dir_line,
-                                  norm_line, color_line,
-                                  xyzw, norm, col);
-    long ist_vertex = ITHREE * npatch_wall * ist_tube;
-	for (k=0; k<ITHREE*npatch_wall; k++) {
-        set_node_stride_buffer((ist_vertex+k), strided_buf, &point_buf);
-        for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
-        };
-	};
-    return (ist_tube + 1);
-}
-
-long set_icosahedron_node_buffer(long ist_ico, double node_diam,
-                                 double xyzw_draw[4], double color_draw[4],
-                                 struct gl_strided_buffer *strided_buf,
-                                 struct gl_index_buffer *index_buf){
+long set_icosahedron_node_index_buffer(long ist_ico, double node_diam,
+                                       double xyzw_draw[4], double color_draw[4],
+                                       struct gl_strided_buffer *strided_buf,
+                                       struct gl_index_buffer *index_buf){
     struct gl_local_buffer_address point_buf;
     double xyzw_patch[4*12], norm_patch[4*12];
     double f_color[4];
@@ -203,10 +176,10 @@ long set_icosahedron_node_buffer(long ist_ico, double node_diam,
     return (ist_ico+1);
 }
 
-long set_icosahedron_strided_buffer(long ist_ico, double node_diam,
-                                    double xyzw_draw[4], double f_color[4],
-                                    struct gl_strided_buffer *strided_buf,
-                                    struct gl_index_buffer *index_buf){
+long set_icosahedron_single_color_buffer(long ist_ico, double node_diam,
+                                         double xyzw_draw[4], double f_color[4],
+                                         struct gl_strided_buffer *strided_buf,
+                                         struct gl_index_buffer *index_buf){
     struct gl_local_buffer_address point_buf;
     double xyzw_patch[240], norm_patch[240];
     long icou, nd;

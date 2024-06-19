@@ -417,6 +417,11 @@ extern "C" {
     void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
                                                 double *value, int *i_digit);
 
+    void kemoview_set_axis_thickness_w_exp(double value, int i_digit,
+                                           struct kemoviewer_type *kemoviewer);
+    void kemoview_get_axis_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                           double *value, int *i_digit);
+
 /* subroutines for surafces */
     int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer);
 	void kemoview_set_PSF_loaded_params(int selected, int input,

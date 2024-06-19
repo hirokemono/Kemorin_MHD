@@ -37,9 +37,9 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
     long inum_tri = ist_tri;
     for(inum = ist_grp; inum < ied_grp; inum++){
         inod = item_grp[inum]-1;
-        inum_tri = set_icosahedron_strided_buffer(inum_tri, node_diam,
-                                                  &mesh_s->xyzw_draw[4*inod  ],
-                                                  f_color, mesh_buf, index_buf);
+        inum_tri = set_icosahedron_single_color_buffer(inum_tri, node_diam,
+                                                       &mesh_s->xyzw_draw[4*inod  ],
+                                                       f_color, mesh_buf, index_buf);
     };
     return inum_tri;
 }

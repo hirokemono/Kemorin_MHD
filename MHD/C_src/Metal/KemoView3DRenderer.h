@@ -125,6 +125,8 @@ typedef struct
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
     NSUInteger numAxisVertice;
+    id<MTLBuffer> _Nullable axisIndice;
+    NSUInteger numAxisIndice;
 } KemoView3DBuffers;
 
 @interface KemoView3DRenderer : NSObject

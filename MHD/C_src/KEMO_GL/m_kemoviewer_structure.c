@@ -559,10 +559,22 @@ void kemoview_reset_animation(struct kemoviewer_type *kemoviewer){
 void kemoview_set_coastline_thickness_w_exp(double value, int i_digit,
                                             struct kemoviewer_type *kemoviewer){
     set_coastline_thickness_w_exp(value, i_digit, kemoviewer->view_s);
+    return;
 };
 void kemoview_get_coastline_thickness_w_exp(struct kemoviewer_type *kemoviewer,
                                             double *value, int *i_digit){;
     get_coastline_thickness_w_exp(kemoviewer->view_s, value, i_digit);
+    return;
+};
+
+void kemoview_set_axis_thickness_w_exp(double value, int i_digit,
+                                       struct kemoviewer_type *kemoviewer){
+    set_axis_thickness_w_exp(value, i_digit, kemoviewer->view_s);
+    return;
+};
+void kemoview_get_axis_thickness_w_exp(struct kemoviewer_type *kemoviewer,
+                                       double *value, int *i_digit){
+    get_axis_thickness_w_exp(kemoviewer->view_s, value, i_digit);
     return;
 };
 
