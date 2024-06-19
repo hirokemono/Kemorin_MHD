@@ -402,7 +402,8 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_axis_thickness_w_exp((double) self.axisWidthFactor,
-                                      (int) self.axisWidthDigits, kemo_sgl);
+                                      (int) self.axisWidthDigits,
+                                      kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 };
 

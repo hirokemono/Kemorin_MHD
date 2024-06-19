@@ -62,6 +62,36 @@ GtkWidget * init_coastline_pref_menu(struct kemoviewer_gl_type *kemo_gl){
     return wrap_into_frame_gtk("Coastline type", hbox_coasttube);
 }
 
+
+static void axis_thickness_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+    double current_thick;
+    int current_digit;
+    
+    double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+    if(thick_in < 0) return;
+    
+    kemoview_get_axis_thickness_w_exp(kemo_gl->kemoview_data,
+                                 &current_thick, &current_digit);
+    kemoview_set_axis_thickness_w_exp(thick_in, current_digit,
+                                       kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+}
+static void axis_digit_CB(GtkWidget *entry, gpointer user_data)
+{
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
+    double current_thick;
+    int current_digit;
+    
+    int in_digit = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+    kemoview_get_axis_thickness_w_exp(kemo_gl->kemoview_data,
+                                      &current_thick, &current_digit);
+    kemoview_set_axis_thickness_w_exp(current_thick, in_digit,
+                                      kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+}
+
 GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_gl){
     GtkWidget * label_tree_axispos = create_fixed_label_w_index_tree();
     GtkTreeModel * model_axispos
@@ -91,10 +121,39 @@ GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_gl){
     g_signal_connect(G_OBJECT(combobox_axispos), "changed",
                 G_CALLBACK(set_axisposition_CB), (gpointer) kemo_gl);
     
+    
+    int int_thick, current_digit;
+    double current_thick;
+    GtkAdjustment *adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
+    GtkAdjustment *adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
+    GtkWidget *spin_axis_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
+    GtkWidget *spin_axis_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+    g_signal_connect(spin_axis_thick, "value-changed",
+                     G_CALLBACK(axis_thickness_CB), (gpointer) kemo_gl);
+    g_signal_connect(spin_axis_digit, "value-changed",
+                     G_CALLBACK(axis_digit_CB), (gpointer) kemo_gl);
+ 
+    kemoview_get_axis_thickness_w_exp(kemo_gl->kemoview_data,
+                                      &current_thick, &current_digit);
+    int_thick = (int) current_thick;
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_axis_thick), (double) int_thick);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_axis_digit), (double) current_digit);
+
+    
     GtkWidget *hbox_axispos = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_axispos), gtk_label_new("Axis position: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_axispos), combobox_axispos, FALSE, FALSE, 0);
     
-    return wrap_into_frame_gtk("Axis parameters", hbox_axispos);
+    GtkWidget *hbox_axiswidth = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_axiswidth), gtk_label_new("Thickness: "), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_axiswidth), spin_axis_thick, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_axiswidth), gtk_label_new("X 10^"), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_axiswidth), spin_axis_digit, TRUE, TRUE, 0);
+    
+    GtkWidget *axis_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_box_pack_start(GTK_BOX(axis_vbox), hbox_axispos, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(axis_vbox), hbox_axiswidth, TRUE, TRUE, 0);
+
+    return wrap_into_frame_gtk("Axis parameters", axis_vbox);
 }
 

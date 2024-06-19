@@ -341,9 +341,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     GtkTreeModel *child_model_color;
     int iflag = 0;
     int index = 0;
-    
-    GtkAdjustment *adj_thick, *adj_digit;
-    
+
     GtkAdjustment *adj_min_value, *adj_min_digit;
     GtkAdjustment *adj_max_value, *adj_max_digit;
     
@@ -399,8 +397,8 @@ void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(fline_gmenu->switch_tube), "notify::active",
                      G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_gl);
     
-    adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
-    adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
+    GtkAdjustment *adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
+    GtkAdjustment *adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
     fline_gmenu->spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     fline_gmenu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
     g_signal_connect(fline_gmenu->spin_thick, "value-changed",
