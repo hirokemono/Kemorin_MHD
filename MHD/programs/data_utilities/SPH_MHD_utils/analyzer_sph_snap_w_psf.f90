@@ -35,6 +35,7 @@
       type(sph_MHD_w_psf), save, private :: MPSFs
 !
 !>          Elapsed time labels
+      logical, parameter :: flag_detailed1 = .TRUE.
       type(elapsed_labels_4_SECTIONS), save :: elps_SECT1
 !
 ! ----------------------------------------------------------------------
@@ -67,7 +68,7 @@
       total_start = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call elpsed_label_4_SECT(elps_SECT1, elps1)
+      call elpsed_label_4_SECT(flag_detailed1, elps_SECT1, elps1)
       call elpsed_label_field_send_recv
 !
 !   Load parameter file
@@ -109,6 +110,7 @@
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
       call reset_elapse_4_init_sph_mhd
+      call reset_elapse_after_init_SECT(elps_SECT1, elps1)
 !
       end subroutine initialize_sph_snap_w_psf
 !

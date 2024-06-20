@@ -25,8 +25,6 @@
 !
       implicit none
 !
-      logical, save :: iflag_PSF_time = .FALSE.
-!
 ! ----------------------------------------------------------------------
 !
       contains

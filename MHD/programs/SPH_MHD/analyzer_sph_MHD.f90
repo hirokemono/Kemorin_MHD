@@ -71,7 +71,7 @@
       SSMHDs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_4_repartition
 !
       call elpsed_label_field_send_recv
@@ -142,6 +142,7 @@
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
+      call reset_elapse_after_init_VIZ(elps_VIZ1, elps1)
 !
       end subroutine initialize_sph_mhd
 !

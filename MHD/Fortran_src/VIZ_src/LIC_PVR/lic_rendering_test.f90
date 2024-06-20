@@ -181,7 +181,6 @@
      &         (istep_lic, time, elps_PVR, elps_LIC, geofem, ele_comm,  &
      &          next_tbl, nod_fld, lic, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use select_LIC_rendering
 !
       integer(kind = kint), intent(in) :: istep_lic

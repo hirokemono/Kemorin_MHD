@@ -7,8 +7,9 @@
 !>@brief  Initialize elepsed time monitoring
 !!
 !!@verbatim
-!!      subroutine elpsed_label_4_SECT(elps_SECT, elps)
+!!      subroutine elpsed_label_4_SECT(flag_detailed, elps_SECT, elps)
 !!      subroutine reset_elapse_after_init_SECT(elps_SECT, elps)
+!!        logical intent(in) :: flag_detailed
 !!        type(elapsed_labels_4_SECTIONS), intent(inout) :: elps_SECT
 !!        type(elapsed_time_data), intent(inout) :: elps
 !!@endverbatim
@@ -45,18 +46,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine elpsed_label_4_SECT(elps_SECT, elps)
+      subroutine elpsed_label_4_SECT(flag_detailed, elps_SECT, elps)
 !
       use elapsed_labels_4_PSF
 !
+      logical, intent(in) :: flag_detailed
       type(elapsed_labels_4_SECTIONS), intent(inout) :: elps_SECT
       type(elapsed_time_data), intent(inout) :: elps
 !
 !
       call elpsed_label_4_SECTIONS(elps_SECT, elps)
 !
-      call elpsed_label_4_PSF(elps_SECT%elps_PSF, elps)
-      call elpsed_label_4_ISO(elps_SECT%elps_ISO, elps)
+      if(flag_detailed) then
+        call elpsed_label_4_PSF(elps_SECT%elps_PSF, elps)
+        call elpsed_label_4_ISO(elps_SECT%elps_ISO, elps)
+      else
+        elps_SECT%elps_PSF%flag_elapsed = .FALSE.
+        elps_SECT%elps_ISO%flag_elapsed = .FALSE.
+      end if
 !
       end subroutine elpsed_label_4_SECT
 !

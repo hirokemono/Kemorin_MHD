@@ -42,7 +42,7 @@
       write(*,*) 'Simulation start: PE. ', my_rank
 !
       call init_elapse_time_by_TOTAL
-      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !     --------------------- 

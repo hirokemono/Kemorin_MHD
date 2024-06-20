@@ -163,7 +163,6 @@
       subroutine SPH_MHD_zonal_mean_vizs(elps_VIZ, viz_step, time_d,    &
      &          sph, geofem, nod_fld, zm_psf, zm_maps, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
       use map_projection
@@ -219,7 +218,6 @@
       subroutine SPH_MHD_zonal_RMS_vizs(elps_VIZ, viz_step, time_d,     &
      &          sph, geofem, WK, nod_fld, zrms_psf, zrms_maps, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv

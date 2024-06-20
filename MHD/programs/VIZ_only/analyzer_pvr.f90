@@ -63,7 +63,7 @@
 !
 !
       call init_elapse_time_by_TOTAL
-      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)

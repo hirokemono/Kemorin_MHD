@@ -63,7 +63,6 @@
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_SPH_TRNS
       use m_elapsed_labels_4_MHD
-      use m_elapsed_labels_4_VIZ
 !
 !
       call reset_elapse_after_init_SPH
@@ -74,7 +73,6 @@
       call reset_elapse_after_init_SPH_MHD
       call reset_elapse_after_init_SGS
       call reset_elapse_after_init_LEG
-      call reset_elapse_after_init_VIZ(elps_VIZ1, elps1)
 !
       end subroutine reset_elapse_4_init_sph_mhd
 !

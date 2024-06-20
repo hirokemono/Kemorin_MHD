@@ -42,6 +42,7 @@
       type(ucd_data), save :: vtk_out5
 !
 !>          Elapsed time labels
+      logical, parameter :: flag_detailed1 = .TRUE.
       type(elapsed_labels_4_SECTIONS), save :: elps_SECT1
 !
 !  ---------------------------------------------------------------------
@@ -58,7 +59,7 @@
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_SECT(elps_SECT1, elps1)
+      call elpsed_label_4_SECT(flag_detailed1, elps_SECT1, elps1)
       call elpsed_label_field_send_recv
 !
 !     read controls

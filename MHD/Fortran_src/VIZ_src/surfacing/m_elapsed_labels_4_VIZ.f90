@@ -18,6 +18,7 @@
 !
       implicit none
 !
+      logical, parameter :: flag_detailed1 = .TRUE.
       type(elapsed_labels_4_VIZ), save :: elps_viz1
 !
       end module  m_elapsed_labels_4_VIZ

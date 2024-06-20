@@ -28,7 +28,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_elapsed_labels_4_VIZ
       use m_work_time
       use calypso_mpi
 !

@@ -7,8 +7,9 @@
 !>@brief  Initialize elepsed time monitoring
 !!
 !!@verbatim
-!!      subroutine set_elpsed_label_4_VIZ(elps_VIZ, elps)
+!!      subroutine set_elpsed_label_4_VIZ(flag_detailed, elps_VIZ, elps)
 !!      subroutine reset_elapse_after_init_VIZ(elps_VIZ, elps)
+!!        logical, intent(in) :: flag_detailed
 !!        type(elapsed_labels_4_VIZ), intent(inout) :: elps_VIZ
 !!        type(elapsed_time_data), intent(inout) :: elps
 !!@endverbatim
@@ -45,26 +46,38 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_elpsed_label_4_VIZ(elps_VIZ, elps)
+      subroutine set_elpsed_label_4_VIZ(flag_detailed, elps_VIZ, elps)
 !
       use elapsed_labels_4_PVR
       use elapsed_labels_4_FLINE
       use elapsed_labels_4_PSF
 !
+      logical, intent(in) :: flag_detailed
       type(elapsed_labels_4_VIZ), intent(inout) :: elps_VIZ
       type(elapsed_time_data), intent(inout) :: elps
 !
 !
       call elpsed_label_4_VIZ_outline(elps_VIZ, elps)
-      call elpsed_label_4_PVR(elps_VIZ%elps_PVR, elps)
-      call elpsed_label_4_LIC(elps_VIZ%elps_LIC, elps)
 !
-      call elpsed_label_4_PSF(elps_VIZ%elps_PSF, elps)
-      call elpsed_label_4_ISO(elps_VIZ%elps_ISO, elps)
-      call elpsed_label_4_MAP(elps_VIZ%elps_MAP, elps)
+      if(flag_detailed) then
+        call elpsed_label_4_PVR(elps_VIZ%elps_PVR, elps)
+        call elpsed_label_4_LIC(elps_VIZ%elps_LIC, elps)
 !
-      call elpsed_label_4_FLINE(elps_VIZ%elps_FLINE, elps)
-      call elpsed_label_4_TRACER(elps_VIZ%elps_TRACER, elps)
+        call elpsed_label_4_PSF(elps_VIZ%elps_PSF, elps)
+        call elpsed_label_4_ISO(elps_VIZ%elps_ISO, elps)
+        call elpsed_label_4_MAP(elps_VIZ%elps_MAP, elps)
+!
+        call elpsed_label_4_FLINE(elps_VIZ%elps_FLINE, elps)
+        call elpsed_label_4_TRACER(elps_VIZ%elps_TRACER, elps)
+      else
+        elps_VIZ%elps_PSF%flag_elapsed =    .FALSE.
+        elps_VIZ%elps_ISO%flag_elapsed =    .FALSE.
+        elps_VIZ%elps_PVR%flag_elapsed =    .FALSE.
+        elps_VIZ%elps_LIC%flag_elapsed =    .FALSE.
+        elps_VIZ%elps_MAP%flag_elapsed =    .FALSE.
+        elps_VIZ%elps_FLINE%flag_elapsed =  .FALSE.
+        elps_VIZ%elps_TRACER%flag_elapsed = .FALSE.
+      end if
 !
       end subroutine set_elpsed_label_4_VIZ
 !
