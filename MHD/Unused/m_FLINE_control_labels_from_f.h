@@ -20,6 +20,7 @@ label[7]   line_direction_ctl
 label[8]   max_line_stepping_ctl 
 label[14]   max_trace_length_ctl
 label[9]    starting_type_ctl 
+label[15]   communication_mode_ctl
 label[10]   selection_type_ctl 
 label[11]   start_surf_grp_ctl 
 label[12]   seed_point_ctl 

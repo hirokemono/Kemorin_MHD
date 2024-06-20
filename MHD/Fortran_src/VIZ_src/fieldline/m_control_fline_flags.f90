@@ -6,6 +6,7 @@
 !>@brief control parameters for each field line
 !!
 !!@verbatim
+!!      subroutine fline_comm_mode_label_array(array_c)
 !!      subroutine fline_start_label_array(array_c)
 !!      subroutine fline_direction_label_array(array_c)
 !!      subroutine fline_seeds_label_array(array_c)
@@ -17,6 +18,11 @@
       use m_precision
 !
       implicit  none
+!
+      character(len = kchara), parameter                                &
+     &               :: cflag_send_recv = 'send_recv'
+      character(len = kchara), parameter                                &
+     &               :: cflag_bcast =     'broadcast'
 !
       character(len = kchara), parameter                                &
      &               :: cflag_surface_group = 'surface_group'
@@ -48,6 +54,21 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine fline_comm_mode_label_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(cflag_send_recv, array_c)
+      call append_c_to_ctl_array(cflag_bcast,     array_c)
+!
+      end subroutine fline_comm_mode_label_array
+!
+! ----------------------------------------------------------------------
 !
       subroutine fline_start_label_array(array_c)
       use t_control_array_character

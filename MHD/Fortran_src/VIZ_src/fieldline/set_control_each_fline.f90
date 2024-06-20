@@ -105,6 +105,11 @@
      &  call calypso_MPI_abort(ierr_mesh, 'set correct element group')
 !
 !
+      fln_prm%flag_use_broadcast = .TRUE.
+      character_256 = fln%fline_comm_mode_ctl%charavalue
+      if     (cmp_no_case(character_256, cflag_send_recv)) then
+        fln_prm%flag_use_broadcast = .FALSE.
+      end if
 !
       character_256 = fln%starting_type_ctl%charavalue
       if     (cmp_no_case(character_256, cflag_surface_group)) then

@@ -16,6 +16,8 @@ begin fieldline
   max_trace_length_ctl      20.0
   starting_type_ctl     position_list
 !
+  communication_mode_ctl     send_recv
+!
   seed_surf_grp_ctl      icb_surf
   num_fieldline_ctl       10
 !

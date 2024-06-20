@@ -40,6 +40,9 @@
 !>        File parameters for tracer restart file
         type(field_IO_params) :: fline_rst_IO
 !
+!>        flag to use MPI_Bcast for data communication
+        logical :: flag_use_broadcast
+!
 !>        Area of seed point
         integer(kind = kint) :: id_fline_seed_type = 0
 !>        Direction of field line tracing

@@ -115,6 +115,7 @@
 !!@n      fline_area_grp_ctl%c_tbl:  element group to draw field line
         type(ctl_array_chara) :: fline_area_grp_ctl
 !
+        type(read_character_item) :: fline_comm_mode_ctl
 !
         type(read_character_item) :: starting_type_ctl
         type(read_character_item) :: selection_type_ctl
@@ -200,6 +201,7 @@
       fln%num_fieldline_ctl%iflag  =     0
       fln%max_line_stepping_ctl%iflag  = 0
       fln%max_trace_length_ctl%iflag  = 0
+      fln%fline_comm_mode_ctl%iflag =  0
       fln%starting_type_ctl%iflag =  0
       fln%selection_type_ctl%iflag = 0
       fln%seed_surf_grp_ctl%iflag =  0
@@ -248,6 +250,9 @@
      &                    new_fln%fline_color_field_ctl)
       call copy_chara_ctl(org_fln%fline_color_comp_ctl,                 &
      &                    new_fln%fline_color_comp_ctl)
+!
+      call copy_chara_ctl(org_fln%fline_comm_mode_ctl,                  &
+     &                    new_fln%fline_comm_mode_ctl)
 !
       call copy_chara_ctl(org_fln%starting_type_ctl,                    &
      &                    new_fln%starting_type_ctl)

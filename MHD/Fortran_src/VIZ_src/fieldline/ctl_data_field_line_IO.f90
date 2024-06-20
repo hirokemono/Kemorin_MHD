@@ -43,6 +43,8 @@
 !!    line_direction_ctl        forward
 !!    max_line_stepping_ctl     1000
 !!    max_trace_length_ctl      20.0
+!!
+!!    communication_mode_ctl     send_recv
 !!    starting_type_ctl     position_list
 !!
 !!    seed_surface_grp_ctl      icb_surf
@@ -124,6 +126,9 @@
      &      :: hd_max_trace_length = 'max_trace_length_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_starting_type =  'starting_type_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &      :: hd_fline_comm_type =  'communication_mode_ctl'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_seed_surf_grp = 'seed_surface_grp_ctl'
@@ -215,13 +220,15 @@
      &                           fln%fline_rst_format_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_field_line_field,            &
-     &      fln%fline_field_ctl )
+     &                           fln%fline_field_ctl)
         call read_chara_ctl_type(c_buf, hd_coloring_field,              &
-     &      fln%fline_color_field_ctl )
+     &                           fln%fline_color_field_ctl)
         call read_chara_ctl_type(c_buf, hd_coloring_comp,               &
-     &      fln%fline_color_comp_ctl )
+     &                           fln%fline_color_comp_ctl)
         call read_chara_ctl_type(c_buf, hd_starting_type,               &
-     &      fln%starting_type_ctl )
+     &                           fln%starting_type_ctl)
+        call read_chara_ctl_type(c_buf, hd_fline_comm_type,             &
+     &                           fln%fline_comm_mode_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_seed_surf_grp,               &
      &                           fln%seed_surf_grp_ctl)
@@ -290,6 +297,7 @@
       maxlen = max(maxlen, len_trim(hd_line_direction))
       maxlen = max(maxlen, len_trim(hd_max_line_stepping))
       maxlen = max(maxlen, len_trim(hd_starting_type))
+      maxlen = max(maxlen, len_trim(hd_fline_comm_type))
       maxlen = max(maxlen, len_trim(hd_seed_surf_grp))
       maxlen = max(maxlen, len_trim(hd_seed_ele_grp))
       maxlen = max(maxlen, len_trim(hd_seed_ref_field))
@@ -324,6 +332,9 @@
      &                          fln%max_trace_length_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                          fln%starting_type_ctl)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &                          fln%fline_comm_mode_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                          fln%seed_surf_grp_ctl)
@@ -399,6 +410,9 @@
      &                                 fln%fline_color_comp_ctl)
         call init_chara_ctl_item_label(hd_starting_type,                &
      &                                 fln%starting_type_ctl)
+!
+        call init_chara_ctl_item_label(hd_fline_comm_type,              &
+     &                                 fln%fline_comm_mode_ctl)
 !
         call init_chara_ctl_item_label(hd_seed_surf_grp,                &
      &                                fln%seed_surf_grp_ctl)

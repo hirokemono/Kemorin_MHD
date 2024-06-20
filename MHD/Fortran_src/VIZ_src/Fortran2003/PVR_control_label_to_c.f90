@@ -12,6 +12,8 @@
 !!     &          bind(C, NAME = 'c_lic_movie_mode_list')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!
+!!      type(C_ptr) function c_link_fline_comm_mode_list(c_ctl)         &
+!!     &          bind(C, NAME = 'c_link_fline_comm_mode_list')
 !!      type(C_ptr) function c_link_fline_start_list(c_ctl)             &
 !!     &          bind(C, NAME = 'c_link_fline_start_list')
 !!      type(C_ptr) function c_link_fline_dir_list(c_ctl)               &
@@ -77,6 +79,18 @@
      &      call fline_start_label_array(flne_start_list)
       c_link_fline_start_list = C_loc(flne_start_list)
       end function c_link_fline_start_list
+!
+! ----------------------------------------------------------------------
+!
+      type(C_ptr) function c_link_fline_comm_mode_list(c_ctl)           &
+     &          bind(C, NAME = 'c_link_fline_comm_mode_list')
+      use m_control_fline_flags
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      if(.not. allocated(flne_start_list%c_tbl))                        &
+     &      call fline_comm_mode_label_array(flne_start_list)
+      c_link_fline_comm_mode_list = C_loc(flne_start_list)
+      end function c_link_fline_comm_mode_list
 !
 ! ----------------------------------------------------------------------
 !

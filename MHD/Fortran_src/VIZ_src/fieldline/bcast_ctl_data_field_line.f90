@@ -90,6 +90,7 @@
       call bcast_ctl_type_c1(fln%fline_color_field_ctl)
       call bcast_ctl_type_c1(fln%fline_color_comp_ctl)
       call bcast_ctl_type_c1(fln%starting_type_ctl)
+      call bcast_ctl_type_c1(fln%fline_comm_mode_ctl)
 !
       call bcast_ctl_type_c1(fln%seed_surf_grp_ctl)
       call bcast_ctl_type_c1(fln%seed_ele_grp_ctl)
