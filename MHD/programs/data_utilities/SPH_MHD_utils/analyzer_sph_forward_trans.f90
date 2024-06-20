@@ -21,6 +21,7 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use t_spherical_MHD
       use t_sph_SGS_MHD
@@ -64,6 +65,7 @@
       write(*,*) 'Simulation start: PE. ', my_rank
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !   Load parameter file

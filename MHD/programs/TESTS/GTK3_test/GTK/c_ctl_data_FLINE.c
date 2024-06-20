@@ -21,6 +21,7 @@ extern void * c_VIZ_FLINE_color_field_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_color_comp_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_field_output_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_area_grp_ctl(void *f_fline_ctl);
+extern void * c_VIZ_FLINE_comm_mode_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_starting_type_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_selection_type_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_line_direction_ctl(void *f_fline_ctl);
@@ -63,6 +64,8 @@ struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
 																 f_fline_ctl->f_self);
     f_fline_ctl->f_fline_area_grp_ctl =     init_f_ctl_chara_array(c_VIZ_FLINE_area_grp_ctl,
 																  f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_comm_mode_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_comm_mode_ctl,
+                                                                  f_fline_ctl->f_self);
     f_fline_ctl->f_starting_type_ctl =      init_f_ctl_chara_item(c_VIZ_FLINE_starting_type_ctl,
 																 f_fline_ctl->f_self);
     f_fline_ctl->f_selection_type_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_selection_type_ctl,
@@ -96,6 +99,7 @@ void dealloc_f_VIZ_FLINE_ctl(struct f_VIZ_FLINE_ctl *f_fline_ctl)
     dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_field_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_comp_ctl);
     dealloc_chara2_ctl_item_c(f_fline_ctl->f_fline_field_output_ctl);
+    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_comm_mode_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_starting_type_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_selection_type_ctl);
     dealloc_chara_ctl_item_c(f_fline_ctl->f_line_direction_ctl);

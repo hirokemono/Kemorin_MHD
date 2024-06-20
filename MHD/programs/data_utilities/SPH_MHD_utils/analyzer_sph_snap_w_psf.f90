@@ -67,7 +67,7 @@
       total_start = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
+      call elpsed_label_4_SECT(elps_SECT1, elps1)
       call elpsed_label_field_send_recv
 !
 !   Load parameter file

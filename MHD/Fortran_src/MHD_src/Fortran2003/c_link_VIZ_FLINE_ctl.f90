@@ -31,6 +31,8 @@
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_field_output_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_area_grp_ctl(c_ctl)            &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_area_grp_ctl')
+!!      type(c_ptr) function c_VIZ_FLINE_comm_mode_ctl(c_ctl)           &
+!!     &          bind(C, NAME = 'c_VIZ_FLINE_comm_mode_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_starting_type_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_starting_type_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_selection_type_ctl(c_ctl)      &
@@ -188,6 +190,16 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_FLINE_starting_type_ctl = C_loc(f_ctl%starting_type_ctl)
       end function c_VIZ_FLINE_starting_type_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_FLINE_comm_mode_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_VIZ_FLINE_comm_mode_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(fline_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_FLINE_comm_mode_ctl = C_loc(f_ctl%fline_comm_mode_ctl)
+      end function c_VIZ_FLINE_comm_mode_ctl
 !
 !  ---------------------------------------------------------------------
 !

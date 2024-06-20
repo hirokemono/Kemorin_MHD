@@ -39,6 +39,7 @@ struct f_VIZ_FLINE_ctl{
     struct chara_ctl_item  *f_fline_color_comp_ctl;
     struct chara2_ctl_item *f_fline_field_output_ctl;
     struct chara_clist     *f_fline_area_grp_ctl;
+    struct chara_ctl_item  *f_fline_comm_mode_ctl;
     struct chara_ctl_item  *f_starting_type_ctl;
     struct chara_ctl_item  *f_selection_type_ctl;
     struct chara_ctl_item  *f_line_direction_ctl;

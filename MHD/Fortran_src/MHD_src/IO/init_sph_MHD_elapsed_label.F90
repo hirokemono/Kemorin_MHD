@@ -33,7 +33,6 @@
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_SPH_TRNS
       use m_elapsed_labels_4_MHD
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_gen_SPH
 !      use m_work_time_4_sleeve_extend
 !
@@ -48,7 +47,6 @@
       call elpsed_label_calypso_send_recv
 !      call elapsed_label_4_Legendre_trans
 !
-      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elapsed_label_4_SGS_model
 !      call elapsed_label_4_ele_comm_tbl
 !      call elpsed_label_4_sleeve_ext
