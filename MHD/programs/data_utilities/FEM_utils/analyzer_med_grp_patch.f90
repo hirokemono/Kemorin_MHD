@@ -12,10 +12,12 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_work_time
       use calypso_mpi
       use t_FEM_utils
       use t_comm_table
       use t_mesh_SR
+      use t_elapsed_labels_4_SECTIONS
 !
       implicit none
 !
@@ -25,6 +27,8 @@
       type(mesh_SR) :: m_SR4
 
       type(communication_table), save :: edge_comm_MG
+!
+      type(elapsed_labels_4_SECTIONS), save :: elps_SECT1
 !
       private :: set_med_grp_patch_ctl
       private :: set_med_grp_patch_psf_def_ctl
@@ -49,7 +53,10 @@
         write(*,*) 'Input file: mesh data, udt data'
       end if
 !
-!     --------------------- 
+      call init_elapse_time_by_TOTAL
+      call elpsed_label_4_SECT(elps_SECT1, elps1)
+!
+!     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch                                    &
@@ -114,7 +121,7 @@
       call set_med_grp_patch_ctl(psf_ctls_md%num_psf_ctl,               &
      &    psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
-      call SECTIONING_initialize(ione, elps_PSF1,                       &
+      call SECTIONING_initialize(ione, elps_SECT1%elps_PSF,             &
      &    FUTIL1%geofem, edge_comm_MG, FUTIL1%nod_fld, psf_ctls_md,     &
      &    psf_md, m_SR4%SR_sig, m_SR4%SR_il)
 !

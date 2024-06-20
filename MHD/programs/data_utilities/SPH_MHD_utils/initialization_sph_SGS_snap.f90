@@ -7,8 +7,12 @@
 !>@brief  Main loop to evaluate snapshots from spectr data
 !!
 !!@verbatim
-!!      subroutine initialize_sph_SGS_snap(control_file_name,           &
+!!      subroutine initialize_sph_SGS_snap(control_file_name, elps_VIZ, &
 !!     &                                   SSNAPs, SVIZs)
+!!        character(len=kchara), intent(in) :: control_file_name
+!!        type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
+!!        type(spherical_MHD), intent(inout) :: SSNAPs
+!!        type(sph_SGS_MHD), intent(inout) :: SVIZs
 !!@endverbatim
 !
       module initialization_sph_SGS_snap
@@ -26,6 +30,8 @@
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_control_data_dynamo_vizs
+      use t_elapsed_labels_4_VIZ
+      use t_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -45,7 +51,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_SGS_snap(control_file_name,             &
+      subroutine initialize_sph_SGS_snap(control_file_name, elps_VIZ,   &
      &                                   SSNAPs, SVIZs)
 !
       use t_visualizer
@@ -57,6 +63,7 @@
       use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(spherical_MHD), intent(inout) :: SSNAPs
       type(sph_SGS_MHD), intent(inout) :: SVIZs
 !
@@ -89,27 +96,29 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(SSNAPs%MHD_step%viz_step,             &
+      call init_FEM_to_VIZ_bridge(elps_VIZ, SSNAPs%MHD_step%viz_step,   &
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM, SSNAPs%m_SR)
 !
 !  -----   Initialize tracer
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+13)
       call TRACER_initialize                                            &
      &   (SSNAPs%MHD_step%init_d,  SSNAPs%MHD_step%finish_d,            &
      &    SSNAPs%MHD_step%rst_step, SVIZs%FEM_DAT%geofem,               &
      &    SVIZs%VIZ_FEM%para_surf, SVIZs%FEM_DAT%field,                 &
      &    tracer_ctls1%tracer_controls, SVIZs%tracers)
       call dealloc_tracer_controls(tracer_ctls1)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+13)
 !
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(SSNAPs%MHD_step%viz_step,                     &
+      call init_visualize(elps_VIZ, SSNAPs%MHD_step%viz_step,           &
      &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field, SVIZs%tracers,     &
      &    SVIZs%VIZ_FEM, viz_ctls1, SVIZs%VIZs, SSNAPs%m_SR)
       call dealloc_viz_controls(viz_ctls1)
 
-      call init_zonal_mean_vizs(SSNAPs%MHD_step%viz_step,               &
+      call init_zonal_mean_vizs(elps_VIZ, SSNAPs%MHD_step%viz_step,     &
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM%edge_comm,                &
      &    SVIZs%FEM_DAT%field, zm_ctls1, SVIZs%zmeans, SSNAPs%m_SR)
       call dealloc_dynamo_viz_control(zm_ctls1)

@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use t_spherical_MHD
       use t_sph_SGS_MHD
@@ -67,6 +68,7 @@
       write(*,*) 'Simulation start: PE. ', my_rank
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !   Load parameter file
@@ -100,7 +102,7 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(SNAPs%MHD_step%viz_step,              &
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, SNAPs%MHD_step%viz_step,   &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM, SNAPs%m_SR)
 !
 !  -----   Initialize tracer
@@ -110,14 +112,14 @@
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
+     &   (elps_VIZ1, SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,    &
      &    SVIZ_m%FEM_DAT%field, SVIZ_m%tracers, SVIZ_m%VIZ_FEM,         &
      &    viz_ctls_m, SVIZ_m%VIZs, SNAPs%m_SR)
       call dealloc_viz_controls(viz_ctls_m)
-      if(iflag_debug .gt. 0) write(*,*) 'init_zonal_mean_vizs'
 
+      if(iflag_debug .gt. 0) write(*,*) 'init_zonal_mean_vizs'
       call init_zonal_mean_vizs                                         &
-     &   (SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,               &
+     &   (elps_VIZ1, SNAPs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,    &
      &    SVIZ_m%VIZ_FEM%edge_comm, SVIZ_m%FEM_DAT%field,               &
      &    zm_ctls_m, SVIZ_m%zmeans, SNAPs%m_SR)
       call dealloc_dynamo_viz_control(zm_ctls_m)
@@ -186,8 +188,8 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(SNAPs%MHD_step%time_d%i_time_step,    &
      &                          SNAPs%MHD_step%viz_step)
-          call visualize_all                                            &
-     &       (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
+          call visualize_all(elps_VIZ1,                                 &
+     &        SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &        SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SNAPs%m_SR)
 !*
@@ -195,8 +197,8 @@
 !*
           if(SNAPs%MHD_step%viz_step%istep_psf .ge. 0                   &
      &        .or. SNAPs%MHD_step%viz_step%istep_map .ge. 0) then
-            call SGS_MHD_zmean_sections                                 &
-     &         (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,         &
+            call SGS_MHD_zmean_sections(elps_VIZ1,                      &
+     &          SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,         &
      &          SNAPs%SPH_MHD%sph, SVIZ_m%FEM_DAT%geofem,               &
      &          SNAPs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS,                   &
      &          SVIZ_m%FEM_DAT%field, SVIZ_m%zmeans, SNAPs%m_SR)
@@ -216,7 +218,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
       call visualize_fin                                                &
-     &   (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d, SVIZ_m%VIZs)
+     &   (elps_VIZ1, SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,    &
+     &    SVIZ_m%VIZs)
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
       call FEM_finalize_sph_SGS_MHD(SNAPs%MHD_files, SNAPs%MHD_step,    &
      &                              SNAPs%MHD_IO)

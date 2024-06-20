@@ -20,6 +20,7 @@
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use m_machine_parameter
       use t_spherical_MHD
@@ -55,11 +56,13 @@
       SSNAPs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
 !
       call elpsed_label_4_repartition
       call elpsed_label_field_send_recv
 !
-      call initialize_sph_SGS_snap(control_file_name, SSNAPs, SVIZ_m)
+      call initialize_sph_SGS_snap(control_file_name, elps_VIZ1,        &
+     &                             SSNAPs, SVIZ_m)
 !
       end subroutine initialize_sph_special_snap
 !
@@ -126,8 +129,8 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(SSNAPs%MHD_step%time_d%i_time_step,   &
      &                          SSNAPs%MHD_step%viz_step)
-          call visualize_all                                            &
-     &       (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,         &
+          call visualize_all(elps_VIZ1,                                 &
+     &        SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,         &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &        SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
 !*
@@ -135,8 +138,8 @@
 !*
           if(SSNAPs%MHD_step%viz_step%istep_psf .ge. 0                  &
      &        .or. SSNAPs%MHD_step%viz_step%istep_map .ge. 0) then
-            call SGS_MHD_zmean_sections                                 &
-     &         (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,       &
+            call SGS_MHD_zmean_sections(elps_VIZ1,                      &
+     &          SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,       &
      &          SSNAPs%SPH_MHD%sph, SVIZ_m%FEM_DAT%geofem,              &
      &          SSNAPs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS,                  &
      &          SVIZ_m%FEM_DAT%field, SVIZ_m%zmeans, SSNAPs%m_SR)
@@ -155,7 +158,7 @@
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
-      call visualize_fin(SSNAPs%MHD_step%viz_step,                      &
+      call visualize_fin(elps_VIZ1, SSNAPs%MHD_step%viz_step,           &
      &                   SSNAPs%MHD_step%time_d, SVIZ_m%VIZs)
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
       call FEM_finalize_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step,  &

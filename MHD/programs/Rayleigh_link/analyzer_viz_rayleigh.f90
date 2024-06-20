@@ -27,6 +27,7 @@
       use t_VIZ_only_step_parameter
       use t_viz_4_rayleigh
       use t_mesh_SR
+      use m_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -57,13 +58,12 @@
       subroutine init_viz_rayleigh
 !
       use calypso_mpi
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use FEM_to_VIZ_bridge
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
@@ -83,14 +83,14 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, VIZ_DAT_r, m_SR3)
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, t_VIZ_r%viz_step,          &
+     &    FEM_Rayleigh1%geofem, VIZ_DAT_r, m_SR3)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
-      call init_four_visualize                                          &
-     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
-     &    VIZ_DAT_r, viz_ctls4_r, vizs4_r, m_SR3)
+      call init_four_visualize(elps_VIZ1, t_VIZ_r%viz_step,             &
+     &    FEM_Rayleigh1%geofem, FEM_Rayleigh1%field, VIZ_DAT_r,         &
+     &    viz_ctls4_r, vizs4_r, m_SR3)
       call dealloc_viz4_controls(viz_ctls4_r)
 !
       end subroutine init_viz_rayleigh
@@ -120,8 +120,8 @@
         if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
           call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
-          call visualize_four                                           &
-     &       (t_VIZ_r%viz_step, t_VIZ_r%time_d, FEM_Rayleigh1%geofem,   &
+          call visualize_four(elps_VIZ1,                                &
+     &        t_VIZ_r%viz_step, t_VIZ_r%time_d, FEM_Rayleigh1%geofem,   &
      &        FEM_Rayleigh1%field, VIZ_DAT_r, vizs4_r, m_SR3)
         end if
       end do

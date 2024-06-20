@@ -17,6 +17,7 @@
       use t_visualizer
       use t_VIZ_mesh_field
       use t_FEM_SGS_MHD
+      use m_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -35,14 +36,13 @@
 !
       use FEM_analyzer_snapshot
       use input_control
-      use m_elapsed_labels_4_VIZ
       use FEM_to_VIZ_bridge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !     --------------------- 
@@ -66,8 +66,8 @@
      &    FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%MHD_IO,                &
      &    FMHDs%fem_sq, FMHDs%m_SR)
 !
-      call init_FEM_MHD_to_VIZ_bridge(FMHDs%MHD_step%viz_step,          &
-     &    FSGSs%SGS_MHD_wk%fem_int%next_tbl,                            &
+      call init_FEM_MHD_to_VIZ_bridge(elps_VIZ1,                        &
+     &    FMHDs%MHD_step%viz_step, FSGSs%SGS_MHD_wk%fem_int%next_tbl,   &
      &    FSGSs%SGS_MHD_wk%fem_int%jcs, FMHDs%FEM_MHD%geofem,           &
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
 !
@@ -76,7 +76,7 @@
       call dealloc_tracer_controls(FMVIZs%tracer_ctls)
 !
 !  -----   Initialize visualization
-      call init_visualize(FMHDs%MHD_step%viz_step,                      &
+      call init_visualize(elps_VIZ1, FMHDs%MHD_step%viz_step,           &
      &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field, FMVIZs%tracers,    &
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
       call dealloc_viz_controls(FMVIZs%vizs_ctl)
@@ -111,15 +111,16 @@
         if (visval) then
           call MHD_viz_routine_step(FMHDs%MHD_step%flex_p,              &
      &        FMHDs%MHD_step%time_d, FMHDs%MHD_step%viz_step)
-          call visualize_all                                            &
-     &       (FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,           &
+          call visualize_all(elps_VIZ1,                                 &
+     &        FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,           &
      &        FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                &
      &        FMVIZs%tracers, FMVIZs%VIZ_DAT, FMVIZs%VIZs, FMHDs%m_SR)
         end if
       end do
 !
       call visualize_fin                                                &
-     &   (FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d, FMVIZs%VIZs)
+     &   (elps_VIZ1, FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,    &
+     &    FMVIZs%VIZs)
       call FEM_finalize_snapshot                                        &
      &   (FMHDs%MHD_files, FMHDs%MHD_step, FMHDs%MHD_IO)
 !

@@ -19,6 +19,7 @@
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use m_machine_parameter
       use t_spherical_MHD
@@ -59,6 +60,7 @@
       SNAPs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !   Load parameter file
@@ -77,7 +79,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(SNAPs%MHD_files, SNAPs%MHD_step,      &
      &    MVIZs%FEM_DAT, SNAPs%MHD_IO, SNAPs%m_SR)
-      call init_FEM_to_VIZ_bridge(SNAPs%MHD_step%viz_step,              &
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, SNAPs%MHD_step%viz_step,   &
      &    MVIZs%FEM_DAT%geofem, MVIZs%VIZ_DAT, SNAPs%m_SR)
 !
 !        Initialize spherical transform dynamo
@@ -88,11 +90,11 @@
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_four_visualize'
-      call init_four_visualize(SNAPs%MHD_step%viz_step,                 &
+      call init_four_visualize(elps_VIZ1, SNAPs%MHD_step%viz_step,      &
      &    MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT,     &
      &    add_VMHD_ctl1%viz4_ctls, MVIZs%VIZ4s, SNAPs%m_SR)
 
-      call init_zonal_mean_vizs(SNAPs%MHD_step%viz_step,                &
+      call init_zonal_mean_vizs(elps_VIZ1, SNAPs%MHD_step%viz_step,     &
      &    MVIZs%FEM_DAT%geofem, MVIZs%VIZ_DAT%edge_comm,                &
      &    MVIZs%FEM_DAT%field, add_VMHD_ctl1%zm_ctls,                   &
      &    MVIZs%zmeans, SNAPs%m_SR)
@@ -156,12 +158,12 @@
 !*
         if(iflag_vizs_w_fix_step(SNAPs%MHD_step%time_d%i_time_step,     &
      &                           SNAPs%MHD_step%viz_step)) then
-          if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
+          if (iflag_debug.eq.1) write(*,*) 'visualize_four'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(SNAPs%MHD_step%time_d%i_time_step,    &
      &                          SNAPs%MHD_step%viz_step)
-          call visualize_four                                           &
-     &       (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
+          call visualize_four(elps_VIZ1,                                &
+     &        SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,           &
      &        MVIZs%FEM_DAT%geofem, MVIZs%FEM_DAT%field, MVIZs%VIZ_DAT, &
      &        MVIZs%VIZ4s, SNAPs%m_SR)
 !*
@@ -169,8 +171,8 @@
 !*
           if(SNAPs%MHD_step%viz_step%istep_psf .ge. 0                   &
      &        .or. SNAPs%MHD_step%viz_step%istep_map .ge. 0) then
-            call SPH_MHD_zmean_vizs                                     &
-     &         (SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,         &
+            call SPH_MHD_zmean_vizs(elps_VIZ1,                          &
+     &          SNAPs%MHD_step%viz_step, SNAPs%MHD_step%time_d,         &
      &          SNAPs%SPH_MHD%sph, MVIZs%FEM_DAT%geofem,                &
      &          SNAPs%SPH_WK%trns_WK, MVIZs%FEM_DAT%field,              &
      &          MVIZs%zmeans, SNAPs%m_SR)

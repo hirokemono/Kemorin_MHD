@@ -56,13 +56,17 @@
       use t_control_data_vizs
       use input_control_four_vizs
 !
+      call init_elapse_time_by_TOTAL
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
+!
 !       set controls
       if (iflag_debug.gt.0) write(*,*) 's_input_control_four_vizs'
       call s_input_control_four_vizs(fname_viz_ctl, vizs_ctl6,          &
      &                               FEM_viz6, t_VIZ6)
 !
 !  FEM Initialization
-      call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
+      call FEM_initialize_four_vizs                                     &
+     &   (elps_VIZ1, t_VIZ6%init_d, t_VIZ6%ucd_step,                    &
      &    t_VIZ6%viz_step, FEM_viz6, VIZ_DAT6, m_SR16)
 !
       dummy_tracer%num_trace = 0
@@ -91,14 +95,16 @@
      &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6, m_SR16)
 !
 !  Generate field lines
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
         istep_fline                                                     &
      &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%FLINE_t)
         call FLINE_visualize                                            &
-     &     (istep_fline, elps_fline1, t_VIZ6%time_d, FEM_viz6%geofem,   &
-     &      VIZ_DAT6%para_surf, FEM_viz6%field,                         &
+     &     (istep_fline, elps_VIZ1%elps_FLINE, t_VIZ6%time_d,           &
+     &      FEM_viz6%geofem, VIZ_DAT6%para_surf, FEM_viz6%field,        &
      &      dummy_tracer, fline_v6, m_SR16)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
       end do
 !
       end subroutine analyze_fline

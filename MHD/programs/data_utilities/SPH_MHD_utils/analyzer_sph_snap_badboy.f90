@@ -20,6 +20,7 @@
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use m_machine_parameter
       use t_spherical_MHD
@@ -53,11 +54,13 @@
       SSNAPs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
 !
       call elpsed_label_4_repartition
       call elpsed_label_field_send_recv
 !
-      call initialize_sph_SGS_snap(control_file_name, SSNAPs, SVIZ_m)
+      call initialize_sph_SGS_snap(control_file_name, elps_VIZ1,        &
+     &                             SSNAPs, SVIZ_m)
 !
       end subroutine initialize_sph_snap_badboy
 !
@@ -106,11 +109,13 @@
         call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,           &
      &                                    SVIZ_m%SPH_SGS%trns_WK_LES)
 !
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
      &      SVIZ_m%tracers)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
 
      
         SSNAPs%MHD_step%time_d%i_time_step                              &
@@ -143,8 +148,8 @@
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
         call istep_viz_w_fix_dt(SSNAPs%MHD_step%time_d%i_time_step,     &
      &                          SSNAPs%MHD_step%viz_step)
-        call visualize_all                                              &
-     &     (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,           &
+        call visualize_all(elps_VIZ1,                                   &
+     &      SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,           &
      &      SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,                &
      &      SVIZ_m%tracers, SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
         call dealloc_pvr_data(SVIZ_m%VIZs%pvr)
@@ -177,21 +182,25 @@
      &                             'control file is broken')
           end if
 !
-          if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-          call PVR_initialize                                           &
-     &       (SSNAPs%MHD_step%viz_step%PVR_t%increment, elps_PVR1,      &
+          if(elps_VIZ1%flag_elapsed_V)                                  &
+     &        call start_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
+          call PVR_initialize(SSNAPs%MHD_step%viz_step%PVR_t%increment, &
+     &        elps_VIZ1%elps_PVR,                                       &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &        SVIZ_m%tracers, SVIZ_m%VIZs%fline, viz_ctls2%pvr_ctls,    &
      &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
-          if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
-          if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
+          if(elps_VIZ1%flag_elapsed_V)                                  &
+     &        call end_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
+          if(elps_VIZ1%flag_elapsed_V)                                  &
+     &        call start_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
           call PVR_visualize(SSNAPs%MHD_step%viz_step%istep_pvr,        &
-     &        SSNAPs%MHD_step%time_d%time, elps_PVR1,                   &
+     &        SSNAPs%MHD_step%time_d%time, elps_VIZ1%elps_PVR,          &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM%jacobians,          &
      &        SVIZ_m%FEM_DAT%field, SVIZ_m%tracers, SVIZ_m%VIZs%fline,  &
      &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
           call dealloc_pvr_data(SVIZ_m%VIZs%pvr)
-          if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
+          if(elps_VIZ1%flag_elapsed_V)                                  &
+     &                call end_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
       end do
@@ -199,7 +208,7 @@
 !
 !    Loop end
       if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
-      call visualize_fin(SSNAPs%MHD_step%viz_step,                      &
+      call visualize_fin(elps_VIZ1, SSNAPs%MHD_step%viz_step,           &
      &                   SSNAPs%MHD_step%time_d, SVIZ_m%VIZs)
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
       call FEM_finalize_sph_SGS_MHD(SSNAPs%MHD_files,                   &

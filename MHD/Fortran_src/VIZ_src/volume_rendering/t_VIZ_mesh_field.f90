@@ -13,8 +13,9 @@
 !!        type(next_nod_ele_table), intent(in), target :: next_tbl
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!!      subroutine init_mesh_data_for_vizs(viz_step, mesh,              &
+!!      subroutine init_mesh_data_for_vizs(elps_VIZ, viz_step, mesh,    &
 !!     &                                   VIZ_DAT, m_SR)
+!!        type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
@@ -34,6 +35,7 @@
       use t_VIZ_step_parameter
       use t_para_double_numbering
       use t_paralell_surface_indices
+      use t_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -100,11 +102,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_mesh_data_for_vizs(viz_step, mesh,                &
+      subroutine init_mesh_data_for_vizs(elps_VIZ, viz_step, mesh,      &
      &                                   VIZ_DAT, m_SR)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
+      use t_elapsed_labels_4_VIZ
       use t_work_time
       use int_volume_of_domain
       use set_element_id_4_node
@@ -113,6 +115,7 @@
       use const_surface_comm_table
       use set_normal_vectors
 !
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(VIZ_step_params), intent(in) :: viz_step
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -125,18 +128,21 @@
      &       + viz_step%TRACER_t%increment
       if(iflag .gt. 0) then
 !  -----  Construct Element communication table
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+16)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+16)
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (mesh%node, mesh%nod_comm, mesh%ele,                         &
      &      VIZ_DAT%ele_comm, m_SR)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+16)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+16)
       end if
 !
       iflag = viz_step%FLINE_t%increment + viz_step%TRACER_t%increment
       if(iflag .gt. 0) then
 !  -----  Construct Surface communication table
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+16)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+16)
         if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
         call const_surf_comm_table(mesh%node, mesh%nod_comm,            &
      &                             VIZ_DAT%surf_comm, mesh%surf, m_SR)
@@ -166,18 +172,21 @@
         call dealloc_double_numbering(VIZ_DAT%iele_dbl)
         call dealloc_double_numbering(VIZ_DAT%inod_dbl)
         call dealloc_comm_table(VIZ_DAT%surf_comm)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+16)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+16)
       end if
 !
 !  -----  Construct Edge communication table
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment       &
      &       + viz_step%MAP_t%increment
       if(iflag .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+17)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+17)
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table(mesh%node, mesh%nod_comm,            &
      &                             VIZ_DAT%edge_comm, mesh%edge, m_SR)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+17)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+17)
       end if
       call calypso_mpi_barrier
 !

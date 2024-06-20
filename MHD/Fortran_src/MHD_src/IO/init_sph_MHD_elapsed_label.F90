@@ -48,7 +48,7 @@
       call elpsed_label_calypso_send_recv
 !      call elapsed_label_4_Legendre_trans
 !
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elapsed_label_4_SGS_model
 !      call elapsed_label_4_ele_comm_tbl
 !      call elpsed_label_4_sleeve_ext
@@ -76,7 +76,7 @@
       call reset_elapse_after_init_SPH_MHD
       call reset_elapse_after_init_SGS
       call reset_elapse_after_init_LEG
-      call reset_elapse_after_init_VIZ
+      call reset_elapse_after_init_VIZ(elps_VIZ1, elps1)
 !
       end subroutine reset_elapse_4_init_sph_mhd
 !

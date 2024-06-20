@@ -7,11 +7,12 @@
 !>@brief Main module to access all visualization programs
 !!
 !!@verbatim
-!!      subroutine init_visualize(viz_step, geofem, nod_fld, tracer,    &
-!!     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
-!!      subroutine visualize_all(viz_step, time_d, geofem,              &
+!!      subroutine init_visualize(elps_VIZ, viz_step, geofem, nod_fld,  &
+!!     &                          tracer, VIZ_DAT, viz_ctls, vizs, m_SR)
+!!      subroutine visualize_all(elps_VIZ, viz_step, time_d, geofem,    &
 !!     &                         nod_fld, tracer, VIZ_DAT, vizs, m_SR)
-!!      subroutine visualize_fin(viz_step, time_d, vizs)
+!!      subroutine visualize_fin(elps_VIZ, viz_step, time_d, vizs)
+!!        type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -29,9 +30,9 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
+      use t_elapsed_labels_4_VIZ
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
       use t_time_data
@@ -68,8 +69,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(viz_step, geofem, nod_fld, tracer,      &
-     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
+      subroutine init_visualize(elps_VIZ, viz_step, geofem, nod_fld,    &
+     &                          tracer, VIZ_DAT, viz_ctls, vizs, m_SR)
 !
       use t_fem_gauss_int_coefs
       use t_shape_functions
@@ -77,6 +78,7 @@
       use volume_rendering
       use map_projection
 !
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -88,42 +90,56 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize(viz_step%PSF_t%increment, elps_PSF1,   &
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+1)
+      call SECTIONING_initialize                                        &
+     &   (viz_step%PSF_t%increment, elps_VIZ%elps_PSF,                  &
      &    geofem, VIZ_DAT%edge_comm, nod_fld, viz_ctls%psf_ctls,        &
      &    vizs%psf, m_SR%SR_sig, m_SR%SR_il)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+1)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+3)
       call ISOSURF_initialize                                           &
      &   (viz_step%ISO_t%increment, geofem, nod_fld,                    &
      &    viz_ctls%iso_ctls, vizs%iso)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+3)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+5)
       call MAP_PROJECTION_initialize(viz_step%MAP_t%increment,          &
-     &    elps_PSF1, elps_MAP1, geofem, VIZ_DAT%edge_comm, nod_fld,     &
+     &    elps_VIZ%elps_PSF, elps_VIZ%elps_MAP,                         &
+     &    geofem, VIZ_DAT%edge_comm, nod_fld,                           &
      &    viz_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+5)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+11)
       call FLINE_initialize                                             &
      &   (viz_step%FLINE_t%increment, geofem, nod_fld, tracer,          &
      &    viz_ctls%fline_ctls, vizs%fline)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+11)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+7)
       call PVR_initialize                                               &
-     &   (viz_step%PVR_t%increment, elps_PVR1, geofem, nod_fld,         &
+     &   (viz_step%PVR_t%increment, elps_VIZ%elps_PVR, geofem, nod_fld, &
      &    tracer, vizs%fline, viz_ctls%pvr_ctls, vizs%pvr, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+7)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call LIC_initialize                                               &
-     &   (viz_step%LIC_t%increment, elps_PVR1, elps_LIC1,               &
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+9)
+      call LIC_initialize(viz_step%LIC_t%increment,                     &
+     &    elps_VIZ%elps_PVR, elps_VIZ%elps_LIC,                         &
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, vizs%lic, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+9)
 !
       call calypso_mpi_barrier
 !
@@ -131,12 +147,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, time_d, geofem,                &
+      subroutine visualize_all(elps_VIZ, viz_step, time_d, geofem,      &
      &                         nod_fld, tracer, VIZ_DAT, vizs, m_SR)
 !
       use volume_rendering
       use map_projection
 !
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -150,44 +167,57 @@
 !
 !
       if(viz_step%PSF_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
-        call SECTIONING_visualize(viz_step%istep_psf, elps_PSF1,        &
-     &                            time_d, geofem, nod_fld, vizs%psf)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+2)
+        call SECTIONING_visualize                                       &
+     &     (viz_step%istep_psf, elps_VIZ%elps_PSF,                      &
+     &      time_d, geofem, nod_fld, vizs%psf)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+2)
       end if
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
-      call ISOSURF_visualize(viz_step%istep_iso, elps_ISO1, time_d,     &
-     &                       geofem, VIZ_DAT%edge_comm, nod_fld,        &
-     &                       vizs%iso, m_SR%SR_sig, m_SR%SR_il)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+4)
+      call ISOSURF_visualize(viz_step%istep_iso, elps_VIZ%elps_ISO,     &
+     &    time_d, geofem, VIZ_DAT%edge_comm, nod_fld,                   &
+     &    vizs%iso, m_SR%SR_sig, m_SR%SR_il)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+4)
 !
       if(viz_step%MAP_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+6)
         call MAP_PROJECTION_visualize                                   &
-     &     (viz_step%istep_map, elps_PSF1, elps_MAP1, time_d,           &
-     &      geofem, nod_fld, vizs%maps, m_SR%SR_sig)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
+     &     (viz_step%istep_map, elps_VIZ%elps_PSF, elps_VIZ%elps_MAP,   &
+     &      time_d, geofem, nod_fld, vizs%maps, m_SR%SR_sig)
+        if(elps_VIZ%flag_elapsed_V)                                     &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+6)
       end if
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+12)
       call FLINE_visualize                                              &
-     &   (viz_step%istep_fline, elps_fline1, time_d, geofem,            &
+     &   (viz_step%istep_fline, elps_VIZ%elps_FLINE, time_d, geofem,    &
      &    VIZ_DAT%para_surf, nod_fld, tracer, vizs%fline, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+12)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-      call PVR_visualize(viz_step%istep_pvr, time_d%time, elps_PVR1,    &
-     &                   geofem, VIZ_DAT%jacobians, nod_fld, tracer,    &
-     &                   vizs%fline, vizs%pvr, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+8)
+      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
+     &    elps_VIZ%elps_PVR, geofem, VIZ_DAT%jacobians,                 &
+     &    nod_fld, tracer, vizs%fline, vizs%pvr, m_SR)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+8)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize                                                &
-     &   (viz_step%istep_lic, time_d%time, elps_PVR1, elps_LIC1,        &
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+10)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &    elps_VIZ%elps_PVR, elps_VIZ%elps_LIC,                         &
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    vizs%lic, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+10)
 !
       call calypso_mpi_barrier
 !
@@ -195,8 +225,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_fin(viz_step, time_d, vizs)
+      subroutine visualize_fin(elps_VIZ, viz_step, time_d, vizs)
 !
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
 !
@@ -204,7 +235,7 @@
 !
 !
       call LIC_finalize(viz_step%istep_lic, time_d%time,                &
-     &                  elps_LIC1, vizs%lic)
+     &                  elps_VIZ%elps_LIC, vizs%lic)
 !
       end subroutine visualize_fin
 !

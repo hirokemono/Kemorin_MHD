@@ -22,6 +22,7 @@
       use t_VIZ_mesh_field
       use t_mesh_SR
       use t_control_data_all_vizs
+      use m_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -54,7 +55,6 @@
 !
       subroutine initialize_pvr
 !
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use input_control_all_vizs
       use volume_rendering
@@ -63,14 +63,14 @@
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !  Load controls
       if (iflag_debug.gt.0) write(*,*) 's_inoput_control_four_vizs'
-      call s_input_control_all_vizs(fname_viz_ctl, pvr_ctl3,           &
+      call s_input_control_all_vizs(fname_viz_ctl, pvr_ctl3,            &
      &                              FEM_viz3, t_VIZ3)
 !
 !  FEM Initialization
@@ -78,17 +78,19 @@
       call FEM_initialize_viz(t_VIZ3%init_d,  t_VIZ3%ucd_step,          &
      &                        FEM_viz3, m_SR13)
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ3%viz_step, FEM_viz3%geofem, FEM_pvr3, m_SR13)
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, t_VIZ3%viz_step,           &
+     &                            FEM_viz3%geofem, FEM_pvr3, m_SR13)
 !
 !  Tracer Initialization
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
       call TRACER_initialize                                            &
      &   (t_VIZ3%init_d, t_VIZ3%finish_d, t_VIZ3%ucd_step,              &
      &    FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,          &
      &    pvr_ctl3%tracer_ctls%tracer_controls, vizs_tracer3)
       call dealloc_tracer_controls(pvr_ctl3%tracer_ctls)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FLINE_initialize'
@@ -96,13 +98,16 @@
      &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3,                &
      &    pvr_ctl3%viz_ctl_v%fline_ctls, vizs_fline3)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
-      call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment, elps_PVR1,   &
+      call PVR_initialize                                               &
+     &   (t_VIZ3%viz_step%PVR_t%increment, elps_VIZ1%elps_PVR,          &
      &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3, vizs_fline3,   &
      &    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3, m_SR13)
       call dealloc_viz_controls(pvr_ctl3%viz_ctl_v)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
 !
       end subroutine initialize_pvr
 !
@@ -128,28 +133,34 @@
      &                       FEM_viz3, m_SR13)
 !
 !  Load tracer data
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(t_VIZ3%viz_step%istep_tracer,             &
      &      t_VIZ3%time_d, t_VIZ3%ucd_step, vizs_tracer3)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
 !
 !  Const fieldlines
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
-        call FLINE_visualize                                            &
-     &     (t_VIZ3%viz_step%istep_fline, elps_fline1, t_VIZ3%time_d,    &
+        call FLINE_visualize(t_VIZ3%viz_step%istep_fline,               &
+     &      elps_VIZ1%elps_FLINE, t_VIZ3%time_d,                        &
      &      FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,        &
      &      vizs_tracer3, vizs_fline3, m_SR13)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
 !
 !  Rendering
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-        call PVR_visualize                                              &
-     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time, elps_PVR1,   &
-     &     FEM_viz3%geofem, FEM_pvr3%jacobians, FEM_viz3%field,         &
-     &     vizs_tracer3, vizs_fline3, vizs_pvr3, m_SR13)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
+        call PVR_visualize(t_VIZ3%viz_step%istep_pvr,                   &
+     &      t_VIZ3%time_d%time, elps_VIZ1%elps_PVR,                     &
+     &      FEM_viz3%geofem, FEM_pvr3%jacobians, FEM_viz3%field,        &
+     &      vizs_tracer3, vizs_fline3, vizs_pvr3, m_SR13)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

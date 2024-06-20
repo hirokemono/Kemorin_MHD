@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_SPH_transforms
       use m_work_time
+      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
 !
       use SPH_analyzer_back_trans_old
@@ -37,13 +38,12 @@
 !
       use t_ctl_params_sph_trans
       use t_SPH_mesh_field_data
-      use m_elapsed_labels_4_VIZ
       use FEM_to_VIZ_bridge
       use input_controls_sph_trans
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !   ----  read controls
@@ -78,14 +78,14 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step, FEM_STR1%geofem,   &
-     &                            VIZ_D_STR1, m_SR5)
+      call init_FEM_to_VIZ_bridge(elps_VIZ1,FEM_STR1%viz_step,          &
+     &                            FEM_STR1%geofem, VIZ_D_STR1, m_SR5)
 !
 !  ------  initialize visualization
       if (iflag_debug.gt.0) write(*,*) 'init_four_visualize'
-      call init_four_visualize                                          &
-     &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
-     &    VIZ_D_STR1, spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)
+      call init_four_visualize(elps_VIZ1, FEM_STR1%viz_step,            &
+     &    FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,                  &
+     &    spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)
       call dealloc_viz4_controls(spt_ctl1%viz4_ctls)
 !
       end subroutine init_zm_streamfunc
@@ -116,8 +116,8 @@
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call visualize_four                                           &
-     &       (FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
+          call visualize_four(elps_VIZ1,                                &
+     &        FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
      &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%four_vizs, m_SR5)
         end if
       end do

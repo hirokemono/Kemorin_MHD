@@ -58,7 +58,7 @@
       use input_control_three_vizs
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
@@ -70,12 +70,13 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_four_vizs'
-      call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
+      call FEM_initialize_four_vizs                                     &
+     &   (elps_VIZ1, t_VIZ3%init_d, t_VIZ3%ucd_step,                    &
      &    t_VIZ3%viz_step, FEM_viz3, VIZ_DAT3, m_SR13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_three_visualize'
-      call init_three_visualize(t_VIZ3%viz_step,                        &
+      call init_three_visualize(elps_VIZ1, t_VIZ3%viz_step,             &
      &    FEM_viz3%geofem, FEM_viz3%field, VIZ_DAT3,                    &
      &    vizs_ctl3%viz3_ctl, vizs_m3, m_SR13)
 !
@@ -102,7 +103,7 @@
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_three', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
-        call visualize_three(t_VIZ3%viz_step, t_VIZ3%time_d,            &
+        call visualize_three(elps_VIZ1, t_VIZ3%viz_step, t_VIZ3%time_d, &
      &      FEM_viz3%geofem, FEM_viz3%field, VIZ_DAT3, vizs_m3, m_SR13)
       end do
 !

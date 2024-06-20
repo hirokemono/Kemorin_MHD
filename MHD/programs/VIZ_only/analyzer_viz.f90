@@ -20,6 +20,7 @@
       use t_VIZ_mesh_field
       use t_mesh_SR
       use t_particle_trace
+      use m_elapsed_labels_4_VIZ
       use FEM_analyzer_viz
 !
       implicit none
@@ -52,7 +53,6 @@
 !
       subroutine initialize_vizs
 !
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
       use m_work_time_4_sleeve_extend
@@ -61,7 +61,7 @@
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
       call elpsed_label_4_repartition
       call elpsed_label_4_sleeve_ext
@@ -78,21 +78,23 @@
      &                        FEM_viz1, m_SR11)
 !
 !  Tracer Initialization
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
       call TRACER_initialize                                            &
      &   (t_VIZ1%init_d, t_VIZ1%finish_d, t_VIZ1%ucd_step,              &
      &    FEM_viz1%geofem, VIZ_DAT1%para_surf, FEM_viz1%field,          &
      &    vizs_ctl1%tracer_ctls%tracer_controls, tracers_v)
       call dealloc_tracer_controls(vizs_ctl1%tracer_ctls)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1, m_SR11)
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, t_VIZ1%viz_step,           &
+     &                            FEM_viz1%geofem, VIZ_DAT1, m_SR11)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (t_VIZ1%viz_step, FEM_viz1%geofem, FEM_viz1%field, tracers_v,  &
+      call init_visualize(elps_VIZ1, t_VIZ1%viz_step,                   &
+     &    FEM_viz1%geofem, FEM_viz1%field, tracers_v,                   &
      &    VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v, m_SR11)
       call dealloc_viz_controls(vizs_ctl1%viz_ctl_v)
 !
@@ -118,20 +120,23 @@
      &                       FEM_viz1, m_SR11)
 !
 !  Load tracer data
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(t_VIZ1%viz_step%istep_tracer,             &
      &      t_VIZ1%time_d, t_VIZ1%ucd_step, tracers_v)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
-        call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
+        call visualize_all(elps_VIZ1, t_VIZ1%viz_step, t_VIZ1%time_d,   &
      &      FEM_viz1%geofem, FEM_viz1%field, tracers_v, VIZ_DAT1,       &
      &      vizs_v, m_SR11)
       end do
 !
-      call visualize_fin(t_VIZ1%viz_step, t_VIZ1%time_d, vizs_v)
+      call visualize_fin(elps_VIZ1,                                     &
+     &                   t_VIZ1%viz_step, t_VIZ1%time_d, vizs_v)
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
