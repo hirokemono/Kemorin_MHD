@@ -185,12 +185,11 @@
      &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
           if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
           if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-          call PVR_visualize                                            &
-     &       (SSNAPs%MHD_step%viz_step%istep_pvr, elps_PVR1,            &
-     &        SSNAPs%MHD_step%time_d%time, SVIZ_m%FEM_DAT%geofem,       &
-     &        SVIZ_m%VIZ_FEM%jacobians, SVIZ_m%FEM_DAT%field,           &
-     &        SVIZ_m%tracers, SVIZ_m%VIZs%fline, SVIZ_m%VIZs%pvr,       &
-     &        SSNAPs%m_SR)
+          call PVR_visualize(SSNAPs%MHD_step%viz_step%istep_pvr,        &
+     &        SSNAPs%MHD_step%time_d%time, elps_PVR1,                   &
+     &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM%jacobians,          &
+     &        SVIZ_m%FEM_DAT%field, SVIZ_m%tracers, SVIZ_m%VIZs%fline,  &
+     &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
           call dealloc_pvr_data(SVIZ_m%VIZs%pvr)
           if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
