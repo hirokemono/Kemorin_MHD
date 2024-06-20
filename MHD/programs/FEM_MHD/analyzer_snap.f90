@@ -75,12 +75,14 @@
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
 !
 !  -----   Initialize tracer
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (FMHDs%MHD_step%init_d,  FMHDs%MHD_step%finish_d,              &
      &    FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,                &
      &    FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,                &
      &    FMVIZs%tracer_ctls%tracer_controls, FMVIZs%tracers)
       call dealloc_tracer_controls(FMVIZs%tracer_ctls)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  -----   Initialize visualization
       call init_visualize(FMHDs%MHD_step%viz_step,                      &
@@ -111,9 +113,11 @@
      &      FMHDs%MHD_IO, FMHDs%fem_sq, FMHDs%m_SR)
 !
 !  Visualization
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         call TRACER_visualize(FMHDs%MHD_step%viz_step%istep_tracer,     &
      &      FMHDs%MHD_step%time_d, FMHDs%MHD_step%rst_step,             &
      &      FMVIZs%tracers)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
 !
         visval = MHD_viz_routine_flag(FMHDs%MHD_step%flex_p,            &
      &                                FMHDs%MHD_step%time_d,            &

@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image                             &
-!!     &         (mesh, group, sf_grp_4_sf, lic_p, field_lic,           &
+!!     &         (elps_LIC, mesh, group, sf_grp_4_sf, lic_p, field_lic, &
 !!     &          pvr_screen, draw_param, color_param, pvr_start,       &
 !!     &          elapse_ray_trace_out, count_int_nod)
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -32,7 +33,6 @@
       use m_constants
       use m_geometry_constants
       use m_machine_parameter
-      use m_elapsed_labels_4_VIZ
       use m_work_time
       use calypso_mpi
       use lic_rgba_4_each_pixel
@@ -58,7 +58,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_lic_image                               &
-     &         (mesh, group, sf_grp_4_sf, lic_p, field_lic,             &
+     &         (elps_LIC, mesh, group, sf_grp_4_sf, lic_p, field_lic,   &
      &          pvr_screen, draw_param, color_param, pvr_start,         &
      &          elapse_ray_trace_out, count_int_nod)
 !
@@ -70,6 +70,7 @@
       use lic_pixel_ray_trace_fix_len
       use lic_pixel_ray_trace_by_ele
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -154,11 +155,13 @@
       call sum_icou_int_nod_smp(mesh%node, mesh%ele,                    &
      &                          l_elsp1, count_int_nod)
 !
-      if(iflag_LIC_time) then
-        elps1%elapsed(ist_elapsed_LIC+3)                                &
-     &     = elps1%elapsed(ist_elapsed_LIC+3) + l_elsp1%elapse_rtrace
-        elps1%elapsed(ist_elapsed_LIC+4)                                &
-     &     = elps1%elapsed(ist_elapsed_LIC+4) + l_elsp1%elapse_line_int
+      if(elps_LIC%flag_elapsed) then
+        elps1%elapsed(elps_LIC%ist_elapsed+3)                           &
+     &     = elps1%elapsed(elps_LIC%ist_elapsed+3)                      &
+     &      + l_elsp1%elapse_rtrace
+        elps1%elapsed(elps_LIC%ist_elapsed+4)                           &
+     &     = elps1%elapsed(elps_LIC%ist_elapsed+4)                      &
+     &      + l_elsp1%elapse_line_int
       end if
 !
       call cal_trace_time_statistic(mesh%node, mesh%ele, lic_p,         &

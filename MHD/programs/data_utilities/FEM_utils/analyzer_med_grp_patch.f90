@@ -81,6 +81,7 @@
 !
       subroutine analyze_med_grp_patch
 !
+      use m_elapsed_labels_4_VIZ
       use m_ctl_params_4_diff_udt
       use set_parallel_file_name
       use t_control_data_sections
@@ -113,9 +114,9 @@
       call set_med_grp_patch_ctl(psf_ctls_md%num_psf_ctl,               &
      &    psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
-      call SECTIONING_initialize(ione, FUTIL1%geofem, edge_comm_MG,     &
-     &    FUTIL1%nod_fld, psf_ctls_md, psf_md,                          &
-     &    m_SR4%SR_sig, m_SR4%SR_il)
+      call SECTIONING_initialize(ione, elps_PSF1,                       &
+     &    FUTIL1%geofem, edge_comm_MG, FUTIL1%nod_fld, psf_ctls_md,     &
+     &    psf_md, m_SR4%SR_sig, m_SR4%SR_il)
 !
       end subroutine analyze_med_grp_patch
 !

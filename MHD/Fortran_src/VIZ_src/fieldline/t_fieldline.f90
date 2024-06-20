@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine FLINE_initialize(increment_fline, geofem, nod_fld,   &
 !!     &          tracer, fline_ctls, fline)
-!!      subroutine FLINE_visualize(istep_fline, time_d, geofem,         &
-!!     &          para_surf, nod_fld, tracer, fline, m_SR)
+!!      subroutine FLINE_visualize(istep_fline, elps_fline, time_d,     &
+!!     &          geofem, para_surf, nod_fld, tracer, fline, m_SR)
 !!      subroutine FLINE_finalize(fline)
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -25,9 +25,10 @@
       module t_fieldline
 !
       use m_precision
-!
       use m_machine_parameter
       use m_geometry_constants
+      use m_work_time
+!
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -119,8 +120,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_visualize(istep_fline, time_d, geofem,           &
-     &          para_surf, nod_fld, tracer, fline, m_SR)
+      subroutine FLINE_visualize(istep_fline, elps_fline, time_d,       &
+     &          geofem, para_surf, nod_fld, tracer, fline, m_SR)
 !
       use multi_tracer_fieldline
       use const_field_lines
@@ -129,6 +130,7 @@
 !
 !
       integer(kind = kint), intent(in) :: istep_fline
+      type(elapsed_lables), intent(in) :: elps_fline
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
       type(paralell_surface_indices), intent(in) :: para_surf
@@ -142,12 +144,17 @@
 !  
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
-      call s_const_field_lines(geofem%mesh, geofem%group,               &
+      call s_const_field_lines(elps_fline, geofem%mesh, geofem%group,   &
      &    para_surf, nod_fld, tracer, fline%num_fline,                  &
      &    fline%fln_prm, fline%fln_src, fline%fln_tce,                  &
      &    fline%fln_SR, fline%fln_bcast, fline%fline_lc, m_SR)
+!
+      if(elps_fline%flag_elapsed)                                       &
+     &         call start_elapsed_time(elps_fline%ist_elapsed+4)
       call output_field_lines(istep_fline, time_d, fline%num_fline,     &
      &                         fline%fln_prm, fline%fline_lc)
+      if(elps_fline%flag_elapsed)                                       &
+     &         call end_elapsed_time(elps_fline%ist_elapsed+4)
 !
       end subroutine FLINE_visualize
 !
@@ -203,8 +210,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines(mesh, group, para_surf, nod_fld,   &
-     &          tracer, num_fline, fln_prm, fln_src, fln_tce,           &
+      subroutine s_const_field_lines                                    &
+     &         (elps_fline, mesh, group, para_surf, nod_fld, tracer,    &
+     &          num_fline, fln_prm, fln_src, fln_tce,                   &
      &          fln_SR, fln_bcast, fline_lc, m_SR)
 !
       use const_field_lines
@@ -212,6 +220,7 @@
       use set_fline_seeds_from_list
       use set_fields_for_fieldline
 !
+      type(elapsed_lables), intent(in) :: elps_fline
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(paralell_surface_indices), intent(in) :: para_surf
@@ -229,6 +238,8 @@
 !
       integer(kind = kint) :: i_fln
 !
+      if(elps_fline%flag_elapsed)                                       &
+     &         call start_elapsed_time(elps_fline%ist_elapsed+1)
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_tracer_seeds) then
@@ -246,11 +257,13 @@
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
         end if
       end do
+      if(elps_fline%flag_elapsed)                                       &
+     &         call end_elapsed_time(elps_fline%ist_elapsed+1)
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call const_each_field_line(mesh, para_surf, nod_fld,            &
-     &      fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),              &
+        call const_each_field_line(elps_fline, mesh, para_surf,         &
+     &      nod_fld, fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),     &
      &      fln_bcast(i_fln), fline_lc(i_fln), m_SR)
       end do
 !

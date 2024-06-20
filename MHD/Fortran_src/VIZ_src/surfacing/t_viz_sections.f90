@@ -26,8 +26,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_work_time
       use m_elapsed_labels_4_VIZ
+      use m_work_time
       use calypso_mpi
 !
       use t_VIZ_step_parameter
@@ -72,7 +72,7 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize(viz_step%PSF_t%increment,              &
+      call SECTIONING_initialize(viz_step%PSF_t%increment, elps_PSF1,   &
      &    geofem, edge_comm, nod_fld, surfacing_ctls%psf_s_ctls,        &
      &    viz_psfs%psf, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
@@ -103,12 +103,12 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
-      call SECTIONING_visualize                                         &
-     &   (viz_step%istep_psf, time_d, geofem, nod_fld, viz_psfs%psf)
+      call SECTIONING_visualize(viz_step%istep_psf, elps_PSF1,          &
+     &                          time_d, geofem, nod_fld, viz_psfs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
-      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
+      call ISOSURF_visualize(viz_step%istep_iso, elps_ISO1, time_d,     &
      &    geofem, edge_comm, nod_fld, viz_psfs%iso,                     &
      &    m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)

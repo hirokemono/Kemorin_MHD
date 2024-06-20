@@ -27,6 +27,8 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
 !
       use t_mesh_data
       use t_comm_table
@@ -37,7 +39,6 @@
       use t_VIZ_mesh_field
       use t_mesh_SR
       use t_work_time
-      use m_elapsed_labels_4_VIZ
 !
       implicit none
 !
@@ -52,7 +53,6 @@
       subroutine init_FEM_to_VIZ_bridge                                 &
      &         (viz_step, geofem, VIZ_DAT, m_SR)
 !
-      use m_work_time
       use parallel_FEM_mesh_init
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -68,6 +68,7 @@
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
+!
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
@@ -119,17 +120,17 @@
 !
 !  -----  Const Neighboring information
       if(viz_step%LIC_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+16)
         if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
         call set_belonged_ele_and_next_nod                              &
      &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+16)
       end if
 !
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment       &
      &     + viz_step%FLINE_t%increment + viz_step%TRACER_t%increment
       if(iflag .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+16)
         if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
 !        call sel_max_int_point_by_etype                                &
 !     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
@@ -139,7 +140,7 @@
         if (iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
         call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
      &      geofem%mesh, geofem%group, spfs, jacobians)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+16)
       end if
 !
       end subroutine normals_and_jacobians_4_VIZ

@@ -6,7 +6,7 @@ FEM_analyzer_viz_surf.o: $(VIZ_PLUG_DIR)/FEM_analyzer_viz_surf.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_VTK_convert.o: $(VIZ_PLUG_DIR)/analyzer_VTK_convert.f90 m_precision.o m_work_time.o t_viz_VTK_convert.o t_VIZ_only_step_parameter.o t_control_data_section_only.o t_FEM_mesh_field_4_viz.o t_file_IO_parameter.o t_vector_for_solver.o FEM_analyzer_viz_surf.o t_mesh_SR.o calypso_mpi.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_section_only.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_fline.o: $(VIZ_PLUG_DIR)/analyzer_fline.f90 m_precision.o calypso_mpi.o t_fieldline.o t_control_data_four_vizs.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_vector_for_solver.o t_mesh_SR.o FEM_analyzer_four_vizs.o t_control_data_vizs.o input_control_four_vizs.o
+analyzer_fline.o: $(VIZ_PLUG_DIR)/analyzer_fline.f90 m_precision.o calypso_mpi.o t_fieldline.o t_control_data_four_vizs.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_vector_for_solver.o t_mesh_SR.o t_particle_trace.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o t_control_data_vizs.o input_control_four_vizs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_four_vizs.o: $(VIZ_PLUG_DIR)/analyzer_four_vizs.f90 m_precision.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_control_data_four_vizs.o t_four_visualizers.o t_VIZ_only_step_parameter.o t_FEM_mesh_field_4_viz.o t_VIZ_mesh_field.o t_mesh_SR.o FEM_analyzer_four_vizs.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_SEND_RECV.o input_control_four_vizs.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -42,7 +42,7 @@ main_visualization.o: $(VIZ_PLUG_DIR)/main_visualization.f90 m_precision.o calyp
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_mesh_field_4_viz.o: $(VIZ_PLUG_DIR)/t_FEM_mesh_field_4_viz.f90 m_precision.o t_mesh_data.o t_phys_data.o t_field_list_for_vizs.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o t_control_data_tracers.o t_control_array_character3.o skip_comment_f.o viz_step_ctls_to_time_ctl.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o ctl_data_visualiser_IO.o write_control_elements.o
+t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o t_control_data_tracers.o t_control_array_character3.o skip_comment_f.o viz_step_ctls_to_time_ctl.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o ctl_data_visualiser_IO.o write_control_elements.o ctl_data_four_vizs_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_four_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_four_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_viz4.o t_control_array_character3.o skip_comment_f.o viz4_step_ctls_to_time_ctl.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o ctl_data_four_vizs_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

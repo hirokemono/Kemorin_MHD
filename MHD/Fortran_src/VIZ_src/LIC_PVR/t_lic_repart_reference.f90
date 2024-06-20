@@ -14,17 +14,20 @@
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!
 !!      subroutine init_lic_repart_ref                                  &
-!!     &         (mesh, pvr_rgb, each_part_p, rep_ref)
+!!     &         (elps_LIC, mesh, pvr_rgb, each_part_p, rep_ref)
 !!      subroutine alloc_lic_repart_ref(node, rep_ref)
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
 !!      subroutine reset_lic_count_line_int(rep_ref)
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_geometry), intent(in) :: mesh
-!!      subroutine output_LIC_line_integrate_count(time, rep_ref)
+!!      subroutine output_LIC_line_integrate_count(time, elps_LIC,      &
+!!     &                                           rep_ref)
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(lic_repart_reference), intent(in) :: rep_ref
 !!@endverbatim
 !
@@ -160,10 +163,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_lic_repart_ref                                    &
-     &         (mesh, pvr_rgb, each_part_p, rep_ref)
+     &         (elps_LIC, mesh, pvr_rgb, each_part_p, rep_ref)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use t_mesh_data
       use t_time_data
       use t_field_data_IO
@@ -173,6 +175,7 @@
       use field_IO_select
       use int_volume_of_single_domain
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_image_type), intent(in) :: pvr_rgb
       type(volume_partioning_param), intent(in) :: each_part_p
@@ -184,7 +187,8 @@
       integer(kind = kint) :: ierr
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call start_elapsed_time(elps_LIC%ist_elapsed+9)
       call alloc_lic_repart_ref(mesh%node, rep_ref)
 !
       call set_lic_repart_reference_file(pvr_rgb, rep_ref)
@@ -208,7 +212,8 @@
         call cal_node_volue_w_power(each_part_p%vol_power,              &
      &      mesh%node, mesh%ele, rep_ref%count_line_int)
       end if
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call end_elapsed_time(elps_LIC%ist_elapsed+9)
 !
       end subroutine init_lic_repart_ref
 !
@@ -285,27 +290,30 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_LIC_line_integrate_count(time, rep_ref)
+      subroutine output_LIC_line_integrate_count(time, elps_LIC,        &
+     &                                           rep_ref)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use t_time_data
       use t_field_data_IO
       use field_IO_select
 !
       real(kind = kreal), intent(in) :: time
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(lic_repart_reference), intent(in) :: rep_ref
 !
       type(time_data) :: t_IO
       type(field_IO) :: fld_IO
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call start_elapsed_time(elps_LIC%ist_elapsed+9)
       call copy_lic_repart_ref_to_IO(time, rep_ref, t_IO, fld_IO)
       call sel_write_step_FEM_field_file                                &
      &   (iminus, rep_ref%file_IO, t_IO, fld_IO)
       call dealloc_phys_IO(fld_IO)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call end_elapsed_time(elps_LIC%ist_elapsed+9)
 !
       end subroutine output_LIC_line_integrate_count
 !

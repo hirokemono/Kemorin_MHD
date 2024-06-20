@@ -7,18 +7,20 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine set_fixed_view_and_image(i_img, num_stereo,          &
-!!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
-!!      subroutine rendering_with_fixed_view(istep_pvr, time,           &
+!!      subroutine set_fixed_view_and_image(elps_PVR, mesh,             &
+!!     &          pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
+!!      subroutine rendering_with_fixed_view(istep_pvr, time, elps_PVR, &
 !!     &          mesh, group, tracer, fline, sf_grp_4_sf,              &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb,              &
 !!     &          SR_sig, SR_r)
 !!
-!!      subroutine rendering_at_once(istep_pvr, time, mesh, group,      &
-!!     &          tracer, fline, sf_grp_4_sf, field_pvr, pvr_param,     &
-!!     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
+!!      subroutine rendering_at_once                                    &
+!!     &         (istep_pvr, time, elps_PVR, mesh, group, tracer, fline,&
+!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,         &
+!!     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !!        integer(kind = kint), intent(in) :: i_img, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
+!!        type(elapsed_lables), intent(in) :: elps_PVR
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -72,13 +74,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_view_and_image                               &
-     &         (mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
+      subroutine set_fixed_view_and_image(elps_PVR, mesh,               &
+     &          pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
       use t_pvr_stencil_buffer
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_geometry), intent(in) :: mesh
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_image_type), intent(in) :: pvr_rgb
@@ -92,7 +95,7 @@
      &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
+     &   (elps_PVR, pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,      &
      &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
 !
       call allocate_item_pvr_ray_start                                  &
@@ -104,7 +107,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view(istep_pvr, time,             &
+      subroutine rendering_with_fixed_view(istep_pvr, time, elps_PVR,   &
      &          mesh, group, tracer, fline, sf_grp_4_sf,                &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb,                &
      &          SR_sig, SR_r)
@@ -113,6 +116,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(tracer_module), intent(in) :: tracer
@@ -131,8 +135,8 @@
      &   (pvr_proj%start_save, pvr_proj%start_fix)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image                                              &
-     &   (istep_pvr, time, mesh, group, tracer, fline, sf_grp_4_sf,     &
+      call rendering_image(istep_pvr, time, elps_PVR,                   &
+     &    mesh, group, tracer, fline, sf_grp_4_sf,                      &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
@@ -141,9 +145,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, time, mesh, group,        &
-     &          tracer, fline, sf_grp_4_sf, field_pvr, pvr_param,       &
-     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
+      subroutine rendering_at_once                                      &
+     &         (istep_pvr, time, elps_PVR, mesh, group, tracer, fline,  &
+     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,           &
+     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
@@ -151,6 +156,7 @@
       use t_pvr_stencil_buffer
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      type(elapsed_lables), intent(in) :: elps_PVR
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -171,13 +177,13 @@
       call transfer_to_screen(mesh%node, mesh%surf,                     &
      &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
-      call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
-     &    SR_sig, SR_r, SR_i)
+      call const_pvr_stencil_buffer(elps_PVR, pvr_rgb,                  &
+     &    pvr_proj%start_fix, pvr_proj%stencil, SR_sig, SR_r, SR_i)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, mesh, group, tracer, fline, &
-     &    sf_grp_4_sf, pvr_param%color, pvr_param%colorbar, field_pvr,  &
+      call rendering_image(istep_pvr, time, elps_PVR,                   &
+     &    mesh, group, tracer, fline, sf_grp_4_sf,                      &
+     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
       call deallocate_pvr_ray_start(pvr_proj%start_fix)
@@ -189,13 +195,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, time, mesh, group, tracer, fline,            &
+     &         (istep_pvr, time, elps_PVR, mesh, group, tracer, fline,  &
      &          sf_grp_4_sf, color_param, cbar_param, field_pvr,        &
      &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
      &          pvr_rgb, SR_sig, SR_r)
 !
       use m_geometry_constants
-      use m_elapsed_labels_4_VIZ
       use t_solver_SR
 !
       use ray_trace_4_each_image
@@ -206,6 +211,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(tracer_module), intent(in) :: tracer
@@ -225,26 +231,30 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
+      if(elps_PVR%flag_elapsed)                                         &
+     &         call start_elapsed_time(elps_PVR%ist_elapsed+3)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image                                     &
      &   (mesh, group, tracer, fline, sf_grp_4_sf,                      &
      &    field_pvr, pvr_screen, draw_param, color_param, pvr_start)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
+      if(elps_PVR%flag_elapsed)                                         &
+     &          call end_elapsed_time(elps_PVR%ist_elapsed+3)
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
+      if(elps_PVR%flag_elapsed)                                         &
+     &          call start_elapsed_time(elps_PVR%ist_elapsed+4)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
       call collect_rendering_image(pvr_start,                           &
      &    pvr_rgb%num_pixel_actual, pvr_rgb%rgba_real_gl, pvr_stencil,  &
      &    SR_sig, SR_r)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+4)
+      if(elps_PVR%flag_elapsed)                                         &
+     &          call end_elapsed_time(elps_PVR%ist_elapsed+4)
 !
-!      call composit_by_segmentad_image                                 &
-!     &   (istep_pvr, iflag_PVR_time, ist_elapsed_PVR,                  &
+!      call s_composit_by_segmentad_image(istep_pvr, elps_PVR,          &
 !     &    pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !
       if(my_rank .eq. pvr_rgb%irank_image_file) then
-        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
+        if(elps_PVR%flag_elapsed)                                       &
+     &          call start_elapsed_time(elps_PVR%ist_elapsed+3)
         if(cbar_param%flag_pvr_colorbar) then
           call set_pvr_colorbar                                         &
      &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
@@ -262,7 +272,8 @@
      &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
      &        cbar_param%iscale_font, pvr_screen, pvr_rgb%rgba_real_gl)
         end if
-        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
+        if(elps_PVR%flag_elapsed)                                       &
+     &          call end_elapsed_time(elps_PVR%ist_elapsed+3)
       end if
 !
       end subroutine rendering_image

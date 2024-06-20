@@ -7,11 +7,14 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm, &
-!!     &                               next_tbl, nod_fld, tracer, fline,&
-!!     &                               lic_ctls, repart_ctl, lic, m_SR)
-!!      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,&
-!!     &                              next_tb, lnod_fld, lic, m_SR)
+!!      subroutine LIC_initialize_test                                  &
+!!     &         (increment_lic, elps_PVR, elps_LIC, geofem, ele_comm,  &
+!!     &          next_tbl, nod_fld, tracer, fline, lic_ctls,           &
+!!     &          repart_ctl, lic, m_SR)
+!!      subroutine LIC_visualize_test                                   &
+!!     &         (istep_lic, time, elps_PVR, elps_LIC, geofem, ele_comm,&
+!!     &          next_tbl, nod_fld, lic, m_SR)
+!!        type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
@@ -64,9 +67,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm,   &
-     &                               next_tbl, nod_fld, tracer, fline,  &
-     &                               lic_ctls, repart_ctl, lic, m_SR)
+      subroutine LIC_initialize_test                                    &
+     &         (increment_lic, elps_PVR, elps_LIC, geofem, ele_comm,    &
+     &          next_tbl, nod_fld, tracer, fline, lic_ctls,             &
+     &          repart_ctl, lic, m_SR)
 !
       use t_control_data_pvr_sections
       use t_particle_trace
@@ -79,6 +83,7 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: increment_lic
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
@@ -135,7 +140,8 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_INT_COUNT_BASED) then
-          call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
+          call init_lic_repart_ref                                      &
+     &       (elps_LIC, geofem%mesh, lic%pvr%pvr_rgb(i_lic),            &
      &        lic%lic_param(i_lic)%each_part_p, lic%rep_ref(i_lic))
         end if
       end do
@@ -158,19 +164,22 @@
 !
       if(lic%flag_each_repart) return
       if(lic%repart_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
-        call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
-     &                           lic%repart_p, lic%rep_ref_m)
+        call init_lic_repart_ref                                        &
+     &     (elps_LIC, geofem%mesh, lic%pvr%pvr_rgb(1),                  &
+     &      lic%repart_p, lic%rep_ref_m)
       end if
 !
-      call LIC_initialize_w_shared_mesh(geofem, ele_comm,  next_tbl,    &
+      call LIC_initialize_w_shared_mesh                                 &
+     &   (elps_PVR, elps_LIC, geofem, ele_comm,  next_tbl,              &
      &    lic%repart_p, lic%rep_ref_m, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine LIC_initialize_test
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,  &
-     &                              next_tbl, nod_fld, lic, m_SR)
+      subroutine LIC_visualize_test                                     &
+     &         (istep_lic, time, elps_PVR, elps_LIC, geofem, ele_comm,  &
+     &          next_tbl, nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use select_LIC_rendering
@@ -178,6 +187,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -190,14 +200,16 @@
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
 !
       if(lic%flag_each_repart) then
-        call LIC_visualize_w_each_repart(istep_lic, time,               &
+        call LIC_visualize_w_each_repart                                &
+     &     (istep_lic, time, elps_PVR, elps_LIC,                        &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
      &      lic%rep_ref_m, lic%repart_data, lic%pvr, lic%lic_param,     &
      &      lic%rep_ref, m_SR)
       else
         call LIC_visualize_w_shared_mesh                                &
-     &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
-     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
+     &     (istep_lic, time, elps_PVR, elps_LIC, geofem, nod_fld,       &
+     &      lic%repart_p, lic%repart_data, lic%pvr, lic%lic_param,      &
+     &      m_SR)
       end if
 !
       end subroutine LIC_visualize_test

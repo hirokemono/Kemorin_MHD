@@ -74,12 +74,14 @@
      &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
 !
 !  -----   Initialize tracer
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (FMHDs%MHD_step%init_d,  FMHDs%MHD_step%finish_d,              &
      &    FMHDs%MHD_step%rst_step, FMHDs%FEM_MHD%geofem,                &
      &    FMVIZs%VIZ_DAT%para_surf, FMHDs%FEM_MHD%field,                &
      &    FMVIZs%tracer_ctls%tracer_controls, FMVIZs%tracers)
       call dealloc_tracer_controls(FMVIZs%tracer_ctls)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  -----   Initialize visualization
       call init_visualize(FMHDs%MHD_step%viz_step,                      &

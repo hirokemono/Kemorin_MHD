@@ -97,20 +97,20 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize                                        &
-     &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf, m_SR%SR_sig, m_SR%SR_il)
-      call SECTIONING_initialize(viz_step%PSF_t%increment,              &
+      call SECTIONING_initialize(viz_step%PSF_t%increment, elps_PSF1,   &
+     &    geofem, edge_comm, nod_fld, zm_ctls%zm_psf_ctls,              &
+     &    zmeans%zm_psf, m_SR%SR_sig, m_SR%SR_il)
+      call SECTIONING_initialize(viz_step%PSF_t%increment, elps_PSF1,   &
      &    geofem, edge_comm, nod_fld, zm_ctls%zRMS_psf_ctls,            &
      &    zmeans%zrms_psf, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call MAP_PROJECTION_initialize                                    &
-     &   (viz_step%MAP_t%increment, geofem, edge_comm, nod_fld,         &
+      call MAP_PROJECTION_initialize(viz_step%MAP_t%increment,          &
+     &    elps_PSF1, elps_MAP1, geofem, edge_comm, nod_fld,             &
      &    zm_ctls%zm_map_ctls, zmeans%zm_maps, m_SR%SR_sig, m_SR%SR_il)
-      call MAP_PROJECTION_initialize                                    &
-     &   (viz_step%MAP_t%increment, geofem, edge_comm, nod_fld,         &
+      call MAP_PROJECTION_initialize(viz_step%MAP_t%increment,          &
+     &    elps_PSF1, elps_MAP1, geofem, edge_comm, nod_fld,             &
      &    zm_ctls%zRMS_map_ctls, zmeans%zRMS_maps,                      &
      &    m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
@@ -180,16 +180,16 @@
       if(zm_psf%num_psf .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
         if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize zmean'
-        call SECTIONING_visualize                                       &
-     &   (viz_step%istep_psf, time_d, geofem, nod_fld, zm_psf)
+        call SECTIONING_visualize(viz_step%istep_psf, elps_PSF1,        &
+     &                            time_d, geofem, nod_fld, zm_psf)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
       end if
 !
       if(zm_maps%num_map .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
         call MAP_PROJECTION_visualize                                   &
-     &     (viz_step%istep_map, time_d, geofem, nod_fld, zm_maps,       &
-     &      m_SR%SR_sig)
+     &     (viz_step%istep_map, elps_PSF1, elps_MAP1, time_d,           &
+     &      geofem, nod_fld, zm_maps, m_SR%SR_sig)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
       end if
 !
@@ -233,16 +233,16 @@
       if(zrms_psf%num_psf .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
         if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
-        call SECTIONING_visualize                                       &
-     &     (viz_step%istep_psf, time_d, geofem, nod_fld, zrms_psf)
+        call SECTIONING_visualize(viz_step%istep_psf, elps_PSF1,        &
+     &                            time_d, geofem, nod_fld, zrms_psf)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
       end if
 !
       if(zrms_maps%num_map .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
         call MAP_PROJECTION_visualize                                   &
-     &     (viz_step%istep_map, time_d, geofem, nod_fld, zRMS_maps,     &
-     &      m_SR%SR_sig)
+     &     (viz_step%istep_map, elps_PSF1, elps_MAP1, time_d,           &
+     &      geofem, nod_fld, zRMS_maps, m_SR%SR_sig)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
       end if
 !

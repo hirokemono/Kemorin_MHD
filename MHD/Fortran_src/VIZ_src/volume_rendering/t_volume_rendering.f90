@@ -42,7 +42,6 @@
       use m_machine_parameter
       use m_geometry_constants
       use m_work_time
-      use m_elapsed_labels_4_VIZ
 !
       use t_mesh_data
       use t_phys_data

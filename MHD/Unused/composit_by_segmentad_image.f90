@@ -7,8 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine s_composit_by_segmentad_image                        &
-!!     &         (istep_pvr, iflag_PVR_time, ist_elapsed_PVR,           &
+!!      subroutine s_composit_by_segmentad_image(istep_pvr, elps_PVR,   &
 !!     &          pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !!        type(pvr_ray_start_type), intent(in) :: pvr_start
 !!        type(pvr_stencil_buffer), intent(in) :: pvr_stencil
@@ -35,8 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_composit_by_segmentad_image                          &
-     &         (istep_pvr, iflag_PVR_time, ist_elapsed_PVR,             &
+      subroutine s_composit_by_segmentad_image(istep_pvr, elps_PVR,     &
      &          pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !
       use t_pvr_image_array
@@ -46,11 +44,11 @@
       use PVR_image_transfer
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      logical, intent(in) :: iflag_PVR_time
-      integer(kind = kint), intent(in) :: ist_elapsed_PVR
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(pvr_ray_start_type), intent(in) :: pvr_start
       type(pvr_stencil_buffer), intent(in) :: pvr_stencil
+!
       type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -58,6 +56,8 @@
       integer(kind = kint) :: i, j, k, ipix
 !
 !
+      if(elps_PVR%flag_elapsed)                                         &
+     &       call start_elapsed_time(elps_PVR%ist_elapsed+3)
       allocate(rgba_gl(4,pvr_rgb%num_pixel_actual))
 !$omp parallel workshare
       rgba_gl(1:4,1:pvr_rgb%num_pixel_actual)                           &
@@ -71,9 +71,12 @@
      &    pvr_img%num_overlap, pvr_rgb%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
+      if(elps_PVR%flag_elapsed)                                         &
+     &       call end_elapsed_time(elps_PVR%ist_elapsed+3)
 !
 !       Outut semented image
+      if(elps_PVR%flag_elapsed)                                         &
+     &        call start_elapsed_time(elps_PVR%ist_elapsed+4)
       if(i_debug .gt. 0) then
         do i = 1, pvr_img%num_overlap
           j = pvr_img%istack_overlap(my_rank) + i
@@ -85,7 +88,6 @@
         end do
       end if
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
       if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
       call distribute_segmented_images                                  &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
@@ -106,7 +108,8 @@
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+4)
+      if(elps_PVR%flag_elapsed)                                         &
+     &        call end_elapsed_time(elps_PVR%ist_elapsed+4)
 !
       call compare_image_composition                                    &
      &   (pvr_stencil, pvr_img, pvr_rgb, rgba_gl)

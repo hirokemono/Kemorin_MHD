@@ -82,11 +82,13 @@
      &   (t_VIZ3%viz_step, FEM_viz3%geofem, FEM_pvr3, m_SR13)
 !
 !  Tracer Initialization
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (t_VIZ3%init_d, t_VIZ3%finish_d, t_VIZ3%ucd_step,              &
      &    FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,          &
      &    pvr_ctl3%tracer_ctls%tracer_controls, vizs_tracer3)
       call dealloc_tracer_controls(pvr_ctl3%tracer_ctls)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FLINE_initialize'
@@ -94,11 +96,13 @@
      &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3,                &
      &    pvr_ctl3%viz_ctl_v%fline_ctls, vizs_fline3)
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
-      call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
+      call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment, elps_PVR1,   &
      &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3, vizs_fline3,   &
      &    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3, m_SR13)
       call dealloc_viz_controls(pvr_ctl3%viz_ctl_v)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       end subroutine initialize_pvr
 !
@@ -124,22 +128,28 @@
      &                       FEM_viz3, m_SR13)
 !
 !  Load tracer data
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         call TRACER_visualize(t_VIZ3%viz_step%istep_tracer,             &
      &      t_VIZ3%time_d, t_VIZ3%ucd_step, vizs_tracer3)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
 !
 !  Const fieldlines
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
         call FLINE_visualize                                            &
-     &     (t_VIZ3%viz_step%istep_fline, t_VIZ3%time_d,                 &
+     &     (t_VIZ3%viz_step%istep_fline, elps_fline1, t_VIZ3%time_d,    &
      &      FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,        &
      &      vizs_tracer3, vizs_fline3, m_SR13)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
 !
 !  Rendering
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
         call PVR_visualize                                              &
-     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
+     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time, elps_PVR1,   &
      &     FEM_viz3%geofem, FEM_pvr3%jacobians, FEM_viz3%field,         &
      &     vizs_tracer3, vizs_fline3, vizs_pvr3, m_SR13)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

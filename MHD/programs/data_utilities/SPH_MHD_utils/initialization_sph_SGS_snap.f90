@@ -93,14 +93,14 @@
      &    SVIZs%FEM_DAT%geofem, SVIZs%VIZ_FEM, SSNAPs%m_SR)
 !
 !  -----   Initialize tracer
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (SSNAPs%MHD_step%init_d,  SSNAPs%MHD_step%finish_d,            &
      &    SSNAPs%MHD_step%rst_step, SVIZs%FEM_DAT%geofem,               &
      &    SVIZs%VIZ_FEM%para_surf, SVIZs%FEM_DAT%field,                 &
      &    tracer_ctls1%tracer_controls, SVIZs%tracers)
       call dealloc_tracer_controls(tracer_ctls1)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'

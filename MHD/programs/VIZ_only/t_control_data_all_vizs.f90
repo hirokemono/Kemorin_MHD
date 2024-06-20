@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine read_control_file_vizs(file_name, vizs_ctl, c_buf)
 !!      subroutine write_control_file_vizs(file_name, vizs_ctl)
+!!      subroutine init_vizs_control_label(hd_block, vizs_ctl)
 !!      subroutine dealloc_vizs_control_data(vizs_ctl)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_vizs), intent(inout) :: vizs_ctl
@@ -24,6 +25,10 @@
 !!    begin time_step_ctl
 !!      ...
 !!    end time_step_ctl
+!!
+!!    begin tracers_control
+!!      ...
+!!    end  tracers_control
 !!
 !!    begin visual_control
 !!      ...
@@ -52,6 +57,8 @@
 !
 !>      Structure for visulization program
       type control_data_vizs
+!>        Block name
+        character(len=kchara) :: block_name = 'visualizer'
 !>        Structure for file settings
         type(platform_data_control) :: viz_plt
 !>        Structure for time stepping control
@@ -77,12 +84,11 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter, private                         &
      &                    :: hd_time_step = 'time_step_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_tracer_ctl = 'tracers_control'
 !
       character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_tracer_ctl = 'tracers_control'
 !
       private :: viz_ctl_file_code
       private :: read_vizs_control_data, write_vizs_control_data
@@ -172,10 +178,7 @@
 !
 !
       if(vizs_ctl%i_viz_only_file .gt. 0) return
-      call init_platforms_labels(hd_platform, vizs_ctl%viz_plt)
-      call init_ctl_time_step_label(hd_time_step, vizs_ctl%t_viz_ctl)
-      call init_viz_ctl_label(hd_viz_control, vizs_ctl%viz_ctl_v)
-      call init_tracers_ctl_label(hd_tracer_ctl, vizs_ctl%tracer_ctls)
+      call init_vizs_control_label(hd_block, vizs_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -231,6 +234,27 @@
       end subroutine write_vizs_control_data
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_vizs_control_label(hd_block, vizs_ctl)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_four_vizs_IO
+      use ctl_data_visualiser_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_vizs), intent(inout) :: vizs_ctl
+!
+!
+      vizs_ctl%block_name = hd_block
+      call init_platforms_labels(hd_platform, vizs_ctl%viz_plt)
+      call init_ctl_time_step_label(hd_time_step, vizs_ctl%t_viz_ctl)
+      call init_viz_ctl_label(hd_viz_control, vizs_ctl%viz_ctl_v)
+      call init_tracers_ctl_label(hd_tracer_ctl, vizs_ctl%tracer_ctls)
+!
+      end subroutine init_vizs_control_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_vizs_control_data(vizs_ctl)

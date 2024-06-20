@@ -7,9 +7,11 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine s_trace_particle(dt_init, node, ele, surf, para_surf,&
-!!     &          nod_fld, fln_prm, fln_tce, fln_bcast, v_prev)
-!!        real(kind = kreal), intent(in) :: dt_init
+!!      subroutine s_trace_particle(dt, elps_tracer, mesh, para_surf,   &
+!!     &          nod_fld, fln_prm, fln_tce, fline_lc,                  &
+!!     &          fln_SR, fln_bcast, v_prev, m_SR)
+!!        real(kind = kreal), intent(in) :: dt
+!!        type(elapsed_lables), intent(in) :: elps_tracer
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -28,6 +30,8 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+      use m_work_time
+!
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -48,9 +52,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle(dt, mesh, para_surf, nod_fld,         &
-     &          fln_prm, fln_tce, fline_lc, fln_SR, fln_bcast,          &
-     &          v_prev, m_SR)
+      subroutine s_trace_particle(dt, elps_tracer, mesh, para_surf,     &
+     &          nod_fld, fln_prm, fln_tce, fline_lc,                    &
+     &          fln_SR, fln_bcast, v_prev, m_SR)
 !
       use transfer_to_long_integers
       use trace_particle_in_element
@@ -58,11 +62,12 @@
       use copy_field_smp
 !
       real(kind = kreal), intent(in) :: dt
+      type(elapsed_lables), intent(in) :: elps_tracer
       type(mesh_geometry), intent(in) :: mesh
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
-!
       type(fieldline_paramter), intent(in) :: fln_prm
+!
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
       type(trace_data_send_recv), intent(inout) :: fln_SR
@@ -78,8 +83,8 @@
 
       call reset_fline_start(fline_lc)
       do
-        if(iflag_MAP_time)                                              &
-     &              call start_elapsed_time(ist_elapsed_TRACER+2)
+        if(elps_tracer%flag_elapsed)                                    &
+     &         call start_elapsed_time(elps_tracer%ist_elapsed+1)
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
      &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
@@ -112,11 +117,11 @@
      &                           fline_lc)
           end if
         end do
-        if(iflag_MAP_time)                                              &
-     &              call end_elapsed_time(ist_elapsed_TRACER+2)
+        if(elps_tracer%flag_elapsed)                                    &
+     &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
 !
-        if(iflag_MAP_time)                                              &
-     &              call start_elapsed_time(ist_elapsed_TRACER+3)
+        if(elps_tracer%flag_elapsed)                                    &
+     &         call start_elapsed_time(elps_tracer%ist_elapsed+2)
         if(fln_tce%num_current_fline .gt. 4096) then
           call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
      &                                m_SR%SR_sig, nline)
@@ -124,8 +129,8 @@
           call s_broadcast_trace_data(fln_prm, fln_tce,                 &
      &                                fln_bcast, nline)
         end if
-        if(iflag_MAP_time)                                              &
-     &              call end_elapsed_time(ist_elapsed_TRACER+3)
+        if(elps_tracer%flag_elapsed)                                    &
+     &          call end_elapsed_time(elps_tracer%ist_elapsed+2)
 !
         if(nline .le. 0) exit
       end do

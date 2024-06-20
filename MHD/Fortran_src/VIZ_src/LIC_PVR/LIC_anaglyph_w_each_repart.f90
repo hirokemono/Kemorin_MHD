@@ -7,16 +7,19 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine s_LIC_anaglyph_w_each_repart                         &
-!!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
-!!     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,     &
-!!     &          rep_ref, m_SR)
+!!      subroutine s_LIC_anaglyph_w_each_repart(istep_lic, time,        &
+!!     &          elps_PVR, elps_LIC, geofem, ele_comm, next_tbl,       &
+!!     &          nod_fld, repart_p, rep_ref_m, repart_data,            &
+!!     &          pvr, lic_param, rep_ref, m_SR)
 !!      subroutine LIC_movie_anaglyph_each_repart                       &
-!!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
+!!     &         (istep_lic, time, elps_PVR, elps_LIC,                  &
+!!     &          geofem, ele_comm, next_tbl, nod_fld,                  &
 !!     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,     &
 !!     &          rep_ref, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_PVR
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
@@ -70,13 +73,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_LIC_anaglyph_w_each_repart                           &
-     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
-     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
-     &          rep_ref, m_SR)
+      subroutine s_LIC_anaglyph_w_each_repart(istep_lic, time,          &
+     &          elps_PVR, elps_LIC, geofem, ele_comm, next_tbl,         &
+     &          nod_fld, repart_p, rep_ref_m, repart_data,              &
+     &          pvr, lic_param, rep_ref, m_SR)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use t_lic_field_data
       use t_surf_grp_list_each_surf
       use set_PVR_view_and_image
@@ -89,6 +91,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -106,7 +109,8 @@
       integer(kind = kint) :: i_lic, ist_lic, ied_lic, ist_img
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call start_elapsed_time(elps_LIC%ist_elapsed+1)
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
@@ -116,16 +120,16 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
-        call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
-     &      rep_ref(i_lic), rep_ref_m, lic_param(i_lic),                &
+        call LIC_init_each_mesh(elps_LIC, geofem, ele_comm, next_tbl,   &
+     &      repart_p, rep_ref(i_lic), rep_ref_m, lic_param(i_lic),      &
      &      repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &
      &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
-     &                          repart_data, m_SR)
+        call set_LIC_each_field(elps_LIC, geofem, repart_p,             &
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         call reset_lic_count_line_int(rep_ref_snap)
         call alloc_lic_repart_ref                                       &
@@ -138,11 +142,12 @@
 !
         if(my_rank .eq. 0) write(*,*)                                   &
      &                   's_each_LIC_anaglyph each', i_lic
-        call anaglyph_PVR_view_matrices(repart_data%viz_fem%mesh,       &
-     &     pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),                &
-     &     pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+        call anaglyph_PVR_view_matrices                                 &
+    &      (elps_PVR, repart_data%viz_fem%mesh,                         &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
         call s_each_LIC_anaglyph                                        &
-     &     (istep_lic, time, repart_data%viz_fem,                       &
+     &     (istep_lic, time, elps_LIC, repart_data%viz_fem,             &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
@@ -160,21 +165,25 @@
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call end_elapsed_time(elps_LIC%ist_elapsed+1)
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call start_elapsed_time(elps_LIC%ist_elapsed+2)
       call output_PVR_images(istep_lic, pvr%num_pvr, ist_lic, ied_lic,  &
      &    pvr%num_pvr_images, pvr%PVR_sort%istack_pvr_images,           &
      &    pvr%pvr_rgb)
       call dealloc_lic_repart_ref(rep_ref_snap)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      if(elps_LIC%flag_elapsed)                                         &
+     &            call end_elapsed_time(elps_LIC%ist_elapsed+2)
 !
       end subroutine s_LIC_anaglyph_w_each_repart
 !
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_movie_anaglyph_each_repart                         &
-     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
+     &         (istep_lic, time, elps_PVR, elps_LIC,                    &
+     &          geofem, ele_comm, next_tbl, nod_fld,                    &
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
@@ -190,6 +199,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -217,16 +227,16 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
-        call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
-     &      rep_ref(i_lic), rep_ref_m, lic_param(i_lic),                &
+        call LIC_init_each_mesh(elps_LIC, geofem, ele_comm, next_tbl,   &
+     &      repart_p, rep_ref(i_lic), rep_ref_m, lic_param(i_lic),      &
      &      repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &
      &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
-     &                          repart_data, m_SR)
+        call set_LIC_each_field(elps_LIC, geofem, repart_p,             &
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         call reset_lic_count_line_int(rep_ref_snap)
         call alloc_lic_repart_ref                                       &
@@ -237,7 +247,8 @@
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
-        call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
+        call anaglyph_lic_rendering_w_rot                               &
+     &     (istep_lic, time, elps_PVR, elps_LIC,                        &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &

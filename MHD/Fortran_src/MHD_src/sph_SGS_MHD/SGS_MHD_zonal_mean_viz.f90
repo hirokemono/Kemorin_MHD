@@ -121,16 +121,16 @@
       if(zrms_psf%num_psf .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
         if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
-        call SECTIONING_visualize                                       &
-     &     (viz_step%istep_psf, time_d, fem, nod_fld, zrms_psf)
+        call SECTIONING_visualize(viz_step%istep_psf, elps_PSF1,        &
+     &                            time_d, fem, nod_fld, zrms_psf)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
       end if
 !
       if(zrms_maps%num_map .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
         call MAP_PROJECTION_visualize                                   &
-     &     (viz_step%istep_map, time_d, fem, nod_fld, zRMS_maps,        &
-     &      m_SR%SR_sig)
+     &     (viz_step%istep_map, elps_PSF1, elps_MAP1, time_d,           &
+     &      fem, nod_fld, zRMS_maps, m_SR%SR_sig)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
       end if
 !

@@ -22,6 +22,8 @@
       use t_particle_trace
       use FEM_analyzer_four_vizs
 !
+      use m_elapsed_labels_4_VIZ
+!
       implicit none
 !
       character(len = kchara), parameter, private                       &
@@ -41,7 +43,7 @@
 !>      Structure of field line module
       type(fieldline_module), save :: fline_v6
 !>      Structure of field line module
-      type(tracer_module), save :: tracer_v6
+      type(tracer_module), save :: dummy_tracer
 !
 !  ---------------------------------------------------------------------
 !
@@ -63,16 +65,11 @@
       call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
      &    t_VIZ6%viz_step, FEM_viz6, VIZ_DAT6, m_SR16)
 !
-!  -----   Initialize tracer
-      call TRACER_initialize                                            &
-     &   (t_VIZ6%init_d, t_VIZ6%finish_d, t_VIZ6%ucd_step,              &
-     &    FEM_viz6%geofem, VIZ_DAT6%para_surf, FEM_viz6%field,          &
-     &    vizs_ctl6%tracer_ctls%tracer_controls, tracer_v6)
-      call dealloc_tracer_controls(vizs_ctl6%tracer_ctls)
+      dummy_tracer%num_trace = 0
 !
 !  VIZ Initialization
       call FLINE_initialize(t_VIZ6%viz_step%FLINE_t%increment,          &
-     &    FEM_viz6%geofem, FEM_viz6%field, tracer_v6,                   &
+     &    FEM_viz6%geofem, FEM_viz6%field, dummy_tracer,                &
      &    vizs_ctl6%viz4_ctl%fline_ctls, fline_v6)
 !
       end subroutine initialize_fline
@@ -93,19 +90,15 @@
         call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6, m_SR16)
 !
-!  Load tracer data
-       istep_tracer                                                     &
-     &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%TRACER_t)
-       call TRACER_visualize(istep_tracer, t_VIZ6%time_d,               &
-     &                       t_VIZ6%ucd_step, tracer_v6)
-!
 !  Generate field lines
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+12)
         istep_fline                                                     &
      &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%FLINE_t)
         call FLINE_visualize                                            &
-     &     (istep_fline, t_VIZ6%time_d, FEM_viz6%geofem,                &
+     &     (istep_fline, elps_fline1, t_VIZ6%time_d, FEM_viz6%geofem,   &
      &      VIZ_DAT6%para_surf, FEM_viz6%field,                         &
-     &      tracer_v6, fline_v6, m_SR16)
+     &      dummy_tracer, fline_v6, m_SR16)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+12)
       end do
 !
       end subroutine analyze_fline

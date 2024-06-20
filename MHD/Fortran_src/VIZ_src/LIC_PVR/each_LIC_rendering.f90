@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_each_LIC_rendering(istep_pvr, time, num_img,       &
-!!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,           &
+!!     &          elps_LIC, viz_fem, field_lic, sf_grp_4_sf, lic_param, &
 !!     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_data), intent(in) :: viz_fem
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(lic_field_data), intent(in) :: field_lic
@@ -23,17 +24,18 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        type(lic_repart_reference), intent(inout) :: rep_ref_viz
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine s_each_LIC_rendering_w_rot                           &
-!!     &         (istep_pvr, time, viz_fem, field_lic, sf_grp_4_sf,     &
+!!      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,          &
+!!     &          elps_PVR, elps_LIC, viz_fem, field_lic, sf_grp_4_sf,  &
 !!     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
 !!     &          rep_ref_viz, m_SR)
-!!      subroutine each_LIC_quilt_rendering_w_rot(istep_pvr, time,      &
-!!     &          num_img, viz_fem, field_lic, sf_grp_4_sf,             &
-!!     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          rep_ref_viz, m_SR)
+!!      subroutine each_LIC_quilt_rendering_w_rot                       &
+!!     &         (istep_pvr, time, num_img, elps_PVR, elps_LIC,         &
+!!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param, pvr_param,&
+!!     &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
 !!        type(mesh_data), intent(in) :: viz_fem
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(lic_field_data), intent(in) :: field_lic
@@ -55,6 +57,7 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+      use m_work_time
 !
       use t_mesh_data
       use t_phys_data
@@ -85,7 +88,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_each_LIC_rendering(istep_pvr, time, num_img,         &
-     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,             &
+     &          elps_LIC, viz_fem, field_lic, sf_grp_4_sf, lic_param,   &
      &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
@@ -96,6 +99,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_data), intent(in) :: viz_fem
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_field_data), intent(in) :: field_lic
@@ -115,7 +119,7 @@
      &   (pvr_param%outline, pvr_param%color)
 !
       do i_img = 1, num_img
-        call lic_rendering_with_fixed_view(istep_pvr, time,             &
+        call lic_rendering_with_fixed_view(istep_pvr, time, elps_LIC,   &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,        &
      &      field_lic, pvr_param,  pvr_proj(i_img), pvr_rgb(i_img),     &
      &      rep_ref_viz, m_SR)
@@ -125,13 +129,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering_w_rot                             &
-     &         (istep_pvr, time, viz_fem, field_lic, sf_grp_4_sf,       &
+      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,            &
+     &          elps_PVR, elps_LIC, viz_fem, field_lic, sf_grp_4_sf,    &
      &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          rep_ref_viz, m_SR)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use t_rotation_pvr_images
       use cal_pvr_modelview_mat
       use set_default_pvr_params
@@ -144,6 +147,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: viz_fem
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_field_data), intent(in) :: field_lic
@@ -171,31 +175,34 @@
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rotation_view_projection_mats(i_rot, pvr_param,            &
      &                                     pvr_proj%screen)
-        call rendering_lic_at_once                                      &
-     &     (istep_pvr, time,  viz_fem%mesh, viz_fem%group, sf_grp_4_sf, &
+        call rendering_lic_at_once(istep_pvr, time, elps_PVR, elps_LIC, &
+     &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                   &
      &      lic_param, field_lic, pvr_param, pvr_bound, pvr_proj,       &
      &      rot_imgs1%rot_pvr_rgb(i_rot), rep_ref_viz, m_SR)
       end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      if(elps_LIC%flag_elapsed)                                         &
+     &           call end_elapsed_time(elps_LIC%ist_elapsed+1)
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      if(elps_LIC%flag_elapsed)                                         &
+     &           call start_elapsed_time(elps_LIC%ist_elapsed+2)
       call output_rotation_PVR_images(istep_pvr,                        &
      &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      if(elps_LIC%flag_elapsed)                                         &
+     &           call end_elapsed_time(elps_LIC%ist_elapsed+2)
+      if(elps_LIC%flag_elapsed)                                         &
+     &           call start_elapsed_time(elps_LIC%ist_elapsed+1)
 !
       end subroutine s_each_LIC_rendering_w_rot
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_LIC_quilt_rendering_w_rot(istep_pvr, time,        &
-     &          num_img, viz_fem, field_lic, sf_grp_4_sf,               &
-     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          rep_ref_viz, m_SR)
+      subroutine each_LIC_quilt_rendering_w_rot                         &
+     &         (istep_pvr, time, num_img, elps_PVR, elps_LIC,           &
+     &          viz_fem, field_lic, sf_grp_4_sf, lic_param, pvr_param,  &
+     &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
       use rendering_LIC_image
       use rendering_streo_LIC_image
@@ -205,6 +212,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: viz_fem
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_field_data), intent(in) :: field_lic
@@ -228,19 +236,24 @@
         do i_img = 1, num_img
           call rot_multi_view_projection_mats(i_img, i_rot,             &
      &        pvr_param, pvr_proj(i_img)%screen)
-          call rendering_lic_at_once(istep_pvr, time,                   &
+          call rendering_lic_at_once                                    &
+     &       (istep_pvr, time, elps_PVR, elps_LIC,                      &
      &        viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                 &
      &        lic_param, field_lic, pvr_param, pvr_bound,               &
      &        pvr_proj(i_img), pvr_rgb(i_img),  rep_ref_viz, m_SR)
         end do
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        if(elps_LIC%flag_elapsed)                                       &
+     &           call end_elapsed_time(elps_LIC%ist_elapsed+1)
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+        if(elps_LIC%flag_elapsed)                                       &
+     &           call start_elapsed_time(elps_LIC%ist_elapsed+2)
         call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &     pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix, num_img, &
      &     pvr_param%stereo_def%n_column_row_view, pvr_rgb(1))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        if(elps_LIC%flag_elapsed)                                       &
+     &           call end_elapsed_time(elps_LIC%ist_elapsed+2)
+        if(elps_LIC%flag_elapsed)                                       &
+     &           call start_elapsed_time(elps_LIC%ist_elapsed+1)
       end do
 !
       end subroutine each_LIC_quilt_rendering_w_rot

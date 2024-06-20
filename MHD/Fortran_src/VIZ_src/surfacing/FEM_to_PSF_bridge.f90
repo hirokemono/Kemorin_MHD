@@ -37,6 +37,7 @@
       subroutine init_FEM_to_PSF_bridge                                 &
      &         (viz_step, geofem, edge_comm, m_SR)
 !
+      use m_elapsed_labels_4_VIZ
       use parallel_FEM_mesh_init
       use const_element_comm_tables
 !
@@ -56,10 +57,12 @@
 !
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+17)
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
      &      edge_comm, geofem%mesh%edge, m_SR)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+17)
       end if
 !
       end subroutine init_FEM_to_PSF_bridge

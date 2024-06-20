@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image_4_lic                                &
-!!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
+!!     &         (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf,  &
 !!     &          lic_p, color_param, cbar_param, field_lic,            &
 !!     &          draw_param, pvr_screen, pvr_start, pvr_stencil,       &
 !!     &          pvr_rgb, rep_ref_viz, SR_sig, SR_r)
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -47,13 +48,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image_4_lic                                  &
-     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
+     &         (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf,    &
      &          lic_p, color_param, cbar_param, field_lic,              &
      &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
      &          pvr_rgb, rep_ref_viz, m_SR)
 !
       use m_geometry_constants
-      use m_elapsed_labels_4_VIZ
       use t_mesh_data
       use t_geometry_data
       use t_surface_data
@@ -78,6 +78,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -100,26 +101,28 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image                                     &
-     &   (mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_screen,       &
-     &    draw_param, color_param, pvr_start,                           &
+     &   (elps_LIC, mesh, group, sf_grp_4_sf, lic_p,                    &
+     &    field_lic, pvr_screen, draw_param, color_param, pvr_start,    &
      &    elapse_ray_trace_out,  rep_ref_viz%count_line_int)
       rep_ref_viz%elapse_ray_trace(1:2)                                 &
      &     = rep_ref_viz%elapse_ray_trace(1:2)                          &
      &      + elapse_ray_trace_out(1:2)
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call start_elapsed_time(elps_LIC%ist_elapsed+5)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
       call collect_rendering_image(pvr_start, pvr_rgb%num_pixel_actual, &
      &    pvr_rgb%rgba_real_gl, pvr_stencil, m_SR%SR_sig, m_SR%SR_r)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+5)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call end_elapsed_time(elps_LIC%ist_elapsed+5)
 !
-!      call s_composit_by_segmentad_image                               &
-!     &   (istep_pvr, iflag_LIC_time, ist_elapsed_LIC,                  &
+!      call s_composit_by_segmentad_image(istep_pvr, elps_PVR,          &
 !     &    pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !
       if(my_rank .eq. pvr_rgb%irank_image_file) then
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
+        if(elps_LIC%flag_elapsed)                                       &
+     &           call start_elapsed_time(elps_LIC%ist_elapsed+3)
         if(cbar_param%flag_pvr_colorbar) then
           call set_pvr_colorbar                                         &
      &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
@@ -137,7 +140,8 @@
      &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
      &        cbar_param%iscale_font, pvr_screen, pvr_rgb%rgba_real_gl)
         end if
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
+        if(elps_LIC%flag_elapsed)                                       &
+     &         call end_elapsed_time(elps_LIC%ist_elapsed+3)
       end if
 !
       end subroutine rendering_image_4_lic

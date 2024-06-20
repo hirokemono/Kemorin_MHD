@@ -15,8 +15,9 @@
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!
-!!      subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,     &
-!!     &          repart_p, rep_ref_m, repart_data, m_SR)
+!!      subroutine LIC_init_shared_mesh(elps_LIC, geofem, ele_comm,     &
+!!     &          next_tbl, repart_p, rep_ref_m, repart_data, m_SR)
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
@@ -25,9 +26,9 @@
 !!        type(lic_repart_reference), intent(in) :: rep_ref_m
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,       &
-!!     &                              repart_p, rep_ref, rep_ref_m,     &
-!!     &                              lic_param, repart_data, m_SR)
+!!      subroutine LIC_init_each_mesh(elps_LIC, geofem, ele_comm,       &
+!!     &          next_tbl, repart_p, rep_ref, rep_ref_m,               &
+!!     &          lic_param, repart_data, m_SR)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
@@ -37,10 +38,11 @@
 !!        type(lic_parameters), intent(inout) :: lic_param
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
-!!      subroutine set_LIC_each_field(geofem, repart_p, lic_param,      &
-!!     &                              repart_data, m_SR)
+!!      subroutine set_LIC_each_field(elps_LIC, geofem, repart_p,       &
+!!     &                              lic_param, repart_data, m_SR)
 !!      subroutine dealloc_LIC_each_mesh                                &
 !!     &         (repart_p, each_part_p, repart_data)
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(volume_partioning_param), intent(in) :: each_part_p
@@ -55,7 +57,6 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
       use t_mesh_data
@@ -138,9 +139,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,       &
-     &          repart_p, rep_ref_m, repart_data, m_SR)
+      subroutine LIC_init_shared_mesh(elps_LIC, geofem, ele_comm,       &
+     &          next_tbl, repart_p, rep_ref_m, repart_data, m_SR)
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -156,8 +158,8 @@
       if(repart_p%flag_repartition) then
 !  -----  Repartition
         allocate(masking_tmp(0))
-        call s_LIC_re_partition                                        &
-     &     ((.TRUE.), repart_p, geofem, ele_comm, next_tbl,            &
+        call s_LIC_re_partition                                         &
+     &     ((.TRUE.), repart_p, elps_LIC, geofem, ele_comm, next_tbl,   &
      &      izero, masking_tmp, rep_ref_m, repart_data, m_SR)
         deallocate(masking_tmp)
 !
@@ -173,10 +175,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,         &
-     &                              repart_p, rep_ref, rep_ref_m,       &
-     &                              lic_param, repart_data, m_SR)
+      subroutine LIC_init_each_mesh(elps_LIC, geofem, ele_comm,         &
+     &          next_tbl, repart_p, rep_ref, rep_ref_m,                 &
+     &          lic_param, repart_data, m_SR)
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -189,8 +192,9 @@
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
-        call s_LIC_re_partition(lic_param%flag_LIC_elapsed_dump,        &
-     &      lic_param%each_part_p, geofem, ele_comm, next_tbl,          &
+        call s_LIC_re_partition                                         &
+     &     (lic_param%flag_LIC_elapsed_dump, lic_param%each_part_p,     &
+     &      elps_LIC, geofem, ele_comm, next_tbl,                       &
      &      lic_param%num_masking, lic_param%masking, rep_ref,          &
      &      repart_data, m_SR)
 !
@@ -199,7 +203,7 @@
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(lic_param%flag_LIC_elapsed_dump,        &
-     &      repart_p, geofem, ele_comm, next_tbl,                       &
+     &      repart_p, elps_LIC, geofem, ele_comm, next_tbl,             &
      &      izero, lic_param%masking, rep_ref_m, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
@@ -214,9 +218,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_LIC_each_field(geofem, repart_p, lic_param,        &
-     &                              repart_data, m_SR)
+      subroutine set_LIC_each_field(elps_LIC, geofem, repart_p,         &
+     &                              lic_param, repart_data, m_SR)
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_data), intent(in), target :: geofem
       type(volume_partioning_param), intent(in) :: repart_p
       type(lic_parameters), intent(in) :: lic_param
@@ -225,7 +230,8 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+7)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call start_elapsed_time(elps_LIC%ist_elapsed+7)
         if(repart_p%flag_repartition                                    &
      &        .or. lic_param%each_part_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh,                       &
@@ -233,7 +239,8 @@
      &        repart_data%nod_fld_lic, repart_data%field_lic,           &
      &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+7)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call end_elapsed_time(elps_LIC%ist_elapsed+7)
 !
       end subroutine set_LIC_each_field
 !
@@ -264,9 +271,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_LIC_re_partition                                     &
-     &         (flag_lic_dump, repart_p, geofem, ele_comm, next_tbl,    &
-     &          num_mask, masking, rep_ref, repart_data, m_SR)
+      subroutine s_LIC_re_partition(flag_lic_dump, repart_p, elps_LIC,  &
+     &          geofem, ele_comm, next_tbl, num_mask, masking,          &
+     &          rep_ref, repart_data, m_SR)
 !
       use t_next_node_ele_4_node
       use t_jacobians
@@ -282,6 +289,7 @@
 !
       logical, intent(in) :: flag_lic_dump
       integer(kind = kint), intent(in) :: num_mask
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -296,7 +304,8 @@
       type(jacobians_type) :: jac_viz
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call start_elapsed_time(elps_LIC%ist_elapsed+6)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(flag_lic_dump, repart_p,         &
      &    geofem, ele_comm, next_tbl, num_mask, masking,                &
@@ -307,9 +316,11 @@
      &    repart_data%sleeve_exp_WK, m_SR)
       call dealloc_calypso_comm_table(repart_data%mesh_to_viz_ele_tbl)
       call dealloc_comm_table(repart_data%viz_ele_comm)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call end_elapsed_time(elps_LIC%ist_elapsed+6)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+8)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call start_elapsed_time(elps_LIC%ist_elapsed+8)
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
      &   (repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
@@ -330,7 +341,8 @@
       call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
      &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
      &    spfs_T, jac_viz)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+8)
+      if(elps_LIC%flag_elapsed)                                         &
+     &         call end_elapsed_time(elps_LIC%ist_elapsed+8)
 !
       end subroutine s_LIC_re_partition
 !

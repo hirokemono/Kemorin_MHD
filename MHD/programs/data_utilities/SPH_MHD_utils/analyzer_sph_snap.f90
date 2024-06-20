@@ -126,9 +126,11 @@
 !
 !*  ----------- Visualization --------------
 !*
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
      &      SVIZ_m%tracers)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
 !
         if(iflag_vizs_w_fix_step(SSNAPs%MHD_step%time_d%i_time_step,    &
      &                           SSNAPs%MHD_step%viz_step)) then

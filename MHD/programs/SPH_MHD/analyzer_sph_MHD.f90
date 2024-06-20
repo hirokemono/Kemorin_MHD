@@ -114,14 +114,14 @@
       &   SVIZ_m%VIZ_FEM, SSMHDs%m_SR)
 !
 !  -----   Initialize tracer
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
      &    SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,              &
      &    SVIZ_m%VIZ_FEM%para_surf, SVIZ_m%FEM_DAT%field,               &
      &    tracer_ctls1%tracer_controls, SVIZ_m%tracers)
       call dealloc_tracer_controls(tracer_ctls1)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
@@ -230,7 +230,7 @@
            SSMHDs%MHD_step%viz_step%istep_tracer                        &
      &        = istep_file_w_fix_dt(SSMHDs%MHD_step%time_d%i_time_step, &
      &                              SSMHDs%MHD_step%viz_step%TRACER_t)
-           call TRACER_evolution(SSMHDs%MHD_step%time_d,                &
+           call TRACER_evolution(elps_tracer1, SSMHDs%MHD_step%time_d,  &
      &        SSMHDs%MHD_step%finish_d, SSMHDs%MHD_step%rst_step,       &
      &        SSMHDs%MHD_step%viz_step%istep_tracer,                    &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%VIZ_FEM%para_surf,          &

@@ -22,17 +22,20 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_proj)
 !!
-!!      subroutine each_PVR_rendering(istep_pvr, time, num_img,         &
+!!      subroutine each_PVR_rendering                                   &
+!!     &         (istep_pvr, time, num_img, elps_PVR,  geofem, jacs,    &
+!!     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,       &
+!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+!!      subroutine each_PVR_rendering_w_rot(istep_pvr, time, elps_PVR,  &
 !!     &          geofem, jacs, nod_fld, tracer, fline, sf_grp_4_sf,    &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
-!!      subroutine each_PVR_rendering_w_rot                             &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld, tracer, fline,&
-!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound, pvr_rgb,&
-!!     &          pvr_proj, SR_sig, SR_r, SR_i)
-!!      subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,      &
-!!     &          num_img, geofem, jacs, nod_fld, tracer, fline,        &
-!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,         &
-!!     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
+!!     &          field_pvr, pvr_param, pvr_bound, pvr_rgb, pvr_proj,   &
+!!     &          SR_sig, SR_r, SR_i)
+!!      subroutine each_PVR_quilt_rendering_w_rot                       &
+!!     &         (istep_pvr, time, num_img, elps_PVR, geofem, jacs,     &
+!!     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,       &
+!!     &          pvr_param, pvr_bound, pvr_proj, pvr_rgb,              &
+!!     &          SR_sig, SR_r, SR_i)
+!!        type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(node_data), intent(in) :: node
@@ -171,9 +174,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering(istep_pvr, time, num_img,           &
-     &          geofem, jacs, nod_fld, tracer, fline, sf_grp_4_sf,      &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
+      subroutine each_PVR_rendering                                     &
+     &         (istep_pvr, time, num_img, elps_PVR,  geofem, jacs,      &
+     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,         &
+     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
       use rendering_vr_image
@@ -182,6 +186,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(tracer_module), intent(in) :: tracer
@@ -208,7 +213,7 @@
      &   (pvr_param%outline, pvr_param%color)
 !
       do i_img = 1, num_img
-        call rendering_with_fixed_view(istep_pvr, time,                 &
+        call rendering_with_fixed_view(istep_pvr, time, elps_PVR,       &
      &      geofem%mesh, geofem%group, tracer, fline, sf_grp_4_sf,      &
      &      field_pvr, pvr_param, pvr_proj(i_img), pvr_rgb(i_img),      &
      &      SR_sig, SR_r)
@@ -218,16 +223,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering_w_rot                               &
-     &         (istep_pvr, time, geofem, jacs, nod_fld, tracer, fline,  &
-     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound, pvr_rgb,  &
-     &          pvr_proj, SR_sig, SR_r, SR_i)
+      subroutine each_PVR_rendering_w_rot(istep_pvr, time, elps_PVR,    &
+     &          geofem, jacs, nod_fld, tracer, fline, sf_grp_4_sf,      &
+     &          field_pvr, pvr_param, pvr_bound, pvr_rgb, pvr_proj,     &
+     &          SR_sig, SR_r, SR_i)
 !
       use cal_pvr_modelview_mat
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(tracer_module), intent(in) :: tracer
@@ -257,7 +263,7 @@
 !
 !
       call rendering_with_rotation                                      &
-     &   (istep_pvr, time, geofem%mesh, geofem%group,                   &
+     &   (istep_pvr, time, elps_PVR, geofem%mesh, geofem%group,         &
      &    tracer, fline, sf_grp_4_sf, field_pvr, pvr_rgb, pvr_param,    &
      &    pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
 !
@@ -265,13 +271,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,        &
-     &          num_img, geofem, jacs, nod_fld, tracer, fline,          &
-     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_bound,           &
-     &          pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
+      subroutine each_PVR_quilt_rendering_w_rot                         &
+     &         (istep_pvr, time, num_img, elps_PVR, geofem, jacs,       &
+     &          nod_fld, tracer, fline, sf_grp_4_sf, field_pvr,         &
+     &          pvr_param, pvr_bound, pvr_proj, pvr_rgb,                &
+     &          SR_sig, SR_r, SR_i)
 !
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
       use rendering_vr_image
       use write_PVR_image
@@ -280,6 +286,7 @@
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: num_img
 !
+      type(elapsed_lables), intent(in) :: elps_PVR
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(tracer_module), intent(in) :: tracer
@@ -312,20 +319,24 @@
         do i_img = 1, num_img
           call rot_multi_view_projection_mats(i_img, i_rot,             &
      &        pvr_param, pvr_proj(i_img)%screen)
-          call rendering_at_once(istep_pvr, time,                       &
+          call rendering_at_once(istep_pvr, time, elps_PVR,             &
      &        geofem%mesh, geofem%group, tracer, fline, sf_grp_4_sf,    &
      &        field_pvr, pvr_param, pvr_bound, pvr_proj(i_img),         &
      &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
         end do
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        if(elps_PVR%flag_elapsed)                                       &
+     &           call end_elapsed_time(elps_PVR%ist_elapsed+1)
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+        if(elps_PVR%flag_elapsed)                                       &
+     &           call start_elapsed_time(elps_PVR%ist_elapsed+2)
         call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &      pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix,         &
      &      num_img, pvr_param%stereo_def%n_column_row_view,            &
      &      pvr_rgb)
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        if(elps_PVR%flag_elapsed)                                       &
+     &           call end_elapsed_time(elps_PVR%ist_elapsed+2)
+        if(elps_PVR%flag_elapsed)                                       &
+     &           call start_elapsed_time(elps_PVR%ist_elapsed+1)
       end do
 !
       end subroutine each_PVR_quilt_rendering_w_rot

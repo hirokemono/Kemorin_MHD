@@ -16,51 +16,26 @@
       use m_precision
       use m_work_time
 !
+      use elapsed_labels_4_FLINE
+!
       implicit none
 !
       logical, save :: iflag_VIZ_time = .FALSE.
       integer(kind = kint), save :: ist_elapsed_VIZ =   0
       integer(kind = kint), save :: ied_elapsed_VIZ =   0
 !
-      logical, save :: iflag_PVR_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_PVR =   0
-      integer(kind = kint), save :: ied_elapsed_PVR =   0
+      type(elapsed_lables), save :: elps_PSF1
+      type(elapsed_lables), save :: elps_ISO1
 !
-      logical, save :: iflag_LIC_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_LIC =   0
-      integer(kind = kint), save :: ied_elapsed_LIC =   0
+      type(elapsed_lables), save :: elps_PVR1
+      type(elapsed_lables), save :: elps_LIC1
+      type(elapsed_lables), save :: elps_map1
 !
-      logical, save :: iflag_PSF_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_PSF =   0
-      integer(kind = kint), save :: ied_elapsed_PSF =   0
-!
-      logical, save :: iflag_ISO_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_ISO =   0
-      integer(kind = kint), save :: ied_elapsed_ISO =   0
-!
-      logical, save :: iflag_MAP_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_MAP =   0
-      integer(kind = kint), save :: ied_elapsed_MAP =   0
-!
-      logical, save :: iflag_FLINE_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_FLINE =   0
-      integer(kind = kint), save :: ied_elapsed_FLINE =   0
-!
-      logical, save :: iflag_TRACER_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_TRACER =   0
-      integer(kind = kint), save :: ied_elapsed_TRACER =   0
+      type(elapsed_lables), save :: elps_fline1
+      type(elapsed_lables), save :: elps_tracer1
 !
       private :: elpsed_label_4_VIZ_outline
-      private :: elpsed_label_4_PVR, elpsed_label_4_LIC
       private :: reset_elapse_after_init_VIZ_top
-!
-      private :: reset_elapse_after_init_PVR
-      private :: reset_elapse_after_init_LIC
-      private :: reset_elapse_after_init_PSF
-      private :: reset_elapse_after_init_ISO
-      private :: reset_elapse_after_init_MAP
-      private :: reset_elapse_after_init_FLINE
-      private :: reset_elapse_after_init_TRACER
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,17 +45,21 @@
 !
       subroutine elpsed_label_4_VIZ
 !
+      use elapsed_labels_4_PVR
+      use elapsed_labels_4_FLINE
+      use elapsed_labels_4_PSF
+!
 !
       call elpsed_label_4_VIZ_outline
-      call elpsed_label_4_PVR
-      call elpsed_label_4_LIC
+      call elpsed_label_4_PVR(elps_PVR1, elps1)
+      call elpsed_label_4_LIC(elps_LIC1, elps1)
 !
-      call elpsed_label_4_PSF
-      call elpsed_label_4_ISO
-      call elpsed_label_4_MAP
+      call elpsed_label_4_PSF(elps_PSF1, elps1)
+      call elpsed_label_4_ISO(elps_ISO1, elps1)
+      call elpsed_label_4_MAP(elps_map1, elps1)
 !
-      call elpsed_label_4_FLINE
-      call elpsed_label_4_TRACER
+      call elpsed_label_4_FLINE(elps_fline1, elps1)
+      call elpsed_label_4_TRACER(elps_tracer1, elps1)
 !
       end subroutine elpsed_label_4_VIZ
 !
@@ -88,17 +67,17 @@
 !
       subroutine reset_elapse_after_init_VIZ
 !
+      use elapsed_labels_4_PVR
+      use elapsed_labels_4_PSF
+!
 !
       call reset_elapse_after_init_VIZ_top
-!      call reset_elapse_after_init_PVR
-      call reset_elapse_after_init_LIC
+!      call reset_elapse_after_init_PVR(elps_PVR1, elps1)
+      call reset_elapse_after_init_LIC(elps_LIC1, elps1)
 !
-      call reset_elapse_after_init_PSF
-      call reset_elapse_after_init_ISO
-      call reset_elapse_after_init_MAP
-!
-      call reset_elapse_after_init_FLINE
-      call reset_elapse_after_init_TRACER
+      call reset_elapse_after_init_PSF(elps_PSF1, elps1)
+      call reset_elapse_after_init_ISO(elps_ISO1, elps1)
+      call reset_elapse_after_init_MAP(elps_map1, elps1)
 !
       end subroutine reset_elapse_after_init_VIZ
 !
@@ -107,7 +86,7 @@
 !
       subroutine elpsed_label_4_VIZ_outline
 !
-      integer(kind = kint), parameter :: num_append = 15
+      integer(kind = kint), parameter :: num_append = 17
 !
 !
       call append_elapsed_times                                         &
@@ -134,198 +113,22 @@
       elps1%labels(ist_elapsed_VIZ+10) = 'LIC rendering.    '
 !
       elps1%labels(ist_elapsed_VIZ+11)                                  &
-     &                    = 'fieldline initialization.    '
-      elps1%labels(ist_elapsed_VIZ+12) = 'fieldline.    '
+     &                    = 'Fieldline initialization.    '
+      elps1%labels(ist_elapsed_VIZ+12) = 'Fieldline.    '
 !
-      elps1%labels(ist_elapsed_VIZ+13) = 'VTK output in viz module'
-      elps1%labels(ist_elapsed_VIZ+14)                                  &
+      elps1%labels(ist_elapsed_VIZ+13)                                  &
+     &                    = 'Tracer initialization.    '
+      elps1%labels(ist_elapsed_VIZ+14) = 'Tracer.    '
+!
+      elps1%labels(ist_elapsed_VIZ+15) = 'VTK output in viz module'
+      elps1%labels(ist_elapsed_VIZ+16)                                  &
      &                    = 'ele. comm. table for LIC    '
-      elps1%labels(ist_elapsed_VIZ+15)                                  &
-     &                    = 'edge comm. table for surfacing    '
+      elps1%labels(ist_elapsed_VIZ+17)                                  &
+     &                    = 'edge comm. table for vizualization    '
 !
       iflag_VIZ_time = .TRUE.
 !
       end subroutine elpsed_label_4_VIZ_outline
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_PVR
-!
-      integer(kind = kint), parameter :: num_append = 12
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_PVR, ied_elapsed_PVR)
-!
-      elps1%labels(ist_elapsed_PVR+1)                                   &
-     &                    = 'Volume rendering w/o file output   '
-      elps1%labels(ist_elapsed_PVR+2)                                   &
-     &                    = 'Volume rendering file output   '
-      elps1%labels(ist_elapsed_PVR+3)                                   &
-     &                    = 'V. Rendering ray trace   '
-      elps1%labels(ist_elapsed_PVR+4)                                   &
-     &                    = 'V. Rendering subimage composit   '
-!
-      elps1%labels(ist_elapsed_PVR+5)                                   &
-     &                    = 'bcast_pvr_controls  '
-      elps1%labels(ist_elapsed_PVR+6)                                   &
-     &                    = 'set_pvr_controls  '
-      elps1%labels(ist_elapsed_PVR+7)                                   &
-     &                    = 'each_PVR_initialize  '
-      elps1%labels(ist_elapsed_PVR+8)                                   &
-     &                    = 's_const_comm_tbl_img_output  '
-      elps1%labels(ist_elapsed_PVR+9)                                   &
-     &                    = 's_const_comm_tbl_img_composit  '
-      elps1%labels(ist_elapsed_PVR+10)                                  &
-     &                    = 'calypso_SR_type_int pvr_init  '
-      elps1%labels(ist_elapsed_PVR+11)                                  &
-     &                    = 'calypso_SR_type_1 pvr_init '
-      elps1%labels(ist_elapsed_PVR+12)                                  &
-     &                    = 'set_image_stacking_and_recv  '
-!
-      iflag_PVR_time = .TRUE.
-!
-      end subroutine elpsed_label_4_PVR
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_LIC
-!
-      integer(kind = kint), parameter :: num_append = 9
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_LIC, ied_elapsed_LIC)
-!
-      elps1%labels(ist_elapsed_LIC+1)                                   &
-     &                    = 'LIC V. rendering w/o file output   '
-      elps1%labels(ist_elapsed_LIC+2)                                   &
-     &                    = 'LIC V. rendering file output   '
-      elps1%labels(ist_elapsed_LIC+3)                                   &
-     &                    = 'LIC V. Rendering ray trace   '
-      elps1%labels(ist_elapsed_LIC+4)                                   &
-     &                    = 'Line integration for LIC   '
-      elps1%labels(ist_elapsed_LIC+5)                                   &
-     &                    = 'LIC V. Rendering subimage composit   '
-      elps1%labels(ist_elapsed_LIC+6)                                   &
-     &                    = 'LIC V. Rendering domain repartition  '
-      elps1%labels(ist_elapsed_LIC+7)                                   &
-     &                    = 'LIC data transfer to new domain  '
-      elps1%labels(ist_elapsed_LIC+8)                                   &
-     &                    = 'FEM_mesh_initialization for LIC mesh  '
-      elps1%labels(ist_elapsed_LIC+9)                                   &
-     &                    = 'Data IO for line integration counts   '
-!
-      iflag_LIC_time = .TRUE.
-!
-      end subroutine elpsed_label_4_LIC
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_PSF
-!
-      integer(kind = kint), parameter :: num_append = 3
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_PSF, ied_elapsed_PSF)
-!
-      elps1%labels(ist_elapsed_PSF+1)                                   &
-     &                    = 'Find Section patch   '
-      elps1%labels(ist_elapsed_PSF+2)                                   &
-     &                    = 'Interpolate data on Section   '
-      elps1%labels(ist_elapsed_PSF+3)                                   &
-     &                    = 'Output Sectioning data   '
-!
-      iflag_PSF_time = .TRUE.
-!
-      end subroutine elpsed_label_4_PSF
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_ISO
-!
-      integer(kind = kint), parameter :: num_append = 3
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_ISO, ied_elapsed_ISO)
-!
-      elps1%labels(ist_elapsed_ISO+1)                                   &
-     &                    = 'Find Isosurface patch   '
-      elps1%labels(ist_elapsed_ISO+2)                                   &
-     &                    = 'Interpolate data on isosurface   '
-      elps1%labels(ist_elapsed_ISO+3)                                   &
-     &                    = 'Output Isosurface data   '
-!
-      iflag_ISO_time = .TRUE.
-!
-      end subroutine elpsed_label_4_ISO
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_MAP
-!
-      integer(kind = kint), parameter :: num_append = 3
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_MAP, ied_elapsed_MAP)
-!
-      elps1%labels(ist_elapsed_MAP+1)                                   &
-     &                    = 'Collect map data   '
-      elps1%labels(ist_elapsed_MAP+2)                                   &
-     &                    = 'Interpolate data on map   '
-      elps1%labels(ist_elapsed_MAP+3)                                   &
-     &                    = 'Output Map image   '
-!
-      iflag_MAP_time = .TRUE.
-!
-      end subroutine elpsed_label_4_MAP
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_FLINE
-!
-      integer(kind = kint), parameter :: num_append = 4
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_FLINE, ied_elapsed_FLINE)
-!
-      elps1%labels(ist_elapsed_FLINE+1)                                 &
-     &                    = 'Set Seed points   '
-      elps1%labels(ist_elapsed_FLINE+2)                                 &
-     &                    = 'Trace field line   '
-      elps1%labels(ist_elapsed_FLINE+3)                                 &
-     &                    = 'Communication for field line   '
-      elps1%labels(ist_elapsed_FLINE+4)                                 &
-     &                    = 'Output field line file   '
-!
-      iflag_FLINE_time = .TRUE.
-!
-      end subroutine elpsed_label_4_FLINE
-!
-!-----------------------------------------------------------------------
-!
-      subroutine elpsed_label_4_TRACER
-!
-      integer(kind = kint), parameter :: num_append = 3
-!
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_TRACER, ied_elapsed_TRACER)
-!
-      elps1%labels(ist_elapsed_TRACER+1)                                &
-     &                    = 'time integration of tracer   '
-      elps1%labels(ist_elapsed_TRACER+2)                                &
-     &                    = 'Communication for tracers  '
-      elps1%labels(ist_elapsed_TRACER+3)                                &
-     &                    = 'Output tracer file   '
-!
-      iflag_TRACER_time = .TRUE.
-!
-      end subroutine elpsed_label_4_TRACER
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -342,77 +145,6 @@
       end do
 !
       end subroutine reset_elapse_after_init_VIZ_top
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_PVR
-!
-!
-      if(iflag_PVR_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_PVR+1, ied_elapsed_PVR)
-!
-      end subroutine reset_elapse_after_init_PVR
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_LIC
-!
-!
-      if(iflag_LIC_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_LIC+1, ied_elapsed_LIC)
-!
-      end subroutine reset_elapse_after_init_LIC
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_PSF
-!
-!
-      if(iflag_PSF_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_PSF+2, ist_elapsed_PSF+2)
-!
-      end subroutine reset_elapse_after_init_PSF
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_ISO
-!
-!
-      if(iflag_ISO_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_ISO+2, ist_elapsed_ISO+2)
-!
-      end subroutine reset_elapse_after_init_ISO
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_MAP
-!
-!
-      if(iflag_MAP_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_MAP+2, ist_elapsed_MAP+2)
-!
-      end subroutine reset_elapse_after_init_MAP
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_FLINE
-!
-!
-      if(iflag_FLINE_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_FLINE+2,                     &
-     &                         ist_elapsed_FLINE+2)
-!
-      end subroutine reset_elapse_after_init_FLINE
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_TRACER
-!
-!
-      if(iflag_TRACER_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_MAP+2, ist_elapsed_MAP+2)
-!
-      end subroutine reset_elapse_after_init_TRACER
 !
 !-----------------------------------------------------------------------
 !

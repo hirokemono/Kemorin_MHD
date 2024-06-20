@@ -78,11 +78,13 @@
      &                        FEM_viz1, m_SR11)
 !
 !  Tracer Initialization
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+13)
       call TRACER_initialize                                            &
      &   (t_VIZ1%init_d, t_VIZ1%finish_d, t_VIZ1%ucd_step,              &
      &    FEM_viz1%geofem, VIZ_DAT1%para_surf, FEM_viz1%field,          &
      &    vizs_ctl1%tracer_ctls%tracer_controls, tracers_v)
       call dealloc_tracer_controls(vizs_ctl1%tracer_ctls)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
@@ -114,6 +116,12 @@
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
         call FEM_analyze_viz(i_step, t_VIZ1%ucd_step, t_VIZ1%time_d,    &
      &                       FEM_viz1, m_SR11)
+!
+!  Load tracer data
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
+        call TRACER_visualize(t_VIZ1%viz_step%istep_tracer,             &
+     &      t_VIZ1%time_d, t_VIZ1%ucd_step, tracers_v)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step

@@ -106,9 +106,13 @@
         call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,           &
      &                                    SVIZ_m%SPH_SGS%trns_WK_LES)
 !
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+14)
         call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
      &      SVIZ_m%tracers)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+14)
+
+     
         SSNAPs%MHD_step%time_d%i_time_step                              &
       &        = SSNAPs%MHD_step%init_d%i_time_step
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
@@ -173,16 +177,22 @@
      &                             'control file is broken')
           end if
 !
-          call PVR_initialize(SSNAPs%MHD_step%viz_step%PVR_t%increment, &
+          if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
+          call PVR_initialize                                           &
+     &       (SSNAPs%MHD_step%viz_step%PVR_t%increment, elps_PVR1,      &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &        SVIZ_m%tracers, SVIZ_m%VIZs%fline, viz_ctls2%pvr_ctls,    &
      &        SVIZ_m%VIZs%pvr, SSNAPs%m_SR)
-          call PVR_visualize(SSNAPs%MHD_step%viz_step%istep_pvr,        &
+          if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
+          if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
+          call PVR_visualize                                            &
+     &       (SSNAPs%MHD_step%viz_step%istep_pvr, elps_PVR1,            &
      &        SSNAPs%MHD_step%time_d%time, SVIZ_m%FEM_DAT%geofem,       &
      &        SVIZ_m%VIZ_FEM%jacobians, SVIZ_m%FEM_DAT%field,           &
      &        SVIZ_m%tracers, SVIZ_m%VIZs%fline, SVIZ_m%VIZs%pvr,       &
      &        SSNAPs%m_SR)
           call dealloc_pvr_data(SVIZ_m%VIZs%pvr)
+          if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
       end do

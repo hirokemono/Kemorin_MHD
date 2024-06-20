@@ -7,8 +7,10 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine const_each_field_line(mesh, para_surf, nod_fld,      &
-!!     &          fln_prm, fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
+!!      subroutine const_each_field_line                                &
+!!     &         (elps_fline, mesh, para_surf, nod_fld, fln_prm,        &
+!!     &          fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
+!!        type(elapsed_lables), intent(in) :: elps_fline
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(paralell_surface_indices), intent(in) :: para_surf
 !!        type(phys_data), intent(in) :: nod_fld
@@ -28,6 +30,8 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+      use m_work_time
+!
       use t_mesh_SR
       use t_mesh_data
       use t_control_params_4_fline
@@ -49,13 +53,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_each_field_line(mesh, para_surf, nod_fld,        &
-     &          fln_prm, fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
+      subroutine const_each_field_line                                  &
+     &         (elps_fline, mesh, para_surf, nod_fld, fln_prm,          &
+     &          fln_tce, fln_SR, fln_bcast, fline_lc, m_SR)
 !
       use calypso_SR
       use transfer_to_long_integers
       use extend_field_line
 !
+      type(elapsed_lables), intent(in) :: elps_fline
       type(mesh_geometry), intent(in) :: mesh
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
@@ -74,6 +80,8 @@
       call reset_fline_start(fline_lc)
 !
       do
+        if(elps_fline%flag_elapsed)                                     &
+     &           call start_elapsed_time(elps_fline%ist_elapsed+2)
         do inum = 1, fln_tce%num_current_fline
           call s_extend_field_line(mesh%node, mesh%ele, mesh%surf,      &
      &        para_surf, nod_fld, fln_prm%fline_fields,                 &
@@ -88,14 +96,20 @@
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
      &        fln_tce%iflag_comm_start(inum), fline_lc, inum)
         end do
+        if(elps_fline%flag_elapsed)                                     &
+     &           call end_elapsed_time(elps_fline%ist_elapsed+2)
 !
-!        if(fln_tce%num_current_fline .gt. 4096) then
-!          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,        &
-!     &                                m_SR%SR_sig, nline)
-!        else
-          call s_broadcast_trace_data(fln_prm, fln_tce,                &
+        if(elps_fline%flag_elapsed)                                     &
+     &           call start_elapsed_time(elps_fline%ist_elapsed+3)
+        if(fln_tce%num_current_fline .gt. 4096) then
+          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
+     &                                m_SR%SR_sig, nline)
+        else
+          call s_broadcast_trace_data(fln_prm, fln_tce,                 &
      &                                 fln_bcast, nline)
-!        end if
+        end if
+        if(elps_fline%flag_elapsed)                                     &
+     &           call end_elapsed_time(elps_fline%ist_elapsed+3)
 !
        if(nline .le. 0) exit
       end do
