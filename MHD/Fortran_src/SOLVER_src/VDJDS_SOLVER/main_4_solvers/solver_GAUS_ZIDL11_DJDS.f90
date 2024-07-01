@@ -294,7 +294,7 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, X, W(1,iWK), NEIBPETOT, NEIBPE,             &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            iter_gauss, SR_sig, SR_r)
+     &            iter_gauss, SR_sig, SR_r, COMMtime)
 !
 !
          call subtruct_matvec_11                                        &
