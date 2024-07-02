@@ -34,6 +34,7 @@
 !
       use m_precision
       use t_solver_SR
+      use m_solver_count_time
 !
       implicit none
 !
@@ -64,31 +65,34 @@
       integer(kind=kint), intent(inout) :: IER
 !
       integer :: ierror
+!>      Elapsed time for initialization
+      real(kind = kreal) :: INITtime
 !C
 !C
       IER = 0
 !
 !C-- BiCGSTAB
       if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
-        call init_VBiCGSTABnn_DJDS_SMP                                  &
-     &     (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VBiCGSTABnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND,       &
+     &                                 iterPREmax, INITtime)
 !C
 !C-- GPBiCG using n*n solver
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
-        call init_VGPBiCGnn_DJDS_SMP                                    &
-     &     (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VGPBiCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND,         &
+     &                               iterPREmax, INITtime)
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
-        call init_VCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND,             &
+     &                           iterPREmax, INITtime)
 !
 !C-- Gauss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
-        call init_VGAUSS_ZEIDELnn_DJDS_SMP(NP, NB, PEsmpTOT)
+        call init_VGAUSS_ZEIDELnn_DJDS_SMP(NP, NB, PEsmpTOT, INITtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
-        call init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
+        call init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT, INITtime)
 !
       else
         IER = 1
@@ -227,6 +231,7 @@
 !
       integer(kind=kint ) :: ITR
       integer :: ierror
+      real(kind = kreal) :: RATIO
 !
 !
 
@@ -242,8 +247,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
-!
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !C
 !C-- GPBiCG using n*n solver
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
@@ -254,8 +258,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
-!
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
@@ -266,8 +269,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
-!
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !
 !C-- Gauss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
@@ -278,7 +280,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND,                     &
+     &           SR_sig, SR_r, COMPtime, COMMtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
@@ -289,14 +292,20 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
-!
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND,                     &
+     &           SR_sig, SR_r, COMPtime, COMMtime)
       end if
 !
 !
       ITERactual= ITR
 !C
 !C-- ERROR
+      RATIO= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      if (my_rank.eq.0) then
+        open(41,file='solver_NN.dat',position='append')
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, RATIO
+        close(41)
+      end if
       if (IER.gt.0) then
         ierror = int(IER)
         if (my_rank.eq.0) then
@@ -391,6 +400,8 @@
 !
       integer(kind=kint ) :: ITR
       integer :: ierror
+!>      Elapsed time for initialization
+      real(kind = kreal) :: INITtime, RATIO
 !
 !
       ITR = ITER
@@ -405,7 +416,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -417,9 +429,9 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
-!C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
         call VCGnn_DJDS_SMP                                             &
@@ -429,8 +441,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
-!
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
 !C-- Gauss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
@@ -441,7 +453,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
+     &           PRECOND, SR_sig, SR_r, INITtime, COMPtime, COMMtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
@@ -452,14 +464,20 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
-!
+     &           PRECOND, SR_sig, SR_r, INITtime, COMPtime, COMMtime)
       end if
 !
 !
       ITERactual= ITR
 !C
 !C-- ERROR
+      RATIO = 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      if (my_rank.eq.0) then
+        open(41,file='solver_NN.dat',position='append')
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, RATIO
+        close(41)
+      end if
+!
       if (IER.gt.0) then
         ierror = int(IER)
         if (my_rank.eq.0) then
