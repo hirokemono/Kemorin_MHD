@@ -40,6 +40,7 @@
 !
       use m_precision
       use t_solver_SR
+      use m_solver_count_time
 !
       implicit none
 !
@@ -70,29 +71,33 @@
       integer(kind=kint), intent(inout) :: IER
       integer :: ierror
 !
+!>      Elapsed time for initialization
+      real(kind = kreal) :: INITtime
 !
       IER = 0
 !
 !C-- BiCGSTAB
       if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
-        call init_VBiCGSTAB11_DJDS_SMP                                  &
-     &     (NP, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VBiCGSTAB11_DJDS_SMP(NP, PEsmpTOT, PRECOND,           &
+     &                                 iterPREmax, INITtime)
 !C
 !C-- GPBiCG
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
-        call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,             &
+     &                               iterPREmax, INITtime)
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
-        call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
+        call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,                 &
+     &                           iterPREmax, INITtime)
 !C
 !C-- GAuss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
-        call init_VGAUSS_ZEIDEL11_DJDS_SMP(NP, PEsmpTOT)
+        call init_VGAUSS_ZEIDEL11_DJDS_SMP(NP, PEsmpTOT, INITtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
-        call init_VJACOBI11_DJDS_SMP(NP, PEsmpTOT)
+        call init_VJACOBI11_DJDS_SMP(NP, PEsmpTOT, INITtime)
       else
         IER = 1
       end if
@@ -235,7 +240,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !
 !C
 !C-- GPBiCG
@@ -247,7 +252,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !
 !C
 !C-- CG
@@ -259,7 +264,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r, COMPtime, COMMtime)
 !
 !C
 !C-- GAuss-Zeidel
@@ -271,7 +276,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
+     &           PRECOND, SR_sig, SR_r, COMPtime, COMMtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
@@ -282,12 +287,19 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
-      endif
+     &           PRECOND, SR_sig, SR_r, COMPtime, COMMtime)
+      end if
 
       ITERactual= ITR
 !C
 !C-- ERROR
+      R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      if (my_rank.eq.0) then
+        open(41,file='solver_11.dat',position='append')
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        close(41)
+      end if
+!
       if (IER.gt.0) then
         ierror = int(IER)
         if (my_rank.eq.0) then
@@ -373,6 +385,8 @@
 !
       integer(kind=kint ) :: ITR
       integer :: ierror
+!>      Elapsed time for initialization
+      real(kind = kreal) :: INITtime
 !
       ITR = ITER
 
@@ -386,7 +400,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
 !C
 !C-- GPBiCG
@@ -398,7 +413,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
 !C
 !C-- CG
@@ -410,8 +426,8 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig, SR_r)
-!
+     &           PRECOND, iterPREmax, SR_sig, SR_r,                     &
+     &           INITtime, COMPtime, COMMtime)
 !
 !C
 !C-- GAuss-Zeidel
@@ -423,7 +439,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
+     &           PRECOND, SR_sig, SR_r, INITtime, COMPtime, COMMtime)
 !C
 !C-- Jacobi
       else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
@@ -434,13 +450,19 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, SR_sig, SR_r)
-!
-      endif
+     &           PRECOND, SR_sig, SR_r, INITtime, COMPtime, COMMtime)
+      end if
 
       ITERactual= ITR
 !C
 !C-- ERROR
+      R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      if (my_rank.eq.0) then
+        open(41,file='solver_11.dat',position='append')
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        close(41)
+      end if
+!
       if (IER.gt.0) then
         ierror = int(IER)
         if (my_rank.eq.0) then
