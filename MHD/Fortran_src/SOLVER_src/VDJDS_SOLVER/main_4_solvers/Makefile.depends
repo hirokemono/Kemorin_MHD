@@ -8,37 +8,37 @@ solverNN_DJDS.o: $(SOLVER_MAIN_DIR)/solverNN_DJDS.f90 m_precision.o t_solver_SR.
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_DJDS.o: $(SOLVER_MAIN_DIR)/solver_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_flags_4_solvers.o solver_VCG11_DJDS_SMP.o solver_VBiCGSTAB11_DJDS_SMP.o solver_VGPBiCG11_DJDS_SMP.o solver_GAUS_ZIDL11_DJDS.o solver_JACOBI11_DJDS.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GAUS_ZIDL11_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDL11_DJDS.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_11.o symmetric_gauss_zeidel_11.o calypso_mpi.o solver_SR.o m_CG_constants.o m_solver_count_time.o djds_norm_products_11.o vector_calc_solver_11.o
+solver_GAUS_ZIDL11_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDL11_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_11.o symmetric_gauss_zeidel_11.o solver_SR.o m_CG_constants.o djds_norm_products_11.o vector_calc_solver_11.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GAUS_ZIDL33_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDL33_DJDS.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_33.o symmetric_gauss_zeidel_33.o calypso_mpi.o solver_SR_3.o m_CG_constants.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o
+solver_GAUS_ZIDL33_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDL33_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_33.o symmetric_gauss_zeidel_33.o solver_SR_3.o m_CG_constants.o cal_norm_products_33.o vector_calc_solver_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GAUS_ZIDLnn_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDLnn_DJDS.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_nn.o symmetric_gauss_zeidel_nn.o calypso_mpi.o solver_SR_N.o m_CG_constants.o m_solver_count_time.o cal_norm_products_nn.o vector_calc_solver_nn.o
+solver_GAUS_ZIDLnn_DJDS.o: $(SOLVER_MAIN_DIR)/solver_GAUS_ZIDLnn_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_nn.o symmetric_gauss_zeidel_nn.o solver_SR_N.o m_CG_constants.o cal_norm_products_nn.o vector_calc_solver_nn.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_JACOBI11_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBI11_DJDS.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_11.o jacobi_precondition_11.o calypso_mpi.o solver_SR.o m_CG_constants.o m_solver_count_time.o djds_norm_products_11.o vector_calc_solver_11.o
+solver_JACOBI11_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBI11_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_11.o jacobi_precondition_11.o solver_SR.o m_CG_constants.o djds_norm_products_11.o vector_calc_solver_11.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_JACOBI33_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBI33_DJDS.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_33.o jacobi_precondition_33.o calypso_mpi.o solver_SR_3.o m_CG_constants.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o
+solver_JACOBI33_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBI33_DJDS.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_33.o jacobi_precondition_33.o solver_SR_3.o m_CG_constants.o cal_norm_products_33.o vector_calc_solver_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_JACOBInn_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBInn_DJDS.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o solver_SR_N.o m_solver_count_time.o cal_norm_products_nn.o vector_calc_solver_nn.o djds_matrix_calcs_nn.o jacobi_precondition_nn.o m_CG_constants.o
+solver_JACOBInn_DJDS.o: $(SOLVER_MAIN_DIR)/solver_JACOBInn_DJDS.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o solver_SR_N.o cal_norm_products_nn.o vector_calc_solver_nn.o djds_matrix_calcs_nn.o jacobi_precondition_nn.o m_CG_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VBiCGSTAB11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTAB11_DJDS_SMP.f90 m_precision.o t_solver_SR.o m_BiCGSTAB_constants.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o calypso_mpi.o solver_SR.o m_solver_count_time.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_BiCGSTAB.o
+solver_VBiCGSTAB11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTAB11_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_BiCGSTAB_constants.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o solver_SR.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_BiCGSTAB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VBiCGSTAB33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTAB33_DJDS_SMP.f90 m_precision.o t_solver_SR.o m_BiCGSTAB_constants.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o calypso_mpi.o solver_SR_3.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_BiCGSTAB.o
+solver_VBiCGSTAB33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTAB33_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_BiCGSTAB_constants.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o solver_SR_3.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_BiCGSTAB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VBiCGSTABnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTABnn_DJDS_SMP.f90 m_precision.o t_solver_SR.o m_BiCGSTAB_constants.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o calypso_mpi.o solver_SR_N.o m_solver_count_time.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_BiCGSTAB.o
+solver_VBiCGSTABnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VBiCGSTABnn_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_BiCGSTAB_constants.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o solver_SR_N.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_BiCGSTAB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VCG11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCG11_DJDS_SMP.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o calypso_mpi.o solver_SR.o m_CG_constants.o m_solver_count_time.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_CG.o
+solver_VCG11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCG11_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o solver_SR.o m_CG_constants.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_CG.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VCG33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCG33_DJDS_SMP.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o calypso_mpi.o solver_SR_3.o m_CG_constants.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_CG.o
+solver_VCG33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCG33_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o solver_SR_3.o m_CG_constants.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_CG.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VCG33_DJDS_SMP_d.o: $(SOLVER_MAIN_DIR)/solver_VCG33_DJDS_SMP_d.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_33.o incomplete_cholesky_33d.o i_cholesky_w_asdd_33d.o block_ilu_33.o calypso_mpi.o solver_SR_3.o m_CG_constants.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o djds_matrix_calcs_33d.o diagonal_scaling_33.o calcs_4_CG.o
+solver_VCG33_DJDS_SMP_d.o: $(SOLVER_MAIN_DIR)/solver_VCG33_DJDS_SMP_d.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_33.o incomplete_cholesky_33d.o i_cholesky_w_asdd_33d.o block_ilu_33.o solver_SR_3.o m_CG_constants.o cal_norm_products_33.o vector_calc_solver_33.o djds_matrix_calcs_33d.o diagonal_scaling_33.o calcs_4_CG.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VCGnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCGnn_DJDS_SMP.f90 m_precision.o t_solver_SR.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o calypso_mpi.o solver_SR_N.o m_CG_constants.o m_solver_count_time.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_CG.o
+solver_VCGnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VCGnn_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o solver_SR_N.o m_CG_constants.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_CG.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VGPBiCG11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCG11_DJDS_SMP.f90 m_precision.o t_solver_SR.o m_GPBiCG_constants.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o calypso_mpi.o solver_SR.o m_solver_count_time.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_GPBiCG11.o
+solver_VGPBiCG11_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCG11_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_GPBiCG_constants.o djds_matrix_calcs_11.o incomplete_cholesky_11.o i_cholesky_w_asdd_11.o solver_SR.o djds_norm_products_11.o vector_calc_solver_11.o diagonal_scaling_11.o calcs_4_GPBiCG11.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VGPBiCG33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCG33_DJDS_SMP.f90 m_precision.o t_solver_SR.o m_GPBiCG_constants.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o calypso_mpi.o solver_SR_3.o m_solver_count_time.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_GPBiCG33.o
+solver_VGPBiCG33_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCG33_DJDS_SMP.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_GPBiCG_constants.o djds_matrix_calcs_33.o incomplete_cholesky_33.o i_cholesky_w_asdd_33.o block_ilu_33.o solver_SR_3.o cal_norm_products_33.o vector_calc_solver_33.o diagonal_scaling_33.o calcs_4_GPBiCG33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_VGPBiCGnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCGnn_DJDS_SMP.f90 m_precision.o m_constants.o t_solver_SR.o m_GPBiCG_constants.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o calypso_mpi.o solver_SR_N.o m_solver_count_time.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_GPBiCGnn.o
+solver_VGPBiCGnn_DJDS_SMP.o: $(SOLVER_MAIN_DIR)/solver_VGPBiCGnn_DJDS_SMP.f90 m_precision.o m_constants.o t_solver_SR.o m_GPBiCG_constants.o djds_matrix_calcs_nn.o incomplete_cholesky_nn.o i_cholesky_w_asdd_nn.o block_ilu_nn.o calypso_mpi.o solver_SR_N.o cal_norm_products_nn.o vector_calc_solver_nn.o diagonal_scaling_nn.o calcs_4_GPBiCGnn.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_solver_djds.o: $(SOLVER_MAIN_DIR)/t_solver_djds.f90 m_precision.o m_constants.o t_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<

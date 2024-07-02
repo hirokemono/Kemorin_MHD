@@ -1,46 +1,47 @@
 !
 !  module solver_DJDS.f90
 !
-!C*** 
-!C*** module solver_DJDS
-!C***
-!
-!      subroutine  init_solver_DJDS                                     &
-!     &         (NP, PEsmpTOT, METHOD, PRECOND, ERROR)
-!
-!      subroutine  solve_DJDS_kemo                                      &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
-!
-!      subroutine  init_solve_DJDS_kemo                                 &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
-!
-! \beginSUBROUTINE
-!      solver subsystem entry for scalar Matrix with DJDS ordering
-!      Kenorin's special
-!    \begin{flushright}     
-!     coded by K.Nakajima (RIST) on DEC. 1999 (ver 3.0)
-!     Modified by Kemorin (RIST) on Sep. 2002 (ver X.0)
-!    \end{flushright}     
+!!C*** 
+!!C*** module solver_DJDS
+!!C***
+!!
+!!      subroutine init_solver_DJDS(NP, PEsmpTOT, METHOD, PRECOND,      &
+!!     &                            IER, INITtime)
+!!
+!!      subroutine solve_DJDS_kemo                                      &
+!!     &         (N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
+!!     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
+!!     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
+!!     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
+!!     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
+!!     &          STACK_IMPORT, NOD_IMPORT,                             &
+!!     &          STACK_EXPORT, NOD_EXPORT,                             &
+!!     &          METHOD, PRECOND, ITERactual,                          &
+!!     &          SR_sig, SR_r, COMPtime, COMMtime)
+!!
+!!      subroutine init_solve_DJDS_kemo                                 &
+!!     &         (N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
+!!     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
+!!     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
+!!     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
+!!     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
+!!     &          STACK_IMPORT, NOD_IMPORT,                             &
+!!     &          STACK_EXPORT, NOD_EXPORT,                             &
+!!     &          METHOD, PRECOND, ITERactual, SR_sig, SR_r,            &
+!!     &          INITtime, COMPtime, COMMtime)
+!!
+!! \beginSUBROUTINE
+!!      solver subsystem entry for scalar Matrix with DJDS ordering
+!!      Kenorin's special
+!!    \begin{flushright}     
+!!     coded by K.Nakajima (RIST) on DEC. 1999 (ver 3.0)
+!!     Modified by Kemorin (RIST) on Sep. 2002 (ver X.0)
+!!    \end{flushright}     
 !
       module solver_DJDS
 !
       use m_precision
       use t_solver_SR
-      use m_solver_count_time
 !
       implicit none
 !
@@ -53,8 +54,8 @@
 !  ---------------------------------------------------------------------
 !C
 !C--- init_solver
-      subroutine  init_solver_DJDS                                      &
-     &         (NP, PEsmpTOT, METHOD, PRECOND, IER)
+      subroutine init_solver_DJDS(NP, PEsmpTOT, METHOD, PRECOND,        &
+     &                            IER, INITtime)
 !
       use calypso_mpi
 !
@@ -69,10 +70,10 @@
       character(len=kchara) , intent(in):: METHOD
       character(len=kchara) , intent(in):: PRECOND
       integer(kind=kint), intent(inout) :: IER
-      integer :: ierror
-!
 !>      Elapsed time for initialization
-      real(kind = kreal) :: INITtime
+      real(kind = kreal), intent(inout) :: INITtime
+!
+      integer :: ierror
 !
       IER = 0
 !
@@ -119,14 +120,15 @@
 !C
 !C--- solve
       subroutine  solve_DJDS_kemo                                       &
-     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
-     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
-     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
-     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+     &         (N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,               &
+     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                 &
+     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,            &
+     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,               &
+     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                      &
+     &          STACK_IMPORT, NOD_IMPORT,                               &
+     &          STACK_EXPORT, NOD_EXPORT,                               &
+     &          METHOD, PRECOND, ITERactual,                            &
+     &          SR_sig, SR_r, COMPtime, COMMtime)
 !
       use calypso_mpi
 !
@@ -224,8 +226,13 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
 !
-      integer(kind=kint ) :: ITR
+      real(kind = kreal) :: RATIO
+      integer(kind=kint) :: ITR
       integer :: ierror
 !
       ITR = ITER
@@ -293,10 +300,10 @@
       ITERactual= ITR
 !C
 !C-- ERROR
-      R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      RATIO= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
       if (my_rank.eq.0) then
         open(41,file='solver_11.dat',position='append')
-        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, RATIO
         close(41)
       end if
 !
@@ -314,15 +321,16 @@
 !  ---------------------------------------------------------------------
 !C
 !C--- solve
-      subroutine  init_solve_DJDS_kemo                                  &
-     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
-     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
-     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
-     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+      subroutine init_solve_DJDS_kemo                                   &
+     &         (N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,               &
+     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                 &
+     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,            &
+     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,               &
+     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                      &
+     &          STACK_IMPORT, NOD_IMPORT,                               &
+     &          STACK_EXPORT, NOD_EXPORT,                               &
+     &          METHOD, PRECOND, ITERactual, SR_sig, SR_r,              &
+     &          INITtime, COMPtime, COMMtime)
 !
       use calypso_mpi
 !
@@ -382,14 +390,19 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
-!
-      integer(kind=kint ) :: ITR
-      integer :: ierror
 !>      Elapsed time for initialization
-      real(kind = kreal) :: INITtime
+      real(kind = kreal), intent(inout) :: INITtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: RATIO
+      integer(kind=kint) :: ITR
+      integer :: ierror
+!
 !
       ITR = ITER
-
 !C
 !C-- BiCGSTAB
       if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
@@ -456,10 +469,10 @@
       ITERactual= ITR
 !C
 !C-- ERROR
-      R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      RATIO= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
       if (my_rank.eq.0) then
         open(41,file='solver_11.dat',position='append')
-        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, RATIO
         close(41)
       end if
 !

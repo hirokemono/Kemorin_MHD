@@ -25,8 +25,8 @@
       module solver_DJDS33_struct
 !
       use m_precision
-!
       use t_solver_djds
+      use m_solver_count_time
 !
       implicit none
 !
@@ -46,7 +46,8 @@
       integer(kind = kint), intent(inout)  :: ierr
 !
 !
-      call init_solver33_DJDS(NP, PEsmpTOT, METHOD, PRECOND, ierr)
+      call init_solver33_DJDS(NP, PEsmpTOT, METHOD, PRECOND,            &
+     &                        ierr, INITtime)
 !
       end subroutine init33_DJDS_struct
 !
@@ -93,7 +94,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r, COMPtime, COMMtime)
 !
       end subroutine solve33_DJDS_struct
 !
@@ -141,7 +142,8 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r,                      &
+     &     INITtime, COMPtime, COMMtime)
 !
       end subroutine init_solve33_DJDS_struct
 !

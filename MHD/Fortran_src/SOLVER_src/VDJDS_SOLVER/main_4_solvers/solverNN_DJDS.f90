@@ -5,28 +5,30 @@
 !C*** module solverNN_DJDS
 !C***
 !
-!!        subroutine  init_solverNN_DJDS                                &
-!!     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER)
+!!        subroutine init_solverNN_DJDS                                 &
+!!     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER, INITtime)
 !!
-!!      subroutine  solveNN_DJDS_kemo                                   &
-!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
-!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
-!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
-!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
-!!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                   &
-!!     &           STACK_IMPORT, NOD_IMPORT,                            &
-!!     &           STACK_EXPORT, NOD_EXPORT,                            &
-!!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+!!      subroutine solveNN_DJDS_kemo                                    &
+!!     &         (N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
+!!     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
+!!     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
+!!     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
+!!     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
+!!     &          STACK_IMPORT, NOD_IMPORT,                             &
+!!     &          STACK_EXPORT, NOD_EXPORT,                             &
+!!     &          METHOD, PRECOND, ITERactual,                          &
+!!     &          SR_sig, SR_r, COMPtime, COMMtime)
 !!
-!!      subroutine  init_solveNN_DJDS_kemo                              &
-!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
-!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
-!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
-!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
-!!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                   &
-!!     &           STACK_IMPORT, NOD_IMPORT,                            &
-!!     &           STACK_EXPORT, NOD_EXPORT,                            &
-!!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+!!      subroutine init_solveNN_DJDS_kemo                               &
+!!     &         (N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
+!!     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
+!!     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
+!!     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
+!!     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
+!!     &          STACK_IMPORT, NOD_IMPORT,                             &
+!!     &          STACK_EXPORT, NOD_EXPORT,                             &
+!!     &          METHOD, PRECOND, ITERactual, SR_sig, SR_r,            &
+!!     &          INITtime, COMPtime, COMMtime)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -34,7 +36,6 @@
 !
       use m_precision
       use t_solver_SR
-      use m_solver_count_time
 !
       implicit none
 !
@@ -47,8 +48,8 @@
 !  ---------------------------------------------------------------------
 !
 !C--- init_solverNN
-        subroutine  init_solverNN_DJDS                                  &
-     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER)
+        subroutine init_solverNN_DJDS                                   &
+     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER, INITtime)
 !
       use calypso_mpi
 !
@@ -62,11 +63,12 @@
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
       character(len=kchara) , intent(in):: METHOD
       character(len=kchara) , intent(in):: PRECOND
+!
       integer(kind=kint), intent(inout) :: IER
+!>      Elapsed time for initialization
+      real(kind = kreal), intent(inout) :: INITtime
 !
       integer :: ierror
-!>      Elapsed time for initialization
-      real(kind = kreal) :: INITtime
 !C
 !C
       IER = 0
@@ -113,15 +115,16 @@
 !  ---------------------------------------------------------------------
 !C
 !C--- solve
-      subroutine  solveNN_DJDS_kemo                                     &
-     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,          &
-     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
-     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
-     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+      subroutine solveNN_DJDS_kemo                                      &
+     &         (N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,           &
+     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                 &
+     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,            &
+     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,               &
+     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                      &
+     &          STACK_IMPORT, NOD_IMPORT,                               &
+     &          STACK_EXPORT, NOD_EXPORT,                               &
+     &          METHOD, PRECOND, ITERactual,                            &
+     &          SR_sig, SR_r, COMPtime, COMMtime)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for N*N Block Matrix with DJDS ordering
@@ -228,6 +231,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
 !
       integer(kind=kint ) :: ITR
       integer :: ierror
@@ -320,15 +327,16 @@
 !  ---------------------------------------------------------------------
 !C
 !C--- solve with init
-      subroutine  init_solveNN_DJDS_kemo                                &
-     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,          &
-     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
-     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
-     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+      subroutine init_solveNN_DJDS_kemo                                 &
+     &         (N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,           &
+     &          STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                 &
+     &          NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,            &
+     &          INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,               &
+     &          EPS, ITER, IER, NEIBPETOT, NEIBPE,                      &
+     &          STACK_IMPORT, NOD_IMPORT,                               &
+     &          STACK_EXPORT, NOD_EXPORT,                               &
+     &          METHOD, PRECOND, ITERactual, SR_sig, SR_r,              &
+     &          INITtime, COMPtime, COMMtime)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for N*N Block Matrix with DJDS ordering
@@ -397,11 +405,16 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for initialization
+      real(kind = kreal), intent(inout) :: INITtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
 !
       integer(kind=kint ) :: ITR
       integer :: ierror
-!>      Elapsed time for initialization
-      real(kind = kreal) :: INITtime, RATIO
+      real(kind = kreal) :: RATIO
 !
 !
       ITR = ITER

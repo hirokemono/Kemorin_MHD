@@ -28,6 +28,7 @@
 !
       use t_solver_djds
       use t_solver_SR
+      use m_solver_count_time
 !
       implicit none
 !
@@ -48,7 +49,7 @@
 !
 !
       call init_solverNN_DJDS(NP, NB, PEsmpTOT, METHOD, PRECOND,        &
-     &    ierr)
+     &                        ierr, INITtime)
 !
       end subroutine initNN_DJDS_struct
 !
@@ -95,7 +96,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r, COMPtime, COMMtime)
 !
       end subroutine solveNN_DJDS_struct
 !
@@ -141,8 +142,9 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
-!
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r,                      &
+     &     INITtime, COMPtime, COMMtime)
+
       end subroutine init_solveNN_DJDS_struct
 !
 ! ----------------------------------------------------------------------

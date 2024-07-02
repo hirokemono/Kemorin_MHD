@@ -3,10 +3,10 @@
 !
 !     Written by H. Matsui on Jan., 2005
 !
-!      subroutine precond_DJDS11                                        &
-!     &         ( N, NP, NL, NPL, NVECT, PEsmpTOT, STACKmcG, STACKmc,   &
-!     &           NLhyp, IVECT, OtoN_L, OtoN_U, LtoU, D, INL, IAL,      &
-!     &           AL, ALU_L, ALU_U, PRECOND, sigma_diag)
+!!      subroutine precond_DJDS11                                       &
+!!     &         ( N, NP, NL, NPL, NVECT, PEsmpTOT, STACKmcG, STACKmc,  &
+!!     &           NLhyp, IVECT, OtoN_L, OtoN_U, LtoU, D, INL, IAL,     &
+!!     &           AL, ALU_L, ALU_U, PRECOND, sigma_diag)
 !
       module preconditioning_DJDS11
 !
