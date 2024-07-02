@@ -11,7 +11,7 @@
       use m_precision
       use t_solver_SR
 !
-      implicit REAL*8(A-H,O-Z)
+      implicit none
 !
 !-----------------------------------------------------------------------
 !
@@ -40,7 +40,8 @@
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR, METHOD, PRECOND,            &
-     &                   INTARRAY, REALARRAY, SR_sig, SR_r)
+     &                   INTARRAY, REALARRAY, SR_sig, SR_r,             &
+     &                   PRECtime, COMPtime, COMMtime)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for nb*nb Block Matrix
@@ -120,9 +121,19 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver preconditioning
+      real(kind = kreal), intent(inout) :: PRECtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
 
+      real(kind = kreal) :: START_TIME
       integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, NREST
       integer(kind=kint) :: i, j, k, jj
+!
+      real(kind = kreal) :: BNRM20, BNRM2
+      real(kind = kreal) :: SIGMA_DIAG, RESID
 !C
 !C +-------+
 !C | INIT. |
@@ -194,8 +205,12 @@
         enddo
       enddo
 
+      COMMtime = 0.0d0
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
       if (BNRM2.eq.0.d0) ERROR= 320
 !C===
 
@@ -211,7 +226,8 @@
       call CG_N (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r,        &
+     &           PRECtime, COMPtime, COMMtime)
       endif
       endif
 
@@ -226,7 +242,8 @@
      &          (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r,        &
+     &           PRECtime, COMPtime, COMMtime)
       endif
       endif
 
@@ -241,7 +258,8 @@
      &          (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r,        &
+     &           PRECtime, COMPtime, COMMtime)
       endif
       endif
 

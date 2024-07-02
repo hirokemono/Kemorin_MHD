@@ -8,7 +8,8 @@
 !!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,             &
 !!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
 !!     &                  STACK_IMPORT, NOD_IMPORT,                     &
-!!     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET,               &
+!!     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
@@ -42,7 +43,8 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,           &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET,                 &
+     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 !
       use calypso_mpi
       use m_constants
@@ -95,6 +97,14 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver preconditioning
+      real(kind = kreal), intent(inout) :: PRECtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME, S1_TIME, S2_TIME
 !
 !
       integer(kind=kint ) :: MAXIT, IFLAG, MONITORFLAG
@@ -129,10 +139,13 @@
 
       MAXIT = ITER
       TOL   = EPS
+      S1_TIME= MPI_WTIME()
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, D)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       if (NSET.ge.1) then
 !C
@@ -140,6 +153,7 @@
 !C | ILU decomposition |
 !C +-------------------+
 !C===
+        S2_TIME= MPI_WTIME()
         if (PRECOND(1:2).eq.'IC' .or. PRECOND(1:3).eq.'ILU') then
           call precond_crs_ilu(N, NP, NPL, NPU, D, AL, INL,IAL,         &
      &      INU, AU, ALUG, SIGMA, SIGMA_DIAG)
@@ -148,6 +162,7 @@
           call precond_crs_ssor(N, NP, D, ALUG, SIGMA_DIAG)
         end if
 !C===
+        PRECtime = MPI_WTIME() - S2_TIME
       end if
 
 !C
@@ -159,8 +174,12 @@
      &    IAL, IAU, D, AL, AU, W(1,R), B, X)
 
       call cal_local_norm_1(NP, N, B, BNRM20(1))
+
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
       if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 !C===
 
@@ -174,8 +193,11 @@
 !C +-----------------+
 !C===
       call cal_local_s_product_1(NP, N, W(1,RT), W(1,R), RHO0(1))
+
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !C===
 
 !C
@@ -201,9 +223,11 @@
 !C
 !C-- INTERFACE data EXCHANGE
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,P) )
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
 !C
 !C-- incomplete CHOLESKY
@@ -230,9 +254,11 @@
 !C
 !C-- INTERFACE data EXCHANGE
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,PT) )
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,V), W(1,PT))
@@ -242,9 +268,12 @@
 !C-- calc. ALPHA
 
       call cal_local_s_product_1(NP, N, W(1,RT), W(1,V), C20(1))
+
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        ALPHA = RHO(1) / C2(1)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+      ALPHA = RHO(1) / C2(1)
 
 !C
 !C-- {s}= {r} - ALPHA*{V}
@@ -257,11 +286,11 @@
 
 !C
 !C-- INTERFACE data EXCHANGE
-
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,S) )
-
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !C
 !C-- incomplete CHOLESKY
 
@@ -286,10 +315,11 @@
 
 !C
 !C-- INTERFACE data EXCHANGE
-
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,ST) )
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,T), W(1,ST))
@@ -303,8 +333,11 @@
         CG(1:2)= 0.d0
         call cal_local_sproduct_norm_1(NP, N,                           &
      &     W(1,T), W(1,S), C0(1), C0(2) )
+
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG, 2, CALYPSO_REAL,                    &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         OMEGA= CG(1) / CG(2)
 !C===
 
@@ -319,8 +352,11 @@
         W(1:N,R) = W(1:N,S )                   - OMEGA*W(1:N,T)
 !
         call cal_local_norm_1(NP, N,  W(1,S), DNRM20(1))
+
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE(DNRM20, DNRM2, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         RESID= dsqrt(DNRM2(1) / BNRM2(1))
 
         if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
@@ -335,9 +371,12 @@
 
 !C
 !C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+      COMPtime = MPI_WTIME() - S1_TIME
 !
       end subroutine        BiCGSTAB
 !

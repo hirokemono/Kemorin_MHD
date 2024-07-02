@@ -293,8 +293,6 @@
 !$omp workshare
       W(1:3*NP,1:nWK_BiCGSTAB) = 0.0d0
 !$omp end workshare
-!
-      call reset_solver_time
 !C
 !C-- change B,X
 !

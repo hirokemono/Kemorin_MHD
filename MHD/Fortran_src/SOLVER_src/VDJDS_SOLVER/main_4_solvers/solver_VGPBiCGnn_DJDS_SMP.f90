@@ -298,8 +298,6 @@
       W(1:NB*NP,1:ntotWK_GPBiCG) = 0.0d0
 !$omp end workshare
 !
-      call reset_solver_time
-!
 !C-- change B,X
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,         &

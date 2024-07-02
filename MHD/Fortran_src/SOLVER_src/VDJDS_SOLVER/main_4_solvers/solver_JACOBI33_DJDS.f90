@@ -272,8 +272,6 @@
       W(1:3*NP,1:ntotWK_CG) = 0.0d0
 !$omp end workshare
 !
-      call reset_solver_time
-!
 !C-- change B,X
 !
        call change_order_2_solve_bx3(NP, PEsmpTOT, STACKmcG,            &

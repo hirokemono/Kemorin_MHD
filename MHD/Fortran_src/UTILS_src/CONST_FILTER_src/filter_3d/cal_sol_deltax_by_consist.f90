@@ -4,6 +4,7 @@
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Apr., 2008
 !
+!!      subroutine init_elapsed_solver_4_filter
 !!      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm, tbl_crs,&
 !!     &          f_l, gfil_p, mass, dx_nod, v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -34,9 +35,32 @@
       integer(kind=kint) :: itr_res, imonitor_solve
       private :: itr_res, nset, imonitor_solve
 !
+      logical :: flag_FILTER_SOLVER_time = .FALSE.
+      integer(kind = kint) :: ist_elapsed_SOLVER = 0
+      integer(kind = kint) :: ied_elapsed_SOLVER = 0
+!
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_elapsed_solver_4_filter
+!
+      use m_work_time
+!
+      integer(kind = kint), parameter :: num_append = 3
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_SOLVER, ied_elapsed_SOLVER)
+!
+      elps1%labels(ist_elapsed_SOLVER+ 1) = 'Solver Preconditioning   '
+      elps1%labels(ist_elapsed_SOLVER+ 2) = 'Solver iteration time    '
+      elps1%labels(ist_elapsed_SOLVER+ 3) = 'Solver communicatio time '
+!
+      flag_FILTER_SOLVER_time = .TRUE.
+!
+      end subroutine init_elapsed_solver_4_filter
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,6 +70,7 @@
       use calypso_mpi
       use t_ctl_params_4_gen_filter
       use t_solver_SR
+      use m_work_time
 !
       use solver
 !
@@ -64,6 +89,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      integer (kind = kint) :: inod
+      real(kind = kreal) :: PRECtime, COMPtime, COMMtime
       integer(kind = kint) :: ierr
 !
 !
@@ -102,9 +128,19 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &
      &             gfil_p%method_elesize, gfil_p%precond_elesize,       &
-     &             mass%INTARRAY_crs, mass%REALARRAY_crs, SR_sig, SR_r)
+     &             mass%INTARRAY_crs, mass%REALARRAY_crs, SR_sig, SR_r, &
+     &             PRECtime, COMPtime, COMMtime)
 !
-      if (my_rank .eq. 0 ) then
+      if(flag_FILTER_SOLVER_time) then
+        elps1%elapsed(ist_elapsed_SOLVER+1)                             &
+     &     = elps1%elapsed(ist_elapsed_SOLVER+1) + PRECtime
+        elps1%elapsed(ist_elapsed_SOLVER+2)                             &
+     &     = elps1%elapsed(ist_elapsed_SOLVER+2) + COMPtime
+        elps1%elapsed(ist_elapsed_SOLVER+3)                             &
+     &     = elps1%elapsed(ist_elapsed_SOLVER+3) + COMMtime
+      end if
+!
+      if(my_rank .eq. 0) then
         write(*,*) ' iteration finish:', itr_res
       end if
 !

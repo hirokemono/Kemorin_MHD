@@ -237,9 +237,6 @@
 !$omp workshare
       W(1:NP,1:ntotWK_CG) = 0.0d0
 !$omp end workshare
-!
-      call reset_solver_time
-!
 !C
 !C-- change B,X
 

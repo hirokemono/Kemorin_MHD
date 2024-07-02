@@ -7,6 +7,14 @@
 !C*** 
 !C*** module solver_GPBiCG_N
 !C***
+!!      subroutine GPBiCG_N                                             &
+!!     &                 (N, NP, NB, NPL, NPU,                          &
+!!     &                  D,  AL, INL, IAL, AU, INU, IAU,               &
+!!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,             &
+!!     &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,       &
+!!     &                  STACK_IMPORT, NOD_IMPORT,                     &
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET,               &
+!!     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 !
       module solver_GPBiCG_N
 !
@@ -28,7 +36,8 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET,                 &
+     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 
 ! \beginSUBROUTINE
 !     GPBiCG_N solves the linear system Ax = b using the
@@ -83,6 +92,14 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver preconditioning
+      real(kind = kreal), intent(inout) :: PRECtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME, S1_TIME, S2_TIME
 
       real(kind=kreal), dimension(:),    allocatable, save ::  DD
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
@@ -137,26 +154,31 @@
 
       MAXIT = ITER
       TOL   = RESID
+      S1_TIME= MPI_WTIME()
 
       ERROR= 0
 
       if (NSET.ge.1) then
+        S2_TIME= MPI_WTIME()
 !C
 !C +-------------------+
 !C | ILU decomposition |
 !C +-------------------+
 !C===
       do k1 = 1, NB
-       do i= 1, NP
-        ii = NB*(i-1)
-        DD(ii+k1)= 0.d0
-        WW(ii+k1,R)= D(k1,k1,i)
-       enddo
-      enddo
+        do i= 1, NP
+          ii = NB*(i-1)
+          DD(ii+k1)= 0.d0
+          WW(ii+k1,R)= D(k1,k1,i)
+        end do
+      end do
 
-        call SOLVER_SEND_RECV_n                                         &
-     &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
+      START_TIME= MPI_WTIME()
+      call SOLVER_SEND_RECV_n                                           &
+     &   (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,          &
+     &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
         do k1 = 1, NB
          do i= N+1, NP
           ii = NB*(i-1)
@@ -245,6 +267,7 @@
         enddo
       endif
 !C===
+        PRECtime = MPI_WTIME() - S2_TIME
       endif
 
 !C
@@ -254,10 +277,11 @@
 !C===
 !C
 !C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
-
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !C
 !C-- BEGIN calculation
 
@@ -320,10 +344,12 @@
         end do
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       if (BNRM2(1) .eq. 0.d0) BNRM2(1)= 1.d0      
 !C===
@@ -349,11 +375,11 @@
 
 !C
 !C-- INTERFACE data EXCHANGE
-
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
-
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !C
 !C-- incomplete CHOLESKY
       
@@ -510,10 +536,11 @@
 
 !C
 !C-- calc. {p_tld}= A{p}
-
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do j= 1, N
         jj = NB*(j-1)
@@ -567,8 +594,10 @@
         end do
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,                 &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       ALPHA= RHO(1) / RHO1(1)
 !C===
@@ -599,18 +628,17 @@
 !C-- calc. {t_tld} and {t0} by [M] inversion
 !C         {W2}   = [Minv]{p_tld} 
 !C
-
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,PT))
-
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,T))
-
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,T0))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do i= 1, NP
         ii = NB*(i-1)
@@ -867,9 +895,11 @@
 
 !C
 !C-- calc. [A]{t_tld}
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,TT))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do j= 1, N
         jj = NB*(j-1)
@@ -947,8 +977,11 @@
         end do
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
       if (iter.eq.1) then
         EQ(1)= CG(2)/CG(5)
         EQ(2)= 0.d0
@@ -1004,10 +1037,12 @@
 
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
 !C
 !C +--------------------------------------+
@@ -1038,9 +1073,12 @@
 
 !C
 !C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+      COMPtime = MPI_WTIME() - S1_TIME
 
       deallocate (WW)
 
