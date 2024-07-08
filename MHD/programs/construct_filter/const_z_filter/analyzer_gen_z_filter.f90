@@ -95,6 +95,7 @@
       use set_matrices_4_z_filter
       use copy_matrix_2_djds_array
       use write_z_filter_4_nod
+      use cal_delta_z_4_z_filter
 !
       use t_crs_connect
       use t_crs_matrix
@@ -106,8 +107,12 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
+      real(kind = kreal) :: INITtime, PRECtime
+      real(kind = kreal) :: COMPtime, COMMtime
       integer(kind=kint) :: itr_res, ierr
 !
+!
+      call elapsed_label_4_Zfilter
 !C
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
@@ -246,15 +251,24 @@
           call solve_by_djds_solver33                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
      &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig_f, SR_r_f,      &
-     &        itr_res, ierr)
+     &        itr_res, ierr, INITtime, PRECtime, COMPtime, COMMtime)
         else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
      &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig_f, SR_r_f,      &
-     &        itr_res, ierr)
+     &        itr_res, ierr, INITtime, PRECtime, COMPtime, COMMtime)
         end if
+      end if
+!
+      if(flag_Zfilte_time) then
+        elps1%elapsed(ist_elapsed_Zfilter+1)                            &
+     &        = elps1%elapsed(ist_elapsed_ZFILTER+1) + INITtime
+        elps1%elapsed(ist_elapsed_ZFILTER+2)                            &
+     &        = elps1%elapsed(ist_elapsed_ZFILTER+2) + COMPtime
+        elps1%elapsed(ist_elapsed_ZFILTER+3)                            &
+     &        = elps1%elapsed(ist_elapsed_ZFILTER+3) + COMMtime
       end if
 !
 !    construct commutative filter

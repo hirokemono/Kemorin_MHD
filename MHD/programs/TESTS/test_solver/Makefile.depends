@@ -1,6 +1,6 @@
 analyzer_test_crs.o: $(SOLVERTEST_DIR)/analyzer_test_crs.f90 m_precision.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_iccg_parameter.o t_ctl_data_solver_test.o t_solver_SR.o m_work_time.o calypso_mpi.o input_control_solver_test.o crs_matrix_io.o solve_by_crs_solver.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_test_djds.o: $(SOLVERTEST_DIR)/analyzer_test_djds.f90 m_precision.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_iccg_parameter.o t_ctl_data_solver_test.o t_solver_SR.o calypso_mpi.o input_control_solver_test.o crs_matrix_io.o solve_precond_DJDS.o copy_matrix_2_djds_array.o t_solver_djds.o
+analyzer_test_djds.o: $(SOLVERTEST_DIR)/analyzer_test_djds.f90 m_precision.o m_work_time.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_iccg_parameter.o t_ctl_data_solver_test.o t_solver_SR.o calypso_mpi.o input_control_solver_test.o crs_matrix_io.o solve_precond_DJDS.o copy_matrix_2_djds_array.o t_solver_djds.o
 	$(F90) -c $(F90OPTFLAGS) $<
 crs_matrix_io.o: $(SOLVERTEST_DIR)/crs_matrix_io.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_crs_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<

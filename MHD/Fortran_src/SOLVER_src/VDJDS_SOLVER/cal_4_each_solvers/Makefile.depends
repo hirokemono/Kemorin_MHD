@@ -14,6 +14,4 @@ m_CG_constants.o: $(SOLVER_EACH_DIR)/m_CG_constants.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_GPBiCG_constants.o: $(SOLVER_EACH_DIR)/m_GPBiCG_constants.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_solver_count_time.o: $(SOLVER_EACH_DIR)/m_solver_count_time.f90 m_precision.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
 

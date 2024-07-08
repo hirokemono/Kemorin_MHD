@@ -75,15 +75,21 @@
       type(MGCG_parameter), intent(in) :: MG_param
       type(node_data), intent(in) :: node
 !
+      real(kind = kreal) :: INITtime
       integer(kind = kint) :: ierr
 !
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
         call init_VMGCG33_DJDS_SMP(node%numnod, np_smp, PRECOND,        &
-            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax)
+            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax,        &
+     &      INITtime)
       else
         call init33_DJDS_struct(node%numnod, np_smp, METHOD,            &
-            PRECOND, ierr)
+                                PRECOND, ierr, INITtime)
+      end if
+      if(iflag_FMHD_time) then
+        elps1%elapsed(ist_elapsed_FMHD+1)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+1) + INITtime
       end if
 !
       end subroutine init_MGCG33_MHD
@@ -102,15 +108,22 @@
       type(MGCG_parameter), intent(in) :: MG_param
       type(node_data), intent(in) :: node
 !
+      real(kind = kreal) :: INITtime
+!
       integer(kind = kint) :: ierr
 !
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
         call init_VMGCG11_DJDS_SMP(node%numnod, np_smp, PRECOND,        &
-            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax)
+            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax,        &
+     &      INITtime)
       else
         call init_DJDS11_struct(node%numnod, np_smp, METHOD,            &
-            PRECOND, ierr)
+                                PRECOND, ierr, INITtime)
+      end if
+      if(iflag_FMHD_time) then
+        elps1%elapsed(ist_elapsed_FMHD+1)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+1) + INITtime
       end if
 !
       end subroutine init_MGCG11_MHD
@@ -149,6 +162,8 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      real(kind = kreal) :: COMPtime, COMMtime
+      real(kind = kreal) :: COMPtime_CG, VCYCLEtime
       integer(kind = kint) :: ierr, itr_res
 !
 !
@@ -157,21 +172,33 @@
 ! 
       ierr = i_debug
 !
-      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+1)
+      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+2)
       if (cmp_no_case(METHOD, 'MGCG')) then
-        call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
+        call solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm,              &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
      &      np_smp, node%numnod, b_vec(1), x_vec(1), itr, itr_res,      &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
-     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax, SR_sig, SR_r)
+     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG, ierr,     &
+     &      SR_sig, SR_r, COMPtime, COMPtime_CG, VCYCLEtime, COMMtime)
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
-     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res,     &
+     &      COMPtime, COMMtime)
       end if
 !
-      if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
+      if(iflag_FMHD_time) then
+        call end_elapsed_time(ist_elapsed_FMHD+3)
+!
+        elps1%elapsed(ist_elapsed_FMHD+4)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+4) + COMPtime
+        elps1%elapsed(ist_elapsed_FMHD+5)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+5) + COMMtime
+        elps1%elapsed(ist_elapsed_FMHD+6)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+6) + COMPtime_CG
+        elps1%elapsed(ist_elapsed_FMHD+7)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+7) + VCYCLEtime
+      end if
       if(iflag_debug .gt. 0) write(12,*) ' Iteration counts:', itr_res
 !
       end subroutine solver_MGCG_vector
@@ -210,13 +237,16 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      real(kind = kreal) :: COMPtime, COMMtime
+      real(kind = kreal) :: COMPtime_CG, VCYCLEtime
       integer(kind = kint) :: ierr, itr_res
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'METHOD for scalar: ',           &
      &                                  trim(METHOD)
 !
-      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+1)
+      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+3)
+
       ierr = i_debug
 !
 !      call CG                                                          &
@@ -230,19 +260,31 @@
 !     &     MG_comm(0)%istack_export, MG_comm(0)%item_export, 1)
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
-        call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
+        call solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm,              &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat11, MG_vector, np_smp,      &
      &      node%numnod, b_vec(1), x_vec(1), itr, itr_res,              &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
-     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax, SR_sig, SR_r)
+     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG, ierr,     &
+     &      SR_sig, SR_r, COMPtime, COMPtime_CG, VCYCLEtime, COMMtime)
       else
         call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &
-     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res,     &
+     &      COMPtime, COMMtime)
       end if
 !
-      if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
+      if(iflag_FMHD_time) then
+        call end_elapsed_time(ist_elapsed_FMHD+3)
+!
+        elps1%elapsed(ist_elapsed_FMHD+4)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+4) + COMPtime
+        elps1%elapsed(ist_elapsed_FMHD+5)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+5) + COMMtime
+        elps1%elapsed(ist_elapsed_FMHD+6)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+6) + COMPtime_CG
+        elps1%elapsed(ist_elapsed_FMHD+7)                               &
+     &        = elps1%elapsed(ist_elapsed_FMHD+7) + VCYCLEtime
+      end if
       if (iflag_debug .gt. 0) write(12,*) ' iteration counts', itr_res
 !
       end subroutine solver_MGCG_scalar

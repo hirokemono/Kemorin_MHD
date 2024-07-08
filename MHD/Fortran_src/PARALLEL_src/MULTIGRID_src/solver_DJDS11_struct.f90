@@ -8,26 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine init_DJDS11_struct(NP, PEsmpTOT, METHOD, PRECOND,    &
-!!     &          ierr)
+!!     &                              ierr, INITtime)
 !!
 !!      subroutine solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,    &
 !!     &           mat11, NP, B, X, METHOD, PRECOND, SR_sig, SR_r,      &
-!!     &           ierr, eps, itr, itr_res)
+!!     &           ierr, eps, itr, itr_res, COMPtime, COMMtime)
 !!      subroutine init_solve_DJDS11_struct                             &
 !!     &         (PEsmpTOT, comm_tbl, djds_tbl, mat11, NP, B, X,        &
-!!     &          METHOD, PRECOND, SR_sig, SR_r,                        &
-!!     &          ierr, eps, itr, itr_res)
+!!     &          METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr,        &
+!!     &          itr_res, INITtime, COMPtime, COMMtime)
 !!
 !!      subroutine precond_DJDS11_struct(PEsmpTOT, djds_tbl, mat11,     &
-!!     &          PRECOND, sigma_diag)
+!!     &                                 PRECOND, sigma_diag, PRECtime)
 !!@endverbatim
 !
       module solver_DJDS11_struct
 !
       use m_precision
+      use calypso_mpi
 !
       use t_solver_djds
-      use m_solver_count_time
 !
       implicit none
 !
@@ -38,13 +38,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_DJDS11_struct(NP, PEsmpTOT, METHOD, PRECOND,      &
-     &          ierr)
+     &                              ierr, INITtime)
 !
       use solver_DJDS
 !
       integer(kind = kint), intent(in)  :: NP, PEsmpTOT
       character(len=kchara ), intent(in):: METHOD, PRECOND
       integer(kind = kint), intent(inout)  :: ierr
+      real(kind = kreal), intent(inout) :: INITtime
 !
 !
       call init_solver_DJDS(NP, PEsmpTOT, METHOD, PRECOND,              &
@@ -56,7 +57,7 @@
 !
       subroutine solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,      &
      &           mat11, NP, B, X, METHOD, PRECOND, SR_sig, SR_r,        &
-     &           ierr, eps, itr, itr_res)
+     &           ierr, eps, itr, itr_res, COMPtime, COMMtime)
 !
       use t_solver_SR
       use t_comm_table
@@ -78,6 +79,8 @@
 !
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+      real(kind = kreal), intent(inout) :: COMPtime
+      real(kind = kreal), intent(inout) :: COMMtime
 !
 !
 !       call s_check_DJDS_ordering                                      &
@@ -135,8 +138,8 @@
 !
       subroutine init_solve_DJDS11_struct                               &
      &         (PEsmpTOT, comm_tbl, djds_tbl, mat11, NP, B, X,          &
-     &          METHOD, PRECOND, SR_sig, SR_r,                          &
-     &          ierr, eps, itr, itr_res)
+     &          METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr,          &
+     &          itr_res, INITtime, COMPtime, COMMtime)
 !
       use t_comm_table
       use solver_DJDS
@@ -156,6 +159,9 @@
 !
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+      real(kind = kreal), intent(inout) :: INITtime
+      real(kind = kreal), intent(inout) :: COMPtime
+      real(kind = kreal), intent(inout) :: COMMtime
 !
 !
       call init_solve_DJDS_kemo                                         &
@@ -183,19 +189,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine precond_DJDS11_struct(PEsmpTOT, djds_tbl, mat11,       &
-     &          PRECOND, sigma_diag)
+     &                                 PRECOND, sigma_diag, PRECtime)
 !
       use preconditioning_DJDS11
 !
-       type(DJDS_ordering_table), intent(in) :: djds_tbl
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
       integer(kind = kint), intent(in)  :: PEsmpTOT
       real(kind = kreal), intent(in) :: sigma_diag
       character(len=kchara ), intent(in):: PRECOND
-       type(DJDS_MATRIX), intent(inout) :: mat11
+      type(DJDS_MATRIX), intent(inout) :: mat11
+      real(kind = kreal), intent(inout) :: PRECtime
+!
+      real(kind = kreal) :: START_TIME
 !
 !C
 !C== PRECONDITIONING
 !
+      START_TIME = MPI_WTIME()
       call precond_DJDS11                                               &
      &    (mat11%internal_diag, mat11%num_diag, djds_tbl%NLmax,         &
      &     djds_tbl%itotal_l, djds_tbl%NHYP, PEsmpTOT,                  &
@@ -206,6 +216,7 @@
      &     djds_tbl%indexDJDS_l, djds_tbl%itemDJDS_L,                   &
      &     mat11%aiccg(mat11%istart_l), mat11%ALUG_L, mat11%ALUG_U,     &
      &     PRECOND, sigma_diag)
+      PRECtime = PRECtime + (MPI_WTIME() - START_TIME)
 !
       end subroutine precond_DJDS11_struct
 !

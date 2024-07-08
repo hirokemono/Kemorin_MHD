@@ -67,6 +67,8 @@
       integer (kind= kint) :: i, n_int
 !
       nprocs = 1
+!
+!      call elapsed_label_4_Zfilter
 !C
 !C
 !C-- CNTL DATA

@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                    &
-!!     &          METHOD_MG, PRECOND_MG)
+!!     &                               METHOD_MG, PRECOND_MG, INITtime)
 !!      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,      &
 !!     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,         &
 !!     &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG, &
-!!     &          IER, ntotWK_CG, W, SR_sig, SR_r)
+!!     &          IER, ntotWK_CG, W, SR_sig, SR_r,                        &
+!!     &          COMPtime_CG, COMMtime_MG)
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
@@ -29,13 +30,15 @@
 !!        integer(kind = kint), intent(inout) :: IER
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        real(kind = kreal), intent(inout) :: INITtime
+!!        real(kind = kreal), intent(inout) :: COMPtime_CG
+!!        real(kind = kreal), intent(inout) :: COMMtime_MG
 !!@endverbatim
 !
       module MGCG11_V_cycle
 !
       use m_precision
 !
-      use m_solver_count_time
       use t_interpolate_table
       use t_solver_djds
       use t_vector_for_solver
@@ -54,18 +57,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                      &
-     &          METHOD_MG, PRECOND_MG)
+     &                               METHOD_MG, PRECOND_MG, INITtime)
 !
       use m_constants
       use solver_DJDS11_struct
 !
       integer(kind = kint), intent(in) :: NP, PEsmpTOT
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+      real(kind = kreal), intent(inout) :: INITtime
+!
       integer(kind = kint) :: ierr
 !
 !
       call init_DJDS11_struct(NP, PEsmpTOT, METHOD_MG, PRECOND_MG,      &
-     &    ierr)
+     &                        ierr, INITtime)
 !
       end subroutine init_MGCG11_V_cycle
 !
@@ -74,7 +79,8 @@
       subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
      &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG,   &
-     &          IER, ntotWK_CG, W, SR_sig, SR_r)
+     &          IER, ntotWK_CG, W, SR_sig, SR_r,                        &
+     &          COMPtime_CG, COMMtime_MG)
 !
       use calypso_mpi
 !
@@ -107,9 +113,12 @@
 !
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+      real(kind = kreal), intent(inout) :: COMPtime_CG
+      real(kind = kreal), intent(inout) :: COMMtime_MG
 !
       integer(kind = kint) :: NP_f, NP_c
-      integer(kind = kint) :: i, j, iter_res, ierr
+      integer(kind = kint) :: i, iter_res, ierr
+      real(kind = kreal) :: COMPtime,  COMMtime
       real(kind = kreal) :: resd
 !
 !
@@ -140,7 +149,7 @@
 !C calculate residual
       if(print_residual_on_each_level) Then
         call cal_residual11_type(djds_tbl(0), mat11(0), MG_vect(0),     &
-     &      PEsmpTOT, resd, ntotWK_CG, W(1))
+     &      PEsmpTOT, resd, ntotWK_CG, W(1), COMMtime_MG)
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
@@ -154,7 +163,9 @@
         call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
-     &      ierr, EPS_MG, iter_mid, iter_res)
+     &      ierr, EPS_MG, iter_mid, iter_res, COMPtime, COMMtime)
+        COMPtime_CG = COMPtime_CG + COMPtime
+        COMMtime_MG = COMMtime_MG + COMMtime
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
@@ -184,7 +195,9 @@
       call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                    &
      &      djds_tbl(i), mat11(i), NP_c, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
-     &      ierr, EPS_MG, iter_lowest, iter_res)
+     &      ierr, EPS_MG, iter_lowest, iter_res, COMPtime, COMMtime)
+      COMPtime_CG = COMPtime_CG + COMPtime
+      COMMtime_MG = COMMtime_MG + COMMtime
 !
 !
       do i = num_MG_level-1, 0, -1
@@ -207,7 +220,7 @@
         if(print_residual_on_each_level) Then
         write(*,*) 'cal_residual11_type', i
           call cal_residual11_type(djds_tbl(i), mat11(i), MG_vect(i),   &
-     &      PEsmpTOT, resd, ntotWK_CG, W(1))
+     &      PEsmpTOT, resd, ntotWK_CG, W(1), COMMtime_MG)
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
@@ -215,7 +228,9 @@
         call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
-     &      ierr, EPS_MG, iter_lowest, iter_res)
+     &      ierr, EPS_MG, iter_lowest, iter_res, COMPtime, COMMtime)
+        COMPtime_CG = COMPtime_CG + COMPtime
+        COMMtime_MG = COMMtime_MG + COMMtime
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
@@ -238,7 +253,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_residual11_type(djds_tbl, mat11, MG_vect,          &
-     &          PEsmpTOT, resd, ntotWK_CG, W)
+     &          PEsmpTOT, resd, ntotWK_CG, W, COMMtime)
 !
       use calypso_mpi
 !
@@ -255,6 +270,9 @@
       real(kind = kreal), intent(inout) :: resd
       real(kind = kreal), intent(inout) :: W(mat11%num_diag,ntotWK_CG)
 !
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME
       real(kind = kreal) :: BNRM20
 !
 !
@@ -286,8 +304,7 @@
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (BNRM20, resd, 1, CALYPSO_REAL,              &
      &        MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        END_TIME= MPI_WTIME()
-        COMMtime = COMMtime + END_TIME - START_TIME
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !
       end subroutine cal_residual11_type
 !
