@@ -64,11 +64,15 @@
       type(fline_ctl), intent(inout)  :: fline_ctl_struct
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       call count_control_4_fline(fline_ctl_struct,                      &
-     &     group%ele_grp, group%surf_grp, fln_prm)
+     &     group%ele_grp, group%surf_grp, fln_prm, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr,                                    &
+     &                         'Check Directory for Fieldline output')
+      end if
 !
       call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(fln_prm)
@@ -108,11 +112,15 @@
       type(fline_ctl), intent(inout)  :: fline_ctl_struct
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       call count_control_4_fline(fline_ctl_struct,                      &
-     &    group%ele_grp, group%surf_grp, fln_prm)
+     &    group%ele_grp, group%surf_grp, fln_prm, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr,                                    &
+     &                         'Check Directory for tracer output')
+      end if
 !
       call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(fln_prm)

@@ -15,6 +15,7 @@
 !!        type(tracer_module), intent(in) :: tracer
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
+!!        integer(kind = kint), intent(inout) :: ierr
 !!      subroutine set_fline_ctl_4_tracer_seed(num_tracer, tracer_prm,  &
 !!     &                                       fln, fln_prm)
 !!        integer(kind = kint), intent(in) :: num_tracer
@@ -48,7 +49,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
+      subroutine count_control_4_fline(fln, ele_grp, sf_grp,            &
+     &                                 fln_prm, ierr)
 !
       use m_field_file_format
       use m_control_fline_flags
@@ -66,10 +68,12 @@
       type(fline_ctl), intent(in) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
+      integer(kind = kint), intent(inout) :: ierr
 !
       character(len=kchara) :: character_256
 !
 !
+      ierr = 0
       if(fln%fline_file_head_ctl%iflag .gt. 0) then
         fln_prm%fline_file_IO%file_prefix                               &
      &         =  fln%fline_file_head_ctl%charavalue
@@ -81,8 +85,8 @@
       if(check_file_writable(my_rank,                                   &
      &                       fln_prm%fline_file_IO%file_prefix)         &
      &                                             .eqv. .FALSE.) then
-        call calypso_mpi_abort(ierr_VIZ,                                &
-     &                         'Check Directory for Fieldline output')
+        ierr = ierr_VIZ
+        return
       end if
 !
       if(fln%fline_output_type_ctl%iflag .eq. 0) then
