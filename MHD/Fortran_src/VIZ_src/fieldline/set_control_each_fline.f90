@@ -7,7 +7,7 @@
 !> @brief Set seed points from tracers
 !!
 !!@verbatim
-!!      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
+!!      subroutine  (fln, ele_grp, sf_grp, fln_prm)
 !!      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
