@@ -74,12 +74,15 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: nline, inum, ip
+!      integer(kind = kint) ::  jcou
 !
 !
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
       call reset_fline_start(fline_lc)
 !
+!      jcou = 0
       do
+!        jcou = jcou + 1
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+2)
         do inum = 1, fln_tce%num_current_fline

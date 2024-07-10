@@ -22,7 +22,7 @@
 !!        type(broadcast_trace_data),intent(inout):: fln_bcast(num_fline)
 !!
 !!      subroutine set_fixed_FLINE_seed_points(mesh, num_fline,         &
-!!     &                                      fln_prm, fln_src, fln_tce)
+!!     &                                      fln_prm, fln_src)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
@@ -136,7 +136,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
-     &                                      fln_prm, fln_src, fln_tce)
+     &                                      fln_prm, fln_src)
 !
       use m_connect_hexa_2_tetra
       use t_find_interpolate_in_ele
@@ -147,7 +147,6 @@
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
 !
 !
       integer(kind = kint) :: i_fln
@@ -170,7 +169,7 @@
           call alloc_init_tracer_position(fln_prm(i_fln),               &
      &                                    fln_src(i_fln))
           call init_FLINE_seed_from_list(mesh%node, mesh%ele,           &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln), fln_dist)
+     &        fln_prm(i_fln), fln_src(i_fln), fln_dist)
         end if
       end do
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
@@ -206,6 +205,8 @@
      &                       .eq. iflag_position_list) then
         else if(fln_prm(i_fln)%id_fline_seed_type                       &
      &                       .eq. iflag_position_list) then
+          call count_FLINE_seed_from_list                               &
+     &       (fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
           call set_FLINE_seed_field_from_list                           &
      &       (mesh%node, mesh%ele, nod_fld,                             &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))

@@ -18,7 +18,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(FLINE_element_size), intent(inout) :: fln_dist
 !!      subroutine init_FLINE_seed_from_list(node, ele,                 &
-!!     &          fln_prm, fln_src, fln_tce, fln_dist)
+!!     &                                     fln_prm, fln_src, fln_dist)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
@@ -31,6 +31,11 @@
 !!         type(element_data), intent(in) :: ele
 !!         type(phys_data), intent(in) :: nod_fld
 !!         type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!
+!!      subroutine count_FLINE_seed_from_list(fln_prm, fln_src, fln_tce)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine set_field_at_each_seed_point(node, ele, nod_fld,     &
@@ -145,7 +150,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_FLINE_seed_from_list(node, ele,                   &
-     &          fln_prm, fln_src, fln_tce, fln_dist)
+     &                                     fln_prm, fln_src, fln_dist)
 !
       use calypso_mpi_int
       use t_control_data_flines
@@ -157,7 +162,6 @@
       type(element_data), intent(in) :: ele
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
-      type(each_fieldline_trace), intent(inout) :: fln_tce
       type(FLINE_element_size), intent(inout) :: fln_dist
 !
       type(cal_interpolate_coefs_work), save :: itp_ele_work_f
@@ -214,6 +218,7 @@
           end if
         end do
       end do
+      call dealloc_work_4_interpolate(itp_ele_work_f)
         
 !      do ip = 1, nprocs
 !        call calypso_mpi_barrier
@@ -238,7 +243,22 @@
 !        call calypso_mpi_barrier
 !        write(*,*) my_rank, 'fln_src%num_line_local',                  &
 !     &            fln_src%num_line_local
-
+!
+      end subroutine init_FLINE_seed_from_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_FLINE_seed_from_list(fln_prm, fln_src, fln_tce)
+!
+      use calypso_mpi_int
+!
+      type(fieldline_paramter), intent(in) :: fln_prm
+      type(each_fieldline_source), intent(in) :: fln_src
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      integer(kind = kint) :: i
+!
+!
       fln_tce%num_current_fline = fln_src%num_line_local
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
         fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
@@ -254,9 +274,8 @@
      &     = fln_tce%istack_current_fline(i-1)                          &
      &      + fln_tce%istack_current_fline(i)
       end do
-      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-      end subroutine init_FLINE_seed_from_list
+      end subroutine count_FLINE_seed_from_list
 !
 !  ---------------------------------------------------------------------
 !

@@ -99,7 +99,7 @@
      &   (fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce, &
      &    fline%fline_lc, fline%fln_SR, fline%fln_bcast)
       call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
-     &    fline%fln_prm, fline%fln_src, fline%fln_tce)
+     &    fline%fln_prm, fline%fln_src)
 !
       end subroutine FLINE_initialize
 !
@@ -248,6 +248,8 @@
      &        fln_prm(i_fln), fln_tce(i_fln))
         else if(fln_prm(i_fln)%id_fline_seed_type                       &
      &                       .eq. iflag_position_list) then
+          call count_FLINE_seed_from_list                               &
+     &       (fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
           call set_FLINE_seed_field_from_list                           &
      &       (mesh%node, mesh%ele, nod_fld,                             &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
@@ -261,7 +263,6 @@
      &         call end_elapsed_time(elps_fline%ist_elapsed+1)
 !
       do i_fln = 1, num_fline
-        if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call const_each_field_line(elps_fline, mesh, para_surf,         &
      &      nod_fld, fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),     &
      &      fln_bcast(i_fln), fline_lc(i_fln), m_SR)
