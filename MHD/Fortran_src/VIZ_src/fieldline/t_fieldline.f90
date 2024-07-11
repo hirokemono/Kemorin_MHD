@@ -238,9 +238,9 @@
 !
       integer(kind = kint) :: i_fln
 !
-      if(elps_fline%flag_elapsed)                                       &
-     &         call start_elapsed_time(elps_fline%ist_elapsed+1)
       do i_fln = 1, num_fline
+        if(elps_fline%flag_elapsed)                                     &
+     &         call start_elapsed_time(elps_fline%ist_elapsed+1)
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_tracer_seeds) then
           call const_fline_seed_from_tracer(mesh%node, mesh%ele,        &
@@ -258,14 +258,14 @@
      &       (mesh, group, para_surf, nod_fld,                          &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
         end if
-      end do
-      if(elps_fline%flag_elapsed)                                       &
+        if(elps_fline%flag_elapsed)                                     &
      &         call end_elapsed_time(elps_fline%ist_elapsed+1)
+        call calypso_mpi_barrier()
 !
-      do i_fln = 1, num_fline
         call const_each_field_line(elps_fline, mesh, para_surf,         &
      &      nod_fld, fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),     &
      &      fln_bcast(i_fln), fline_lc(i_fln), m_SR)
+        call calypso_mpi_barrier()
       end do
 !
       end subroutine s_const_field_lines

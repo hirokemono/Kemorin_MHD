@@ -64,7 +64,7 @@
 !
       type(fieldline_seeds_surf_group) :: seed_sf_grp
 !
-      integer(kind = kint) :: ip
+      integer(kind = kint) :: ip, i
       integer(kind = kint) :: num_sf
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
@@ -74,6 +74,15 @@
 !
       call init_flux_on_seed_surface(ele, surf, sf_grp, nod_fld,        &
      &                               fln_prm, seed_sf_grp)
+!
+      abs_flux_start_l = 0.0d0
+      tot_flux_start_l = 0.0d0
+      do i = 1, seed_sf_grp%nsurf_seed
+        abs_flux_start_l                                                &
+     &            = abs_flux_start_l + abs(seed_sf_grp%flux_start(i))
+        tot_flux_start_l                                                &
+     &            = tot_flux_start_l + seed_sf_grp%flux_start(i)
+      end do
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (tot_flux_start_l, tot_flux_start, MPI_SUM)
@@ -118,8 +127,6 @@
 !
       if(fln_prm%num_each_field_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
-          if(iflag_debug .gt. 0)                                        &
-     &        write(*,*) 'start_surface_witout_random'
           call start_surface_witout_random                              &
      &       (seed_sf_grp, abs_flux_start_l, fln_src%num_line_local,    &
      &        fln_prm%num_each_field_line, fln_prm%id_surf_start_fline)
