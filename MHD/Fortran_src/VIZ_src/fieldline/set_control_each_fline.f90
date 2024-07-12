@@ -7,7 +7,7 @@
 !> @brief Set seed points from tracers
 !!
 !!@verbatim
-!!      subroutine  (fln, ele_grp, sf_grp, fln_prm)
+!!      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
 !!      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -185,23 +185,6 @@
      &      = set_surf_grp_id_4_viz(ele_grp%num_grp, ele_grp%grp_name,  &
      &                              fln%seed_ele_grp_ctl%charavalue)
         end if
-!
-      else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
-        if(fln%seed_surface_ctl%num .gt. 0) then
-          fln_prm%num_each_field_line = fln%seed_surface_ctl%num
-        end if
-      else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
-        if(fln%seed_point_ctl%num .gt. 0) then
-          fln_prm%num_each_field_line = fln%seed_point_ctl%num
-        end if
-        if(fln%seed_geological_ctl%num .gt. 0) then
-          fln_prm%num_each_field_line = fln_prm%num_each_field_line     &
-    &                                  + fln%seed_geological_ctl%num
-        end if
-        if(fln%seed_spherical_ctl%num .gt. 0) then
-          fln_prm%num_each_field_line = fln_prm%num_each_field_line     &
-    &                                  + fln%seed_spherical_ctl%num
-        end if
       end if
 !
       end subroutine count_control_4_fline
@@ -222,17 +205,12 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
-      real(kind = kreal) :: rr(1), theta(1), phi(1)
-      integer(kind = kint) :: i, icou
       integer(kind = kint) :: ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
       character(len=kchara) :: tmpfield(1)
       character(len=kchara) :: tmpcomp(1)
       character(len=kchara) :: tmpchara(1)
 !
-      real(kind = kreal) :: pi
-!
-      pi = four * atan(one)
 !
       tmpfield(1) = fln%fline_field_ctl%charavalue
       tmpcomp(1) =  'vector'
@@ -262,56 +240,6 @@
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)
-!
-      if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
-        do i = 1, fln_prm%num_each_field_line
-          fln_prm%id_gl_surf_start_fline(1,i)                           &
-     &          = fln%seed_surface_ctl%int1(i)
-          fln_prm%id_gl_surf_start_fline(2,i)                           &
-     &          = fln%seed_surface_ctl%int2(i)
-        end do
-      else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
-        do i = 1, fln%seed_point_ctl%num
-          fln_prm%xx_surf_start_fline(1,i) = fln%seed_point_ctl%vec1(i)
-          fln_prm%xx_surf_start_fline(2,i) = fln%seed_point_ctl%vec2(i)
-          fln_prm%xx_surf_start_fline(3,i) = fln%seed_point_ctl%vec3(i)
-        end do
-        do i = 1, fln%seed_geological_ctl%num
-          icou = i + fln%seed_point_ctl%num
-          rr(1) =              fln%seed_geological_ctl%vec1(i)
-          theta(1) = (90.0d0 - fln%seed_geological_ctl%vec2(i))         &
-    &               * pi / 180.0d0
-          phi(1) =   fln%seed_geological_ctl%vec3(i) * pi / 180.0d0
-          call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
-    &                         fln_prm%xx_surf_start_fline(1,icou),      &
-    &                         fln_prm%xx_surf_start_fline(2,icou),      &
-    &                         fln_prm%xx_surf_start_fline(3,icou))
-        end do
-        do i = 1, fln%seed_spherical_ctl%num
-          icou = i + fln%seed_point_ctl%num                             &
-    &              + fln%seed_geological_ctl%num
-          rr(1) =    fln%seed_spherical_ctl%vec1(i)
-          theta(1) = fln%seed_spherical_ctl%vec2(i)
-          phi(1) =   fln%seed_spherical_ctl%vec3(i)
-!          write(*,*) my_rank, i, 'seed_spherical_ctl',  &
-!    &        fln%seed_spherical_ctl%vec1(i),            &
-!    &        fln%seed_spherical_ctl%vec2(i),            &
-!    &        fln%seed_spherical_ctl%vec3(i)
-!          write(*,*) my_rank, i, 'seed_spherical_ctl',                 &
-!    &            rr(1), theta(1), phi(1)
-          call position_2_xyz(IONE, rr(1), theta(1), phi(1),            &
-    &                         fln_prm%xx_surf_start_fline(1,icou),      &
-    &                         fln_prm%xx_surf_start_fline(2,icou),      &
-    &                         fln_prm%xx_surf_start_fline(3,icou))
-!          write(*,*) my_rank, i, icou, 'xx_surf_start_fline',          &
-!    &              fln_prm%xx_surf_start_fline(:,icou)
-        end do
-!       
-!        do i = 1, fln_prm%num_each_field_line
-!          write(*,*) i, 'fln_prm%xx_surf_start_fline',                 &
-!     &        fln_prm%xx_surf_start_fline(:,i)
-!        end do
-      end if
 !
       end subroutine set_control_4_fline
 !
@@ -351,7 +279,7 @@
      &     'set correct tracer file prefix for seeds')
       end if
 !
-      end subroutine set_fline_ctl_4_tracer_Seed
+      end subroutine set_fline_ctl_4_tracer_seed
 !
 !  ---------------------------------------------------------------------
 !

@@ -29,7 +29,10 @@ extern void * c_VIZ_FLINE_start_surf_grp_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_num_fieldline_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_max_line_step_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_max_trace_len_ctl(void *f_fline_ctl);
+
 extern void * c_VIZ_FLINE_seed_point_ctl(void *f_fline_ctl);
+extern void * c_VIZ_FLINE_geological_pnt_ctl(void *f_fline_ctl);
+extern void * c_VIZ_FLINE_spherical_pnt_ctl(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_seed_surface_ctl(void *f_fline_ctl);
 
 
