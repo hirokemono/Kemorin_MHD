@@ -100,6 +100,7 @@
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
      &        fln_tce%iflag_comm_start(inum), fline_lc, inum)
         end do
+        call calypso_mpi_barrier()
         if(elps_fline%flag_elapsed)                                     &
      &           call end_elapsed_time(elps_fline%ist_elapsed+2)
 !
