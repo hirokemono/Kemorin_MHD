@@ -73,17 +73,6 @@
 !!        starting_gl_surface_id  12  3
 !!      end array
 !!    end seed_lists_ctl
-!!
-!!    array starting_gl_surface_id  10
-!!      starting_gl_surface_id  12  3
-!!    end array
-!!
-!!     field type:
-!!     scalar, vector, sym_tensor, asym_tensor
-!!       spherical_vector,   spherical_sym_tensor
-!!       cylindrical_vector, cylindrical_sym_tensor
-!!       norm, 
-!!
 !!  end fieldline
 !!  ---------------------------------------------------------------------
 !!@endverbatim

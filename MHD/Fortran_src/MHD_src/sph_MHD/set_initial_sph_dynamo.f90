@@ -148,7 +148,6 @@
      &    ipol%base%i_magne, ipol%base%i_current, rj_fld)
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
-      call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
 !
       if (iflag_restart.ne.i_rst_by_file                                &
