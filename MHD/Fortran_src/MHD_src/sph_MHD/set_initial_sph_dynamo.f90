@@ -115,8 +115,8 @@
       type(SPH_MHD_model_data), intent(in) :: SPH_model 
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
+      type(MHD_step_param), intent(in) :: MHD_step
 !
-      type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: sph_fst_IO
 !

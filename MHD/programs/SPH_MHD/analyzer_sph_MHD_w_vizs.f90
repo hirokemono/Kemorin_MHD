@@ -138,14 +138,9 @@
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
 !
-!*  -----------  set initial step data --------------
-!*
-      call copy_time_step_data(MHDMs%MHD_step%init_d,                   &
-     &                         MHDMs%MHD_step%time_d)
-      iflag_finish = 0
-!*
 !*  -------  time evelution loop start -----------
 !*
+      iflag_finish = 0
       do
         call evolve_time_data(MHDMs%MHD_step%time_d)
 !
