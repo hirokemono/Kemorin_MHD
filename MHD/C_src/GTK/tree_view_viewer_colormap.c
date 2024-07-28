@@ -90,7 +90,7 @@ GtkWidget * add_pvr_colormap_list_box(struct kemoviewer_type *kemo_sgl,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(color_vws->scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(color_vws->scrolled_window, 300, 300);
-    gtk_widget_set_app_paintable(color_vws->scrolled_window, TRUE);
+//    gtk_widget_set_app_paintable(color_vws->scrolled_window, TRUE);
     gtk_widget_add_events (color_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect(G_OBJECT(color_vws->scrolled_window), "draw", 
 				G_CALLBACK(pvr_draw_colorabar_CB), (gpointer) color_vws);

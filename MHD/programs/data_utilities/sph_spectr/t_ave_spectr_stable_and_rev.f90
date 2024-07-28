@@ -132,12 +132,22 @@
       integer(kind = kint) :: i, ifile
 !
 !       Load gauss coefficients data
+      imode_g1(-1:1) = 0
       if(tave_st_rev_param%flag_old_gauss) then
         call load_gauss_coefs_time_series                               &
      &     (flag_log, tave_st_rev_param%gauss_file_name,                &
      &      tave_st_rev_param%start_time, tave_st_rev_param%end_time,   &
      &      true_start, true_end, gauss_IO_a)
         call dup_gauss_series_to_spectr(gauss_IO_a, sph_IN_g, g_series)
+!
+        do i = 1, sph_IN_g%nfield_sph_spec
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))        &
+     &                                             imode_g1( 0) = i
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))        &
+     &                                             imode_g1( 1) = i
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))        &
+     &                                             imode_g1(-1) = i
+        end do
       else
         call load_sph_volume_mean_file                                  &
      &     (tave_st_rev_param%gauss_file_name,                          &
@@ -146,17 +156,17 @@
         write(comment_111,'(2a,a23,1p2E25.15e3,a1)') '#', char(10),     &
      &             '# Start and End time:  ', true_start, true_end,     &
      &             char(10)
+!
+        do i = 1, sph_IN_g%nfield_sph_spec
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))        &
+     &                                             imode_g1( 0) = i-2
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))        &
+     &                                             imode_g1( 1) = i-2
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))        &
+     &                                             imode_g1(-1) = i-2
+        end do
       end if
 !
-      imode_g1(-1:1) = 0
-      do i = 1, sph_IN_g%nfield_sph_spec
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))          &
-     &                                               imode_g1( 0) = i
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))          &
-     &                                               imode_g1( 1) = i
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))          &
-     &                                               imode_g1(-1) = i
-      end do
       write(*,*) 'imode_g1', imode_g1( 0), imode_g1( 1), imode_g1(-1)
 !
       allocate(ave_gauss(sph_IN_g%nfield_sph_spec,2))

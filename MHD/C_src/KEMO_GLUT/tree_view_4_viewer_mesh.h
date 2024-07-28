@@ -15,7 +15,7 @@
 #include "t_control_chara_int3_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
-#include "tree_view_chara_int3_GTK.h"
+// #include "tree_view_chara_int3_GTK.h"
 #include "quicksort_c.h"
 
 #define COLUMN_MESH_INDEX    0

@@ -14,7 +14,7 @@
 #include "kemoview_gtk_colorsel.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "t_control_chara_int3_IO.h"
-#include "tree_view_chara_int3_GTK.h"
+// #include "tree_view_chara_int3_GTK.h"
 #include "tree_view_4_viewer_mesh.h"
 #include "quicksort_c.h"
 
