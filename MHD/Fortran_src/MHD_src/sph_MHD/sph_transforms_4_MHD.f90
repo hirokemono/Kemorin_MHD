@@ -178,7 +178,7 @@
 !
       if(trns_fwd%ncomp .eq. 0) return
       call sph_f_trans_w_coriolis                                       &
-     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns, trns_fwd,  &
+     &   (sph, comms_sph, trans_p, cor_rlm, f_trns, trns_fwd,           &
      &    WK_leg, WK_FFTs_MHD, SR_sig, SR_r)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+9)
@@ -265,8 +265,8 @@
       call sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj, fl_prop,        &
      &    sph_bc_U, omega_sph, trans_p%leg, gt_cor,                     &
      &    trns_MHD%b_trns, trns_MHD%backward, cor_rlm, SR_sig, SR_r)
-      call sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj, fl_prop,        &
-     &    cor_rlm, trns_MHD%f_trns, trns_MHD%forward, SR_sig, SR_r)
+      call sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj, cor_rlm,        &
+     &    trns_MHD%f_trns, trns_MHD%forward, SR_sig, SR_r)
 !
       call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
      &    trns_MHD%forward, comm_rj, SR_r%n_WR, SR_r%WR(1), rj_fld)
