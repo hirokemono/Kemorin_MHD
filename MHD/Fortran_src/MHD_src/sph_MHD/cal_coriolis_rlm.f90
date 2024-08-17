@@ -134,8 +134,6 @@
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
-      write(*,*) 'fl_prop%iflag_4_coriolis', fl_prop%iflag_4_coriolis, &
-     &   f_trns%forces%i_Coriolis, f_trns%rot_forces%i_Coriolis
       if(fl_prop%iflag_4_coriolis .eqv. .FALSE.) return
 !
 !$omp parallel workshare
@@ -144,14 +142,12 @@
 !$omp end parallel workshare
 !
       if(f_trns%forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sum_coriolis_rlm'
         call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,           &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      gt_cor, n_WR, WR, cor_rlm)
       end if
 !
       if(f_trns%rot_forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sum_rot_coriolis_rlm'
         call sum_rot_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      leg, gt_cor,n_WR, WR, cor_rlm)
@@ -177,8 +173,6 @@
 !
 !
       if(f_trns%forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sel_calypso_to_send_vector Coriolis', &
-     &            ip_rlm_coriolis, f_trns%forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &
@@ -187,8 +181,6 @@
       end if
 !
       if(f_trns%rot_forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sel_calypso_to_send_vector rot_Coriolis', &
-     &            ip_rlm_rot_cor, f_trns%rot_forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &

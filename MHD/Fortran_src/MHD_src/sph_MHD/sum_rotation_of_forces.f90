@@ -56,6 +56,9 @@
      &   .and.  fl_prop%iflag_4_gravity                                 &
      &   .and.  fl_prop%iflag_4_coriolis                                &
      &   .and.  fl_prop%iflag_4_lorentz) then
+        write(*,*) 'set_MHD_terms_to_force rotation', &
+     &         ipol_rot_frc%i_m_advect, ipol_rot_frc%i_Coriolis, &
+     &         ipol_rot_frc%i_lorentz, ipol_rot_frc%i_buoyancy
         call set_MHD_terms_to_force                                     &
      &     (ipol_exp, ipol_rot_frc, ipol_rot_frc%i_buoyancy,            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
