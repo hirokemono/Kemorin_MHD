@@ -134,7 +134,8 @@
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
-      write(*,*) 'fl_prop%iflag_4_coriolis', fl_prop%iflag_4_coriolis
+      write(*,*) 'fl_prop%iflag_4_coriolis', fl_prop%iflag_4_coriolis, &
+     &   b_trns%forces%i_Coriolis, b_trns%rot_forces%i_Coriolis
       if(fl_prop%iflag_4_coriolis .eqv. .FALSE.) return
 !
 !$omp parallel workshare
