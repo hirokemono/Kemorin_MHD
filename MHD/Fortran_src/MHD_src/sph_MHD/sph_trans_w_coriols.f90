@@ -10,9 +10,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis                               &
-!!     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph, b_trns, &
-!!     &          trans_p, gt_cor, trns_bwd, WK_leg, WK_FFTs_MHD,       &
-!!     &          cor_rlm, SR_sig, SR_r)
+!!     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,         &
+!!     &          b_trns, f_trns, trans_p, gt_cor, trns_bwd,            &
+!!     &          WK_leg, WK_FFTs_MHD, cor_rlm, SR_sig, SR_r)
 !!      subroutine sph_f_trans_w_coriolis                               &
 !!     &         (sph, comms_sph, trans_p, cor_rlm, f_trns,             &
 !!     &          trns_fwd, WK_leg, WK_FFTs_MHD, SR_sig, SR_r)
@@ -33,7 +33,7 @@
 !!
 !!      subroutine sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj,         &
 !!     &          fl_prop, sph_bc_U, omega_sph, leg, gt_cor,            &
-!!     &          b_trns, trns_bwd, cor_rlm, SR_sig, SR_r)
+!!     &          b_trns, f_trns, trns_bwd, cor_rlm, SR_sig, SR_r)
 !!      subroutine sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj,         &
 !!     &          cor_rlm, f_trns, trns_fwd, SR_sig, SR_r)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -107,9 +107,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_w_coriolis                                 &
-     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph, b_trns,   &
-     &          trans_p, gt_cor, trns_bwd, WK_leg, WK_FFTs_MHD,         &
-     &          cor_rlm, SR_sig, SR_r)
+     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,           &
+     &          b_trns, f_trns, trans_p, gt_cor, trns_bwd,              &
+     &          WK_leg, WK_FFTs_MHD, cor_rlm, SR_sig, SR_r)
 !
       use cal_coriolis_rlm
 !
@@ -121,6 +121,7 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
       type(phys_address), intent(in) :: b_trns
+      type(phys_address), intent(in) :: f_trns
 !
       type(spherical_transform_data), intent(inout) :: trns_bwd
       type(legendre_trns_works), intent(inout) :: WK_leg
@@ -142,8 +143,8 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call s_cal_coriolis_rlm                                           &
      &   (trns_bwd%ncomp, sph%sph_rlm, comms_sph%comm_rlm,              &
-     &    fl_prop, sph_bc_U, omega_sph, b_trns, trans_p%leg, gt_cor,    &
-     &    SR_r%n_WR, SR_r%WR(1), cor_rlm)
+     &    fl_prop, sph_bc_U, omega_sph, b_trns, f_trns,                 &
+     &    trans_p%leg, gt_cor, SR_r%n_WR, SR_r%WR(1), cor_rlm)
       call finish_send_recv_sph(comms_sph%comm_rj, SR_sig)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
@@ -250,7 +251,7 @@
 !
       subroutine sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj,           &
      &          fl_prop, sph_bc_U, omega_sph, leg, gt_cor,              &
-     &          b_trns, trns_bwd, cor_rlm, SR_sig, SR_r)
+     &          b_trns, f_trns, trns_bwd, cor_rlm, SR_sig, SR_r)
 !
       use cal_coriolis_rlm
 !
@@ -263,6 +264,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
       type(phys_address), intent(in) :: b_trns
+      type(phys_address), intent(in) :: f_trns
       type(spherical_transform_data), intent(in) :: trns_bwd
 !
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
@@ -280,7 +282,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_cal_coriolis_rlm'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call s_cal_coriolis_rlm(trns_bwd%ncomp, sph_rlm, comm_rlm,        &
-     &    fl_prop, sph_bc_U, omega_sph, b_trns, leg, gt_cor,            &
+     &    fl_prop, sph_bc_U, omega_sph, b_trns, f_trns, leg, gt_cor,    &
      &    SR_r%n_WR, SR_r%WR(1), cor_rlm)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !

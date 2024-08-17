@@ -187,9 +187,9 @@
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
-     &    omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,          &
-     &    trns_MHD%backward, WK_leg, WK_FFTs_MHD, cor_rlm,              &
-     &    SR_sig, SR_r)
+     &    omega_sph, trans_p, gt_cor, rj_fld,                           &
+     &    trns_MHD%b_trns, trns_MHD%f_trns, trns_MHD%backward,          &
+     &    WK_leg, WK_FFTs_MHD, cor_rlm, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)

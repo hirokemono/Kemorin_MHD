@@ -10,14 +10,14 @@
 !!@verbatim
 !!************************************************
 !!      subroutine s_cal_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,   &
-!!     &          fl_prop, sph_bc_U, omega_sph, b_trns, leg, gt_cor,    &
-!!     &          n_WR, WR, cor_rlm)
+!!     &          fl_prop, sph_bc_U, omega_sph, b_trns, f_trns,         &
+!!     &          leg, gt_cor, n_WR, WR, cor_rlm)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_rotation), intent(in) :: omega_sph
-!!        type(phys_address), intent(in) :: b_trns
+!!        type(phys_address), intent(in) :: b_trns, f_trns
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
 !!        integer(kind = kint), intent(in) :: ncomp_trans, n_WR
@@ -112,8 +112,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,     &
-     &          fl_prop, sph_bc_U, omega_sph, b_trns, leg, gt_cor,      &
-     &          n_WR, WR, cor_rlm)
+     &          fl_prop, sph_bc_U, omega_sph, b_trns, f_trns,           &
+     &          leg, gt_cor, n_WR, WR, cor_rlm)
 !
       use t_physical_property
       use t_boundary_params_sph_MHD
@@ -123,7 +123,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rotation), intent(in) :: omega_sph
-      type(phys_address), intent(in) :: b_trns
+      type(phys_address), intent(in) :: b_trns, f_trns
       type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
@@ -135,7 +135,7 @@
 !
 !
       write(*,*) 'fl_prop%iflag_4_coriolis', fl_prop%iflag_4_coriolis, &
-     &   b_trns%forces%i_Coriolis, b_trns%rot_forces%i_Coriolis
+     &   f_trns%forces%i_Coriolis, f_trns%rot_forces%i_Coriolis
       if(fl_prop%iflag_4_coriolis .eqv. .FALSE.) return
 !
 !$omp parallel workshare
@@ -143,14 +143,14 @@
      &                  1:cor_rlm%ncomp_coriolis_rlm) = 0.0d0
 !$omp end parallel workshare
 !
-      if(b_trns%forces%i_Coriolis .gt. izero) then
+      if(f_trns%forces%i_Coriolis .gt. izero) then
         write(*,*) 'sum_rot_coriolis_rlm'
         call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,           &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      gt_cor, n_WR, WR, cor_rlm)
       end if
 !
-      if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+      if(f_trns%rot_forces%i_Coriolis .gt. izero) then
         write(*,*) 'sum_rot_coriolis_rlm'
         call sum_rot_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
@@ -162,38 +162,38 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_coriolis_terms_rlm(ncomp_trans, sph_rlm,          &
-     &          comm_rlm, b_trns, cor_rlm, n_WS, WS)
+     &          comm_rlm, f_trns, cor_rlm, n_WS, WS)
 !
       use m_sph_communicators
       use sel_spherical_SRs
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(phys_address), intent(in) :: b_trns
+      type(phys_address), intent(in) :: f_trns
       type(coriolis_rlm_data), intent(in) :: cor_rlm
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
 !
-      if(b_trns%forces%i_Coriolis .gt. izero) then
+      if(f_trns%forces%i_Coriolis .gt. izero) then
         write(*,*) 'sel_calypso_to_send_vector Coriolis', &
-     &            ip_rlm_coriolis, b_trns%forces%i_Coriolis
+     &            ip_rlm_coriolis, f_trns%forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &
      &     cor_rlm%ncomp_coriolis_rlm, ip_rlm_coriolis,                 &
-     &     b_trns%forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
+     &     f_trns%forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
       end if
 !
-      if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+      if(f_trns%rot_forces%i_Coriolis .gt. izero) then
         write(*,*) 'sel_calypso_to_send_vector rot_Coriolis', &
-     &            ip_rlm_rot_cor, b_trns%rot_forces%i_Coriolis
+     &            ip_rlm_rot_cor, f_trns%rot_forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &
      &     cor_rlm%ncomp_coriolis_rlm, ip_rlm_rot_cor,                  &
-     &     b_trns%rot_forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
+     &     f_trns%rot_forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
       end if
 !
       end subroutine copy_coriolis_terms_rlm
