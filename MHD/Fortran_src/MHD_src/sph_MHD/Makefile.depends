@@ -32,7 +32,7 @@ cal_buoyancies_sph_MHD.o: $(MHD_SPH_DIR)/cal_buoyancies_sph_MHD.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_buoyancy_flux_sph.o: $(MHD_SPH_DIR)/cal_buoyancy_flux_sph.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_coriolis_rlm.o: $(MHD_SPH_DIR)/cal_coriolis_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_poloidal_rotation.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o t_physical_property.o t_boundary_params_sph_MHD.o t_gaunt_coriolis_rlm.o t_coriolis_terms_rlm.o t_base_force_labels.o m_sph_communicators.o sel_spherical_SRs.o sum_coriolis_terms_rlm.o sum_rot_coriolis_terms_rlm.o sum_boundary_coriolis_rlm.o
+cal_coriolis_rlm.o: $(MHD_SPH_DIR)/cal_coriolis_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_poloidal_rotation.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o t_physical_property.o t_boundary_params_sph_MHD.o t_gaunt_coriolis_rlm.o t_coriolis_terms_rlm.o t_phys_address.o m_sph_communicators.o sel_spherical_SRs.o sum_coriolis_terms_rlm.o sum_boundary_coriolis_rlm.o sum_rot_coriolis_terms_rlm.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_diff_adv_src_explicit.o: $(MHD_SPH_DIR)/cal_diff_adv_src_explicit.f90 m_precision.o m_constants.o m_t_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

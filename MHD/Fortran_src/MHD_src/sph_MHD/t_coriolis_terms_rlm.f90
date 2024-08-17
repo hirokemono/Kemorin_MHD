@@ -102,7 +102,7 @@
         integer (kind=kint) :: idx_rlm_degree_one(-1:1) = (/0,0,0/)
 !
 !>        Number of compoennt of coriolis term data
-        integer(kind = kint) :: ncomp_coriolis_rlm = 3
+        integer(kind = kint) :: ncomp_coriolis_rlm = 6
 !>        Coriolis term
         real(kind = kreal), allocatable :: d_cor_rlm(:,:)
 !>        Coriolis term at inner boundary
@@ -183,11 +183,10 @@
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
-      cor_rlm%ncomp_coriolis_rlm = 3
-      allocate( cor_rlm%d_cor_rlm(nnod_rlm,cor_rlm%ncomp_coriolis_rlm) )
+      allocate(cor_rlm%d_cor_rlm(nnod_rlm,cor_rlm%ncomp_coriolis_rlm))
 !
-      allocate( cor_rlm%d_cor_in_rlm(jmax_rlm) )
-      allocate( cor_rlm%d_cor_out_rlm(jmax_rlm) )
+      allocate(cor_rlm%d_cor_in_rlm(jmax_rlm))
+      allocate(cor_rlm%d_cor_out_rlm(jmax_rlm))
 !
       if(nnod_rlm .le. 0) return
       cor_rlm%d_cor_rlm = 0.0d0

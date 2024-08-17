@@ -96,6 +96,13 @@
 !>      Address for toroidal componenet of Coriolis term
       integer(kind = kint), parameter, private :: it_rlm_coriolis = 3
 !
+!>      Address for poloidal componenet of Coriolis term
+      integer(kind = kint), parameter, private :: ip_rlm_rot_cor = 4
+!>      Address for horizontal componenet of Coriolis term
+      integer(kind = kint), parameter, private :: ih_rlm_rot_cor = 5
+!>      Address for toroidal componenet of Coriolis term
+      integer(kind = kint), parameter, private :: it_rlm_rot_cor = 6
+!
       private :: sum_coriolis_rlm, sum_rot_coriolis_rlm
 !
 ! -----------------------------------------------------------------------
@@ -135,10 +142,14 @@
 !$omp end parallel workshare
 !
       if(b_trns%forces%i_Coriolis .gt. izero) then
+        write(*,*) 'sum_rot_coriolis_rlm'
         call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,           &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      gt_cor, n_WR, WR, cor_rlm)
-      else if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+      end if
+!
+      if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+        write(*,*) 'sum_rot_coriolis_rlm'
         call sum_rot_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      leg, gt_cor,n_WR, WR, cor_rlm)
@@ -164,16 +175,22 @@
 !
 !
       if(b_trns%forces%i_Coriolis .gt. izero) then
+        write(*,*) 'sel_calypso_to_send_vector Coriolis', &
+     &            ip_rlm_coriolis, b_trns%forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &
      &     cor_rlm%ncomp_coriolis_rlm, ip_rlm_coriolis,                 &
      &     b_trns%forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
-      else if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+      end if
+!
+      if(b_trns%rot_forces%i_Coriolis .gt. izero) then
+        write(*,*) 'sel_calypso_to_send_vector Coriolis', &
+     &            ip_rlm_rot_cor, b_trns%rot_forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
      &     comm_rlm%nneib_domain, comm_rlm%istack_sr, comm_rlm%item_sr, &
-     &     cor_rlm%ncomp_coriolis_rlm, ip_rlm_coriolis,                 &
+     &     cor_rlm%ncomp_coriolis_rlm, ip_rlm_rot_cor,                  &
      &     b_trns%rot_forces%i_Coriolis, cor_rlm%d_cor_rlm(1,1), WS(1))
       end if
 !
@@ -253,8 +270,8 @@
       call select_sum_rot_coriolis_rlm_10(b_trns,                       &
      &    sph_rlm, leg, omega_sph, gt_cor, fl_prop%coef_cor,            &
      &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR,                      &
-     &    cor_rlm%d_cor_rlm(1,ip_rlm_coriolis),                         &
-     &    cor_rlm%d_cor_rlm(1,it_rlm_coriolis))
+     &    cor_rlm%d_cor_rlm(1,ip_rlm_rot_cor),                          &
+     &    cor_rlm%d_cor_rlm(1,it_rlm_rot_cor))
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm(b_trns,                      &
@@ -262,7 +279,7 @@
      &      sph_rlm%radius_1d_rlm_r, omega_sph%ws_rlm,                  &
      &      fl_prop%coef_cor, ncomp_trans, n_WR, comm_rlm%irev_sr, WR,  &
      &      cor_rlm%idx_rlm_ICB, cor_rlm%idx_rlm_degree_one,            &
-     &      cor_rlm%d_cor_rlm(1,ip_rlm_coriolis))
+     &      cor_rlm%d_cor_rlm(1,ip_rlm_rot_cor))
       end if
 !
 !      call sum_r_coriolis_bc_rlm_10(b_trns,                            &
