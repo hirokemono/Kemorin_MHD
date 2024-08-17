@@ -84,38 +84,34 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: it_rot_buo
-!
 !
       if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then
 !
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'rot_self_dbl_buoyancy_sph_MHD', ipol_base%i_temp
-          it_rot_buo = ipol_rot_frc%i_buoyancy + 2
           call rot_self_dbl_buoyancy_sph_MHD                            &
      &      (sph_bc_U%kr_in, sph_bc_U%kr_out,                           &
      &       fl_prop%coef_buo, ipol_base%i_temp, fl_prop%coef_comp_buo, &
-     &       ipol_base%i_light, it_rot_buo,                             &
+     &       ipol_base%i_light, ipol_rot_frc%i_buoyancy,                &
      &       sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                     &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_gravity) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_self_buoyancy_sph_MHD', ipol_base%i_temp
-        it_rot_buo = ipol_rot_frc%i_buoyancy + 2
         call rot_self_buoyancy_sph_MHD                                  &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_base%i_temp, it_rot_buo,                               &
+     &      ipol_base%i_temp, ipol_rot_frc%i_buoyancy,                  &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_self_buoyancy_sph_MHD', ipol_base%i_light
-        it_rot_buo = ipol_rot_frc%i_comp_buo + 2
-        call rot_self_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &      fl_prop%coef_comp_buo, ipol_base%i_light, it_rot_buo,       &
+        call rot_self_buoyancy_sph_MHD                                  &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
+     &      ipol_base%i_light, ipol_rot_frc%i_comp_buo,                 &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -142,37 +138,33 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: it_rot_buo
-!
 !
       if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then
 !
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'rot_r_cst_dbl_buoyancy_sph_MHD', ipol_base%i_temp
-          it_rot_buo = ipol_rot_frc%i_buoyancy + 2
           call rot_r_cst_dbl_buoyancy_sph_MHD                           &
      &      (sph_bc_U%kr_in, sph_bc_U%kr_out,                           &
      &       fl_prop%coef_buo, ipol_base%i_temp, fl_prop%coef_comp_buo, &
-     &       ipol_base%i_light, it_rot_buo, sph_rj%nidx_rj,             &
-     &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &       ipol_base%i_light, ipol_rot_frc%i_buoyancy,                &
+     &       sph_rj%nidx_rj, rj_fld%n_point, rj_fld%ntot_phys,          &
+     &       rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_gravity) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_r_const_buoyancy_sph_MHD', ipol_base%i_temp
-        it_rot_buo = ipol_rot_frc%i_buoyancy + 2
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_base%i_temp, it_rot_buo, sph_rj%nidx_rj,               &
+     &      ipol_base%i_temp, ipol_rot_frc%i_comp_buo, sph_rj%nidx_rj,  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_r_const_buoyancy_sph_MHD', ipol_base%i_light
-        it_rot_buo = ipol_rot_frc%i_comp_buo + 2
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
-     &      ipol_base%i_light, it_rot_buo, sph_rj%nidx_rj,              &
+     &      ipol_base%i_light, ipol_rot_frc%i_comp_buo, sph_rj%nidx_rj, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

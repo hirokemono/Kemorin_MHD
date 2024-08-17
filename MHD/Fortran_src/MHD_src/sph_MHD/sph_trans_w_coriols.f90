@@ -228,8 +228,6 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
-      write(*,*) 'f_trns%forces%i_Coriolis', f_trns%forces%i_Coriolis,  &
-     &           f_trns%rot_forces%i_Coriolis
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call copy_coriolis_terms_rlm                                      &
      &   (trns_fwd%ncomp, sph%sph_rlm, comms_sph%comm_rlm,              &

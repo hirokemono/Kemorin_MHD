@@ -163,15 +163,13 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: it_rot_buo
-!
 !
       if (fl_prop%iflag_4_filter_gravity) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_self_buoyancy_sph_MHD by filtrered temperature'
-        it_rot_buo = ipol_rot_fil_frc%i_buoyancy + 2
-        call rot_self_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &      fl_prop%coef_buo, ipol_fil%i_temp, it_rot_buo,              &
+        call rot_self_buoyancy_sph_MHD                                  &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
+     &      ipol_fil%i_temp, ipol_rot_fil_frc%i_buoyancy,               &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -179,9 +177,9 @@
       if(fl_prop%iflag_4_filter_comp_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_self_buoyancy_sph_MHD by filtrered composition'
-        it_rot_buo = ipol_rot_fil_frc%i_comp_buo + 2
-        call rot_self_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &      fl_prop%coef_comp_buo, ipol_fil%i_light, it_rot_buo,        &
+        call rot_self_buoyancy_sph_MHD                                  &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
+     &      ipol_fil%i_light, ipol_rot_fil_frc%i_comp_buo,              &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -202,27 +200,25 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: it_rot_buo
-!
 !
       if (fl_prop%iflag_4_filter_gravity) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_r_const_buoyancy_sph_MHD by filtrered temperature'
-        it_rot_buo = ipol_rot_fil_frc%i_buoyancy + 2
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_fil%i_temp, it_rot_buo, sph_rj%nidx_rj,                &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol_fil%i_temp, ipol_rot_fil_frc%i_buoyancy,               &
+     &      sph_rj%nidx_rj, rj_fld%n_point, rj_fld%ntot_phys,           &
+     &      rj_fld%d_fld)
       end if
 !
       if(fl_prop%iflag_4_filter_comp_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'rot_r_const_buoyancy_sph_MHD by filtrered composition'
-        it_rot_buo = ipol_rot_fil_frc%i_comp_buo + 2
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
-     &      ipol_fil%i_light, it_rot_buo, sph_rj%nidx_rj,               &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol_fil%i_light, ipol_rot_fil_frc%i_comp_buo,              &
+     &      sph_rj%nidx_rj, rj_fld%n_point, rj_fld%ntot_phys,           &
+     &      rj_fld%d_fld)
       end if
 !
       end subroutine sel_rot_r_cst_filtered_buo_sph
