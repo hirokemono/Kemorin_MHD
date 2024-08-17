@@ -144,7 +144,7 @@
 !$omp end parallel workshare
 !
       if(f_trns%forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sum_rot_coriolis_rlm'
+        write(*,*) 'sum_coriolis_rlm'
         call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,           &
      &      fl_prop, sph_bc_U, omega_sph, b_trns,                       &
      &      gt_cor, n_WR, WR, cor_rlm)
