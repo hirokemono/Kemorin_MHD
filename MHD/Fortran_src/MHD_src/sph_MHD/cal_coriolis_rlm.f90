@@ -134,6 +134,7 @@
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
+      write(*,*) 'fl_prop%iflag_4_coriolis', fl_prop%iflag_4_coriolis
       if(fl_prop%iflag_4_coriolis .eqv. .FALSE.) return
 !
 !$omp parallel workshare
@@ -185,7 +186,7 @@
       end if
 !
       if(b_trns%rot_forces%i_Coriolis .gt. izero) then
-        write(*,*) 'sel_calypso_to_send_vector Coriolis', &
+        write(*,*) 'sel_calypso_to_send_vector rot_Coriolis', &
      &            ip_rlm_rot_cor, b_trns%rot_forces%i_Coriolis
         call sel_calypso_to_send_vector                                 &
      &    (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                         &
