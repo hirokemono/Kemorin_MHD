@@ -156,7 +156,7 @@
      &      'rot_r_const_buoyancy_sph_MHD', ipol_base%i_temp
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_base%i_temp, ipol_rot_frc%i_comp_buo, sph_rj%nidx_rj,  &
+     &      ipol_base%i_temp, ipol_rot_frc%i_buoyancy, sph_rj%nidx_rj,  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo) then
