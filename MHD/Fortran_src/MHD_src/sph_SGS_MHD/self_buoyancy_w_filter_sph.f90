@@ -67,10 +67,15 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ibuo_temp,  ibuo_comp
+!
+!
+      call sel_field_address_for_buoyancies                             &
+     &   (ipol%base, MHD_prop%ref_param_T, MHD_prop%ref_param_C,        &
+     &    ibuo_temp, ibuo_comp)
       call sel_buoyancies_sph_MHD                                       &
-     &   (sph%sph_rj, leg, ipol%base, ipol%forces,                      &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_bc_U, rj_fld)
+     &   (sph%sph_rj, leg, ipol%forces, MHD_prop%fl_prop,               &
+     &    sph_bc_U, ibuo_temp, ibuo_comp, rj_fld)
 !
       call sel_self_filtered_buo_sph(sph%sph_rj, leg,                   &
      &    ipol_LES%filter_fld, ipol_LES%force_by_filter,                &
@@ -128,7 +133,7 @@
      &      'cal_self_buoyancy_sph_MHD by filtrered temperature'
         call cal_self_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out, &
      &      leg%g_sph_rj, fl_prop%coef_buo,                             &
-     &      ipol_fil%i_temp, ipol_fil_frc%i_buoyancy,    &
+     &      ipol_fil%i_temp, ipol_fil_frc%i_buoyancy,                   &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call delete_sphere_average                                      &
@@ -140,7 +145,7 @@
      &      'cal_self_buoyancy_sph_MHD by filtrered composition'
         call cal_self_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out, &
      &      leg%g_sph_rj, fl_prop%coef_comp_buo,                        &
-     &      ipol_fil%i_light, ipol_fil_frc%i_comp_buo,   &
+     &      ipol_fil%i_light, ipol_fil_frc%i_comp_buo,                  &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call delete_sphere_average                                      &

@@ -94,6 +94,7 @@
 !
       use cal_nonlinear_sph_MHD
       use sum_rotation_of_forces
+      use cal_self_buoyancies_sph
       use rot_self_buoyancies_sph
 !
       use m_work_time
@@ -109,10 +110,18 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-!   ----  lead rotation of buoyancies
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
      &                         .gt. id_no_evolution) then
-      if(iflag_debug.gt.0) write(*,*) 'sel_rot_buoyancy_sph_MHD'
+!
+!   ----  lead buoyancies
+        call sel_buoyancies_sph_MHD                                     &
+     &     (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol%forces,       &
+     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
+     &      SPH_MHD%ipol%base%i_temp, SPH_MHD%ipol%base%i_light,        &
+     &      SPH_MHD%fld)
+!
+!   ----  lead rotation of buoyancies
+        if(iflag_debug.gt.0) write(*,*) 'sel_rot_buoyancy_sph_MHD'
         call sel_rot_buoyancy_sph_MHD(SPH_MHD%sph%sph_rj,               &
      &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
      &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
@@ -223,6 +232,7 @@
      &          rj_fld, SR_sig, SR_r)
 !
       use m_phys_constants
+      use cal_self_buoyancies_sph
       use rot_self_buoyancies_sph
       use sph_transforms_4_MHD
       use copy_nodal_fields
@@ -243,8 +253,15 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-!   ----  Rotation of buoyancies
+!
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+!   ----  lead rotation of buoyancies
+        call sel_buoyancies_sph_MHD                                     &
+     &     (sph%sph_rj, trans_p%leg, ipol%forces,                       &
+     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                      &
+     &      ipol%base%i_temp, ipol%base%i_light, rj_fld)
+!
+!   ----  lead rotation of buoyancies
         if(iflag_debug.gt.0) write(*,*) 'sel_rot_buoyancy_sph_MHD'
         call sel_rot_buoyancy_sph_MHD                                   &
      &     (sph%sph_rj, ipol%base, ipol%rot_forces,                     &
