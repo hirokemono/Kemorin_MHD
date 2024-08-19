@@ -74,7 +74,7 @@
 !
 !
       call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ione, izero, ione, fdm_1st_nod)
+     &   (sph_rj%nidx_rj(1), izero, ione, izero, ione, fdm_1st_nod)
 !
       allocate(mat_fdm(2,2,sph_rj%nidx_rj(1)))
       mat_fdm(1:2,1:2,1:sph_rj%nidx_rj(1)) = 0.0d0
@@ -83,7 +83,7 @@
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
       call copy_first_fdm_ele_to_node                                   &
-     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_1st_nod%fdm(1))
+     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_1st_nod%fdm)
       deallocate(mat_fdm)
 !
       end subroutine const_first_fdm_ele_to_node
@@ -144,19 +144,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_first_fdm_ele_to_node(nri, mat_fdm, fdm1)
+      subroutine copy_first_fdm_ele_to_node(nri, mat_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(2,2,nri)
-      type(fdm_matrix), intent(inout) :: fdm1
+      type(fdm_matrix), intent(inout) :: fdm(0:1)
 !
       integer(kind= kint) :: k
 !
 !
 !$omp parallel do private (k)
       do k = 1, nri-1
-        fdm1%dmat(k, 0) = mat_fdm(2,1,k)
-        fdm1%dmat(k, 1) = mat_fdm(2,2,k)
+        fdm(0)%dmat(k, 0) = mat_fdm(1,1,k)
+        fdm(0)%dmat(k, 1) = mat_fdm(1,2,k)
+!
+        fdm(1)%dmat(k, 0) = mat_fdm(2,1,k)
+        fdm(1)%dmat(k, 1) = mat_fdm(2,2,k)
       end do
 !$omp end parallel do
 !

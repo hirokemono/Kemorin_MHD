@@ -84,7 +84,7 @@
 !
 !
       call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ithree, itwo, ione, fdm_3rd_ele)
+     &   (sph_rj%nidx_rj(1), izero, ithree, itwo, ione, fdm_3rd_ele)
 !
       allocate(mat_fdm(4,4,sph_rj%nidx_rj(1)))
       mat_fdm(1:4,1:4,1:sph_rj%nidx_rj(1)) = 0.0d0
@@ -185,13 +185,13 @@
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(4,4,nri)
-      type(fdm_matrix), intent(inout) :: fdm(3)
+      type(fdm_matrix), intent(inout) :: fdm(0:3)
 !
       integer(kind= kint) :: i, k
 !
 !
 !$omp parallel do private (i,k)
-      do i = 1, 3
+      do i = 0, 3
         do k = 1, nri-1
           fdm(i)%dmat(k,-2) = mat_fdm(i+1,1,k)
           fdm(i)%dmat(k,-1) = mat_fdm(i+1,2,k)
