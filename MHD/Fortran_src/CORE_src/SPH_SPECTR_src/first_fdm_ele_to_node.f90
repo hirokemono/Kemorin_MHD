@@ -124,9 +124,9 @@
       do kr = 1, nri
         mat_taylor_2(1,1) = one
         if (kr .eq. 1) then
-          mat_taylor_2(1,2) = half * r(1)
+          mat_taylor_2(1,2) = - half * r(1)
         else
-          mat_taylor_2(1,2) = half * (r(kr) - r(kr-1))
+          mat_taylor_2(1,2) = - half * (r(kr) - r(kr-1))
         end if
 !
         mat_taylor_2(2,1) = one
