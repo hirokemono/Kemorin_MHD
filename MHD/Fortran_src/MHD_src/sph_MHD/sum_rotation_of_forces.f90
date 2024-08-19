@@ -63,23 +63,23 @@
         end if
 !
       if(fl_prop%iflag_4_coriolis) then
-        call add_each_force_to_rot_forces                               &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_Coriolis,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%iflag_4_lorentz) then
-        call add_each_force_to_rot_forces                               &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_lorentz,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(fl_prop%iflag_4_gravity) then
-        call add_buoyancy_to_vort_force                                 &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_buoyancy,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%iflag_4_composit_buo) then
-        call add_buoyancy_to_vort_force                                 &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_comp_buo,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -105,17 +105,17 @@
 !
 !$omp parallel
       if(fl_prop%iflag_4_coriolis) then
-        call add_each_force_to_rot_forces                               &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_Coriolis,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%iflag_4_gravity) then
-        call add_buoyancy_to_vort_force                                 &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_buoyancy,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%iflag_4_composit_buo) then
-        call add_buoyancy_to_vort_force                                 &
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_comp_buo,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
