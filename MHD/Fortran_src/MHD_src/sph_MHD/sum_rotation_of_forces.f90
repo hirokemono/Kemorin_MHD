@@ -57,7 +57,7 @@
 !
 !$omp parallel
       if(fl_prop%iflag_4_inertia) then
-        call add_rot_advection_to_force                                 &
+        call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_rot_frc%i_m_advect,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

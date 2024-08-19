@@ -29,7 +29,7 @@
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!
-!!      subroutine add_rot_advection_to_force                           &
+!!      subroutine subtract_advection_to_force                          &
 !!     &         (is_exp, is_rot_inertia, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine add_buoyancy_to_vort_force                           &
 !!     &         (is_exp, is_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
@@ -212,7 +212,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine add_rot_advection_to_force                             &
+      subroutine subtract_advection_to_force                            &
      &         (is_exp, is_rot_inertia, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_exp, is_rot_inertia
@@ -223,11 +223,13 @@
 !$omp workshare
       d_rj(1:nnod_rj,is_exp  ) = d_rj(1:nnod_rj,is_exp  )               &
      &                        - d_rj(1:nnod_rj,is_rot_inertia  )
+      d_rj(1:nnod_rj,is_exp+1) = d_rj(1:nnod_rj,is_exp+1)               &
+     &                        - d_rj(1:nnod_rj,is_rot_inertia+1)
       d_rj(1:nnod_rj,is_exp+2) = d_rj(1:nnod_rj,is_exp+2)               &
      &                        - d_rj(1:nnod_rj,is_rot_inertia+2)
 !$omp end workshare nowait
 !
-      end subroutine add_rot_advection_to_force
+      end subroutine subtract_advection_to_force
 !
 ! ----------------------------------------------------------------------
 !
