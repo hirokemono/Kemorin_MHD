@@ -30,9 +30,9 @@
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!
 !!      subroutine subtract_advection_to_force                          &
-!!     &         (is_exp, is_rot_inertia, nnod_rj, ntot_phys_rj, d_rj)
+!!     &         (is_exp, is_inertia, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine add_each_force_to_forces                             &
-!!     &         (is_exp, is_rot_force, nnod_rj, ntot_phys_rj, d_rj)
+!!     &         (is_exp, is_force, nnod_rj, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ini_adams_inertia                                &
 !!     &         (fl_prop, ipol_exp, nnod_rj, ntot_phys_rj, d_rj)
@@ -222,20 +222,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine subtract_advection_to_force                            &
-     &         (is_exp, is_rot_inertia, nnod_rj, ntot_phys_rj, d_rj)
+     &         (is_exp, is_inertia, nnod_rj, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: is_exp, is_rot_inertia
+      integer(kind = kint), intent(in) :: is_exp, is_inertia
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
 !$omp workshare
       d_rj(1:nnod_rj,is_exp  ) = d_rj(1:nnod_rj,is_exp  )               &
-     &                        - d_rj(1:nnod_rj,is_rot_inertia  )
+     &                        - d_rj(1:nnod_rj,is_inertia  )
       d_rj(1:nnod_rj,is_exp+1) = d_rj(1:nnod_rj,is_exp+1)               &
-     &                        - d_rj(1:nnod_rj,is_rot_inertia+1)
+     &                        - d_rj(1:nnod_rj,is_inertia+1)
       d_rj(1:nnod_rj,is_exp+2) = d_rj(1:nnod_rj,is_exp+2)               &
-     &                        - d_rj(1:nnod_rj,is_rot_inertia+2)
+     &                        - d_rj(1:nnod_rj,is_inertia+2)
 !$omp end workshare nowait
 !
       end subroutine subtract_advection_to_force
@@ -243,20 +243,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine add_each_force_to_forces                               &
-     &         (is_exp, is_rot_force, nnod_rj, ntot_phys_rj, d_rj)
+     &         (is_exp, is_force, nnod_rj, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: is_exp, is_rot_force
+      integer(kind = kint), intent(in) :: is_exp, is_force
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
 !$omp workshare
       d_rj(1:nnod_rj,is_exp  ) = d_rj(1:nnod_rj,is_exp  )               &
-     &                       + d_rj(1:nnod_rj,is_rot_force  )
+     &                       + d_rj(1:nnod_rj,is_force  )
       d_rj(1:nnod_rj,is_exp+1) = d_rj(1:nnod_rj,is_exp+1)               &
-     &                       + d_rj(1:nnod_rj,is_rot_force+1)
+     &                       + d_rj(1:nnod_rj,is_force+1)
       d_rj(1:nnod_rj,is_exp+2) = d_rj(1:nnod_rj,is_exp+2)               &
-     &                       + d_rj(1:nnod_rj,is_rot_force+2)
+     &                       + d_rj(1:nnod_rj,is_force+2)
 !$omp end workshare nowait
 !
       end subroutine add_each_force_to_forces

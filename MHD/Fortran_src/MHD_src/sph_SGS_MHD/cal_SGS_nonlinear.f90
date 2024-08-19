@@ -186,15 +186,22 @@
      &      return
 !
 !   ----  Sum all explicit forces
-      if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
+!        if(iflag_debug .gt. 0) write(*,*)                              &
+!     &       'sum_forces_to_explicit for rotation of forces'
         write(*,*) 'sum_forces_to_explicit ', &
      &    SPH_MHD%ipol%forces%i_m_advect, SPH_MHD%ipol%forces%i_Coriolis, &
      &    SPH_MHD%ipol%forces%i_lorentz, SPH_MHD%ipol%forces%i_buoyancy
+!        call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,        &
+!     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%forces, SPH_MHD%fld)
+!
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &       'sum_forces_to_explicit for rotation of forces'
         write(*,*) 'sum_forces_to_explicit rotation', &
      &    SPH_MHD%ipol%rot_forces%i_m_advect, SPH_MHD%ipol%rot_forces%i_Coriolis, &
      &    SPH_MHD%ipol%rot_forces%i_lorentz, SPH_MHD%ipol%rot_forces%i_buoyancy
-      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
-     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
+        call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,         &
+     &      SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces,             &
+     &      SPH_MHD%fld)
 !
 !    ---- Add filtered rotation of forces
       if(iflag_debug .gt. 0) write(*,*) 'sum_filter_forces_to_explicit'
@@ -202,11 +209,19 @@
      &    SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%rot_frc_by_filter,    &
      &    SPH_MHD%fld)
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                'SGS_forces_to_explicit'
-      call SGS_forces_to_explicit(SPH_SGS%SGS_par%model_p,              &
-     &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,            &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
+!
+!        if(iflag_debug .gt. 0) write(*,*)                              &
+!     &                'SGS_forces_to_explicit rotatin of forces'
+!        call SGS_forces_to_explicit                                    &
+!     &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph%sph_rj,               &
+!     &      SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%SGS_term,          &
+!     &      SPH_MHD%fld)
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'SGS_forces_to_explicit rotatin of forces'
+        call SGS_forces_to_explicit                                     &
+     &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph%sph_rj,                &
+     &      SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%rot_SGS,            &
+     &      SPH_MHD%fld)
 !
       end subroutine nonlinear_with_SGS
 !*

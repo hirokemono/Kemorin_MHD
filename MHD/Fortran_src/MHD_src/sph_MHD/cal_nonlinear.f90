@@ -152,9 +152,15 @@
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme .eq. id_no_evolution)  &
      &      return
 !
-      if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
-      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
-     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
+!        if(iflag_debug .gt. 0) write(*,*)                               &
+!     &       'sum_forces_to_explicit for forces'
+!        call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,        &
+!     &      SPH_MHD%ipol%exp_work, SPH_MHD%ipol%forces, SPH_MHD%fld)
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &       'sum_forces_to_explicit for rotation of forces'
+        call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,         &
+     &      SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces,             &
+     &      SPH_MHD%fld)
 !
       end subroutine nonlinear
 !*
@@ -293,8 +299,12 @@
       call add_ref_advect_sph_MHD(sph%sph_rj, sph_MHD_bc, MHD_prop,     &
      &                            trans_p%leg, refs, ipol, rj_fld)
 !
-      call licv_forces_to_explicit(MHD_prop%fl_prop,                    &
-     &    ipol%exp_work, ipol%rot_forces, rj_fld)
+!
+!      call licv_forces_to_explicit(MHD_prop%fl_prop,                   &
+!     &    ipol%exp_work, ipol%forces, rj_fld)
+
+        call licv_forces_to_explicit(MHD_prop%fl_prop,                  &
+     &      ipol%exp_work, ipol%rot_forces, rj_fld)
 !
 !
       end subroutine licv_exp

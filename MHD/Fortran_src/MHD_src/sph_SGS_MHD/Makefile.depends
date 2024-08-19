@@ -126,7 +126,7 @@ sph_transforms_4_SGS.o: $(SGS_MHD_SPH_DIR)/sph_transforms_4_SGS.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_rot_of_filter_forces.o: $(SGS_MHD_SPH_DIR)/sum_rot_of_filter_forces.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_base_force_labels.o t_explicit_term_labels.o t_phys_data.o cal_vorticity_terms_adams.o cal_div_of_forces.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sum_rotation_of_SGS.o: $(SGS_MHD_SPH_DIR)/sum_rotation_of_SGS.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_spheric_parameter.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_SGS_control_parameter.o t_boundary_data_sph_MHD.o t_explicit_term_labels.o t_SGS_term_labels.o
+sum_rotation_of_SGS.o: $(SGS_MHD_SPH_DIR)/sum_rotation_of_SGS.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_spheric_parameter.o t_phys_data.o t_explicit_term_labels.o t_SGS_term_labels.o t_SGS_control_parameter.o cal_vorticity_terms_adams.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_SGS_buoyancy_sph.o: $(SGS_MHD_SPH_DIR)/t_SGS_buoyancy_sph.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_parameter.o t_spheric_rj_data.o t_spheric_rtp_data.o t_phys_data.o t_SGS_model_coef_labels.o t_sph_trans_arrays_MHD.o calypso_mpi_real.o t_rms_4_sph_spectr.o radial_int_for_sph_spec.o volume_average_4_sph.o prod_SGS_model_coefs_sph.o transfer_to_long_integers.o t_SGS_model_addresses.o t_SGS_term_labels.o prod_buo_model_coefs_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
