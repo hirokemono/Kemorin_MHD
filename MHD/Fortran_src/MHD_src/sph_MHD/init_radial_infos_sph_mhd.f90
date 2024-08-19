@@ -68,9 +68,12 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,      &
-     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
+     &          ipol, sph, r_2nd, r_n2e_3rd, r_e2n_1st,                 &
+     &          omega_sph, MHD_prop, sph_MHD_bc)
 !
       use second_fdm_node_coefs
+      use third_fdm_node_to_ele
+      use first_fdm_ele_to_node
       use material_property
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -80,6 +83,9 @@
       type(sph_grids), intent(in) :: sph
 !
       type(fdm_matrices), intent(inout) :: r_2nd
+      type(fdm_matrices), intent(inout) :: r_n2e_3rd
+      type(fdm_matrices), intent(inout) :: r_e2n_1st
+!
       type(sph_rotation), intent(inout) :: omega_sph
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
@@ -90,6 +96,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
       call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_first_fdm_ele_to_node'
+      call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
+      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
+      call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
 !
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property                                        &
