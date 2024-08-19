@@ -60,12 +60,13 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use t_spheric_parameter
       use t_fdm_coefs
 !
       implicit none
 !
-      private :: set_third_fdm_node_to_ele, copy_first_fdm_node_to_ele
+      private :: set_third_fdm_node_to_ele, copy_third_fdm_node_to_ele
       private :: cal_sph_vect_dxr_ele
 !
 !  -------------------------------------------------------------------
@@ -92,9 +93,15 @@
       call set_third_fdm_node_to_ele                                    &
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
-      call copy_first_fdm_node_to_ele                                   &
+      call copy_third_fdm_node_to_ele                                   &
      &   (sph_rj%nidx_rj(1), mat_fdm, fdm_3rd_ele%fdm)
       deallocate(mat_fdm)
+!
+      if(iflag_debug .gt. 0) then
+          write(*,*) 'check Third order FDM on element'
+        call check_fdm_coefs                                            &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_3rd_ele)
+      end if
 !
       end subroutine const_third_fdm_node_to_ele
 !
@@ -181,7 +188,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_first_fdm_node_to_ele(nri, mat_fdm, fdm)
+      subroutine copy_third_fdm_node_to_ele(nri, mat_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(4,4,nri)
@@ -201,7 +208,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_first_fdm_node_to_ele
+      end subroutine copy_third_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

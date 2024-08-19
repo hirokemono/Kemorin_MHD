@@ -26,6 +26,10 @@
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine set_delta_r_4_sph_mhd(sph_params, sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -58,8 +62,6 @@
       use t_physical_property
 !
       implicit none
-!
-      private :: set_delta_r_4_sph_mhd
 !
 !  -------------------------------------------------------------------
 !

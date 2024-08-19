@@ -10,10 +10,10 @@
 !!      subroutine const_first_fdm_ele_to_node(sph_rj, fdm_1st_nod)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_1st_nod
-!!      subroutine cal_first_fdm_ele_to_node(kr_in, kr_out, sph_rj,     &
-!!     &          fdm_1st_nod, dele_rj, dnod_dr)
+!!      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,       &
+!!     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
 !!        real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
 !!        type(fdm_matrices), intent(in) :: fdm_1st_nod
 !!        real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
@@ -50,6 +50,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use t_spheric_parameter
       use t_fdm_coefs
 !
@@ -86,22 +87,28 @@
      &   (sph_rj%nidx_rj(1), mat_fdm, fdm_1st_nod%fdm)
       deallocate(mat_fdm)
 !
+      if(iflag_debug .gt. 0) then
+          write(*,*) 'check First order FDM from element'
+        call check_fdm_coefs                                            &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_1st_nod)
+      end if
+!
       end subroutine const_first_fdm_ele_to_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_first_fdm_ele_to_node(kr_in, kr_out, sph_rj,       &
-     &          fdm_1st_nod, dele_rj, dnod_dr)
+      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,         &
+     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
       type(fdm_matrices), intent(in) :: fdm_1st_nod
 !
       real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
 !
       call cal_sph_vect_dr_nod_1(kr_in, kr_out, sph_rj,                 &
-     &    fdm_1st_nod%fdm(1), dele_rj, dnod_dr)
+     &    fdm_1st_nod%fdm(i_th), dele_rj, dnod_dr)
 !
       end subroutine cal_first_fdm_ele_to_node
 !
