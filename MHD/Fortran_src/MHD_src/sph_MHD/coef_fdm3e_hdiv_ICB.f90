@@ -10,10 +10,7 @@
 !!      subroutine cal_fdm3e_ICB_hdiv_vp(r_from_ICB)
 !!        type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_ICB
 !!
-!!      subroutine check_3rd_ICB_hdiv_vp_fdm
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
-!!
-!!   Matrix for poloidal velocity with free-slip boundary at ICB
+!!   Matrix for poloidal velocity with horizontal divergence at ICB
 !!      d_rj(ICB  ) =  mat_taylor_3e(1,1) * d_ele
 !!                   + mat_taylor_3e(1,2) * dfdr
 !!                   + mat_taylor_3e(1,3) * d2fdr2
@@ -31,6 +28,15 @@
 !!                   + mat_taylor_3e(4,3) * d2fdr2
 !!                   + mat_taylor_3e(4,4) * d3fdr3
 !!     mat_fdm4_CMB1_free_vp = (mat_taylor_3e)^-1
+!!
+!!      subroutine cal_third_fdm_ICB_ele(i_th, kr_in,                   &
+!!     &          sph_rj, fdm3e_ICB, d_rj, dfdr_rj, dele_bc)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+!!        integer(kind = kint), intent(in) :: i_th, kr_in
+!!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+!!        real(kind = kreal), intent(in) :: dfdr_rj(sph_rj%nnod_rj)
+!!        real(kind = kreal), intent(inout) :: dele_bc(sph_rj%nidx_rj(2))
 !!@endverbatim
 !!
       module coef_fdm3e_hdiv_ICB
@@ -38,6 +44,7 @@
       use m_precision
       use m_constants
 !
+      use t_spheric_rj_data
       use t_coef_fdm3e_MHD_boundaries
       use cal_inverse_small_matrix
 !
@@ -92,7 +99,7 @@
       mat_taylor_3e(1,1) =  one
       mat_taylor_3e(1,2) = -dr_n1
       mat_taylor_3e(1,3) =  half * dr_n1*dr_n1
-      mat_taylor_3e(1,4) = =dr_n1*dr_n1*dr_n1 / six
+      mat_taylor_3e(1,4) = -dr_n1*dr_n1*dr_n1 / six
 !
       mat_taylor_3e(2,1) =   one
       mat_taylor_3e(2,2) =   dr_p1
@@ -120,22 +127,41 @@
       fdm3e_ICB%dmat_vp0(-1,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
       fdm3e_ICB%dmat_vp0( 0,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
       fdm3e_ICB%dmat_vp0( 1,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
-      fdm3e_ICB%dmat_vp0( 2,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
+      fdm3e_ICB%dmat_vp0(-2,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_ICB_hdiv_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_3rd_ICB_hdiv_vp_fdm(fdm3e_ICB)
+      subroutine cal_third_fdm_ICB_ele(i_th, kr_in,                     &
+     &          sph_rj, fdm3e_ICB, d_rj, dfdr_rj, dele_bc)
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      integer(kind = kint), intent(in) :: i_th, kr_in
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dfdr_rj(sph_rj%nnod_rj)
+!
+      real(kind = kreal), intent(inout) :: dele_bc(sph_rj%nidx_rj(2))
+!
+      integer(kind = kint) :: inod, i_p2, i_n1, i_p1, j
 !
 !
-      write(50,*) ' Horizontal divergence on ICB'
-      call check_3rd_ele_ICB_vpol_fdm(fdm3e_ICB)
+!$omp parallel do private(inod,i_n1,i_p1,i_p2,j)
+      do j = 1, sph_rj%nidx_rj(2)
+        inod = j + (kr_in-1) * sph_rj%nidx_rj(2)
+        i_p1 = j + (kr_in  ) * sph_rj%nidx_rj(2)
+        i_p2 = j + (kr_in+1) * sph_rj%nidx_rj(2)
 !
-      end subroutine check_3rd_ICB_hdiv_vp_fdm
+        dele_bc(j) =     fdm3e_ICB%dmat_vp0( 1,i_th) * d_rj(i_p2)       &
+     &                 + fdm3e_ICB%dmat_vp0( 0,i_th) * d_rj(i_p1)       &
+     &                 + fdm3e_ICB%dmat_vp0(-1,i_th) * d_rj(inod)       &
+     &                 + fdm3e_ICB%dmat_vp0(-2,i_th) * dfdr_rj(inod)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_third_fdm_ICB_ele
 !
 ! -----------------------------------------------------------------------
 !

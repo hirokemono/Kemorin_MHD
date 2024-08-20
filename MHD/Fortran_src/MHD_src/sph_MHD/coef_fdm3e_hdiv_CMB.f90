@@ -10,10 +10,7 @@
 !!      subroutine cal_fdm3e_CMB_hdiv_vp(r_from_CMB)
 !!        type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_CMB
 !!
-!!      subroutine check_3rd_CMB_hdiv_vp_fdm
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
-!!
-!!   Matrix for poloidal velocity with free-slip boundary at CMB
+!!   Matrix for poloidal velocity with horizontal divergence at CMB
 !!      dfdr =      fdm3e_ICB%dmat_vp1(-2,2) * d_rj(CMB-3)
 !!                + fdm3e_ICB%dmat_vp1(-1,2) * d_rj(CMB-2)
 !!                + fdm3e_ICB%dmat_vp1( 0,2) * d_rj(CMB-1)
@@ -26,6 +23,15 @@
 !!                + fdm3e_ICB%dmat_vp1(-1,4) * d_rj(CMB-2)
 !!                + fdm3e_ICB%dmat_vp1( 0,4) * d_rj(CMB-1)
 !!                + fdm3e_ICB%dmat_vp1( 1,4) * d_rj(CMB  )
+!!
+!!      subroutine cal_third_fdm_CMB_ele(i_th, kr_out,                  &
+!!     &          sph_rj, fdm3e_CMB, d_rj, dfdr_rj, dele_bc)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
+!!        integer(kind = kint), intent(in) :: i_th, kr_out
+!!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+!!        real(kind = kreal), intent(in) :: dfdr_rj(sph_rj%nnod_rj)
+!!        real(kind = kreal), intent(inout) :: dele_bc(sph_rj%nidx_rj(2))
 !!@endverbatim
 !!
       module coef_fdm3e_hdiv_CMB
@@ -33,6 +39,7 @@
       use m_precision
       use m_constants
 !
+      use t_spheric_rj_data
       use t_coef_fdm3e_MHD_boundaries
       use cal_inverse_small_matrix
 !
@@ -122,15 +129,34 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_3rd_CMB_hdiv_vp_fdm(fdm3e_CMB)
+      subroutine cal_third_fdm_CMB_ele(i_th, kr_out,                    &
+     &          sph_rj, fdm3e_CMB, d_rj, dfdr_rj, dele_bc)
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
+      integer(kind = kint), intent(in) :: i_th, kr_out
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dfdr_rj(sph_rj%nnod_rj)
+!
+      real(kind = kreal), intent(inout) :: dele_bc(sph_rj%nidx_rj(2))
+!
+      integer(kind = kint) :: inod, i_n2, i_n1, j
 !
 !
-      write(50,*) ' Horizontal divergence on CMB'
-      call check_3rd_ele_CMB_vpol_fdm(fdm3e_CMB)
+!$omp parallel do private(inod,i_n2,i_n1,j)
+      do j = 1, sph_rj%nidx_rj(2)
+        inod = j + (kr_out-1) * sph_rj%nidx_rj(2)
+        i_n1 = j + (kr_out-2) * sph_rj%nidx_rj(2)
+        i_n2 = j + (kr_out-3) * sph_rj%nidx_rj(2)
 !
-      end subroutine check_3rd_CMB_hdiv_vp_fdm
+        dele_bc(inod) =  fdm3e_CMB%dmat_vp0(-2,i_th) * d_rj(i_n2)       &
+     &                 + fdm3e_CMB%dmat_vp0(-1,i_th) * d_rj(i_n1)       &
+     &                 + fdm3e_CMB%dmat_vp0( 0,i_th) * d_rj(inod)       &
+     &                 + fdm3e_CMB%dmat_vp0( 1,i_th) * dfdr_rj(inod)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_third_fdm_CMB_ele
 !
 ! -----------------------------------------------------------------------
 !

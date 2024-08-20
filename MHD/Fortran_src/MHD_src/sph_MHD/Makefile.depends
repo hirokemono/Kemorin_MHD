@@ -122,6 +122,10 @@ coef_fdm2_free_ICB.o: $(MHD_SPH_DIR)/coef_fdm2_free_ICB.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 coef_fdm2_to_center.o: $(MHD_SPH_DIR)/coef_fdm2_to_center.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
+coef_fdm3e_hdiv_CMB.o: $(MHD_SPH_DIR)/coef_fdm3e_hdiv_CMB.f90 m_precision.o m_constants.o t_coef_fdm3e_MHD_boundaries.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+coef_fdm3e_hdiv_ICB.o: $(MHD_SPH_DIR)/coef_fdm3e_hdiv_ICB.f90 m_precision.o m_constants.o t_coef_fdm3e_MHD_boundaries.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
 coef_fdm4_vpol_free_CMB.o: $(MHD_SPH_DIR)/coef_fdm4_vpol_free_CMB.f90 m_precision.o m_constants.o t_coef_fdm4_MHD_boundaries.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 coef_fdm4_vpol_free_ICB.o: $(MHD_SPH_DIR)/coef_fdm4_vpol_free_ICB.f90 m_precision.o m_constants.o t_coef_fdm4_MHD_boundaries.o cal_inverse_small_matrix.o
@@ -357,6 +361,8 @@ t_boundary_params_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_params_sph_MHD.f90 m_prec
 t_boundary_sph_spectr.o: $(MHD_SPH_DIR)/t_boundary_sph_spectr.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm2_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm2_MHD_boundaries.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3e_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm3e_MHD_boundaries.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm4_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm4_MHD_boundaries.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

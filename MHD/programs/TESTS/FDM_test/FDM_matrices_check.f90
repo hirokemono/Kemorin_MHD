@@ -5,7 +5,7 @@
       use m_constants
       use t_spheric_parameter
       use t_fdm_coefs
-      use t_group_data
+      use t_coef_fdm3e_MHD_boundaries
       use chebyshev_radial_grid
 !
       implicit none
@@ -14,6 +14,9 @@
       type(fdm_matrices) :: r_2nd_1
       type(fdm_matrices) :: r_n2e_3rd_1
       type(fdm_matrices) :: r_e2n_1st_1
+!
+      type(fdm3e_BC_hdiv) :: fdm3e_ICB_1
+      type(fdm3e_BC_hdiv) :: fdm3e_CMB_1
 !
       integer :: k
 !
@@ -37,11 +40,12 @@
 !        write(*,*) k, sph1%sph_rj%radius_1d_rj_r(k)
 !      end do
 !
-      call init_FDM_coefs_for_test                                      &
-     &   (sph1, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1)
+      call init_FDM_coefs_for_test(sph1, r_2nd_1,                       &
+     &    r_n2e_3rd_1, r_e2n_1st_1, fdm3e_ICB_1, fdm3e_CMB_1)
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
-     &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1)
+     &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
+     &    fdm3e_ICB_1, fdm3e_CMB_1)
 !
 !  -------------------------------------------------------------------
 !
@@ -49,49 +53,68 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_FDM_coefs_for_test                                &
-     &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st)
+      subroutine init_FDM_coefs_for_test(sph, r_2nd,                    &
+     &          r_n2e_3rd, r_e2n_1st, fdm3e_ICB, fdm3e_CMB)
 !
       use parallel_load_data_4_sph
       use init_radial_infos_sph_mhd
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
+      use coef_fdm3e_hdiv_ICB
+      use coef_fdm3e_hdiv_CMB
 !
       type(sph_grids), intent(inout) :: sph
       type(fdm_matrices), intent(inout) :: r_2nd
       type(fdm_matrices), intent(inout) :: r_n2e_3rd
       type(fdm_matrices), intent(inout) :: r_e2n_1st
+      type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_ICB
+      type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_CMB
+!
+      integer(kind = kint) :: kr_in, kr_out
+!
 !
       if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
       call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
       call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
-      call check_fdm_coefs                                            &
+      call check_fdm_coefs                                              &
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r, r_2nd)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_first_fdm_ele_to_node'
       call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
+!
       if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
       call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
+!
+      kr_in =  sph1%sph_params%nlayer_ICB
+      call cal_fdm3e_ICB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_in   ),   &
+     &                           fdm3e_ICB)
+      kr_out = sph1%sph_params%nlayer_CMB
+     call cal_fdm3e_CMB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_out-2),    &
+     &                           fdm3e_CMB)
 !
       end subroutine init_FDM_coefs_for_test
 !
 !  -------------------------------------------------------------------
 !
       subroutine test_radial_FDM(kr_in, kr_out, sph_rj,                 &
-     &                           r_2nd, r_n2e_3rd, r_e2n_1st)
+     &          r_2nd, r_n2e_3rd, r_e2n_1st, fdm3e_ICB, fdm3e_CMB)
 !
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
+      use coef_fdm3e_hdiv_ICB
+      use coef_fdm3e_hdiv_CMB
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(fdm_matrices), intent(in) :: r_n2e_3rd
       type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
 !
       real(kind = kreal), allocatable :: r_ele(:)
 !
@@ -115,8 +138,9 @@
       real(kind = kreal), allocatable :: d_e2n(:)
       real(kind = kreal), allocatable :: dfdr_e2n(:)
 !
-      integer(kind = kint) :: inod, j, k
+      integer(kind = kint) :: inod, j, k, ist_in, ist_out
       real(kind = kreal) :: r
+!
 !
       allocate(r_ele(sph_rj%nidx_rj(1)))
       do k = 1, sph_rj%nidx_rj(1)
@@ -181,9 +205,17 @@
       end do
 !
 !
+      ist_in =  1 + (kr_in- 1) * sph_rj%nidx_rj(2)
+      ist_out = 1 + (kr_out-1) * sph_rj%nidx_rj(2)
+!
       allocate(d_ele(sph_rj%nnod_rj))
-      call cal_third_fdm_node_to_ele(izero, kr_in, kr_out, sph_rj,    &
+      call cal_third_fdm_node_to_ele(izero, kr_in, kr_out, sph_rj,      &
      &                               r_n2e_3rd, d_rj, d_ele)
+      call cal_third_fdm_ICB_ele(izero, kr_in,  sph_rj, fdm3e_ICB,      &
+     &                           d_rj, dr_rj, d_ele(ist_in))
+      call cal_third_fdm_CMB_ele(izero, kr_out, sph_rj, fdm3e_CMB,      &
+     &                           d_rj, dr_rj, d_ele(ist_out))
+!
       write(*,*) 'Interpolation to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -195,8 +227,12 @@
       end do
 !
       allocate(dfdr_ele(sph_rj%nnod_rj))
-      call cal_third_fdm_node_to_ele(ione, kr_in, kr_out, sph_rj,     &
+      call cal_third_fdm_node_to_ele(ione, kr_in, kr_out, sph_rj,       &
      &                               r_n2e_3rd, d_rj, dfdr_ele)
+      call cal_third_fdm_ICB_ele(ione, kr_in,  sph_rj, fdm3e_ICB,       &
+     &                           d_rj, dr_rj, dfdr_ele(ist_in))
+      call cal_third_fdm_CMB_ele(ione, kr_out, sph_rj, fdm3e_CMB,       &
+     &                           d_rj, dr_rj, dfdr_ele(ist_out))
       write(*,*) '1st derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -208,8 +244,12 @@
       end do
 !
       allocate(d2fdr2_ele(sph_rj%nnod_rj))
-      call cal_third_fdm_node_to_ele(itwo, kr_in, kr_out, sph_rj,     &
+      call cal_third_fdm_node_to_ele(itwo, kr_in, kr_out, sph_rj,       &
      &                               r_n2e_3rd, d_rj, d2fdr2_ele)
+      call cal_third_fdm_ICB_ele(itwo, kr_in,  sph_rj, fdm3e_ICB,       &
+     &                           d_rj, dr_rj, d2fdr2_ele(ist_in))
+      call cal_third_fdm_CMB_ele(itwo, kr_out, sph_rj, fdm3e_CMB,       &
+     &                           d_rj, dr_rj, d2fdr2_ele(ist_out))
       write(*,*) '2nd derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -221,8 +261,12 @@
       end do
 !
       allocate(d3fdr3_ele(sph_rj%nnod_rj))
-      call cal_third_fdm_node_to_ele(ithree, kr_in, kr_out, sph_rj,   &
+      call cal_third_fdm_node_to_ele(ithree, kr_in, kr_out, sph_rj,     &
      &                               r_n2e_3rd, d_rj, d3fdr3_ele)
+      call cal_third_fdm_ICB_ele(ithree, kr_in,  sph_rj, fdm3e_ICB,     &
+     &                           d_rj, dr_rj, d3fdr3_ele(ist_in))
+      call cal_third_fdm_CMB_ele(ithree, kr_out, sph_rj, fdm3e_CMB,     &
+     &                           d_rj, dr_rj, d3fdr3_ele(ist_out))
       write(*,*) '3rd derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -235,7 +279,7 @@
 !
 !
       allocate(d_e2n(sph_rj%nnod_rj))
-      call cal_first_fdm_ele_to_node(izero, kr_in, kr_out, sph_rj,    &
+      call cal_first_fdm_ele_to_node(izero, kr_in, kr_out, sph_rj,      &
      &                               r_e2n_1st, de_rj, d_e2n)
       write(*,*) 'Interpolation from element to node'
       do j = 1, sph_rj%nidx_rj(2)
@@ -248,7 +292,7 @@
       end do
 !
       allocate(dfdr_e2n(sph_rj%nnod_rj))
-      call cal_first_fdm_ele_to_node(ione, kr_in, kr_out, sph_rj,     &
+      call cal_first_fdm_ele_to_node(ione, kr_in, kr_out, sph_rj,       &
      &                               r_e2n_1st, de_rj, dfdr_e2n)
       write(*,*) '1st derivative from element to node'
       do j = 1, sph_rj%nidx_rj(2)
@@ -259,6 +303,8 @@
      &            dfdr_e2n(inod), dr_rj(inod)
        end do
       end do
+      call check_3rd_ele_BC_vpol_fdm(6, fdm3e_ICB)
+      call check_3rd_ele_BC_vpol_fdm(6, fdm3e_CMB)
 !
       end subroutine test_radial_FDM
 !
