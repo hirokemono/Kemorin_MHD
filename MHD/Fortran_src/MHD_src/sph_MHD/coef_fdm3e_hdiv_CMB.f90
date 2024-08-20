@@ -112,10 +112,10 @@
      &            r_from_CMB(0)
       end if
 !
-      fdm3e_CMB%dmat_vp0(-1,2: 0) = mat_fdm3e_CMB_hdiv_vp(1:4,3)
-      fdm3e_CMB%dmat_vp0(-1,2: 1) = mat_fdm3e_CMB_hdiv_vp(1:4,2)
-      fdm3e_CMB%dmat_vp0(-1,2: 2) = mat_fdm3e_CMB_hdiv_vp(1:4,1)
-      fdm3e_CMB%dmat_vp0(-1,2: 3) = mat_fdm3e_CMB_hdiv_vp(1:4,4)
+      fdm3e_CMB%dmat_vp0( 0,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,1)
+      fdm3e_CMB%dmat_vp0(-1,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,2)
+      fdm3e_CMB%dmat_vp0(-2,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,3)
+      fdm3e_CMB%dmat_vp0( 1,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_CMB_hdiv_vp
 !
