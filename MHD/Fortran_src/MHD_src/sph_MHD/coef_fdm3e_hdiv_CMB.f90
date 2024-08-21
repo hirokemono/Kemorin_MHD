@@ -36,6 +36,33 @@
 !!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(in) :: dfdr_rj(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout) :: dele_bc(sph_rj%nidx_rj(2))
+!!
+!!      subroutine cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB, fdm3e_CMB, &
+!!     &                                      fdm3e_free_CMB)
+!!        type(fdm2_free_slip), intent(inout) :: fdm2_free_CMB
+!!        type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_CMB
+!!        type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_free_CMB
+!!
+!!      d_rj(CMB  ) = 0
+!!      dfdr_cmb = fdm2_free_CMB%dmat_vp(-1,2) * d_rj(CMB-1)
+!!                + fdm2_free_CMB%dmat_vp( 0,2) * d_rj(CMB  )
+!!      dnfdr_e(0:3) =  fdm3e_CMB%dmat_vp0(-2,1:4) * d_rj(CMB-2)        &
+!!     &              + fdm3e_CMB%dmat_vp0(-1,1:4) * d_rj(CMB-1)        &
+!!     &              + fdm3e_CMB%dmat_vp0( 0,1:4) * d_rj(CMB  )        &
+!!     &              + fdm3e_CMB%dmat_vp0( 1,1:4) * dfdr_cmb
+!!                   =  fdm3e_CMB%dmat_vp0(-2,1:4) * d_rj(CMB-2)        &
+!!     &              + fdm3e_CMB%dmat_vp0(-1,1:4) * d_rj(CMB-1)        &
+!!     &              + fdm3e_CMB%dmat_vp0( 0,1:4) * d_rj(CMB  )        &
+!!     &              + fdm3e_CMB%dmat_vp0( 1,1:4)                      &
+!!     &               * (fdm2_free_CMB%dmat_vp(-1,2) * d_rj(CMB-1)
+!!                      + fdm2_free_CMB%dmat_vp( 0,2) * d_rj(CMB  ))
+!!                   =  fdm3e_CMB%dmat_vp0(-2,1:4) *       d_rj(CMB-2)  &
+!!     &              + (fdm3e_CMB%dmat_vp0(-1,1:4)                     &
+!!     &                 + fdm3e_CMB%dmat_vp0( 1,1:4)                   &
+!!     &                  * fdm2_free_CMB%dmat_vp(-1,2)) * d_rj(CMB-1)  &
+!!     &              + (fdm3e_CMB%dmat_vp0( 0,1:4)                     &
+!!     &                + fdm3e_CMB%dmat_vp0( 1,1:4)                    &
+!!     &                 * fdm2_free_CMB%dmat_vp( 0,2)) * d_rj(CMB  )
 !!@endverbatim
 !!
       module coef_fdm3e_hdiv_CMB
@@ -129,6 +156,28 @@
       fdm3e_CMB%dmat_vp0( 1,1:4) = mat_fdm3e_CMB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_CMB_hdiv_vp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_ICB, fdm3e_ICB,   &
+     &                                      fdm3e_free_ICB)
+!
+      use t_coef_fdm2_MHD_boundaries
+!
+      type(fdm2_free_slip), intent(inout) :: fdm2_free_ICB
+      type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_ICB
+      type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_free_ICB
+!
+!
+      fdm3e_free_ICB%dmat_vp0(-2,1:4) = fdm3e_ICB%dmat_vp0(-2,1:4)
+      fdm3e_free_ICB%dmat_vp0(-1,1:4) = fdm3e_ICB%dmat_vp0(-1,1:4)      &
+     &       + fdm3e_ICB%dmat_vp0( 1,1:4) * fdm2_free_ICB%dmat_vp(-1,2)
+!      fdm3e_free_ICB%dmat_vp0( 0,1:4) = fdm3e_ICB%dmat_vp0( 0,1:4)     &
+!     &       + fdm3e_ICB%dmat_vp0( 1,1:4) * fdm2_free_ICB%dmat_vp( 0,2)
+      fdm3e_free_ICB%dmat_vp0( 0,1:4) = zero
+      fdm3e_free_ICB%dmat_vp0( 1,1:4) = zero
+!
+      end subroutine cal_fdm3e_CMB_free_hdiv_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

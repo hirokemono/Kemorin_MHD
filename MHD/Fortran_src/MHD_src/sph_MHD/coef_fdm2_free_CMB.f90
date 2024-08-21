@@ -181,7 +181,7 @@
 !
 !
       write(id_file,*) ' Free slip for CMB'
-      call check_coef_fdm_free_slip(id_file, fdm2_free_CMB)
+      call check_fdm_coef_free_slip_CMB(id_file, fdm2_free_CMB)
 !
       end subroutine check_coef_fdm_free_CMB
 !

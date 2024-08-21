@@ -179,7 +179,7 @@
 !
 !
       write(id_file,*) ' Free slip for ICB'
-      call check_coef_fdm_free_slip(id_file, fdm2_free_ICB)
+      call check_fdm_coef_free_slip_ICB(id_file, fdm2_free_ICB)
 !
       end subroutine check_coef_fdm_free_ICB
 !
