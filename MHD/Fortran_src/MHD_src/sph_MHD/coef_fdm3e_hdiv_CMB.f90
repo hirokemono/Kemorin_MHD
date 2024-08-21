@@ -11,18 +11,22 @@
 !!        type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_CMB
 !!
 !!   Matrix for poloidal velocity with horizontal divergence at CMB
-!!      dfdr =      fdm3e_ICB%dmat_vp1(-2,2) * d_rj(CMB-3)
-!!                + fdm3e_ICB%dmat_vp1(-1,2) * d_rj(CMB-2)
-!!                + fdm3e_ICB%dmat_vp1( 0,2) * d_rj(CMB-1)
-!!                + fdm3e_ICB%dmat_vp1( 1,2) * d_rj(CMB  )
-!!      d2fdr2 =    fdm3e_ICB%dmat_vp1(-2,3) * d_rj(CMB-3)
-!!                + fdm3e_ICB%dmat_vp1(-1,3) * d_rj(CMB-2)
-!!                + fdm3e_ICB%dmat_vp1( 0,3) * d_rj(CMB-1)
-!!                + fdm3e_ICB%dmat_vp1( 1,3) * d_rj(CMB  )
-!!      d3fdr3 =    fdm3e_ICB%dmat_vp1(-2,4) * d_rj(CMB-3)
-!!                + fdm3e_ICB%dmat_vp1(-1,4) * d_rj(CMB-2)
-!!                + fdm3e_ICB%dmat_vp1( 0,4) * d_rj(CMB-1)
-!!                + fdm3e_ICB%dmat_vp1( 1,4) * d_rj(CMB  )
+!!      d_ele =     fdm3e_CMB%dmat_vp0(-2,1) * d_rj(CMB-2)
+!!                + fdm3e_CMB%dmat_vp0(-1,1) * d_rj(CMB-1)
+!!                + fdm3e_CMB%dmat_vp0( 0,1) * d_rj(CMB  )
+!!                + fdm3e_CMB%dmat_vp0( 1,1) * dfdr(CMB  )
+!!      dfdr =      fdm3e_CMB%dmat_vp0(-2,2) * d_rj(CMB-3)
+!!                + fdm3e_CMB%dmat_vp0(-1,2) * d_rj(CMB-2)
+!!                + fdm3e_CMB%dmat_vp0( 0,2) * d_rj(CMB-1)
+!!                + fdm3e_CMB%dmat_vp0( 1,2) * dfdr(CMB  )
+!!      d2fdr2 =    fdm3e_CMB%dmat_vp0(-2,3) * d_rj(CMB-3)
+!!                + fdm3e_CMB%dmat_vp0(-1,3) * d_rj(CMB-2)
+!!                + fdm3e_CMB%dmat_vp0( 0,3) * d_rj(CMB-1)
+!!                + fdm3e_CMB%dmat_vp0( 1,3) * dfdr(CMB  )
+!!      d3fdr3 =    fdm3e_CMB%dmat_vp0(-2,4) * d_rj(CMB-3)
+!!                + fdm3e_CMB%dmat_vp0(-1,4) * d_rj(CMB-2)
+!!                + fdm3e_CMB%dmat_vp0( 0,4) * d_rj(CMB-1)
+!!                + fdm3e_CMB%dmat_vp0( 1,4) * dfdr(CMB  )
 !!
 !!      subroutine cal_third_fdm_CMB_ele(i_th, kr_out,                  &
 !!     &          sph_rj, fdm3e_CMB, d_rj, dfdr_rj, dele_bc)
@@ -119,10 +123,10 @@
      &            r_from_CMB(0)
       end if
 !
-      fdm3e_CMB%dmat_vp0( 0,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,1)
-      fdm3e_CMB%dmat_vp0(-1,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,2)
-      fdm3e_CMB%dmat_vp0(-2,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,3)
-      fdm3e_CMB%dmat_vp0( 1,0:3) = mat_fdm3e_CMB_hdiv_vp(1:4,4)
+      fdm3e_CMB%dmat_vp0( 0,1:4) = mat_fdm3e_CMB_hdiv_vp(1:4,1)
+      fdm3e_CMB%dmat_vp0(-1,1:4) = mat_fdm3e_CMB_hdiv_vp(1:4,2)
+      fdm3e_CMB%dmat_vp0(-2,1:4) = mat_fdm3e_CMB_hdiv_vp(1:4,3)
+      fdm3e_CMB%dmat_vp0( 1,1:4) = mat_fdm3e_CMB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_CMB_hdiv_vp
 !
@@ -149,10 +153,10 @@
         i_n1 = j + (kr_out-2) * sph_rj%nidx_rj(2)
         i_n2 = j + (kr_out-3) * sph_rj%nidx_rj(2)
 !
-        dele_bc(inod) =  fdm3e_CMB%dmat_vp0(-2,i_th) * d_rj(i_n2)       &
-     &                 + fdm3e_CMB%dmat_vp0(-1,i_th) * d_rj(i_n1)       &
-     &                 + fdm3e_CMB%dmat_vp0( 0,i_th) * d_rj(inod)       &
-     &                 + fdm3e_CMB%dmat_vp0( 1,i_th) * dfdr_rj(inod)
+        dele_bc(inod) =  fdm3e_CMB%dmat_vp0(-2,i_th+1) * d_rj(i_n2)     &
+     &                 + fdm3e_CMB%dmat_vp0(-1,i_th+1) * d_rj(i_n1)     &
+     &                 + fdm3e_CMB%dmat_vp0( 0,i_th+1) * d_rj(inod)     &
+     &                 + fdm3e_CMB%dmat_vp0( 1,i_th+1) * dfdr_rj(inod)
       end do
 !$omp end parallel do
 !

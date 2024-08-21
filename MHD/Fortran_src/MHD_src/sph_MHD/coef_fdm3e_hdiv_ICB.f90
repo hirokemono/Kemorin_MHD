@@ -124,10 +124,10 @@
      &            r_from_ICB(0)
       end if
 !
-      fdm3e_ICB%dmat_vp0(-1,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
-      fdm3e_ICB%dmat_vp0( 0,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
-      fdm3e_ICB%dmat_vp0( 1,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
-      fdm3e_ICB%dmat_vp0(-2,0:3) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
+      fdm3e_ICB%dmat_vp0(-1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
+      fdm3e_ICB%dmat_vp0( 0,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
+      fdm3e_ICB%dmat_vp0( 1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
+      fdm3e_ICB%dmat_vp0(-2,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_ICB_hdiv_vp
 !
@@ -154,10 +154,10 @@
         i_p1 = j + (kr_in  ) * sph_rj%nidx_rj(2)
         i_p2 = j + (kr_in+1) * sph_rj%nidx_rj(2)
 !
-        dele_bc(j) =     fdm3e_ICB%dmat_vp0( 1,i_th) * d_rj(i_p2)       &
-     &                 + fdm3e_ICB%dmat_vp0( 0,i_th) * d_rj(i_p1)       &
-     &                 + fdm3e_ICB%dmat_vp0(-1,i_th) * d_rj(inod)       &
-     &                 + fdm3e_ICB%dmat_vp0(-2,i_th) * dfdr_rj(inod)
+        dele_bc(j) =     fdm3e_ICB%dmat_vp0( 1,i_th+1) * d_rj(i_p2)     &
+     &                 + fdm3e_ICB%dmat_vp0( 0,i_th+1) * d_rj(i_p1)     &
+     &                 + fdm3e_ICB%dmat_vp0(-1,i_th+1) * d_rj(inod)     &
+     &                 + fdm3e_ICB%dmat_vp0(-2,i_th+1) * dfdr_rj(inod)
       end do
 !$omp end parallel do
 !

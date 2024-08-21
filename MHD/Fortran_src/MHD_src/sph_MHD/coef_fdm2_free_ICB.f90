@@ -12,7 +12,8 @@
 !!      subroutine cal_fdm2_ICB_free_vt(r_from_ICB, fdm2_free_ICB)
 !!        type(fdm2_free_slip), intent(inout) :: fdm2_free_ICB
 !!
-!!      subroutine check_coef_fdm_free_ICB(fdm2_free_ICB)
+!!      subroutine check_coef_fdm_free_ICB(id_file, fdm2_free_ICB)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !!
 !!    Matrix to evaluate radial derivative of poloidal velocity
@@ -171,13 +172,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_coef_fdm_free_ICB(fdm2_free_ICB)
+      subroutine check_coef_fdm_free_ICB(id_file, fdm2_free_ICB)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !
 !
-      write(50,*) ' Free slip for ICB'
-      call check_coef_fdm_free_slip(fdm2_free_ICB)
+      write(id_file,*) ' Free slip for ICB'
+      call check_coef_fdm_free_slip(id_file, fdm2_free_ICB)
 !
       end subroutine check_coef_fdm_free_ICB
 !

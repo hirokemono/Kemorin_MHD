@@ -12,7 +12,8 @@
 !!      subroutine cal_fdm2_CMB_free_vt(r_from_CMB, fdm2_free_CMB)
 !!        type(fdm2_free_slip), intent(inout) :: fdm2_free_CMB
 !!
-!!      subroutine check_coef_fdm_free_CMB(fdm2_free_CMB)
+!!      subroutine check_coef_fdm_free_CMB(id_file, fdm2_free_CMB)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !!
 !!    Matrix to evaluate radial derivative of poloidal velocity
@@ -173,13 +174,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_coef_fdm_free_CMB(fdm2_free_CMB)
+      subroutine check_coef_fdm_free_CMB(id_file, fdm2_free_CMB)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !
 !
-      write(50,*) ' Free slip for CMB'
-      call check_coef_fdm_free_slip(fdm2_free_CMB)
+      write(id_file,*) ' Free slip for CMB'
+      call check_coef_fdm_free_slip(id_file, fdm2_free_CMB)
 !
       end subroutine check_coef_fdm_free_CMB
 !

@@ -108,6 +108,10 @@
      &                          fdm2_free_ICB)
       call cal_fdm2_CMB_free_vp(sph%sph_rj%radius_1d_rj_r(kr_out-1),   &
      &                          fdm2_free_CMB)
+      call cal_fdm2_ICB_free_vt(sph%sph_rj%radius_1d_rj_r(kr_in   ),   &
+     &                          fdm2_free_ICB)
+      call cal_fdm2_CMB_free_vt(sph%sph_rj%radius_1d_rj_r(kr_out-1),   &
+     &                          fdm2_free_CMB)
 !
       end subroutine init_FDM_coefs_for_test
 !
@@ -331,14 +335,14 @@
       c_dr =  r /   (dr_bc * (r + dr_bc))
       c_dr2 = 2.0 / (dr_bc * (r + dr_bc))
       write(*,*) 'free ICB', c_dr, c_dr2
-      call check_coef_fdm_free_slip(fdm2_free_ICB)
+      call check_coef_fdm_free_slip(6, fdm2_free_ICB)
 !
       r =         sph_rj%radius_1d_rj_r(kr_out  )
       dr_bc = r - sph_rj%radius_1d_rj_r(kr_out-1)
       c_dr =  r /   (dr_bc * (r - dr_bc))
       c_dr2 = 2.0 / (dr_bc * (r - dr_bc))
       write(*,*) 'free CMB', c_dr, c_dr2
-      call check_coef_fdm_free_slip(fdm2_free_CMB)
+      call check_coef_fdm_free_slip(6, fdm2_free_CMB)
 !
       end subroutine test_radial_FDM
 !

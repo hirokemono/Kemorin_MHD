@@ -12,22 +12,22 @@
 !!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_BC0
 !!
 !!   Matrix for horizontal divergence of velocity at CMB element
-!!      d_ele =     fdm4_noslip_CMB%dmat_vp0(-2,0) * d_rj(CMB-2)
-!!                + fdm4_noslip_CMB%dmat_vp0(-1,0) * d_rj(CMB-1)
-!!                + fdm4_noslip_CMB%dmat_vp0( 0,0) * d_rj(CMB  )
-!!                + fdm4_noslip_CMB%dmat_vp0( 1,0) * dfdr(CMB  )
-!!      dfdr =      fdm4_noslip_CMB%dmat_vp0(-2,1) * d_rj(CMB-2)
+!!      d_ele =     fdm4_noslip_ICB%dmat_vp0(-2,1) * d_rj(CMB-2)
 !!                + fdm4_noslip_CMB%dmat_vp0(-1,1) * d_rj(CMB-1)
 !!                + fdm4_noslip_CMB%dmat_vp0( 0,1) * d_rj(CMB  )
 !!                + fdm4_noslip_CMB%dmat_vp0( 1,1) * dfdr(CMB  )
-!!      d2fdr2 =    fdm4_noslip_CMB%dmat_vp0(-2,2) * d_rj(CMB-2)
+!!      dfdr =      fdm4_noslip_CMB%dmat_vp0(-2,2) * d_rj(CMB-2)
 !!                + fdm4_noslip_CMB%dmat_vp0(-1,2) * d_rj(CMB-1)
 !!                + fdm4_noslip_CMB%dmat_vp0( 0,2) * d_rj(CMB  )
 !!                + fdm4_noslip_CMB%dmat_vp0( 1,2) * dfdr(CMB  )
-!!      d3fdr3 =    fdm4_noslip_CMB%dmat_vp0(-2,3) * d_rj(CMB-2)
+!!      d2fdr2 =    fdm4_noslip_CMB%dmat_vp0(-2,3) * d_rj(CMB-2)
 !!                + fdm4_noslip_CMB%dmat_vp0(-1,3) * d_rj(CMB-1)
 !!                + fdm4_noslip_CMB%dmat_vp0( 0,3) * d_rj(CMB  )
 !!                + fdm4_noslip_CMB%dmat_vp0( 1,3) * dfdr(CMB  )
+!!      d3fdr3 =    fdm4_noslip_CMB%dmat_vp0(-2,4) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB%dmat_vp0(-1,4) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB%dmat_vp0( 0,4) * d_rj(CMB  )
+!!                + fdm4_noslip_CMB%dmat_vp0( 1,4) * dfdr(CMB  )
 !!
 !!   Matrix for horizontal divergence of velocity at ICB element
 !!      d_ele =     fdm4_noslip_CMB%dmat_vp0(-2,0) * dfdr(ICB  )
@@ -61,7 +61,7 @@
 !
       type fdm3e_BC_hdiv
 !>        Matrix to evaluate radial derivative at Boundary
-        real(kind = kreal) :: dmat_vp0(-2:1,0:3)
+        real(kind = kreal) :: dmat_vp0(-2:1,4)
       end type fdm3e_BC_hdiv
 !
 !
@@ -79,13 +79,13 @@
 !
       write(id_file,*) ' fdm3e_BC0%dmat_vp0'
       write(id_file,*) 'matrix for Interpolation'
-      write(id_file,'(1p9E25.15e3)') fdm3e_BC0%dmat_vp0(-2:1,0)
-      write(id_file,*) 'matrix for dfdr'
       write(id_file,'(1p9E25.15e3)') fdm3e_BC0%dmat_vp0(-2:1,1)
-      write(id_file,*) 'matrix for d2fdr2'
+      write(id_file,*) 'matrix for dfdr'
       write(id_file,'(1p9E25.15e3)') fdm3e_BC0%dmat_vp0(-2:1,2)
-      write(id_file,*) 'matrix for d3fdr3'
+      write(id_file,*) 'matrix for d2fdr2'
       write(id_file,'(1p9E25.15e3)') fdm3e_BC0%dmat_vp0(-2:1,3)
+      write(id_file,*) 'matrix for d3fdr3'
+      write(id_file,'(1p9E25.15e3)') fdm3e_BC0%dmat_vp0(-2:1,4)
 !
       end subroutine check_3rd_ele_BC_vpol_fdm
 !

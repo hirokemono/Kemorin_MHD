@@ -8,7 +8,8 @@
 !!       at CMB with free slip boundary
 !!
 !!@verbatim
-!!      subroutine check_coef_fdm_free_slip(fdm2_free_mat)
+!!      subroutine check_coef_fdm_free_slip(id_file, fdm2_free_mat)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_mat
 !!      subroutine check_coef_fdm_fix_dr_2ctr(fdm2_center)
 !!        type(fdm4_ICB_vpol), intent(in) :: fdm2_center
@@ -128,26 +129,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_coef_fdm_free_slip(fdm2_free_mat)
+      subroutine check_coef_fdm_free_slip(id_file, fdm2_free_mat)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(fdm2_free_slip), intent(in) :: fdm2_free_mat
 !
 !
-      write(50,*) ' fdm2_free_mat%dmat_vp'
-      write(50,*) ' mat_fdm11,  mat_fdm12'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,1)
-      write(50,*) ' mat_fdm21,  mat_fdm22'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,2)
-      write(50,*) ' mat_fdm31,  mat_fdm32'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,3)
+      write(id_file,*) ' fdm2_free_mat%dmat_vp'
+      write(id_file,*) ' mat_fdm11,  mat_fdm12'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,1)
+      write(id_file,*) ' mat_fdm21,  mat_fdm22'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,2)
+      write(id_file,*) ' mat_fdm31,  mat_fdm32'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,3)
 !
-      write(50,*) ' fdm2_free_mat%dmat_vt'
-      write(50,*) ' mat_fdm11,  mat_fdm12'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,1)
-      write(50,*) ' mat_fdm21,  mat_fdm22'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,2)
-      write(50,*) ' mat_fdm31,  mat_fdm32'
-      write(50,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,3)
+      write(id_file,*) ' fdm2_free_mat%dmat_vt'
+      write(id_file,*) ' mat_fdm11,  mat_fdm12'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,1)
+      write(id_file,*) ' mat_fdm21,  mat_fdm22'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,2)
+      write(id_file,*) ' mat_fdm31,  mat_fdm32'
+      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,3)
 !
       end subroutine check_coef_fdm_free_slip
 !
