@@ -29,6 +29,7 @@
       use t_boundary_sph_spectr
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm4_MHD_boundaries
+      use t_coef_fdm3e_MHD_boundaries
       use t_time_data
       use t_spheric_parameter
       use t_control_parameter
@@ -60,8 +61,17 @@
         type(fdm2_center_mat) :: fdm2_center
 !>        Structure for FDM matrix of free slip boundary at ICB
         type(fdm2_free_slip) :: fdm2_free_ICB
+!>        Structure for FDM matrix at ICB element
+        type(fdm3e_BC_hdiv) :: fdm3e_ICB
+!>        Structure for FDM matrix of free slip boundary at ICB element
+        type(fdm3e_BC_hdiv) :: fdm3e_free_ICB
+!
 !>        Structure for FDM matrix of free slip boundary at CMB
         type(fdm2_free_slip) :: fdm2_free_CMB
+!>        Structure for FDM matrix at CMB element
+        type(fdm3e_BC_hdiv) :: fdm3e_CMB
+!>        Structure for FDM matrix of free slip boundary at CMB element
+        type(fdm3e_BC_hdiv) :: fdm3e_free_CMB
 !
 !>        Structure for 4th order FDM matrix of non-slip boundary at ICB
         type(fdm4_ICB_vpol) :: fdm4_noslip_ICB

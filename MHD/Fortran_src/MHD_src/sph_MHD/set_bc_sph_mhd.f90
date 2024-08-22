@@ -57,6 +57,8 @@
       use coef_fdm2_to_center
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
+      use coef_fdm3e_hdiv_ICB
+      use coef_fdm3e_hdiv_CMB
 !
       type(boundary_spectra), intent(in) :: bc_IO
 !
@@ -68,7 +70,7 @@
 !
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
-      integer(kind = kint) :: kst, ked
+      integer(kind = kint) :: kst
 !
 !
       if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -84,18 +86,28 @@
      &      sph_MHD_bc%sph_bc_U)
 !
         kst = sph_MHD_bc%sph_bc_U%kr_in
-        ked = sph_MHD_bc%sph_bc_U%kr_in + 1
-        call cal_fdm2_ICB_free_vp                                       &
-     &     (sph_rj%radius_1d_rj_r(kst:ked), sph_MHD_bc%fdm2_free_ICB)
-        call cal_fdm2_ICB_free_vt                                       &
-     &     (sph_rj%radius_1d_rj_r(kst:ked), sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst),           &
+     &                            sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vt(sph_rj%radius_1d_rj_r(kst),           &
+     &                            sph_MHD_bc%fdm2_free_ICB)
 !
-        kst = sph_MHD_bc%sph_bc_U%kr_out-1
-        ked = sph_MHD_bc%sph_bc_U%kr_out
+        call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
+     &                             sph_MHD_bc%fdm3e_ICB)
+        call cal_fdm3e_ICB_free_hdiv_vp(sph_MHD_bc%fdm2_free_ICB,       &
+     &                                  sph_MHD_bc%fdm3e_ICB,           &
+     &                                  sph_MHD_bc%fdm3e_free_ICB)
+!
+        kst = sph_MHD_bc%sph_bc_U%kr_out
         call cal_fdm2_CMB_free_vp                                       &
-     &     (sph_rj%radius_1d_rj_r(kst:ked), sph_MHD_bc%fdm2_free_CMB)
+     &     (sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
         call cal_fdm2_CMB_free_vt                                       &
-     &     (sph_rj%radius_1d_rj_r(kst:ked), sph_MHD_bc%fdm2_free_CMB)
+     &     (sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
+!
+        call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(kst-2),        &
+     &                             sph_MHD_bc%fdm3e_CMB)
+        call cal_fdm3e_CMB_free_hdiv_vp(sph_MHD_bc%fdm2_free_CMB,       &
+     &                                  sph_MHD_bc%fdm3e_CMB,           &
+     &                                  sph_MHD_bc%fdm3e_free_CMB)
       end if
 !
 !
@@ -133,12 +145,12 @@
 !      Set FDM matrices for Center
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
-      call cal_2nd_to_center_fixed_fdm                                  &
-     &   (sph_rj%radius_1d_rj_r(1:2), sph_MHD_bc%fdm2_center)
-      call cal_2nd_center_fix_df_fdm                                    &
-     &   (sph_rj%radius_1d_rj_r(1), sph_MHD_bc%fdm2_center)
-      call cal_2nd_center_fixed_fdm                                     &
-     &   (sph_rj%radius_1d_rj_r(1:2), sph_MHD_bc%fdm2_center)
+      call cal_2nd_to_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),        &
+     &                                 sph_MHD_bc%fdm2_center)
+      call cal_2nd_center_fix_df_fdm(sph_rj%radius_1d_rj_r(1),          &
+     &                               sph_MHD_bc%fdm2_center)
+      call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),           &
+     &                              sph_MHD_bc%fdm2_center)
 !
 !      Check data
 !
@@ -165,8 +177,11 @@
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
      &       (velocity%name, sph_MHD_bc%sph_bc_U)
+          call check_3rd_ele_BC_vpol_fdm(50, sph_MHD_bc%fdm3e_ICB)
           call check_coef_fdm_free_ICB(50, sph_MHD_bc%fdm2_free_ICB)
           call check_coef_fdm_free_CMB(50, sph_MHD_bc%fdm2_free_CMB)
+          call check_3rd_ele_BC_vpol_fdm(50, sph_MHD_bc%fdm3e_free_ICB)
+          call check_3rd_ele_BC_vpol_fdm(50, sph_MHD_bc%fdm3e_free_CMB)
         end if
 !
         if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &

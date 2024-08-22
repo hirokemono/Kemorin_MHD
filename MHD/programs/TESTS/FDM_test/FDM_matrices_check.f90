@@ -17,10 +17,11 @@
       type(fdm_matrices) :: r_e2n_1st_1
 !
       type(fdm3e_BC_hdiv) :: fdm3e_ICB_1
-      type(fdm3e_BC_hdiv) :: fdm3e_CMB_1
       type(fdm3e_BC_hdiv) :: fdm3e_free_ICB_1
-      type(fdm3e_BC_hdiv) :: fdm3e_free_CMB_1
       type(fdm2_free_slip) :: fdm2_free_ICB_1
+!
+      type(fdm3e_BC_hdiv) :: fdm3e_CMB_1
+      type(fdm3e_BC_hdiv) :: fdm3e_free_CMB_1
       type(fdm2_free_slip) :: fdm2_free_CMB_1
 !
       integer :: k
@@ -75,6 +76,7 @@
       use coef_fdm3e_hdiv_CMB
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
+      use coef_fdm2_to_center
 !
       type(sph_grids), intent(inout) :: sph
       type(fdm_matrices), intent(inout) :: r_2nd
@@ -105,6 +107,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
       call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
+      call cal_2nd_to_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),    &
+     &                                 fdm2_center)
+      call cal_2nd_center_fix_df_fdm(sph%sph_rj%radius_1d_rj_r(1),      &
+     &                               fdm2_center)
+      call cal_2nd_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),       &
+     &                              fdm2_center)
 !
       kr_in =  sph1%sph_params%nlayer_ICB
       call cal_fdm2_ICB_free_vt(sph%sph_rj%radius_1d_rj_r(kr_in   ),    &
