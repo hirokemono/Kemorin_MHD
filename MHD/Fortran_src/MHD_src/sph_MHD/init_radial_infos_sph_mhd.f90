@@ -128,6 +128,7 @@
       type(sph_rotation), intent(inout) :: omega_sph
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
+      real(kind = kreal), allocatable :: h_rho(:)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
       call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
@@ -141,9 +142,13 @@
 !
 !*  ---------- boundary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
+      allocate(h_rho(sph%sph_rj%nidx_rj(1)))
+      h_rho(:) = zero
       call s_set_bc_sph_mhd                                             &
      &   (bc_IO, sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,    &
-     &    MHD_prop, MHD_BC, sph_MHD_bc)
+     &    MHD_prop, MHD_BC, h_rho, sph_MHD_bc)
+!
+      deallocate(h_rho)
 !
       end subroutine init_r_infos_sph_mhd
 !

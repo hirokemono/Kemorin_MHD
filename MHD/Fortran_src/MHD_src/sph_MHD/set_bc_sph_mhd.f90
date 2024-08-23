@@ -15,6 +15,7 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1))
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!@endverbatim
 !
@@ -46,7 +47,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,            &
-     &          radial_rj_grp, MHD_prop, MHD_BC, sph_MHD_bc)
+     &          radial_rj_grp, MHD_prop, MHD_BC, h_rho, sph_MHD_bc)
 !
       use m_base_field_labels
 !
@@ -67,6 +68,7 @@
       type(group_data), intent(in) :: radial_rj_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1))
 !
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
@@ -88,8 +90,8 @@
         kst = sph_MHD_bc%sph_bc_U%kr_in
         call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst),           &
      &                            sph_MHD_bc%fdm2_free_ICB)
-        call cal_fdm2_ICB_free_vt(sph_rj%radius_1d_rj_r(kst),           &
-     &                            sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vt(h_rho(kst),                           &
+     &      sph_rj%radius_1d_rj_r(kst), sph_MHD_bc%fdm2_free_ICB)
 !
         call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
      &                             sph_MHD_bc%fdm3e_ICB)
@@ -100,8 +102,8 @@
         kst = sph_MHD_bc%sph_bc_U%kr_out
         call cal_fdm2_CMB_free_vp                                       &
      &     (sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
-        call cal_fdm2_CMB_free_vt                                       &
-     &     (sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
+        call cal_fdm2_CMB_free_vt(h_rho(kst),                           &
+     &      sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
 !
         call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(kst-2),        &
      &                             sph_MHD_bc%fdm3e_CMB)
