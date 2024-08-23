@@ -88,8 +88,8 @@
      &      sph_MHD_bc%sph_bc_U)
 !
         kst = sph_MHD_bc%sph_bc_U%kr_in
-        call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst),           &
-     &                            sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vp(h_rho(kst),                           &
+     &      sph_rj%radius_1d_rj_r(kst), sph_MHD_bc%fdm2_free_ICB)
         call cal_fdm2_ICB_free_vt(h_rho(kst),                           &
      &      sph_rj%radius_1d_rj_r(kst), sph_MHD_bc%fdm2_free_ICB)
 !
@@ -100,8 +100,8 @@
      &                                  sph_MHD_bc%fdm3e_free_ICB)
 !
         kst = sph_MHD_bc%sph_bc_U%kr_out
-        call cal_fdm2_CMB_free_vp                                       &
-     &     (sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
+        call cal_fdm2_CMB_free_vp(h_rho(kst),                           &
+     &      sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
         call cal_fdm2_CMB_free_vt(h_rho(kst),                           &
      &      sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
 !

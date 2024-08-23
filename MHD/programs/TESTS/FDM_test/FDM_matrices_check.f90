@@ -129,8 +129,8 @@
       kr_in =  sph1%sph_params%nlayer_ICB
       call cal_fdm2_ICB_free_vt(h_rho(kr_in),                           &
      &    sph%sph_rj%radius_1d_rj_r(kr_in   ), fdm2_free_ICB)
-      call cal_fdm2_ICB_free_vp(sph%sph_rj%radius_1d_rj_r(kr_in   ),    &
-     &                          fdm2_free_ICB)
+      call cal_fdm2_ICB_free_vp(h_rho(kr_in),                           &
+     &    sph%sph_rj%radius_1d_rj_r(kr_in   ), fdm2_free_ICB)
       call cal_fdm3e_ICB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_in   ),   &
      &                           fdm3e_ICB)
       call cal_fdm3e_ICB_free_hdiv_vp(fdm2_free_ICB, fdm3e_ICB,         &
@@ -139,8 +139,8 @@
       kr_out = sph1%sph_params%nlayer_CMB
       call cal_fdm2_CMB_free_vt(h_rho(kr_out),                          &
      &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
-      call cal_fdm2_CMB_free_vp(sph%sph_rj%radius_1d_rj_r(kr_out-1),    &
-     &                          fdm2_free_CMB)
+      call cal_fdm2_CMB_free_vp(h_rho(kr_out),                          &
+     &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
       call cal_fdm3e_CMB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_out-2),   &
      &                           fdm3e_CMB)
       call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB, fdm3e_CMB,         &
