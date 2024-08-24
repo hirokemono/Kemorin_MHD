@@ -11,8 +11,6 @@
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,    &
 !!     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
-!!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
-!!     &                                MHD_prop, omega_sph, sph_MHD_bc)
 !!      subroutine init_reference_fields(sph, ipol, r_2nd,              &
 !!     &          refs, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
@@ -92,9 +90,14 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
+      real(kind = kreal), allocatable :: h_rho(:)
 !
+!
+      allocate(h_rho(sph%sph_rj%nidx_rj(1)))
+      h_rho(:) = zero
       call init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph, MHD_prop, &
-     &                          omega_sph, sph_MHD_bc)
+     &                          omega_sph, h_rho, sph_MHD_bc)
+      deallocate(h_rho)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
       call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
@@ -115,7 +118,8 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,     &
-     &                                MHD_prop, omega_sph, sph_MHD_bc)
+     &                                MHD_prop, omega_sph, h_rho,       &
+     &                                sph_MHD_bc)
 !
       use set_bc_sph_mhd
 !
@@ -124,11 +128,11 @@
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      real(kind = kreal), intent(in) :: h_rho(sph%sph_rj%nidx_rj(1))
 !
       type(sph_rotation), intent(inout) :: omega_sph
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
-      real(kind = kreal), allocatable :: h_rho(:)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
       call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
@@ -142,13 +146,13 @@
 !
 !*  ---------- boundary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      allocate(h_rho(sph%sph_rj%nidx_rj(1)))
-      h_rho(:) = zero
       call s_set_bc_sph_mhd                                             &
      &   (bc_IO, sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,    &
      &    MHD_prop, MHD_BC, h_rho, sph_MHD_bc)
 !
-      deallocate(h_rho)
+      if(iflag_debug .ge. iflag_full_msg) then
+        call check_bc_sph_mhd(MHD_prop, sph_MHD_bc)
+      end if
 !
       end subroutine init_r_infos_sph_mhd
 !
