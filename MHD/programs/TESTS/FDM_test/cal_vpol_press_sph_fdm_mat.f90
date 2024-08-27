@@ -68,14 +68,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vpol_press_sph_mat                                 &
-     &         (sph_rj, radius_1d_rj_r, ar_1d_rj, g_sph_rj,             &
+     &         (sph_rj, ar_1d_rj, g_sph_rj,             &
      &          kr_in, kr_out, coef_p, coef_d, d2nod_mat_fdm_2,         &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d3ele_mat_fdm_3,      &
      &          d1nod_mat_fdm_e1, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -99,7 +98,8 @@
 !$omp parallel do                                                       &
 !$omp& private(k,j,r_mid,ar_mid,d_mid,c_d3,c_d1,c_d0,hdiv_visous)
       do k = kr_in+2, kr_out-1
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -156,7 +156,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_exp_sph_vpol_diffusions(sph_rj, istep_rj,       &
-     &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
+     &          ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, d2nod_mat_fdm_2,                        &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d3ele_mat_fdm_3,      &
      &          d1nod_mat_fdm_e1, e_press,                              &
@@ -166,7 +166,6 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -195,7 +194,8 @@
 !$omp parallel do private(k,j,r_mid,ar_mid,c_d3,c_d1,c_d0,              &
 !$omp&                    iele,i_p1,inod,i_n1,i_n2,hdiv_visous)
       do k = kr_in+2, kr_out-1
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -250,7 +250,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_mat(sph_rj, radius_1d_rj_r,   &
+      subroutine add_val_viscosity_sph_mat(sph_rj,   &
      &          ar_1d_rj, g_sph_rj, kr_in, kr_out,                      &
      &          coef_p, coef_d, relative_d, h_nu, d1nod_mat_fdm_2,      &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
@@ -258,7 +258,6 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -282,7 +281,8 @@
 !$omp& private(k,j,r_mid,ar_mid,d_mid,c_d2,c_d1,c_d0,hdiv_visous)
       do k = kr_in+2, kr_out-1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -338,7 +338,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_val_viscosity(sph_rj, istep_rj,         &
-     &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
+     &          ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, relative_d, h_nu, d1nod_mat_fdm_2,      &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
      &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj,       &
@@ -347,7 +347,6 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -375,7 +374,8 @@
 !$omp&                    iele,i_p1,inod,i_n1,i_n2,hdiv_visous)
       do k = kr_in+2, kr_out-1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -430,7 +430,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_mat(sph_rj, radius_1d_rj_r,     &
+      subroutine add_val_density_sph_mat(sph_rj,     &
      &          ar_1d_rj, g_sph_rj, kr_in, kr_out, coef_p, coef_d,      &
      &          relative_d, h_rho, h_nu, d1nod_mat_fdm_2,               &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
@@ -438,7 +438,6 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -463,7 +462,8 @@
 !$omp& private(k,j,r_mid,ar_mid,d_mid,c_d2,c_d1,c_d0,hdiv_visous)
       do k = kr_in+2, kr_out-1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -514,7 +514,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_val_density(sph_rj, istep_rj,           &
-     &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
+     &          ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, relative_d, h_rho, h_nu,                &
      &          d1nod_mat_fdm_2, d0ele_mat_fdm_3,                       &
      &          d1ele_mat_fdm_3, d2ele_mat_fdm_3,                       &
@@ -524,7 +524,6 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -553,7 +552,8 @@
 !$omp&                    iele,i_p1,inod,i_n1,i_n2,hdiv_visous)
       do k = kr_in+2, kr_out-1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -611,12 +611,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_CMB_mat(sph_rj, radius_1d_rj_r,  &
+      subroutine set_vpol_press_sph_CMB_mat(sph_rj,  &
      &          g_sph_rj, kr_out, coef_p, coef_d, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
@@ -631,7 +630,8 @@
 !
 !
       k = kr_out
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -674,14 +674,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_CMB                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
      &          coef_p, coef_d, fdm3e_CMB_mat, is_velo,                 &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
@@ -700,7 +699,8 @@
 !
 !
       k = kr_out
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -731,12 +731,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_CMB_mat                          &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_out,            &
+     &         (sph_rj, g_sph_rj, kr_out,            &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -753,7 +752,8 @@
 !
       k = kr_out
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -783,14 +783,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_CMB                            &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat,                &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -811,7 +810,8 @@
 !
       k = kr_out
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -843,12 +843,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CMB_mat                            &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_out,            &
+     &         (sph_rj, g_sph_rj, kr_out,            &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -866,7 +865,8 @@
 !
       k = kr_out
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -897,14 +897,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CMB                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -926,7 +925,8 @@
 !
       k = kr_out
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -959,12 +959,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_ICB_mat(sph_rj, radius_1d_rj_r,  &
+      subroutine set_vpol_press_sph_ICB_mat(sph_rj,  &
      &          g_sph_rj, kr_in, coef_p, coef_d, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
@@ -979,7 +978,8 @@
 !
 !
       k = kr_in+1
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1022,14 +1022,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_ICB                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
      &          coef_d, fdm3e_ICB_mat, is_velo,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
@@ -1048,7 +1047,8 @@
 !
 !
       k = kr_in+1
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1078,12 +1078,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_ICB_mat                          &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_in,             &
+     &         (sph_rj, g_sph_rj, kr_in,             &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1100,7 +1099,8 @@
 !
       k = kr_in+1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1130,14 +1130,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_ICB                            &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, is_velo,       &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1158,7 +1157,8 @@
 !
       k = kr_in+1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1190,12 +1190,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_ICB_mat                            &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_in,             &
+     &         (sph_rj, g_sph_rj, kr_in,             &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1213,7 +1212,8 @@
 !
       k = kr_in+1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1244,14 +1244,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_ICB                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1273,7 +1272,8 @@
 !
       k = kr_in+1
         d_mid = half * (relative_d(k-1) +     relative_d(k))
-        r_mid = half * (radius_1d_rj_r(k-1) + radius_1d_rj_r(k))
+        r_mid = half * (sph_rj%radius_1d_rj_r(k-1)                      &
+     &                + sph_rj%radius_1d_rj_r(k  ))
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1307,11 +1307,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_vpol_press_sph_center_mat                          &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, coef_p, coef_d,    &
+     &         (sph_rj, g_sph_rj, coef_p, coef_d,    &
      &          fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
@@ -1325,7 +1324,7 @@
       real(kind = kreal) :: hdiv_visous(-2:1)
 !
 !
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1352,13 +1351,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_CTR                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj,          &
+     &         (sph_rj, istep_rj, g_sph_rj,          &
      &          coef_d, fdm3e_center_mat, is_velo,                      &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
@@ -1377,7 +1375,7 @@
       real(kind = kreal) :: hdiv_visous(-2:1)
 !
 !
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1405,11 +1403,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_CTR_mat                          &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj, coef_d,            &
+     &         (sph_rj, g_sph_rj, coef_d,            &
      &          relative_d, h_nu, fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1425,7 +1422,7 @@
 !
 !
         d_mid =        relative_d(1)
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1452,13 +1449,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_CTR                            &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
+     &         (sph_rj, istep_rj, g_sph_rj, coef_d,  &
      &          relative_d, h_nu, fdm3e_center_mat, is_velo,            &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1478,7 +1474,7 @@
 !
 !
         d_mid =        relative_d(1)
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1508,12 +1504,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CTR_mat                            &
-     &         (sph_rj, radius_1d_rj_r, g_sph_rj,                    &
+     &         (sph_rj, g_sph_rj,                    &
      &          coef_d, relative_d, h_rho, h_nu,                        &
      &          fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1531,7 +1526,7 @@
 !
       k = 1
         d_mid = relative_d(1)
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
@@ -1559,13 +1554,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CTR                           &
-     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
+     &         (sph_rj, istep_rj, g_sph_rj, coef_d,  &
      &          relative_d, h_rho, h_nu, fdm3e_center_mat, is_velo,     &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
@@ -1587,7 +1581,7 @@
 !
       k = 1
         d_mid = relative_d(1)
-        r_mid = half * radius_1d_rj_r(1)
+        r_mid = half * sph_rj%radius_1d_rj_r(1)
         ar_mid(1) = one / r_mid
         ar_mid(2) = ar_mid(1) * ar_mid(1)
         ar_mid(3) = ar_mid(1) * ar_mid(2)
