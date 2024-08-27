@@ -33,10 +33,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_unit_mat_vsp_evo(sph_rj, nri, kr_in, kr_out, mat7)
+      subroutine set_unit_mat_vsp_evo(sph_rj, kr_in, kr_out, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
 !
       real(kind = kreal), intent(inout)                                 &
@@ -57,7 +56,7 @@
           mat7(4,2*k-1,j) = zero
           mat7(4,2*k,  j) = zero
         end do
-        do k = kr_out+1, nri
+        do k = kr_out+1, sph_rj%nidx_rj(1)
           mat7(4,2*k-1,j) = one
           mat7(4,2*k,  j) = one
         end do
@@ -69,23 +68,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vpol_press_sph_mat                                 &
-     &         (sph_rj, nri, radius_1d_rj_r, ar_1d_rj, g_sph_rj,          &
+     &         (sph_rj, radius_1d_rj_r, ar_1d_rj, g_sph_rj,             &
      &          kr_in, kr_out, coef_p, coef_d, d2nod_mat_fdm_2,         &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d3ele_mat_fdm_3,      &
      &          d1nod_mat_fdm_e1, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d3ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(nri,0:1)
+      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d3ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(sph_rj%nidx_rj(1),0:1)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -148,7 +146,7 @@
 !
           mat7(3,2*k+1,j) =     mat_grad_p(1)
           mat7(2,2*k+2,j) =   - mat_visous(1)
-          if((2*k+3) .le. 2*nri) mat7(1,2*k+3,j) = zero
+          if((2*k+3) .le. 2*sph_rj%nidx_rj(1)) mat7(1,2*k+3,j) = zero
         end do
       end do
 !$omp end parallel do
@@ -157,7 +155,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_exp_sph_vpol_diffusions(sph_rj, nri, istep_rj,       &
+      subroutine cal_exp_sph_vpol_diffusions(sph_rj, istep_rj,       &
      &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, d2nod_mat_fdm_2,                        &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d3ele_mat_fdm_3,      &
@@ -166,18 +164,17 @@
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d3ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(nri,0:1)
+      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d3ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(sph_rj%nidx_rj(1),0:1)
 !
       integer(kind = kint), intent(in) :: is_velo, is_viscous, is_grad_p
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -253,25 +250,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_mat(sph_rj, nri, radius_1d_rj_r,   &
+      subroutine add_val_viscosity_sph_mat(sph_rj, radius_1d_rj_r,   &
      &          ar_1d_rj, g_sph_rj, kr_in, kr_out,                      &
      &          coef_p, coef_d, relative_d, h_nu, d1nod_mat_fdm_2,      &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
      &          mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(nri,-2:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -341,7 +337,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_val_viscosity(sph_rj, nri, istep_rj,         &
+      subroutine add_exp_sph_val_viscosity(sph_rj, istep_rj,         &
      &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, relative_d, h_nu, d1nod_mat_fdm_2,      &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
@@ -349,19 +345,18 @@
      &          e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(nri,-2:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
 !
       integer(kind = kint), intent(in) :: is_velo, is_viscous
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -435,26 +430,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_mat(sph_rj, nri, radius_1d_rj_r,     &
+      subroutine add_val_density_sph_mat(sph_rj, radius_1d_rj_r,     &
      &          ar_1d_rj, g_sph_rj, kr_in, kr_out, coef_p, coef_d,      &
      &          relative_d, h_rho, h_nu, d1nod_mat_fdm_2,               &
      &          d0ele_mat_fdm_3, d1ele_mat_fdm_3, d2ele_mat_fdm_3,      &
      &          mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(nri,-2:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -519,7 +513,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_val_density(sph_rj, nri, istep_rj,           &
+      subroutine add_exp_sph_val_density(sph_rj, istep_rj,           &
      &          radius_1d_rj_r, ar_1d_rj, g_sph_rj, kr_in, kr_out,      &
      &          coef_p, coef_d, relative_d, h_rho, h_nu,                &
      &          d1nod_mat_fdm_2, d0ele_mat_fdm_3,                       &
@@ -528,20 +522,19 @@
      &          e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: ar_1d_rj(sph_rj%nidx_rj(1),3)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(nri,-2:1)
-      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(nri,-2:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: d0ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d1ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
+      real(kind = kreal), intent(in) :: d2ele_mat_fdm_3(sph_rj%nidx_rj(1),-2:1)
 !
       integer(kind = kint), intent(in) :: is_velo, is_viscous
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -618,13 +611,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_CMB_mat(sph_rj, nri, radius_1d_rj_r,  &
+      subroutine set_vpol_press_sph_CMB_mat(sph_rj, radius_1d_rj_r,  &
      &          g_sph_rj, kr_out, coef_p, coef_d, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
@@ -671,9 +663,9 @@
           if((2*kr_out-2) .gt. 0) mat7(6,2*kr_out-2,j) = zero
           mat7(5,2*kr_out-1,j) = zero
           mat7(4,2*kr_out,  j) = one
-          if((2*kr_out+1) .le. 2*nri) mat7(3,2*kr_out+1,j) = zero
-          if((2*kr_out+2) .le. 2*nri) mat7(2,2*kr_out+2,j) = zero
-          if((2*kr_out+3) .le. 2*nri) mat7(1,2*kr_out+3,j) = zero
+          if((2*kr_out+1) .le. 2*sph_rj%nidx_rj(1)) mat7(3,2*kr_out+1,j) = zero
+          if((2*kr_out+2) .le. 2*sph_rj%nidx_rj(1)) mat7(2,2*kr_out+2,j) = zero
+          if((2*kr_out+3) .le. 2*sph_rj%nidx_rj(1)) mat7(1,2*kr_out+3,j) = zero
         end do
 !$omp end parallel do
 !
@@ -682,15 +674,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_CMB                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
      &          coef_p, coef_d, fdm3e_CMB_mat, is_velo,                 &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
@@ -740,17 +731,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_CMB_mat                          &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, kr_out,            &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_out,            &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -793,19 +783,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_CMB                            &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat,                &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
@@ -854,18 +843,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CMB_mat                            &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, kr_out,            &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_out,            &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -909,20 +897,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CMB                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_out,  &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
@@ -972,13 +959,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_ICB_mat(sph_rj, nri, radius_1d_rj_r,  &
+      subroutine set_vpol_press_sph_ICB_mat(sph_rj, radius_1d_rj_r,  &
      &          g_sph_rj, kr_in, coef_p, coef_d, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
@@ -1025,9 +1011,9 @@
           if((2*kr_in-2) .gt. 0) mat7(6,2*kr_in-2,j) = zero
           mat7(5,2*kr_in-1,j) = zero
           mat7(4,2*kr_in,  j) = one
-          if((2*kr_in+1) .le. 2*nri) mat7(3,2*kr_in+1,j) = zero
-          if((2*kr_in+2) .le. 2*nri) mat7(2,2*kr_in+2,j) = zero
-          if((2*kr_in+3) .le. 2*nri) mat7(1,2*kr_in+3,j) = zero
+          if((2*kr_in+1) .le. 2*sph_rj%nidx_rj(1)) mat7(3,2*kr_in+1,j) = zero
+          if((2*kr_in+2) .le. 2*sph_rj%nidx_rj(1)) mat7(2,2*kr_in+2,j) = zero
+          if((2*kr_in+3) .le. 2*sph_rj%nidx_rj(1)) mat7(1,2*kr_in+3,j) = zero
         end do
 !$omp end parallel do
 !
@@ -1036,15 +1022,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_ICB                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
      &          coef_d, fdm3e_ICB_mat, is_velo,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
@@ -1093,17 +1078,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_ICB_mat                          &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, kr_in,             &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_in,             &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -1146,19 +1130,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_ICB                            &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, is_velo,       &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
@@ -1207,18 +1190,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_ICB_mat                            &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, kr_in,             &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, kr_in,             &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -1262,20 +1244,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_ICB                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, kr_in,   &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
@@ -1326,12 +1307,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_vpol_press_sph_center_mat                          &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, coef_p, coef_d,    &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, coef_p, coef_d,    &
      &          fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
@@ -1372,14 +1352,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_CTR                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj,          &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj,          &
      &          coef_d, fdm3e_center_mat, is_velo,                      &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
@@ -1426,16 +1405,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_viscosity_sph_CTR_mat                          &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj, coef_d,            &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj, coef_d,            &
      &          relative_d, h_nu, fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -1474,18 +1452,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_nu_CTR                            &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
      &          relative_d, h_nu, fdm3e_center_mat, is_velo,            &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
@@ -1531,18 +1508,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CTR_mat                            &
-     &         (sph_rj, nri, radius_1d_rj_r, g_sph_rj,                    &
+     &         (sph_rj, radius_1d_rj_r, g_sph_rj,                    &
      &          coef_d, relative_d, h_rho, h_nu,                        &
      &          fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -1583,19 +1559,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CTR                           &
-     &         (sph_rj, nri, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
+     &         (sph_rj, istep_rj, radius_1d_rj_r, g_sph_rj, coef_d,  &
      &          relative_d, h_rho, h_nu, fdm3e_center_mat, is_velo,     &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(nri)
-      real(kind = kreal), intent(in) :: h_nu(nri)
-      real(kind = kreal), intent(in) :: h_rho(nri,0:1)
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
       integer(kind = kint), intent(in) :: is_velo
