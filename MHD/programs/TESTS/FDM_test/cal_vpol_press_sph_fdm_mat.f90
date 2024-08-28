@@ -24,6 +24,7 @@
       use m_precision
       use m_constants
       use t_spheric_rj_data
+      use t_schmidt_poly_on_rtm
       use t_fdm_coefs
 !
       implicit none
@@ -68,14 +69,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vpol_press_sph_mat                                 &
-     &         (sph_rj, g_sph_rj,             &
-     &          kr_in, kr_out, coef_p, coef_d, fdm_2,         &
-     &          fdm_3e, fdm_e1, mat7)
+      subroutine cal_vpol_press_sph_mat(sph_rj, Plm_WK, kr_in, kr_out,  &
+     &          coef_p, coef_d, fdm_2, fdm_3e, fdm_e1, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       type(fdm_matrix), intent(in) :: fdm_2(2)
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
@@ -103,8 +102,8 @@
 !
         c_d3 = -one
         do j = 1, sph_rj%nidx_rj(2)
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =  Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
 !
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm_3e(3)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -127,7 +126,7 @@
       do k = kr_in+1, kr_out-1
         c_d2 =  one
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = -g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
+          c_d0 = - Plm_WK%g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
           mat_grad_p( 0:1) = coef_p * fdm_e1(1)%dmat(k,0:1)
           mat_visous(-1:1) = coef_d *  c_d2 * fdm_2(2)%dmat(k,-1:1)
           mat_visous( 0) =   mat_visous( 0) + coef_d * c_d0
@@ -152,16 +151,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_exp_sph_vpol_diffusions(sph_rj, istep_rj,       &
-     &          g_sph_rj, kr_in, kr_out,      &
-     &          coef_p, coef_d, fdm_2, fdm_3e, fdm_e1, e_press,   &
+      subroutine cal_exp_sph_vpol_diffusions                            &
+     &         (sph_rj, Plm_WK, kr_in, kr_out, coef_p, coef_d,          &
+     &          fdm_2, fdm_3e, fdm_e1, e_press,                         &
      &          is_velo, is_viscous, is_grad_p,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       type(fdm_matrix), intent(in) :: fdm_2(2)
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
@@ -194,14 +192,15 @@
 !
         c_d3 = -one
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
 !
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm_3e(3)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -220,11 +219,12 @@
       do k = kr_in+1, kr_out-1
         c_d2 =  one
         do j = 1, sph_rj%nidx_rj(2)
-          inod = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_n1 = inod - istep_rj(2)
-          i_p1 = inod + istep_rj(2)
+          inod = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_n1 = inod - sph_rj%istep_rj(2)
+          i_p1 = inod + sph_rj%istep_rj(2)
 !
-          c_d0 = -g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
+          c_d0 = - Plm_WK%g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
           mat_grad_p( 0:1) = coef_p * fdm_e1(1)%dmat(k,0:1)
           mat_visous(-1:1) = coef_d * c_d2 * fdm_2(2)%dmat(k,-1:1)
           mat_visous( 0) = mat_visous( 0) + coef_d * c_d0
@@ -242,15 +242,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_mat(sph_rj,   &
-     &          g_sph_rj, kr_in, kr_out,                      &
-     &          coef_p, coef_d, relative_d, h_nu, fdm_2,      &
-     &          fdm_3e, mat7)
+      subroutine add_val_viscosity_sph_mat                              &
+     &         (sph_rj, Plm_WK, kr_in, kr_out, coef_d,                  &
+     &          relative_d, h_nu, fdm_2,  fdm_3e, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
-      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       type(fdm_matrix), intent(in) :: fdm_2(2)
@@ -278,7 +277,7 @@
         c_d2 = - h_nu(k)
         c_d1 = two * ar_mid(1) * h_nu(k)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm_3e(2)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -325,18 +324,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_val_viscosity(sph_rj, istep_rj,         &
-     &          g_sph_rj, kr_in, kr_out,      &
-     &          coef_p, coef_d, relative_d, h_nu, fdm_2,      &
-     &          fdm_3e,      &
+      subroutine add_exp_sph_val_viscosity                              &
+     &         (sph_rj, Plm_WK, kr_in, kr_out, coef_d,                  &
+     &          relative_d, h_nu, fdm_2, fdm_3e,                        &
      &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj,       &
      &          e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
-      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       type(fdm_matrix), intent(in) :: fdm_2(2)
@@ -368,13 +365,14 @@
         c_d2 = - h_nu(k)
         c_d1 = two * ar_mid(1) * h_nu(k)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm_3e(2)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -394,9 +392,10 @@
         c_d1 = two * h_nu(k)
         c_d0 = - four * h_nu(k) * sph_rj%ar_1d_rj(k,1)
         do j = 1, sph_rj%nidx_rj(2)
-          inod = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_n1 = inod - istep_rj(2)
-          i_p1 = inod + istep_rj(2)
+          inod = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_n1 = inod - sph_rj%istep_rj(2)
+          i_p1 = inod + sph_rj%istep_rj(2)
 !
           mat_visous(-1:1) = coef_d * relative_d(k)                     &
      &                      * c_d1 * fdm_2(1)%dmat(k,-1:1)
@@ -415,14 +414,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_mat(sph_rj,     &
-     &          g_sph_rj, kr_in, kr_out, coef_p, coef_d,      &
+      subroutine add_val_density_sph_mat                                &
+     &         (sph_rj, Plm_WK, kr_in, kr_out, coef_d,                  &
      &          relative_d, h_rho, h_nu, fdm_2, fdm_3e, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
-      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
@@ -452,7 +451,8 @@
         c_d1 = two * ar_mid(1) * h_rho(k,0)  + h_rho(k,1)               &
      &        + h_nu(k) * h_rho(k,0)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3) * ar_mid(2)                     &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm_3e(2)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -493,18 +493,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_val_density(sph_rj, istep_rj,           &
-     &          g_sph_rj, kr_in, kr_out,      &
-     &          coef_p, coef_d, relative_d, h_rho, h_nu,                &
-     &          fdm_2, fdm_3e,                       &
-     &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj,       &
-     &          e_hdiv_viscous)
+      subroutine add_exp_sph_val_density                                &
+     &         (sph_rj, Plm_WK, kr_in, kr_out, coef_d, relative_d,      &
+     &          h_rho, h_nu, fdm_2, fdm_3e, is_velo, is_viscous,        &
+     &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
-      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
@@ -538,13 +535,15 @@
         c_d1 = two * ar_mid(1) * h_rho(k,0)  + h_rho(k,1)               &
      &        + h_nu(k) * h_rho(k,0)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm_3e(2)%dmat(k,-2:1)   &
      &                                + c_d1 * fdm_3e(1)%dmat(k,-2:1)   &
@@ -565,9 +564,10 @@
         c_d0 = - (four / three) * (h_rho(k,0) * sph_rj%ar_1d_rj(k,1)    &
      &                           + h_rho(k,0) * h_nu(k) + h_rho(k,1))
         do j = 1, sph_rj%nidx_rj(2)
-          inod = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_n1 = inod - istep_rj(2)
-          i_p1 = inod + istep_rj(2)
+          inod = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_n1 = inod - sph_rj%istep_rj(2)
+          i_p1 = inod + sph_rj%istep_rj(2)
 !
           mat_visous(-1:1) = coef_d * relative_d(k)                     &
      &                      * c_d1 * fdm_2(1)%dmat(k,-1:1)
@@ -587,12 +587,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_CMB_mat(sph_rj,  &
-     &          g_sph_rj, kr_out, coef_p, coef_d, fdm3e_CMB_mat, mat7)
+      subroutine set_vpol_press_sph_CMB_mat(sph_rj, Plm_WK, kr_out,     &
+     &          coef_p, coef_d, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
@@ -615,8 +615,8 @@
         c_d3 = -one
 !$omp parallel do private (j,c_d1,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,3)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
      &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
@@ -649,15 +649,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp_sph_hdiv_viscous_CMB                           &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
+      subroutine set_exp_sph_hdiv_viscous_CMB(sph_rj, Plm_WK, kr_out,   &
      &          coef_p, coef_d, fdm3e_CMB_mat, is_velo,                 &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
@@ -685,13 +683,14 @@
 !$omp  parallel do                                                      &
 !$omp& private(j,c_d1,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,3)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
      &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
@@ -706,13 +705,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_CMB_mat                          &
-     &         (sph_rj, g_sph_rj, kr_out,            &
+      subroutine add_val_viscosity_sph_CMB_mat(sph_rj, Plm_WK, kr_out,  &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -738,7 +736,7 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
@@ -758,15 +756,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_nu_CMB                            &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
+      subroutine add_exp_sph_hdiv_val_nu_CMB(sph_rj, Plm_WK, kr_out,    &
      &          coef_d, relative_d, h_nu, fdm3e_CMB_mat,                &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -796,12 +792,13 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
@@ -818,13 +815,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_CMB_mat                            &
-     &         (sph_rj, g_sph_rj, kr_out,            &
+      subroutine add_val_density_sph_CMB_mat(sph_rj, Plm_WK, kr_out,    &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -852,7 +848,8 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
@@ -872,15 +869,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_rho_CMB                           &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_out,  &
+      subroutine add_exp_sph_hdiv_val_rho_CMB(sph_rj, Plm_WK, kr_out,   &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -912,12 +907,14 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
-          i_n2 = i_n1 - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n2 = i_n1 - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
@@ -935,12 +932,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_ICB_mat(sph_rj,  &
-     &          g_sph_rj, kr_in, coef_p, coef_d, fdm3e_ICB_mat, mat7)
+      subroutine set_vpol_press_sph_ICB_mat(sph_rj, Plm_WK, kr_in,      &
+     &          coef_p, coef_d, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
@@ -963,8 +960,8 @@
         c_d3 = -one
 !$omp parallel do private(j,c_d1,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,3)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
      &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
@@ -987,9 +984,12 @@
           if((2*kr_in-2) .gt. 0) mat7(6,2*kr_in-2,j) = zero
           mat7(5,2*kr_in-1,j) = zero
           mat7(4,2*kr_in,  j) = one
-          if((2*kr_in+1) .le. 2*sph_rj%nidx_rj(1)) mat7(3,2*kr_in+1,j) = zero
-          if((2*kr_in+2) .le. 2*sph_rj%nidx_rj(1)) mat7(2,2*kr_in+2,j) = zero
-          if((2*kr_in+3) .le. 2*sph_rj%nidx_rj(1)) mat7(1,2*kr_in+3,j) = zero
+          if((2*kr_in+1) .le. 2*sph_rj%nidx_rj(1))                      &
+     &                       mat7(3,2*kr_in+1,j) = zero
+          if((2*kr_in+2) .le. 2*sph_rj%nidx_rj(1))                      &
+     &                       mat7(2,2*kr_in+2,j) = zero
+          if((2*kr_in+3) .le. 2*sph_rj%nidx_rj(1))                      &
+     &                       mat7(1,2*kr_in+3,j) = zero
         end do
 !$omp end parallel do
 !
@@ -997,15 +997,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp_sph_hdiv_viscous_ICB                           &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
+      subroutine set_exp_sph_hdiv_viscous_ICB(sph_rj, Plm_WK, kr_in,    &
      &          coef_d, fdm3e_ICB_mat, is_velo,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
 !
@@ -1032,13 +1030,14 @@
         c_d3 = -one
 !$omp parallel do private(j,c_d1,c_d0,iele,i_p1,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
 !
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,3)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
      &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
@@ -1053,13 +1052,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_ICB_mat                          &
-     &         (sph_rj, g_sph_rj, kr_in,             &
+      subroutine add_val_viscosity_sph_ICB_mat(sph_rj, Plm_WK, kr_in,   &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1085,7 +1083,7 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
@@ -1105,15 +1103,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_nu_ICB                            &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
+      subroutine add_exp_sph_hdiv_val_nu_ICB(sph_rj, Plm_WK, kr_in,     &
      &          coef_d, relative_d, h_nu, fdm3e_ICB_mat, is_velo,       &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1143,12 +1139,13 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,i_p1,iele,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
@@ -1165,13 +1162,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_ICB_mat                            &
-     &         (sph_rj, g_sph_rj, kr_in,             &
+      subroutine add_val_density_sph_ICB_mat(sph_rj, Plm_WK, kr_in,     &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1199,7 +1195,8 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
@@ -1219,15 +1216,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_rho_ICB                           &
-     &         (sph_rj, istep_rj, g_sph_rj, kr_in,   &
+      subroutine add_exp_sph_hdiv_val_rho_ICB(sph_rj, Plm_WK, kr_in,    &
      &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1259,12 +1254,14 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,iele,i_p1,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * istep_rj(1) + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
+     &             + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
-          i_n1 = iele - istep_rj(2)
+          i_n1 = iele - sph_rj%istep_rj(2)
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
      &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
@@ -1282,12 +1279,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vpol_press_sph_center_mat                          &
-     &         (sph_rj, g_sph_rj, coef_p, coef_d,    &
-     &          fdm3e_center_mat, mat7)
+      subroutine set_vpol_press_sph_center_mat(sph_rj, Plm_WK,          &
+     &          coef_p, coef_d, fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
@@ -1308,8 +1304,8 @@
         c_d3 = -one
 !$omp parallel do private(j,c_d1,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,3)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
      &                                + c_d0 * fdm3e_center_mat(0:1,0))
@@ -1326,14 +1322,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp_sph_hdiv_viscous_CTR                           &
-     &         (sph_rj, istep_rj, g_sph_rj,          &
+      subroutine set_exp_sph_hdiv_viscous_CTR(sph_rj, Plm_WK,           &
      &          coef_d, fdm3e_center_mat, is_velo,                      &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
 !
@@ -1359,12 +1353,12 @@
         c_d3 = -one
 !$omp parallel do private(j,c_d1,c_d0,iele,i_p1,inod,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
 !
-          c_d1 =  g_sph_rj(j,3)*ar_mid(2)
-          c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
+          c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
+          c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
           hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,3)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
      &                                + c_d0 * fdm3e_center_mat(0:1,0))
@@ -1378,12 +1372,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_viscosity_sph_CTR_mat                          &
-     &         (sph_rj, g_sph_rj, coef_d,            &
+      subroutine add_val_viscosity_sph_CTR_mat(sph_rj, Plm_WK, coef_d,  &
      &          relative_d, h_nu, fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1407,7 +1400,7 @@
         c_d1 = two * ar_mid(1) * h_nu(1)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
           hdiv_visous(0:1)                                              &
      &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
@@ -1424,14 +1417,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_nu_CTR                            &
-     &         (sph_rj, istep_rj, g_sph_rj, coef_d,  &
+      subroutine add_exp_sph_hdiv_val_nu_CTR(sph_rj, Plm_WK, coef_d,    &
      &          relative_d, h_nu, fdm3e_center_mat, is_velo,            &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1459,11 +1450,11 @@
         c_d1 = two * ar_mid(1) * h_nu(1)
 !$omp parallel do private(j,c_d0,i_p1,iele,inod,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
           hdiv_visous(0:1)                                              &
      &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
@@ -1479,13 +1470,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_CTR_mat                            &
-     &         (sph_rj, g_sph_rj,                    &
-     &          coef_d, relative_d, h_rho, h_nu,                        &
-     &          fdm3e_center_mat, mat7)
+      subroutine add_val_density_sph_CTR_mat(sph_rj, Plm_WK,            &
+     &          coef_d, relative_d, h_rho, h_nu, fdm3e_center_mat,      &
+     &          mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1512,7 +1502,8 @@
      &        + h_nu(1) * h_rho(1,0)
 !$omp parallel do private(j,c_d0,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(1,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(1,0) * two / three
           hdiv_visous( 0:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
@@ -1529,14 +1520,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_rho_CTR                           &
-     &         (sph_rj, istep_rj, g_sph_rj, coef_d,  &
+      subroutine add_exp_sph_hdiv_val_rho_CTR(sph_rj, Plm_WK, coef_d,   &
      &          relative_d, h_rho, h_nu, fdm3e_center_mat, is_velo,     &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: istep_rj(2)
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -1567,11 +1556,12 @@
      &        + h_nu(1) * h_rho(1,0)
 !$omp parallel do private(j,c_d0,i_p1,iele,inod,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (j-1) * istep_rj(2)
-          i_p1 = iele + istep_rj(2)
+          iele = 1 + (j-1) * sph_rj%istep_rj(2)
+          i_p1 = iele + sph_rj%istep_rj(2)
           inod = iele
 !
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(1,0) * two / three
+          c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
+     &            * h_rho(1,0) * two / three
           hdiv_visous( 0:1)                                             &
      &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
