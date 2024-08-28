@@ -34,8 +34,126 @@
       contains
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine set_unit_mat_vsp_evo(sph_rj, kr_in, kr_out, mat7)
+      subroutine cal_sph_vpol_press_sph_matrix                          &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, coef_p, coef_d, relative_d,   &
+     &          h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st,               &
+     &          band_vsp_evo)
+!
+      use t_boundary_params_sph_MHD
+      use t_sph_matrices
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+!
+      type(band_matrices_type), intent(inout)  :: band_vsp_evo
+!
+!
+      call cal_vpol_press_sph_mat(sph_rj, Plm_WK,                       &
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, coef_d,              &
+     &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
+     &    band_vsp_evo%mat)
+!
+      if(flag_viscous_variation) then
+        call add_val_viscosity_sph_mat(sph_rj, Plm_WK,                  &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, coef_d,                    &
+     &      relative_d, h_nu, r_2nd%fdm(1), r_n2e_3rd%fdm(0),           &
+     &      band_vsp_evo%mat)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_val_density_sph_mat                                    &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_in, sph_bc_U%kr_out, coef_d,    &
+     &      relative_d, h_nu, h_rho, r_2nd%fdm(1), r_n2e_3rd%fdm(0),    &
+     &      band_vsp_evo%mat)
+      end if
+!
+      call add_unit_mat_vsp_evo                                         &
+     &   (sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, band_vsp_evo%mat)
+
+!
+      end subroutine cal_sph_vpol_press_sph_matrix
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_exp_sph_vpol_val_diffuse                           &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, coef_p, coef_d, relative_d,   &
+     &          h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st, e_press,      &
+     &          ipol_base, ipol_force, ipol_diffusion,                  &
+     &          rj_fld, e_hdiv_viscous)
+!
+      use t_boundary_params_sph_MHD
+      use t_base_field_labels
+      use t_base_force_labels
+      use t_phys_data
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_force
+      type(diffusion_address), intent(in) :: ipol_diffusion
+      real(kind = kreal), intent(in) :: e_press(sph_rj%nnod_rj)
+!
+      type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
+!
+!
+      call cal_exp_sph_vpol_diffusions(sph_rj, Plm_WK,                  &
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, coef_d,              &
+     &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
+     &    e_press, ipol_base%i_velo,                                    &
+     &    ipol_diffusion%i_v_diffuse, ipol_force%i_press_grad,          &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
+     &    e_hdiv_viscous)
+
+      if(flag_viscous_variation) then
+        call add_exp_sph_val_viscosity(sph_rj, Plm_WK,                  &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, coef_d,                    &
+     &      relative_d, h_nu, r_2nd%fdm(1), r_n2e_3rd%fdm(0),           &
+     &      ipol_base%i_velo, ipol_diffusion%i_v_diffuse,               &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_exp_sph_val_density(sph_rj, Plm_WK,                    &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, coef_d,                    &
+     &      relative_d, h_nu, h_rho, r_2nd%fdm(1), r_n2e_3rd%fdm(0),    &
+     &      ipol_base%i_velo, ipol_diffusion%i_v_diffuse,               &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      end subroutine cal_exp_sph_vpol_val_diffuse
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine add_unit_mat_vsp_evo(sph_rj, kr_in, kr_out, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
@@ -55,8 +173,8 @@
         mat7(4,2*kr_in-1,j) = one
         mat7(4,2*kr_in,  j) = zero
         do k = kr_in+1, kr_out
-          mat7(4,2*k-1,j) = zero
-          mat7(4,2*k,  j) = zero
+!          mat7(4,2*k-1,j) = zero
+          mat7(4,2*k,  j) = mat7(4,2*k,  j) + one
         end do
         do k = kr_out+1, sph_rj%nidx_rj(1)
           mat7(4,2*k-1,j) = one
@@ -65,7 +183,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_unit_mat_vsp_evo
+      end subroutine add_unit_mat_vsp_evo
 !
 ! -----------------------------------------------------------------------
 !
@@ -74,11 +192,11 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: coef_p, coef_d
       type(fdm_matrix), intent(in) :: fdm_2(2)
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
       type(fdm_matrix), intent(in) :: fdm_e1(0:1)
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: coef_p, coef_d
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -416,7 +534,7 @@
 !
       subroutine add_val_density_sph_mat                                &
      &         (sph_rj, Plm_WK, kr_in, kr_out, coef_d,                  &
-     &          relative_d, h_rho, h_nu, fdm_2, fdm_3e, mat7)
+     &          relative_d, h_nu, h_rho, fdm_2, fdm_3e, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -816,7 +934,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CMB_mat(sph_rj, Plm_WK, kr_out,    &
-     &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat, mat7)
+     &          coef_d, relative_d, h_nu, h_rho, fdm3e_CMB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -870,7 +988,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CMB(sph_rj, Plm_WK, kr_out,   &
-     &          coef_d, relative_d, h_rho, h_nu, fdm3e_CMB_mat,         &
+     &          coef_d, relative_d, h_nu, h_rho, fdm3e_CMB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -1163,7 +1281,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_ICB_mat(sph_rj, Plm_WK, kr_in,     &
-     &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat, mat7)
+     &          coef_d, relative_d, h_nu, h_rho, fdm3e_ICB_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -1217,7 +1335,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_ICB(sph_rj, Plm_WK, kr_in,    &
-     &          coef_d, relative_d, h_rho, h_nu, fdm3e_ICB_mat,         &
+     &          coef_d, relative_d, h_nu, h_rho, fdm3e_ICB_mat,         &
      &          is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -1471,7 +1589,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_val_density_sph_CTR_mat(sph_rj, Plm_WK,            &
-     &          coef_d, relative_d, h_rho, h_nu, fdm3e_center_mat,      &
+     &          coef_d, relative_d, h_nu, h_rho, fdm3e_center_mat,      &
      &          mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -1521,7 +1639,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_val_rho_CTR(sph_rj, Plm_WK, coef_d,   &
-     &          relative_d, h_rho, h_nu, fdm3e_center_mat, is_velo,     &
+     &          relative_d, h_nu, h_rho, fdm3e_center_mat, is_velo,     &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
