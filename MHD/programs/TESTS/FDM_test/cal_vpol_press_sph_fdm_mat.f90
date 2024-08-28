@@ -71,8 +71,7 @@
       subroutine cal_vpol_press_sph_mat                                 &
      &         (sph_rj, g_sph_rj,             &
      &          kr_in, kr_out, coef_p, coef_d, fdm_2,         &
-     &          fdm_3e,      &
-     &          d1nod_mat_fdm_e1, mat7)
+     &          fdm_3e, fdm_e1, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
@@ -80,7 +79,7 @@
       real(kind = kreal), intent(in) :: coef_p, coef_d
       type(fdm_matrix), intent(in) :: fdm_2(2)
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(sph_rj%nidx_rj(1),0:1)
+      type(fdm_matrix), intent(in) :: fdm_e1(0:1)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -129,7 +128,7 @@
         c_d2 =  one
         do j = 1, sph_rj%nidx_rj(2)
           c_d0 = -g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
-          mat_grad_p( 0:1) = coef_p * d1nod_mat_fdm_e1(k,0:1)
+          mat_grad_p( 0:1) = coef_p * fdm_e1(1)%dmat(k,0:1)
           mat_visous(-1:1) = coef_d *  c_d2 * fdm_2(2)%dmat(k,-1:1)
           mat_visous( 0) =   mat_visous( 0) + coef_d * c_d0
 !
@@ -155,8 +154,7 @@
 !
       subroutine cal_exp_sph_vpol_diffusions(sph_rj, istep_rj,       &
      &          g_sph_rj, kr_in, kr_out,      &
-     &          coef_p, coef_d, fdm_2, fdm_3e,  &
-     &          d1nod_mat_fdm_e1, e_press,                              &
+     &          coef_p, coef_d, fdm_2, fdm_3e, fdm_e1, e_press,   &
      &          is_velo, is_viscous, is_grad_p,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
@@ -167,7 +165,7 @@
       real(kind = kreal), intent(in) :: coef_p, coef_d
       type(fdm_matrix), intent(in) :: fdm_2(2)
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_e1(sph_rj%nidx_rj(1),0:1)
+      type(fdm_matrix), intent(in) :: fdm_e1(0:1)
 !
       integer(kind = kint), intent(in) :: is_velo, is_viscous, is_grad_p
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -227,7 +225,7 @@
           i_p1 = inod + istep_rj(2)
 !
           c_d0 = -g_sph_rj(j,3) * sph_rj%ar_1d_rj(k,2)
-          mat_grad_p( 0:1) = coef_p * d1nod_mat_fdm_e1(k,0:1)
+          mat_grad_p( 0:1) = coef_p * fdm_e1(1)%dmat(k,0:1)
           mat_visous(-1:1) = coef_d * c_d2 * fdm_2(2)%dmat(k,-1:1)
           mat_visous( 0) = mat_visous( 0) + coef_d * c_d0
 !
@@ -313,10 +311,10 @@
             mat7(6,2*k-2,j) = relative_d(k) * mat7(6,2*k-2,j)           &
      &                       - mat_visous(-1)
           end if
-!          mat7(5,2*k-1,j) = coef_p * d1nod_mat_fdm_e1(k, 0)
+!          mat7(5,2*k-1,j) = coef_p * fdm_e1(1)%dmat(k, 0)
           mat7(4,2*k,  j) = relative_d(k) *mat7(4,2*k,  j)              &
      &                     - mat_visous( 0)
-!          mat7(3,2*k+1,j) = coef_p * d1nod_mat_fdm_e1(k, 1)
+!          mat7(3,2*k+1,j) = coef_p * fdm_e1(1)%dmat(k, 1)
           mat7(2,2*k+2,j) = relative_d(k) *mat7(2,2*k+2,j)              &
      &                     - mat_visous( 1)
         end do
