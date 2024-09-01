@@ -122,6 +122,8 @@
      &                               fdm2_center)
       call cal_2nd_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),       &
      &                              fdm2_center)
+      call cal_fdm3e_CTR_hdiv_vp(sph_rj%radius_1d_rj_r(1),              &
+     &                           sph_MHD_bc%fdm3e_center)
 !
       allocate(h_rho(sph%sph_rj%nidx_rj(1)))
       h_rho(:) = zero

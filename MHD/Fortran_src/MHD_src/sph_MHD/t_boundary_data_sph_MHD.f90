@@ -59,6 +59,8 @@
 !
 !>        Structure for FDM matrix of center
         type(fdm2_center_mat) :: fdm2_center
+!>        Structure for FDM matrix of free slip boundary at center
+        type(fdm3e_BC_hdiv) :: fdm3e_center
 !>        Structure for FDM matrix of free slip boundary at ICB
         type(fdm2_free_slip) :: fdm2_free_ICB
 !>        Structure for FDM matrix at ICB element

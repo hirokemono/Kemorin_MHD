@@ -29,10 +29,243 @@
 !
       implicit none
 !
+      character(len=kchara), parameter, private                         &
+     &           :: vsp_evo_name = 'velocity_pressure_evolution'
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat_vpol_press                            &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          my_rank, dt, sph_rj, Plm_WK,          &
+     &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
+     &          fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,                &
+     &          fdm3e_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho,     &
+     &          band_vsp_evo)
+!
+      use t_physical_property
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+      use t_sph_matrices
+      use m_ludcmp_band
+      use check_sph_radial_mat
+!
+      integer, intent(in) :: my_rank
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB, fdm3e_free_ICB
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB, fdm3e_free_CMB
+!
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(band_matrices_type), intent(inout) :: band_vsp_evo
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+!
+      band_vsp_evo%mat_name = vsp_evo_name
+!
+      call alloc_band_matrices_type(iseven, (2*sph_rj%nidx_rj(1)),      &
+     &                              sph_rj%nidx_rj(2), band_vsp_evo)
+!
+      call set_unit_on_diag(band_vsp_evo)
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+      else
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
+      end if
+      call cal_sph_vpol_press_sph_matrix                                &
+     &   (flag_viscous_variation, flag_ref_density_valiation,           &
+     &    sph_rj, Plm_WK, sph_bc_U, fl_prop%coef_press, coef_dvt,       &
+     &    relative_d, h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st,         &
+     &    band_vsp_evo)
+!
+!   Boundary condition for ICB
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call cal_sph_vpol_press_sph_mat_CTR                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                     &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      band_vsp_evo)
+      else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
+        call cal_sph_vpol_press_sph_mat_ICB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_ICB,                   &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      band_vsp_evo)
+!
+!      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
+      else
+        call cal_sph_vpol_press_sph_mat_ICB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      band_vsp_evo)
+      end if
+!
+!   Boundary condition for CMB
+      if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
+        call cal_sph_vpol_press_sph_mat_CMB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_CMB,                   &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      band_vsp_evo)
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
+      else
+        call cal_sph_vpol_press_sph_mat_CMB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB,                        &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      band_vsp_evo)
+      end if
+!
+!
+      call ludcmp_7band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vsp_evo)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_radial_band_mat(my_rank, sph_rj, band_vsp_evo)
+      end if
+!
+!      do j = 1, sph_rj%nidx_rj(2)
+!        do k = 1, sph_rj%nidx_rj(1)
+!          band_vsp_evo%det(j)                                          &
+!     &                = band_vsp_evo%det(j) * band_vsp_evo%lu(5,k,j)
+!        end do
+!        write(my_rank+60,*) 'det vsp', j, band_vsp_evo%det(j)
+!      end do
+!
+      end subroutine const_radial_mat_vpol_press
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_hdiv_vpol_diffusion                              &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          dt, sph_rj, Plm_WK,          &
+     &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
+     &          fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,                &
+     &          fdm3e_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho,     &
+     &          e_press, ipol_base, ipol_force, ipol_diffusion,         &
+     &          rj_fld, e_hdiv_viscous)
+!
+      use t_base_field_labels
+      use t_base_force_labels
+      use t_phys_data
+      use t_physical_property
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB, fdm3e_free_ICB
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB, fdm3e_free_CMB
+!
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_force
+      type(diffusion_address), intent(in) :: ipol_diffusion
+      real(kind = kreal), intent(in) :: e_press(sph_rj%nnod_rj)
+!
+      type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+      else
+        coef_dvt = (one - fl_prop%coef_imp) * fl_prop%coef_diffuse * dt
+      end if
+      call cal_exp_sph_vpol_val_diffuse                                 &
+     &   (flag_viscous_variation, flag_ref_density_valiation,           &
+     &    sph_rj, Plm_WK, sph_bc_U, fl_prop%coef_press, coef_dvt,       &
+     &    relative_d, h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st,         &
+     &    e_press, ipol_base, ipol_force, ipol_diffusion,               &
+     &    rj_fld, e_hdiv_viscous)
+!
+!   Boundary condition for ICB
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call cal_exp_sph_vp_val_diffuse_CTR                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                     &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      ipol_base, rj_fld, e_hdiv_viscous)
+      else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
+        call cal_exp_sph_vp_val_diffuse_ICB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_ICB,                   &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      ipol_base, rj_fld, e_hdiv_viscous)
+!
+!      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
+      else
+        call cal_exp_sph_vp_val_diffuse_ICB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      ipol_base, rj_fld, e_hdiv_viscous)
+      end if
+!
+!   Boundary condition for CMB
+      if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
+        call cal_exp_sph_vp_val_diffuse_CMB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_CMB,                   &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      ipol_base, rj_fld, e_hdiv_viscous)
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
+      else
+        call cal_exp_sph_vp_val_diffuse_CMB                             &
+     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB,                        &
+     &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
+     &      ipol_base, rj_fld, e_hdiv_viscous)
+      end if
+!
+      end subroutine const_hdiv_vpol_diffusion
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_vpol_press_sph_matrix                          &
@@ -81,7 +314,6 @@
 !
       call add_unit_mat_vsp_evo                                         &
      &   (sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, band_vsp_evo%mat)
-
 !
       end subroutine cal_sph_vpol_press_sph_matrix
 !
@@ -154,10 +386,11 @@
 !
       subroutine cal_sph_vpol_press_sph_mat_CMB                         &
      &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          sph_rj, Plm_WK, sph_bc_U, coef_p, coef_d, relative_d,   &
-     &          h_nu, h_rho,fdm3e_CMB_mat, band_vsp_evo)
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB, coef_p, coef_d,    &
+     &          relative_d, h_nu, h_rho, band_vsp_evo)
 !
       use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
       use t_sph_matrices
 !
       logical, intent(in) :: flag_viscous_variation
@@ -165,33 +398,29 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
 !
       type(band_matrices_type), intent(inout)  :: band_vsp_evo
 !
 !
       call set_vpol_press_sph_CMB_mat(sph_rj, Plm_WK, sph_bc_U%kr_out,  &
-     &   coef_p, coef_d, fdm3e_CMB_mat, band_vsp_evo%mat)
+     &   coef_p, coef_d, fdm3e_CMB%dmat_vp0, band_vsp_evo%mat)
 !
       if(flag_viscous_variation) then
         call add_val_viscosity_sph_CMB_mat                              &
-     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d,                    &
-     &      relative_d, h_nu, fdm3e_CMB_mat, band_vsp_evo%mat)
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d, relative_d,        &
+     &      h_nu, fdm3e_CMB%dmat_vp0, band_vsp_evo%mat)
       end if
 !
       if(flag_ref_density_valiation) then
         call add_val_density_sph_CMB_mat                                &
-     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d,                    &
-     &      relative_d, h_nu, h_rho, fdm3e_CMB_mat, band_vsp_evo%mat)
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d, relative_d,        &
+     &      h_nu, h_rho, fdm3e_CMB%dmat_vp0, band_vsp_evo%mat)
       end if
-!
-      call add_unit_mat_vsp_evo                                         &
-     &   (sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, band_vsp_evo%mat)
-
 !
       end subroutine cal_sph_vpol_press_sph_mat_CMB
 !
@@ -199,11 +428,12 @@
 !
       subroutine cal_exp_sph_vp_val_diffuse_CMB                         &
      &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          sph_rj, Plm_WK, sph_bc_U, coef_p, coef_d, relative_d,   &
-     &          h_nu, h_rho, fdm3e_CMB_mat, ipol_base, rj_fld,          &
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB, coef_p, coef_d,    &
+     &          relative_d, h_nu, h_rho, ipol_base, rj_fld,             &
      &          e_hdiv_viscous)
 !
       use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
       use t_base_field_labels
       use t_base_force_labels
       use t_phys_data
@@ -213,11 +443,109 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      type(base_field_address), intent(in) :: ipol_base
+      type(phys_data), intent(in) :: rj_fld
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
+!
+!
+      call set_exp_sph_hdiv_viscous_CMB                                 &
+     &   (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d,                      &
+     &    fdm3e_CMB%dmat_vp0, ipol_base%i_velo,                         &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
+     &    e_hdiv_viscous)
+
+      if(flag_viscous_variation) then
+        call add_exp_sph_hdiv_val_nu_CMB                                &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d, relative_d,        &
+     &      h_nu, fdm3e_CMB%dmat_vp0, ipol_base%i_velo,                 &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_exp_sph_hdiv_val_rho_CMB                               &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d, relative_d,        &
+     &      h_nu, h_rho, fdm3e_CMB%dmat_vp0, ipol_base%i_velo,          &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      end subroutine cal_exp_sph_vp_val_diffuse_CMB
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sph_vpol_press_sph_mat_ICB                         &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB, coef_p, coef_d,    &
+     &          relative_d, h_nu, h_rho, band_vsp_evo)
+!
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+      use t_sph_matrices
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+!
+      type(band_matrices_type), intent(inout)  :: band_vsp_evo
+!
+!
+      call set_vpol_press_sph_ICB_mat(sph_rj, Plm_WK, sph_bc_U%kr_in,  &
+     &    coef_p, coef_d, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+!
+      if(flag_viscous_variation) then
+        call add_val_viscosity_sph_ICB_mat                              &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_in, coef_d, relative_d,         &
+     &      h_nu, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_val_density_sph_ICB_mat                                &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_in, coef_d, relative_d,         &
+     &      h_nu, h_rho, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+      end if
+!
+      end subroutine cal_sph_vpol_press_sph_mat_ICB
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_exp_sph_vp_val_diffuse_ICB                         &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB, coef_p, coef_d,    &
+     &          relative_d, h_nu, h_rho, ipol_base, rj_fld,             &
+     &          e_hdiv_viscous)
+!
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+      use t_base_field_labels
+      use t_base_force_labels
+      use t_phys_data
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
       type(base_field_address), intent(in) :: ipol_base
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -225,29 +553,125 @@
      &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
 !
 !
-      call set_exp_sph_hdiv_viscous_CMB                                 &
-     &   (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_p, coef_d,              &
-     &    fdm3e_CMB_mat, ipol_base%i_velo,                              &
+      call set_exp_sph_hdiv_viscous_ICB                                 &
+     &   (sph_rj, Plm_WK, sph_bc_U%kr_in, coef_d,                       &
+     &    fdm3e_ICB%dmat_vp0, ipol_base%i_velo,                         &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
      &    e_hdiv_viscous)
 
       if(flag_viscous_variation) then
-        call add_exp_sph_hdiv_val_nu_CMB                                &
-     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d,                    &
-     &      relative_d, h_nu, fdm3e_CMB_mat, ipol_base%i_velo,          &
+        call add_exp_sph_hdiv_val_nu_ICB                                &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_in, coef_d, relative_d,         &
+     &      h_nu, fdm3e_ICB%dmat_vp0, ipol_base%i_velo,                 &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      e_hdiv_viscous)
       end if
 !
       if(flag_ref_density_valiation) then
-        call add_exp_sph_hdiv_val_rho_CMB                               &
-     &     (sph_rj, Plm_WK, sph_bc_U%kr_out, coef_d,                    &
-     &      relative_d, h_nu, h_rho, fdm3e_CMB_mat, ipol_base%i_velo,   &
+        call add_exp_sph_hdiv_val_rho_ICB                               &
+     &     (sph_rj, Plm_WK, sph_bc_U%kr_in, coef_d, relative_d,         &
+     &      h_nu, h_rho, fdm3e_ICB%dmat_vp0, ipol_base%i_velo,          &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      e_hdiv_viscous)
       end if
 !
-      end subroutine cal_exp_sph_vp_val_diffuse_CMB
+      end subroutine cal_exp_sph_vp_val_diffuse_ICB
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sph_vpol_press_sph_mat_CTR                         &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                 &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho,                &
+     &          band_vsp_evo)
+!
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+      use t_sph_matrices
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+!
+      type(band_matrices_type), intent(inout)  :: band_vsp_evo
+!
+!
+      call set_vpol_press_sph_center_mat(sph_rj, Plm_WK,                &
+     &    coef_p, coef_d, fdm3e_center%dmat_vp0, band_vsp_evo%mat)
+!
+      if(flag_viscous_variation) then
+        call add_val_viscosity_sph_CTR_mat(sph_rj, Plm_WK, coef_d,      &
+     &      relative_d, h_nu, fdm3e_center%dmat_vp0, band_vsp_evo%mat)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_val_density_sph_CTR_mat(sph_rj, Plm_WK, coef_d,        &
+     &      relative_d, h_nu, h_rho, fdm3e_center%dmat_vp0,             &
+     &      band_vsp_evo%mat)
+      end if
+!
+      end subroutine cal_sph_vpol_press_sph_mat_CTR
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_exp_sph_vp_val_diffuse_CTR                         &
+     &         (flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                 &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho,                &
+     &          ipol_base, rj_fld, e_hdiv_viscous)
+!
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3e_MHD_boundaries
+      use t_base_field_labels
+      use t_base_force_labels
+      use t_phys_data
+!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
+      type(base_field_address), intent(in) :: ipol_base
+!
+      type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
+!
+!
+      call set_exp_sph_hdiv_viscous_CTR(sph_rj, Plm_WK, coef_d,         &
+     &    fdm3e_center%dmat_vp0, ipol_base%i_velo,                      &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
+     &    e_hdiv_viscous)
+
+      if(flag_viscous_variation) then
+        call add_exp_sph_hdiv_val_nu_CTR(sph_rj, Plm_WK, coef_d,        &
+     &      relative_d, h_nu, fdm3e_center%dmat_vp0, ipol_base%i_velo,  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      if(flag_ref_density_valiation) then
+        call add_exp_sph_hdiv_val_rho_CTR                               &
+     &     (sph_rj, Plm_WK, coef_d, relative_d, h_nu, h_rho,            &
+     &      fdm3e_center%dmat_vp0, ipol_base%i_velo,                    &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      e_hdiv_viscous)
+      end if
+!
+      end subroutine cal_exp_sph_vp_val_diffuse_CTR
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -811,7 +1235,7 @@
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -834,9 +1258,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,3)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           if((2*k-4) .gt. 0) then
             mat7(7,2*k-4,j) = - hdiv_visous(-2)
@@ -870,14 +1294,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_exp_sph_hdiv_viscous_CMB(sph_rj, Plm_WK, kr_out,   &
-     &          coef_p, coef_d, fdm3e_CMB_mat, is_velo,                 &
+     &          coef_d, fdm3e_CMB_mat, is_velo,                         &
      &          n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: coef_d
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -911,9 +1335,9 @@
 !
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,3)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) =  hdiv_visous(-2) * d_rj(i_n2,is_velo)  &
      &                          + hdiv_visous(-1) * d_rj(i_n1,is_velo)  &
@@ -934,7 +1358,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -958,9 +1382,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           if((2*k-4) .gt. 0) then
             mat7(7,2*k-4,j) = d_mid* mat7(7,2*k-4,j) - hdiv_visous(-2)
@@ -986,7 +1410,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1020,9 +1444,9 @@
 !
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) =  d_mid * e_hdiv_viscous(iele)          &
      &                          + hdiv_visous(-2) * d_rj(i_n2,is_velo)  &
@@ -1045,7 +1469,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1071,9 +1495,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           if((2*k-4) .gt. 0) then
             mat7(7,2*k-4,j) = mat7(7,2*k-4,j) - hdiv_visous(-2)
@@ -1100,7 +1524,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_CMB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1136,9 +1560,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_CMB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_CMB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_CMB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_CMB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_CMB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) = e_hdiv_viscous(iele)                   &
      &                          + hdiv_visous(-2) * d_rj(i_n2,is_velo)  &
@@ -1159,7 +1583,7 @@
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1182,9 +1606,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,3)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
 !          if((2*k-4) .gt. 0) mat7(7,2*k-4,j) = - hdiv_visous(-2)
           mat7(6,2*k-3,j) =   zero
@@ -1225,7 +1649,7 @@
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1258,9 +1682,9 @@
 !
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,3)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+          hdiv_visous(-2:1) = coef_d * (c_d3 * fdm3e_ICB_mat(-2:1,4)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) =  hdiv_visous(-1) * d_rj(i_n1,is_velo)  &
      &                          + hdiv_visous( 0) * d_rj(inod,is_velo)  &
@@ -1281,7 +1705,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1305,9 +1729,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,3)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
 !          if((2*k-4) .gt. 0) then
 !            mat7(7,2*k-4,j) = d_mid * mat7(7,2*k-4,j) - hdiv_visous(-2)
@@ -1333,7 +1757,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1367,9 +1791,9 @@
 !
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,3)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) = d_mid * e_hdiv_viscous(iele)           &
      &                          + hdiv_visous(-1) * d_rj(i_n1,is_velo)  &
@@ -1392,7 +1816,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1418,9 +1842,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,3)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
 !          if((2*k-4) .gt. 0) then
 !            mat7(7,2*k-4,j) = mat7(7,2*k-4,j) - hdiv_visous(-2)
@@ -1447,7 +1871,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_ICB_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1483,9 +1907,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,2)    &
-     &                                + c_d1 * fdm3e_ICB_mat(-2:1,1)    &
-     &                                + c_d0 * fdm3e_ICB_mat(-2:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_ICB_mat(-2:1,3)    &
+     &                                + c_d1 * fdm3e_ICB_mat(-2:1,2)    &
+     &                                + c_d0 * fdm3e_ICB_mat(-2:1,1))
 !
           e_hdiv_viscous(iele) = e_hdiv_viscous(iele)                   &
      &                          + hdiv_visous(-1) * d_rj(i_n1,is_velo)  &
@@ -1505,7 +1929,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_p, coef_d
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1526,9 +1950,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,3)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+          hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,4)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
           mat7(4,1,j) = coef_p
 !
@@ -1549,7 +1973,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1579,9 +2003,9 @@
 !
           c_d1 =        Plm_WK%g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * Plm_WK%g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,3)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+          hdiv_visous( 0:1) = coef_d * (c_d3 * fdm3e_center_mat(0:1,4)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
           e_hdiv_viscous(iele) =  hdiv_visous( 0) * d_rj(inod,is_velo)  &
      &                          + hdiv_visous( 1) * d_rj(i_p1,is_velo)
@@ -1600,7 +2024,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1622,9 +2046,9 @@
         do j = 1, sph_rj%nidx_rj(2)
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
           hdiv_visous(0:1)                                              &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
 !          mat7(4,1,j) = coef_p
 !
@@ -1646,7 +2070,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1676,9 +2100,9 @@
 !
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2) * h_nu(1)
           hdiv_visous(0:1)                                              &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
           e_hdiv_viscous(iele) = d_mid * e_hdiv_viscous(iele)           &
      &                          + hdiv_visous( 0) * d_rj(inod,is_velo)  &
@@ -1700,7 +2124,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
@@ -1725,9 +2149,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(1,0) * two / three
           hdiv_visous( 0:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
 !          mat7(4,1,j) = coef_p
 !
@@ -1750,7 +2174,7 @@
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,0:3)
+      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
       integer(kind = kint), intent(in) :: is_velo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -1783,9 +2207,9 @@
           c_d0 = - Plm_WK%g_sph_rj(j,3)*ar_mid(2)                       &
      &            * h_rho(1,0) * two / three
           hdiv_visous( 0:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,1)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,0))
+     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
+     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
+     &                                + c_d0 * fdm3e_center_mat(0:1,1))
 !
           e_hdiv_viscous(iele) = d_mid * e_hdiv_viscous(iele)           &
      &                          + hdiv_visous( 0) * d_rj(inod,is_velo)  &
