@@ -169,7 +169,7 @@
         end if
       end if
 !
-      if (fl_prop%iflag_4_coriolis .eqv. .FALSE.) then
+      if (fl_prop%flag_coriolis .eqv. .FALSE.) then
         coefs_Coriolis%num = 0
       else
         if(mom_ctl%coef_4_Coriolis%icou .eq. 0) then
@@ -180,7 +180,7 @@
         end if
       end if
 !
-      if (fl_prop%iflag_4_lorentz .eqv. .FALSE.) then
+      if (fl_prop%flag_lorentz .eqv. .FALSE.) then
         coefs_Lorentz%num = 0
       else
         if(mom_ctl%coef_4_Lorentz%icou .eq. 0) then

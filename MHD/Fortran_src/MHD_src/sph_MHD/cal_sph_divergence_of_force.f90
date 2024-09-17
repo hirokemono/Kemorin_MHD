@@ -80,19 +80,19 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%fl_prop%iflag_4_inertia) then
+      if(MHD_prop%fl_prop%flag_inertia) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_m_advect, ipol_div_frc%i_m_advect, rj_fld)
       end if
 !
-      if(MHD_prop%fl_prop%iflag_4_lorentz) then
+      if(MHD_prop%fl_prop%flag_lorentz) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_lorentz, ipol_div_frc%i_lorentz, rj_fld)
       end if
 !
-      if(MHD_prop%fl_prop%iflag_4_coriolis) then
+      if(MHD_prop%fl_prop%flag_coriolis) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_coriolis, ipol_div_frc%i_Coriolis, rj_fld)

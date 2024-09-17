@@ -229,7 +229,7 @@
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
 !
-      if(fl_prop%iflag_4_coriolis .and. fl_prop%iflag_coriolis_implicit &
+      if(fl_prop%flag_coriolis .and. fl_prop%iflag_coriolis_implicit    &
      &    .and. fl_prop%iflag_FEM_coriolis .eq. id_FORCE_ele_int) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_ele'
         call int_vol_coriolis_ele(FEM_prm%npoint_t_evo_int,             &

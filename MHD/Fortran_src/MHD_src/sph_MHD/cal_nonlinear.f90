@@ -276,7 +276,7 @@
 !*
 !*  ----  copy velocity for coriolis term ------------------
       if(iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
-      if(MHD_prop%fl_prop%iflag_4_coriolis) then
+      if(MHD_prop%fl_prop%flag_coriolis) then
         call sph_transform_4_licv                                       &
      &     (sph%sph_rlm, comms_sph%comm_rlm, comms_sph%comm_rj,         &
      &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,  &

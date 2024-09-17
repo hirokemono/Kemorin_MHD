@@ -72,10 +72,10 @@
       character(len=kchara) :: tmpchara
 !
 !
-      fl_prop%iflag_4_inertia =         .TRUE.
+      fl_prop%flag_inertia =          .TRUE.
       fl_prop%flag_thermal_buoyancy = .FALSE.
-      fl_prop%iflag_4_coriolis =        .FALSE.
-      fl_prop%iflag_4_lorentz =         .FALSE.
+      fl_prop%flag_coriolis =         .FALSE.
+      fl_prop%flag_lorentz =          .FALSE.
       fl_prop%flag_comp_buoyancy =    .FALSE.
 !
       fl_prop%flag_filter_gravity =  .FALSE.
@@ -84,7 +84,7 @@
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         fl_prop%num_force = 0
-        fl_prop%iflag_4_inertia = .FALSE.
+        fl_prop%flag_inertia = .FALSE.
       else
         if (frc_ctl%force_names%icou .gt. 0) then
           fl_prop%num_force = frc_ctl%force_names%num
@@ -122,15 +122,15 @@
      &       ) fl_prop%flag_filter_comp_buo = .TRUE.
 !
           if (cmp_no_case(tmpchara, coriolis_e1)                        &
-     &       ) fl_prop%iflag_4_coriolis = .TRUE.
+     &       ) fl_prop%flag_coriolis = .TRUE.
 !
           if(cmp_no_case(tmpchara, hd_filtered_inertia)) then
             fl_prop%flag_filter_inertia = .TRUE.
-            fl_prop%iflag_4_inertia = .FALSE.
+            fl_prop%flag_inertia =        .FALSE.
           end if
 !
           if(cmp_no_case(tmpchara, lorentz_label)) then
-            fl_prop%iflag_4_lorentz = .TRUE.
+            fl_prop%flag_lorentz = .TRUE.
           else if(cmp_no_case(tmpchara, hd_filtered_Lorentz)) then
             fl_prop%flag_filter_lorentz = .TRUE.
           end if
@@ -239,7 +239,7 @@
       fl_prop%sys_rot(1:2) = zero
       fl_prop%sys_rot(3) =   one
 !
-      if(fl_prop%iflag_4_coriolis .eqv. .FALSE.) return
+      if(fl_prop%flag_coriolis .eqv. .FALSE.) return
       if(cor_ctl%FEM_coriolis_model%iflag .gt. 0                        &
      &  .and. cmp_no_case(cor_ctl%FEM_coriolis_model%charavalue,'node') &
      &  .and. fl_prop%iflag_scheme .ne. id_Crank_nicolson_cmass) then
@@ -247,7 +247,7 @@
       end if
 !
       if(fl_prop%iflag_scheme .gt. id_Crank_nicolson                    &
-     &   .and. fl_prop%iflag_4_coriolis                                 &
+     &   .and. fl_prop%flag_coriolis                                    &
      &   .and. cor_ctl%FEM_coriolis_implicit%iflag .gt. 0               &
      &   .and. yes_flag(cor_ctl%FEM_coriolis_implicit%charavalue)) then
         fl_prop%iflag_coriolis_implicit = .TRUE.
@@ -265,8 +265,8 @@
       end if
 !
      if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_4_coriolis', fl_prop%iflag_4_coriolis
-        if(fl_prop%iflag_4_coriolis) then
+        write(*,*) 'flag_coriolis', fl_prop%flag_coriolis
+        if(fl_prop%flag_coriolis) then
           write(*,'(a, 1p3E25.15e3)') 'rotation:', fl_prop%sys_rot(1:3)
         end if
       end if

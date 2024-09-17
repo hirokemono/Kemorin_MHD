@@ -72,7 +72,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if(fl_prop%iflag_4_coriolis .eqv. .FALSE.                         &
+      if(fl_prop%flag_coriolis .eqv. .FALSE.                            &
      &  .or. fl_prop%iflag_FEM_coriolis .ne. id_FORCE_at_node) return
 !
       if(fl_prop%iflag_coriolis_implicit) then

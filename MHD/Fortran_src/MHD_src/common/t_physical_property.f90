@@ -72,11 +72,11 @@
         real  (kind=kreal) :: coef_diffuse
 !
 !>        Force flag for Filtered inertia term
-        logical :: iflag_4_inertia = .TRUE.
+        logical :: flag_inertia =          .TRUE.
 !>        Force flag for Coriolis force
-        logical :: iflag_4_coriolis = .FALSE.
+        logical :: flag_coriolis =         .FALSE.
 !>        Force flag for Lorentz force
-        logical :: iflag_4_lorentz = .FALSE.
+        logical :: flag_lorentz =          .FALSE.
 !>        Force flag for thermal buoyancy
         logical :: flag_thermal_buoyancy = .FALSE.
 !>        Force flag for compositional buoyancy

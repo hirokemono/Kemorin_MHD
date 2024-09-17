@@ -228,7 +228,7 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if(fl_prop%iflag_4_lorentz) then
+        if(fl_prop%flag_lorentz) then
           if(iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys_base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
@@ -292,7 +292,7 @@
 !
 !  --------  set coriolis force
 !
-        if(fl_prop%iflag_4_coriolis                                     &
+        if(fl_prop%flag_coriolis                                        &
      &     .and. fl_prop%iflag_FEM_coriolis .eq. id_FORCE_ele_int) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys_base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
@@ -539,7 +539,7 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if(fl_prop%iflag_4_lorentz) then
+        if(fl_prop%flag_lorentz) then
           if(iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys_base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
@@ -601,7 +601,7 @@
 !
 !  --------  set coriolis force
 !
-        if(fl_prop%iflag_4_coriolis                                     &
+        if(fl_prop%flag_coriolis                                        &
      &     .and. fl_prop%iflag_FEM_coriolis .eq. id_FORCE_ele_int) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys_base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)

@@ -208,7 +208,7 @@
         call add_phys_name_ctl(perturbation_composition, field_ctl)
       end if
 !
-      if(fl_prop%iflag_4_coriolis)                                      &
+      if(fl_prop%flag_coriolis)                                         &
      &  call add_phys_name_ctl(Coriolis_force, field_ctl)
 !
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then

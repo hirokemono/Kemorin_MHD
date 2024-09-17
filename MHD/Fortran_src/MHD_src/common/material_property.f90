@@ -122,13 +122,13 @@
      &       depth_top, depth_bottom)
         end if
 !
-        if (fl_prop%iflag_4_coriolis) then
+        if (fl_prop%flag_coriolis) then
           call construct_coefficient(fl_prop%coef_cor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Coriolis,  &
      &       depth_top, depth_bottom)
         end if
 !
-        if(fl_prop%iflag_4_lorentz) then
+        if(fl_prop%flag_lorentz) then
           call construct_coefficient(fl_prop%coef_lor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
      &       depth_top, depth_bottom)
@@ -152,10 +152,10 @@
         if(fl_prop%flag_comp_buoyancy)  write(*,*)                      &
      &         'coefficient for composit buoyancy:   ',                 &
      &              fl_prop%coef_comp_buo
-        if(fl_prop%iflag_4_coriolis) write(*,*)                         &
+        if(fl_prop%flag_coriolis) write(*,*)                            &
      &         'coefficient for coriolis force:      ',                 &
      &              fl_prop%coef_cor
-        if(fl_prop%iflag_4_lorentz) write(*,*)                          &
+        if(fl_prop%flag_lorentz) write(*,*)                          &
      &         'coefficient for Lorentz force:       ',                 &
      &              fl_prop%coef_lor
         end if

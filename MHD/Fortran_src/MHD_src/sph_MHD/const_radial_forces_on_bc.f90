@@ -87,7 +87,7 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(fl_prop%iflag_4_inertia) then
+      if(fl_prop%flag_inertia) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_frc%i_m_advect, ipol_div_frc%i_m_advect,               &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -98,7 +98,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_lorentz) then
+      if(fl_prop%flag_lorentz) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_frc%i_lorentz, ipol_div_frc%i_lorentz,                 &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &

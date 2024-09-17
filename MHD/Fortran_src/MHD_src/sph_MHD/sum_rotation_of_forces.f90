@@ -56,18 +56,18 @@
      &   (rj_fld, n_vector, ipol_exp%i_forces)
 !
 !$omp parallel
-      if(fl_prop%iflag_4_inertia) then
+      if(fl_prop%flag_inertia) then
         call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_force%i_m_advect,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
-      if(fl_prop%iflag_4_coriolis) then
+      if(fl_prop%flag_coriolis) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_Coriolis,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_lorentz) then
+      if(fl_prop%flag_lorentz) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_lorentz,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -104,7 +104,7 @@
 !
 !
 !$omp parallel
-      if(fl_prop%iflag_4_coriolis) then
+      if(fl_prop%flag_coriolis) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_Coriolis,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
