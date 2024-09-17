@@ -151,7 +151,7 @@
 !
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%iflag_4_gravity) then
+          if(fl_prop%flag_thermal_buoyancy) then
             i_fld = i_fld + 1
             iak_sgs_term%i_SGS_buoyancy =  i_fld
             wk_sph_sgs%name(i_fld) = SGS_buoyancy%name
@@ -161,7 +161,7 @@
 !
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%iflag_4_composit_buo) then
+          if(fl_prop%flag_comp_buoyancy) then
             i_fld = i_fld + 1
             iak_sgs_term%i_SGS_comp_buo =  i_fld
             wk_sph_sgs%name(i_fld) = SGS_composit_buoyancy%name

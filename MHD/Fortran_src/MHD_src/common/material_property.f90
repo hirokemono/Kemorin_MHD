@@ -108,14 +108,14 @@
         fl_prop%acoef_press = one / fl_prop%coef_press
         fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
-        if     (fl_prop%iflag_4_gravity                                 &
+        if     (fl_prop%flag_thermal_buoyancy                           &
      &     .or. fl_prop%flag_filter_gravity) then
           call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
      &      depth_top, depth_bottom)
         end if
 !
-        if     (fl_prop%iflag_4_composit_buo                            &
+        if     (fl_prop%flag_comp_buoyancy                              &
      &     .or. fl_prop%flag_filter_comp_buo) then
           call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
@@ -146,10 +146,10 @@
      &              fl_prop%coef_press
           write(*,*) 'coefficient for viscous diffusion:   ',           &
      &              fl_prop%coef_diffuse
-        if(fl_prop%iflag_4_gravity) write(*,*)                          &
-     &         'coefficient for buoyancy:            ',                 &
+        if(fl_prop%flag_thermal_buoyancy) write(*,*)                    &
+     &         'coefficient for thernal buoyancy:    ',                 &
      &              fl_prop%coef_buo
-        if(fl_prop%iflag_4_composit_buo)  write(*,*)                    &
+        if(fl_prop%flag_comp_buoyancy)  write(*,*)                      &
      &         'coefficient for composit buoyancy:   ',                 &
      &              fl_prop%coef_comp_buo
         if(fl_prop%iflag_4_coriolis) write(*,*)                         &

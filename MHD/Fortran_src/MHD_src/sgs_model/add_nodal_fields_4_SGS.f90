@@ -84,11 +84,11 @@
         call add_phys_name_ctl(div_SGS_m_flux, field_ctl)
         call add_phys_name_ctl(Reynolds_work, field_ctl)
 !
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           call add_phys_name_ctl(SGS_heat_flux, field_ctl)
           call add_phys_name_ctl(SGS_buoyancy_flux, field_ctl)
         end if
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           call add_phys_name_ctl(SGS_composit_flux, field_ctl)
           call add_phys_name_ctl(SGS_comp_buoyancy_flux, field_ctl)
         end if

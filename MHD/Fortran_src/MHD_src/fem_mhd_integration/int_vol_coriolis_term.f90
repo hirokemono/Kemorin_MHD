@@ -155,8 +155,8 @@
 !
 ! ---------  set buoyancy at each node
 !
-      if(fl_prop%iflag_4_composit_buo                                   &
-     &   .and. fl_prop%iflag_4_gravity) then
+      if(fl_prop%flag_comp_buoyancy                                     &
+     &   .and. fl_prop%flag_thermal_buoyancy) then
         call set_double_gravity_2_each_node(iphys%base%i_temp,          &
      &      iphys%base%i_light, iphys%forces%i_buoyancy,                &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
@@ -171,14 +171,14 @@
      &      node, nod_fld)
 !
       else if(fl_prop%flag_filter_comp_buo                              &
-     & .and. fl_prop%iflag_4_gravity) then
+     & .and. fl_prop%flag_thermal_buoyancy) then
         call set_double_gravity_2_each_node                             &
      &     (iphys%base%i_temp, iphys_LES%filter_fld%i_light,            &
      &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
      &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
      &      node, nod_fld)
 !
-      else if(fl_prop%iflag_4_composit_buo                              &
+      else if(fl_prop%flag_comp_buoyancy                                &
      & .and. fl_prop%flag_filter_gravity) then
         call set_double_gravity_2_each_node                             &
      &     (iphys_LES%filter_fld%i_temp, iphys%base%i_light,            &
@@ -187,13 +187,13 @@
      &      node, nod_fld)
 !
 !
-      else if (fl_prop%iflag_4_gravity) then
+      else if (fl_prop%flag_thermal_buoyancy) then
         call set_gravity_2_each_node                                    &
      &     (iphys%base%i_temp, iphys%forces%i_buoyancy,                 &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
 !
-      else if (fl_prop%iflag_4_composit_buo) then
+      else if (fl_prop%flag_comp_buoyancy) then
         call set_gravity_2_each_node                                    &
      &     (iphys%base%i_light, iphys%forces%i_buoyancy,                &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &

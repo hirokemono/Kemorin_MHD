@@ -121,11 +121,11 @@
         end if
 !
         if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%iflag_4_gravity) then
+          if(fl_prop%flag_thermal_buoyancy) then
             num_SGS_terms = num_SGS_terms +   1
             ntot_SGS_comps = ntot_SGS_comps + 6
           end if
-          if(fl_prop%iflag_4_composit_buo) then
+          if(fl_prop%flag_comp_buoyancy) then
             num_SGS_terms = num_SGS_terms +   1
             ntot_SGS_comps = ntot_SGS_comps + 6
           end if
@@ -234,7 +234,7 @@
       num_comp = 0
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%iflag_4_gravity) then
+          if(fl_prop%flag_thermal_buoyancy) then
             num_comp = n_sym_tensor
             sgs_coefs%Csim_SGS_tbuo%num_comp = num_comp
             sgs_coefs%Csim_SGS_tbuo%iak_Csim =   i_fld
@@ -252,7 +252,7 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
        num_comp = 0
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%iflag_4_composit_buo) then
+          if(fl_prop%flag_comp_buoyancy) then
             num_comp = n_sym_tensor
             sgs_coefs%Csim_SGS_cbuo%num_comp = num_comp
             sgs_coefs%Csim_SGS_cbuo%iak_Csim =   i_fld

@@ -53,48 +53,48 @@
 !
 !$omp parallel
       if(      fl_prop%iflag_4_inertia                                  &
-     &   .and. fl_prop%iflag_4_gravity                                  &
-     &   .and. fl_prop%iflag_4_composit_buo                             &
+     &   .and. fl_prop%flag_thermal_buoyancy                            &
+     &   .and. fl_prop%flag_comp_buoyancy                               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz) then
         call set_DMHD_terms_to_div_force                                &
      &     (ipol_base%i_press, ipol_div_frc,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_inertia                                  &
-     &   .and. fl_prop%iflag_4_gravity                                  &
-     &   .and. (fl_prop%iflag_4_composit_buo .eqv. .FALSE.)             &
+     &   .and. fl_prop%flag_thermal_buoyancy                            &
+     &   .and. (fl_prop%flag_comp_buoyancy .eqv. .FALSE.)               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz) then
         call set_MHD_terms_to_div_force                                 &
      &     (ipol_base%i_press, ipol_div_frc, ipol_div_frc%i_buoyancy,   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_inertia                                  &
-     &   .and.(fl_prop%iflag_4_gravity .eqv.      .FALSE.)              &
-     &   .and. fl_prop%iflag_4_composit_buo                             &
+     &   .and.(fl_prop%flag_thermal_buoyancy .eqv. .FALSE.)             &
+     &   .and. fl_prop%flag_comp_buoyancy                               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz) then
         call set_MHD_terms_to_div_force                                 &
      &     (ipol_base%i_press, ipol_div_frc, ipol_div_frc%i_comp_buo,   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_inertia                                  &
-     &   .and. fl_prop%iflag_4_gravity                                  &
-     &   .and. fl_prop%iflag_4_composit_buo                             &
+     &   .and. fl_prop%flag_thermal_buoyancy                            &
+     &   .and. fl_prop%flag_comp_buoyancy                               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. (fl_prop%iflag_4_lorentz  .eqv. .FALSE.)) then
         call set_div_dcv_terms_to_force                                 &
      &     (ipol_base%i_press, ipol_div_frc,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_inertia                                  &
-     &   .and. fl_prop%iflag_4_gravity                                  &
-     &   .and. (fl_prop%iflag_4_composit_buo .eqv. .FALSE.)             &
+     &   .and. fl_prop%flag_thermal_buoyancy                            &
+     &   .and. (fl_prop%flag_comp_buoyancy .eqv. .FALSE.)               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. (fl_prop%iflag_4_lorentz  .eqv. .FALSE.)) then
         call set_div_cv_terms_to_force                                  &
      &     (ipol_base%i_press, ipol_div_frc, ipol_div_frc%i_buoyancy,   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_inertia                                  &
-     &   .and.(fl_prop%iflag_4_gravity  .eqv. .FALSE.)                  &
-     &   .and. fl_prop%iflag_4_composit_buo                             &
+     &   .and.(fl_prop%flag_thermal_buoyancy  .eqv. .FALSE.)            &
+     &   .and. fl_prop%flag_comp_buoyancy                               &
      &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. (fl_prop%iflag_4_lorentz  .eqv. .FALSE.)) then
         call set_div_cv_terms_to_force                                  &
@@ -119,12 +119,12 @@
      &       (ipol_base%i_press, ipol_div_frc%i_lorentz,                &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           call add_term_to_div_force                                    &
      &       (ipol_base%i_press, ipol_div_frc%i_buoyancy,               &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           call add_term_to_div_force                                    &
      &       (ipol_base%i_press, ipol_div_frc%i_comp_buo,               &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

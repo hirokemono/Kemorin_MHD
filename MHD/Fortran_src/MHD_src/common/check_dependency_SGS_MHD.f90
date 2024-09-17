@@ -191,19 +191,19 @@
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
-        if(fl_prop%iflag_4_gravity                                      &
-     &     .and. (fl_prop%iflag_4_composit_buo .eqv. .FALSE.)) then
+        if(fl_prop%flag_thermal_buoyancy                                &
+     &     .and. (fl_prop%flag_comp_buoyancy .eqv. .FALSE.)) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           if(SGS_param%SGS_momentum%iflag_SGS_flux.eq.id_SGS_none       &
      &      .or. SGS_param%SGS_heat%iflag_SGS_flux.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           if(SGS_param%SGS_momentum%iflag_SGS_flux.eq.id_SGS_none       &
      &     .or. SGS_param%SGS_light%iflag_SGS_flux.eq.id_SGS_none) then
               call calypso_MPI_abort(ierr_fld,                          &

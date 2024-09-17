@@ -67,12 +67,12 @@
 !
 !
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_gravity, fl_prop%iflag_4_composit_buo,        &
+     &   (fl_prop%flag_thermal_buoyancy, fl_prop%flag_comp_buoyancy,    &
      &    sph_bc_U%kr_in, sph_rj, ipol_base, ipol_div_frc,              &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_gravity, fl_prop%iflag_4_composit_buo,        &
+     &   (fl_prop%flag_thermal_buoyancy, fl_prop%flag_comp_buoyancy,    &
      &    sph_bc_U%kr_out, sph_rj, ipol_base, ipol_div_frc,             &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)

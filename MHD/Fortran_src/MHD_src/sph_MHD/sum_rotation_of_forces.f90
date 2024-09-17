@@ -73,12 +73,12 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_gravity) then
+      if(fl_prop%flag_thermal_buoyancy) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_buoyancy,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_composit_buo) then
+      if(fl_prop%flag_comp_buoyancy) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_comp_buo,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -109,12 +109,12 @@
      &     (ipol_exp%i_forces, ipol_force%i_Coriolis,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_gravity) then
+      if(fl_prop%flag_thermal_buoyancy) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_buoyancy,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_composit_buo) then
+      if(fl_prop%flag_comp_buoyancy) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_comp_buo,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

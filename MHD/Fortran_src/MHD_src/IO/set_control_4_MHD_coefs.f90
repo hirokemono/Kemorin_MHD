@@ -145,7 +145,7 @@
         coefs_v_diffuse%num = mom_ctl%coef_4_viscous%num
       end if
 !
-      if((fl_prop%iflag_4_gravity .eqv. .FALSE.)                        &
+      if((fl_prop%flag_thermal_buoyancy .eqv. .FALSE.)                  &
      &     .and. (fl_prop%flag_filter_gravity .eqv. .FALSE.)) then
         coefs_buoyancy%num = 0
       else
@@ -157,7 +157,7 @@
         end if
       end if
 !
-      if((fl_prop%iflag_4_composit_buo .eqv. .FALSE.)                   &
+      if((fl_prop%flag_comp_buoyancy .eqv. .FALSE.)                     &
      &     .and. (fl_prop%flag_filter_comp_buo .eqv. .FALSE.)) then
         coefs_comp_buo%num = 0
       else
