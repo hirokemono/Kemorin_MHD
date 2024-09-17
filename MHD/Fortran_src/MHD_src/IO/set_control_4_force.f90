@@ -78,8 +78,8 @@
       fl_prop%iflag_4_lorentz =         .FALSE.
       fl_prop%iflag_4_composit_buo =    .FALSE.
 !
-      fl_prop%iflag_4_filter_gravity =  .FALSE.
-      fl_prop%iflag_4_filter_comp_buo = .FALSE.
+      fl_prop%flag_filter_gravity =  .FALSE.
+      fl_prop%flag_filter_comp_buo = .FALSE.
       fl_prop%iflag_4_filter_lorentz =  .FALSE.
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
@@ -115,11 +115,11 @@
 !
           if(     cmp_no_case(tmpchara, Filtered_gravity_label)         &
      &       .or. cmp_no_case(tmpchara, Filtered_gravity_e1)            &
-     &       ) fl_prop%iflag_4_filter_gravity =  .TRUE.
+     &       ) fl_prop%flag_filter_gravity =  .TRUE.
 !
           if(   cmp_no_case(tmpchara, Filtered_comp_gravity_label)      &
      &     .or. cmp_no_case(tmpchara, Filtered_comp_gravity_e1)         &
-     &       ) fl_prop%iflag_4_filter_comp_buo = .TRUE.
+     &       ) fl_prop%flag_filter_comp_buo = .TRUE.
 !
           if (cmp_no_case(tmpchara, coriolis_e1)                        &
      &       ) fl_prop%iflag_4_coriolis = .TRUE.
@@ -168,8 +168,8 @@
       fl_prop%i_grav = iflag_no_gravity
       if(     fl_prop%iflag_4_gravity                                   &
      &   .or. fl_prop%iflag_4_composit_buo                              &
-     &   .or. fl_prop%iflag_4_filter_gravity                            &
-     &   .or. fl_prop%iflag_4_filter_comp_buo) then
+     &   .or. fl_prop%flag_filter_gravity                               &
+     &   .or. fl_prop%flag_filter_comp_buo) then
         if(g_ctl%FEM_gravity_model%iflag .gt. 0                         &
      &    .and. cmp_no_case(g_ctl%FEM_gravity_model%charavalue,'node')  &
      &    .and. fl_prop%iflag_scheme .ne. id_Crank_nicolson_cmass) then

@@ -146,7 +146,7 @@
       end if
 !
       if((fl_prop%iflag_4_gravity .eqv. .FALSE.)                        &
-     &     .and. (fl_prop%iflag_4_filter_gravity .eqv. .FALSE.)) then
+     &     .and. (fl_prop%flag_filter_gravity .eqv. .FALSE.)) then
         coefs_buoyancy%num = 0
       else
         if (mom_ctl%coef_4_termal_buo%icou .eq. 0) then
@@ -158,7 +158,7 @@
       end if
 !
       if((fl_prop%iflag_4_composit_buo .eqv. .FALSE.)                   &
-     &     .and. (fl_prop%iflag_4_filter_comp_buo .eqv. .FALSE.)) then
+     &     .and. (fl_prop%flag_filter_comp_buo .eqv. .FALSE.)) then
         coefs_comp_buo%num = 0
       else
         if(mom_ctl%coef_4_comp_buo%icou .eq. 0) then

@@ -55,8 +55,8 @@
 !
       flag =   fl_prop%iflag_4_filter_inertia                           &
      &    .or. fl_prop%iflag_4_filter_lorentz                           &
-     &    .or. fl_prop%iflag_4_filter_gravity                           &
-     &    .or. fl_prop%iflag_4_filter_comp_buo
+     &    .or. fl_prop%flag_filter_gravity                              &
+     &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
 !$omp parallel
@@ -72,12 +72,12 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_gravity) then
+      if(fl_prop%flag_filter_gravity) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_buoyancy,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_comp_buo) then
+      if(fl_prop%flag_filter_comp_buo) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_comp_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -102,8 +102,8 @@
 !
       flag =   fl_prop%iflag_4_filter_inertia                           &
      &    .or. fl_prop%iflag_4_filter_lorentz                           &
-     &    .or. fl_prop%iflag_4_filter_gravity                           &
-     &    .or. fl_prop%iflag_4_filter_comp_buo
+     &    .or. fl_prop%flag_filter_gravity                              &
+     &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
 !$omp parallel
@@ -118,12 +118,12 @@
      &     (ipol_base%i_press, ipol_div_fil_frc%i_lorentz,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_gravity) then
+      if(fl_prop%flag_filter_gravity) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_buoyancy,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_comp_buo) then
+      if(fl_prop%flag_filter_comp_buo) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_comp_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
