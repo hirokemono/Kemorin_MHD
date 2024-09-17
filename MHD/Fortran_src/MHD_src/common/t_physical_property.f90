@@ -91,6 +91,11 @@
 !>        Force flag for filtered compositional buoyancy
         logical :: iflag_4_filter_comp_buo = .FALSE.
 !
+!>        Force flag for filtered compositional buoyancy
+        logical :: flag_viscous_variation =     .FALSE.
+!>        Force flag for filtered compositional buoyancy
+        logical :: flag_ref_density_valiation = .FALSE.
+!
 !>       coefficient for Coriolis force
         real  (kind=kreal) :: coef_cor = zero
 !>       coefficient for chemical Lorentz force
