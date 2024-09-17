@@ -83,9 +83,9 @@
         logical :: iflag_4_composit_buo = .FALSE.
 !
 !>        Force flag for Filtered inertia term
-        logical :: iflag_4_filter_inertia = .FALSE.
+        logical :: flag_filter_inertia = .FALSE.
 !>        Force flag for Filtered Lorentz force
-        logical :: iflag_4_filter_lorentz = .FALSE.
+        logical :: flag_filter_lorentz =  .FALSE.
 !>        Force flag for filtered thermal buoyancy
         logical :: flag_filter_gravity =  .FALSE.
 !>        Force flag for filtered compositional buoyancy

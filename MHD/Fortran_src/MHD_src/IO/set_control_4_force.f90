@@ -80,7 +80,7 @@
 !
       fl_prop%flag_filter_gravity =  .FALSE.
       fl_prop%flag_filter_comp_buo = .FALSE.
-      fl_prop%iflag_4_filter_lorentz =  .FALSE.
+      fl_prop%flag_filter_lorentz =  .FALSE.
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         fl_prop%num_force = 0
@@ -125,14 +125,14 @@
      &       ) fl_prop%iflag_4_coriolis = .TRUE.
 !
           if(cmp_no_case(tmpchara, hd_filtered_inertia)) then
-            fl_prop%iflag_4_filter_inertia = .TRUE.
+            fl_prop%flag_filter_inertia = .TRUE.
             fl_prop%iflag_4_inertia = .FALSE.
           end if
 !
           if(cmp_no_case(tmpchara, lorentz_label)) then
             fl_prop%iflag_4_lorentz = .TRUE.
           else if(cmp_no_case(tmpchara, hd_filtered_Lorentz)) then
-            fl_prop%iflag_4_filter_lorentz = .TRUE.
+            fl_prop%flag_filter_lorentz = .TRUE.
           end if
 !
         end do

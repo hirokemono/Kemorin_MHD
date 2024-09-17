@@ -53,20 +53,20 @@
 !
       logical :: flag
 !
-      flag =   fl_prop%iflag_4_filter_inertia                           &
-     &    .or. fl_prop%iflag_4_filter_lorentz                           &
+      flag =   fl_prop%flag_filter_inertia                              &
+     &    .or. fl_prop%flag_filter_lorentz                              &
      &    .or. fl_prop%flag_filter_gravity                              &
      &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
 !$omp parallel
-      if(fl_prop%iflag_4_filter_inertia) then
+      if(fl_prop%flag_filter_inertia) then
         call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_m_advect,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_lorentz) then
+      if(fl_prop%flag_filter_lorentz) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_lorentz,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -100,20 +100,20 @@
 !
       logical :: flag
 !
-      flag =   fl_prop%iflag_4_filter_inertia                           &
-     &    .or. fl_prop%iflag_4_filter_lorentz                           &
+      flag =   fl_prop%flag_filter_inertia                              &
+     &    .or. fl_prop%flag_filter_lorentz                              &
      &    .or. fl_prop%flag_filter_gravity                              &
      &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
 !$omp parallel
-!      if(fl_prop%iflag_4_filter_inertia) then
+!      if(fl_prop%flag_filter_inertia) then
 !        call add_div_advection_to_force                                &
 !     &     (ipol_base%i_press, ipol_div_fil_frc%i_m_advect,            &
 !     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      end if
 !
-      if(fl_prop%iflag_4_filter_lorentz) then
+      if(fl_prop%flag_filter_lorentz) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_lorentz,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

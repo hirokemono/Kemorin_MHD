@@ -88,8 +88,8 @@
       logical :: flag
 !
 !
-      flag =   MHD_prop%fl_prop%iflag_4_filter_inertia                  &
-     &    .or. MHD_prop%fl_prop%iflag_4_filter_lorentz                  &
+      flag =   MHD_prop%fl_prop%flag_filter_inertia                     &
+     &    .or. MHD_prop%fl_prop%flag_filter_lorentz                     &
      &    .or. MHD_prop%cd_prop%iflag_4_filter_induction                &
      &    .or. MHD_prop%ht_prop%iflag_4_filter_advection                &
      &    .or. MHD_prop%cp_prop%iflag_4_filter_advection

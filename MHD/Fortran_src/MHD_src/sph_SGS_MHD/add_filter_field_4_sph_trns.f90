@@ -63,7 +63,7 @@
 !
 !
 !   filtered velocity flag
-!      if(       fl_prop%iflag_4_filter_inertia                         &
+!      if(       fl_prop%flag_filter_inertia                            &
 !     &     .or. cd_prop%iflag_4_filter_induction                       &
 !     &     .or. ht_prop%iflag_4_filter_advection                       &
 !     &     .or. cp_prop%iflag_4_filter_advection) then
@@ -72,20 +72,20 @@
      &      trns)
 !      end if
 !   filtered vorticity flag
-!      if(fl_prop%iflag_4_filter_inertia) then
+!      if(fl_prop%flag_filter_inertia) then
         call add_field_4_sph_trns_by_pol(d_rj,                          &
      &      ipol_fil%i_vort, iphys_fil%i_vort, b_trns_fil%i_vort,       &
      &      trns)
 !      end if
 !   filtered magnetic field flag
 !      if(       cd_prop%iflag_4_filter_induction                       &
-!     &     .or. fl_prop%iflag_4_filter_lorentz) then
+!     &     .or. fl_prop%flag_filter_lorentz) then
         call add_field_4_sph_trns_by_pol(d_rj,                          &
      &      ipol_fil%i_magne, iphys_fil%i_magne, b_trns_fil%i_magne,    &
      &      trns)
 !      end if
 !   filtered current density flag
-!      if(fl_prop%iflag_4_filter_lorentz) then
+!      if(fl_prop%flag_filter_lorentz) then
         call add_field_4_sph_trns_by_pol(d_rj,                          &
      &      ipol_fil%i_current, iphys_fil%i_current,                    &
      &      b_trns_fil%i_current, trns)

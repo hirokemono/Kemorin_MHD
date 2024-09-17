@@ -48,14 +48,14 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
 !
 !   filtered advection flag
-        if(fl_prop%iflag_4_filter_inertia) then
+        if(fl_prop%flag_filter_inertia) then
           call add_phys_name_ctl(inertia_by_filtered, field_ctl)
           call add_phys_name_ctl(rot_inertia_by_filtered, field_ctl)
           call add_phys_name_ctl(div_inertia_by_filtered, field_ctl)
         end if  
 !
 !   Lorentz flag
-        if(fl_prop%iflag_4_filter_lorentz) then
+        if(fl_prop%flag_filter_lorentz) then
           call add_phys_name_ctl(Lorentz_force_by_filtered, field_ctl)
           call add_phys_name_ctl(rot_Lorentz_force_by_filtered,         &
      &                           field_ctl)
