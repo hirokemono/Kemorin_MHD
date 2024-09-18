@@ -38,11 +38,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vpol_press                            &
-     &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          my_rank, dt, sph_rj, Plm_WK,          &
-     &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
-     &          fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,                &
+      subroutine const_radial_mat_vpol_press(my_rank, dt, sph_rj,       &
+     &          Plm_WK, fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st,           &
+     &          sph_bc_U, fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,      &
      &          fdm3e_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho,     &
      &          band_vsp_evo)
 !
@@ -54,8 +52,6 @@
       use check_sph_radial_mat
 !
       integer, intent(in) :: my_rank
-      logical, intent(in) :: flag_viscous_variation
-      logical, intent(in) :: flag_ref_density_valiation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(fdm_matrices), intent(in) :: r_2nd
@@ -91,7 +87,8 @@
         coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
       end if
       call cal_sph_vpol_press_sph_matrix                                &
-     &   (flag_viscous_variation, flag_ref_density_valiation,           &
+     &   (fl_prop%flag_viscous_variation,                               &
+     &    fl_prop%flag_ref_density_valiation,                           &
      &    sph_rj, Plm_WK, sph_bc_U, fl_prop%coef_press, coef_dvt,       &
      &    relative_d, h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st,         &
      &    band_vsp_evo)
@@ -100,13 +97,15 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_vpol_press_sph_mat_CTR                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                     &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_vpol_press_sph_mat_ICB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_ICB,                   &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
@@ -116,7 +115,8 @@
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
       else
         call cal_sph_vpol_press_sph_mat_ICB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
@@ -125,7 +125,8 @@
 !   Boundary condition for CMB
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_vpol_press_sph_mat_CMB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_CMB,                   &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
@@ -134,7 +135,8 @@
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
       else
         call cal_sph_vpol_press_sph_mat_CMB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB,                        &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
@@ -160,9 +162,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_hdiv_vpol_diffusion                              &
-     &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          dt, sph_rj, Plm_WK,          &
+      subroutine const_hdiv_vpol_diffusion(dt, sph_rj, Plm_WK,          &
      &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
      &          fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,                &
      &          fdm3e_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho,     &
@@ -176,8 +176,6 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm3e_MHD_boundaries
 !
-      logical, intent(in) :: flag_viscous_variation
-      logical, intent(in) :: flag_ref_density_valiation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(fdm_matrices), intent(in) :: r_2nd
@@ -213,7 +211,8 @@
         coef_dvt = (one - fl_prop%coef_imp) * fl_prop%coef_diffuse * dt
       end if
       call cal_exp_sph_vpol_val_diffuse                                 &
-     &   (flag_viscous_variation, flag_ref_density_valiation,           &
+     &   (fl_prop%flag_viscous_variation,                               &
+     &    fl_prop%flag_ref_density_valiation,                           &
      &    sph_rj, Plm_WK, sph_bc_U, fl_prop%coef_press, coef_dvt,       &
      &    relative_d, h_nu, h_rho, r_2nd, r_n2e_3rd, r_e2n_1st,         &
      &    e_press, ipol_base, ipol_force, ipol_diffusion,               &
@@ -223,13 +222,15 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_exp_sph_vp_val_diffuse_CTR                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_center,                     &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_exp_sph_vp_val_diffuse_ICB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_ICB,                   &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)
@@ -239,7 +240,8 @@
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
       else
         call cal_exp_sph_vp_val_diffuse_ICB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)
@@ -248,7 +250,8 @@
 !   Boundary condition for CMB
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_exp_sph_vp_val_diffuse_CMB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_free_CMB,                   &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)
@@ -257,7 +260,8 @@
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
       else
         call cal_exp_sph_vp_val_diffuse_CMB                             &
-     &     (flag_viscous_variation, flag_ref_density_valiation,         &
+     &     (fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj, Plm_WK, sph_bc_U, fdm3e_CMB,                        &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)

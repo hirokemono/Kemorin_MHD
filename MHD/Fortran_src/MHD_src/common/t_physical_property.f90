@@ -91,11 +91,6 @@
 !>        Force flag for filtered compositional buoyancy
         logical :: flag_filter_comp_buo = .FALSE.
 !
-!>        Force flag for filtered compositional buoyancy
-        logical :: flag_viscous_variation =     .FALSE.
-!>        Force flag for filtered compositional buoyancy
-        logical :: flag_ref_density_valiation = .FALSE.
-!
 !>       coefficient for Coriolis force
         real  (kind=kreal) :: coef_cor = zero
 !>       coefficient for chemical Lorentz force
@@ -105,6 +100,27 @@
 !>       coefficient for chemical buoyancy
         real  (kind=kreal) :: coef_comp_buo = zero
 !
+!>       Flag of radial valuable viscosity
+        logical :: flag_viscous_variation =     .FALSE.
+!>       Flag of radial valuable density
+        logical :: flag_ref_density_valiation = .FALSE.
+!
+!>       Density at inner boundary
+        real(kind = kreal) :: rho_ICB = one
+!>       Density at outer boundary
+        real(kind = kreal) :: rho_CMB = one
+!>       Polytrope index
+        real(kind = kreal) :: idx_polytrope = zero
+!
+!>       radial field index for density variation
+        integer(kind = kint) :: ir_rho =       izero
+!>       radial field index for density variation
+        integer(kind = kint) :: ir_drho_norm = izero
+!>       radial field index for density variation
+        integer(kind = kint) :: ir_nu =        izero
+!>       radial field index for density variation
+        integer(kind = kint) :: ir_dnu_norm =  izero
+!
 !>       flag for gravity type
         integer (kind=kint) :: i_grav
 !>       gravity direction for constant gravity
@@ -113,7 +129,7 @@
         real (kind=kreal) :: sys_rot(3) = (/zero, zero, one/)
 !
 !>        Buoyancy model for FEM
-        integer(kind = kint) :: iflag_FEM_gravity = id_FORCE_ele_int
+        integer(kind = kint) :: iflag_FEM_gravity =  id_FORCE_ele_int
 !>        Coriolis force model for FEM
         integer(kind = kint) :: iflag_FEM_coriolis = id_FORCE_ele_int
 !>        Coriolis force model for FEM
