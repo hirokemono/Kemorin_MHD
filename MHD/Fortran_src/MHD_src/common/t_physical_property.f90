@@ -105,13 +105,6 @@
 !>       Flag of radial valuable density
         logical :: flag_ref_density_valiation = .FALSE.
 !
-!>       Density at inner boundary
-        real(kind = kreal) :: rho_ICB = one
-!>       Density at outer boundary
-        real(kind = kreal) :: rho_CMB = one
-!>       Polytrope index
-        real(kind = kreal) :: idx_polytrope = zero
-!
 !>       radial field index for density variation
         integer(kind = kint) :: ir_rho =       izero
 !>       radial field index for density variation

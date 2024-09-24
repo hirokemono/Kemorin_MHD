@@ -45,7 +45,6 @@
       module t_ctl_data_valuable_diffuse
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements

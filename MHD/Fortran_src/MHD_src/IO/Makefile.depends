@@ -210,9 +210,9 @@ t_ctl_data_temp_model.o: $(MHD_IO_DIR)/t_ctl_data_temp_model.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_termal_norm.o: $(MHD_IO_DIR)/t_ctl_data_termal_norm.f90 m_precision.o m_machine_parameter.o t_control_array_charareal.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_valuable_density.o: $(MHD_IO_DIR)/t_ctl_data_valuable_density.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_real2.o skip_comment_f.o write_control_elements.o
+t_ctl_data_valuable_density.o: $(MHD_IO_DIR)/t_ctl_data_valuable_density.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_real2.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_valuable_diffuse.o: $(MHD_IO_DIR)/t_ctl_data_valuable_diffuse.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real2.o skip_comment_f.o write_control_elements.o
+t_ctl_data_valuable_diffuse.o: $(MHD_IO_DIR)/t_ctl_data_valuable_diffuse.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real2.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_node_monitor_IO.o: $(MHD_IO_DIR)/t_node_monitor_IO.f90 m_precision.o t_time_data.o t_mesh_data.o t_phys_data.o t_IO_step_parameter.o t_ctl_data_node_monitor.o calypso_mpi.o m_machine_parameter.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
