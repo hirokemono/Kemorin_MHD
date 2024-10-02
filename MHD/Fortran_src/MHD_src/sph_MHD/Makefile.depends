@@ -372,7 +372,9 @@ t_const_wz_coriolis_rtp.o: $(MHD_SPH_DIR)/t_const_wz_coriolis_rtp.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coriolis_terms_rlm.o: $(MHD_SPH_DIR)/t_coriolis_terms_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_rlm_data.o t_poloidal_rotation.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o t_boundary_params_sph_MHD.o t_gaunt_coriolis_rlm.o calypso_mpi.o interact_coriolis_rlm.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_param_val_density.o: $(MHD_SPH_DIR)/t_ctl_param_val_density.f90 m_precision.o t_ctl_data_valuable_density.o skip_comment_f.o
+t_ctl_param_val_density.o: $(MHD_SPH_DIR)/t_ctl_param_val_density.f90 m_precision.o m_constants.o t_ctl_data_valuable_density.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_param_val_diffusion.o: $(MHD_SPH_DIR)/t_ctl_param_val_diffusion.f90 m_precision.o m_constants.o t_ctl_data_valuable_diffuse.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_each_sph_boundary_IO_data.o: $(MHD_SPH_DIR)/t_each_sph_boundary_IO_data.f90 m_precision.o t_spheric_rj_data.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o calypso_mpi.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o calypso_mpi_real.o m_machine_parameter.o set_sph_boundary_from_file.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

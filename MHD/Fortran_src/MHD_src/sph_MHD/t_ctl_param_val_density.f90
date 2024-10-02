@@ -40,7 +40,7 @@
 !>       Polytrope index
         real(kind = kreal) :: polytrope_idx = zero
 !
-!>       Number of
+!>       Number of list
         integer(kind = kint) :: num_density_list = 0
 !>       Polytrope index
         real(kind = kreal), allocatable :: density_radius(:)
