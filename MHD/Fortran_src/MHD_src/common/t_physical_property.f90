@@ -157,6 +157,11 @@
 !>       coefficient for magnetic induction
         real  (kind=kreal) :: coef_induct
 !
+!>       radial field index for diffusivity variation
+        integer(kind = kint) :: ir_eta =        izero
+!>       radial field index for diffusivity variation
+        integer(kind = kint) :: ir_deta_norm =  izero
+!
 !>       Ratio of magnetic energy to kinetic energy scale
         real  (kind=kreal) :: me_to_ke_ratio
 !
@@ -189,6 +194,11 @@
         real(kind = kreal) :: coef_diffuse
 !>       coefficient for heat source term
         real(kind = kreal) :: coef_source = zero
+!
+!>       radial field index for diffusivity variation
+        integer(kind = kint) :: ir_kappa =        izero
+!>       radial field index for diffusivity variation
+        integer(kind = kint) :: ir_dkappa_norm =  izero
 !
 !>       coefficient for diffusion reduction for ICB
         real(kind = kreal) :: diffusie_reduction_ICB = one

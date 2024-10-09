@@ -38,8 +38,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vpol_press(my_rank, dt, sph_rj,       &
-     &          Plm_WK, fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st,           &
+      subroutine const_radial_mat_vpol_press(my_rank, dt,               &
+     &          flag_viscous_variation, flag_ref_density_valiation,     &
+     &          sph_rj, Plm_WK, fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st,   &
      &          sph_bc_U, fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,      &
      &          fdm3e_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho,     &
      &          band_vsp_evo)
@@ -52,6 +53,8 @@
       use check_sph_radial_mat
 !
       integer, intent(in) :: my_rank
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(fdm_matrices), intent(in) :: r_2nd

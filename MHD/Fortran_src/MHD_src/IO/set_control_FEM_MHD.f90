@@ -176,6 +176,7 @@
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
+!   Set external magnetic field scale
       call set_coefs_4_magnetic_scale                                   &
      &   (model_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
 !
