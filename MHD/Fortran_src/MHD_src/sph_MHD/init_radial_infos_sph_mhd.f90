@@ -172,9 +172,9 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine init_radius_variations_sph_mhd(bc_IO, sph_grps, MHD_BC, sph, r_2nd,    &
-     &                                MHD_prop, omega_sph,       &
-     &                                sph_MHD_bc)
+      subroutine init_radius_variations_sph_mhd                         &
+     &         (bc_IO, sph_grps, MHD_BC, sph, r_2nd,                    &
+     &          MHD_prop, omega_sph, sph_MHD_bc)
 !
       use set_bc_sph_mhd
       use t_sph_radial_interpolate
@@ -196,16 +196,8 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
       type(phys_data) :: radial_variation
-      type(sph_radial_interpolate) :: r_itp
-      type(time_data) :: t_IO
-      type(field_IO) :: fld_IO
-      integer(kind = kint) :: iend
-      integer(kind = kint) :: icou, i_r, i_den
       integer(kind = kint) :: icou_ref = 0
       integer(kind = kint) :: k
-      real(kind = kreal) :: r_in, r_out, rho_in, rho_out
-      real(kind = kreal) :: beta, N_p, xi_0, p_idx
-      real(kind = kreal) :: c_0, c_1, xi_r, dxi_dr
 !
 !
       icou_ref = 1
@@ -294,23 +286,56 @@
         write(*,*) icou_ref, trim(radial_variation%phys_name(icou_ref))
       end do
 !
+      call set_radial_density_sph_mhd         &
+     &   (sph, r_2nd, MHD_prop, radial_variation)
+!
+      end subroutine init_radius_variations_sph_mhd
+!
+!  -------------------------------------------------------------------
+!
+      subroutine set_radial_density_sph_mhd         &
+     &         (sph, r_2nd, MHD_prop, radial_variation)
+!
+      use set_bc_sph_mhd
+      use t_sph_radial_interpolate
+      use radial_interpolation
+      use const_diffusive_profile
+      use cal_sph_exp_1st_diff
+      use field_file_IO
+      use calypso_mpi_real
+      use transfer_to_long_integers
+      use m_base_field_labels
+!
+      type(sph_grids), intent(in) :: sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
+!
+      type(phys_data), intent(inout) :: radial_variation
+!
+      type(sph_radial_interpolate) :: r_itp
+      type(time_data) :: t_IO
+      type(field_IO) :: fld_IO
+      integer(kind = kint) :: iend
+      integer(kind = kint) :: icou, i_r, i_den
+      integer(kind = kint) :: icou_ref = 0
+      integer(kind = kint) :: k
+      real(kind = kreal) :: r_in, r_out, rho_in, rho_out
+      real(kind = kreal) :: beta, N_p, xi_0, p_idx
+      real(kind = kreal) :: c_0, c_1, xi_r, dxi_dr
+      character(len=kchara), parameter :: radius_nume = 'radius'
+!
       if(my_rank .eq. 0) then
 !
       p_idx =   MHD_prop%polytrope_param%polytrope_idx
       if(p_idx .le. 0.0d0) then
-         if(MHD_prop%polytrope_param%num_density_list .le. 0) then
-            call read_and_alloc_step_field                         &
-     &         (MHD_prop%polytrope_param%density_file_name,        &
+        if(MHD_prop%polytrope_param%num_density_list .le. 0) then
+            call read_and_alloc_step_field                              &
+     &         (MHD_prop%polytrope_param%density_file_name,             &
      &          my_rank, t_IO, fld_IO, iend)
 !
-          i_r = 0
-          i_den = 0
-          icou = 0
-          do k = 1, fld_IO%num_field_IO
-            if(fld_IO%fld_name(k) .eq. 'radius') i_r = icou + 1
-            if(fld_IO%fld_name(k) .eq. 'density') i_den = icou + 1
-            icou = icou + fld_IO%num_comp_IO(k)
-          end do
+          i_r =   find_address_from_field_IO(radius_nume, fld_IO)
+          i_den = find_address_from_field_IO(density%name, fld_IO)
+          write(*,*) 'i_den', i_den, i_r
           call alloc_density_variation_list(fld_IO%nnod_IO,             &
      &                                      MHD_prop%polytrope_param)
           MHD_prop%polytrope_param%density_radius(1:fld_IO%nnod_IO)     &
@@ -347,13 +372,12 @@
         call dealloc_org_radius_interpolate(r_itp)
 !
         call cal_sph_nod_gradient_1d(ione, sph%sph_rj%nidx_rj(1),       &
-     &      sph%sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat, &
+     &      sph%sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat,                   &
      &      radial_variation%d_fld(2,MHD_prop%fl_prop%ir_rho),          &
      &      radial_variation%d_fld(2,MHD_prop%fl_prop%ir_drho_norm))
         radial_variation%d_fld(1,MHD_prop%fl_prop%ir_drho_norm) = zero
         k = sph%sph_rj%nidx_rj(1) + 1
         radial_variation%d_fld(k,MHD_prop%fl_prop%ir_drho_norm) = zero
-!
       else
         r_in =    MHD_prop%polytrope_param%rho_bottom(1)
         r_out =   MHD_prop%polytrope_param%rho_top(1)
@@ -376,15 +400,6 @@
      &          = p_idx * dxi_dr / xi_r
         end do
       end if
-!
-      write(*,*) 'r_in', r_in, r_out
-      write(*,*) 'rho_in', rho_in, rho_out
-      do k = 1, sph%sph_rj%nidx_rj(1)
-        write(*,*) k, sph%sph_rj%radius_1d_rj_r(k),                    &
-     &      sph%sph_rj%ar_1d_rj(k,1),                                  &
-     &      radial_variation%d_fld(k+1,MHD_prop%fl_prop%ir_rho),       &
-     &      radial_variation%d_fld(k+1,MHD_prop%fl_prop%ir_drho_norm)
-      end do
       end if
 !
       call calypso_mpi_bcast_real                                       &
@@ -394,7 +409,39 @@
      &   (radial_variation%d_fld(1,MHD_prop%fl_prop%ir_drho_norm),      &
      &    cast_long(radial_variation%n_point), 0)
 !
-      end subroutine init_radius_variations_sph_mhd
+      do k = 1, sph%sph_rj%nidx_rj(1)
+        write(*,*) k, sph%sph_rj%radius_1d_rj_r(k),                     &
+     &      sph%sph_rj%ar_1d_rj(k,1),                                   &
+     &      radial_variation%d_fld(k+1,MHD_prop%fl_prop%ir_rho),        &
+     &      radial_variation%d_fld(k+1,MHD_prop%fl_prop%ir_drho_norm)
+      end do
+!
+      end subroutine set_radial_density_sph_mhd
+!
+!  -------------------------------------------------------------------
+!
+      integer(kind = kint) function find_address_from_field_IO          &
+     &                                          (target_name, fld_IO)
+!
+      character(len = kchara), intent(in) :: target_name
+      type(field_IO), intent(in) :: fld_IO
+!
+      integer(kind = kint) :: i_field, icou, i
+!
+      i_field = 0
+      icou = 0
+      do i = 1, fld_IO%num_field_IO
+        if(fld_IO%fld_name(i) .eq. target_name) then
+          i_field = icou + 1
+          exit
+        end if
+        icou = icou + fld_IO%num_comp_IO(i)
+      end do
+      if(i_field .le. 0) write(*,*) trim(target_name),                  &
+     &                           ' cannot be found...'
+      find_address_from_field_IO = i_field
+!
+      end function find_address_from_field_IO
 !
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
