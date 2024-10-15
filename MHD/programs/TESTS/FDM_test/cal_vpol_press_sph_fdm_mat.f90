@@ -7,16 +7,6 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,          &
-!!     &          radial_rj_grp, MHD_prop, MHD_BC, sph_MHD_bc)
-!!        type(boundary_spectra), intent(in) :: bc_IO
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(MHD_BC_lists), intent(in) :: MHD_BC
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(group_data), intent(in) :: radial_rj_grp
-!!        real(kind = kreal), intent(in) :: h_rho(nri)
-!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!@endverbatim
 !
       module cal_vpol_press_sph_fdm_mat

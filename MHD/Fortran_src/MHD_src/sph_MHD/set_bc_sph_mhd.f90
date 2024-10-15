@@ -8,14 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,          &
-!!     &          radial_rj_grp, MHD_prop, MHD_BC, sph_MHD_bc)
+!!     &          radial_rj_grp, MHD_prop, radial_variation,            &
+!!     &          MHD_BC, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(phys_data), intent(in) :: radial_variation
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
-!!        real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1))
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine check_bc_sph_mhd(MHD_prop, sph_MHD_bc)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -48,8 +49,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,            &
-     &          radial_rj_grp, MHD_prop, MHD_BC, h_rho, sph_MHD_bc)
+     &          radial_rj_grp, MHD_prop, radial_variation,              &
+     &          MHD_BC, sph_MHD_bc)
 !
+      use t_phys_data
       use m_base_field_labels
 !
       use set_bc_flag_sph_velo
@@ -69,15 +72,27 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(phys_data), intent(in) :: radial_variation
       type(MHD_BC_lists), intent(in) :: MHD_BC
-      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1))
 !
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
-      integer(kind = kint) :: kst
+      integer(kind = kint) :: kst, ked, icomp
+      real(kind = kreal) :: h_rho_in, h_rho_out
 !
 !
-      if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+      if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+        kst = sph_MHD_bc%sph_bc_U%kr_in
+        ked = sph_MHD_bc%sph_bc_U%kr_out
+        icomp = MHD_prop%fl_prop%ir_dnu_norm
+        if(MHD_prop%fl_prop%ir_dnu_norm .gt. 0) then
+          h_rho_in =  radial_variation%d_fld(kst+1,icomp)
+          h_rho_out = radial_variation%d_fld(ked+1,icomp)
+        else
+          h_rho_in =  zero
+          h_rho_out = zero
+        end if
+!
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(bc_IO, sph_rj, radial_rj_grp,          &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
@@ -89,11 +104,12 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_U)
 !
-        kst = sph_MHD_bc%sph_bc_U%kr_in
-        call cal_fdm2_ICB_free_vp(h_rho(kst),                           &
-     &      sph_rj%radius_1d_rj_r(kst), sph_MHD_bc%fdm2_free_ICB)
-        call cal_fdm2_ICB_free_vt(h_rho(kst),                           &
-     &      sph_rj%radius_1d_rj_r(kst), sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vp(h_rho_in,                             &
+     &                            sph_rj%radius_1d_rj_r(kst),           &
+     &                            sph_MHD_bc%fdm2_free_ICB)
+        call cal_fdm2_ICB_free_vt(h_rho_in,                             &
+     &                            sph_rj%radius_1d_rj_r(kst),           &
+     &                            sph_MHD_bc%fdm2_free_ICB)
 !
         call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
      &                             sph_MHD_bc%fdm3e_ICB)
@@ -101,13 +117,14 @@
      &                                  sph_MHD_bc%fdm3e_ICB,           &
      &                                  sph_MHD_bc%fdm3e_free_ICB)
 !
-        kst = sph_MHD_bc%sph_bc_U%kr_out
-        call cal_fdm2_CMB_free_vp(h_rho(kst),                           &
-     &      sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
-        call cal_fdm2_CMB_free_vt(h_rho(kst),                           &
-     &      sph_rj%radius_1d_rj_r(kst-1), sph_MHD_bc%fdm2_free_CMB)
+        call cal_fdm2_CMB_free_vp(h_rho_out,                            &
+     &                            sph_rj%radius_1d_rj_r(ked-1),         &
+     &                            sph_MHD_bc%fdm2_free_CMB)
+        call cal_fdm2_CMB_free_vt(h_rho_out,                            &
+     &                            sph_rj%radius_1d_rj_r(ked-1),         &
+     &                            sph_MHD_bc%fdm2_free_CMB)
 !
-        call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(kst-2),        &
+        call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(ked-2),        &
      &                             sph_MHD_bc%fdm3e_CMB)
         call cal_fdm3e_CMB_free_hdiv_vp(sph_MHD_bc%fdm2_free_CMB,       &
      &                                  sph_MHD_bc%fdm3e_CMB,           &
