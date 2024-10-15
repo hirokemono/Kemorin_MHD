@@ -89,15 +89,15 @@
 !
         call set_sph_radial_diffusivity(my_rank, radius_name,           &
      &      magnetic_diffusivity%name, MHD_prop%cd_prop%ir_eta,         &
-     &      sph%sph_rj, r_2nd, MHD_prop%val_viscous_param,              &
+     &      sph%sph_rj, r_2nd, MHD_prop%val_mag_diffuse_param,          &
      &      radial_variation, r_itp, fld_IO)
         call set_sph_radial_diffusivity(my_rank, radius_name,           &
      &      thermal_diffusivity%name, MHD_prop%ht_prop%ir_kappa,        &
-     &      sph%sph_rj, r_2nd, MHD_prop%val_viscous_param,              &
+     &      sph%sph_rj, r_2nd, MHD_prop%val_thermal_diffuse_param,      &
      &      radial_variation, r_itp, fld_IO)
         call set_sph_radial_diffusivity(my_rank, radius_name,           &
      &      chemical_diffusivity%name, MHD_prop%cp_prop%ir_kappa,       &
-     &      sph%sph_rj, r_2nd, MHD_prop%val_viscous_param,              &
+     &      sph%sph_rj, r_2nd, MHD_prop%val_comp_diffuse_param,         &
      &      radial_variation, r_itp, fld_IO)
       end if
 !
