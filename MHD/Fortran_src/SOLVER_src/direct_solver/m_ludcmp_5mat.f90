@@ -74,7 +74,8 @@
         if(i.gt.n-2) aamax = max( abs(a(i,i+itwo)), aamax)
         if(i.gt.n-1) aamax = max( abs(a(i,i+ione)), aamax)
 !
-        if (aamax.eq.0.0d0) pause 'singular matrix in ludcmp'
+        if (aamax.eq.0.0d0) write(*,*)                                  &
+     &                    '!!!!!!  singular matrix in ludcmp  !!!!!!'
         vv(i) = 1.0d0 / aamax
         idx_org(i) = i
       end do
