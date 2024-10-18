@@ -184,16 +184,6 @@
 !
       call init_reft_rj_data(sph%sph_rj, ipol, refs)
 !
-      write(*,*) my_rank, 'refs%ref_field%n_point',   refs%ref_field%n_point
-      write(*,*) my_rank, 'refs%ref_field%num_phys',  refs%ref_field%num_phys
-      write(*,*) my_rank, 'refs%ref_field%ntot_phys', refs%ref_field%ntot_phys
-      write(*,*) my_rank, 'refs%ref_field%phys_name: ', refs%ref_field%phys_name
-      write(*,*) my_rank, 'refs%ref_field%d_fld: ',   &
-    &    size(refs%ref_field%d_fld,1), size(refs%ref_field%d_fld,2)
-      write(*,*) my_rank, 'refs%ref_field%d_fld: ', refs%ref_field%d_fld(:,1)
-     call calypso_mpi_barrier
-     call calypso_mpi_abort(222, 'Tako')
-!
       call cal_ref_sources_from_d_rj(sph, ipol, rj_fld, refs)
       call load_sph_reference_fields(refs)
       call overwrite_sources_by_reference(sph%sph_rj, refs%iref_base,   &

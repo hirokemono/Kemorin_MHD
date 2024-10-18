@@ -34,6 +34,11 @@
       private :: set_r_variation_data_address
       private :: check_r_variation_data_list
 !
+      character(len = kchara), parameter                                &
+     &        :: r_valiation_file_name = 'Radial_variations_out.dat'
+!
+      private :: output_radial_variation
+!
 !  -------------------------------------------------------------------
 !
       contains
@@ -62,12 +67,11 @@
       integer(kind = kint) :: k
 !
 !
-      radial_variation%num_phys =  count_r_variation_data(MHD_prop)
-      radial_variation%ntot_phys = radial_variation%num_phys
+      radial_variation%num_phys =      count_r_variation_data(MHD_prop)
+      radial_variation%num_phys_viz =  radial_variation%num_phys
+      radial_variation%ntot_phys =     radial_variation%num_phys
       call alloc_phys_name(radial_variation)
       call alloc_phys_data((sph%sph_rj%nidx_rj(1)+1), radial_variation)
-      write(*,*) 'radial_variation%num_phys', radial_variation%num_phys
-      write(*,*) 'radial_variation%ntot_phys', radial_variation%ntot_phys
 !
       call set_r_variation_data_address(MHD_prop, radial_variation)
       call check_r_variation_data_list(MHD_prop, radial_variation)
@@ -106,10 +110,8 @@
      &      cast_long(radial_variation%n_point), 0)
       end do
 !
-      do k = 1, sph%sph_rj%nidx_rj(1)
-        write(*,*) k, sph%sph_rj%radius_1d_rj_r(k),                     &
-     &      sph%sph_rj%ar_1d_rj(k,1), radial_variation%d_fld(k+1,:)
-      end do
+      call output_radial_variation                                      &
+     &   (r_valiation_file_name, radial_variation, fld_IO)
 !
       end subroutine init_radius_variations_sph_mhd
 !
@@ -140,7 +142,15 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(phys_data), intent(inout) :: radial_variation
 !
+      integer(kind = kint) :: i
       integer(kind = kint) :: icou_ref = 0
+!
+!
+      radial_variation%istack_component(0) = 0
+      do i = 1, radial_variation%num_phys
+        radial_variation%num_component(i) =    1
+        radial_variation%istack_component(i) = i
+      end do
 !
       icou_ref = 1
       radial_variation%phys_name(icou_ref) = 'radius'
@@ -201,6 +211,49 @@
 !
 !  -------------------------------------------------------------------
 !
+      subroutine output_radial_variation                                &
+     &         (file_prefix, radial_variation, ref_fld_IO)
+!
+      use calypso_mpi
+      use field_file_IO
+!
+      use copy_rj_phys_data_4_IO
+      use set_sph_extensions
+!
+      character(len = kchara), intent(in) :: file_prefix
+      type(phys_data), intent(in) :: radial_variation
+      type(field_IO), intent(inout) :: ref_fld_IO
+!
+      type(time_data) :: time_IO
+!
+!
+      if(my_rank .ne. 0) return
+      if(radial_variation%num_phys .le. 1) return
+!
+      time_IO%i_time_step = izero
+      time_IO%time = zero
+      time_IO%dt = zero
+!
+      write(*,*) 'radial_variation%num_phys', radial_variation%num_phys
+      write(*,*) 'radial_variation%num_component', radial_variation%num_component
+      write(*,*) 'radial_variation%istack_component', radial_variation%istack_component
+!
+      call copy_rj_phys_name_to_IO                                      &
+     &   (radial_variation%num_phys, radial_variation, ref_fld_IO)
+      call alloc_phys_data_IO(ref_fld_IO)
+      call copy_rj_phys_data_to_IO                                      &
+     &   (radial_variation%num_phys, radial_variation, ref_fld_IO)
+!
+      call write_step_field_file(file_prefix, my_rank,                  &
+     &                           time_IO, ref_fld_IO)
+!
+      call dealloc_phys_data_IO(ref_fld_IO)
+      call dealloc_phys_name_IO(ref_fld_IO)
+!
+      end subroutine output_radial_variation
+!
+! -----------------------------------------------------------------------
+!
       subroutine check_r_variation_data_list(MHD_prop,                  &
      &                                       radial_variation)
 !
@@ -225,6 +278,6 @@
 !
       end subroutine check_r_variation_data_list
 !
-!  -------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       end module init_sph_radius_variations
