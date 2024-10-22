@@ -1,5 +1,6 @@
 #
-calypso_GTK.o: $(C_SRCDIR)/GTK/calypso_GTK.c \
+calypso_GTK.o: \
+  $(C_SRCDIR)/GTK/calypso_GTK.c \
   $(C_SRCDIR)/GTK/calypso_GTK.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 control_combobox_GTK.o: \

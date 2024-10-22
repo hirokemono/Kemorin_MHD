@@ -335,4 +335,33 @@
                            vertexCount:numVertex];
     }
 };
+
+- (void)drawPointObject:(id<MTLRenderCommandEncoder> _Nullable *_Nullable) renderEncoder
+              pipelines:(KemoView3DPipelines *_Nullable) kemo3DPipelines
+                  depth:(id<MTLDepthStencilState> _Nullable *_Nullable) depthState
+              numVertex:(NSUInteger) numVertex
+                 vertex:(id<MTLBuffer> _Nullable *_Nullable) vertices
+                 unites:(KemoViewUnites *_Nullable) monoViewUnites
+ {
+    if(numVertex > 0){
+        [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+        [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+        [*renderEncoder setCullMode:MTLCullModeBack];
+        [*renderEncoder setDepthStencilState:*depthState];
+        
+        [*renderEncoder setRenderPipelineState:kemo3DPipelines->simplePipelineState];
+        [*renderEncoder setVertexBuffer:*vertices
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->modelview_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLModelViewMatrix];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->projection_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLProjectionMatrix];
+        [*renderEncoder drawPrimitives:MTLPrimitiveTypePoint
+                           vertexStart:0
+                           vertexCount:numVertex];
+    }
+};
 @end
