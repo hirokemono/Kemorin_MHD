@@ -33,6 +33,6 @@ void dealloc_Tracer_buffers(struct Tracer_buffers *Tracer_bufs);
 void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                          struct psf_data *tracer_d,
                          struct psf_menu_val *tracer_m,
-                         struct Tracer_buffers *Tracer_bufs);
+                         struct gl_strided_buffer *Tracer_ico_buf);
 
 #endif /*  M_KEMOVIEW_TRACER_BUFFERS_  */

@@ -1188,6 +1188,7 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fieldline_buffers.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_tracer_buffers.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_buffers.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
@@ -1569,6 +1570,7 @@ m_kemoviewer_data.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fieldline_buffers.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_tracer_buffers.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_buffers.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
@@ -1693,6 +1695,7 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fieldline_buffers.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/pthread_fieldline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_tracer_buffers.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_buffers.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
