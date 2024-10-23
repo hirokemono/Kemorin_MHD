@@ -81,7 +81,8 @@ long set_tracer_arrow_to_buf(const long ist_tri,
 void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                          struct psf_data *tracer_d,
                          struct psf_menu_val *tracer_m,
-                         struct gl_strided_buffer *Tracer_ico_buf){
+                         struct gl_strided_buffer *Tracer_ico_buf,
+                         struct gl_strided_buffer *Tracer_dot_buf){
 //                         struct Tracer_buffers *Tracer_bufs){
     Tracer_ico_buf->num_nod_buf = 0;
 //    Tracer_bufs->Tracer_dot_buf->num_nod_buf = 0;
