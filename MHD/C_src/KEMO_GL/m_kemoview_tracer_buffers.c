@@ -85,22 +85,23 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
                          struct gl_strided_buffer *Tracer_dot_buf){
 //                         struct Tracer_buffers *Tracer_bufs){
     Tracer_ico_buf->num_nod_buf = 0;
-//    Tracer_bufs->Tracer_dot_buf->num_nod_buf = 0;
+    Tracer_dot_buf->num_nod_buf = 0;
     if(tracer_m->iflag_draw_viz <= 0) return;
     
     set_color_code_for_fieldlines(tracer_d, tracer_m);
-/*
     long num_points = tracer_d->nnod_viz;
-    set_buffer_address_4_patch(num_points, Tracer_bufs->Tracer_dot_buf);
-    if(Tracer_bufs->Tracer_dot_buf->num_nod_buf>0){
-        resize_strided_buffer(Tracer_bufs->Tracer_dot_buf);
+    set_buffer_address_4_patch(num_points, Tracer_dot_buf);
+    
+    printf("Tracer_dot_buf->num_nod_buf %ld\n", Tracer_dot_buf->num_nod_buf);
+    if(Tracer_dot_buf->num_nod_buf>0){
+        resize_strided_buffer(Tracer_dot_buf);
         
         set_nodes_strided_buffer(IZERO, 
                                  tracer_d->nnod_viz, tracer_d->xyzw_viz,
                                  tracer_d->xyzw_viz, tracer_d->color_nod, 
-                                 tracer_d->xyzw_viz, Tracer_bufs->Tracer_dot_buf);
+                                 tracer_d->xyzw_viz, Tracer_dot_buf);
     };
-*/
+
     double ref_width = 1.5;
     double tube_width;
     if(tracer_m->viz_line_width <= 0.0){
