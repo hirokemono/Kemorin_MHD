@@ -44,7 +44,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     for(i=0;i<4;i++){
         kemo_VAOs->psf_solid_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
     };
-    kemo_VAOs->psf_trans_index_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+    kemo_VAOs->psf_trans_index_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
     for(i=0;i<2;i++){
         kemo_VAOs->psf_trans_index_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
     };
