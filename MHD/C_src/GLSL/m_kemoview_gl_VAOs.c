@@ -250,7 +250,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                               kemo_buffers->MAP_bufs,
                               kemo_VAOs);
     }else{
-        set_tracer_buffer_to_VAO(kemo_buffers->Tracer_buf, kemo_VAOs->tracer_VAO);
+        set_tracer_buffer_to_VAO(kemo_buffers->Tracer_ico_buf, kemo_VAOs->tracer_VAO);
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
 
         const_PSF_gl_texure_name(kemo_mul_psf->psf_a->ipsf_texured,
