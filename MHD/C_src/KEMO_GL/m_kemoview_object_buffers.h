@@ -41,9 +41,7 @@ struct kemoview_buffers{
     struct MAP_buffers       *MAP_bufs;
     
     struct FieldLine_buffers *Fline_bufs;
-
-    struct gl_strided_buffer *Tracer_ico_buf;
-    struct gl_strided_buffer *Tracer_dot_buf;
+    struct Tracer_buffers *Tracer_bufs;
 
     struct MESH_buffers      *MESH_bufs;
     struct gl_strided_buffer *mesh_trns_buf;

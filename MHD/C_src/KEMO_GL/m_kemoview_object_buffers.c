@@ -34,9 +34,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->PSF_lines = init_PSF_line_buffers();
     kemo_buffers->MAP_bufs = init_MAP_buffers();
     
-    kemo_buffers->Fline_bufs = init_FieldLine_buffers();
-    kemo_buffers->Tracer_ico_buf = init_strided_buffer(n_point);
-    kemo_buffers->Tracer_dot_buf = init_strided_buffer(n_point);
+    kemo_buffers->Fline_bufs =     init_FieldLine_buffers();
+    kemo_buffers->Tracer_bufs =    init_Tracer_buffers();
 
     kemo_buffers->MESH_bufs =     init_MESH_buffers();
     kemo_buffers->mesh_trns_buf = init_strided_buffer(n_point);
@@ -60,6 +59,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->mesh_trns_buf);
 
     dealloc_FieldLine_buffers(kemo_buffers->Fline_bufs);
+    dealloc_Tracer_buffers(kemo_buffers->Tracer_bufs);
 
     dealloc_PSF_trans_buffers(kemo_buffers->PSF_transes);
     dealloc_PSF_solid_buffers(kemo_buffers->PSF_solids);
@@ -67,8 +67,6 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_MAP_buffers(kemo_buffers->MAP_bufs);
     
     dealloc_PSF_line_buffers(kemo_buffers->PSF_lines);
-    dealloc_strided_buffer(kemo_buffers->Tracer_ico_buf);
-    dealloc_strided_buffer(kemo_buffers->Tracer_dot_buf);
 
     dealloc_strided_buffer(kemo_buffers->screen_buf);
     dealloc_strided_buffer(kemo_buffers->axis_buf);
@@ -170,8 +168,7 @@ void set_kemoviewer_buffers(struct kemoview_mul_psf *kemo_mul_psf,
         const_tracer_buffer(kemo_buffers->nthreads, view_s,
                             kemo_tracer->tracer_d,
                             kemo_tracer->tracer_m,
-                            kemo_buffers->Tracer_ico_buf,
-                            kemo_buffers->Tracer_dot_buf);
+                            kemo_buffers->Tracer_bufs);
         
         const_solid_mesh_buffer(kemo_buffers->nthreads,
                                 kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
