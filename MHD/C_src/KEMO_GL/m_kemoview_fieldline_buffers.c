@@ -33,6 +33,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct fline_directions *fline_dir,
                              struct psf_menu_val *fline_m,
                              struct FieldLine_buffers *Fline_bufs){
+    Fline_bufs->FLINE_tube_buf->num_nod_buf = 0;
     Fline_bufs->FLINE_line_buf->num_nod_buf = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
         
