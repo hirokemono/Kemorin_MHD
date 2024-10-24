@@ -212,10 +212,10 @@ static void set_fieldline_buffer_to_VAO(struct FieldLine_buffers *Fline_bufs,
     Const_Simple_VAO(fline_VAO[1], Fline_bufs->FLINE_line_buf);
 }
 
-static void set_tracer_buffer_to_VAO(struct gl_strided_buffer *Tracedr_buffer,
+static void set_tracer_buffer_to_VAO(struct Tracer_buffers *Tracer_bufs,
                                      struct VAO_ids **tracer_VAO){
-    Const_Phong_VAO(tracer_VAO[0], Tracedr_buffer);
-//    Const_Simple_VAO(tracer_VAO[1], Fline_bufs->FLINE_line_buf);
+    Const_Phong_VAO(tracer_VAO[0], Tracer_bufs->Tracer_ico_buf);
+//    Const_Simple_VAO(tracer_VAO[1], Tracer_bufs->Tracer_dot_buf);
 }
 
 static void set_draw_messages_to_VAO(struct MESSAGE_buffers *MESSAGE_bufs,
@@ -250,7 +250,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
                               kemo_buffers->MAP_bufs,
                               kemo_VAOs);
     }else{
-        set_tracer_buffer_to_VAO(kemo_buffers->Tracer_bufs->Tracer_ico_buf, kemo_VAOs->tracer_VAO);
+        set_tracer_buffer_to_VAO(kemo_buffers->Tracer_bufs, kemo_VAOs->tracer_VAO);
         set_fieldline_buffer_to_VAO(kemo_buffers->Fline_bufs, kemo_VAOs->fline_VAO);
 
         const_PSF_gl_texure_name(kemo_mul_psf->psf_a->ipsf_texured,
