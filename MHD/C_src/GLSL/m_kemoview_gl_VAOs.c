@@ -182,6 +182,9 @@ static void set_fieldline_buffer_to_VAO(struct FieldLine_buffers *Fline_bufs,
                           Fline_bufs->FLINE_tube_buf,
                           Fline_bufs->FLINE_tube_index_buf);
     Const_Simple_VAO(fline_VAO[1], Fline_bufs->FLINE_line_buf);
+    printf("fline_VAO[0]->npoint_draw  %d %d \n",
+           fline_VAO[0]->npoint_draw,
+           fline_VAO[1]->npoint_draw);
 }
 
 static void set_tracer_buffer_to_VAO(struct Tracer_buffers *Tracer_bufs,
@@ -246,7 +249,12 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     };
     set_draw_messages_to_VAO(kemo_buffers->MESSAGE_bufs, kemo_VAOs);
+    
+    printf("set_initial_cube_VAO in kemo_VAOs->cube_VAO->npoint_draw  %d \n",
+           kemo_VAOs->cube_VAO->npoint_draw);
     set_initial_cube_VAO(kemo_buffers->initial_bufs, kemo_VAOs->cube_VAO);
+    printf("set_initial_cube_VAO end kemo_VAOs->cube_VAO->npoint_draw  %d \n",
+           kemo_VAOs->cube_VAO->npoint_draw);
     return;
 };
 

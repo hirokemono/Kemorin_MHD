@@ -35,8 +35,12 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 void set_initial_cube_VAO(struct initial_cube_buffers *initial_bufs,
                           struct VAO_ids *cube_VAO){
     cube_VAO->npoint_draw = initial_bufs->cube_index_buf->ntot_vertex;
+    printf("set_initial_cube_VAO cube_VAO->npoint_draw  %d \n",
+           cube_VAO->npoint_draw);
 	if(cube_VAO->npoint_draw <= 0) return;
 	cube_surf_VBO(cube_VAO, initial_bufs->cube_buf, initial_bufs->cube_index_buf);
+    printf("cube_surf_VBO cube_VAO->npoint_draw  %d \n",
+           cube_VAO->npoint_draw);
 	glBindVertexArray(0);
 	return;
 };
@@ -47,6 +51,8 @@ void draw_initial_cube(struct transfer_matrices *matrices, struct phong_lights *
     float shiness_tmp[1];
     int nd;
     
+    printf("cube_VAO->npoint_draw  %d \n",
+           cube_VAO->npoint_draw);
     if(cube_VAO->npoint_draw <= 0) return;
     
     for(nd=0;nd<4;nd++){

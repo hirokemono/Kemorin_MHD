@@ -43,6 +43,9 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
     Fline_bufs->FLINE_line_buf->num_nod_buf =       0;
     Fline_bufs->FLINE_tube_buf->num_nod_buf =       0;
     Fline_bufs->FLINE_tube_index_buf->ntot_vertex = 0;
+    printf("Fline_bufs->FLINE_tube_index_buf->ntot_vertex %d %d \n",
+           Fline_bufs->FLINE_tube_buf->num_nod_buf,
+           Fline_bufs->FLINE_tube_index_buf->ntot_vertex);
     if(fline_m->iflag_draw_viz <= 0) return;
     
     long num_edge = count_fieldlines_to_buf(fline_d);
