@@ -42,7 +42,7 @@ void const_fieldlines_buffer(const int nthreads, struct view_element *view_s,
                              struct FieldLine_buffers *Fline_bufs){
     Fline_bufs->FLINE_line_buf->num_nod_buf =       0;
     Fline_bufs->FLINE_tube_buf->num_nod_buf =       0;
-    Fline_bufs->FLINE_tube_index_buf->ntot_vertex = 0;
+//    Fline_bufs->FLINE_tube_index_buf->ntot_vertex = 0;
     if(fline_m->iflag_draw_viz <= 0) return;
     
     long num_edge = count_fieldlines_to_buf(fline_d);

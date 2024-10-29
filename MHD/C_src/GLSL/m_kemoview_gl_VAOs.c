@@ -246,6 +246,7 @@ void set_draw_objects_to_VAO(struct kemoview_mul_psf *kemo_mul_psf,
         set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs);
     };
     set_draw_messages_to_VAO(kemo_buffers->MESSAGE_bufs, kemo_VAOs);
+    
     set_initial_cube_VAO(kemo_buffers->initial_bufs, kemo_VAOs->cube_VAO);
     return;
 };

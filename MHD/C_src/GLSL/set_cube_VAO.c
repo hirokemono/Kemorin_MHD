@@ -19,8 +19,8 @@ void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf,
 {
     GLenum ErrorCheckValue = glGetError();
     
-    Const_Phong_VAO(VAO_quad, gl_buf);
-    
+    Const_Phong_Index_VAO(VAO_quad, gl_buf, index_buf);
+
     glBindVertexArray(VAO_quad->id_VAO);
     glDeleteBuffers(1, &VAO_quad->id_index);
     /* Create index buffer on GPU, and then copy from CPU */

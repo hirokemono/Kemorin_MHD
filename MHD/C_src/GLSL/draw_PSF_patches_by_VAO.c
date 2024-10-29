@@ -88,7 +88,6 @@ void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
     drawgl_textured_elements_VAO(&kemo_shaders->texture_name, matrices, lights,
                                  kemo_shaders, psf_solid_index_VAO[1]);
     glDisable(GL_CULL_FACE);
-    drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[2]);
     drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[4]);
     drawgl_elements_with_phong(matrices, lights, kemo_shaders, psf_solid_index_VAO[5]);
     return;
