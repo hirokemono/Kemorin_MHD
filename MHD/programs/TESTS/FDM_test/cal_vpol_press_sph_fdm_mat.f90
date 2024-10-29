@@ -617,7 +617,7 @@
       end if
 !
       if(flag_ref_density_valiation) then
-        call add_val_density_sph_CTR_mat(sph_rj, Plm_WK%g_sph_rj,       &
+        call add_sph_val_density_CTR_mat(sph_rj, Plm_WK%g_sph_rj,       &
      &      coef_d, relative_d, h_nu, h_rho, fdm3e_center%dmat_vp0,     &
      &      band_vsp_evo%mat)
       end if
@@ -669,7 +669,7 @@
       end if
 !
       if(flag_ref_density_valiation) then
-        call add_exp_sph_hdiv_val_rho_CTR                               &
+        call add_sph_exp_hdiv_val_rho_CTR                               &
      &     (sph_rj, Plm_WK%g_sph_rj, coef_d, relative_d, h_nu, h_rho,   &
      &      fdm3e_center%dmat_vp0, ipol_base%i_velo,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
@@ -2115,7 +2115,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_val_density_sph_CTR_mat(sph_rj, g_sph_rj, coef_d,  &
+      subroutine add_sph_val_density_CTR_mat(sph_rj, g_sph_rj, coef_d,  &
      &          relative_d, h_nu, h_rho, fdm3e_center_mat, mat7)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -2158,11 +2158,11 @@
         end do
 !$omp end parallel do
 !
-      end subroutine add_val_density_sph_CTR_mat
+      end subroutine add_sph_val_density_CTR_mat
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp_sph_hdiv_val_rho_CTR(sph_rj, g_sph_rj,         &
+      subroutine add_sph_exp_hdiv_val_rho_CTR(sph_rj, g_sph_rj,         &
      &          coef_d, relative_d, h_nu, h_rho, fdm3e_center_mat,      &
      &           is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
 !
@@ -2213,7 +2213,7 @@
         end do
 !$omp end parallel do
 !
-      end subroutine add_exp_sph_hdiv_val_rho_CTR
+      end subroutine add_sph_exp_hdiv_val_rho_CTR
 !
 ! -----------------------------------------------------------------------
 !
