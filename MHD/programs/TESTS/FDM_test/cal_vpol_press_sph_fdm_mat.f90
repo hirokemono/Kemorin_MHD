@@ -592,6 +592,7 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm3e_MHD_boundaries
       use t_sph_matrices
+      use sph_valuable_density_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -606,6 +607,8 @@
 !
       type(band_matrices_type), intent(inout)  :: band_vsp_evo
 !
+      real(kind = kreal) :: hdiv_visous_j(0:1,sph_rj%nidx_rj(2))
+!
 !
       call set_vpol_press_sph_center_mat(sph_rj, Plm_WK%g_sph_rj,       &
      &    coef_p, coef_d, fdm3e_center%dmat_vp0, band_vsp_evo%mat)
@@ -617,9 +620,9 @@
       end if
 !
       if(flag_ref_density_valiation) then
-        call add_sph_val_density_CTR_mat(sph_rj, Plm_WK%g_sph_rj,       &
+        call add_sph_val_density_CTR_mat7(sph_rj, Plm_WK%g_sph_rj,      &
      &      coef_d, relative_d, h_nu, h_rho, fdm3e_center%dmat_vp0,     &
-     &      band_vsp_evo%mat)
+     &      band_vsp_evo%mat, hdiv_visous_j)
       end if
 !
       end subroutine cal_sph_vpol_press_sph_mat_CTR
@@ -637,6 +640,7 @@
       use t_base_field_labels
       use t_base_force_labels
       use t_phys_data
+      use sph_valuable_density_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -653,6 +657,8 @@
       type(phys_data), intent(inout) :: rj_fld
       real(kind = kreal), intent(inout)                                 &
      &                   :: e_hdiv_viscous(sph_rj%nnod_rj)
+!
+      real(kind = kreal) :: hdiv_visous_j(0:1,sph_rj%nidx_rj(2))
 !
 !
       call set_exp_sph_hdiv_viscous_CTR(sph_rj, Plm_WK%g_sph_rj,        &
@@ -673,7 +679,7 @@
      &     (sph_rj, Plm_WK%g_sph_rj, coef_d, relative_d, h_nu, h_rho,   &
      &      fdm3e_center%dmat_vp0, ipol_base%i_velo,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
-     &      e_hdiv_viscous)
+     &      e_hdiv_viscous, hdiv_visous_j)
       end if
 !
       end subroutine cal_exp_sph_vp_val_diffuse_CTR
@@ -2112,108 +2118,6 @@
 !$omp end parallel do
 !
       end subroutine add_exp_sph_hdiv_val_nu_CTR
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_sph_val_density_CTR_mat(sph_rj, g_sph_rj, coef_d,  &
-     &          relative_d, h_nu, h_rho, fdm3e_center_mat, mat7)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),17)
-      real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: j
-      real(kind = kreal) :: r_mid, ar_mid(3), d_mid, c_d2, c_d1, c_d0
-      real(kind = kreal) :: hdiv_visous(0:1)
-!
-!
-        d_mid = relative_d(1)
-        r_mid = half * sph_rj%radius_1d_rj_r(1)
-        ar_mid(1) = one / r_mid
-        ar_mid(2) = ar_mid(1) * ar_mid(1)
-        ar_mid(3) = ar_mid(1) * ar_mid(2)
-!
-        c_d2 = h_rho(1,0)
-        c_d1 = two * ar_mid(1) * h_rho(1,0)  + h_rho(1,1)               &
-     &        + h_nu(1) * h_rho(1,0)
-!$omp parallel do private(j,c_d0,hdiv_visous)
-        do j = 1, sph_rj%nidx_rj(2)
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(1,0) * two / three
-          hdiv_visous( 0:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,1))
-!
-!          mat7(4,1,j) = coef_p
-!
-          mat7(3,2,j) = mat7(3,2,j) - hdiv_visous(0)
-          mat7(1,4,j) = mat7(1,4,j) - hdiv_visous(1)
-        end do
-!$omp end parallel do
-!
-      end subroutine add_sph_val_density_CTR_mat
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_sph_exp_hdiv_val_rho_CTR(sph_rj, g_sph_rj,         &
-     &          coef_d, relative_d, h_nu, h_rho, fdm3e_center_mat,      &
-     &           is_velo, n_point, ntot_phys_rj, d_rj, e_hdiv_viscous)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),17)
-      real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
-!
-      integer(kind = kint), intent(in) :: is_velo
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real(kind = kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
-!
-      real(kind = kreal), intent(inout) :: e_hdiv_viscous(n_point)
-!
-      integer(kind = kint) :: j
-      integer(kind = kint) :: inod, iele, i_p1
-      real(kind = kreal) :: r_mid, ar_mid(3), d_mid, c_d2, c_d1, c_d0
-      real(kind = kreal) :: hdiv_visous(0:1)
-!
-!
-        d_mid = relative_d(1)
-        r_mid = half * sph_rj%radius_1d_rj_r(1)
-        ar_mid(1) = one / r_mid
-        ar_mid(2) = ar_mid(1) * ar_mid(1)
-        ar_mid(3) = ar_mid(1) * ar_mid(2)
-!
-        c_d2 = h_rho(1,0)
-        c_d1 = two * ar_mid(1) * h_rho(1,0)  + h_rho(1,1)               &
-     &        + h_nu(1) * h_rho(1,0)
-!$omp parallel do private(j,c_d0,i_p1,iele,inod,hdiv_visous)
-        do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (j-1) * sph_rj%istep_rj(2)
-          i_p1 = iele + sph_rj%istep_rj(2)
-          inod = iele
-!
-          c_d0 = - g_sph_rj(j,3)*ar_mid(2)  * h_rho(1,0) * two / three
-          hdiv_visous( 0:1)                                             &
-     &              = coef_d * d_mid * (c_d2 * fdm3e_center_mat(0:1,3)  &
-     &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
-     &                                + c_d0 * fdm3e_center_mat(0:1,1))
-!
-          e_hdiv_viscous(iele) = d_mid * e_hdiv_viscous(iele)           &
-     &                          + hdiv_visous( 0) * d_rj(inod,is_velo)  &
-     &                          + hdiv_visous( 1) * d_rj(i_p1,is_velo)
-        end do
-!$omp end parallel do
-!
-      end subroutine add_sph_exp_hdiv_val_rho_CTR
 !
 ! -----------------------------------------------------------------------
 !

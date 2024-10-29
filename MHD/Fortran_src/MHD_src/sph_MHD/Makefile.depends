@@ -338,6 +338,8 @@ sph_transforms_snapshot.o: $(MHD_SPH_DIR)/sph_transforms_snapshot.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_update_after_evolution.o: $(MHD_SPH_DIR)/sph_update_after_evolution.f90 m_precision.o calypso_mpi.o m_machine_parameter.o const_sph_radial_grad.o const_sph_rotation.o const_sph_diffusion.o t_control_parameter.o t_physical_property.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_radial_matrices_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_work_4_sph_trans.o cal_inner_core_rotation.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sph_valuable_density_CTR.o: $(MHD_SPH_DIR)/sph_valuable_density_CTR.f90 m_precision.o m_constants.o t_spheric_rj_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sum_boundary_coriolis_rlm.o: $(MHD_SPH_DIR)/sum_boundary_coriolis_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_phys_address.o t_gaunt_coriolis_rlm.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_coriolis_terms_rlm.o: $(MHD_SPH_DIR)/sum_coriolis_terms_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_rlm_data.o t_phys_address.o t_base_field_labels.o t_poloidal_rotation.o t_gaunt_coriolis_rlm.o
