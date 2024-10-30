@@ -593,8 +593,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use t_sph_matrices
       use sph_hdiv_viscousity_CTR
-      use sph_valuable_viscosity_CTR
-      use sph_valuable_density_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -612,20 +610,12 @@
       real(kind = kreal) :: hdiv_visous_j(0:1,sph_rj%nidx_rj(2))
 !
 !
-      call set_sph_vpol_press_CTR_mat7(sph_rj, Plm_WK%g_sph_rj,         &
-     &    coef_p, coef_d, fdm3e_center%dmat_vp0, band_vsp_evo%mat)
-!
-      if(flag_viscous_variation) then
-        call add_sph_val_viscosity_CTR_mat7                             &
-     &     (sph_rj, Plm_WK%g_sph_rj, coef_d, relative_d, h_nu,          &
-     &      fdm3e_center%dmat_vp0, band_vsp_evo%mat, hdiv_visous_j)
-      end if
-!
-      if(flag_ref_density_valiation) then
-        call add_sph_val_density_CTR_mat7(sph_rj, Plm_WK%g_sph_rj,      &
-     &      coef_d, relative_d, h_nu, h_rho, fdm3e_center%dmat_vp0,     &
-     &      band_vsp_evo%mat, hdiv_visous_j)
-      end if
+      call set_sph_vpol_press_CTR_mat7                                  &
+     &  (flag_viscous_variation, flag_ref_density_valiation,            &
+     &   sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                          &
+     &   sph_rj%radius_1d_rj_r(1), Plm_WK%g_sph_rj, coef_p, coef_d,     &
+     &   relative_d(1), h_nu(1), h_rho(1,0), h_rho(1,1),                &
+     &   fdm3e_center%dmat_vp0, hdiv_visous_j, band_vsp_evo%mat)
 !
       end subroutine cal_sph_vpol_press_sph_mat_CTR
 !
@@ -643,8 +633,6 @@
       use t_base_force_labels
       use t_phys_data
       use sph_hdiv_viscousity_CTR
-      use sph_valuable_viscosity_CTR
-      use sph_valuable_density_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -664,36 +652,14 @@
 !
       real(kind = kreal) :: hdiv_visous_j(0:1,sph_rj%nidx_rj(2))
 !
-      integer(kind = kint) :: j, iele
 !
-!
-      call set_sph_exp_hdiv_viscous_CTR(sph_rj, Plm_WK%g_sph_rj,        &
-     &    coef_d, fdm3e_center%dmat_vp0, ipol_base%i_velo,              &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
-     &    e_hdiv_viscous)
-
-!$omp parallel do private(j,iele)
-      do j = 1, sph_rj%nidx_rj(2)
-        iele = 1 + (j-1) * sph_rj%istep_rj(2)
-        e_hdiv_viscous(iele) = relative_d(1) * e_hdiv_viscous(iele)
-      end do
-!$omp end parallel do
-!
-      if(flag_viscous_variation) then
-        call add_sph_exp_hdiv_val_nu_CTR                                &
-     &     (sph_rj, Plm_WK%g_sph_rj, coef_d, relative_d, h_nu,          &
-     &      fdm3e_center%dmat_vp0, ipol_base%i_velo,                    &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
-     &      e_hdiv_viscous, hdiv_visous_j)
-      end if
-!
-      if(flag_ref_density_valiation) then
-        call add_sph_exp_hdiv_val_rho_CTR                               &
-     &     (sph_rj, Plm_WK%g_sph_rj, coef_d, relative_d, h_nu, h_rho,   &
-     &      fdm3e_center%dmat_vp0, ipol_base%i_velo,                    &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
-     &      e_hdiv_viscous, hdiv_visous_j)
-      end if
+      call set_sph_exp_hdiv_viscous_CTR                                 &
+     &  (flag_viscous_variation, flag_ref_density_valiation,            &
+     &   sph_rj%nnod_rj, sph_rj%nidx_rj(2),                             &
+     &   sph_rj%radius_1d_rj_r(1), Plm_WK%g_sph_rj, coef_d,             &
+     &   relative_d(1), h_nu(1), h_rho(1,0), h_rho(1,1),                &
+     &   fdm3e_center%dmat_vp0, rj_fld%d_fld(1,ipol_base%i_velo),       &
+     &   hdiv_visous_j, band_vsp_evo%mat)
 !
       end subroutine cal_exp_sph_vp_val_diffuse_CTR
 !
