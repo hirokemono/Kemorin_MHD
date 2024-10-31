@@ -378,6 +378,8 @@ t_coef_fdm3e_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm3e_MHD_boundaries.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm4_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm4_MHD_boundaries.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_vpol_centre.o: $(MHD_SPH_DIR)/t_coef_fdm4_vpol_centre.f90 m_precision.o m_constants.o forth_fdm_node_coefs.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_const_wz_coriolis_rtp.o: $(MHD_SPH_DIR)/t_const_wz_coriolis_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rtp_data.o t_spheric_rj_data.o calypso_mpi.o calypso_mpi_real.o overwrite_prod_const_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coriolis_terms_rlm.o: $(MHD_SPH_DIR)/t_coriolis_terms_rlm.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_rlm_data.o t_poloidal_rotation.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o t_boundary_params_sph_MHD.o t_gaunt_coriolis_rlm.o calypso_mpi.o interact_coriolis_rlm.o
