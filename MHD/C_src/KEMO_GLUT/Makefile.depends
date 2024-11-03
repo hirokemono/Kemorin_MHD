@@ -163,9 +163,9 @@ kemoview_gtk_Fline_window.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -377,9 +377,9 @@ kemoview_gtk_PSF_isoline_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -577,9 +577,9 @@ kemoview_gtk_PSF_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -786,9 +786,9 @@ kemoview_gtk_PSF_surface_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -986,9 +986,9 @@ kemoview_gtk_PSF_vector_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -1190,9 +1190,9 @@ kemoview_gtk_PSF_window.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -1395,9 +1395,9 @@ kemoview_gtk_axis_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -1592,9 +1592,9 @@ kemoview_gtk_axis_prefs_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -1790,9 +1790,9 @@ kemoview_gtk_evolution_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -1988,9 +1988,9 @@ kemoview_gtk_fieldline_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -2203,9 +2203,9 @@ kemoview_gtk_fline_selectors.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -2400,9 +2400,9 @@ kemoview_gtk_lighting_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -2605,9 +2605,9 @@ kemoview_gtk_main_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -2838,9 +2838,9 @@ kemoview_gtk_menu_button.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -3047,9 +3047,9 @@ kemoview_gtk_mesh_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -3245,9 +3245,9 @@ kemoview_gtk_performance_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -3448,9 +3448,9 @@ kemoview_gtk_preference_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -3654,9 +3654,9 @@ kemoview_gtk_quilt_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -3852,9 +3852,9 @@ kemoview_gtk_rotation_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -4049,9 +4049,9 @@ kemoview_gtk_shading_mode_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -4244,9 +4244,9 @@ kemoview_gtk_tube_pref_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -4440,9 +4440,9 @@ kemoview_gtk_viewmatrix_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -4643,9 +4643,9 @@ kemoview_gtk_viewmode_menu.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -4843,9 +4843,9 @@ tree_view_4_domain_viewer.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -5043,9 +5043,9 @@ tree_view_4_ele_group_viewer.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -5264,9 +5264,9 @@ tree_view_4_nod_group_viewer.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -5464,9 +5464,9 @@ tree_view_4_surf_group_viewer.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -5680,9 +5680,9 @@ tree_view_kemoview_colormap.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -5869,9 +5869,9 @@ view_modifier_glfw.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -6202,9 +6202,9 @@ movie_from_GLFW_by_FFMPEG.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
@@ -6247,9 +6247,9 @@ kemoview_FFMPEG_encoder.o: \
   /usr/local/include/libavutil/error.h \
   /usr/local/include/libavutil/macros.h \
   /usr/local/include/libavutil/avconfig.h \
+  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mem.h \
   /usr/local/include/libavutil/rational.h \
-  /usr/local/include/libavutil/version.h \
   /usr/local/include/libavutil/mathematics.h \
   /usr/local/include/libavutil/intfloat.h \
   /usr/local/include/libavutil/log.h \
