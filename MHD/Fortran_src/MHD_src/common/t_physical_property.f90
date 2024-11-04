@@ -106,13 +106,15 @@
         logical :: flag_ref_density_valiation = .FALSE.
 !
 !>       radial field index for density variation
-        integer(kind = kint) :: ir_rho =       izero
+        integer(kind = kint) :: ir_rho =        izero
 !>       radial field index for density variation
-        integer(kind = kint) :: ir_drho_norm = izero
+        integer(kind = kint) :: ir_drho_norm =  izero
 !>       radial field index for density variation
-        integer(kind = kint) :: ir_nu =        izero
+        integer(kind = kint) :: ir_d2rho_norm = izero
 !>       radial field index for density variation
-        integer(kind = kint) :: ir_dnu_norm =  izero
+        integer(kind = kint) :: ir_nu =         izero
+!>       radial field index for density variation
+        integer(kind = kint) :: ir_dnu_norm =   izero
 !
 !>       flag for gravity type
         integer (kind=kint) :: i_grav

@@ -125,7 +125,7 @@
       integer(kind = kint) :: icou_ref = 0
 !
       icou_ref = 1
-      if(MHD_prop%flag_ref_density_valiation)  icou_ref = icou_ref + 2
+      if(MHD_prop%flag_ref_density_valiation)  icou_ref = icou_ref + 3
       if(MHD_prop%flag_viscous_variation)      icou_ref = icou_ref + 2
       if(MHD_prop%flag_mag_diffuse_variation)  icou_ref = icou_ref + 2
       if(MHD_prop%flag_term_diffuse_variation) icou_ref = icou_ref + 2
@@ -157,13 +157,16 @@
 !
       if(MHD_prop%flag_ref_density_valiation) then
         write(*,*) 'flag_ref_density_valiation ON'
-        MHD_prop%fl_prop%ir_rho =       icou_ref + 1
-        MHD_prop%fl_prop%ir_drho_norm = icou_ref + 2
+        MHD_prop%fl_prop%ir_rho =        icou_ref + 1
+        MHD_prop%fl_prop%ir_drho_norm =  icou_ref + 2
+        MHD_prop%fl_prop%ir_d2rho_norm = icou_ref + 3
         radial_variation%phys_name(MHD_prop%fl_prop%ir_rho)             &
     &                           = 'density'
         radial_variation%phys_name(MHD_prop%fl_prop%ir_drho_norm)       &
     &                           = 'normalized_drho_dr'
-        icou_ref = icou_ref + 2
+        radial_variation%phys_name(MHD_prop%fl_prop%ir_drho_norm)       &
+    &                           = 'normalized_d2rho_dr2'
+        icou_ref = icou_ref + 3
       end if
 !
       if(MHD_prop%flag_viscous_variation) then
@@ -262,7 +265,8 @@
       integer(kind = kint) :: icou_ref
 !
       write(*,*) 'ir_rho', MHD_prop%fl_prop%ir_rho
-      write(*,*) 'ir_drho_norm', MHD_prop%fl_prop%ir_drho_norm
+      write(*,*) 'ir_drho_norm',  MHD_prop%fl_prop%ir_drho_norm
+      write(*,*) 'ir_d2rho_norm', MHD_prop%fl_prop%ir_d2rho_norm
 !
       write(*,*) 'ir_nu', MHD_prop%fl_prop%ir_nu
       write(*,*) 'ir_dnu_norm', MHD_prop%fl_prop%ir_dnu_norm

@@ -107,11 +107,20 @@
      &      radial_variation%n_point, radial_variation%d_fld(1,1),      &
      &      radial_variation%d_fld(1,ir_density  ),                     &
      &      radial_variation%d_fld(1,ir_density+1), r_itp)
+!
+        call cal_sph_nod_gradient_1d(ione, sph_rj%nidx_rj(1),           &
+     &      sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat,                       &
+     &      radial_variation%d_fld(2,ir_density+1),                     &
+     &      radial_variation%d_fld(2,ir_density+2))
+        radial_variation%d_fld(2,ir_density+1) = zero
+        k = sph_rj%nidx_rj(1) + 1
+        radial_variation%d_fld(k,ir_density+2) = zero
       else
         call set_sph_polytrope_density                                  &
      &     (sph_rj, polytrope_param, radial_variation%n_point,          &
      &      radial_variation%d_fld(1,ir_density  ),                     &
-     &      radial_variation%d_fld(1,ir_density+1))
+     &      radial_variation%d_fld(1,ir_density+1),                     &
+     &      radial_variation%d_fld(1,ir_density+2))
       end if
 !
       end subroutine set_sph_radial_density
@@ -202,7 +211,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_sph_polytrope_density(sph_rj, polytrope_param,     &
-     &                                     n_point, rho_r, drho_norm)
+     &          n_point, rho_r, drho_norm, d2rho_norm)
 !
       use t_ctl_param_val_density
 !
@@ -212,11 +221,12 @@
 !
       real(kind = kreal), intent(inout) :: rho_r(n_point)
       real(kind = kreal), intent(inout) :: drho_norm(n_point)
+      real(kind = kreal), intent(inout) :: d2rho_norm(n_point)
 !
       integer(kind = kint) :: k
       real(kind = kreal) :: r_in, r_out, rho_in, rho_out
       real(kind = kreal) :: beta, N_p, xi_0, p_idx
-      real(kind = kreal) :: c_0, c_1, xi_r, dxi_dr
+      real(kind = kreal) :: c_0, c_1, xi_r, dxi_dr, d2xi_dr
 !
 !
         p_idx =   polytrope_param%polytrope_idx
@@ -231,12 +241,17 @@
         c_1 = (one + beta) * (one - xi_0) / ((one - beta)**2)
 !
         do k = 1, sph_rj%nidx_rj(1)
-          xi_r =   c_0 + c_1 * sph_rj%ar_1d_rj(k,1)
-          dxi_dr =     - c_1 * sph_rj%ar_1d_rj(k,2)
+          xi_r =    c_0 + c_1 * sph_rj%ar_1d_rj(k,1)
+          dxi_dr =      - c_1 * sph_rj%ar_1d_rj(k,2)
+          d2xi_dr = two * c_1 * sph_rj%ar_1d_rj(k,2)                    &
+     &             * sph_rj%ar_1d_rj(k,1)
 !
           rho_r(k+1) =     xi_r**p_idx
           drho_norm(k+1) = p_idx * dxi_dr / xi_r
 !     &        = p_idx * xi_r**(p_idx-1.0d0) * dxi_dr / xi_r**p_idx
+!
+          drho_norm(k+1) = p_idx * (d2xi_dr / xi_r                      &
+     &                    + (dxi_dr / xi_r)**2)
         end do
 !
       end subroutine set_sph_polytrope_density
@@ -291,6 +306,12 @@
 !
       call cal_sph_nod_gradient_1d(ione, sph_rj%nidx_rj(1),             &
      &    sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat, val_r(2), dval_norm(2))
+!
+!$omp parallel workshare
+      dval_norm(2:n_point-1) = dval_norm(2:n_point-1)                   &
+     &                     / val_r(2:n_point-1)
+!$omp end parallel workshare
+!
       dval_norm(1) = zero
       k = sph_rj%nidx_rj(1) + 1
       dval_norm(k) = zero
