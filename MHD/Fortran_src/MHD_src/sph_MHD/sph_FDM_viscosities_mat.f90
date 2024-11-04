@@ -65,9 +65,9 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &            :: mat_grad_p(-n_next+1:n_next)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &           :: mat_viscous(-n_next:n_next,sph_rj%nidx_rj(2))
+!!     &            :: mat_viscous(-n_next:n_next,sph_rj%nidx_rj(2))
 !!        real(kind = kreal), intent(inout)                             &
-!!     &     :: hdiv_visous_mat(-2:1,sph_rj%nidx_rj(2))
+!!     &            :: hdiv_visous_mat(-2:1,sph_rj%nidx_rj(2))
 !!@endverbatim
 !!
       module sph_FDM_viscosities_mat
