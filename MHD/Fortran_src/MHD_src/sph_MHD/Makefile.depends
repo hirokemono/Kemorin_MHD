@@ -78,7 +78,7 @@ cal_sol_sph_MHD_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_MHD_crank.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sol_sph_fluid_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_fluid_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_sph_matrices.o t_boundary_sph_spectr.o t_boundary_data_sph_MHD.o t_coef_fdm2_MHD_boundaries.o set_reference_sph_mhd.o lubksb_357band_mul.o copy_field_smp.o solve_sph_fluid_crank.o set_evoluved_boundaries.o select_exp_velocity_ICB.o select_exp_velocity_CMB.o select_exp_magne_ICB.o select_exp_magne_CMB.o t_physical_property.o t_sph_center_matrix.o t_boundary_params_sph_MHD.o fill_scalar_field.o select_exp_scalar_ICB.o select_exp_scalar_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sph_FDM3e_hdiv_viscous.o: $(MHD_SPH_DIR)/cal_sph_FDM3e_hdiv_viscous.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_fdm_coefs.o
+cal_sph_FDM3e_hdiv_viscous.o: $(MHD_SPH_DIR)/cal_sph_FDM3e_hdiv_viscous.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_bc_fdm_4th_mat.o: $(MHD_SPH_DIR)/cal_sph_bc_fdm_4th_mat.f90 m_precision.o m_machine_parameter.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o coef_fdm4_vpol_nonslip_ICB.o coef_fdm4_vpol_nonslip_CMB.o coef_fdm4_vpol_free_ICB.o coef_fdm4_vpol_free_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<

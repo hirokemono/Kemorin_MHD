@@ -64,7 +64,7 @@
       integer(kind = kint) :: i, k
 !
 !
-      call set_all_layer_sph_spectr(sph_params, sph_rj, pwr)
+      call set_all_layer_sph_spectr(sph_rj, pwr)
 !
       call set_layers_4_sph_spectr(sph_rj, pwr)
 !

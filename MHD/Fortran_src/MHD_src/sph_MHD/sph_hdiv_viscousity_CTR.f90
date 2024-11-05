@@ -10,15 +10,16 @@
 !!@verbatim
 !!      subroutine set_sph_exp_hdiv_viscous_CTR                         &
 !!     &         (flag_viscous_variation, flag_ref_density_valiation,   &
-!!     &          nnod_rj, jmax, istep_j, r_innermost, g_sph_rj, coef_d,&
-!!     &          relative_d, h_nu, h_rho, h_drhodr, fdm3e_center_mat,  &
-!!     &          d_vpol, hdiv_visous_j, e_hdiv_viscous)
+!!     &          nnod_rj, jmax, r_innermost, g_sph_rj,                 &
+!!     &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,    &
+!!     &          fdm3e_center_mat, d_vpol, hdiv_visous_j,              &
+!!     &          e_hdiv_viscous)
 !!        logical, intent(in) :: flag_viscous_variation
 !!        logical, intent(in) :: flag_ref_density_valiation
-!!        integer(kind = kint), intent(in) :: nnod_rj, jmax, istep_j
+!!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: r_innermost
 !!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,17)
-!!        real(kind = kreal), intent(in) :: coef_d
+!!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        real(kind = kreal), intent(in) :: relative_d
 !!        real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
 !!        real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
@@ -56,19 +57,20 @@
 !
       subroutine set_sph_exp_hdiv_viscous_CTR                           &
      &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          nnod_rj, jmax, istep_j, r_innermost, g_sph_rj, coef_d,  &
-     &          relative_d, h_nu, h_rho, h_drhodr, fdm3e_center_mat,    &
-     &          d_vpol, hdiv_visous_j, e_hdiv_viscous)
+     &          nnod_rj, jmax, r_innermost, g_sph_rj,                   &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,      &
+     &          fdm3e_center_mat, d_vpol, hdiv_visous_j,                &
+     &          e_hdiv_viscous)
 !
       use sph_hdiv_viscous_coefs_CTR
       use set_sph_horizontal_div_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
-      integer(kind = kint), intent(in) :: nnod_rj, jmax, istep_j
+      integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: r_innermost
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,17)
-      real(kind = kreal), intent(in) :: coef_d
+      real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d
       real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
@@ -78,12 +80,11 @@
       real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
       real(kind = kreal), intent(inout) :: e_hdiv_viscous(nnod_rj)
 !
-      integer(kind = kint) :: j, iele
+      integer(kind = kint) :: iele
 !
 !
-!$omp parallel do private(j,iele)
-      do j = 1, jmax
-        iele = 1 + (j-1) * istep_j
+!$omp parallel do private(iele)
+      do iele = 1, jmax
         e_hdiv_viscous(iele) = 0.0d0
       end do
 !$omp end parallel do
@@ -92,8 +93,8 @@
      &   (flag_viscous_variation, flag_ref_density_valiation,           &
      &    jmax, r_innermost, g_sph_rj, coef_d, relative_d,              &
      &    h_nu, h_rho, h_drhodr, fdm3e_center_mat, hdiv_visous_j)
-      call add_sph_CTR_exp_horiz_div(nnod_rj, jmax, istep_j,            &
-     &    d_vpol, hdiv_visous_j, e_hdiv_viscous)
+      call add_exp_sph_hdiv_viscous_CTR(nnod_rj, jmax,                  &
+     &    coef_p, hdiv_visous_j, d_vpol, e_hdiv_viscous)
 !
       end subroutine set_sph_exp_hdiv_viscous_CTR
 !
@@ -138,8 +139,8 @@
      &   (flag_viscous_variation, flag_ref_density_valiation,           &
      &    jmax, r_innermost, g_sph_rj, coef_d, relative_d,              &
      &    h_nu, h_rho, h_drhodr, fdm3e_center_mat, hdiv_visous_j)
-      call subtract_sph_CTR_hdiv_mat7                                   &
-     &   (nri, jmax, hdiv_visous_j, mat7)
+      call sub_sph_hdiv_viscous_mat7_CTR(nri, jmax, coef_p,             &
+     &                                   hdiv_visous_j, mat7)
 !
       end subroutine set_sph_vpol_press_CTR_mat7
 !
@@ -184,7 +185,8 @@
      &   (flag_viscous_variation, flag_ref_density_valiation,           &
      &    jmax, r_innermost, g_sph_rj, coef_d, relative_d,              &
      &    h_nu, h_rho, h_drhodr, fdm3e_center_mat, hdiv_visous_j)
-      call subtract_sph_CTR_hdiv_mat9(nri, jmax, hdiv_visous_j, mat9)
+      call sub_sph_hdiv_viscous_mat9_CTR(nri, jmax, coef_p,             &
+     &                                   hdiv_visous_j, mat9)
 !
       end subroutine set_sph_vpol_press_CTR_mat9
 !

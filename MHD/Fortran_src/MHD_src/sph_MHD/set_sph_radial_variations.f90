@@ -77,7 +77,7 @@
 !
       type(time_data) :: t_IO
       integer(kind = kint) :: iend
-      integer(kind = kint) :: i_r, i_den
+      integer(kind = kint) :: i_r, i_den, k
 !
 !
       if(ir_density .le. 0) return

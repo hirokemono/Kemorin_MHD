@@ -656,7 +656,7 @@
       call set_sph_exp_hdiv_viscous_CTR                                 &
      &  (flag_viscous_variation, flag_ref_density_valiation,            &
      &   sph_rj%nnod_rj, sph_rj%nidx_rj(2),                             &
-     &   sph_rj%radius_1d_rj_r(1), Plm_WK%g_sph_rj, coef_d,             &
+     &   sph_rj%radius_1d_rj_r(1), Plm_WK%g_sph_rj, coef_p, coef_d,     &
      &   relative_d(1), h_nu(1), h_rho(1,0), h_rho(1,1),                &
      &   fdm3e_center%dmat_vp0, rj_fld%d_fld(1,ipol_base%i_velo),       &
      &   hdiv_visous_j, band_vsp_evo%mat)
