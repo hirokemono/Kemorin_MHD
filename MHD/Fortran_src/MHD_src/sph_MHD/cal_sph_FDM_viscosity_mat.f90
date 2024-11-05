@@ -1,5 +1,5 @@
-!>@file   cal_whole_sph_FDM_viscosity.f90
-!!@brief  module cal_whole_sph_FDM_viscosity
+!>@file   cal_sph_FDM_viscosity_mat.f90
+!!@brief  module cal_sph_FDM_viscosity_mat
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan, 2020
@@ -33,7 +33,7 @@
 !!     &           :: mat_grad_p(-n_next+1:n_next,nri)
 !!@endverbatim
 !!
-      module cal_whole_sph_FDM_viscosity
+      module cal_sph_FDM_viscosity_mat
 !
       use m_precision
       use m_constants
@@ -270,4 +270,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cal_whole_sph_FDM_viscosity
+      end module cal_sph_FDM_viscosity_mat

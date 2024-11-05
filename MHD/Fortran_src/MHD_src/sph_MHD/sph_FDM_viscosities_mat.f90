@@ -91,7 +91,7 @@
       subroutine sph_FDM_whole_p_grad_mat(n_next, kr_st, kr_ed,         &
      &          sph_rj, coef_p, fdm_e2n_d1_mat, mat_grad_p)
 !
-      use cal_whole_sph_FDM_viscosity
+      use cal_sph_FDM_viscosity_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: n_next
@@ -115,7 +115,7 @@
      &          sph_rj, fl_prop, radial_variation, fdm_nth,             &
      &          g_sph_rj, coef_d, mat_viscous)
 !
-      use cal_whole_sph_FDM_viscosity
+      use cal_sph_FDM_viscosity_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -187,7 +187,7 @@
       subroutine sph_FDM_layer_p_grad_mat(n_next, coef_p,               &
      &                                    fdm_e2n_d1_mat, mat_grad_p)
 !
-      use cal_whole_sph_FDM_viscosity
+      use cal_sph_FDM_viscosity_mat
 !
       integer(kind = kint), intent(in) :: n_next
       real(kind = kreal), intent(in) :: coef_p
@@ -209,7 +209,7 @@
      &          sph_rj, fl_prop, radial_variation, g_sph_rj,            &
      &          coef_d, fdm_d1_mat, fdm_d2_mat, mat_viscous)
 !
-      use cal_whole_sph_FDM_viscosity
+      use cal_sph_FDM_viscosity_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
