@@ -61,6 +61,7 @@
 !
       use t_ctl_param_val_density
       use radial_interpolation
+      use cal_sph_exp_1st_diff
       use field_file_IO
 !
       integer, intent(in) :: my_rank
