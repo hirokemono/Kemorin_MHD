@@ -102,7 +102,7 @@
       mat_taylor_3(1,3) = zero
 !
       mat_taylor_3(2,1) =  zero
-      mat_taylor_3(2,2) = -two / r0 - h_rho
+      mat_taylor_3(2,2) = -(two / r0 + h_rho)
       mat_taylor_3(2,3) =  one
 !
       mat_taylor_3(3,1) = one
