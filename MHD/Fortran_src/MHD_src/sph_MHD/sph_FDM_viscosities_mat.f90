@@ -7,11 +7,6 @@
 !>@brief  Forth order FDM on nodes
 !!
 !!@verbatim
-!!      subroutine sph_FDM_whole_p_grad_mat(n_next, kr_st, kr_ed,       &
-!!     &          sph_rj, coef_p, fdm_e2n_d1_mat, mat_grad_p)
-!!      subroutine sph_FDM_whole_viscosity(n_next, kr_st, kr_ed,        &
-!!     &          sph_rj, fl_prop, radial_variation, fdm_nth,           &
-!!     &          g_sph_rj, coef_d, mat_viscous)
 !!      subroutine sph_FDM_whole_hdiv_viscousity(kr_st, kr_ed,          &
 !!     &          sph_rj, fl_prop, radial_variation, fdm_3e,            &
 !!     &          g_sph_rj, coef_d, hdiv_visous_mat)
@@ -88,66 +83,6 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine sph_FDM_whole_p_grad_mat(n_next, kr_st, kr_ed,         &
-     &          sph_rj, coef_p, fdm_e2n_d1_mat, mat_grad_p)
-!
-      use cal_sph_FDM_viscosity_mat
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: n_next
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in)                                    &
-     &            :: fdm_e2n_d1_mat(sph_rj%nidx_rj(1),-n_next+1:n_next)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &            :: mat_grad_p(-n_next+1:n_next,sph_rj%nidx_rj(1))
-!
-!
-      call set_FDM_pressure_grad_mat(n_next, kr_st, kr_ed,              &
-     &    sph_rj%nidx_rj(1), coef_p, fdm_e2n_d1_mat, mat_grad_p)
-!
-      end subroutine sph_FDM_whole_p_grad_mat
-!
-!  -------------------------------------------------------------------
-!
-      subroutine sph_FDM_whole_viscosity(n_next, kr_st, kr_ed,          &
-     &          sph_rj, fl_prop, radial_variation, fdm_nth,             &
-     &          g_sph_rj, coef_d, mat_viscous)
-!
-      use cal_sph_FDM_viscosity_mat
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
-      type(fdm_matrix), intent(in) :: fdm_nth(2)
-!
-      integer(kind = kint), intent(in) :: n_next
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
-      real(kind = kreal), intent(in)                                    &
-     &                   :: g_sph_rj(sph_rj%nidx_rj(2),17)
-      real(kind = kreal), intent(in) :: coef_d
-!
-      real(kind = kreal), intent(inout)                                 &
-     &            :: mat_viscous(-n_next:n_next,                        &
-     &                           sph_rj%nidx_rj(2),sph_rj%nidx_rj(1))
-!
-!
-      call sph_FDM_viscosity_mat(n_next, kr_st, kr_ed,                  &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
-     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,1),   &
-     &    sph_rj%ar_1d_rj(1,2), g_sph_rj, coef_d,                       &
-     &    radial_variation%d_fld(2,fl_prop%ir_nu),                      &
-     &    radial_variation%d_fld(2,fl_prop%ir_dnu_norm),                &
-     &    radial_variation%d_fld(2,fl_prop%ir_drho_norm),               &
-     &    radial_variation%d_fld(2,fl_prop%ir_d2rho_norm),              &
-     &    fdm_nth(1)%dmat, fdm_nth(2)%dmat, mat_viscous)
-!
-      end subroutine sph_FDM_whole_viscosity
-!
-!  -------------------------------------------------------------------
-!
       subroutine sph_FDM_whole_hdiv_viscousity(kr_st, kr_ed,            &
      &          sph_rj, fl_prop, radial_variation, fdm_3e,              &
      &          g_sph_rj, coef_d, hdiv_visous_mat)
@@ -198,8 +133,8 @@
      &            :: mat_grad_p(-n_next+1:n_next)
 !
 !
-      call set_FDM_pressure_grad_mat(n_next, ione, ione, ione,          &
-     &    coef_p, fdm_e2n_d1_mat(-n_next+1), mat_grad_p(-n_next+1))
+      call set_FDM_pressure_grad_mat(n_next, kr, ione,                  &
+     &    coef_p, fdm_e2n_d1_mat(-n_next+1), mat_grad_p)
 !
       end subroutine sph_FDM_layer_p_grad_mat
 !
@@ -224,10 +159,10 @@
       real(kind = kreal), intent(in) :: fdm_d2_mat(-n_next:n_next)
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: mat_viscous(-n_next:n_next,sph_rj%nidx_rj(2))
+     &           :: mat_viscous(sph_rj%nidx_rj(2),-n_next:n_next)
 !
 !
-      call sph_FDM_viscosity_mat(n_next, ione, ione,                    &
+      call sph_FDM_viscosity_mat(n_next, kr,                            &
      &    fl_prop%flag_viscous_variation,                               &
      &    fl_prop%flag_ref_density_valiation,                           &
      &    ione, sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(kr,1),               &
