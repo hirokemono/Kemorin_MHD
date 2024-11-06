@@ -11,31 +11,38 @@
 !!        type(fdm4_ICB_vpol), intent(in) :: fdm4_vpol_ICB
 !!      subroutine check_4th_CMB_vpol_fdm(fdm4_vpol_CMB)
 !!        type(fdm4_CMB_vpol), intent(in) :: fdm4_vpol_CMB
+!!      subroutine check_4th_CTR_vpol_fdm(fdm4_vpol_CTR)
+!!        type(fdm4_center_vpol), intent(in) :: fdm4_vpol_CTR
+!!      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
+!!        type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at ICB
-!!      d2fdr2 =    fdm4_noslip_ICB%dmat_vp0( 2,3) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp0( 1,3) * d_rj(ICB-1)
+!!      d2fdr2 =    fdm4_noslip_ICB%dmat_vp0( 2,3) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp0( 1,3) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp0( 0,3) * d_rj(ICB  )
-!!      d3fdr3 =    fdm4_noslip_ICB%dmat_vp0( 2,4) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp0( 1,4) * d_rj(ICB-1)
+!!      d3fdr3 =    fdm4_noslip_ICB%dmat_vp0( 2,4) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp0( 1,4) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp0( 0,4) * d_rj(ICB  )
+!!      d4fdr4 =    fdm4_noslip_ICB%dmat_vp0( 2,5) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp0( 1,5) * d_rj(ICB+1)
+!!                + fdm4_noslip_ICB%dmat_vp0( 0,5) * d_rj(ICB  )
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at next of ICB
-!!      dfdr =      fdm4_noslip_ICB%dmat_vp1( 2,2) * d_rj(ICB-3)
-!!                + fdm4_noslip_ICB%dmat_vp1( 1,2) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp1( 0,2) * d_rj(ICB-1)
+!!      dfdr =      fdm4_noslip_ICB%dmat_vp1( 2,2) * d_rj(ICB+3)
+!!                + fdm4_noslip_ICB%dmat_vp1( 1,2) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp1( 0,2) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp1(-1,2) * d_rj(ICB  )
-!!      d2fdr2 =    fdm4_noslip_ICB%dmat_vp1( 2,3) * d_rj(ICB-3)
-!!                + fdm4_noslip_ICB%dmat_vp1( 1,3) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp1( 0,3) * d_rj(ICB-1)
+!!      d2fdr2 =    fdm4_noslip_ICB%dmat_vp1( 2,3) * d_rj(ICB+3)
+!!                + fdm4_noslip_ICB%dmat_vp1( 1,3) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp1( 0,3) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp1(-1,3) * d_rj(ICB  )
-!!      d3fdr3 =    fdm4_noslip_ICB%dmat_vp1( 2,4) * d_rj(ICB-3)
-!!                + fdm4_noslip_ICB%dmat_vp1( 1,4) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp1( 0,4) * d_rj(ICB-1)
+!!      d3fdr3 =    fdm4_noslip_ICB%dmat_vp1( 2,4) * d_rj(ICB+3)
+!!                + fdm4_noslip_ICB%dmat_vp1( 1,4) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp1( 0,4) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp1(-1,4) * d_rj(ICB  )
-!!      d4fdr4 =    fdm4_noslip_ICB%dmat_vp1( 2,5) * d_rj(ICB-3)
-!!                + fdm4_noslip_ICB%dmat_vp1( 1,5) * d_rj(ICB-2)
-!!                + fdm4_noslip_ICB%dmat_vp1( 0,5) * d_rj(ICB-1)
+!!      d4fdr4 =    fdm4_noslip_ICB%dmat_vp1( 2,5) * d_rj(ICB+3)
+!!                + fdm4_noslip_ICB%dmat_vp1( 1,5) * d_rj(ICB+2)
+!!                + fdm4_noslip_ICB%dmat_vp1( 0,5) * d_rj(ICB+1)
 !!                + fdm4_noslip_ICB%dmat_vp1(-1,5) * d_rj(ICB  )
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at CMB
@@ -67,15 +74,18 @@
 !!
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at ICB
-!!      dfdr =      fdm4_free_ICB%dmat_vp0( 2,2) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,2) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,2) * d_rj(ICB  )
-!!      d2fdr2 =    fdm4_free_ICB%dmat_vp0( 2,3) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,3) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,3) * d_rj(ICB  )
-!!      d3fdr3 =    fdm4_free_ICB%dmat_vp0( 2,4) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,4) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,4) * d_rj(ICB  )
+!!      dfdr =      fdm4_free_ICB%dmat_vp1( 2,2) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,2) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,2) * d_rj(1)
+!!      d2fdr2 =    fdm4_free_ICB%dmat_vp1( 2,3) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,3) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,3) * d_rj(1)
+!!      d3fdr3 =    fdm4_free_ICB%dmat_vp1( 2,4) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,4) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,4) * d_rj(1)
+!!      d4fdr4 =    fdm4_free_ICB%dmat_vp1( 2,5) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,5) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,5) * d_rj(1)
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at next of ICB
 !!      dfdr =      fdm4_free_ICB%dmat_vp1( 2,2) * d_rj(ICB+3)
@@ -94,6 +104,39 @@
 !!                + fdm4_free_ICB%dmat_vp1( 1,5) * d_rj(ICB+2)
 !!                + fdm4_free_ICB%dmat_vp1( 0,5) * d_rj(ICB+1)
 !!                + fdm4_free_ICB%dmat_vp1(-1,5) * d_rj(ICB  )
+!!
+!!
+!!   Matrix for poloidal velocity at next of center
+!!      dfdr =      fdm4_vpol_CTR%dmat_vp1( 2,2) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp1( 1,2) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp1( 0,2) * d_rj(1)
+!!      d2fdr2 =    fdm4_vpol_CTR%dmat_vp1( 2,3) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp1( 1,3) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp1( 0,3) * d_rj(1)
+!!      d3fdr3 =    fdm4_vpol_CTR%dmat_vp1( 2,4) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp1( 1,4) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp1( 0,4) * d_rj(1)
+!!      d4fdr4 =    fdm4_vpol_CTR%dmat_vp1( 2,5) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp1( 1,5) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp1( 0,5) * d_rj(1)
+!!
+!!   Matrix for poloidal velocity at 2nd next of center
+!!      dfdr =      fdm4_vpol_CTR%dmat_vp2( 2,2) * d_rj(4)
+!!                + fdm4_vpol_CTR%dmat_vp2( 1,2) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp2( 0,2) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp2(-1,2) * d_rj(1)
+!!      d2fdr2 =    fdm4_vpol_CTR%dmat_vp2( 2,3) * d_rj(4)
+!!                + fdm4_vpol_CTR%dmat_vp2( 1,3) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp2( 0,3) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp2(-1,3) * d_rj(1)
+!!      d3fdr3 =    fdm4_vpol_CTR%dmat_vp2( 2,4) * d_rj(4)
+!!                + fdm4_vpol_CTR%dmat_vp2( 1,4) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp2( 0,4) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp2(-1,4) * d_rj(1)
+!!      d4fdr4 =    fdm4_vpol_CTR%dmat_vp2( 2,5) * d_rj(4)
+!!                + fdm4_vpol_CTR%dmat_vp2( 1,5) * d_rj(3)
+!!                + fdm4_vpol_CTR%dmat_vp2( 0,5) * d_rj(2)
+!!                + fdm4_vpol_CTR%dmat_vp2(-1,5) * d_rj(1)
 !!@endverbatim
 !!
 !!@n @param r_from_ICB(0:3) radius to three next points of ICB
@@ -101,25 +144,43 @@
       module t_coef_fdm4_MHD_boundaries
 !
       use m_precision
-!
       use m_constants
 !
       implicit none
 !
-!
       type fdm4_ICB_vpol
 !>        Matrix to evaluate radial derivative at ICB
-        real(kind = kreal) :: dmat_vp0(0:2,2:4)
+        real(kind = kreal) :: dmat_vp0(0:2,2:5)
 !>        Matrix to evaluate radial derivative at next of ICB
         real(kind = kreal) :: dmat_vp1(-1:2,5)
       end type fdm4_ICB_vpol
 !
       type fdm4_CMB_vpol
 !>        Matrix to evaluate radial derivative at CMB
-        real(kind = kreal) :: dmat_vp0(-2:0,2:4)
+        real(kind = kreal) :: dmat_vp0(-2:0,2:5)
 !>        Matrix to evaluate radial derivative at next of CMB
         real(kind = kreal) :: dmat_vp1(-2:1,2:5)
       end type fdm4_CMB_vpol
+!
+!>      Structure for FDM matrix of center
+      type fdm4_center_vpol
+!>        Matrix to evaluate radial derivative at center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_vp1( 0:2,2:5)
+!>        Matrix to evaluate radial derivative at next of center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_vp2(-1:2,2:5)
+      end type fdm4_center_vpol
+!
+!>      Structure for element to node FDM matrix of center
+      type fdm3_e2n_center_vpol
+!>        Matrix to evaluate radial derivative at center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_pe1( 0:2,2:4)
+!>        Matrix to evaluate radial derivative at next of center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_pe2(-1:2,2:4)
+      end type fdm3_e2n_center_vpol
 !
 !
 ! -----------------------------------------------------------------------
@@ -179,6 +240,60 @@
       write(50,'(1p9E25.15e3)') fdm4_vpol_CMB%dmat_vp1(-2:1,5)
 !
       end subroutine check_4th_CMB_vpol_fdm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_4th_CTR_vpol_fdm(fdm4_vpol_CTR)
+!
+      type(fdm4_center_vpol), intent(in) :: fdm4_vpol_CTR
+!
+!
+      write(50,*) ' fdm4_vpol_CTR%dmat_vp0'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp1(0:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp1(0:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp1(0:2,4)
+      write(50,*) 'matrix for d4fdr4'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp1(0:2,5)
+!
+      write(50,*) ' fdm4_vpol_CTR%dmat_vp1'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp2(-1:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp2(-1:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp2(-1:2,4)
+      write(50,*) 'matrix for d4fdr4'
+      write(50,'(1p9E25.15e3)') fdm4_vpol_CTR%dmat_vp2(-1:2,5)
+!
+      end subroutine check_4th_CTR_vpol_fdm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
+!
+      type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
+!
+!
+      write(50,*) ' fdm3_e2n_CTR%dmat_vp0'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,4)
+!
+      write(50,*) ' fdm3_e2n_CTR%dmat_pe1'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,4)
+!
+      end subroutine check_3rd_e2n_CTR_vpol_fdm
 !
 ! -----------------------------------------------------------------------
 !

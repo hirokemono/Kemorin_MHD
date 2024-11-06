@@ -29,7 +29,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_sph_bc_fdm_4th_mat                               &
-     &         (nri, radius_1d_rj_r, sph_bc_U, sph_MHD_bc)
+     &         (nri, h_rho, radius_1d_rj_r, sph_bc_U, sph_MHD_bc)
 !
       use t_boundary_params_sph_MHD
       use coef_fdm4_vpol_nonslip_ICB
@@ -38,6 +38,7 @@
       use coef_fdm4_vpol_free_CMB
 !
       integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: h_rho
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
@@ -54,10 +55,10 @@
       call cal_fdm4_CMB1_nonslip_vp                                     &
      &  (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_noslip_CMB)
 !
-      call cal_fdm4_ICB0_free_vp                                        &
-     &   (radius_1d_rj_r(sph_bc_U%kr_in), sph_MHD_bc%fdm4_free_ICB)
-      call cal_fdm4_ICB1_free_vp                                        &
-     &   (radius_1d_rj_r(sph_bc_U%kr_in), sph_MHD_bc%fdm4_free_ICB)
+      call cal_fdm4_ICB0_free_vp(h_rho, radius_1d_rj_r(sph_bc_U%kr_in), &
+     &                           sph_MHD_bc%fdm4_free_ICB)
+      call cal_fdm4_ICB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_in),        &
+     &                           sph_MHD_bc%fdm4_free_ICB)
 !
       call cal_fdm4_CMB0_free_vp                                        &
      &   (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_free_CMB)

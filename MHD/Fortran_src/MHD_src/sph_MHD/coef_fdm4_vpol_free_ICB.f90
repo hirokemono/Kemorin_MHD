@@ -7,7 +7,8 @@
 !>@brief Matrix to evaluate radial derivative for free-slip at ICB
 !!
 !!@verbatim
-!!      subroutine cal_fdm4_ICB0_free_vp(r_from_ICB, fdm4_free_ICB)
+!!      subroutine cal_fdm4_ICB0_free_vp(h_rho, r_from_ICB,             &
+!!     &                                 fdm4_free_ICB)
 !!      subroutine cal_fdm4_ICB1_free_vp(r_from_ICB, fdm4_free_ICB)
 !!        type(fdm4_ICB_vpol), intent(inout) :: fdm4_free_ICB
 !!
@@ -107,8 +108,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_fdm4_ICB0_free_vp(r_from_ICB, fdm4_free_ICB)
+      subroutine cal_fdm4_ICB0_free_vp(h_rho, r_from_ICB,               &
+     &                                 fdm4_free_ICB)
 !
+      real(kind = kreal), intent(in) :: h_rho
       real(kind = kreal), intent(in) :: r_from_ICB(0:2)
       type(fdm4_ICB_vpol), intent(inout) :: fdm4_free_ICB
 !
@@ -126,9 +129,9 @@
       mat_taylor_4(1,3) = zero
       mat_taylor_4(1,4) = zero
 !
-      mat_taylor_4(2,1) =  one
-      mat_taylor_4(2,2) =  -r0
-      mat_taylor_4(2,3) =  half * r0*r0
+      mat_taylor_4(2,1) =  zero
+      mat_taylor_4(2,2) = -(two / r0 + h_rho)
+      mat_taylor_4(2,3) =  one
       mat_taylor_4(2,4) =  zero
 !
       mat_taylor_4(3,1) = one
