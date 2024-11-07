@@ -24,7 +24,7 @@
 !!        real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
 !!        real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+!!        real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
 !!        real(kind = kreal), intent(inout) :: e_hdiv_viscous(nnod_rj)
 !!      subroutine set_sph_vpol_press_CTR_mat7                          &
 !!     &         (flag_viscous_variation, flag_ref_density_valiation,   &
@@ -77,7 +77,7 @@
 !
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
       real(kind = kreal), intent(inout) :: e_hdiv_viscous(nnod_rj)
 !
       integer(kind = kint) :: iele
@@ -120,16 +120,16 @@
       real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
       real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
 !
 !
 !$omp parallel workshare
-      hdiv_visous_j(0,1:jmax) = zero
-      hdiv_visous_j(1,1:jmax) = zero
+      hdiv_visous_j(1:jmax,0:1) = zero
+!$omp end parallel workshare
 !
-      mat7(4,1,1:jmax) = coef_p
-!
+!$omp parallel workshare
+      mat7(4,1,1:jmax) = 0
       mat7(3,2,1:jmax) = zero
       mat7(2,3,1:jmax) = zero
       mat7(1,4,1:jmax) = zero
@@ -165,16 +165,16 @@
       real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
       real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !
 !
 !$omp parallel workshare
-      hdiv_visous_j(0,1:jmax) = zero
-      hdiv_visous_j(1,1:jmax) = zero
+      hdiv_visous_j(1:jmax,0:1) = zero
+!$omp end parallel workshare
 !
-      mat9(5,1,1:jmax) = coef_p
-!
+!$omp parallel workshare
+      mat9(5,1,1:jmax) = zero
       mat9(4,2,1:jmax) = zero
       mat9(3,3,1:jmax) = zero
       mat9(2,4,1:jmax) = zero

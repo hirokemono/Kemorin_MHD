@@ -58,7 +58,7 @@
       real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
 !
       real(kind = kreal) :: coef_CTR
       real(kind = kreal) :: ar_mid(3)
@@ -90,7 +90,7 @@
       end if
 !
 !$omp parallel workshare
-      hdiv_visous_j(0:1,1:jmax) = coef_CTR * hdiv_visous_j(0:1,1:jmax)
+      hdiv_visous_j(1:jmax,0:1) = coef_CTR * hdiv_visous_j(1:jmax,0:1)
 !$omp end parallel workshare
 !
       end subroutine s_sph_hdiv_coefficients_CTR
@@ -106,7 +106,7 @@
       real(kind = kreal), intent(in) :: ar_mid(3)
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
 !
       integer(kind = kint) :: j
       real(kind = kreal) :: c_d3, c_d1, c_d0
@@ -117,7 +117,7 @@
         do j = 1, jmax
           c_d1 =        g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
-          hdiv_visous_j( 0:1,j) =       c_d3 * fdm3e_center_mat(0:1,4)  &
+          hdiv_visous_j(j,0:1) =        c_d3 * fdm3e_center_mat(0:1,4)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d0 * fdm3e_center_mat(0:1,1)
         end do
@@ -136,7 +136,7 @@
       real(kind = kreal), intent(in) :: h_nu
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
 !
       integer(kind = kint) :: j
       real(kind = kreal) :: c_d2, c_d1, c_d0
@@ -147,7 +147,7 @@
 !$omp parallel do private(j,c_d0)
         do j = 1, jmax
           c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu
-          hdiv_visous_j(0:1,j) = hdiv_visous_j(0:1,j)                   &
+          hdiv_visous_j(j,0:1) = hdiv_visous_j(j,0:1)                   &
      &                                + c_d2 * fdm3e_center_mat(0:1,3)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d0 * fdm3e_center_mat(0:1,1)
@@ -167,7 +167,7 @@
       real(kind = kreal), intent(in) :: h_nu, h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm3e_center_mat(-2:1,4)
 !
-      real(kind = kreal), intent(inout) :: hdiv_visous_j(0:1,jmax)
+      real(kind = kreal), intent(inout) :: hdiv_visous_j(jmax,0:1)
 !
       integer(kind = kint) :: j
       real(kind = kreal) :: c_d2, c_d1, c_d0
@@ -178,7 +178,7 @@
 !$omp parallel do private(j,c_d0)
         do j = 1, jmax
           c_d0 = - g_sph_rj(j,3)*ar_mid(2)  * h_rho * two / three
-          hdiv_visous_j(0:1,j) = hdiv_visous_j(0:1,j)                   &
+          hdiv_visous_j(j,0:1) = hdiv_visous_j(j,0:1)                   &
      &                                + c_d2 * fdm3e_center_mat(0:1,3)  &
      &                                + c_d1 * fdm3e_center_mat(0:1,2)  &
      &                                + c_d0 * fdm3e_center_mat(0:1,1)

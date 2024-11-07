@@ -47,7 +47,7 @@
 !!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
 !!        real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!!      subroutine subtract_viscous_vp_FDM4_mat(kr, nri, jmax, coef_p,  &
+!!      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax, coef_p,  &
 !!     &          mat3_grad_p, mat4_viscous, hdiv_visous_mat, mat9)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nri, jmax
@@ -222,7 +222,7 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine subtract_viscous_vp_FDM4_mat(kr, nri, jmax, coef_p,    &
+      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax, coef_p,    &
      &          mat3_grad_p, mat4_viscous, hdiv_visous_mat, mat9)
 !
       integer(kind = kint), intent(in) :: kr
@@ -265,7 +265,7 @@
         mat9(1,2*kr+4,j) = mat9(1,2*kr+4,j) - mat4_viscous(j, 2)
       end do
 !
-      end subroutine subtract_viscous_vp_FDM4_mat
+      end subroutine sub_sph_pol_viscous_FDM4_mat
 !
 !  -------------------------------------------------------------------
 !
