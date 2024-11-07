@@ -314,9 +314,11 @@ set_sph_exp_rigid_ICB.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_exp_rigid_ICB_s4t2.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB_s4t2.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_horizontal_div_CTR.o: $(MHD_SPH_DIR)/set_sph_horizontal_div_CTR.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_hdiv_viscous.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscous.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_radial_variations.o: $(MHD_SPH_DIR)/set_sph_radial_variations.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_radial_interpolate.o t_field_data_IO.o t_fdm_coefs.o t_ctl_param_val_density.o radial_interpolation.o cal_sph_exp_1st_diff.o field_file_IO.o t_ctl_param_val_diffusion.o const_diffusive_profile.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -336,7 +338,7 @@ sph_fwd_trans_on_circles.o: $(MHD_SPH_DIR)/sph_fwd_trans_on_circles.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_hdiv_viscous_coefs_CTR.o: $(MHD_SPH_DIR)/sph_hdiv_viscous_coefs_CTR.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_hdiv_viscousity_CTR.o: $(MHD_SPH_DIR)/sph_hdiv_viscousity_CTR.f90 m_precision.o m_constants.o sph_hdiv_viscous_coefs_CTR.o set_sph_horizontal_div_CTR.o
+sph_hdiv_viscousity_CTR.o: $(MHD_SPH_DIR)/sph_hdiv_viscousity_CTR.f90 m_precision.o m_constants.o sph_hdiv_viscous_coefs_CTR.o set_sph_pol_hdiv_viscs_CTR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_mhd_rst_IO_control.o: $(MHD_SPH_DIR)/sph_mhd_rst_IO_control.f90 m_precision.o m_machine_parameter.o calypso_mpi.o m_file_format_switch.o t_time_data.o t_IO_step_parameter.o t_phys_address.o t_phys_data.o t_MHD_file_parameter.o t_file_IO_parameter.o t_field_data_IO.o field_IO_select.o set_sph_restart_IO.o t_spheric_parameter.o r_interpolate_sph_data.o copy_rj_phys_data_4_IO.o const_global_element_ids.o t_spheric_rj_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

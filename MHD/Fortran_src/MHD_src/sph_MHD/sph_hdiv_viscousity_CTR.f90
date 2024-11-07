@@ -63,7 +63,7 @@
      &          e_hdiv_viscous)
 !
       use sph_hdiv_viscous_coefs_CTR
-      use set_sph_horizontal_div_CTR
+      use set_sph_pol_hdiv_viscs_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -108,7 +108,7 @@
      &          hdiv_visous_j, mat7)
 !
       use sph_hdiv_viscous_coefs_CTR
-      use set_sph_horizontal_div_CTR
+      use set_sph_pol_hdiv_viscs_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
@@ -153,7 +153,7 @@
      &          hdiv_visous_j, mat9)
 !
       use sph_hdiv_viscous_coefs_CTR
-      use set_sph_horizontal_div_CTR
+      use set_sph_pol_hdiv_viscs_CTR
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
