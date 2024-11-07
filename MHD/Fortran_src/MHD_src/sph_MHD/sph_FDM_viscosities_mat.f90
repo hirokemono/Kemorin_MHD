@@ -80,14 +80,14 @@
       integer(kind = kint), intent(in) :: kr, nri_fdm
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in)                                    &
-     &                   :: fdm_e2n_d1_mat(-n_next+1:n_next)
+     &                   :: fdm_e2n_d1_mat(nri_fdm,-n_next+1:n_next)
 !
       real(kind = kreal), intent(inout)                                 &
      &            :: mat_grad_p(-n_next+1:n_next)
 !
 !
-      call set_sph_FDM_pressure_grad_mat(n_next, kr, coef_p,            &
-     &    nri_fdm, fdm_e2n_d1_mat(-n_next+1), mat_grad_p)
+      call set_sph_FDM_pressure_grad_mat(n_next, kr, coef_p, nri_fdm,   &
+     &                                   fdm_e2n_d1_mat, mat_grad_p)
 !
       end subroutine sph_FDM_layer_p_grad_mat
 !
