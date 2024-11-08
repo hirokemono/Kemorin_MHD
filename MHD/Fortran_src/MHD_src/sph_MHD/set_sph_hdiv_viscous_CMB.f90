@@ -20,8 +20,6 @@
 !!
 !!      subroutine sub_sph_hdiv_viscous_mat7_CMB                        &
 !!     &         (k_CMB, nri, jmax, coef_p, hdiv_visous_mat_CMB, mat7)
-!!      subroutine sub_sph_hdiv_viscous_mat7_CMB1                       &
-!!     &         (k_CMB, nri, jmax, coef_p, hdiv_visous_mat_CMB1, mat7)
 !!        integer(kind = kint), intent(in) :: k_CMB
 !!        integer(kind = kint), intent(in) :: nri, jmax
 !!        real(kind = kreal), intent(in) :: coef_p
@@ -86,40 +84,6 @@
       end subroutine add_exp_sph_hdiv_viscous_CMB
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sub_sph_hdiv_viscous_mat7_CMB1                         &
-     &         (k_CMB, nri, jmax, coef_p, hdiv_visous_mat_CMB1, mat7)
-!
-      integer(kind = kint), intent(in) :: k_CMB
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat_CMB1(jmax,-2:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        mat7(7,2*k_CMB-6,j) = mat7(7,2*k_CMB-6,j)                       &
-     &                       - hdiv_visous_mat_CMB1(j,-2)
-!       mat7(6,2*k_CMB-5,j) = mat7(6,2*k_CMB-5,j)
-        mat7(5,2*k_CMB-4,j) = mat7(5,2*k_CMB-4,j)                       &
-     &                       - hdiv_visous_mat_CMB1(j,-1)
-!
-        mat7(4,2*k_CMB-3,j) = mat7(4,2*k_CMB-3,j) + coef_p
-!
-        mat7(3,2*k_CMB-2,j) = mat7(3,2*k_CMB-2,j)                       &
-     &                       - hdiv_visous_mat_CMB1(j, 0)
-        mat7(2,2*k_CMB-1,j) = mat7(2,2*k_CMB-1,j)
-        mat7(1,2*k_CMB,  j) = mat7(1,2*k_CMB,  j)                       &
-     &                       - hdiv_visous_mat_CMB1(j, 1)
-      end do
-!$omp end parallel do
-!
-      end subroutine sub_sph_hdiv_viscous_mat7_CMB1
-!
 ! -----------------------------------------------------------------------
 !
       subroutine sub_sph_hdiv_viscous_mat7_CMB                          &

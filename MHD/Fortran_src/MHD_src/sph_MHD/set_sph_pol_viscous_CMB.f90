@@ -40,18 +40,22 @@
 !!
 !!      subroutine sub_sph_pol_viscous_mat7_CMB1(k_CMB, nri, jmax,      &
 !!     &          mat1_grad_p_CMB1, mat2_viscous_CMB1, mat7)
-!!      subroutine sub_sph_pol_viscous_mat7_CMB(k_CMB, nri, jmax, mat7)
+!!      subroutine set_sph_pol_viscous_mat7_CMB(k_CMB, nri, jmax, mat7)
 !!        integer(kind = kint), intent(in) :: k_CMB
 !!        integer(kind = kint), intent(in) :: nri, jmax
 !!        real(kind = kreal), intent(in) :: mat1_grad_p_CMB1( 0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_CMB1(jmax,-1:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!!      subroutine sub_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax,       &
+!!
+!!      subroutine sub_sph_pol_viscous_mat9_CMB1(k_CMB, nri, jmax,      &
 !!     &          mat3_grad_p_CMB1, mat4_viscous_CMB1, mat9)
 !!        integer(kind = kint), intent(in) :: k_CMB
 !!        integer(kind = kint), intent(in) :: nri, jmax
 !!        real(kind = kreal), intent(in) :: mat3_grad_p_CMB1(-1:1)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_CMB1(jmax,-2:1)
+!!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
+!!      subroutine set_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax, mat9)
+!!        integer(kind = kint), intent(in) :: k_CMB, nri, jmax
 !!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !!@endverbatim
 !
@@ -212,7 +216,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sub_sph_pol_viscous_mat7_CMB(k_CMB, nri, jmax, mat7)
+      subroutine set_sph_pol_viscous_mat7_CMB(k_CMB, nri, jmax, mat7)
 !
       integer(kind = kint), intent(in) :: k_CMB, nri, jmax
 !
@@ -234,11 +238,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sub_sph_pol_viscous_mat7_CMB
+      end subroutine set_sph_pol_viscous_mat7_CMB
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sub_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax,         &
+      subroutine sub_sph_pol_viscous_mat9_CMB1(k_CMB, nri, jmax,        &
      &          mat3_grad_p_CMB1, mat4_viscous_CMB1, mat9)
 !
       integer(kind = kint), intent(in) :: k_CMB
@@ -274,6 +278,19 @@
       end do
 !$omp end parallel do
 !
+      end subroutine sub_sph_pol_viscous_mat9_CMB1
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax, mat9)
+!
+      integer(kind = kint), intent(in) :: k_CMB, nri, jmax
+!
+      real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
+!
+      integer(kind = kint) :: j
+!
+!
 !$omp parallel do private(j)
       do j = 1, jmax
         mat9(9,2*k_CMB-4,j) = zero
@@ -290,7 +307,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sub_sph_pol_viscous_mat9_CMB
+      end subroutine set_sph_pol_viscous_mat9_CMB
 !
 ! -----------------------------------------------------------------------
 !
