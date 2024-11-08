@@ -69,7 +69,7 @@
 !
 !$omp parallel do private(j,iele,inod,i_n2,i_n1)
       do j = 1, jmax
-        iele = j + (k_CMB-1) * nri
+        iele = j + (k_CMB-1) * jmax
         inod = iele
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
@@ -145,7 +145,7 @@
 !
         mat9(4,2*k_CMB-2,j) = mat9(4,2*k_CMB-2,j)                       &
      &                       - hdiv_visous_mat_CMB1(j, 0)
-        mat9(3,2*k_CMB-1,j) = mat9(3,2*k_CMB-1,j)
+!        mat9(3,2*k_CMB-1,j) = mat9(3,2*k_CMB-1,j)
         mat9(2,2*k_CMB,  j) = mat9(2,2*k_CMB,  j)                       &
      &                       - hdiv_visous_mat_CMB1(j, 1)
         if(2*k_CMB+1 .gt. 2*nri) mat9(1,2*k_CMB+1,j) = zero

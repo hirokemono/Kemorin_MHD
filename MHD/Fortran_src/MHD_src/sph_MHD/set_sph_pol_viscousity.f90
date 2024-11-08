@@ -74,7 +74,7 @@
 !
 !
       do j = 1, jmax
-        inod = j + (kr-1) * nri
+        inod = j + (kr-1) * jmax
         i_n1 = inod - jmax
         i_p1 = inod + jmax
 !
@@ -107,7 +107,7 @@
 !
 !
       do j = 1, jmax
-        inod = j + (kr-1) * nri
+        inod = j + (kr-1) * jmax
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
         i_p1 = inod + jmax

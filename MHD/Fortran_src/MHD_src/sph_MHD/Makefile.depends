@@ -320,6 +320,8 @@ set_sph_exp_rigid_ICB_s4t2.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB_s4t2.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_hdiv_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_CMB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_hdiv_viscous_ICB.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_hdiv_viscousity.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscousity.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
@@ -327,6 +329,8 @@ set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_
 set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_viscous_ICB.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_viscousity.o: $(MHD_SPH_DIR)/set_sph_pol_viscousity.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

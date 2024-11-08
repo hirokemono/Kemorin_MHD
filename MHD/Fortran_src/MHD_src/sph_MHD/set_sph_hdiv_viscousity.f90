@@ -64,7 +64,7 @@
 !
 !
       do j = 1, jmax
-        iele = j + (kr-1) * nri
+        iele = j + (kr-1) * jmax
         inod = iele
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax

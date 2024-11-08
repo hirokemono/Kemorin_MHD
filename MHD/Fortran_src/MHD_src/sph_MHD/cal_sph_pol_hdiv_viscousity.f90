@@ -174,7 +174,7 @@
 !$omp end parallel do
 !
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
-      do kr = kr_st+2, kr_ed-1
+      do kr = kr_st+1, kr_ed-1
         call sph_FDM_layer_p_grad_mat                                   &
      &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr, coef_p,            &
      &      fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
@@ -315,7 +315,7 @@
 !$omp end parallel do
 !
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
-      do kr = kr_st+2, kr_ed-2
+      do kr = kr_st+1, kr_ed-1
         call sph_FDM_layer_p_grad_mat                                   &
      &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr,                    &
      &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
