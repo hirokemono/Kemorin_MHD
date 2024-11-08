@@ -26,9 +26,10 @@
 !!        real(kind=kreal), intent(in) :: hdiv_visous_mat_CMB1(jmax,-2:1)
 !!        real(kind=kreal), intent(in) :: hdiv_visous_mat_CMB(jmax,-2:0)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!!      subroutine sub_sph_hdiv_viscous_mat9_CMB                        &
-!!     &         (k_CMB, nri, jmax, coef_p,                             &
-!!     &          hdiv_visous_mat_CMB1, hdiv_visous_mat_CMB, mat9)
+!!      subroutine sub_sph_hdiv_viscous_mat9_CMB1(k_CMB, nri, jmax,     &
+!!     &          coef_p, hdiv_visous_mat_CMB1, mat9)
+!!      subroutine sub_sph_hdiv_viscous_mat9_CMB(k_CMB, nri, jmax,      &
+!!     &          coef_p, hdiv_visous_mat_CMB, mat9)
 !!        integer(kind = kint), intent(in) :: k_CMB
 !!        integer(kind = kint), intent(in) :: nri, jmax
 !!        real(kind = kreal), intent(in) :: coef_p
@@ -110,9 +111,8 @@
 !
         mat7(3,2*k_CMB,  j) = mat7(3,2*k_CMB,  j)                       &
      &                       - hdiv_visous_mat_CMB(j, 0)
-!       mat7(2,2*k_CMB+1,j) = mat7(2,2*k_CMB+1,j)
-!       mat7(1,2*k_CMB+2,j) = mat7(1,2*k_CMB+2,j)                       &
-!     &                       - hdiv_visous_mat_CMB(j, 1)
+        if(2*k_CMB+1 .gt. 2*nri) mat7(2,2*k_CMB+1,j) = zero
+        if(2*k_CMB+2 .gt. 2*nri) mat7(1,2*k_CMB+2,j) = zero
       end do
 !$omp end parallel do
 !
@@ -120,15 +120,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sub_sph_hdiv_viscous_mat9_CMB                          &
-     &         (k_CMB, nri, jmax, coef_p,                               &
-     &          hdiv_visous_mat_CMB1, hdiv_visous_mat_CMB, mat9)
+      subroutine sub_sph_hdiv_viscous_mat9_CMB1(k_CMB, nri, jmax,       &
+     &          coef_p, hdiv_visous_mat_CMB1, mat9)
 !
       integer(kind = kint), intent(in) :: k_CMB
       integer(kind = kint), intent(in) :: nri, jmax
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: hdiv_visous_mat_CMB1(jmax,-2:1)
-      real(kind = kreal), intent(in) :: hdiv_visous_mat_CMB(jmax,-2:0)
 !
       real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !
@@ -153,6 +151,22 @@
         if(2*k_CMB+1 .gt. 2*nri) mat9(1,2*k_CMB+1,j) = zero
       end do
 !$omp end parallel do
+!
+      end subroutine sub_sph_hdiv_viscous_mat9_CMB1
+!
+!  -------------------------------------------------------------------
+!
+      subroutine sub_sph_hdiv_viscous_mat9_CMB(k_CMB, nri, jmax,        &
+     &          coef_p, hdiv_visous_mat_CMB, mat9)
+!
+      integer(kind = kint), intent(in) :: k_CMB
+      integer(kind = kint), intent(in) :: nri, jmax
+      real(kind = kreal), intent(in) :: coef_p
+      real(kind = kreal), intent(in) :: hdiv_visous_mat_CMB(jmax,-2:0)
+!
+      real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
+!
+      integer(kind = kint) :: j
 !
 !$omp parallel do private(j)
       do j = 1, jmax

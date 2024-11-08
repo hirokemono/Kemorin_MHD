@@ -317,8 +317,8 @@
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
       do kr = kr_st+2, kr_ed-2
         call sph_FDM_layer_p_grad_mat                                   &
-     &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr, coef_p,            &
-     &      fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
+     &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr,                    &
+     &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                      &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
@@ -370,7 +370,7 @@
 !
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
-      do kr = kr_st+2, kr_ed-1
+      do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (kr, sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,    &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
