@@ -280,7 +280,7 @@
 !
 !$omp parallel do private(j)
       do j = 1, jmax
-!        mat9(9,-3,j) = mat9(9,-3,j)   zero
+!        mat9(9,-3,j) = mat9(9,-3,j)
 !        mat9(8,-2,j) = mat9(8,-2,j) - mat_hdiv_vcs_CTR(j,-2)
 !        mat9(7,-1,j) = mat9(7,-1,j)
 !        mat9(6, 0,j) = mat9(6, 0,j) - mat_hdiv_vcs_CTR(j,-1)

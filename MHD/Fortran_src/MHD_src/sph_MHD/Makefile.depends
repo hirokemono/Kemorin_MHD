@@ -316,11 +316,15 @@ set_sph_exp_rigid_ICB.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_exp_rigid_ICB_s4t2.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB_s4t2.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_hdiv_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_hdiv_viscous.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscous.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_CMB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_radial_variations.o: $(MHD_SPH_DIR)/set_sph_radial_variations.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_radial_interpolate.o t_field_data_IO.o t_fdm_coefs.o t_ctl_param_val_density.o radial_interpolation.o cal_sph_exp_1st_diff.o field_file_IO.o t_ctl_param_val_diffusion.o const_diffusive_profile.o
 	$(F90) -c $(F90OPTFLAGS) $<
