@@ -1,5 +1,5 @@
-!>@file   set_sph_pol_hdiv_viscous.f90
-!!@brief  module set_sph_pol_hdiv_viscous
+!>@file   set_sph_pol_viscousity.f90
+!!@brief  module set_sph_pol_viscousity
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan, 2020
@@ -7,16 +7,6 @@
 !>@brief  Substitute viscousity matrix in each layer
 !!
 !!@verbatim
-!!      subroutine add_exp_sph_hdiv_viscous(kr, nnod_rj, nri, jmax,     &
-!!     &          coef_p, hdiv_visous_mat, d_vpol, press_e,             &
-!!     &          hdiv_viscous_e)
-!!        integer(kind = kint), intent(in) :: kr
-!!        integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
-!!        real(kind = kreal), intent(in) :: coef_p
-!!        real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
-!!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
 !!      subroutine add_exp2_sph_pol_viscous(kr, nnod_rj, nri, jmax,     &
 !!     &          mat1_grad_p, mat2_viscous, d_vpol, press_e,           &
 !!     &          d_viscous_p)
@@ -38,27 +28,23 @@
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax, coef_p,  &
-!!     &          mat1_grad_p, mat2_viscous, hdiv_visous_mat, mat7)
+!!      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax,          &
+!!     &          mat1_grad_p, mat2_viscous, mat7)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: coef_p
 !!        real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
-!!        real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!!      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax, coef_p,  &
-!!     &          mat3_grad_p, mat4_viscous, hdiv_visous_mat, mat9)
+!!      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax,          &
+!!     &          mat3_grad_p, mat4_viscous, mat9)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: coef_p
 !!        real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
-!!        real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
 !!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !!@endverbatim
 !!
-      module set_sph_pol_hdiv_viscous
+      module set_sph_pol_viscousity
 !
       use m_precision
       use m_constants
@@ -68,41 +54,6 @@
 !  -------------------------------------------------------------------
 !
       contains
-!
-!  -------------------------------------------------------------------
-!
-      subroutine add_exp_sph_hdiv_viscous(kr, nnod_rj, nri, jmax,       &
-     &          coef_p, hdiv_visous_mat, d_vpol, press_e,               &
-     &          hdiv_viscous_e)
-!
-      integer(kind = kint), intent(in) :: kr
-      integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
-      real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!
-      real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
-!
-      integer(kind = kint) :: j, i_n1, i_p1, i_n2, inod, iele
-!
-!
-      do j = 1, jmax
-        iele = j + (kr-1) * nri
-        inod = iele
-        i_n1 = inod - jmax
-        i_n2 = i_n1 - jmax
-        i_p1 = inod + jmax
-!
-        hdiv_viscous_e(iele) = hdiv_viscous_e(iele)                     &
-     &                     + hdiv_visous_mat(j,-2) * d_vpol(i_n2)       &
-     &                     + hdiv_visous_mat(j,-1) * d_vpol(i_n1)       &
-     &                     - coef_p *                press_e(iele)      &
-     &                     + hdiv_visous_mat(j, 0) * d_vpol(inod)       &
-     &                     + hdiv_visous_mat(j, 1) * d_vpol(i_p1)
-      end do
-!
-      end subroutine add_exp_sph_hdiv_viscous
 !
 !  -------------------------------------------------------------------
 !
@@ -179,32 +130,18 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax, coef_p,    &
-     &          mat1_grad_p, mat2_viscous, hdiv_visous_mat, mat7)
+      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax,            &
+     &          mat1_grad_p, mat2_viscous, mat7)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
       real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
-      real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
 !
       real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
 !
       integer(kind = kint) :: j
 !
-!
-      do j = 1, jmax
-        mat7(7,2*kr-4,j) = mat7(7,2*kr-4,j) - hdiv_visous_mat(j,-2)
-!        mat7(6,2*kr-3,j) = mat7(6,2*kr-3,j)
-        mat7(5,2*kr-2,j) = mat7(5,2*kr-2,j) - hdiv_visous_mat(j,-1)
-!
-        mat7(4,2*kr-1,j) = mat7(4,2*kr-1,j) + coef_p
-!
-        mat7(3,2*kr,  j) = mat7(3,2*kr,  j) - hdiv_visous_mat(j, 0)
-!        mat7(2,2*kr+1,j) = mat7(2,2*kr+1,j)
-        mat7(1,2*kr+2,j) = mat7(1,2*kr+2,j) - hdiv_visous_mat(j, 1)
-      end do
 !
       do j = 1, jmax
 !        mat7(7,2*kr-3,j) = mat7(7,2*kr-3,j)
@@ -222,34 +159,18 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax, coef_p,    &
-     &          mat3_grad_p, mat4_viscous, hdiv_visous_mat, mat9)
+      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax,            &
+     &          mat3_grad_p, mat4_viscous, mat9)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
       real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
-      real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
 !
       real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !
       integer(kind = kint) :: j
 !
-!
-      do j = 1, jmax
-!        mat9(9,2*kr-5,j) = mat9(9,2*kr-5,j)
-        mat9(8,2*kr-4,j) = mat9(8,2*kr-4,j) - hdiv_visous_mat(j,-2)
-!        mat9(7,2*kr-3,j) = mat9(7,2*kr-3,j)
-        mat9(6,2*kr-2,j) = mat9(6,2*kr-2,j) - hdiv_visous_mat(j,-1)
-!
-        mat9(5,2*kr-1,j) = mat9(5,2*kr-1,j) + coef_p
-!
-        mat9(4,2*kr,  j) = mat9(4,2*kr,  j) - hdiv_visous_mat(j, 0)
-!        mat9(3,2*kr+1,j) = mat9(3,2*kr+1,j)
-        mat9(2,2*kr+2,j) = mat9(2,2*kr+2,j) - hdiv_visous_mat(j, 1)
-!        mat9(1,2*kr+3,j) = mat9(1,2*kr+3,j)
-      end do
 !
       do j = 1, jmax
         mat9(9,2*kr-4,j) = mat9(9,2*kr-4,j) - mat4_viscous(j,-2)
@@ -269,4 +190,4 @@
 !
 !  -------------------------------------------------------------------
 !
-      end module set_sph_pol_hdiv_viscous
+      end module set_sph_pol_viscousity
