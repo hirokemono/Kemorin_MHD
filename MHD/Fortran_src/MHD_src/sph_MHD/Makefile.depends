@@ -116,6 +116,8 @@ cal_sph_pol_hdiv_viscousity.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_viscousity.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_pol_hdiv_vscs_CMB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_CMB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o set_sph_pol_viscousity.o set_sph_hdiv_viscousity.o t_coef_fdm4_MHD_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
+cal_sph_pol_hdiv_vscs_ICB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o set_sph_pol_viscousity.o set_sph_hdiv_viscousity.o t_coef_fdm4_MHD_boundaries.o
+	$(F90) -c $(F90OPTFLAGS) $<
 cal_typical_scale.o: $(MHD_SPH_DIR)/cal_typical_scale.f90 m_precision.o m_constants.o calypso_mpi.o t_sph_typical_scales.o t_field_labels.o t_phys_data.o t_spheric_parameter.o t_spheric_rj_data.o t_boundary_params_sph_MHD.o t_control_array_character.o t_multi_flag_labels.o m_base_field_labels.o m_field_file_format_labels.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_vorticity_terms_adams.o: $(MHD_SPH_DIR)/cal_vorticity_terms_adams.f90 m_precision.o m_t_step_parameter.o t_spheric_rj_data.o t_physical_property.o t_boundary_data_sph_MHD.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o
