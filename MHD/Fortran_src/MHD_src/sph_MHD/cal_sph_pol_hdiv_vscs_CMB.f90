@@ -165,7 +165,8 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat_CMB(sph_rj%nidx_rj(2),-2:1)
 !
-      real(kind = kreal), intent(inout) :: d_viscous_p(sph_rj%nnod_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: d_viscous_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
      &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !
@@ -444,7 +445,7 @@
      &    coef_p, hdiv_visous_mat_CMB(1,-2), mat9)
 !
       call sph_FDM_layer_p_grad_mat                                     &
-     &   (-ione, itwo, (sph_bc_U%kr_out-1), coef_p,                     &
+     &   (-ione, ione, (sph_bc_U%kr_out-1), coef_p,                     &
      &    fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_viscosity_mat                                  &

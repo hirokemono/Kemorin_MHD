@@ -167,9 +167,8 @@
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call add_exp_sph_hdiv_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),   &
-     &      coef_p, hdiv_visous_mat, d_vpol, press_e,                   &
-     &      hdiv_viscous_e)
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), coef_p,              &
+     &      hdiv_visous_mat, d_vpol, press_e, hdiv_viscous_e)
       end do
 !$omp end parallel do
 !
@@ -184,7 +183,7 @@
      &      fdm_2(1)%nri_mat, fdm_2(1)%dmat, fdm_2(2)%dmat,             &
      &      mat2_viscous)
         call add_exp2_sph_pol_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),   &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &      mat1_grad_p, mat2_viscous, d_vpol, press_e, d_viscous_p)
       end do
 !$omp end parallel do
@@ -240,9 +239,8 @@
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call add_exp_sph_hdiv_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),   &
-     &      coef_p, hdiv_visous_mat, d_vpol, press_e,                   &
-     &      hdiv_viscous_e)
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), coef_p,              &
+     &      hdiv_visous_mat, d_vpol, press_e, hdiv_viscous_e)
       end do
 !$omp end parallel do
 !
@@ -257,7 +255,7 @@
      &      fdm_4(1)%nri_mat, fdm_4(1)%dmat, fdm_4(2)%dmat,             &
      &      mat4_viscous)
         call add_exp4_sph_pol_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),   &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &      mat3_grad_p, mat4_viscous, d_vpol, press_e, d_viscous_p)
       end do
 !$omp end parallel do
