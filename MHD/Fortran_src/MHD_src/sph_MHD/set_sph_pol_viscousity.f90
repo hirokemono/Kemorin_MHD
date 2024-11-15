@@ -35,13 +35,6 @@
 !!        real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!!      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax,          &
-!!     &          mat3_grad_p, mat4_viscous, mat9)
-!!        integer(kind = kint), intent(in) :: kr
-!!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
-!!        real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
-!!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !!@endverbatim
 !!
       module set_sph_pol_viscousity
@@ -156,37 +149,6 @@
       end do
 !
       end subroutine sub_sph_pol_viscous_FDM2_mat
-!
-!  -------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_FDM4_mat(kr, nri, jmax,            &
-     &          mat3_grad_p, mat4_viscous, mat9)
-!
-      integer(kind = kint), intent(in) :: kr
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
-      real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
-!
-      real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, jmax
-        mat9(9,2*kr-4,j) = mat9(9,2*kr-4,j) - mat4_viscous(j,-2)
-        mat9(8,2*kr-3,j) = mat9(8,2*kr-3,j) + mat3_grad_p(-1)
-        mat9(7,2*kr-2,j) = mat9(7,2*kr-2,j) - mat4_viscous(j,-1)
-        mat9(6,2*kr-1,j) = mat9(6,2*kr-1,j) + mat3_grad_p(0)
-!
-        mat9(5,2*kr,  j) = mat9(5,2*kr,  j) - mat4_viscous(j, 0)
-!
-        mat9(4,2*kr+1,j) = mat9(4,2*kr+1,j) + mat3_grad_p(1)
-        mat9(3,2*kr+2,j) = mat9(3,2*kr+2,j) - mat4_viscous(j, 1)
-        mat9(2,2*kr+3,j) = mat9(2,2*kr+3,j) + mat3_grad_p(2)
-        mat9(1,2*kr+4,j) = mat9(1,2*kr+4,j) - mat4_viscous(j, 2)
-      end do
-!
-      end subroutine sub_sph_pol_viscous_FDM4_mat
 !
 !  -------------------------------------------------------------------
 !

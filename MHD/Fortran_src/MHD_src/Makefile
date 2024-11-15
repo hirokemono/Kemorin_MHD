@@ -23,7 +23,8 @@ MG_for_MHD   \
 Fortran2003 \
 \
 sph_MHD \
-sph_SGS_MHD
+sph_SGS_MHD \
+radial_FDM
 
 #
 #  -------------------------------------------------------------------------

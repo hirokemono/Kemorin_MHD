@@ -341,6 +341,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM4_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop

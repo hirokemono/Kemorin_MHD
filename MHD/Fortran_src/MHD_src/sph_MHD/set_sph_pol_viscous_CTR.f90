@@ -41,12 +41,6 @@
 !!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,-1:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,nri,jmax)
-!!      subroutine sub_sph_pol_viscous_mat9_CTR1(nri, jmax,             &
-!!     &          mat3_grad_p_CTR1, mat4_viscous_CTR1, mat9)
-!!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CTR1(-1:2)
-!!        real(kind = kreal), intent(in) :: mat4_viscous_CTR1(jmax,-2:2)
-!!        real(kind = kreal), intent(inout) :: mat9(9,nri,jmax)
 !!@endverbatim
 !
       module set_sph_pol_viscous_CTR
@@ -206,68 +200,5 @@
       end subroutine sub_sph_pol_viscous_mat7_CTR1
 !
 !  -------------------------------------------------------------------
-!  -------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_mat9_CTR2(nri, jmax,               &
-     &          mat3_grad_p_CTR1, mat4_viscous_CTR2, mat9)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-!
-      real(kind = kreal), intent(in) :: mat3_grad_p_CTR1(-1:2)
-      real(kind = kreal), intent(in) :: mat4_viscous_CTR2(jmax,-1:2)
-!
-      real(kind = kreal), intent(inout) :: mat9(9,nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, jmax
-!       mat9(9, 0,j) = mat9(9, 0,j) - mat4_viscous_CTR2(j,-2)
-        mat9(8, 1,j) = mat9(8, 1,j) + mat3_grad_p_CTR1(-1)
-        mat9(7, 2,j) = mat9(7, 2,j) - mat4_viscous_CTR2(j,-1)
-        mat9(6, 3,j) = mat9(6, 3,j) + mat3_grad_p_CTR1( 0)
-!
-        mat9(5, 4,j) = mat9(5, 4,j) - mat4_viscous_CTR2(j, 0)
-!
-        mat9(4, 5,j) = mat9(4, 5,j) + mat3_grad_p_CTR1( 1)
-        mat9(3, 6,j) = mat9(3, 6,j) - mat4_viscous_CTR2(j, 1)
-        mat9(2, 7,j) = mat9(2, 7,j) + mat3_grad_p_CTR1( 2)
-        mat9(1, 8,j) = mat9(1, 8,j) - mat4_viscous_CTR2(j, 2)
-      end do
-!
-      end subroutine sub_sph_pol_viscous_mat9_CTR2
-!
-!  -------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_mat9_CTR1(nri, jmax,               &
-     &          mat3_grad_p_CTR1, mat4_viscous_CTR1, mat9)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-!
-      real(kind = kreal), intent(in) :: mat3_grad_p_CTR1( 0:2)
-      real(kind = kreal), intent(in) :: mat4_viscous_CTR1(jmax,0:2)
-!
-      real(kind = kreal), intent(inout) :: mat9(9,nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, jmax
-!        mat9(9,-2,j) = mat9(9,-2,j) - mat4_viscous_CTR1(j,-2)
-!        mat9(8,-1,j) = mat9(8,-1,j) + mat3_grad_p_CTR1(-1)
-!        mat9(7, 0,j) = mat9(7, 0,j) - mat4_viscous_CTR1(j,-1)
-        mat9(6, 1,j) = mat9(6, 1,j) + mat3_grad_p_CTR1( 0)
-!
-        mat9(5, 2,j) = mat9(5, 2,j) - mat4_viscous_CTR1(j, 0)
-!
-        mat9(4, 3,j) = mat9(4, 3,j) + mat3_grad_p_CTR1( 1)
-        mat9(3, 4,j) = mat9(3, 4,j) - mat4_viscous_CTR1(j, 1)
-        mat9(2, 5,j) = mat9(2, 5,j) + mat3_grad_p_CTR1( 2)
-        mat9(1, 6,j) = mat9(1, 6,j) - mat4_viscous_CTR1(j, 2)
-      end do
-!
-      end subroutine sub_sph_pol_viscous_mat9_CTR1
-!
-! -----------------------------------------------------------------------
 !
       end module set_sph_pol_viscous_CTR

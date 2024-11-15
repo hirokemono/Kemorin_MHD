@@ -34,17 +34,6 @@
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
-!!
-!!      subroutine sub_sph_pol_viscous_mat9_CMB1(k_CMB, nri, jmax,      &
-!!     &          mat3_grad_p_CMB1, mat4_viscous_CMB1, mat9)
-!!        integer(kind = kint), intent(in) :: k_CMB
-!!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CMB1(-1:1)
-!!        real(kind = kreal), intent(in) :: mat4_viscous_CMB1(jmax,-2:1)
-!!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
-!!      subroutine set_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax, mat9)
-!!        integer(kind = kint), intent(in) :: k_CMB, nri, jmax
-!!        real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
 !!@endverbatim
 !
       module set_sph_pol_viscous_CMB
@@ -189,75 +178,6 @@
 !$omp end parallel do
 !
       end subroutine set_sph_pol_viscous_mat7_CMB
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_mat9_CMB1(k_CMB, nri, jmax,        &
-     &          mat3_grad_p_CMB1, mat4_viscous_CMB1, mat9)
-!
-      integer(kind = kint), intent(in) :: k_CMB
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: mat3_grad_p_CMB1(-1:1)
-      real(kind = kreal), intent(in) :: mat4_viscous_CMB1(jmax,-2:1)
-!
-      real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        mat9(9,2*k_CMB-6,j) = mat9(9,2*k_CMB-6,j)                       &
-     &                       - mat4_viscous_CMB1(j,-2)
-        mat9(8,2*k_CMB-5,j) = mat9(8,2*k_CMB-5,j)                       &
-     &                       + mat3_grad_p_CMB1(-1)
-        mat9(7,2*k_CMB-4,j) = mat9(7,2*k_CMB-4,j)                       &
-     &                       - mat4_viscous_CMB1(j,-1)
-        mat9(6,2*k_CMB-3,j) = mat9(6,2*k_CMB-3,j)                       &
-     &                       + mat3_grad_p_CMB1(0)
-!
-        mat9(5,2*k_CMB-2,j) = mat9(5,2*k_CMB-2,j)                       &
-     &                       - mat4_viscous_CMB1(j, 0)
-!
-        mat9(4,2*k_CMB-1,j) = mat9(4,2*k_CMB-1,j)                       &
-     &                       + mat3_grad_p_CMB1(1)
-        mat9(3,2*k_CMB,  j) = mat9(3,2*k_CMB,  j)                       &
-     &                       - mat4_viscous_CMB1(j, 1)
-        if(2*k_CMB+1 .le. 2*nri) mat9(2,2*k_CMB+1,j) = zero
-        if(2*k_CMB+2 .le. 2*nri) mat9(1,2*k_CMB+2,j) = zero
-      end do
-!$omp end parallel do
-!
-      end subroutine sub_sph_pol_viscous_mat9_CMB1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_sph_pol_viscous_mat9_CMB(k_CMB, nri, jmax, mat9)
-!
-      integer(kind = kint), intent(in) :: k_CMB, nri, jmax
-!
-      real(kind = kreal), intent(inout) :: mat9(9,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        mat9(9,2*k_CMB-4,j) = zero
-        mat9(8,2*k_CMB-3,j) = zero
-        mat9(7,2*k_CMB-2,j) = zero
-        mat9(6,2*k_CMB-1,j) = zero
-!
-        mat9(5,2*k_CMB,  j) = one
-!
-       if(2*k_CMB+1 .le. 2*nri)  mat9(4,2*k_CMB+1,j) = zero
-       if(2*k_CMB+2 .le. 2*nri)  mat9(3,2*k_CMB+2,j) = zero
-       if(2*k_CMB+3 .le. 2*nri)  mat9(2,2*k_CMB+3,j) = zero
-       if(2*k_CMB+4 .le. 2*nri)  mat9(1,2*k_CMB+4,j) = zero
-      end do
-!$omp end parallel do
-!
-      end subroutine set_sph_pol_viscous_mat9_CMB
 !
 ! -----------------------------------------------------------------------
 !

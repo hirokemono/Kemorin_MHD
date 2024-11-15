@@ -1,0 +1,3 @@
+set_sph_pol_vscs_FDM4_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM4_mat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

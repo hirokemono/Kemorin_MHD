@@ -416,6 +416,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM4_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -442,14 +443,17 @@
      &           :: mat9(9,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
       real(kind = kreal) :: mat3_grad_p(-1:2)
+      integer(kind = kint) :: kr
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
       else
         call set_sph_hdiv_viscous_mat9_ICB                              &
      &     (sph_bc_U%kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat9)
-        call set_sph_pol_viscous_mat9_ICB                               &
-     &     (sph_bc_U%kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat9)
+        do kr = 1, sph_bc_U%kr_in
+          call set_sph_pol_viscous_mat9_ICB                             &
+     &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat9)
+        end do
       end if
 !
 !
@@ -491,8 +495,8 @@
      &      ione, fdm4_noslip_ICB%dmat_vp1(-2,2),                       &
      &      fdm4_noslip_ICB%dmat_vp1(-2,3), mat4_viscous_CMB1)
       end if
-      call sub_sph_pol_viscous_mat9_ICB1                                &
-     &   (sph_bc_U%kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),         &
+      call sub_sph_pol_viscous_mat9_ICB1((sph_bc_U%kr_in+1),            &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    mat3_grad_p(0), mat4_viscous_CMB1(1,-1), mat9)
 !
       call set_sph_FDM_hdiv_viscosity_mat                               &
