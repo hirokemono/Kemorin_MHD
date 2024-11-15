@@ -346,6 +346,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM2_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -364,6 +365,8 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
+!
+      integer(kind = kint) :: kr
 !
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
@@ -387,8 +390,10 @@
      &   (sph_bc_U%kr_out, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),        &
      &    coef_p, hdiv_visous_mat_CMB, hdiv_visous_mat_CMB(1,-2), mat7)
 !
-      call set_sph_pol_viscous_mat7_CMB                                 &
-     &   (sph_bc_U%kr_out, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
+      do kr = sph_bc_U%kr_out, sph_rj%nidx_rj(1)
+        call set_sph_pol_viscous_mat7_CMB                               &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
+      end do
 !
       end subroutine sph_FDM2_vpol_viscosity_mat_CMB
 !

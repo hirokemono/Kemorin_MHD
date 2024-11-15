@@ -35,12 +35,6 @@
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
-!!      subroutine sub_sph_pol_viscous_mat7_CTR1(nri, jmax,             &
-!!     &          mat1_grad_p_CTR1, mat2_viscous_CTR1, mat7)
-!!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(0:1)
-!!        real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,-1:1)
-!!        real(kind = kreal), intent(inout) :: mat7(7,nri,jmax)
 !!@endverbatim
 !
       module set_sph_pol_viscous_CTR
@@ -171,34 +165,5 @@
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_mat7_CTR1(nri, jmax,               &
-     &          mat1_grad_p_CTR1, mat2_viscous_CTR1, mat7)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-!
-      real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(1:1)
-      real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax, 0:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, jmax
-!       mat7(7,-1,j) = mat7(7,-1,j)
-!       mat7(6, 0,j) = mat7(6, 0,j) - mat2_viscous_CTR1(j,-1)
-!        mat7(5, 1,j) = mat7(5, 1,j) + mat1_grad_p_CTR1(0)
-!
-        mat7(4, 2,j) = mat7(4, 2,j) - mat2_viscous_CTR1(j, 0)
-!
-        mat7(3, 3,j) = mat7(3, 3,j) + mat1_grad_p_CTR1(1)
-        mat7(2, 4,j) = mat7(2, 4,j) - mat2_viscous_CTR1(j, 1)
-!       mat7(1, 5,j) = mat7(1, 5,j)
-      end do
-!
-      end subroutine sub_sph_pol_viscous_mat7_CTR1
-!
-!  -------------------------------------------------------------------
 !
       end module set_sph_pol_viscous_CTR

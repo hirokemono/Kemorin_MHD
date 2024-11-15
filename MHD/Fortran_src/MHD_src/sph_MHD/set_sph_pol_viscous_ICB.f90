@@ -152,33 +152,6 @@
       end subroutine add_exp4_sph_pol_viscous_ICB
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_sph_pol_viscous_mat7_ICB(k_ICB, nri, jmax, mat7)
-!
-      integer(kind = kint), intent(in) :: k_ICB, nri, jmax
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        if(2*k_ICB-3 .gt. 0) mat7(7,2*k_ICB-3,j) = zero
-        if(2*k_ICB-2 .gt. 0) mat7(6,2*k_ICB-2,j) = zero
-        if(2*k_ICB-1 .gt. 0) mat7(5,2*k_ICB-1,j) = zero
-!
-        mat7(4,2*k_ICB,  j) = one
-!
-        mat7(3,2*k_ICB+1,j) = zero
-        mat7(2,2*k_ICB+2,j) = zero
-        mat7(1,2*k_ICB+3,j) = zero
-      end do
-!$omp end parallel do
-!
-      end subroutine set_sph_pol_viscous_mat7_ICB
-!
-! -----------------------------------------------------------------------
 !
       end module set_sph_pol_viscous_ICB
 

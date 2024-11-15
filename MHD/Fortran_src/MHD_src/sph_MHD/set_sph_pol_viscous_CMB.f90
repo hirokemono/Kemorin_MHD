@@ -155,31 +155,5 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_pol_viscous_mat7_CMB(k_CMB, nri, jmax, mat7)
-!
-      integer(kind = kint), intent(in) :: k_CMB, nri, jmax
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        mat7(7,2*k_CMB-3,j) = zero
-        mat7(6,2*k_CMB-2,j) = zero
-        mat7(5,2*k_CMB-1,j) = zero
-!
-        mat7(4,2*k_CMB,  j) = one
-!
-       if(2*k_CMB+1 .le. 2*nri)  mat7(3,2*k_CMB+1,j) = zero
-       if(2*k_CMB+2 .le. 2*nri)  mat7(2,2*k_CMB+2,j) = zero
-       if(2*k_CMB+3 .le. 2*nri)  mat7(1,2*k_CMB+3,j) = zero
-      end do
-!$omp end parallel do
-!
-      end subroutine set_sph_pol_viscous_mat7_CMB
-!
-! -----------------------------------------------------------------------
-!
       end module set_sph_pol_viscous_CMB
 

@@ -27,14 +27,6 @@
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
-!!
-!!      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax,          &
-!!     &          mat1_grad_p, mat2_viscous, mat7)
-!!        integer(kind = kint), intent(in) :: kr
-!!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
-!!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
-!!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
 !!@endverbatim
 !!
       module set_sph_pol_viscousity
@@ -119,36 +111,6 @@
       end do
 !
       end subroutine add_exp4_sph_pol_viscous
-!
-!  -------------------------------------------------------------------
-!  -------------------------------------------------------------------
-!
-      subroutine sub_sph_pol_viscous_FDM2_mat(kr, nri, jmax,            &
-     &          mat1_grad_p, mat2_viscous, mat7)
-!
-      integer(kind = kint), intent(in) :: kr
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
-      real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, jmax
-!        mat7(7,2*kr-3,j) = mat7(7,2*kr-3,j)
-        mat7(6,2*kr-2,j) = mat7(6,2*kr-2,j) - mat2_viscous(j,-1)
-        mat7(5,2*kr-1,j) = mat7(5,2*kr-1,j) + mat1_grad_p(0)
-!
-        mat7(4,2*kr,  j) = mat7(4,2*kr,  j) - mat2_viscous(j, 0)
-!
-        mat7(3,2*kr+1,j) = mat7(3,2*kr+1,j) + mat1_grad_p(1)
-        mat7(2,2*kr+2,j) = mat7(2,2*kr+2,j) - mat2_viscous(j, 1)
-!        mat7(1,2*kr+3,j) = mat7(1,2*kr+3,j)
-      end do
-!
-      end subroutine sub_sph_pol_viscous_FDM2_mat
 !
 !  -------------------------------------------------------------------
 !
