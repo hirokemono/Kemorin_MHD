@@ -203,6 +203,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -255,8 +256,8 @@
      &      fdm_4(1)%nri_mat, fdm_4(1)%dmat, fdm_4(2)%dmat,             &
      &      mat4_viscous)
         call add_exp4_sph_pol_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
-     &      mat3_grad_p, mat4_viscous, d_vpol, press_e, d_viscous_p)
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol, press_e,     &
+     &      mat3_grad_p, mat4_viscous, d_viscous_p)
       end do
 !$omp end parallel do
 !

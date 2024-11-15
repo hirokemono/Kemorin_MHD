@@ -237,6 +237,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -285,9 +286,8 @@
      &      fdm4_noslip_ICB%dmat_vp0(0,3), mat4_viscous_ICB)
       end if
       call add_exp4_sph_pol_viscous_ICB(sph_bc_U%kr_in,                 &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),         &
-     &    mat3_grad_p_CMB(-1), mat4_viscous_ICB(1,0),                   &
-     &    d_vpol, press_e, d_viscous_p)
+     &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol, press_e,           &
+     &    mat3_grad_p_CMB(1), mat4_viscous_ICB(1,0), d_viscous_p)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
@@ -329,9 +329,8 @@
      &      fdm4_noslip_ICB%dmat_vp1(-1,3), mat4_viscous_ICB)
       end if
       call add_exp4_sph_pol_viscous_ICB1((sph_bc_U%kr_in+1),            &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),         &
-     &    mat3_grad_p_CMB(-1), mat4_viscous_ICB(1,-2),                  &
-     &    d_vpol, press_e, d_viscous_p)
+     &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol, press_e,           &
+     &    mat3_grad_p_CMB(-1), mat4_viscous_ICB(1,-2), d_viscous_p)
 !
       end subroutine sph_exp_FDM4_vpol_viscosity_ICB
 !
