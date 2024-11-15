@@ -4,7 +4,7 @@
 
 MHD_FDM_DIR = $$(MHD_SRCDIR)/radial_FDM
 SOURCES = $(shell ls *.f90)
-MOD_KEMO = $(addsuffix .o,$(basename $(SOURCES)) )
+MOD_SPH_MHD_FDM = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -16,12 +16,12 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_KEMO)' \
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SPH_MHD_FDM)' \
 	>> $(MAKENAME)
 
 mod_list:
-	@echo MOD_KEMO=  \\ >> $(MAKENAME)
-	@echo $(MOD_KEMO) >> $(MAKENAME)
+	@echo MOD_SPH_MHD_FDM=  \\ >> $(MAKENAME)
+	@echo $(MOD_SPH_MHD_FDM) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 
