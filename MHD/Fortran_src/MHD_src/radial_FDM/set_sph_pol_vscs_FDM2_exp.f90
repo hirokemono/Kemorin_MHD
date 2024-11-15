@@ -1,14 +1,14 @@
-!>@file   set_sph_pol_viscousity.f90
-!!@brief  module set_sph_pol_viscousity
+!>@file   set_sph_pol_vscs_FDM4_exp.f90
+!!@brief  module set_sph_pol_vscs_FDM4_exp
 !!
 !!@author H. Matsui
-!!@date Programmed in Jan, 2020
+!!@date    programmed by H.Matsui in Oct., 2024
 !
-!>@brief  Substitute viscousity matrix in each layer
+!>@brief Set poloidal diffusivity to 4-th order FDM matrix
 !!
 !!@verbatim
 !!      subroutine add_exp2_sph_pol_viscous(kr, nnod_rj, jmax,          &
-!!     &          mat1_grad_p, mat2_viscous, d_vpol, press_e,           &
+!!     &          d_vpol, press_e, mat1_grad_p, mat2_viscous,           &
 !!     &          d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
@@ -18,22 +18,22 @@
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!@endverbatim
-!!
-      module set_sph_pol_viscousity
+!
+      module set_sph_pol_vscs_FDM2_exp
 !
       use m_precision
       use m_constants
 !
       implicit none
 !
-!  -------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       contains
 !
-!  -------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine add_exp2_sph_pol_viscous(kr, nnod_rj, jmax,            &
-     &          mat1_grad_p, mat2_viscous, d_vpol, press_e,             &
+     &          d_vpol, press_e, mat1_grad_p, mat2_viscous,             &
      &          d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -64,5 +64,4 @@
       end subroutine add_exp2_sph_pol_viscous
 !
 !  -------------------------------------------------------------------
-!
-      end module set_sph_pol_viscousity
+      end module set_sph_pol_vscs_FDM2_exp

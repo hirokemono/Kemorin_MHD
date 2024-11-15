@@ -141,7 +141,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -235,7 +234,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM4_exp
 !
@@ -346,7 +344,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM2_mat
 !
@@ -418,7 +415,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM4_mat
 !

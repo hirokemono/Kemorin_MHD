@@ -125,7 +125,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
@@ -205,7 +204,6 @@
       use t_coef_fdm4_vpol_centre
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
@@ -294,7 +292,6 @@
       use t_coef_fdm2_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
@@ -369,7 +366,6 @@
       use t_coef_fdm4_vpol_centre
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_pol_viscousity
       use set_sph_hdiv_viscousity
       use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
