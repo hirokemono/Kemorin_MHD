@@ -142,6 +142,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -189,10 +190,10 @@
      &      ione, fdm2_fix_dr_ICB(-1,2), fdm2_fix_dr_ICB(-1,3),         &
      &      mat2_viscous_ICB)
       end if
-      call add_exp2_sph_pol_viscous_ICB(sph_bc_U%kr_in,                 &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),         &
-     &    mat3_grad_p_CMB(-1), mat2_viscous_ICB(1,0),                   &
-     &    d_vpol, press_e, d_viscous_p)
+      call add_exp2_sph_pol_viscous_ICB                                 &
+     &   (sph_bc_U%kr_in, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
+     &    d_vpol, press_e, mat3_grad_p_CMB(-1), mat2_viscous_ICB(1,0),  &
+     &    d_viscous_p)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then

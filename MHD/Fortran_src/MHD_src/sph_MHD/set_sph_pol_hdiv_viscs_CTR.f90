@@ -126,8 +126,8 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
-      use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
+      use set_sph_pol_vscs_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -184,7 +184,8 @@
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
      &    ione, fdm2_center%dmat_fix_dr(-1,2),                          &
      &    fdm2_center%dmat_fix_dr(-1,3), mat2_viscous_CTR)
-      call add_exp2_sph_viscous_CTR1(sph_rj%nnod_rj, sph_rj%nidx_rj(2), &
+      call add_exp2_sph_viscous_CTR1                                    &
+     &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &    d_vpol, press_e, mat3_grad_p_CTR(0), mat2_viscous_CTR(1,0),   &
      &    d_viscous_p)
 !
@@ -205,7 +206,6 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
-      use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
       use set_sph_pol_vscs_FDM4_exp
 !
@@ -293,7 +293,6 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
-      use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
       use set_sph_pol_vscs_FDM2_mat
 !
@@ -367,7 +366,6 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
-      use set_sph_pol_viscous_CTR
       use set_sph_hdiv_viscous_CTR
       use set_sph_pol_vscs_FDM4_mat
 !

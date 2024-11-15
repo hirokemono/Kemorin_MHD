@@ -141,6 +141,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use set_sph_pol_vscs_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -212,8 +213,8 @@
       end if
       call add_exp2_sph_pol_viscous_CMB                                 &
      &   (sph_bc_U%kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),           &
-     &    mat1_grad_p_CMB(-1), mat2_viscous_CMB(1,-1),                  &
-     &    d_vpol, press_e, d_viscous_p)
+     &    d_vpol, press_e, mat1_grad_p_CMB(-1), mat2_viscous_CMB(1,-1), &
+     &    d_viscous_p)
 !
       end subroutine sph_exp_FDM2_vpol_viscosity_CMB
 !
