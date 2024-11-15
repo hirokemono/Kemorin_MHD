@@ -9,17 +9,17 @@
 !!
 !!@verbatim
 !!      subroutine add_exp_sph_hdiv_viscous_ICB1                        &
-!!     &         (k_ICB, nnod_rj, nri, jmax, coef_p,                    &
+!!     &         (k_ICB, nnod_rj, jmax, coef_p, hdiv_visous_mat_ICB,    &
 !!     &          hdiv_visous_mat_ICB, d_vpol, press_e, hdiv_viscous_e)
 !!        integer(kind = kint), intent(in) :: k_ICB
-!!        integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
+!!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: coef_p
 !!        real(kind=kreal), intent(in) :: hdiv_visous_mat_ICB(jmax,-1:1)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
 !!
-!!      subroutine sub_sph_hdiv_viscous_mat7_ICB                        &
+!!      subroutine sub_sph_hdiv_viscous_mat7_ICB1                       &
 !!     &         (k_ICB, nri, jmax, coef_p, hdiv_visous_mat_ICB, mat7)
 !!        integer(kind = kint), intent(in) :: k_ICB
 !!        integer(kind = kint), intent(in) :: nri, jmax
@@ -50,11 +50,11 @@
 !  -------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_viscous_ICB1                          &
-     &         (k_ICB, nnod_rj, nri, jmax, coef_p,                      &
-     &          hdiv_visous_mat_ICB, d_vpol, press_e, hdiv_viscous_e)
+     &         (k_ICB, nnod_rj, jmax, coef_p, hdiv_visous_mat_ICB,      &
+     &          d_vpol, press_e, hdiv_viscous_e)
 !
       integer(kind = kint), intent(in) :: k_ICB
-      integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
+      integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: hdiv_visous_mat_ICB(jmax,-1:1)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
@@ -88,7 +88,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sub_sph_hdiv_viscous_mat7_ICB                          &
+      subroutine sub_sph_hdiv_viscous_mat7_ICB1                         &
      &         (k_ICB, nri, jmax, coef_p, hdiv_visous_mat_ICB, mat7)
 !
       integer(kind = kint), intent(in) :: k_ICB
@@ -117,7 +117,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sub_sph_hdiv_viscous_mat7_ICB
+      end subroutine sub_sph_hdiv_viscous_mat7_ICB1
 !
 ! -----------------------------------------------------------------------
 !

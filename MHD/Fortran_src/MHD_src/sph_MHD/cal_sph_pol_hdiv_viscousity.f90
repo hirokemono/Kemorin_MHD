@@ -162,8 +162,8 @@
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
       do kr = kr_st+2, kr_ed-1
-        call set_sph_FDM_hdiv_viscosity_mat                             &
-     &     (kr, sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,    &
+        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,            &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call add_exp_sph_hdiv_viscous                                   &
@@ -234,8 +234,8 @@
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
       do kr = kr_st+2, kr_ed-1
-        call set_sph_FDM_hdiv_viscosity_mat                             &
-     &     (kr, sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,    &
+        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,            &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call add_exp_sph_hdiv_viscous                                   &
@@ -302,8 +302,8 @@
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
       do kr = kr_st+2, kr_ed-1
-        call set_sph_FDM_hdiv_viscosity_mat                             &
-     &     (kr, sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,    &
+        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,            &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call sub_sph_hdiv_viscous_FDM2_mat                              &
@@ -369,8 +369,8 @@
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
       do kr = kr_st+2, kr_ed-2
-        call set_sph_FDM_hdiv_viscosity_mat                             &
-     &     (kr, sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,    &
+        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,            &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
         call sub_sph_hdiv_viscous_FDM4_mat                              &

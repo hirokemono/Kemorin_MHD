@@ -188,17 +188,11 @@
 !   ----  Sum all explicit forces
 !        if(iflag_debug .gt. 0) write(*,*)                              &
 !     &       'sum_forces_to_explicit for rotation of forces'
-        write(*,*) 'sum_forces_to_explicit ', &
-     &    SPH_MHD%ipol%forces%i_m_advect, SPH_MHD%ipol%forces%i_Coriolis, &
-     &    SPH_MHD%ipol%forces%i_lorentz, SPH_MHD%ipol%forces%i_buoyancy
 !        call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,        &
 !     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%forces, SPH_MHD%fld)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       'sum_forces_to_explicit for rotation of forces'
-        write(*,*) 'sum_forces_to_explicit rotation', &
-     &    SPH_MHD%ipol%rot_forces%i_m_advect, SPH_MHD%ipol%rot_forces%i_Coriolis, &
-     &    SPH_MHD%ipol%rot_forces%i_lorentz, SPH_MHD%ipol%rot_forces%i_buoyancy
         call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,         &
      &      SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces,             &
      &      SPH_MHD%fld)

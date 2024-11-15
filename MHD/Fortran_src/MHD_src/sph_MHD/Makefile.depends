@@ -322,15 +322,19 @@ set_sph_exp_rigid_ICB_s4t2.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB_s4t2.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_hdiv_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_CMB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_hdiv_viscous_CTR.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_CTR.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_hdiv_viscous_ICB.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscous_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_hdiv_viscousity.o: $(MHD_SPH_DIR)/set_sph_hdiv_viscousity.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o
+set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o set_sph_pol_viscousity.o set_sph_hdiv_viscousity.o set_sph_pol_viscous_CTR.o set_sph_hdiv_viscous_CTR.o t_coef_fdm4_MHD_boundaries.o t_coef_fdm4_vpol_centre.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_viscous_CMB.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_viscous_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_CTR.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_viscous_ICB.o: $(MHD_SPH_DIR)/set_sph_pol_viscous_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -353,8 +357,6 @@ sph_fwd_trans_mid_eq.o: $(MHD_SPH_DIR)/sph_fwd_trans_mid_eq.f90 m_precision.o m_
 sph_fwd_trans_on_circles.o: $(MHD_SPH_DIR)/sph_fwd_trans_on_circles.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rj_data.o t_phys_data.o t_phys_address.o t_field_on_circle.o t_sph_circle_parameters.o t_FFT_selector.o calypso_mpi_real.o transfer_to_long_integers.o circle_bwd_transfer_rj.o cal_circle_transform.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_hdiv_viscous_coefs_CTR.o: $(MHD_SPH_DIR)/sph_hdiv_viscous_coefs_CTR.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
-sph_hdiv_viscousity_CTR.o: $(MHD_SPH_DIR)/sph_hdiv_viscousity_CTR.f90 m_precision.o m_constants.o sph_hdiv_viscous_coefs_CTR.o set_sph_pol_hdiv_viscs_CTR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_mhd_rst_IO_control.o: $(MHD_SPH_DIR)/sph_mhd_rst_IO_control.f90 m_precision.o m_machine_parameter.o calypso_mpi.o m_file_format_switch.o t_time_data.o t_IO_step_parameter.o t_phys_address.o t_phys_data.o t_MHD_file_parameter.o t_file_IO_parameter.o t_field_data_IO.o field_IO_select.o set_sph_restart_IO.o t_spheric_parameter.o r_interpolate_sph_data.o copy_rj_phys_data_4_IO.o const_global_element_ids.o t_spheric_rj_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
