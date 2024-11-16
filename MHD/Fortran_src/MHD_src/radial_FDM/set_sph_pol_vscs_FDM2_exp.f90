@@ -12,7 +12,7 @@
 !!     &          d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p(jmax, 0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
@@ -23,7 +23,7 @@
 !!     &          d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(0:1)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(jmax,0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,0:1)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
@@ -33,7 +33,7 @@
 !!     &          d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p_ICB(1:1)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p_ICB(jmax,1:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_ICB(jmax,0:1)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
@@ -45,7 +45,7 @@
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(in) :: mat1_grad_p_CMB(0:0)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p_CMB(jmax,0:0)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_CMB(jmax,-1:0)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!@endverbatim
@@ -69,7 +69,7 @@
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
+      real(kind = kreal), intent(in) :: mat1_grad_p(jmax,0:1)
       real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
       real(kind = kreal), intent(in) :: press_e(nnod_rj)
@@ -86,9 +86,9 @@
 !
         d_viscous_p(inod) = d_viscous_p(inod)                           &
      &                        + mat2_viscous(j,-1) * d_vpol(i_n1)       &
-     &                        - mat1_grad_p( 0) *  press_e(inod)        &
+     &                        - mat1_grad_p(j, 0) *  press_e(inod)      &
      &                        + mat2_viscous(j, 0) * d_vpol(inod)       &
-     &                        - mat1_grad_p( 1) *  press_e(i_p1)        &
+     &                        - mat1_grad_p(j, 1) *  press_e(i_p1)      &
      &                        + mat2_viscous(j, 1) * d_vpol(i_p1)
       end do
 !
@@ -102,7 +102,7 @@
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(0:1)
+      real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(jmax,0:1)
       real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,0:1)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
       real(kind = kreal), intent(in) :: press_e(nnod_rj)
@@ -120,9 +120,9 @@
 !
         d_viscous_p(inod) = d_viscous_p(inod)                           &
 !     &                        + mat2_viscous_CTR1(j,-1) * d_vpol(i_n1) &
-     &                        - mat1_grad_p_CTR1( 0) *  press_e(inod)   &
+     &                        - mat1_grad_p_CTR1(j, 0) *  press_e(inod) &
      &                        + mat2_viscous_CTR1(j, 0) * d_vpol(inod)  &
-     &                        - mat1_grad_p_CTR1( 1) *  press_e(i_p1)   &
+     &                        - mat1_grad_p_CTR1(j,1) *  press_e(i_p1)  &
      &                        + mat2_viscous_CTR1(j, 1) * d_vpol(i_p1)
       end do
 !$omp end parallel do
@@ -139,7 +139,7 @@
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
       real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat1_grad_p_ICB(1:1)
+      real(kind = kreal), intent(in) :: mat1_grad_p_ICB(jmax,1:1)
       real(kind = kreal), intent(in) :: mat2_viscous_ICB(jmax,0:1)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -154,7 +154,7 @@
 !
         d_viscous_p(inod) = d_viscous_p(inod)                           &
      &                        + mat2_viscous_ICB(j, 0) * d_vpol(inod)   &
-     &                        - mat1_grad_p_ICB( 1) *  press_e(i_p1)    &
+     &                        - mat1_grad_p_ICB(j, 1) *  press_e(i_p1)  &
      &                        + mat2_viscous_ICB(j, 1) * d_vpol(i_p1)
       end do
 !$omp end parallel do
@@ -171,7 +171,7 @@
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
       real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat1_grad_p_CMB(0:0)
+      real(kind = kreal), intent(in) :: mat1_grad_p_CMB(jmax,0:0)
       real(kind = kreal), intent(in) :: mat2_viscous_CMB(jmax,-1:0)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -186,7 +186,7 @@
 !
         d_viscous_p(inod) = d_viscous_p(inod)                           &
      &                   + mat2_viscous_CMB(j,-1) * d_vpol(i_n1)        &
-     &                   - mat1_grad_p_CMB( 0) *  press_e(inod)         &
+     &                   - mat1_grad_p_CMB(j, 0) *  press_e(inod)       &
      &                   + mat2_viscous_CMB(j, 0) * d_vpol(inod)
       end do
 !$omp end parallel do

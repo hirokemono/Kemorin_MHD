@@ -12,14 +12,14 @@
 !!      subroutine set_sph_pol_viscous_mat7_ICB(kr, nri, jmax, mat7)
 !!      subroutine set_sph_pol_viscous_mat7_CMB(kr, nri, jmax, mat7)
 !!        integer(kind = kint), intent(in) :: kr, nri, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p(jmax,0:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
 !!
 !!      subroutine sub_sph_pol_viscous_mat7_CTR1(nri, jmax,             &
 !!     &          mat1_grad_p_CTR1, mat2_viscous_CTR1, mat7)
 !!        integer(kind = kint), intent(in) :: nri, jmax
-!!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(0:1)
+!!        real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(jmax,1:1)
 !!        real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,0:1)
 !!        real(kind = kreal), intent(inout) :: mat7(7,nri,jmax)
 !!@endverbatim
@@ -41,7 +41,7 @@
      &          mat1_grad_p, mat2_viscous, mat7)
 !
       integer(kind = kint), intent(in) :: kr, nri, jmax
-      real(kind = kreal), intent(in) :: mat1_grad_p( 0:1)
+      real(kind = kreal), intent(in) :: mat1_grad_p(jmax,0:1)
       real(kind = kreal), intent(in) :: mat2_viscous(jmax,-1:1)
 !
       real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
@@ -52,11 +52,11 @@
       do j = 1, jmax
 !        mat7(7,2*kr-3,j) = mat7(7,2*kr-3,j)
         mat7(6,2*kr-2,j) = mat7(6,2*kr-2,j) - mat2_viscous(j,-1)
-        mat7(5,2*kr-1,j) = mat7(5,2*kr-1,j) + mat1_grad_p(0)
+        mat7(5,2*kr-1,j) = mat7(5,2*kr-1,j) + mat1_grad_p(j,0)
 !
         mat7(4,2*kr,  j) = mat7(4,2*kr,  j) - mat2_viscous(j, 0)
 !
-        mat7(3,2*kr+1,j) = mat7(3,2*kr+1,j) + mat1_grad_p(1)
+        mat7(3,2*kr+1,j) = mat7(3,2*kr+1,j) + mat1_grad_p(j,1)
         mat7(2,2*kr+2,j) = mat7(2,2*kr+2,j) - mat2_viscous(j, 1)
 !        mat7(1,2*kr+3,j) = mat7(1,2*kr+3,j)
       end do
@@ -124,7 +124,7 @@
 !
       integer(kind = kint), intent(in) :: nri, jmax
 !
-      real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(1:1)
+      real(kind = kreal), intent(in) :: mat1_grad_p_CTR1(jmax,1:1)
       real(kind = kreal), intent(in) :: mat2_viscous_CTR1(jmax,0:1)
 !
       real(kind = kreal), intent(inout) :: mat7(7,nri,jmax)
@@ -135,11 +135,11 @@
       do j = 1, jmax
 !       mat7(7,-1,j) = mat7(7,-1,j)
 !       mat7(6, 0,j) = mat7(6, 0,j) - mat2_viscous_CTR1(j,-1)
-!        mat7(5, 1,j) = mat7(5, 1,j) + mat1_grad_p_CTR1(0)
+!        mat7(5, 1,j) = mat7(5, 1,j) + mat1_grad_p_CTR1(j,0)
 !
         mat7(4, 2,j) = mat7(4, 2,j) - mat2_viscous_CTR1(j, 0)
 !
-        mat7(3, 3,j) = mat7(3, 3,j) + mat1_grad_p_CTR1(1)
+        mat7(3, 3,j) = mat7(3, 3,j) + mat1_grad_p_CTR1(j,1)
         mat7(2, 4,j) = mat7(2, 4,j) - mat2_viscous_CTR1(j, 1)
 !       mat7(1, 5,j) = mat7(1, 5,j)
       end do

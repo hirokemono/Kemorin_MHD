@@ -7,15 +7,18 @@
 !>@brief  Forth order FDM on nodes
 !!
 !!@verbatim
-!!      subroutine set_sph_FDM_pressure_grad_mat(n_in, n_out, kr,       &
+!!      subroutine set_sph_FDM_pressure_grad_mat                        &
+!!     &         (kr, n_in, n_out, jmax, r_nod, g_sph_rj,               &
 !!     &          coef_p, nri_fdm, fdm_e2n_d1_mat, mat_grad_p)
 !!        integer(kind = kint), intent(in) :: n_in, n_out
-!!        integer(kind = kint), intent(in) :: kr, nri_fdm
-!!        real(kind = kreal), intent(in) :: coef_p
+!!        integer(kind = kint), intent(in) :: kr, jmax
+!!        integer(kind = kint), intent(in) :: nri_fdm
+!!        real(kind = kreal), intent(in) :: r_nod(kr)
+!!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,17)
 !!        real(kind = kreal), intent(in)                                &
-!!     &                    :: fdm_e2n_d1_mat(nri_fdm,n_in:n_out)
+!!     &                   :: fdm_e2n_d1_mat(nri_fdm,n_in:n_out)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &           :: mat_grad_p(n_in:n_out)
+!!     &                   :: mat_grad_p(jmax,n_in:n_out)
 !!      subroutine set_sph_FDM_fix_viscous_mat(n_in, n_out, kr, jmax,   &
 !!     &          a2_radius, g_sph_rj, nri_fdm, fdm_d2_mat, mat_viscous)
 !!        integer(kind = kint), intent(in) :: n_out
@@ -60,19 +63,29 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_sph_FDM_pressure_grad_mat(n_in, n_out, kr,         &
+      subroutine set_sph_FDM_pressure_grad_mat                          &
+     &         (kr, n_in, n_out, jmax, r_nod, g_sph_rj,                 &
      &          coef_p, nri_fdm, fdm_e2n_d1_mat, mat_grad_p)
 !
       integer(kind = kint), intent(in) :: n_in, n_out
-      integer(kind = kint), intent(in) :: kr, nri_fdm
+      integer(kind = kint), intent(in) :: kr, jmax
+      integer(kind = kint), intent(in) :: nri_fdm
+      real(kind = kreal), intent(in) :: r_nod(kr)
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,17)
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in)                                    &
-     &                    :: fdm_e2n_d1_mat(nri_fdm,n_in:n_out)
+     &                   :: fdm_e2n_d1_mat(nri_fdm,n_in:n_out)
 !
-      real(kind = kreal), intent(inout) :: mat_grad_p(n_in:n_out)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: mat_grad_p(jmax,n_in:n_out)
+!
+      integer(kind = kint) :: i_next
 !
 !
-      mat_grad_p(n_in:n_out) = coef_p * fdm_e2n_d1_mat(kr,n_in:n_out)
+      do i_next = n_in, n_out
+        mat_grad_p(1:jmax,i_next) = coef_p * g_sph_rj(1:jmax,13)        &
+     &                       * r_nod*r_nod * fdm_e2n_d1_mat(kr,i_next)
+      end do
 !
       end subroutine set_sph_FDM_pressure_grad_mat
 !

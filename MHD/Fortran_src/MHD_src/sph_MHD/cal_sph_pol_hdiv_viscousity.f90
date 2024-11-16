@@ -131,6 +131,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -157,7 +158,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !
-      real(kind = kreal) :: mat1_grad_p(0:1)
+      real(kind = kreal) :: mat1_grad_p(sph_rj%nidx_rj(2),0:1)
       integer(kind = kint) :: kr
 !
 !
@@ -175,9 +176,11 @@
 !
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
       do kr = kr_st+1, kr_ed-1
-        call sph_FDM_layer_p_grad_mat                                   &
-     &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr, coef_p,            &
-     &      fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
+        call set_sph_FDM_pressure_grad_mat                              &
+     &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                    &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
+!
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                      &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
@@ -203,6 +206,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM4_exp
       use set_sph_pol_grad_p_FDM4_exp
 !
@@ -231,7 +235,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !
-      real(kind = kreal) :: mat3_grad_p(-1:2)
+      real(kind = kreal) :: mat3_grad_p(-sph_rj%nidx_rj(2),1:2)
       integer(kind = kint) :: kr
 !
 !
@@ -249,11 +253,12 @@
 !
 !$omp parallel do private(kr,mat3_grad_p,mat4_viscous)
       do kr = kr_st+2, kr_ed-2
-        call sph_FDM_layer_p_grad_mat                                   &
-     &     (fdm_e3(1)%n_minus, fdm_e3(1)%n_plus, kr, coef_p,            &
-     &      fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
+        call set_sph_FDM_pressure_grad_mat                              &
+     &     (kr, fdm_e3(1)%n_minus, fdm_e3(1)%n_plus,                    &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
         call set_exp4_sph_pol_grad_p                                    &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), g_sph_rj, coef_p,    &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &      press_e, mat3_grad_p, d_grad_p)
       end do
 !$omp end parallel do
@@ -284,6 +289,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM2_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -307,7 +313,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
-      real(kind = kreal) :: mat1_grad_p(0:1)
+      real(kind = kreal) :: mat1_grad_p(sph_rj%nidx_rj(2),0:1)
       integer(kind = kint) :: kr
 !
 !
@@ -325,9 +331,11 @@
 !
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
       do kr = kr_st+1, kr_ed-1
-        call sph_FDM_layer_p_grad_mat                                   &
-     &     (fdm_e1(1)%n_minus, fdm_e1(1)%n_plus, kr,                    &
+        call set_sph_FDM_pressure_grad_mat                              &
+     &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                    &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
      &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
+!
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                      &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
@@ -351,6 +359,7 @@
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
+      use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM4_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -374,7 +383,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: mat9(9,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
-      real(kind = kreal) :: mat3_grad_p(-1:2)
+      real(kind = kreal) :: mat3_grad_p(-sph_rj%nidx_rj(2),1:2)
       integer(kind = kint) :: kr
 !
 !
@@ -392,9 +401,11 @@
 !
 !$omp parallel do private(kr,mat3_grad_p,mat4_viscous)
       do kr = kr_st+2, kr_ed-2
-        call sph_FDM_layer_p_grad_mat                                   &
-     &     (fdm_e3(1)%n_minus, fdm_e3(1)%n_plus, kr, coef_p,            &
-     &      fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
+        call set_sph_FDM_pressure_grad_mat                              &
+     &     (kr, fdm_e3(1)%n_minus, fdm_e3(1)%n_plus,                    &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
+!
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_4(1)%n_minus, fdm_4(1)%n_plus, kr,                      &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &

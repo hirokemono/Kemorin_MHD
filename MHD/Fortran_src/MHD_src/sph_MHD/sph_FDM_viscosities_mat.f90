@@ -7,16 +7,6 @@
 !>@brief  Forth order FDM on nodes
 !!
 !!@verbatim
-!!      subroutine sph_FDM_layer_p_grad_mat(n_in, n_out, kr, coef_p,    &
-!!     &          nri_fdm, fdm_e2n_d1_mat, mat_grad_p)
-!!        integer(kind = kint), intent(in) :: n_in, n_out
-!!        integer(kind = kint), intent(in) :: kr, nri_fdm
-!!        real(kind = kreal), intent(in) :: coef_p
-!!        real(kind = kreal), intent(in)                                &
-!!     &                   :: fdm_e2n_d1_mat(n_in:n_out)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &            :: mat_grad_p(n_in:n_out)
-!!
 !!      subroutine set_sph_FDM_viscosity_mat(n_in, n_out, kr,           &
 !!     &          sph_rj, fl_prop, radial_variation, g_sph_rj,          &
 !!     &          coef_d, nri_fdm, fdm_d1_mat, fdm_d2_mat, mat_viscous)
@@ -73,27 +63,6 @@
 !  -------------------------------------------------------------------
 !
       contains
-!
-!  -------------------------------------------------------------------
-!
-      subroutine sph_FDM_layer_p_grad_mat(n_in, n_out, kr, coef_p,      &
-     &          nri_fdm, fdm_e2n_d1_mat, mat_grad_p)
-!
-      use cal_sph_FDM_viscosity_mat
-!
-      integer(kind = kint), intent(in) :: n_in, n_out
-      integer(kind = kint), intent(in) :: kr, nri_fdm
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in)                                    &
-     &                   :: fdm_e2n_d1_mat(nri_fdm,n_in:n_out)
-!
-      real(kind = kreal), intent(inout) :: mat_grad_p(n_in:n_out)
-!
-!
-      call set_sph_FDM_pressure_grad_mat(n_in, n_out, kr,               &
-     &    coef_p, nri_fdm, fdm_e2n_d1_mat, mat_grad_p)
-!
-      end subroutine sph_FDM_layer_p_grad_mat
 !
 !  -------------------------------------------------------------------
 !
