@@ -54,6 +54,7 @@
 !!     &           :: mat4_viscous(sph_rj%nidx_rj(2),-2:2)
 !!        real(kind = kreal), intent(inout)                            &
 !!     &           :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
+!!        real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
 !!        real(kind=kreal), intent(inout) :: d_viscous_p(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                            &
 !!     &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
@@ -197,12 +198,13 @@
      &         g_sph_rj, coef_p, coef_d,                                &
      &         fdm_4, fdm_3e, fdm_e3, d_vpol, press_e,                  &
      &         mat4_viscous, hdiv_visous_mat,                           &
-     &         d_viscous_p, hdiv_viscous_e)
+     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM4_exp
+      use set_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -224,6 +226,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
 !
+      real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout) :: d_viscous_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
      &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
@@ -249,14 +252,22 @@
         call sph_FDM_layer_p_grad_mat                                   &
      &     (fdm_e3(1)%n_minus, fdm_e3(1)%n_plus, kr, coef_p,            &
      &      fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
+        call set_exp4_sph_pol_grad_p                                    &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), g_sph_rj, coef_p,    &
+     &      press_e, mat3_grad_p, d_grad_p)
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(kr,mat3_grad_p,mat4_viscous)
+      do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_4(1)%n_minus, fdm_4(1)%n_plus, kr,                      &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_4(1)%nri_mat, fdm_4(1)%dmat, fdm_4(2)%dmat,             &
      &      mat4_viscous)
         call add_exp4_sph_pol_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol, press_e,     &
-     &      mat3_grad_p, mat4_viscous, d_viscous_p)
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
+     &      mat4_viscous, d_viscous_p)
       end do
 !$omp end parallel do
 !

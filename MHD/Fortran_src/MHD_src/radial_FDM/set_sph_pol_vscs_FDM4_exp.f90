@@ -7,55 +7,40 @@
 !>@brief Set poloidal diffusivity to 4-th order FDM matrix
 !!
 !!@verbatim
-!!      subroutine add_exp4_sph_pol_viscous(kr, nnod_rj, jmax,          &
-!!     &          d_vpol, press_e, mat3_grad_p, mat4_viscous,           &
-!!     &          d_viscous_p)
+!!      subroutine set_exp4_sph_pol_viscous(kr, nnod_rj, jmax,          &
+!!     &          d_vpol, mat4_viscous, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine add_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,         &
-!!     &          d_vpol, press_e, mat3_grad_p_CTR1, mat4_viscous_CTR1, &
-!!     &          d_viscous_p)
-!!      subroutine add_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,         &
-!!     &          d_vpol, press_e, mat3_grad_p_CTR2, mat4_viscous_CTR2, &
-!!     &          d_viscous_p)
+!!      subroutine set_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,         &
+!!     &          d_vpol, mat4_viscous_CTR1, d_viscous_p)
+!!      subroutine set_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,         &
+!!     &          d_vpol, mat4_viscous_CTR2, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CTR1(0:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_CTR1(jmax,0:2)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CTR2(-1:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_CTR2(jmax,-1:2)
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine add_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,      &
-!!     &          d_vpol, press_e, mat3_grad_p_ICB, mat4_viscous_ICB,   &
-!!     &          d_viscous_p)
-!!      subroutine add_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,     &
-!!     &          d_vpol, press_e, mat3_grad_p_ICB1, mat4_viscous_ICB1, &
-!!     &          d_viscous_p)
+!!      subroutine set_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,      &
+!!     &          d_vpol, mat4_viscous_ICB, d_viscous_p)
+!!      subroutine set_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,     &
+!!     &          d_vpol, mat4_viscous_ICB1, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_ICB(1:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_ICB(jmax,0:2)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_ICB1(0:2)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_ICB1(jmax,-1:2)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine add_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,     &
-!!     &          d_vpol, press_e, mat3_grad_p_CMB1, mat4_viscous_CMB1, &
-!!     &           d_viscous_p)
-!!      subroutine add_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,      &
-!!     &          d_vpol, press_e, mat3_grad_p_CMB, mat4_viscous_CMB,   &
-!!     &          d_viscous_p)
+!!      subroutine set_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,     &
+!!     &          d_vpol, mat4_viscous_CMB1, d_viscous_p)
+!!      subroutine set_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,      &
+!!     &          d_vpol, mat4_viscous_CMB, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
@@ -80,15 +65,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_pol_viscous(kr, nnod_rj, jmax,            &
-     &          d_vpol, press_e, mat3_grad_p, mat4_viscous,             &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_pol_viscous(kr, nnod_rj, jmax,            &
+     &          d_vpol, mat4_viscous, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat3_grad_p(-1:2)
       real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -103,33 +85,25 @@
         i_p1 = inod + jmax
         i_p2 = i_p1 + jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
-     &                        + mat4_viscous(j,-2) * d_vpol(i_n2)       &
-     &                        - mat3_grad_p(-1) *  press_e(i_n1)        &
+        d_viscous_p(inod) =     mat4_viscous(j,-2) * d_vpol(i_n2)       &
      &                        + mat4_viscous(j,-1) * d_vpol(i_n1)       &
-     &                        - mat3_grad_p( 0) *  press_e(inod)        &
      &                        + mat4_viscous(j, 0) * d_vpol(inod)       &
-     &                        - mat3_grad_p( 1) *  press_e(i_p1)        &
      &                        + mat4_viscous(j, 1) * d_vpol(i_p1)       &
-     &                        - mat3_grad_p( 2) *  press_e(i_p2)        &
      &                        + mat4_viscous(j, 2) * d_vpol(i_p2)
       end do
 !
-      end subroutine add_exp4_sph_pol_viscous
+      end subroutine set_exp4_sph_pol_viscous
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,           &
-     &          d_vpol, press_e, mat3_grad_p_CTR1, mat4_viscous_CTR1,   &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,           &
+     &          d_vpol, mat4_viscous_CTR1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: mat3_grad_p_CTR1(0:2)
       real(kind = kreal), intent(in) :: mat4_viscous_CTR1(jmax,0:2)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !
@@ -144,33 +118,26 @@
         i_p1 = inod + jmax
         i_p2 = i_p1 + jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
+        d_viscous_p(inod) =                                             &
 !     &                        + mat4_viscous_CTR1(j,-2) * d_vpol(i_n2) &
-!     &                        - mat3_grad_p_CTR1(-1) *  press_e(i_n1)  &
 !     &                        + mat4_viscous_CTR1(j,-1) * d_vpol(i_n1) &
-     &                        - mat3_grad_p_CTR1( 0) *  press_e(inod)   &
      &                        + mat4_viscous_CTR1(j, 0) * d_vpol(inod)  &
-     &                        - mat3_grad_p_CTR1( 1) *  press_e(i_p1)   &
      &                        + mat4_viscous_CTR1(j, 1) * d_vpol(i_p1)  &
-     &                        - mat3_grad_p_CTR1( 2) *  press_e(i_p2)   &
      &                        + mat4_viscous_CTR1(j, 2) * d_vpol(i_p2)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_viscous_CTR1
+      end subroutine set_exp4_sph_viscous_CTR1
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,           &
-     &          d_vpol, press_e, mat3_grad_p_CTR2, mat4_viscous_CTR2,   &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,           &
+     &          d_vpol, mat4_viscous_CTR2, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: mat3_grad_p_CTR2(-1:2)
       real(kind = kreal), intent(in) :: mat4_viscous_CTR2(jmax,-1:2)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !
@@ -185,33 +152,26 @@
         i_p2 = i_p1 + jmax
 !        i_n2 = i_n1 - jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
+        d_viscous_p(inod) =                                             &
 !     &                        + mat4_viscous_CTR2(j,-2) * d_vpol(i_n2) &
-     &                        - mat3_grad_p_CTR2(-1) *  press_e(i_n1)   &
      &                        + mat4_viscous_CTR2(j,-1) * d_vpol(i_n1)  &
-     &                        - mat3_grad_p_CTR2( 0) *  press_e(inod)   &
      &                        + mat4_viscous_CTR2(j, 0) * d_vpol(inod)  &
-     &                        - mat3_grad_p_CTR2( 1) *  press_e(i_p1)   &
      &                        + mat4_viscous_CTR2(j, 1) * d_vpol(i_p1)  &
-     &                        - mat3_grad_p_CTR2( 2) *  press_e(i_p2)   &
      &                        + mat4_viscous_CTR2(j, 2) * d_vpol(i_p2)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_viscous_CTR2
+      end subroutine set_exp4_sph_viscous_CTR2
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,        &
-     &          d_vpol, press_e, mat3_grad_p_ICB, mat4_viscous_ICB,     &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,        &
+     &          d_vpol, mat4_viscous_ICB, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat3_grad_p_ICB(1:2)
       real(kind = kreal), intent(in) :: mat4_viscous_ICB(jmax,0:2)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -225,29 +185,23 @@
         i_p1 = inod + jmax
         i_p2 = i_p1 + jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
-     &                        + mat4_viscous_ICB(j, 0) * d_vpol(inod)   &
-     &                        - mat3_grad_p_ICB( 1) *  press_e(i_p1)    &
+        d_viscous_p(inod) =     mat4_viscous_ICB(j, 0) * d_vpol(inod)   &
      &                        + mat4_viscous_ICB(j, 1) * d_vpol(i_p1)   &
-     &                        - mat3_grad_p_ICB( 2) *  press_e(i_p2)    &
      &                        + mat4_viscous_ICB(j, 2) * d_vpol(i_p2)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_pol_viscous_ICB
+      end subroutine set_exp4_sph_pol_viscous_ICB
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,       &
-     &          d_vpol, press_e, mat3_grad_p_ICB1, mat4_viscous_ICB1,   &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,       &
+     &          d_vpol, mat4_viscous_ICB1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: mat3_grad_p_ICB1(0:2)
       real(kind = kreal), intent(in) :: mat4_viscous_ICB1(jmax,-1:2)
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !
@@ -261,31 +215,24 @@
         i_p1 = inod + jmax
         i_p2 = i_p1 + jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
-     &                        + mat4_viscous_ICB1(j,-1) * d_vpol(i_n1)  &
-     &                        - mat3_grad_p_ICB1( 0) *  press_e(inod)   &
+        d_viscous_p(inod) =     mat4_viscous_ICB1(j,-1) * d_vpol(i_n1)  &
      &                        + mat4_viscous_ICB1(j, 0) * d_vpol(inod)  &
-     &                        - mat3_grad_p_ICB1( 1) *  press_e(i_p1)   &
      &                        + mat4_viscous_ICB1(j, 1) * d_vpol(i_p1)  &
-     &                        - mat3_grad_p_ICB1( 2) *  press_e(i_p2)   &
      &                        + mat4_viscous_ICB1(j, 2) * d_vpol(i_p2)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_pol_viscous_ICB1
+      end subroutine set_exp4_sph_pol_viscous_ICB1
 !
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,       &
-     &          d_vpol, press_e, mat3_grad_p_CMB1, mat4_viscous_CMB1,   &
-     &           d_viscous_p)
+      subroutine set_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,       &
+     &          d_vpol, mat4_viscous_CMB1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat3_grad_p_CMB1(-1:1)
       real(kind = kreal), intent(in) :: mat4_viscous_CMB1(jmax,-2:1)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -300,30 +247,23 @@
         i_n2 = i_n1 - jmax
         i_p1 = inod + jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
-     &                   + mat4_viscous_CMB1(j,-2) * d_vpol(i_n2)       &
-     &                   - mat3_grad_p_CMB1(-1) *  press_e(i_n1)        &
-     &                   + mat4_viscous_CMB1(j,-1) * d_vpol(i_n1)       &
-     &                   - mat3_grad_p_CMB1( 0) *  press_e(inod)        &
-     &                   + mat4_viscous_CMB1(j, 0) * d_vpol(inod)       &
-     &                   - mat3_grad_p_CMB1( 1) *  press_e(i_p1)        &
-     &                   + mat4_viscous_CMB1(j, 1) * d_vpol(i_p1)
+        d_viscous_p(inod) =  mat4_viscous_CMB1(j,-2) * d_vpol(i_n2)     &
+     &                     + mat4_viscous_CMB1(j,-1) * d_vpol(i_n1)     &
+     &                     + mat4_viscous_CMB1(j, 0) * d_vpol(inod)     &
+     &                     + mat4_viscous_CMB1(j, 1) * d_vpol(i_p1)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_pol_viscous_CMB1
+      end subroutine set_exp4_sph_pol_viscous_CMB1
 !
 !  -------------------------------------------------------------------
 !
-      subroutine add_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,        &
-     &          d_vpol, press_e, mat3_grad_p_CMB, mat4_viscous_CMB,     &
-     &          d_viscous_p)
+      subroutine set_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,        &
+     &          d_vpol, mat4_viscous_CMB, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-      real(kind = kreal), intent(in) :: mat3_grad_p_CMB(-1:0)
       real(kind = kreal), intent(in) :: mat4_viscous_CMB(jmax,-2:0)
 !
       real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
@@ -337,16 +277,13 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d_viscous_p(inod) = d_viscous_p(inod)                           &
-     &                   + mat4_viscous_CMB(j,-2) * d_vpol(i_n2)        &
-     &                   - mat3_grad_p_CMB(-1) *  press_e(i_n1)         &
-     &                   + mat4_viscous_CMB(j,-1) * d_vpol(i_n1)        &
-     &                   - mat3_grad_p_CMB( 0) *  press_e(inod)         &
-     &                   + mat4_viscous_CMB(j, 0) * d_vpol(inod)
+        d_viscous_p(inod) = mat4_viscous_CMB(j,-2) * d_vpol(i_n2)       &
+     &                    + mat4_viscous_CMB(j,-1) * d_vpol(i_n1)       &
+     &                    + mat4_viscous_CMB(j, 0) * d_vpol(inod)
       end do
 !$omp end parallel do
 !
-      end subroutine add_exp4_sph_pol_viscous_CMB
+      end subroutine set_exp4_sph_pol_viscous_CMB
 !
 ! -----------------------------------------------------------------------
 !
