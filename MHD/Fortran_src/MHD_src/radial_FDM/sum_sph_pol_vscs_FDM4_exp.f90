@@ -1,5 +1,5 @@
-!>@file   set_sph_pol_vscs_FDM4_exp.f90
-!!@brief  module set_sph_pol_vscs_FDM4_exp
+!>@file   sum_sph_pol_vscs_FDM4_exp.f90
+!!@brief  module sum_sph_pol_vscs_FDM4_exp
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2024
@@ -7,7 +7,7 @@
 !>@brief Set poloidal diffusivity to 4-th order FDM matrix
 !!
 !!@verbatim
-!!      subroutine set_exp4_sph_pol_viscous(kr, nnod_rj, jmax,          &
+!!      subroutine sum_exp4_sph_pol_viscous(kr, nnod_rj, jmax,          &
 !!     &          d_vpol, mat4_viscous, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
@@ -15,9 +15,9 @@
 !!        real(kind = kreal), intent(in) :: mat4_viscous(jmax,-2:2)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine set_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,         &
+!!      subroutine sum_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,         &
 !!     &          d_vpol, mat4_viscous_CTR1, d_viscous_p)
-!!      subroutine set_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,         &
+!!      subroutine sum_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,         &
 !!     &          d_vpol, mat4_viscous_CTR2, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
@@ -26,9 +26,9 @@
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine set_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,      &
+!!      subroutine sum_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,      &
 !!     &          d_vpol, mat4_viscous_ICB, d_viscous_p)
-!!      subroutine set_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,     &
+!!      subroutine sum_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,     &
 !!     &          d_vpol, mat4_viscous_ICB1, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
@@ -37,22 +37,19 @@
 !!        real(kind = kreal), intent(in) :: mat4_viscous_ICB1(jmax,-1:2)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!
-!!      subroutine set_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,     &
+!!      subroutine sum_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,     &
 !!     &          d_vpol, mat4_viscous_CMB1, d_viscous_p)
-!!      subroutine set_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,      &
+!!      subroutine sum_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,      &
 !!     &          d_vpol, mat4_viscous_CMB, d_viscous_p)
 !!        integer(kind = kint), intent(in) :: kr
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
 !!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CMB1(-1:1)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_CMB1(jmax,-2:1)
-!!        real(kind = kreal), intent(in) :: mat3_grad_p_CMB(-1:0)
 !!        real(kind = kreal), intent(in) :: mat4_viscous_CMB(jmax,-2:0)
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!@endverbatim
 !
-      module set_sph_pol_vscs_FDM4_exp
+      module sum_sph_pol_vscs_FDM4_exp
 !
       use m_precision
       use m_constants
@@ -65,7 +62,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_pol_viscous(kr, nnod_rj, jmax,            &
+      subroutine sum_exp4_sph_pol_viscous(kr, nnod_rj, jmax,            &
      &          d_vpol, mat4_viscous, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -92,12 +89,12 @@
      &                        + mat4_viscous(j, 2) * d_vpol(i_p2)
       end do
 !
-      end subroutine set_exp4_sph_pol_viscous
+      end subroutine sum_exp4_sph_pol_viscous
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,           &
+      subroutine sum_exp4_sph_viscous_CTR1(kr, nnod_rj, jmax,           &
      &          d_vpol, mat4_viscous_CTR1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -127,11 +124,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_viscous_CTR1
+      end subroutine sum_exp4_sph_viscous_CTR1
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,           &
+      subroutine sum_exp4_sph_viscous_CTR2(kr, nnod_rj, jmax,           &
      &          d_vpol, mat4_viscous_CTR2, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -161,12 +158,12 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_viscous_CTR2
+      end subroutine sum_exp4_sph_viscous_CTR2
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,        &
+      subroutine sum_exp4_sph_pol_viscous_ICB(kr, nnod_rj, jmax,        &
      &          d_vpol, mat4_viscous_ICB, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -191,11 +188,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_pol_viscous_ICB
+      end subroutine sum_exp4_sph_pol_viscous_ICB
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,       &
+      subroutine sum_exp4_sph_pol_viscous_ICB1(kr, nnod_rj, jmax,       &
      &          d_vpol, mat4_viscous_ICB1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -222,12 +219,12 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_pol_viscous_ICB1
+      end subroutine sum_exp4_sph_pol_viscous_ICB1
 !
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,       &
+      subroutine sum_exp4_sph_pol_viscous_CMB1(kr, nnod_rj, jmax,       &
      &          d_vpol, mat4_viscous_CMB1, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -254,11 +251,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_pol_viscous_CMB1
+      end subroutine sum_exp4_sph_pol_viscous_CMB1
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,        &
+      subroutine sum_exp4_sph_pol_viscous_CMB(kr, nnod_rj, jmax,        &
      &          d_vpol, mat4_viscous_CMB, d_viscous_p)
 !
       integer(kind = kint), intent(in) :: kr
@@ -283,8 +280,8 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_exp4_sph_pol_viscous_CMB
+      end subroutine sum_exp4_sph_pol_viscous_CMB
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_sph_pol_vscs_FDM4_exp
+      end module sum_sph_pol_vscs_FDM4_exp

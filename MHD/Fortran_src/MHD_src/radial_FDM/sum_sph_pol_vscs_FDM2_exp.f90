@@ -1,5 +1,5 @@
-!>@file   set_sph_pol_vscs_FDM2_exp.f90
-!!@brief  module set_sph_pol_vscs_FDM2_exp
+!>@file   sum_sph_pol_vscs_FDM2_exp.f90
+!!@brief  module sum_sph_pol_vscs_FDM2_exp
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2024
@@ -38,7 +38,7 @@
 !!        real(kind = kreal), intent(inout) :: d_viscous_p(nnod_rj)
 !!@endverbatim
 !
-      module set_sph_pol_vscs_FDM2_exp
+      module sum_sph_pol_vscs_FDM2_exp
 !
       use m_precision
       use m_constants
@@ -160,4 +160,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_sph_pol_vscs_FDM2_exp
+      end module sum_sph_pol_vscs_FDM2_exp

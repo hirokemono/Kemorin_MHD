@@ -132,7 +132,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM2_exp
+      use sum_sph_pol_vscs_FDM2_exp
       use sum_sph_pol_grad_p_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -216,7 +216,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM4_exp
+      use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -266,7 +266,7 @@
      &     (kr, fdm_e3(1)%n_minus, fdm_e3(1)%n_plus,                    &
      &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
      &      coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
-        call set_exp4_sph_pol_grad_p                                    &
+        call sum_exp4_sph_pol_grad_p                                    &
      &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &      press_e, mat3_grad_p, d_grad_p)
       end do
@@ -279,7 +279,7 @@
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_4(1)%nri_mat, fdm_4(1)%dmat, fdm_4(2)%dmat,             &
      &      mat4_viscous)
-        call add_exp4_sph_pol_viscous                                   &
+        call sum_exp4_sph_pol_viscous                                   &
      &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
      &      mat4_viscous, d_viscous_p)
       end do

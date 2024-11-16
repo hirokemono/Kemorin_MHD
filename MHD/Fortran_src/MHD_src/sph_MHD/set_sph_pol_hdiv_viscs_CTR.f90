@@ -130,7 +130,7 @@
       use set_sph_hdiv_viscousity
       use set_sph_hdiv_viscous_CTR
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM2_exp
+      use sum_sph_pol_vscs_FDM2_exp
       use sum_sph_pol_grad_p_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -218,7 +218,7 @@
       use set_sph_hdiv_viscousity
       use set_sph_hdiv_viscous_CTR
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM4_exp
+      use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -275,7 +275,7 @@
      &   (ione, izero, fdm_e3(1)%n_plus,                                &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CTR)
-      call set_exp4_sph_pol_grad_p_CTR1                                 &
+      call sum_exp4_sph_pol_grad_p_CTR1                                 &
      &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &    press_e, mat3_grad_p_CTR(1,0), d_grad_p)
 !
@@ -283,7 +283,7 @@
      &   (itwo, -ione, fdm_e3(1)%n_plus,                                &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CTR)
-      call set_exp4_sph_pol_grad_p                                      &
+      call sum_exp4_sph_pol_grad_p                                      &
      &   (itwo, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
      &    press_e, mat3_grad_p_CTR(1,-1), d_grad_p)
 !
@@ -291,7 +291,7 @@
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
      &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
      &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CTR)
-      call set_exp4_sph_viscous_CTR1                                    &
+      call sum_exp4_sph_viscous_CTR1                                    &
      &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
      &    mat4_viscous_CTR(1,0), d_viscous_p)
 !
@@ -299,7 +299,7 @@
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
      &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
      &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CTR)
-      call set_exp4_sph_viscous_CTR2                                    &
+      call sum_exp4_sph_viscous_CTR2                                    &
      &   (itwo, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
      &    mat4_viscous_CTR(1,-1), d_viscous_p)
 !

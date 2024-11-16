@@ -144,7 +144,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM2_exp
+      use sum_sph_pol_vscs_FDM2_exp
       use sum_sph_pol_grad_p_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -244,7 +244,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM4_exp
+      use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -281,7 +281,7 @@
      &   ((sph_bc_U%kr_out-1), fdm_e3(1)%n_minus, izero,                &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CMB)
-      call set_exp4_sph_pol_grad_p_CMB1                                 &
+      call sum_exp4_sph_pol_grad_p_CMB1                                 &
      &   ((sph_bc_U%kr_out-1), sph_rj%nnod_rj, sph_rj%nidx_rj(2),       &
      &    press_e, mat3_grad_p_CMB(1,-1), d_grad_p)
 !
@@ -289,7 +289,7 @@
      &   (sph_bc_U%kr_out, fdm_e3(1)%n_minus, izero,                    &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CMB)
-      call set_exp4_sph_pol_grad_p_CMB                                  &
+      call sum_exp4_sph_pol_grad_p_CMB                                  &
      &   (sph_bc_U%kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),           &
      &    press_e, mat3_grad_p_CMB(1,-1), d_grad_p)
 !
@@ -306,7 +306,7 @@
      &      ione, fdm4_noslip_CMB%dmat_vp1(-2,2),                       &
      &      fdm4_noslip_CMB%dmat_vp1(-2,3), mat4_viscous_CMB)
       end if
-      call set_exp4_sph_pol_viscous_CMB1                                &
+      call sum_exp4_sph_pol_viscous_CMB1                                &
      &   ((sph_bc_U%kr_out-1), sph_rj%nnod_rj, sph_rj%nidx_rj(2),       &
      &    d_vpol, mat4_viscous_CMB(1,-2), d_viscous_p)
 !
@@ -345,10 +345,9 @@
      &      ione, fdm4_noslip_CMB%dmat_vp0(-2,2),                       &
      &      fdm4_noslip_CMB%dmat_vp0(-2,3), mat4_viscous_CMB)
       end if
-      call add_exp4_sph_pol_viscous_CMB                                 &
+      call sum_exp4_sph_pol_viscous_CMB                                 &
      &   (sph_bc_U%kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),           &
-     &    d_vpol, press_e, mat3_grad_p_CMB(1,-1), mat4_viscous_CMB(1,-2), &
-     &    d_viscous_p)
+     &    d_vpol, mat4_viscous_CMB(1,-2), d_viscous_p)
 !
       end subroutine sph_exp_FDM4_vpol_viscosity_CMB
 !
