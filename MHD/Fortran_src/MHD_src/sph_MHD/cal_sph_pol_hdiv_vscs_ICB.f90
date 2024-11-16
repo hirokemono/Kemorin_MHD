@@ -13,7 +13,7 @@
 !!     &         fdm2_fix_dr_ICB, fdm2_free_ICB,                        &
 !!     &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,     &
 !!     &         mat2_viscous_ICB, hdiv_visous_mat_ICB,                 &
-!!     &         d_viscous_p, hdiv_viscous_e)
+!!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(in) :: radial_variation
@@ -32,6 +32,7 @@
 !!     &           :: mat2_viscous_ICB(sph_rj%nidx_rj(2),-1:1)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
+!!        real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: d_viscous_p(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -135,7 +136,7 @@
      &         fdm2_fix_dr_ICB, fdm2_free_ICB,                          &
      &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,       &
      &         mat2_viscous_ICB, hdiv_visous_mat_ICB,                   &
-     &         d_viscous_p, hdiv_viscous_e)
+     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_MHD_boundaries
@@ -145,6 +146,7 @@
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM2_exp
+      use sum_sph_pol_grad_p_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -168,6 +170,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
 !
+      real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
      &                    :: d_viscous_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
@@ -180,6 +183,9 @@
      &   (sph_bc_U%kr_in, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,          &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p_ICB)
+      call sum_exp2_sph_pol_grad_p_ICB                                  &
+     &   (sph_bc_U%kr_in, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
+     &    press_e, mat1_grad_p_ICB(1,1), d_grad_p)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_viscosity_mat                                  &
@@ -194,10 +200,9 @@
      &      ione, fdm2_fix_dr_ICB(-1,2), fdm2_fix_dr_ICB(-1,3),         &
      &      mat2_viscous_ICB)
       end if
-      call add_exp2_sph_pol_viscous_ICB                                 &
+      call sum_exp2_sph_pol_viscous_ICB                                 &
      &   (sph_bc_U%kr_in, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
-     &    d_vpol, press_e, mat1_grad_p_ICB(1,1), mat2_viscous_ICB(1,0), &
-     &    d_viscous_p)
+     &    d_vpol, mat2_viscous_ICB(1,0), d_viscous_p)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
@@ -242,7 +247,7 @@
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM4_exp
-      use set_sph_pol_grad_p_FDM4_exp
+      use sum_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop

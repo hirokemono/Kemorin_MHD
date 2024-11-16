@@ -13,7 +13,7 @@
 !!     &         g_sph_rj, coef_p, coef_d, fdm_e1,                      &
 !!     &         fdm2_center, fdm3e_center, d_vpol, press_e,            &
 !!     &         mat2_viscous_CTR, hdiv_visous_mat_CTR,                 &
-!!     &         d_viscous_p, hdiv_viscous_e)
+!!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(in) :: radial_variation
@@ -29,6 +29,7 @@
 !!     &           :: mat2_viscous_CTR(sph_rj%nidx_rj(2),-1:1)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: hdiv_visous_mat_CTR(sph_rj%nidx_rj(2),-2:1)
+!!        real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: d_viscous_p(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -120,7 +121,7 @@
      &         g_sph_rj, coef_p, coef_d, fdm_e1,                        &
      &         fdm2_center, fdm3e_center, d_vpol, press_e,              &
      &         mat2_viscous_CTR, hdiv_visous_mat_CTR,                   &
-     &         d_viscous_p, hdiv_viscous_e)
+     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
@@ -129,7 +130,8 @@
       use set_sph_hdiv_viscousity
       use set_sph_hdiv_viscous_CTR
       use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM4_exp
+      use set_sph_pol_vscs_FDM2_exp
+      use sum_sph_pol_grad_p_FDM2_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -150,6 +152,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat_CTR(sph_rj%nidx_rj(2),-2:1)
 !
+      real(kind = kreal), intent(inout) :: d_grad_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
      &                    :: d_viscous_p(sph_rj%nnod_rj)
       real(kind = kreal), intent(inout)                                 &
@@ -184,14 +187,17 @@
      &   (ione, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                    &
      &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
      &    coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p_CTR)
+      call sum_exp2_sph_pol_grad_p                                      &
+     &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
+     &    press_e, mat1_grad_p_CTR(1,0), d_grad_p)
+!
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
      &    ione, fdm2_center%dmat_fix_dr(-1,2),                          &
      &    fdm2_center%dmat_fix_dr(-1,3), mat2_viscous_CTR)
-      call add_exp2_sph_viscous_CTR1                                    &
+      call sum_exp2_sph_viscous_CTR1                                    &
      &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
-     &    d_vpol, press_e, mat1_grad_p_CTR(1,0), mat2_viscous_CTR(1,0), &
-     &    d_viscous_p)
+     &    d_vpol, mat2_viscous_CTR(1,0), d_viscous_p)
 !
       end subroutine sph_exp_FDM2_vpol_viscosity_CTR
 !
@@ -213,7 +219,7 @@
       use set_sph_hdiv_viscous_CTR
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM4_exp
-      use set_sph_pol_grad_p_FDM4_exp
+      use sum_sph_pol_grad_p_FDM4_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
