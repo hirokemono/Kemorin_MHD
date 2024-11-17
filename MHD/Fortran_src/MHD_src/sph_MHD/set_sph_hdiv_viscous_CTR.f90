@@ -48,66 +48,6 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine sub_sph_hdiv_viscous_mat7_CTR(nri, jmax, coef_p,       &
-     &          hdiv_visous_mat_CTR, mat7)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat_CTR(jmax,0:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-!       mat7(7,-2,j) = mat7(7,-2,j) - hdiv_visous_mat_CTR(j,-2)
-!       mat7(6,-1,j) = mat7(6,-1,j)
-!       mat7(5, 0,j) = mat7(5, 0,j) - hdiv_visous_mat_CTR(j,-1)
-!
-        mat7(4,1,j) = mat7(4,1,j) + coef_p
-!
-        mat7(3,2,j) = mat7(3,2,j) - hdiv_visous_mat_CTR(j, 0)
-!       mat7(2,3,j) = mat7(2,3,j)
-        mat7(1,4,j) = mat7(1,4,j) - hdiv_visous_mat_CTR(j, 1)
-      end do
-!$omp end parallel do
-!
-      end subroutine sub_sph_hdiv_viscous_mat7_CTR
-!
-!  -------------------------------------------------------------------
-!
-      subroutine sub_sph_hdiv_viscous_mat7_CTR1(nri, jmax, coef_p,      &
-     &          hdiv_visous_mat_CTR1, mat7)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in)                                    &
-     &                   :: hdiv_visous_mat_CTR1(jmax,-1:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-!       mat7(7,0,j) = mat7(7,0,j) - hdiv_visous_mat_CTR1(j,-2)
-!       mat7(6,1,j) = mat7(6,1,j)
-        mat7(5,2,j) = mat7(5,2,j) - hdiv_visous_mat_CTR1(j,-1)
-!
-        mat7(4,3,j) = mat7(4,3,j) + coef_p
-!
-        mat7(3,4,j) = mat7(3,4,j) - hdiv_visous_mat_CTR1(j, 0)
-!       mat7(2,5,j) = mat7(2,5,j)
-        mat7(1,6,j) = mat7(1,6,j) - hdiv_visous_mat_CTR1(j, 1)
-      end do
-!$omp end parallel do
-!
-      end subroutine sub_sph_hdiv_viscous_mat7_CTR1
-!
-!  -------------------------------------------------------------------
-!  -------------------------------------------------------------------
-!
       subroutine sub_sph_hdiv_viscous_mat9_CTR1(nri, jmax, coef_p,      &
      &           hdiv_visous_mat_CTR1, mat9)
 !

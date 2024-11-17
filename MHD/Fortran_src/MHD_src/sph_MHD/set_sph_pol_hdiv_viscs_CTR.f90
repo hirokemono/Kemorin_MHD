@@ -180,7 +180,7 @@
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,-1))
-      call sum_exp_sph_hdiv_viscous_ICB1                                &
+      call sum_exp_sph_hdiv_viscous_ICB                                 &
      &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), d_vpol,           &
      &    hdiv_visous_mat_CTR(1,-1), hdiv_viscous_e)
 !
@@ -221,6 +221,7 @@
       use cal_sph_FDM_viscosity_mat
       use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
+      use sum_sph_hdiv_vscs_FDM_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -268,7 +269,7 @@
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,-1))
-      call sum_exp_sph_hdiv_viscous_ICB1                                &
+      call sum_exp_sph_hdiv_viscous_ICB                                 &
      &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), d_vpol,           &
      &    hdiv_visous_mat_CTR(1,-1), hdiv_viscous_e)
 !
@@ -322,6 +323,7 @@
       use set_sph_hdiv_viscous_CTR
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM2_mat
+      use set_sph_hdiv_vscs_FDM_mat7
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -352,9 +354,11 @@
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,0))
+      call add_sph_ele_pressure_FDM_mat7                                &
+     &   (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_CTR                                &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    coef_p, hdiv_visous_mat_CTR(1,0), mat7)
+     &    hdiv_visous_mat_CTR(1,0), mat7)
 !
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (itwo, -ione, ione, sph_rj, fl_prop,                         &
@@ -363,8 +367,10 @@
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,-1))
+      call add_sph_ele_pressure_FDM_mat7                                &
+     &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_CTR1                               &
-     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p,                 &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    hdiv_visous_mat_CTR(1,-1), mat7)
 !
       call set_sph_FDM_pressure_grad_mat                                &

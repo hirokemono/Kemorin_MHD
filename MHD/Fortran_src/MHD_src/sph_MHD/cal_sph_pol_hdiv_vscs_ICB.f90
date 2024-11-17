@@ -223,7 +223,7 @@
      &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
      &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
       end if
-      call sum_exp_sph_hdiv_viscous_ICB1((sph_bc_U%kr_in+1),            &
+      call sum_exp_sph_hdiv_viscous_ICB((sph_bc_U%kr_in+1),             &
      &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,                    &
      &    hdiv_visous_mat_ICB, hdiv_viscous_e)
 !
@@ -333,7 +333,7 @@
      &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
      &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
       end if
-      call sum_exp_sph_hdiv_viscous_ICB1((sph_bc_U%kr_in+1),            &
+      call sum_exp_sph_hdiv_viscous_ICB((sph_bc_U%kr_in+1),             &
      &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,                    &
      &    hdiv_visous_mat_ICB, hdiv_viscous_e)
 !
@@ -371,6 +371,7 @@
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM2_mat
+      use set_sph_hdiv_vscs_FDM_mat7
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -395,9 +396,9 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
       else
-        call set_sph_hdiv_viscous_mat7_ICB                              &
-     &     (sph_bc_U%kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
         do kr = 1, sph_bc_U%kr_in
+          call add_sph_ele_pressure_FDM_mat7                            &
+     &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
           call set_sph_pol_viscous_mat7_ICB                             &
      &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
         end do
@@ -420,9 +421,11 @@
      &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
      &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
       end if
-      call sub_sph_hdiv_viscous_mat7_ICB1                               &
-     &   (sph_bc_U%kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),         &
-     &    coef_p, hdiv_visous_mat_ICB(1,-1), mat7)
+      call add_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+      call sub_sph_hdiv_viscous_mat7_ICB1((sph_bc_U%kr_in+1),           &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &    hdiv_visous_mat_ICB(1,-1), mat7)
 !
       end subroutine sph_FDM2_vpol_viscosity_mat_ICB
 !

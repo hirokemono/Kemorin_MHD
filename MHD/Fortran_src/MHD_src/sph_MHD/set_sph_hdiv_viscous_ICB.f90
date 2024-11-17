@@ -38,67 +38,7 @@
 !
 !  -------------------------------------------------------------------
 ! -----------------------------------------------------------------------
-!
-      subroutine sub_sph_hdiv_viscous_mat7_ICB1                         &
-     &         (k_ICB, nri, jmax, coef_p, hdiv_visous_mat_ICB, mat7)
-!
-      integer(kind = kint), intent(in) :: k_ICB
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat_ICB(jmax,-1:1)
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        if(2*k_ICB-2 .gt. 0) mat7(7,2*k_ICB-2,j) = zero
-!       mat7(6,2*k_ICB-1,j) = mat7(6,2*k_ICB-1,j)
-        mat7(5,2*k_ICB,  j) = mat7(5,2*k_ICB,  j)                       &
-     &                       - hdiv_visous_mat_ICB(j,-1)
-!
-        mat7(4,2*k_ICB+1,j) = mat7(4,2*k_ICB+1,j) + coef_p
-!
-        mat7(3,2*k_ICB+2,j) = mat7(3,2*k_ICB+2,j)                       &
-     &                       - hdiv_visous_mat_ICB(j, 0)
-!        mat7(2,2*k_ICB+3,j) = mat7(2,2*k_ICB+3,j)
-        mat7(1,2*k_ICB+4,j) = mat7(1,2*k_ICB+4,j)                       &
-     &                       - hdiv_visous_mat_ICB(j, 1)
-      end do
-!$omp end parallel do
-!
-      end subroutine sub_sph_hdiv_viscous_mat7_ICB1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_sph_hdiv_viscous_mat7_ICB(k_ICB, nri, jmax, mat7)
-!
-      integer(kind = kint), intent(in) :: k_ICB
-      integer(kind = kint), intent(in) :: nri, jmax
-!
-      real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
-!
-      integer(kind = kint) :: j
-!
-!$omp parallel do private(j)
-      do j = 1, jmax
-        if(2*k_ICB-4 .gt. 0) mat7(7,2*k_ICB-4,j) = zero
-        if(2*k_ICB-3 .gt. 0) mat7(6,2*k_ICB-3,j) = zero
-        if(2*k_ICB-2 .gt. 0) mat7(5,2*k_ICB-2,j) = zero
-!
-        mat7(4,2*k_ICB-1,j) = zero
-!
-        mat7(3,2*k_ICB,  j) = one
-        mat7(2,2*k_ICB+1,j) = zero
-        mat7(1,2*k_ICB+2,j) = zero
-      end do
-!$omp end parallel do
-!
-      end subroutine set_sph_hdiv_viscous_mat7_ICB
-!
-!  -------------------------------------------------------------------
-!
+
       subroutine sub_sph_hdiv_viscous_mat9_ICB1(k_ICB, nri, jmax,       &
      &          coef_p, hdiv_visous_mat_ICB, mat9)
 !

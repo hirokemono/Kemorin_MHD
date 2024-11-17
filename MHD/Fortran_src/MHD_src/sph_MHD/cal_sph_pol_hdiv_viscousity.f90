@@ -302,6 +302,7 @@
       use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM2_mat
+      use set_sph_hdiv_vscs_FDM_mat7
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -334,8 +335,10 @@
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
-        call sub_sph_hdiv_viscous_FDM2_mat                              &
-     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p,           &
+        call add_sph_ele_pressure_FDM_mat7                              &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+        call sub_sph_hdiv_viscous_FDM_mat7                              &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                   &
      &      hdiv_visous_mat, mat7)
       end do
 !$omp end parallel do
