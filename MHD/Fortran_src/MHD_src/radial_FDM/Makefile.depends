@@ -2,6 +2,8 @@ set_sph_pol_vscs_FDM2_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM2_mat.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_pol_vscs_FDM4_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM4_mat.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_hdiv_vscs_FDM_exp.o: $(MHD_FDM_DIR)/sum_sph_hdiv_vscs_FDM_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_pol_grad_p_FDM2_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_grad_p_FDM2_exp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_pol_grad_p_FDM4_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_grad_p_FDM4_exp.f90 m_precision.o m_constants.o

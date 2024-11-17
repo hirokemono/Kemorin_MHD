@@ -134,6 +134,7 @@
       use cal_sph_FDM_viscosity_mat
       use sum_sph_pol_vscs_FDM2_exp
       use sum_sph_pol_grad_p_FDM2_exp
+      use sum_sph_hdiv_vscs_FDM_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -170,9 +171,9 @@
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
-        call add_exp_sph_hdiv_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), coef_p,              &
-     &      hdiv_visous_mat, d_vpol, press_e, hdiv_viscous_e)
+        call sum_exp_sph_hdiv_viscous                                   &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
+     &      d_vpol, hdiv_visous_mat, hdiv_viscous_e)
       end do
 !$omp end parallel do
 !
@@ -218,6 +219,7 @@
       use cal_sph_FDM_viscosity_mat
       use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
+      use sum_sph_hdiv_vscs_FDM_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -254,9 +256,9 @@
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
-        call add_exp_sph_hdiv_viscous                                   &
-     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2), coef_p,              &
-     &      hdiv_visous_mat, d_vpol, press_e, hdiv_viscous_e)
+        call sum_exp_sph_hdiv_viscous                                   &
+     &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
+     &      d_vpol, hdiv_visous_mat, hdiv_viscous_e)
       end do
 !$omp end parallel do
 !

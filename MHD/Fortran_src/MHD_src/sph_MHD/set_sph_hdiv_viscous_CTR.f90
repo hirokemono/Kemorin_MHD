@@ -8,22 +8,6 @@
 !!      to FDM matrix and explicit term
 !!
 !!@verbatim
-!!      subroutine add_exp_sph_hdiv_viscous_CTR1 (nnod_rj, jmax, coef_p,&
-!!     &          hdiv_visous_mat_CTR1, d_vpol, press_e, hdiv_viscous_e)
-!!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: coef_p
-!!        real(kind=kreal), intent(in) :: hdiv_visous_mat_CTR1(jmax,-1:1)
-!!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!!        real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
-!!      subroutine add_exp_sph_hdiv_viscous_CTR(nnod_rj, jmax, coef_p,  &
-!!     &          d_vpol, mat_hdiv_vcs_CTR, e_hdiv_viscous)
-!!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        real(kind = kreal), intent(in) :: coef_p
-!!        real(kind = kreal), intent(in) :: mat_hdiv_vcs_CTR(jmax,0:1)
-!!        real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!!        real(kind = kreal), intent(inout) :: e_hdiv_viscous(nnod_rj)
-!!
 !!      subroutine sub_sph_hdiv_viscous_mat7_CTR(nri, jmax, coef_p,     &
 !!     &          hdiv_visous_mat_CTR, mat7)
 !!        integer(kind = kint), intent(in) :: nri, jmax
@@ -63,72 +47,6 @@
       contains
 !
 !  -------------------------------------------------------------------
-!
-      subroutine add_exp_sph_hdiv_viscous_CTR1 (nnod_rj, jmax, coef_p,  &
-     &          hdiv_visous_mat_CTR1, d_vpol, press_e, hdiv_viscous_e)
-!
-      integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat_CTR1(jmax,-1:1)
-      real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-      real(kind = kreal), intent(in) :: press_e(nnod_rj)
-!
-      real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
-!
-      integer(kind = kint) :: j, i_n1, i_p1, inod, iele
-!
-!
-!$omp parallel do private(j,iele,inod,i_n1,i_p1)
-      do j = 1, jmax
-        iele = j + jmax
-        inod = iele
-        i_n1 = j
-        i_p1 = inod + jmax
-!
-        hdiv_viscous_e(iele) = hdiv_viscous_e(iele)                     &
-     &                     + hdiv_visous_mat_CTR1(j,-1) * d_vpol(i_n1)  &
-     &                     - coef_p *                press_e(iele)      &
-     &                     + hdiv_visous_mat_CTR1(j, 0) * d_vpol(inod)  &
-     &                     + hdiv_visous_mat_CTR1(j, 1) * d_vpol(i_p1)
-!
-        hdiv_viscous_e(i_n1) = hdiv_viscous_e(iele)
-      end do
-!$omp end parallel do
-!
-!
-      end subroutine add_exp_sph_hdiv_viscous_CTR1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_exp_sph_hdiv_viscous_CTR(nnod_rj, jmax, coef_p,    &
-     &          d_vpol, mat_hdiv_vcs_CTR, e_hdiv_viscous)
-!
-      integer(kind = kint), intent(in) :: nnod_rj, jmax
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: mat_hdiv_vcs_CTR(jmax,0:1)
-      real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
-!
-      real(kind = kreal), intent(inout) :: e_hdiv_viscous(nnod_rj)
-!
-      integer(kind = kint) :: j, iele, i_p1, inod
-!
-!
-!$omp parallel do private(j,iele,i_p1,inod)
-      do j = 1, jmax
-        iele = j
-        i_p1 = iele + jmax
-        inod = iele
-!
-        e_hdiv_viscous(iele) = e_hdiv_viscous(iele) - coef_p            &
-     &                        + mat_hdiv_vcs_CTR(j, 0) * d_vpol(inod)   &
-     &                        + mat_hdiv_vcs_CTR(j, 1) * d_vpol(i_p1)
-      end do
-!$omp end parallel do
-!
-      end subroutine add_exp_sph_hdiv_viscous_CTR
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine sub_sph_hdiv_viscous_mat7_CTR(nri, jmax, coef_p,       &
      &          hdiv_visous_mat_CTR, mat7)

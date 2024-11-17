@@ -47,34 +47,21 @@
 !  -------------------------------------------------------------------
 !
       subroutine add_exp_sph_hdiv_viscous(kr, nnod_rj, jmax, coef_p,    &
-     &          hdiv_visous_mat, d_vpol, press_e, hdiv_viscous_e)
+     &                                    press_e, hdiv_viscous_e)
 !
       integer(kind = kint), intent(in) :: kr
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: hdiv_visous_mat(jmax,-2:1)
-      real(kind = kreal), intent(in) :: d_vpol(nnod_rj)
       real(kind = kreal), intent(in) :: press_e(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
 !
-      integer(kind = kint) :: j, i_n1, i_p1, i_n2, inod, iele
+      integer(kind = kint) :: ist, ied
 !
 !
-      do j = 1, jmax
-        iele = j + (kr-1) * jmax
-        inod = iele
-        i_n1 = inod - jmax
-        i_n2 = i_n1 - jmax
-        i_p1 = inod + jmax
-!
-        hdiv_viscous_e(iele) = hdiv_viscous_e(iele)                     &
-     &                     + hdiv_visous_mat(j,-2) * d_vpol(i_n2)       &
-     &                     + hdiv_visous_mat(j,-1) * d_vpol(i_n1)       &
-     &                     - coef_p *                press_e(iele)      &
-     &                     + hdiv_visous_mat(j, 0) * d_vpol(inod)       &
-     &                     + hdiv_visous_mat(j, 1) * d_vpol(i_p1)
-      end do
+      ist = 1 + (kr-1) * jmax
+      ied =      kr * jmax
+      hdiv_viscous_e(ist:ied) = - coef_p * press_e(ist:ied)
 !
       end subroutine add_exp_sph_hdiv_viscous
 !
