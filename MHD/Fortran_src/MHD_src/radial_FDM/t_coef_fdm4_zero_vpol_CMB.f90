@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative for non-slip at ICB
+!>@brief Matrix to evaluate radial derivative for non-slip at CMB
 !!
 !!@verbatim
 !!      subroutine check_4th_CMB_nonslip_vp_fdm(fdm4_noslip_CMB)

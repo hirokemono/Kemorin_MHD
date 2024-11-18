@@ -238,7 +238,6 @@
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB
@@ -430,7 +429,6 @@
      &         mat4_viscous_CMB1, hdiv_visous_mat_CMB, mat9)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB

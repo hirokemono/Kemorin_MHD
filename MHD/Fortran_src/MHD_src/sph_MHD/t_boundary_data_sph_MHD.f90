@@ -28,8 +28,9 @@
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
       use t_coef_fdm2_MHD_boundaries
-      use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm4_zero_vpol_ICB
+      use t_coef_fdm4_free_vpol_ICB
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB
       use t_time_data
@@ -78,9 +79,9 @@
         type(fdm3e_BC_hdiv) :: fdm3e_free_CMB
 !
 !>        Structure for 4th order FDM matrix of non-slip boundary at ICB
-        type(fdm4_ICB_vpol) :: fdm4_noslip_ICB
+        type(fdm4_ICB_zero_vpol) :: fdm4_noslip_ICB
 !>        Structure for 4th order FDM matrix of free slip boundary at ICB
-        type(fdm4_ICB_vpol) :: fdm4_free_ICB
+        type(fdm4_ICB_free_vpol) :: fdm4_free_ICB
 !
 !>        Structure for 4th order FDM matrix of non-slip boundary at CMB
         type(fdm4_CMB_zero_vpol) :: fdm4_noslip_CMB

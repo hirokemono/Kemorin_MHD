@@ -15,7 +15,7 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_mat
 !!      subroutine check_coef_fdm_fix_dr_2ctr(fdm2_center)
-!!        type(fdm4_ICB_vpol), intent(in) :: fdm2_center
+!!        type(fdm2_ICB_vpol), intent(in) :: fdm2_center
 !!
 !!    Matrix to evaluate radial derivative of poloidal velocity
 !!    at CMB with free slip boundary

@@ -34,8 +34,8 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB
-      use coef_fdm4_vpol_nonslip_ICB
-      use coef_fdm4_vpol_free_ICB
+      use t_coef_fdm4_zero_vpol_ICB
+      use t_coef_fdm4_free_vpol_ICB
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: h_rho

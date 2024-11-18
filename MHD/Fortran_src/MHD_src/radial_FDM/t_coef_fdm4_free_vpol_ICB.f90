@@ -1,30 +1,36 @@
-!>@file   coef_fdm4_vpol_free_ICB.f90
-!!@brief  module coef_fdm4_vpol_free_ICB
+!>@file   t_coef_fdm4_free_vpol_ICB.f90
+!!@brief  module t_coef_fdm4_free_vpol_ICB
 !!
 !!@author H. Matsui
 !!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative for free-slip at ICB
+!>@brief Matrix to evaluate radial derivative for non-slip at ICB
 !!
 !!@verbatim
+!!      subroutine check_4th_ICB_free_vp_fdm(fdm4_free_ICB)
+!!        type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
 !!      subroutine cal_fdm4_ICB0_free_vp(h_rho, r_from_ICB,             &
 !!     &                                 fdm4_free_ICB)
+!!        real(kind = kreal), intent(in) :: h_rho
+!!        real(kind = kreal), intent(in) :: r_from_ICB(0:2)
+!!        type(fdm4_ICB_free_vpol), intent(inout) :: fdm4_free_ICB
 !!      subroutine cal_fdm4_ICB1_free_vp(r_from_ICB, fdm4_free_ICB)
-!!        type(fdm4_ICB_vpol), intent(inout) :: fdm4_free_ICB
-!!
-!!      subroutine check_4th_ICB_free_vp_fdm(fdm4_free_ICB)
-!!        type(fdm4_ICB_vpol), intent(in) :: fdm4_free_ICB
+!!        real(kind = kreal), intent(in) :: r_from_ICB(0:3)
+!!        type(fdm4_ICB_free_vpol), intent(inout) :: fdm4_free_ICB
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at ICB
-!!      dfdr =      fdm4_free_ICB%dmat_vp0( 2,2) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,2) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,2) * d_rj(ICB  )
-!!      d2fdr2 =    fdm4_free_ICB%dmat_vp0( 2,3) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,3) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,3) * d_rj(ICB  )
-!!      d3fdr3 =    fdm4_free_ICB%dmat_vp0( 2,4) * d_rj(ICB+2)
-!!                + fdm4_free_ICB%dmat_vp0( 1,4) * d_rj(ICB+1)
-!!                + fdm4_free_ICB%dmat_vp0( 0,4) * d_rj(ICB  )
+!!      dfdr =      fdm4_free_ICB%dmat_vp1( 2,2) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,2) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,2) * d_rj(1)
+!!      d2fdr2 =    fdm4_free_ICB%dmat_vp1( 2,3) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,3) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,3) * d_rj(1)
+!!      d3fdr3 =    fdm4_free_ICB%dmat_vp1( 2,4) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,4) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,4) * d_rj(1)
+!!      d4fdr4 =    fdm4_free_ICB%dmat_vp1( 2,5) * d_rj(3)
+!!                + fdm4_free_ICB%dmat_vp1( 1,5) * d_rj(2)
+!!                + fdm4_free_ICB%dmat_vp1( 0,5) * d_rj(1)
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at next of ICB
 !!      dfdr =      fdm4_free_ICB%dmat_vp1( 2,2) * d_rj(ICB+3)
@@ -45,18 +51,61 @@
 !!                + fdm4_free_ICB%dmat_vp1(-1,5) * d_rj(ICB  )
 !!@endverbatim
 !!
-!!@n @param r_from_ICB(0:3) radius to three next points from ICB
-!!
-      module coef_fdm4_vpol_free_ICB
+      module t_coef_fdm4_free_vpol_ICB
 !
       use m_precision
-!
       use m_constants
-      use t_coef_fdm4_MHD_boundaries
-      use cal_inverse_small_matrix
 !
       implicit none
 !
+      type fdm4_ICB_free_vpol
+!>        Matrix to evaluate radial derivative at ICB
+        real(kind = kreal) :: dmat_vp0(-2:2,1:5)
+!>        Matrix to evaluate radial derivative at next of ICB
+        real(kind = kreal) :: dmat_vp1(-2:2,1:5)
+      end type fdm4_ICB_free_vpol
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_4th_ICB_free_vp_fdm(fdm4_free_ICB)
+!
+      type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
+!
+!
+      write(50,*) ' free slip boundary at ICB'
+      write(50,*) ' fdm4_free_ICB%dmat_vp0'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp0(0:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp0(0:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp0(0:2,4)
+!
+      write(50,*) ' fdm4_free_ICB%dmat_vp1'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp1(-1:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp1(-1:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp1(-1:2,4)
+      write(50,*) 'matrix for d4fdr4'
+      write(50,'(1p9E25.15e3)') fdm4_free_ICB%dmat_vp1(-1:2,5)
+!
+      end subroutine check_4th_ICB_free_vp_fdm
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_fdm4_ICB0_free_vp(h_rho, r_from_ICB,               &
+     &                                 fdm4_free_ICB)
+!
+      real(kind = kreal), intent(in) :: h_rho
+      real(kind = kreal), intent(in) :: r_from_ICB(0:2)
+      type(fdm4_ICB_free_vpol), intent(inout) :: fdm4_free_ICB
 !
 !>      Work matrix to evaluate fdm4_free_ICB%dmat_vp0(0:2,2:4)
 !!@verbatim
@@ -74,46 +123,6 @@
 !!                + mat_fdm4_ICB_free_vp(4,2) * B.C. (=0)
 !!@endverbatim
       real(kind = kreal) :: mat_fdm4_ICB_free_vp(4,4)
-!
-!>      Work matrix to evaluate fdm4_free_ICB%dmat_vp1(-1:1,5)
-!!@verbatim
-!!      dfdr =      mat_fdm4_ICB1_free_vp(2,5) * d_rj(ICB+3)
-!!                + mat_fdm4_ICB1_free_vp(2,4) * d_rj(ICB+2)
-!!                + mat_fdm4_ICB1_free_vp(2,1) * d_rj(ICB+1)
-!!                + mat_fdm4_ICB1_free_vp(2,3) * d_rj(ICB  )
-!!                + mat_fdm4_ICB1_free_vp(2,2) * B.C. (=0)
-!!      d2fdr2 =    mat_fdm4_ICB1_free_vp(3,5) * d_rj(ICB+3)
-!!                + mat_fdm4_ICB1_free_vp(3,4) * d_rj(ICB+2)
-!!                + mat_fdm4_ICB1_free_vp(3,1) * d_rj(ICB+1)
-!!                + mat_fdm4_ICB1_free_vp(3,3) * d_rj(ICB  )
-!!                + mat_fdm4_ICB1_free_vp(3,2) * B.C. (=0)
-!!      d3fdr3 =    mat_fdm4_ICB1_free_vp(4,5) * d_rj(ICB+3)
-!!                + mat_fdm4_ICB1_free_vp(4,4) * d_rj(ICB+2)
-!!                + mat_fdm4_ICB1_free_vp(4,1) * d_rj(ICB+1)
-!!                + mat_fdm4_ICB1_free_vp(4,3) * d_rj(ICB  )
-!!                + mat_fdm4_ICB1_free_vp(4,2) * B.C. (=0)
-!!      d4fdr4 =    mat_fdm4_ICB1_free_vp(5,5) * d_rj(ICB+3)
-!!                + mat_fdm4_ICB1_free_vp(5,4) * d_rj(ICB+2)
-!!                + mat_fdm4_ICB1_free_vp(5,1) * d_rj(ICB+1)
-!!                + mat_fdm4_ICB1_free_vp(5,3) * d_rj(ICB  )
-!!                + mat_fdm4_ICB1_free_vp(5,2) * B.C. (=0)
-!!@endverbatim
-      real(kind = kreal) :: mat_fdm4_ICB1_free_vp(5,5)
-!
-      private :: mat_fdm4_ICB_free_vp, mat_fdm4_ICB1_free_vp
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_fdm4_ICB0_free_vp(h_rho, r_from_ICB,               &
-     &                                 fdm4_free_ICB)
-!
-      real(kind = kreal), intent(in) :: h_rho
-      real(kind = kreal), intent(in) :: r_from_ICB(0:2)
-      type(fdm4_ICB_vpol), intent(inout) :: fdm4_free_ICB
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_4(4,4)
@@ -152,15 +161,12 @@
      &            r_from_ICB(0)
       end if
 !
-      fdm4_free_ICB%dmat_vp0(0,2) = mat_fdm4_ICB_free_vp(2,1)
-      fdm4_free_ICB%dmat_vp0(1,2) = mat_fdm4_ICB_free_vp(2,3)
-      fdm4_free_ICB%dmat_vp0(2,2) = mat_fdm4_ICB_free_vp(2,4)
-      fdm4_free_ICB%dmat_vp0(0,3) = mat_fdm4_ICB_free_vp(3,1)
-      fdm4_free_ICB%dmat_vp0(1,3) = mat_fdm4_ICB_free_vp(3,3)
-      fdm4_free_ICB%dmat_vp0(2,3) = mat_fdm4_ICB_free_vp(3,4)
-      fdm4_free_ICB%dmat_vp0(0,4) = mat_fdm4_ICB_free_vp(4,1)
-      fdm4_free_ICB%dmat_vp0(1,4) = mat_fdm4_ICB_free_vp(4,3)
-      fdm4_free_ICB%dmat_vp0(2,4) = mat_fdm4_ICB_free_vp(4,4)
+      fdm4_free_ICB%dmat_vp0(-2,1:4) = zero
+      fdm4_free_ICB%dmat_vp0(-1,1:4) = zero
+      fdm4_free_ICB%dmat_vp0( 0,1:4) = mat_fdm4_ICB_free_vp(1:4,1)
+      fdm4_free_ICB%dmat_vp0( 1,1:4) = mat_fdm4_ICB_free_vp(1:4,3)
+      fdm4_free_ICB%dmat_vp0( 2,1:4) = mat_fdm4_ICB_free_vp(1:4,4)
+      fdm4_free_ICB%dmat_vp0(-2:2,5) = zero
 !
       end subroutine cal_fdm4_ICB0_free_vp
 !
@@ -169,7 +175,32 @@
       subroutine cal_fdm4_ICB1_free_vp(r_from_ICB, fdm4_free_ICB)
 !
       real(kind = kreal), intent(in) :: r_from_ICB(0:3)
-      type(fdm4_ICB_vpol), intent(inout) :: fdm4_free_ICB
+      type(fdm4_ICB_free_vpol), intent(inout) :: fdm4_free_ICB
+!
+!>      Work matrix to evaluate fdm4_free_ICB%dmat_vp1(-1:1,5)
+!!@verbatim
+!!      dfdr =      mat_fdm4_ICB1_free_vp(2,5) * d_rj(ICB+3)
+!!                + mat_fdm4_ICB1_free_vp(2,4) * d_rj(ICB+2)
+!!                + mat_fdm4_ICB1_free_vp(2,1) * d_rj(ICB+1)
+!!                + mat_fdm4_ICB1_free_vp(2,3) * d_rj(ICB  )
+!!                + mat_fdm4_ICB1_free_vp(2,2) * B.C. (=0)
+!!      d2fdr2 =    mat_fdm4_ICB1_free_vp(3,5) * d_rj(ICB+3)
+!!                + mat_fdm4_ICB1_free_vp(3,4) * d_rj(ICB+2)
+!!                + mat_fdm4_ICB1_free_vp(3,1) * d_rj(ICB+1)
+!!                + mat_fdm4_ICB1_free_vp(3,3) * d_rj(ICB  )
+!!                + mat_fdm4_ICB1_free_vp(3,2) * B.C. (=0)
+!!      d3fdr3 =    mat_fdm4_ICB1_free_vp(4,5) * d_rj(ICB+3)
+!!                + mat_fdm4_ICB1_free_vp(4,4) * d_rj(ICB+2)
+!!                + mat_fdm4_ICB1_free_vp(4,1) * d_rj(ICB+1)
+!!                + mat_fdm4_ICB1_free_vp(4,3) * d_rj(ICB  )
+!!                + mat_fdm4_ICB1_free_vp(4,2) * B.C. (=0)
+!!      d4fdr4 =    mat_fdm4_ICB1_free_vp(5,5) * d_rj(ICB+3)
+!!                + mat_fdm4_ICB1_free_vp(5,4) * d_rj(ICB+2)
+!!                + mat_fdm4_ICB1_free_vp(5,1) * d_rj(ICB+1)
+!!                + mat_fdm4_ICB1_free_vp(5,3) * d_rj(ICB  )
+!!                + mat_fdm4_ICB1_free_vp(5,2) * B.C. (=0)
+!!@endverbatim
+      real(kind = kreal) :: mat_fdm4_ICB1_free_vp(5,5)
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_5(5,5)
@@ -222,26 +253,14 @@
      &            r_from_ICB(0)
       end if
 !
-      fdm4_free_ICB%dmat_vp1( 2,2:5) = mat_fdm4_ICB1_free_vp(2:5,5)
-      fdm4_free_ICB%dmat_vp1( 1,2:5) = mat_fdm4_ICB1_free_vp(2:5,4)
-      fdm4_free_ICB%dmat_vp1( 0,2:5) = mat_fdm4_ICB1_free_vp(2:5,1)
-      fdm4_free_ICB%dmat_vp1(-1,2:5) = mat_fdm4_ICB1_free_vp(2:5,3)
+      fdm4_free_ICB%dmat_vp1( 2,1:5) = mat_fdm4_ICB1_free_vp(1:5,5)
+      fdm4_free_ICB%dmat_vp1( 1,1:5) = mat_fdm4_ICB1_free_vp(1:5,4)
+      fdm4_free_ICB%dmat_vp1( 0,1:5) = mat_fdm4_ICB1_free_vp(1:5,1)
+      fdm4_free_ICB%dmat_vp1(-1,1:5) = mat_fdm4_ICB1_free_vp(1:5,3)
+      fdm4_free_ICB%dmat_vp1(-2,1:5) = 0.0
 !
       end subroutine cal_fdm4_ICB1_free_vp
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine check_4th_ICB_free_vp_fdm(fdm4_free_ICB)
-!
-      type(fdm4_ICB_vpol), intent(in) :: fdm4_free_ICB
-!
-!
-      write(50,*) ' free slip boundary'
-      call check_4th_ICB_vpol_fdm(fdm4_free_ICB)
-!
-      end subroutine check_4th_ICB_free_vp_fdm
-!
-! -----------------------------------------------------------------------
-!
-      end module coef_fdm4_vpol_free_ICB
+      end module t_coef_fdm4_free_vpol_ICB
