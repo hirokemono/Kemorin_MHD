@@ -1,18 +1,17 @@
-!>@file   coef_fdm4_vpol_nonslip_CMB.f90
-!!@brief  module coef_fdm4_vpol_nonslip_CMB
+!>@file   t_coef_fdm4_zero_vpol_CMB.f90
+!!@brief  module t_coef_fdm4_zero_vpol_CMB
 !!
 !!@author H. Matsui
 !!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative for non-slip at CMB
+!>@brief Matrix to evaluate radial derivative for non-slip at ICB
 !!
 !!@verbatim
+!!      subroutine check_4th_CMB_nonslip_vp_fdm(fdm4_noslip_CMB)
+!!        type(fdm4_CMB_zero_vpol), intent(in) :: fdm4_noslip_CMB
 !!      subroutine cal_fdm4_CMB0_nonslip_vp(r_from_CMB, fdm4_noslip_CMB)
 !!      subroutine cal_fdm4_CMB1_nonslip_vp(r_from_CMB, fdm4_noslip_CMB)
-!!        type(fdm4_CMB_vpol), intent(inout) :: fdm4_noslip_CMB
-!!
-!!      subroutine check_4th_CMB_nonslip_vp_fdm(fdm4_noslip_CMB)
-!!      type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
+!!        type(fdm4_CMB_zero_vpol), intent(inout) :: fdm4_noslip_CMB
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at CMB
 !!      dfdr =      0.0
@@ -42,18 +41,60 @@
 !!                + fdm4_noslip_CMB%dmat_vp1( 1,5) * d_rj(CMB  )
 !!@endverbatim
 !!
-!!@n @param r_from_CMB(-3:0) radius from three next points to CMB
+!!@n @param r_from_ICB(0:3) radius to three next points of ICB
 !!
-      module coef_fdm4_vpol_nonslip_CMB
+      module t_coef_fdm4_zero_vpol_CMB
 !
       use m_precision
       use m_constants
 !
-      use t_coef_fdm4_MHD_boundaries
-      use cal_inverse_small_matrix
-!
       implicit none
 !
+      type fdm4_CMB_zero_vpol
+!>        Matrix to evaluate radial derivative at CMB
+        real(kind = kreal) :: dmat_vp0(-2:2,1:5)
+!>        Matrix to evaluate radial derivative at next of CMB
+        real(kind = kreal) :: dmat_vp1(-2:2,1:5)
+      end type fdm4_CMB_zero_vpol
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_4th_CMB_nonslip_vp_fdm(fdm4_noslip_CMB)
+!
+      type(fdm4_CMB_zero_vpol), intent(in) :: fdm4_noslip_CMB
+!
+!
+      write(50,*) ' zero poloidal at CMB'
+      write(50,*) ' fdm4_noslip_CMB%dmat_vp0'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp0(-2:0,2)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp0(-2:0,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp0(-2:0,4)
+!
+      write(50,*) ' fdm4_noslip_CMB%dmat_vp1'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp1(-2:1,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp1(-2:1,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp1(-2:1,4)
+      write(50,*) 'matrix for d4fdr4'
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB%dmat_vp1(-2:1,5)
+!
+      end subroutine check_4th_CMB_nonslip_vp_fdm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_fdm4_CMB0_nonslip_vp(r_from_CMB, fdm4_noslip_CMB)
+!
+      real(kind = kreal), intent(in) :: r_from_CMB(-3:0)
+      type(fdm4_CMB_zero_vpol), intent(inout) :: fdm4_noslip_CMB
 !
 !>      Work matrix to evaluate fdm4_noslip_CMB%dmat_vp0
 !!@verbatim
@@ -71,44 +112,6 @@
 !!                + mat_fdm_noslip_CMB_4(5,2) * dfdr(CMB)
 !!@endverbatim
       real(kind = kreal) :: mat_fdm_noslip_CMB_4(4,4)
-!
-!>      Work matrix to evaluate fdm4_noslip_CMB%dmat_vp1
-!!@verbatim
-!!      dfdr =      mat_fdm_noslip_CMB1_4(2,5) * d_rj(CMB-3)
-!!                + mat_fdm_noslip_CMB1_4(2,4) * d_rj(CMB-2)
-!!                + mat_fdm_noslip_CMB1_4(2,1) * d_rj(CMB-1)
-!!                + mat_fdm_noslip_CMB1_4(2,3) * d_rj(CMB  )
-!!                + mat_fdm_noslip_CMB1_4(2,2) * dfdr(CMB)
-!!      d2fdr2 =    mat_fdm_noslip_CMB1_4(3,5) * d_rj(CMB-3)
-!!                + mat_fdm_noslip_CMB1_4(3,4) * d_rj(CMB-2)
-!!                + mat_fdm_noslip_CMB1_4(3,1) * d_rj(CMB-1)
-!!                + mat_fdm_noslip_CMB1_4(3,3) * d_rj(CMB  )
-!!                + mat_fdm_noslip_CMB1_4(3,2) * dfdr(CMB)
-!!      d3fdr3 =    mat_fdm_noslip_CMB1_4(4,5) * d_rj(CMB-3)
-!!                + mat_fdm_noslip_CMB1_4(4,4) * d_rj(CMB-2)
-!!                + mat_fdm_noslip_CMB1_4(4,1) * d_rj(CMB-1)
-!!                + mat_fdm_noslip_CMB1_4(4,3) * d_rj(CMB  )
-!!                + mat_fdm_noslip_CMB1_4(4,2) * dfdr(CMB)
-!!      d4fdr4 =    mat_fdm_noslip_CMB1_4(5,5) * d_rj(CMB-3)
-!!                + mat_fdm_noslip_CMB1_4(5,4) * d_rj(CMB-2)
-!!                + mat_fdm_noslip_CMB1_4(5,1) * d_rj(CMB-1)
-!!                + mat_fdm_noslip_CMB1_4(5,3) * d_rj(CMB  )
-!!                + mat_fdm_noslip_CMB1_4(5,2) * dfdr(CMB)
-!!@endverbatim
-      real(kind = kreal) :: mat_fdm_noslip_CMB1_4(5,5)
-!
-      private :: mat_fdm_noslip_CMB_4, mat_fdm_noslip_CMB1_4
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_fdm4_CMB0_nonslip_vp(r_from_CMB, fdm4_noslip_CMB)
-!
-      real(kind = kreal), intent(in) :: r_from_CMB(-3:0)
-      type(fdm4_CMB_vpol), intent(inout) :: fdm4_noslip_CMB
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_4(4,4)
@@ -149,9 +152,9 @@
 !
       fdm4_noslip_CMB%dmat_vp0(-2:0,2) = 0.0
 !
-      fdm4_noslip_CMB%dmat_vp0(-2,3:4) = mat_fdm_noslip_CMB_4(3:4,4)
-      fdm4_noslip_CMB%dmat_vp0(-1,3:4) = mat_fdm_noslip_CMB_4(3:4,3)
-      fdm4_noslip_CMB%dmat_vp0( 0,3:4) = mat_fdm_noslip_CMB_4(3:4,1)
+      fdm4_noslip_CMB%dmat_vp0(-2,1:4) = mat_fdm_noslip_CMB_4(1:4,4)
+      fdm4_noslip_CMB%dmat_vp0(-1,1:4) = mat_fdm_noslip_CMB_4(1:4,3)
+      fdm4_noslip_CMB%dmat_vp0( 0,1:4) = mat_fdm_noslip_CMB_4(1:4,1)
 !
       end subroutine cal_fdm4_CMB0_nonslip_vp
 !
@@ -160,7 +163,32 @@
       subroutine cal_fdm4_CMB1_nonslip_vp(r_from_CMB, fdm4_noslip_CMB)
 !
       real(kind = kreal), intent(in) :: r_from_CMB(-3:0)
-      type(fdm4_CMB_vpol), intent(inout) :: fdm4_noslip_CMB
+      type(fdm4_CMB_zero_vpol), intent(inout) :: fdm4_noslip_CMB
+!
+!>      Work matrix to evaluate fdm4_noslip_CMB%dmat_vp1
+!!@verbatim
+!!      dfdr =      mat_fdm_noslip_CMB1_4(2,5) * d_rj(CMB-3)
+!!                + mat_fdm_noslip_CMB1_4(2,4) * d_rj(CMB-2)
+!!                + mat_fdm_noslip_CMB1_4(2,1) * d_rj(CMB-1)
+!!                + mat_fdm_noslip_CMB1_4(2,3) * d_rj(CMB  )
+!!                + mat_fdm_noslip_CMB1_4(2,2) * dfdr(CMB)
+!!      d2fdr2 =    mat_fdm_noslip_CMB1_4(3,5) * d_rj(CMB-3)
+!!                + mat_fdm_noslip_CMB1_4(3,4) * d_rj(CMB-2)
+!!                + mat_fdm_noslip_CMB1_4(3,1) * d_rj(CMB-1)
+!!                + mat_fdm_noslip_CMB1_4(3,3) * d_rj(CMB  )
+!!                + mat_fdm_noslip_CMB1_4(3,2) * dfdr(CMB)
+!!      d3fdr3 =    mat_fdm_noslip_CMB1_4(4,5) * d_rj(CMB-3)
+!!                + mat_fdm_noslip_CMB1_4(4,4) * d_rj(CMB-2)
+!!                + mat_fdm_noslip_CMB1_4(4,1) * d_rj(CMB-1)
+!!                + mat_fdm_noslip_CMB1_4(4,3) * d_rj(CMB  )
+!!                + mat_fdm_noslip_CMB1_4(4,2) * dfdr(CMB)
+!!      d4fdr4 =    mat_fdm_noslip_CMB1_4(5,5) * d_rj(CMB-3)
+!!                + mat_fdm_noslip_CMB1_4(5,4) * d_rj(CMB-2)
+!!                + mat_fdm_noslip_CMB1_4(5,1) * d_rj(CMB-1)
+!!                + mat_fdm_noslip_CMB1_4(5,3) * d_rj(CMB  )
+!!                + mat_fdm_noslip_CMB1_4(5,2) * dfdr(CMB)
+!!@endverbatim
+      real(kind = kreal) :: mat_fdm_noslip_CMB1_4(5,5)
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_5(5,5)
@@ -217,18 +245,5 @@
       end subroutine cal_fdm4_CMB1_nonslip_vp
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine check_4th_CMB_nonslip_vp_fdm(fdm4_noslip_CMB)
-!
-      type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
-!
-!
-      write(50,*) ' non slip boundary'
-      call check_4th_CMB_vpol_fdm(fdm4_noslip_CMB)
-!
-      end subroutine check_4th_CMB_nonslip_vp_fdm
-!
-! -----------------------------------------------------------------------
-!
-      end module coef_fdm4_vpol_nonslip_CMB
+      end module t_coef_fdm4_zero_vpol_CMB

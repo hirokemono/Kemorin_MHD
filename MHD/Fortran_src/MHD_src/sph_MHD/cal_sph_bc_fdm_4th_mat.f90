@@ -32,8 +32,9 @@
      &         (nri, h_rho, radius_1d_rj_r, sph_bc_U, sph_MHD_bc)
 !
       use t_boundary_params_sph_MHD
+      use t_coef_fdm4_zero_vpol_CMB
+      use t_coef_fdm4_free_vpol_CMB
       use coef_fdm4_vpol_nonslip_ICB
-      use coef_fdm4_vpol_nonslip_CMB
       use coef_fdm4_vpol_free_ICB
 !
       integer(kind = kint), intent(in) :: nri
@@ -59,16 +60,16 @@
       call cal_fdm4_ICB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_in),        &
      &                           sph_MHD_bc%fdm4_free_ICB)
 !
-      call cal_fdm4_CMB0_free_vp                                        &
-     &   (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_free_CMB)
-      call cal_fdm4_CMB1_free_vp                                        &
-     &   (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_free_CMB)
+      call cal_fdm4_CMB0_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
+     &                           sph_MHD_bc%fdm4_free_vp_CMB)
+      call cal_fdm4_CMB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
+     &                           sph_MHD_bc%fdm4_free_vp_CMB)
 !
       if (iflag_debug .eq. iflag_full_msg) then
         call check_4th_ICB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_ICB)
         call check_4th_CMB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_CMB)
         call check_4th_ICB_free_vp_fdm(sph_MHD_bc%fdm4_free_ICB)
-        call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_CMB)
+        call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_vp_CMB)
       end if
 !
 !      call cal_sph_bc_2nd_ele_fdm_mat
