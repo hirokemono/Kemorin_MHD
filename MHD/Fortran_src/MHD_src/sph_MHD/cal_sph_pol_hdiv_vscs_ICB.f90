@@ -143,7 +143,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use sum_sph_pol_vscs_FDM2_exp
       use sum_sph_pol_grad_p_FDM2_exp
@@ -245,7 +244,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use sum_sph_pol_vscs_FDM4_exp
       use sum_sph_pol_grad_p_FDM4_exp
@@ -369,7 +367,6 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_hdiv_viscousity
       use set_sph_pol_vscs_FDM2_mat
       use set_sph_hdiv_vscs_FDM_mat7
 !
@@ -443,9 +440,9 @@
       use t_coef_fdm3e_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
-      use set_sph_hdiv_viscousity
       use cal_sph_FDM_viscosity_mat
       use set_sph_pol_vscs_FDM4_mat
+      use set_sph_hdiv_vscs_FDM_mat9
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -503,9 +500,11 @@
      &      fdm3e_noslip_ICB%dmat_vp0(-2,3),                            &
      &      fdm3e_noslip_ICB%dmat_vp0(-2,4), hdiv_visous_mat_ICB)
       end if
+      call add_sph_ele_pressure_FDM_mat9((sph_bc_U%kr_in+1),            &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat9)
       call sub_sph_hdiv_viscous_mat9_ICB1((sph_bc_U%kr_in+1),           &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    coef_p, hdiv_visous_mat_ICB(1,-1), mat9)
+     &    hdiv_visous_mat_ICB(1,-1), mat9)
 !
 !
       call set_sph_FDM_pressure_grad_mat                                &
@@ -536,7 +535,7 @@
      &    fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat_ICB)
       call sub_sph_hdiv_viscous_mat9_ICB1(sph_bc_U%kr_in,               &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    coef_p, hdiv_visous_mat_ICB(1,-1), mat9)
+     &    hdiv_visous_mat_ICB(1,-1), mat9)
 !
       end subroutine sph_FDM4_vpol_viscosity_mat_CMB
 !

@@ -1,17 +1,20 @@
-!>@file   coef_fdm3_e2n_to_center.f90
-!!@brief  module coef_fdm3_e2n_to_center
+!>@file   t_coef_fdm3_ele2nod_centre.f90
+!!@brief  module t_coef_fdm3_ele2nod_centre
 !!
 !!@author H. Matsui
-!!@date Programmed in Jan., 2010
+!!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative
-!!       toward center
+!>@brief Matrix to evaluate radial derivative around center
 !!
 !!@verbatim
+!!      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
+!!        type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
+!!
 !!      subroutine cal_fdm3_e2n_mat_center1(radius, fdm3_e2n_CTR)
 !!      subroutine cal_fdm3_e2n_mat_center2(radius, fdm3_e2n_CTR)
+!!        real(kind = kreal), intent(in) :: radius(4)
 !!        type(fdm3_e2n_center_vpol), intent(inout) :: fdm3_e2n_CTR
-!!
+!
 !!   Matrix for poloidal velocity at next of center
 !!      dfdr =      fdm3_e2n_CTR%dmat_pe1( 2,2) * d_ele(3)
 !!                + fdm3_e2n_CTR%dmat_pe1( 1,2) * d_ele(2)
@@ -45,18 +48,60 @@
 !!                + fdm3_e2n_CTR%dmat_pe2(-1,5) * d_ele(1)
 !!@endverbatim
 !!
-!!@n @param radius(1:2) radius at two innermost grids
-!!
-      module coef_fdm3_e2n_to_center
+      module t_coef_fdm3_ele2nod_centre
 !
       use m_precision
       use m_constants
 !
-      use t_coef_fdm4_MHD_boundaries
-      use cal_inverse_small_matrix
-!
       implicit none
 !
+!>      Structure for element to node FDM matrix of center
+      type fdm3_e2n_center_vpol
+!>        Matrix to evaluate radial derivative at center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_pe1(-1:2,1:4)
+!>        Matrix to evaluate radial derivative at next of center
+!!       for poloidal velocity
+        real(kind = kreal) :: dmat_pe2(-1:2,1:4)
+      end type fdm3_e2n_center_vpol
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
+!
+      type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
+!
+!
+      write(50,*) ' fdm3_e2n_CTR%dmat_vp0'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,4)
+!
+      write(50,*) ' fdm3_e2n_CTR%dmat_pe1'
+      write(50,*) 'matrix for dfdr'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,2)
+      write(50,*) 'matrix for d2fdr2'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,3)
+      write(50,*) 'matrix for d3fdr3'
+      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,4)
+!
+      end subroutine check_3rd_e2n_CTR_vpol_fdm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_fdm3_e2n_mat_center1(radius, fdm3_e2n_CTR)
+!
+      use cal_inverse_small_matrix
+!
+      real(kind = kreal), intent(in) :: radius(4)
+      type(fdm3_e2n_center_vpol), intent(inout) :: fdm3_e2n_CTR
 !
 !>      Work matrix to evaluate fdm3_e2n_CTR%dmat_fix_fld(-1:1,3)
 !!@verbatim
@@ -78,40 +123,6 @@
 !!                + mat_fdm_ctr1_fix_4(4,4) * d_ele(3)
 !!@endverbatim
       real(kind = kreal) :: mat_fdm_ctr1_fix_4(4,4)
-!
-!>      Work matrix to evaluate fdm3_e2n_CTR%dmat_fix_fld(-1:1,3)
-!!@verbatim
-!!      d_nod =     mat_fdm_ctr2_fix_4(1,1) * d_ele(2)
-!!                + mat_fdm_ctr2_fix_4(1,2) * d_ele(3)
-!!                + mat_fdm_ctr2_fix_4(1,3) * d_ele(1)
-!!                + mat_fdm_ctr2_fix_4(1,4) * d_ele(4)
-!!      dfdr =      mat_fdm_ctr2_fix_4(2,1) * d_ele(2)
-!!                + mat_fdm_ctr2_fix_4(2,2) * d_ele(3)
-!!                + mat_fdm_ctr2_fix_4(2,3) * d_ele(1)
-!!                + mat_fdm_ctr2_fix_4(2,4) * d_ele(4)
-!!      d2fdr2 =    mat_fdm_ctr2_fix_4(3,1) * d_ele(2)
-!!                + mat_fdm_ctr2_fix_4(3,2) * d_ele(3)
-!!                + mat_fdm_ctr2_fix_4(3,3) * d_ele(1)
-!!                + mat_fdm_ctr2_fix_4(3,4) * d_ele(4)
-!!      d3fdr3 =    mat_fdm_ctr2_fix_4(4,1) * d_ele(2)
-!!                + mat_fdm_ctr2_fix_4(4,2) * d_ele(3)
-!!                + mat_fdm_ctr2_fix_4(4,3) * d_ele(1)
-!!                + mat_fdm_ctr2_fix_4(4,4) * d_ele(4)
-!!@endverbatim
-      real(kind = kreal) :: mat_fdm_ctr2_fix_4(4,4)
-!
-      private :: mat_fdm_ctr1_fix_4, mat_fdm_ctr2_fix_4
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_fdm3_e2n_mat_center1(radius, fdm3_e2n_CTR)
-!
-      real(kind = kreal), intent(in) :: radius(3)
-      type(fdm3_e2n_center_vpol), intent(inout) :: fdm3_e2n_CTR
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_4(4,4)
@@ -149,6 +160,7 @@
      &            radius(1:2)
       end if
 !
+      fdm3_e2n_CTR%dmat_pe1(-1,1:4) = zero
       fdm3_e2n_CTR%dmat_pe1( 0,1:4) = mat_fdm_ctr1_fix_4(1:4,1)
       fdm3_e2n_CTR%dmat_pe1( 1,1:4) = mat_fdm_ctr1_fix_4(1:4,2)
       fdm3_e2n_CTR%dmat_pe1( 2,1:4) = mat_fdm_ctr1_fix_4(1:4,4)
@@ -159,8 +171,31 @@
 !
       subroutine cal_fdm3_e2n_mat_center2(radius, fdm3_e2n_CTR)
 !
+      use cal_inverse_small_matrix
+!
       real(kind = kreal), intent(in) :: radius(4)
       type(fdm3_e2n_center_vpol), intent(inout) :: fdm3_e2n_CTR
+!
+!>      Work matrix to evaluate fdm3_e2n_CTR%dmat_fix_fld(-1:1,3)
+!!@verbatim
+!!      d_nod =     mat_fdm_ctr2_fix_4(1,1) * d_ele(2)
+!!                + mat_fdm_ctr2_fix_4(1,2) * d_ele(3)
+!!                + mat_fdm_ctr2_fix_4(1,3) * d_ele(1)
+!!                + mat_fdm_ctr2_fix_4(1,4) * d_ele(4)
+!!      dfdr =      mat_fdm_ctr2_fix_4(2,1) * d_ele(2)
+!!                + mat_fdm_ctr2_fix_4(2,2) * d_ele(3)
+!!                + mat_fdm_ctr2_fix_4(2,3) * d_ele(1)
+!!                + mat_fdm_ctr2_fix_4(2,4) * d_ele(4)
+!!      d2fdr2 =    mat_fdm_ctr2_fix_4(3,1) * d_ele(2)
+!!                + mat_fdm_ctr2_fix_4(3,2) * d_ele(3)
+!!                + mat_fdm_ctr2_fix_4(3,3) * d_ele(1)
+!!                + mat_fdm_ctr2_fix_4(3,4) * d_ele(4)
+!!      d3fdr3 =    mat_fdm_ctr2_fix_4(4,1) * d_ele(2)
+!!                + mat_fdm_ctr2_fix_4(4,2) * d_ele(3)
+!!                + mat_fdm_ctr2_fix_4(4,3) * d_ele(1)
+!!                + mat_fdm_ctr2_fix_4(4,4) * d_ele(4)
+!!@endverbatim
+      real(kind = kreal) :: mat_fdm_ctr2_fix_4(4,4)
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_4(4,4)
@@ -207,4 +242,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module coef_fdm3_e2n_to_center
+      end module t_coef_fdm3_ele2nod_centre

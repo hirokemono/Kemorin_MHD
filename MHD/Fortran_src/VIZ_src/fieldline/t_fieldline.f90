@@ -82,7 +82,6 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
-      integer(kind = kint) :: i_fln
 !
       fline%num_fline = fline_ctls%num_fline_ctl
       if(increment_fline .le. 0) fline%num_fline = 0
@@ -140,8 +139,7 @@
       type(fieldline_module), intent(inout) :: fline
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_fln
-!  
+!
       if (fline%num_fline.le.0 .or. istep_fline.le.0) return
 !
       call s_const_field_lines(elps_fline, geofem%mesh, geofem%group,   &
@@ -165,8 +163,6 @@
       use multi_tracer_fieldline
 !
       type(fieldline_module), intent(inout) :: fline
-!
-      integer(kind = kint) :: i_fln
 !
 !
       if (fline%num_fline .le. 0) return

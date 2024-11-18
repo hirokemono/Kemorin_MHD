@@ -82,7 +82,7 @@
 !
       subroutine analyze_fline
 !
-      integer(kind = kint) :: i_step, istep_fline, istep_tracer
+      integer(kind = kint) :: i_step, istep_fline
 !
 !
       do i_step = t_VIZ6%init_d%i_time_step, t_VIZ6%finish_d%i_end_step

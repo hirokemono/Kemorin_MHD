@@ -7,6 +7,13 @@
 !>@brief  Substitute viscousity matrix in each layer
 !!
 !!@verbatim
+!!      subroutine sub_exp_sph_hdiv_viscous(kr, nnod_rj, jmax, coef_p,  &
+!!     &                                    press_e, hdiv_viscous_e)
+!!        integer(kind = kint), intent(in) :: kr
+!!        integer(kind = kint), intent(in) :: nnod_rj, jmax
+!!        real(kind = kreal), intent(in) :: coef_p
+!!        real(kind = kreal), intent(in) :: press_e(nnod_rj)
+!!        real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
 !!      subroutine sum_exp_sph_hdiv_viscous(kr, nnod_rj, jmax,          &
 !!     &          d_vpol, hdiv_visous_mat, hdiv_viscous_e)
 !!        integer(kind = kint), intent(in) :: kr
@@ -47,6 +54,27 @@
 !  -------------------------------------------------------------------
 !
       contains
+!
+!  -------------------------------------------------------------------
+!
+      subroutine sub_exp_sph_hdiv_viscous(kr, nnod_rj, jmax, coef_p,    &
+     &                                    press_e, hdiv_viscous_e)
+!
+      integer(kind = kint), intent(in) :: kr
+      integer(kind = kint), intent(in) :: nnod_rj, jmax
+      real(kind = kreal), intent(in) :: coef_p
+      real(kind = kreal), intent(in) :: press_e(nnod_rj)
+!
+      real(kind = kreal), intent(inout) :: hdiv_viscous_e(nnod_rj)
+!
+      integer(kind = kint) :: ist, ied
+!
+!
+      ist = 1 + (kr-1) * jmax
+      ied =      kr * jmax
+      hdiv_viscous_e(ist:ied) = - coef_p * press_e(ist:ied)
+!
+      end subroutine sub_exp_sph_hdiv_viscous
 !
 !  -------------------------------------------------------------------
 !

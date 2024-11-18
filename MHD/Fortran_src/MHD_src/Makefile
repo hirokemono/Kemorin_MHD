@@ -80,6 +80,7 @@ mod_list:
 	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
 	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
+	@echo '$$(MOD_SPH_MHD_FDM)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_SPH_MHD)'     \\  >> $(MAKENAME)
 	@echo '$$(MOD_SPH_SGS_MHD)'     >> $(MAKENAME)
 	@echo >> $(MAKENAME)

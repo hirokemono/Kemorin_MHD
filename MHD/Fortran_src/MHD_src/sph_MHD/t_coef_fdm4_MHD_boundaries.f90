@@ -13,8 +13,6 @@
 !!        type(fdm4_CMB_vpol), intent(in) :: fdm4_vpol_CMB
 !!      subroutine check_4th_CTR_vpol_fdm(fdm4_vpol_CTR)
 !!        type(fdm4_center_vpol), intent(in) :: fdm4_vpol_CTR
-!!      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
-!!        type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at ICB
 !!      d2fdr2 =    fdm4_noslip_ICB%dmat_vp0( 2,3) * d_rj(ICB+2)
@@ -172,17 +170,6 @@
         real(kind = kreal) :: dmat_vp2(-1:2,2:5)
       end type fdm4_center_vpol
 !
-!>      Structure for element to node FDM matrix of center
-      type fdm3_e2n_center_vpol
-!>        Matrix to evaluate radial derivative at center
-!!       for poloidal velocity
-        real(kind = kreal) :: dmat_pe1( 0:2,2:4)
-!>        Matrix to evaluate radial derivative at next of center
-!!       for poloidal velocity
-        real(kind = kreal) :: dmat_pe2(-1:2,2:4)
-      end type fdm3_e2n_center_vpol
-!
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -271,30 +258,5 @@
       end subroutine check_4th_CTR_vpol_fdm
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine check_3rd_e2n_CTR_vpol_fdm(fdm3_e2n_CTR)
-!
-      type(fdm3_e2n_center_vpol), intent(in) :: fdm3_e2n_CTR
-!
-!
-      write(50,*) ' fdm3_e2n_CTR%dmat_vp0'
-      write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,2)
-      write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,3)
-      write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe1(0:2,4)
-!
-      write(50,*) ' fdm3_e2n_CTR%dmat_pe1'
-      write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,2)
-      write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,3)
-      write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') fdm3_e2n_CTR%dmat_pe2(-1:2,4)
-!
-      end subroutine check_3rd_e2n_CTR_vpol_fdm
-!
-! -----------------------------------------------------------------------
-!
+
       end module t_coef_fdm4_MHD_boundaries
