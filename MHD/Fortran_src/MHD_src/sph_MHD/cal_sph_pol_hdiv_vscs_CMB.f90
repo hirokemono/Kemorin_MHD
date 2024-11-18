@@ -51,7 +51,7 @@
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
-!!        type(fdm4_CMB_vpol), intent(in) :: fdm4_free_CMB
+!!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_CMB
 !!        type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
 !!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
 !!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_CMB
@@ -99,7 +99,7 @@
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_3e(0:3)
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
-!!        type(fdm4_CMB_vpol), intent(in) :: fdm4_free_CMB
+!!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_CMB
 !!        type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
 !!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
 !!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_CMB
@@ -240,6 +240,7 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm4_free_vpol_CMB
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use cal_sph_FDM_viscosity_mat
@@ -257,7 +258,7 @@
       real(kind = kreal), intent(in) :: coef_p, coef_d
 !
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
-      type(fdm4_CMB_vpol), intent(in) :: fdm4_free_CMB
+      type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_CMB
       type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_CMB
@@ -430,6 +431,7 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm4_free_vpol_CMB
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use cal_sph_FDM_viscosity_mat
@@ -447,7 +449,7 @@
 !
       type(fdm_matrix), intent(in) :: fdm_3e(0:3)
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
-      type(fdm4_CMB_vpol), intent(in) :: fdm4_free_CMB
+      type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_CMB
       type(fdm4_CMB_vpol), intent(in) :: fdm4_noslip_CMB
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_CMB

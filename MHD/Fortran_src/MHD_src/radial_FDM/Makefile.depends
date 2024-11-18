@@ -24,6 +24,10 @@ sum_sph_pol_vscs_FDM4_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_vscs_FDM4_exp.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm3_ele2nod_centre.o: $(MHD_FDM_DIR)/t_coef_fdm3_ele2nod_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_centre.o: $(MHD_FDM_DIR)/t_coef_fdm4_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_free_vpol_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm4_free_vpol_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm4_vpol_centre.o: $(MHD_FDM_DIR)/t_coef_fdm4_vpol_centre.f90 m_precision.o m_constants.o forth_fdm_node_coefs.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

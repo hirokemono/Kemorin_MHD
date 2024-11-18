@@ -30,6 +30,7 @@
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm4_MHD_boundaries
       use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm4_free_vpol_CMB
       use t_time_data
       use t_spheric_parameter
       use t_control_parameter
@@ -83,7 +84,7 @@
 !>        Structure for 4th order FDM matrix of non-slip boundary at CMB
         type(fdm4_CMB_vpol) :: fdm4_noslip_CMB
 !>        Structure for 4th order FDM matrix of free slip boundary at CMB
-        type(fdm4_CMB_vpol) :: fdm4_free_CMB
+        type(fdm4_CMB_free_vpol) :: fdm4_free_CMB
       end type sph_MHD_boundary_data
 !
 ! ----------------------------------------------------------------------

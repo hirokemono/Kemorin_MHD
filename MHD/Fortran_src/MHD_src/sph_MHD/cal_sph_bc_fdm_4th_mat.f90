@@ -35,7 +35,6 @@
       use coef_fdm4_vpol_nonslip_ICB
       use coef_fdm4_vpol_nonslip_CMB
       use coef_fdm4_vpol_free_ICB
-      use coef_fdm4_vpol_free_CMB
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: h_rho
