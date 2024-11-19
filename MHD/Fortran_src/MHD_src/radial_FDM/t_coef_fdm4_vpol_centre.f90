@@ -7,54 +7,53 @@
 !>@brief Matrix to evaluate radial derivative for next of center
 !!
 !!@verbatim
-!!      use cal_coef_fdm4_vpol_centre(nri, r, fdm4_pol_CTR)
-!!        integer(kind = kint), intent(in) :: nri
-!!        real(kind = kreal), intent(in) :: r(3)
-!!        type(fdm4_centre_vpol), intent(inout) :: fdm4_pol_CTR
+!!      subroutine cal_coef_fdm4_vpol_centre(r, fdm4_center)
+!!        real(kind = kreal), intent(in) :: r(4)
+!!        type(fdm4_centre_vpol), intent(inout) :: fdm4_center
 !!
 !!   Matrix for poloidal vector at inner most node
-!!      dfdr =      fdm4_pol_CTR%dmat_vp1(-2,2) * dfdr_Center
-!!                + fdm4_pol_CTR%dmat_vp1(-1,2) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp1( 0,2) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp1( 1,2) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp1( 2,2) * d_rj(3)
-!!      d2fdr2 =    fdm4_pol_CTR%dmat_vp1(-2,3) * dfdr_Center
-!!                + fdm4_pol_CTR%dmat_vp1(-1,3) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp1( 0,3) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp1( 1,3) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp1( 2,3) * d_rj(3)
-!!      d3fdr3 =    fdm4_pol_CTR%dmat_vp1(-2,4) * dfdr_Center
-!!                + fdm4_pol_CTR%dmat_vp1(-1,4) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp1( 0,4) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp1( 1,4) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp1( 2,4) * d_rj(3)
-!!      d4fdr4 =    fdm4_pol_CTR%dmat_vp1(-2,5) * dfdr_Center
-!!                + fdm4_pol_CTR%dmat_vp1(-1,5) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp1( 0,5) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp1( 1,5) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp1( 2,5) * d_rj(3)
+!!      dfdr =      fdm4_center%dmat_vp1(-2,2) * dfdr_Center
+!!                + fdm4_center%dmat_vp1(-1,2) * d_Center
+!!                + fdm4_center%dmat_vp1( 0,2) * d_rj(1)
+!!                + fdm4_center%dmat_vp1( 1,2) * d_rj(2)
+!!                + fdm4_center%dmat_vp1( 2,2) * d_rj(3)
+!!      d2fdr2 =    fdm4_center%dmat_vp1(-2,3) * dfdr_Center
+!!                + fdm4_center%dmat_vp1(-1,3) * d_Center
+!!                + fdm4_center%dmat_vp1( 0,3) * d_rj(1)
+!!                + fdm4_center%dmat_vp1( 1,3) * d_rj(2)
+!!                + fdm4_center%dmat_vp1( 2,3) * d_rj(3)
+!!      d3fdr3 =    fdm4_center%dmat_vp1(-2,4) * dfdr_Center
+!!                + fdm4_center%dmat_vp1(-1,4) * d_Center
+!!                + fdm4_center%dmat_vp1( 0,4) * d_rj(1)
+!!                + fdm4_center%dmat_vp1( 1,4) * d_rj(2)
+!!                + fdm4_center%dmat_vp1( 2,4) * d_rj(3)
+!!      d4fdr4 =    fdm4_center%dmat_vp1(-2,5) * dfdr_Center
+!!                + fdm4_center%dmat_vp1(-1,5) * d_Center
+!!                + fdm4_center%dmat_vp1( 0,5) * d_rj(1)
+!!                + fdm4_center%dmat_vp1( 1,5) * d_rj(2)
+!!                + fdm4_center%dmat_vp1( 2,5) * d_rj(3)
 !!
 !!   Matrix for poloidal vector at next of inner most node
-!!      dfdr =      fdm4_pol_CTR%dmat_vp2(-2,2) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp2(-1,2) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp2( 0,2) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp2( 1,2) * d_rj(3)
-!!                + fdm4_pol_CTR%dmat_vp2( 2,2) * d_rj(4)
-!!      d2fdr2 =    fdm4_pol_CTR%dmat_vp2(-2,3) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp2(-1,3) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp2( 0,3) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp2( 1,3) * d_rj(3)
-!!                + fdm4_pol_CTR%dmat_vp2( 2,3) * d_rj(4)
-!!      d3fdr3 =    fdm4_pol_CTR%dmat_vp2(-2,4) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp2(-1,4) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp2( 0,4) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp2( 1,4) * d_rj(3)
-!!                + fdm4_pol_CTR%dmat_vp2( 2,4) * d_rj(4)
-!!      d4fdr4 =    fdm4_pol_CTR%dmat_vp2(-2,5) * d_Center
-!!                + fdm4_pol_CTR%dmat_vp2(-1,5) * d_rj(1)
-!!                + fdm4_pol_CTR%dmat_vp2( 0,5) * d_rj(2)
-!!                + fdm4_pol_CTR%dmat_vp2( 1,5) * d_rj(3)
-!!                + fdm4_pol_CTR%dmat_vp2( 2,5) * d_rj(4)
+!!      dfdr =      fdm4_center%dmat_vp2(-2,2) * d_Center
+!!                + fdm4_center%dmat_vp2(-1,2) * d_rj(1)
+!!                + fdm4_center%dmat_vp2( 0,2) * d_rj(2)
+!!                + fdm4_center%dmat_vp2( 1,2) * d_rj(3)
+!!                + fdm4_center%dmat_vp2( 2,2) * d_rj(4)
+!!      d2fdr2 =    fdm4_center%dmat_vp2(-2,3) * d_Center
+!!                + fdm4_center%dmat_vp2(-1,3) * d_rj(1)
+!!                + fdm4_center%dmat_vp2( 0,3) * d_rj(2)
+!!                + fdm4_center%dmat_vp2( 1,3) * d_rj(3)
+!!                + fdm4_center%dmat_vp2( 2,3) * d_rj(4)
+!!      d3fdr3 =    fdm4_center%dmat_vp2(-2,4) * d_Center
+!!                + fdm4_center%dmat_vp2(-1,4) * d_rj(1)
+!!                + fdm4_center%dmat_vp2( 0,4) * d_rj(2)
+!!                + fdm4_center%dmat_vp2( 1,4) * d_rj(3)
+!!                + fdm4_center%dmat_vp2( 2,4) * d_rj(4)
+!!      d4fdr4 =    fdm4_center%dmat_vp2(-2,5) * d_Center
+!!                + fdm4_center%dmat_vp2(-1,5) * d_rj(1)
+!!                + fdm4_center%dmat_vp2( 0,5) * d_rj(2)
+!!                + fdm4_center%dmat_vp2( 1,5) * d_rj(3)
+!!                + fdm4_center%dmat_vp2( 2,5) * d_rj(4)
 !!@endverbatim
 !!
       module t_coef_fdm4_vpol_centre
@@ -80,14 +79,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_coef_fdm4_vpol_centre(nri, r, fdm4_pol_CTR)
+      subroutine cal_coef_fdm4_vpol_centre(r, fdm4_center)
 !
       use forth_fdm_node_coefs
       use cal_inverse_small_matrix
 !
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: r(nri)
-      type(fdm4_centre_vpol), intent(inout) :: fdm4_pol_CTR
+      real(kind = kreal), intent(in) :: r(4)
+      type(fdm4_centre_vpol), intent(inout) :: fdm4_center
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_fdm(5,5)
@@ -96,16 +94,16 @@
 !
       mat_fdm(1:5,1:5) = 0.0d0
 !
-      call set_forth_taylor_expand_CTR1(r, mat_fdm)
+      call set_forth_taylor_expand_CTR1(r(1), mat_fdm)
       call cal_inverse_nn_matrix                                        &
      &   (ifive, mat_fdm, mat_fdm(1,1), ierr)
-      call order_each_forth_fdm_node(mat_fdm, fdm4_pol_CTR%dmat_vp1)
+      call order_each_forth_fdm_node(mat_fdm, fdm4_center%dmat_vp1)
 !
       call set_forth_dr_ICB1(r(1), delta)
       call set_forth_taylor_expand(delta, mat_fdm)
       call cal_inverse_nn_matrix                                        &
      &   (ifive, mat_fdm, mat_fdm(1,1), ierr)
-      call order_each_forth_fdm_node(mat_fdm, fdm4_pol_CTR%dmat_vp2)
+      call order_each_forth_fdm_node(mat_fdm, fdm4_center%dmat_vp2)
 !
       end subroutine cal_coef_fdm4_vpol_centre
 !

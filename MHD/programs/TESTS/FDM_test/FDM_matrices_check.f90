@@ -68,16 +68,17 @@
       subroutine init_FDM_coefs_for_test                                &
      &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st,                       &
      &          fdm3e_ICB, fdm3e_free_ICB, fdm2_free_ICB,               &
-     &          fdm3e_CMB, fdm3e_free_CMB, fdm2_free_CMB,               &
+     &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB,           &
      &          fdm2_center)
 !
+      use t_coef_fdm3_n2e_zero_vp_CMB
+      use t_coef_fdm3_n2e_free_vp_CMB
       use parallel_load_data_4_sph
       use init_radial_infos_sph_mhd
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
       use coef_fdm3e_hdiv_ICB
-      use coef_fdm3e_hdiv_CMB
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
       use coef_fdm2_to_center
@@ -91,7 +92,7 @@
       type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_free_ICB
       type(fdm2_free_slip), intent(inout) :: fdm2_free_ICB
 !
-      type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_CMB
+      type(fdm3_n2e_CMB_zero_vpol), intent(inout) :: fdm3e_vp0_CMB
       type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_free_CMB
       type(fdm2_free_slip), intent(inout) :: fdm2_free_CMB
 !
@@ -144,8 +145,8 @@
       call cal_fdm2_CMB_free_vp(h_rho(kr_out),                          &
      &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
       call cal_fdm3e_CMB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_out-2),   &
-     &                           fdm3e_CMB)
-      call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB, fdm3e_CMB,         &
+     &                           fdm3e_vp0_CMB)
+      call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB, fdm3e_vp0_CMB,     &
      &                                fdm3e_free_CMB)
       deallocate(h_rho)
 !
@@ -156,13 +157,14 @@
       subroutine test_radial_FDM(kr_in, kr_out, sph_rj,                 &
      &          r_2nd, r_n2e_3rd, r_e2n_1st,                            &
      &          fdm3e_ICB, fdm3e_free_ICB, fdm2_free_ICB,               &
-     &          fdm3e_CMB, fdm3e_free_CMB, fdm2_free_CMB)
+     &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB)
 ! 
+      use t_coef_fdm3_n2e_zero_vp_CMB
+      use t_coef_fdm3_n2e_free_vp_CMB
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
       use coef_fdm3e_hdiv_ICB
-      use coef_fdm3e_hdiv_CMB
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
 !
@@ -176,8 +178,8 @@
       type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_CMB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
+      type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
       type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !
       real(kind = kreal), allocatable :: r_ele(:)
@@ -277,8 +279,9 @@
      &                               r_n2e_3rd, d_rj, d_ele)
       call cal_third_fdm_ICB_ele(izero, kr_in,  sph_rj, fdm3e_ICB,      &
      &                           d_rj, dr_rj, d_ele(ist_in))
-      call cal_third_fdm_CMB_ele(izero, kr_out, sph_rj, fdm3e_CMB,      &
-     &                           d_rj, dr_rj, d_ele(ist_out))
+      call cal_fdm3_zero_vp_CMB_ele                                     &
+     &   (izero, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),             &
+     &    fdm3e_vp0_CMB, d_rj, dr_rj, d_ele)
 !
       write(*,*) 'Interpolation to element'
       do j = 1, sph_rj%nidx_rj(2)
@@ -295,8 +298,9 @@
      &                               r_n2e_3rd, d_rj, dfdr_ele)
       call cal_third_fdm_ICB_ele(ione, kr_in,  sph_rj, fdm3e_ICB,       &
      &                           d_rj, dr_rj, dfdr_ele(ist_in))
-      call cal_third_fdm_CMB_ele(ione, kr_out, sph_rj, fdm3e_CMB,       &
-     &                           d_rj, dr_rj, dfdr_ele(ist_out))
+      call cal_fdm3_zero_vp_CMB_ele                                     &
+     &   (ione, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
+     &    fdm3e_vp0_CMB, d_rj, dr_rj, dfdr_ele)
       write(*,*) '1st derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -312,8 +316,9 @@
      &                               r_n2e_3rd, d_rj, d2fdr2_ele)
       call cal_third_fdm_ICB_ele(itwo, kr_in,  sph_rj, fdm3e_ICB,       &
      &                           d_rj, dr_rj, d2fdr2_ele(ist_in))
-      call cal_third_fdm_CMB_ele(itwo, kr_out, sph_rj, fdm3e_CMB,       &
-     &                           d_rj, dr_rj, d2fdr2_ele(ist_out))
+      call cal_fdm3_zero_vp_CMB_ele                                     &
+     &   (itwo, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
+     &    fdm3e_vp0_CMB, d_rj, dr_rj, d2fdr2_ele)
       write(*,*) '2nd derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -329,8 +334,9 @@
      &                               r_n2e_3rd, d_rj, d3fdr3_ele)
       call cal_third_fdm_ICB_ele(ithree, kr_in,  sph_rj, fdm3e_ICB,     &
      &                           d_rj, dr_rj, d3fdr3_ele(ist_in))
-      call cal_third_fdm_CMB_ele(ithree, kr_out, sph_rj, fdm3e_CMB,     &
-     &                           d_rj, dr_rj, d3fdr3_ele(ist_out))
+      call cal_fdm3_zero_vp_CMB_ele                                     &
+     &   (ithree, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
+     &    fdm3e_vp0_CMB, d_rj, dr_rj, dd3fdr3_ele)
       write(*,*) '3rd derivative from node to element'
       do j = 1, sph_rj%nidx_rj(2)
        do k = kr_in, kr_out
@@ -369,7 +375,7 @@
       end do
 !
       call check_3rd_ele_BC_vpol_fdm(6, fdm3e_ICB)
-      call check_3rd_ele_BC_vpol_fdm(6, fdm3e_CMB)
+      call check_fdm3_n2e_CMB_zero_vpol(6, fdm3e_vp0_CMB)
 !
       r =     sph_rj%radius_1d_rj_r(kr_in  )
       dr_bc = sph_rj%radius_1d_rj_r(kr_in+1) - r
@@ -383,7 +389,7 @@
       write(*,*) 'free ICB for D2Vt/DR2 (ICB, ICB+1)', c_dr2, c_dr
       call check_fdm_coef_free_slip_ICB(6, fdm2_free_ICB)
       write(*,*) 'free ICB element'
-      call check_3rd_ele_BC_vpol_fdm(6, fdm3e_free_ICB)
+      call check_fdm3_n2e_CMB_free_vpol(6, fdm3e_free_ICB)
 !
       r =         sph_rj%radius_1d_rj_r(kr_out  )
       dr_bc = r - sph_rj%radius_1d_rj_r(kr_out-1)
@@ -397,7 +403,7 @@
       write(*,*) 'free CMB for D2Vt/DR2 (CMB-1, CMB)', c_dr, c_dr2
       call check_fdm_coef_free_slip_CMB(6, fdm2_free_CMB)
       write(*,*) 'free CMB element'
-      call check_3rd_ele_BC_vpol_fdm(6, fdm3e_free_CMB)
+      call check_fdm3_n2e_CMB_free_vpol(6, fdm3e_free_CMB)
 !
       end subroutine test_radial_FDM
 !

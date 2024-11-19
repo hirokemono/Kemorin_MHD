@@ -36,6 +36,7 @@
       use t_coef_fdm4_free_vpol_CMB
       use t_coef_fdm4_zero_vpol_ICB
       use t_coef_fdm4_free_vpol_ICB
+      use t_coef_fdm4_vpol_centre
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: h_rho
@@ -65,10 +66,14 @@
       call cal_fdm4_CMB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
      &                           sph_MHD_bc%fdm4_free_vp_CMB)
 !
+      call cal_coef_fdm4_vpol_centre(radius_1d_rj_r(1),                 &
+     &                               sph_MHD_bc%fdm4_center)
+!
       if (iflag_debug .eq. iflag_full_msg) then
         call check_4th_ICB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_ICB)
         call check_4th_CMB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_CMB)
         call check_4th_ICB_free_vp_fdm(sph_MHD_bc%fdm4_free_ICB)
+        call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_vp_CMB)
         call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_vp_CMB)
       end if
 !
