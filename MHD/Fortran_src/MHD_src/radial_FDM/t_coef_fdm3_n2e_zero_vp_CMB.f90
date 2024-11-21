@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative for non-slip at ICB
+!>@brief Matrix to evaluate radial derivative for non-slip at CMB
 !!
 !!@verbatim
 !!      subroutine check_fdm3_n2e_CMB_zero_vpol(id_file, fdm3e_vp0_CMB)
@@ -43,12 +43,9 @@
 !!                + fdm3e_vp0_CMB%dmat_vp0( 1,4) * dfdr(CMB  )
 !!@endverbatim
 !!
-!!@n @param r_from_ICB(0:3) radius to three next points of ICB
-!!
       module t_coef_fdm3_n2e_zero_vp_CMB
 !
       use m_precision
-!
       use m_constants
 !
       implicit none

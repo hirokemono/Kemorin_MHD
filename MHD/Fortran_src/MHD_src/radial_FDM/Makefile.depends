@@ -28,6 +28,8 @@ t_coef_fdm3_n2e_free_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_CMB.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm3_n2e_zero_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_zero_vp_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_ICB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm4_centre.o: $(MHD_FDM_DIR)/t_coef_fdm4_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm4_free_vpol_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm4_free_vpol_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o

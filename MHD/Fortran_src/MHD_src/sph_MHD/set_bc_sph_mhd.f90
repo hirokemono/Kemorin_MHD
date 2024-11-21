@@ -127,9 +127,9 @@
 !
         call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(ked-2),        &
      &                             sph_MHD_bc%fdm3e_vp0_CMB)
-        call cal_fdm3e_CMB_free_hdiv_vp(sph_MHD_bc%fdm2_free_CMB,       &
-     &                                  sph_MHD_bc%fdm3e_vp0_CMB,       &
-     &                                  sph_MHD_bc%fdm3e_free_CMB)
+        call cal_fdm3e_CMB_free_hdiv_vp                                 &
+     &     (sph_MHD_bc%fdm2_free_CMB%dmat_vp, sph_MHD_bc%fdm3e_vp0_CMB, &
+     &      sph_MHD_bc%fdm3e_free_CMB)
       end if
 !
 !

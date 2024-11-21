@@ -146,8 +146,8 @@
      &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
       call cal_fdm3e_CMB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_out-2),   &
      &                           fdm3e_vp0_CMB)
-      call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB, fdm3e_vp0_CMB,     &
-     &                                fdm3e_free_CMB)
+      call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB%dmat_vp,            &
+     &                                fdm3e_vp0_CMB, fdm3e_free_CMB)
       deallocate(h_rho)
 !
       end subroutine init_FDM_coefs_for_test

@@ -119,7 +119,6 @@
 !!     mat_fdm4_CMB1_free_vp = (mat_taylor_3e)^-1
 !!@endverbatim
       real(kind = kreal) :: mat_fdm3e_ICB_hdiv_vp(4,4)
-!!@endverbatim
 !
       private :: mat_fdm3e_ICB_hdiv_vp
       private :: cal_fdm3e_inner_hdiv_vp
@@ -142,7 +141,8 @@
       dr_p1 = half * (r_from_ICB(1) - r_from_ICB(0))
       dr_p2 = half * (r_from_ICB(2) + r_from_ICB(1)) - r_from_ICB(0)
 !
-      call cal_fdm3e_inner_hdiv_vp(dr_n1, dr_p1, dr_p2, fdm3e_ICB)
+      call cal_fdm3e_inner_hdiv_vp(dr_n1, dr_p1, dr_p2,                 &
+     &                             fdm3e_ICB%dmat_vp0)
 !
       end subroutine cal_fdm3e_ICB_hdiv_vp
 !
@@ -167,9 +167,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_fdm3e_inner_hdiv_vp(dr_n1, dr_p1, dr_p2,           &
-     &                                   fdm3e_ICB)
+     &                                   dmat_vp_in)
 !
       real(kind = kreal), intent(in) :: dr_p1, dr_n1, dr_p2
+      real(kind = kreal), intent(inout) :: dmat_vp_in(-2:1,4)
       type(fdm3e_BC_hdiv), intent(inout) :: fdm3e_ICB
 !
       integer(kind = kint) :: ierr
@@ -204,10 +205,10 @@
      &            dr_p1, dr_n1, dr_p2
       end if
 !
-      fdm3e_ICB%dmat_vp0(-1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
-      fdm3e_ICB%dmat_vp0( 0,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
-      fdm3e_ICB%dmat_vp0( 1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
-      fdm3e_ICB%dmat_vp0(-2,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
+      dmat_vp_in(-1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
+      dmat_vp_in( 0,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
+      dmat_vp_in( 1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
+      dmat_vp_in(-2,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
 !
       end subroutine cal_fdm3e_inner_hdiv_vp
 !

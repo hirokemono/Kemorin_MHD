@@ -12,8 +12,8 @@
 !!        type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
 !!
 !!      subroutine cal_fdm3e_CMB_free_hdiv_vp                           &
-!!     &         (fdm2_free_CMB, fdm3e_vp0_CMB, fdm3e_free_CMB)
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+!!     &         (dmat_vp_free_CMB, fdm3e_vp0_CMB, fdm3e_free_CMB)
+!!        real(kind = kreal), intent(in) :: dmat_vp_free_CMB(-1:1,3)
 !!        type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
 !!        type(fdm3_n2e_CMB_free_vpol), intent(inout) :: fdm3e_free_CMB
 !!      subroutine cal_fdm3_free_vp_CMB_ele(i_th, kr_out, nnod_rj, jmax,&
@@ -88,12 +88,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_fdm3e_CMB_free_hdiv_vp                             &
-     &         (fdm2_free_CMB, fdm3e_vp0_CMB, fdm3e_free_CMB)
+     &         (dmat_vp_free_CMB, fdm3e_vp0_CMB, fdm3e_free_CMB)
 !
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm3_n2e_zero_vp_CMB
 !
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      real(kind = kreal), intent(in) :: dmat_vp_free_CMB(-1:1,3)
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
 !
       type(fdm3_n2e_CMB_free_vpol), intent(inout) :: fdm3e_free_CMB
@@ -101,9 +101,9 @@
 !
       fdm3e_free_CMB%dmat_vp0(-2,1:4) = fdm3e_vp0_CMB%dmat_vp0(-2,1:4)
       fdm3e_free_CMB%dmat_vp0(-1,1:4) = fdm3e_vp0_CMB%dmat_vp0(-1,1:4)  &
-     &   + fdm3e_vp0_CMB%dmat_vp0( 1,1:4) * fdm2_free_CMB%dmat_vp(-1,2)
+     &   + fdm3e_vp0_CMB%dmat_vp0( 1,1:4) * dmat_vp_free_CMB(-1,2)
 !      fdm3e_free_CMB%dmat_vp0( 0,1:4) = fdm3e_vp0_CMB%dmat_vp0( 0,1:4) &
-!     &  + fdm3e_vp0_CMB%dmat_vp0( 1,1:4) * fdm2_free_CMB%dmat_vp( 0,2)
+!     &  + fdm3e_vp0_CMB%dmat_vp0( 1,1:4) * dmat_vp_free_CMB( 0,2)
       fdm3e_free_CMB%dmat_vp0( 0,1:4) = zero
       fdm3e_free_CMB%dmat_vp0( 1,1:4) = zero
 !
