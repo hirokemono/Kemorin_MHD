@@ -11,7 +11,7 @@
 !!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
 !!     &         g_sph_rj, coef_p, coef_d, fdm_e1,                      &
 !!     &         fdm2_fix_dr_ICB, fdm2_free_ICB,                        &
-!!     &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,     &
+!!     &         fdm3e_vp0_ICB, fdm3e_free_ICB, d_vpol, press_e,        &
 !!     &         mat2_viscous_ICB, hdiv_visous_mat_ICB,                 &
 !!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -24,8 +24,8 @@
 !!        type(fdm_matrix), intent(in) :: fdm_e1(0:1)
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !!        real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+!!        type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !!        real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -41,7 +41,7 @@
 !!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
 !!     &         g_sph_rj, coef_p, coef_d, fdm_e3,                      &
 !!     &         fdm4_noslip_ICB, fdm4_free_ICB,                        &
-!!     &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,     &
+!!     &         fdm3e_vp0_ICB, fdm3e_free_ICB, d_vpol, press_e,        &
 !!     &         mat4_viscous_ICB, hdiv_visous_mat_ICB,                 &
 !!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -54,8 +54,8 @@
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
 !!        type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
 !!        type(fdm4_ICB_zero_vpol), intent(in) :: fdm4_noslip_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+!!        type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !!        real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -70,7 +70,7 @@
 !!
 !!      subroutine sph_FDM2_vpol_viscosity_mat_ICB                      &
 !!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,  g_sph_rj,&
-!!     &         coef_p, coef_d, fdm3e_noslip_ICB, fdm3e_free_ICB,      &
+!!     &         coef_p, coef_d, fdm3e_vp0_ICB, fdm3e_free_ICB,         &
 !!     &         hdiv_visous_mat_ICB, mat7)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -79,8 +79,8 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+!!        type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
 !!        real(kind = kreal), intent(inout)                             &
@@ -89,7 +89,7 @@
 !!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
 !!     &         g_sph_rj, coef_p, coef_d, fdm_3e, fdm_e3,              &
 !!     &         fdm4_noslip_ICB, fdm4_free_ICB,                        &
-!!     &         fdm3e_noslip_ICB, fdm3e_free_ICB,                      &
+!!     &         fdm3e_vp0_ICB, fdm3e_free_ICB,                         &
 !!     &         mat4_viscous_CMB1, hdiv_visous_mat_ICB, mat9)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -102,8 +102,8 @@
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
 !!        type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
 !!        type(fdm4_ICB_zero_vpol), intent(in) :: fdm4_noslip_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+!!        type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)
 !!        real(kind = kreal), intent(inout)                             &
@@ -134,13 +134,14 @@
      &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
      &         g_sph_rj, coef_p, coef_d, fdm_e1,                        &
      &         fdm2_fix_dr_ICB, fdm2_free_ICB,                          &
-     &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,       &
+     &         fdm3e_vp0_ICB, fdm3e_free_ICB, d_vpol, press_e,          &
      &         mat2_viscous_ICB, hdiv_visous_mat_ICB,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_MHD_boundaries
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use cal_sph_FDM_viscosity_mat
@@ -160,8 +161,8 @@
       type(fdm_matrix), intent(in) :: fdm_e1(0:1)
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
       real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !
@@ -217,10 +218,9 @@
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     ((sph_bc_U%kr_in+1), -ione, ione, sph_rj, fl_prop,           &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,1),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,2),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,1), fdm3e_vp0_ICB%dmat_vp0(-1,2), &
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
+     &      hdiv_visous_mat_ICB)
       end if
       call sum_exp_sph_hdiv_viscous_ICB((sph_bc_U%kr_in+1),             &
      &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,                    &
@@ -235,12 +235,13 @@
      &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
      &         g_sph_rj, coef_p, coef_d, fdm_e3,                        &
      &         fdm4_noslip_ICB, fdm4_free_ICB,                          &
-     &         fdm3e_noslip_ICB, fdm3e_free_ICB, d_vpol, press_e,       &
+     &         fdm3e_vp0_ICB, fdm3e_free_ICB, d_vpol, press_e,          &
      &         mat4_viscous_ICB, hdiv_visous_mat_ICB,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm4_zero_vpol_ICB
       use t_coef_fdm4_free_vpol_ICB
       use sph_FDM_viscosities_mat
@@ -262,8 +263,8 @@
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
       type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
       type(fdm4_ICB_zero_vpol), intent(in) :: fdm4_noslip_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
       real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !
@@ -327,10 +328,9 @@
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     ((sph_bc_U%kr_in+1), -ione, ione, sph_rj, fl_prop,           &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,1),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,2),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,1), fdm3e_vp0_ICB%dmat_vp0(-1,2), &
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
+     &      hdiv_visous_mat_ICB)
       end if
       call sum_exp_sph_hdiv_viscous_ICB((sph_bc_U%kr_in+1),             &
      &    sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,                    &
@@ -361,11 +361,12 @@
 !
       subroutine sph_FDM2_vpol_viscosity_mat_ICB                        &
      &        (sph_rj, fl_prop, radial_variation, sph_bc_U,  g_sph_rj,  &
-     &         coef_p, coef_d, fdm3e_noslip_ICB, fdm3e_free_ICB,        &
+     &         coef_p, coef_d, fdm3e_vp0_ICB, fdm3e_free_ICB,           &
      &         hdiv_visous_mat_ICB, mat7)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use set_sph_pol_vscs_FDM2_mat
@@ -380,8 +381,8 @@
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
 !
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
@@ -414,10 +415,9 @@
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     ((sph_bc_U%kr_in+1), -ione, ione, sph_rj, fl_prop,           &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,1),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,2),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,3),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,1), fdm3e_vp0_ICB%dmat_vp0(-1,2), &
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
+     &      hdiv_visous_mat_ICB)
       end if
       call add_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
@@ -433,11 +433,12 @@
      &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
      &         g_sph_rj, coef_p, coef_d, fdm_3e, fdm_e3,                &
      &         fdm4_noslip_ICB, fdm4_free_ICB,                          &
-     &         fdm3e_noslip_ICB, fdm3e_free_ICB,                        &
+     &         fdm3e_vp0_ICB, fdm3e_free_ICB,                           &
      &         mat4_viscous_CMB1, hdiv_visous_mat_ICB, mat9)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm4_zero_vpol_ICB
       use t_coef_fdm4_free_vpol_ICB
       use sph_FDM_viscosities_mat
@@ -459,8 +460,8 @@
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
       type(fdm4_ICB_free_vpol), intent(in) :: fdm4_free_ICB
       type(fdm4_ICB_zero_vpol), intent(in) :: fdm4_noslip_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_noslip_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)
@@ -497,10 +498,9 @@
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     ((sph_bc_U%kr_in+1), -itwo, ione, sph_rj, fl_prop,           &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
-     &      fdm3e_noslip_ICB%dmat_vp0(-2,1),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-2,2),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-2,3),                            &
-     &      fdm3e_noslip_ICB%dmat_vp0(-2,4), hdiv_visous_mat_ICB)
+     &      fdm3e_vp0_ICB%dmat_vp0(-2,1), fdm3e_vp0_ICB%dmat_vp0(-2,2), &
+     &      fdm3e_vp0_ICB%dmat_vp0(-2,3), fdm3e_vp0_ICB%dmat_vp0(-2,4), &
+     &      hdiv_visous_mat_ICB)
       end if
       call add_sph_ele_pressure_FDM_mat9((sph_bc_U%kr_in+1),            &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat9)

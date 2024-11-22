@@ -22,7 +22,7 @@
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_e1(0:1)
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
 !!        real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -48,7 +48,7 @@
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
 !!        type(fdm4_centre_vpol), intent(in) :: fdm4_pol_CTR
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
 !!        real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !!        real(kind = kreal), intent(inout)                             &
@@ -72,7 +72,7 @@
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_e1(0:1)
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
 !!        type(fdm2_center_mat), intent(in) :: fdm2_pol_CTR
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: mat2_viscous_CMB1(sph_rj%nidx_rj(2),-1:1)
@@ -93,8 +93,8 @@
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
 !!        type(fdm_matrix), intent(in) :: fdm_e3(0:1)
 !!        type(fdm4_centre_vpol), intent(in) :: fdm4_pol_CTR
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
-!!        type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center1
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center1
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)
 !!        real(kind = kreal), intent(inout)                             &
@@ -124,7 +124,7 @@
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_coef_fdm2_MHD_boundaries
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use cal_sph_FDM_viscosity_mat
@@ -142,7 +142,7 @@
 !
       type(fdm_matrix), intent(in) :: fdm_e1(0:1)
       type(fdm2_center_mat), intent(in) :: fdm2_center
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
       real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
       real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !
@@ -209,7 +209,7 @@
      &         mat4_viscous_CTR, hdiv_visous_mat_CTR,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_coef_fdm4_vpol_centre
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
@@ -228,7 +228,7 @@
 !
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
       type(fdm4_centre_vpol), intent(in) :: fdm4_pol_CTR
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
       real(kind = kreal), intent(in) :: d_vpol(sph_rj%nnod_rj)
       real(kind = kreal), intent(in) :: press_e(sph_rj%nnod_rj)
 !
@@ -310,7 +310,7 @@
      &         coef_p, coef_d, fdm_e1, fdm2_pol_CTR, fdm3e_center,      &
      &         mat2_viscous_CMB1, hdiv_visous_mat_CTR, mat7)
 !
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_coef_fdm2_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
@@ -327,7 +327,7 @@
       real(kind = kreal), intent(in) :: coef_p, coef_d
 !
       type(fdm_matrix), intent(in) :: fdm_e1(0:1)
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
       type(fdm2_center_mat), intent(in) :: fdm2_pol_CTR
 !
       real(kind = kreal), intent(inout)                                 &
@@ -388,7 +388,7 @@
      &         fdm4_pol_CTR, fdm3e_center, fdm3e_center1,               &
      &         mat4_viscous_CMB1, hdiv_visous_mat_CTR, mat9)
 !
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_coef_fdm4_vpol_centre
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
@@ -406,8 +406,8 @@
 !
       type(fdm_matrix), intent(in) :: fdm_e3(0:1)
       type(fdm4_centre_vpol), intent(in) :: fdm4_pol_CTR
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center1
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center1
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)

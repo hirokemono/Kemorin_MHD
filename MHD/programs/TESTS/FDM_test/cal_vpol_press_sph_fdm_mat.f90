@@ -31,14 +31,17 @@
       subroutine const_radial_mat_vpol_press(my_rank, dt,               &
      &          flag_viscous_variation, flag_ref_density_valiation,     &
      &          sph_rj, Plm_WK, fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st,   &
-     &          sph_bc_U, fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,      &
+     &          sph_bc_U, fdm3e_center, fdm3e_vp0_ICB, fdm3e_free_ICB,  &
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho, &
      &          band_vsp_evo)
 !
       use t_physical_property
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
+      use t_coef_fdm3_n2e_free_vp_CMB
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_sph_matrices
       use m_ludcmp_band
       use check_sph_radial_mat
@@ -54,10 +57,11 @@
       type(fdm_matrices), intent(in) :: r_e2n_1st
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB, fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_vp0_CMB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
+      type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
 !
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -115,7 +119,7 @@
         call cal_sph_vpol_press_sph_mat_ICB                             &
      &     (fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
-     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_vp0_ICB,                    &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      band_vsp_evo)
       end if
@@ -162,7 +166,7 @@
 !
       subroutine const_hdiv_vpol_diffusion(dt, sph_rj, Plm_WK,          &
      &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
-     &          fdm3e_center, fdm3e_ICB, fdm3e_free_ICB,                &
+     &          fdm3e_center, fdm3e_vp0_ICB, fdm3e_free_ICB,             &
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho, &
      &          press_e, ipol_base, ipol_force, ipol_diffusion,         &
      &          rj_fld, e_hdiv_viscous)
@@ -172,8 +176,11 @@
       use t_phys_data
       use t_physical_property
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
+      use t_coef_fdm3_n2e_free_vp_CMB
+      use t_coef_fdm3_n2e_zero_vp_CTR
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -182,10 +189,11 @@
       type(fdm_matrices), intent(in) :: r_e2n_1st
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB, fdm3e_free_ICB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_vp0_CMB
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_free_CMB
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
+      type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
 !
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -242,7 +250,7 @@
         call cal_exp_sph_vp_val_diffuse_ICB                             &
      &     (fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
-     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB,                        &
+     &      sph_rj, Plm_WK, sph_bc_U, fdm3e_vp0_ICB,                    &
      &      fl_prop%coef_press, coef_dvt, relative_d, h_nu, h_rho,      &
      &      ipol_base, rj_fld, e_hdiv_viscous)
       end if
@@ -310,7 +318,6 @@
      &          coef_p, coef_d, relative_d, h_nu, h_rho, band_vsp_evo)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_sph_matrices
 !
@@ -319,7 +326,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_vp0_CMB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -355,7 +362,6 @@
      &          ipol_base, rj_fld, e_hdiv_viscous)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_base_field_labels
       use t_base_force_labels
@@ -366,7 +372,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_vp0_CMB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -407,11 +413,11 @@
 !
       subroutine cal_sph_vpol_press_sph_mat_ICB                         &
      &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB, coef_p, coef_d,    &
-     &          relative_d, h_nu, h_rho, band_vsp_evo)
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_vp0_ICB,                &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho, band_vsp_evo)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
       use t_sph_matrices
 !
       logical, intent(in) :: flag_viscous_variation
@@ -419,7 +425,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -430,18 +436,18 @@
 !
       call set_vpol_press_sph_ICB_mat                                   &
      &   (sph_rj, sph_bc_U%kr_in, Plm_WK%g_sph_rj,                      &
-     &    coef_p, coef_d, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+     &    coef_p, coef_d, fdm3e_vp0_ICB%dmat_vp0, band_vsp_evo%mat)
 !
       if(flag_viscous_variation) then
         call add_val_viscosity_sph_ICB_mat                              &
      &     (sph_rj, sph_bc_U%kr_in, Plm_WK%g_sph_rj, coef_d,            &
-     &      relative_d, h_nu, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+     &      relative_d, h_nu, fdm3e_vp0_ICB%dmat_vp0, band_vsp_evo%mat)
       end if
 !
       if(flag_ref_density_valiation) then
         call add_val_density_sph_ICB_mat(sph_rj, sph_bc_U%kr_in,        &
      &      Plm_WK%g_sph_rj, coef_d, relative_d,                        &
-     &      h_nu, h_rho, fdm3e_ICB%dmat_vp0, band_vsp_evo%mat)
+     &      h_nu, h_rho, fdm3e_vp0_ICB%dmat_vp0, band_vsp_evo%mat)
       end if
 !
       end subroutine cal_sph_vpol_press_sph_mat_ICB
@@ -450,12 +456,12 @@
 !
       subroutine cal_exp_sph_vp_val_diffuse_ICB                         &
      &         (flag_viscous_variation, flag_ref_density_valiation,     &
-     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_ICB, coef_p, coef_d,    &
-     &          relative_d, h_nu, h_rho, ipol_base, rj_fld,             &
-     &          e_hdiv_viscous)
+     &          sph_rj, Plm_WK, sph_bc_U, fdm3e_vp0_ICB,                &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho, ipol_base,     &
+     &          rj_fld, e_hdiv_viscous)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_ICB
       use t_base_field_labels
       use t_base_force_labels
       use t_phys_data
@@ -465,7 +471,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -479,14 +485,14 @@
 !
       call set_exp_sph_hdiv_viscous_ICB                                 &
      &   (sph_rj, sph_bc_U%kr_in, Plm_WK%g_sph_rj, coef_d,              &
-     &    fdm3e_ICB%dmat_vp0, ipol_base%i_velo,                         &
+     &    fdm3e_vp0_ICB%dmat_vp0, ipol_base%i_velo,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
      &    e_hdiv_viscous)
 
       if(flag_viscous_variation) then
         call add_exp_sph_hdiv_val_nu_ICB                                &
      &     (sph_rj, sph_bc_U%kr_in, Plm_WK%g_sph_rj, coef_d,            &
-     &      relative_d, h_nu, fdm3e_ICB%dmat_vp0, ipol_base%i_velo,     &
+     &      relative_d, h_nu, fdm3e_vp0_ICB%dmat_vp0, ipol_base%i_velo, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      e_hdiv_viscous)
       end if
@@ -495,7 +501,7 @@
         call add_exp_sph_hdiv_val_rho_ICB                               &
      &     (sph_rj, sph_bc_U%kr_in, Plm_WK%g_sph_rj,                    &
      &      coef_d, relative_d, h_nu, h_rho,                            &
-     &      fdm3e_ICB%dmat_vp0, ipol_base%i_velo,                       &
+     &      fdm3e_vp0_ICB%dmat_vp0, ipol_base%i_velo,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      e_hdiv_viscous)
       end if
@@ -512,7 +518,7 @@
      &          band_vsp_evo)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_sph_matrices
       use sph_hdiv_viscousity_CTR
 !
@@ -521,7 +527,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))
@@ -550,7 +556,7 @@
      &          ipol_base, rj_fld, e_hdiv_viscous)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm3e_MHD_boundaries
+      use t_coef_fdm3_n2e_zero_vp_CTR
       use t_base_field_labels
       use t_base_force_labels
       use t_phys_data
@@ -561,7 +567,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm3e_BC_hdiv), intent(in) :: fdm3e_center
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_center
       real(kind = kreal), intent(in) :: coef_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1))
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1))

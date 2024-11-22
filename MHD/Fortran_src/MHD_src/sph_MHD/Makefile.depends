@@ -110,9 +110,9 @@ cal_sph_model_coefs.o: $(MHD_SPH_DIR)/cal_sph_model_coefs.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_pol_hdiv_viscousity.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_viscousity.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sph_pol_hdiv_vscs_CMB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_CMB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_zero_vpol_CMB.o t_coef_fdm4_free_vpol_CMB.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o t_coef_fdm4_MHD_boundaries.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
+cal_sph_pol_hdiv_vscs_CMB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_CMB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_CMB.o t_coef_fdm3_n2e_free_vp_CMB.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_zero_vpol_CMB.o t_coef_fdm4_free_vpol_CMB.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o t_coef_fdm4_MHD_boundaries.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sph_pol_hdiv_vscs_ICB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_zero_vpol_ICB.o t_coef_fdm4_free_vpol_ICB.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
+cal_sph_pol_hdiv_vscs_ICB.o: $(MHD_SPH_DIR)/cal_sph_pol_hdiv_vscs_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_ICB.o t_coef_fdm3_n2e_free_vp_ICB.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_zero_vpol_ICB.o t_coef_fdm4_free_vpol_ICB.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_typical_scale.o: $(MHD_SPH_DIR)/cal_typical_scale.f90 m_precision.o m_constants.o calypso_mpi.o t_sph_typical_scales.o t_field_labels.o t_phys_data.o t_spheric_parameter.o t_spheric_rj_data.o t_boundary_params_sph_MHD.o t_control_array_character.o t_multi_flag_labels.o m_base_field_labels.o m_field_file_format_labels.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -127,8 +127,6 @@ coef_fdm2_free_CMB.o: $(MHD_SPH_DIR)/coef_fdm2_free_CMB.f90 m_precision.o m_cons
 coef_fdm2_free_ICB.o: $(MHD_SPH_DIR)/coef_fdm2_free_ICB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 coef_fdm2_to_center.o: $(MHD_SPH_DIR)/coef_fdm2_to_center.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o cal_inverse_small_matrix.o
-	$(F90) -c $(F90OPTFLAGS) $<
-coef_fdm3e_hdiv_ICB.o: $(MHD_SPH_DIR)/coef_fdm3e_hdiv_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_coef_fdm3e_MHD_boundaries.o cal_inverse_small_matrix.o t_coef_fdm2_MHD_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_data_4_dynamobench.o: $(MHD_SPH_DIR)/const_data_4_dynamobench.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o field_at_mid_equator.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_time_data.o t_schmidt_poly_on_rtm.o t_rms_4_sph_spectr.o t_boundary_data_sph_MHD.o t_field_on_circle.o t_field_4_dynamobench.o t_work_4_sph_trans.o calypso_mpi_real.o sph_fwd_trans_mid_eq.o cal_rms_fields_by_sph.o global_field_4_dynamobench.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -242,7 +240,7 @@ set_address_sph_trans_snap.o: $(MHD_SPH_DIR)/set_address_sph_trans_snap.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bc_flag_sph_velo.o: $(MHD_SPH_DIR)/set_bc_flag_sph_velo.f90 m_precision.o m_constants.o m_machine_parameter.o m_boundary_condition_IDs.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_sph_boundary_input_data.o t_spheric_rj_data.o t_group_data.o t_bc_data_list.o set_bc_sph_scalars.o m_base_field_labels.o set_sph_bc_data_by_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_bc_sph_mhd.o: $(MHD_SPH_DIR)/set_bc_sph_mhd.f90 m_precision.o m_machine_parameter.o m_boundary_condition_IDs.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_group_data.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_spheric_rj_data.o t_bc_data_list.o t_sph_boundary_input_data.o t_phys_data.o t_coef_fdm3_n2e_zero_vp_CMB.o t_coef_fdm3_n2e_free_vp_CMB.o m_base_field_labels.o set_bc_flag_sph_velo.o set_bc_sph_scalars.o cal_fdm_coefs_4_boundaries.o coef_fdm2_to_center.o coef_fdm2_free_ICB.o coef_fdm2_free_CMB.o coef_fdm3e_hdiv_ICB.o set_sph_bc_magne_sph.o
+set_bc_sph_mhd.o: $(MHD_SPH_DIR)/set_bc_sph_mhd.f90 m_precision.o m_machine_parameter.o m_boundary_condition_IDs.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_group_data.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_spheric_rj_data.o t_bc_data_list.o t_sph_boundary_input_data.o t_phys_data.o t_coef_fdm3_n2e_zero_vp_ICB.o t_coef_fdm3_n2e_free_vp_ICB.o t_coef_fdm3_n2e_zero_vp_CMB.o t_coef_fdm3_n2e_free_vp_CMB.o m_base_field_labels.o set_bc_flag_sph_velo.o set_bc_sph_scalars.o cal_fdm_coefs_4_boundaries.o coef_fdm2_to_center.o coef_fdm2_free_ICB.o coef_fdm2_free_CMB.o set_sph_bc_magne_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bc_sph_scalars.o: $(MHD_SPH_DIR)/set_bc_sph_scalars.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o m_machine_parameter.o m_boundary_condition_IDs.o t_spheric_rj_data.o t_group_data.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_sph_boundary_input_data.o t_bc_data_list.o t_field_labels.o m_base_field_labels.o m_base_force_labels.o set_sph_bc_data_by_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -300,7 +298,7 @@ set_sph_exp_rigid_ICB_s4t2.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB_s4t2.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_vpol_centre.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
+set_sph_pol_hdiv_viscs_CTR.o: $(MHD_SPH_DIR)/set_sph_pol_hdiv_viscs_CTR.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_CTR.o sph_FDM_viscosities_mat.o cal_sph_FDM3e_hdiv_viscous.o cal_sph_FDM_viscosity_mat.o sum_sph_pol_vscs_FDM2_exp.o sum_sph_pol_grad_p_FDM2_exp.o sum_sph_hdiv_vscs_FDM_exp.o t_coef_fdm4_vpol_centre.o sum_sph_pol_vscs_FDM4_exp.o sum_sph_pol_grad_p_FDM4_exp.o set_sph_pol_vscs_FDM2_mat.o set_sph_hdiv_vscs_FDM_mat7.o set_sph_pol_vscs_FDM4_mat.o set_sph_hdiv_vscs_FDM_mat9.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_radial_variations.o: $(MHD_SPH_DIR)/set_sph_radial_variations.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_radial_interpolate.o t_field_data_IO.o t_fdm_coefs.o t_ctl_param_val_density.o radial_interpolation.o cal_sph_exp_1st_diff.o field_file_IO.o t_ctl_param_val_diffusion.o const_diffusive_profile.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -356,7 +354,7 @@ t_SPH_MHD_zonal_mean_viz.o: $(MHD_SPH_DIR)/t_SPH_MHD_zonal_mean_viz.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_addresses_sph_transform.o: $(MHD_SPH_DIR)/t_addresses_sph_transform.f90 m_precision.o t_spheric_rtp_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_boundary_data_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_data_sph_MHD.f90 m_precision.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3e_MHD_boundaries.o t_coef_fdm4_zero_vpol_ICB.o t_coef_fdm4_free_vpol_ICB.o t_coef_fdm4_zero_vpol_CMB.o t_coef_fdm4_free_vpol_CMB.o t_coef_fdm4_vpol_centre.o t_coef_fdm3_n2e_zero_vp_CMB.o t_coef_fdm3_n2e_free_vp_CMB.o t_time_data.o t_spheric_parameter.o t_control_parameter.o set_evoluved_boundaries.o
+t_boundary_data_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_data_sph_MHD.f90 m_precision.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm4_zero_vpol_ICB.o t_coef_fdm4_free_vpol_ICB.o t_coef_fdm4_zero_vpol_CMB.o t_coef_fdm4_free_vpol_CMB.o t_coef_fdm4_vpol_centre.o t_coef_fdm3_n2e_zero_vp_ICB.o t_coef_fdm3_n2e_free_vp_ICB.o t_coef_fdm3_n2e_zero_vp_CMB.o t_coef_fdm3_n2e_free_vp_CMB.o t_coef_fdm3_n2e_zero_vp_CTR.o t_time_data.o t_spheric_parameter.o t_control_parameter.o set_evoluved_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_boundary_params_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_params_sph_MHD.f90 m_precision.o cal_fdm_coefs_4_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -364,7 +362,9 @@ t_boundary_sph_spectr.o: $(MHD_SPH_DIR)/t_boundary_sph_spectr.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm2_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm2_MHD_boundaries.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_coef_fdm3e_MHD_boundaries.o: $(MHD_SPH_DIR)/t_coef_fdm3e_MHD_boundaries.f90 m_precision.o m_constants.o
+t_coef_fdm3_n2e_free_vp_ICB.o: $(MHD_SPH_DIR)/t_coef_fdm3_n2e_free_vp_ICB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_ICB.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_zero_vp_CTR.o: $(MHD_SPH_DIR)/t_coef_fdm3_n2e_zero_vp_CTR.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_const_wz_coriolis_rtp.o: $(MHD_SPH_DIR)/t_const_wz_coriolis_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rtp_data.o t_spheric_rj_data.o calypso_mpi.o calypso_mpi_real.o overwrite_prod_const_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -53,6 +53,8 @@
      &          MHD_BC, sph_MHD_bc)
 !
       use t_phys_data
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_coef_fdm3_n2e_free_vp_CMB
       use m_base_field_labels
@@ -64,7 +66,6 @@
       use coef_fdm2_to_center
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
-      use coef_fdm3e_hdiv_ICB
       use set_sph_bc_magne_sph
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -113,10 +114,10 @@
      &                            sph_MHD_bc%fdm2_free_ICB)
 !
         call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
-     &                             sph_MHD_bc%fdm3e_ICB)
-        call cal_fdm3e_ICB_free_hdiv_vp(sph_MHD_bc%fdm2_free_ICB,       &
-     &                                  sph_MHD_bc%fdm3e_ICB,           &
-     &                                  sph_MHD_bc%fdm3e_free_ICB)
+     &                             sph_MHD_bc%fdm3e_vp0_ICB)
+        call cal_fdm3e_ICB_free_hdiv_vp                                 &
+     &     (sph_MHD_bc%fdm2_free_ICB%dmat_vp, sph_MHD_bc%fdm3e_vp0_ICB, &
+     &      sph_MHD_bc%fdm3e_free_ICB)
 !
         call cal_fdm2_CMB_free_vp(h_rho_out,                            &
      &                            sph_rj%radius_1d_rj_r(ked-1),         &
@@ -194,7 +195,6 @@
       use coef_fdm2_to_center
       use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
-      use coef_fdm3e_hdiv_ICB
       use set_sph_bc_magne_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -224,10 +224,12 @@
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
      &       (velocity%name, sph_MHD_bc%sph_bc_U)
-          call check_3rd_ele_BC_vpol_fdm(50, sph_MHD_bc%fdm3e_ICB)
+          call check_fdm3_n2e_ICB_zero_vpol                             &
+     &       (50, sph_MHD_bc%fdm3e_vp0_ICB)
           call check_coef_fdm_free_ICB(50, sph_MHD_bc%fdm2_free_ICB)
           call check_coef_fdm_free_CMB(50, sph_MHD_bc%fdm2_free_CMB)
-          call check_3rd_ele_BC_vpol_fdm(50, sph_MHD_bc%fdm3e_free_ICB)
+          call check_fdm3_n2e_ICB_free_vpol                             &
+     &       (50, sph_MHD_bc%fdm3e_free_ICB)
           call check_fdm3_n2e_CMB_free_vpol                             &
      &       (50, sph_MHD_bc%fdm3e_free_CMB)
         end if

@@ -1,49 +1,48 @@
-!>@file   t_coef_fdm3_n2e_zero_vp_ICB.f90
-!!@brief  module t_coef_fdm3_n2e_zero_vp_ICB
+!>@file   t_coef_fdm3_n2e_zero_vp_CTR.f90
+!!@brief  module t_coef_fdm3_n2e_zero_vp_CTR
 !!
 !!@author H. Matsui
 !!@date Programmed in May., 2013
 !
-!>@brief Matrix to evaluate radial derivative for non-slip at ICB
+!>@brief Matrix to evaluate radial derivative for non-slip at Center
 !!
 !!@verbatim
-!!      subroutine check_fdm3_n2e_ICB_zero_vpol(id_file, fdm3e_vp0_ICB)
+!!      subroutine check_fdm3_n2e_CTR_zero_vpol(id_file, fdm3e_CTR)
 !!        integer(kind = kint), intent(in) :: id_file
-!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
-!!      subroutine cal_fdm3e_ICB_hdiv_vp(r_from_ICB, fdm3e_vp0_ICB)
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_CTR
+!!      subroutine cal_fdm3e_CTR_hdiv_vp(r_from_ICB, fdm3e_CTR)
 !!        real(kind = kreal), intent(in) :: r_from_ICB(0:2)
-!!        type(fdm3_n2e_ICB_zero_vpol), intent(inout) :: fdm3e_vp0_ICB
+!!        type(fdm3_n2e_CTR_vpol), intent(inout) :: fdm3e_CTR
 !!
-!!      subroutine cal_third_fdm_ICB_ele(i_th, kr_in, nnod_rj, jmax,    &
-!!     &          fdm3e_vp0_ICB, d_rj, dfdr_rj, dele_bc)
+!!      subroutine cal_third_fdm_CTR_ele(i_th, kr_in, nnod_rj, jmax,    &
+!!     &          fdm3e_CTR, d_rj, dfdr_rj, dele_bc)
 !!        integer(kind = kint), intent(in) :: nnod_rj, jmax
-!!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+!!        type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_CTR
 !!        integer(kind = kint), intent(in) :: i_th, kr_in
 !!        real(kind = kreal), intent(in) :: d_rj(nnod_rj)
 !!        real(kind = kreal), intent(in) :: dfdr_rj(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: dele_bc(nnod_rj)
 !!
-!!   Matrix for poloidal velocity with horizontal divergence at ICB
-!!      d_ele =     fdm3e_vp0_ICB%dmat_vp0(-2,0) * dfdr(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0(-1,0) * d_rj(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0( 0,0) * d_rj(ICB+1)
-!!                + fdm3e_vp0_ICB%dmat_vp0( 1,0) * d_rj(ICB+2)
-!!      dfdr =      fdm3e_vp0_ICB%dmat_vp0(-2,1) * dfdr(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0(-1,1) * d_rj(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0( 0,1) * d_rj(ICB+1)
-!!                + fdm3e_vp0_ICB%dmat_vp0( 1,1) * d_rj(ICB+2)
-!!      d2fdr2 =    fdm3e_vp0_ICB%dmat_vp0(-2,2) * dfdr(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0(-1,2) * d_rj(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0( 0,2) * d_rj(ICB+1)
-!!                + fdm3e_vp0_ICB%dmat_vp0( 1,2) * d_rj(ICB+2)
-!!      d3fdr3 =    fdm3e_vp0_ICB%dmat_vp0(-2,3) * dfdr(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0(-1,3) * d_rj(ICB  )
-!!                + fdm3e_vp0_ICB%dmat_vp0( 0,3) * d_rj(ICB+1)
-!!                + fdm3e_vp0_ICB%dmat_vp0( 1,3) * dfdr(ICB+2)
-!!
+!!   Matrix for poloidal velocity with horizontal divergence at CENTER
+!!      d_ele =     fdm3e_ICB%dmat_vp0(-2,0) * dfdr(0)
+!!                + fdm3e_ICB%dmat_vp0(-1,0) * d_rj(0)
+!!                + fdm3e_ICB%dmat_vp0( 0,0) * d_rj(1)
+!!                + fdm3e_ICB%dmat_vp0( 1,0) * d_rj(2)
+!!      dfdr =      fdm3e_ICB%dmat_vp0(-2,1) * dfdr(0)
+!!                + fdm3e_ICB%dmat_vp0(-1,1) * d_rj(0)
+!!                + fdm3e_ICB%dmat_vp0( 0,1) * d_rj(1)
+!!                + fdm3e_ICB%dmat_vp0( 1,1) * d_rj(2)
+!!      d2fdr2 =    fdm3e_ICB%dmat_vp0(-2,2) * dfdr(0)
+!!                + fdm3e_ICB%dmat_vp0(-1,2) * d_rj(0)
+!!                + fdm3e_ICB%dmat_vp0( 0,2) * d_rj(1)
+!!                + fdm3e_ICB%dmat_vp0( 1,2) * d_rj(2)
+!!      d3fdr3 =    fdm3e_ICB%dmat_vp0(-2,3) * dfdr(0)
+!!                + fdm3e_ICB%dmat_vp0(-1,3) * d_rj(0)
+!!                + fdm3e_ICB%dmat_vp0( 0,3) * d_rj(1)
+!!                + fdm3e_ICB%dmat_vp0( 1,3) * dfdr(2)
 !!@endverbatim
 !!
-      module t_coef_fdm3_n2e_zero_vp_ICB
+      module t_coef_fdm3_n2e_zero_vp_CTR
 !
       use m_precision
       use m_constants
@@ -51,10 +50,10 @@
       implicit none
 !
 !
-      type fdm3_n2e_ICB_zero_vpol
+      type fdm3_n2e_CTR_vpol
 !>        Matrix to evaluate radial derivative at Boundary
         real(kind = kreal) :: dmat_vp0(-2:1,4)
-      end type fdm3_n2e_ICB_zero_vpol
+      end type fdm3_n2e_CTR_vpol
 !
 ! -----------------------------------------------------------------------
 !
@@ -62,35 +61,35 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_fdm3_n2e_ICB_zero_vpol(id_file, fdm3e_vp0_ICB)
+      subroutine check_fdm3_n2e_CTR_zero_vpol(id_file, fdm3e_CTR)
 !
       integer(kind = kint), intent(in) :: id_file
-      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_CTR
 !
 !
-      write(id_file,*) ' fdm3e_vp0_ICB%dmat_vp0'
+      write(id_file,*) ' fdm3e_CTR%dmat_vp0'
       write(id_file,*) 'matrix for Interpolation'
-      write(id_file,'(1p9E25.15e3)') fdm3e_vp0_ICB%dmat_vp0(-2:1,1)
+      write(id_file,'(1p9E25.15e3)') fdm3e_CTR%dmat_vp0(-2:1,1)
       write(id_file,*) 'matrix for dfdr'
-      write(id_file,'(1p9E25.15e3)') fdm3e_vp0_ICB%dmat_vp0(-2:1,2)
+      write(id_file,'(1p9E25.15e3)') fdm3e_CTR%dmat_vp0(-2:1,2)
       write(id_file,*) 'matrix for d2fdr2'
-      write(id_file,'(1p9E25.15e3)') fdm3e_vp0_ICB%dmat_vp0(-2:1,3)
+      write(id_file,'(1p9E25.15e3)') fdm3e_CTR%dmat_vp0(-2:1,3)
       write(id_file,*) 'matrix for d3fdr3'
-      write(id_file,'(1p9E25.15e3)') fdm3e_vp0_ICB%dmat_vp0(-2:1,4)
+      write(id_file,'(1p9E25.15e3)') fdm3e_CTR%dmat_vp0(-2:1,4)
 !
-      end subroutine check_fdm3_n2e_ICB_zero_vpol
+      end subroutine check_fdm3_n2e_CTR_zero_vpol
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_fdm3e_ICB_hdiv_vp(r_from_ICB, fdm3e_vp0_ICB)
+      subroutine cal_fdm3e_CTR_hdiv_vp(r_from_CTR, fdm3e_CTR)
 !
       use cal_inverse_small_matrix
 !
-      real(kind = kreal), intent(in) :: r_from_ICB(0:2)
-      type(fdm3_n2e_ICB_zero_vpol), intent(inout) :: fdm3e_vp0_ICB
+      real(kind = kreal), intent(in) :: r_from_CTR(3)
+      type(fdm3_n2e_CTR_vpol), intent(inout) :: fdm3e_CTR
 !
-!>      Work matrix to evaluate fdm3e_vp0_ICB%dmat_vp0
+!>      Work matrix to evaluate fdm3e_ICB%dmat_vp0
 !!@verbatim
 !!      d_rj(ICB  ) =  mat_taylor_3e(1,1) * d_ele
 !!                   + mat_taylor_3e(1,2) * dfdr
@@ -112,14 +111,14 @@
 !!@endverbatim
       real(kind = kreal) :: mat_fdm3e_ICB_hdiv_vp(4,4)
 !
-      integer(kind = kint) :: ierr
       real(kind = kreal) :: dr_p1, dr_n1, dr_p2
+      integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_3e(4,4)
 !
 !
-      dr_n1 = half * (r_from_ICB(1) - r_from_ICB(0))
-      dr_p1 = half * (r_from_ICB(1) - r_from_ICB(0))
-      dr_p2 = half * (r_from_ICB(2) + r_from_ICB(1)) - r_from_ICB(0)
+      dr_n1 = half * r_from_CTR(1)
+      dr_p1 = half * (r_from_CTR(2) - r_from_CTR(1))
+      dr_p2 = half * (r_from_CTR(3) + r_from_CTR(2)) - r_from_CTR(1)
 !
       mat_taylor_3e(1,1) =  one
       mat_taylor_3e(1,2) = -dr_n1
@@ -149,21 +148,21 @@
      &            dr_p1, dr_n1, dr_p2
       end if
 !
-      fdm3e_vp0_ICB%dmat_vp0(-1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
-      fdm3e_vp0_ICB%dmat_vp0( 0,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
-      fdm3e_vp0_ICB%dmat_vp0( 1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
-      fdm3e_vp0_ICB%dmat_vp0(-2,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
+      fdm3e_CTR%dmat_vp0(-1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,1)
+      fdm3e_CTR%dmat_vp0( 0,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,2)
+      fdm3e_CTR%dmat_vp0( 1,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,3)
+      fdm3e_CTR%dmat_vp0(-2,1:4) = mat_fdm3e_ICB_hdiv_vp(1:4,4)
 !
-      end subroutine cal_fdm3e_ICB_hdiv_vp
+      end subroutine cal_fdm3e_CTR_hdiv_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_third_fdm_ICB_ele(i_th, kr_in, nnod_rj, jmax,      &
-     &          fdm3e_vp0_ICB, d_rj, dfdr_rj, dele_bc)
+      subroutine cal_third_fdm_CTR_ele(i_th, kr_in, nnod_rj, jmax,      &
+     &          fdm3e_CTR, d_rj, dfdr_rj, dele_bc)
 !
       integer(kind = kint), intent(in) :: nnod_rj, jmax
-      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_CTR
       integer(kind = kint), intent(in) :: i_th, kr_in
       real(kind = kreal), intent(in) :: d_rj(nnod_rj)
       real(kind = kreal), intent(in) :: dfdr_rj(nnod_rj)
@@ -179,16 +178,15 @@
         i_p1 = j + (kr_in  ) * jmax
         i_p2 = j + (kr_in+1) * jmax
 !
-        dele_bc(inod) = fdm3e_vp0_ICB%dmat_vp0( 1,i_th+1) * d_rj(i_p2)  &
-     &                + fdm3e_vp0_ICB%dmat_vp0( 0,i_th+1) * d_rj(i_p1)  &
-     &                + fdm3e_vp0_ICB%dmat_vp0(-1,i_th+1) * d_rj(inod)  &
-     &                + fdm3e_vp0_ICB%dmat_vp0(-2,i_th+1)               &
-     &                                                 * dfdr_rj(inod)
+        dele_bc(inod) = fdm3e_CTR%dmat_vp0( 1,i_th+1) * d_rj(i_p2)      &
+     &                + fdm3e_CTR%dmat_vp0( 0,i_th+1) * d_rj(i_p1)      &
+     &                + fdm3e_CTR%dmat_vp0(-1,i_th+1) * d_rj(inod)      &
+     &                + fdm3e_CTR%dmat_vp0(-2,i_th+1) * dfdr_rj(inod)
       end do
 !$omp end parallel do
 !
-      end subroutine cal_third_fdm_ICB_ele
+      end subroutine cal_third_fdm_CTR_ele
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_coef_fdm3_n2e_zero_vp_ICB
+      end module t_coef_fdm3_n2e_zero_vp_CTR
