@@ -14,7 +14,7 @@
 !!      subroutine cal_fdm3_e2n_mat_center2(radius, fdm3_e2n_CTR)
 !!        real(kind = kreal), intent(in) :: radius(4)
 !!        type(fdm3_e2n_center_vpol), intent(inout) :: fdm3_e2n_CTR
-!
+!!
 !!   Matrix for poloidal velocity at next of center
 !!      dfdr =      fdm3_e2n_CTR%dmat_pe1( 2,2) * d_ele(3)
 !!                + fdm3_e2n_CTR%dmat_pe1( 1,2) * d_ele(2)
@@ -154,7 +154,8 @@
       mat_taylor_4(4,3) =  dr_p2*dr_p2 / two
       mat_taylor_4(4,4) =  dr_p2**3 / six
 !
-      call cal_inverse_44_matrix(mat_taylor_4, mat_fdm_ctr1_fix_4, ierr)
+      call cal_inverse_44_matrix(mat_taylor_4,                          &
+     &                           mat_fdm_ctr1_fix_4, ierr)
       if(ierr .eq. 1) then
         write(*,*) 'singular matrix mat_fdm_ctr1_fix_4 ',               &
      &            radius(1:2)

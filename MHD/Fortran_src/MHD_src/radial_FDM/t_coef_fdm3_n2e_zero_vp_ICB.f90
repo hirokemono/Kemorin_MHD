@@ -52,8 +52,10 @@
 !
 !
       type fdm3_n2e_ICB_zero_vpol
-!>        Matrix to evaluate radial derivative at Boundary
+!>        Matrix to evaluate radial derivative at next of center
         real(kind = kreal) :: dmat_vp0(-2:1,4)
+!>        Matrix to evaluate radial derivative at 2nd next of center
+        real(kind = kreal) :: dmat_vp1(-2:1,4)
       end type fdm3_n2e_ICB_zero_vpol
 !
 ! -----------------------------------------------------------------------
