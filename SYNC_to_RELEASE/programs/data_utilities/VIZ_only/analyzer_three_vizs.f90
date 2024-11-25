@@ -1,1 +1,0 @@
-../../../../MHD/programs/VIZ_only/analyzer_three_vizs.f90

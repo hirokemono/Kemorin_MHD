@@ -1,1 +1,0 @@
-../../../../MHD/programs/VIZ_only/main_three_visualizations.f90

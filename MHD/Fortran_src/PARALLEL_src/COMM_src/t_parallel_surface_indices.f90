@@ -1,5 +1,5 @@
-!>@file   t_paralell_surface_indices.f90
-!!@brief  module t_paralell_surface_indices
+!>@file   t_parallel_surface_indices.f90
+!!@brief  module t_parallel_surface_indices
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -20,7 +20,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
-      module t_paralell_surface_indices
+      module t_parallel_surface_indices
 !
       use m_precision
       use m_machine_parameter
@@ -246,4 +246,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_paralell_surface_indices
+      end module t_parallel_surface_indices
