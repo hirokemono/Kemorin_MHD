@@ -10,14 +10,20 @@
 !!@verbatim
 !!************************************************
 !!
-!!      subroutine sum_div_coriolis_lrm_10(b_trns, nnod_rlm, nidx_rlm,  &
-!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,   &
-!!     &          jgi_cor_rlm, jei_cor_rlm, sd_rlm, td_rlm,             &
-!!     &          NB, n_WR, irev_sr_rlm, WR, d_div_cor_rlm)
-!!      subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,  &
-!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,   &
-!!     &          jgi_cor_rlm, jei_cor_rlm, sd_rlm, td_rlm,             &
-!!     &          NB, n_WR, irev_sr_rlm, WR, d_div_cor_rlm)
+!!      subroutine sel_sum_div_coriolis_rlm_10                          &
+!!     &         (b_trns, sph_rlm, omega_sph, gt_cor, coef_cor,         &
+!!     &          NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
+!!        type(phys_address), intent(in) :: b_trns
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rotation), intent(in) :: omega_sph
+!!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
+!!        integer(kind = kint), intent(in) :: NB, n_WR
+!!        integer(kind = kint), intent(in)                              &
+!!     &                               :: irev_sr_rlm(sph_rlm%nnod_rlm)
+!!        real(kind = kreal), intent(in) :: WR(n_WR)
+!!        real(kind = kreal), intent(in) :: coef_cor
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                               :: div_cor_rlm(sph_rlm%nnod_rlm)
 !!
 !!************************************************
 !!
@@ -61,6 +67,7 @@
       use m_constants
 !
       use t_phys_address
+      use t_base_field_labels
       use t_gaunt_coriolis_rlm
 !
       implicit none
@@ -71,13 +78,56 @@
 !
 !   ------------------------------------------------------------------
 !
-!*
-      subroutine sum_div_coriolis_lrm_10(b_trns, nnod_rlm, nidx_rlm,    &
-     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,     &
-     &          jgi_cor_rlm, jei_cor_rlm, sd_rlm, td_rlm,               &
-     &          NB, n_WR, irev_sr_rlm, WR, d_div_cor_rlm)
+      subroutine sel_sum_div_coriolis_rlm_10                            &
+     &         (b_trns, sph_rlm, omega_sph, gt_cor, coef_cor,           &
+     &          NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
+!
+      use t_spheric_rlm_data
+      use t_poloidal_rotation
 !
       type(phys_address), intent(in) :: b_trns
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_rotation), intent(in) :: omega_sph
+!
+      type(gaunt_coriolis_rlm), intent(in) :: gt_cor
+!
+      integer(kind = kint), intent(in) :: NB, n_WR
+      integer(kind = kint), intent(in)                                  &
+     &                               :: irev_sr_rlm(sph_rlm%nnod_rlm)
+      real(kind = kreal), intent(in) :: WR(n_WR)
+      real(kind = kreal), intent(in) :: coef_cor
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                               :: div_cor_rlm(sph_rlm%nnod_rlm)
+!
+!
+      if(sph_rlm%istep_rlm(1) .eq. 1) then
+        call sum_div_coriolis_rlm_10                                    &
+     &   (b_trns%base, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,              &
+     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,                &
+     &    omega_sph%ws_rlm, coef_cor,                                   &
+     &    gt_cor%jgi_rlm, gt_cor%jei_rlm, gt_cor%sd_rlm, gt_cor%td_rlm, &
+     &    NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
+      else
+        call sum_div_coriolis_lrm_10                                    &
+     &   (b_trns%base, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,              &
+     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,                &
+     &    omega_sph%ws_rlm, coef_cor,                                   &
+     &    gt_cor%jgi_rlm, gt_cor%jei_rlm, gt_cor%sd_rlm, gt_cor%td_rlm, &
+     &    NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
+      end if
+!
+      end subroutine sel_sum_div_coriolis_rlm_10
+!
+! -----------------------------------------------------------------------
+!
+!*
+      subroutine sum_div_coriolis_lrm_10(t_base, nnod_rlm, nidx_rlm,    &
+     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,     &
+     &          jgi_cor_rlm, jei_cor_rlm, sd_rlm, td_rlm,               &
+     &          NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
+!
+      type(base_field_address), intent(in) :: t_base
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -95,7 +145,7 @@
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: d_div_cor_rlm(nnod_rlm)
+      real(kind = kreal), intent(inout) :: div_cor_rlm(nnod_rlm)
 !
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm, j11
       integer(kind = kint) :: i11, i21, i12, ir_11, ir_21, ir_12
@@ -118,21 +168,21 @@
           ir_21 = irev_sr_rlm(i21) - 1
           ir_12 = irev_sr_rlm(i12) - 1
 !
-          sp_wt_l1 =        WR(b_trns%base%i_vort+2+NB*ir_12)
-          sp_wp_k1 = half * WR(b_trns%base%i_vort+  NB*ir_11)
-          sp_wp_k2 = half * WR(b_trns%base%i_vort+  NB*ir_21)
-          sp_dwp_k1 =       WR(b_trns%base%i_vort+1+NB*ir_11)
-          sp_dwp_k2 =       WR(b_trns%base%i_vort+1+NB*ir_21)
+          sp_wt_l1 =        WR(t_base%i_vort+2+NB*ir_12)
+          sp_wp_k1 = half * WR(t_base%i_vort+  NB*ir_11)
+          sp_wp_k2 = half * WR(t_base%i_vort+  NB*ir_21)
+          sp_dwp_k1 =       WR(t_base%i_vort+1+NB*ir_11)
+          sp_dwp_k2 =       WR(t_base%i_vort+1+NB*ir_21)
 !
-          d_div_cor_rlm(i_rlm)                                          &
+          div_cor_rlm(i_rlm)                                            &
      &     =  td_rlm(1,j_rlm) *   omega_rlm(k_rlm,1) * sp_wt_l1         &
      &      + sd_rlm(1,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k1         &
      &      + sd_rlm(2,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k2         &
      &      + sd_rlm(1,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k1        &
      &      + sd_rlm(2,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k2
 !
-          d_div_cor_rlm(i_rlm)                                          &
-     &     = -coef_cor * d_div_cor_rlm(i_rlm)                           &
+          div_cor_rlm(i_rlm)                                            &
+     &     = -coef_cor * div_cor_rlm(i_rlm)                             &
      &                 * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
       end do
@@ -151,15 +201,15 @@
           i11 =  j11 + (k_rlm-1)*nidx_rlm(2)
           ir_11 = irev_sr_rlm(i11)
 !
-          sp_wp_k1 = half * WR(b_trns%base%i_vort +   NB*ir_11)
-          sp_dwp_k1 =       WR(b_trns%base%i_vort + 1+NB*ir_11)
+          sp_wp_k1 = half * WR(t_base%i_vort +   NB*ir_11)
+          sp_dwp_k1 =       WR(t_base%i_vort + 1+NB*ir_11)
 !
-          d_div_cor_rlm(i_rlm)                                          &
+          div_cor_rlm(i_rlm)                                            &
      &       =  four*(two/three) * sp_wp_k1                             &
      &        + four*(two/three) * omega_rlm(k_rlm,1) * sp_dwp_k1
 !
-          d_div_cor_rlm(i_rlm)                                          &
-     &       = -coef_cor * d_div_cor_rlm(i_rlm)                         &
+          div_cor_rlm(i_rlm)                                            &
+     &       = -coef_cor * div_cor_rlm(i_rlm)                           &
      &                   * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
 !$omp end parallel do
@@ -169,12 +219,12 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,    &
+      subroutine sum_div_coriolis_rlm_10(t_base, nnod_rlm, nidx_rlm,    &
      &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,     &
      &          jgi_cor_rlm, jei_cor_rlm, sd_rlm, td_rlm,               &
-     &          NB, n_WR, irev_sr_rlm, WR, d_div_cor_rlm)
+     &          NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
 !
-      type(phys_address), intent(in) :: b_trns
+      type(base_field_address), intent(in) :: t_base
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -192,7 +242,7 @@
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: d_div_cor_rlm(nnod_rlm)
+      real(kind = kreal), intent(inout) :: div_cor_rlm(nnod_rlm)
 !
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm, j11
       integer(kind = kint) :: i11, i21, i12, ir_11, ir_21, ir_12
@@ -215,21 +265,21 @@
           ir_21 = irev_sr_rlm(i21) - 1
           ir_12 = irev_sr_rlm(i12) - 1
 !
-          sp_wt_l1 =        WR(b_trns%base%i_vort+2+NB*ir_12)
-          sp_wp_k1 = half * WR(b_trns%base%i_vort+  NB*ir_11)
-          sp_wp_k2 = half * WR(b_trns%base%i_vort+  NB*ir_21)
-          sp_dwp_k1 =       WR(b_trns%base%i_vort+1+NB*ir_11)
-          sp_dwp_k2 =       WR(b_trns%base%i_vort+1+NB*ir_21)
+          sp_wt_l1 =        WR(t_base%i_vort+2+NB*ir_12)
+          sp_wp_k1 = half * WR(t_base%i_vort+  NB*ir_11)
+          sp_wp_k2 = half * WR(t_base%i_vort+  NB*ir_21)
+          sp_dwp_k1 =       WR(t_base%i_vort+1+NB*ir_11)
+          sp_dwp_k2 =       WR(t_base%i_vort+1+NB*ir_21)
 !
-          d_div_cor_rlm(i_rlm)                                          &
+          div_cor_rlm(i_rlm)                                            &
      &     =  td_rlm(1,j_rlm) *   omega_rlm(k_rlm,1) * sp_wt_l1         &
      &      + sd_rlm(1,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k1         &
      &      + sd_rlm(2,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k2         &
      &      + sd_rlm(1,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k1        &
      &      + sd_rlm(2,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k2
 !
-          d_div_cor_rlm(i_rlm)                                          &
-     &     = -coef_cor * d_div_cor_rlm(i_rlm)                           &
+          div_cor_rlm(i_rlm)                                            &
+     &     = -coef_cor * div_cor_rlm(i_rlm)                             &
      &                 * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
       end do
@@ -248,15 +298,15 @@
           i11 =   (j11 - 1) * nidx_rlm(1) + k_rlm
           ir_11 = irev_sr_rlm(i11)
 !
-          sp_wp_k1 = half * WR(b_trns%base%i_vort +   NB*ir_11)
-          sp_dwp_k1 =       WR(b_trns%base%i_vort + 1+NB*ir_11)
+          sp_wp_k1 = half * WR(t_base%i_vort +   NB*ir_11)
+          sp_dwp_k1 =       WR(t_base%i_vort + 1+NB*ir_11)
 !
-          d_div_cor_rlm(i_rlm)                                          &
+          div_cor_rlm(i_rlm)                                            &
      &       =  four*(two/three) * sp_wp_k1                             &
      &        + four*(two/three) * omega_rlm(k_rlm,1) * sp_dwp_k1
 !
-          d_div_cor_rlm(i_rlm)                                          &
-     &       = -coef_cor * d_div_cor_rlm(i_rlm)                         &
+          div_cor_rlm(i_rlm)                                            &
+     &       = -coef_cor * div_cor_rlm(i_rlm)                           &
      &                   * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
 !$omp end parallel do

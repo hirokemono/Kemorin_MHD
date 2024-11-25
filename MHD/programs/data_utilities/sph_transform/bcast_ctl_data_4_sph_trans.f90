@@ -38,7 +38,7 @@
       use bcast_4_field_ctl
       use bcast_4_time_step_ctl
       use bcast_4_platform_ctl
-      use bcast_control_data_vizs
+      use bcast_ctl_data_viz4
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !
@@ -49,7 +49,7 @@
       call bcast_ctl_data_4_platform(spt_ctl%plt)
       call bcast_ctl_data_4_platform(spt_ctl%org_plt)
       call bcast_FEM_mesh_control(spt_ctl%Fmesh_ctl)
-      call bcast_viz_controls(spt_ctl%viz_ctls)
+      call bcast_viz4_controls(spt_ctl%viz4_ctls)
 !
       call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
       call calypso_mpi_bcast_character                                  &

@@ -11,6 +11,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
+#include "m_kemoview_tracer.h"
 #include "m_kemoview_mesh.h"
 #include "m_colorbar_buffer.h"
 #include "m_phong_light_table_c.h"
@@ -29,5 +30,6 @@
 #include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
+#include "draw_colorbar_gl.h"
 
 #endif

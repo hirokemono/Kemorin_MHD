@@ -1,0 +1,49 @@
+cal_sph_FDM3e_hdiv_viscous.o: $(MHD_FDM_DIR)/cal_sph_FDM3e_hdiv_viscous.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_sph_FDM_viscosity_mat.o: $(MHD_FDM_DIR)/cal_sph_FDM_viscosity_mat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_hdiv_vscs_FDM_mat7.o: $(MHD_FDM_DIR)/set_sph_hdiv_vscs_FDM_mat7.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_hdiv_vscs_FDM_mat9.o: $(MHD_FDM_DIR)/set_sph_hdiv_vscs_FDM_mat9.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_vscs_FDM2_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM2_mat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sph_pol_vscs_FDM4_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM4_mat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_FDM_viscosities_mat.o: $(MHD_FDM_DIR)/sph_FDM_viscosities_mat.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o cal_sph_FDM_viscosity_mat.o cal_sph_FDM3e_hdiv_viscous.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_hdiv_vscs_FDM_exp.o: $(MHD_FDM_DIR)/sum_sph_hdiv_vscs_FDM_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_pol_grad_p_FDM2_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_grad_p_FDM2_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_pol_grad_p_FDM4_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_grad_p_FDM4_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_pol_vscs_FDM2_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_vscs_FDM2_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_sph_pol_vscs_FDM4_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_vscs_FDM4_exp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_ele2nod_centre.o: $(MHD_FDM_DIR)/t_coef_fdm3_ele2nod_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_free_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_CMB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_CMB.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_free_vp_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_ICB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_ICB.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_zero_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_zero_vp_CTR.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_CTR.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm3_n2e_zero_vp_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_ICB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_centre.o: $(MHD_FDM_DIR)/t_coef_fdm4_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_free_vpol_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm4_free_vpol_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_free_vpol_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm4_free_vpol_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_vpol_centre.o: $(MHD_FDM_DIR)/t_coef_fdm4_vpol_centre.f90 m_precision.o m_constants.o t_fdm_coefs.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_zero_vpol_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm4_zero_vpol_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm4_zero_vpol_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm4_zero_vpol_ICB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

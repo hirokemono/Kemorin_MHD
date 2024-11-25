@@ -6,7 +6,6 @@
 #define M_PHONG_LIGHT_TABLE_C_
 
 #include <math.h>
-#include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
 
 struct phong_lights{

@@ -8,14 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine lic_rendering_with_fixed_view                        &
-!!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,     &
-!!     &          field_lic, pvr_param, pvr_proj, pvr_rgb,              &
+!!     &         (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf,  &
+!!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb,       &
 !!     &          rep_ref_viz, m_SR)
-!!      subroutine rendering_lic_at_once(istep_pvr, time,               &
+!!      subroutine rendering_lic_at_once                                &
+!!     &         (istep_pvr, time, elps_PVR, elps_LIC,                  &
 !!     &          mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,&
 !!     &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: i_img, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
+!!        type(elapsed_lables), intent(in) :: elps_LIC
+!!        type(elapsed_lables), intent(in) :: elps_PVR
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -65,14 +68,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_fixed_view                          &
-     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,       &
-     &          field_lic, pvr_param, pvr_proj, pvr_rgb,                &
+     &         (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf,    &
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb,         &
      &          rep_ref_viz, m_SR)
 !
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -91,7 +95,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic                                        &
-     &   (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,             &
+     &   (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf, lic_p,   &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, rep_ref_viz, m_SR)
@@ -101,7 +105,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once(istep_pvr, time,                 &
+      subroutine rendering_lic_at_once                                  &
+     &         (istep_pvr, time, elps_PVR, elps_LIC,                    &
      &          mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,  &
      &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
@@ -112,6 +117,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -130,12 +136,12 @@
      &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
+     &   (elps_PVR, pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,      &
      &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic                                        &
-     &   (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,             &
+     &   (istep_pvr, time, elps_LIC, mesh, group, sf_grp_4_sf, lic_p,   &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
      &    pvr_proj%stencil, pvr_rgb, rep_ref_viz, m_SR)

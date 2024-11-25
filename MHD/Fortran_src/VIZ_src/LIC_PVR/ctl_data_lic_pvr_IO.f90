@@ -86,6 +86,7 @@
       use t_control_data_LIC
       use t_ctl_data_4_view_transfer
       use t_control_data_pvr_isosurfs
+      use t_control_data_pvr_tracers
       use t_ctl_data_pvr_movie
       use t_ctl_data_quilt_image
       use t_ctl_data_pvr_area
@@ -130,6 +131,12 @@
      &             :: hd_pvr_sections = 'section_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &             :: hd_pvr_flines =  'fieldline_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_pvr_tracers =  'tracer_ctl'
+!
       character(len=kchara), parameter, private                         &
      &             :: hd_quilt_image =  'quilt_image_ctl'
       character(len=kchara), parameter, private                         &
@@ -175,6 +182,8 @@
       call init_lighting_ctl_label(hd_pvr_lighting, pvr%light)
       call init_pvr_sections_ctl(hd_pvr_sections, pvr%pvr_scts_c)
       call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr%pvr_isos_c)
+      call init_pvr_tracerss_ctl(hd_pvr_flines, pvr%pvr_flines_c)
+      call init_pvr_tracerss_ctl(hd_pvr_tracers, pvr%pvr_tracers_c)
       call init_quilt_image_ctl_label(hd_quilt_image, pvr%quilt_c)
       call init_pvr_rotation_ctl_label(hd_snapshot_movie, pvr%movie)
       call init_lic_control_label(hd_lic_control, lic_ctl)
@@ -205,16 +214,21 @@
         end if
 !
         call read_pvr_sections_ctl(id_control, hd_pvr_sections,         &
-     &      pvr%pvr_scts_c, c_buf)
+     &                             pvr%pvr_scts_c, c_buf)
         call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,          &
-     &      pvr%pvr_isos_c, c_buf)
+     &                             pvr%pvr_isos_c, c_buf)
+!
+        call read_pvr_tracers_ctl(id_control, hd_pvr_flines,            &
+     &                            pvr%pvr_flines_c, c_buf)
+        call read_pvr_tracers_ctl(id_control, hd_pvr_tracers,           &
+     &                            pvr%pvr_tracers_c, c_buf)
 !
         call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
-     &      pvr%render_area_c, c_buf)
+     &                                pvr%render_area_c, c_buf)
         call read_quilt_image_ctl(id_control, hd_quilt_image,           &
-     &      pvr%quilt_c, c_buf)
+     &                            pvr%quilt_c, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_snapshot_movie,       &
-     &      pvr%movie, c_buf)
+     &                             pvr%movie, c_buf)
 !
         call s_read_lic_control_data                                    &
      &     (id_control, hd_lic_control, lic_ctl, c_buf)
@@ -326,6 +340,11 @@
       call write_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,           &
      &                            pvr%pvr_isos_c, level)
 !
+      call write_pvr_tracers_ctl(id_control, hd_pvr_flines,             &
+     &                           pvr%pvr_flines_c, level)
+      call write_pvr_tracers_ctl(id_control, hd_pvr_tracers,            &
+     &                           pvr%pvr_tracers_c, level)
+!
       call write_quilt_image_ctl(id_control, hd_quilt_image,            &
      &                           pvr%quilt_c, level)
       call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &
@@ -360,6 +379,8 @@
       call init_lighting_ctl_label(hd_pvr_lighting, pvr%light)
       call init_pvr_sections_ctl(hd_pvr_sections, pvr%pvr_scts_c)
       call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr%pvr_isos_c)
+      call init_pvr_tracerss_ctl(hd_pvr_flines, pvr%pvr_flines_c)
+      call init_pvr_tracerss_ctl(hd_pvr_tracers, pvr%pvr_tracers_c)
       call init_quilt_image_ctl_label(hd_quilt_image, pvr%quilt_c)
       call init_pvr_rotation_ctl_label(hd_snapshot_movie, pvr%movie)
       call init_lic_control_label(hd_lic_control, lic_ctl)

@@ -15,8 +15,8 @@
 #include "set_PSF_patches_to_buf.h"
 
 long sel_map_nodes_to_buf_pthread(long ipatch_in, int nthreads,
-                                  long ist_psf, long ied_psf,
-                                  int i_psf, struct psf_data **psf_s,
+                                  long ist_psf, long ied_psf, int i_psf,
+                                  struct psf_data **psf_s, struct psf_normals **psf_n,
                                   struct gl_strided_buffer *strided_buf);
 long sel_map_patch_to_buf_pthread(long ipatch_in, int nthreads, long ist_psf, long ied_psf,
                                   struct psf_data **psf_s, struct kemo_array_control *psf_a,

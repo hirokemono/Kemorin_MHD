@@ -222,7 +222,7 @@
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
-      integer(kind = kint) :: num, i
+      integer(kind = kint) :: num
 !
 !
 !$omp parallel workshare

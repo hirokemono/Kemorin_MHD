@@ -14,7 +14,16 @@
 #include "kemoviewer_param_c.h"
 #include "m_vertex_buffer.h"
 
+struct initial_cube_buffers{
+    struct gl_strided_buffer *cube_buf;
+    struct gl_index_buffer *cube_index_buf;
+};
+
+
 /* prototypes */
+struct initial_cube_buffers * init_initial_cube_buffers(void);
+void dealloc_initial_cube_buffers(struct initial_cube_buffers *initial_bufs);
+
 void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf);
 int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf);

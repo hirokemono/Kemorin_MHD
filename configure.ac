@@ -69,14 +69,18 @@ AC_ARG_WITH(gtk,
 AC_ARG_WITH(glfw,
 	[  --with-glfw             Use GLFW GUI framework],[USE_glfw='yes'],[USE_glfw='no'])
 
+AC_ARG_WITH(ffmpeg,
+	[  --with-ffmpeg           Use FFMPEG multimedia framework],[USE_ffmpeg='yes'],[USE_ffmpeg='no'])
+
 
 AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
 AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")
 
-AC_MSG_RESULT(with-fftw3...   "${USE_fftw3}")
-AC_MSG_RESULT(enable-libpng..."${USE_libpng}")
-AC_MSG_RESULT(enable-gtk...   "${USE_gtk}")
-AC_MSG_RESULT(enable-glfw...  "${USE_glfw}")
+AC_MSG_RESULT(with-fftw3...  "${USE_fftw3}")
+AC_MSG_RESULT(with-libpng... "${USE_libpng}")
+AC_MSG_RESULT(with-gtk...    "${USE_gtk}")
+AC_MSG_RESULT(with-glfw...   "${USE_glfw}")
+AC_MSG_RESULT(with-ffmpeg... "${USE_ffmpeg}")
 
 AC_MSG_RESULT(with-blas...     "${with_blas}")
 AC_MSG_RESULT(with-zlib...     "${with_zlib}")
@@ -422,7 +426,6 @@ else
 	GLFW_LIBS=""
 fi
 
-
 AC_SUBST(PKGFLAGS_GTK)
 AC_SUBST(GTK3_CFLAGS)
 AC_SUBST(GTK3_LIBS)
@@ -430,6 +433,32 @@ AC_SUBST(GTK3_LIBS)
 AC_SUBST(PKGFLAGS_GLFW)
 AC_SUBST(GLFW_CFLAGS)
 AC_SUBST(GLFW_LIBS)
+
+
+if test -n "${GL_LIBS}"
+then
+# Check FFMPEG
+	if test ${USE_ffmpeg} = "yes"
+	then
+		PKG_CHECK_MODULES([FFMPEG], libavcodec libavformat libswscale, have_ffmpeg=yes, AC_MSG_ERROR(Cannot find avcodec, avformet, or swscale))
+	fi
+	
+	if test ${have_ffmpeg} = "yes"
+	then
+		PKGFLAGS_FFMPEG="libavcodec libavformat libswscale"
+	else
+		PKGFLAGS_FFMPEG=""
+	fi
+else
+	PKGFLAGS_FFMPEG=""
+	FFMPEG_CFLAGS=""
+	FFMPEG_LIBS=""
+fi
+
+AC_SUBST(PKGFLAGS_FFMPEG)
+AC_SUBST(FFMPEG_CFLAGS)
+AC_SUBST(FFMPEG_LIBS)
+
 
 # Check pgplot for Fortran compiler
 LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
@@ -511,6 +540,11 @@ if test -n "${GLFW_LIBS}"; then
         AC_MSG_RESULT(    Use GLFW...           yes)
 else
         AC_MSG_RESULT(    Use GLFW...            no)
+fi
+if test -n "${FFMPEG_LIBS}"; then
+        AC_MSG_RESULT(    Use FFMPEG...         yes)
+else
+        AC_MSG_RESULT(    Use FFMPEG...          no)
 fi
 AC_MSG_RESULT()
 if test -n "${PGPLOT_LIBS}"; then

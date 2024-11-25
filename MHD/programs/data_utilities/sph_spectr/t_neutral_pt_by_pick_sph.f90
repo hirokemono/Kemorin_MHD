@@ -180,6 +180,7 @@
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
       call const_second_fdm_coefs(sph_params, sph_rj, r_2nd)
 !
+!
       write(*,*) 'icomp_temp, icomp_light',                             &
      &           ntl%icomp_temp, ntl%icomp_light
       write(*,*) 'ipick_l0m0', ntl%ipick_l0m0

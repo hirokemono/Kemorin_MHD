@@ -9,20 +9,20 @@
 #include "kemoviewer_gl.h"
 
 /*  OpenGL routines */
-struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void){
+struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) malloc(sizeof(struct kemoviewer_gl_type));
     if(kemo_gl == NULL){
         printf("malloc error for kemoviewer_gl_type\n");
         exit(0);
     };
-    kemo_gl->kemo_shaders = init_kemoview_shaders();
-    kemo_gl->kemo_VAOs = init_kemoview_VAOs();
-
-    if((kemo_gl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids))) == NULL){
-        printf("malloc error for menu_VAO\n");
-        exit(0);
-    };
+    kemo_gl->kemoview_data = kemoviewer;
     
+    kemo_gl->kemo_shaders = init_kemoview_shaders();
+    initialize_gl_shaders(kemo_gl->kemo_shaders);
+
+    kemo_gl->kemo_VAOs = init_kemoview_VAOs();
+    assign_kemoview_VAOs(kemo_gl->kemo_VAOs);
+
     return kemo_gl;
 }
 
@@ -31,15 +31,10 @@ void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl){
     clear_kemoview_VAOs(kemo_gl->kemo_VAOs);
     dealloc_kemoview_VAOs(kemo_gl->kemo_VAOs);
     dealloc_kemoview_shaders(kemo_gl->kemo_shaders);
+//    kemo_gl->kemoview_data = NULL;
+    free(kemo_gl);
     return;
 }
-
-void kemoview_gl_init_lighting(struct kemoviewer_gl_type *kemo_gl){
-    kemo_gl_initial_lighting_c(kemo_gl->kemo_shaders);
-    assign_kemoview_VAOs(kemo_gl->kemo_VAOs);
-    return;
-}
-
 
 void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer){
     set_gl_bg_color(kemoviewer->kemo_mesh->bg_color);
@@ -54,20 +49,50 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
-                          struct kemoviewer_gl_type *kemo_gl){
-    update_draw_objects_gl3(kemo_sgl, kemo_gl);
+void kemoview_gl_full_draw(struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW,
+                              kemo_gl->kemoview_data);
+    select_modify_anaglyph(kemo_gl->kemoview_data,
+                           kemo_gl->kemo_VAOs,
+                           kemo_gl->kemo_shaders);
+    return;
 };
 
-void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
-                              struct kemoviewer_gl_type *kemo_gl){
-    struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
-    draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl, anaglyph_image);
-
+void kemoview_gl_fast_draw(struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW,
+                              kemo_gl->kemoview_data);
+    kemoview_mono_viewmatrix(kemo_gl->kemoview_data);
+    kemoview_fast_buffers(kemo_gl->kemoview_data);
     glDrawBuffer(GL_BACK);
-    move_draw_anaglyph_gl3(kemo_sgl, kemo_gl, anaglyph_image);
-    dealloc_kemoview_gl_texure(anaglyph_image);
+    update_draw_objects_gl3(kemo_gl->kemoview_data,
+                            kemo_gl->kemo_VAOs,
+                            kemo_gl->kemo_shaders);
+    return;
 };
+
+void kemoview_gl_quilt_draw(int istep_qult, struct kemoviewer_gl_type * kemo_gl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_set_view_integer(ISET_DRAW_MODE, QUILT_DRAW,
+                              kemo_gl->kemoview_data);
+    kemoview_step_viewmatrix(istep_qult, kemo_gl->kemoview_data);
+    glDrawBuffer(GL_BACK);
+    update_draw_objects_gl3(kemo_gl->kemoview_data,
+                            kemo_gl->kemo_VAOs,
+                            kemo_gl->kemo_shaders);
+    return;
+};
+
+void kemoview_modify_anaglyph(struct kemoviewer_gl_type *kemo_gl){
+    select_modify_anaglyph(kemo_gl->kemoview_data,
+                           kemo_gl->kemo_VAOs,
+                           kemo_gl->kemo_shaders);
+};
+
 
 
 unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
@@ -112,27 +137,35 @@ void kemoview_add_ext_to_file_name(struct kv_string *file_prefix,
 }
 
 
-int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+
+int kemoview_get_PSF_file_prefix(struct kemoviewer_gl_type *kemo_gl,
                                  struct kv_string *stripped_filehead){
     struct kv_string* stripped_dir = alloc_kvstring();
-    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    int istep = send_each_psf_file_dir_head(kemoviewer->kemo_psf->psf_m[i_psf],
-                                            stripped_dir, stripped_filehead);
+    int istep = send_psf_file_dir_prefix(kemo_gl->kemoview_data->kemo_mul_psf,
+                                         stripped_dir, stripped_filehead);
     dealloc_kvstring(stripped_dir);
     return istep;
 }
 
 void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                      struct kemoviewer_gl_type *kemo_gl){
-    release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->ipsf_texured,
-                                kemo_gl->kemo_shaders);
+    int iflag = kemo_gl->kemoview_data->kemo_mul_psf->psf_a->ipsf_texured;
+    release_PSF_texture_from_gl(iflag, kemo_gl->kemo_shaders);
     return;
 };
 
-void * kemoview_link_active_colormap_param(int i_current, int icomp,
-                                           struct kemoviewer_type *kemoviewer){
-    void *current_cmap = kemoviewer->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
-    return current_cmap;
+void * kemoview_link_active_colormap_param(int id_model,
+                                           struct kemoviewer_gl_type *kemo_gl){
+    struct colormap_params * cmap_params;
+    if(id_model == FIELDLINE_RENDERING){
+        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_fline->fline_m);
+    }else if(id_model == TRACER_RENDERING){
+        cmap_params =  link_active_colormap_param(kemo_gl->kemoview_data->kemo_tracer->tracer_m);
+    }else{
+        int i_current = get_curent_PSF_ID(kemo_gl->kemoview_data->kemo_mul_psf->psf_a);
+        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_mul_psf->psf_m[i_current]);
+    }
+    return (void *) cmap_params;
 }
 
 
@@ -152,13 +185,12 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
     write_gl_window_step_file(iflag_img, istep, image_prefix->string,
                               npix_x, npix_y, image);
 }
-
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
                                  struct kemoviewer_type *kemo_sgl,
                                  struct kemoviewer_gl_type *kemo_gl){
-    set_texture_to_psf(img_fmt, image_prefix->string,
-                       kemo_sgl->kemo_psf->psf_a->psf_texure,
-                       &kemo_gl->kemo_shaders->texture_name);
+    int iflag = set_texture_to_psf(img_fmt, image_prefix->string,
+                                   kemo_gl->kemoview_data->kemo_mul_psf->psf_a->psf_texure);
+    if(iflag > 0){glGenTextures(1 , &kemo_gl->kemo_shaders->texture_name);};
 };
 #endif
 

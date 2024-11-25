@@ -14,17 +14,13 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 
 #include "kemoview_gtk_routines.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 
 
@@ -83,14 +79,14 @@ struct view_widgets{
 
 /*  prototypes */
 
-void update_windowsize_menu(struct kemoviewer_type *kemo_sgl,
+void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct view_widgets *view_menu,
                             GtkWidget *window);
 void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,
                           struct view_widgets *view_menu,
                           GtkWidget *window);
 
-GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                           struct view_widgets *view_menu,
                                           GtkWidget *window);
 #endif

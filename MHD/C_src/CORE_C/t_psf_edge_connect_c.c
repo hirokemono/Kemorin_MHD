@@ -252,6 +252,8 @@ struct psf_edge_data_c * init_psf_edge_data_c(void){
 	return psf_edge;
 };
 
+FILE *fp;
+
 struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nele_viz,
 											 const int nnod_4_ele_viz, long **ie_viz,
 											 double *xyzw_viz, double *norm_nod){
@@ -283,22 +285,23 @@ struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nel
 	set_edge_position_4_sf_c(xyzw_viz, psf_edge, psf_edge_xyz);
 	set_edge_direction_4_sf_c(xyzw_viz, psf_edge, psf_edge_xyz);
 	set_edge_normal_4_sf_c(norm_nod, psf_edge, psf_edge_xyz);
-*/
-/*
-    printf("nnod nele %ld %ld \n", nnod_viz, nele_viz);
+
+    fp = fopen("Users/matsui/Desktop/edge.txt", "w");
+    fprintf(fp,"nnod nele %ld %ld \n", nnod_viz, nele_viz);
     long i;
     for(i=0;i<nele_viz;i++){
-		printf("patch %ld, %ld %ld %ld\n", i, ie_viz[i][0], ie_viz[i][1], ie_viz[i][2]);
+        fprintf(fp,"patch %ld, %ld %ld %ld\n", i, ie_viz[i][0], ie_viz[i][1], ie_viz[i][2]);
     }
     for(i=0;i<psf_edge->nedge_viewer;i++){
-        printf("edge %ld, %ld %ld\n", i, psf_edge->ie_edge[i][0], psf_edge->ie_edge[i][1]);
+        fprintf(fp,"edge %ld, %ld %ld\n", i, psf_edge->ie_edge[i][0], psf_edge->ie_edge[i][1]);
     };
     for(i=0;i<nele_viz;i++){
-        printf("iedge_4_sf %ld, %ld %ld %ld\n", i, 
+        fprintf(fp,"iedge_4_sf %ld, %ld %ld %ld\n", i,
                psf_edge->iedge_4_sf[i][0], psf_edge->iedge_4_sf[i][1], psf_edge->iedge_4_sf[i][2]);
     };
-*/
-    
+    fclose(fp);
+ */
+ 
     dealloc_sum_hash(ed_sf_tbl);
 
     return psf_edge;

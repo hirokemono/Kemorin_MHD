@@ -24,7 +24,7 @@ int_vol_poisson_mat.o: $(MHD_SOLVER_DIR)/int_vol_poisson_mat.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_poisson_matrix.o: $(MHD_SOLVER_DIR)/int_vol_poisson_matrix.f90 m_precision.o m_phys_constants.o t_physical_property.o t_FEM_control_parameter.o t_SGS_control_parameter.o t_mesh_data.o t_geometry_data.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_filter_elength.o t_finite_element_mat.o t_material_property.o t_FEM_SGS_model_coefs.o t_solver_djds.o int_vol_poisson_mat.o int_vol_poisson_sgs_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-precond_djds_MHD.o: $(MHD_SOLVER_DIR)/precond_djds_MHD.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_solver_djds_MHD.o t_FEM_control_parameter.o solver_MGCG_MHD.o t_solver_djds.o solver_DJDS11_struct.o solver_DJDS33_struct.o
+precond_djds_MHD.o: $(MHD_SOLVER_DIR)/precond_djds_MHD.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o calypso_mpi.o t_physical_property.o t_solver_djds_MHD.o t_FEM_control_parameter.o solver_MGCG_MHD.o t_solver_djds.o solver_DJDS11_struct.o solver_DJDS33_struct.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_MHD_idx_4_mat_type.o: $(MHD_SOLVER_DIR)/set_MHD_idx_4_mat_type.f90 m_precision.o m_geometry_constants.o t_physical_property.o t_mesh_data.o t_geometry_data.o t_geometry_data_MHD.o t_table_FEM_const.o t_solver_djds.o set_idx_4_mat_type.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -100,6 +100,7 @@ depends:
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
+		FFMPEG_CFLAGS='$(FFMPEG_CFLAGS)' \
 		depends; \
 		) \
 	done

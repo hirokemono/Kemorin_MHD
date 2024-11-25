@@ -144,7 +144,8 @@ long set_sph_long_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
 
 long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, long num_grid,
                                    int ncorner, double tube_radius, double radius,
-                                   struct gl_strided_buffer *strided_buf){
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_index_buffer *index_buf){
     long i, j;
     
     double xyzw_line[8];
@@ -160,16 +161,17 @@ long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, l
         i = iedge % num_grid;
         set_meridional_frame(i, radius, theta_p_grid, phi_p_grid[j],
                              xyzw_line, dir_line, norm_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius,
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
     }
     return inum;
 }
 
 long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, long num_grid,
                                     int ncorner, double tube_radius, double radius,
-                                    struct gl_strided_buffer *strided_buf){
+                                    struct gl_strided_buffer *strided_buf,
+                                    struct gl_index_buffer *index_buf){
     long i, j;
     
     double xyzw_line[8];
@@ -185,9 +187,9 @@ long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, 
         i = iedge % num_grid;
         set_longitude_frame(i, radius, theta_t_grid[j], phi_t_grid,
                             xyzw_line, dir_line, norm_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius,
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
     }
     return inum;
 }
@@ -271,7 +273,8 @@ long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
 
 long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                    long num_grid, int ncorner, double tube_radius,
-                                   struct gl_strided_buffer *strided_buf){
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_index_buffer *index_buf){
     long i, j;
 	double rtp_flame[6];
     
@@ -293,16 +296,17 @@ long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
 		rtp_flame[1] = theta_p_grid[i];
 		rtp_flame[4] = theta_p_grid[i+1];
         set_map_frame_edge(0.5, rtp_flame, xyzw_line, dir_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius,
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
 	}
 	return inum;
 }
 
 long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                     long num_grid, int ncorner, double tube_radius,
-                                    struct gl_strided_buffer *strided_buf){
+                                    struct gl_strided_buffer *strided_buf,
+                                    struct gl_index_buffer *index_buf){
     long i, j;
     double rtp_flame[6];
     
@@ -324,9 +328,9 @@ long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
         rtp_flame[2] = phi_t_grid[i];
         rtp_flame[5] = phi_t_grid[i+1];
         set_map_frame_edge(0.5, rtp_flame, xyzw_line, dir_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius,
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
     }
     return inum;
 }
@@ -378,7 +382,8 @@ long set_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
 
 long set_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                             int ncorner, double tube_radius, double radius,
-                            struct gl_strided_buffer *strided_buf){
+                            struct gl_strided_buffer *strided_buf,
+                            struct gl_index_buffer *index_buf){
     double xyzw_line[8];
     double dir_line[8], norm_line[8];
     double color_line[8];
@@ -389,9 +394,9 @@ long set_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
     long inum = ist_buf;
 	for(long iedge=ist_edge; iedge<ied_edge;iedge++) {
         set_coastline_edge(iedge, radius, xyzw_line, dir_line, norm_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius, 
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
 	};
 	return inum;
 }
@@ -441,7 +446,8 @@ long set_map_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
 
 long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                                 int ncorner, double tube_radius,
-                                struct gl_strided_buffer *strided_buf){
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_index_buffer *index_buf){
     double xyzw_line[8] = {0.0, 0.0, 0.002, 1.0, 0.0, 0.0, 0.002, 1.0};
     double dir_line[8] =  {0.0, 0.0, 0.0,   1.0, 0.0, 0.0, 0.0,   1.0};
     double color_line[8];
@@ -452,9 +458,9 @@ long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
     long inum = ist_buf;
 	for(long iedge=ist_edge; iedge<ied_edge; iedge++) {
         set_map_coastline_edge(iedge, xyzw_line, dir_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius, 
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
  };
 	return inum;
 }
@@ -497,7 +503,8 @@ long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge
 long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                       long num_grid, int ncorner, double tube_radius,
                                       double radius, double r_ICB,
-                                      struct gl_strided_buffer *strided_buf){
+                                      struct gl_strided_buffer *strided_buf,
+                                      struct gl_index_buffer *index_buf){
     long i, j;
     double rtp_flame[6];
     
@@ -523,9 +530,9 @@ long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge
         rtp_flame[2] = phi_t_grid[i];
         rtp_flame[5] = phi_t_grid[i+1];
         set_map_frame_edge(1.0, rtp_flame, xyzw_line, dir_line);
-        inum = set_tube_strided_buffer(inum, ncorner, tube_radius,
-                                       xyzw_line, dir_line, color_line,
-                                       strided_buf);
+        inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
+                                          xyzw_line, dir_line, color_line,
+                                          strided_buf, index_buf);
     }
     return inum;
 }

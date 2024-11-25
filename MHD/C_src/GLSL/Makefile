@@ -19,6 +19,15 @@ CURRENTDIR = $(shell pwd)
 SRC_MAKE_SHADER = $(MAKE_C_SHADER).f90
 SRC_SHADERS = $(shell ls *.vert *.frag)
 
+GLUT_INCLUDES= \
+  $$(C_INCLUDE)   \
+  $$(GTK3_CFLAGS) \
+  $$(GLFW_CFLAGS)
+
+#ifdef FFMPEG_CFLAGS
+  GLUT_INCLUDES+=  $$(FFMPEG_CFLAGS)
+#endif
+
 #
 #  -------------------------------------------------------------------------
 #

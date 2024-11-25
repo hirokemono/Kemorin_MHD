@@ -9,12 +9,6 @@
 
 #include "set_mesh_patch_2_gl_buf.h"
 
-const int ntri_ico = 20;
-
-long num_icosahedron_patch(void){
-    return ntri_ico;
-}
-
 static long count_each_grp_node_ico_to_buf(int iflag_domain, int *istack_grp){
     if(iflag_domain == 0) return 0;
     long num_patch = istack_grp[1] - istack_grp[0];
@@ -36,15 +30,16 @@ long set_each_group_node_ico_to_buf(const long ist_tri,
                                     long ist_grp, long ied_grp, int *item_grp,
                                     struct viewer_mesh *mesh_s, double node_diam,
                                     double f_color[4], 
-                                    struct gl_strided_buffer *mesh_buf){
+                                    struct gl_strided_buffer *mesh_buf,
+                                    struct gl_index_buffer *index_buf){
     long inod, inum;
     
     long inum_tri = ist_tri;
     for(inum = ist_grp; inum < ied_grp; inum++){
         inod = item_grp[inum]-1;
-        inum_tri = set_icosahedron_strided_buffer(inum_tri, node_diam,
-                                                  &mesh_s->xyzw_draw[4*inod  ],
-                                                  f_color, mesh_buf);
+        inum_tri = set_icosahedron_single_color_buffer(inum_tri, node_diam,
+                                                       &mesh_s->xyzw_draw[4*inod  ],
+                                                       f_color, mesh_buf, index_buf);
     };
     return inum_tri;
 }

@@ -14,11 +14,13 @@
 !!     &                        :: pvr_ctl_type(num_lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
-!!      subroutine s_set_lic_controls(group, nod_fld, fname_lic_ctl,    &
-!!     &          pvr_ctl_type, lic_ctl_type, lic_param, rep_ref, pvr,  &
-!!     &          flag_each_repart)
+!!      subroutine s_set_lic_controls(group, nod_fld, tracer, fline,    &
+!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, lic_param, &
+!!     &          rep_ref, pvr, flag_each_repart)
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(pvr_parameter_ctl),intent(in):: pvr_ctl_type(pvr%num_pvr)
 !!        type(lic_parameter_ctl),intent(in):: lic_ctl_type(pvr%num_pvr)
@@ -84,13 +86,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_lic_controls(group, nod_fld, fname_lic_ctl,      &
-     &          pvr_ctl_type, lic_ctl_type, lic_param, rep_ref, pvr,    &
-     &          flag_each_repart)
+      subroutine s_set_lic_controls(group, nod_fld, tracer, fline,      &
+     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, lic_param,   &
+     &          rep_ref, pvr, flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
       use t_group_data
+      use t_particle_trace
+      use t_fieldline
       use t_lic_repart_reference
       use t_volume_rendering
       use set_control_each_pvr
@@ -103,6 +107,8 @@
 !
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(volume_rendering_module), intent(inout) :: pvr
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(pvr%num_pvr)
@@ -137,8 +143,8 @@
      &     (group%surf_grp, pvr%pvr_param(i_lic)%draw_param)
       end do
 !
-      call set_from_lic_control(group, nod_fld, pvr%num_pvr,            &
-     &    pvr_ctl_type, lic_ctl_type, pvr%PVR_sort,                     &
+      call set_from_lic_control(group, nod_fld, tracer, fline,          &
+     &    pvr%num_pvr,  pvr_ctl_type, lic_ctl_type, pvr%PVR_sort,       &
      &    lic_param, pvr%pvr_param, rep_ref, flag_each_repart)
 !
 !   Set image output PE
@@ -155,13 +161,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_from_lic_control(group, nod_fld, num_lic,          &
-     &          pvr_ctl_type, lic_ctl_type, PVR_sort,                   &
+      subroutine set_from_lic_control(group, nod_fld, tracer, fline,    &
+     &          num_lic, pvr_ctl_type, lic_ctl_type, PVR_sort,          &
      &          lic_param, pvr_param, rep_ref, flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
       use t_group_data
+      use t_particle_trace
+      use t_fieldline
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_sections
@@ -178,6 +186,8 @@
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
       type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
@@ -206,8 +216,8 @@
      &      flag_each_repart)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
-        call set_control_pvr                                            &
-     &     (pvr_ctl_type(i_ctl), group%ele_grp, group%surf_grp,         &
+        call set_control_pvr(pvr_ctl_type(i_ctl),                       &
+     &      group%ele_grp, group%surf_grp, tracer, fline,               &
      &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%draw_param,     &
      &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
         pvr_param(i_lic)%colorbar%iflag_opacity = 0

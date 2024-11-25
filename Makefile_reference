@@ -69,15 +69,19 @@ BLAS_LIBS = -framework veclib
 #
 #   libpng and zlib settings
 #
+PKGFLAGS_ZLIB = 
 ZLIB_CFLAGS = -I/Users/matsui/local/include
 ZLIB_LIBS =   -L/Users/matsui/local/lib -lz
+PKGFLAGS_PNG =  png
 PNG_CFLAGS =  -I/Users/matsui/local/include
 PNG_LIBS =    -L/Users/matsui/local/lib -lpng 
 #
 #    FFTW3 settings
 #
-FFTW3_CFLAGS= 
-FFTW3_LIBS=   -L/usre/local/lib -Lfftw
+PKGFLAGS_FFTW3=   fftw3
+FFTW3_CFLAGS=     -I/opt/homebrew/Cellar/fftw/3.3.10_1/include
+FFTW3_LIBS=       -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3
+FFTW3_OMP_LIBS=   -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3_omp
 #
 #
 #    HDF5 fortran wrapper settings
@@ -93,6 +97,7 @@ X_LIBS= -L/usr/X11/lib -lX11
 #
 #   OpenGL settings (Requirement: OpenGL, libpng)
 #
+PKGFLAGS_GL= 
 OPENGL_INC = -I/usr/X11/include
 OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
 #
@@ -101,11 +106,22 @@ OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
 PGPLOT_LIBS= -L/usr/local/pgplot/lib -lpgplot -L/usr/X11/lib -lX11 -L/opt/local/lib -laquaterm -Wl,-framework -Wl,Foundation
 #
 #   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+PKGFLAGS_GTK= gtk+-3.0
 GTK3_CFLAGS= `pkg-config --cflags gtk+-2.0`
 GTK3_LIBS=   `pkg-config --libs gtk+-2.0`
 #
-#   GLUI settings (Requirement: OpenGL, GLUT, libpng)
-#     It Turns on if C++ compiler is defined
+#
+#   GLFW settings (Requirement: OpenGL, libpng)
+#
+PKGFLAGS_GLFW= glfw-3
+GLFW_CFLAGS=   -I/opt/homebrew/Cellar/glfw/3.3.8/include
+GLFW_LIBS=     -L/opt/homebrew/Cellar/glfw/3.3.8/lib -lglfw
+#
+#
+#   FFMPEG settings
+PKGFLAGS_FFMPEG= "libavcodec libavformat libswscale"
+GLFW_CFLAGS=      -I/opt/homebrew/Cellar/ffmpeg/7.0_1/include
+GLFW_LIBS=        -L/opt/homebrew/Cellar/ffmpeg/7.0_1/lib -lavcodec -lavformat -lswscale
 #
 #  --- Please do not chenge the following ---
 #
@@ -154,6 +170,8 @@ depends: $(MAKE_MOD_DEP)
 		GTK3_LIBS="$(GTK3_LIBS)" \
 		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
 		GLFW_LIBS="$(GLFW_LIBS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+		FFMPEG_LIBS="$(FFMPEG_LIBS)" \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \
@@ -211,6 +229,8 @@ makemake: mpif.h
 		GTK3_LIBS="$(GTK3_LIBS)" \
 		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
 		GLFW_LIBS="$(GLFW_LIBS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+		FFMPEG_LIBS="$(FFMPEG_LIBS)" \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \
@@ -268,6 +288,8 @@ makemake64: $(MAKE_MOD_DEP)
 		GTK3_LIBS="$(GTK3_LIBS)" \
 		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
 		GLFW_LIBS="$(GLFW_LIBS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+		FFMPEG_LIBS="$(FFMPEG_LIBS)" \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \

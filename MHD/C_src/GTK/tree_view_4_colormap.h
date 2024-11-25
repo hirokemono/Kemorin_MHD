@@ -23,6 +23,8 @@
 #include "kemoview_gtk_routines.h"
 
 struct colormap_view{
+    int iflag_current_model;
+    
     struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;

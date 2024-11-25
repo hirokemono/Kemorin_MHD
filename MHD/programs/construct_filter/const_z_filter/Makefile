@@ -29,6 +29,8 @@ m_int_edge_data.o
 MOD_Z_FILTER_PLUG = \
 main_gen_z_filter.o \
 analyzer_gen_z_filter.o \
+cal_delta_z_4_z_filter.o \
+solve_by_mass_z.o \
 \
 m_int_commtative_filter.o \
 m_z_filter_values.o \

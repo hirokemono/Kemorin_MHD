@@ -449,9 +449,6 @@ GtkWidget * add_real3_list_frame(GtkTreeView *r3_tree_view, struct real3_clist *
                                  GtkWidget *button_add, GtkWidget *button_delete){
     GtkWidget *Frame_1;
     
-    GtkWidget *hbox_1, *vbox_1;
-    
-    GtkWidget *label;
     GtkWidget *scrolled_window;
     
     GtkTreeSelection *selection;
@@ -463,25 +460,31 @@ GtkWidget * add_real3_list_frame(GtkTreeView *r3_tree_view, struct real3_clist *
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
     gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_1), button_delete, FALSE, FALSE, 0);
     
-    label = gtk_label_new("");
+    GtkWidget *label = gtk_label_new("");
     gtk_box_pack_end(GTK_BOX(hbox_1), label, TRUE, TRUE, 0);
     
-    vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, FALSE, FALSE, 0);
     
-    /* Delete data bottun */
-    
+    /* Table */
+    GtkWidget *label_2 = gtk_label_new("  ");
+
+    GtkWidget *hbox_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_2), GTK_WIDGET(r3_tree_view), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_2), label_2, FALSE, FALSE, 0);
+
+
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 240, 160);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r3_tree_view));
+    gtk_widget_set_size_request(scrolled_window, 160, 160);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), hbox_2);
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
     selection = gtk_tree_view_get_selection(r3_tree_view);

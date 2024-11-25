@@ -67,14 +67,16 @@ GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_FLINE_ct
     GtkWidget *hbox_6 = add_c_list_box_w_addbottun(f_fline_item->f_fline_area_grp_ctl, 
                                                    fline_vws->fline_area_grp_view);
     
-    GtkWidget *hbox_7 = draw_chara_item_entry_hbox(f_fline_item->f_starting_type_ctl);
-    GtkWidget *hbox_8 = draw_chara_item_entry_hbox(f_fline_item->f_selection_type_ctl);
-    GtkWidget *hbox_9 = draw_chara_item_entry_hbox(f_fline_item->f_line_direction_ctl);
+    GtkWidget *hbox_16 = draw_chara_item_entry_hbox(f_fline_item->c_VIZ_FLINE_comm_mode_ctl);
+    GtkWidget *hbox_7 =  draw_chara_item_entry_hbox(f_fline_item->f_starting_type_ctl);
+    GtkWidget *hbox_8 =  draw_chara_item_entry_hbox(f_fline_item->f_selection_type_ctl);
+    GtkWidget *hbox_9 =  draw_chara_item_entry_hbox(f_fline_item->f_line_direction_ctl);
     
     GtkWidget *hbox_10 = draw_chara_item_entry_hbox(f_fline_item->f_start_surf_grp_ctl);
     
     GtkWidget *hbox_11 = draw_int_item_entry_hbox(f_fline_item->f_num_fieldline_ctl);
     GtkWidget *hbox_12 = draw_int_item_entry_hbox(f_fline_item->f_max_line_stepping_ctl);
+    GtkWidget *hbox_15 = draw_int_item_entry_hbox(f_fline_item->f_max_trace_length_ctl);
     GtkWidget *hbox_13 = r3_list_combobox_expander(f_fline_item->f_seed_point_ctl,
                                                    fline_vws->f_seed_point_vws, window);
     
@@ -88,12 +90,14 @@ GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_FLINE_ct
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_5,  FALSE, FALSE, 0);
     
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_16, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_7,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_8,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_9,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_10, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_11, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_15, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_13, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_14, FALSE, FALSE, 0);
     

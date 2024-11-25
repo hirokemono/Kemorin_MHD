@@ -15,66 +15,29 @@
 #include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 
-struct fline_data{
-    long nedge_fline;
-    long nnod_4_edge_fline;
-    long **iedge_fline;
-
-    
-    double *xyzw_edge_fline;
+struct fline_directions{
+    double *dir_nod;
     double *dir_edge;
     double *length_edge;
-    double length_total;
-    
-    long nnod_fline;
-    long *inod_fline;
-    double *xyzw_fline;
-
-    long nfield;
-    long *ncomp;
-    long *istack_comp;
-    int *id_coord;
-    char **data_name;
-    
-    long ncomptot;
-    double *d_nod;
-    
-    double *d_amp;
-    double *color_nod;
-    
-    double *dir_nod;
-    
-    double *d_min;
-    double *d_max;
-    double *d_ave;
-    double *d_rms;
-    
-    double *amp_min;
-    double *amp_max;
-    
-    double center_psf[3];
-    double xmin_psf[3];
-    double xmax_psf[3];
-    double rmax_psf;
+    double total_length;
 };
+
 
 /* prototypes */
 
-struct fline_data * init_fline_data(void);
+void deallc_all_points_data(struct psf_data *points_d);
 
-void alloc_fline_node_s(long nnod, struct fline_data *fline_d);
 
-void alloc_fline_ele_s(long n_ele, long nnod_4_ele,
-                       struct fline_data *fline_d);
+void alloc_points_color_data(struct psf_data *points_d);
+void deallc_all_points_data(struct psf_data *points_d);
 
-void alloc_fline_field_name_c(long nfield, struct fline_data *fline_d);
-void alloc_fline_field_data_c(struct fline_data *fline_d);
 
-void alloc_fline_data(struct fline_data *fline_d);
-void alloc_fline_work_data(struct fline_data *fline_d);
-void alloc_fline_ave_data(struct fline_data *fline_d);
-
-void dealloc_fline_work_data(struct fline_data *fline_d);
-void deallc_all_fline_data(struct fline_data *fline_d);
+struct fline_directions * init_fline_directions(void);
+void alloc_fline_direction_data(struct psf_data *fline_d,
+                                struct fline_directions *fline_dir);
+void alloc_fline_work_data(struct psf_data *fline_d,
+                           struct fline_directions *fline_dir);
+void dealloc_fline_direction_data(struct fline_directions *fline_dir);
+void dealloc_fline_work_data(struct fline_directions *fline_dir);
 
 #endif  /* M_FLINE_DATA_4_VIEWER_C_ */

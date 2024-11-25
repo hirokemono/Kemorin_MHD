@@ -61,8 +61,8 @@
 !
       call clear_model_coefs_2_ele(ele, Csim_SGS_mf)
 !
-      if(fl_prop%iflag_4_gravity                                        &
-     &     .and. fl_prop%iflag_4_composit_buo) then
+      if(fl_prop%flag_thermal_buoyancy                                  &
+     &     .and. fl_prop%flag_comp_buoyancy) then
         if(SGS_param%SGS_momentum%itype_Csym_flux                       &
      &      .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_dbuo_ele(n_sym_tensor, ele%numele, &
@@ -81,7 +81,7 @@
      &        wk_sgs%fld_clip(1,Csim_SGS_mf%iak_Csim),                  &
      &        Csim_SGS_mf%coef(1,1))
         end if
-      else if(fl_prop%iflag_4_gravity) then
+      else if(fl_prop%flag_thermal_buoyancy) then
         if(SGS_param%SGS_momentum%itype_Csym_flux                       &
      &      .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele(n_sym_tensor, ele%numele,  &
@@ -98,7 +98,7 @@
      &        wk_sgs%fld_clip(1,Csim_SGS_mf%iak_Csim),                  &
      &        Csim_SGS_mf%coef(1,1))
         end if
-      else if(fl_prop%iflag_4_composit_buo) then
+      else if(fl_prop%flag_comp_buoyancy) then
         if(SGS_param%SGS_momentum%itype_Csym_flux                       &
      &      .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele(n_sym_tensor, ele%numele,  &

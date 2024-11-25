@@ -9,12 +9,14 @@
 
 #import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoviewerController.h"
 #import "KemoViewerObject.h"
 #include "Kemoviewer.h"
 
 
 @interface OpacityMapController : NSObject {
     IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger  NumOpacityTable;
@@ -24,16 +26,10 @@
 	
 	IBOutlet id _OpacityTableView;
     IBOutlet fillRectView* _fillRectView;
-	
-	CGFloat DataMaximum;
-	CGFloat DataMinimum;
 }
 @property (assign) NSMutableArray * OpacityTableField;
 @property (assign) NSMutableArray * OpacityTableOpacity;
 @property (assign) NSTableView * idOpacityTableView;
-@property CGFloat DataMaximum;
-@property CGFloat DataMinimum;
-
 
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
@@ -42,7 +38,6 @@
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 
-- (void)InitOpacityTables:(struct kemoviewer_type *) kemo_sgl;
 - (void) SetOpacityTables:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateOpacityTables:(id)pID;
 

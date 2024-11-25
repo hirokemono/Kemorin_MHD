@@ -11,46 +11,42 @@
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 #import "KemoViewerObject.h"
+#import "ElasticMenuWindow.h"
+#import "PsfController.h"
+#import "RGBAMapController.h"
 
 #include "Kemoviewer.h"
 
 @interface FlineController : NSObject {
 
     IBOutlet NSWindow*  window;
-    IBOutlet KemoViewerMetalView * _metalView;
-	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet KemoViewerMetalView   * _metalView;
+	IBOutlet KemoviewerController  * _kemoviewControl;
+    IBOutlet PsfController         * _psfController;
+    IBOutlet RGBAMapController * _rgbaMapObject;
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
+    
     IBOutlet KemoViewerObject *_kmv;
 
+    IBOutlet NSPathControl *_flinePathControl;
+    NSInteger currentFlineStep;
+
+    IBOutlet NSColorWell *_flineColorWell;
+
+    
 	NSInteger DrawFlineFlag;
-	NSString *FlineOpenDirectory;
-	NSString *FlineOpenFilehead;
-	NSString *FlineOpenFileext;
-	NSString *FlineOpenFileheadExStep;
 	
 	NSString *FlineWindowlabel;
 	
-	NSInteger FlineNumberOfField;
-	NSInteger FlineTotalComponent;
-	NSMutableArray *FlineNumberOfComponent;
-	NSMutableArray *FlineFieldName;
-	NSMutableArray *FlineMinimum;
-	NSMutableArray *FlineMaximum;
-	
-	NSNumber *FieldlineFlag;
-	NSNumber *FlineDrawFieldId;
-	NSNumber *FlineDrawComponentId;
 	NSNumber *FieldlineColor;
 
 	IBOutlet NSMatrix *_flinetype_matrix;
 	NSInteger Flinetype;
 
-	
-	NSNumber *FlineMinimumRange;
-	NSNumber *FlineMaximumRange;
-	
-	IBOutlet id _FlineFieldMenu;
-	IBOutlet id _FlineComponentMenu;
-	
+	IBOutlet NSPopUpButton * _FlineFieldMenu;
+	IBOutlet NSPopUpButton * _FlineComponentMenu;
+    IBOutlet NSTabView     * _controlTabView;
+
 	CGFloat FlineDisplayMinimum;
 	CGFloat FlineDisplayMaximum;
 	CGFloat FlineDisplayMinDigit;
@@ -64,10 +60,13 @@
 	CGFloat FlineThickDigit;
 
 	IBOutlet id FieldlineColorItem;
+    
+    NSInteger FlineColorbarSwitch;
 }
 
 @property(retain) NSString* FlineWindowlabel;
 
+@property NSInteger currentFlineStep;
 @property NSInteger DrawFlineFlag;
 @property CGFloat FlineDisplayMinimum;
 @property CGFloat FlineDisplayMaximum;
@@ -81,22 +80,20 @@
 @property CGFloat FlineThickFactor;
 @property CGFloat FlineThickDigit;
 
+@property NSInteger FlineColorbarSwitch;
+
+
 - (id)init;
 - (id)dealloc;
 -(void) awakeFromNib;
 
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
                   kemoview:(struct kemoviewer_type *) kemo_sgl;
-- (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 
 - (IBAction) CloseFlineFile:(id)pId;
 - (IBAction) FlineFieldAction:(id)sender;
 - (IBAction) FlineComponentAction:(id)sender;
-
-- (void) SetFlineFieldMenu;
-- (void) SetFlineComponentMenu:(NSInteger)isel
-                      kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 
@@ -104,4 +101,6 @@
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 
+- (int) FlineColorbarSwitchStatus;
+- (void) setFlineColorbarSwitchStatus:(int) isel;
 @end

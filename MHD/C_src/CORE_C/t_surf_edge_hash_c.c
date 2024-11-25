@@ -101,23 +101,24 @@ void set_edge_hash_4_triangle(const int nedge_4_surf, const long numsurf,
 		};
 	};
 	
-	/* ! Set stacks */
-	for(ihash=0;ihash<=h_tbl->ntot_id;ihash++){h_tbl->istack_hash[ihash] = 0;};
-	for(ihash=1;ihash<=h_tbl->ntot_id;ihash++){
-		h_tbl->istack_hash[ihash] = h_tbl->istack_hash[ihash-1] + num_edge_hash[ihash];
-		if(h_tbl->istack_hash[ihash] <= (nedge_4_surf*numsurf)){
-			h_tbl->iend_hash = ihash+1;
+/* ! Set stacks */
+    h_tbl->istack_hash[0] = 0;
+	for(ihash=0;ihash<h_tbl->ntot_id;ihash++){h_tbl->istack_hash[ihash+1] = 0;};
+	for(ihash=0;ihash<h_tbl->ntot_id;ihash++){
+		h_tbl->istack_hash[ihash+1] = h_tbl->istack_hash[ihash] + num_edge_hash[ihash];
+		if(h_tbl->istack_hash[ihash+1] <= (nedge_4_surf*numsurf)){
+			h_tbl->iend_hash = ihash;
 		};
 	};
 /* ! Set ID */
-	for(ihash=0;ihash<=h_tbl->ntot_id;ihash++){num_edge_hash[ihash] = 0;};
+	for(ihash=0;ihash<h_tbl->ntot_id;ihash++){num_edge_hash[ihash] = 0;};
 	for(isurf=0;isurf<numsurf;isurf++){
 		for(k1=0;k1<nedge_4_surf;k1++){
 			is1 = h_tbl->node_on_edge_tri[k1][0];
 			is2 = h_tbl->node_on_edge_tri[k1][1];
 			ihash = ie_viz[isurf][is1] + ie_viz[isurf][is2];
 			num_edge_hash[ihash] = num_edge_hash[ihash] + 1;
-			icou = h_tbl->istack_hash[ihash-1] + num_edge_hash[ihash];
+			icou = h_tbl->istack_hash[ihash] + num_edge_hash[ihash];
 			h_tbl->id_hash[0][icou-1] = isurf;
 			h_tbl->id_hash[1][icou-1] = (long) k1;
 		};

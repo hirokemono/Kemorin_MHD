@@ -14,19 +14,14 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_routines.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct psf_surface_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;
@@ -42,11 +37,9 @@ struct psf_surface_gtk_menu{
 
 /*  prototypes */
 
-void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
+void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_surface_gtk_menu *gtk_psf_surface);
-GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
-                                               struct kemoviewer_gl_type *kemo_gl,
+GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                                GtkWidget *window, 
-                                               struct colormap_view *color_vws, 
                                                struct psf_surface_gtk_menu *psf_surface_menu);
 #endif

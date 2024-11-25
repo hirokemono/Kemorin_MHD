@@ -13,12 +13,13 @@
       use m_SPH_transforms
       use m_work_time
       use m_elapsed_labels_SEND_RECV
+      use m_elapsed_labels_4_VIZ
       use t_ctl_params_sph_trans
       use t_mesh_SR
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
-      use t_visualizer
+      use t_four_visualizers
 !
       implicit none
 !
@@ -31,16 +32,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_analyzer_gauss_back_trans
 !
       use t_SPH_mesh_field_data
-      use m_elapsed_labels_4_VIZ
       use FEM_to_VIZ_bridge
       use input_controls_sph_trans
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 !
 !   -----  read controls
@@ -70,19 +70,20 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, FEM_STR1%viz_step,         &
      &                            FEM_STR1%geofem, VIZ_D_STR1, m_SR5)
 !
 !  ------  initialize visualization
-      call init_visualize                                               &
-     &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
-     &    VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs, m_SR5)
+      call init_four_visualize(elps_VIZ1, FEM_STR1%viz_step,            &
+     &    FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,                  &
+     &    spt_ctl1%viz4_ctls, FEM_STR1%four_vizs, m_SR5)
+      call dealloc_viz4_controls(spt_ctl1%viz4_ctls)
 !
-      end subroutine init_analyzer
+      end subroutine init_analyzer_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_gauss_back_trans
 !
       use FEM_to_VIZ_bridge
 !
@@ -106,18 +107,15 @@
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call visualize_all                                            &
-     &       (FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
-     &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%vizs, m_SR5)
+          call visualize_four(elps_VIZ1,                                &
+     &        FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
+     &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%four_vizs, m_SR5)
         end if
       end do
 !
-      call visualize_fin(FEM_STR1%viz_step, t_STR%time_d,               &
-     &                   FEM_STR1%vizs)
-!
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !

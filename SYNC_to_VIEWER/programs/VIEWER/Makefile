@@ -15,6 +15,21 @@ kemo_mesh_viewer_glfw_gtk.o \
 \
 '$$(OBJ_KEMOVIEW_GLUT)'
 
+GLUT_LIBS= \
+  $$(GTK3_LIBS) \
+  $$(GLFW_LIBS) \
+  $$(OPENGL_LIBS)
+
+GLUT_INCLUDES= \
+  $$(C_INCLUDE)   \
+  $$(GTK3_CFLAGS) \
+  $$(GLFW_CFLAGS)
+
+#ifdef FFMPEG_CFLAGS
+  GLUT_INCLUDES+=  $$(FFMPEG_CFLAGS)
+  GLUT_LIBS+=      $$(FFMPEG_LIBS)
+#endif
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -34,8 +49,7 @@ target_task:
 	'$$(LIB_KEMO_C_FILE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GLFW)' \
-	'$$(MOD_KEMOVIEW_GLFW) -L. $$(LIB_KEMO_C)' \
-	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	'$$(MOD_KEMOVIEW_GLFW) -L. $$(LIB_KEMO_C) $(GLUT_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 lib_name:
@@ -54,7 +68,7 @@ depends:
 		( \
 		cd $(MAKEDIR); \
 		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(CURRENTDIR)/$$sources >> $(MAKENAME).tmp; \
-		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
+		echo '	$$(CC) -c $$(OPTFLAGS_GL) $(GLUT_INCLUDES) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
 	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends

@@ -21,6 +21,8 @@
 	IBOutlet id _streoViewTypeMenu;
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	
+    NSInteger activeControlFlag;
+
 	CGFloat coastlineRadius;
 	NSInteger ShadingMode;
 	NSInteger PolygonMode;
@@ -66,6 +68,10 @@
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
     NSInteger axisPositionFlag;
+    CGFloat axisWidthFactor;
+    CGFloat axisWidthDigits;
+
+    
     CGFloat ICBRadius;
     
     NSInteger CoastLineTubeFlag;
@@ -74,6 +80,7 @@
     NSInteger CoastlineDigit;
 }
 
+@property NSInteger activeControlFlag;
 @property CGFloat ColorLoopCount;
 @property CGFloat NodeSizeFactor;
 @property CGFloat NodeSizedigits;
@@ -94,6 +101,8 @@
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
 @property NSInteger axisPositionFlag;
+@property CGFloat   axisWidthFactor;
+@property CGFloat   axisWidthDigits;
 @property NSInteger TubeNumCorners;
 @property CGFloat   ThreadsCount;
 @property CGFloat   CoastlineWidth;
@@ -105,6 +114,12 @@
 - (id)init;
 - (void)awakeFromNib;
 - (id)dealloc;
+
+- (int) CurrentControlModel;
+
+- (int) SetCurrentPSFFile:(int) id_model
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                 pathTree:(NSPathControl *) pathControl;
 
 - (void)SetViewTypeMenu:(NSInteger) selected
                kemoview:(struct kemoviewer_type *) kemo_sgl;
@@ -144,5 +159,7 @@
 - (IBAction)SetCoastLinETubeAction:(id)sender;
 - (IBAction)SetTubeNumCornersAction:(id)sender;
 - (IBAction)SetCoastlineWidth:(id)pSender;
+
+- (IBAction) SetAxisBarWidth:(id)pSender;
 
 @end

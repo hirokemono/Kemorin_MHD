@@ -4,6 +4,15 @@
 !     programmed by H.Matsui on July 2005
 !     Modified by H. Matsui on Oct., 2006
 !
+!>@file   fem_skv_div_asym_t_upw.f90
+!!@brief  module fem_skv_div_asym_t_upw
+!!
+!!@date  Programmed by H.Matsui in July 2005
+!!       Modified by H. Matsui in Oct., 2006
+!!
+!>@brief control data for each field line
+!!
+!!@verbatim
 !!      subroutine fem_skv_all_div_asym_t_upw                           &
 !!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
@@ -15,6 +24,7 @@
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,     &
 !!     &          vxe, flux_1, sk_v)
+!!@endverbatim
 !
       module fem_skv_div_asym_t_upw
 !

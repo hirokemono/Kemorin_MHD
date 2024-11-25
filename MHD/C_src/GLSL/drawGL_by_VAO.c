@@ -81,6 +81,19 @@ void drawgl_textured_elements_VAO(GLuint *texture_name,
 
 
 
+void drawgl_points(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                   struct kemoview_shaders *kemo_shaders){
+    if(VAO->npoint_draw <= 0) return;
+    
+    glDisable(GL_CULL_FACE);
+    glUseProgram(kemo_shaders->simple->programId);
+    transfer_matrix_to_GL(kemo_shaders->simple, matrices);
+
+    glBindVertexArray(VAO->id_VAO);
+    glDrawArrays(GL_POINTS, IZERO, VAO->npoint_draw);
+    return;
+};
+
 void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
@@ -95,7 +108,7 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 };
 
 void draw_map_objects_VAO(struct transfer_matrices *matrices,
-                          struct VAO_ids **map_VAO, struct VAO_ids *map_index_VAO,
+                          struct VAO_ids **map_VAO, struct VAO_ids **map_index_VAO,
                           struct kemoview_shaders *kemo_shaders){
 	int i;
     /* set shading mode */
@@ -105,24 +118,20 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
 
-    if(map_index_VAO->npoint_draw > 0){
-        glBindVertexArray(map_index_VAO->id_VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO->id_index);
-        glDrawElements(GL_TRIANGLES, map_index_VAO->npoint_draw , GL_UNSIGNED_INT, 0);
-    }
-
+    for(i=0;i<3;i++){
+        if(map_index_VAO[i]->npoint_draw > 0){
+            glBindVertexArray(map_index_VAO[i]->id_VAO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, map_index_VAO[i]->id_index);
+            glDrawElements(GL_TRIANGLES, map_index_VAO[i]->npoint_draw , GL_UNSIGNED_INT, 0);
+        }
+    };
     
-	for(i=0;i<3;i++){
+	for(i=0;i<1;i++){
 		if(map_VAO[i]->npoint_draw > 0){
 			glBindVertexArray(map_VAO[i]->id_VAO);
 			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
 		};
 	};	
-		
-    if(map_VAO[3]->npoint_draw > 0){
-        glBindVertexArray(map_VAO[2]->id_VAO);
-        glDrawArrays(GL_LINES, IZERO, map_VAO[2]->npoint_draw);
-    };
 	return;
 }
 

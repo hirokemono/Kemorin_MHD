@@ -18,9 +18,17 @@ static const NSUInteger MaxFramesInFlight = 3;
 @implementation KemoViewerRenderer
 {
     KemoViewMetalBuffers * _kemoMetalBufBase;
-    KemoView2DRenderer *   _kemo2DRenderer;
-    KemoView3DRenderer *   _kemo3DRenderer[MaxFramesInFlight];
-    KemoViewRendererTools * _kemoRendererTools;
+
+    KemoView2DMetalPipelines _kemoView2DPipelines;
+    KemoView2DMetalBuffers   _kemoView2DMetalBufs;
+    KemoViewMapMetalBuffers  _kemoViewMapMetalBufs;
+    KemoViewMessageMetalBuffers  _kemoViewMessageMetalBufs;
+
+    KemoView2DRenderer      *_kemo2DRenderer;
+    KemoViewMapRenderer     *_kemoMapRenderer;
+    KemoViewMessageRenderer *_kemoMessageRenderer;
+    KemoView3DRenderer      *_kemo3DRenderer[MaxFramesInFlight];
+    KemoViewRendererTools   *_kemoRendererTools;
 
     id<MTLDevice> _device;
 
@@ -65,9 +73,13 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     int i;
     
-    _kemoRendererTools = [[KemoViewRendererTools alloc] init];
-    _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
-    _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
+    _kemoRendererTools =   [[KemoViewRendererTools alloc] init];
+    _kemoMetalBufBase =    [[KemoViewMetalBuffers alloc] init];
+    _kemo2DRenderer =      [[KemoView2DRenderer alloc] init];
+    _kemoMapRenderer =     [[KemoViewMapRenderer alloc] init];
+    _kemoMessageRenderer = [[KemoViewMessageRenderer alloc] init];
+
+    
     for(i=0;i<MaxFramesInFlight;i++){
         _kemo3DRenderer[i] = [[KemoView3DRenderer alloc] init];
     };
@@ -91,6 +103,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         [_kemo2DRenderer addKemoView2DPipelines:mtkView
+                                      pipelines:&_kemoView2DPipelines
                                     targetPixel:mtkView.colorPixelFormat];
         for(i=0;i<MaxFramesInFlight;i++){
             [_kemo3DRenderer[i] addKemoView3DPipelines:mtkView
@@ -116,13 +129,13 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     if(iflag_view == VIEW_MAP){
 /*  Release Map vertexs */
-        [_kemo2DRenderer releaseMapMetalBuffers];
+        [_kemoMapRenderer releaseMapMetalBuffers:&_kemoViewMapMetalBufs];
     }else{
 /*  Release 3D vertexs */
         [kemo3DRenderer releaseKemoView3DMetalBuffers];
     };
 /*  Release Message vertexs */
-    [_kemo2DRenderer releaseMsgMetalBuffers];
+    [_kemoMessageRenderer releaseMsgMetalBuffers:&_kemoViewMessageMetalBufs];
     return;
 }
 
@@ -134,8 +147,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     if(viewflag == VIEW_MAP){
 /*  Set Map vertexs to Metal buffers */
-        [_kemo2DRenderer setMapMetalBuffers:device
-                                    buffers:kemo_sgl->kemo_buffers];
+        [_kemoMapRenderer setMapMetalBuffers:device
+                             baseMetalBuffer:_kemoMetalBufBase
+                                 metalBuffer:&_kemoViewMapMetalBufs
+                                     buffers:kemo_sgl->kemo_buffers];
     }else{
 /*  Set 3D vertexs to Metal buffers */
         [kemo3DRenderer setKemoView3DMetalBuffers:device
@@ -143,8 +158,10 @@ static const NSUInteger MaxFramesInFlight = 3;
     };
     
 /*  Set message vertexs to Metal buffers */
-    [_kemo2DRenderer setMessageMetalBuffers:device
-                                    buffers:kemo_sgl->kemo_buffers];
+    [_kemoMessageRenderer setMessageMetalBuffers:device
+                                 baseMetalBuffer:_kemoMetalBufBase
+                                     metalBuffer:&_kemoViewMessageMetalBufs
+                                         buffers:kemo_sgl->kemo_buffers];
     return;
 }
 
@@ -176,19 +193,11 @@ static const NSUInteger MaxFramesInFlight = 3;
         kemoview_fast_buffers(kemo_sgl);
         [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
                                                    kemoview:kemo_sgl];
-
-        [self refreshTripleBuffers:i_current
-                        metalDevice:device
-                            kemoview:kemo_sgl];
     }else if(iflag == MOVIE_DRAW && iflag_view != VIEW_MAP){
-        [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
+        [_kemo3DRenderer[i_current] releaseKemoMovieMetalBuffers];
         kemoview_fast_buffers(kemo_sgl);
-        [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
-                                                   kemoview:kemo_sgl];
-
-        [self refreshTripleBuffers:i_current
-                        metalDevice:device
-                            kemoview:kemo_sgl];
+        [_kemo3DRenderer[i_current] setKemoMovieMetalBuffers:device
+                                                    kemoview:kemo_sgl];
     }else if(iflag == QUILT_DRAW && iflag_view != VIEW_MAP){
         [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
         kemoview_transparent_buffers(kemo_sgl);
@@ -205,11 +214,9 @@ static const NSUInteger MaxFramesInFlight = 3;
                              kemoview:kemo_sgl
                              viewflag:iflag_view];
 
-        if(iflag == TRIPLE_UPDATE){
-            [self refreshTripleBuffers:i_current
+        [self refreshTripleBuffers:i_current
                            metalDevice:device
                               kemoview:kemo_sgl];
-       }
     };
     return;
 }
@@ -231,21 +238,22 @@ static const NSUInteger MaxFramesInFlight = 3;
     int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
-        [_kemo2DRenderer encodeMapObjects:renderEncoder
-                               projection:&_map_proj_mat];
-    }else if(kemoview_get_view_integer(kemo_sgl, ISET_DRAW_MODE) == SIMPLE_DRAW){
-        [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
-                                                      depth:&_depthState
-                                                     unites:monoViewUnites
-                                                      sides:iflag_polygon];
+        [_kemoMapRenderer encodeMapObjects:renderEncoder
+                               base2Dclass:_kemo2DRenderer
+                                 pipelines:&_kemoView2DPipelines
+                               metalBuffer:&_kemoViewMapMetalBufs
+                                projection:&_map_proj_mat];
     }else{
         [_kemo3DRenderer[i_current] encodeKemoView3DObjects:renderEncoder
                                                       depth:&_depthState
                                                      unites:monoViewUnites
                                                       sides:iflag_polygon];
     };
-    [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                               projection:&_cbar_proj_mat];
+    [_kemoMessageRenderer encodeMessageObjects:renderEncoder
+                                   base2Dclass:_kemo2DRenderer
+                                     pipelines:&_kemoView2DPipelines
+                                   metalBuffer:&_kemoViewMessageMetalBufs
+                                    projection:&_cbar_proj_mat];
 }
 
 -(void) KemoViewEncodeAll:(NSUInteger) i_current
@@ -335,7 +343,8 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
-                                     numVertex:numVertex
+                                     pipelines:&_kemoView2DPipelines
+                                    numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure
                                          right:rightTexure
@@ -362,6 +371,7 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
+                                     pipelines:&_kemoView2DPipelines
                                      numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure

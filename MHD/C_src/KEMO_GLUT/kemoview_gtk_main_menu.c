@@ -18,7 +18,8 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
     }
 
     mbot->psf_gmenu = alloc_psf_gtk_menu();
-    mbot->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->fline_gmenu =  (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+    mbot->tracer_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
     mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
 
@@ -32,7 +33,8 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
 void dealloc_main_buttons(struct main_buttons *mbot){
     dealloc_psf_gtk_menu(mbot->psf_gmenu);
-    free(mbot->fline_menu);
+    free(mbot->tracer_gmenu);
+    free(mbot->fline_gmenu);
     free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
 
@@ -45,11 +47,10 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 	return;
 };
 
-void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
-                               struct kemoviewer_gl_type *kemo_gl,
+void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
                                struct kv_string *filename,
                                struct main_buttons *mbot,
-                               GtkWidget *window_main){
+                               GtkWidget *main_window){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
@@ -60,51 +61,52 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	
-	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
+	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
     kemoview_free_kvstring(filename);
 	
-    init_psf_window(kemo_sgl, kemo_gl, mbot->psf_gmenu, window_main);
-    init_fline_window(kemo_sgl, mbot->fline_menu, window_main);
-    init_mesh_window(kemo_sgl, mbot->mesh_vws, mbot->meshWin);
+    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
+    init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
+    init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
 
-    activate_evolution_menu(kemo_sgl, mbot->itemTEvo);
-	gtk_widget_queue_draw(window_main);
-    draw_full(kemo_sgl);
+    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
 
 static void open_file_CB(GtkButton *button, gpointer user_data){
     struct kv_string *filename;
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-    struct kemoviewer_gl_type *kemo_sgl_gl
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "window"));
+    struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
     int iflag_set = kemoview_gtk_read_file_select(button, user_data);
     if(iflag_set == IZERO) return;
     GtkEntry *entry = GTK_ENTRY(user_data);
-    GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
     filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     
-    open_kemoviewer_file_glfw(kemo_sgl, kemo_sgl_gl, filename,
-                              mbot, window_main);
+    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
     return;
 };
 
 
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    struct kemoviewer_type *kemo_sgl
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-    struct kemoviewer_gl_type *kemo_sgl_gl
+    struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
     struct gl_texure_image *render_image = alloc_kemoview_gl_texure();
-    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
-        draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_sgl_gl, render_image);
+    if(kemoview_get_view_type_flag(kemo_gl->kemoview_data) == VIEW_STEREO){
+        draw_anaglyph_to_rgb_gl(kemo_gl->kemoview_data,
+                                kemo_gl->kemo_VAOs,
+                                kemo_gl->kemo_shaders,
+                                render_image);
     }else{
-        draw_objects_to_rgb_gl(kemo_sgl, kemo_sgl_gl, render_image);
+        draw_objects_to_rgb_gl(kemo_gl->kemoview_data,
+                               kemo_gl->kemo_VAOs,
+                               kemo_gl->kemo_shaders,
+                               render_image);
     }
     
     struct gl_texure_image *fliped_img = alloc_kemoview_gl_texure();
@@ -148,17 +150,17 @@ static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
 */
 
 static void image_save_CB(GtkButton *button, gpointer user_data){
-    struct kemoviewer_type *kemo_sgl 
-            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int iflag_set = kemoview_gtk_save_file_select(button, user_data);
     int id_imagefmt_by_input;
     int i_quilt;
     
     if(iflag_set == IZERO) return;
     
-    int iflag_quilt = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
-    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    int iflag_quilt = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE);
+    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     GtkEntry *entry = GTK_ENTRY(user_data);
@@ -169,7 +171,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
     id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
     if(id_imagefmt_by_input < 0) {
-        id_imagefmt_by_input = kemoview_get_view_integer(kemo_sgl, IMAGE_FORMAT_FLAG);;
+        id_imagefmt_by_input = kemoview_get_view_integer(kemo_gl->kemoview_data,
+                                                         IMAGE_FORMAT_FLAG);;
         kemoview_free_kvstring(file_prefix);
         file_prefix = kemoview_init_kvstring_by_string(filename->string);
     };
@@ -183,21 +186,24 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
         kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
                                       npix_x, npix_y, image);
     } else {
-        int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-        int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+        int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_COLUMN);
+        int nimg_raw =    kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_RAW);
         unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-            draw_quilt(i_quilt, kemo_sgl);
+            draw_quilt(i_quilt, kemo_gl);
             kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-            kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
+            kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                   image, quilt_image);
         };
         kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
                                       (nimg_column * npix_x),
                                       (nimg_raw * npix_y), quilt_image);
         free(quilt_image);
         printf("quilt! %d x %d\n", nimg_column, nimg_raw);
-        draw_full(kemo_sgl);
+        draw_full_gl(kemo_gl);
     }
     free(image);
     kemoview_free_kvstring(file_prefix);
@@ -205,10 +211,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-GtkWidget * make_gtk_open_file_box(struct main_buttons *mbot,
-                                   GtkWidget *window,
-                                   struct kemoviewer_type *kemo_sgl,
-                                   struct kemoviewer_gl_type *kemo_gl){
+GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
+                                   GtkWidget *main_window, struct main_buttons *mbot){
     GtkWidget *hbox_open;
     /*
     GtkWidget *testButton = gtk_button_new_with_label("On");
@@ -217,12 +221,15 @@ GtkWidget * make_gtk_open_file_box(struct main_buttons *mbot,
     */
     
     GtkWidget *entry_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer)   window);
     g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
-    g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemo_sgl);
     g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
-    
-    GtkWidget *menuGrid = make_gtk_menu_button(mbot, kemo_sgl);
+    g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
+
+    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
+    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
+                                               mbot->lightparams_vws,
+                                               mbot->evo_gmenu,
+                                               mbot->itemTEvo);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",
@@ -238,11 +245,10 @@ GtkWidget * make_gtk_open_file_box(struct main_buttons *mbot,
 
 GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
                                    GtkWidget *quitButton,
-                                   struct kemoviewer_type *kemo_sgl,
                                    struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *savebox;
     GtkWidget *entry_save_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(entry_save_file), "kemoview", (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(entry_save_file), "kemoview_gl", (gpointer) kemo_gl);
     GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
     g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
                      G_CALLBACK(image_save_CB), (gpointer) entry_save_file);
@@ -255,7 +261,6 @@ GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);                                                          
     gtk_clipboard_clear(clipboard);                                                                                
     gtk_clipboard_set_text(clipboard, "", 0);
-    g_object_set_data(G_OBJECT(clipboard), "kemoview", (gpointer) kemo_sgl);
     g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
     
     GtkWidget *copyButton = gtk_button_new_with_label("Copy");
@@ -270,26 +275,24 @@ GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
 };
 
 GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
-                                   GtkWidget *quitButton, GtkWidget *window_main,
-                                   struct kemoviewer_type *kemo_sgl,
+                                   GtkWidget *quitButton, GtkWidget *main_window,
                                    struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *vbox_menu;
     
-    GtkWidget *hbox_open = make_gtk_open_file_box(mbot, window_main, kemo_sgl, kemo_gl);
-    GtkWidget *savebox = make_gtk_save_file_box(mbot, quitButton, kemo_sgl, kemo_gl);
+    GtkWidget *hbox_open = make_gtk_open_file_box(kemo_gl, main_window, mbot);
+    GtkWidget *savebox = make_gtk_save_file_box(mbot, quitButton, kemo_gl);
     
-    GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(mbot->view_menu, kemo_sgl);
-    GtkWidget *hbox_axis = make_axis_menu_box(kemo_sgl, window_main);
-    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_sgl,
-                                                          mbot->rot_gmenu,
-                                                          window_main);
-//    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_sgl, mbot->evo_gmenu, window_main);
-    mbot->expander_view = init_viewmatrix_menu_expander(kemo_sgl,
-                                                        mbot->view_menu,
-                                                        window_main);
-    mbot->expander_quilt = init_quilt_menu_expander(kemo_sgl,
-                                                    mbot->quilt_gmenu,
-                                                    mbot->view_menu, window_main);
+    GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(kemo_gl, mbot->view_menu);
+    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
+    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
+                                                          main_window);
+/*
+    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
+*/
+    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
+                                                        main_window);
+    mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
+                                                    mbot->view_menu, main_window);
     
     vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(vbox_menu), hbox_open, FALSE, FALSE, 0);

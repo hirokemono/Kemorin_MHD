@@ -19,15 +19,11 @@
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_routines.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 /* protytypes */
 
-GtkWidget * init_coastline_pref_menu(struct kemoviewer_type *kemo_sgl);
-GtkWidget * init_axis_position_menu(struct kemoviewer_type *kemo_sgl);
+GtkWidget * init_coastline_pref_menu(struct kemoviewer_gl_type *kemo_gl);
+GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_sgl);
 
 #endif /* KEMOVIEW_GTK_AXIS_PREFS_MENU_*/

@@ -100,6 +100,10 @@ ifdef OPENGL_LIBS
     CPP_FLAGS+= -DGLFW3
   endif
 
+  ifdef FFMPEG_LIBS
+    CPP_FLAGS+= -DFFMPEG
+  endif
+
   OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIBS)
   OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)  
 endif
@@ -155,7 +159,7 @@ depends:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
-		GLFW_LIBS="$(GLFW_LIBS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends; \
@@ -253,6 +257,11 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'GLFW_CFLAGS =  $(GLFW_CFLAGS)'         >> $(MAKENAME)
 	@echo 'GLFW_LIBS =    $(GLFW_LIBS)'           >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# FFMPEG settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'FFMPEG_CFLAGS =  $(FFMPEG_CFLAGS)'         >> $(MAKENAME)
+	@echo 'FFMPEG_LIBS =    $(FFMPEG_LIBS)'           >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
@@ -354,7 +363,8 @@ makemake:
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
 		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)'   \
-		GLFW_LIBS='$(GLFW_LIBS)'   \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \

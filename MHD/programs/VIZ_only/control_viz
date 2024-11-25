@@ -22,6 +22,15 @@ begin visualizer
     i_step_LIC_ctl          400
   end time_step_ctl
 !
+!
+  begin tracers_control
+    array tracer_ctl
+      file tracer_ctl     'ctl_tracer_x'
+    end array tracer_ctl
+    i_step_tracer_output       20
+  end   tracers_control
+!
+!
   begin visual_control
     begin visual_domain_control
       begin viz_mesh_files_def

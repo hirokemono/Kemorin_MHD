@@ -40,6 +40,30 @@ static unsigned int cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 */
 /* cube informaiton into VBO */
 
+struct initial_cube_buffers * init_initial_cube_buffers(void)
+{
+    struct initial_cube_buffers *initial_bufs = (struct initial_cube_buffers *) malloc(sizeof(struct initial_cube_buffers));
+    if(initial_bufs == NULL){
+        printf("malloc error in initial_cube_buffers \n");
+        exit(0);
+    };
+    long n_point = 1024;
+    initial_bufs->cube_buf =        init_strided_buffer(n_point);
+    initial_bufs->cube_index_buf =  init_gl_index_buffer(12, 3);
+    
+    CubeNode_to_buf(0.5f, initial_bufs->cube_buf,
+                    initial_bufs->cube_index_buf);
+    return initial_bufs;
+}
+
+void dealloc_initial_cube_buffers(struct initial_cube_buffers *initial_bufs)
+{
+    dealloc_gl_index_buffer(initial_bufs->cube_index_buf);
+    dealloc_strided_buffer(initial_bufs->cube_buf);
+    free(initial_bufs);
+};
+
+
 
 void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf){

@@ -2,6 +2,14 @@
 !C*** 
 !C*** module solver_BLCG_3
 !C***
+!!      subroutine BLCG_3                                               &
+!!     &               (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, &
+!!     &                B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
+!!     &                RESID,  ITER, ERROR, iterPREmax,                &
+!!     &                NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
+!!     &                STACK_EXPORT, NOD_EXPORT, NSET,                 &
+!!     &                SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
+!!
 !C
       module solver_BLCG_3
 !
@@ -39,7 +47,8 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET,                 &
+     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 
       use calypso_mpi
 !
@@ -82,6 +91,14 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver preconditioning
+      real(kind = kreal), intent(inout) :: PRECtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME, S1_TIME, S2_TIME
 
       real(kind=kreal), dimension(:),    allocatable, save :: SCALE
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
@@ -137,8 +154,10 @@
       
       MAXIT  = ITER
        TOL   = RESID           
+      S1_TIME= MPI_WTIME()
 
       if (NSET.ge.1) then
+        S2_TIME= MPI_WTIME()
 !C
 !C-- exchanging DIAGONAL components
         WW= 0.d0
@@ -153,6 +172,8 @@
           WW(3*i-1,3)= D(2,3,i)
           WW(3*i  ,3)= D(3,3,i)
         enddo
+
+        START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,1))
@@ -162,6 +183,8 @@
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,3))
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
         do i= N+1, NP
           D(1,1,i)= WW(3*i-2,1)
           D(2,1,i)= WW(3*i-1,1)
@@ -183,9 +206,11 @@
           SCALE (3*i  )= 1.d0/dsqrt(dabs(D(3,3,i)))
         enddo
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, SCALE)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do i= 1, NP
         ip1= 3*i-2
@@ -271,6 +296,7 @@
         enddo
       endif
 !C===
+        PRECtime = MPI_WTIME() - S2_TIME
       endif
 
 !C
@@ -286,9 +312,11 @@
 !C
 !C-- INTERFACE data EXCHANGE
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       call subtruct_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,  &
      &    D, AL, AU,  WW(1,R), B, X)
@@ -298,8 +326,10 @@
         BNRM20= BNRM20+B(3*i-2)**2+B(3*i-1)**2+B(3*i)**2
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
       ITER = 0
@@ -400,9 +430,11 @@
 !C
 !C-- additive Schwartz
 
+        START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ZP))
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -498,9 +530,11 @@
 !C
 !C-- additive Schwartz
 
+        START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ZP))
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -522,8 +556,10 @@
      &             + WW(3*i  ,R)*WW(3*i  ,Z)
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !C===
 
 !C
@@ -557,9 +593,11 @@
 !C
 !C-- INTERFACE data EXCHANGE
 
-      call SOLVER_SEND_RECV_3                                           &
-     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P))
+        START_TIME= MPI_WTIME()
+        call SOLVER_SEND_RECV_3                                         &
+     &     (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,            &
+     &      STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P))
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU,  WW(1,Q), WW(1,P) )
@@ -575,9 +613,12 @@
       do i= 1, N
         C10= C10 + WW(3*i-2,P)*WW(3*i-2,Q) + WW(3*i-1,P)*WW(3*i-1,Q)    &
      &           + WW(3*i  ,P)*WW(3*i  ,Q)
-      enddo
+      end do
+
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
       ALPHA= RHO / C1
 !C===
 
@@ -600,9 +641,12 @@
       do i= 1, N
         DNRM20= DNRM20 + WW(3*i-2,R)**2 + WW(3*i-1,R)**2                &
      &                                  + WW(3*i  ,R)**2
-      enddo
+      end do
+
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         RESID= dsqrt(DNRM2/BNRM2)
 
@@ -631,9 +675,12 @@
         B(3*i  )= B(3*i  ) / SCALE(3*i  )
       enddo
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+      COMPtime = MPI_WTIME() - S1_TIME
 
       deallocate (WW)
 !
@@ -1595,7 +1642,9 @@
         WW(3*i  ,indexB)= WW(3*i  ,indexB) + WW(3*i  ,indexA)
       enddo
 
-      if (iterPRE .eq. iterPREmax) return
+      if (iterPRE .eq. iterPREmax) then
+        return
+      end if
 
       do j= 1, N
          X1= WW(3*j-2,indexB)
@@ -1916,13 +1965,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine GAUSSJ33(a, n, np)
+      subroutine GAUSSJ33(a, n, np, COMMtime)
 
       use calypso_mpi
 !
 !
       integer(kind=kint) :: n, np
       real(kind=kreal), dimension(np,np) :: a
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind=kreal) :: START_TIME
 !
       integer(kind=kint) :: i, icol, irow, j, k, l, ll
       integer(kind=kint), dimension(n) :: indxc, indxr, ipiv
@@ -1952,9 +2005,13 @@
           endif
         enddo
 !
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE(err_l, err_g, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        if(err_g .gt. 0.1d0) return
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+        if(err_g .gt. 0.1d0) then
+          return
+        end if
 !
         ipiv(icol)= ipiv(icol) + 1
         if (irow.ne.icol) then
@@ -1972,8 +2029,11 @@
           write(*,*) 'singular matrix in gaussj'
           err_l = 1.0d0
         end if
+
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE (err_l, err_g, 1, CALYPSO_REAL,              &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         if(err_g .gt. 0.1d0) return
 !
         pivinv= 1.d0 / a(icol,icol)

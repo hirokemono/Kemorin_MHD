@@ -16,7 +16,7 @@ const_ele_layering_table.o: $(MESH_TYPE_DIR)/const_ele_layering_table.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 const_import_table.o: $(MESH_TYPE_DIR)/const_import_table.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_mesh_information.o: $(MESH_TYPE_DIR)/const_mesh_information.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_group_data.o t_group_connects.o t_surface_group_connect.o t_surface_group_normals.o t_surface_data.o t_edge_data.o t_element_group_table.o set_smp_4_group_types.o set_connects_4_surf_group.o set_surf_edge_mesh.o nod_and_ele_derived_info.o cal_mesh_position.o const_surface_data.o set_size_4_smp_types.o
+const_mesh_information.o: $(MESH_TYPE_DIR)/const_mesh_information.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_group_data.o t_group_connects.o t_surface_group_connect.o t_surface_group_normals.o t_surface_data.o t_edge_data.o t_element_group_table.o set_smp_4_group_types.o set_connects_4_surf_group.o set_surf_edge_mesh.o nod_and_ele_derived_info.o m_connect_hexa_2_tetra.o cal_mesh_position.o const_surface_data.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_surface_data.o: $(MESH_TYPE_DIR)/const_surface_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_sum_hash.o set_local_id_table_4_1ele.o set_surface_hash.o set_element_list_4_surface.o mark_surf_hash.o set_surface_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

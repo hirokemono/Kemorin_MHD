@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine input_conrol_rayleigh_viz(ctl_file_name,             &
-!!     &          rayleigh_vctl, FEM_Rayleigh, t_viz_param)
-!!        character(len = kchara), intent(in) :: ctl_file_name
+!!     &          rayleigh_vctl, FEM_Rayleigh, viz4_ctls, t_viz_param)
 !!        character(len = kchara), intent(in) :: ctl_file_name
 !!        type(control_data_rayleigh_vizs), intent(inout)               &
 !!     &                                 :: rayleigh_vctl
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                 :: FEM_Rayleigh
+!!        type(vis4_controls), intent(inout) :: viz4_ctls
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!@endverbatim
 !
@@ -33,6 +33,7 @@
       use t_rayleigh_field_IO
       use t_rayleigh_field_address
       use t_ctl_data_rayleigh_vizs
+      use t_control_data_viz4
 !
       implicit none
 !
@@ -57,15 +58,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_conrol_rayleigh_viz(ctl_file_name,               &
-     &          rayleigh_vctl, FEM_Rayleigh, t_viz_param)
+     &          rayleigh_vctl, FEM_Rayleigh, viz4_ctls, t_viz_param)
 !
       use t_read_control_elements
+      use bcast_ctl_data_viz4
 !
       character(len = kchara), intent(in) :: ctl_file_name
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                                 :: rayleigh_vctl
-        type(FEM_mesh_field_rayleigh_viz), intent(inout)                &
+      type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                 :: FEM_Rayleigh
+      type(vis4_controls), intent(inout) :: viz4_ctls
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       integer(kind = kint) :: ierr = 0
@@ -74,10 +77,11 @@
 !
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_rayleigh_viz(ctl_file_name,                  &
-     &                                  rayleigh_vctl, c_buf1)
+        call read_ctl_file_rayleigh_viz(ctl_file_name, rayleigh_vctl,   &
+     &                                  viz4_ctls, c_buf1)
       end if
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vctl)
+      call bcast_viz4_controls(viz4_ctls)
 !
       if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(rayleigh_vctl%i_viz_only_file,           &
@@ -97,7 +101,6 @@
       use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
-      use bcast_control_data_vizs
       use bcast_4_field_ctl
       use bcast_4_sphere_ctl
 !
@@ -106,7 +109,6 @@
 !
       call bcast_ctl_data_4_platform(rayleigh_vctl%viz_plt)
       call bcast_ctl_data_4_time_step(rayleigh_vctl%t_viz_ctl)
-      call bcast_viz_controls(rayleigh_vctl%viz_ctl_v)
 !
       call bcast_phys_data_ctl(rayleigh_vctl%fld_ctl)
       call bcast_ctl_ndomain_4_shell(rayleigh_vctl%sdctl)

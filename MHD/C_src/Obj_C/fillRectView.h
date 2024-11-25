@@ -1,7 +1,15 @@
+//
+//  fillRectView.h
+//  Kemoview_Cocoa
+//
+//  Created by Hiroaki Matsui on 11/08/17.
+//  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
+//
 
 
 @import Cocoa;
 
+#import "KemoviewerController.h"
 #import "KemoViewerObject.h"
 #include "Kemoviewer.h"
 
@@ -9,6 +17,7 @@
 
 @interface fillRectView : NSView
 {
+    IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet KemoViewerObject *_kmv;
     
     NSRect	boxRect;

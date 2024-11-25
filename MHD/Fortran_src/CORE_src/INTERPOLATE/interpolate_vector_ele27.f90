@@ -8,6 +8,19 @@
 !> @brief Interpolation for vector in Lagrange element
 !!
 !!@verbatim
+!!      subroutine s_interpolate_vector_ele27(np_smp, numnod,           &
+!!     &          numele, ie, v_org, istack_smp, num_points, iele_gauss,&
+!!     &          xi_gauss, vect)
+!!        integer (kind = kint), intent(in) :: np_smp
+!!        integer (kind = kint), intent(in) :: numnod, numele
+!!        integer (kind = kint), intent(in) :: ie(numele,27)
+!!        integer (kind = kint), intent(in) :: istack_smp(0:np_smp)
+!!        integer (kind = kint), intent(in) :: num_points
+!!        integer (kind = kint), intent(in) :: iele_gauss(num_points)
+!!        real (kind=kreal), intent(in) :: xi_gauss(num_points,3)
+!!        real (kind=kreal), intent(in) :: v_org(3*numnod)
+!!        real (kind=kreal), intent(inout) :: vect(3*num_points)
+!!
 !!      subroutine itp_matvec_vector_surf9(np_smp, NP, v_org,           &
 !!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
 !!      subroutine itp_matvec_vector_ele27(np_smp, NP, v_org,           &
@@ -26,8 +39,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_vector_ele27(np_smp, numnod, numele, ie, &
-     &          v_org, istack_smp, num_points, iele_gauss,              &
+      subroutine s_interpolate_vector_ele27(np_smp, numnod,             &
+     &          numele, ie, v_org, istack_smp, num_points, iele_gauss,  &
      &          xi_gauss, vect)
 !
       use m_constants

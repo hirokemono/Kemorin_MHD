@@ -179,10 +179,10 @@
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           call add_phys_name_ctl(Csim_SGS_buoyancy, field_ctl)
         end if
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           call add_phys_name_ctl(Csim_SGS_composit_buo, field_ctl)
         end if
       end if
@@ -294,11 +294,11 @@
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
         call add_phys_name_ctl(Reynolds_work, field_ctl)
 !
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           call add_phys_name_ctl(SGS_buoyancy_flux, field_ctl)
         end if
 !
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           call add_phys_name_ctl(SGS_comp_buoyancy_flux, field_ctl)
         end if
       end if

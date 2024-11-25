@@ -20,6 +20,7 @@
 
 
 struct colormap_params{
+///*    Colomap ID       **///
 	int id_color_mode;
 	struct real2_clist *colormap;
 	struct real2_clist *opacitymap;

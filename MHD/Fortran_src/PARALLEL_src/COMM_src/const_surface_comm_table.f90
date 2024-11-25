@@ -79,6 +79,8 @@
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
 !
+      call dealloc_interior_surf(surf)
+      call alloc_global_surf_id(surf)
       call alloc_interior_surf(surf)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
@@ -130,6 +132,7 @@
 !
       call dealloc_comm_table(surf_comm)
       call dealloc_interior_surf(surf)
+      call dealloc_global_surf_id(surf)
 !
       end subroutine dealloc_surf_comm_table
 !

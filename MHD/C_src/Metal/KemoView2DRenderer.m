@@ -16,110 +16,8 @@
 @implementation KemoView2DRenderer
 {
     KemoView2DMetalShaders   _kemoView2DShaders;
-    KemoView2DMetalPipelines _kemoView2DPipelines;
-    KemoView2DMetalBuffers   _kemoView2DMetalBufs;
 }
 
--(id) init
-{
-    _kemo2DMetalBufBase = [[KemoViewMetalBuffers alloc] init];
-    return self;
-}
-
-- (void) setMapMBuffers:(id<MTLDevice> *) device
-            metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
-{
-    kemoView2DMetalBufs->numMapNodeVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                            buffer:kemo_buffers->PSF_node_buf
-                                                                            vertex:&(kemoView2DMetalBufs->mapNodeVertice)];
-    kemoView2DMetalBufs->numMapSolidIndices = [_kemo2DMetalBufBase setMetalIndices:device
-                                                                          indexbuf:kemo_buffers->MAP_solid_index_buf
-                                                                             index:&(kemoView2DMetalBufs->mapSolidIndices)];
-    
-    kemoView2DMetalBufs->numMapSolidVertice =  [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_solid_buf
-                                                                             vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
-    kemoView2DMetalBufs->numMapinesVertice =   [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->MAP_isoline_buf
-                                                                             vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
-    kemoView2DMetalBufs->numCoastLineVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_line_buf
-                                                                             vertex:&(kemoView2DMetalBufs->coastLineVertice)];
-    kemoView2DMetalBufs->numCoastTubeVertice = [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                             buffer:kemo_buffers->coast_tube_buf
-                                                                             vertex:&(kemoView2DMetalBufs->coastTubeVertice)];
-};
-
-- (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-{
-    if(kemoView2DMetalBufs->numMapNodeVertice > 0)  {[kemoView2DMetalBufs->mapNodeVertice    release];};
-    if(kemoView2DMetalBufs->numMapSolidIndices > 0)  {[kemoView2DMetalBufs->mapSolidIndices  release];};
-
-    if(kemoView2DMetalBufs->numMapSolidVertice > 0)  {[kemoView2DMetalBufs->mapSolidVertice  release];};
-    if(kemoView2DMetalBufs->numMapinesVertice > 0)   {[kemoView2DMetalBufs->mapLinesVertice  release];};
-    if(kemoView2DMetalBufs->numCoastLineVertice > 0) {[kemoView2DMetalBufs->coastLineVertice release];};
-    if(kemoView2DMetalBufs->numCoastTubeVertice > 0) {[kemoView2DMetalBufs->coastTubeVertice release];};
-    return;
-}
-
-- (void) setMsgMBuffers:(id<MTLDevice> *) device
-            metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffers:(struct kemoview_buffers *) kemo_buffers
-{
-    kemoView2DMetalBufs->numColorBarVertice =    [_kemo2DMetalBufBase setMetalVertexs:device
-                                                                               buffer:kemo_buffers->cbar_buf
-                                                                               vertex:&(kemoView2DMetalBufs->colorBarVertice)];
-    kemoView2DMetalBufs->numMinLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_min_buf
-                                                                               vertex:&(kemoView2DMetalBufs->minLabelVertice)
-                                                                               texure:&(kemoView2DMetalBufs->minLabelTexure)];
-    kemoView2DMetalBufs->numMaxLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_max_buf
-                                                                               vertex:&(kemoView2DMetalBufs->maxLabelVertice)
-                                                                               texure:&(kemoView2DMetalBufs->maxLabelTexure)];
-    kemoView2DMetalBufs->numZeroLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->cbar_zero_buf
-                                                                               vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
-                                                                               texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
-    
-    kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->timelabel_buf
-                                                                               vertex:&(kemoView2DMetalBufs->timeLabelVertice)
-                                                                               texure:&(kemoView2DMetalBufs->timeLabelTexure)];
-    
-    kemoView2DMetalBufs->numMessageVertice =   [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->message_buf
-                                                                               vertex:&(kemoView2DMetalBufs->messageVertice)
-                                                                               texure:&(kemoView2DMetalBufs->messageTexure)];
-    return;
-}
-
-- (void) releaseMsgMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-{
-    if(kemoView2DMetalBufs->numColorBarVertice > 0) {[kemoView2DMetalBufs->colorBarVertice release];};
-    if(kemoView2DMetalBufs->numMinLabelVertice > 0){
-        [kemoView2DMetalBufs->minLabelVertice release];
-        [kemoView2DMetalBufs->minLabelTexure  release];
-    };
-    if(kemoView2DMetalBufs->numMaxLabelVertice > 0){
-        [kemoView2DMetalBufs->maxLabelVertice release];
-        [kemoView2DMetalBufs->maxLabelTexure  release];
-    };
-    if(kemoView2DMetalBufs->numZeroLabelVertice > 0){
-        [kemoView2DMetalBufs->zeroLabelVertice release];
-        [kemoView2DMetalBufs->zeroLabelTexure  release];
-    };
-    if(kemoView2DMetalBufs->numtimeLabelVertice > 0){
-        [kemoView2DMetalBufs->timeLabelVertice release];
-        [kemoView2DMetalBufs->timeLabelTexure  release];
-    };
-    if(kemoView2DMetalBufs->numMessageVertice > 0){
-        [kemoView2DMetalBufs->messageVertice release];
-        [kemoView2DMetalBufs->messageTexure  release];
-    };
-    return;
-}
 
 -(void) set2DShaderLibrary:(KemoView2DMetalShaders *) kemoView2DShaders
                    library:(id<MTLLibrary>  *) shaderLibrary
@@ -237,14 +135,14 @@
     return;
 }
 
-- (void)draw2DLineObject:(id<MTLRenderCommandEncoder> *) renderEncoder
-               pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+- (void)draw2DLineObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+               pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) simple2DPipelineState
                numVertex:(NSUInteger) numVertex
-                  vertex:(id<MTLBuffer> *) vertices
-              projection:(matrix_float4x4 *) projection_mat;
+                  vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+              projection:(matrix_float4x4 *_Nonnull) projection_mat
 {
     if(numVertex > 0){
-        [*renderEncoder setRenderPipelineState:kemoView2DPipelines->simple2DPipelineState];
+        [*renderEncoder setRenderPipelineState:*simple2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -259,15 +157,15 @@
 }
 
 
-- (void)draw2DElementObject:(id<MTLRenderCommandEncoder> *) renderEncoder
-                  pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+- (void)draw2DElementObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                  pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) trans2DPipelineState
                   numVertex:(NSUInteger) numVertex
-                     vertex:(id<MTLBuffer> *) vertices
-                      index:(id<MTLBuffer> *) indices
-                 projection:(matrix_float4x4 *) projection_mat
+                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+                      index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
+                 projection:(matrix_float4x4 *_Nonnull) projection_mat
 {
     if(numVertex > 0){
-        [*renderEncoder setRenderPipelineState: kemoView2DPipelines->trans2DPipelineState];
+        [*renderEncoder setRenderPipelineState: *trans2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -283,14 +181,14 @@
     
 }
 
-- (void)draw2DPatchObject:(id<MTLRenderCommandEncoder> *) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+- (void)draw2DPatchObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                pipelines:(id<MTLRenderPipelineState>  _Nonnull *_Nonnull) trans2DPipelineState
                 numVertex:(NSUInteger) numVertex
-                   vertex:(id<MTLBuffer> *) vertices
-               projection:(matrix_float4x4 *) projection_mat
+                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+               projection:(matrix_float4x4 *_Nonnull) projection_mat
 {
     if(numVertex > 0){
-        [*renderEncoder setRenderPipelineState: kemoView2DPipelines->trans2DPipelineState];
+        [*renderEncoder setRenderPipelineState: *trans2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -304,42 +202,13 @@
     
 }
 
-- (void)drawTextBoxObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
-                numVertex:(NSUInteger) numVertex
-                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
-               projection:(matrix_float4x4 *_Nonnull) projection_mat;
-{
-    if(numVertex > 0){
-        [*renderEncoder setRenderPipelineState:kemoView2DPipelines->texured2DPipelineState];
-        /* Pass in the parameter data. */
-        [*renderEncoder setVertexBuffer:*vertices
-                                 offset:0
-                                atIndex:AAPLVertexInputIndexVertices];
-        [*renderEncoder setVertexBytes:projection_mat
-                                length:sizeof(matrix_float4x4)
-                               atIndex:AAPLOrthogonalMatrix];
-        
-        /* Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
-         ///  to the 'colorMap' argument in the 'samplingShader' function because its
-         //   texture attribute qualifier also uses AAPLTextureIndexBaseColor for its index. */
-        [*renderEncoder setFragmentTexture:*texture
-                                   atIndex:AAPLTextureIndexBaseColor];
-        /* Draw the triangles. */
-        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                           vertexStart:0
-                           vertexCount:numVertex];
-    };
-}
-
-- (void)drawAnaglyphObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                 pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
-                 numVertex:(NSUInteger) numVertex
-                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                      left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
-                     right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
-                projection:(matrix_float4x4 *_Nonnull) projection_mat;
+- (void)encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                    pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                    numVertex:(NSUInteger) numVertex
+                       vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                         left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
+                        right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
+                   projection:(matrix_float4x4 *_Nonnull) projection_mat;
 {
     if(numVertex > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->anaglyphPipelineState];
@@ -366,122 +235,6 @@
 }
 
 
-- (void) setMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-             pipelines:(KemoView2DMetalPipelines * _Nonnull) kemoView2DPipelines
-           metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-            projection:(matrix_float4x4 * _Nonnull) map_proj_mat
-{
-    /*  Commands to render map projection */
-    [self draw2DElementObject:renderEncoder
-                    pipelines:kemoView2DPipelines
-                    numVertex:kemoView2DMetalBufs->numMapSolidIndices
-                       vertex:&(kemoView2DMetalBufs->mapNodeVertice)
-                       index:&(kemoView2DMetalBufs->mapSolidIndices)
-                   projection:map_proj_mat];
-
-    /*  Commands to render map projection */
-    [self draw2DPatchObject:renderEncoder
-                  pipelines:kemoView2DPipelines
-                  numVertex:kemoView2DMetalBufs->numMapSolidVertice
-                     vertex:&(kemoView2DMetalBufs->mapSolidVertice)
-                 projection:map_proj_mat];
-
-     /*  Commands to render isolines on map */
-    [self draw2DPatchObject:renderEncoder
-                  pipelines:kemoView2DPipelines
-                  numVertex:kemoView2DMetalBufs->numMapinesVertice
-                     vertex:&(kemoView2DMetalBufs->mapLinesVertice)
-                 projection:map_proj_mat];
-    /*  Commands to render Coastline on map */
-    [self draw2DPatchObject:renderEncoder
-                 pipelines:kemoView2DPipelines
-                 numVertex:kemoView2DMetalBufs->numCoastTubeVertice
-                    vertex:&(kemoView2DMetalBufs->coastTubeVertice)
-                projection:map_proj_mat];
-
-    [self draw2DLineObject:renderEncoder
-                 pipelines:kemoView2DPipelines
-                 numVertex:kemoView2DMetalBufs->numCoastLineVertice
-                    vertex:&(kemoView2DMetalBufs->coastLineVertice)
-                projection:map_proj_mat];
-    return;
-}
-
-- (void) setMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                 pipelines:(KemoView2DMetalPipelines * _Nonnull) kemo2DPipelines
-               metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                projection:(matrix_float4x4 * _Nonnull) projection_mat
-{
-/*  Commands to render colorbar  box */
-    [self draw2DPatchObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numColorBarVertice
-                     vertex:&(kemoView2DMetalBufs->colorBarVertice)
-                 projection:projection_mat];
-/*  Commands to render colorbar  label */
-    [self drawTextBoxObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numMinLabelVertice
-                     vertex:&(kemoView2DMetalBufs->minLabelVertice)
-                     texure:&(kemoView2DMetalBufs->minLabelTexure)
-                 projection:projection_mat];
-    [self drawTextBoxObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numMaxLabelVertice
-                     vertex:&(kemoView2DMetalBufs->maxLabelVertice)
-                     texure:&(kemoView2DMetalBufs->maxLabelTexure)
-                 projection:projection_mat];
-    [self drawTextBoxObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numZeroLabelVertice
-                     vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
-                     texure:&(kemoView2DMetalBufs->zeroLabelTexure)
-                 projection:projection_mat];
-
-/*  Commands to render time label */
-    [self drawTextBoxObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numtimeLabelVertice
-                     vertex:&(kemoView2DMetalBufs->timeLabelVertice)
-                     texure:&(kemoView2DMetalBufs->timeLabelTexure)
-                 projection:projection_mat];
-/*  Commands to render colorbar  box */
-    [self drawTextBoxObject:renderEncoder
-                  pipelines:kemo2DPipelines
-                  numVertex:kemoView2DMetalBufs->numMessageVertice
-                     vertex:&(kemoView2DMetalBufs->messageVertice)
-                     texure:&(kemoView2DMetalBufs->messageTexure)
-                 projection:projection_mat];
-    return;
-}
-
-- (void) releaseMapMetalBuffers
-{
-    [self releaseMapMBuffers:&_kemoView2DMetalBufs];
-    return;
-}
-- (void) releaseMsgMetalBuffers
-{
-    [self releaseMsgMBuffers:&_kemoView2DMetalBufs];
-    return;
-}
-
-- (void) setMapMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
-                    buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
-{
-    [self setMapMBuffers:device
-             metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
-}
-- (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
-                        buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
-{
-    [self setMsgMBuffers:device
-             metalbuffer:&_kemoView2DMetalBufs
-                 buffers:kemo_buffers];
-    return;
-}
-
 
 -(void) add2DShaderLibrary:(id<MTLLibrary> _Nonnull * _Nonnull) shaderLibrary
 {
@@ -489,46 +242,13 @@
                      library:shaderLibrary];
 }
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
+                     pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
                    targetPixel:(MTLPixelFormat) pixelformat
 {
     [self setKemoView2DPipelines:mtkView
                          shaders:&_kemoView2DShaders
-                       pipelines:&_kemoView2DPipelines
+                       pipelines:kemoView2DPipelines
                      targetPixel:pixelformat];
 }
-
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-               projection:(matrix_float4x4 * _Nonnull) map_proj_mat
-{
-    [self setMapObjects:renderEncoder
-              pipelines:&_kemoView2DPipelines
-            metalBuffer:&_kemoView2DMetalBufs
-              projection:map_proj_mat];
-}
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                   projection:(matrix_float4x4 * _Nonnull) projection_mat
-{
-    [self setMessageObjects:renderEncoder
-               pipelines:&_kemoView2DPipelines
-             metalBuffer:&_kemoView2DMetalBufs
-              projection:projection_mat];
-}
-
-- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                     numVertex:(NSUInteger) numVertex
-                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
-                          left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
-                         right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
-                    projection:(matrix_float4x4 * _Nonnull) projection_mat
-{
-    [self drawAnaglyphObject:renderEncoder
-                   pipelines:&_kemoView2DPipelines
-                   numVertex:numVertex
-                      vertex:anaglyphVertex
-                        left:leftTexure
-                       right:rightTexure
-                  projection:projection_mat];
-}
-
 @end
 

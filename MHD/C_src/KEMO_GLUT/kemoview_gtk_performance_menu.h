@@ -19,16 +19,12 @@
 #include "kemoview_gtk_routines.h"
 #include "view_modifier_glfw.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 
-GtkWidget * init_num_threads_menu_frame(struct kemoviewer_type *kemo_sgl);
-GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_type *kemo_sgl,
+GtkWidget * init_num_threads_menu_frame(struct kemoviewer_gl_type *kemo_gl);
+GtkWidget * init_FPS_test_menu_frame(struct kemoviewer_gl_type *kemo_gl,
                                      GtkWidget *window);
 
 #endif /*  KEMOVIEW_GTK_PERFORMANCE_MENU_  */

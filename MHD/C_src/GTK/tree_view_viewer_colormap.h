@@ -15,9 +15,8 @@
 #include "tree_view_4_colormap.h"
 #include "tree_view_4_pvr_colormap.h"
 
-void update_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
-                                     struct colormap_view *color_vws);
-void init_colormap_params_4_viewer(struct kemoviewer_type *kemo_sgl,
+void init_colormap_params_4_viewer(int id_model,
+                                   struct kemoviewer_gl_type *kemo_gl,
                                    struct colormap_view *color_vws);
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 

@@ -80,7 +80,7 @@
       subroutine read_control_data_sph_trans(file_name,                 &
      &                                       spt_ctl, c_buf)
 !
-      use viz_step_ctls_to_time_ctl
+      use viz4_step_ctls_to_time_ctl
 !
       character(len = kchara), intent(in) :: file_name
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
@@ -103,10 +103,10 @@
       c_buf%level = c_buf%level - 1
       if(c_buf%iend .gt. 0) return
 !
-      call s_viz_step_ctls_to_time_ctl                                  &
-     &   (spt_ctl%viz_ctls, spt_ctl%t_ctl)
-      call add_fields_4_vizs_to_fld_ctl(spt_ctl%viz_ctls,               &
-     &    spt_ctl%fld_ctl%field_ctl)
+      call s_viz4_step_ctls_to_time_ctl(spt_ctl%viz4_ctls,              &
+     &                                 spt_ctl%t_ctl)
+      call add_fields_viz4_to_fld_ctl(spt_ctl%viz4_ctls,                &
+     &                                spt_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_control_data_sph_trans
 !
@@ -143,7 +143,7 @@
      &         (id_control, hd_block, spt_ctl, c_buf)
 !
       use ctl_data_platforms_IO
-      use ctl_data_visualiser_IO
+      use ctl_data_four_vizs_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -159,7 +159,7 @@
       call init_parallel_shell_ctl_label(hd_sph_shell,                  &
      &                                   spt_ctl%psph_ctl)
       call init_FEM_mesh_ctl_label(hd_FEM_mesh, spt_ctl%Fmesh_ctl)
-      call init_viz_ctl_label(hd_viz_control, spt_ctl%viz_ctls)
+      call init_viz4_ctl_label(hd_viz_control, spt_ctl%viz4_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -181,8 +181,8 @@
         call read_sph_trans_params_ctl                                  &
      &     (id_control, hd_sph_trans_params, spt_ctl, c_buf)
 !
-        call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           spt_ctl%viz_ctls, c_buf)
+        call s_read_viz4_controls(id_control, hd_viz_control,           &
+     &                           spt_ctl%viz4_ctls, c_buf)
       end do
       spt_ctl%i_sph_trans_ctl = 1
 !
@@ -194,7 +194,7 @@
      &         (id_control, hd_block, spt_ctl, level)
 !
       use ctl_data_platforms_IO
-      use ctl_data_visualiser_IO
+      use ctl_data_four_vizs_IO
       use ctl_file_gen_sph_shell_IO
       use write_control_elements
 !
@@ -222,7 +222,7 @@
       call write_sph_trans_params_ctl                                   &
      &   (id_control, hd_sph_trans_params, spt_ctl, level)
 !
-      call write_viz_controls(id_control, spt_ctl%viz_ctls, level)
+      call write_viz4_controls(id_control, spt_ctl%viz4_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_control_data

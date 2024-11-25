@@ -37,8 +37,9 @@ void cal_range_4_mesh_c(struct viewer_mesh *mesh_s, struct view_element *view){
 	return;
 }
 
-void cal_psf_viewer_range(struct psf_data **psf_s, struct kemo_array_control *psf_a,  
-                          struct fline_data *fline_d, struct fline_menu_val *fline_m, 
+void cal_psf_viewer_range(struct psf_data **psf_s,   struct kemo_array_control *psf_a,  
+                          struct psf_data *fline_d,  struct psf_menu_val *fline_m, 
+                          struct psf_data *tracer_d, struct psf_menu_val *tracer_m, 
                           struct view_element *view){
     int i, nd;
     
@@ -48,7 +49,11 @@ void cal_psf_viewer_range(struct psf_data **psf_s, struct kemo_array_control *ps
 	};
     view->r_max = ZERO;
     
-    if (fline_m->iflag_draw_fline > 0) {
+    if (tracer_m->iflag_draw_viz > 0) {
+        set_center_4_draw_c(view, tracer_d->xmin_psf, tracer_d->xmax_psf,
+                            tracer_d->center_psf, tracer_d->rmax_psf);
+    };
+    if (fline_m->iflag_draw_viz > 0) {
         set_center_4_draw_c(view, fline_d->xmin_psf, fline_d->xmax_psf,
                             fline_d->center_psf, fline_d->rmax_psf);
     };

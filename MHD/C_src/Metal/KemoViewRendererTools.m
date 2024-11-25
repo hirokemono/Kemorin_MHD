@@ -103,7 +103,6 @@
                   material:(MaterialParameters *) mats
                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int i, j;
     [self setMetalColorbuffer:lights
                      material:mats
                      kemoview:kemo_sgl];
@@ -118,18 +117,27 @@
     int i;
     double value, color, opacity;
     
-    metalColormap->id_cmap[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP);
+    metalColormap->id_cmap[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                SURFACE_RENDERING,
+                                                                ISET_COLORMAP);
     
-    metalColormap->num_normalize[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
+    metalColormap->num_normalize[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                      SURFACE_RENDERING,
+                                                                      ISET_NUM_COLOR);
     for(i=0;i<metalColormap->num_normalize[0];i++){
-        kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl, SURFACE_RENDERING,
+                                         i, &value, &color);
         metalColormap->data_reference[i] =  (float) value;
         metalColormap->data_normalized[i] = (float) color;
     }
     
-    metalColormap->num_opacity[0] = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
+    metalColormap->num_opacity[0] = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                                    SURFACE_RENDERING,
+                                                                    ISET_NUM_OPACITY);
     for(i=0;i<metalColormap->num_opacity[0];i++) {
-        kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+        kemoview_get_PSF_opacity_items(kemo_sgl,
+                                       SURFACE_RENDERING,
+                                       i, &value, &opacity);
         metalColormap->alpha_reference[i] =  (float) value;
         metalColormap->alpha_output[i] = (float) opacity;
     }
@@ -169,7 +177,7 @@
 - (void) setKemoViewLightings:(struct kemoviewer_type *) kemo_sgl
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    if(kemo_sgl->kemo_buffers->cube_index_buf->ntot_vertex > 0){
+    if(kemo_sgl->kemo_buffers->initial_bufs->cube_index_buf->ntot_vertex > 0){
         [self setCubeColorbuffer:&(monoViewUnites->lights)
                         material:&(monoViewUnites->material)
                         kemoview:kemo_sgl];

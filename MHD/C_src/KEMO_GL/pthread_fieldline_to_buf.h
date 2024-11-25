@@ -19,12 +19,14 @@
 
 long sel_fieldtubes_to_buf_pthread(long ist_patch, const int nthreads, 
                                    double tube_width,
-                                   struct fline_data *fline_d,
-                                   struct fline_menu_val *fline_m,
-                                   struct gl_strided_buffer *strided_buf);
-long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads, 
-                                   struct fline_data *fline_d,
-                                   struct fline_menu_val *fline_m,
+                                   struct psf_data *fline_d,
+                                   struct fline_directions *fline_dir,
+                                   struct psf_menu_val *fline_m,
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_index_buffer   *index_buf);
+long sel_fieldlines_to_buf_pthread(long ist_patch, const int nthreads,
+                                   struct psf_data *fline_d,
+                                   struct psf_menu_val *fline_m,
                                    struct gl_strided_buffer *strided_buf);
 
 #endif /* PTHREAD_FIELDLINE_TO_BUF_ */

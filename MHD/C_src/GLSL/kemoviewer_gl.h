@@ -8,12 +8,6 @@
 #ifndef kemoviewer_gl_h_
 #define kemoviewer_gl_h_
 
-#ifdef __APPLE__
-#include<OpenGL/gl3.h>
-#else
-#include<GL/gl.h>
-#endif
-
 #include "kemoviewer.h"
 
 #include "glsl.h"
@@ -24,32 +18,42 @@
 #include "m_gl_transfer_matrix.h"
 #include "init_gl_lighting_c.h"
 #include "kemoviewer_param_c.h"
+#include "kemoview_gl_draw_objects.h"
 #include "move_draw_objects_gl.h"
 #include "write_gl_window_to_file.h"
 #include "set_kemoviewer_ucd_data.h"
+#include "draw_colorbar_gl.h"
 
 #ifdef PNG_OUTPUT
     #include "set_psf_texture_by_png.h"
 #endif
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+struct kemoviewer_gl_type{
+    struct kemoview_shaders   *kemo_shaders;
+    struct kemoview_VAOs      *kemo_VAOs;
+    struct VAO_ids            *menu_VAO;
+    
+    struct kemoviewer_type    *kemoview_data;
+};
 
 /*  OopenGL routines */
-    struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void);
+    struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer);
     void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl);
-
-    void kemoview_gl_init_lighting(struct kemoviewer_gl_type *kemo_gl);
 
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
-                              struct kemoviewer_gl_type *kemo_gl);
-    void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
-                                  struct kemoviewer_gl_type *kemo_gl);
+    void kemoview_modify_anaglyph(struct kemoviewer_gl_type *kemo_gl);
+
+    void kemoview_gl_full_draw(struct kemoviewer_gl_type * kemo_gl);
+    void kemoview_gl_fast_draw(struct kemoviewer_gl_type * kemo_gl);
+    void kemoview_gl_quilt_draw(int istep_qult, struct kemoviewer_gl_type * kemo_gl);
+
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
@@ -69,12 +73,12 @@ extern "C" {
                                        struct kv_string *file_name);
 
 /* subroutines for surafces */
-    int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+    int kemoview_get_PSF_file_prefix(struct kemoviewer_gl_type *kemo_gl,
                                      struct kv_string *stripped_filehead);
     void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                          struct kemoviewer_gl_type *kemo_gl);
-    void * kemoview_link_active_colormap_param(int i_current, int icomp,
-                                               struct kemoviewer_type *kemoviewer);
+    void * kemoview_link_active_colormap_param(int id_model,
+                                               struct kemoviewer_gl_type *kemo_gl);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */

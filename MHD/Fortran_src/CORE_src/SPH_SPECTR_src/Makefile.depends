@@ -30,7 +30,7 @@ count_num_sph_smp.o: $(SPH_SPECTR_DIR)/count_num_sph_smp.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 extend_potential_field.o: $(SPH_SPECTR_DIR)/extend_potential_field.f90 m_precision.o m_constants.o t_spheric_rj_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-first_fdm_ele_to_node.o: $(SPH_SPECTR_DIR)/first_fdm_ele_to_node.f90 m_precision.o m_constants.o t_spheric_parameter.o t_fdm_coefs.o cal_inverse_small_matrix.o
+first_fdm_ele_to_node.o: $(SPH_SPECTR_DIR)/first_fdm_ele_to_node.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_parameter.o t_fdm_coefs.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 first_fdm_node_to_ele.o: $(SPH_SPECTR_DIR)/first_fdm_node_to_ele.f90 m_precision.o m_constants.o t_spheric_parameter.o t_fdm_coefs.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -106,6 +106,6 @@ t_spheric_rtm_data.o: $(SPH_SPECTR_DIR)/t_spheric_rtm_data.f90 m_precision.o m_c
 	$(F90) -c $(F90OPTFLAGS) $<
 t_spheric_rtp_data.o: $(SPH_SPECTR_DIR)/t_spheric_rtp_data.f90 m_precision.o m_constants.o m_spheric_constants.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-third_fdm_node_to_ele.o: $(SPH_SPECTR_DIR)/third_fdm_node_to_ele.f90 m_precision.o m_constants.o t_spheric_parameter.o t_fdm_coefs.o cal_inverse_small_matrix.o
+third_fdm_node_to_ele.o: $(SPH_SPECTR_DIR)/third_fdm_node_to_ele.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_parameter.o t_fdm_coefs.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

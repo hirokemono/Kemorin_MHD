@@ -9,15 +9,6 @@
 #import "Colormap_EditorAppDelegate.h"
 #include "m_kemoviewer_structure.h"
 
-struct viewer_mesh       *vmesh;
-struct psf_data          *psf_d;
-struct fline_data        *fline_d;
-struct mesh_menu_val     *mesh_menu;
-struct psf_menu_val      *psf_menu;
-struct fline_menu_val    *fline_menu;
-struct view_element      *view_s;
-struct glut_menu_address *glut_menu_id;
-
 @implementation Colormap_EditorAppDelegate
 
 @synthesize window;

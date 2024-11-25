@@ -1025,6 +1025,17 @@ void get_coastline_thickness_w_exp(struct view_element *view_s,
     return;
 };
 
+void set_axis_thickness_w_exp(double value, int i_digit,
+                              struct view_element *view_s){
+    view_s->width_axis = const_from_digit_order(value, i_digit);
+    return;
+};
+void get_axis_thickness_w_exp(struct view_element *view_s,
+                              double *value, int *i_digit){
+    find_order_digit(view_s->width_axis, value, i_digit);
+    return;
+};
+
 void set_lighting_check_flag(struct view_element *view_s, int num) {view_s->iflag_light_check = num;};
 int send_lighting_check_flag(struct view_element *view_s) {return view_s->iflag_light_check;};
 

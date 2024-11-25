@@ -124,13 +124,24 @@
       integer(kind = kint) :: ifile
 !
 !
+        write(*,*) 'tave_st_rev_param%flag_old_gauss', tave_st_rev_param%flag_old_gauss
 !       Load gauss coefficients data
+      imode_g1(-1:1) = 0
       if(tave_st_rev_param%flag_old_gauss) then
         call load_gauss_coefs_time_series                               &
      &     (flag_log, tave_st_rev_param%gauss_file_name,                &
      &      tave_st_rev_param%start_time, tave_st_rev_param%end_time,   &
      &      true_start, true_end, gauss_IO_a)
         call dup_gauss_series_to_spectr(gauss_IO_a, sph_IN_g, g_series)
+!
+        do i = 1, sph_IN_g%nfield_sph_spec
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))        &
+     &                                              imode_g1( 0) = i
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))        &
+     &                                              imode_g1( 1) = i
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))        &
+     &                                              imode_g1(-1) = i
+        end do
       else
         call load_sph_volume_mean_file                                  &
      &     (tave_st_rev_param%gauss_file_name,                          &
@@ -139,17 +150,17 @@
         write(comment_111,'(2a,a23,1p2E25.15e3,a1)') '#', char(10),     &
      &             '# Start and End time:  ', true_start, true_end,     &
      &             char(10)
+!
+        do i = 1, sph_IN_g%nfield_sph_spec
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))        &
+     &                                              imode_g1( 0) = i-2
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))        &
+     &                                              imode_g1( 1) = i-2
+          if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))        &
+     &                                              imode_g1(-1) = i-2
+        end do
       end if
 !
-      imode_g1(-1:1) = 0
-      do i = 1, sph_IN_g%nfield_sph_spec
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))          &
-     &                                               imode_g1( 0) = i
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))          &
-     &                                               imode_g1( 1) = i
-        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))          &
-     &                                               imode_g1(-1) = i
-      end do
       write(*,*) 'imode_g1', imode_g1( 0), imode_g1( 1), imode_g1(-1)
 !
       allocate(ave_gauss(sph_IN_g%nfield_sph_spec,2))
@@ -158,15 +169,21 @@
       allocate(iflag_sta(g_series%n_step))
       allocate(iflag_rev(g_series%n_step))
 !
+!$omp parallel workshare
       iflag_sta = 0
       iflag_rev = 0
+!$omp end parallel workshare
+!$omp parallel do private(i,g10_mid)
       do i = 1, g_series%n_step-1
         g10_mid = half * (g_series%vmean_series(imode_g1( 0),i)         &
      &                  + g_series%vmean_series(imode_g1( 0),i+1))
         if(abs(g10_mid) .le. tave_st_rev_param%border_g10)              &
      &                                        iflag_rev(i) = 1
       end do
+!$omp end parallel do
+!$omp parallel workshare
       iflag_sta(1:g_series%n_step) = 1 - iflag_rev(1:g_series%n_step)
+!$omp end parallel workshare
 !
       write(*,'(a)',advance='NO') 'Stable Phase '
       call cal_time_ave_picked_sph_spectr                               &

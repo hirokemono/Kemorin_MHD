@@ -156,7 +156,6 @@ t_control_data_4_pvr.o \
 t_control_data_pvr_isosurfs.o \
 t_control_data_pvr_sections.o \
 t_control_data_pvrs.o \
-t_control_data_viz3.o \
 t_control_data_viz4.o \
 t_control_params_4_pvr.o \
 t_control_params_stereo_pvr.o \

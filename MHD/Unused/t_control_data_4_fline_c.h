@@ -38,6 +38,7 @@ struct fline_ctl_c{
 	struct chara_ctl_item *start_surf_grp_ctl;
 	struct int_ctl_item *num_fieldline_ctl;
 	struct int_ctl_item *max_line_stepping_ctl;
+	struct real_ctl_item *max_trace_length_ctl;
 	
 	struct real3_clist *seed_point_list;
 	struct int2_clist *seed_surface_list;

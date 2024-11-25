@@ -9,7 +9,7 @@ void set_gl_bg_color(float bg_color[4]){
     return;
 };
 
-void kemo_gl_initial_lighting_c(struct kemoview_shaders *kemo_shaders){	
+void initialize_gl_shaders(struct kemoview_shaders *kemo_shaders){
 	if (glslInit()) exit(1);
 	LoadShaderFromStrings(kemo_shaders->simple, load_simple_vert(), load_simple_frag());
 	LoadShaderFromStrings(kemo_shaders->phong, load_phong_vert(), load_phong_frag());

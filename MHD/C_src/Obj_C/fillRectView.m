@@ -19,16 +19,19 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 
 - (void)drawRect:(NSRect)frameRect
 {
+    int current_model = [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [self setBoundsSize : NSMakeSize(165,275)];
-    [self SetColorRectangles:kemo_sgl];
+    [self SetColorRectangles:current_model
+                    kemoview:kemo_sgl];
     [self DrawColorMarks];
 }
 - (void)UpdateColorbar{
 	[self setNeedsDisplay:YES];
 }
 
-- (void)SetColorRectangles:(struct kemoviewer_type *) kemo_sgl
+- (void)SetColorRectangles:(int) current_model
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     boxRect = NSMakeRect(54, 1, 52, 257);
     NSRect	rect1 = NSMakeRect(55, 2, 25, 2);
@@ -42,17 +45,33 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 	float ylabel;
     int		i, npoint;
     
-    if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) < 1) return;
-	npoint = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
-	kemoview_get_PSF_color_items(kemo_sgl, IZERO, &colorMin, &color);
-	kemoview_get_PSF_color_items(kemo_sgl, (npoint-1), &colorMax, &color);
-	npoint = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
-	kemoview_get_PSF_opacity_items(kemo_sgl, IZERO, &dataMin, &opacity);
-	kemoview_get_PSF_opacity_items(kemo_sgl, (npoint-1), &dataMax, &opacity);
+    if(current_model == SURFACE_RENDERING){
+        int n_loaded = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
+        if(n_loaded < 1) return;
+    }
+    
+    npoint = kemoview_get_viz_colormap_param(kemo_sgl,
+                                             current_model,
+                                             ISET_NUM_COLOR);
+    kemoview_get_VIZ_color_RGB_value(kemo_sgl, current_model,
+                                     IZERO, &colorMin, &color);
+    kemoview_get_VIZ_color_RGB_value(kemo_sgl, current_model,
+                                     (npoint-1), &colorMax, &color);
+	npoint = kemoview_get_viz_colormap_param(kemo_sgl,
+                                             current_model,
+                                             ISET_NUM_OPACITY);
+	kemoview_get_PSF_opacity_items(kemo_sgl,
+                                   current_model,
+                                   IZERO, &dataMin, &opacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl,
+                                   current_model,
+                                   (npoint-1), &dataMax, &opacity);
 	if (dataMin > colorMin) {dataMin = colorMin;};
 	if (dataMax < colorMax) {dataMax = colorMax;};
 
-	maxOpacity = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
+	maxOpacity = kemoview_get_VIZ_opacity_range(kemo_sgl,
+                                                current_model,
+                                                ISET_OPACITY_MAX);
 	
     // Set rectList
     for(i = 0; i < RECTCOUNT; i++) {
@@ -66,8 +85,9 @@ BOOL appearanceIsDark(NSAppearance * appearance)
     for(i = 0; i < RECTCOUNT; i++) {
 		value = dataMin
 			+ ((double) i / ((double)RECTCOUNT-1)) * (dataMax-dataMin);
-		kemoview_get_PSF_rgb_at_value(kemo_sgl, value, &r, &g, &b);
-		a = kemoview_get_PSF_opacity_at_value(kemo_sgl, value);
+		kemoview_get_PSF_rgb_at_value(kemo_sgl, current_model, value,
+                                      &r, &g, &b);
+		a = kemoview_get_PSF_opacity_at_value(kemo_sgl, current_model, value);
 		a = a / maxOpacity;
 
         colors[i] = [NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0];
@@ -76,8 +96,12 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 
 	str = [NSString stringWithFormat:@"Color"];
 	[self drawString:str x:105 y:265];
-	for(i = 0; i < kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR); i++) {
-		kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
+    int n_color = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                  current_model,
+                                                  ISET_NUM_COLOR);
+	for(i = 0; i<n_color; i++) {
+        kemoview_get_VIZ_color_RGB_value(kemo_sgl, current_model,
+                                         i, &value, &color);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
 		[self drawString:str x:112 y:ylabel];
@@ -85,8 +109,13 @@ BOOL appearanceIsDark(NSAppearance * appearance)
 
 	str = [NSString stringWithFormat:@"Opacity"];
 	[self drawString:str x:3 y:265];
-	for(i = 0; i < kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY); i++) {
-		kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+    int n_opacity = kemoview_get_viz_colormap_param(kemo_sgl,
+                                                    current_model,
+                                                    ISET_NUM_OPACITY);
+	for(i = 0; i < n_opacity; i++) {
+		kemoview_get_PSF_opacity_items(kemo_sgl,
+                                       current_model,
+                                       i, &value, &opacity);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
 		[self drawString:str x:0 y:ylabel];

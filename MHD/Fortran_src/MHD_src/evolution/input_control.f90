@@ -10,13 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
-!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,   &
-!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+!!     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,       &
+!!     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,    &
+!!     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
-!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,   &
-!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+!!     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
+!!     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
+!!     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -36,6 +36,7 @@
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
+!!        type(tracers_control), intent(inout) :: tracer_ctls
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!@endverbatim
@@ -60,6 +61,7 @@
       use t_field_data_IO
       use t_ctl_data_FEM_MHD
       use t_ctl_data_SGS_model
+      use t_control_data_tracers
       use t_FEM_MHD_solvers
       use t_bc_data_list
       use t_flex_delta_t_data
@@ -86,8 +88,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+      subroutine load_control_4_fem_MHD(file_name, FEM_MHD_ctl,         &
+     &                                 sgs_ctl, tracer_ctls, viz_ctls)
 !
       use t_ctl_data_FEM_MHD
       use t_ctl_data_SGS_model
@@ -96,10 +98,12 @@
       use bcast_control_FEM_MHD
       use bcast_ctl_SGS_MHD_model
       use bcast_control_data_vizs
+      use bcast_control_data_tracers
 !
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
 !
       type(buffer_for_control) :: c_buf1
@@ -107,8 +111,8 @@
 !
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_4_fem_MHD(file_name,                          &
-     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf1)
+        call read_control_4_FEM_MHD(file_name,                          &
+     &      FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf1)
       end if
 !
       if(c_buf1%iend .gt. 0) then
@@ -118,6 +122,7 @@
       call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
       call bcast_sgs_ctl(sgs_ctl)
       call bcast_viz_controls(viz_ctls)
+      call bcast_tracer_controls(tracer_ctls)
 !
       end subroutine load_control_4_fem_MHD
 !
@@ -125,9 +130,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_FEM_MHD                                &
-     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
-     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,         &
+     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,      &
+     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -151,12 +156,13 @@
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
+      type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
       call load_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl1,           &
-     &                            sgs_ctl_F, viz_ctls)
+     &                            sgs_ctl_F, tracer_ctls, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD(FEM_MHD_ctl1%plt,                      &
@@ -189,9 +195,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_FEM_snap                               &
-     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
-     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,         &
+     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,      &
+     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -215,12 +221,13 @@
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !
+      type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
       call load_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl1,          &
-     &                            sgs_ctl_F, viz_ctls)
+     &                            sgs_ctl_F, tracer_ctls, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD(FEM_MHD_ctl1%plt,                      &

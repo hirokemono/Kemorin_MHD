@@ -93,23 +93,12 @@ static void get_grayscale_c(double val, double minval, double maxval,
 	return;
 }
 
-void set_two_color_scale_c(double val, double *f_color){
-	
-	if ( val < 0.0 ) {
-		f_color[0] = 0.2;
-		f_color[1] = 0.5;
-		f_color[2] = 0.8;
-	}
-	else{
-		f_color[0] = 1.0;
-		f_color[1] = 0.5;
-		f_color[2] = 0.0;
-	};
-	
-	/*
-	f_color[3] = opacity * SIX_DECI;
-	f_color[3] = opacity;
-	*/
+void set_two_color_scale_c(int id_color_mode, 
+                           double val, double *f_color){
+    double rnorm = 1.0;
+    if (val < 0.0){rnorm = 0.0;};
+    cal_rgb_from_value_s(id_color_mode, rnorm,
+                         &f_color[0], &f_color[1], &f_color[2]);
 	return;
 }
 
@@ -133,13 +122,31 @@ void set_two_color_scale_g(double val, double *f_color){
 	return;
 }
 
+void set_two_range_cyan_color_c(double val, double *f_color){
+	
+	if ( val < 0.0 ) {
+		f_color[0] = 0.2;
+		f_color[1] = 0.5;
+		f_color[2] = 0.8;
+	}
+	else{
+		f_color[0] = 1.0;
+		f_color[1] = 0.5;
+		f_color[2] = 0.0;
+    };
+    
+	return;
+}
+
 void set_rainbow_color_code(struct colormap_array *cmap_array,
                             struct colormap_array *omap_array,
                             int id_color_mode, double val_pe,
 							double *f_color){
-	set_rgb_from_value_s(cmap_array, id_color_mode, val_pe,
+    double rnorm = color_normalize_linear_segment_c(cmap_array->num,
+                                                    cmap_array->data,
+                                                    cmap_array->value, val_pe);
+    cal_rgb_from_value_s(id_color_mode, rnorm,
                          &f_color[0], &f_color[1], &f_color[2]);
-
     f_color[3] = set_opacity_from_value_s(omap_array, val_pe);
 	return;
 }

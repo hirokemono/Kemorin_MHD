@@ -18,14 +18,10 @@
 #include "kemoviewer_gl.h"
 #include "kemoview_gtk_routines.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 /* protytypes */
 
-GtkWidget * init_tube_pref_frame(struct kemoviewer_type *kemo_sgl);
+GtkWidget * init_tube_pref_frame(struct kemoviewer_gl_type *kemo_gl);
 
 #endif /* KEMOVIEW_GTK_TUBE_PREF_MENU_*/

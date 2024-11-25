@@ -37,6 +37,7 @@
       use t_MHD_step_parameter
       use t_phys_data
       use t_MHD_file_parameter
+      use t_ctl_data_FEM_MHD
       use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_FEM_MHD_control
@@ -139,8 +140,7 @@
 !
 !   set forces
 !
-      call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, MHD_prop)
+      call s_set_control_4_force(model_ctl, MHD_prop)
       call set_control_rotation_form(MHD_prop%iflag_all_scheme,         &
      &    MHD_prop%fl_prop, fmctl_ctl%mevo_ctl, FEM_prm)
 !
@@ -176,6 +176,7 @@
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
+!   Set external magnetic field scale
       call set_coefs_4_magnetic_scale                                   &
      &   (model_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
 !
@@ -199,6 +200,8 @@
       call set_control_4_FEM_params                                     &
      &   (fmctl_ctl%mevo_ctl, fmctl_ctl%fint_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, FEM_prm)
+!
+!   set tracer parameters
 !
       end subroutine set_control_4_FEM_MHD
 !

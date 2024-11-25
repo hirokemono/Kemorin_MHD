@@ -26,7 +26,7 @@ cal_gaussian_at_node.o: $(FILTER_3D_MATDIR)/cal_gaussian_at_node.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_simple_filter_each_node.o: $(FILTER_3D_MATDIR)/cal_simple_filter_each_node.f90 m_precision.o m_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_elength.o t_filter_dxdxi.o t_reference_moments.o t_next_node_ele_4_node.o t_filter_coefs.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o expand_filter_area_4_1node.o set_simple_filters.o cal_3d_filter_4_each_node.o int_filter_functions.o fem_const_filter_matrix.o delete_small_weighting.o write_filters_4_each_node.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sol_deltax_by_consist.o: $(FILTER_3D_MATDIR)/cal_sol_deltax_by_consist.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_finite_element_mat.o t_crs_matrix.o t_vector_for_solver.o calypso_mpi.o t_ctl_params_4_gen_filter.o t_solver_SR.o solver.o
+cal_sol_deltax_by_consist.o: $(FILTER_3D_MATDIR)/cal_sol_deltax_by_consist.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_finite_element_mat.o t_crs_matrix.o t_vector_for_solver.o m_work_time.o calypso_mpi.o t_ctl_params_4_gen_filter.o t_solver_SR.o solver.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sol_filter_func_nod.o: $(FILTER_3D_MATDIR)/cal_sol_filter_func_nod.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_crs_connect.o t_crs_matrix.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o copy_2_crs_matrix_4_filter.o solver_single.o m_ludcmp.o
 	$(F90) -c $(F90OPTFLAGS) $<

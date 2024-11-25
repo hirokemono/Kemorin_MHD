@@ -90,6 +90,8 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      integer(kind = kint) :: ibuo_temp,  ibuo_comp
+!
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
      &   (SPH_MHD%sph, trans_p%leg, SPH_MHD%ipol, ipol_LES,             &
@@ -109,14 +111,19 @@
      &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp,                      &
      &    SPH_MHD%ipol%prod_fld, SPH_MHD%fld)
 !
+      call sel_field_address_for_buoyancies(SPH_MHD%ipol%sym_fld,       &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ibuo_temp, ibuo_comp)
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
-     &    SPH_MHD%ipol%sym_fld, SPH_MHD%ipol%forces_by_sym_asym,        &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &    SPH_MHD%ipol%forces_by_sym_asym, MHD_prop%fl_prop,            &
+     &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+!
+      call sel_field_address_for_buoyancies(SPH_MHD%ipol%asym_fld,      &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ibuo_temp, ibuo_comp)
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
-     &    SPH_MHD%ipol%asym_fld, SPH_MHD%ipol%forces_by_sym_sym,        &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &    SPH_MHD%ipol%forces_by_sym_sym, MHD_prop%fl_prop,             &
+     &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
 !
 !
 !

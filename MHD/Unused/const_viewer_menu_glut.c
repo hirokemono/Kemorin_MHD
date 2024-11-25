@@ -2,6 +2,7 @@
 /* const_viewer_menu_glut.c */
 
 #include "const_viewer_menu_glut.h"
+#define COLORBAR_TOGGLE      8
 
 void glut_drawing_select() {
 	int iflag_shade = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
@@ -149,7 +150,7 @@ void glut_PSF_comps_select() {
 void glut_PSF_patchcolor_select(){
 	int iflag_p_color = kemoview_get_PSF_patch_color_mode();
 
-	if (iflag_p_color != RAINBOW_SURFACE) {
+	if (iflag_p_color != COLORED_BY_DATA) {
 		glutAddMenuEntry("Rainbow surface", RAINBOW_PSF_SURF);
 	};
 	if (iflag_p_color != WHITE_SURFACE) {
@@ -235,7 +236,7 @@ void glut_PSF_draw_menu(){
 	int iflag_grid =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	int iflag_zero =        kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
 	int iflag_cbar =        kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
-	int iflag_vect =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+	int iflag_vect =        kemoview_get_VIZ_vector_draw_flags(kemo_sgl, SURFACE_RENDERING);
 	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
     int iflag_PSF_tanvec =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	int if_psf =            kemoview_get_PSF_field_id();
@@ -300,7 +301,7 @@ void glut_PSF_draw_menu(){
 void glut_PSF_range_menu(){
 	int if_psf =        kemoview_get_PSF_field_id();
 	int ncomp =   (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
-	int iflag_vect =    kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+	int iflag_vect =    kemoview_get_VIZ_vector_draw_flags(kemo_sgl, SURFACE_RENDERING);
 	int iflag_v_color = kemoview_get_PSF_vector_color_mode();
 /*	int iflag_refv =  kemoview_get_PSF_draw_refv();*/
 
@@ -318,7 +319,7 @@ void glut_PSF_range_menu(){
 			glutAddMenuEntry("show Vector Reference",PSFREFV_TOGGLE);
 		};
 		*/
-		if (iflag_v_color == RAINBOW_SURFACE) {
+		if (iflag_v_color == COLORED_BY_DATA) {
 			glutAddMenuEntry("Black Vector",          WHITE_PSF_VECT);
 		}else{
 			glutAddMenuEntry("Rainbow Vector",        RAINBOW_PSF_VECT);

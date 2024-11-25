@@ -8,16 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine LIC_fixview_viz_shared_mesh                          &
-!!     &         (istep_lic, time, geofem, nod_fld, repart_p,           &
+!!     &         (istep_lic, time, elps_LIC, geofem, nod_fld, repart_p, &
 !!     &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
-!!      subroutine LIC_movie_visualize_shared_mesh                      &
-!!     &         (istep_lic, time, geofem, nod_fld, repart_p,           &
+!!      subroutine LIC_movie_visualize_shared_mesh(istep_lic, time,     &
+!!     &          elps_PVR, elps_LIC, geofem, nod_fld, repart_p,        &
 !!     &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
-!!      subroutine LIC_movie_quilt_shared_mesh                          &
-!!     &         (istep_lic, time, geofem, nod_fld, repart_p,           &
+!!      subroutine LIC_movie_quilt_shared_mesh(istep_lic, time,         &
+!!     &          elps_PVR, elps_LIC, geofem, nod_fld, repart_p,        &
 !!     &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_PVR
+!!        type(elapsed_lables), intent(in) :: elps_LIC
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
@@ -68,10 +70,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_fixview_viz_shared_mesh                            &
-     &         (istep_lic, time, geofem, nod_fld, repart_p,             &
+     &         (istep_lic, time, elps_LIC, geofem, nod_fld, repart_p,   &
      &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use each_volume_rendering
@@ -80,6 +81,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
@@ -101,8 +103,8 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
-     &                          repart_data, m_SR)
+        call set_LIC_each_field(elps_LIC, geofem, repart_p,             &
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
@@ -111,7 +113,7 @@
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering', i_lic
         call reset_lic_count_line_int(rep_ref_viz)
         call s_each_LIC_rendering                                       &
-     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &     (istep_lic, time, num_img, elps_LIC, repart_data%viz_fem,    &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
@@ -121,8 +123,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_movie_visualize_shared_mesh                        &
-     &         (istep_lic, time, geofem, nod_fld, repart_p,             &
+      subroutine LIC_movie_visualize_shared_mesh(istep_lic, time,       &
+     &          elps_PVR, elps_LIC, geofem, nod_fld, repart_p,          &
      &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
@@ -133,6 +135,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
@@ -155,12 +158,12 @@
 !
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
-        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
-     &                          repart_data, m_SR)
+        call set_LIC_each_field(elps_LIC, geofem, repart_p,             &
+     &                          lic_param(i_lic), repart_data, m_SR)
         call reset_lic_count_line_int(rep_ref_viz)
 !
         call s_each_LIC_rendering_w_rot                                 &
-     &     (istep_lic, time, repart_data%viz_fem,                       &
+     &     (istep_lic, time, elps_PVR, elps_LIC, repart_data%viz_fem,   &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
@@ -171,8 +174,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_movie_quilt_shared_mesh                            &
-     &         (istep_lic, time, geofem, nod_fld, repart_p,             &
+      subroutine LIC_movie_quilt_shared_mesh(istep_lic, time,           &
+     &          elps_PVR, elps_LIC, geofem, nod_fld, repart_p,          &
      &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
@@ -183,6 +186,7 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
@@ -204,16 +208,16 @@
         num_img = pvr%PVR_sort%istack_pvr_images(i_lic) - ist_img
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
-        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
-     &                          repart_data, m_SR)
+        call set_LIC_each_field(elps_LIC, geofem, repart_p,             &
+     &                          lic_param(i_lic), repart_data, m_SR)
         call reset_lic_count_line_int(rep_ref_viz)
 !
         call each_LIC_quilt_rendering_w_rot                             &
-     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
-     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
-     &      rep_ref_viz, m_SR)
+     &     (istep_lic, time, num_img, elps_PVR, elps_LIC,               &
+     &      repart_data%viz_fem, repart_data%field_lic,                 &
+     &      pvr%sf_grp_4_sf, lic_param(i_lic), pvr%pvr_param(i_lic),    &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
       end do
 !
       end subroutine LIC_movie_quilt_shared_mesh

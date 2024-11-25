@@ -15,9 +15,6 @@
 @synthesize OpacityTableOpacity;
 @synthesize idOpacityTableView;
 
-@synthesize DataMaximum;
-@synthesize DataMinimum;
-
 - (void)awakeFromNib {
 	self.OpacityTableField =   [[NSMutableArray alloc]init];
 	self.OpacityTableOpacity = [[NSMutableArray alloc]init];	
@@ -29,9 +26,12 @@
 	double value2, opacity2;
     
 	NSInteger isel = [idOpacityTableView selectedRow];
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 
-    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
+    int n_opacity = kemoview_get_viz_colormap_param(kemo_sgl, id_model,
+                                                    ISET_NUM_OPACITY);
+    if(n_opacity > 16) return;
 
 	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
@@ -40,7 +40,8 @@
 		opacity2 = [[self.OpacityTableOpacity objectAtIndex:isel] doubleValue];
 		value =   (value1 + value2)*HALF;
 		opacity = (opacity1 + opacity2)*HALF;
-		kemoview_add_PSF_opacity_list(value, opacity, kemo_sgl);
+        kemoview_add_VIZ_opacity_list(value, opacity,
+                                      id_model, kemo_sgl);
 		
         [self SetOpacityTables:kemo_sgl];
 	}
@@ -51,13 +52,14 @@
 - (IBAction)deleteSelectedRow:(id)pId {
     int i;
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     NSIndexSet *SelectedList = [idOpacityTableView selectedRowIndexes];
     if([self.OpacityTableField count] < 3) return;
     
     if ([idOpacityTableView numberOfSelectedRows] > 0) {
         for(i = (int) [self.OpacityTableField count]-1;i>1;i--){
             if([SelectedList containsIndex:i] == TRUE){
-                kemoview_delete_PSF_opacity_list(i, kemo_sgl);
+                kemoview_delete_VIZ_opacity_list(i, id_model, kemo_sgl);
             }
         }
     }
@@ -119,8 +121,10 @@
 										  withObject:[[NSNumber alloc] initWithDouble:opacity]];
 	}
 	
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
+    kemoview_set_VIZ_opacity_data((int) pRowIndex, value, opacity,
+                                  id_model, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 	[_fillRectView UpdateColorbar];
     return;
@@ -130,17 +134,6 @@
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
-- (void)InitOpacityTables:(struct kemoviewer_type *) kemo_sgl
-{
-	double d_min, d_max;
-	
-	NumOpacityTable = 2;
-	d_min = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MIN);
-	d_max = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MAX);
-	
-    [self SetOpacityTables:kemo_sgl];
-}
-
 - (void) SetOpacityTables:(struct kemoviewer_type *) kemo_sgl
 {
 	int i;
@@ -148,9 +141,12 @@
 	
 	[OpacityTableField removeAllObjects];
 	[OpacityTableOpacity removeAllObjects];
-	NumOpacityTable = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY);
+    int id_model = (int) [_kemoviewControl CurrentControlModel];
+	NumOpacityTable = kemoview_get_viz_colormap_param(kemo_sgl, id_model,
+                                                      ISET_NUM_OPACITY);
 	for(i=0;i<NumOpacityTable;i++){
-		kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
+		kemoview_get_PSF_opacity_items(kemo_sgl, id_model,
+                                       i, &value, &opacity);
 		[OpacityTableField    addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[OpacityTableOpacity addObject:[[NSNumber alloc ] initWithDouble:opacity] ];
 	}

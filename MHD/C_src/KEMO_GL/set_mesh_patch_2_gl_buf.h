@@ -16,14 +16,14 @@
 #include "m_vertex_buffer.h"
 #include "set_primitives_to_gl_buffer.h"
 
-long num_icosahedron_patch(void);
 long add_mesh_node_ico_to_buf(long ist_patch, int *istack_grp, int num_pe_sf,
                               int *iflag_domain, long *istack_patch_pe);
 long set_each_group_node_ico_to_buf(const long ist_tri, 
                                     long ist_grp, long ied_grp, int *item_grp,
                                     struct viewer_mesh *mesh_s, double node_diam,
                                     double f_color[4], 
-                                    struct gl_strided_buffer *mesh_buf);
+                                    struct gl_strided_buffer *mesh_buf,
+                                    struct gl_index_buffer *index_buf);
 
 long count_mesh_edge_buf(long ist_edge, int *iflag_domain, int *istack_grp,
                          struct viewer_mesh *mesh_s, long *istack_edge_pe);

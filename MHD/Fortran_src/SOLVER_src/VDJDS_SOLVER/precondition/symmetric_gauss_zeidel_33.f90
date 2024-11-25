@@ -1,15 +1,19 @@
-!symmetric_gauss_zeidel_33.f90
-!      module symmetric_gauss_zeidel_33
+!>@file   symmetric_gauss_zeidel_33.f90
+!!@brief  module symmetric_gauss_zeidel_33
+!!
+!!@author H. Matsui
+!!@date Programmed in 20??
 !
-!     Written by Kemorin
-!
+!>@brief  complete Gauss-Zeidel (data communication for each hyperplane)
+!!
+!!@verbatim
 !!       subroutine weak_sym_gauss_zeidel_33                            &
 !!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
 !!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
 !!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
-!!     &            niter, SR_sig, SR_r)
+!!     &            niter, SR_sig, SR_r, COMMtime)
 !!
 !!       subroutine full_sym_gauss_zeidel_33                            &
 !!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
@@ -17,7 +21,7 @@
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
 !!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
-!!     &            niter, SR_sig, SR_r)
+!!     &            niter, SR_sig, SR_r, COMMtime)
 !!
 !!
 !!       subroutine weak_sym_gauss_zeidel_3x33                          &
@@ -26,7 +30,7 @@
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           niter, SR_sig, SR_r)
+!!     &           niter, SR_sig, SR_r, COMMtime)
 !!
 !!       subroutine full_sym_gauss_zeidel_3x33                          &
 !!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
@@ -34,9 +38,10 @@
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
 !!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
-!!     &            niter, SR_sig, SR_r)
+!!     &            niter, SR_sig, SR_r, COMMtime)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module symmetric_gauss_zeidel_33
 !
@@ -44,7 +49,6 @@
 !
       use t_solver_SR
       use gauss_zeidel_33
-      use m_solver_count_time
       use solver_SR_3
 !
       implicit none
@@ -61,7 +65,7 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            niter, SR_sig, SR_r)
+     &            niter, SR_sig, SR_r, COMMtime)
 !
       use calypso_mpi
 !
@@ -102,6 +106,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME
 !
        integer(kind = kint) :: icou
 !
@@ -117,8 +125,7 @@
         call SOLVER_SEND_RECV_3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
-          END_TIME= MPI_WTIME()
-          COMMtime = COMMtime + END_TIME - START_TIME
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !
         call gauss_zeidel_backward_33                                   &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
@@ -130,8 +137,7 @@
         call SOLVER_SEND_RECV_3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
-          END_TIME= MPI_WTIME()
-          COMMtime = COMMtime + END_TIME - START_TIME
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
       end do
 !
       end subroutine weak_sym_gauss_zeidel_33
@@ -144,7 +150,7 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            niter, SR_sig, SR_r)
+     &            niter, SR_sig, SR_r, COMMtime)
 !
       use calypso_mpi
 !
@@ -185,6 +191,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME
 !
        integer(kind = kint) :: icou, iv
 !
@@ -202,8 +212,7 @@
           call SOLVER_SEND_RECV_3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
-           END_TIME= MPI_WTIME()
-           COMMtime = COMMtime + END_TIME - START_TIME
+          COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         end do
 !
         do iv= NVECT, 1, -1
@@ -214,12 +223,11 @@
      &            ALU_U, B, S, W3)
 !
 !
-        START_TIME= MPI_WTIME()
+          START_TIME= MPI_WTIME()
           call SOLVER_SEND_RECV_3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
-          END_TIME= MPI_WTIME()
-          COMMtime = COMMtime + END_TIME - START_TIME
+          COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         end do
       end do
 !
@@ -234,7 +242,7 @@
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           niter, SR_sig, SR_r)
+     &           niter, SR_sig, SR_r, COMMtime)
 !
       use calypso_mpi
 !
@@ -276,6 +284,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME
 !
        integer(kind = kint) :: icou
 !
@@ -291,8 +303,7 @@
         call solver_send_recv_3x3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
-        END_TIME= MPI_WTIME()
-        COMMtime = COMMtime + END_TIME - START_TIME
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 !
         call gauss_zeidel_backward_3x33                                 &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
@@ -304,8 +315,7 @@
         call solver_send_recv_3x3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
-        END_TIME= MPI_WTIME()
-        COMMtime = COMMtime + END_TIME - START_TIME
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
       end do
 !
        end subroutine weak_sym_gauss_zeidel_3x33
@@ -318,7 +328,7 @@
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           niter, SR_sig, SR_r)
+     &           niter, SR_sig, SR_r, COMMtime)
 !
       use calypso_mpi
 !
@@ -360,6 +370,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME
 !
        integer(kind = kint) :: icou, iv
 !
@@ -376,8 +390,7 @@
           call solver_send_recv_3x3                                     &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
-          END_TIME= MPI_WTIME()
-          COMMtime = COMMtime + END_TIME - START_TIME
+          COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         end do
 !
         do iv= NVECT, 1, -1
@@ -391,9 +404,7 @@
           call solver_send_recv_3x3                                     &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
-          END_TIME= MPI_WTIME()
-          COMMtime = COMMtime + END_TIME - START_TIME
-!
+          COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
         end do
       end do
 !

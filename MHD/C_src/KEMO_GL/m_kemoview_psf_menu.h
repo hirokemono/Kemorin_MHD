@@ -17,6 +17,7 @@
 #include "m_colorbar_buffer.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
+#include "set_psf_viewer.h"
 
 struct kemo_array_control{
 	int nlimit_loaded;
@@ -50,43 +51,50 @@ struct kemo_array_control{
 };
 
 struct psf_menu_val{
-	struct kv_string *psf_header;
-	int psf_step;
-	int iflag_psf_file;
+	struct kv_string *viz_prefix_c;
+	int viz_step_c;
+	int iformat_viz_file;
 	
     int iflag_draw_time;
     double time;
-
+    
+	int if_draw_viz;
+	int ic_draw_viz;
+	long icomp_draw_viz;
+	
+    int iflag_draw_viz;
+	int iflag_draw_cbar;
+    
+	struct colormap_params **cmap_viz_comp;
+	struct colormap_params **cmap_viz_fld;
+	
+///*    Color mode  ID      **///
+	int viz_color_mode;
     int polygon_mode_psf;
-    int ivect_tangential;
+    long viz_line_type;
+    int ncorner_viz_line;
+    
+    int isoline_ncorner;
+	double viz_line_width;
 	
-	int draw_psf_solid;
-	int draw_psf_grid;
-	int draw_psf_zero;
-	int draw_psf_cbar;
-	
-	int if_draw_psf;
-	int ic_draw_psf;
-	long icomp_draw_psf;
-	
-	int psf_patch_color;
 	int isoline_color;
 	int n_isoline;
-	double isoline_width;
+	
+	int draw_psf_grid;
+	int draw_psf_zero;
 	
 	int ist_positive_line;
-	
-	struct colormap_params **cmap_psf_comp;
-	struct colormap_params **cmap_psf_fld;
 	
 	int draw_psf_vect;
 	int draw_psf_refv;
 	int vector_patch_color;
+    int ivect_tangential;
 	int increment_vect;
 	double scale_vect;
 	double vector_thick;
     
     long nadded_for_phi0;
+    struct map_interpolate *map_itp;
 };
 
 /* Prototypes */
@@ -96,8 +104,13 @@ void alloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 
 
-void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
-void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
+struct psf_menu_val *  init_psf_menu_val(void);
+void dealloc_psf_menu_val(struct psf_menu_val *psf_m);
+
+void alloc_draw_psf_flags(int id_color_mode, long nfield, long ncomptot,
+                          struct psf_menu_val *psf_m);
+void dealloc_draw_psf_flags(long nfield, long ncomptot,
+                            struct psf_menu_val *psf_m);
 
 void alloc_kemoview_array(struct kemo_array_control *psf_a);
 void set_max_psf_loading(int ntot_psf_data, struct kemo_array_control *psf_a);
@@ -106,10 +119,12 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a);
 
 void init_psf_parameters(struct psf_menu_val *psf_m);
 
-void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-
-
+void set_VIZ_field(int selected,
+                   char *data_name, long *istack_comp,
+                   struct psf_menu_val *psf_m);
+void set_VIZ_component(int selected,
+                       char *data_name, long *istack_comp,
+                       struct psf_menu_val *psf_m);
 
 int get_PSF_maximum_load(struct kemo_array_control *psf_a);
 

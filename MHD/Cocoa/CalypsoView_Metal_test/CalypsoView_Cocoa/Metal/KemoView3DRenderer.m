@@ -33,7 +33,7 @@
                metalbuffer:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
                   kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
                    buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
-                      PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
+                      PSFs:(struct kemoview_mul_psf *_Nonnull) kemo_mul_psf
 {
     /*  Set Cube Vertex buffer */
     kemoView3DMetalBuf->numCubeVertice = [_kemo3DMetalBufBase setCubeVertexs:device
@@ -61,7 +61,7 @@
                 metalbuffer:&_kemoViewMetalBuf
                    kemoview:kemo_sgl
                     buffers:kemo_sgl->kemo_buffers
-                       PSFs:kemo_sgl->kemo_psf];
+                       PSFs:kemo_sgl->kemo_mul_psf];
     return;
 }
 

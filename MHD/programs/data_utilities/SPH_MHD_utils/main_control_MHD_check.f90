@@ -14,15 +14,25 @@
 !
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
+      use t_control_data_tracers
+      use t_control_data_dynamo_vizs
       use write_control_elements
+      use ctl_data_SGS_SPH_MHD_IO
 !
       implicit none
 !
 !>      File name for control file
       character(len=kchara) :: MHD_ctl_name
 !
-      type(mhd_simulation_control) :: MHD_ctl1
-      type(add_sgs_sph_mhd_ctl) :: add_SSMHD_ctl1
+      type(mhd_simulation_control) :: MHD_ctl3
+!>        Structures for SGS controls
+      type(SGS_model_control) :: sgs_ctl3
+!>        Structures of visualization controls
+      type(visualization_controls) :: viz_ctls3
+!>        Structures of tracer
+      type(tracers_control) :: tracer_ctls3
+!>        Structures of zonal mean controls
+      type(sph_dynamo_viz_controls) :: zm_ctls3
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -34,16 +44,16 @@
       call getarg_k(1, MHD_ctl_name)
 !
       c_buf1%level = 0
-      call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
-     &    MHD_ctl1, add_SSMHD_ctl1, c_buf1)
+      call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl3, sgs_ctl3, &
+     &    tracer_ctls3, viz_ctls3, zm_ctls3, c_buf1)
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
 !
       write(id_monitor,'(a)') '!  '
       write(id_monitor,'(a)') '!  Checked control data'
       write(id_monitor,'(a)') '!  '
-      call write_sph_mhd_control_data(id_monitor,                       &
-     &    MHD_ctl1, add_SSMHD_ctl1, c_buf1%level)
+      call write_sph_mhd_control_data(id_monitor, MHD_ctl3, sgs_ctl3,   &
+     &    tracer_ctls3, viz_ctls3,  zm_ctls3, c_buf1%level)
 !
       stop '***** program finished *****'
 !

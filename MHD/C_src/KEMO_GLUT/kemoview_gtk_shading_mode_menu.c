@@ -10,25 +10,27 @@
 
 static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int index_mode = gtk_selected_combobox_index(combobox_shading);
     
-    kemoview_set_object_property_flags(SHADING_SWITCH, index_mode, kemo_sgl);
-    draw_full(kemo_sgl);
+    kemoview_set_object_property_flags(SHADING_SWITCH, index_mode,
+                                       kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
     return;
 };
 
 static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int index_mode = gtk_selected_combobox_index(combobox_surfdir);
     
-    kemoview_set_object_property_flags(POLYGON_SWITCH, index_mode, kemo_sgl);
-    draw_full(kemo_sgl);
+    kemoview_set_object_property_flags(POLYGON_SWITCH, index_mode,
+                                       kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
     return;
 };
 
-GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl){
+GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl){
 /* Shading mode chooser */
     
     GtkWidget * label_tree_shading = create_fixed_label_w_index_tree();
@@ -40,7 +42,7 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl){
     
     GtkWidget *combobox_shading = gtk_combo_box_new_with_model(child_model_shading);
     GtkCellRenderer *renderer_shading = gtk_cell_renderer_text_new();
-    if(kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH) == FLAT_SHADE){
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, SHADING_SWITCH) == FLAT_SHADE){
         gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_shading), 1);
     } else {
         gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_shading), 0);
@@ -49,7 +51,7 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl){
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_shading), renderer_shading,
                 "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_shading), "changed",
-                G_CALLBACK(set_shading_mode_CB), (gpointer) kemo_sgl);
+                G_CALLBACK(set_shading_mode_CB), (gpointer) kemo_gl);
     
     GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
@@ -67,7 +69,7 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl){
     
     GtkWidget *combobox_surf_dir = gtk_combo_box_new_with_model(child_model_surf_dir);
     GtkCellRenderer *renderer_surf_dir = gtk_cell_renderer_text_new();
-    if(kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH) == REVERSE_POLYGON){
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, POLYGON_SWITCH) == REVERSE_POLYGON){
         gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_surf_dir), 1);
     } else {
         gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_surf_dir), 0);
@@ -76,7 +78,7 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_type *kemo_sgl){
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_surf_dir), renderer_surf_dir,
                 "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_surf_dir), "changed",
-                G_CALLBACK(set_surface_direction_CB), (gpointer) kemo_sgl);
+                G_CALLBACK(set_surface_direction_CB), (gpointer) kemo_gl);
     
     GtkWidget *hbox_surf_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_surf_dir), gtk_label_new("Surface direction: "), FALSE, FALSE, 0);

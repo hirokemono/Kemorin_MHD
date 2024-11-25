@@ -54,6 +54,8 @@ interpolate_vector_ele8.o: $(INTERPOLATE_DIR)/interpolate_vector_ele8.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 interporate_position_in_ele.o: $(INTERPOLATE_DIR)/interporate_position_in_ele.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sel_interpolate_scalar.o: $(INTERPOLATE_DIR)/sel_interpolate_scalar.f90 m_precision.o m_geometry_constants.o interpolate_scalar_ele8.o interpolate_scalar_ele20.o interpolate_scalar_ele27.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_interpolate_coefs_dest.o: $(INTERPOLATE_DIR)/t_interpolate_coefs_dest.f90 m_precision.o t_interpolate_tbl_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_interpolate_tbl_dest.o: $(INTERPOLATE_DIR)/t_interpolate_tbl_dest.f90 m_precision.o m_constants.o

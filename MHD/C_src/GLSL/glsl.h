@@ -11,7 +11,6 @@
 #include<GL/gl.h>
 #endif
 
-#include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_phong_light_table_c.h"
 #include "m_transfer_matrices.h"
@@ -23,6 +22,9 @@ struct shader_ids{
 	
 	GLuint vertexID;
 	GLuint fragmentID;
+    
+    char *vetex_text;
+    char *fragment_text;
 };
 
 struct kemoview_shaders{

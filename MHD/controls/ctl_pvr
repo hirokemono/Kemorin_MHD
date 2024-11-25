@@ -83,7 +83,7 @@ begin volume_rendering   (BMP or PNG)
     end array position_of_lights
 !
     ambient_coef              0.5
-    diffuse_coef              5.6
+    diffuse_coef              0.6
     specular_coef             0.8
   end lighting_ctl
 !

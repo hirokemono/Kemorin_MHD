@@ -28,8 +28,7 @@ extern const char color_labels[7][KCHARA_C];
 void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
 			struct chara_ctl_item *colormap_mode);
 
-void set_rgb_from_value_s(struct colormap_array *cmap_array,
-                          int id_color_mode, double value,
+void cal_rgb_from_value_s(int id_color_mode, double rnorm,
                           double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
                       double red, double green, double blue);
@@ -55,9 +54,6 @@ void get_color_table_items_s(struct colormap_params *cmap_s,
 void get_opacity_table_items_s(struct colormap_params *cmap_s, 
                                int i_point, double *value, double *opacity);
 
-void get_colormap_to_tables(struct colormap_params *cmap_s, int *id_cmap, int *num_cmap, int *num_alpha,
-                            float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
-
 void set_linear_colormap(struct colormap_params *cmap_s, double val_min, double val_max);
 void set_constant_opacitymap(struct colormap_params *cmap_s,
                              double val_min, double val_max, double opacity);
@@ -69,10 +65,10 @@ void copy_opacity_from_ctl(struct real2_clist *f_linear_opacity_ctl,
                            struct colormap_params *cmap_s);
 
 void check_colormap_control_file_s(const int iflag_draw_time, const int iflag_draw_axis,
-                                   const int draw_psf_cbar, struct colormap_params *cmap_s);
+                                   const int iflag_draw_cbar, struct colormap_params *cmap_s);
 void write_colormap_control_file_s(const char *file_name, 
                                    const int iflag_draw_time, const int iflag_draw_axis, 
-                                   const int draw_psf_cbar, struct colormap_params *cmap_s);
+                                   const int iflag_draw_cbar, struct colormap_params *cmap_s);
 void read_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
 
 

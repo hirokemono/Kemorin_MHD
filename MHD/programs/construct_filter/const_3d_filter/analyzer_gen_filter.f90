@@ -13,6 +13,7 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
+      use m_work_time
 !
       use t_ctl_params_4_gen_filter
       use t_ctl_param_newdom_filter
@@ -95,6 +96,7 @@
       use const_jacobians_3d
       use set_ctl_gen_filter
       use mpi_load_mesh_data
+      use cal_sol_deltax_by_consist
 !
 !
       use calypso_mpi
@@ -104,7 +106,10 @@
         write(*,*) 'Input file: mesh data'
       end if
 !
-!     --------------------- 
+      call init_elapse_time_by_TOTAL
+      call init_elapsed_solver_4_filter
+!
+!     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
       if(my_rank .eq. 0) then

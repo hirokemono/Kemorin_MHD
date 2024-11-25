@@ -35,6 +35,8 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_work_time
+      use m_elapsed_labels_4_MHD
       use calypso_mpi
 !
       use t_physical_property
@@ -104,6 +106,8 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
+      real(kind = kreal) :: PRECtime
+!
 !C
 !C +-----------------+
 !C | preconditioning |
@@ -112,34 +116,58 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl_l, mat_press,    &
-     &     PRECOND_11, sigma_diag)
+     &     PRECOND_11, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp, djds_tbl_fl, mat_velo,       &
-     &      PRECOND_33, sigma_diag)
+     &      PRECOND_33, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_temp,       &
-     &     PRECOND_11, sigma_diag)
+     &     PRECOND_11, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_light,      &
-     &     PRECOND_11, sigma_diag)
+     &     PRECOND_11, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_l, mat_magp,        &
-     &     PRECOND_11, sigma_diag)
+     &     PRECOND_11, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       if    (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson           &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call precond_DJDS33_struct(np_smp, djds_tbl, mat_magne,         &
-     &      PRECOND_33, sigma_diag)
+     &      PRECOND_33, sigma_diag, PRECtime)
+        if(iflag_FMHD_time) then
+          elps1%elapsed(ist_elapsed_FMHD+2)                             &
+     &        = elps1%elapsed(ist_elapsed_FMHD+2) + PRECtime
+        end if
       end if
 !
       end subroutine matrix_precondition

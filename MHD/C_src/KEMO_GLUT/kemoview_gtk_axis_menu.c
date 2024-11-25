@@ -10,57 +10,61 @@
 #include "kemoview_gtk_axis_menu.h"
 
 static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(AXIS_TOGGLE, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(AXIS_TOGGLE, iflag,
+                                       kemo_gl->kemoview_data);
 	
-	draw_full(kemo_sgl);
+	draw_full_gl(kemo_gl);
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(COASTLINE_SWITCH, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(COASTLINE_SWITCH, iflag,
+                                       kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(SPHEREGRID_SWITCH, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(SPHEREGRID_SWITCH, iflag,
+                                       kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 	return;
 };
 static void draw_tangent_cyl_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     int iflag = gtk_switch_get_state(GTK_SWITCH(switch_bar));
-    kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH, iflag, kemo_sgl);
+    kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH, iflag,
+                                       kemo_gl->kemoview_data);
     
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
     return;
 };
 static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
 	double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_coastline_radius(radius, kemo_sgl);
+	kemoview_set_coastline_radius(radius, kemo_gl->kemoview_data);
 	
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 static void ICB_radius_CB(GtkWidget *entry, gpointer data)
 {
-    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    kemoview_set_inner_core_radius(radius, kemo_sgl);
+    kemoview_set_inner_core_radius(radius, kemo_gl->kemoview_data);
     
-    draw_full(kemo_sgl);
+    draw_full_gl(kemo_gl);
 }
 
 
 
-GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
+GtkWidget * make_axis_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                GtkWidget *window){
 	int index = 0;
 	
@@ -68,56 +72,60 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 
     
 	GtkWidget *switch_axis = gtk_switch_new();
-	if(kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE) == 0){
+	if(kemoview_get_object_property_flags(kemo_gl->kemoview_data,
+                                          AXIS_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(switch_axis), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(switch_axis), TRUE);
 	};
 	g_signal_connect(G_OBJECT(switch_axis), "notify::active",
-				G_CALLBACK(draw_axis_switch_CB), (gpointer) kemo_sgl);
+				G_CALLBACK(draw_axis_switch_CB), (gpointer) kemo_gl);
 	
 	GtkWidget *switch_coastline = gtk_switch_new();
-	if(kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH) == 0){
+	if(kemoview_get_object_property_flags(kemo_gl->kemoview_data,
+                                          COASTLINE_SWITCH) == 0){
 		gtk_switch_set_active(GTK_SWITCH(switch_coastline), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(switch_coastline), TRUE);
 	};
 	g_signal_connect(G_OBJECT(switch_coastline), "notify::active",
-				G_CALLBACK(draw_coastline_switch_CB), (gpointer) kemo_sgl);
+				G_CALLBACK(draw_coastline_switch_CB), (gpointer) kemo_gl);
 	
 	GtkWidget *switch_sph_grid = gtk_switch_new();
-	if(kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH) == 0){
+	if(kemoview_get_object_property_flags(kemo_gl->kemoview_data,
+                                          SPHEREGRID_SWITCH) == 0){
 		gtk_switch_set_active(GTK_SWITCH(switch_sph_grid), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(switch_sph_grid), TRUE);
 	};
 	g_signal_connect(G_OBJECT(switch_sph_grid), "notify::active",
-				G_CALLBACK(draw_sph_grid_switch_CB), (gpointer) kemo_sgl);
+				G_CALLBACK(draw_sph_grid_switch_CB), (gpointer) kemo_gl);
 	
-	GtkAdjustment *adj_coast_radius = gtk_adjustment_new(kemoview_get_coastline_radius(kemo_sgl),
-										  0.0, 10.0, 0.02, 0.02, 0.0);
+	GtkAdjustment *adj_coast_radius
+        = gtk_adjustment_new(kemoview_get_coastline_radius(kemo_gl->kemoview_data),
+                             0.0, 10.0, 0.02, 0.02, 0.0);
 	GtkWidget *spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
 	g_signal_connect(spin_coast_radius, "value-changed",
-                     G_CALLBACK(coastline_radius_CB), (gpointer) kemo_sgl);
+                     G_CALLBACK(coastline_radius_CB), (gpointer) kemo_gl);
 
     
     GtkWidget *switch_tangent_cyl = gtk_switch_new();
-    if(kemoview_get_object_property_flags(kemo_sgl, TANGENT_CYLINDER_SWITCH) == 0){
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data,
+                                          TANGENT_CYLINDER_SWITCH) == 0){
         gtk_switch_set_active(GTK_SWITCH(switch_tangent_cyl), FALSE);
     } else {
         gtk_switch_set_active(GTK_SWITCH(switch_tangent_cyl), TRUE);
     };
     g_signal_connect(G_OBJECT(switch_tangent_cyl), "notify::active",
-                G_CALLBACK(draw_tangent_cyl_switch_CB), (gpointer) kemo_sgl);
+                G_CALLBACK(draw_tangent_cyl_switch_CB), (gpointer) kemo_gl);
     
 
-    GtkAdjustment *adj_ICB_radius = gtk_adjustment_new(kemoview_get_inner_core_radius(kemo_sgl),
-                                          0.0, 10.0, 0.02, 0.02, 0.0);
+    GtkAdjustment *adj_ICB_radius
+        = gtk_adjustment_new(kemoview_get_inner_core_radius(kemo_gl->kemoview_data),
+                             0.0, 10.0, 0.02, 0.02, 0.0);
     GtkWidget *spin_ICB_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ICB_radius), 0, 3);
     g_signal_connect(spin_ICB_radius, "value-changed",
-                     G_CALLBACK(ICB_radius_CB), (gpointer) kemo_sgl);
-
-
+                     G_CALLBACK(ICB_radius_CB), (gpointer) kemo_gl);
 
 	GtkWidget *hbox_axis = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_axis), gtk_label_new("Draw axis: "), FALSE, FALSE, 0);

@@ -19,22 +19,22 @@
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_viewer_colormap.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_PSF_menu.h"
+#include "kemoview_gtk_evolution_menu.h"
+#include "kemoview_gtk_fline_selectors.h"
 #include "view_modifier_glfw.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 
 /*  prototypes */
+void replace_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
+                            struct psf_gtk_menu *psf_gmenu,
+                            GtkWidget *itemTEvo);
 
-void init_psf_window(struct kemoviewer_type *kemo_sgl,
-                     struct kemoviewer_gl_type *kemo_gl,
+void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
                      struct psf_gtk_menu *psf_gmenu,
-                     GtkWidget *window);
+                     GtkWidget *main_window, GtkWidget *itemTEvo);
 
 #endif /*  KEMOVIEW_GTK_PSF_WINDOW_ */

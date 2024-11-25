@@ -37,6 +37,7 @@ struct fline_ctl_c * init_fline_ctl_c(){
 	fline_c->start_surf_grp_ctl =    init_chara_ctl_item_c();
     fline_c->num_fieldline_ctl =     init_int_ctl_item_c();
     fline_c->max_line_stepping_ctl = init_int_ctl_item_c();
+    fline_c->max_trace_length_ctl =  init_real_ctl_item_c();
 	
     fline_c->seed_point_list = init_real3_clist();
     sprintf(fline_c->seed_point_list->r1_name, "x");
@@ -69,6 +70,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	dealloc_chara_ctl_item_c(fline_c->start_surf_grp_ctl);
 	free(fline_c->num_fieldline_ctl);
 	free(fline_c->max_line_stepping_ctl);
+	free(fline_c->max_trace_length_ctl);
 	
 	dealloc_real3_clist(fline_c->seed_point_list);
 	dealloc_int2_clist(fline_c->seed_surface_list);
@@ -103,6 +105,8 @@ int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 							  fline_c->line_direction_ctl);
 		read_integer_ctl_item_c(buf, fline_c->fline_ctl_lbls->label_fline_ctl->label[ 8],
 								fline_c->max_line_stepping_ctl);
+		read_integer_ctl_item_c(buf, fline_c->fline_ctl_lbls->label_fline_ctl->label[14],
+								fline_c->max_trace_length_ctl);
         
 		read_chara_ctl_item_c(buf, fline_c->fline_ctl_lbls->label_fline_ctl->label[ 9],
 							  fline_c->starting_type_ctl);
@@ -154,6 +158,9 @@ int write_fline_ctl_c(FILE *fp, int level, const char *label,
 	write_integer_ctl_item_c(fp, level, fline_c->fline_ctl_lbls->label_fline_ctl->maxlen,
 							 fline_c->fline_ctl_lbls->label_fline_ctl->label[ 8],
 							 fline_c->max_line_stepping_ctl);
+	write_integer_ctl_item_c(fp, level, fline_c->fline_ctl_lbls->label_fline_ctl->maxlen,
+							 fline_c->fline_ctl_lbls->label_fline_ctl->label[14],
+							 fline_c->max_trace_length_ctl);
     
 	write_chara_ctl_item_c(fp, level, fline_c->fline_ctl_lbls->label_fline_ctl->maxlen,
 						   fline_c->fline_ctl_lbls->label_fline_ctl->label[ 9],

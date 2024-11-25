@@ -62,6 +62,8 @@ t_mesh_data_with_pointer.o: $(COMMDIR)/t_mesh_data_with_pointer.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_para_double_numbering.o: $(COMMDIR)/t_para_double_numbering.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o t_solver_SR_int.o t_geometry_data.o t_comm_table.o solver_SR_type.o find_belonged_process.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_paralell_surface_indices.o: $(COMMDIR)/t_paralell_surface_indices.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_mesh_data.o t_comm_table.o t_mesh_SR.o t_para_double_numbering.o t_geometry_data.o t_surface_data.o reverse_SR_int.o solver_SR_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_read_djds_matrix_IO.o: $(COMMDIR)/t_read_djds_matrix_IO.f90 m_precision.o t_comm_table.o t_solver_djds.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sum_local_node_id_list.o: $(COMMDIR)/t_sum_local_node_id_list.f90 m_precision.o m_constants.o t_geometry_data.o t_para_double_numbering.o t_next_node_ele_4_node.o find_element_id_4_node.o cal_minmax_and_stacks.o t_surface_data.o t_edge_data.o

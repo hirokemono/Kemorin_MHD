@@ -16,6 +16,7 @@
 #import "AAPLImage.h"
 #import "KemoViewMetalBuffers.h"
 #import "KemoViewRendererTools.h"
+#import "KemoView3DBaseRenderer.h"
 
 #include "m_kemoviewer_data.h"
 
@@ -58,11 +59,18 @@ typedef struct
     /*  Vertex buffer for PSF arrows */
     id<MTLBuffer> _Nullable psfArrowVertice;
     NSUInteger numPSFArrowVertice;
+    /*  Index buffer for PSF arrows */
+    id<MTLBuffer> _Nullable psfArrowIndices;
+    NSUInteger numPSFArrowIndices;
+
     /*  Vertex buffer for PSF isolines */
     id<MTLBuffer> _Nullable psfLinesVertice;
     NSUInteger numPSFLinesVertice;
+    /*  Vertex buffer for PSF isotubes */
     id<MTLBuffer> _Nullable psfTubesVertice;
     NSUInteger numPSFTubesVertice;
+    id<MTLBuffer> _Nullable psfTubeIndice;
+    NSUInteger numPSFTubesIndice;
 
     /*  Texure buffer for PSF with texure */
     id<MTLTexture> _Nullable psfSolidTexure;
@@ -71,12 +79,24 @@ typedef struct
     id<MTLTexture> _Nullable psfTransTexure;
     NSUInteger numPSFTransTexurePixsel;
 
+    /*  Vertex buffer for field lines  */
+    id<MTLBuffer> _Nullable fieldLineVertice;
+    NSUInteger numFieldLineVertice;
     /*  Vertex buffer for field lines solid patch */
     id<MTLBuffer> _Nullable fieldTubeVertice;
     NSUInteger numFieldTubeVertice;
-    /*  Vertex buffer for field lines  */
-    id<MTLBuffer> _Nullable fieldLineVertice;
-    NSUInteger numFfieldLineVertice;
+    id<MTLBuffer> _Nullable fieldTubeIndice;
+    NSUInteger numFieldTubeIndice;
+
+    /*  Vertex buffer for tracer dots patch */
+    id<MTLBuffer> _Nullable tracerDotVertice;
+    NSUInteger numTracerDotVertice;
+    /*  Vertex buffer for tracer icosaheron patch */
+    id<MTLBuffer> _Nullable tracerIcoVertice;
+    NSUInteger numTracerIcoVertice;
+    /*  Index buffer for psf solid patch */
+    id<MTLBuffer> _Nullable tracerIcoIndices;
+    NSUInteger numTracerIcoIndices;
 
     /*  Vertex buffer for mesh solid patch */
     id<MTLBuffer> _Nullable meshSolidVertice;
@@ -90,55 +110,24 @@ typedef struct
     /*  Vertex buffer for mesh nodes */
     id<MTLBuffer> _Nullable meshNodeVertice;
     NSUInteger numMeshNodeVertice;
+    /*  Index buffer for mesh nodes */
+    id<MTLBuffer> _Nullable meshNodeIndice;
+    NSUInteger numMeshNodeIndice;
 
     /*  Vertex buffer for Coast lines */
     id<MTLBuffer> _Nullable coastLineVertice;
     NSUInteger numCoastLineVertice;
     id<MTLBuffer> _Nullable coastTubeVertice;
     NSUInteger numCoastTubeVertice;
-    
+    id<MTLBuffer> _Nullable coastTubeIndice;
+    NSUInteger numCoastTubeIndice;
+
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
     NSUInteger numAxisVertice;
+    id<MTLBuffer> _Nullable axisIndice;
+    NSUInteger numAxisIndice;
 } KemoView3DBuffers;
-
-typedef struct
-{
-    /*  Shader functions for simple shader  */
-    id<MTLFunction>            _Nonnull simpleVertexFunction;
-    id<MTLFunction>            _Nonnull simpleFragmentFunction;
-    
-    /*  Shader functions for textured  shader  */
-    id<MTLFunction>            _Nonnull texuredVertexFunction;
-    id<MTLFunction>            _Nonnull texuredFragmentFunction;
-    
-    /*  Shader functions for Phong shader  */
-    id<MTLFunction> _Nonnull phongVertexFunction;
-    id<MTLFunction> _Nonnull phongFragmentFunction;
-    
-    /*  Shader functions for Phong shader with colormap */
-    id<MTLFunction> _Nonnull phongColorMapVertexFunction;
-    id<MTLFunction> _Nonnull phongColorMapFragmentFunction;
-    
-    /*  Shader functions for textured Phong shader  */
-    id<MTLFunction> _Nonnull texuredPhongVertexFunction;
-    id<MTLFunction> _Nonnull texuredPhongFragmentFunction;
-} KemoViewMetalShaders;
-
-typedef struct
-{
-    /*  Shader functions for simple shader  */
-    id<MTLRenderPipelineState> _Nonnull simplePipelineState;
-    /*  Shader functions for Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongPipelineState;
-    /*  Shader functions for Phong shader with colormap construction */
-    id<MTLRenderPipelineState> _Nonnull phongColorMapPipelineState;
-    /*  Shader functions for textured Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
-
-    /*  Shader functions for textured  shader  */
-    id<MTLRenderPipelineState> _Nonnull texuredPipelineState;
-} KemoView3DPipelines;
 
 @interface KemoView3DRenderer : NSObject
 {
@@ -149,11 +138,14 @@ typedef struct
                                kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoFastMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                         kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
+- (void) setKemoMovieMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                         kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                           kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
 - (void) releaseTransparentMetalBuffers;
 - (void) releaseKemoFastMetalBuffers;
+- (void) releaseKemoMovieMetalBuffers;
 - (void) releaseKemoView3DMetalBuffers;
 
 -(void) addKemoView3DShaderLibrary:(id<MTLLibrary> _Nonnull *_Nonnull) defaultLibrary;
@@ -161,15 +153,10 @@ typedef struct
 -(void) addKemoView3DPipelines:(nonnull MTKView *)mtkView
                    targetPixel:(MTLPixelFormat) pixelformat;
 
-- (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
-                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
-                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon;
-
-- (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
-                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
-                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
-                           sides:(int) iflag_polygon;
+-(void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
+                          depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
+                         unites:(KemoViewUnites *_Nonnull) monoViewUnites
+                          sides:(int) iflag_polygon;
 @end
 
 

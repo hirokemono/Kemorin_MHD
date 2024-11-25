@@ -85,6 +85,7 @@
       use check_dependency_SGS_MHD
       use input_control_sph_MHD
       use sph_SGS_mhd_monitor_data_IO
+      use forth_fdm_node_coefs
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(FEM_mesh_field_data), intent(in) :: FEM_dat
@@ -107,8 +108,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,    &
-     &   SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,     &
-     &   SPH_model%omega_sph, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+     &    SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,    &
+     &    SPH_WK%r_n2e_3rd, SPH_WK%r_e2n_1st,                           &
+     &    SPH_model%omega_sph, SPH_model%MHD_prop,                      &
+     &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
+      call const_forth_fdm_coefs(SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
 !
 ! ---------------------------------
 !
@@ -288,18 +294,21 @@
      &      MHD_step%rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
       end if
 !
-      MHD_step%finish_d%elapsed_local                                   &
+      if(MHD_step%finish_d%i_end_step .eq. -1) then
+        MHD_step%finish_d%elapsed_local                                 &
      &    = MPI_WTIME() - MHD_step%finish_d%started_time
-      call calypso_mpi_allreduce_one_real                               &
-     &   (MHD_step%finish_d%elapsed_local,                              &
-     &    MHD_step%finish_d%elapsed_max, MPI_MAX)
-      if      (MHD_step%finish_d%i_end_step .eq. -1                     &
-     &   .and. MHD_step%finish_d%elapsed_max                            &
-     &        .gt. MHD_step%finish_d%elapsed_time) then
-        iflag_finish = 1
-        call output_sph_SGS_MHD_rst_control                             &
+        call calypso_mpi_allreduce_one_real                             &
+     &     (MHD_step%finish_d%elapsed_local,                            &
+     &      MHD_step%finish_d%elapsed_max, MPI_MAX)
+        MHD_step%finish_d%flag_terminate_by_elapsed                     &
+     &     = (MHD_step%finish_d%elapsed_max                             &
+     &          .gt. MHD_step%finish_d%elapsed_time)
+        if(MHD_step%finish_d%flag_terminate_by_elapsed) then
+          iflag_finish = 1
+          call output_sph_SGS_MHD_rst_control                           &
      &     (MHD_step%finish_d%i_end_step, MHD_files, MHD_step%time_d,   &
      &      MHD_step%rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
+        end if
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+6)
 !
