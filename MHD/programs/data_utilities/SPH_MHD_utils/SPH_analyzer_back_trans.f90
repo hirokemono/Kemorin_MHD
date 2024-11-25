@@ -77,6 +77,7 @@
       use input_control_sph_MHD
       use back_sph_trans_4_all_field
       use sph_SGS_mhd_monitor_data_IO
+      use forth_fdm_node_coefs
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -97,9 +98,12 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,    &
      &    SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,    &
-     &    SPH_WK%r_4th, SPH_WK%r_n2e_3rd, SPH_WK%r_e2n_1st,             &
+     &    SPH_WK%r_n2e_3rd, SPH_WK%r_e2n_1st,                           &
      &    SPH_model%omega_sph, SPH_model%MHD_prop,                      &
      &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
+      call const_forth_fdm_coefs(SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
 !
 !  -------------------------------
 !

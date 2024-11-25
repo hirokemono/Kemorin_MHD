@@ -10,7 +10,7 @@
 !!
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,    &
-!!     &          ipol, sph, r_2nd, r_4th, r_n2e_3rd, r_e2n_1st,        &
+!!     &          ipol, sph, r_2nd, r_n2e_3rd, r_e2n_1st,               &
 !!     &          omega_sph, MHD_prop, radial_variation, sph_MHD_bc)
 !!      subroutine init_reference_fields(sph, ipol, r_2nd,              &
 !!     &          refs, rj_fld, MHD_prop, sph_MHD_bc)
@@ -20,7 +20,6 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_grids), intent(in) :: sph
 !!        type(fdm_matrices), intent(inout) :: r_2nd
-!!        type(fdm_matrices), intent(inout) :: r_4th
 !!        type(fdm_matrices), intent(inout) :: r_n2e_3rd
 !!        type(fdm_matrices), intent(inout) :: r_e2n_1st
 !!        type(sph_rotation), intent(inout) :: omega_sph
@@ -72,11 +71,10 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,      &
-     &          ipol, sph, r_2nd, r_4th, r_n2e_3rd, r_e2n_1st,          &
+     &          ipol, sph, r_2nd, r_n2e_3rd, r_e2n_1st,                 &
      &          omega_sph, MHD_prop, radial_variation, sph_MHD_bc)
 !
       use second_fdm_node_coefs
-      use forth_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
       use material_property
@@ -90,7 +88,6 @@
       type(sph_grids), intent(in) :: sph
 !
       type(fdm_matrices), intent(inout) :: r_2nd
-      type(fdm_matrices), intent(inout) :: r_4th
       type(fdm_matrices), intent(inout) :: r_n2e_3rd
       type(fdm_matrices), intent(inout) :: r_e2n_1st
 !
@@ -123,8 +120,6 @@
       call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
       if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
       call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
-      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
-      call const_forth_fdm_coefs(sph%sph_rj, r_4th)
 !
 !*  ---------- Radial variations of density and diffusivities  -------
       call init_radius_variations_sph_mhd(sph, r_2nd, MHD_prop,         &

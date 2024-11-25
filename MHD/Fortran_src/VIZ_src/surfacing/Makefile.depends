@@ -32,8 +32,6 @@ find_node_and_patch_psf.o: $(PSF_SECTION_DIR)/find_node_and_patch_psf.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 get_geometry_reference.o: $(PSF_SECTION_DIR)/get_geometry_reference.f90 m_precision.o m_constants.o set_components_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_elapsed_labels_4_VIZ.o: $(PSF_SECTION_DIR)/m_elapsed_labels_4_VIZ.f90 m_precision.o m_work_time.o t_elapsed_labels_4_VIZ.o
-	$(F90) -c $(F90OPTFLAGS) $<
 m_intersection_data_0.o: $(PSF_SECTION_DIR)/m_intersection_data_0.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_intersection_data_1.o: $(PSF_SECTION_DIR)/m_intersection_data_1.f90 m_precision.o
