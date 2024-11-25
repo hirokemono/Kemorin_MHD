@@ -7,8 +7,9 @@
 !>@brief Matrix to evaluate radial derivative for next of center
 !!
 !!@verbatim
-!!      subroutine cal_coef_fdm4_vpol_centre(r, fdm4_center)
+!!      subroutine cal_coef_fdm4_vpol_centre(r, fdm4, fdm4_center)
 !!        real(kind = kreal), intent(in) :: r(4)
+!!        type(fdm_matrix), intent(in) :: fdm4(4)
 !!        type(fdm4_centre_vpol), intent(inout) :: fdm4_center
 !!
 !!   Matrix for poloidal vector at inner most node
@@ -71,7 +72,7 @@
       end type fdm4_centre_vpol
 !
       private :: set_forth_taylor_expand_CTR1
-      private :: order_each_forth_fdm_node
+      private :: order_each_center_fdm4
 !
 ! -----------------------------------------------------------------------
 !
@@ -79,17 +80,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_coef_fdm4_vpol_centre(r, fdm4_center)
+      subroutine cal_coef_fdm4_vpol_centre(r, fdm4, fdm4_center)
 !
-      use forth_fdm_node_coefs
+      use t_fdm_coefs
       use cal_inverse_small_matrix
 !
       real(kind = kreal), intent(in) :: r(4)
+      type(fdm_matrix), intent(in) :: fdm4(4)
+!
       type(fdm4_centre_vpol), intent(inout) :: fdm4_center
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, i
       real(kind = kreal) :: mat_fdm(5,5)
-      real(kind = kreal) :: delta(-2:1)
 !
 !
       mat_fdm(1:5,1:5) = 0.0d0
@@ -97,13 +99,15 @@
       call set_forth_taylor_expand_CTR1(r(1), mat_fdm)
       call cal_inverse_nn_matrix                                        &
      &   (ifive, mat_fdm, mat_fdm(1,1), ierr)
-      call order_each_forth_fdm_node(mat_fdm, fdm4_center%dmat_vp1)
+      call order_each_center_fdm4(mat_fdm, fdm4_center%dmat_vp1)
 !
-      call set_forth_dr_ICB1(r(1), delta)
-      call set_forth_taylor_expand(delta, mat_fdm)
-      call cal_inverse_nn_matrix                                        &
-     &   (ifive, mat_fdm, mat_fdm(1,1), ierr)
-      call order_each_forth_fdm_node(mat_fdm, fdm4_center%dmat_vp2)
+      fdm4_center%dmat_vp2(-2:2,1) = zero
+      fdm4_center%dmat_vp2(0,   1) = one
+!$omp parallel do private(i)
+      do i = 1, 4
+        fdm4_center%dmat_vp2(-2:2,i+1) = fdm4(i)%dmat(2,-2:2)
+      end do
+!$omp end parallel do
 !
       end subroutine cal_coef_fdm4_vpol_centre
 !
@@ -157,7 +161,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_each_forth_fdm_node(mat_fdm, dmat)
+      subroutine order_each_center_fdm4(mat_fdm, dmat)
 !
       real(kind = kreal), intent(in) ::    mat_fdm(5,5)
       real(kind = kreal), intent(inout) :: dmat(-2:2,5)
@@ -169,7 +173,7 @@
       dmat( 1,1:5) = mat_fdm(1:5,3)
       dmat( 2,1:5) = mat_fdm(1:5,5)
 !
-      end subroutine order_each_forth_fdm_node
+      end subroutine order_each_center_fdm4
 !
 ! -----------------------------------------------------------------------
 !

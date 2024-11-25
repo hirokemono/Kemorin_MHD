@@ -7,9 +7,13 @@
 !!> @brief calculate 4th order FDM matrices for boundaries
 !!
 !!@verbatim
-!!      subroutine s_cal_sph_bc_fdm_4th_mat                             &
-!!     &         (nri, radius_1d_rj_r, sph_bc_U, sph_MHD_bc)
+!!      subroutine s_cal_sph_bc_fdm_4th_mat(nri, h_rho, radius_1d_rj_r, &
+!!     &          sph_bc_U, fdm_4th, sph_MHD_bc)
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(in) :: h_rho
+!!        real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(fdm_matrices), intent(in) :: fdm_4th
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!@endverbatim
 !
@@ -28,9 +32,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sph_bc_fdm_4th_mat                               &
-     &         (nri, h_rho, radius_1d_rj_r, sph_bc_U, sph_MHD_bc)
+      subroutine s_cal_sph_bc_fdm_4th_mat(nri, h_rho, radius_1d_rj_r,   &
+     &          sph_bc_U, fdm_4th, sph_MHD_bc)
 !
+      use t_fdm_coefs
       use t_boundary_params_sph_MHD
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB
@@ -42,6 +47,7 @@
       real(kind = kreal), intent(in) :: h_rho
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm_matrices), intent(in) :: fdm_4th
 !
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
@@ -66,7 +72,7 @@
       call cal_fdm4_CMB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
      &                           sph_MHD_bc%fdm4_free_vp_CMB)
 !
-      call cal_coef_fdm4_vpol_centre(radius_1d_rj_r(1),                 &
+      call cal_coef_fdm4_vpol_centre(radius_1d_rj_r(1), fdm_4th%fdm,    &
      &                               sph_MHD_bc%fdm4_center)
 !
       if (iflag_debug .eq. iflag_full_msg) then

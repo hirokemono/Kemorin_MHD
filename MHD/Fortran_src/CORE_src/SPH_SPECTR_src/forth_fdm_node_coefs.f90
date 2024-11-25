@@ -21,19 +21,6 @@
 !!      subroutine set_forth_dr(r, delta)
 !!        real(kind = kreal), intent(in) :: r(-2:2)
 !!        real(kind = kreal), intent(inout) :: delta(-2:1)
-!!
-!!      subroutine set_forth_dr_ICB(r, delta)
-!!        real(kind = kreal), intent(in) :: r( 0:2)
-!!        real(kind = kreal), intent(inout) :: delta(-2:1)
-!!      subroutine set_forth_dr_ICB1(r, delta)
-!!        real(kind = kreal), intent(in) :: r(-1:2)
-!!        real(kind = kreal), intent(inout) :: delta(-2:1)
-!!      subroutine set_forth_dr_CMB1(r, delta)
-!!        real(kind = kreal), intent(in) :: r(-2:1)
-!!        real(kind = kreal), intent(inout) :: delta(-2:1)
-!!      subroutine set_forth_dr_CMB(r, delta)
-!!        real(kind = kreal), intent(in) :: r(-2:0)
-!!        real(kind = kreal), intent(inout) :: delta(-2:1)
 !! ----------------------------------------------------------------------
 !!      Coeeficients for derivatives by 1d finite difference method
 !!
@@ -160,16 +147,32 @@
 !
 !$omp parallel do private(kr,delta,mat_taylor_5)
       do kr = 1, nri
-        if (kr .eq. 1) then
-          call set_forth_dr_ICB(r(1), delta)
+        if(kr .eq. 1) then
+          delta(-2) = r(kr+1)
         else if(kr .eq. 2) then
-          call set_forth_dr_ICB1(r(1), delta)
-        else if(kr .eq. nri-1) then
-          call set_forth_dr_CMB1(r(nri-3), delta)
-        else if(kr .eq. nri) then
-          call set_forth_dr_CMB(r(nri-2), delta)
+          delta(-2) = r(kr  )
         else
-          call set_forth_dr(r(kr-2), delta)
+          delta(-2) = r(kr) - r(kr-2)
+        end if
+!
+        if(kr .eq. 1) then
+          delta(-1) = r(kr)
+        else
+          delta(-1) = r(kr  ) - r(kr-1)
+        end if
+!
+        if(kr .eq. nri) then
+          delta( 0) = r(kr  ) - r(kr-1)
+        else
+          delta( 0) = r(kr+1) - r(kr)
+        end if
+!
+        if(kr .eq. nri-1) then
+          delta( 1) = r(kr+1) - r(kr-1)
+        else if(kr .eq. nri) then
+          delta( 1) = r(kr) -   r(kr-2)
+        else
+          delta( 1) = r(kr+2) - r(kr)
         end if
 !
         call set_forth_taylor_expand(delta, mat_taylor_5)
@@ -288,77 +291,6 @@
       mat_taylor_5(5,5) =  a24 *  delta( 1)**4
 !
       end subroutine set_forth_taylor_expand
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_forth_dr(r, delta)
-!
-      real(kind = kreal), intent(in) :: r(-2:2)
-      real(kind = kreal), intent(inout) :: delta(-2:1)
-!
-      delta(-2) = r(0) - r(-2)
-      delta(-1) = r(0) - r(-1)
-      delta( 0) = r(1) - r( 0)
-      delta( 1) = r(2) - r( 0)
-!
-      end subroutine set_forth_dr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_forth_dr_ICB(r, delta)
-!
-      real(kind = kreal), intent(in) :: r( 0:2)
-      real(kind = kreal), intent(inout) :: delta(-2:1)
-!
-      delta(-2) = r(1)
-      delta(-1) = r(0)
-      delta( 0) = r(1) - r( 0)
-      delta( 1) = r(2) - r( 0)
-!
-      end subroutine set_forth_dr_ICB
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_forth_dr_ICB1(r, delta)
-!
-      real(kind = kreal), intent(in) :: r(-1:2)
-      real(kind = kreal), intent(inout) :: delta(-2:1)
-!
-      delta(-2) = r(0)
-      delta(-1) = r(0) - r(-1)
-      delta( 0) = r(1) - r( 0)
-      delta( 1) = r(2) - r( 0)
-!
-      end subroutine set_forth_dr_ICB1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_forth_dr_CMB1(r, delta)
-!
-      real(kind = kreal), intent(in) :: r(-2:1)
-      real(kind = kreal), intent(inout) :: delta(-2:1)
-!
-      delta(-2) = r(0) - r(-2)
-      delta(-1) = r(0) - r(-1)
-      delta( 0) = r(1) - r( 0)
-      delta( 1) = delta( 0) + delta(-1)
-!
-      end subroutine set_forth_dr_CMB1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_forth_dr_CMB(r, delta)
-!
-      real(kind = kreal), intent(in) :: r(-2:0)
-      real(kind = kreal), intent(inout) :: delta(-2:1)
-!
-      delta(-2) = r(0) - r(-2)
-      delta(-1) = r(0) - r(-1)
-      delta( 0) = delta(-1)
-      delta( 1) = delta(-2)
-!
-      end subroutine set_forth_dr_CMB
 !
 ! -----------------------------------------------------------------------
 !
