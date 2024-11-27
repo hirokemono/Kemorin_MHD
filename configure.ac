@@ -40,9 +40,6 @@ builtin(include,MHD/confdb/ax_check_pgplot.m4)
 dnl Include hdf5 Check
 builtin(include,MHD/confdb/ax_lib_hdf5.m4)
 #
-dnl Include Aquaterm Check
-builtin(include,MHD/confdb/ax_check_aquaterm.m4)
-#
 dnl Include pkg-config Check
 builtin(include,MHD/confdb/pkg.m4)
 #
@@ -133,7 +130,6 @@ AC_MSG_RESULT(with-ffmpeg... "${USE_ffmpeg}")
 
 AC_MSG_RESULT(with-blas...     "${with_blas}")
 AC_MSG_RESULT(with-zlib...     "${with_zlib}")
-AC_MSG_RESULT(with-aquaterm... "${with_aquaterm}")
 AC_MSG_RESULT(with-pgplot...   "${with_pgplot}")
 
 # Checks for programs.
@@ -394,12 +390,6 @@ then
 	GL_LIBS="-framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa"
 	GL_INC="${X_CFLAGS}"
 	COCOA_FLAG="-D__APPLE__"
-# Check Aquaterm
-	LIBS=""
-	AX_CHECK_AQUATERM
-	AC_SUBST(HAVE_LIBAQUATERM)
-	AQUATERM_LIBS="-F${AQUATERM_HOME} ${LIBS} -Wl,-framework -Wl,Foundation"
-	AC_MSG_RESULT(AQUATERM_LIBS: ${AQUATERM_LIBS})
 else
 	COCOA_FLAG=""
 # Checks for OpenGL
@@ -415,15 +405,12 @@ else
 	else
 		PKGFLAGS_GL=""
 	fi
-	
-	AQUATERM_LIBS=""
 fi
 AC_SUBST(COCOA_FLAG)
 
 AC_SUBST(PKGFLAGS_GL)
 AC_SUBST(GL_LIBS)
 AC_SUBST(GL_INC)
-AC_SUBST(AQUATERM_LIBS)
 
 if test -n "${GL_LIBS}"
 then
@@ -510,7 +497,7 @@ AC_SUBST(FFMPEG_LIBS)
 
 
 # Check pgplot for Fortran compiler
-LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
+LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS}"
 LDFLAGS=""
 AX_CHECK_PGPLOT
 AC_SUBST(HAVE_LIBPGPLOT)
@@ -600,11 +587,6 @@ if test -n "${PGPLOT_LIBS}"; then
         AC_MSG_RESULT(    Use PGPLOT...         yes)
 else
         AC_MSG_RESULT(    Use PGPLOT...          no)
-fi
-if test -n "${AQUATERM_LIBS}"; then
-        AC_MSG_RESULT(    Use Aquaterm...       yes)
-else
-        AC_MSG_RESULT(    Use Aquaterm...        no)
 fi
 AC_MSG_RESULT()
 AC_MSG_RESULT(---------------------------------------------------------------)
