@@ -65,19 +65,20 @@ AC_ARG_WITH(pgplot,
 [if test "$withval" != no ; then
   pgplot_places="/usr/local /usr /opt/local /sw"
   AC_MSG_RESULT(yes)
-  if test -d "$withval"
-  then
+  if test -d "$withval" ; then
     pgplot_places="$withval $pgplot_places"
   else
     AC_MSG_WARN([Sorry, $withval does not exist, checking usual places])
   fi
-else
+ else
   LIBS=""
+  pgplot_places=""
   AC_MSG_RESULT(no)
 fi],
-[AC_MSG_WARN([Checking pgplot in usual places])
- pgplot_places="/usr/local /usr /opt/local /sw"
- AC_MSG_RESULT(yes)])
+[  LIBS=""
+  pgplot_places=""
+  AC_MSG_RESULT(no)
+ ])
 
 #
 # Locate pgplot, if wanted

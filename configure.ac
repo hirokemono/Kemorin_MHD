@@ -51,26 +51,75 @@ AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
 # AC_CONFIG_HEADERS([config.h])
 
 AC_ARG_ENABLE(cocoa,
-	[  --enable-cocoa          Use Cocoa framework],[USE_Cocoa='yes'],[USE_Cocoa='no'])
+[  --enable-cocoa          Use Cocoa framework
+   --disable-cocoa to disable Cocoa framework],
+[if test "$enableval" != no ; then
+  USE_Cocoa='yes'
+ else
+  USE_Cocoa='no'
+ fi],
+[USE_Cocoa='no'])
 
 AC_ARG_ENABLE(gl,
-	[  --enable-gl             Use OpenGL for viewer],[USE_gl='yes'],[USE_gl='no'])
+[  --enable-gl             Use OpenGL viewer
+   --disable-gl to disable OpenGL viewer],
+[if test "$enableval" != no ; then
+  USE_gl='yes'
+ else
+  USE_gl='no'
+ fi],
+[USE_gl='no'])
 
 
 AC_ARG_WITH(fftw3,
-    [  --with-fftw3            Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
+[  --with-fftw3           Use fftw3 library
+   --without-fftw3 to disable fftw3 library],
+[if test "$withval" != no ; then
+  USE_fftw3='yes'
+ else
+  USE_fftw3='no'
+ fi],
+[USE_fftw3='no'])
 
 AC_ARG_WITH(libpng,
-	[  --with-libpng           Use libpng library],[USE_libpng='yes'],[USE_libpng='no'])
+[  --with-libpng           Use libpng library
+   --without-libpng to disable libpng library],
+[if test "$withval" != no ; then
+  USE_libpng='yes'
+ else
+  USE_libpng='no'
+ fi],
+[USE_libpng='no'])
 
 AC_ARG_WITH(gtk,
-	[  --with-gtk              Use gtk+ GUI framework],[USE_gtk='yes'],[USE_gtk='no'])
+[  --with-gtk              Use gtk+ GUI framework
+   --without-gtk to disable gtk+ framework],
+[if test "$withval" != no ; then
+  USE_gtk='yes'
+ else
+  USE_gtk='no'
+ fi],
+[USE_gtk='no'])
 
 AC_ARG_WITH(glfw,
-	[  --with-glfw             Use GLFW GUI framework],[USE_glfw='yes'],[USE_glfw='no'])
+[  --with-glfw             Use GLFW GUI framework
+   --without-glfw to disable GLFW framework],
+[if test "$withval" != no ; then
+  USE_glfw='yes'
+ else
+  USE_glfw='no'
+ fi],
+[USE_glfw='no'])
 
 AC_ARG_WITH(ffmpeg,
-	[  --with-ffmpeg           Use FFMPEG multimedia framework],[USE_ffmpeg='yes'],[USE_ffmpeg='no'])
+[  --with-ffmpeg           Use FFMPEG multimedia framework
+   --without-ffmpeg to disable FFMPEG framework],
+[if test "$withval" != no ; then
+  USE_ffmpeg='yes'
+ else
+  USE_ffmpeg='no'
+ fi],
+[USE_ffmpeg='no'])
 
 
 AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")

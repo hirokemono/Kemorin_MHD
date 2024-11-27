@@ -1515,16 +1515,23 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --enable-cocoa          Use Cocoa framework
-  --enable-gl             Use OpenGL for viewer
+   --disable-cocoa to disable Cocoa framework
+  --enable-gl             Use OpenGL viewer
+   --disable-gl to disable OpenGL viewer
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-fftw3            Use fftw3 library
+  --with-fftw3           Use fftw3 library
+   --without-fftw3 to disable fftw3 library
   --with-libpng           Use libpng library
+   --without-libpng to disable libpng library
   --with-gtk              Use gtk+ GUI framework
+   --without-gtk to disable gtk+ framework
   --with-glfw             Use GLFW GUI framework
+   --without-glfw to disable GLFW framework
   --with-ffmpeg           Use FFMPEG multimedia framework
+   --without-ffmpeg to disable FFMPEG framework
   --with-hdf5=yes/no/PATH full path of h5pcc for parallel HDF5 configuration
   --with-blas=<lib>       use BLAS library <lib>
   --with-zlib=DIR root directory path of zlib installation defaults to
@@ -5951,7 +5958,11 @@ fi
 # Check whether --enable-cocoa was given.
 if test ${enable_cocoa+y}
 then :
-  enableval=$enable_cocoa; USE_Cocoa='yes'
+  enableval=$enable_cocoa; if test "$enableval" != no ; then
+  USE_Cocoa='yes'
+ else
+  USE_Cocoa='no'
+ fi
 else case e in #(
   e) USE_Cocoa='no' ;;
 esac
@@ -5961,7 +5972,11 @@ fi
 # Check whether --enable-gl was given.
 if test ${enable_gl+y}
 then :
-  enableval=$enable_gl; USE_gl='yes'
+  enableval=$enable_gl; if test "$enableval" != no ; then
+  USE_gl='yes'
+ else
+  USE_gl='no'
+ fi
 else case e in #(
   e) USE_gl='no' ;;
 esac
@@ -5973,7 +5988,11 @@ fi
 # Check whether --with-fftw3 was given.
 if test ${with_fftw3+y}
 then :
-  withval=$with_fftw3; USE_fftw3='yes'
+  withval=$with_fftw3; if test "$withval" != no ; then
+  USE_fftw3='yes'
+ else
+  USE_fftw3='no'
+ fi
 else case e in #(
   e) USE_fftw3='no' ;;
 esac
@@ -5984,7 +6003,11 @@ fi
 # Check whether --with-libpng was given.
 if test ${with_libpng+y}
 then :
-  withval=$with_libpng; USE_libpng='yes'
+  withval=$with_libpng; if test "$withval" != no ; then
+  USE_libpng='yes'
+ else
+  USE_libpng='no'
+ fi
 else case e in #(
   e) USE_libpng='no' ;;
 esac
@@ -5995,7 +6018,11 @@ fi
 # Check whether --with-gtk was given.
 if test ${with_gtk+y}
 then :
-  withval=$with_gtk; USE_gtk='yes'
+  withval=$with_gtk; if test "$withval" != no ; then
+  USE_gtk='yes'
+ else
+  USE_gtk='no'
+ fi
 else case e in #(
   e) USE_gtk='no' ;;
 esac
@@ -6006,7 +6033,11 @@ fi
 # Check whether --with-glfw was given.
 if test ${with_glfw+y}
 then :
-  withval=$with_glfw; USE_glfw='yes'
+  withval=$with_glfw; if test "$withval" != no ; then
+  USE_glfw='yes'
+ else
+  USE_glfw='no'
+ fi
 else case e in #(
   e) USE_glfw='no' ;;
 esac
@@ -6017,7 +6048,11 @@ fi
 # Check whether --with-ffmpeg was given.
 if test ${with_ffmpeg+y}
 then :
-  withval=$with_ffmpeg; USE_ffmpeg='yes'
+  withval=$with_ffmpeg; if test "$withval" != no ; then
+  USE_ffmpeg='yes'
+ else
+  USE_ffmpeg='no'
+ fi
 else case e in #(
   e) USE_ffmpeg='no' ;;
 esac
@@ -14147,24 +14182,24 @@ then :
   pgplot_places="/usr/local /usr /opt/local /sw"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-  if test -d "$withval"
-  then
+  if test -d "$withval" ; then
     pgplot_places="$withval $pgplot_places"
   else
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Sorry, $withval does not exist, checking usual places" >&5
 printf "%s\n" "$as_me: WARNING: Sorry, $withval does not exist, checking usual places" >&2;}
   fi
-else
+ else
   LIBS=""
+  pgplot_places=""
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
 fi
 else case e in #(
-  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Checking pgplot in usual places" >&5
-printf "%s\n" "$as_me: WARNING: Checking pgplot in usual places" >&2;}
- pgplot_places="/usr/local /usr /opt/local /sw"
- { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; } ;;
+  e)   LIBS=""
+  pgplot_places=""
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+  ;;
 esac
 fi
 
