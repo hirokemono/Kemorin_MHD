@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/MHD_src/sph_MHD/cal_sph_field_by_rotation.f90

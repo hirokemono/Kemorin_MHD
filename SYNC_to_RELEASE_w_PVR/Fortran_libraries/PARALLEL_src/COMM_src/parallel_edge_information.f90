@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/COMM_src/parallel_edge_information.f90

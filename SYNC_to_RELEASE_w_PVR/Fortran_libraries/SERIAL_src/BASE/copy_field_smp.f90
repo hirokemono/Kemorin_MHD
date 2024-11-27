@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/BASE/copy_field_smp.f90

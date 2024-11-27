@@ -1,0 +1,39 @@
+begin time_averaging_sph_monitor
+  start_time_ctl     0.51
+  end_time_ctl       0.52
+!!
+  degree_range_ctl     1   12
+!!
+  array volume_integrate_prefix
+    volume_integrate_prefix     'sph_ave_volume'
+    volume_integrate_prefix     'sph_pwr_volume_s'
+    volume_integrate_prefix     'sph_pwr_volume_m0'
+    volume_integrate_prefix     'sph_ave_convective'
+    volume_integrate_prefix     'sph_pwr_convective_s'
+    volume_integrate_prefix     'sph_pwr_convective_m0'
+  end array volume_integrate_prefix
+!!
+  array volume_sph_spectr_prefix
+    volume_sph_spectr_prefix     'sph_pwr_volume_l'
+    volume_sph_spectr_prefix     'sph_pwr_volume_m'
+    volume_sph_spectr_prefix     'sph_pwr_volume_lm'
+    volume_sph_spectr_prefix     'sph_pwr_convective_l'
+    volume_sph_spectr_prefix     'sph_pwr_convective_m'
+    volume_sph_spectr_prefix     'sph_pwr_convective_lm'
+  end array volume_sph_spectr_prefix
+!!
+  array sphere_integrate_prefix
+    sphere_integrate_prefix     'sph_pwr_layer_s'
+    sphere_integrate_prefix     'sph_pwr_layer_m0'
+  end array sphere_integrate_prefix
+!!
+  array layer_sph_spectr_prefix
+    layer_sph_spectr_prefix     'sph_pwr_layer_l'
+    layer_sph_spectr_prefix     'sph_pwr_layer_m'
+    layer_sph_spectr_prefix     'sph_pwr_layer_lm'
+  end array layer_sph_spectr_prefix
+!!
+  gauss_coefs_prefix           'sph_spectr/gauss_coefs'
+  picked_sph_prefix            'sph_spectr/picked_mode'
+  nusselt_number_prefix        'Nusselt'
+end time_averaging_sph_monitor

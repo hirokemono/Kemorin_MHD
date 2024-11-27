@@ -1,0 +1,1 @@
+/Users/matsui/git/Kemorin_MHD/MHD/confdb/ax_mpi.m4
