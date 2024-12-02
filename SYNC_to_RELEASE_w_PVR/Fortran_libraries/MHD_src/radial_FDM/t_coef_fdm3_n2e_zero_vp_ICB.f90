@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/radial_FDM/t_coef_fdm3_n2e_zero_vp_ICB.f90
