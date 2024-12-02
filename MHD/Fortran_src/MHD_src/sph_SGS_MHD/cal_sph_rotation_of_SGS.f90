@@ -92,6 +92,7 @@
      &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                 &
      &          ipol_SGS, ipol_rot_SGS, rj_fld)
 !
+      use t_coef_fdm2_free_slip_ICB
       use calypso_mpi
       use const_sph_radial_grad
       use const_sph_rotation
@@ -100,7 +101,8 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
       type(SGS_term_address), intent(in) :: ipol_SGS
       type(SGS_term_address), intent(in) :: ipol_rot_SGS
 !

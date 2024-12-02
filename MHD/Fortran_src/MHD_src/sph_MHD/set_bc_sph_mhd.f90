@@ -39,6 +39,7 @@
       use t_spheric_rj_data
       use t_bc_data_list
       use t_sph_boundary_input_data
+      use t_coef_fdm2_free_slip_ICB
 !
       implicit none
 !
@@ -64,7 +65,6 @@
 !
       use cal_fdm_coefs_4_boundaries
       use coef_fdm2_to_center
-      use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
       use set_sph_bc_magne_sph
 !
@@ -192,7 +192,6 @@
 !
       use cal_fdm_coefs_4_boundaries
       use coef_fdm2_to_center
-      use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
       use set_sph_bc_magne_sph
 !
@@ -225,7 +224,8 @@
      &       (velocity%name, sph_MHD_bc%sph_bc_U)
           call check_fdm3_n2e_ICB_zero_vpol                             &
      &       (50, sph_MHD_bc%fdm3e_vp0_ICB)
-          call check_coef_fdm_free_ICB(50, sph_MHD_bc%fdm2_free_ICB)
+          call check_fdm2_coef_free_slip_ICB                            &
+     &       (50, sph_MHD_bc%fdm2_free_ICB)
           call check_coef_fdm_free_CMB(50, sph_MHD_bc%fdm2_free_CMB)
           call check_fdm3_n2e_ICB_free_vpol                             &
      &       (50, sph_MHD_bc%fdm3e_free_ICB)

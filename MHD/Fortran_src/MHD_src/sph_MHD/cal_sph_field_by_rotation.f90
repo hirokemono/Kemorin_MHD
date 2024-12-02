@@ -36,7 +36,7 @@
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(sph_boundary_type), intent(in)  :: sph_bc_U
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+!!        type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine cal_rot_of_induction_sph                             &
@@ -154,6 +154,7 @@
      &          g_sph_rj, sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,       &
      &          ipol_frc, ipol_rot_frc, rj_fld)
 !
+      use t_coef_fdm2_free_slip_ICB
       use const_sph_radial_grad
       use const_sph_rotation
       use cal_inner_core_rotation
@@ -163,7 +164,7 @@
       type(base_force_address), intent(in) :: ipol_frc
       type(base_force_address), intent(in) :: ipol_rot_frc
       type(sph_boundary_type), intent(in)  :: sph_bc_U
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
       type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !

@@ -60,6 +60,7 @@
       use t_boundary_sph_spectr
       use t_boundary_data_sph_MHD
       use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_free_slip_ICB
 !
       use set_reference_sph_mhd
       use lubksb_357band_mul
@@ -87,7 +88,8 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_boundary_data), intent(in) :: bcs_U
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
       type(phys_address), intent(in) :: ipol
 !

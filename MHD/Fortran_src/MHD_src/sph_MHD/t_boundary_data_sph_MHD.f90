@@ -28,6 +28,7 @@
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
       use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm4_zero_vpol_ICB
       use t_coef_fdm4_free_vpol_ICB
       use t_coef_fdm4_zero_vpol_CMB
@@ -73,7 +74,7 @@
         type(fdm4_centre_vpol) :: fdm4_center
 
 !>        Structure for FDM matrix of free slip boundary at ICB
-        type(fdm2_free_slip) :: fdm2_free_ICB
+        type(fdm2_ICB_free_slip) :: fdm2_free_ICB
 !>        Structure for FDM matrix at ICB element
         type(fdm3_n2e_ICB_zero_vpol) :: fdm3e_vp0_ICB
 !>        Structure for FDM matrix of free slip boundary at ICB element

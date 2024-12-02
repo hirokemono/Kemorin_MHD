@@ -39,7 +39,7 @@
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
 !!          type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
-!!          type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+!!          type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !!          type(fdm_matrices), intent(in) :: r_2nd
 !!@endverbatim
 !!
@@ -54,6 +54,7 @@
       use t_boundary_sph_spectr
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_free_slip_ICB
 !
       use set_sph_exp_fix_vector_ICB
       use set_sph_exp_rigid_ICB
@@ -76,7 +77,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -139,7 +140,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld
@@ -185,7 +186,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld, is_rot
@@ -234,7 +235,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo
@@ -308,7 +309,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_vort

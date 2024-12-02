@@ -68,6 +68,7 @@
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB,           &
      &          fdm2_center)
 !
+      use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
@@ -77,7 +78,6 @@
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
-      use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
       use coef_fdm2_to_center
 !
@@ -89,7 +89,7 @@
       type(fdm3_n2e_CTR_vpol), intent(inout) :: fdm3e_CTR
       type(fdm3_n2e_ICB_zero_vpol), intent(inout) :: fdm3e_vp0_ICB
       type(fdm3_n2e_ICB_free_vpol), intent(inout) :: fdm3e_free_ICB
-      type(fdm2_free_slip), intent(inout) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(inout) :: fdm2_free_ICB
 !
       type(fdm3_n2e_CMB_zero_vpol), intent(inout) :: fdm3e_vp0_CMB
       type(fdm3_n2e_CMB_free_vpol), intent(inout) :: fdm3e_free_CMB
@@ -157,7 +157,8 @@
      &          r_2nd, r_n2e_3rd, r_e2n_1st,                            &
      &          fdm3e_vp0_ICB, fdm3e_free_ICB, fdm2_free_ICB,           &
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB)
-! 
+!
+      use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
@@ -165,7 +166,6 @@
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
-      use coef_fdm2_free_ICB
       use coef_fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
@@ -176,7 +176,7 @@
 !
       type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
       type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
@@ -391,7 +391,7 @@
       c_dr3 =  2.0 / r
       write(*,*) 'free ICB for DVt/DR (ICB)', c_dr3
       write(*,*) 'free ICB for D2Vt/DR2 (ICB, ICB+1)', c_dr2, c_dr
-      call check_fdm_coef_free_slip_ICB(6, fdm2_free_ICB)
+      call check_fdm2_coef_free_slip_ICB(6, fdm2_free_ICB)
       write(*,*) 'free ICB element'
       call check_fdm3_n2e_ICB_free_vpol(6, fdm3e_free_ICB)
 !

@@ -39,7 +39,7 @@
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
 !!          type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
-!!          type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+!!          type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !!          type(fdm_matrices), intent(in) :: r_2nd
 !!@endverbatim
 !!
