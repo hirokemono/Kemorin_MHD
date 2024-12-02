@@ -36,7 +36,6 @@
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -198,6 +197,7 @@
      &          sph_bc_T, bcs_T, sph_bc_C, bcs_C,                       &
      &          fdm2_center, ipol_frc, ipol_SGS, ipol_div_SGS, rj_fld)
 !
+      use t_coef_fdm2_centre
       use calypso_mpi
       use const_sph_divergence
 !

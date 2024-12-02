@@ -44,8 +44,6 @@
       use t_sph_matrices
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
-      use t_coef_fdm2_free_slip_ICB
 !
       use set_radial_mat_sph
 !
@@ -76,6 +74,7 @@
      &         fdm2_center, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,     &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
+      use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
 !
@@ -273,6 +272,7 @@
      &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, fdm2_center,      &
      &          g_sph_rj, band_bp_evo, band_bt_evo)
 !
+      use t_coef_fdm2_centre
       use set_sph_scalar_mat_bc
       use set_sph_magne_mat_bc
       use center_sph_matrices

@@ -53,7 +53,6 @@
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm2_free_slip_ICB
 !
       use set_sph_exp_fix_vector_ICB

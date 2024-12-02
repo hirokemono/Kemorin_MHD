@@ -50,7 +50,7 @@
       use t_sph_center_matrix
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
 !
       implicit none
 !

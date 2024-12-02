@@ -138,7 +138,6 @@
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_coef_fdm3_n2e_free_vp_CMB

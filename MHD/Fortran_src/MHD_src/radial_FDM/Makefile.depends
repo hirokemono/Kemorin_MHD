@@ -22,15 +22,17 @@ sum_sph_pol_vscs_FDM2_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_vscs_FDM2_exp.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_pol_vscs_FDM4_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_vscs_FDM4_exp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_coef_fdm2_centre.o: $(MHD_FDM_DIR)/t_coef_fdm2_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm2_free_slip_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm2_free_slip_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm2_free_slip_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm2_free_slip_ICB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm3_ele2nod_centre.o: $(MHD_FDM_DIR)/t_coef_fdm3_ele2nod_centre.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_coef_fdm3_n2e_free_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_CMB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_CMB.o
+t_coef_fdm3_n2e_free_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_CMB.f90 m_precision.o m_constants.o t_coef_fdm3_n2e_zero_vp_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_coef_fdm3_n2e_free_vp_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_ICB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm3_n2e_zero_vp_ICB.o
+t_coef_fdm3_n2e_free_vp_ICB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_free_vp_ICB.f90 m_precision.o m_constants.o t_coef_fdm3_n2e_zero_vp_ICB.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_coef_fdm3_n2e_zero_vp_CMB.o: $(MHD_FDM_DIR)/t_coef_fdm3_n2e_zero_vp_CMB.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -93,7 +93,6 @@
       subroutine cal_fdm3e_ICB_free_hdiv_vp                             &
      &         (dmat_vp_free_ICB, fdm3e_vp0_ICB, fdm3e_free_ICB)
 !
-      use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm3_n2e_zero_vp_ICB
 !
       real(kind = kreal), intent(in) :: dmat_vp_free_ICB(-1:1,3)

@@ -47,7 +47,6 @@
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
       use t_radial_matrices_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
       use t_work_4_sph_trans
 !
       implicit none

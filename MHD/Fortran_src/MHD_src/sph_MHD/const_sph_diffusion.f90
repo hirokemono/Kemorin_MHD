@@ -72,7 +72,7 @@
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
 !
@@ -208,7 +208,6 @@
      &         (sph_rj, r_2nd, sph_bc, bcs_S, fdm2_center,              &
      &          g_sph_rj, coef_diffuse, is_fld, is_diffuse, rj_fld)
 !
-      use t_coef_fdm2_MHD_boundaries
       use select_exp_scalar_ICB
       use select_exp_scalar_CMB
 !

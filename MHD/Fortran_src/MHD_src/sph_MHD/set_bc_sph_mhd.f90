@@ -41,6 +41,7 @@
       use t_sph_boundary_input_data
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
+      use t_coef_fdm2_centre
 !
       implicit none
 !
@@ -65,7 +66,6 @@
       use set_bc_sph_scalars
 !
       use cal_fdm_coefs_4_boundaries
-      use coef_fdm2_to_center
       use set_sph_bc_magne_sph
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -191,7 +191,6 @@
       use set_bc_sph_scalars
 !
       use cal_fdm_coefs_4_boundaries
-      use coef_fdm2_to_center
       use set_sph_bc_magne_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -247,7 +246,7 @@
      &       (composition%name, sph_MHD_bc%sph_bc_C)
         end if
 !
-        call check_coef_fdm_fix_dr_2ctr(sph_MHD_bc%fdm2_center)
+        call check_fdm2_coefs_centre(50, sph_MHD_bc%fdm2_center)
       end if
 !
       end subroutine check_bc_sph_mhd

@@ -68,7 +68,7 @@
       use t_spheric_rj_data
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
 !
       implicit none
 !

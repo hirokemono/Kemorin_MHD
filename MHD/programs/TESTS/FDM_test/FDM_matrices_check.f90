@@ -68,6 +68,7 @@
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB,           &
      &          fdm2_center)
 !
+      use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
@@ -79,7 +80,6 @@
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
-      use coef_fdm2_to_center
 !
       type(sph_grids), intent(inout) :: sph
       type(fdm_matrices), intent(inout) :: r_2nd

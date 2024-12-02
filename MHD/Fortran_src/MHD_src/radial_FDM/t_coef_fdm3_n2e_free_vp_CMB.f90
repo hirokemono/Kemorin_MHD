@@ -90,7 +90,6 @@
       subroutine cal_fdm3e_CMB_free_hdiv_vp                             &
      &         (dmat_vp_free_CMB, fdm3e_vp0_CMB, fdm3e_free_CMB)
 !
-      use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm3_n2e_zero_vp_CMB
 !
       real(kind = kreal), intent(in) :: dmat_vp_free_CMB(-1:1,3)

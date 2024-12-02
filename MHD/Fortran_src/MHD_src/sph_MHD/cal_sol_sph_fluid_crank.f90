@@ -59,7 +59,7 @@
       use t_sph_matrices
       use t_boundary_sph_spectr
       use t_boundary_data_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
 !

@@ -95,7 +95,7 @@
       use t_spheric_rj_data
       use t_phys_data
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
       use t_fdm_coefs

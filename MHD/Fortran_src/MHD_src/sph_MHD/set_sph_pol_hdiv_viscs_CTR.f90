@@ -123,7 +123,7 @@
      &         mat2_viscous_CTR, hdiv_visous_mat_CTR,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_centre
       use t_coef_fdm3_n2e_zero_vp_CTR
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
@@ -310,8 +310,8 @@
      &         coef_p, coef_d, fdm_e1, fdm2_pol_CTR, fdm3e_center,      &
      &         mat2_viscous_CMB1, hdiv_visous_mat_CTR, mat7)
 !
+      use t_coef_fdm2_centre
       use t_coef_fdm3_n2e_zero_vp_CTR
-      use t_coef_fdm2_MHD_boundaries
       use sph_FDM_viscosities_mat
       use cal_sph_FDM3e_hdiv_viscous
       use cal_sph_FDM_viscosity_mat
