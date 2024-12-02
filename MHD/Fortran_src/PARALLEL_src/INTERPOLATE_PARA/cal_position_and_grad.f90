@@ -107,7 +107,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_3d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(8,3)
       real(kind = kreal), intent(in) :: xi(3)
@@ -138,7 +138,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_3d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(20,3)
       real(kind = kreal), intent(in) :: xi(3)
@@ -169,7 +169,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_3d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(27,3)
       real(kind = kreal), intent(in) :: xi(3)
@@ -201,7 +201,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_2d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(num_linear_sf,3)
       real(kind = kreal), intent(in) :: xi(2)
@@ -231,7 +231,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_2d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(num_quad_sf,3)
       real(kind = kreal), intent(in) :: xi(2)
@@ -261,7 +261,7 @@
      &          x_local_ele, xi)
 !
       use cal_shape_function_2d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(num_lag_sf,3)
       real(kind = kreal), intent(in) :: xi(2)
@@ -291,7 +291,7 @@
       subroutine cal_position_and_grad_2(xx_z, dnxi, x_local_ele, xi)
 !
       use cal_shape_function_1d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(num_linear_edge,3)
       real(kind = kreal), intent(in) :: xi(1)
@@ -314,7 +314,7 @@
       subroutine cal_position_and_grad_3(xx_z, dnxi, x_local_ele, xi)
 !
       use cal_shape_function_1d
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: x_local_ele(num_quad_edge,3)
       real(kind = kreal), intent(in) :: xi(1)

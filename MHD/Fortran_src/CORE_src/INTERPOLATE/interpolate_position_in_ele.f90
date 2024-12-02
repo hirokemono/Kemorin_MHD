@@ -1,19 +1,44 @@
-!
-!     module interporate_position_in_ele
-!
-!     Written by H. Matsui on July, 2006
-!
-!      subroutine interporate_one_position_linear(x_out, x_local, an)
-!      subroutine interporate_one_position_quad(x_out, x_local, an)
-!      subroutine interporate_one_position_lag(x_out, x_local, an)
-!
-!      subroutine interporate_one_position_by_4(x_out, x_local, an)
-!      subroutine interporate_one_position_by_9(x_out, x_local, an)
-!
-!      subroutine interporate_one_position_by_2(x_out, x_local, an)
-!      subroutine interporate_one_position_by_3(x_out, x_local, an)
-!
-      module interporate_position_in_ele
+!>@file   interpolate_position_in_ele.f90
+!!@brief  module interpolate_position_in_ele
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006
+!!
+!>@brief  Interpolate positions in each element, surface, and edge
+!!
+!!@verbatim
+!!      subroutine interporate_one_position_linear(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(8,3)
+!!        real (kind=kreal), intent(in) :: an(8)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!      subroutine interporate_one_position_quad(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(20,3)
+!!        real (kind=kreal), intent(in) :: an(20)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!      subroutine interporate_one_position_lag(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(27,3)
+!!        real (kind=kreal), intent(in) :: an(27)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!
+!!      subroutine interporate_one_position_by_4(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(4,3)
+!!        real (kind=kreal), intent(in) :: an(4)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!      subroutine interporate_one_position_by_9(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(9,3)
+!!        real (kind=kreal), intent(in) :: an(9)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!
+!!      subroutine interporate_one_position_by_2(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(2,3)
+!!        real (kind=kreal), intent(in) :: an(2)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!      subroutine interporate_one_position_by_3(x_out, x_local, an)
+!!        real (kind=kreal), intent(in) :: x_local(3,3)
+!!        real (kind=kreal), intent(in) :: an(3)
+!!        real (kind=kreal), intent(inout) :: x_out(3)
+!!@endverbatim
+      module interpolate_position_in_ele
 !
       use m_precision
 !
@@ -250,4 +275,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module interporate_position_in_ele
+      end module interpolate_position_in_ele

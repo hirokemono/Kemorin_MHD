@@ -345,7 +345,7 @@
 !
       use shape_func_elements
       use shape_func_3d_linear
-      use interporate_position_in_ele
+      use interpolate_position_in_ele
 !
       real(kind = kreal), intent(in) :: xi_ele(8,3)
       real(kind = kreal), intent(in) :: xi_itp(3)

@@ -54,7 +54,7 @@ m_refined_connection_tbl.o: $(REFINER_DIR)/m_refined_connection_tbl.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 merge_domain_local_by_type.o: $(REFINER_DIR)/merge_domain_local_by_type.f90 m_precision.o t_mesh_data.o t_merged_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-merge_refine_itp_table.o: $(REFINER_DIR)/merge_refine_itp_table.f90 m_precision.o m_machine_parameter.o m_constants.o t_work_merge_refine_itp.o t_interpolate_tbl_org.o m_refine_flag_parameters.o copy_local_position_2_ele.o modify_local_positions.o t_interpolate_tbl_dest.o m_refined_connection_tbl.o shape_func_elements.o shape_func_3d_linear.o interporate_position_in_ele.o
+merge_refine_itp_table.o: $(REFINER_DIR)/merge_refine_itp_table.f90 m_precision.o m_machine_parameter.o m_constants.o t_work_merge_refine_itp.o t_interpolate_tbl_org.o m_refine_flag_parameters.o copy_local_position_2_ele.o modify_local_positions.o t_interpolate_tbl_dest.o m_refined_connection_tbl.o shape_func_elements.o shape_func_3d_linear.o interpolate_position_in_ele.o
 	$(F90) -c $(F90OPTFLAGS) $<
 refined_nod_2_mesh_data.o: $(REFINER_DIR)/refined_nod_2_mesh_data.f90 m_precision.o t_geometry_data.o t_refined_node_id.o m_geometry_constants.o t_refined_element_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
