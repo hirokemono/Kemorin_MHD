@@ -24,7 +24,7 @@
 !!        type(scalar_property), intent(in) :: cp_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+!!        type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
@@ -71,6 +71,7 @@
      &          ipol, rj_fld)
 !
       use t_coef_fdm2_free_slip_ICB
+      use t_coef_fdm2_free_slip_CMB
       use cal_inner_core_rotation
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -78,7 +79,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld

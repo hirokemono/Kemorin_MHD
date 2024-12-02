@@ -40,6 +40,7 @@
       use t_bc_data_list
       use t_sph_boundary_input_data
       use t_coef_fdm2_free_slip_ICB
+      use t_coef_fdm2_free_slip_CMB
 !
       implicit none
 !
@@ -65,7 +66,6 @@
 !
       use cal_fdm_coefs_4_boundaries
       use coef_fdm2_to_center
-      use coef_fdm2_free_CMB
       use set_sph_bc_magne_sph
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -192,7 +192,6 @@
 !
       use cal_fdm_coefs_4_boundaries
       use coef_fdm2_to_center
-      use coef_fdm2_free_CMB
       use set_sph_bc_magne_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -226,7 +225,8 @@
      &       (50, sph_MHD_bc%fdm3e_vp0_ICB)
           call check_fdm2_coef_free_slip_ICB                            &
      &       (50, sph_MHD_bc%fdm2_free_ICB)
-          call check_coef_fdm_free_CMB(50, sph_MHD_bc%fdm2_free_CMB)
+          call check_fdm2_coef_free_slip_CMB                            &
+     &       (50, sph_MHD_bc%fdm2_free_CMB)
           call check_fdm3_n2e_ICB_free_vpol                             &
      &       (50, sph_MHD_bc%fdm3e_free_ICB)
           call check_fdm3_n2e_CMB_free_vpol                             &

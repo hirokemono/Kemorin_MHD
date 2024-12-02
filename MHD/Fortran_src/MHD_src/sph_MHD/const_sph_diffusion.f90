@@ -74,6 +74,7 @@
       use t_boundary_sph_spectr
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm2_free_slip_ICB
+      use t_coef_fdm2_free_slip_CMB
 !
       use cal_sph_exp_diffusion
 !
@@ -98,7 +99,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: is_velo, is_viscous
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -138,7 +139,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: is_vort, is_w_diffuse
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)

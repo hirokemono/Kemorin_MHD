@@ -31,6 +31,7 @@
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm4_zero_vpol_ICB
       use t_coef_fdm4_free_vpol_ICB
+      use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_CMB
       use t_coef_fdm4_vpol_centre
@@ -81,7 +82,7 @@
         type(fdm3_n2e_ICB_free_vpol) :: fdm3e_free_ICB
 !
 !>        Structure for FDM matrix of free slip boundary at CMB
-        type(fdm2_free_slip) :: fdm2_free_CMB
+        type(fdm2_CMB_free_slip) :: fdm2_free_CMB
 !>        Structure for FDM matrix at CMB element with zero poloidal
         type(fdm3_n2e_CMB_zero_vpol) :: fdm3e_vp0_CMB
 !>        Structure for FDM matrix of free slip boundary at CMB element

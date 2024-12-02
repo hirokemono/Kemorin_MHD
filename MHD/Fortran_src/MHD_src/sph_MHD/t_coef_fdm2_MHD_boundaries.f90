@@ -8,62 +8,8 @@
 !!       at CMB with free slip boundary
 !!
 !!@verbatim
-!!      subroutine check_fdm_coef_free_slip_ICB(id_file, fdm2_free_mat)
-!!        integer(kind = kint), intent(in) :: id_file
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_mat
-!!      subroutine check_fdm_coef_free_slip_CMB(id_file, fdm2_free_mat)
-!!        integer(kind = kint), intent(in) :: id_file
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_mat
 !!      subroutine check_coef_fdm_fix_dr_2ctr(fdm2_center)
 !!        type(fdm2_ICB_vpol), intent(in) :: fdm2_center
-!!
-!!    Matrix to evaluate radial derivative of poloidal velocity
-!!    at CMB with free slip boundary
-!!      dfdr =    fdm2_free_CMB%dmat_vp(-1,2) * d_rj(CMB-1)
-!!              + fdm2_free_CMB%dmat_vp( 0,2) * d_rj(CMB  )
-!!      d2fdr2 =  fdm2_free_CMB%dmat_vp(-1,3) * d_rj(CMB-1)
-!!              + fdm2_free_CMB%dmat_vp( 0,3) * d_rj(CMB  )
-!!
-!!    Matrix to evaluate radial derivative of toroidal vorticity
-!!    at CMB with free slip boundary
-!!      dfdr =    fdm2_free_CMB%dmat_vt( 0,2) * d_rj(CMB  )
-!!      d2fdr2 =  fdm2_free_CMB%dmat_vt(-1,3) * d_rj(CMB-1)
-!!              + fdm2_free_CMB%dmat_vt( 0,3) * d_rj(CMB  )
-!!
-!!    Taylor expansion of free slip boundary at CMB
-!!      dfdr =    mat_fdm_2(2,1) * d_rj(CMB  )
-!!              + mat_fdm_2(2,2)
-!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
-!!              + mat_fdm_2(2,3) * d_rj(CMB-1)
-!!      d2fdr2 =  mat_fdm_2(3,1) * d_rj(CMB  )
-!!              + mat_fdm_2(3,2)
-!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
-!!              + mat_fdm_2(3,3) * d_rj(CMB-1)
-!!
-!!
-!!    Matrix to evaluate radial derivative of poloidal velocity
-!!    at ICB with free slip boundary
-!!      dfdr =    fdm2_free_ICB%dmat_vp( 0,2) * d_rj(ICB  )
-!!              + fdm2_free_ICB%dmat_vp( 1,2) * d_rj(ICB+1)
-!!      d2fdr2 =  fdm2_free_ICB%dmat_vp( 0,3) * d_rj(ICB  )
-!!              + fdm2_free_ICB%dmat_vp( 1,3) * d_rj(ICB+1)
-!!
-!!    Matrix to evaluate radial derivative of toroidal vorticity
-!!    at ICB with free slip boundary
-!!      dfdr =    fdm2_free_ICB%dmat_vt( 0,2) * d_rj(ICB  )
-!!      d2fdr2 =  fdm2_free_ICB%dmat_vt( 0,3) * d_rj(ICB  )
-!!              + fdm2_free_ICB%dmat_vt( 1,3) * d_rj(ICB+1)
-!!
-!!    Taylor expansion of free slip boundary at CMB
-!!      dfdr =    mat_fdm_2(2,1) * d_rj(CMB  )
-!!              + mat_fdm_2(2,2)
-!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
-!!              + mat_fdm_2(2,3) * d_rj(CMB-1)
-!!      d2fdr2 =  mat_fdm_2(3,1) * d_rj(CMB  )
-!!              + mat_fdm_2(3,2)
-!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
-!!              + mat_fdm_2(3,3) * d_rj(CMB-1)
-!!
 !!
 !!     Matrix for derivatives at the next of center with fixed field
 !!      dfdr(1) =      fdm2_center%dmat_fix_fld(-1,2) * d_center(0)
@@ -102,17 +48,6 @@
 !
       implicit none
 !
-!>      Structure for FDM matrix of free slip boundary
-      type fdm2_free_slip
-!>        Matrix to evaluate radial derivative of poloidal velocity
-!!        with free slip boundary
-        real(kind = kreal) :: dmat_vp(-1:1,3)
-!>        Matrix to evaluate radial derivative of toroidal vorticity
-!!        with free slip boundary
-        real(kind = kreal) :: dmat_vt(-1:1,3)
-      end type fdm2_free_slip
-!
-!
 !>      Structure for FDM matrix of center
       type fdm2_center_mat
 !>        Matrix to evaluate radial derivative at center
@@ -130,33 +65,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine check_fdm_coef_free_slip_CMB(id_file, fdm2_free_mat)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(fdm2_free_slip), intent(in) :: fdm2_free_mat
-!
-!
-      write(id_file,*) ' fdm2_free_mat%dmat_vp at CMB'
-      write(id_file,*) '     no delivative dmat_vp(-1,1),  dmat_vp(0,1)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,1)
-      write(id_file,*) '  first delivative dmat_vp(-1,2),  dmat_vp(0,2)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,2)
-      write(id_file,*) ' second delivative dmat_vp(-1,3),  dmat_vp(0,3)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vp(-1:0,3)
-!
-      write(id_file,*) ' fdm2_free_mat%dmat_vt at CMB'
-      write(id_file,*) '     no delivative dmat_vt(-1,1),  dmat_vt(0,1)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,1)
-      write(id_file,*) '  first delivative dmat_vt(-1,2),  dmat_vt(0,2)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,2)
-      write(id_file,*) ' second delivative dmat_vt(-1,3),  dmat_vt(0,3)'
-      write(id_file,'(1p9E25.15e3)') fdm2_free_mat%dmat_vt(-1:0,3)
-!
-      end subroutine check_fdm_coef_free_slip_CMB
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_coef_fdm_fix_dr_2ctr(fdm2_center)

@@ -21,7 +21,7 @@
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-!!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+!!        type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(band_matrices_type), intent(inout) :: band_vp_evo
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!        type(band_matrices_type), intent(inout) :: band_wt_evo
@@ -77,6 +77,8 @@
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use t_coef_fdm2_free_slip_ICB
+      use t_coef_fdm2_free_slip_CMB
+!
       use m_ludcmp_band
       use set_sph_scalar_mat_bc
       use cal_inner_core_rotation
@@ -90,7 +92,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt

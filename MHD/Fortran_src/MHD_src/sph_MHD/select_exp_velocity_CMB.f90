@@ -39,7 +39,7 @@
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
 !!          type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
-!!          type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+!!          type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !!          type(fdm_matrices), intent(in) :: r_2nd
 !!@endverbatim
 !!
@@ -53,7 +53,7 @@
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm2_free_slip_CMB
 !
       use set_sph_exp_rigid_CMB
       use set_sph_exp_free_CMB
@@ -74,7 +74,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -117,7 +117,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld
@@ -152,7 +152,7 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld, is_rot
@@ -193,7 +193,7 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo
@@ -246,7 +246,7 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_vort

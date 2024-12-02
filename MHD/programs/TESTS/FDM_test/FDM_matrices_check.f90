@@ -71,6 +71,7 @@
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
+      use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_coef_fdm3_n2e_free_vp_CMB
       use parallel_load_data_4_sph
@@ -78,7 +79,6 @@
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
-      use coef_fdm2_free_CMB
       use coef_fdm2_to_center
 !
       type(sph_grids), intent(inout) :: sph
@@ -93,7 +93,7 @@
 !
       type(fdm3_n2e_CMB_zero_vpol), intent(inout) :: fdm3e_vp0_CMB
       type(fdm3_n2e_CMB_free_vpol), intent(inout) :: fdm3e_free_CMB
-      type(fdm2_free_slip), intent(inout) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(inout) :: fdm2_free_CMB
 !
       type(fdm2_center_mat), intent(inout) :: fdm2_center
 !
@@ -161,12 +161,12 @@
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
+      use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_coef_fdm3_n2e_free_vp_CMB
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
-      use coef_fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -180,7 +180,7 @@
 !
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
       type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
-      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       real(kind = kreal), allocatable :: r_ele(:)
 !
@@ -405,7 +405,7 @@
       c_dr3 =  2.0 / r
       write(*,*) 'free CMB for DVt/DR (CMB)', c_dr3
       write(*,*) 'free CMB for D2Vt/DR2 (CMB-1, CMB)', c_dr, c_dr2
-      call check_fdm_coef_free_slip_CMB(6, fdm2_free_CMB)
+      call check_fdm2_coef_free_slip_CMB(6, fdm2_free_CMB)
       write(*,*) 'free CMB element'
       call check_fdm3_n2e_CMB_free_vpol(6, fdm3e_free_CMB)
 !

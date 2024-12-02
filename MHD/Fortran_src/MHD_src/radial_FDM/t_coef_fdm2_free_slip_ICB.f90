@@ -5,7 +5,7 @@
 !!@date Programmed in Jan., 2010
 !
 !>@brief Matrix to evaluate poloidal velocity and toroidal vorticity
-!!       at CMB with free slip boundary
+!!       at ICB with free slip boundary
 !!
 !!@verbatim
 !!      subroutine cal_fdm2_ICB_free_vp(h_rho, r_from_ICB,              &
