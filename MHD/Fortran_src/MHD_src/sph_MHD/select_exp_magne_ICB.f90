@@ -282,8 +282,8 @@
      &      n_point, ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_fixed_diffuse2(sph_rj%nidx_rj(2),          &
-     &      g_sph_rj, sph_bc_B%kr_out, sph_bc_B%r_CMB,                  &
-     &      sph_bc_B%fdm2_fix_fld_CMB, sph_bc_B%fdm2_fix_dr_CMB,        &
+     &      g_sph_rj, sph_bc_B%kr_in, sph_bc_B%r_ICB,                   &
+     &      sph_bc_B%fdm2_fix_fld_ICB, sph_bc_B%fdm2_fix_dr_ICB,        &
      &      coef_diffuse, is_magne, is_ohmic,                           &
      &      n_point, ntot_phys_rj, d_rj)
 !      else if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
