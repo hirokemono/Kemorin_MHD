@@ -42,8 +42,8 @@
 !!
 !!   Matrix for derivatives with fixed field
 !!    at inner boundary of the shell
-!!      dfdr =      fdm1_fix_fld_ICB%dmat1_sc0( 0,2) * d_rj(ICB  )
-!!                + fdm1_fix_fld_ICB%dmat1_sc0( 1,2) * d_rj(ICB+1)
+!!      dfdr =      fdm1_fix_fld_ICB%dmat1_ICB( 0,2) * d_rj(ICB  )
+!!                + fdm1_fix_fld_ICB%dmat1_ICB( 1,2) * d_rj(ICB+1)
 !!@endverbatim
 !!
       module t_coef_fdm1_free_rotate_ICB
@@ -57,7 +57,7 @@
       type fdm1_ICB_fixed_field
 !>        Matrix to evaluate radial derivative at ICB with fixed field
 !!        with first order accuracy
-        real(kind = kreal) :: dmat1_sc0(0:1,2)
+        real(kind = kreal) :: dmat1_ICB(0:1,2)
       end type fdm1_ICB_fixed_field
 !
 ! -----------------------------------------------------------------------
@@ -73,7 +73,7 @@
 !
       write(id_file,*) ' fdm1_fix_fld_ICB'
       write(id_file,*) ' mat_fdm21,  mat_fdm22'
-      write(id_file,'(1p9E25.15e3)') fdm1_fix_fld_ICB%dmat1_sc0(0:1,2)
+      write(id_file,'(1p9E25.15e3)') fdm1_fix_fld_ICB%dmat1_ICB(0:1,2)
 !
       end subroutine check_fdm1_ICB_fixed_field
 !
@@ -91,10 +91,10 @@
 !
       dr_p1 = r_from_ICB(1) - r_from_ICB(0)
 !
-      fdm1_fix_fld_ICB%dmat1_sc0(0,1) =  one
-      fdm1_fix_fld_ICB%dmat1_sc0(1,1) =  zero
-      fdm1_fix_fld_ICB%dmat1_sc0(0,2) = -one / dr_p1
-      fdm1_fix_fld_ICB%dmat1_sc0(1,2) =  one / dr_p1
+      fdm1_fix_fld_ICB%dmat1_ICB(0,1) =  one
+      fdm1_fix_fld_ICB%dmat1_ICB(1,1) =  zero
+      fdm1_fix_fld_ICB%dmat1_ICB(0,2) = -one / dr_p1
+      fdm1_fix_fld_ICB%dmat1_ICB(1,2) =  one / dr_p1
 !
       end subroutine cal_fdm1_coef_fix_fld_ICB
 !
@@ -120,11 +120,11 @@
 !       vt_evo_mat(3,kr_in-1,idx_rj_l0) = zero
         vt_evo_mat(2,kr_in,  idx_rj_l0)                                 &
      &     = one - coef_imp*dt*coef_d * five                            &
-     &      * (fdm1_fix_fld_ICB%dmat1_sc0(0,2) - two*ar_1d_rj(kr_in,1)) &
+     &      * (fdm1_fix_fld_ICB%dmat1_ICB(0,2) - two*ar_1d_rj(kr_in,1)) &
      &      * ar_1d_rj(kr_in,1)
         vt_evo_mat(1,kr_in+1,idx_rj_l0)                                 &
      &     = - coef_imp*dt*coef_d * five * ar_1d_rj(kr_in,1)            &
-     &        * fdm1_fix_fld_ICB%dmat1_sc0(1,2)
+     &        * fdm1_fix_fld_ICB%dmat1_ICB(1,2)
 !
       end subroutine set_rotate_icb_vt_sph_mat
 !
@@ -153,8 +153,8 @@
       i10c_ri = idx_rj_l0 + (kr_in-1)*jmax
       i10c_r1 = idx_rj_l0 +  kr_in * jmax
 !
-      mat_0 = fdm1_fix_fld_ICB%dmat1_sc0(0,2) - two*ar_1d_rj(kr_in,1)
-      mat_1 = fdm1_fix_fld_ICB%dmat1_sc0(1,2)
+      mat_0 = fdm1_fix_fld_ICB%dmat1_ICB(0,2) - two*ar_1d_rj(kr_in,1)
+      mat_1 = fdm1_fix_fld_ICB%dmat1_ICB(1,2)
 !
       d_rj(i10c_ri,it_viscous)                                          &
      &                   =  five  * coef_d * ar_1d_rj(kr_in,1)          &

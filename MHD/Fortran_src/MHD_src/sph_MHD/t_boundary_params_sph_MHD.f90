@@ -22,6 +22,7 @@
 !
       use m_precision
       use t_coef_fdm1_free_rotate_ICB
+      use t_coef_fdm1_free_rotate_CMB
 !
       implicit none
 !
@@ -96,7 +97,7 @@
         type(fdm1_ICB_fixed_field) :: fdm1_fix_fld_ICB
 !>        Matrix to evaluate radial derivative at CMB with fixed field
 !!        with first order accuracy
-        real(kind = kreal) :: fdm1_fix_fld_CMB(0:1,2)
+        type(fdm1_CMB_fixed_field) :: fdm1_fix_fld_CMB
       end type sph_boundary_type
 !
 ! -----------------------------------------------------------------------
@@ -158,9 +159,7 @@
       write(50,'(1p9E25.15e3)') sph_bc%fdm2_fix_dr_ICB(-1:1,3)
 !
 !
-      write(50,*) ' fdm1_fix_fld_CMB'
-      write(50,*) ' mat_fdm21,  mat_fdm22'
-      write(50,'(1p9E25.15e3)') sph_bc%fdm1_fix_fld_CMB(0:1,2)
+      call check_fdm1_CMB_fixed_field(50, sph_bc%fdm1_fix_fld_CMB)
 !
       write(50,*) ' fdm2_fix_fld_CMB'
       write(50,*) ' mat_fdm21,  mat_fdm22,  mat_fdm23'
