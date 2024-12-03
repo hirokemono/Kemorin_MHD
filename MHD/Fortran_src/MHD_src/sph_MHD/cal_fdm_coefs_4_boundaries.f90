@@ -8,9 +8,6 @@
 !>@brief Obtain FDM matrix for basic boundary conditions  at boundaries
 !!
 !!@verbatim
-!!      subroutine cal_fdm1_coef_fix_fld_ICB(r_from_ICB,                &
-!!     &          fdm1_fix_fld_ICB)
-!!
 !!      subroutine cal_fdm2_coef_fix_fld_ICB(r_from_ICB,                &
 !!     &          fdm2_fix_fld_ICB)
 !!      subroutine cal_fdm2_coef_fix_df_ICB(r_from_ICB,                 &
@@ -25,9 +22,6 @@
 !!
 !!   Matrix for derivatives with fixed field
 !!    at inner boundary of the shell
-!!      dfdr =      fdm1_fix_fld_ICB( 0,2) * d_rj(ICB  )
-!!                + fdm1_fix_fld_ICB( 1,2) * d_rj(ICB+1)
-!!
 !!      dfdr =      fdm2_fix_fld_ICB( 0,2) * d_rj(ICB  )
 !!                + fdm2_fix_fld_ICB( 1,2) * d_rj(ICB+1)
 !!                + fdm2_fix_fld_ICB( 2,2) * d_rj(ICB+2)
@@ -75,6 +69,7 @@
       use m_precision
 !
       use m_constants
+      use t_coef_fdm1_free_rotate_ICB
       use cal_inverse_small_matrix
 !
       implicit none
@@ -129,26 +124,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_fdm1_coef_fix_fld_ICB(r_from_ICB,                  &
-     &          fdm1_fix_fld_ICB)
-!
-      real(kind = kreal), intent(in) :: r_from_ICB(0:1)
-      real(kind = kreal), intent(inout) :: fdm1_fix_fld_ICB(0:1,2)
-!
-      real(kind = kreal) :: dr_p1
-!
-!
-      dr_p1 = r_from_ICB(1) - r_from_ICB(0)
-!
-      fdm1_fix_fld_ICB(0,1) =  one
-      fdm1_fix_fld_ICB(1,1) =  zero
-      fdm1_fix_fld_ICB(0,2) = -one / dr_p1
-      fdm1_fix_fld_ICB(1,2) =  one / dr_p1
-!
-      end subroutine cal_fdm1_coef_fix_fld_ICB
 !
 ! -----------------------------------------------------------------------
 !

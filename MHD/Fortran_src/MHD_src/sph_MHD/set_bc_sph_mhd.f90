@@ -176,9 +176,6 @@
       call cal_fdm3e_CTR_hdiv_vp(sph_rj%radius_1d_rj_r(1),              &
      &                           sph_MHD_bc%fdm3e_center)
 !
-!      Check data
-      call check_bc_sph_mhd(MHD_prop, sph_MHD_bc)
-!
       end subroutine s_set_bc_sph_mhd
 !
 ! -----------------------------------------------------------------------

@@ -21,6 +21,7 @@
       module t_boundary_params_sph_MHD
 !
       use m_precision
+      use t_coef_fdm1_free_rotate_ICB
 !
       implicit none
 !
@@ -92,7 +93,7 @@
 !
 !>        Matrix to evaluate radial derivative at ICB with fixed field
 !!        with first order accuracy
-        real(kind = kreal) :: fdm1_fix_fld_ICB(0:1,2)
+        type(fdm1_ICB_fixed_field) :: fdm1_fix_fld_ICB
 !>        Matrix to evaluate radial derivative at CMB with fixed field
 !!        with first order accuracy
         real(kind = kreal) :: fdm1_fix_fld_CMB(0:1,2)
@@ -142,9 +143,7 @@
 !
       write(50,*) ' Boundary condition matrix for ', trim(label)
 !
-      write(50,*) ' fdm1_fix_fld_ICB'
-      write(50,*) ' mat_fdm21,  mat_fdm22'
-      write(50,'(1p9E25.15e3)') sph_bc%fdm1_fix_fld_ICB(0:1,2)
+      call check_fdm1_ICB_fixed_field(50, sph_bc%fdm1_fix_fld_ICB)
 !
       write(50,*) ' fdm2_fix_fld_ICB'
       write(50,*) ' mat_fdm21,  mat_fdm22,  mat_fdm23'
