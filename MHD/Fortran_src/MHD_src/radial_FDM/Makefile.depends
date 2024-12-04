@@ -16,6 +16,10 @@ sph_exp_nod_insulate_CMB.o: $(MHD_FDM_DIR)/sph_exp_nod_insulate_CMB.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_nod_insulate_ICB.o: $(MHD_FDM_DIR)/sph_exp_nod_insulate_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_nod_psd_vacuum_CMB.o: $(MHD_FDM_DIR)/sph_exp_nod_psd_vacuum_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_nod_psd_vacuum_ICB.o: $(MHD_FDM_DIR)/sph_exp_nod_psd_vacuum_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_hdiv_vscs_FDM_exp.o: $(MHD_FDM_DIR)/sum_sph_hdiv_vscs_FDM_exp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_pol_grad_p_FDM2_exp.o: $(MHD_FDM_DIR)/sum_sph_pol_grad_p_FDM2_exp.f90 m_precision.o m_constants.o

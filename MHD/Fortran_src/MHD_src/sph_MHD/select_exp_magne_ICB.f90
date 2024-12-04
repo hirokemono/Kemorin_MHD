@@ -66,7 +66,6 @@
       use t_boundary_sph_spectr
 !
       use set_sph_exp_fix_vector_ICB
-      use cal_sph_exp_nod_icb_qvac
       use set_sph_exp_nod_center
 !
       implicit none
@@ -82,6 +81,7 @@
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
       use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -132,6 +132,7 @@
      &          is_magne, n_point, ntot_phys_rj, d_rj)
 !
       use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -176,6 +177,7 @@
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
       use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -220,6 +222,7 @@
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
       use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -260,6 +263,7 @@
 !
       use cal_sph_exp_fixed_scalar
       use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
