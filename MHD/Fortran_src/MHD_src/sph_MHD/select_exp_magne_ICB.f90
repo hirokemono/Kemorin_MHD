@@ -66,7 +66,6 @@
       use t_boundary_sph_spectr
 !
       use set_sph_exp_fix_vector_ICB
-      use cal_sph_exp_nod_icb_ins
       use cal_sph_exp_nod_icb_qvac
       use set_sph_exp_nod_center
 !
@@ -81,6 +80,8 @@
       subroutine sel_ICB_grad_bp_and_current                            &
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_nod_insulate_ICB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -130,6 +131,8 @@
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_nod_insulate_ICB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -171,6 +174,8 @@
       subroutine sel_ICB_sph_current                                    &
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_nod_insulate_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -214,6 +219,8 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_nod_insulate_ICB
+!
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -252,6 +259,7 @@
      &          is_magne, is_ohmic, n_point, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
+      use sph_exp_nod_insulate_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj

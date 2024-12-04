@@ -64,7 +64,6 @@
       use t_boundary_sph_spectr
 !
       use set_sph_exp_fix_vector_CMB
-      use cal_sph_exp_nod_cmb_ins
       use cal_sph_exp_nod_cmb_qvac
 !
       implicit none
@@ -78,6 +77,8 @@
       subroutine sel_CMB_grad_bp_and_current                            &
      &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                  &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_nod_insulate_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -120,6 +121,8 @@
      &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                  &
      &          is_magne, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_nod_insulate_CMB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_vector_BC_coef), intent(in) :: CMB_Bspec
@@ -154,6 +157,8 @@
 !
       subroutine sel_CMB_sph_current(sph_rj, sph_bc_B, g_sph_rj,        &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_nod_insulate_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -190,6 +195,8 @@
       subroutine sel_CMB_sph_rotation_uxb(sph_rj, sph_bc_B, g_sph_rj,   &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_nod_insulate_CMB
+!
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
 !
@@ -222,6 +229,7 @@
      &          is_magne, is_ohmic, n_point, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
+      use sph_exp_nod_insulate_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
