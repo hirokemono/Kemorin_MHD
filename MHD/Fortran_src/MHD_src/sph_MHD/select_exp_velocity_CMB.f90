@@ -55,8 +55,6 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_free_slip_CMB
 !
-      use set_sph_exp_free_CMB
-!
       implicit none
 !
 ! -----------------------------------------------------------------------
@@ -71,6 +69,7 @@
 !
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
+      use sph_exp_free_slip_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -117,6 +116,7 @@
 !
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
+      use sph_exp_free_slip_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -156,6 +156,7 @@
 !
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
+      use sph_exp_free_slip_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -199,6 +200,7 @@
       use cal_sph_exp_fixed_scalar
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
+      use sph_exp_free_slip_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -254,6 +256,7 @@
       use cal_sph_exp_fixed_scalar
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
+      use sph_exp_free_slip_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj

@@ -1,5 +1,5 @@
-!>@file   set_sph_exp_free_CMB.f90
-!!@brief  module set_sph_exp_free_CMB
+!>@file   sph_exp_free_slip_CMB.f90
+!!@brief  module sph_exp_free_slip_CMB
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan., 2010
@@ -46,7 +46,7 @@
 !!@n @param ntot_phys_rj   Total number of components
 !!@n @param d_rj           Spectrum data
 !
-      module set_sph_exp_free_CMB
+      module sph_exp_free_slip_CMB
 !
       use m_precision
       use m_constants
@@ -256,4 +256,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_sph_exp_free_CMB
+      end module sph_exp_free_slip_CMB

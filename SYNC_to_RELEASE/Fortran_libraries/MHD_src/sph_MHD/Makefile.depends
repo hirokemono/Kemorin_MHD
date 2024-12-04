@@ -194,9 +194,9 @@ select_exp_scalar_CMB.o: $(MHD_SPH_DIR)/select_exp_scalar_CMB.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 select_exp_scalar_ICB.o: $(MHD_SPH_DIR)/select_exp_scalar_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_fdm2_centre.o set_scalar_boundary_sph.o cal_sph_exp_center.o cal_sph_exp_fixed_scalar.o cal_sph_exp_fixed_flux.o cal_sph_exp_rotation.o cal_sph_exp_center_diffuse2.o
 	$(F90) -c $(F90OPTFLAGS) $<
-select_exp_velocity_CMB.o: $(MHD_SPH_DIR)/select_exp_velocity_CMB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o t_coef_fdm2_free_slip_CMB.o set_sph_exp_free_CMB.o sph_exp_fix_vector_CMB.o sph_exp_rigid_CMB.o cal_sph_exp_fixed_scalar.o
+select_exp_velocity_CMB.o: $(MHD_SPH_DIR)/select_exp_velocity_CMB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o t_coef_fdm2_free_slip_CMB.o sph_exp_fix_vector_CMB.o sph_exp_rigid_CMB.o sph_exp_free_slip_CMB.o cal_sph_exp_fixed_scalar.o
 	$(F90) -c $(F90OPTFLAGS) $<
-select_exp_velocity_ICB.o: $(MHD_SPH_DIR)/select_exp_velocity_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o t_coef_fdm2_free_slip_ICB.o set_sph_exp_free_ICB.o set_sph_exp_nod_center.o sph_exp_fix_vector_ICB.o sph_exp_rigid_ICB.o cal_sph_exp_fixed_scalar.o cal_inner_core_rotation.o
+select_exp_velocity_ICB.o: $(MHD_SPH_DIR)/select_exp_velocity_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o t_coef_fdm2_free_slip_ICB.o set_sph_exp_nod_center.o sph_exp_fix_vector_ICB.o sph_exp_rigid_ICB.o sph_exp_free_slip_ICB.o cal_sph_exp_fixed_scalar.o cal_inner_core_rotation.o
 	$(F90) -c $(F90OPTFLAGS) $<
 select_r_mat_scalar_bc_sph.o: $(MHD_SPH_DIR)/select_r_mat_scalar_bc_sph.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_sph_matrices.o t_sph_matrix.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm2_centre.o set_sph_scalar_mat_bc.o cal_inner_core_rotation.o center_sph_matrices.o set_radial_mat_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -243,10 +243,6 @@ set_sph_bc_data_by_file.o: $(MHD_SPH_DIR)/set_sph_bc_data_by_file.f90 m_precisio
 set_sph_bc_magne_sph.o: $(MHD_SPH_DIR)/set_sph_bc_magne_sph.f90 m_precision.o m_machine_parameter.o m_boundary_condition_IDs.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_group_data.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_spheric_rj_data.o t_bc_data_list.o t_sph_boundary_input_data.o m_base_field_labels.o set_bc_sph_scalars.o set_sph_bc_data_by_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_boundary_from_file.o: $(MHD_SPH_DIR)/set_sph_boundary_from_file.f90 m_precision.o t_spheric_rj_data.o t_field_labels.o m_base_field_labels.o m_base_force_labels.o skip_comment_f.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_exp_free_CMB.o: $(MHD_SPH_DIR)/set_sph_exp_free_CMB.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_exp_free_ICB.o: $(MHD_SPH_DIR)/set_sph_exp_free_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_exp_nod_center.o: $(MHD_SPH_DIR)/set_sph_exp_nod_center.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -20,6 +20,10 @@ sph_exp_free_CMB_s4t2.o: $(MHD_FDM_DIR)/sph_exp_free_CMB_s4t2.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_free_ICB_s4t2.o: $(MHD_FDM_DIR)/sph_exp_free_ICB_s4t2.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_free_slip_CMB.o: $(MHD_FDM_DIR)/sph_exp_free_slip_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_free_slip_ICB.o: $(MHD_FDM_DIR)/sph_exp_free_slip_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_no_condition_CMB.o: $(MHD_FDM_DIR)/sph_exp_no_condition_CMB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_no_condition_ICB.o: $(MHD_FDM_DIR)/sph_exp_no_condition_ICB.f90 m_precision.o m_constants.o
