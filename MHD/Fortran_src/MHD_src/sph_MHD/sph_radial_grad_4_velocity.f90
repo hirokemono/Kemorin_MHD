@@ -64,6 +64,8 @@
 !
       implicit none
 !
+      private :: delete_bc_rj_vector
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -145,7 +147,6 @@
       subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,       &
      &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
 !
-      use cal_sph_exp_nod_none_bc
       use t_const_wz_coriolis_rtp
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -177,6 +178,33 @@
 !$omp end parallel
 !
       end subroutine const_pressure_gradient
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine delete_bc_rj_vector(jmax, kr_bc, is_fld,               &
+     &                               n_point, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: jmax, kr_bc
+      integer(kind = kint), intent(in) :: is_fld
+!
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod, j
+!
+!
+!$omp parallel do private(inod)
+      do j = 1, jmax
+        inod = j + (kr_bc-1) * jmax
+!
+        d_rj(inod,is_fld  ) = 0.0d0
+        d_rj(inod,is_fld+1) = 0.0d0
+        d_rj(inod,is_fld+2) = 0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine delete_bc_rj_vector
 !
 ! -----------------------------------------------------------------------
 !

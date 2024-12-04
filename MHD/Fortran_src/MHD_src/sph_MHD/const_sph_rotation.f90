@@ -210,7 +210,8 @@
       subroutine const_sph_rotation_no_bc(sph_rj, r_2nd, sph_bc,        &
      &          g_sph_rj, is_fld, is_rot, rj_fld)
 !
-      use cal_sph_exp_nod_none_bc
+      use sph_exp_no_condition_ICB
+      use sph_exp_no_condition_CMB
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
