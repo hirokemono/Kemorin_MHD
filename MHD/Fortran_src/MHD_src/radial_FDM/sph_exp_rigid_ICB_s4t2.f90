@@ -1,5 +1,5 @@
-!>@file   set_sph_exp_rigid_ICB_s4t2.f90
-!!@brief  module set_sph_exp_rigid_ICB_s4t2
+!>@file   sph_exp_rigid_ICB_s4t2.f90
+!!@brief  module sph_exp_rigid_ICB_s4t2
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan., 2010
@@ -48,7 +48,7 @@
 !!
 !
 !
-      module set_sph_exp_rigid_ICB_s4t2
+      module sph_exp_rigid_ICB_s4t2
 !
       use m_precision
 !
@@ -248,4 +248,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_sph_exp_rigid_ICB_s4t2
+      end module sph_exp_rigid_ICB_s4t2

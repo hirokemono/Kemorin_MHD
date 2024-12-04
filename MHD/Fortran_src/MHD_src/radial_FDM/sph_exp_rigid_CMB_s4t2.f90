@@ -1,5 +1,5 @@
-!>@file   set_sph_exp_rigid_CMB_s4t2.f90
-!!@brief  module set_sph_exp_rigid_CMB_s4t2
+!>@file   sph_exp_rigid_CMB_s4t2.f90
+!!@brief  module sph_exp_rigid_CMB_s4t2
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan., 2010
@@ -46,7 +46,7 @@
 !!@n @param ntot_phys_rj   Total number of components
 !!@n @param d_rj           Spectrum data
 !
-      module set_sph_exp_rigid_CMB_s4t2
+      module sph_exp_rigid_CMB_s4t2
 !
       use m_precision
       use m_constants
@@ -245,4 +245,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_sph_exp_rigid_CMB_s4t2
+      end module sph_exp_rigid_CMB_s4t2

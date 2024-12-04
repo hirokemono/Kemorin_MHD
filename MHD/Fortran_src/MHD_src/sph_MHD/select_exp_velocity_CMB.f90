@@ -55,9 +55,7 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_free_slip_CMB
 !
-      use set_sph_exp_rigid_CMB
       use set_sph_exp_free_CMB
-      use set_sph_exp_fix_vector_CMB
 !
       implicit none
 !
@@ -70,6 +68,9 @@
       subroutine sel_CMB_grad_vp_and_vorticity                          &
      &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB, g_sph_rj,   &
      &          is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_fix_vector_CMB
+      use sph_exp_rigid_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -114,6 +115,9 @@
      &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB,             &
      &          is_fld, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_CMB
+      use sph_exp_rigid_CMB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
@@ -149,6 +153,9 @@
       subroutine sel_CMB_sph_vorticity                                  &
      &         (sph_rj, sph_bc_U, fdm2_free_CMB, g_sph_rj,              &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_fix_vector_CMB
+      use sph_exp_rigid_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -190,6 +197,8 @@
      &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_vector_CMB
+      use sph_exp_rigid_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -243,6 +252,8 @@
      &          is_vort, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_vector_CMB
+      use sph_exp_rigid_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj

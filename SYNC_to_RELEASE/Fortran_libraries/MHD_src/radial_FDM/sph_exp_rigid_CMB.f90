@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/MHD_src/radial_FDM/sph_exp_rigid_CMB.f90

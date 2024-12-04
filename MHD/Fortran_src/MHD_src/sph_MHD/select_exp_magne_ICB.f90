@@ -65,7 +65,6 @@
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
 !
-      use set_sph_exp_fix_vector_ICB
       use set_sph_exp_nod_center
 !
       implicit none
@@ -80,6 +79,7 @@
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
       use sph_exp_nod_insulate_ICB
       use sph_exp_nod_psd_vacuum_ICB
 !
@@ -131,6 +131,7 @@
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
       use sph_exp_nod_insulate_ICB
       use sph_exp_nod_psd_vacuum_ICB
 !
@@ -176,6 +177,7 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
       use sph_exp_nod_insulate_ICB
       use sph_exp_nod_psd_vacuum_ICB
 !
@@ -221,6 +223,7 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
       use sph_exp_nod_insulate_ICB
       use sph_exp_nod_psd_vacuum_ICB
 !
@@ -262,6 +265,7 @@
      &          is_magne, is_ohmic, n_point, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_vector_ICB
       use sph_exp_nod_insulate_ICB
       use sph_exp_nod_psd_vacuum_ICB
 !

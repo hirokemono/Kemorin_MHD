@@ -55,8 +55,6 @@
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_free_slip_ICB
 !
-      use set_sph_exp_fix_vector_ICB
-      use set_sph_exp_rigid_ICB
       use set_sph_exp_free_ICB
       use set_sph_exp_nod_center
 !
@@ -71,6 +69,9 @@
       subroutine sel_ICB_grad_vp_and_vorticity(sph_rj, r_2nd,           &
      &          sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,           &
      &          is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_fix_vector_ICB
+      use sph_exp_rigid_ICB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -135,6 +136,9 @@
      &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,      &
      &          is_fld, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
+      use sph_exp_rigid_ICB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -181,6 +185,9 @@
       subroutine sel_ICB_sph_vorticity                                  &
      &         (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB, g_sph_rj,       &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+!
+      use sph_exp_fix_vector_ICB
+      use sph_exp_rigid_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -229,7 +236,8 @@
 !
       use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
-      use set_sph_exp_fix_vector_CMB
+      use sph_exp_rigid_ICB
+      use sph_exp_fix_vector_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -303,7 +311,8 @@
 !
       use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
-      use set_sph_exp_fix_vector_CMB
+      use sph_exp_rigid_ICB
+      use sph_exp_fix_vector_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) :: sph_rj
