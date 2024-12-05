@@ -108,7 +108,8 @@
 !
       subroutine cal_fdm_coefs_4_BCs(nri, radius, sph_bc)
 !
-      use cal_fdm_coefs_4_boundaries
+      use t_coef_fdm2_scalar_ICB
+      use t_coef_fdm2_scalar_CMB
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius(nri)

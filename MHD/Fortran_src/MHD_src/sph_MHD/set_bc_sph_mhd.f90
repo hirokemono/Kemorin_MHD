@@ -65,7 +65,6 @@
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
-      use cal_fdm_coefs_4_boundaries
       use set_sph_bc_magne_sph
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -187,7 +186,6 @@
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
-      use cal_fdm_coefs_4_boundaries
       use set_sph_bc_magne_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
