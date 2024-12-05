@@ -79,7 +79,8 @@
       use t_coef_fdm2_free_slip_CMB
 !
       use m_ludcmp_band
-      use set_sph_scalar_mat_bc
+      use set_sph_scalar_matrix_ICB
+      use set_sph_scalar_matrix_CMB
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
@@ -273,8 +274,8 @@
      &          g_sph_rj, band_bp_evo, band_bt_evo)
 !
       use t_coef_fdm2_centre
-      use set_sph_scalar_mat_bc
-      use set_sph_magne_mat_bc
+      use set_sph_scalar_matrix_ICB
+      use set_sph_scalar_matrix_CMB
       use center_sph_matrices
       use check_sph_radial_mat
 !

@@ -78,7 +78,8 @@
      &          coef_f, coef_d, dt, coef_imp, is_field,                 &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use set_scalar_boundary_sph
+      use sph_exp_fixed_flux_CMB
+      use set_fixed_scalar_sph
       use cal_sph_exp_center
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -96,7 +97,7 @@
 !   Set RHS vector for CMB
       if (sph_bc%iflag_cmb .eq. iflag_fixed_field                       &
      &  .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
-        call set_fixed_scalar_sph(sph_rj%nidx_rj(2),                    &
+        call s_set_fixed_scalar_sph(sph_rj%nidx_rj(2),                  &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      sph_bc%kr_out, sph_rj%nidx_rj(1), is_field,                 &
      &      CMB_Sspec%S_BC, CMB_Sspec%S_CTR,                            &

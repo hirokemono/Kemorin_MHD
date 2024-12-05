@@ -19,6 +19,14 @@
 !!      subroutine cal_sph_in_fix_flux_diffuse2(jmax, g_sph_rj,         &
 !!     &          kr_in, r_ICB, fdm2_fix_dr_ICB, flux_ICB, coef_d,      &
 !!     &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
+!!
+!!      subroutine adjust_in_fixed_flux_sph(jmax, kr_in, r_ICB,         &
+!!     &          fdm2_fix_dr_ICB, flux_ICB, coef_d,                    &
+!!     &          diffuse_reduction, coef_imp, dt, is_fld,              &
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine poisson_in_fixed_flux_sph                            &
+!!     &         (jmax, kr_in, r_ICB, fdm2_fix_dr_ICB, flux_ICB,        &
+!!     &          is_fld, n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param idx_rj_degree_zero    Local address for degree 0
@@ -174,6 +182,70 @@
 !$omp end parallel do
 !
       end subroutine cal_sph_in_fix_flux_diffuse2
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine adjust_in_fixed_flux_sph(jmax, kr_in, r_ICB,           &
+     &          fdm2_fix_dr_ICB, flux_ICB, coef_d,                      &
+     &          diffuse_reduction, coef_imp, dt, is_fld,                &
+     &          n_point, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: is_fld
+      real(kind = kreal), intent(in) :: coef_d, coef_imp, dt
+      real(kind = kreal), intent(in) :: diffuse_reduction
+      real(kind = kreal), intent(in) :: flux_ICB(jmax)
+      real(kind = kreal), intent(in) :: r_ICB(0:2)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod, j
+!
+!
+!$omp parallel do private(inod)
+      do j = 1, jmax
+        inod = j + (kr_in-1) * jmax
+!
+        d_rj(inod,is_fld) =  d_rj(inod,is_fld)                          &
+     &                     + dt * coef_imp * coef_d * diffuse_reduction &
+     &                      * ( fdm2_fix_dr_ICB(-1,3)                   &
+     &                       + two*r_ICB(1) ) * flux_ICB(j)
+      end do
+!$omp end parallel do
+!
+      end subroutine adjust_in_fixed_flux_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine poisson_in_fixed_flux_sph                              &
+     &         (jmax, kr_in, r_ICB, fdm2_fix_dr_ICB, flux_ICB,          &
+     &          is_fld, n_point, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: is_fld
+      real(kind = kreal), intent(in) :: flux_ICB(jmax)
+      real(kind = kreal), intent(in) :: r_ICB(0:1)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod, j
+!
+!
+!$omp parallel do private(inod)
+      do j = 1, jmax
+        inod = j + (kr_in-1) * jmax
+!
+        d_rj(inod,is_fld) = (fdm2_fix_dr_ICB(-1,3) + two*r_ICB(1))      &
+     &                     * flux_ICB(j)
+      end do
+!$omp end parallel do
+!
+      end subroutine poisson_in_fixed_flux_sph
 !
 ! -----------------------------------------------------------------------
 !
