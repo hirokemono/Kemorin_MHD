@@ -91,7 +91,6 @@
      &          g_sph_rj, coef_diffuse, is_velo, is_viscous, rj_fld)
 !
       use cal_sph_exp_1st_diff
-      use cal_sph_exp_fixed_scalar
       use select_exp_velocity_ICB
       use select_exp_velocity_CMB
 !

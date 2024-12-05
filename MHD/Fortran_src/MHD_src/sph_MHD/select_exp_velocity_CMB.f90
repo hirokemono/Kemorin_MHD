@@ -197,7 +197,7 @@
      &          fdm2_free_CMB, g_sph_rj, coef_diffuse,                  &
      &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_scalar_CMB
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
       use sph_exp_free_slip_CMB
@@ -253,7 +253,7 @@
      &          fdm2_free_CMB, g_sph_rj, coef_diffuse,                  &
      &          is_vort, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_scalar_CMB
       use sph_exp_fix_vector_CMB
       use sph_exp_rigid_CMB
       use sph_exp_free_slip_CMB
@@ -273,12 +273,6 @@
       integer(kind = kint) :: ids_w_diffuse
 !
 !
-      ids_w_diffuse = is_w_diffuse + 1
-!
-      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2), sph_bc_U%kr_in,   &
-     &    sph_bc_U%fdm2_fix_fld_ICB, is_w_diffuse, ids_w_diffuse,       &
-     &    n_point, ntot_phys_rj, d_rj)
-!
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_w_diffuse2                            &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
@@ -296,6 +290,7 @@
      &      n_point, ntot_phys_rj, d_rj)
       end if
 !
+      ids_w_diffuse = is_w_diffuse + 1
       call cal_dsdr_sph_no_bc_out_2(sph_rj%nidx_rj(2), sph_bc_U%kr_out, &
      &    sph_bc_U%fdm2_fix_fld_CMB, is_w_diffuse, ids_w_diffuse,       &
      &    n_point, ntot_phys_rj, d_rj)

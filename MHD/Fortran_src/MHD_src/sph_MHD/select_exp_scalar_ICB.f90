@@ -136,8 +136,8 @@
      &         (sph_rj, sph_bc, ICB_Sspec, fdm2_center, g_sph_rj,       &
      &          is_fld, is_grad, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_ICB
+      use sph_exp_fixed_flux_ICB
       use cal_sph_exp_rotation
       use cal_sph_exp_center
 !
@@ -206,8 +206,8 @@
      &          g_sph_rj, coef_diffuse, is_fld, is_diffuse,             &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_ICB
+      use sph_exp_fixed_flux_ICB
       use cal_sph_exp_center_diffuse2
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -263,8 +263,8 @@
      &         (sph_rj, sph_bc, ICB_Sspec, fdm2_center, g_sph_rj,       &
      &          is_flux, is_advect, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_ICB
+      use sph_exp_fixed_flux_ICB
       use cal_sph_exp_center
       use cal_sph_exp_center_diffuse2
 !

@@ -236,10 +236,10 @@
      &          sph_bc_U, fdm2_free_ICB, g_sph_rj, coef_diffuse,        &
      &          is_velo, is_viscous, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
       use sph_exp_rigid_ICB
       use sph_exp_free_slip_ICB
+      use sph_exp_fix_scalar_ICB
       use sph_exp_fix_vector_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -312,10 +312,10 @@
      &          sph_bc_U, fdm2_free_ICB, g_sph_rj, coef_diffuse,        &
      &          is_vort, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
       use sph_exp_rigid_ICB
       use sph_exp_free_slip_ICB
+      use sph_exp_fix_scalar_ICB
       use sph_exp_fix_vector_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -330,6 +330,8 @@
       real(kind = kreal), intent(in) :: coef_diffuse
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: ids_w_diffuse
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
@@ -364,6 +366,11 @@
      &      coef_diffuse, is_vort, is_w_diffuse,                        &
      &      n_point, ntot_phys_rj, d_rj)
       end if
+!
+      ids_w_diffuse = is_w_diffuse + 1
+      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2), sph_bc_U%kr_in,   &
+     &    sph_bc_U%fdm2_fix_fld_ICB, is_w_diffuse, ids_w_diffuse,       &
+     &    n_point, ntot_phys_rj, d_rj)
 !
       end subroutine sel_ICB_sph_vort_diffusion
 !

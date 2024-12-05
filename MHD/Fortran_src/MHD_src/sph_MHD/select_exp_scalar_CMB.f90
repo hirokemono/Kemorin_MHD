@@ -124,8 +124,8 @@
      &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                    &
      &          is_fld, is_grad, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_CMB
+      use sph_exp_fixed_flux_CMB
       use cal_sph_exp_rotation
 !
       type(sph_boundary_type), intent(in) :: sph_bc
@@ -173,8 +173,8 @@
      &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj, coef_diffuse,      &
      &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_CMB
+      use sph_exp_fixed_flux_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
@@ -213,8 +213,8 @@
      &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                    &
      &          is_flux, is_advect, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
-      use cal_sph_exp_fixed_flux
+      use sph_exp_fix_scalar_CMB
+      use sph_exp_fixed_flux_CMB
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_rj_grid), intent(in) :: sph_rj

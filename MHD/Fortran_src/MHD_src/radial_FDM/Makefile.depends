@@ -12,9 +12,17 @@ set_sph_pol_vscs_FDM4_mat.o: $(MHD_FDM_DIR)/set_sph_pol_vscs_FDM4_mat.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_FDM_viscosities_mat.o: $(MHD_FDM_DIR)/sph_FDM_viscosities_mat.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_physical_property.o t_fdm_coefs.o cal_sph_FDM_viscosity_mat.o cal_sph_FDM3e_hdiv_viscous.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_fix_scalar_CMB.o: $(MHD_FDM_DIR)/sph_exp_fix_scalar_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_fix_scalar_ICB.o: $(MHD_FDM_DIR)/sph_exp_fix_scalar_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_fix_vector_CMB.o: $(MHD_FDM_DIR)/sph_exp_fix_vector_CMB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_fix_vector_ICB.o: $(MHD_FDM_DIR)/sph_exp_fix_vector_ICB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_fixed_flux_CMB.o: $(MHD_FDM_DIR)/sph_exp_fixed_flux_CMB.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_exp_fixed_flux_ICB.o: $(MHD_FDM_DIR)/sph_exp_fixed_flux_ICB.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_exp_free_CMB_s4t2.o: $(MHD_FDM_DIR)/sph_exp_free_CMB_s4t2.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
