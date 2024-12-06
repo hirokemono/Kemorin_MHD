@@ -730,11 +730,10 @@
 !$omp  parallel do                                                      &
 !$omp& private(j,c_d1,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
-          i_n2 = i_n1 - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
+          i_n2 = i_n1 - sph_rj%nidx_rj(2)
 !
           c_d1 =        g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
@@ -840,11 +839,10 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
-          i_n2 = i_n1 - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
+          i_n2 = i_n1 - sph_rj%nidx_rj(2)
 !
           c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
@@ -954,11 +952,10 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,iele,inod,i_n1,i_n2,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
-          i_n2 = i_n1 - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
+          i_n2 = i_n1 - sph_rj%nidx_rj(2)
 !
           c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
@@ -1076,11 +1073,10 @@
         c_d3 = -one
 !$omp parallel do private(j,c_d1,c_d0,iele,i_p1,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
-          i_p1 = iele + sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
+          i_p1 = iele + sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
 !
           c_d1 =        g_sph_rj(j,3)*ar_mid(2)
           c_d0 = -two * g_sph_rj(j,3)*ar_mid(3)
@@ -1186,11 +1182,10 @@
         c_d1 = two * ar_mid(1) * h_nu(k)
 !$omp parallel do private(j,c_d0,i_p1,iele,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
-          i_p1 = iele + sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
+          i_p1 = iele + sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
 !
           c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_nu(k)
           hdiv_visous(-2:1)                                             &
@@ -1300,11 +1295,10 @@
      &        + h_nu(k) * h_rho(k,0)
 !$omp parallel do private(j,c_d0,iele,i_p1,inod,i_n1,hdiv_visous)
         do j = 1, sph_rj%nidx_rj(2)
-          iele = 1 + (k-1) * sph_rj%istep_rj(1)                         &
-     &             + (j-1) * sph_rj%istep_rj(2)
-          i_p1 = iele + sph_rj%istep_rj(2)
+          iele = j + (k-1) * sph_rj%nidx_rj(2)
+          i_p1 = iele + sph_rj%nidx_rj(2)
           inod = iele
-          i_n1 = iele - sph_rj%istep_rj(2)
+          i_n1 = iele - sph_rj%nidx_rj(2)
 !
           c_d0 = - g_sph_rj(j,3)*ar_mid(2) * h_rho(k,0) * two / three
           hdiv_visous(-2:1)                                             &
