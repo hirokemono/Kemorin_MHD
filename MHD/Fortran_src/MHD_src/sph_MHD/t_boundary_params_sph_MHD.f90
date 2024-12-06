@@ -94,10 +94,10 @@
 !
 !>        Matrix to evaluate radial derivative at ICB with fixed field
 !!        with first order accuracy
-        type(fdm1_ICB_fixed_field) :: fdm1_fix_fld_ICB
+        real(kind = kreal) :: fdm1_fix_fld_ICB(0:1,2)
 !>        Matrix to evaluate radial derivative at CMB with fixed field
 !!        with first order accuracy
-        type(fdm1_CMB_fixed_field) :: fdm1_fix_fld_CMB
+        real(kind = kreal) :: fdm1_fix_fld_CMB(-1:0,2)
       end type sph_boundary_type
 !
 ! -----------------------------------------------------------------------

@@ -16,7 +16,7 @@
 !!        integer(kind = kint), intent(in) :: kr_in
 !!        real(kind = kreal), intent(in) :: dt
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(fdm1_ICB_fixed_field), intent(in) :: fdm1_fix_fld_ICB
+!!        real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!      subroutine cal_icore_viscous_drag_explicit                      &
@@ -26,7 +26,7 @@
 !!        integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
 !!        integer(kind = kint), intent(in) :: it_velo, it_viscous
 !!        real(kind = kreal), intent(in) :: coef_d
-!!        type(fdm1_ICB_fixed_field), intent(in) :: fdm1_fix_fld_ICB
+!!        real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        real(kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !!      subroutine copy_icore_rot_to_tor_coriolis                       &
@@ -122,7 +122,7 @@
 !
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: dt
-      type(fdm1_ICB_fixed_field), intent(in) :: fdm1_fix_fld_ICB
+      real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -155,7 +155,7 @@
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: it_velo, it_viscous
       real(kind = kreal), intent(in) :: coef_d
-      type(fdm1_ICB_fixed_field), intent(in) :: fdm1_fix_fld_ICB
+      real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
