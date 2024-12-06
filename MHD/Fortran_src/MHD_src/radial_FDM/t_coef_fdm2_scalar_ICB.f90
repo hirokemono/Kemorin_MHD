@@ -8,6 +8,12 @@
 !>@brief Obtain FDM matrix for basic boundary conditions  at boundaries
 !!
 !!@verbatim
+!!      subroutine check_fdm2_coefs_ICB(id_file,                        &
+!!     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!!        real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!!
 !!      subroutine cal_fdm2_coef_fix_fld_ICB(r_from_ICB,                &
 !!     &                                     fdm2_fix_fld_ICB)
 !!      subroutine cal_fdm2_coef_fix_df_ICB(r_from_ICB,                 &
@@ -45,6 +51,31 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine check_fdm2_coefs_ICB(id_file,                          &
+     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB)
+!
+      integer(kind = kint), intent(in) :: id_file
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+!
+      write(id_file,*) ' fdm2_fix_fld_ICB'
+      write(id_file,*) ' mat_fdm21,  mat_fdm22,  mat_fdm23'
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_ICB(0:2,2)
+      write(id_file,*) ' mat_fdm31,  mat_fdm32,  mat_fdm33'
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_ICB(0:2,3)
+!
+      write(id_file,*) ' fdm2_fix_dr_ICB'
+      write(id_file,*) ' mat_fdm21,  mat_fdm22,  mat_fdm23'
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_dr_ICB(-1:1,2)
+      write(id_file,*) ' mat_fdm31,  mat_fdm32,  mat_fdm33'
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_dr_ICB(-1:1,3)
+!
+      end subroutine check_fdm2_coefs_ICB
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_fdm2_coef_fix_fld_ICB(r_from_ICB,                  &

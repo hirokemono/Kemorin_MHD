@@ -18,7 +18,8 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
-!!      subroutine check_bc_sph_mhd(MHD_prop, sph_MHD_bc)
+!!      subroutine check_bc_sph_mhd(id_file, MHD_prop, sph_MHD_bc)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!@endverbatim
@@ -179,7 +180,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_bc_sph_mhd(MHD_prop, sph_MHD_bc)
+      subroutine check_bc_sph_mhd(id_file, MHD_prop, sph_MHD_bc)
 !
       use m_base_field_labels
 !
@@ -188,60 +189,61 @@
 !
       use set_sph_bc_magne_sph
 !
+      integer(kind = kint), intent(in) :: id_file
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
 !
       if(iflag_debug .gt. 1) then
-        write(*,*) 'sph_bc_U%iflag_icb', sph_MHD_bc%sph_bc_U%kr_in,     &
-     &          sph_MHD_bc%sph_bc_U%iflag_icb
-        write(*,*) 'sph_bc_U%iflag_cmb', sph_MHD_bc%sph_bc_U%kr_out,    &
-     &          sph_MHD_bc%sph_bc_U%iflag_cmb
-        write(*,*) 'sph_bc_T%iflag_icb', sph_MHD_bc%sph_bc_T%kr_in,     &
-     &          sph_MHD_bc%sph_bc_T%iflag_icb
-        write(*,*) 'sph_bc_T%iflag_cmb', sph_MHD_bc%sph_bc_T%kr_out,    &
-     &          sph_MHD_bc%sph_bc_T%iflag_cmb
-        write(*,*) 'sph_bc_B%iflag_icb', sph_MHD_bc%sph_bc_B%kr_in,     &
-     &          sph_MHD_bc%sph_bc_B%iflag_icb
-        write(*,*) 'sph_bc_B%iflag_cmb', sph_MHD_bc%sph_bc_B%kr_out,    &
-     &          sph_MHD_bc%sph_bc_B%iflag_cmb
-        write(*,*) 'sph_bc_C%iflag_icb', sph_MHD_bc%sph_bc_C%kr_in,     &
-     &          sph_MHD_bc%sph_bc_C%iflag_icb
-        write(*,*) 'sph_bc_C%iflag_cmb', sph_MHD_bc%sph_bc_C%kr_out,    &
-     &          sph_MHD_bc%sph_bc_C%iflag_cmb
+        write(id_file,*) 'sph_bc_U%iflag_icb',                          &
+     &        sph_MHD_bc%sph_bc_U%kr_in,  sph_MHD_bc%sph_bc_U%iflag_icb
+        write(id_file,*) 'sph_bc_U%iflag_cmb',                          &
+     &        sph_MHD_bc%sph_bc_U%kr_out, sph_MHD_bc%sph_bc_U%iflag_cmb
+        write(id_file,*) 'sph_bc_T%iflag_icb',                          &
+     &        sph_MHD_bc%sph_bc_T%kr_in,  sph_MHD_bc%sph_bc_T%iflag_icb
+        write(id_file,*) 'sph_bc_T%iflag_cmb',                          &
+     &        sph_MHD_bc%sph_bc_T%kr_out, sph_MHD_bc%sph_bc_T%iflag_cmb
+        write(id_file,*) 'sph_bc_B%iflag_icb',                          &
+     &        sph_MHD_bc%sph_bc_B%kr_in,  sph_MHD_bc%sph_bc_B%iflag_icb
+        write(id_file,*) 'sph_bc_B%iflag_cmb',                          &
+     &        sph_MHD_bc%sph_bc_B%kr_out, sph_MHD_bc%sph_bc_B%iflag_cmb
+        write(id_file,*) 'sph_bc_C%iflag_icb',                          &
+     &        sph_MHD_bc%sph_bc_C%kr_in,  sph_MHD_bc%sph_bc_C%iflag_icb
+        write(id_file,*) 'sph_bc_C%iflag_cmb',                          &
+     &        sph_MHD_bc%sph_bc_C%kr_out, sph_MHD_bc%sph_bc_C%iflag_cmb
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
-     &       (velocity%name, sph_MHD_bc%sph_bc_U)
+     &       (id_file, velocity%name, sph_MHD_bc%sph_bc_U)
           call check_fdm3_n2e_ICB_zero_vpol                             &
-     &       (50, sph_MHD_bc%fdm3e_vp0_ICB)
+     &       (id_file, sph_MHD_bc%fdm3e_vp0_ICB)
           call check_fdm2_coef_free_slip_ICB                            &
-     &       (50, sph_MHD_bc%fdm2_free_ICB)
+     &       (id_file, sph_MHD_bc%fdm2_free_ICB)
           call check_fdm2_coef_free_slip_CMB                            &
-     &       (50, sph_MHD_bc%fdm2_free_CMB)
+     &       (id_file, sph_MHD_bc%fdm2_free_CMB)
           call check_fdm3_n2e_ICB_free_vpol                             &
-     &       (50, sph_MHD_bc%fdm3e_free_ICB)
+     &       (id_file, sph_MHD_bc%fdm3e_free_ICB)
           call check_fdm3_n2e_CMB_free_vpol                             &
-     &       (50, sph_MHD_bc%fdm3e_free_CMB)
+     &       (id_file, sph_MHD_bc%fdm3e_free_CMB)
         end if
 !
         if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &
      &   then
           call check_fdm_coefs_4_BC2                                    &
-     &       (magnetic_field%name, sph_MHD_bc%sph_bc_B)
+     &       (id_file, magnetic_field%name, sph_MHD_bc%sph_bc_B)
         end if
         if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
-     &       (temperature%name,  sph_MHD_bc%sph_bc_T)
+     &       (id_file, temperature%name,  sph_MHD_bc%sph_bc_T)
         end if
         if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
-     &       (composition%name, sph_MHD_bc%sph_bc_C)
+     &       (id_file, composition%name, sph_MHD_bc%sph_bc_C)
         end if
 !
-        call check_fdm2_coefs_centre(50, sph_MHD_bc%fdm2_center)
+        call check_fdm2_coefs_centre(id_file, sph_MHD_bc%fdm2_center)
       end if
 !
       end subroutine check_bc_sph_mhd
