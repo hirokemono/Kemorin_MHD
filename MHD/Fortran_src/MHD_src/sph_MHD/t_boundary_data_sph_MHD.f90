@@ -27,6 +27,8 @@
       use m_precision
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
+      use t_coef_sph_velocity_BCs
+!
       use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm4_zero_vpol_ICB
@@ -66,6 +68,9 @@
         type(sph_scalar_boundary_data) :: bcs_T
 !>        Structure for boundary composition spectr
         type(sph_scalar_boundary_data) :: bcs_C
+!
+!>        Structure for Additional velocity boundary condition matrices
+        type(velocity_boundary_FDMs) :: bc_fdms_U
 !
 !>        Structure for FDM matrix of center
         type(fdm2_center_mat) :: fdm2_center

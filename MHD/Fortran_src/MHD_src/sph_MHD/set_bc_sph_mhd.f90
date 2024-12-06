@@ -108,9 +108,9 @@
      &      sph_MHD_bc%sph_bc_U)
 !
         call cal_fdm1_coef_fix_fld_ICB(sph_rj%radius_1d_rj_r(kst),      &
-     &      sph_MHD_bc%sph_bc_U%fdm1_fix_fld_ICB)
+     &      sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_ICB)
         call cal_fdm1_coef_fix_fld_CMB(sph_rj%radius_1d_rj_r(ked-1),    &
-     &      sph_MHD_bc%sph_bc_U%fdm1_fix_fld_CMB)
+     &      sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_CMB)
 !
         call cal_fdm2_ICB_free_vp(h_rho_in,                             &
      &                            sph_rj%radius_1d_rj_r(kst),           &
@@ -228,9 +228,9 @@
      &       (id_file, velocity%name, sph_MHD_bc%sph_bc_U)
 !
           call check_fdm1_ICB_fixed_field                               &
-     &       (id_file, sph_MHD_bc%sph_bc_U%fdm1_fix_fld_ICB)
+     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_ICB)
           call check_fdm1_CMB_fixed_field                               &
-     &       (id_file, sph_MHD_bc%sph_bc_U%fdm1_fix_fld_CMB)
+     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_CMB)
 !
           call check_fdm3_n2e_ICB_zero_vpol                             &
      &       (id_file, sph_MHD_bc%fdm3e_vp0_ICB)

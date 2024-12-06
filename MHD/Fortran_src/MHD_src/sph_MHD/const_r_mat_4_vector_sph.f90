@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step                          &
-!!     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                  &
+!!     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U, bc_fdms_U,       &
 !!     &         fdm2_center, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,   &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
@@ -19,6 +19,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
+!!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
 !!        type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
@@ -70,10 +71,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step                            &
-     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                    &
+     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U, bc_fdms_U,         &
      &         fdm2_center, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,     &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
+      use t_coef_sph_velocity_BCs
       use t_coef_fdm2_centre
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
@@ -90,6 +92,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
       type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
@@ -200,7 +203,7 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix                                   &
-     &     (sph_bc_U%kr_in, sph_bc_U%fdm1_fix_fld_ICB,                  &
+     &     (sph_bc_U%kr_in, bc_fdms_U%fdm1_fix_fld_ICB,                 &
      &      dt, sph_rj, fl_prop, band_vt_evo)
       end if
 !
