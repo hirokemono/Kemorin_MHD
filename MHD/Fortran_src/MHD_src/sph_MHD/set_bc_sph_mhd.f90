@@ -57,6 +57,8 @@
      &          MHD_BC, sph_MHD_bc)
 !
       use t_phys_data
+      use t_coef_fdm1_free_rotate_ICB
+      use t_coef_fdm1_free_rotate_CMB
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
@@ -104,6 +106,11 @@
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_U)
+!
+        call cal_fdm1_coef_fix_fld_ICB(sph_rj%radius_1d_rj_r(kst),      &
+     &      sph_MHD_bc%sph_bc_U%fdm1_fix_fld_ICB)
+        call cal_fdm1_coef_fix_fld_CMB(sph_rj%radius_1d_rj_r(ked-1),    &
+     &      sph_MHD_bc%sph_bc_U%fdm1_fix_fld_CMB)
 !
         call cal_fdm2_ICB_free_vp(h_rho_in,                             &
      &                            sph_rj%radius_1d_rj_r(kst),           &
@@ -184,6 +191,8 @@
 !
       use m_base_field_labels
 !
+      use t_coef_fdm1_free_rotate_ICB
+      use t_coef_fdm1_free_rotate_CMB
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
@@ -217,6 +226,12 @@
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2                                    &
      &       (id_file, velocity%name, sph_MHD_bc%sph_bc_U)
+!
+          call check_fdm1_ICB_fixed_field                               &
+     &       (id_file, sph_MHD_bc%sph_bc_U%fdm1_fix_fld_ICB)
+          call check_fdm1_CMB_fixed_field                               &
+     &       (id_file, sph_MHD_bc%sph_bc_U%fdm1_fix_fld_CMB)
+!
           call check_fdm3_n2e_ICB_zero_vpol                             &
      &       (id_file, sph_MHD_bc%fdm3e_vp0_ICB)
           call check_fdm2_coef_free_slip_ICB                            &

@@ -24,8 +24,6 @@
       module t_boundary_params_sph_MHD
 !
       use m_precision
-      use t_coef_fdm1_free_rotate_ICB
-      use t_coef_fdm1_free_rotate_CMB
 !
       implicit none
 !
@@ -119,22 +117,15 @@
       type(sph_boundary_type), intent(inout) :: sph_bc
 !
 !
-      call cal_fdm1_coef_fix_fld_ICB(radius(sph_bc%kr_in),              &
-     &     sph_bc%fdm1_fix_fld_ICB)
-!
       call cal_fdm2_coef_fix_fld_ICB(radius(sph_bc%kr_in),              &
-     &     sph_bc%fdm2_fix_fld_ICB)
+     &    sph_bc%fdm2_fix_fld_ICB)
       call cal_fdm2_coef_fix_df_ICB(radius(sph_bc%kr_in),               &
-     &     sph_bc%fdm2_fix_dr_ICB)
-!
-!
-      call cal_fdm1_coef_fix_fld_CMB(radius(sph_bc%kr_out-1),           &
-     &     sph_bc%fdm1_fix_fld_CMB)
+     &    sph_bc%fdm2_fix_dr_ICB)
 !
       call cal_fdm2_coef_fix_fld_CMB(radius(sph_bc%kr_out-2),           &
-     &     sph_bc%fdm2_fix_fld_CMB)
+     &    sph_bc%fdm2_fix_fld_CMB)
       call cal_fdm2_coef_fix_df_CMB(radius(sph_bc%kr_out-1),            &
-     &     sph_bc%fdm2_fix_dr_CMB)
+     &    sph_bc%fdm2_fix_dr_CMB)
 !
       end subroutine cal_fdm_coefs_4_BCs
 !
@@ -152,11 +143,8 @@
 !
       write(id_file,*) ' Boundary condition matrix for ', trim(label)
 !
-      call check_fdm1_ICB_fixed_field(id_file, sph_bc%fdm1_fix_fld_ICB)
       call check_fdm2_coefs_ICB(id_file, sph_bc%fdm2_fix_fld_ICB,       &
      &                                   sph_bc%fdm2_fix_dr_ICB)
-!
-      call check_fdm1_CMB_fixed_field(id_file, sph_bc%fdm1_fix_fld_CMB)
       call check_fdm2_coefs_CMB(id_file, sph_bc%fdm2_fix_fld_CMB,       &
      &                          sph_bc%fdm2_fix_dr_CMB)
 !

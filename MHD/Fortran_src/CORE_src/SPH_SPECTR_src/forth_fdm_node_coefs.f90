@@ -1,5 +1,5 @@
 !>@file   forth_fdm_node_coefs.f90
-!!@brief  module forth_fdm_node_coefs
+!!@brief  module v
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan, 2020
@@ -99,7 +99,7 @@
 !
       if(iflag_debug .gt. 0) then
         call check_fdm_coefs                                            &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_4th)
+     &     (50, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_4th)
       end if
 !
       end subroutine const_forth_fdm_coefs

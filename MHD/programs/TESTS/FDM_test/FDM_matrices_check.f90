@@ -7,52 +7,70 @@
       use t_spheric_rj_data
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
+      use t_boundary_params_sph_MHD
       use chebyshev_radial_grid
 !
       implicit none
+!
+      integer(kind = kint), parameter :: num_fluid_grid = 96
+      real(kind = kreal), parameter :: rmin = 0.0d0
+      real(kind = kreal), parameter :: rmax = 1.6d0
+      real(kind = kreal), parameter :: r_ICB = 7.0d0 / 13.0d0
+      real(kind = kreal), parameter :: r_CMB = 20.0d0 / 13.0d0
 !
       type(sph_grids) :: sph1
       type(fdm_matrices) :: r_2nd_1
       type(fdm_matrices) :: r_n2e_3rd_1
       type(fdm_matrices) :: r_e2n_1st_1
+      type(fdm_matrices) :: r_4th_1
 !
       type(sph_MHD_boundary_data) :: sph_MHD_bc1
+      character(len=kchara), parameter :: BC_label = 'Boundary'
 !
       integer :: k
 !
-      sph1%sph_rj%nidx_rj(1) = 128
+      iflag_debug = 0
       sph1%sph_rj%nidx_rj(2) =   6
-      sph1%sph_rj%nnod_rj =    sph1%sph_rj%nidx_rj(1)                   &
-     &                        * sph1%sph_rj%nidx_rj(2)
-      call alloc_sph_1d_index_rj(sph1%sph_rj)
+      sph1%sph_params%radius_ICB = r_ICB
+      sph1%sph_params%radius_CMB = r_CMB
+      call count_chebyshev_ext_layers(num_fluid_grid,                   &
+     &    sph1%sph_params%radius_ICB, sph1%sph_params%radius_CMB,       &
+     &    rmin, rmax, sph1%sph_rj%nidx_rj(1),                           &
+     &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB)
+      sph1%sph_rj%nnod_rj = sph1%sph_rj%nidx_rj(1)                      &
+     &                     * sph1%sph_rj%nidx_rj(2)
 !
-      sph1%sph_params%nlayer_ICB =   24
-      sph1%sph_params%nlayer_CMB =   96
-      sph1%sph_params%radius_ICB =   7.0d0 / 13.0d0
-      sph1%sph_params%radius_CMB =   20.0d0 / 13.0d0
+      write(*,*) 'sph_rj%nidx_rj', sph1%sph_rj%nidx_rj(1:2)
+      write(*,*) 'nlayer_ICB', sph1%sph_params%nlayer_ICB
+      write(*,*) 'nlayer_CMB', sph1%sph_params%nlayer_CMB
+!
+      call alloc_sph_1d_index_rj(sph1%sph_rj)
 !
       call set_chebyshev_distance_shell(sph1%sph_rj%nidx_rj(1),         &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_params%radius_ICB, sph1%sph_params%radius_CMB,       &
      &    sph1%sph_rj%radius_1d_rj_r)
 !
-!      do k = 1, sph1%sph_rj%nidx_rj(1)
-!        write(*,*) k, sph1%sph_rj%radius_1d_rj_r(k)
-!      end do
-!
       call init_FDM_coefs_for_test                                      &
-     &   (sph1, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,                      &
-     &    sph_MHD_bc1%fdm3e_center,         &
+     &   (sph1, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1, r_4th_1)
+!
+      sph_MHD_bc1%sph_bc_U%kr_in = sph1%sph_params%nlayer_ICB
+      sph_MHD_bc1%sph_bc_U%kr_out = sph1%sph_params%nlayer_CMB
+      call cal_fdm_coefs_4_BCs                                          &
+     &   (sph1%sph_rj%nidx_rj(1), sph1%sph_rj%radius_1d_rj_r,           &
+     &    sph_MHD_bc1%sph_bc_U)
+      call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
+!
+      call init_FDM_boundaries_for_test(sph1, sph_MHD_bc1%fdm3e_center, &
      &    sph_MHD_bc1%fdm3e_vp0_ICB, sph_MHD_bc1%fdm3e_free_ICB,        &
-     &    sph_MHD_bc1%fdm2_free_ICB,     &
+     &    sph_MHD_bc1%fdm2_free_ICB,                                    &
      &    sph_MHD_bc1%fdm3e_vp0_CMB, sph_MHD_bc1%fdm3e_free_CMB,        &
-     &    sph_MHD_bc1%fdm2_free_CMB,               &
-     &    sph_MHD_bc1%fdm2_center)
+     &    sph_MHD_bc1%fdm2_free_CMB, sph_MHD_bc1%fdm2_center)
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
      &    sph_MHD_bc1%fdm3e_vp0_ICB, sph_MHD_bc1%fdm3e_free_ICB,        &
-     &    sph_MHD_bc1%fdm2_free_ICB,     &
+     &    sph_MHD_bc1%fdm2_free_ICB,                                    &
      &    sph_MHD_bc1%fdm3e_vp0_CMB, sph_MHD_bc1%fdm3e_free_CMB,        &
      &    sph_MHD_bc1%fdm2_free_CMB)
 !
@@ -63,7 +81,39 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_FDM_coefs_for_test                                &
-     &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, fdm3e_CTR,            &
+     &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, r_4th)
+!
+      use parallel_load_data_4_sph
+      use init_radial_infos_sph_mhd
+      use second_fdm_node_coefs
+      use third_fdm_node_to_ele
+      use first_fdm_ele_to_node
+      use forth_fdm_node_coefs
+!
+      type(sph_grids), intent(inout) :: sph
+      type(fdm_matrices), intent(inout) :: r_2nd
+      type(fdm_matrices), intent(inout) :: r_n2e_3rd
+      type(fdm_matrices), intent(inout) :: r_e2n_1st
+      type(fdm_matrices), intent(inout) :: r_4th
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
+      call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
+      call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
+      if (iflag_debug.gt.0) write(*,*) 'const_first_fdm_ele_to_node'
+      call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
+      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
+      call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
+      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
+      call const_forth_fdm_coefs(sph%sph_rj, r_4th)
+!
+      end subroutine init_FDM_coefs_for_test
+!
+!  -------------------------------------------------------------------
+!
+      subroutine init_FDM_boundaries_for_test(sph, fdm3e_CTR,           &
      &          fdm3e_vp0_ICB, fdm3e_free_ICB, fdm2_free_ICB,           &
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB,           &
      &          fdm2_center)
@@ -75,16 +125,8 @@
       use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use t_coef_fdm3_n2e_free_vp_CMB
-      use parallel_load_data_4_sph
-      use init_radial_infos_sph_mhd
-      use second_fdm_node_coefs
-      use third_fdm_node_to_ele
-      use first_fdm_ele_to_node
 !
       type(sph_grids), intent(inout) :: sph
-      type(fdm_matrices), intent(inout) :: r_2nd
-      type(fdm_matrices), intent(inout) :: r_n2e_3rd
-      type(fdm_matrices), intent(inout) :: r_e2n_1st
 !
       type(fdm3_n2e_CTR_vpol), intent(inout) :: fdm3e_CTR
       type(fdm3_n2e_ICB_zero_vpol), intent(inout) :: fdm3e_vp0_ICB
@@ -99,21 +141,6 @@
 !
       real(kind = kreal), allocatable :: h_rho(:)
       integer(kind = kint) :: kr_in, kr_out
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
-      call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
-      call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
-      call check_fdm_coefs                                              &
-     &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r, r_2nd)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_first_fdm_ele_to_node'
-      call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
-      call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
       call cal_2nd_to_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),    &
@@ -149,7 +176,7 @@
      &                                fdm3e_vp0_CMB, fdm3e_free_CMB)
       deallocate(h_rho)
 !
-      end subroutine init_FDM_coefs_for_test
+      end subroutine init_FDM_boundaries_for_test
 !
 !  -------------------------------------------------------------------
 !
