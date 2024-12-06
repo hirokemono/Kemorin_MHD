@@ -306,9 +306,9 @@
      &      .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
           grad_r(kr) = BC0_CMB
         else
-          grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)        &
-     &                + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)        &
-     &                + sph_bc%fdm2_fix_fld_CMB(0,2) * d_r(kr  )
+          grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(-2,2) * d_r(kr-2)       &
+     &                + sph_bc%fdm2_fix_fld_CMB(-1,2) * d_r(kr-1)       &
+     &                + sph_bc%fdm2_fix_fld_CMB( 0,2) * d_r(kr  )
           write(*,*) 'Given condition:   ',  BC0_CMB
           write(*,*) 'Numerical solution:',  grad_r(kr)
         end if
@@ -316,9 +316,9 @@
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
-        grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)          &
-     &               + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)         &
-     &               + sph_bc%fdm2_fix_fld_CMB(0,2) * BC0_CMB
+        grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(-2,2) * d_r(kr-2)         &
+     &              + sph_bc%fdm2_fix_fld_CMB(-1,2) * d_r(kr-1)         &
+     &              + sph_bc%fdm2_fix_fld_CMB( 0,2) * BC0_CMB
       end if
 !
       end subroutine sel_CMB_radial_grad_1d_scalar
@@ -338,9 +338,9 @@
       integer(kind = kint) :: kr
 !
       kr = sph_bc%kr_out
-      grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)            &
-     &            + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)            &
-     &            + sph_bc%fdm2_fix_fld_CMB(0,2) * d_r(kr  )
+      grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(-2,2) * d_r(kr-2)           &
+     &            + sph_bc%fdm2_fix_fld_CMB(-1,2) * d_r(kr-1)           &
+     &            + sph_bc%fdm2_fix_fld_CMB( 0,2) * d_r(kr  )
 
       end subroutine fix_CMB_radial_grad_1d_scalar
 !

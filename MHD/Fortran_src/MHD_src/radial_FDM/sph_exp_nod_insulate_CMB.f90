@@ -28,7 +28,7 @@
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_CMB(0:2)   Radius at CMB
-!!@n @param fdm2_fix_fld_CMB(0:2,3)
+!!@n @param fdm2_fix_fld_CMB(-2:0,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
 !!@n @param fdm2_fix_dr_CMB(-1:1,3)
 !!         Matrix to evaluate field at CMB with fixed radial derivative
@@ -62,7 +62,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -83,8 +83,8 @@
      &          + (fdm2_fix_dr_CMB( 0,3)                                &
      &           -  g_sph_rj(j,1)*r_CMB(1)*fdm2_fix_dr_CMB( 1,3))       &
      &                                   * d_rj(inod,is_fld  )
-        d1t_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld+2)
+        d1t_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld+2)
 !
         d_rj(inod,is_fld+1) = d1s_dr1
         d_rj(inod,is_fld+2) = zero
@@ -167,7 +167,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -187,9 +187,9 @@
      &          + (fdm2_fix_dr_CMB( 0,3)                                &
      &           -  g_sph_rj(j,1)*r_CMB(1)*fdm2_fix_dr_CMB( 1,3))       &
      &                                   * d_rj(inod,is_fld  )
-        d1t_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld+2)
+        d1t_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_rot) = d_rj(inod,is_fld+2)
         d_rj(inod,is_rot+1) = d1t_dr1
@@ -212,7 +212,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -232,9 +232,9 @@
      &          + (fdm2_fix_dr_CMB( 0,3)                                &
      &           -  g_sph_rj(j,1)*r_CMB(1)*fdm2_fix_dr_CMB( 1,3))       &
      &                                   * d_rj(inod,is_fld  )
-        d2t_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld+2)
+        d2t_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_diffuse  ) = coef_d * (d2s_dr2                     &
      &    - g_sph_rj(j,3)*r_CMB(2)*d_rj(inod,is_fld  ) )

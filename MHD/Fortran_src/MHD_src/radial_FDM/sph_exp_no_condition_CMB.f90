@@ -21,7 +21,7 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@n @param fdm2_fix_fld_CMB(0:2,3)
+!!@n @param fdm2_fix_fld_CMB(-2:0,3)
 !!            Finite difference matrix for CMB with no boundary condition
 !!
 !!@n @param n_point  Number of points for spectrum data
@@ -59,7 +59,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_grad
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -83,9 +83,9 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_grad+1)         &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_grad+1)         &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_grad+1)
+        d1s_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_grad+1)        &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_grad+1)        &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_grad+1)
 !
         d_rj(inod,is_grad  ) = d1s_dr1 * g_sph_rj(j,13) * r_CMB(0)**2
       end do
@@ -104,7 +104,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -119,12 +119,12 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d2s_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld  )
-        d1t_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld+2)
+        d2s_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld  )         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld  )         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld  )
+        d1t_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_rot  ) = d_rj(inod,is_fld+2)
         d_rj(inod,is_rot+1) = d1t_dr1
@@ -145,7 +145,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_div
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -160,9 +160,9 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld  )
+        d1s_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld  )         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld  )         &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_fld  )
 !
         d_rj(inod,is_div) =  (d1s_dr1 - d_rj(inod,is_fld+1) )           &
      &                  * max(g_sph_rj(j,3),half) * r_CMB(2)
@@ -181,7 +181,7 @@
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -196,12 +196,12 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d2s_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld  )          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld  )
-        d2t_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld+2)
+        d2s_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld  )         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld  )         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld  )
+        d2t_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_diffuse  ) =  d2s_dr2                              &
      &               - g_sph_rj(j,3)*r_CMB(2)*d_rj(inod,is_fld  )

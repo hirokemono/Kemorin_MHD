@@ -29,7 +29,7 @@
 !!@n @param r_CMB(0:2)   Radius at CMB
 !!@n @param r_CMB1(0:2)   Radius at the next of CMB
 !!
-!!@n @param fdm2_fix_fld_CMB(0:2,3)
+!!@n @param fdm2_fix_fld_CMB(-2:0,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
 !!@n @param  fdm4_noslip_CMB(-2:0,2:4)
 !!         Matrix for poloidal velocity with non-slip boundary at CMB
@@ -69,7 +69,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
       real(kind = kreal), intent(in) :: Vt_CMB(jmax)
@@ -92,11 +92,11 @@
         d_rj(inod,is_fld+1) = zero
         d_rj(inod,is_fld+2) = Vt_CMB(j)
 !
-        d2s_dr2 =  fdm4_noslip_CMB(-2,3) * d_rj(i_n2,is_fld  )          &
-     &           + fdm4_noslip_CMB(-1,3) * d_rj(i_n1,is_fld  )
-        d1t_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld+2)
+        d2s_dr2 =  fdm4_noslip_CMB(-2,3) *  d_rj(i_n2,is_fld  )         &
+     &           + fdm4_noslip_CMB(-1,3) *  d_rj(i_n1,is_fld  )
+        d1t_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_rot  ) =  d_rj(inod,is_fld+2)
         d_rj(inod,is_rot+1) =  d1t_dr1
@@ -137,7 +137,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
 !
@@ -155,11 +155,11 @@
         i_n2 = i_n1 - jmax
         i_n3 = i_n2 - jmax
 !
-        d2s_dr2 =  fdm4_noslip_CMB(-2,3) * d_rj(i_n2,is_fld  )          &
-     &           + fdm4_noslip_CMB(-1,3) * d_rj(i_n1,is_fld  )
-        d1t_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld+2)
+        d2s_dr2 =  fdm4_noslip_CMB(-2,3) *  d_rj(i_n2,is_fld  )         &
+     &           + fdm4_noslip_CMB(-1,3) *  d_rj(i_n1,is_fld  )
+        d1t_dr1 =  fdm2_fix_fld_CMB(-2,2) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,2) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,2) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_rot  ) =  d_rj(inod,is_fld+2)
         d_rj(inod,is_rot+1) =  d1t_dr1
@@ -197,7 +197,7 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
 !
@@ -215,11 +215,11 @@
         i_n2 = i_n1 - jmax
         i_n3 = i_n2 - jmax
 !
-        d2s_dr2 =  fdm4_noslip_CMB(-2,3) * d_rj(i_n2,is_fld  )          &
-     &           + fdm4_noslip_CMB(-1,3) * d_rj(i_n1,is_fld  )
-        d2t_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld+2)
+        d2s_dr2 =  fdm4_noslip_CMB(-2,3) *  d_rj(i_n2,is_fld  )         &
+     &           + fdm4_noslip_CMB(-1,3) *  d_rj(i_n1,is_fld  )
+        d2t_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_diffuse  ) =  coef_d * (d2s_dr2                    &
      &               - g_sph_rj(j,3)*r_CMB(2)*d_rj(inod,is_fld  ) )

@@ -29,7 +29,7 @@
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_CMB(0:2)   Radius at CMB
 !!
-!!@n @param fdm2_fix_fld_CMB(0:2,3)
+!!@n @param fdm2_fix_fld_CMB(-2:0,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
 !!@n @param fdm2_free_vp_CMB(-1:1,3)
 !!         Matrix to evaluate poloidal velocity
@@ -224,7 +224,7 @@
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in)  :: fdm2_free_vt_CMB(-1:1,3)
-      real(kind = kreal), intent(in)  :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in)  :: fdm2_fix_fld_CMB(-2:0,3)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -241,9 +241,9 @@
 !
         d2s_dr2 =  fdm2_free_vt_CMB(-1,3) * d_rj(i_n1,is_fld  )         &
      &           + fdm2_free_vt_CMB( 0,3) * d_rj(inod,is_fld  )
-        d2t_dr2 =  fdm2_fix_fld_CMB(2,3) * d_rj(i_n2,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(1,3) * d_rj(i_n1,is_fld+2)          &
-     &           + fdm2_fix_fld_CMB(0,3) * d_rj(inod,is_fld+2)
+        d2t_dr2 =  fdm2_fix_fld_CMB(-2,3) * d_rj(i_n2,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB(-1,3) * d_rj(i_n1,is_fld+2)         &
+     &           + fdm2_fix_fld_CMB( 0,3) * d_rj(inod,is_fld+2)
 !
         d_rj(inod,is_diffuse  ) =  coef_d * (d2s_dr2                    &
      &               - g_sph_rj(j,3)*r_CMB(2) * d_rj(inod,is_fld  ) )

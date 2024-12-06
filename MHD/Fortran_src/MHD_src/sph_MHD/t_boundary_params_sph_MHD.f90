@@ -91,7 +91,7 @@
 !>        Matrix to evaluate field at ICB with fixed radial derivative
         real(kind = kreal) :: fdm2_fix_dr_ICB(-1:1,3)
 !>        Matrix to evaluate radial derivative at CMB with fixed field
-        real(kind = kreal) :: fdm2_fix_fld_CMB(0:2,3)
+        real(kind = kreal) :: fdm2_fix_fld_CMB(-2:0,3)
 !>        Matrix to evaluate field at CMB with fixed radial derivative
         real(kind = kreal) :: fdm2_fix_dr_CMB(-1:1,3)
 !

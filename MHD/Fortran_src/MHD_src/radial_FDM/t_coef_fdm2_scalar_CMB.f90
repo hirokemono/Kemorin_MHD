@@ -11,21 +11,21 @@
 !!      subroutine check_fdm2_coefs_CMB(id_file,                        &
 !!     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB)
 !!        integer(kind = kint), intent(in) :: id_file
-!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !!        real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
 !!
 !!      subroutine cal_fdm2_coef_fix_fld_CMB(r_from_CMB2,               &
-!!     &          fdm2_fix_fld_CMB)
+!!     &                                     fdm2_fix_fld_CMB)
 !!      subroutine cal_fdm2_coef_fix_df_CMB(r_from_CMB1,                &
-!!     &          fdm2_fix_dr_CMB)
+!!     &                                    fdm2_fix_dr_CMB)
 !!
 !!   Matrix for derivatives with fixed field
 !!    at outer boundary of the shell
-!!      dfdr =      fdm2_fix_fld_CMB( 2,2) * d_rj(CMB-2)
-!!                + fdm2_fix_fld_CMB( 1,2) * d_rj(CMB-1)
+!!      dfdr =      fdm2_fix_fld_CMB(-2,2) * d_rj(CMB-2)
+!!                + fdm2_fix_fld_CMB(-1,2) * d_rj(CMB-1)
 !!                + fdm2_fix_fld_CMB( 0,2) * d_rj(CMB  )
-!!      d2fdr2 =    fdm2_fix_fld_CMB( 2,3) * d_rj(CMB-2)
-!!                + fdm2_fix_fld_CMB( 1,3) * d_rj(CMB-1)
+!!      d2fdr2 =    fdm2_fix_fld_CMB(-2,3) * d_rj(CMB-2)
+!!                + fdm2_fix_fld_CMB(-1,3) * d_rj(CMB-1)
 !!                + fdm2_fix_fld_CMB( 0,3) * d_rj(CMB  )
 !!
 !!   Matrix for field and 2nd derivatives with fixed gradient
@@ -59,15 +59,15 @@
      &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB)
 !
       integer(kind = kint), intent(in) :: id_file
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
 !
 !
       write(id_file,*) ' fdm2_fix_fld_CMB'
       write(id_file,*) ' mat_fdm21,  mat_fdm22,  mat_fdm23'
-      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_CMB(0:2,2)
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_CMB(-2:0,2)
       write(id_file,*) ' mat_fdm31,  mat_fdm32,  mat_fdm33'
-      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_CMB(0:2,3)
+      write(id_file,'(1p9E25.15e3)') fdm2_fix_fld_CMB(-2:0,3)
 !
       write(id_file,*) ' fdm2_fix_dr_CMB'
       write(id_file,*) ' mat_fdm11,  mat_fdm12,  mat_fdm13'
@@ -85,9 +85,9 @@
       use cal_inverse_small_matrix
 !
       real(kind = kreal), intent(in) :: r_from_CMB2(-2:0)
-      real(kind = kreal), intent(inout) :: fdm2_fix_fld_CMB(0:2,3)
+      real(kind = kreal), intent(inout) :: fdm2_fix_fld_CMB(-2:0,3)
 !
-!>      Work matrix to evaluate fdm2_fix_fld_CMB(0:2,3)
+!>      Work matrix to evaluate fdm2_fix_fld_CMB(-2:0,3)
 !!@verbatim
 !!      dfdr =      mat_fdm_CMB_fix_2(2,1) * d_rj(CMB  )
 !!                + mat_fdm_CMB_fix_2(2,2) * d_rj(CMB-1)
@@ -125,9 +125,9 @@
      &            r_from_CMB2(0)
       end if
 !
-      fdm2_fix_fld_CMB(2,1:3) = mat_fdm_CMB_fix_2(1:3,3)
-      fdm2_fix_fld_CMB(1,1:3) = mat_fdm_CMB_fix_2(1:3,2)
-      fdm2_fix_fld_CMB(0,1:3) = mat_fdm_CMB_fix_2(1:3,1)
+      fdm2_fix_fld_CMB(-2,1:3) = mat_fdm_CMB_fix_2(1:3,3)
+      fdm2_fix_fld_CMB(-1,1:3) = mat_fdm_CMB_fix_2(1:3,2)
+      fdm2_fix_fld_CMB( 0,1:3) = mat_fdm_CMB_fix_2(1:3,1)
 !
       end subroutine cal_fdm2_coef_fix_fld_CMB
 !
