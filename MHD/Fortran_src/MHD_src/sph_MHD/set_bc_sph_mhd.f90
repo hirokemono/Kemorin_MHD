@@ -120,10 +120,10 @@
      &                            sph_MHD_bc%bc_fdms_U%fdm2_free_ICB)
 !
         call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
-     &                             sph_MHD_bc%fdm3e_vp0_ICB)
+     &                             sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB)
         call cal_fdm3e_ICB_free_hdiv_vp                                 &
      &     (sph_MHD_bc%bc_fdms_U%fdm2_free_ICB%dmat_vp,                 &
-     &      sph_MHD_bc%fdm3e_vp0_ICB, sph_MHD_bc%fdm3e_free_ICB)
+     &      sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB, sph_MHD_bc%bc_fdms_U%fdm3e_free_ICB)
 !
         call cal_fdm2_CMB_free_vp(h_rho_out,                            &
      &                            sph_rj%radius_1d_rj_r(ked-1),         &
@@ -133,10 +133,11 @@
      &                            sph_MHD_bc%bc_fdms_U%fdm2_free_CMB)
 !
         call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(ked-2),        &
-     &                             sph_MHD_bc%fdm3e_vp0_CMB)
+     &                             sph_MHD_bc%bc_fdms_U%fdm3e_vp0_CMB)
         call cal_fdm3e_CMB_free_hdiv_vp                                 &
      &     (sph_MHD_bc%bc_fdms_U%fdm2_free_CMB%dmat_vp,                 &
-     &      sph_MHD_bc%fdm3e_vp0_CMB, sph_MHD_bc%fdm3e_free_CMB)
+     &      sph_MHD_bc%bc_fdms_U%fdm3e_vp0_CMB,            &
+     &      sph_MHD_bc%bc_fdms_U%fdm3e_free_CMB)
       end if
 !
 !
@@ -233,15 +234,15 @@
      &       (id_file, sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_CMB)
 !
           call check_fdm3_n2e_ICB_zero_vpol                             &
-     &       (id_file, sph_MHD_bc%fdm3e_vp0_ICB)
+     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB)
           call check_fdm2_coef_free_slip_ICB                            &
      &       (id_file, sph_MHD_bc%bc_fdms_U%fdm2_free_ICB)
           call check_fdm2_coef_free_slip_CMB                            &
      &       (id_file, sph_MHD_bc%bc_fdms_U%fdm2_free_CMB)
           call check_fdm3_n2e_ICB_free_vpol                             &
-     &       (id_file, sph_MHD_bc%fdm3e_free_ICB)
+     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_free_ICB)
           call check_fdm3_n2e_CMB_free_vpol                             &
-     &       (id_file, sph_MHD_bc%fdm3e_free_CMB)
+     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_free_CMB)
         end if
 !
         if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &

@@ -62,16 +62,20 @@
       call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
 !
       call init_FDM_boundaries_for_test(sph1, sph_MHD_bc1%fdm3e_center, &
-     &    sph_MHD_bc1%fdm3e_vp0_ICB, sph_MHD_bc1%fdm3e_free_ICB,        &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB, &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_ICB,        &
      &    sph_MHD_bc1%bc_fdms_U%fdm2_free_ICB,                          &
-     &    sph_MHD_bc1%fdm3e_vp0_CMB, sph_MHD_bc1%fdm3e_free_CMB,        &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB, &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_CMB,        &
      &    sph_MHD_bc1%bc_fdms_U%fdm2_free_CMB, sph_MHD_bc1%fdm2_center)
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
-     &    sph_MHD_bc1%fdm3e_vp0_ICB, sph_MHD_bc1%fdm3e_free_ICB,        &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB, &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_ICB,        &
      &    sph_MHD_bc1%bc_fdms_U%fdm2_free_ICB,                          &
-     &    sph_MHD_bc1%fdm3e_vp0_CMB, sph_MHD_bc1%fdm3e_free_CMB,        &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB,   &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_CMB,        &
      &    sph_MHD_bc1%bc_fdms_U%fdm2_free_CMB)
 !
 !  -------------------------------------------------------------------
