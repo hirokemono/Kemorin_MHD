@@ -87,9 +87,8 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2                                      &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
-     &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
+      call cal_rot_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj,         &
+     &    sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U,                    &
      &    ipol_fil_frc, ipol_rot_fil_frc, rj_fld)
 !
       call cal_rot_of_induction_sph                                     &

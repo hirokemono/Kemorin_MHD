@@ -7,9 +7,9 @@
 !> @brief Evaluate curl of fields
 !!
 !!@verbatim
-!!      subroutine const_sph_vorticity(sph_rj, r_2nd, sph_bc_U,         &
-!!     &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,               &
-!!     &          is_velo, is_vort, rj_fld)
+!!      subroutine const_sph_vorticity(sph_rj, r_2nd,                   &
+!!     &                               sph_bc_U, bc_fdms_U, g_sph_rj,   &
+!!     &                               is_velo, is_vort, rj_fld)
 !!        Address for input:    is_velo, is_velo+2
 !!        Address for solution: is_vort, is_vort+2, is_vort+1
 !!
@@ -29,15 +29,14 @@
 !!        Address for solution: is_rot, it_rot, ids_rot
 !!
 !!      subroutine const_sph_force_rot2(sph_rj, r_2nd,                  &
-!!     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,     &
-!!     &          is_fld, is_rot, rj_fld)
+!!     &                                sph_bc_U, bc_fdms_U, g_sph_rj,  &
+!!     &                                is_fld, is_rot, rj_fld)
 !!        Address for input:    is_fld, it_fld
 !!        Address for solution: is_rot, it_rot, ids_rot
 !!
 !!      subroutine const_sph_viscous_by_vort2                           &
-!!     &         (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, fdm2_free_ICB, fdm2_free_CMB,  &
-!!     &          g_sph_rj, coef_diffuse, is_velo, is_vort, is_viscous, &
-!!     &          rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, g_sph_rj,         &
+!!     &          coef_diffuse, is_velo, is_vort, is_viscous, rj_fld)
 !!        Address for input:    is_velo, is_vort, is_vort+2
 !!        Address for solution: is_viscous, is_viscous+2, is_viscous+1
 !!
@@ -52,8 +51,6 @@
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
-!!        type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-!!        type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -97,8 +94,7 @@
       use t_phys_data
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_centre
-      use t_coef_fdm2_free_slip_ICB
-      use t_coef_fdm2_free_slip_CMB
+      use t_coef_sph_velocity_BCs
       use t_fdm_coefs
 !
       use cal_sph_exp_rotation
@@ -111,9 +107,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_vorticity(sph_rj, r_2nd, sph_bc_U,           &
-     &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,                 &
-     &          is_velo, is_vort, rj_fld)
+      subroutine const_sph_vorticity(sph_rj, r_2nd,                     &
+     &                               sph_bc_U, bc_fdms_U, g_sph_rj,     &
+     &                               is_velo, is_vort, rj_fld)
 !
       use select_exp_velocity_ICB
       use select_exp_velocity_CMB
@@ -121,8 +117,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
 !
       integer(kind = kint), intent(in) :: is_velo, is_vort
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -131,10 +126,10 @@
 !
 !
       call sel_ICB_sph_vorticity(sph_rj, r_2nd, sph_bc_U,               &
-     &    fdm2_free_ICB, g_sph_rj, is_velo, is_vort,                    &
+     &    bc_fdms_U%fdm2_free_ICB, g_sph_rj, is_velo, is_vort,          &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_CMB_sph_vorticity                                        &
-     &   (sph_rj, sph_bc_U, fdm2_free_CMB, g_sph_rj, is_velo, is_vort,  &
+      call sel_CMB_sph_vorticity(sph_rj, sph_bc_U,                      &
+     &    bc_fdms_U%fdm2_free_CMB, g_sph_rj, is_velo, is_vort,          &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
@@ -242,8 +237,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_force_rot2(sph_rj, r_2nd,                    &
-     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,       &
-     &          is_fld, is_rot, rj_fld)
+     &                                sph_bc_U, bc_fdms_U, g_sph_rj,    &
+     &                                is_fld, is_rot, rj_fld)
 !
       use select_exp_velocity_ICB
       use select_exp_velocity_CMB
@@ -251,8 +246,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
 !
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -261,10 +255,10 @@
 !
 !
       call sel_ICB_sph_vorticity(sph_rj, r_2nd, sph_bc_U,               &
-     &    fdm2_free_ICB, g_sph_rj, is_fld, is_rot,                      &
+     &    bc_fdms_U%fdm2_free_ICB, g_sph_rj, is_fld, is_rot,            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_CMB_sph_vorticity                                        &
-     &   (sph_rj, sph_bc_U, fdm2_free_CMB, g_sph_rj, is_fld, is_rot,    &
+      call sel_CMB_sph_vorticity(sph_rj, sph_bc_U,                      &
+     &    bc_fdms_U%fdm2_free_CMB, g_sph_rj, is_fld, is_rot,            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
@@ -278,11 +272,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_viscous_by_vort2                             &
-     &         (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, fdm2_free_ICB, fdm2_free_CMB,  &
-     &          g_sph_rj, coef_diffuse, is_velo, is_vort, is_viscous,   &
-     &          rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, g_sph_rj,           &
+     &          coef_diffuse, is_velo, is_vort, is_viscous, rj_fld)
 !
-      use t_coef_sph_velocity_BCs
       use cal_sph_exp_rotation
       use select_exp_velocity_ICB
       use select_exp_velocity_CMB
@@ -291,8 +283,6 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: is_velo, is_vort, is_viscous
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -307,12 +297,13 @@
      &    is_vort, is_viscous, rj_fld%n_point, rj_fld%ntot_phys,        &
      &    rj_fld%d_fld)
 !
-      call sel_ICB_sph_viscous_diffusion                                &
-     &   (sph_rj, r_2nd, sph_bc_U, bc_fdms_U,                           &
-     &    fdm2_free_ICB, g_sph_rj, coef_diffuse, is_velo, is_viscous,   &
+      call sel_ICB_sph_viscous_diffusion(sph_rj, r_2nd, sph_bc_U,       &
+     &    bc_fdms_U%fdm2_free_ICB, bc_fdms_U%fdm1_fix_fld_ICB,          &
+     &    g_sph_rj, coef_diffuse, is_velo, is_viscous,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_CMB_sph_viscous_diffusion(sph_rj, sph_bc_U,              &
-     &    fdm2_free_CMB, g_sph_rj, coef_diffuse, is_velo, is_viscous,   &
+      call sel_CMB_sph_viscous_diffusion                                &
+     &   (sph_rj, sph_bc_U, bc_fdms_U%fdm2_free_CMB,                    &
+     &    g_sph_rj, coef_diffuse, is_velo, is_viscous,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_viscous_by_vort2

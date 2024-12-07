@@ -8,17 +8,31 @@
 !!
 !!@verbatim
 !!      subroutine const_grad_vp_and_vorticity(sph_rj, r_2nd,           &
-!!     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,        &
-!!     &          g_sph_rj, is_velo, is_vort, rj_fld)
-!!        Address for input:    is_velo, is_velo+2
-!!        Address for solution: is_velo+1, 
+!!     &          sph_bc_U, bc_fdms_U, bcs_U, g_sph_rj,                 &
+!!     &          is_velo, is_vort, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(sph_vector_boundary_data), intent(in) :: bcs_U
+!!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+!!        real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!!        integer(kind = kint), intent(in) :: is_velo, is_vort
+!!        type(phys_data), intent(inout) :: rj_fld
+!!          Address for input:    is_velo, is_velo+2
+!!          Address for solution: is_velo+1,
 !!                              is_vort, is_vort+2, is_vort+1
 !!
-!!      subroutine const_grad_poloidal_moment                           &
-!!     &         (sph_rj, r_2nd, sph_bc_U, bcs_U,                       &
-!!     &          fdm2_free_ICB, fdm2_free_CMB, is_fld, rj_fld)
-!!        Address for input:    is_fld, is_fld+2
-!!        Address for solution: is_fld+1
+!!      subroutine const_grad_poloidal_moment(sph_rj, r_2nd,            &
+!!     &          sph_bc_U, bc_fdms_U, bcs_U, is_fld, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+!!        type(sph_vector_boundary_data), intent(in) :: bcs_U
+!!        integer(kind = kint), intent(in) :: is_fld
+!!        type(phys_data), intent(inout) :: rj_fld
+!!          Address for input:    is_fld, is_fld+2
+!!          Address for solution: is_fld+1
 !!
 !!      subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,     &
 !!     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
@@ -57,8 +71,7 @@
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_free_slip_ICB
-      use t_coef_fdm2_free_slip_CMB
+      use t_coef_sph_velocity_BCs
 !
       use cal_sph_exp_1st_diff
 !
@@ -73,8 +86,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_vp_and_vorticity(sph_rj, r_2nd,             &
-     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,          &
-     &          g_sph_rj, is_velo, is_vort, rj_fld)
+     &          sph_bc_U, bc_fdms_U, bcs_U, g_sph_rj,                   &
+     &          is_velo, is_vort, rj_fld)
 !
       use cal_sph_exp_rotation
       use select_exp_velocity_ICB
@@ -84,20 +97,19 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_vector_boundary_data), intent(in) :: bcs_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_velo, is_vort
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_ICB_grad_vp_and_vorticity                                &
-     &   (sph_rj, r_2nd, sph_bc_U, bcs_U%ICB_Vspec, fdm2_free_ICB,      &
+      call sel_ICB_grad_vp_and_vorticity(sph_rj, r_2nd,                 &
+     &    sph_bc_U, bcs_U%ICB_Vspec, bc_fdms_U%fdm2_free_ICB,           &
      &    g_sph_rj, is_velo, is_vort,                                   &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_CMB_grad_vp_and_vorticity                                &
-     &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, fdm2_free_CMB,             &
+     &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, bc_fdms_U%fdm2_free_CMB,   &
      &    g_sph_rj, is_velo, is_vort,                                   &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -110,9 +122,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_poloidal_moment                             &
-     &         (sph_rj, r_2nd, sph_bc_U, bcs_U,                         &
-     &          fdm2_free_ICB, fdm2_free_CMB, is_fld, rj_fld)
+      subroutine const_grad_poloidal_moment(sph_rj, r_2nd,              &
+     &          sph_bc_U, bc_fdms_U, bcs_U, is_fld, rj_fld)
 !
       use cal_sph_exp_rotation
       use select_exp_velocity_ICB
@@ -121,19 +132,18 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(sph_vector_boundary_data), intent(in) :: bcs_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
       integer(kind = kint), intent(in) :: is_fld
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_ICB_grad_poloidal_moment                                 &
-     &   (sph_rj, r_2nd, sph_bc_U, bcs_U%ICB_Vspec, fdm2_free_ICB,      &
+      call sel_ICB_grad_poloidal_moment(sph_rj, r_2nd,                  &
+     &    sph_bc_U, bcs_U%ICB_Vspec, bc_fdms_U%fdm2_free_ICB,           &
      &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_CMB_grad_poloidal_moment                                 &
-     &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, fdm2_free_CMB,             &
+      call sel_CMB_grad_poloidal_moment(sph_rj,                         &
+     &    sph_bc_U, bcs_U%CMB_Vspec, bc_fdms_U%fdm2_free_CMB,           &
      &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &

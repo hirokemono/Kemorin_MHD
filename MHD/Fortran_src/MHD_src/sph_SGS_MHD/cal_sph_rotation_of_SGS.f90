@@ -66,9 +66,8 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'SGS_rot_of_SGS_forces_sph_2'
-      call SGS_rot_of_SGS_forces_sph_2                                  &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
-     &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
+      call SGS_rot_of_SGS_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj,     &
+     &    sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U,                    &
      &    ipol_LES%SGS_term, ipol_LES%rot_SGS, rj_fld)
 !
       call cal_rot_of_SGS_induction_sph                                 &
@@ -88,11 +87,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SGS_rot_of_SGS_forces_sph_2(sph_rj, r_2nd, g_sph_rj,   &
-     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                 &
-     &          ipol_SGS, ipol_rot_SGS, rj_fld)
+     &          sph_bc_U, bc_fdms_U, ipol_SGS, ipol_rot_SGS, rj_fld)
 !
-      use t_coef_fdm2_free_slip_ICB
-      use t_coef_fdm2_free_slip_CMB
+      use t_coef_sph_velocity_BCs
       use calypso_mpi
       use const_sph_radial_grad
       use const_sph_rotation
@@ -101,8 +98,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(SGS_term_address), intent(in) :: ipol_SGS
       type(SGS_term_address), intent(in) :: ipol_rot_SGS
 !
@@ -113,15 +109,15 @@
 !
       if(ipol_rot_SGS%i_SGS_inertia .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
-        call const_sph_force_rot2(sph_rj, r_2nd,                        &
-     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
+        call const_sph_force_rot2                                       &
+     &     (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, g_sph_rj,               &
      &      ipol_SGS%i_SGS_inertia, ipol_rot_SGS%i_SGS_inertia, rj_fld)
       end if
 !
       if(ipol_rot_SGS%i_SGS_Lorentz .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
-        call const_sph_force_rot2(sph_rj, r_2nd,                        &
-     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
+        call const_sph_force_rot2                                       &
+     &     (sph_rj, r_2nd, sph_bc_U, bc_fdms_U, g_sph_rj,               &
      &      ipol_SGS%i_SGS_Lorentz, ipol_rot_SGS%i_SGS_Lorentz, rj_fld)
       end if
 !
