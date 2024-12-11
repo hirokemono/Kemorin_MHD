@@ -17,9 +17,15 @@
       use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_ICB
-      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
+      use t_coef_fdm3_n2e_zero_vp_CTR
+      use t_coef_fdm3_n2e_free_vp_ICB
       use t_coef_fdm3_n2e_free_vp_CMB
+!
+      use t_coef_fdm4_zero_vpol_ICB
+      use t_coef_fdm4_zero_vpol_CMB
+      use t_coef_fdm4_free_vpol_ICB
+      use t_coef_fdm4_free_vpol_CMB
 !
       implicit none
 !
@@ -41,11 +47,23 @@
         type(fdm3_n2e_ICB_zero_vpol) :: fdm3e_vp0_ICB
 !>        Structure for FDM matrix at CMB element with zero poloidal
         type(fdm3_n2e_CMB_zero_vpol) :: fdm3e_vp0_CMB
+!>        Structure for FDM matrix of free slip boundary at center
+        type(fdm3_n2e_CTR_vpol) :: fdm3e_center
 !
 !>        Structure for FDM matrix of free slip boundary at ICB element
         type(fdm3_n2e_ICB_free_vpol) :: fdm3e_free_ICB
 !>        Structure for FDM matrix of free slip boundary at CMB element
         type(fdm3_n2e_CMB_free_vpol) :: fdm3e_free_CMB
+!
+!>        Structure for 4th order FDM matrix of non-slip boundary at ICB
+        type(fdm4_ICB_zero_vpol) :: fdm4_noslip_ICB
+!>        Structure for 4th order FDM matrix of non-slip boundary at CMB
+        type(fdm4_CMB_zero_vpol) :: fdm4_noslip_CMB
+!
+!>        Structure for 4th order FDM matrix of free slip boundary at ICB
+        type(fdm4_ICB_free_vpol) :: fdm4_free_vp_ICB
+!>        Structure for 4th order FDM matrix of free slip boundary at CMB
+        type(fdm4_CMB_free_vpol) :: fdm4_free_vp_CMB
       end type velocity_boundary_FDMs
 !
       end module t_coef_sph_velocity_BCs

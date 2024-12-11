@@ -52,35 +52,38 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
 !
-      call cal_fdm4_ICB0_nonslip_vp                                     &
-     &   (radius_1d_rj_r(sph_bc_U%kr_in), sph_MHD_bc%fdm4_noslip_ICB)
-      call cal_fdm4_ICB1_nonslip_vp                                     &
-     &   (radius_1d_rj_r(sph_bc_U%kr_in), sph_MHD_bc%fdm4_noslip_ICB)
+      call cal_fdm4_ICB0_nonslip_vp(radius_1d_rj_r(sph_bc_U%kr_in),     &
+     &                              sph_MHD_bc%bc_fdms_U%fdm4_noslip_ICB)
+      call cal_fdm4_ICB1_nonslip_vp(radius_1d_rj_r(sph_bc_U%kr_in),     &
+     &                              sph_MHD_bc%bc_fdms_U%fdm4_noslip_ICB)
 !
-      call cal_fdm4_CMB0_nonslip_vp                                     &
-     &  (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_noslip_CMB)
-      call cal_fdm4_CMB1_nonslip_vp                                     &
-     &  (radius_1d_rj_r(sph_bc_U%kr_out-3), sph_MHD_bc%fdm4_noslip_CMB)
+      call cal_fdm4_CMB0_nonslip_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),  &
+     &                              sph_MHD_bc%bc_fdms_U%fdm4_noslip_CMB)
+      call cal_fdm4_CMB1_nonslip_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),  &
+     &                              sph_MHD_bc%bc_fdms_U%fdm4_noslip_CMB)
 !
       call cal_fdm4_ICB0_free_vp(h_rho, radius_1d_rj_r(sph_bc_U%kr_in), &
-     &                           sph_MHD_bc%fdm4_free_ICB)
+     &                           sph_MHD_bc%bc_fdms_U%fdm4_free_vp_ICB)
       call cal_fdm4_ICB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_in),        &
-     &                           sph_MHD_bc%fdm4_free_ICB)
+     &                           sph_MHD_bc%bc_fdms_U%fdm4_free_vp_ICB)
 !
       call cal_fdm4_CMB0_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
-     &                           sph_MHD_bc%fdm4_free_vp_CMB)
+     &                           sph_MHD_bc%bc_fdms_U%fdm4_free_vp_CMB)
       call cal_fdm4_CMB1_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-3),     &
-     &                           sph_MHD_bc%fdm4_free_vp_CMB)
+     &                           sph_MHD_bc%bc_fdms_U%fdm4_free_vp_CMB)
 !
       call cal_coef_fdm4_vpol_centre(radius_1d_rj_r(1), fdm_4th%fdm,    &
      &                               sph_MHD_bc%fdm4_center)
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        call check_4th_ICB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_ICB)
-        call check_4th_CMB_nonslip_vp_fdm(sph_MHD_bc%fdm4_noslip_CMB)
-        call check_4th_ICB_free_vp_fdm(sph_MHD_bc%fdm4_free_ICB)
-        call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_vp_CMB)
-        call check_4th_CMB_free_vp_fdm(sph_MHD_bc%fdm4_free_vp_CMB)
+        call check_4th_ICB_nonslip_vp_fdm                               &
+     &     (sph_MHD_bc%bc_fdms_U%fdm4_noslip_ICB)
+        call check_4th_CMB_nonslip_vp_fdm                               &
+     &     (sph_MHD_bc%bc_fdms_U%fdm4_noslip_CMB)
+        call check_4th_ICB_free_vp_fdm                                  &
+     &     (sph_MHD_bc%bc_fdms_U%fdm4_free_vp_ICB)
+        call check_4th_CMB_free_vp_fdm                                  &
+     &     (sph_MHD_bc%bc_fdms_U%fdm4_free_vp_CMB)
       end if
 !
 !      call cal_sph_bc_2nd_ele_fdm_mat

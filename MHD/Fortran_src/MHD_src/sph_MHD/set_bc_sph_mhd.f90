@@ -182,7 +182,7 @@
       call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),           &
      &                              sph_MHD_bc%fdm2_center)
       call cal_fdm3e_CTR_hdiv_vp(sph_rj%radius_1d_rj_r(1),              &
-     &                           sph_MHD_bc%fdm3e_center)
+     &                           sph_MHD_bc%bc_fdms_U%fdm3e_center)
 !
       end subroutine s_set_bc_sph_mhd
 !
