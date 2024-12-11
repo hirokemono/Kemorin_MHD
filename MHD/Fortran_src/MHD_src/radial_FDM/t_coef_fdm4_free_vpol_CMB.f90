@@ -10,8 +10,10 @@
 !!      subroutine check_4th_CMB_free_vp_fdm(id_file, fdm4_free_vp_CMB)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
-!!      subroutine cal_fdm4_CMB0_free_vp(r_from_CMB, fdm4_free_vp_CMB)
+!!      subroutine cal_fdm4_CMB0_free_vp(h_rho, r_from_CMB,             &
+!!     &                                 fdm4_free_vp_CMB)
 !!      subroutine cal_fdm4_CMB1_free_vp(r_from_CMB, fdm4_free_vp_CMB)
+!!        real(kind = kreal), intent(in) :: h_rho
 !!        real(kind = kreal), intent(in) :: r_from_CMB(-3:0)
 !!        type(fdm4_CMB_free_vpol), intent(inout) :: fdm4_free_vp_CMB
 !!
@@ -97,10 +99,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_fdm4_CMB0_free_vp(r_from_CMB, fdm4_free_vp_CMB)
+      subroutine cal_fdm4_CMB0_free_vp(h_rho, r_from_CMB,               &
+     &                                 fdm4_free_vp_CMB)
 !
       use cal_inverse_small_matrix
 !
+      real(kind = kreal), intent(in) :: h_rho
       real(kind = kreal), intent(in) :: r_from_CMB(-3:0)
       type(fdm4_CMB_free_vpol), intent(inout) :: fdm4_free_vp_CMB
 !
@@ -135,20 +139,20 @@
       mat_taylor_4(1,3) = zero
       mat_taylor_4(1,4) = zero
 !
-      mat_taylor_4(2,1) =  one
-      mat_taylor_4(2,2) =  -r0
-      mat_taylor_4(2,3) =  half * r0*r0
+      mat_taylor_4(2,1) =  zero
+      mat_taylor_4(2,2) =  -(two / r0 + h_rho)
+      mat_taylor_4(2,3) =  one
       mat_taylor_4(2,4) =  zero
 !
       mat_taylor_4(3,1) =  one
       mat_taylor_4(3,2) = -dr_n1
       mat_taylor_4(3,3) =  dr_n1*dr_n1 / two
-      mat_taylor_4(3,4) = -dr_n1**3 / six
+      mat_taylor_4(3,4) = -(one/six) * dr_n1**3
 !
       mat_taylor_4(4,1) =  one
       mat_taylor_4(4,2) = -dr_n2
-      mat_taylor_4(4,3) =  dr_n2*dr_n2 / two
-      mat_taylor_4(4,4) = -dr_n2**3 / six
+      mat_taylor_4(4,3) =  half * dr_n2*dr_n2
+      mat_taylor_4(4,4) = -(one/six) * dr_n2**3
 !
       call cal_inverse_44_matrix(mat_taylor_4,                          &
      &    mat_fdm4_CMB_free_vp, ierr)

@@ -42,8 +42,7 @@
       use t_spheric_rj_data
       use t_bc_data_list
       use t_sph_boundary_input_data
-      use t_coef_fdm2_free_slip_ICB
-      use t_coef_fdm2_free_slip_CMB
+      use t_coef_sph_velocity_BCs
       use t_coef_fdm2_centre
 !
       implicit none
@@ -59,12 +58,6 @@
      &          MHD_BC, sph_MHD_bc)
 !
       use t_phys_data
-      use t_coef_fdm1_free_rotate_ICB
-      use t_coef_fdm1_free_rotate_CMB
-      use t_coef_fdm3_n2e_zero_vp_ICB
-      use t_coef_fdm3_n2e_free_vp_ICB
-      use t_coef_fdm3_n2e_zero_vp_CMB
-      use t_coef_fdm3_n2e_free_vp_CMB
       use m_base_field_labels
 !
       use set_bc_flag_sph_velo
@@ -94,6 +87,10 @@
      &      MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC,              &
      &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
 !
+        call cal_fdm_coefs_4_BCs                                        &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
+     &      sph_MHD_bc%sph_bc_U)
+!
         kst = sph_MHD_bc%sph_bc_U%kr_in
         ked = sph_MHD_bc%sph_bc_U%kr_out
         icomp = MHD_prop%fl_prop%ir_dnu_norm
@@ -105,41 +102,8 @@
           h_rho_out = zero
         end if
 !
-        call cal_fdm_coefs_4_BCs                                        &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
-     &      sph_MHD_bc%sph_bc_U)
-!
-        call cal_fdm1_coef_fix_fld_ICB(sph_rj%radius_1d_rj_r(kst),      &
-     &      sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_ICB)
-        call cal_fdm1_coef_fix_fld_CMB(sph_rj%radius_1d_rj_r(ked-1),    &
-     &      sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_CMB)
-!
-        call cal_fdm2_ICB_free_vp(h_rho_in,                             &
-     &                            sph_rj%radius_1d_rj_r(kst),           &
-     &                            sph_MHD_bc%bc_fdms_U%fdm2_free_ICB)
-        call cal_fdm2_ICB_free_vt(h_rho_in,                             &
-     &                            sph_rj%radius_1d_rj_r(kst),           &
-     &                            sph_MHD_bc%bc_fdms_U%fdm2_free_ICB)
-!
-        call cal_fdm3e_ICB_hdiv_vp(sph_rj%radius_1d_rj_r(kst),          &
-     &                             sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB)
-        call cal_fdm3e_ICB_free_hdiv_vp                                 &
-     &     (sph_MHD_bc%bc_fdms_U%fdm2_free_ICB%dmat_vp,                 &
-     &      sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB, sph_MHD_bc%bc_fdms_U%fdm3e_free_ICB)
-!
-        call cal_fdm2_CMB_free_vp(h_rho_out,                            &
-     &                            sph_rj%radius_1d_rj_r(ked-1),         &
-     &                            sph_MHD_bc%bc_fdms_U%fdm2_free_CMB)
-        call cal_fdm2_CMB_free_vt(h_rho_out,                            &
-     &                            sph_rj%radius_1d_rj_r(ked-1),         &
-     &                            sph_MHD_bc%bc_fdms_U%fdm2_free_CMB)
-!
-        call cal_fdm3e_CMB_hdiv_vp(sph_rj%radius_1d_rj_r(ked-2),        &
-     &                             sph_MHD_bc%bc_fdms_U%fdm3e_vp0_CMB)
-        call cal_fdm3e_CMB_free_hdiv_vp                                 &
-     &     (sph_MHD_bc%bc_fdms_U%fdm2_free_CMB%dmat_vp,                 &
-     &      sph_MHD_bc%bc_fdms_U%fdm3e_vp0_CMB,            &
-     &      sph_MHD_bc%bc_fdms_U%fdm3e_free_CMB)
+        call set_sph_fdm_velocity_bc(kst, ked, h_rho_in, h_rho_out,     &
+     &                               sph_rj, sph_MHD_bc%bc_fdms_U)
       end if
 !
 !
@@ -183,8 +147,6 @@
      &                               sph_MHD_bc%fdm2_center)
       call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),           &
      &                              sph_MHD_bc%fdm2_center)
-      call cal_fdm3e_CTR_hdiv_vp(sph_rj%radius_1d_rj_r(1),              &
-     &                           sph_MHD_bc%bc_fdms_U%fdm3e_CTR)
 !
       end subroutine s_set_bc_sph_mhd
 !
@@ -234,8 +196,7 @@
 !
           call check_sph_fdm_boundaries(id_file,                        &
      &        sph_MHD_bc%sph_bc_U%kr_in, sph_MHD_bc%sph_bc_U%kr_out,    &
-     &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
-     &        sph_MHD_bc%bc_fdms_U)
+     &        sph_rj, sph_MHD_bc%bc_fdms_U)
         end if
 !
         if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &

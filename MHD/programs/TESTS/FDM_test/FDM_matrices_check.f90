@@ -61,28 +61,17 @@
      &    sph_MHD_bc1%sph_bc_U)
       call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
 !
-      call init_FDM_boundaries_for_test(sph1,  &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_CTR, &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB, &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_ICB,        &
-     &    sph_MHD_bc1%bc_fdms_U%fdm2_free_ICB,                          &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB, &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_CMB,        &
-     &    sph_MHD_bc1%bc_fdms_U%fdm2_free_CMB, sph_MHD_bc1%fdm2_center)
+      call init_FDM_boundaries_for_test(sph1,                           &
+     &    sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB, &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_ICB,        &
-     &    sph_MHD_bc1%bc_fdms_U%fdm2_free_ICB,                          &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB,   &
-     &    sph_MHD_bc1%bc_fdms_U%fdm3e_free_CMB,        &
-     &    sph_MHD_bc1%bc_fdms_U%fdm2_free_CMB)
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB,                          &
+     &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB)
 !
       call check_sph_fdm_boundaries(6,                                  &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
-     &    sph1%sph_rj%nidx_rj(1), sph1%sph_rj%radius_1d_rj_r,           &
-     &    sph_MHD_bc1%bc_fdms_U)
+     &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
 !
 !  -------------------------------------------------------------------
 !
@@ -123,34 +112,20 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_FDM_boundaries_for_test(sph, fdm3e_CTR,           &
-     &          fdm3e_vp0_ICB, fdm3e_free_ICB, fdm2_free_ICB,           &
-     &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB,           &
-     &          fdm2_center)
+      subroutine init_FDM_boundaries_for_test(sph, bc_fdms_U,           &
+     &                                        fdm2_center)
 !
       use t_coef_fdm2_centre
-      use t_coef_fdm2_free_slip_ICB
-      use t_coef_fdm3_n2e_zero_vp_ICB
-      use t_coef_fdm3_n2e_free_vp_ICB
-      use t_coef_fdm2_free_slip_CMB
-      use t_coef_fdm3_n2e_zero_vp_CMB
-      use t_coef_fdm3_n2e_free_vp_CMB
+      use t_coef_sph_velocity_BCs
 !
       type(sph_grids), intent(inout) :: sph
 !
-      type(fdm3_n2e_CTR_vpol), intent(inout) :: fdm3e_CTR
-      type(fdm3_n2e_ICB_zero_vpol), intent(inout) :: fdm3e_vp0_ICB
-      type(fdm3_n2e_ICB_free_vpol), intent(inout) :: fdm3e_free_ICB
-      type(fdm2_ICB_free_slip), intent(inout) :: fdm2_free_ICB
-!
-      type(fdm3_n2e_CMB_zero_vpol), intent(inout) :: fdm3e_vp0_CMB
-      type(fdm3_n2e_CMB_free_vpol), intent(inout) :: fdm3e_free_CMB
-      type(fdm2_CMB_free_slip), intent(inout) :: fdm2_free_CMB
-!
       type(fdm2_center_mat), intent(inout) :: fdm2_center
+      type(velocity_boundary_FDMs), intent(inout) :: bc_fdms_U
 !
       real(kind = kreal), allocatable :: h_rho(:)
       integer(kind = kint) :: kr_in, kr_out
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
       call cal_2nd_to_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),    &
@@ -159,31 +134,15 @@
      &                               fdm2_center)
       call cal_2nd_center_fixed_fdm(sph%sph_rj%radius_1d_rj_r(1),       &
      &                              fdm2_center)
-      call cal_fdm3e_CTR_hdiv_vp(sph%sph_rj%radius_1d_rj_r(1),          &
-     &                           fdm3e_CTR)
 !
       allocate(h_rho(sph%sph_rj%nidx_rj(1)))
       h_rho(:) = zero
 !
       kr_in =  sph1%sph_params%nlayer_ICB
-      call cal_fdm2_ICB_free_vt(h_rho(kr_in),                           &
-     &    sph%sph_rj%radius_1d_rj_r(kr_in   ), fdm2_free_ICB)
-      call cal_fdm2_ICB_free_vp(h_rho(kr_in),                           &
-     &    sph%sph_rj%radius_1d_rj_r(kr_in   ), fdm2_free_ICB)
-      call cal_fdm3e_ICB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_in   ),   &
-     &                           fdm3e_vp0_ICB)
-      call cal_fdm3e_ICB_free_hdiv_vp(fdm2_free_ICB%dmat_vp,            &
-     &                                fdm3e_vp0_ICB, fdm3e_free_ICB)
-!
       kr_out = sph1%sph_params%nlayer_CMB
-      call cal_fdm2_CMB_free_vt(h_rho(kr_out),                          &
-     &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
-      call cal_fdm2_CMB_free_vp(h_rho(kr_out),                          &
-     &    sph%sph_rj%radius_1d_rj_r(kr_out-1), fdm2_free_CMB)
-      call cal_fdm3e_CMB_hdiv_vp(sph%sph_rj%radius_1d_rj_r(kr_out-2),   &
-     &                           fdm3e_vp0_CMB)
-      call cal_fdm3e_CMB_free_hdiv_vp(fdm2_free_CMB%dmat_vp,            &
-     &                                fdm3e_vp0_CMB, fdm3e_free_CMB)
+      call set_sph_fdm_velocity_bc                                      &
+     &   (kr_in, kr_out, h_rho(kr_in), h_rho(kr_out),                   &
+     &    sph%sph_rj, bc_fdms_U)
       deallocate(h_rho)
 !
       end subroutine init_FDM_boundaries_for_test
@@ -191,16 +150,11 @@
 !  -------------------------------------------------------------------
 !
       subroutine test_radial_FDM(kr_in, kr_out, sph_rj,                 &
-     &          r_2nd, r_n2e_3rd, r_e2n_1st,                            &
-     &          fdm3e_vp0_ICB, fdm3e_free_ICB, fdm2_free_ICB,           &
-     &          fdm3e_vp0_CMB, fdm3e_free_CMB, fdm2_free_CMB)
+     &                           r_2nd, r_n2e_3rd, r_e2n_1st,           &
+     &                           fdm3e_vp0_ICB, fdm3e_vp0_CMB)
 !
-      use t_coef_fdm2_free_slip_ICB
       use t_coef_fdm3_n2e_zero_vp_ICB
-      use t_coef_fdm3_n2e_free_vp_ICB
-      use t_coef_fdm2_free_slip_CMB
       use t_coef_fdm3_n2e_zero_vp_CMB
-      use t_coef_fdm3_n2e_free_vp_CMB
       use second_fdm_node_coefs
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
@@ -212,12 +166,7 @@
       type(fdm_matrices), intent(in) :: r_e2n_1st
 !
       type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
-      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
-      type(fdm2_ICB_free_slip), intent(in) :: fdm2_free_ICB
-!
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
-      type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
-      type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !
       real(kind = kreal), allocatable :: r_ele(:)
 !
@@ -242,7 +191,7 @@
       real(kind = kreal), allocatable :: dfdr_e2n(:)
 !
       integer(kind = kint) :: inod, j, k, ist_in, ist_out
-      real(kind = kreal) :: r,  dr_bc, c_dr, c_dr2, c_dr3
+      real(kind = kreal) :: r
 !
 !
       allocate(r_ele(sph_rj%nidx_rj(1)))
