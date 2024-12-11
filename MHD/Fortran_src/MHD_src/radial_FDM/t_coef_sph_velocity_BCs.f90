@@ -26,6 +26,7 @@
       use t_coef_fdm4_zero_vpol_CMB
       use t_coef_fdm4_free_vpol_ICB
       use t_coef_fdm4_free_vpol_CMB
+      use t_coef_fdm4_vpol_centre
 !
       implicit none
 !
@@ -64,6 +65,9 @@
         type(fdm4_ICB_free_vpol) :: fdm4_free_vp_ICB
 !>        Structure for 4th order FDM matrix of free slip boundary at CMB
         type(fdm4_CMB_free_vpol) :: fdm4_free_vp_CMB
+!
+!>        Structure for FDM matrix of free slip boundary at center
+        type(fdm4_centre_vpol) :: fdm4_center
       end type velocity_boundary_FDMs
 !
       end module t_coef_sph_velocity_BCs

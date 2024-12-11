@@ -31,9 +31,9 @@
 !
       use t_coef_fdm2_centre
       use t_coef_fdm4_vpol_centre
-      use t_time_data
       use t_spheric_parameter
       use t_control_parameter
+      use t_time_data
 !
       implicit none
 !
@@ -60,11 +60,8 @@
 !
 !>        Structure for Additional velocity boundary condition matrices
         type(velocity_boundary_FDMs) :: bc_fdms_U
-!
 !>        Structure for FDM matrix of center
         type(fdm2_center_mat) :: fdm2_center
-!>        Structure for FDM matrix of free slip boundary at center
-        type(fdm4_centre_vpol) :: fdm4_center
       end type sph_MHD_boundary_data
 !
 ! ----------------------------------------------------------------------

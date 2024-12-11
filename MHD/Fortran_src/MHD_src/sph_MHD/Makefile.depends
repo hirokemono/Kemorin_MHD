@@ -74,7 +74,7 @@ cal_sol_sph_MHD_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_MHD_crank.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sol_sph_fluid_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_fluid_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_sph_matrices.o t_boundary_sph_spectr.o t_boundary_data_sph_MHD.o t_coef_fdm2_centre.o set_reference_sph_mhd.o lubksb_357band_mul.o t_coef_sph_velocity_BCs.o copy_field_smp.o solve_sph_fluid_crank.o set_evoluved_boundaries.o select_exp_velocity_ICB.o select_exp_velocity_CMB.o select_exp_magne_ICB.o select_exp_magne_CMB.o t_physical_property.o t_sph_center_matrix.o t_boundary_params_sph_MHD.o fill_scalar_field.o select_exp_scalar_ICB.o select_exp_scalar_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sph_bc_fdm_4th_mat.o: $(MHD_SPH_DIR)/cal_sph_bc_fdm_4th_mat.f90 m_precision.o m_machine_parameter.o t_boundary_data_sph_MHD.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_fdm4_zero_vpol_CMB.o t_coef_fdm4_free_vpol_CMB.o t_coef_fdm4_zero_vpol_ICB.o t_coef_fdm4_free_vpol_ICB.o t_coef_fdm4_vpol_centre.o
+cal_sph_bc_fdm_4th_mat.o: $(MHD_SPH_DIR)/cal_sph_bc_fdm_4th_mat.f90 m_precision.o m_machine_parameter.o t_boundary_data_sph_MHD.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_coef_sph_velocity_BCs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_divergence_of_force.o: $(MHD_SPH_DIR)/cal_sph_divergence_of_force.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rj_data.o t_base_force_labels.o t_phys_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_control_parameter.o const_sph_divergence.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -310,7 +310,7 @@ t_SPH_MHD_zonal_mean_viz.o: $(MHD_SPH_DIR)/t_SPH_MHD_zonal_mean_viz.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_addresses_sph_transform.o: $(MHD_SPH_DIR)/t_addresses_sph_transform.f90 m_precision.o t_spheric_rtp_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_boundary_data_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_data_sph_MHD.f90 m_precision.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_sph_velocity_BCs.o t_coef_fdm2_centre.o t_coef_fdm4_vpol_centre.o t_time_data.o t_spheric_parameter.o t_control_parameter.o set_evoluved_boundaries.o
+t_boundary_data_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_data_sph_MHD.f90 m_precision.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_sph_velocity_BCs.o t_coef_fdm2_centre.o t_coef_fdm4_vpol_centre.o t_spheric_parameter.o t_control_parameter.o t_time_data.o set_evoluved_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_boundary_params_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_params_sph_MHD.f90 m_precision.o t_coef_fdm2_scalar_ICB.o t_coef_fdm2_scalar_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
