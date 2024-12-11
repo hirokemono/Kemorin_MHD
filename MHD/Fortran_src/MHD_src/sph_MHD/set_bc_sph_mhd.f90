@@ -18,8 +18,10 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
-!!      subroutine check_bc_sph_mhd(id_file, MHD_prop, sph_MHD_bc)
+!!      subroutine check_bc_sph_mhd(id_file, sph_rj,                    &
+!!     &                            MHD_prop, sph_MHD_bc)
 !!        integer(kind = kint), intent(in) :: id_file
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!@endverbatim
@@ -182,13 +184,14 @@
       call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),           &
      &                              sph_MHD_bc%fdm2_center)
       call cal_fdm3e_CTR_hdiv_vp(sph_rj%radius_1d_rj_r(1),              &
-     &                           sph_MHD_bc%bc_fdms_U%fdm3e_center)
+     &                           sph_MHD_bc%bc_fdms_U%fdm3e_CTR)
 !
       end subroutine s_set_bc_sph_mhd
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_bc_sph_mhd(id_file, MHD_prop, sph_MHD_bc)
+      subroutine check_bc_sph_mhd(id_file, sph_rj,                      &
+     &                            MHD_prop, sph_MHD_bc)
 !
       use m_base_field_labels
 !
@@ -200,6 +203,7 @@
       use set_sph_bc_magne_sph
 !
       integer(kind = kint), intent(in) :: id_file
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
@@ -228,21 +232,10 @@
           call check_fdm_coefs_4_BC2                                    &
      &       (id_file, velocity%name, sph_MHD_bc%sph_bc_U)
 !
-          call check_fdm1_ICB_fixed_field                               &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_ICB)
-          call check_fdm1_CMB_fixed_field                               &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm1_fix_fld_CMB)
-!
-          call check_fdm3_n2e_ICB_zero_vpol                             &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_vp0_ICB)
-          call check_fdm2_coef_free_slip_ICB                            &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm2_free_ICB)
-          call check_fdm2_coef_free_slip_CMB                            &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm2_free_CMB)
-          call check_fdm3_n2e_ICB_free_vpol                             &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_free_ICB)
-          call check_fdm3_n2e_CMB_free_vpol                             &
-     &       (id_file, sph_MHD_bc%bc_fdms_U%fdm3e_free_CMB)
+          call check_sph_fdm_boundaries(id_file,                        &
+     &        sph_MHD_bc%sph_bc_U%kr_in, sph_MHD_bc%sph_bc_U%kr_out,    &
+     &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
+     &        sph_MHD_bc%bc_fdms_U)
         end if
 !
         if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &

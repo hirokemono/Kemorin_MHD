@@ -7,7 +7,8 @@
 !>@brief Matrix to evaluate radial derivative for non-slip at ICB
 !!
 !!@verbatim
-!!      subroutine check_4th_CMB_free_vp_fdm(fdm4_free_vp_CMB)
+!!      subroutine check_4th_CMB_free_vp_fdm(id_file, fdm4_free_vp_CMB)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
 !!      subroutine cal_fdm4_CMB0_free_vp(r_from_CMB, fdm4_free_vp_CMB)
 !!      subroutine cal_fdm4_CMB1_free_vp(r_from_CMB, fdm4_free_vp_CMB)
@@ -67,29 +68,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_4th_CMB_free_vp_fdm(fdm4_free_vp_CMB)
+      subroutine check_4th_CMB_free_vp_fdm(id_file, fdm4_free_vp_CMB)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
 !
 !
-      write(50,*) ' free slip boundary'
-      write(50,*) ' fdm4_free_vp_CMB%dmat_vp0'
-      write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,2)
-      write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,3)
-      write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,4)
+      write(id_file,*) ' free slip boundary'
+      write(id_file,*) ' fdm4_free_vp_CMB%dmat_vp0'
+      write(id_file,*) 'matrix for dfdr'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,2)
+      write(id_file,*) 'matrix for d3fdr3'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,3)
+      write(id_file,*) 'matrix for d3fdr3'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp0(-2:0,4)
 !
-      write(50,*) ' fdm4_free_vp_CMB%dmat_vp1'
-      write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,2)
-      write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,3)
-      write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,4)
-      write(50,*) 'matrix for d4fdr4'
-      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,5)
+      write(id_file,*) ' fdm4_free_vp_CMB%dmat_vp1'
+      write(id_file,*) 'matrix for dfdr'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,2)
+      write(id_file,*) 'matrix for d2fdr2'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,3)
+      write(id_file,*) 'matrix for d3fdr3'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,4)
+      write(id_file,*) 'matrix for d4fdr4'
+      write(id_file,'(1p9E25.15e3)') fdm4_free_vp_CMB%dmat_vp1(-2:1,5)
 !
       end subroutine check_4th_CMB_free_vp_fdm
 !
