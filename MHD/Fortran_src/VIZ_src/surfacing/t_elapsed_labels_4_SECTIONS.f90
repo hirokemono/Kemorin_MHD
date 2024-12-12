@@ -125,8 +125,7 @@
 !
       if(elps_SECT%flag_elapsed_S .eqv. .FALSE.) return
       
-      do i = 1, 7
-        i_viz = 2*i + elps_SECT%ist_elapsed_S
+      do i_viz = elps_SECT%ist_elapsed_S+2, elps_SECT%ied_elapsed_S, 2
         call reset_elapsed_timer(i_viz, i_viz, elps)
       end do
 !
