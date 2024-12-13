@@ -145,13 +145,21 @@
 !
       if(MHD_prop%fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0)                                          &
+     &          write(*,*) 'const_radial_mat_toroidal_flow'
+        call const_radial_mat_toroidal_flow                             &
+     &     (dt, sph_rj, r_2nd, MHD_prop%fl_prop,                        &
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U,                  &
+     &      sph_MHD_bc%fdm2_center, g_sph_rj, sph_MHD_mat%band_vt_evo)
+        if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step                                &
      &     (dt, sph_rj, r_2nd, MHD_prop%fl_prop,                        &
      &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U,                  &
      &      sph_MHD_bc%fdm2_center, g_sph_rj,                           &
      &      sph_MHD_mat%band_vs_poisson, sph_MHD_mat%band_vp_evo,       &
-     &      sph_MHD_mat%band_vt_evo, sph_MHD_mat%band_wt_evo)
+     &      sph_MHD_mat%band_wt_evo)
+        if(iflag_debug .gt. 0)                                          &
+     &          write(*,*) 'const_radial_mat_4_press_sph'
         call const_radial_mat_4_press_sph                               &
      &     (sph_rj, r_2nd, MHD_prop%fl_prop,                            &
      &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%fdm2_center,                &

@@ -8,7 +8,10 @@
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,       &
 !!     &         fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,   &
-!!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
+!!     &         band_vs_poisson, band_vp_evo, band_wt_evo)
+!!      subroutine const_radial_mat_toroidal_flow(dt, sph_rj, r_2nd,    &
+!!     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,  &
+!!     &          band_vt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
 !!     &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, fdm2_center,    &
 !!     &          g_sph_rj, band_bp_evo, band_bt_evo)
@@ -68,8 +71,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,         &
-     &         fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,     &
-     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          band_vs_poisson, band_vp_evo, band_wt_evo)
 !
       use t_coef_sph_velocity_BCs
       use t_coef_fdm2_centre
@@ -93,7 +96,6 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(band_matrices_type), intent(inout) :: band_vp_evo
-      type(band_matrices_type), intent(inout) :: band_vt_evo
       type(band_matrices_type), intent(inout) :: band_wt_evo
       type(band_matrices_type), intent(inout) :: band_vs_poisson
 !
@@ -101,31 +103,23 @@
       real(kind = kreal) :: coef_dvt
 !
 !
-      band_vt_evo%mat_name = vt_evo_name
       band_wt_evo%mat_name = wt_evo_name
       band_vp_evo%mat_name = vp_evo_name
 !
       call alloc_band_mat_sph(ifive, sph_rj, band_vp_evo)
-      call alloc_band_mat_sph(ithree, sph_rj, band_vt_evo)
       call alloc_band_mat_sph(ithree, sph_rj, band_wt_evo)
       call alloc_band_mat_sph(ithree, sph_rj, band_vs_poisson)
 !
       call set_unit_on_diag(band_vp_evo)
-      call set_unit_on_diag(band_vt_evo)
       call set_unit_on_diag(band_wt_evo)
 !
       if(fl_prop%coef_diffuse .eq. zero) then
         coef_dvt = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_vt_evo%mat)
-        call set_unit_mat_4_poisson                                     &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat)
       else
         coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
-        call set_unit_mat_4_time_evo                                    &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_wt_evo%mat)
       end if
@@ -134,10 +128,6 @@
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_vs_poisson%mat)
 !
-      call add_vector_poisson_mat_sph                                   &
-     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_dvt, r_2nd%fdm(2)%dmat, band_vt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
@@ -150,10 +140,6 @@
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      coef_dvt, band_vt_evo%mat)
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
@@ -172,20 +158,12 @@
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
      &        sph_bc_U%kr_in, sph_bc_U%r_ICB,                           &
-     &        bc_fdms_U%fdm2_free_ICB%dmat_vt,                          &
-     &        coef_dvt, band_vt_evo%mat)
-          call add_fix_flux_icb_poisson_mat                             &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB,                           &
      &        bc_fdms_U%fdm2_free_ICB%dmat_vp,                          &
      &        one, band_vs_poisson%mat)
 !      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
         else
-          call set_fix_fld_icb_poisson_mat                              &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
-     &        sph_bc_U%kr_in, band_vt_evo%mat)
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
      &        sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB, &
@@ -194,12 +172,6 @@
       end if
 !
 !   Overwrite rotation for inner core
-!
-      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call set_icore_viscous_matrix                                   &
-     &     (sph_bc_U%kr_in, bc_fdms_U%fdm1_fix_fld_ICB,                 &
-     &      dt, sph_rj, fl_prop, band_vt_evo)
-      end if
 !
 !   Boundary condition for CMB
 !
@@ -212,20 +184,12 @@
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
-     &      bc_fdms_U%fdm2_free_CMB%dmat_vt,                            &
-     &      coef_dvt, band_vt_evo%mat)
-        call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
      &      bc_fdms_U%fdm2_free_CMB%dmat_vp,                            &
      &      one, band_vs_poisson%mat)
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
       else
-        call set_fix_fld_cmb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_out, band_vt_evo%mat)
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,  &
@@ -241,14 +205,11 @@
       call ludcmp_5band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vp_evo)
       call ludcmp_3band_mul_t                                           &
-     &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo)
-      call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_wt_evo)
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vs_poisson)
 !
       if(i_debug .eq. iflag_full_msg) then
-        call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
         call check_radial_band_mat(my_rank, sph_rj, band_wt_evo)
         call check_radial_band_mat(my_rank, sph_rj, band_vp_evo)
       end if
@@ -257,15 +218,132 @@
 !        do k = 1, sph_rj%nidx_rj(1)
 !          band_vp_evo%det(j)                                           &
 !     &                = band_vp_evo%det(j) * band_vp_evo%lu(5,k,j)
-!          band_vt_evo%det(j)                                           &
-!     &                = band_vt_evo%det(j) * band_vt_evo%lu(3,k,j)
 !        end do
-!        write(my_rank+60,*) 'det vp', j,                               &
-!     &                       band_vp_evo%det(j), band_vt_evo%det(j)
+!        write(my_rank+60,*) 'det vp', j, band_vp_evo%det(j)
 !      end do
 !
       end subroutine const_radial_mat_vort_2step
 !
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat_toroidal_flow(dt, sph_rj, r_2nd,      &
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          band_vt_evo)
+!
+      use t_coef_sph_velocity_BCs
+      use t_coef_fdm2_centre
+!
+      use m_ludcmp_band
+      use set_sph_scalar_matrix_ICB
+      use set_sph_scalar_matrix_CMB
+      use cal_inner_core_rotation
+      use center_sph_matrices
+      use mat_product_3band_mul
+      use check_sph_radial_mat
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(band_matrices_type), intent(inout) :: band_vt_evo
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+!
+      band_vt_evo%mat_name = vt_evo_name
+      call alloc_band_mat_sph(ithree, sph_rj, band_vt_evo)
+      call set_unit_on_diag(band_vt_evo)
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+        call set_unit_mat_4_poisson                                     &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_vt_evo%mat)
+      else
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
+        call set_unit_mat_4_time_evo                                    &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
+      end if
+!
+!
+      call add_vector_poisson_mat_sph                                   &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
+     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
+     &    coef_dvt, r_2nd%fdm(2)%dmat, band_vt_evo%mat)
+!
+!   Boundary condition for ICB
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call add_vector_poisson_mat_center                              &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
+     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
+     &      coef_dvt, band_vt_evo%mat)
+      else
+        if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
+          call add_fix_flux_icb_poisson_mat                             &
+     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
+     &        sph_bc_U%kr_in, sph_bc_U%r_ICB,                           &
+     &        bc_fdms_U%fdm2_free_ICB%dmat_vt,                          &
+     &        coef_dvt, band_vt_evo%mat)
+!      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
+        else
+          call set_fix_fld_icb_poisson_mat                              &
+     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
+     &        sph_bc_U%kr_in, band_vt_evo%mat)
+        end if
+      end if
+!
+!   Overwrite rotation for inner core
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        call set_icore_viscous_matrix                                   &
+     &     (sph_bc_U%kr_in, bc_fdms_U%fdm1_fix_fld_ICB,                 &
+     &      dt, sph_rj, fl_prop, band_vt_evo)
+      end if
+!
+!   Boundary condition for CMB
+      if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
+        call add_fix_flux_cmb_poisson_mat                               &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
+     &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
+     &      bc_fdms_U%fdm2_free_CMB%dmat_vt,                            &
+     &      coef_dvt, band_vt_evo%mat)
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
+      else
+        call set_fix_fld_cmb_poisson_mat                                &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_bc_U%kr_out, band_vt_evo%mat)
+      end if
+!
+      call ludcmp_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
+      end if
+!
+!      do j = 1, sph_rj%nidx_rj(2)
+!        do k = 1, sph_rj%nidx_rj(1)
+!          band_vt_evo%det(j)                                           &
+!     &                = band_vt_evo%det(j) * band_vt_evo%lu(3,k,j)
+!        end do
+!        write(my_rank+60,*) 'det vp', j, band_vt_evo%det(j)
+!      end do
+!
+      end subroutine const_radial_mat_toroidal_flow
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_magne_sph                           &
@@ -273,7 +351,7 @@
      &          g_sph_rj, band_bp_evo, band_bt_evo)
 !
       use t_coef_fdm2_centre
-      use set_sph_scalar_matrix_ICB
+      use select_sph_r_mat_magne_BC
       use set_sph_scalar_matrix_CMB
       use center_sph_matrices
       use check_sph_radial_mat
@@ -327,58 +405,15 @@
      &    g_sph_rj, sph_bc_B%kr_in, sph_bc_B%kr_out,                    &
      &    coef_dbt, r_2nd%fdm(2)%dmat, band_bt_evo%mat)
 !
+!  Matrices at ICB or center
+      call sel_sph_r_mat_pol_magnetic_ICB(sph_rj, sph_bc_B,             &
+     &    fdm2_center, g_sph_rj, coef_dbt, band_bp_evo)
+      call sel_sph_r_mat_tor_magnetic_ICB(sph_rj, sph_bc_B,             &
+     &    fdm2_center, g_sph_rj, coef_dbt, band_bt_evo)
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      coef_dbt, band_bp_evo%mat)
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      coef_dbt, band_bt_evo%mat)
-      else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
-        call add_fix_flux_icb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB,   &
-     &      coef_dbt, band_bp_evo%mat)
-        call set_fix_fld_icb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_B%kr_in, band_bt_evo%mat)
-      else if(sph_bc_B%iflag_icb .eq. iflag_evolve_field) then
-        call set_fix_fld_icb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_B%kr_in, band_bp_evo%mat)
-        call set_fix_fld_icb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_B%kr_in, band_bt_evo%mat)
-!      else if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
-      else
-        call set_ins_magne_icb_rmat_sph                                 &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB,   &
-     &      coef_dbt, band_bp_evo%mat)
-        call set_fix_fld_icb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_B%kr_in, band_bt_evo%mat)
-      end if
-!
-      if(sph_bc_B%iflag_cmb .eq. iflag_radial_magne) then
-        call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB,  &
-     &      coef_dbt, band_bp_evo%mat)
-      else if(sph_bc_B%iflag_cmb .eq. iflag_evolve_field) then
-        call set_fix_fld_cmb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_B%kr_out, band_bp_evo%mat)
-!      else if(sph_bc_B%iflag_cmb .eq. iflag_sph_insulator) then
-      else
-        call set_ins_magne_cmb_rmat_sph                                 &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB,  &
-     &      coef_dbt, band_bp_evo%mat)
-      end if
+!  Matrices at CMB
+      call sel_sph_r_mat_pol_magnetic_CMB(sph_rj, sph_bc_B, g_sph_rj,   &
+     &                                    coef_dbt, band_bp_evo)
       call set_fix_fld_cmb_poisson_mat                                  &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_B%kr_out, band_bt_evo%mat)
