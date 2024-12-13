@@ -121,7 +121,7 @@
       type(elapsed_labels_4_SECTIONS), intent(in) :: elps_SECT
       type(elapsed_time_data), intent(inout) :: elps
 !
-      integer(kind = kint) :: i, i_viz
+      integer(kind = kint) :: i_viz
 !
       if(elps_SECT%flag_elapsed_S .eqv. .FALSE.) return
       

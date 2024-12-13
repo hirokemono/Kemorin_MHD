@@ -7,6 +7,14 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
+!!      subroutine init_4th_fdms_for_sph_MHD(id_check, sph,  MHD_prop,  &
+!!     &          radial_variation, r_4th, sph_MHD_bc)
+!!        integer(kind = kint), intent(in) :: id_check
+!!        type(sph_grids), intent(in) :: sph
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(phys_data), intent(in) :: radial_variation
+!!        type(fdm_matrices), intent(inout) :: r_4th
+!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine init_sph_transform_SGS_MHD                           &
 !!     &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,       &
 !!     &          trans_p, WK, WK_LES, SPH_MHD, SR_sig, SR_r)
@@ -31,27 +39,7 @@
 !
       use calypso_mpi
 !
-      use t_SPH_MHD_model_data
-      use t_SGS_control_parameter
-      use t_SPH_mesh_field_data
-      use t_sph_trans_arrays_MHD
-      use t_sph_trans_arrays_SGS_MHD
-      use t_schmidt_poly_on_rtm
-      use t_work_4_sph_trans
-      use t_legendre_trans_select
-      use t_const_wz_coriolis_rtp
-      use t_coriolis_terms_rlm
-      use t_gaunt_coriolis_rlm
-      use t_boundary_data_sph_MHD
-      use t_phys_address
-      use t_SGS_model_addresses
-      use t_solver_SR
-!
       implicit  none
-!
-      private :: init_leg_fourier_trans_SGS_MHD
-      private :: init_sph_transform_SGS_model
-      private :: init_sph_FFTs_for_SGS_model
 !
 !-----------------------------------------------------------------------
 !
@@ -59,9 +47,62 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine init_4th_fdms_for_sph_MHD(id_check, sph,  MHD_prop,    &
+     &          radial_variation, r_4th, sph_MHD_bc)
+!
+      use t_spheric_parameter
+      use t_control_parameter
+      use t_fdm_coefs
+      use t_boundary_data_sph_MHD
+      use t_coef_sph_velocity_BCs
+      use set_bc_sph_mhd
+      use forth_fdm_node_coefs
+!
+      integer(kind = kint), intent(in) :: id_check
+      type(sph_grids), intent(in) :: sph
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(phys_data), intent(in) :: radial_variation
+!
+      type(fdm_matrices), intent(inout) :: r_4th
+      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
+!
+      real(kind = kreal) :: h_rho_in, h_rho_out
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
+      call const_forth_fdm_coefs(sph%sph_rj, r_4th)
+!
+      if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+        call density_diff_at_boundaries                                 &
+     &     (MHD_prop%fl_prop, radial_variation, sph_MHD_bc%sph_bc_U,    &
+     &      h_rho_in, h_rho_out)
+        call set_boundary_sph_4th_fdm                                   &
+     &     (sph_MHD_bc%sph_bc_U%kr_in, sph_MHD_bc%sph_bc_U%kr_out,      &
+     &      h_rho_in, h_rho_out, sph%sph_rj, r_4th,                     &
+     &      sph_MHD_bc%bc_fdms_U)
+        if(iflag_debug .gt. 0) then
+          call check_sph_4th_fdm_boundaries(id_check,                   &
+     &                                      sph_MHD_bc%bc_fdms_U)
+        end if
+      end if
+!
+      end subroutine init_4th_fdms_for_sph_MHD
+!
+!-----------------------------------------------------------------------
+!
       subroutine init_sph_transform_SGS_MHD                             &
      &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,         &
      &          trans_p, WK, WK_LES, SPH_MHD, SR_sig, SR_r)
+!
+      use t_SPH_MHD_model_data
+      use t_SGS_control_parameter
+      use t_phys_address
+      use t_SGS_model_addresses
+      use t_work_4_sph_trans
+      use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
+      use t_SPH_mesh_field_data
+      use t_solver_SR
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -69,6 +110,7 @@
       use set_address_sph_trans_snap
       use address_sph_trans_SGS_snap
       use init_sphrical_transform_MHD
+      use init_sph_trans_SGS_model
       use check_sph_mhd_openmp_size
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -137,197 +179,6 @@
      &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig, SR_r)
 !
       end subroutine init_sph_transform_SGS_MHD
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine init_sph_transform_SGS_model(SGS_param, d_rj,          &
-     &          ipol, ipol_LES, iphys, iphys_LES, WK_LES,               &
-     &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      use set_address_sph_trans_SGS
-      use set_address_sph_trans_ngSGS
-      use set_address_sph_trans_snap
-      use address_sph_trans_SGS_snap
-      use address_sph_trans_fil_force
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(phys_data), intent(in) :: d_rj
-      type(phys_address), intent(in) :: ipol, iphys
-      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-!
-      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
-      integer(kind = kint), intent(inout) :: ncomp_max_trans
-      integer(kind = kint), intent(inout) :: nvector_max_trans
-      integer(kind = kint), intent(inout) :: nscalar_max_trans
-!
-!
-      call init_sph_trns_filter_MHD                                     &
-     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,               &
-     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      call init_sph_trns_filter_snap                                    &
-     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_snap,              &
-     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call init_sph_trns_filter_diff_vect                               &
-     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_difv,              &
-     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
-        if(iflag_debug .gt. 0) then
-          write(*,*) 'Spherical transform field table ',                &
-     &               'for similarity SGS (trns_SGS)'
-        end if
-        call set_sph_trns_address_fld_simi                              &
-     &     (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SGS,                 &
-     &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call set_sph_trns_address_dyn_simi                            &
-     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_DYNS,              &
-     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call set_sph_trns_address_Csim                                &
-     &      (SGS_param, d_rj, ipol_LES, iphys_LES, WK_LES%trns_Csim,    &
-     &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-         end if
-!
-      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        call set_sph_trns_address_ngrad_SGS                             &
-     &     (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SGS,                 &
-     &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        call set_sph_trns_address_ngrad_pre                             &
-     &     (d_rj, ipol, iphys, WK_LES%trns_ngTMP,                       &
-     &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          if(iflag_debug .gt. 0) then
-            write(*,*) 'Spherical transform field table ',              &
-     &                 'for similarity SGS (trns_SIMI)'
-          end if
-          call set_sph_trns_address_fld_simi                            &
-     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SIMI,              &
-     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call set_sph_trns_address_dyn_ngrad                           &
-     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_DYNG,              &
-     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call set_addresses_trans_sph_ngCsim                           &
-     &       (SGS_param, d_rj, ipol_LES, iphys_LES, WK_LES%trns_Csim,   &
-     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-         end if
-      end if
-!
-      end subroutine init_sph_transform_SGS_model
-!
-!-----------------------------------------------------------------------
-!
-      subroutine init_leg_fourier_trans_SGS_MHD                         &
-     &         (SGS_param, sph, comms_sph, ncomp_max_trans,             &
-     &          trans_p, WK, WK_LES, SR_sig, SR_r)
-!
-      use init_sph_trans
-      use init_FFT_4_MHD
-      use pole_sph_transform
-      use skip_comment_f
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-!
-      integer(kind = kint), intent(in) :: ncomp_max_trans
-!
-      type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
-      call initialize_legendre_trans                                    &
-     &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
-     &    trans_p%leg, trans_p%idx_trns, SR_sig, SR_r,                  &
-     &    trans_p%iflag_SPH_recv)
-!
-      WK%iflag_MHD_FFT = trans_p%iflag_FFT
-      call init_fourier_transform_4_MHD                                 &
-     &   (sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    WK%trns_MHD, WK%WK_FFTs_MHD, SR_r, WK%iflag_MHD_FFT)
-!
-      call init_sph_FFTs_for_SGS_model                                  &
-     &   (WK%iflag_MHD_FFT, SGS_param, sph, comms_sph, WK_LES)
-!
-      trans_p%iflag_FFT = set_FFT_mode_4_snapshot(WK%iflag_MHD_FFT)
-      call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
-     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
-!
-      if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
-!
-      end subroutine init_leg_fourier_trans_SGS_MHD
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine init_sph_FFTs_for_SGS_model                            &
-     &         (iflag_ref_FFT, SGS_param, sph, comms_sph, WK_LES)
-!
-      integer(kind = kint), intent(in) :: iflag_ref_FFT
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(SGS_model_control_params), intent(in) :: SGS_param
-!
-      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
-!
-!
-      call init_sph_FFTs_for_each_SGS                                   &
-     &   (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_fil_MHD)
-!
-      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
-        call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SGS)
-!
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_DYNS)
-          call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_Csim)
-         end if
-!
-      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SGS)
-        call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_ngTMP)
-!
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SIMI)
-          call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_DYNG)
-          call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_Csim)
-         end if
-      end if
-!
-      end subroutine init_sph_FFTs_for_SGS_model
-!
-!-----------------------------------------------------------------------
-!
-      subroutine init_sph_FFTs_for_each_SGS                             &
-     &         (iflag_ref_FFT, sph, comms_sph, trns_SGS)
-!
-      integer(kind = kint), intent(in) :: iflag_ref_FFT
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-!
-      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
-!
-!
-      call init_sph_FFT_select(my_rank, iflag_ref_FFT,                  &
-     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    trns_SGS%backward%ncomp, trns_SGS%forward%ncomp,              &
-     &    trns_SGS%WK_FFTs_SGS)
-!
-      end subroutine init_sph_FFTs_for_each_SGS
 !
 !-----------------------------------------------------------------------
 !

@@ -7,17 +7,25 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,          &
-!!     &          radial_rj_grp, MHD_prop, radial_variation,            &
-!!     &          MHD_BC, sph_MHD_bc)
+!!      subroutine set_fdm_matrices_sph_mhd                             &
+!!     &         (bc_IO, sph_params, sph_rj, radial_rj_grp, MHD_prop,   &
+!!     &          radial_variation, MHD_BC, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_data), intent(in) :: radial_variation
-!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(phys_data), intent(in) :: radial_variation
+!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
+!!
+!!      subroutine density_diff_at_boundaries(fl_prop, radial_variation,&
+!!     &          sph_bc_U, h_rho_in, h_rho_out)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(phys_data), intent(in) :: radial_variation
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        real(kind = kreal), intent(inout) :: h_rho_in, h_rho_out
+!!
 !!      subroutine check_bc_sph_mhd(id_file, sph_rj,                    &
 !!     &                            MHD_prop, sph_MHD_bc)
 !!        integer(kind = kint), intent(in) :: id_file
@@ -37,6 +45,7 @@
       use t_physical_property
       use t_spheric_parameter
       use t_group_data
+      use t_phys_data
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
       use t_spheric_rj_data
@@ -53,16 +62,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,            &
-     &          radial_rj_grp, MHD_prop, radial_variation,              &
-     &          MHD_BC, sph_MHD_bc)
+      subroutine set_fdm_matrices_sph_mhd                               &
+     &         (bc_IO, sph_params, sph_rj, radial_rj_grp, MHD_prop,     &
+     &          radial_variation, MHD_BC, sph_MHD_bc)
 !
-      use t_phys_data
       use m_base_field_labels
 !
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
-!
       use set_sph_bc_magne_sph
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -76,7 +83,6 @@
 !
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
-      integer(kind = kint) :: kst, ked, icomp
       real(kind = kreal) :: h_rho_in, h_rho_out
 !
 !
@@ -91,21 +97,13 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_U)
 !
-        kst = sph_MHD_bc%sph_bc_U%kr_in
-        ked = sph_MHD_bc%sph_bc_U%kr_out
-        icomp = MHD_prop%fl_prop%ir_dnu_norm
-        if(MHD_prop%fl_prop%ir_dnu_norm .gt. 0) then
-          h_rho_in =  radial_variation%d_fld(kst+1,icomp)
-          h_rho_out = radial_variation%d_fld(ked+1,icomp)
-        else
-          h_rho_in =  zero
-          h_rho_out = zero
-        end if
-!
-        call set_sph_fdm_velocity_bc(kst, ked, h_rho_in, h_rho_out,     &
-     &                               sph_rj, sph_MHD_bc%bc_fdms_U)
+        call density_diff_at_boundaries                                 &
+     &     (MHD_prop%fl_prop, radial_variation, sph_MHD_bc%sph_bc_U,    &
+     &      h_rho_in, h_rho_out)
+        call set_sph_fdm_velocity_bc                                    &
+     &     (sph_MHD_bc%sph_bc_U%kr_in, sph_MHD_bc%sph_bc_U%kr_out,      &
+     &      h_rho_in, h_rho_out, sph_rj, sph_MHD_bc%bc_fdms_U)
       end if
-!
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
@@ -148,7 +146,32 @@
       call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1),           &
      &                              sph_MHD_bc%fdm2_center)
 !
-      end subroutine s_set_bc_sph_mhd
+      end subroutine set_fdm_matrices_sph_mhd
+!
+! -----------------------------------------------------------------------
+!
+      subroutine density_diff_at_boundaries(fl_prop, radial_variation,  &
+     &          sph_bc_U, h_rho_in, h_rho_out)
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(phys_data), intent(in) :: radial_variation
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind = kreal), intent(inout) :: h_rho_in, h_rho_out
+!
+      integer(kind = kint) :: kst, ked
+!
+!
+      kst = sph_bc_U%kr_in
+      ked = sph_bc_U%kr_out
+      if(fl_prop%ir_dnu_norm .gt. 0) then
+        h_rho_in =  radial_variation%d_fld(kst+1,fl_prop%ir_dnu_norm)
+        h_rho_out = radial_variation%d_fld(ked+1,fl_prop%ir_dnu_norm)
+      else
+        h_rho_in =  zero
+        h_rho_out = zero
+      end if
+!
+      end subroutine density_diff_at_boundaries
 !
 ! -----------------------------------------------------------------------
 !

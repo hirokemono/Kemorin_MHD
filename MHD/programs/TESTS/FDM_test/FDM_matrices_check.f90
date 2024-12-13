@@ -27,7 +27,6 @@
       type(sph_MHD_boundary_data) :: sph_MHD_bc1
       character(len=kchara), parameter :: BC_label = 'Boundary'
 !
-      integer :: k
 !
       iflag_debug = 0
       sph1%sph_rj%nidx_rj(2) =   6
@@ -61,7 +60,7 @@
      &    sph_MHD_bc1%sph_bc_U)
       call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
 !
-      call init_FDM_boundaries_for_test(sph1,                           &
+      call init_FDM_boundaries_for_test(sph1, r_4th_1,                  &
      &    sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
@@ -72,6 +71,7 @@
       call check_sph_fdm_boundaries(6,                                  &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
+      call check_sph_4th_fdm_boundaries(6, sph_MHD_bc1%bc_fdms_U)
 !
 !  -------------------------------------------------------------------
 !
@@ -112,13 +112,15 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_FDM_boundaries_for_test(sph, bc_fdms_U,           &
-     &                                        fdm2_center)
+      subroutine init_FDM_boundaries_for_test(sph, fdm_4th,             &
+     &                                        bc_fdms_U, fdm2_center)
 !
+      use t_fdm_coefs
       use t_coef_fdm2_centre
       use t_coef_sph_velocity_BCs
 !
-      type(sph_grids), intent(inout) :: sph
+      type(sph_grids), intent(in) :: sph
+      type(fdm_matrices), intent(in) :: fdm_4th
 !
       type(fdm2_center_mat), intent(inout) :: fdm2_center
       type(velocity_boundary_FDMs), intent(inout) :: bc_fdms_U
@@ -136,13 +138,19 @@
      &                              fdm2_center)
 !
       allocate(h_rho(sph%sph_rj%nidx_rj(1)))
-      h_rho(:) = zero
+      h_rho(1:sph%sph_rj%nidx_rj(1)) = zero
 !
       kr_in =  sph1%sph_params%nlayer_ICB
       kr_out = sph1%sph_params%nlayer_CMB
       call set_sph_fdm_velocity_bc                                      &
      &   (kr_in, kr_out, h_rho(kr_in), h_rho(kr_out),                   &
      &    sph%sph_rj, bc_fdms_U)
+      call set_boundary_sph_4th_fdm                                     &
+     &   (kr_in, kr_out, h_rho(kr_in), h_rho(kr_out),                   &
+     &    sph%sph_rj, fdm_4th, bc_fdms_U)
+      call set_boundary_sph_4th_fdm                                     &
+     &   (kr_in, kr_out, h_rho(kr_in), h_rho(kr_out),                   &
+     &    sph%sph_rj, fdm_4th, bc_fdms_U)
       deallocate(h_rho)
 !
       end subroutine init_FDM_boundaries_for_test

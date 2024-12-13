@@ -106,8 +106,8 @@
      &    model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
-      call set_ctl_SPH_SGS_MHD_monitors                                 &
-     &   (smonitor_ctl, MHD_prop, MHD_BC, rj_fld, monitor)
+      call set_ctl_SPH_SGS_MHD_monitors(smonitor_ctl, MHD_BC,           &
+     &                                  rj_fld, monitor)
 !
       call set_crustal_filtering_control(crust_filter_ctl, monitor)
 !
@@ -187,8 +187,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_SPH_SGS_MHD_monitors(smonitor_ctl, MHD_prop, &
-     &                                        MHD_BC, rj_fld, monitor)
+      subroutine set_ctl_SPH_SGS_MHD_monitors(smonitor_ctl, MHD_BC,     &
+     &                                        rj_fld, monitor)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -211,7 +211,6 @@
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_data), intent(in) :: rj_fld
-type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !

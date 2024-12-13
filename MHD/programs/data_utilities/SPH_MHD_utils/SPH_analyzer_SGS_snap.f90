@@ -107,7 +107,14 @@
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
       call const_forth_fdm_coefs(SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
 !
-!  -------------------------------
+! ---------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
+      call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
+     &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
+     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
+!
+! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD(SPH_model, SPH_SGS%SGS_par,       &
