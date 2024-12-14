@@ -130,6 +130,7 @@
 !
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
+      use const_r_mat_4_magnetic_sph
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
