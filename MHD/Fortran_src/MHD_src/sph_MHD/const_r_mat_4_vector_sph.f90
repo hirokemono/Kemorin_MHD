@@ -78,9 +78,7 @@
       use t_coef_fdm2_centre
 !
       use m_ludcmp_band
-      use set_sph_scalar_matrix_ICB
-      use set_sph_scalar_matrix_CMB
-      use cal_inner_core_rotation
+      use select_sph_r_mat_vort_BC
       use center_sph_matrices
       use mat_product_3band_mul
       use check_sph_radial_mat
@@ -138,63 +136,12 @@
      &    one, r_2nd%fdm(2)%dmat, band_vs_poisson%mat)
 !
 !   Boundary condition for ICB
-!
-      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      coef_dvt, band_wt_evo%mat)
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      one, band_vs_poisson%mat)
-      else
-        call add_fix_flux_icb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
-     &      coef_dvt, band_wt_evo%mat)
-!
-        if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-          call add_fix_flux_icb_poisson_mat                             &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB,                           &
-     &        bc_fdms_U%fdm2_free_ICB%dmat_vp,                          &
-     &        one, band_vs_poisson%mat)
-!      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
-        else
-          call add_fix_flux_icb_poisson_mat                             &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB, &
-     &        one, band_vs_poisson%mat)
-        end if
-      end if
-!
-!   Overwrite rotation for inner core
+      call sel_sph_r_mat_vort_2step_ICB(sph_rj, sph_bc_U, bc_fdms_U,    &
+     &   fdm2_center, g_sph_rj, coef_dvt, band_vs_poisson, band_wt_evo)
 !
 !   Boundary condition for CMB
-!
-      call add_fix_flux_cmb_poisson_mat                                 &
-     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,               &
-     &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
-     &    coef_dvt, band_wt_evo%mat)
-!
-      if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
-     &      bc_fdms_U%fdm2_free_CMB%dmat_vp,                            &
-     &      one, band_vs_poisson%mat)
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
-      else
-        call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,  &
-     &      one, band_vs_poisson%mat)
-      end if
+      call sel_sph_r_mat_vort_2step_CMB(sph_rj, sph_bc_U, bc_fdms_U,    &
+     &    g_sph_rj, coef_dvt, band_vs_poisson, band_wt_evo)
 !
 !
       call cal_mat_product_3band_mul                                    &
@@ -234,8 +181,7 @@
       use t_coef_fdm2_centre
 !
       use m_ludcmp_band
-      use set_sph_scalar_matrix_ICB
-      use set_sph_scalar_matrix_CMB
+      use select_sph_r_mat_vort_BC
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
@@ -279,31 +225,11 @@
      &    coef_dvt, r_2nd%fdm(2)%dmat, band_vt_evo%mat)
 !
 !   Boundary condition for ICB
+      call sel_sph_r_mat_tor_flow_ICB(sph_rj, sph_bc_U,                 &
+     &    bc_fdms_U, fdm2_center, g_sph_rj, coef_dvt,                   &
+     &    band_vt_evo)
 !
-      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
-     &      coef_dvt, band_vt_evo%mat)
-      else
-        if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-          call add_fix_flux_icb_poisson_mat                             &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB,                           &
-     &        bc_fdms_U%fdm2_free_ICB%dmat_vt,                          &
-     &        coef_dvt, band_vt_evo%mat)
-!      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
-        else
-          call set_fix_fld_icb_poisson_mat                              &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
-     &        sph_bc_U%kr_in, band_vt_evo%mat)
-        end if
-      end if
-!
-!   Overwrite rotation for inner core
-!
+!   Overwrite rotation of inner core for degree 1
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix                                   &
      &     (sph_bc_U%kr_in, bc_fdms_U%fdm1_fix_fld_ICB,                 &
@@ -311,21 +237,10 @@
       end if
 !
 !   Boundary condition for CMB
-      if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
-     &      bc_fdms_U%fdm2_free_CMB%dmat_vt,                            &
-     &      coef_dvt, band_vt_evo%mat)
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
-      else
-        call set_fix_fld_cmb_poisson_mat                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_out, band_vt_evo%mat)
-      end if
+      call sel_sph_r_mat_tor_flow_CMB(sph_rj, sph_bc_U,                 &
+     &          bc_fdms_U, g_sph_rj, coef_dvt, band_vt_evo)
 !
+!   LU decomposition
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo)
 !
