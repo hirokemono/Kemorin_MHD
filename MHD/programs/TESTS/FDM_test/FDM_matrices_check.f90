@@ -8,9 +8,18 @@
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_radial_matrices_sph_MHD
+      use t_schmidt_poly_on_rtm
+      use t_physical_property
+!
       use chebyshev_radial_grid
+      use schmidt_poly_on_rtm_grid
+      use const_r_mat_4_vector_sph
+      use count_num_sph_smp
 !
       implicit none
+!
+      integer(kind = kint), parameter :: id_file = 55
 !
       integer(kind = kint), parameter :: num_fluid_grid = 96
       real(kind = kreal), parameter :: rmin = 0.0d0
@@ -18,18 +27,34 @@
       real(kind = kreal), parameter :: r_ICB = 7.0d0 / 13.0d0
       real(kind = kreal), parameter :: r_CMB = 20.0d0 / 13.0d0
 !
+      real(kind = kreal), parameter :: dt = 1.0d-5
+!
       type(sph_grids) :: sph1
       type(fdm_matrices) :: r_2nd_1
       type(fdm_matrices) :: r_n2e_3rd_1
       type(fdm_matrices) :: r_e2n_1st_1
       type(fdm_matrices) :: r_4th_1
+      type(legendre_4_sph_trans) :: Plm_WK1
+      type(MHD_radial_matrices) :: sph_MHD_mat1
+      type(fluid_property) :: fl_prop1
 !
       type(sph_MHD_boundary_data) :: sph_MHD_bc1
       character(len=kchara), parameter :: BC_label = 'Boundary'
 !
+      character(len=kchara), parameter                                  &
+     &           :: vt_evo_name =  'toroidal_velocity_evolution'
+      character(len=kchara), parameter                                  &
+     &           :: wt_evo_name =  'toroidal_vorticity_evolution'
+      character(len=kchara), parameter                                  &
+     &           :: vp_evo_name =  'poloidal_velocity_evolution'
+      character(len=kchara), parameter                                  &
+     &           :: vsp_evo_name = 'velocity_pressure_evolution'
+!
+      integer ::  k, l, ierr
 !
       iflag_debug = 0
-      sph1%sph_rj%nidx_rj(2) =   6
+!
+      sph1%sph_rj%nidx_rj(2) =   9
       sph1%sph_params%radius_ICB = r_ICB
       sph1%sph_params%radius_CMB = r_CMB
       call count_chebyshev_ext_layers(num_fluid_grid,                   &
@@ -44,6 +69,13 @@
       write(*,*) 'nlayer_CMB', sph1%sph_params%nlayer_CMB
 !
       call alloc_sph_1d_index_rj(sph1%sph_rj)
+      call count_num_rj_smp(sph1%sph_rj, ierr)
+      do k = 1, sph1%sph_rj%nidx_rj(2)
+        l = aint(sqrt(real(k)))
+        sph1%sph_rj%idx_gl_1d_rj_j(k,1) = k
+        sph1%sph_rj%idx_gl_1d_rj_j(k,2) = l
+        sph1%sph_rj%idx_gl_1d_rj_j(k,3) = k - l*(l+1)
+      end do
 !
       call set_chebyshev_distance_shell(sph1%sph_rj%nidx_rj(1),         &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
@@ -62,16 +94,49 @@
 !
       call init_FDM_boundaries_for_test(sph1, r_4th_1,                  &
      &    sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
+      call check_sph_fdm_boundaries(6,                                  &
+     &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
+     &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
+      call check_sph_4th_fdm_boundaries(6, sph_MHD_bc1%bc_fdms_U)
+!
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB,                          &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB)
 !
-      call check_sph_fdm_boundaries(6,                                  &
-     &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
-     &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
-      call check_sph_4th_fdm_boundaries(6, sph_MHD_bc1%bc_fdms_U)
+!
+      call alloc_schmidt_normalize                                      &
+     &   (sph1%sph_rj%nidx_rj(2), sph1%sph_rj%nidx_rj(2), Plm_WK1)
+      call copy_sph_normalization_2_rj(sph1%sph_rj,  Plm_WK1%g_sph_rj)
+!      do k = 1, sph1%sph_rj%nidx_rj(2)
+!        write(*,*) k, Plm_WK1%g_sph_rj(k,1:3)
+!      end do
+!
+      i_debug = iflag_full_msg
+      call const_radial_mat_vort_2step                                  &
+     &   (dt, sph1%sph_rj, r_2nd_1, fl_prop1,                           &
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
+     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
+     &    sph_MHD_mat1%band_vs_poisson, sph_MHD_mat1%band_vp_evo,       &
+     &    sph_MHD_mat1%band_wt_evo)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_radial_band_mat(id_file, sph1%sph_rj,                &
+     &                             sph_MHD_mat1%band_wt_evo)
+        call check_radial_band_mat(id_file, sph1%sph_rj,                &
+     &                             sph_MHD_mat1%band_vp_evo)
+      end if
+!
+!      do j = 1, sph1%sph_rj%nidx_rj(2)
+!        do k = 1, sph1%sph_rj%nidx_rj(1)
+!          sph_MHD_mat1%band_vp_evo%det(j)                              &
+!     &                = sph_MHD_mat1%band_vp_evo%det(j)                &
+!     &                  * sph_MHD_mat1%band_vp_evo%lu(5,k,j)
+!        end do
+!        write(my_rank+60,*) 'det vp', j,                               &
+!                           &    sph_MHD_mat1%band_vp_evo%det(j)
+!      end do
 !
 !  -------------------------------------------------------------------
 !

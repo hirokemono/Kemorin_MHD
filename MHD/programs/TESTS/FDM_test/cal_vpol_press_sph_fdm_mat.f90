@@ -28,7 +28,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vpol_press(my_rank, dt,               &
+      subroutine const_radial_mat_vpol_press(id_file, dt,               &
      &          flag_viscous_variation, flag_ref_density_valiation,     &
      &          sph_rj, Plm_WK, fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st,   &
      &          sph_bc_U, fdm3e_center, fdm3e_vp0_ICB, fdm3e_free_ICB,  &
@@ -47,7 +47,7 @@
       use check_sph_radial_mat
       use cal_sph_pol_hdiv_viscousity
 !
-      integer, intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_file
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -149,7 +149,7 @@
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vsp_evo)
 !
       if(i_debug .eq. iflag_full_msg) then
-        call check_radial_band_mat(my_rank, sph_rj, band_vsp_evo)
+        call check_radial_band_mat(id_file, sph_rj, band_vsp_evo)
       end if
 !
 !      do j = 1, sph_rj%nidx_rj(2)
@@ -157,7 +157,7 @@
 !          band_vsp_evo%det(j)                                          &
 !     &                = band_vsp_evo%det(j) * band_vsp_evo%lu(5,k,j)
 !        end do
-!        write(my_rank+60,*) 'det vsp', j, band_vsp_evo%det(j)
+!        write(id_file,*) 'det vsp', j, band_vsp_evo%det(j)
 !      end do
 !
       end subroutine const_radial_mat_vpol_press
@@ -166,7 +166,7 @@
 !
       subroutine const_hdiv_vpol_diffusion(dt, sph_rj, Plm_WK,          &
      &          fl_prop, r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U,         &
-     &          fdm3e_center, fdm3e_vp0_ICB, fdm3e_free_ICB,             &
+     &          fdm3e_center, fdm3e_vp0_ICB, fdm3e_free_ICB,            &
      &          fdm3e_vp0_CMB, fdm3e_free_CMB, relative_d, h_nu, h_rho, &
      &          press_e, ipol_base, ipol_force, ipol_diffusion,         &
      &          rj_fld, e_hdiv_viscous)

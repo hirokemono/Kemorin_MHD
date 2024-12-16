@@ -58,7 +58,6 @@
       use select_sph_r_mat_magne_BC
       use set_sph_scalar_matrix_CMB
       use center_sph_matrices
-      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -127,11 +126,6 @@
      &   (np_smp, sph_rj%istack_rj_j_smp, band_bp_evo)
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_bt_evo)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        call check_radial_band_mat(my_rank, sph_rj, band_bp_evo)
-        call check_radial_band_mat(my_rank, sph_rj, band_bt_evo)
-      end if
 !
       end subroutine const_radial_mat_4_magne_sph
 !

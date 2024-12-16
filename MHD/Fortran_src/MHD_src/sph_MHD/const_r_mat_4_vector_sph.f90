@@ -29,7 +29,6 @@
       module const_r_mat_4_vector_sph
 !
       use m_precision
-      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -40,6 +39,8 @@
       use t_sph_matrices
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
+      use t_coef_sph_velocity_BCs
+      use t_coef_fdm2_centre
 !
       use set_radial_mat_sph
 !
@@ -64,14 +65,10 @@
      &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
      &          band_vs_poisson, band_vp_evo, band_wt_evo)
 !
-      use t_coef_sph_velocity_BCs
-      use t_coef_fdm2_centre
-!
       use m_ludcmp_band
       use select_sph_r_mat_vort_BC
       use center_sph_matrices
       use mat_product_3band_mul
-      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -146,19 +143,6 @@
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vs_poisson)
 !
-      if(i_debug .eq. iflag_full_msg) then
-        call check_radial_band_mat(my_rank, sph_rj, band_wt_evo)
-        call check_radial_band_mat(my_rank, sph_rj, band_vp_evo)
-      end if
-!
-!      do j = 1, sph_rj%nidx_rj(2)
-!        do k = 1, sph_rj%nidx_rj(1)
-!          band_vp_evo%det(j)                                           &
-!     &                = band_vp_evo%det(j) * band_vp_evo%lu(5,k,j)
-!        end do
-!        write(my_rank+60,*) 'det vp', j, band_vp_evo%det(j)
-!      end do
-!
       end subroutine const_radial_mat_vort_2step
 !
 ! -----------------------------------------------------------------------
@@ -167,15 +151,11 @@
      &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
      &          band_vt_evo)
 !
-      use t_coef_sph_velocity_BCs
-      use t_coef_fdm2_centre
-!
       use m_ludcmp_band
       use select_sph_r_mat_vort_BC
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
-      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -234,19 +214,71 @@
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo)
 !
-      if(i_debug .eq. iflag_full_msg) then
-        call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
+      end subroutine const_radial_mat_toroidal_flow
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat7_vpol_press(dt, sph_rj, r_2nd,        &
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          band7_vsp_evo)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(band_matrices_type), intent(inout) :: band7_vsp_evo
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+!
+      band7_vsp_evo%mat_name = vsp_evo_name
+      call alloc_band_matrices_type(iseven, (2*sph_rj%nidx_rj(1)),      &
+     &                              sph_rj%nidx_rj(2), band7_vsp_evo)
+      call set_unit_on_diag(band7_vsp_evo)
+!
+      end subroutine const_radial_mat7_vpol_press
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat9_vpol_press(dt, sph_rj, r_2nd,        &
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          band9_vsp_evo)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(band_matrices_type), intent(inout) :: band9_vsp_evo
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+      else
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
       end if
 !
-!      do j = 1, sph_rj%nidx_rj(2)
-!        do k = 1, sph_rj%nidx_rj(1)
-!          band_vt_evo%det(j)                                           &
-!     &                = band_vt_evo%det(j) * band_vt_evo%lu(3,k,j)
-!        end do
-!        write(my_rank+60,*) 'det vp', j, band_vt_evo%det(j)
-!      end do
+      band9_vsp_evo%mat_name = vsp_evo_name
+      call alloc_band_matrices_type(inine, (2*sph_rj%nidx_rj(1)),       &
+     &                              sph_rj%nidx_rj(2), band9_vsp_evo)
+      call set_unit_on_diag(band9_vsp_evo)
 !
-      end subroutine const_radial_mat_toroidal_flow
+      end subroutine const_radial_mat9_vpol_press
 !
 ! -----------------------------------------------------------------------
 !
