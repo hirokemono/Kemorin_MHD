@@ -269,12 +269,15 @@
      &       = rj_org%radius_1d_rj_r(1:rj_new%nidx_rj(1))
       rj_new%a_r_1d_rj_r(1:rj_new%nidx_rj(1))                           &
      &       = rj_org%a_r_1d_rj_r(1:rj_new%nidx_rj(1))
+!
       rj_new%ar_1d_rj(1:rj_new%nidx_rj(1),1)                            &
-     &       = rj_org%ar_1d_rj(1:rj_new%nidx_rj(1),1)
+     &       = rj_new%a_r_1d_rj_r(1:rj_new%nidx_rj(1))
       rj_new%ar_1d_rj(1:rj_new%nidx_rj(1),2)                            &
-     &       = rj_org%ar_1d_rj(1:rj_new%nidx_rj(1),2)
+     &       = rj_new%ar_1d_rj(1:rj_new%nidx_rj(1),1)                   &
+     &        * rj_new%a_r_1d_rj_r(1:rj_new%nidx_rj(1))
       rj_new%ar_1d_rj(1:rj_new%nidx_rj(1),3)                            &
-     &       = rj_org%ar_1d_rj(1:rj_new%nidx_rj(1),3)
+     &       = rj_new%ar_1d_rj(1:rj_new%nidx_rj(1),2)                   &
+     &        * rj_new%a_r_1d_rj_r(1:rj_new%nidx_rj(1))
 !$omp end parallel workshare
 !$omp parallel workshare
       rj_new%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),1)                      &
