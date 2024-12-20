@@ -81,6 +81,8 @@
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_params%radius_ICB, sph1%sph_params%radius_CMB,       &
      &    sph1%sph_rj%radius_1d_rj_r)
+      call set_sph_one_over_radius_rj(sph1%sph_rj)
+
 !
       call init_FDM_coefs_for_test                                      &
      &   (sph1, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1, r_4th_1)
