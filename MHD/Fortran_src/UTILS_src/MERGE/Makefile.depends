@@ -20,7 +20,7 @@ new_SPH_restart.o: $(MERGE_DIR)/new_SPH_restart.f90 m_precision.o calypso_mpi.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 parallel_assemble_sph.o: $(MERGE_DIR)/parallel_assemble_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_parameter.o t_phys_data.o t_spheric_rj_data.o t_sph_radial_interpolate.o
 	$(F90) -c $(F90OPTFLAGS) $<
-r_interpolate_marged_sph.o: $(MERGE_DIR)/r_interpolate_marged_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o t_spheric_group.o t_sph_radial_interpolate.o calypso_mpi_int.o skip_comment_f.o radial_interpolation.o
+r_interpolate_marged_sph.o: $(MERGE_DIR)/r_interpolate_marged_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o t_spheric_group.o t_sph_radial_interpolate.o calypso_mpi_int.o skip_comment_f.o t_spheric_rj_data.o radial_interpolation.o
 	$(F90) -c $(F90OPTFLAGS) $<
 search_original_domain_node.o: $(MERGE_DIR)/search_original_domain_node.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -36,7 +36,7 @@ share_field_data.o: $(MERGE_DIR)/share_field_data.f90 m_precision.o m_constants.
 	$(F90) -c $(F90OPTFLAGS) $<
 share_mesh_data.o: $(MERGE_DIR)/share_mesh_data.f90 m_precision.o calypso_mpi.o m_constants.o t_geometry_data.o t_comm_table.o t_group_data.o t_para_double_numbering.o calypso_mpi_int.o new_SPH_restart.o sph_file_MPI_IO_select.o transfer_to_long_integers.o calypso_mpi_int8.o calypso_mpi_real.o set_nnod_4_ele_by_type.o calypso_mpi_char.o
 	$(F90) -c $(F90OPTFLAGS) $<
-share_spectr_index_data.o: $(MERGE_DIR)/share_spectr_index_data.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o calypso_mpi_real.o calypso_mpi_int.o transfer_to_long_integers.o
+share_spectr_index_data.o: $(MERGE_DIR)/share_spectr_index_data.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_rj_data.o calypso_mpi_real.o calypso_mpi_int.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_comm_table_4_assemble.o: $(MERGE_DIR)/t_comm_table_4_assemble.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_file_IO_parameter.o share_mesh_data.o search_original_domain_node.o
 	$(F90) -c $(F90OPTFLAGS) $<

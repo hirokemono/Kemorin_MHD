@@ -51,9 +51,8 @@
 !
       do icou = 1, pick_IO%n_step
           call set_radial_grad_scalars(icou, i_step, time,              &
-     &        SPH_dat_ss%sph%sph_rj%nidx_rj(1),                         &
-     &        SPH_dat_ss%sph%sph_rj%radius_1d_rj_r,                     &
-     &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio, pick_IO, ntl1)
+     &        SPH_dat_ss%sph%sph_rj, pick_IO,                           &
+     &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio, ntl1)
       end do
 !
       call dealloc_neutral_point(ntl1)

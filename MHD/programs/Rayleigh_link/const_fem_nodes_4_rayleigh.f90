@@ -288,7 +288,7 @@
 !
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
-      integer(kind = kint) :: i, irev
+      integer(kind = kint) :: i, irev, k
 !
 !
       sph_rj%nidx_global_rj(1) = rayleigh_rtp%nri_gl
@@ -297,10 +297,22 @@
       sph_rj%nidx_rj(2) = sph_rj%nidx_global_rj(2) / nprocs
 !
       call alloc_sph_1d_index_rj(sph_rj)
+!$omp parallel do private(k)
       do i = 1, rayleigh_rtp%nri_gl
         irev = rayleigh_rtp%nri_gl - i + 1
         sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
       end do
+!$omp end parallel do
+!$omp parallel do private(k)
+      do k = 1, sph_rj%nidx_rj(1)
+        sph_rj%a_r_1d_rj_r(k) = one / sph_rj%radius_1d_rj_r(k)
+        sph_rj%ar_1d_rj(k,1) = sph_rj%a_r_1d_rj_r(k)
+        sph_rj%ar_1d_rj(k,2) = sph_rj%ar_1d_rj(k,1)                     &
+     &                                * sph_rj%a_r_1d_rj_r(k)
+        sph_rj%ar_1d_rj(k,3) = sph_rj%ar_1d_rj(k,2)                     &
+     &                                * sph_rj%a_r_1d_rj_r(k)
+      end do
+!$omp end parallel do
 !
       end subroutine sph_rj_params_from_rayleigh
 !
