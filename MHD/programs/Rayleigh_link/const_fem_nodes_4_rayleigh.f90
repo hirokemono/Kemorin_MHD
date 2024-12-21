@@ -303,16 +303,8 @@
         sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
       end do
 !$omp end parallel do
-!$omp parallel do private(k)
-      do k = 1, sph_rj%nidx_rj(1)
-        sph_rj%a_r_1d_rj_r(k) = one / sph_rj%radius_1d_rj_r(k)
-        sph_rj%ar_1d_rj(k,1) = sph_rj%a_r_1d_rj_r(k)
-        sph_rj%ar_1d_rj(k,2) = sph_rj%ar_1d_rj(k,1)                     &
-     &                                * sph_rj%a_r_1d_rj_r(k)
-        sph_rj%ar_1d_rj(k,3) = sph_rj%ar_1d_rj(k,2)                     &
-     &                                * sph_rj%a_r_1d_rj_r(k)
-      end do
-!$omp end parallel do
+!
+      call set_sph_one_over_radius_rj(sph_rj)
 !
       end subroutine sph_rj_params_from_rayleigh
 !

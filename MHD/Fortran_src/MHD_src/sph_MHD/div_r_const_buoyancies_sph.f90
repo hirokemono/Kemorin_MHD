@@ -98,7 +98,7 @@
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_temp, igrad_temp, fl_prop%coef_comp_buo,               &
      &      ipol_comp, igrad_comp, ipol_div_frc%i_buoyancy,             &
-     &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%flag_thermal_buoyancy) then
@@ -106,7 +106,7 @@
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_temp, igrad_temp, ipol_div_frc%i_buoyancy,             &
-     &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%flag_comp_buoyancy) then
@@ -114,7 +114,7 @@
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
      &      ipol_comp, igrad_comp, ipol_div_frc%i_comp_buo,             &
-     &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

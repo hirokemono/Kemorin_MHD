@@ -166,7 +166,7 @@
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_fil%i_temp, ipol_gfl%i_grad_temp,                      &
      &      ipol_div_fil_frc%i_buoyancy,                                &
-     &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -176,7 +176,7 @@
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
      &      ipol_fil%i_light, ipol_gfl%i_grad_composit,                 &
      &      ipol_div_fil_frc%i_comp_buo,                                &
-     &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
