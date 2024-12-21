@@ -131,7 +131,7 @@
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_matmul                                 &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
-     &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
+     &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, g_sph_rlm,    &
      &        kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
      &        ncomp, comm_rlm%irev_sr, n_WR, WR,                        &
      &        WK_l_mtl%nvec_jk, WK_l_mtl%pol_e(1,ip),                   &

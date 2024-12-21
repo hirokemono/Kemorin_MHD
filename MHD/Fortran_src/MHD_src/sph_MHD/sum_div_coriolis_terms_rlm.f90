@@ -104,14 +104,14 @@
       if(sph_rlm%istep_rlm(1) .eq. 1) then
         call sum_div_coriolis_rlm_10                                    &
      &   (b_trns%base, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,              &
-     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,                &
+     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm,                   &
      &    omega_sph%ws_rlm, coef_cor,                                   &
      &    gt_cor%jgi_rlm, gt_cor%jei_rlm, gt_cor%sd_rlm, gt_cor%td_rlm, &
      &    NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)
       else
         call sum_div_coriolis_lrm_10                                    &
      &   (b_trns%base, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,              &
-     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,                &
+     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm,                   &
      &    omega_sph%ws_rlm, coef_cor,                                   &
      &    gt_cor%jgi_rlm, gt_cor%jei_rlm, gt_cor%sd_rlm, gt_cor%td_rlm, &
      &    NB, n_WR, irev_sr_rlm, WR, div_cor_rlm)

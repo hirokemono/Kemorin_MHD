@@ -85,7 +85,7 @@
 !
       call order_b_trans_fields_krin                                    &
      &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,        &
-     &    sph_rlm%a_r_1d_rlm_r, sph_rlm%istack_rlm_j_smp,               &
+     &    sph_rlm%ar_1d_rlm, sph_rlm%istack_rlm_j_smp,                  &
      &    ncomp, nvector, nscalar, comm_rlm%irev_sr,                    &
      &    n_WR, WR, WK_spin%sp_rlm_wk(1))
 !

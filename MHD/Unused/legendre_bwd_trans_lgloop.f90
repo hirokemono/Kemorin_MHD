@@ -94,11 +94,11 @@
      &                            + (k_rlm-1) * sph_rlm%istep_rlm(1))
 !
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
-     &                       * sph_rlm%a_r_1d_rlm_r(k_rlm)**2
+     &                       * sph_rlm%ar_1d_rlm(k_rlm)**2
             sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                           &
-     &                       * sph_rlm%a_r_1d_rlm_r(k_rlm)
+     &                       * sph_rlm%ar_1d_rlm(k_rlm)
             sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                           &
-     &                       * sph_rlm%a_r_1d_rlm_r(k_rlm)
+     &                       * sph_rlm%ar_1d_rlm(k_rlm)
           end do
         end do
 !
