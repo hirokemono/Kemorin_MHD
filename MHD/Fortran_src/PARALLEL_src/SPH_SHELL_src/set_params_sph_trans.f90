@@ -251,7 +251,7 @@
 !
 !
 !$omp parallel workshare
-      sph_rtp%a_r_1d_rtp_r(1:sph_rtp%nidx_rtp(1))                       &
+      sph_rtp%ar_1d_rtm(1:sph_rtp%nidx_rtp(1))                          &
      &      = one / sph_rtp%radius_1d_rtp_r(1:sph_rtp%nidx_rtp(1))
 !$omp end parallel workshare
 !

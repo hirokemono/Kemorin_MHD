@@ -96,7 +96,7 @@
 !>        1d radius data for @f$ f(r,\theta,\phi) @f$
         real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
 !>        1 / radius_1d_rtp_r
-        real(kind = kreal), allocatable :: a_r_1d_rtp_r(:)
+        real(kind = kreal), allocatable :: ar_1d_rtm(:)
 !
 !>      @f$ \sin \theta @f$ in sapherical grid (one-dimentional)
         real(kind = kreal), allocatable :: sin_theta_1d_rtp(:)
@@ -131,7 +131,7 @@
       num = sph_rtp%nidx_rtp(1)
       allocate(sph_rtp%idx_gl_1d_rtp_r(num))
       allocate(sph_rtp%radius_1d_rtp_r(num))
-      allocate(sph_rtp%a_r_1d_rtp_r(num))
+      allocate(sph_rtp%ar_1d_rtm(num))
       num = sph_rtp%nidx_rtp(2)
       allocate(sph_rtp%idx_gl_1d_rtp_t(num))
       num = sph_rtp%nidx_rtp(3)
@@ -142,7 +142,7 @@
       if(sph_rtp%nidx_rtp(1) .gt. 0) then
         sph_rtp%idx_gl_1d_rtp_r = 0
         sph_rtp%radius_1d_rtp_r = 0.0d0
-        sph_rtp%a_r_1d_rtp_r = 0.0d0
+        sph_rtp%ar_1d_rtm = 0.0d0
       end if
 !
       end subroutine alloc_sph_1d_index_rtp
@@ -224,8 +224,7 @@
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
-      deallocate(sph_rtp%radius_1d_rtp_r)
-      deallocate(sph_rtp%a_r_1d_rtp_r)
+      deallocate(sph_rtp%radius_1d_rtp_r, sph_rtp%ar_1d_rtm)
       deallocate(sph_rtp%idx_gl_1d_rtp_r)
       deallocate(sph_rtp%idx_gl_1d_rtp_t)
       deallocate(sph_rtp%idx_gl_1d_rtp_p)
