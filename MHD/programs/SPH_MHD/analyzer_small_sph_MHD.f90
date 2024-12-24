@@ -93,6 +93,7 @@
       subroutine evolution_sph_mhd_only
 !
       use t_time_data
+      use t_sph_trans_arrays_MHD
       use SPH_analyzer_MHD
       use init_sph_MHD_elapsed_label
 !
@@ -109,6 +110,12 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
+        if(lead_field_data_flag(MHDMs%MHD_step%time_d%i_time_step,      &
+     &                          MHDMs%MHD_step)) then
+          call alloc_sph_trans_area_snap(MHDMs%SPH_MHD%sph,             &
+     &                                   MHDMs%SPH_WK%trns_WK)
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHDMs%MHD_files, iflag_finish,             &
      &      MHDMs%SPH_model, MHDMs%MHD_step, MHDMs%MHD_IO%rst_IO,       &
