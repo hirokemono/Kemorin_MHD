@@ -96,6 +96,7 @@
       use t_sph_trans_arrays_MHD
       use SPH_analyzer_MHD
       use init_sph_MHD_elapsed_label
+      use output_viz_file_control
 !
       integer(kind = kint) :: iflag_finish
 !
