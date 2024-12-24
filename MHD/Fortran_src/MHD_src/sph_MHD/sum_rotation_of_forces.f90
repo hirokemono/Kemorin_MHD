@@ -60,7 +60,8 @@
         call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_force%i_m_advect,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        end if
+      end if
+!$omp end parallel
 !
       if(fl_prop%flag_coriolis) then
         call add_each_force_to_forces                                   &
@@ -83,7 +84,6 @@
      &     (ipol_exp%i_forces, ipol_force%i_comp_buo,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine sum_forces_to_explicit
 !
@@ -103,7 +103,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!$omp parallel
       if(fl_prop%flag_coriolis) then
         call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_force%i_Coriolis,                   &
@@ -119,7 +118,6 @@
      &     (ipol_exp%i_forces, ipol_force%i_comp_buo,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
 !
       end subroutine licv_forces_to_explicit

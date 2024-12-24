@@ -59,12 +59,13 @@
      &     (ipol_exp%i_forces, SGS_term%i_SGS_inertia,                  &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
+!$omp end parallel
+!
       if(SGS_param%iflag_SGS_lorentz  .ne. id_turn_OFF) then
         call add_each_force_to_forces                                   &
      &    (ipol_exp%i_forces, SGS_term%i_SGS_Lorentz,                   &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine SGS_forces_to_explicit
 !
