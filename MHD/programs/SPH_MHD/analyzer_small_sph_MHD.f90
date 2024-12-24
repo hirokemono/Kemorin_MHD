@@ -122,6 +122,11 @@
      &      MHDMs%SPH_model, MHDMs%MHD_step, MHDMs%MHD_IO%rst_IO,       &
      &      MHDMs%SPH_MHD, MHDMs%SPH_WK, MHDMs%m_SR)
 !
+        if(lead_field_data_flag(MHDMs%MHD_step%time_d%i_time_step,      &
+     &                          MHDMs%MHD_step)) then
+          call dealloc_sph_trans_area_snap(MHDMs%SPH_WK%trns_WK)
+        end if
+!
 !*  -----------  exit loop --------------
 !*
         if(iflag_finish .gt. 0) exit
