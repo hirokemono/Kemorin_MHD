@@ -275,6 +275,7 @@
      &      iphys%base%i_current, iphys%forces%i_vp_induct,             &
      &      iphys%prod_fld%i_electric, nod_fld%d_fld)
       end if
+!$omp end parallel
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar(iphys%base%i_velo,                &
@@ -288,6 +289,7 @@
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
+!$omp parallel
       if (iphys%ene_flux%i_me_gen .gt. izero) then
         call cal_phys_dot_product                                       &
      &     (iphys%forces%i_induction, iphys%base%i_magne,               &
