@@ -202,12 +202,10 @@
       type(edge_position_sph), intent(inout) :: edge_sph
 !
 !
-!$omp parallel
       call cvt_vector_2_cyl_smp                                         &
      &   (edge%numedge, edge%edge_vect, edge_sph%edge_vect_cyl,         &
      &    edge%x_edge(1:edge%numedge,1), edge%x_edge(1:edge%numedge,2), &
      &    edge%s_edge, edge%as_edge)
-!$omp end parallel
 !
       end subroutine cal_edge_vector_cylindrical
 !

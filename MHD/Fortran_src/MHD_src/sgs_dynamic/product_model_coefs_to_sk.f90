@@ -142,10 +142,10 @@
 !
         else if(icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele
-!$omp parallel private(k1)
             call overwrite_vector_2_cyl_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
+!$omp parallel
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))

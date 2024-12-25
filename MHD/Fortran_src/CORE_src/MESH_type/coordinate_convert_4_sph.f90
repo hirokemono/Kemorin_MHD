@@ -253,12 +253,10 @@
 !
 !
       if     (numdir .eq. 6) then
-!$omp parallel
         call overwrite_cyl_tensor_smp                                   &
      &       (np_smp, node%numnod, node%istack_nod_smp,                 &
      &        d_nod(1,i_fld), node%xx(1:node%numnod,1),                 &
      &        node%xx(1:node%numnod,2), node%ss, node%a_s)
-!$omp end parallel
       else if(numdir .eq. 3) then
         call overwrite_vector_2_cyl_smp(node%numnod, d_nod(1,i_fld),    &
      &      node%xx(1:node%numnod,1), node%xx(1:node%numnod,2),         &

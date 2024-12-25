@@ -154,10 +154,8 @@
        real(kind=kreal), intent(in) :: rs(numnod)
        real(kind=kreal), intent(in) :: a_rs(numnod)
 !
-!$omp parallel
       call cvt_vector_2_cyl_smp(numnod, vect, v_cyl,                    &
      &                          xx(1,1), xx(1,2), rs, a_rs)
-!$omp end parallel
 !
       end subroutine cvt_vector_2_cylindrical
 !

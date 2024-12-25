@@ -210,12 +210,10 @@
       type(surface_position_sph), intent(inout) :: surf_sph
 !
 !
-!$omp parallel
       call cvt_vector_2_cyl_smp                                         &
      &   (surf%numsurf, surf%vnorm_surf, surf_sph%vnorm_surf_cyl,       &
      &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
      &    surf%s_surf, surf%as_surf)
-!$omp end parallel
 !
       end subroutine cal_normal_vector_cylindrical
 !
