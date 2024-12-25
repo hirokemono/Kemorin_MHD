@@ -55,11 +55,9 @@
      &          ele%x_ele(1:ele%numele,1),  ele%x_ele(1:ele%numele,2),  &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1) )
-!$omp end parallel
             call overwrite_xyz_tensor_by_sph_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -73,11 +71,9 @@
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1) )
-!$omp end parallel
             call overwrite_xyz_tensor_by_cyl_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -86,19 +82,15 @@
 !
         else
           do k1 = 1, ele%nnod_4_ele
-!$omp parallel
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele%numele,       &
      &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
-!$omp end parallel
           end do
         end if
 !
       else
         do k1 = 1, ele%nnod_4_ele
-!$omp parallel
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele%numele,         &
      &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
-!$omp end parallel
          end do
       end if
 !
@@ -131,11 +123,9 @@
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))
-!$omp end parallel
             call overwrite_sph_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%theta_ele, ele%phi_ele)
           end do
@@ -145,31 +135,26 @@
             call overwrite_vector_2_cyl_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))
-!$omp end parallel
             call overwrite_cyl_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%phi_ele)
           end do
 !
         else
-!$omp parallel private(k1)
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, ele%numele,       &
      &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1))
           end do
-!$omp end parallel
         end if
 !
       else
-!$omp parallel private(k1)
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, ele%numele,            &
      &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
-!$omp end parallel
+!
       end if
 !
       end subroutine prod_model_coefs_4_vector
@@ -202,11 +187,9 @@
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1), sk6(1,1,k1) )
-!$omp end parallel
             call overwrite_xyz_asym_t_by_sph_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -220,11 +203,9 @@
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
-!$omp parallel
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1), sk6(1,1,k1) )
-!$omp end parallel
             call overwrite_xyz_asym_t_by_cyl_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -232,21 +213,17 @@
           end do
 !
         else
-!$omp parallel private(k1)
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele%numele,       &
      &          ele%istack_ele_smp, ak_sgs(1), sk6(1,1,k1) )
           end do
-!$omp end parallel
         end if
 !
       else
-!$omp parallel private(k1)
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele%numele,         &
      &        ele%istack_ele_smp, ak_sgs(1), sk6(1,1,k1) )
          end do
-!$omp end parallel
       end if
 !
       end subroutine prod_model_coefs_4_asym_t
