@@ -221,10 +221,8 @@
      &           vector(psf_phys%n_point, psf_phys%ntot_phys)
 !
 !
-!$omp parallel
       call copy_all_field_smp(psf_phys%n_point, psf_phys%ntot_phys,     &
      &    vector, psf_phys%d_fld)
-!$omp end parallel
 !
       end subroutine copy_filed_to_phys_data
 !
