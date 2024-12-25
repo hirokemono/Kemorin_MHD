@@ -151,14 +151,12 @@
      &      flx_rtp(1,fs_trns_eflux%i_ujb) )
       end if
 !
-!$omp parallel
       if(fs_trns_eflux%i_nega_ujb .gt. 0) then
         call cal_dot_prod_w_coef_smp(nnod, dminus,                      &
      &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
      &      flx_rtp(1,fs_trns_eflux%i_nega_ujb))
       end if
-!$omp end parallel
 !
       if(fs_trns_eflux%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &

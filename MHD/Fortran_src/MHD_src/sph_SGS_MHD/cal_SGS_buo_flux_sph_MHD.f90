@@ -113,14 +113,12 @@
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
-!$omp parallel
       if(fs_trns_sef%i_reynolds_wk .gt. 0) then
         call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),            &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
       end if
-!$omp end parallel
 !
       if(fs_trns_sef%i_SGS_Lor_wk .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
