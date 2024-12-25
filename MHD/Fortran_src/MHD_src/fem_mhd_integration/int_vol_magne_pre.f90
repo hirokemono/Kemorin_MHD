@@ -128,11 +128,9 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_base%i_magne, mhd_fem_wk%magne_1)
 !
-!$omp parallel
         call add_const_to_vector_smp                                    &
      &     (ele%numele, d_ele(1,iphys_ele_base%i_magne),                &
      &      cd_prop%ex_magne, fem_wk%vector_1)
-!$omp end parallel
 !
         call fem_skv_induction_pg                                       &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -228,11 +226,9 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_base%i_magne, mhd_fem_wk%magne_1)
 !
-!$omp parallel
         call add_const_to_vector_smp                                    &
      &     (ele%numele, d_ele(1,iphys_ele_base%i_magne),                &
      &      cd_prop%ex_magne, fem_wk%vector_1)
-!$omp end parallel
 !
         call fem_skv_induction_upm                                      &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
