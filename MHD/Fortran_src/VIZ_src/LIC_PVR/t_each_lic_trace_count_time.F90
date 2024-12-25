@@ -194,9 +194,9 @@
       l_elsp%elapse_line_int = l_elsp%elapse_line_int                   &
      &                        / dble(l_elsp%np_smp_sys)
 !
-!$omp workshare
+!$omp parallel workshare
       count_int_nod(1:node%numnod) =  0.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
 !      if(lic_p%each_part_p%iflag_repart_ref                            &
 !     &                     .eq. i_INT_COUNT_BASED) then
@@ -212,10 +212,10 @@
 !$omp end parallel
 !      end if
 !
-!$omp workshare
+!$omp parallel workshare
       count_int_nod(1:node%numnod) = count_int_nod(1:node%numnod)       &
      &                              / dble(ele%nnod_4_ele)
-!$omp end workshare
+!$omp end parallel workshare
 !
       count_line_tmp = 0
 !$omp parallel do reduction(+:count_line_tmp)
@@ -242,15 +242,17 @@
 !     &                  / (ele%volume * elapse_lic_gl)
 !
 !      allocate(volume_nod_cnt(node%numnod))
-!!$omp workshare
+!!$omp parallel workshare
 !      volume_nod_cnt(1:node%numnod) = 0.0d0
-!!$omp end workshare
+!!$omp end parallel workshare
+!
 !      call cal_node_volue(node, ele, volume_nod_cnt)
-!!$omp workshare
+!
+!!$omp parallel workshare
 !      count_int_nod(1:node%numnod)                                     &
 !     &    = count_int_nod(1:node%numnod) * anorm_line_int_gl           &
 !     &     + volume_nod_cnt(1:node%numnod) * anorm_rtrace_gl
-!!$omp end workshare
+!!$omp end parallel workshare
 !      deallocate(volume_nod_cnt)
 !
       end subroutine sum_icou_int_nod_smp

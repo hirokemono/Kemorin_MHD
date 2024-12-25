@@ -82,11 +82,9 @@
      &    n_scalar, d_rtp(1,i_trns), d_zm)
 !$omp end parallel
 !
-!$omp parallel
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans                                 &
      &   (m_folding, sph_rtp, node, v_pole(1,i_trns), i_field, nod_fld)
@@ -124,11 +122,9 @@
      &    n_vector, d_rtp(1,i_trns), d_zm)
 !$omp end parallel
 !
-!$omp parallel
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
 !$omp parallel
       call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
@@ -171,11 +167,9 @@
      &    n_sym_tensor, d_rtp(1,i_trns), d_zm)
 !$omp end parallel
 !
-!$omp parallel
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm, nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
 !$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, node%numnod,         &
@@ -220,11 +214,9 @@
      &    n_scalar, d_rtp(1,i_trns), d_rms)
 !$omp end parallel
 !
-!$omp parallel
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans                                 &
      &   (m_folding, sph_rtp, node, v_pole(1,i_trns), i_field, nod_fld)
@@ -262,14 +254,12 @@
      &    n_vector, d_rtp(1,i_trns), d_rms)
 !$omp end parallel
 !
-!$omp parallel
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
 !$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(node%numnod,            &
+      call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
      &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
 !$omp end parallel
 !
@@ -309,11 +299,9 @@
      &    n_sym_tensor, d_rtp(1,i_trns), d_rms)
 !$omp end parallel
 !
-!$omp parallel
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms, nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
 !$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, node%numnod,         &

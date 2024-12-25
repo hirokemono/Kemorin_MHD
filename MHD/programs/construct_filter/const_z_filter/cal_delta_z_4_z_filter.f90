@@ -138,9 +138,9 @@
      &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
          end if
 !
-!$omp workshare
+!$omp parallel workshare
          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
-!$omp end workshare
+!$omp end parallel workshare
        end if
 !
        write(*,*) 'int_edge_diff_vart_w'
@@ -168,9 +168,9 @@
      &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
          end if
 !
-!$omp workshare
+!$omp parallel workshare
          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
-!$omp end workshare
+!$omp end parallel workshare
         end if
 !
        call int_edge_d2_vart_w                                          &
@@ -198,9 +198,9 @@
      &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
          end if
 !
-!$omp workshare
+!$omp parallel workshare
          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
-!$omp end workshare
+!$omp end parallel workshare
        end if
 !
        call cal_sol_d2_vart_width(node%numnod)
