@@ -85,10 +85,8 @@
      &                           field(1,i_field))
 !$omp end parallel
       else if(numdir .eq. ithree) then
-!$omp parallel
         call constant_vector_smp(const, numnod, ist, ied,               &
      &                           field(1,i_field))
-!$omp end parallel
       else if(numdir .eq. isix) then
         call constant_sym_tensor_smp(const, numnod, ist, ied,           &
      &                               field(1,i_field))
@@ -123,11 +121,11 @@
       real(kind = kreal), intent(inout) :: vector(numnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       vector(ist:ied,1) = const
       vector(ist:ied,2) = const
       vector(ist:ied,3) = const
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine constant_vector_smp
 !

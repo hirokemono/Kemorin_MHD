@@ -341,10 +341,8 @@
 !
       type(SGS_model_coefficient), intent(inout) :: Csim_SGS
 !
-!$omp parallel
       call constant_vector_smp(one, Csim_SGS%n_nod,                     &
      &    ione, Csim_SGS%n_nod, Csim_SGS%coef_nod(1,1))
-!$omp end parallel
 !
       end subroutine reset_vector_sgs_nod_m_coefs
 !
