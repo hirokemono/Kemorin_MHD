@@ -99,7 +99,7 @@
 !
         end do
       end do
-!$omp end parallel do nowait
+!$omp end parallel do
 !
       end subroutine cal_xyz_asym_t_by_cyl_smp
 !
