@@ -134,7 +134,6 @@
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_me_gen))
       end if
 !
-!$omp parallel
       if(fs_trns_sef%i_SGS_buo_wk .gt. 0) then
         call cal_buoyancy_flux_rtp_rin                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
@@ -149,7 +148,6 @@
      &   trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),                &
      &   trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_comp_buo_wk))
       end if
-!$omp end parallel
 !
       end subroutine SGS_fluxes_for_snapshot
 !
@@ -170,7 +168,6 @@
       real(kind = kreal), intent(inout) :: frc_buo(nnod_rtp)
 !
 !
-!$omp parallel
       if(istep_rtp(3) .eq. 1) then
         call cal_buoyancy_flux_rtp_pin                                  &
      &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
@@ -180,7 +177,6 @@
      &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
      &      coef, frc_hf, frc_buo)
       end if
-!$omp end parallel
 !
       end subroutine sel_SGS_buoyancy_flux_rtp
 !
@@ -203,7 +199,7 @@
       integer(kind = kint) :: k, l, m, i1
 !
 !
-!$omp do private(k,l,m,i1)
+!$omp parallel do private(k,l,m,i1)
       do l = 1, nidx_rtp(2)
         do k = 1, nidx_rtp(1)
           do m = 1, nidx_rtp(3)
@@ -212,7 +208,7 @@
           end do
         end do
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine cal_buoyancy_flux_rtp_pin
 !
@@ -234,6 +230,7 @@
       integer(kind = kint) :: k, l, m, i1
 !
 !
+!$omp parallel
       do m = 1, nidx_rtp(3)
 !$omp do private(k,l,i1)
         do l = 1, nidx_rtp(2)
@@ -244,6 +241,7 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
  !
       end subroutine cal_buoyancy_flux_rtp_rin
 !
