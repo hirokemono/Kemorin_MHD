@@ -272,10 +272,8 @@
 !$omp end parallel
         else if(ncomp_4_product2 .eq.3) then
           if(iflag_product_type .eq. 2) then
-!$omp parallel
            call cal_cross_prod_no_coef_smp(node%numnod,                 &
      &         d_prod1(1,1), d_prod2(1,1), d_nod(1,1))
-!$omp end parallel
           else
 !$omp parallel
            call cal_dot_prod_no_coef_smp(node%numnod,                   &

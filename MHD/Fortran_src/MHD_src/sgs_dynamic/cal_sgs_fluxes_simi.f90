@@ -219,9 +219,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-!$omp parallel
       call cal_phys_cross_product(i_v, i_b, i_sgs, nod_fld)
-!$omp end parallel
 !
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
