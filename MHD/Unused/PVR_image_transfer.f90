@@ -141,12 +141,12 @@
       integer :: num, icou
 !
 !
-!$omp workshare
+!$omp parallel workshare
       depth_recv(1:ntot_overlap*npixel_img_local) = -1000.0d0
-!$omp end workshare
-!$omp workshare
+!$omp end parallel workshare
+!$omp parallel workshare
       depth_part(1:ntot_overlap,1:npixel_img_local) = -1000.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
       nneib_send = 0
       do i_rank = 0, nprocs-1
@@ -218,12 +218,12 @@
       integer :: num, icou
 !
 !
-!$omp workshare
+!$omp parallel workshare
       rgba_recv(1:4,ntot_overlap*npixel_img_local) = zero
-!$omp end workshare
-!$omp workshare
+!$omp end parallel workshare
+!$omp parallel workshare
       rgba_part(1:4,1:ntot_overlap,1:npixel_img_local) = zero
-!$omp end workshare
+!$omp end parallel workshare
 !
       nneib_send = 0
       do i_rank = 0, nprocs-1
