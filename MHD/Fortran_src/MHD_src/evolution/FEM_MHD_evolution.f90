@@ -507,21 +507,18 @@
 !
       if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-!$omp parallel
           call subtract_scalars_smp(nod_fld%n_point,                    &
      &                          nod_fld%d_fld(1,iphys%base%i_temp),     &
      &                          ref_fld%d_fld(1,iref_base%i_temp),      &
      &                          nod_fld%d_fld(1,iphys%base%i_per_temp))
-!$omp end parallel
       end if
+!
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
-!$omp parallel
           call subtract_scalars_smp(nod_fld%n_point,                    &
      &                         nod_fld%d_fld(1,iphys%base%i_light),     &
      &                         ref_fld%d_fld(1,iref_base%i_light),      &
      &                         nod_fld%d_fld(1,iphys%base%i_per_light))
-!$omp end parallel
       end if
 !
       end subroutine set_perturbation_to_scalar

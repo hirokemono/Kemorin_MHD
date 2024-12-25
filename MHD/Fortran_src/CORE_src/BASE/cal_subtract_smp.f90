@@ -52,9 +52,9 @@
       real (kind=kreal), intent(inout) :: sol(nnod)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sol(1:nnod) = source(1:nnod) - subt(1:nnod)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine subtract_scalars_smp
 !

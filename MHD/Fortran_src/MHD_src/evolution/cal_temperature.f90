@@ -272,12 +272,10 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
           if(i_pert .gt. 0) then
-!$omp parallel
             call subtract_scalars_smp(nod_fld%n_point,                  &
      &                                nod_fld%d_fld(1,i_scalar),        &
      &                                ref_fld%d_fld(1,iref_scalar),     &
      &                                nod_fld%d_fld(1,i_pert))
-!$omp end parallel
           end if
         end if
 !
