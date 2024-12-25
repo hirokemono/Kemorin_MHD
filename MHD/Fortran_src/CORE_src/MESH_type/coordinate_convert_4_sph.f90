@@ -173,10 +173,8 @@
      &        node%xx(1:node%numnod,2), node%xx(1:node%numnod,3),       &
      &        node%rr, node%ss, node%a_r, node%a_s)
       else if(numdir .eq. 3) then
-!$omp parallel
         call overwrite_sph_vect_2_xyz_smp                               &
      &       (node%numnod, d_nod(1,i_fld), node%theta, node%phi)
-!$omp end parallel
       end if
 !
       end subroutine overwrite_nodal_sph_2_xyz_smp

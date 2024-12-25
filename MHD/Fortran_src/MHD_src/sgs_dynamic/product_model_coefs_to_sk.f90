@@ -126,8 +126,8 @@
 !
       if(itype_Csim .eq. 1) then
         if(icoord_Csim .eq. iflag_spherical) then
-!$omp parallel private(k1)
           do k1 = 1, ele%nnod_4_ele
+!$omp parallel
             call overwrite_vector_2_sph_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
@@ -135,10 +135,10 @@
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))
+!$omp end parallel
             call overwrite_sph_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%theta_ele, ele%phi_ele)
           end do
-!$omp end parallel
 !
         else if(icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele

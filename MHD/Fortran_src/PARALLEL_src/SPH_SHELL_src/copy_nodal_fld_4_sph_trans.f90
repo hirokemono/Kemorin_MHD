@@ -105,10 +105,8 @@
       call copy_vector_from_trans_smp(sph_rtp%nnod_rtp, m_folding,      &
      &    node%numnod, d_rtp(1,i_trns), nod_fld%d_fld(1,i_field))
 !
-!$omp parallel
       call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
      &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
-!$omp end parallel
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)

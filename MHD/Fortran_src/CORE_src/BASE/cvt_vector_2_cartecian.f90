@@ -59,9 +59,7 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-!$omp parallel
        call cvt_sph_vect_2_xyz_smp(numnod, vect, v_sph, theta, phi)
-!$omp end parallel
 !
       end subroutine cvt_vector_2_cart
 !
@@ -76,9 +74,7 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-!$omp parallel
        call cal_sph_2_x_comp_smp(numnod, v_x, v_sph, theta, phi)
-!$omp end parallel
 !
       end subroutine cal_x_component
 !
@@ -92,9 +88,7 @@
        real(kind=kreal), intent(in) :: theta(numnod), phi(numnod)
 !
 !
-!$omp parallel
         call cal_sph_2_y_comp_smp(numnod, v_y, v_sph, theta, phi)
-!$omp end parallel
 !
       end subroutine cal_y_component
 !
@@ -107,10 +101,7 @@
        real(kind=kreal), intent(in) :: theta(numnod)
        real(kind=kreal), intent(inout) :: v_z(numnod)
 !
-!
-!$omp parallel
        call cal_sph_2_z_comp_smp(numnod, v_z, v_sph, theta)
-!$omp end parallel
 !
       end subroutine cal_z_component
 !
