@@ -36,19 +36,21 @@
 !
       ddt = one / dt
 !
-!$omp parallel private(i,ist)
       do i = 1, nod_fld%num_phys
         ist = nod_fld%istack_component(i-1) + 1
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
+!$omp parallel
           call multi_by_const_nod_scalar(ist, ist, ddt, nod_fld)
+!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_vector) then
+!$omp parallel
           call multi_by_const_nod_vector(ist, ist, ddt, nod_fld)
+!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor(ist, ist, ddt, nod_fld)
         end if
       end do
-!$omp end parallel
 !
       end subroutine s_divide_phys_by_delta_t
 !
@@ -68,19 +70,21 @@
 !
 !
       dnum = one / dble(icou)
-!$omp parallel private(i,ist)
       do i = 1, nod_fld%num_phys
         ist = nod_fld%istack_component(i-1) + 1
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
+!$omp parallel
           call multi_by_const_nod_scalar(ist, ist, dnum, nod_fld)
+!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_vector) then
+!$omp parallel
           call multi_by_const_nod_vector(ist, ist, dnum, nod_fld)
+!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor(ist, ist, dnum, nod_fld)
         end if
       end do
-!$omp end parallel
 !
       end subroutine s_divide_phys_by_num_udt
 !
