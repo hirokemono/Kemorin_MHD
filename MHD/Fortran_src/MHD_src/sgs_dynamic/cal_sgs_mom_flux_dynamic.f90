@@ -184,12 +184,10 @@
      &   (SGS_par%model_p%SGS_momentum%SGS_factor,                      &
      &    Csim_SGS_mf%iak_Csim, FEM_SGS_wk%wk_sgs)
 !
-!$omp parallel
       call ovwrt_coef_prod_tensor_smp                                   &
      &   (np_smp, mesh%ele%numele, mesh%ele%istack_ele_smp,             &
      &    SGS_par%model_p%SGS_momentum%SGS_factor,                      &
      &    Csim_SGS_mf%coef(1,1))
-!$omp end parallel
 !
       end subroutine cal_sgs_m_flux_dynamic
 !
