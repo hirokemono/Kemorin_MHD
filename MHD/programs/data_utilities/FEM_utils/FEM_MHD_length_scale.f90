@@ -100,11 +100,9 @@
       if(iphys%base%i_temp  .gt. 0) then
         icou = icou + 1
         ucd%phys_name(icou) = temperature_scale%name
-!$omp parallel
         call cal_len_scale_by_diffuse_smp                               &
      &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_temp),            &
      &      nod_fld%d_fld(1,iphys%diffusion%i_t_diffuse), d_mag(1))
-!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -112,11 +110,9 @@
       if(iphys%base%i_velo  .gt. 0) then
         icou = icou + 1
         ucd%phys_name(icou) = velocity_scale%name
-!$omp parallel
         call cal_len_scale_by_rot_smp                                   &
      &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_velo),            &
      &      nod_fld%d_fld(1,iphys%base%i_vort), d_mag(1))
-!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -124,11 +120,9 @@
       if(iphys%base%i_magne .gt. 0) then
         icou = icou + 1
         ucd%phys_name(3) =    magnetic_scale%name
-!$omp parallel
         call cal_len_scale_by_rot_smp                                   &
      &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_magne),           &
      &      nod_fld%d_fld(1,iphys%base%i_current), d_mag(1))
-!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if

@@ -173,10 +173,8 @@
 !
       else if (ncomp_org .eq. 3) then
         if (i_comp.eq.0) then
-!$omp parallel
           call cal_vector_magnitude(nnod, d_nod(1,ist_field),           &
      &                              c_ref_iso)
-!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.3) then
           ic = ist_field+i_comp-1
@@ -198,11 +196,8 @@
 !
       else if (ncomp_org .eq. 6) then
         if (i_comp.eq.0) then
-!
-!$omp parallel
           call cal_sym_tensor_magnitude(nnod, d_nod(1,ist_field),       &
      &                                  c_ref_iso)
-!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.6) then
           ic = ist_field+i_comp-1

@@ -218,7 +218,6 @@
       type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !
 !
-!$omp parallel
       if(fe_trns_prod%i_velo_scale .gt. 0) then
         call cal_len_scale_by_rot_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
@@ -243,7 +242,6 @@
      &      trns_b_eflux%fld_rtp(1,bs_trns_dif%i_c_diffuse),            &
      &      trns_f_eflux%fld_rtp(1,fe_trns_prod%i_comp_scale))
       end if
-!$omp end parallel
 !
       end subroutine cal_lengh_scale_rtp
 !
