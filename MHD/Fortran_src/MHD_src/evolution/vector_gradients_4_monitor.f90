@@ -266,7 +266,6 @@
      &      v_sol, SR_sig, SR_r)
       end if
 !
-!$omp parallel
       if (iphys%prod_fld%i_electric .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(electric_field%name)
@@ -275,7 +274,6 @@
      &      iphys%base%i_current, iphys%forces%i_vp_induct,             &
      &      iphys%prod_fld%i_electric, nod_fld%d_fld)
       end if
-!$omp end parallel
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar(iphys%base%i_velo,                &
@@ -381,15 +379,12 @@
      &      nod_fld)
       end if
 !
-!$omp parallel
       if (iphys%prod_fld%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp(mesh%node, cd_prop%coef_diffuse, &
      &      nod_fld%ntot_phys, iphys%base%i_current,                    &
      &      iphys%forces%i_vp_induct, iphys%base%i_magne,               &
      &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if
-!$omp end parallel
-!
 !
       end subroutine cal_work_4_forces
 !
