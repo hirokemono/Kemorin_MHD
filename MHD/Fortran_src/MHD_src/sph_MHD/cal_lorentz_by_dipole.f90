@@ -81,7 +81,6 @@
 !
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_flx)
 !
-!$omp parallel
       if(fs_trns_prod%i_dipole_Lorentz .gt. 0) then
         call cal_cross_prod_w_coef_smp(nnod, fl_prop%coef_lor,          &
      &      fld_rtp(1,bs_trns_prod%i_dipole_J),                         &
@@ -89,6 +88,7 @@
      &      frc_rtp(1,fs_trns_prod%i_dipole_Lorentz) )
       end if
 !
+!$omp parallel
       if(fs_trns_prod%i_dipole_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
      &      frc_rtp(1,fs_trns_prod%i_dipole_Lorentz),                   &

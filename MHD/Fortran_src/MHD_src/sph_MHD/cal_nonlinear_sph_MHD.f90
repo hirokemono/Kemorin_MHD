@@ -168,7 +168,6 @@
 !
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_frc)
 !
-!$omp parallel
       if(f_trns_frc%i_m_advect .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%fl_prop%coef_velo,                           &
@@ -176,16 +175,13 @@
      &      fld_rtp(1,b_trns_base%i_velo),                              &
      &      frc_rtp(1,f_trns_frc%i_m_advect) )
       end if
-!$omp end parallel
 !
       if(f_trns_frc%i_lorentz .gt. 0) then
-!$omp parallel
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
      &      fld_rtp(1,b_trns_base%i_current),                           &
      &      fld_rtp(1,b_trns_base%i_magne),                             &
      &      frc_rtp(1,f_trns_frc%i_lorentz) )
-!$omp end parallel
 !
         if(b_trns_base%i_back_B .gt. 0) then
           call add_cross_prod_w_coef_smp                                &
@@ -198,13 +194,11 @@
 !
 !
       if(f_trns_frc%i_vp_induct .gt. 0) then
-!$omp parallel
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%cd_prop%coef_induct,                         &
      &      fld_rtp(1,b_trns_base%i_velo),                              &
      &      fld_rtp(1,b_trns_base%i_magne),                             &
      &      frc_rtp(1,f_trns_frc%i_vp_induct) )
-!$omp end parallel
 !
         if(b_trns_base%i_back_B .gt. 0) then
           call add_cross_prod_w_coef_smp                                &
@@ -253,7 +247,7 @@
 !
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_frc)
 !
-!$omp parallel
+!
       if(f_trns_frc%i_m_advect .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%fl_prop%coef_velo,                           &
@@ -261,16 +255,13 @@
      &      fld_rtp(1,b_trns_base_2%i_velo),                            &
      &      frc_rtp(1,f_trns_frc%i_m_advect) )
       end if
-!$omp end parallel
 !
       if(f_trns_frc%i_lorentz .gt. 0) then
-!$omp parallel
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
      &      fld_rtp(1,b_trns_base_1%i_current),                         &
      &      fld_rtp(1,b_trns_base_2%i_magne),                           &
      &      frc_rtp(1,f_trns_frc%i_lorentz) )
-!$omp end parallel
 !
         if(b_trns_base_2%i_back_B .gt. 0) then
           call add_cross_prod_w_coef_smp                                &
@@ -283,13 +274,11 @@
 !
 !
       if(f_trns_frc%i_vp_induct .gt. 0) then
-!$omp parallel
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%cd_prop%coef_induct,                         &
      &      fld_rtp(1,b_trns_base_1%i_velo),                            &
      &      fld_rtp(1,b_trns_base_2%i_magne),                           &
      &      frc_rtp(1,f_trns_frc%i_vp_induct) )
-!$omp end parallel
 !
         if(b_trns_base_2%i_back_B .gt. 0) then
           call add_cross_prod_w_coef_smp                                &
