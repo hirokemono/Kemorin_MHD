@@ -180,7 +180,6 @@
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
-!$omp parallel
       call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
      &    d_nod(1,i_sgs_simi), xx(1,1), xx(1,2), s, a_s)
 
@@ -189,7 +188,6 @@
 
       call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
      &    d_nod(1,i_sgs_grad_f), xx(1,1), xx(1,2), s, a_s)
-!$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_cyl
 !

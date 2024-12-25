@@ -47,10 +47,10 @@
       integer(kind = kint) :: k1
 !
 !
-!$omp parallel private(k1)
       if(itype_Csim .eq. 1) then
         if(icoord_Csim .eq. iflag_spherical) then
           do k1 = 1, ele%nnod_4_ele
+!$omp parallel
             call overwrite_sph_tensor_smp                               &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1),  ele%x_ele(1:ele%numele,2),  &
@@ -64,6 +64,7 @@
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
+!$omp end parallel
           end do
 !
         else if(icoord_Csim .eq. iflag_cylindrical) then
@@ -72,6 +73,7 @@
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
+!$omp parallel
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1) )
@@ -79,22 +81,26 @@
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
+!$omp end parallel
           end do
 !
         else
           do k1 = 1, ele%nnod_4_ele
+!$omp parallel
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele%numele,       &
      &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
+!$omp end parallel
           end do
         end if
 !
       else
         do k1 = 1, ele%nnod_4_ele
+!$omp parallel
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele%numele,         &
      &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
+!$omp end parallel
          end do
       end if
-!$omp end parallel
 !
       end subroutine prod_model_coefs_4_tensor
 !
