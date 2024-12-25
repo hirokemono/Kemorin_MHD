@@ -67,11 +67,11 @@
       real (kind=kreal), intent(inout) :: sol(nnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sol(1:nnod,1) = source(1:nnod,1) - subt(1:nnod,1)
       sol(1:nnod,2) = source(1:nnod,2) - subt(1:nnod,2)
       sol(1:nnod,3) = source(1:nnod,3) - subt(1:nnod,3)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine subtract_vectors_smp
 !
