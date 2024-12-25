@@ -137,7 +137,7 @@
        real(kind=kreal) :: vx, vy
 !
 !
-!$omp do private(inod,vx,vy)
+!$omp parallel do private(inod,vx,vy)
          do inod = 1, numnod
            vx = vect(inod,1)
            vy = vect(inod,2)
@@ -149,7 +149,7 @@
            end if
 !
          end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_cylinder_r_comp_smp
 !

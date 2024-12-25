@@ -198,10 +198,8 @@
      &                          xx(1,1), xx(1,2), s_radius, a_s)
 !$omp end parallel
         else if (i_comp.eq.14) then
-!$omp parallel
           call cal_cylinder_r_comp_smp(nnod, d_nod(1,ist_field),        &
      &        c_ref_iso, xx(1,1), xx(1,2), s_radius, a_s)
-!$omp end parallel
         end if
 !
       else if (ncomp_org .eq. 6) then

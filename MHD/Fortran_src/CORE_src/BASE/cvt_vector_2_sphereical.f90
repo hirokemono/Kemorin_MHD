@@ -175,10 +175,9 @@
        real(kind=kreal), intent(in) :: rs(numnod)
        real(kind=kreal), intent(in) :: a_rs(numnod)
 !
-!$omp parallel
+!
       call cal_cylinder_r_comp_smp(numnod, vect, v_s,                   &
      &                             xx(1,1), xx(1,2), rs, a_rs)
-!$omp end parallel
 !
       end subroutine cal_cylinder_r_component
 !

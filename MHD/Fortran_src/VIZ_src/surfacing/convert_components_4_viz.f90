@@ -121,11 +121,8 @@
 !$omp end parallel
 !
         else if (icomp_viz .eq. icomp_CYLINDER_R) then
-!$omp parallel
           call cal_cylinder_r_comp_smp(nnod, dat_xyz(1,1),              &
      &        dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
-!
 !
         else if ( icomp_viz .eq. icomp_RR ) then
           call cal_rr_tensor_smp(np_smp, nnod, istack_n_smp,            &
@@ -227,10 +224,8 @@
 !$omp end parallel
 !
         else if(icomp_viz .eq. icomp_CYLINDER_R) then
-!$omp parallel
           call cal_cylinder_r_comp_smp(nnod,  xx(1,1), dat_viz(1),      &
      &                                 xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
         end if
 !
       end subroutine convert_position_4_viz
