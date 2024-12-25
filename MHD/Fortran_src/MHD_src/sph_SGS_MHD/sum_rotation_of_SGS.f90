@@ -14,6 +14,14 @@
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!        type(SGS_term_address), intent(in) :: SGS_term
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine add_SGS_MHD_terms_to_force(ipol_exp, ipol_rot_SGS,   &
+!!     &          ist, ied, nnod_rj, ntot_phys_rj, d_rj)
+!!        type(explicit_term_address), intent(in) :: ipol_exp
+!!        type(SGS_term_address), intent(in) :: ipol_rot_SGS
+!!        integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+!!        integer(kind = kint), intent(in) :: ist, ied
+!!        real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !!@endverbatim
 !
 !
@@ -83,7 +91,7 @@
       integer(kind = kint) :: inod
 !
 !
-!$omp do private (inod)
+!$omp parallel do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol_exp%i_forces  )                                  &
      &        =  d_rj(inod,ipol_exp%i_forces  )                         &
@@ -98,7 +106,7 @@
      &         - d_rj(inod,ipol_rot_SGS%i_SGS_inertia+2)                &
      &         + d_rj(inod,ipol_rot_SGS%i_SGS_Lorentz+2)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine add_SGS_MHD_terms_to_force
 !
