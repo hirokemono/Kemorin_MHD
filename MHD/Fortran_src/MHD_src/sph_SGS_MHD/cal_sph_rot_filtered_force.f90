@@ -198,7 +198,6 @@
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
 !
-!$omp parallel
       if(fl_prop%flag_filter_inertia) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_fil_frc%i_m_advect, ipol_div_fil_frc%i_m_advect,       &
@@ -220,7 +219,6 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine const_radial_fil_forces_on_bc
 !
