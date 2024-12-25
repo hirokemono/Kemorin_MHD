@@ -40,9 +40,7 @@
         ist = nod_fld%istack_component(i-1) + 1
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
-!$omp parallel
           call multi_by_const_nod_scalar(ist, ist, ddt, nod_fld)
-!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector(ist, ist, ddt, nod_fld)
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
@@ -72,9 +70,7 @@
         ist = nod_fld%istack_component(i-1) + 1
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
-!$omp parallel
           call multi_by_const_nod_scalar(ist, ist, dnum, nod_fld)
-!$omp end parallel
         else if ( nod_fld%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector(ist, ist, dnum, nod_fld)
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
