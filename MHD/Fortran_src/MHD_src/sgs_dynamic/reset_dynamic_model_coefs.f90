@@ -326,9 +326,7 @@
 !
       ist = iele_smp_stack(0) + 1
       ied = iele_smp_stack(np_smp)
-!$omp parallel
       call constant_scalar_smp(one, numele, ist, ied, Cdiff%coef(1,1))
-!$omp end parallel
 !
       end subroutine reset_diff_model_coefs
 !

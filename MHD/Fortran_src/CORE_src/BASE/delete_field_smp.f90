@@ -80,10 +80,8 @@
 !
 !
       if(numdir .eq. ione) then
-!$omp parallel
         call constant_scalar_smp(const, numnod, ist, ied,               &
      &                           field(1,i_field))
-!$omp end parallel
       else if(numdir .eq. ithree) then
         call constant_vector_smp(const, numnod, ist, ied,               &
      &                           field(1,i_field))
@@ -106,9 +104,9 @@
       integer(kind = kint), intent(in) :: ist, ied, numnod
       real(kind = kreal), intent(inout) :: scalar(numnod)
 !
-!$omp workshare
+!$omp parallel workshare
           scalar(ist:ied) = const
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine constant_scalar_smp
 !
