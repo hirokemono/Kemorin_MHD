@@ -88,10 +88,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call copy_nod_vector_smp(fld%n_point,                             &
      &    fld%d_fld(1,i_org), fld%d_fld(1,i_target))
-!$omp end parallel
 !
       end subroutine copy_vector_component
 !

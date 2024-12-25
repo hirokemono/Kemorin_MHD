@@ -59,11 +59,11 @@
        real(kind=kreal), intent(inout) :: copied(nnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
        copied(1:nnod,1) = vector(1:nnod,1)
        copied(1:nnod,2) = vector(1:nnod,2)
        copied(1:nnod,3) = vector(1:nnod,3)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine copy_nod_vector_smp
 !

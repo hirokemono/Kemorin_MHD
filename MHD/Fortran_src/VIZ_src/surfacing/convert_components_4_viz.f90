@@ -72,9 +72,7 @@
 !
         else if ( icomp_viz.eq.icomp_VECTOR                             &
      &        .or. icomp_viz.eq.icomp_ASYM_TENSOR) then
-!$omp parallel
           call copy_nod_vector_smp(nnod, dat_xyz(1,1), dat_viz(1,1))
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_SYM_TENSOR ) then
           call copy_nod_sym_tensor_smp                                  &

@@ -135,10 +135,8 @@
         if(nline .le. 0) exit
       end do
 !
-!$omp parallel
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
-!$omp end parallel
 !
       end subroutine s_trace_particle
 !
