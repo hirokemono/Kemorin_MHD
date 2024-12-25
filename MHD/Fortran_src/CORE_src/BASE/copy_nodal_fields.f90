@@ -123,10 +123,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call add_scalars_smp(fld%n_point,                                 &
      &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
-!$omp end parallel
 !
        end subroutine add_2_nod_scalars
 !
@@ -140,10 +138,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call add_vectors_smp(fld%n_point,                                 &
      &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
-!$omp end parallel
 !
        end subroutine add_2_nod_vectors
 !
@@ -157,10 +153,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call add_tensors_smp(fld%n_point,                                 &
      &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
-!$omp end parallel
 !
       end subroutine add_2_nod_tensors
 !

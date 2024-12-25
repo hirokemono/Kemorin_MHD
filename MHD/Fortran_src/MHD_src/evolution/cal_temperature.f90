@@ -247,12 +247,10 @@
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
      &       SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
-!$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
      &                         ref_fld%d_fld(1,iref_scalar),            &
      &                         nod_fld%d_fld(1,i_pert),                 &
      &                         nod_fld%d_fld(1,i_scalar))
-!$omp end parallel
         else
 !          call check_surface_param_smp('cal_scalar_field_pre start',   &
 !     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
