@@ -331,10 +331,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-!$omp parallel
       call cal_phys_scalar_product_vector                               &
      &   (i_velo_f, i_field_f, i_flux, nod_fld)
-!$omp end parallel
       call cal_div_of_scalar_flux                                       &
      &   (i_div_flux, i_flux, iflag_supg, num_int, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &

@@ -101,38 +101,30 @@
 !
       if (iphys%forces%i_h_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(heat_flux%name)
-!$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%base%i_velo, iphys%base%i_temp,                       &
      &      iphys%forces%i_h_flux, nod_fld)
-!$omp end parallel
 !
       else if (iphys%forces%i_ph_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                      trim(pert_heat_flux%name)
-!$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%base%i_velo, iphys%base%i_per_temp,                   &
      &      iphys%forces%i_ph_flux, nod_fld)
-!$omp end parallel
 !
       else if (iphys%forces%i_c_flux .gt.  izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                       trim(composite_flux%name)
-!$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%base%i_velo, iphys%base%i_light,                      &
      &      iphys%forces%i_c_flux, nod_fld)
-!$omp end parallel
 !
       else if (iphys%forces%i_pc_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                       trim(pert_comp_flux%name)
-!$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%base%i_velo, iphys%base%i_per_light,                  &
      &      iphys%forces%i_pc_flux, nod_fld)
-!$omp end parallel
 !
       else if (iphys%forces%i_m_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &

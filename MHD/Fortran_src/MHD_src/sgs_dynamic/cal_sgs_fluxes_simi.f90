@@ -141,10 +141,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-!$omp parallel
       call cal_phys_scalar_product_vector                               &
      &   (ivelo, ifield, i_sgs, nod_fld)
-!$omp end parallel
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
      &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
