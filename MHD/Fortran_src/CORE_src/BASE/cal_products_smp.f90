@@ -273,7 +273,7 @@
       real (kind=kreal), intent(inout) :: prod(nnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       prod(1:nnod,1) =  tensor(1:nnod,1) * vector(1:nnod,1)             &
      &                + tensor(1:nnod,2) * vector(1:nnod,2)             &
      &                + tensor(1:nnod,3) * vector(1:nnod,3)
@@ -283,7 +283,7 @@
       prod(1:nnod,3) =  tensor(1:nnod,3) * vector(1:nnod,1)             &
      &                + tensor(1:nnod,5) * vector(1:nnod,2)             &
      &                + tensor(1:nnod,6) * vector(1:nnod,3)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine cal_tensor_vec_prod_no_coef_smp
 !
@@ -298,12 +298,12 @@
 !
       real (kind=kreal), intent(inout) :: prod(nnod)
 !
-!$omp workshare
+!$omp parallel workshare
       prod(1:nnod) = scalar(1:nnod)                                     &
      &               * sqrt(vector(1:nnod,1)*vector(1:nnod,1)           &
      &                    + vector(1:nnod,2)*vector(1:nnod,2)           &
      &                    + vector(1:nnod,3)*vector(1:nnod,3))
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
        end subroutine cal_scalar_mag_vector_prod_smp
 !

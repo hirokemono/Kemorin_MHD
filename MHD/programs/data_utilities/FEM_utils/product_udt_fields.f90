@@ -283,10 +283,8 @@
 !$omp end parallel
           end if
         else if(ncomp_4_product2 .eq.6) then
-!$omp parallel
            call cal_tensor_vec_prod_no_coef_smp(node%numnod,            &
      &         d_prod2(1,1), d_prod1(1,1),  d_nod(1,1))
-!$omp end parallel
         end if
       else if(ncomp_4_product1.eq.6) then
         if(ncomp_4_product2 .eq. 1) then
@@ -305,17 +303,13 @@
      &         d_prod1(1,6), d_prod2(1,1),  d_nod(1,6))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.3) then
-!$omp parallel
            call cal_tensor_vec_prod_no_coef_smp(node%numnod,            &
      &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-!$omp end parallel
         else if(ncomp_4_product2 .eq.6) then
-!$omp parallel
            call cal_tensor_vec_prod_no_coef_smp(node%numnod,            &
      &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
            call cal_tensor_vec_prod_no_coef_smp(node%numnod,            &
      &         d_prod1(1,1), d_prod2(1,4),  d_nod(1,4))
-!$omp end parallel
         end if
       end if
 !
