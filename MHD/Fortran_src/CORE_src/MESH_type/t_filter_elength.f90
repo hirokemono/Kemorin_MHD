@@ -225,14 +225,14 @@
 !
 !
       if (num .gt. 0) then
-!$omp workshare
+!$omp parallel workshare
         elens%f_x2 = 0.0d0
         elens%f_y2 = 0.0d0
         elens%f_z2 = 0.0d0
         elens%f_xy = 0.0d0
         elens%f_yz = 0.0d0
         elens%f_zx = 0.0d0
-!$omp end workshare
+!$omp end parallel workshare
       end if 
 !
       end subroutine clear_elen_on_ele_type
@@ -246,14 +246,14 @@
 !
 !
       if (num .gt. 0) then
-!$omp workshare
+!$omp parallel workshare
         elen_d%df_x2 = 0.0d0
         elen_d%df_y2 = 0.0d0
         elen_d%df_z2 = 0.0d0
         elen_d%df_xy = 0.0d0
         elen_d%df_yz = 0.0d0
         elen_d%df_zx = 0.0d0
-!$omp end workshare
+!$omp end parallel workshare
       end if 
 !
       end subroutine clear_elen_diffs_type
