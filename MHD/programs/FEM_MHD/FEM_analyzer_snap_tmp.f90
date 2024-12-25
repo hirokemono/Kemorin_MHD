@@ -313,11 +313,9 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-!$omp parallel
       call overwrite_nodal_xyz_2_sph_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
      &    iphys_LES%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
-!$omp end parallel
 !
       call clear_field_data                                             &
      &   (nod_fld, n_sym_tensor, iphys_LES%SGS_term%i_SGS_m_flux)
@@ -350,11 +348,9 @@
      &      iphys_LES%SGS_ene_flux%i_reynolds_wk, nod_fld)
       end if
 !
-!$omp parallel
       call overwrite_nodal_xyz_2_sph_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
      &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
-!$omp end parallel
 
       call clear_field_data(nod_fld, n_vector, iphys%base%i_velo)
 !

@@ -90,11 +90,9 @@
 !$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_SPHL_SYM_TENSOR ) then
-!$omp parallel
           call cal_sph_tensor_smp(np_smp, nnod, istack_n_smp,           &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_CYL_SYM_TENSOR ) then
           call cal_cyl_tensor_smp(np_smp, nnod, istack_n_smp,           &
@@ -130,46 +128,33 @@
 !
 !
         else if ( icomp_viz .eq. icomp_RR ) then
-!$omp parallel
           call cal_rr_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_RT ) then
-!$omp parallel
           call cal_rt_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_RP ) then
-!$omp parallel
           call cal_rp_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_TT ) then
-!$omp parallel
           call cal_tt_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_TP ) then
-!$omp parallel
           call cal_tp_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
      &        sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_PP ) then
-!$omp parallel
           call cal_pp_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
-!
 !
         else if ( icomp_viz .eq. icomp_SS ) then
           call cal_ss_tensor_smp(np_smp, nnod, istack_n_smp,            &

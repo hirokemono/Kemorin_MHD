@@ -94,14 +94,12 @@
       integer(kind = kint) :: i, i_fld, numdir
 !
 !
-!$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld%num_phys
         i_fld =  nod_fld%istack_component(i-1) + 1
         numdir = nod_fld%num_component(i)
         call overwrite_nodal_xyz_2_sph_smp                              &
      &     (node, nod_fld%ntot_phys, i_fld, numdir, nod_fld%d_fld)
       end do
-!$omp end parallel
 !
       end subroutine overwrite_nodal_xyz_2_sph
 !
@@ -229,13 +227,15 @@
      &        node%xx(1:node%numnod,2), node%xx(1:node%numnod,3),       &
      &        node%rr, node%ss, node%a_r, node%a_s)
       else if(numdir .eq. 3) then
+!$omp parallel
         call overwrite_vector_2_sph_smp                                 &
      &       (node%numnod, d_nod(1,i_fld), node%xx(1:node%numnod,1),    &
      &        node%xx(1:node%numnod,2), node%xx(1:node%numnod,3),       &
      &        node%rr, node%ss, node%a_r, node%a_s)
+!$omp end parallel
       end if
 !
-      end subroutine overwrite_nodal_xyz_2_sph_smp 
+      end subroutine overwrite_nodal_xyz_2_sph_smp
 !
 ! -------------------------------------------------------------------
 !

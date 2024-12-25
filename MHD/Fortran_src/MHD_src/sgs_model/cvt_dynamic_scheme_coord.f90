@@ -211,8 +211,8 @@
       integer (kind = kint), intent(in) :: i_sgs_grad, i_sgs_grad_f
       real(kind=kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
+!
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
-!$omp parallel
       call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
      &    d_nod(1,i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),               &
      &    r, s, a_r, a_s)
@@ -224,7 +224,6 @@
       call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
      &    d_nod(1,i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),             &
      &    r, s, a_r, a_s)
-!$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_sph
 !
