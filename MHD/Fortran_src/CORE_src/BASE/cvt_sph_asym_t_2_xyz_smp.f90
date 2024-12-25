@@ -85,7 +85,7 @@
        real(kind=kreal) :: trt, tpr, ttp
 !
 !
-!$omp do private(inod,ist,ied,trt,tpr,ttp)
+!$omp parallel do private(inod,ist,ied,trt,tpr,ttp)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -123,7 +123,7 @@
 !
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_xyz_asym_t_by_sph_smp
 !

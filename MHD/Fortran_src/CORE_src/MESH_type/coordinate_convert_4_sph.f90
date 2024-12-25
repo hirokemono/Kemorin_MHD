@@ -143,14 +143,12 @@
       integer(kind = kint) :: i, i_fld, numdir
 !
 !
-!$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld%num_phys
         i_fld =  nod_fld%istack_component(i-1) + 1
         numdir = nod_fld%num_component(i)
         call overwrite_nodal_sph_2_cyl_smp                              &
      &     (node, nod_fld%ntot_phys, i_fld, numdir, nod_fld%d_fld)
       end do
-!$omp end parallel
 !
       end subroutine overwrite_nodal_sph_2_cyl
 !
@@ -291,8 +289,10 @@
         call overwrite_cyl_tensor_by_sph_smp(np_smp, node%numnod,       &
      &        node%istack_nod_smp, d_nod(1,i_fld), node%theta)
       else if(numdir .eq. 3) then
+!$omp parallel
         call overwrite_sph_vect_2_cyl_smp(np_smp, node%numnod,          &
      &        node%istack_nod_smp, d_nod(1,i_fld), node%theta)
+!$omp end parallel
       end if
 !
       end subroutine overwrite_nodal_sph_2_cyl_smp
