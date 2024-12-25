@@ -76,11 +76,9 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_scalar)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_scalar, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -116,11 +114,9 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_vector)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_vector, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -161,11 +157,9 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_sym_tensor)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_sym_tensor, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -208,11 +202,9 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_scalar)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_scalar, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -248,11 +240,9 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_vector)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_vector, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -293,11 +283,9 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_sym_tensor)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_sym_tensor, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
@@ -330,10 +318,11 @@
       integer(kind = kint) :: kl, m, nd, inod
 !
 !
-!$omp workshare
+!$omp parallel workshare
       d_zm(1:nnod_med,1:numdir) = zero
-!$omp end workshare
+!$omp end parallel workshare
 !
+!$omp parallel
       do nd = 1, numdir
 !$omp do private(m,kl,inod)
         do m = 1, nphi
@@ -344,11 +333,12 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
 !
-!$omp workshare
+!$omp parallel workshare
         d_zm(1:nnod_med,1:numdir)                                       &
      &         = d_zm(1:nnod_med,1:numdir) / dble(nphi)
-!$omp end workshare
+!$omp end parallel workshare
 !
       end subroutine cal_sph_zonal_mean_from_trns
 !
@@ -366,10 +356,11 @@
       integer(kind = kint) :: kl, m, nd, inod
 !
 !
-!$omp workshare
+!$omp parallel workshare
         d_rms(1:nnod_med,1:numdir) = zero
-!$omp end workshare
+!$omp end parallel workshare
 !
+!$omp parallel
       do nd = 1, numdir
 !$omp do private(m,kl,inod)
         do m = 1, nphi
@@ -380,11 +371,12 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
 !
-!$omp workshare
+!$omp parallel workshare
       d_rms(1:nnod_med,1:numdir)                                        &
      &       = sqrt(d_rms(1:nnod_med,1:numdir) / dble(nphi))
-!$omp end workshare
+!$omp end parallel workshare
 !
       end subroutine cal_sph_zonal_rms_from_trns
 !
