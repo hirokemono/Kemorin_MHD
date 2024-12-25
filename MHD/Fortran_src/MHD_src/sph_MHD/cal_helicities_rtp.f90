@@ -184,7 +184,6 @@
      &      fld_rtp(1,bs_trns_base%i_current),                          &
      &      fmag_rtp(1,fe_trns_prod%i_square_j))
       end if
-!$omp parallel
       if(fe_trns_prod%i_square_t .gt. 0) then
         call cal_scalar_prod_no_coef_smp(nnod,                          &
      &      fld_rtp(1,bs_trns_base%i_temp),                             &
@@ -197,7 +196,6 @@
      &      fld_rtp(1,bs_trns_base%i_light),                            &
      &      fmag_rtp(1,fe_trns_prod%i_square_c))
       end if
-!$omp end parallel
 !
       end subroutine cal_square_vector_on_node
 !

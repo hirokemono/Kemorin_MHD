@@ -105,9 +105,9 @@
       real (kind=kreal), intent(inout) :: prod(nnod)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       prod(1:nnod) =  scalar1(1:nnod)*scalar2(1:nnod)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine cal_scalar_prod_no_coef_smp
 !
