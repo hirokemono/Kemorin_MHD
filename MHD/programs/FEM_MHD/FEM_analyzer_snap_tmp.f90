@@ -346,13 +346,13 @@
      &      nod_fld, ele_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
-!$omp parallel
       if (iphys_LES%SGS_ene_flux%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (iphys%base%i_velo, iphys_LES%div_SGS%i_SGS_m_flux,          &
      &      iphys_LES%SGS_ene_flux%i_reynolds_wk, nod_fld)
       end if
 !
+!$omp parallel
       call overwrite_nodal_xyz_2_sph_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
      &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
@@ -390,13 +390,11 @@
      &      nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
-!$omp parallel
       if (iphys_LES%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (iphys%base%i_magne, iphys_LES%SGS_term%i_SGS_induction,     &
      &      iphys_LES%SGS_ene_flux%i_SGS_me_gen, nod_fld)
       end if
-!$omp end parallel
 !
       end subroutine lead_specital_SGS
 !

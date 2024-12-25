@@ -69,12 +69,10 @@
       type(spherical_transform_data), intent(inout) :: trns_f_DYNS
 !
 !
-!$omp parallel
       call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                   &
      &    trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),              &
      &    trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                     &
      &    trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
-!$omp end parallel
 !
       if(fl_prop%flag_thermal_buoyancy) then
         call sel_SGS_buoyancy_flux_rtp                                  &
@@ -122,6 +120,7 @@
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
       end if
+!$omp end parallel
 !
       if(fs_trns_sef%i_SGS_Lor_wk .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
@@ -136,7 +135,6 @@
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_magne),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_me_gen))
       end if
-!$omp end parallel
 !
 !$omp parallel
       if(fs_trns_sef%i_SGS_buo_wk .gt. 0) then

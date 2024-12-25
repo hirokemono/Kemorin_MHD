@@ -289,13 +289,11 @@
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
-!$omp parallel
       if (iphys%ene_flux%i_me_gen .gt. izero) then
         call cal_phys_dot_product                                       &
      &     (iphys%forces%i_induction, iphys%base%i_magne,               &
      &      iphys%ene_flux%i_me_gen, nod_fld)
       end if
-!$omp end parallel
 !
 !
       if (iphys%ene_flux%i_buo_gen .gt. izero) then
@@ -353,6 +351,7 @@
      &     (iphys%forces%i_pc_advect, iphys%base%i_per_light,           &
      &      iphys%ene_flux%i_par_c_gen, nod_fld)
       end if
+!$omp end parallel
 !
       if (iphys%ene_flux%i_vis_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
@@ -384,6 +383,7 @@
      &      nod_fld)
       end if
 !
+!$omp parallel
       if (iphys%prod_fld%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp(mesh%node, cd_prop%coef_diffuse, &
      &      nod_fld%ntot_phys, iphys%base%i_current,                    &

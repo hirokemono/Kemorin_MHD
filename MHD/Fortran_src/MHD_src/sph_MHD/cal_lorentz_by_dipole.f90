@@ -88,14 +88,12 @@
      &      frc_rtp(1,fs_trns_prod%i_dipole_Lorentz) )
       end if
 !
-!$omp parallel
       if(fs_trns_prod%i_dipole_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
      &      frc_rtp(1,fs_trns_prod%i_dipole_Lorentz),                   &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
      &      frc_rtp(1,fs_trns_prod%i_dipole_ujb) )
       end if
-!$omp end parallel
 !
       end subroutine lorentz_frc_and_work_by_dipole
 !

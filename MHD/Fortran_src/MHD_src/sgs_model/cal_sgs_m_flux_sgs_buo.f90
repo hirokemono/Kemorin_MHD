@@ -182,11 +182,9 @@
      &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,         &
      &    nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !
-!$omp parallel
       call cal_phys_dot_product                                         &
      &   (iphys%base%i_velo, iphys_LES%div_SGS%i_SGS_m_flux,            &
      &    iphys_LES%SGS_ene_flux%i_reynolds_wk, nod_fld)
-!$omp end parallel
 !
 !   lead SGS buoyancy flux
 !

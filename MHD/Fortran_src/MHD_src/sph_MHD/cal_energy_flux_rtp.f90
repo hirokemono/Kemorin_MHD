@@ -144,7 +144,6 @@
 !
       real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
 !
-!$omp parallel
       if(fs_trns_eflux%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
      &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
@@ -152,12 +151,14 @@
      &      flx_rtp(1,fs_trns_eflux%i_ujb) )
       end if
 !
+!$omp parallel
       if(fs_trns_eflux%i_nega_ujb .gt. 0) then
         call cal_dot_prod_w_coef_smp(nnod, dminus,                      &
      &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
      &      flx_rtp(1,fs_trns_eflux%i_nega_ujb))
       end if
+!$omp end parallel
 !
       if(fs_trns_eflux%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
@@ -165,7 +166,6 @@
      &      fld_rtp(1,bs_trns_base%i_magne),                            &
      &      flx_rtp(1,fs_trns_eflux%i_me_gen))
       end if
-!$omp end parallel
 !
       end subroutine cal_energy_fluxes_on_node
 !

@@ -275,10 +275,8 @@
            call cal_cross_prod_no_coef_smp(node%numnod,                 &
      &         d_prod1(1,1), d_prod2(1,1), d_nod(1,1))
           else
-!$omp parallel
            call cal_dot_prod_no_coef_smp(node%numnod,                   &
      &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-!$omp end parallel
           end if
         else if(ncomp_4_product2 .eq.6) then
            call cal_tensor_vec_prod_no_coef_smp(node%numnod,            &

@@ -115,7 +115,6 @@
       real(kind = kreal), intent(inout) :: fhls_rtp(nnod,ntot_comp_hls)
 !
 !
-!$omp parallel
       if(fe_trns_prod%i_k_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
@@ -134,7 +133,6 @@
      &      fld_rtp(1,bs_trns_base%i_magne),                            &
      &      fhls_rtp(1,fe_trns_prod%i_x_heli))
       end if
-!$omp end parallel
 !
       end subroutine cal_helicity_on_node
 !

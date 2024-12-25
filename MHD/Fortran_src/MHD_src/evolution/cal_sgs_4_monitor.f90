@@ -410,7 +410,6 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       if (SGS_ene_flux%i_SGS_Lor_wk .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (base%i_velo, SGS_term%i_SGS_Lorentz,                        &
@@ -423,6 +422,7 @@
      &      SGS_ene_flux%i_reynolds_wk, fld)
       end if
 !
+!$omp parallel
       if (SGS_ene_flux%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
      &     (base%i_temp, div_SGS%i_SGS_h_flux,                          &
@@ -434,13 +434,13 @@
      &     (base%i_light, div_SGS%i_SGS_c_flux,                         &
      &      SGS_ene_flux%i_SGS_comp_gen, fld)
       end if
+!$omp end parallel
 !
       if (SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (base%i_magne, SGS_term%i_SGS_induction,                     &
      &      SGS_ene_flux%i_SGS_me_gen, fld)
       end if
-!$omp end parallel
 !
       end subroutine work_of_SGS_terms
 !
