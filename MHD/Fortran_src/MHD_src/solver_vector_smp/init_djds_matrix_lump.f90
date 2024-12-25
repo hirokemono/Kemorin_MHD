@@ -48,14 +48,14 @@
       integer (kind = kint) :: inod, inum, in
 !
 !
-!$omp do private(inum,inod,in) 
+!$omp parallel do private(inum,inod,in)
 !cdir nodep
       do inum = 1, numnod_fld
         inod = inod_fld(inum)
         in = OLDtoNEW(inod)
         aiccg(in) = ml_o(inod)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine init_11_matrix_lump
 !
@@ -74,7 +74,7 @@
       integer (kind = kint) :: inod, inum, in
 !
 !
-!$omp do private(inum,inod,in) 
+!$omp parallel do private(inum,inod,in)
 !cdir nodep
       do inum = 1, numnod_fld
         inod = inod_fld(inum)
@@ -83,7 +83,7 @@
         aiccg(in*9-4) = ml_o(inod)
         aiccg(in*9  ) = ml_o(inod)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine init_33_matrix_lump
 !
