@@ -151,7 +151,7 @@
      &                + vt * cos(theta(inod))*cos(phi(inod))            &
      &                - vp * sin(phi(inod))   )
         end do
-!$omp end parallel do nowait
+!$omp end parallel do
 !
       end subroutine cal_sph_2_x_comp_smp
 !

@@ -321,7 +321,7 @@
 !
         end do
       end do
-!$omp parallel end do
+!$omp end parallel do
 !
       end subroutine overwrite_xyz_tensor_by_sph_smp
 !
