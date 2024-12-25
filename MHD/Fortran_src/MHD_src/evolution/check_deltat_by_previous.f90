@@ -49,7 +49,6 @@
       integer(kind = kint_gl) :: num64
 !
 !
-!$omp parallel
       if(flex_data%i_drmax_v .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_vector_evo_by_previous velo'
@@ -69,7 +68,6 @@
      &      iphys%check_fld1%i_pre_press, iphys%check_fld2%i_pre_press, &
      &      flex_data%i_drmax_p, nod_fld%d_fld, flex_data)
       end if
-!
 !
       if(flex_data%i_drmax_b .gt. izero) then
         if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
@@ -119,7 +117,6 @@
      &      iphys%check_fld2%i_pre_composit, flex_data%i_drmax_d,       &
      &      nod_fld%d_fld, flex_data)
       end if
-!$omp end parallel
 !
       flex_data%d_ratio_max_l(1:flex_data%ntot_comp)                    &
      &        = flex_data%d_ratio_max_smp(1,1:flex_data%ntot_comp)
@@ -173,7 +170,7 @@
       real(kind = kreal) :: d_ratio
 !
 !
-!$omp do private(ist,ied,inod,d_ratio)
+!$omp parallel do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -198,7 +195,9 @@
             d_ratio =    (d_nod(inod,i_fld  ) - d_nod(inod,i_chk2  ) )  &
      &            / (two*(d_nod(inod,i_chk  ) - d_nod(inod,i_chk2  ) ))
             d_ratio = abs(d_ratio - one)
-!            write(100+my_rank,'(i16,1p4e16.5)') inod, d_ratio, d_nod(inod,i_fld  ), d_nod(inod,i_chk  ), d_nod(inod,i_chk2  )
+!            write(100+my_rank,'(i16,1p4e16.5)') inod,                  &
+!     &            d_ratio, d_nod(inod,i_fld  ),                        &
+!     &            d_nod(inod,i_chk  ), d_nod(inod,i_chk2  )
             flex_data%d_ratio_max_smp(ip,idrm)                          &
      &            = max(flex_data%d_ratio_max_smp(ip,idrm), d_ratio)
             flex_data%d_ratio_min_smp(ip,idrm)                          &
@@ -206,7 +205,7 @@
           end if
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine check_scalar_evo_by_previous
 !
@@ -226,7 +225,7 @@
       real(kind = kreal) :: d_ratio
 !
 !
-!$omp do private(ist,ied,inod,d_ratio)
+!$omp parallel do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -308,7 +307,7 @@
           end if
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine check_vector_evo_by_previous
 !

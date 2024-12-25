@@ -227,18 +227,18 @@
       integer(kind = kint) :: i, ip
 !
 !
-!$omp do private(ip)
-        do ip = 1, nprocs
-          num_recv_tmp(ip) = -1
-        end do
-!$omp end do
-!$omp do private(i,ip)
-        do i = 1, ext_tbl%nrank_import
-          ip = ext_tbl%irank_import(i) + 1
-          num_recv_tmp(ip) = ext_tbl%istack_import(i-1)                 &
-     &                            + part_tbl%ntot_import
-        end do
-!$omp end do
+!$omp parallel do private(ip)
+      do ip = 1, nprocs
+        num_recv_tmp(ip) = -1
+      end do
+!$omp end parallel do
+!$omp parallel do private(i,ip)
+      do i = 1, ext_tbl%nrank_import
+        ip = ext_tbl%irank_import(i) + 1
+        num_recv_tmp(ip) = ext_tbl%istack_import(i-1)                   &
+     &                          + part_tbl%ntot_import
+      end do
+!$omp end parallel do
 !
       call calypso_mpi_alltoall_one_int                                 &
      &   (num_recv_tmp(1), num_send_tmp(1))
