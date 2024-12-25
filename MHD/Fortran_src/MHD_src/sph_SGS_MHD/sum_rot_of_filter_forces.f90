@@ -59,13 +59,11 @@
      &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
-!$omp parallel
       if(fl_prop%flag_filter_inertia) then
         call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_m_advect,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       if(fl_prop%flag_filter_lorentz) then
         call add_each_force_to_forces                                   &

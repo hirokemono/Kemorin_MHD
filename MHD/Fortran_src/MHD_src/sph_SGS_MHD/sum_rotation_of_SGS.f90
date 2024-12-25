@@ -53,13 +53,12 @@
 !
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_none) return
-!$omp parallel
+!
       if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_turn_OFF) then
         call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, SGS_term%i_SGS_inertia,                  &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       if(SGS_param%iflag_SGS_lorentz  .ne. id_turn_OFF) then
         call add_each_force_to_forces                                   &
