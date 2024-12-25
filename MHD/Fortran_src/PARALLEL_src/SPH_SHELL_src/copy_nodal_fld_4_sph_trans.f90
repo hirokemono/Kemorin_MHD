@@ -141,12 +141,10 @@
       call copy_tensor_from_trans_smp(sph_rtp%nnod_rtp, m_folding,      &
      &    node%numnod, d_rtp(1,i_trns), nod_fld%d_fld(1,i_field))
 !
-!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, node%numnod,         &
      &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3),                     &
      &    node%rr(1), node%ss(1), node%a_r(1), node%a_s(1))
-!$omp end parallel
 !
       call copy_pole_tsr_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)

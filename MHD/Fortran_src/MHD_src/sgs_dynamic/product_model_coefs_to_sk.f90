@@ -59,12 +59,12 @@
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1) )
+!$omp end parallel
             call overwrite_xyz_tensor_by_sph_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
-!$omp end parallel
           end do
 !
         else if(icoord_Csim .eq. iflag_cylindrical) then

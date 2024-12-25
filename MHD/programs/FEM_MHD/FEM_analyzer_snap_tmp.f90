@@ -322,11 +322,9 @@
       call clear_field_data                                             &
      &   (nod_fld, n_sym_tensor, iphys_LES%SGS_term%i_SGS_m_flux)
 !
-!$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
      &    iphys_LES%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
-!$omp end parallel
 !
       if (iphys_LES%div_SGS%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
@@ -360,11 +358,9 @@
 
       call clear_field_data(nod_fld, n_vector, iphys%base%i_velo)
 !
-!$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
      &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
-!$omp end parallel
 !
       if (iphys_LES%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &

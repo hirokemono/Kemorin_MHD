@@ -217,12 +217,10 @@
       call fill_rest_tensor_field(i_field, nnod_rtp, ntot_phys, d_nod,  &
      &    ione, numnod, internal_node, isix, d_tmp)
 !
-!$omp parallel
       call cal_xyz_tensor_by_sph_smp(np_smp, numnod,                    &
      &          inod_smp_stack, d_tmp(1,1), d_nod(1,i_field),           &
      &          xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,          &
      &          a_radius, a_s_cylinder)
-!$omp end parallel
 !
       end subroutine cvt_sph_tsr_to_nod_tsr
 !
