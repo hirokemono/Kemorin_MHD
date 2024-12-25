@@ -53,10 +53,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call delete_phys_data_smp(fld%n_point, ione, fld%n_point,         &
      &    fld%ntot_phys, numdir, i_target, fld%d_fld)
-!$omp end parallel
 !
       end subroutine clear_field_data
 !

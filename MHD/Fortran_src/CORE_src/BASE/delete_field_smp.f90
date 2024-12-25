@@ -80,14 +80,20 @@
 !
 !
       if(numdir .eq. ione) then
+!$omp parallel
         call constant_scalar_smp(const, numnod, ist, ied,               &
      &                           field(1,i_field))
+!$omp end parallel
       else if(numdir .eq. ithree) then
+!$omp parallel
         call constant_vector_smp(const, numnod, ist, ied,               &
      &                           field(1,i_field))
+!$omp end parallel
       else if(numdir .eq. isix) then
+!$omp parallel
         call constant_sym_tensor_smp(const, numnod, ist, ied,           &
      &                               field(1,i_field))
+!$omp end parallel
       else
         call constant_arb_vect_smp(const, numnod, ist, ied,             &
      &                             numdir, field(1,i_field))
@@ -161,11 +167,13 @@
       integer (kind=kint) :: nd
 !
 !
+!$omp parallel
       do nd = 1, numdir
 !$omp workshare
           vector(ist:ied,nd) = const
 !$omp end workshare nowait
       end do
+!$omp end parallel
 !
       end subroutine constant_arb_vect_smp
 !

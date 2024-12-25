@@ -254,10 +254,8 @@
       type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
-!$omp parallel
       call delete_phys_data_smp(ele%numele, ione, ele%numele,           &
      &    Csim%num_comp, Csim%num_comp, ione, Csim%coef(1,1))
-!$omp end parallel
 !
       end subroutine clear_model_coefs_2_ele
 !
