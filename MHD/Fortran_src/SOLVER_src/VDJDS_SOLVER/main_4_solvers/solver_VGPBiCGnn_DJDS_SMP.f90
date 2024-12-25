@@ -294,9 +294,9 @@
       S1_TIME= MPI_WTIME()
       COMMtime = 0.0d0
 !
-!$omp workshare
+!$omp parallel workshare
       W(1:NB*NP,1:ntotWK_GPBiCG) = 0.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
 !C-- change B,X
 !
