@@ -347,11 +347,11 @@
       real (kind=kreal), intent(inout) :: prod(nnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
           prod(1:nnod,1) = vect1(1:nnod,1) * vect2(1:nnod,1)
           prod(1:nnod,2) = vect1(1:nnod,2) * vect2(1:nnod,2)
           prod(1:nnod,3) = vect1(1:nnod,3) * vect2(1:nnod,3)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine vector_vector_prod_smp
 !
@@ -365,14 +365,14 @@
       real (kind=kreal), intent(inout) :: prod(nnod,6)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       prod(1:nnod,1) = tensor1(1:nnod,1) * tensor2(1:nnod,1)
       prod(1:nnod,2) = tensor1(1:nnod,2) * tensor2(1:nnod,2)
       prod(1:nnod,3) = tensor1(1:nnod,3) * tensor2(1:nnod,3)
       prod(1:nnod,4) = tensor1(1:nnod,4) * tensor2(1:nnod,4)
       prod(1:nnod,5) = tensor1(1:nnod,5) * tensor2(1:nnod,5)
       prod(1:nnod,6) = tensor1(1:nnod,6) * tensor2(1:nnod,6)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine tensor_tensor_prod_smp
 !

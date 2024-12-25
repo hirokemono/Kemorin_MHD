@@ -156,7 +156,6 @@
       real(kind = kreal), intent(inout) :: fmag_rtp(nnod,ntot_comp_fmg)
 !
 !
-!$omp parallel
       if(fe_trns_prod%i_square_v .gt. 0) then
         call vector_vector_prod_smp(nnod,                               &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
@@ -187,6 +186,7 @@
      &      fld_rtp(1,bs_trns_base%i_current),                          &
      &      fmag_rtp(1,fe_trns_prod%i_square_j))
       end if
+!$omp parallel
       if(fe_trns_prod%i_square_t .gt. 0) then
         call cal_scalar_prod_no_coef_smp(nnod,                          &
      &      fld_rtp(1,bs_trns_base%i_temp),                             &
