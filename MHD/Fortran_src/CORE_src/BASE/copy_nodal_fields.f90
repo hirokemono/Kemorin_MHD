@@ -203,10 +203,8 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-!$omp parallel
       call subtract_tensors_smp(fld%n_point,                            &
      &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
-!$omp end parallel
 !
       end subroutine subtract_2_nod_tensors
 !
