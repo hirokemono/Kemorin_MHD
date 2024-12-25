@@ -35,6 +35,7 @@
 !
       implicit none
 !
+      private :: cal_x_comp_sph_smp, cal_y_comp_sph_smp
       private :: cal_cyl_r_comp_sph_smp, cal_z_comp_sph_smp
 !
 !-----------------------------------------------------------------------
@@ -80,7 +81,6 @@
      &                           frc_rtp(1,fs_trns_cmp%i_velo_p))
       end if
 !
-!$omp parallel
       if(fs_trns_cmp%i_velo_s .gt. 0) then
         call cal_cyl_r_comp_sph_smp(sph_rtp, leg,                       &
      &                              fld_rtp(1,b_trns_base%i_velo),      &
@@ -104,7 +104,6 @@
      &                          fld_rtp(1,b_trns_base%i_velo),          &
      &                          frc_rtp(1,fs_trns_cmp%i_velo_z))
       end if
-!$omp end parallel
 !
 !
       if(fs_trns_cmp%i_magne_r .gt. 0) then
@@ -125,7 +124,6 @@
      &                           frc_rtp(1,fs_trns_cmp%i_magne_p))
       end if
 !
-!$omp parallel
       if(fs_trns_cmp%i_magne_s .gt. 0) then
         call cal_cyl_r_comp_sph_smp(sph_rtp, leg,                       &
      &                              fld_rtp(1,b_trns_base%i_magne),     &
@@ -149,7 +147,6 @@
      &                          fld_rtp(1,b_trns_base%i_magne),         &
      &                          frc_rtp(1,fs_trns_cmp%i_magne_z))
       end if
-!$omp end parallel
 !
       end subroutine get_components_from_fld
 !
@@ -166,7 +163,7 @@
       integer (kind=kint) :: iproc, inod, ist, ied, l
 !
 !
-!$omp do private(l,ist,ied,inod)
+!$omp parallel do private(l,ist,ied,inod)
       do iproc = 1, np_smp
         ist = sph_rtp%istack_inod_rtp_smp(iproc-1) + 1
         ied = sph_rtp%istack_inod_rtp_smp(iproc)
@@ -178,7 +175,7 @@
      &                   + v_sph(inod,2) * cos(leg%g_colat_rtm(l))
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_cyl_r_comp_sph_smp
 !
@@ -197,7 +194,7 @@
 !
 !
       amphi = 8.0d0 * atan(one) / dble(sph_rtp%nidx_rtp(3))
-!$omp do private(l,m,ist,ied,inod)
+!$omp parallel do private(l,m,ist,ied,inod)
       do iproc = 1, np_smp
         ist = sph_rtp%istack_inod_rtp_smp(iproc-1) + 1
         ied = sph_rtp%istack_inod_rtp_smp(iproc)
@@ -213,7 +210,7 @@
      &                   - v_sph(inod,3)  * sin(dble(m-1) * amphi)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_x_comp_sph_smp
 !
@@ -232,7 +229,7 @@
 !
 !
       amphi = 8.0d0 * atan(one) / dble(sph_rtp%nidx_rtp(3))
-!$omp do private(l,m,ist,ied,inod)
+!$omp parallel do private(l,m,ist,ied,inod)
       do iproc = 1, np_smp
         ist = sph_rtp%istack_inod_rtp_smp(iproc-1) + 1
         ied = sph_rtp%istack_inod_rtp_smp(iproc)
@@ -248,7 +245,7 @@
      &                   + v_sph(inod,3)  * cos(dble(m-1) * amphi)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_y_comp_sph_smp
 !
@@ -265,7 +262,7 @@
       integer (kind=kint) :: iproc, inod, ist, ied, l
 !
 !
-!$omp do private(l,ist,ied,inod)
+!$omp parallel do private(l,ist,ied,inod)
       do iproc = 1, np_smp
         ist = sph_rtp%istack_inod_rtp_smp(iproc-1) + 1
         ied = sph_rtp%istack_inod_rtp_smp(iproc)
@@ -277,7 +274,7 @@
      &                   - v_sph(inod,2) * sin(leg%g_colat_rtm(l))
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_z_comp_sph_smp
 !
