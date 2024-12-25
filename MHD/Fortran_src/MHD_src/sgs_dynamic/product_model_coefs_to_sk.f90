@@ -124,9 +124,9 @@
       integer(kind = kint) :: k1
 !
 !
-!$omp parallel private(k1)
       if(itype_Csim .eq. 1) then
         if(icoord_Csim .eq. iflag_spherical) then
+!$omp parallel private(k1)
           do k1 = 1, ele%nnod_4_ele
             call overwrite_vector_2_sph_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -138,33 +138,39 @@
             call overwrite_sph_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%theta_ele, ele%phi_ele)
           end do
+!$omp end parallel
 !
         else if(icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele
+!$omp parallel private(k1)
             call overwrite_vector_2_cyl_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%s_ele, ele%as_ele)
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))
+!$omp end parallel
             call overwrite_cyl_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%phi_ele)
           end do
 !
         else
+!$omp parallel private(k1)
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, ele%numele,       &
      &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1))
           end do
+!$omp end parallel
         end if
 !
       else
+!$omp parallel private(k1)
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, ele%numele,            &
      &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
-      end if
 !$omp end parallel
+      end if
 !
       end subroutine prod_model_coefs_4_vector
 !

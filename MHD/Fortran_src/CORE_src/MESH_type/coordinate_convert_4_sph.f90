@@ -204,10 +204,8 @@
      &        node%xx(1:node%numnod,1), node%xx(1:node%numnod,2),       &
      &        node%ss, node%a_s)
       else if(numdir .eq. 3) then
-!$omp parallel
         call overwrite_cyl_vect_2_xyz_smp                               &
      &     (node%numnod, d_nod(1,i_fld), node%phi)
-!$omp end parallel
       end if
 !
       end subroutine overwrite_nodal_cyl_2_xyz_smp

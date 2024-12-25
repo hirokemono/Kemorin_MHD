@@ -57,9 +57,7 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-!$omp parallel
        call cvt_cyl_vect_2_xyz_smp(numnod, vect, v_cyl, phi)
-!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_cartecian
 !
@@ -73,9 +71,7 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-!$omp parallel
        call cvt_cyl_vect_2_x_comp_smp(numnod, v_x, v_cyl, phi)
-!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_x_comp
 !
@@ -89,9 +85,7 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-!$omp parallel
       call cvt_cyl_vect_2_y_comp_smp(numnod, v_y, v_cyl, phi)
-!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_y_comp
 !
