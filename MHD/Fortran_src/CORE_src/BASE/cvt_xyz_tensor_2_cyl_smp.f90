@@ -83,7 +83,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -130,7 +130,7 @@
 !
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_cyl_tensor_smp
 !

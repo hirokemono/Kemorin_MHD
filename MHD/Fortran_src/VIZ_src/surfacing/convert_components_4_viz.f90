@@ -97,11 +97,8 @@
 !$omp end parallel
 !
         else if ( icomp_viz .eq. icomp_CYL_SYM_TENSOR ) then
-!$omp parallel
           call cal_cyl_tensor_smp(np_smp, nnod, istack_n_smp,           &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
-!
 !
         else if (icomp_viz.ge.icomp_XX                                  &
      &           .and. icomp_viz.le.icomp_ZZ) then
