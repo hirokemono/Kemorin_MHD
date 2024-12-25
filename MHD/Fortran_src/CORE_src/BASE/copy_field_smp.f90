@@ -44,9 +44,9 @@
        real(kind=kreal), intent(inout) :: copied(nnod)
 !
 !
-!$omp workshare
+!$omp parallel workshare
        copied(1:nnod) = scalar(1:nnod)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine copy_nod_scalar_smp
 !

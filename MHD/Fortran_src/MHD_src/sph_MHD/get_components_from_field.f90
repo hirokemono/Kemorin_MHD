@@ -62,7 +62,6 @@
      &                   :: frc_rtp(sph_rtp%nnod_rtp,ntot_comp_frc)
 !
 !
-!$omp parallel
       if(fs_trns_cmp%i_velo_r .gt. 0) then
         call copy_nod_scalar_smp(sph_rtp%nnod_rtp,                      &
      &                           fld_rtp(1,b_trns_base%i_velo  ),       &
@@ -81,6 +80,7 @@
      &                           frc_rtp(1,fs_trns_cmp%i_velo_p))
       end if
 !
+!$omp parallel
       if(fs_trns_cmp%i_velo_s .gt. 0) then
         call cal_cyl_r_comp_sph_smp(sph_rtp, leg,                       &
      &                              fld_rtp(1,b_trns_base%i_velo),      &
@@ -104,6 +104,7 @@
      &                          fld_rtp(1,b_trns_base%i_velo),          &
      &                          frc_rtp(1,fs_trns_cmp%i_velo_z))
       end if
+!$omp end parallel
 !
 !
       if(fs_trns_cmp%i_magne_r .gt. 0) then
@@ -124,6 +125,7 @@
      &                           frc_rtp(1,fs_trns_cmp%i_magne_p))
       end if
 !
+!$omp parallel
       if(fs_trns_cmp%i_magne_s .gt. 0) then
         call cal_cyl_r_comp_sph_smp(sph_rtp, leg,                       &
      &                              fld_rtp(1,b_trns_base%i_magne),     &

@@ -106,9 +106,7 @@
        real(kind=kreal), intent(inout) :: v_z(numnod)
 !
 !
-!$omp parallel
       call copy_nod_scalar_smp(numnod, v_cyl(1,3), v_z)
-!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_z_comp
 !

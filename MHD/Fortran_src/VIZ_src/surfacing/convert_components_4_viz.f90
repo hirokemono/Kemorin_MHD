@@ -56,9 +56,7 @@
 !
         if (icomp_viz .eq. icomp_NORM) then
           if( ncomp_org .eq. ncomp_SCALAR) then
-!$omp parallel
             call copy_nod_scalar_smp(nnod, dat_xyz(1,1), dat_viz(1,1))
-!$omp end parallel
           else if ( ncomp_org .eq. ncomp_VECTOR) then
 !$omp parallel
             call cal_vector_magnitude(nnod, dat_xyz(1,1), dat_viz(1,1))
@@ -107,10 +105,8 @@
 !
         else if (icomp_viz.ge.icomp_XX                                  &
      &           .and. icomp_viz.le.icomp_ZZ) then
-!$omp parallel
           call copy_nod_scalar_smp                                      &
      &       (nnod, dat_xyz(1,icomp_viz), dat_viz(1,1))
-!$omp end parallel
 !
         else if (icomp_viz .eq. icomp_RADIAL) then
 !$omp parallel
@@ -239,7 +235,6 @@
       real(kind = kreal), intent(inout) :: dat_viz(nnod)
 !
 !
-!$omp parallel
 !        if (icomp_viz .eq. icomp_NORM) then
 !          call cal_vector_magnitude(nnod, xx(1,1), dat_viz(1))
 !
@@ -248,21 +243,28 @@
      &       (nnod, xx(1,icomp_viz), dat_viz(1))
 !
         else if(icomp_viz .eq. icomp_RADIAL) then
+!$omp parallel
           call cal_radial_comp_smp(nnod, xx(1,1), dat_viz(1),           &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, a_r)
+!$omp end parallel
         else if(icomp_viz .eq. icomp_THETA) then
+!$omp parallel
           call cal_theta_comp_smp(nnod, xx(1,1), dat_viz(1),            &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
+!$omp end parallel
 !
         else if(icomp_viz .eq. icomp_PHI) then
+!$omp parallel
           call cal_phi_comp_smp(nnod, xx(1,1), dat_viz(1),              &
      &                          xx(1,1), xx(1,2), cyl_s, a_s)
+!$omp end parallel
 !
         else if(icomp_viz .eq. icomp_CYLINDER_R) then
+!$omp parallel
           call cal_cylinder_r_comp_smp(nnod,  xx(1,1), dat_viz(1),      &
      &                                 xx(1,1), xx(1,2), cyl_s, a_s)
-        end if
 !$omp end parallel
+        end if
 !
       end subroutine convert_position_4_viz
 !

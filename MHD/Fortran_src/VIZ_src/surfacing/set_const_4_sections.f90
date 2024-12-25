@@ -169,34 +169,40 @@
 !
 !
       if (ncomp_org .eq. 1) then
-!$omp parallel
         call copy_nod_scalar_smp(nnod, d_nod(1,ist_field), c_ref_iso)
-!$omp end parallel
 !
       else if (ncomp_org .eq. 3) then
-!$omp parallel
         if (i_comp.eq.0) then
+!$omp parallel
           call cal_vector_magnitude(nnod, d_nod(1,ist_field),           &
      &                              c_ref_iso)
+!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.3) then
           ic = ist_field+i_comp-1
           call copy_nod_scalar_smp(nnod, d_nod(1,ic), c_ref_iso)
 !
         else if (i_comp.eq.11) then
+!$omp parallel
           call cal_radial_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso, &
      &        xx(1,1), xx(1,2), xx(1,3), radius, a_r)
+!$omp end parallel
         else if (i_comp.eq.12) then
+!$omp parallel
           call cal_theta_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso,  &
      &        xx(1,1), xx(1,2), xx(1,3), radius, s_radius, a_r, a_s)
+!$omp end parallel
         else if (i_comp.eq.13) then
+!$omp parallel
           call cal_phi_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso,    &
      &                          xx(1,1), xx(1,2), s_radius, a_s)
+!$omp end parallel
         else if (i_comp.eq.14) then
+!$omp parallel
           call cal_cylinder_r_comp_smp(nnod, d_nod(1,ist_field),        &
      &        c_ref_iso, xx(1,1), xx(1,2), s_radius, a_s)
-        end if
 !$omp end parallel
+        end if
 !
       else if (ncomp_org .eq. 6) then
         if (i_comp.eq.0) then
@@ -207,12 +213,8 @@
 !$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.6) then
-!
           ic = ist_field+i_comp-1
-!$omp parallel
           call copy_nod_scalar_smp(nnod, d_nod(1,ic), c_ref_iso)
-!$omp end parallel
-!
         end if
       end if
 !
