@@ -91,12 +91,9 @@
       real(kind = kreal), intent(inout) :: d_tmp(numnod,6)
 !
 !
-!$omp parallel
       call cvt_vector_2_sph_smp(numnod, d_nod(1,i_field), d_tmp(1,1),   &
      &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
      &    a_radius, a_s_cylinder)
-!$omp end parallel
-!
       call copy_vector_2_vector_fld(ione, numnod, isix, d_tmp,          &
      &                              i_rtp, nnod_rtp, ntot_rtp, d_rtp)
 !

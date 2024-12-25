@@ -188,12 +188,9 @@
 !
       call copy_vector_to_trans_smp(sph_rtp%nnod_rtp, node%numnod,      &
      &    nod_fld%d_fld(1,i_field), d_rtp)
-!
-!$omp parallel
       call overwrite_vector_2_sph_smp(sph_rtp%nnod_rtp, d_rtp,          &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3),                     &
      &    node%rr(1), node%ss(1), node%a_r(1), node%a_s(1) )
-!$omp end parallel
 !
       end subroutine copy_nod_vec_to_sph_trans
 !

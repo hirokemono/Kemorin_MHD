@@ -127,11 +127,11 @@
       if(itype_Csim .eq. 1) then
         if(icoord_Csim .eq. iflag_spherical) then
           do k1 = 1, ele%nnod_4_ele
-!$omp parallel
             call overwrite_vector_2_sph_smp(ele%numele, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
      &          ele%x_ele(1:ele%numele,3),                              &
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
+!$omp parallel
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
      &          ak_sgs(1,1), sk6(1,1,k1))

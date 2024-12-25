@@ -78,10 +78,8 @@
 !
 !
         else if (icomp_viz .eq. icomp_SPH_VECTOR) then
-!$omp parallel
           call cvt_vector_2_sph_smp(nnod, dat_xyz(1,1), dat_viz(1,1),   &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if (icomp_viz .eq. icomp_CYL_VECTOR) then
           call cvt_vector_2_cyl_smp(nnod, dat_xyz(1,1), dat_viz(1,1),   &
@@ -102,21 +100,15 @@
      &       (nnod, dat_xyz(1,icomp_viz), dat_viz(1,1))
 !
         else if (icomp_viz .eq. icomp_RADIAL) then
-!$omp parallel
           call cal_radial_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),    &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, a_r)
-!$omp end parallel
         else if (icomp_viz .eq. icomp_THETA) then
-!$omp parallel
           call cal_theta_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),     &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if (icomp_viz .eq. icomp_PHI) then
-!$omp parallel
           call cal_phi_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),       &
      &                          xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
 !
         else if (icomp_viz .eq. icomp_CYLINDER_R) then
           call cal_cylinder_r_comp_smp(nnod, dat_xyz(1,1),              &
@@ -205,21 +197,15 @@
      &       (nnod, xx(1,icomp_viz), dat_viz(1))
 !
         else if(icomp_viz .eq. icomp_RADIAL) then
-!$omp parallel
           call cal_radial_comp_smp(nnod, xx(1,1), dat_viz(1),           &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, a_r)
-!$omp end parallel
         else if(icomp_viz .eq. icomp_THETA) then
-!$omp parallel
           call cal_theta_comp_smp(nnod, xx(1,1), dat_viz(1),            &
      &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
-!$omp end parallel
 !
         else if(icomp_viz .eq. icomp_PHI) then
-!$omp parallel
           call cal_phi_comp_smp(nnod, xx(1,1), dat_viz(1),              &
      &                          xx(1,1), xx(1,2), cyl_s, a_s)
-!$omp end parallel
 !
         else if(icomp_viz .eq. icomp_CYLINDER_R) then
           call cal_cylinder_r_comp_smp(nnod,  xx(1,1), dat_viz(1),      &

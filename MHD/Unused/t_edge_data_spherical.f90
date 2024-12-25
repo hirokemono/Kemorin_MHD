@@ -182,13 +182,11 @@
       type(edge_position_sph), intent(inout) :: edge_sph
 !
 !
-!$omp parallel
       call cvt_vector_2_sph_smp                                         &
      &   (edge%numedge, edge%edge_vect, edge%edge_vect_sph,             &
      &    edge%x_edge(1:edge%numedge,1), edge%x_edge(1:edge%numedge,2), &
      &    edge%x_edge(1:edge%numedge,3), edge%r_edge, edge%s_edge,      &
      &    edge%ar_edge, edge%as_edge)
-!$omp end parallel
 !
       end subroutine cal_edge_vector_spherical
 !

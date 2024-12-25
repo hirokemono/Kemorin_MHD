@@ -190,13 +190,11 @@
       type(surface_position_sph), intent(inout) :: surf_sph
 !
 !
-!$omp parallel
       call cvt_vector_2_sph_smp                                         &
      &   (surf%numsurf, surf%vnorm_surf, surf_sph%vnorm_surf_sph,       &
      &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
      &    surf%x_surf(1:surf%numsurf,3), surf%r_surf, surf%s_surf,      &
      &    surf%ar_surf, surf%as_surf)
-!$omp end parallel
 !
       end subroutine cal_normal_vector_spherical
 !
