@@ -87,15 +87,8 @@ mod_list:
 
 
 module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		echo 'Copy sourse dependencies for ' $$dir ; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
-		) \
-	done
+	echo 'Copy sourse dependencies for ' $(C_SRCDIR) ; \
+	cat $(MAKENAME).depends >> $(MAKENAME)
 
 depends:
 	@for dir in $(SUBDIRS); do \

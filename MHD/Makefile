@@ -144,6 +144,7 @@ depends:
 	mkdir -p $(BUILDDIR)/tests
 	mkdir -p $(PYTHONDIR)
 	
+	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
