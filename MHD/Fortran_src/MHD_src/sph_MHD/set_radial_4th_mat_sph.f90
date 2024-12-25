@@ -75,7 +75,7 @@
       integer(kind = kint) :: k, j
 !
 !
-!$omp do private (k,j)
+!$omp parallel do private (k,j)
       do k = kr_in+2, kr_out-2
         do j = 1, jmax
           poisson_mat(5,k-2,j) = - d2nod_mat_fdm_4(k,-2)
@@ -86,7 +86,7 @@
           poisson_mat(1,k+2,j) = - d2nod_mat_fdm_4(k, 2)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine set_radial_vp5_mat_sph
 !
