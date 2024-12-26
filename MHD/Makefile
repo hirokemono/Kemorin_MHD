@@ -420,6 +420,8 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@cat $(MAKENAME).depends >> $(MAKENAME)
+	@rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'generate compile commands for ' $$dir ; \

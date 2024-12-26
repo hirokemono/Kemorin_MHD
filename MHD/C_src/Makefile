@@ -87,8 +87,6 @@ mod_list:
 
 
 module:
-	echo 'Copy sourse dependencies for ' $(C_SRCDIR) ; \
-	cat $(MAKENAME).depends >> $(MAKENAME)
 
 depends:
 	@for dir in $(SUBDIRS); do \
