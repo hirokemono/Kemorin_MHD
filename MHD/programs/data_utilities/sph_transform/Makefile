@@ -217,7 +217,6 @@ mod_list:
 	@echo  $(MOD_ZMEAN_KENE)        >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_TRANSFORM_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_TRANSFORM_DIR)' $(SOURCES)

@@ -149,7 +149,6 @@ mod_list:
 
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CONST_FILTER_3D_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CONST_FILTER_3D_DIR)' $(SOURCES)

@@ -852,7 +852,9 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@sed -e"s/F90OPTFLAGS/F90DLLFLAGS/g" Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_UTILS_DIR)' $(SOURCES)
+	@rm -f Makefile.tmp
+	@$(MAKE_MOD_DEP) Makefile.tmp '$$(SPH_UTILS_DIR)' $(SOURCES)
+	@sed -e"s/F90OPTFLAGS/F90DLLFLAGS/g" Makefile.tmp >> $(MAKENAME).depends
+	@rm Makefile.tmp

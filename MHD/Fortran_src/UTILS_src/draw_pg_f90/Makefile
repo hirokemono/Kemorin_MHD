@@ -40,10 +40,9 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(KEMO_PGDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(KEMO_PGDIR)' $(SOURCES)
 
 
 clean:

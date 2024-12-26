@@ -60,7 +60,6 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
 	@echo '#' > $(MAKENAME).tmp
@@ -71,7 +70,7 @@ depends:
 		echo '	$$(CC) -c $$(OPTFLAGS_GL) $(GLUT_INCLUDES) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(CURRENTDIR)/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MAKENAME).depends
 	@rm $(MAKENAME).tmp
 
 clean:

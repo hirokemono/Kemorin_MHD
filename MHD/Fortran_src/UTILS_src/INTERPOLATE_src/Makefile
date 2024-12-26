@@ -41,10 +41,9 @@ mod_list:
 	@echo >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_SRCDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_SRCDIR)' $(SOURCES)
 
 
 set_clean:

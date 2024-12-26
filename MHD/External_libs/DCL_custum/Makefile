@@ -47,26 +47,24 @@ mod_list:
 	@echo  '#' >> $(MAKENAME)
 
 
-module:
-	@echo 'ftdmsg.o: $$(ISPACK_DIR)/ftdmsg.f' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftr0.o: $$(ISPACK_DIR)/ftr0.f ftdmsg.o ftz0.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftz0.o: $$(ISPACK_DIR)/ftz0.f ftdmsg.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftct.o: $$(ISPACK_DIR)/ftct.f ftr0.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftst.o: $$(ISPACK_DIR)/ftst.f ftr0.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftcm.o: $$(ISPACK_DIR)/ftcm.f ftr0.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftsm.o: $$(ISPACK_DIR)/ftsm.f ftr0.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ispack_0931.o: $$(ISPACK_DIR)/ispack_0931.f ftdmsg.o ftz0.o ftr0.o ftct.o ftst.o ftcm.o ftsm.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-
 depends:
+	@echo 'ftdmsg.o: $$(ISPACK_DIR)/ftdmsg.f' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftr0.o: $$(ISPACK_DIR)/ftr0.f ftdmsg.o ftz0.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftz0.o: $$(ISPACK_DIR)/ftz0.f ftdmsg.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftct.o: $$(ISPACK_DIR)/ftct.f ftr0.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftst.o: $$(ISPACK_DIR)/ftst.f ftr0.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftcm.o: $$(ISPACK_DIR)/ftcm.f ftr0.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ftsm.o: $$(ISPACK_DIR)/ftsm.f ftr0.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'ispack_0931.o: $$(ISPACK_DIR)/ispack_0931.f ftdmsg.o ftz0.o ftr0.o ftct.o ftst.o ftcm.o ftsm.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo '#' >> $(MAKENAME).depends
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

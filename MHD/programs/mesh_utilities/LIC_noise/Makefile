@@ -82,7 +82,6 @@ mod_list:
 	@echo  '#'  >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(LIC_NOISE_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(LIC_NOISE_DIR)' $(SOURCES)

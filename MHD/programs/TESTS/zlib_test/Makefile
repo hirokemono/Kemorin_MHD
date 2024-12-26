@@ -76,10 +76,9 @@ mod_list:
 
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ZLIB_TEST_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ZLIB_TEST_DIR)' $(SOURCES)
 	
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_C) ; do \
@@ -89,7 +88,7 @@ depends:
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(CURRENTDIR)/Makefile.depends
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MAKENAME).depends
 	@rm $(MAKENAME).tmp
 
 clean:

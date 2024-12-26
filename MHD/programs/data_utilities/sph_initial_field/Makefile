@@ -64,10 +64,9 @@ mod_list:
 
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_INITIAL_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_INITIAL_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L
