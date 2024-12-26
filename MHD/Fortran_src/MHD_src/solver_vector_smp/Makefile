@@ -24,9 +24,6 @@ mod_list:
 	@echo $(MOD_MHD_SOLVE) >> $(MAKENAME)
 	@echo '#'>> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_SOLVER_DIR)' $(SOURCES)
 

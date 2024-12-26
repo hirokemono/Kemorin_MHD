@@ -97,9 +97,6 @@ mod_list:
 	@echo  $(MOD_MAKE_SURF_MESH)    >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PART_MAINDIR)' $(SOURCES)
 

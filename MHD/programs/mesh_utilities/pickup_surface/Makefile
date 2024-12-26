@@ -47,9 +47,6 @@ mod_list:
 	@echo  $(MOD_PICK_SURF_MAIN) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PICK_SURF_SRCDIR)' $(SOURCES)
 

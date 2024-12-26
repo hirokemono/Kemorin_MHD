@@ -28,9 +28,6 @@ mod_list:
 	@echo  $(MOD_PLANE_COMMON) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PLANE_COMMON_DIR)' $(SOURCES)
 

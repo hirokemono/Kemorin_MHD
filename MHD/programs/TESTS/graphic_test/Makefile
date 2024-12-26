@@ -163,9 +163,6 @@ mod_list:
 	@echo  $(MOD_PNG_2_QUILT)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(GRAPHIC_TEST_DIR)' $(SOURCES)
 	

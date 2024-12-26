@@ -18,9 +18,6 @@ mod_list:
 	@echo $(MOD_SOLVE_VECCALS) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_VECCAL_DIR)' $(SOURCES)
 

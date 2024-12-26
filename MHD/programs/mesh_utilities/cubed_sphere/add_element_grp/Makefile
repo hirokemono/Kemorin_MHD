@@ -52,9 +52,5 @@ mod_list:
 	@echo  $(MOD_ADDGRP_SPH) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ELE_GRP_SPH_DIR)' $(SOURCES)

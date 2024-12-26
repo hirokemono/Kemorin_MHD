@@ -18,9 +18,6 @@ mod_list:
 	@echo $(MOD_SOLVER_NN) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_NN_DIR)' $(SOURCES)
 

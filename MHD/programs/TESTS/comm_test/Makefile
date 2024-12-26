@@ -94,9 +94,6 @@ mod_list:
 	@echo  MOD_FILTER_COMM_TEST= $(MOD_FILTER_COMM_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(COMM_TEST_DIR)' $(SOURCES)
 

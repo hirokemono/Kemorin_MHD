@@ -31,8 +31,6 @@ mod_list:
 	@echo  $(MOD_LIC) >> $(MAKENAME)
 	@echo  >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(LIC_DIR)' $(SOURCES)
 

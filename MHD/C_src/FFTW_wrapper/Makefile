@@ -32,7 +32,7 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 depends:
-	@echo 'Construct dependencies in C_src/FFTW_wrapper'
+	@echo 'Construct compile list in C_src/FFTW_wrapper'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SOURCES) ; do \
 		( \

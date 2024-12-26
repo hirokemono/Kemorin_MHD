@@ -31,9 +31,6 @@ mod_list:
 	@echo  $(MOD_CUBMESH) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUBMESH_DIR)' $(SOURCES)
 

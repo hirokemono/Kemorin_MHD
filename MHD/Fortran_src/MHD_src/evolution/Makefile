@@ -25,9 +25,6 @@ mod_list:
 	@echo  $(MOD_EVOLVE) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_EVO_DIR)' $(SOURCES)
 

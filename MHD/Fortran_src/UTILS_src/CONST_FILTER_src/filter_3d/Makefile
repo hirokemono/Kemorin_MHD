@@ -24,9 +24,6 @@ mod_list:
 	@echo  $(MOD_3D_FILTER_MAT) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FILTER_3D_MATDIR)' $(SOURCES)
 

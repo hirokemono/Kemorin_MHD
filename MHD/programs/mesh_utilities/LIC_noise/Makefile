@@ -81,7 +81,5 @@ mod_list:
 	@echo  $(MOD_TEST_OLD_NOISE) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(LIC_NOISE_DIR)' $(SOURCES)

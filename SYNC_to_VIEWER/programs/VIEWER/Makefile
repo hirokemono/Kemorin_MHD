@@ -59,8 +59,6 @@ mod_list:
 	@echo  $(MOD_KEMOVIEW_GLFW) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-module:
-
 depends:
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_C) ; do \

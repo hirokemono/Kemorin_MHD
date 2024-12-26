@@ -75,9 +75,6 @@ mod_list:
 	@echo  $(MOD_BC_FILE_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(BC_FILE_TEST_DIR)' $(SOURCES)
 

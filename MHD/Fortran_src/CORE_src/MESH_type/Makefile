@@ -25,9 +25,6 @@ mod_list:
 	@echo  $(MOD_MESH_T) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MESH_TYPE_DIR)' $(SOURCES)
 

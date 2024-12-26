@@ -46,7 +46,7 @@ mod_list:
 
 
 depends:
-	@echo 'Construct dependencies in C_src/KEMO_GLUT'
+	@echo 'Construct compile list in C_src/KEMO_GLUT'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLUT_C) ; do \
 		( \

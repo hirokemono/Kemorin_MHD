@@ -30,9 +30,6 @@ mod_list:
 	@echo  $(MOD_PLANE_IO) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PLANE_IO_DIR)' $(SOURCES)
 

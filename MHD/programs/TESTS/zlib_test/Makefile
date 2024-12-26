@@ -74,9 +74,6 @@ mod_list:
 	@echo  $(MOD_GETARG_TEST)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ZLIB_TEST_DIR)' $(SOURCES)
 	

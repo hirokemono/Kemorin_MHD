@@ -99,9 +99,6 @@ mod_list:
 	@echo  $(MOD_ACDC_SMDT) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SMDT_POLY_TEST_DIR)' $(SOURCES)
 

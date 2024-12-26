@@ -193,9 +193,6 @@ mod_list:
 	@echo  $(MOD_ADD_TIME_SPH)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MERGE_SRCDIR)' $(SOURCES)
 

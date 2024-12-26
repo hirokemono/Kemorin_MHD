@@ -23,8 +23,6 @@ mod_list:
 	@echo MOD_FEM_INT=  \\ >> $(MAKENAME)
 	@echo $(MOD_FEM_INT) >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FEM_INT_DIR)' $(SOURCES)
 

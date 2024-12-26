@@ -40,15 +40,12 @@ mod_list:
 	@echo  $(MOD_NETLIB) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-	@echo 'dsort.o: $$(NETLIB_SRC_DIR)/dsort.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'isort.o: $$(NETLIB_SRC_DIR)/isort.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-
 depends:
+	@echo 'dsort.o: $$(NETLIB_SRC_DIR)/dsort.f90' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo 'isort.o: $$(NETLIB_SRC_DIR)/isort.f90' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME).depends
+	@echo '#' >> $(MAKENAME)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

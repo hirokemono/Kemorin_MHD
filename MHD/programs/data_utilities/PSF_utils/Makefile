@@ -348,9 +348,6 @@ mod_list:
 	@echo  $(MOD_FIX_SGS_MF_WK_PSF)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PSF_UTIL_MAINDIR)' $(SOURCES)
 

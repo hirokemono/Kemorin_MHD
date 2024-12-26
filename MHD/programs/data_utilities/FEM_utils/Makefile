@@ -320,8 +320,5 @@ mod_list:
 	@echo  $(MOD_MHD_LENGH_SCALE)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(UCD_UTILS_DIR)' $(SOURCES)

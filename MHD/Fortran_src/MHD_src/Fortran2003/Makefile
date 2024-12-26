@@ -24,9 +24,6 @@ mod_list:
 	@echo $(MOD_MHD_F2003) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_F2003_DIR)' $(SOURCES)
 

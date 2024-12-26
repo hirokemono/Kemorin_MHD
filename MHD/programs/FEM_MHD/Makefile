@@ -166,9 +166,6 @@ mod_list:
 	@echo  $(MOD_SNAP_TMP)        >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_OUT_DIR)' $(SOURCES)
 

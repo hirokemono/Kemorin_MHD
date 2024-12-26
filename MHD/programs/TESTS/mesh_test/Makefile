@@ -65,9 +65,6 @@ mod_list:
 	@echo  $(MOD_MESH_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MESH_TEST_DIR)' $(SOURCES)
 

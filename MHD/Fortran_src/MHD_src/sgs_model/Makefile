@@ -24,8 +24,6 @@ mod_list:
 	@echo $(MOD_SGS) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_SGS_DIR)' $(SOURCES)
 

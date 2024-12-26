@@ -50,9 +50,6 @@ mod_list:
 	@echo  $(MOD_SORT_TEST)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_C) ; do \

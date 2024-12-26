@@ -39,9 +39,6 @@ mod_list:
 	@echo  $(MOD_CUBED_SPH)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUBED_SPH_DIR)' $(SOURCES)
 

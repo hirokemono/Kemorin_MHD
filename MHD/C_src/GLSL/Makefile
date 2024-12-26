@@ -56,7 +56,7 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 depends: wrap_shader
-	@echo 'Construct dependencies in C_src/GLSL'
+	@echo 'Construct compile list in C_src/GLSL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLSL_C) ; do \
 		( \

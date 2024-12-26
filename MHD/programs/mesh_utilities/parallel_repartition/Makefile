@@ -129,9 +129,6 @@ mod_list:
 	@echo  $(MOD_FIELD_TO_NEWPART)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(REPARTITION_DIR)' $(SOURCES)
 

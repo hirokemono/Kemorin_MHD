@@ -28,8 +28,5 @@ mod_list:
 	@echo  $(MOD_PART_DECOMP) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(DECOMP_DIR)' $(SOURCES)

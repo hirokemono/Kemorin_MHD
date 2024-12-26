@@ -122,9 +122,6 @@ mod_list:
 	@echo  $(MOD_TEST_DZ_PLUG)  $(MOD_Z_FILTER_CTL)  >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CONST_FILTER_Z_DIR)' $(SOURCES)
 

@@ -147,8 +147,5 @@ mod_list:
 	@echo  $(MOD_MOMENT_NEWMESH)      >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CONST_FILTER_3D_DIR)' $(SOURCES)

@@ -25,9 +25,6 @@ mod_list:
 	@echo  $(MOD_GEN_FILTER_IO) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FILTER_3D_IODIR)' $(SOURCES)
 

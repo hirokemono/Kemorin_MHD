@@ -74,14 +74,7 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 
 
-all: fluid
-
-fluid:
-	echo "# Compiling start"; \
-		cd work;  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		fluid
+all: makemake
 
 depends:
 	if [ ! -d $(MAKEDIR) ]; then \
@@ -90,6 +83,8 @@ depends:
 	if [ ! -d $(BUILDDIR) ]; then \
 		mkdir $(BUILDDIR); \
 	fi
+	@rm -f $(MAKEDIR)/Makefile.depends
+
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
@@ -113,13 +108,26 @@ depends:
 
 
 makemake:
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
-	@echo # create module list
+	mkdir -p $(MAKEDIR); \
+	mkdir -p $(BUILDDIR); \
+	
+	echo "Create module list"
+	$(GMAKE) \
+	GMAKE='$(GMAKE)' \
+	MHDDIR='$(MHDDIR)' \
+	MAKEDIR='$(MAKEDIR)' \
+	MAKENAME='$(MAKENAME)' \
+	F90_LOCAL='$(F90_LOCAL)'   \
+	CC="$(CC)"                 \
+	DEPFLAGS='$(DEPFLAGS)' \
+	OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+	C_INCLUDE='$(C_INCLUDE)' \
+	GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+	GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+	FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+	MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+	depends;
+	
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
 	echo '#' >> $(MAKENAME)
@@ -302,21 +310,12 @@ makemake:
 		 ) \
 	done
 	@echo '' >> $(MAKENAME)
-	@echo 'create objects construct list...'
+	@echo 'Append compile list...'
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'generate compile commands for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
+	cat $(MAKENAME).depends >> $(MAKENAME)
+	rm -f $(MAKEDIR)/Makefile.depends
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

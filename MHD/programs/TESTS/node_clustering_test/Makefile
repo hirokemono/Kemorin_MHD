@@ -47,9 +47,6 @@ mod_list:
 	@echo  $(MOD_GROUPING_BY_VOLUME) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SOURCES)
 

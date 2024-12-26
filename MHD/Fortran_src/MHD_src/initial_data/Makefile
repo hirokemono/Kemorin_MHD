@@ -24,9 +24,6 @@ mod_list:
 	@echo $(MOD_KEMO) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_INI_DIR)' $(SOURCES)
 

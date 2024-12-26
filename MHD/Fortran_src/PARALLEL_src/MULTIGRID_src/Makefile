@@ -24,9 +24,6 @@ mod_list:
 	@echo  $(MOD_MULTIGRID) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MG_SRCDIR)' $(SOURCES)
 

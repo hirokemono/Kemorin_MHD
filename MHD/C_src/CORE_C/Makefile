@@ -110,7 +110,7 @@ mod_list:
 
 
 depends:
-	@echo 'Construct dependencies in C_src/CORE_C'
+	@echo 'Construct compile list in C_src/CORE_C'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_KEMO_C) ; do \
 		( \

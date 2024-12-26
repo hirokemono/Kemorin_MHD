@@ -28,8 +28,5 @@ mod_list:
 	@echo  $(MOD_FFT_PLANE_COMMON) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FFT_PLANE_SRCDIR)' $(SOURCES)

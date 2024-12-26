@@ -66,9 +66,6 @@ mod_list:
 	@echo  MOD_FDM_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FDM_TEST)        >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FDM_TEST_DIR)' $(SOURCES)
 

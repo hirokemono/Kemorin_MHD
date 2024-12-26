@@ -150,9 +150,6 @@ mod_list:
 	@echo  $(MOD_5LUTEST)      >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVERTEST_DIR)' $(SOURCES)
 

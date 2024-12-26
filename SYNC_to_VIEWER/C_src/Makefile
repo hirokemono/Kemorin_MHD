@@ -85,21 +85,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		echo 'Copy sourse dependencies for ' $$dir ; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
+		echo 'Copy compile list for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		F90_LOCAL='$(F90_LOCAL)'   \

@@ -851,8 +851,6 @@ mod_list:
 	@echo  $(MOD_SPH_V_SPEC_CHECK)        >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-module:
-
 depends:
 	@rm -f Makefile.tmp
 	@$(MAKE_MOD_DEP) Makefile.tmp '$$(SPH_UTILS_DIR)' $(SOURCES)

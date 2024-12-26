@@ -40,8 +40,6 @@ mod_list:
 	@echo $(MOD_ITP_TABLE) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_SRCDIR)' $(SOURCES)
 

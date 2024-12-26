@@ -24,8 +24,6 @@ mod_list:
 	@echo  $(MOD_CTL) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CTL_DIR)' $(SOURCES)
 

@@ -18,9 +18,6 @@ mod_list:
 	@echo $(MOD_SOLVE_ORDERINGS) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_ORDERING_DIR)' $(SOURCES)
 

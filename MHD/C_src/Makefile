@@ -85,9 +85,6 @@ mod_list:
 		) \
 	done
 
-
-module:
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \

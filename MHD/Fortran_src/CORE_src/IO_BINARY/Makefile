@@ -22,9 +22,6 @@ mod_list:
 	@echo  MOD_BINARY_IO=  \\ >> $(MAKENAME)
 	@echo  $(MOD_BINARY_IO)   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(BINARY_IO_DIR)' $(SOURCES)
 

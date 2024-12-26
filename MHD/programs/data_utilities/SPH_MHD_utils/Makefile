@@ -309,9 +309,6 @@ mod_list:
 	@echo  $(MOD_CTL_MHD_PSF_CHECK) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_SNAPSHOT_DIR)' $(SOURCES)
 

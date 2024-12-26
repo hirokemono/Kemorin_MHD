@@ -59,8 +59,5 @@ mod_list:
 	@echo  $(MOD_GEN_ELE_TABLE) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(GEN_TABLE_DIR)' $(SOURCES)

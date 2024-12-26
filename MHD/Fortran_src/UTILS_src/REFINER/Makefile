@@ -38,9 +38,6 @@ mod_list:
 	@echo  $(MOD_REFINE) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(REFINER_DIR)' $(SOURCES)
 

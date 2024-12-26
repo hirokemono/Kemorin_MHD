@@ -24,9 +24,6 @@ mod_list:
 	@echo  $(MOD_INT32) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(INT32DIR)' $(SOURCES)
 

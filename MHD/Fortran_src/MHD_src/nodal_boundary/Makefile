@@ -23,9 +23,6 @@ mod_list:
 	@echo MOD_NOD_BD=  \\ >> $(MAKENAME)
 	@echo $(MOD_NOD_BD) >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_NOD_BC_DIR)' $(SOURCES)
 

@@ -211,8 +211,5 @@ mod_list:
 	@echo  $(MOD_GZ_BMP_CONVERT)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(VIZ_PLUG_DIR)' $(SOURCES)

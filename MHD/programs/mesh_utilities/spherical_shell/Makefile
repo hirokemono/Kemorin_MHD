@@ -148,7 +148,5 @@ mod_list:
 	@echo  $(MOD_GEN_SPH_GRID_TEST) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(GEN_SPH_GRIDDIR)' $(SOURCES)

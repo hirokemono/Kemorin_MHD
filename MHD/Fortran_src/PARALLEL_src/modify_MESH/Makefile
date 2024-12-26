@@ -40,8 +40,5 @@ mod_list:
 	@echo  $(MOD_MODIFY_PARA_MESH) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MODIFY_PARA_MESHDIR)' $(SOURCES)

@@ -39,8 +39,6 @@ mod_list:
 	@echo  $(MOD_DRAW_PG) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(KEMO_PGDIR)' $(SOURCES)
 

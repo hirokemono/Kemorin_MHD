@@ -28,8 +28,5 @@ mod_list:
 	@echo  $(MOD_CORRELATE_PLANE) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CORRELATE_PLANE_DIR)' $(SOURCES)

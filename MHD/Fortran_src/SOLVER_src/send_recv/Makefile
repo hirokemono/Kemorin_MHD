@@ -22,8 +22,5 @@ mod_list:
 	@echo MOD_SR=  \\ >> $(MAKENAME)
 	@echo $(MOD_SR) >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SR_DIR)' $(SOURCES)

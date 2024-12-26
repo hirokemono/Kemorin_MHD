@@ -34,9 +34,6 @@ mod_list:
 	@echo $(MOD_SOLVER_33) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_33_DIR)' $(SOURCES)
 

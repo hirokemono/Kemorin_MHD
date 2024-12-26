@@ -39,7 +39,5 @@ mod_list:
 	@echo  $(MOD_CUTSHELL) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUTSHELL_DIR)' $(SOURCES)

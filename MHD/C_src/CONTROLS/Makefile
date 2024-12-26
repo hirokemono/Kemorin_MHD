@@ -30,7 +30,7 @@ mod_list:
 
 
 depends:
-	@echo 'Construct dependencies in C_src/CONTROLS'
+	@echo 'Construct compile list in C_src/CONTROLS'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_CTL_C) ; do \
 		( \

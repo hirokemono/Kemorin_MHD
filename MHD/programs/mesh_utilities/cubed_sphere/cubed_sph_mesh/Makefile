@@ -83,8 +83,5 @@ mod_list:
 	@echo  $(MOD_SQURE_CIRC_MESH)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUBED_SPH_MESHDIR)' $(SOURCES)

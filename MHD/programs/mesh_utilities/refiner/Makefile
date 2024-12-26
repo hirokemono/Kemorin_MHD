@@ -59,9 +59,6 @@ mod_list:
 	@echo  $(MOD_REF_PARA_TBL)    >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(REFINE_MAINDIR)' $(SOURCES)
 

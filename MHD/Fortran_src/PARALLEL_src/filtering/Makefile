@@ -23,9 +23,6 @@ mod_list:
 	@echo MOD_FILTERING=  \\ >> $(MAKENAME)
 	@echo $(MOD_FILTERING) >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FILTER_DIR)' $(SOURCES)
 

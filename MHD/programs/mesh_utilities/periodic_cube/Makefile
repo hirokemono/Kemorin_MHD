@@ -37,8 +37,5 @@ mod_list:
 	@echo  $(MOD_PERI_CUBE_MESH)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PERI_CUBE_MESHDIR)' $(SOURCES)

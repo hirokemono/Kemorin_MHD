@@ -24,9 +24,6 @@ mod_list:
 	@echo $(MOD_SOLVER_SET_ORDER) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(DJDS_ORDER_DIR)' $(SOURCES)
 
