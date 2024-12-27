@@ -79,6 +79,7 @@ static long prod_padding_1024floats(int ncomp_buf){
 
 - (void) prepareSort:(struct sortdata *) _d
 {
+    long i;
     _d->sortLength = 1<<24;
     _d->nextP2 =  1 + (int) log2((double) (_d->sortLength-1));
     posix_memalign((void**)&_d->floatresult, 4096, _d->sortLength*sizeof(float));
@@ -101,7 +102,7 @@ static long prod_padding_1024floats(int ncomp_buf){
         printf("malloc error for intinput\n");
         exit(0);
     };
-    for(long i=0;i<_d->sortLength;i++){
+    for(i=0;i<_d->sortLength;i++){
         _d->floatresult[i] = -i + ((float) _d->sortLength * 0.5);
         _d->intresult[i] =  (int) ( -i + _d->sortLength-1);
         _d->floatinput[i] = _d->floatresult[i];
@@ -111,9 +112,10 @@ static long prod_padding_1024floats(int ncomp_buf){
 
 void verifySort(struct sortdata *_d)
 {
+    long i;
     long nout = _d->sortLength;
     if(_d->sortLength > 256) nout = 128;
-    for(long i=0;i<nout;i++){
+    for(i=0;i<nout;i++){
         printf("%ld %f: %d %f: \n", i, _d->floatinput[i],
                _d->intresult[i], _d->floatresult[i]);
     }

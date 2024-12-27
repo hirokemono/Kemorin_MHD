@@ -16,7 +16,8 @@ static void set_psf_nodes_to_tri(long ipsf, long iele,
                                  double xyzw_tri[12], double norm_tri[12],
                                  double color_tri[12]){
     long inod, nd;
-    for(long k = 0; k < ITHREE; k++) {
+    long k;
+    for(k = 0; k < ITHREE; k++) {
         inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
         for(nd=0;nd<4;nd++){xyzw_tri[4*k+nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
         for(nd=0;nd<4;nd++){color_tri[4*k+nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
@@ -94,10 +95,11 @@ long set_psf_patch_indices_to_buf(long ipatch_in, long ist_psf, long ied_psf,
                                   struct gl_index_buffer *index_buf){
     long iele, ipsf;
     long ipatch = ipatch_in;
-    for(long inum=ist_psf;inum<ied_psf;inum++){
+    long inum, k;
+    for(inum=ist_psf;inum<ied_psf;inum++){
         ipsf = psf_a->ipsf_viz_far[inum]-1;
         iele = psf_a->iele_viz_far[inum]-1;
-        for(long k = 0; k < ITHREE; k++) {
+        for(k = 0; k < ITHREE; k++) {
             index_buf->ie_buf[ITHREE*ipatch+k] = (unsigned int) psf_a->istack_all_psf_node[ipsf]
                                                 + (unsigned int) psf_s[ipsf]->ie_viz[iele][k] - 1;
         };
@@ -112,9 +114,9 @@ long set_psf_patches_to_buf(long ipatch_in, long ist_psf, long ied_psf,
                             struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *strided_buf){
     double xyzw_tri[12], norm_tri[12], color_tri[12];
-    long iele, ipsf;
+    long iele, ipsf, inum;
     long ipatch = ipatch_in;
-	for(long inum=ist_psf;inum<ied_psf;inum++){
+	for(inum=ist_psf;inum<ied_psf;inum++){
 		ipsf = psf_a->ipsf_viz_far[inum]-1;
 		iele = psf_a->iele_viz_far[inum]-1;
         set_psf_nodes_to_tri(ipsf, iele, psf_s, psf_n,
@@ -130,10 +132,10 @@ long set_psf_textures_to_buf(long ist_texture, long ist_psf, long ied_psf,
                              struct kemo_array_control *psf_a,
                              struct gl_strided_buffer *strided_buf){
     double xy_txur[6];
-    long ipsf, iele;
+    long ipsf, iele, inum;
 	
     long ipatch = ist_texture;
-	for(long inum=ist_psf; inum<ied_psf; inum++){
+	for(inum=ist_psf; inum<ied_psf; inum++){
         ipsf = psf_a->ipsf_viz_far[inum]-1;
         iele = psf_a->iele_viz_far[inum]-1;
         set_psf_textures_to_tri(ipsf, iele, psf_s, xy_txur);
@@ -151,7 +153,8 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
     double map_xy[4] = {0.0, 0.0, 0.0002, 1.0};;
     double normal[4] = {0.0, 0.0, 1.0, 1.0};
     long inum_nod = ipatch_in;
-    for(long inod=ist_nod;inod<ist_nod+num ;inod++){
+    long inod;
+    for(inod=ist_nod;inod<ist_nod+num ;inod++){
         rtpw[1] = psf_n->rt_viz[ITWO*inod  ];
         rtpw[2] = psf_n->rt_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);

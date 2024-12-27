@@ -171,15 +171,16 @@ double flip_sign_float_pthread_test(struct sort_float_array *rSort){
 
 #ifdef __vDSP__
 double vDSP_vsorti_test(struct sort_float_array *rSort){
+    long i;
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
     printf("Sorting by vDSP_vsortiD...... ");
     gettimeofday( &startwtime, NULL );
     vDSP_Length *kdx_tmp = (vDSP_Length *) calloc(rSort->Narray, sizeof(vDSP_Length));
-    for(long i=0;i<rSort->Narray;i++){kdx_tmp[i] = i;};
+    for(i=0;i<rSort->Narray;i++){kdx_tmp[i] = i;};
     vDSP_vsorti(rSort->ra, kdx_tmp, nil, rSort->Narray, 0);
-    for(long i=0;i<rSort->Narray;i++){
+    for(i=0;i<rSort->Narray;i++){
         rSort->idx[i] = kdx_tmp[i];
         rSort->ra[i] = rSort->org[kdx_tmp[i]];
     };

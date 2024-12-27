@@ -47,9 +47,10 @@ static void * max_Double_Array_each_thread(void *args)
     long hi = ((args_pthread_double_sort *) args)->hi;
     double *dres = ((args_pthread_double_sort *) args)->dres;
     double *dmax = ((args_pthread_double_sort *) args)->dmax;
+    long i;
     
     dmax[id] = dres[lo];
-    for(long i=lo+1;i<hi;i++){
+    for(i=lo+1;i<hi;i++){
         if(dres[i] > dmax[id]){dmax[id] = dres[i];};
     };
     return 0;
@@ -61,8 +62,9 @@ static void * flip_sign_Double_each_thread(void *args)
     long lo =      ((args_pthread_double_sort *) args)->lo;
     long hi =      ((args_pthread_double_sort *) args)->hi;
     double *dres = ((args_pthread_double_sort *) args)->dres;
+    long i;
     
-    for(long i=lo;i<hi;i++){dres[i] = -dres[i];};
+    for(i=lo;i<hi;i++){dres[i] = -dres[i];};
     return 0;
 }
 

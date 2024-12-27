@@ -28,9 +28,10 @@ static long prod_padding_1024floats(int ncomp_buf){
 
 void verifySort(struct sort_float_array *rSort)
 {
+    long i;
     long nout = rSort->narrayP2;
     if(rSort->narrayP2 > 256) nout = 128;
-    for(long i=0;i<nout;i++){
+    for(i=0;i<nout;i++){
         printf("%ld %f: %ld %f: \n", i, rSort->org[i],
                rSort->idx[i], rSort->ra[i]);
     }

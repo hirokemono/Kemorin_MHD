@@ -47,7 +47,8 @@ long set_tracer_ico_buffer(const long ist_ico,
                            struct gl_strided_buffer *Tracer_ico_buf,
                            struct gl_index_buffer *Tracer_index_buf){
     long inum_ico = ist_nod;
-    for(long inod = ist_nod; inod < ied_nod; inod++){
+    long inod;
+    for(inod = ist_nod; inod < ied_nod; inod++){
         inum_ico = set_icosahedron_node_index_buffer(inum_ico,
                                                      tracer_m->viz_line_width,
                                                      &tracer_d->xyzw_viz[4*inod],
@@ -66,7 +67,8 @@ long set_tracer_cone_buffer(const long ist_ico,
     double xyzw_line[8], dir_line[8], color_line[8];
     long inum_ico = ist_nod;
     int nd;
-    for(long inod = ist_nod; inod < ied_nod; inod++){
+    long inod;
+    for(inod = ist_nod; inod < ied_nod; inod++){
         set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
                                   inod, tracer_d, tracer_m,
                                   xyzw_line, dir_line);

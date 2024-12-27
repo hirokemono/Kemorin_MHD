@@ -18,9 +18,10 @@ long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
     long inod, nd;
 	double x_line[8], dir_line[8], color_line[8];
     
+    long iele, k;
 	long inum_tube = ist_patch;
-	for(long iele=ist_line; iele<ied_line; iele++) {
-		for(long k = 0; k < 2; k++) {
+	for(iele=ist_line; iele<ied_line; iele++) {
+		for(k = 0; k < 2; k++) {
 			inod = fline_d->ie_viz[iele][k] - 1;
 			for(nd=0; nd<3; nd++) {
 				x_line[4*k+nd] =   (float) fline_d->xyzw_viz[4*inod + nd];

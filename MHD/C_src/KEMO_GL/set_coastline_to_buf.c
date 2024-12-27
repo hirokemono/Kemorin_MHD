@@ -110,8 +110,9 @@ long set_sph_med_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
 	set_black_color_c(&color_line[0]);
     for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         set_meridional_frame(i, radius, theta_p_grid, phi_p_grid[j],
@@ -133,8 +134,9 @@ long set_sph_long_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     set_black_color_c(&color_line[0]);
     for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         set_longitude_frame(i, radius, theta_t_grid[j], phi_t_grid,
@@ -158,8 +160,9 @@ long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, l
     set_black_color_c(&color_line[0]);
     for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         set_meridional_frame(i, radius, theta_p_grid, phi_p_grid[j],
@@ -185,8 +188,9 @@ long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, 
     set_black_color_c(&color_line[0]);
     for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         set_longitude_frame(i, radius, theta_t_grid[j], phi_t_grid,
@@ -232,8 +236,9 @@ long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     
 	rtp_flame[0] = ONE;
 	rtp_flame[3] = ONE;
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
 		rtp_flame[2] = phi_p_grid[j];
@@ -262,8 +267,9 @@ long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         rtp_flame[1] = theta_t_grid[j];
@@ -294,8 +300,9 @@ long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
+    long iedge;
 	long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
 		rtp_flame[2] = phi_p_grid[j];
@@ -327,8 +334,9 @@ long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
+    long iedge;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         rtp_flame[1] = theta_t_grid[j];
@@ -403,8 +411,9 @@ long set_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
     set_black_color_c(&color_line[0]);
     for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
     
+    long iedge;
     long inum = ist_buf;
-	for(long iedge=ist_edge; iedge<ied_edge;iedge++) {
+	for(iedge=ist_edge; iedge<ied_edge;iedge++) {
         set_coastline_edge(iedge, radius, xyzw_line, dir_line, norm_line);
         inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
                                           xyzw_line, dir_line, color_line,

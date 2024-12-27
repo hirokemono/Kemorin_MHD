@@ -50,9 +50,10 @@ static void * max_Float_Array_each_thread(void *args)
     long hi = ((args_pthread_float_sort *) args)->hi;
     float *res =   ((args_pthread_float_sort *) args)->res;
     float *rmax =  ((args_pthread_float_sort *) args)->rmax;
+    long i;
     
     rmax[id] = res[lo];
-    for(long i=lo+1;i<hi;i++){
+    for(i=lo+1;i<hi;i++){
         if(res[i] > rmax[id]){rmax[id] = res[i];};
     };
     return 0;
@@ -97,8 +98,9 @@ static void * flip_sign_Float_each_thread(void *args)
     long lo =      ((args_pthread_float_sort *) args)->lo;
     long hi =      ((args_pthread_float_sort *) args)->hi;
     float *res =   ((args_pthread_float_sort *) args)->res;
+    long i;
     
-    for(long i=lo;i<hi;i++){res[i] = -res[i];};
+    for(i=lo;i<hi;i++){res[i] = -res[i];};
     return 0;
 }
 
