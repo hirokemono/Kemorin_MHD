@@ -54,7 +54,8 @@ static void set_mesh_group_patch_colors(int surface_color, int color_mode, int c
                                         double opacity, float single_color[4], 
                                         int num_grp, int igrp, int num_pe_sf,
                                         int *iflag_domain, double *f_color){
-	for(int ip = 0; ip < num_pe_sf; ip++){
+    int ip;
+	for(ip = 0; ip < num_pe_sf; ip++){
         if(iflag_domain[ip] == 0){
             f_color[4*ip+3] = 0.0;
         }else{

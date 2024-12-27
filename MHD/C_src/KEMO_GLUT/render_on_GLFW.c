@@ -149,7 +149,8 @@ void write_evolution_views(GLFWwindow *glfw_win,
                            int ist_udt, int ied_udt, int inc_udt,
                            int iflag_img, struct kv_string *image_prefix,
                            int npix_x, int npix_y, unsigned char *image) {
-	for(int i=ist_udt; i<(ied_udt+1); i++) {
+    int i;
+	for(i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			kemoview_viewer_evolution(i, kemo_gl->kemoview_data);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

@@ -91,7 +91,8 @@ static void * flip_sign_Long_each_thread(void *args)
     long hi =      ((args_pthread_long_sort *) args)->hi;
     long *lres =   ((args_pthread_long_sort *) args)->lres;
     
-    for(int i=lo;i<hi;i++){lres[i] = -lres[i];};
+    int i;
+    for(i=lo;i<hi;i++){lres[i] = -lres[i];};
     return 0;
 }
 

@@ -60,14 +60,15 @@ void print_hex(GF2X &f)
     int nb = NumBits(f);
     int nn = (int)ceil((double)nb/(double)ww);
     unsigned int pp[nn];
-    for(int i = 0; i < nn ; i++) pp[i] = 0;
-    for(int i = 0; i < nb ; i++) {
+    int i;
+    for(i = 0; i < nn ; i++) pp[i] = 0;
+    for(i = 0; i < nb ; i++) {
       int iw = i / ww;
       int ib = i % ww;
       if (1 == coeff(f,i)) pp[iw] += (1 << ib);
     }
     if (0 != pp[nn-1]) printf("%X",pp[nn-1]);
-    for(int i = nn-2; i > -1 ; i--) {
+    for(i = nn-2; i > -1 ; i--) {
       printf("%8.8X",pp[i]);
     }
     printf("\n");
@@ -195,8 +196,9 @@ void get_coeff (const int& nn,     // MT param n
   //
   {
     int nb = NumBits(*r);
-    for(int i = 0; i < nn ; i++) pp[i] = 0;
-    for(int i = 0; i < nb ; i++) {
+    int i;
+    for(i = 0; i < nn ; i++) pp[i] = 0;
+    for(i = 0; i < nb ; i++) {
       int iw = i / ww;
       int ib = i % ww;
       if (1 == coeff(*r,i)) pp[iw] += (1 << ib);

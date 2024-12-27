@@ -89,7 +89,8 @@ static void * flip_sign_Int_each_thread(void *args)
     long hi =      ((args_pthread_int_sort *) args)->hi;
     int *ires =    ((args_pthread_int_sort *) args)->ires;
     
-    for(int i=lo;i<hi;i++){ires[i] = -ires[i];};
+    int i;
+    for(i=lo;i<hi;i++){ires[i] = -ires[i];};
     return 0;
 }
 

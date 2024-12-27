@@ -18,11 +18,10 @@ void VFlip(unsigned char * Pix, int width, int height, int chan)
 	int lsize = width * chan;
 	unsigned char *tbuf = new unsigned char[lsize];
 	assert(tbuf);
+    int y;
+    if (height == 0) return;
 
-  if (height == 0) 
-    return;
-
-	for(int y=0; y<height/2; y++)
+	for(y=0; y<height/2; y++)
 	{
 		memcpy(tbuf, &Pix[y*lsize], lsize);
 		memcpy(&Pix[y*lsize], &Pix[(height-y-1)*lsize], lsize);

@@ -25,7 +25,8 @@ static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *p
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
         kemoview_set_VIZ_color_point(i, value, color,
                                      color_vws->iflag_current_model,
@@ -47,7 +48,8 @@ static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
         kemoview_set_VIZ_color_point(i, value, color,
                                      color_vws->iflag_current_model,
@@ -75,7 +77,8 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
         kemoview_set_VIZ_color_point(i, value, color,
                                      color_vws->iflag_current_model,
@@ -102,7 +105,8 @@ static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer u
                                        color_vws->iflag_current_model,
                                        kemo_gl->kemoview_data);
     };
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
         kemoview_set_VIZ_color_point(i, value, color,
                                      color_vws->iflag_current_model,
@@ -128,7 +132,8 @@ static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *pa
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
         kemoview_set_VIZ_opacity_data(i, value, opacity,
                                       color_vws->iflag_current_model,
@@ -152,7 +157,8 @@ static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *p
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
         kemoview_set_VIZ_opacity_data(i, value, opacity,
                                       color_vws->iflag_current_model,
@@ -183,7 +189,8 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
     kemoview_add_VIZ_opacity_list(ZERO, ZERO,
                                   color_vws->iflag_current_model,
                                   kemo_gl->kemoview_data);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
         kemoview_set_VIZ_opacity_data(i, value, opacity,
                                       color_vws->iflag_current_model,
@@ -207,7 +214,8 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	if(num > 2) kemoview_delete_VIZ_opacity_list(num, color_vws->iflag_current_model,
                                                  kemo_gl->kemoview_data);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
         kemoview_set_VIZ_opacity_data(i, value, opacity,
                                       color_vws->iflag_current_model,

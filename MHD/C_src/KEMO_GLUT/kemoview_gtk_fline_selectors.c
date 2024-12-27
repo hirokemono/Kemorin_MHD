@@ -81,9 +81,10 @@ GtkWidget * draw_current_psf_set_hbox(int id_current_psf,
     GtkTreeModel *child_model_psfs = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_psfs));
     
     *index = 0;
+    int ipsf;
     int index_current = 0;
     int nmax_loaded = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, MAX_LOADED);
-    for(int ipsf=0; ipsf<nmax_loaded; ipsf++){
+    for(ipsf=0; ipsf<nmax_loaded; ipsf++){
         if(ipsf == id_current) {index_current = *index;};
         if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ipsf) > 0) {
             kemoview_set_PSF_loaded_params(SET_CURRENT, ipsf, kemo_gl->kemoview_data);
@@ -152,8 +153,9 @@ GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int i
     GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
     int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                                 id_model, COORDINATE_FLAG);
+    int icomp;
     int index = 0;
-    for(int icomp=0;icomp<ncomp;icomp++){
+    for(icomp=0;icomp<ncomp;icomp++){
         set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
         index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
     };

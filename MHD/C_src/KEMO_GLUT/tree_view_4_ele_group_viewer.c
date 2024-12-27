@@ -60,7 +60,8 @@ static void draw_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
                                     i, IONE, kemo_gl->kemoview_data);
 	};
@@ -75,7 +76,8 @@ static void draw_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, 
                                     i, IONE, kemo_gl->kemoview_data);
 	};
@@ -90,7 +92,8 @@ static void draw_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE,
                                     i, IONE, kemo_gl->kemoview_data);
 	};
@@ -105,7 +108,8 @@ static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
                                     i, IZERO, kemo_gl->kemoview_data);
 	};
@@ -120,7 +124,8 @@ static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FORTH, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE,
                                     i, IZERO, kemo_gl->kemoview_data);
 	};
@@ -135,7 +140,8 @@ static void hide_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, grp_vws);
-	for(int i=0;i<num;i++){
+    int i;
+	for(i=0;i<num;i++){
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, 
                                     i, IZERO, kemo_gl->kemoview_data);
 	};

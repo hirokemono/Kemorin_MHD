@@ -47,7 +47,8 @@ static void read_num_node_bin_gz(void *FP_gzip, struct psf_data *psf_z,
     gzread_64bit_psf(FP_gzip, psf_z_WK, (char *) n_inter_gz);
     
     psf_z->nnod_viz = 0;
-    for(int i=0;i<psf_z_WK->nprocs;i++){
+    int i;
+    for(i=0;i<psf_z_WK->nprocs;i++){
         psf_z->nnod_viz = psf_z->nnod_viz + n_inter_gz[i];
     };
     /*

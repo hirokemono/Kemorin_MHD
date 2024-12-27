@@ -30,7 +30,8 @@ static void read_psf_vtk_node_data_gz(void *FP_gzip, int lbuf, char *buf,
     
     alloc_viz_node_s(viz_s);
     
-    for(int i = 0; i < viz_s->nnod_viz; i++) {
+    int i;
+    for(i = 0; i < viz_s->nnod_viz; i++) {
         viz_s->inod_viz[i] = i + 1;
         get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
         sscanf(buf, "%lf %lf %lf",

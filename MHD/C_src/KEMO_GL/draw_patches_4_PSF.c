@@ -8,7 +8,8 @@
 void const_PSF_node_stack(struct psf_data **psf_s,
                           struct kemo_array_control *psf_a){
     psf_a->istack_all_psf_node[0] = 0;
-    for(int i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
+    int i_psf;
+    for(i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
         if(psf_a->iflag_loaded[i_psf] == 0){
             psf_a->istack_all_psf_node[i_psf+1] = psf_a->istack_all_psf_node[i_psf];
         }else{
@@ -30,7 +31,8 @@ void const_PSF_node_buffer(const int nthreads,
 	resize_strided_buffer(psf_buf);
     
     long num_patch = 0;
-    for(int i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
+    int i_psf;
+    for(i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
         if(psf_a->iflag_loaded[i_psf] == 0) continue;
         num_patch = sel_psf_nodes_to_buf_pthread(psf_a->istack_all_psf_node[i_psf], nthreads,
                                                  IZERO, psf_s[i_psf]->nnod_viz,

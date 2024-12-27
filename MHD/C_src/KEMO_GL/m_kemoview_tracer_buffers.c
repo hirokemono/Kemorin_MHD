@@ -65,11 +65,12 @@ long set_tracer_cone_buffer(const long ist_ico,
                             struct gl_index_buffer *Tracer_index_buf){
     double xyzw_line[8], dir_line[8], color_line[8];
     long inum_ico = ist_nod;
+    int nd;
     for(long inod = ist_nod; inod < ied_nod; inod++){
         set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
                                   inod, tracer_d, tracer_m,
                                   xyzw_line, dir_line);
-        for(int nd=0;nd<4;nd++){
+        for(nd=0;nd<4;nd++){
             color_line[  nd] = tracer_d->color_nod[4*inod+nd];
             color_line[4+nd] = tracer_d->color_nod[4*inod+nd];
         }

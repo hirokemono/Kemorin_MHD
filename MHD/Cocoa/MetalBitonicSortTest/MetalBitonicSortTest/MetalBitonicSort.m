@@ -188,8 +188,9 @@ int nsend[2];
     struct timeval endwtime;
     gettimeofday( &startwtime, NULL );
 
-    for(int i=0;i<_d->nextP2;i++){
-        for(int j=0;j<i+1;j++){
+    int i, j;
+    for(i=0;i<_d->nextP2;i++){
+        for(j=0;j<i+1;j++){
             nsend[0] = i;
             nsend[1] = j;
 

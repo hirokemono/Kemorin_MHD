@@ -189,7 +189,8 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	free(psf_s->istack_comp);
     free(psf_s->id_coord);
 	
-	for(int i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
+    int i;
+	for(i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
 	free(psf_s->data_name);
     
     psf_s->nfield = 0;
@@ -215,7 +216,8 @@ void dealloc_viz_node_s(struct psf_data *psf_s){
     free(psf_s->xyzw_viz);
 }
 void dealloc_viz_ele_s(struct psf_data *psf_s){
-    for(int i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
+    int i;
+    for(i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
     free(psf_s->ie_viz);
     free(psf_s->xyzw_ele_viz);
 }

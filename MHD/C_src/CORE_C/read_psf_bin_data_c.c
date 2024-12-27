@@ -80,7 +80,8 @@ static void read_psf_numnod_bin(struct psf_data *psf_b, struct psf_bin_work *psf
      */
     
     psf_b->nnod_viz = 0;
-    for(int i=0;i<psf_b_WK->nprocs;i++){
+    int i;
+    for(i=0;i<psf_b_WK->nprocs;i++){
         psf_b->nnod_viz = psf_b->nnod_viz + n_inter[i];
     };
     free(n_inter);

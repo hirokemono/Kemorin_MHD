@@ -193,11 +193,11 @@ int main(int argc, char *argv[])
     kemo_encode = init_FFMPEG_encoder(width, height, FrameRate, output);
     int ret = 0;
     
-    int j;
+    int i, j;
     printf("file: ");
         kemo_encode->outframe->pict_type = AV_PICTURE_TYPE_NONE;
 //        kemo_encode->outframe->key_frame = 1;
-    for(int i=ist;i<ied;i++){
+    for(i=ist;i<ied;i++){
         if((i-ist) % inc != 0) continue;
         
         sprintf(fname,"%s.%d", argv[1], i);

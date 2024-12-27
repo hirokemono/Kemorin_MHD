@@ -180,7 +180,8 @@ NSData *SnapshotData;
                                    ];
     NSUInteger pix_xy[2];
     NSUInteger pixelByte[1];
-    for(int istep=0;istep<num_step;istep++){
+    int istep;
+    for(istep=0;istep<num_step;istep++){
         [_metalView DrawQuilt:(istep+1)
                        degree:int_degree
                          axis:rotationaxis

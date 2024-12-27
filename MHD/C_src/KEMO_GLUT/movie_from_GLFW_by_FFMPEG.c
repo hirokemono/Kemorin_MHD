@@ -73,7 +73,8 @@ static void write_evolution_movie(GLFWwindow *glfw_win,
     struct FFMPEG_encoder *kemo_encode;
     kemo_encode = init_FFMPEG_encoder(1, npix_x, npix_y, i_fps,
                                       image_prefix->string);
-	for(int i=ist_udt; i<(ied_udt+1); i++) {
+	int i;
+	for(i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			kemoview_viewer_evolution(i, kemo_gl->kemoview_data);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

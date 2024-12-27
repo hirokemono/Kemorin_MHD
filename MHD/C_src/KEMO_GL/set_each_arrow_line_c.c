@@ -32,9 +32,9 @@ static void set_certecian_viz_vector(int icomp, long inod,
 static void cal_tangencial_viz_vector(int ivect_tangential, 
                                       double norm_nod[4],
                                       double v_xyz[3]){
-    
+    int nd;
     if(ivect_tangential==TANGENTIAL_COMPONENT){
-        for(int nd=0; nd<3; nd++) {
+        for(nd=0; nd<3; nd++) {
             v_xyz[nd] = v_xyz[nd] - norm_nod[nd]
                     * (  v_xyz[0]*norm_nod[0]
                        + v_xyz[1]*norm_nod[1]

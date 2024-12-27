@@ -106,8 +106,9 @@ A class to manage all of the Metal objects this app creates.
                                           deallocator:nil];
 
     int nsend[2];
-    for(int i=0;i<nArrayPower;i++){
-        for(int j=0;j<i+1;j++){
+    int i, j;
+    for(i=0;i<nArrayPower;i++){
+        for(j=0;j<i+1;j++){
             nsend[0] = i;
             nsend[1] = j;
 

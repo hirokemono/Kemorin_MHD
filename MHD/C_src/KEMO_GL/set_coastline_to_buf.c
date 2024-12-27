@@ -105,9 +105,10 @@ long set_sph_med_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double xyzw_line[8];
     double dir_line[8], norm_line[8];
     double color_line[8];
+    int nd;
     
 	set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++){
@@ -127,9 +128,10 @@ long set_sph_long_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double xyzw_line[8];
     double dir_line[8], norm_line[8];
     double color_line[8];
+    int nd;
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++){
@@ -146,6 +148,7 @@ long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, l
                                    int ncorner, double tube_radius, double radius,
                                    struct gl_strided_buffer *strided_buf,
                                    struct gl_index_buffer *index_buf){
+    int nd;
     long i, j;
     
     double xyzw_line[8];
@@ -153,7 +156,7 @@ long set_sph_med_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, l
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++){
@@ -172,6 +175,7 @@ long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, 
                                     int ncorner, double tube_radius, double radius,
                                     struct gl_strided_buffer *strided_buf,
                                     struct gl_index_buffer *index_buf){
+    int nd;
     long i, j;
     
     double xyzw_line[8];
@@ -179,7 +183,7 @@ long set_sph_long_flame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge, 
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 
     long inum = ist_buf;
     for(long iedge=ist_edge; iedge<ied_edge; iedge++){
@@ -215,6 +219,7 @@ void set_map_frame_edge(double dotted, double rtp_flame[6],
 
 long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                    long num_grid, struct gl_strided_buffer *strided_buf){
+    int nd;
 	long i, j;
 	double rtp_flame[6];
     
@@ -223,7 +228,7 @@ long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
 	rtp_flame[0] = ONE;
 	rtp_flame[3] = ONE;
@@ -243,6 +248,7 @@ long set_map_med_frame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
 
 long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                     long num_grid, struct gl_strided_buffer *strided_buf){
+    int nd;
     long i, j;
     double rtp_flame[6];
     
@@ -252,7 +258,7 @@ long set_long_map_flame_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
@@ -275,6 +281,7 @@ long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                    long num_grid, int ncorner, double tube_radius,
                                    struct gl_strided_buffer *strided_buf,
                                    struct gl_index_buffer *index_buf){
+    int nd;
     long i, j;
 	double rtp_flame[6];
     
@@ -283,7 +290,7 @@ long set_map_med_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
@@ -307,6 +314,7 @@ long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                     long num_grid, int ncorner, double tube_radius,
                                     struct gl_strided_buffer *strided_buf,
                                     struct gl_index_buffer *index_buf){
+    int nd;
     long i, j;
     double rtp_flame[6];
     
@@ -315,7 +323,7 @@ long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
@@ -338,21 +346,22 @@ long set_map_long_frame_tube_to_buf(long ist_buf, long ist_edge, long ied_edge,
 
 void set_coastline_edge(long iedge, double radius, double xyzw_line[8],
                         double dir_line[8], double norm_line[8]){
+    int k, nd;
 	double tp_coast[4], lake[2];
     
     get_coastline((int) iedge, tp_coast, lake);
     
-    for(int k = 0; k < 2; k++) {
+    for(k = 0; k < 2; k++) {
         norm_line[4*k  ] = cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]);
         norm_line[4*k+1] = cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]);
         norm_line[4*k+2] = sin(tp_coast[2*k]);
         norm_line[4*k+3]  = 1.0;
     };
-    for(int nd = 0;nd < 4; nd++){
+    for(nd = 0;nd < 4; nd++){
         dir_line[nd  ] =  norm_line[nd+4] - norm_line[nd];
         dir_line[nd+4] =  dir_line[nd];
     };
-    for(int nd = 0;nd < 4; nd++){
+    for(nd = 0;nd < 4; nd++){
         xyzw_line[nd] =   radius * norm_line[nd];
         xyzw_line[nd+4] = radius * (norm_line[nd] + 0.8 * dir_line[nd]);
     };
@@ -365,15 +374,17 @@ void set_coastline_edge(long iedge, double radius, double xyzw_line[8],
 
 long set_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
                             double radius, struct gl_strided_buffer *strided_buf){
+    int nd;
+    long iedge;
     double xyzw_line[8];
     double dir_line[8], norm_line[8];
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
     
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge;iedge++) {
+    for(iedge=ist_edge; iedge<ied_edge;iedge++) {
         set_coastline_edge(iedge, radius, xyzw_line, dir_line, norm_line);
         inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	};
@@ -384,12 +395,13 @@ long set_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                             int ncorner, double tube_radius, double radius,
                             struct gl_strided_buffer *strided_buf,
                             struct gl_index_buffer *index_buf){
+    int nd;
     double xyzw_line[8];
     double dir_line[8], norm_line[8];
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
     
     long inum = ist_buf;
 	for(long iedge=ist_edge; iedge<ied_edge;iedge++) {
@@ -429,15 +441,17 @@ void set_map_coastline_edge(long iedge, double xyzw_line[8], double dir_line[8])
 
 long set_map_coastline_line_buf(long ist_buf, long ist_edge, long ied_edge,
                                 struct gl_strided_buffer *strided_buf){
+    int nd;
+    long iedge;
     double xyzw_line[8] = {0.0, 0.0, 0.002, 1.0, 0.0, 0.0, 0.002, 1.0};
     double norm_line[8] = {0.0, 0.0, 1.0,   1.0, 0.0, 0.0, 1.0,   1.0};
     double dir_line[8], color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
 	
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++) {
+    for(iedge=ist_edge; iedge<ied_edge; iedge++) {
         set_map_coastline_edge(iedge, xyzw_line, dir_line);
         inum = set_line_strided_buffer(inum, xyzw_line, color_line, strided_buf);
 	};
@@ -448,15 +462,17 @@ long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
                                 int ncorner, double tube_radius,
                                 struct gl_strided_buffer *strided_buf,
                                 struct gl_index_buffer *index_buf){
+    int nd;
+    long iedge;
     double xyzw_line[8] = {0.0, 0.0, 0.002, 1.0, 0.0, 0.0, 0.002, 1.0};
     double dir_line[8] =  {0.0, 0.0, 0.0,   1.0, 0.0, 0.0, 0.0,   1.0};
     double color_line[8];
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];}
     
     long inum = ist_buf;
-	for(long iedge=ist_edge; iedge<ied_edge; iedge++) {
+	for(iedge=ist_edge; iedge<ied_edge; iedge++) {
         set_map_coastline_edge(iedge, xyzw_line, dir_line);
         inum = set_tube_node_index_buffer(inum, ncorner, tube_radius,
                                           xyzw_line, dir_line, color_line,
@@ -470,6 +486,8 @@ long set_map_coastline_tube_buf(long ist_buf, long ist_edge, long ied_edge,
 long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge,
                                       long num_grid, double radius, double r_ICB,
                                       struct gl_strided_buffer *strided_buf){
+    int nd;
+    long iedge;
     long i, j;
     double rtp_flame[6];
     
@@ -482,12 +500,12 @@ long set_tangent_cylinder_line_to_buf(long ist_buf, long ist_edge, long ied_edge
     theta_t_cyl[1] = pi - asin(r_ICB / radius);
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         rtp_flame[1] = theta_t_cyl[j];
@@ -505,6 +523,8 @@ long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge
                                       double radius, double r_ICB,
                                       struct gl_strided_buffer *strided_buf,
                                       struct gl_index_buffer *index_buf){
+    int nd;
+    long iedge;
     long i, j;
     double rtp_flame[6];
     
@@ -517,12 +537,12 @@ long set_tangent_cylinder_tube_to_buf(long ist_buf, long ist_edge, long ied_edge
     theta_t_cyl[1] = pi - asin(r_ICB / radius);
     
     set_black_color_c(&color_line[0]);
-    for(int nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
+    for(nd=0;nd<4;nd++){color_line[nd+4] = color_line[nd];};
     
     rtp_flame[0] = ONE;
     rtp_flame[3] = ONE;
     long inum = ist_buf;
-    for(long iedge=ist_edge; iedge<ied_edge; iedge++){
+    for(iedge=ist_edge; iedge<ied_edge; iedge++){
         j = iedge / num_grid;
         i = iedge % num_grid;
         rtp_flame[1] = theta_t_cyl[j];

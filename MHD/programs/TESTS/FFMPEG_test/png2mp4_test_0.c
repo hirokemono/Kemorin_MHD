@@ -135,12 +135,12 @@ int main(int argc, char *argv[])
     uint8_t *outbuf = (uint8_t*) av_malloc(av_image_get_buffer_size(pix_fmt, width, height, 1));
     ret = av_image_fill_arrays(outframe->data, outframe->linesize, 
                                outbuf, pix_fmt, width, height, 1);
-    int j;
+    int i, j;
     printf("file: ");
     int64_t pts = 0;
         outframe->pict_type = AV_PICTURE_TYPE_NONE;
 //        outframe->key_frame = 1;
-    for(int i=ist;i<ied;i++){
+    for(i=ist;i<ied;i++){
         if((i-ist) % inc != 0) continue;
         
         sprintf(fname,"%s.%d", argv[1], i);

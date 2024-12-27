@@ -674,9 +674,10 @@ void kemoview_set_VIZ_draw_flag(int id_model, int iflag,
 }
 
 int kemoview_check_all_VIZ_draw_flags(struct kemoviewer_type *kemoviewer){
+    int i;
     int iflag = send_draw_psf_solid(kemoviewer->kemo_fline->fline_m)
             + send_draw_psf_solid(kemoviewer->kemo_tracer->tracer_m);
-    for(int i=0;i<kemoviewer->kemo_mul_psf->psf_a->num_loaded; i++){
+    for(i=0;i<kemoviewer->kemo_mul_psf->psf_a->num_loaded; i++){
         iflag = iflag + send_draw_psf_solid(kemoviewer->kemo_mul_psf->psf_m[i]);
     }
     if(iflag > 0) return 1;
@@ -740,9 +741,10 @@ int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
 static void reset_colorbar_flag(struct kemoview_mul_psf *kemo_mul_psf,
                                 struct kemoview_fline *kemo_fline,
                                 struct kemoview_tracer *kemo_tracer){
+    int i;
     kemo_fline->fline_m->iflag_draw_cbar =   0;
     kemo_tracer->tracer_m->iflag_draw_cbar = 0;
-    for(int i=0; i< kemo_mul_psf->psf_a->nmax_loaded; i++){
+    for(i=0; i< kemo_mul_psf->psf_a->nmax_loaded; i++){
         kemo_mul_psf->psf_m[i]->iflag_draw_cbar = 0;
     }
     return;

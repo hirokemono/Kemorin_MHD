@@ -9,7 +9,8 @@
 
 struct VAO_ids ** init_multi_VAO_ids(int num_VAOs){
     struct VAO_ids **VAOs = (struct VAO_ids **) malloc(num_VAOs*sizeof(struct VAO_ids *));
-    for(int i=0;i<num_VAOs;i++){
+    int i;
+    for(i=0;i<num_VAOs;i++){
         VAOs[i] = init_VAO_ids();
     };
     return VAOs;
@@ -29,7 +30,8 @@ void dealoc_VAO_ids(struct VAO_ids *VAO){
 }
 
 void dealoc_multi_VAO_ids(int num_VAOs, struct VAO_ids **VAOs){
-    for(int i=0;i<num_VAOs;i++){free(VAOs[i]);};
+    int i;
+    for(i=0;i<num_VAOs;i++){free(VAOs[i]);};
     free(VAOs);
     return;
 }

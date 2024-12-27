@@ -15,10 +15,12 @@
 long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
                               double *norm_nod, double *color_nod, double *xy_txur,
                               struct gl_strided_buffer *strided_buf){
+    int nd;
+    long inod;
     struct gl_local_buffer_address point_buf;
-    for(long inod = 0; inod < numnod; inod++) {
+    for(inod = 0; inod < numnod; inod++) {
         set_node_stride_buffer((inod_in+inod), strided_buf, &point_buf);
-        for(int nd=0;nd<4;nd++){
+        for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_nod[4*inod+nd];
             strided_buf->v_buf[nd+point_buf.igl_color] = color_nod[4*inod+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_nod[4*inod+nd];
@@ -34,11 +36,12 @@ long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
                               struct gl_strided_buffer *strided_buf){
     struct gl_local_buffer_address point_buf;
     long k;
+    int nd;
     
     long ipatch = ITHREE*ipatch_in;
     for (k = 0; k < ITHREE; k++) {
         set_node_stride_buffer((ipatch+k), strided_buf, &point_buf);
-        for(int nd=0;nd<4;nd++){
+        for(nd=0;nd<4;nd++){
             strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_tri[4*k+nd];
             strided_buf->v_buf[nd+point_buf.igl_color] = color_tri[4*k+nd];
             strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_tri[4*k+nd];

@@ -298,10 +298,11 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     int n_field = kemoview_get_VIZ_field_param(kemo_sgl,
                                                id_model,
                                                NUM_FIELD_FLAG);
+    int i;
 	if(n_field < 1){
 		[psfFieldMenu addItemWithTitle:@"No field"];
 	} else {
-		for(int i = 0; i < n_field; i++){
+		for(i = 0; i < n_field; i++){
             kemoview_get_VIZ_field_name(kemo_sgl,
                                         id_model,
                                         colorname, i);

@@ -11,7 +11,8 @@
 - (matrix_float4x4) setMetalViewMatrices:(float *) matrix
 {
     vector_float4 col_wk[4];
-    for(int i=0;i<4;i++){
+    int i;
+    for(i=0;i<4;i++){
         col_wk[i].x = matrix[4*i  ];
         col_wk[i].y = matrix[4*i+1];
         col_wk[i].z = matrix[4*i+2];
@@ -24,25 +25,27 @@
 - (matrix_float4x4) setMetalModelViewMatrices:(float *) matrix
 {
     vector_float4 col_wk[4];
-    for(int j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
-    for(int j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
-    for(int j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
-    for(int j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
-    //    for(int j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
+    int j;
+    for(j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
+    for(j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
+    for(j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
+    for(j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
+    //    for(j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 - (matrix_float4x4) setMetalProjViewMatrices:(float *) matrix
 {
     vector_float4 col_wk[4];
-    for(int j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
-    for(int j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
-    for(int j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
-    for(int j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
+    int j;
+    for(j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
+    for(j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
+    for(j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
+    for(j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
     /* Shift viewport */
     col_wk[2][2] = (0.5*matrix[4*2+2] + 0.5*matrix[4*2+3]);
     col_wk[3][2] = (0.5*matrix[4*3+2] + 0.5*matrix[4*3+3]);
     
-    //    for(int j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
+    //    for(j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 
@@ -56,7 +59,8 @@
 
 - (void)leftMaterialParams:(MaterialParameters *) material
 {
-    for(int i=1;i<3;i++){
+    int i;
+    for(i=1;i<3;i++){
         material->ambient[i] =  0.0;
         material->diffuse[i] =  0.0;
         material->specular[i] = 0.0;
@@ -65,7 +69,8 @@
 }
 - (void)fillMaterialParams:(MaterialParameters *) material
 {
-    for(int i=1;i<3;i++){
+    int i;
+    for(i=1;i<3;i++){
         material->ambient[i] =  material->ambient[0];
         material->diffuse[i] =  material->diffuse[0];
         material->specular[i] = material->specular[0];

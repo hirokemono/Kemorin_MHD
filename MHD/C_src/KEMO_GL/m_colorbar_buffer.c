@@ -5,12 +5,13 @@
 #include "m_colorbar_buffer.h"
 
 void check_line_text_bitmap(struct gl_texure_image *image){
+    int i;
     unsigned char *testBMP = (unsigned char *) calloc((9 * image->texure_npix), sizeof(unsigned char));
     if(testBMP == NULL){
         printf("malloc error for testBMP\n");
         exit(0);
     };
-    for(int i=0;i<image->texure_npix;i++){
+    for(i=0;i<image->texure_npix;i++){
         testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) image->texure_rgba[4*i  ]));
         testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) image->texure_rgba[4*i+1]));
         testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) image->texure_rgba[4*i+2]));

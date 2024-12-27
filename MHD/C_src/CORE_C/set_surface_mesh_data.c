@@ -254,7 +254,8 @@ void set_each_patch_group_id(int num_pe_sf, int nsurf_each_tri,
                              int *igroup_mesh_patch){
     int ist, ied, icou;
     int ip_st = igrp * num_pe_sf;
-    for(int ip = 0; ip < num_pe_sf; ip++){
+    int ip;
+    for(ip = 0; ip < num_pe_sf; ip++){
         ist = istack_grp[ip_st+ip];
         ied = istack_grp[ip_st+ip+1];
         for(icou=ist;icou<ied; icou++){

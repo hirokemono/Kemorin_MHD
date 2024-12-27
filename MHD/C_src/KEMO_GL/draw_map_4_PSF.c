@@ -25,7 +25,8 @@ void set_map_node_buffer(const int nthreads,
     resize_strided_buffer(map_buf);
     
     long num_patch = 0;
-    for(int i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
+    int i_psf;
+    for(i_psf=0;i_psf<psf_a->nmax_loaded;i_psf++){
         if(psf_a->iflag_loaded[i_psf] == 0) continue;
         num_patch = sel_map_nodes_to_buf_pthread(num_patch, nthreads,
                                                  0, psf_s[i_psf]->nnod_viz,

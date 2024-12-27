@@ -23,7 +23,8 @@ static void read_gz_viz_node_data(void *FP_gzip, struct psf_data *viz_s){
 	
     alloc_viz_node_s(viz_s);
 	
-	for(int i = 0; i < viz_s->nnod_viz; i++) {
+    int i;
+	for(i = 0; i < viz_s->nnod_viz; i++) {
         get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 		sscanf(buf, "%ld %lf %lf %lf",
 			&viz_s->inod_viz[i], &viz_s->xyzw_viz[i*IFOUR + 0],

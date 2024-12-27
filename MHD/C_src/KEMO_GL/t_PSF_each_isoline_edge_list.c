@@ -88,7 +88,8 @@ struct isoline_line_work * init_isoline_line_work(int nthreads, long *istack_thr
 
 void set_isoline_color_in_wk(double color[4],
                              struct isoline_line_work *wk_iso_line){
-    for(int nd=0;nd<4;nd++){
+    int nd;
+    for(nd=0;nd<4;nd++){
         wk_iso_line->f_color[nd] = color[nd];
         wk_iso_line->f_color[nd+4] = color[nd];
     };

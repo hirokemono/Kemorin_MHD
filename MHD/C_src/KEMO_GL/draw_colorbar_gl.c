@@ -40,7 +40,8 @@ struct initial_cube_lighting * init_inital_cube_lighting(void){
         exit(0);
     }
     init_light->num_light = num_light;
-    for(int i=0;i<4;i++){
+    int i;
+    for(i=0;i<4;i++){
         init_light->lightposition[0][i] = lightposition[i];
         init_light->lightposition[1][i] = light2position[i];
         init_light->whitelight[0][i] = 0.2*white1[i];

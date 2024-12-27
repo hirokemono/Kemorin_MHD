@@ -127,7 +127,8 @@ void set_patch_order_by_distance(long lnum, const long *idx_tmp, struct kemo_arr
 
 
 const int sort_zbuf_ele_by_quicksort(long lnum, double *z_ele_viz, long *idx_tmp){
-    for(int i=0; i<lnum; i++){idx_tmp[i] = i;};
+    int i;
+    for(i=0; i<lnum; i++){idx_tmp[i] = i;};
     quicksort_double_c(z_ele_viz, idx_tmp, ZERO, (lnum-1));
     return 0;
 }
