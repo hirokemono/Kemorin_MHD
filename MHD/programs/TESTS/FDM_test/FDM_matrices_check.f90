@@ -11,6 +11,7 @@
       use t_radial_matrices_sph_MHD
       use t_schmidt_poly_on_rtm
       use t_physical_property
+      use t_work_SPH_MHD
 !
       use chebyshev_radial_grid
       use schmidt_poly_on_rtm_grid
@@ -30,12 +31,8 @@
       real(kind = kreal), parameter :: dt = 1.0d-5
 !
       type(sph_grids) :: sph1
-      type(fdm_matrices) :: r_2nd_1
-      type(fdm_matrices) :: r_n2e_3rd_1
-      type(fdm_matrices) :: r_e2n_1st_1
-      type(fdm_matrices) :: r_4th_1
+      type(work_SPH_MHD) :: SPH_WK1
       type(legendre_4_sph_trans) :: Plm_WK1
-      type(MHD_radial_matrices) :: sph_MHD_mat1
       type(fluid_property) :: fl_prop1
 !
       type(sph_MHD_boundary_data) :: sph_MHD_bc1
@@ -85,7 +82,8 @@
 
 !
       call init_FDM_coefs_for_test                                      &
-     &   (sph1, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1, r_4th_1)
+     &   (sph1, SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,    &
+     &    SPH_WK1%r_4th)
 !
       sph_MHD_bc1%sph_bc_U%kr_in = sph1%sph_params%nlayer_ICB
       sph_MHD_bc1%sph_bc_U%kr_out = sph1%sph_params%nlayer_CMB
@@ -93,7 +91,7 @@
       call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
 !
       call init_FDM_boundaries_for_test(sph1%sph_params, sph1%sph_rj,   &
-     &    r_4th_1, sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
+     &    SPH_WK1%r_4th, sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
       call check_sph_fdm_boundaries(6,                                  &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
@@ -101,7 +99,8 @@
 !
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
-     &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1, r_4th_1,      &
+     &    sph1%sph_rj, SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd,                &
+     &    SPH_WK1%r_e2n_1st, SPH_WK1%r_4th,                             &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB,                          &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB)
 !
@@ -115,27 +114,27 @@
 !
       i_debug = iflag_full_msg
       call const_radial_mat_vort_2step                                  &
-     &   (dt, sph1%sph_rj, r_2nd_1, fl_prop1,                           &
+     &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
      &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
      &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
-     &    sph_MHD_mat1%band_vs_poisson, sph_MHD_mat1%band_vp_evo,       &
-     &    sph_MHD_mat1%band_wt_evo)
+     &    SPH_WK1%MHD_mats%band_vs_poisson,                             &
+     &    SPH_WK1%MHD_mats%band_vp_evo, SPH_WK1%MHD_mats%band_wt_evo)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_radial_band_mat(id_file, sph1%sph_rj,                &
-     &                             sph_MHD_mat1%band_wt_evo)
+     &                             SPH_WK1%MHD_mats%band_wt_evo)
         call check_radial_band_mat(id_file, sph1%sph_rj,                &
-     &                             sph_MHD_mat1%band_vp_evo)
+     &                             SPH_WK1%MHD_mats%band_vp_evo)
       end if
 !
 !      do j = 1, sph1%sph_rj%nidx_rj(2)
 !        do k = 1, sph1%sph_rj%nidx_rj(1)
-!          sph_MHD_mat1%band_vp_evo%det(j)                              &
-!     &                = sph_MHD_mat1%band_vp_evo%det(j)                &
-!     &                  * sph_MHD_mat1%band_vp_evo%lu(5,k,j)
+!          SPH_WK1%MHD_mats%band_vp_evo%det(j)                          &
+!     &                = SPH_WK1%MHD_mats%band_vp_evo%det(j)            &
+!     &                  * SPH_WK1%MHD_mats%band_vp_evo%lu(5,k,j)
 !        end do
 !        write(my_rank+60,*) 'det vp', j,                               &
-!                           &    sph_MHD_mat1%band_vp_evo%det(j)
+!                           &    SPH_WK1%MHD_mats%band_vp_evo%det(j)
 !      end do
 !
 !  -------------------------------------------------------------------
