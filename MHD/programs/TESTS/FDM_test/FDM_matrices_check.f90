@@ -101,7 +101,7 @@
 !
       call test_radial_FDM                                              &
      &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
-     &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1,               &
+     &    sph1%sph_rj, r_2nd_1, r_n2e_3rd_1, r_e2n_1st_1, r_4th_1,      &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB,                          &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB)
 !
@@ -224,20 +224,18 @@
 !  -------------------------------------------------------------------
 !
       subroutine test_radial_FDM(kr_in, kr_out, sph_rj,                 &
-     &                           r_2nd, r_n2e_3rd, r_e2n_1st,           &
+     &                           r_2nd, r_n2e_3rd, r_e2n_1st, r_4th,    &
      &                           fdm3e_vp0_ICB, fdm3e_vp0_CMB)
 !
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
-      use second_fdm_node_coefs
-      use third_fdm_node_to_ele
-      use first_fdm_ele_to_node
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(fdm_matrices), intent(in) :: r_n2e_3rd
       type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(fdm_matrices), intent(in) :: r_4th
 !
       type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
@@ -247,25 +245,9 @@
       real(kind = kreal), allocatable :: d_rj(:)
       real(kind = kreal), allocatable :: dr_rj(:)
       real(kind = kreal), allocatable :: d2r_rj(:)
-!
       real(kind = kreal), allocatable :: de_rj(:)
-      real(kind = kreal), allocatable :: dre_rj(:)
-      real(kind = kreal), allocatable :: d2re_rj(:)
-      real(kind = kreal), allocatable :: d3re_rj(:)
 !
-      real(kind = kreal), allocatable :: dfdr_nod(:)
-      real(kind = kreal), allocatable :: d2fdr2_nod(:)
-!
-      real(kind = kreal), allocatable :: d_ele(:)
-      real(kind = kreal), allocatable :: dfdr_ele(:)
-      real(kind = kreal), allocatable :: d2fdr2_ele(:)
-      real(kind = kreal), allocatable :: d3fdr3_ele(:)
-!
-      real(kind = kreal), allocatable :: d_e2n(:)
-      real(kind = kreal), allocatable :: dfdr_e2n(:)
-!
-      integer(kind = kint) :: inod, j, k, ist_in, ist_out
-      real(kind = kreal) :: r
+      integer(kind = kint) :: inod, j, k
 !
 !
       allocate(r_ele(sph_rj%nidx_rj(1)))
@@ -290,6 +272,108 @@
       end do
 !
       allocate(de_rj(sph_rj%nnod_rj))
+      do inod = 1, sph_rj%nnod_rj
+        j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
+        k = 1 + (inod- j) / sph_rj%nidx_rj(2)
+!
+        de_rj(inod) =   r_ele(k)**j
+      end do
+!
+      write(*,*) '#'
+      write(*,*) '2nd-order FDM'
+      call test_radial_2nd_FDM(kr_in, kr_out, sph_rj,                   &
+     &                         d_rj, dr_rj, d2r_rj, r_2nd)
+!
+      write(*,*) '#'
+      write(*,*) '3rd-order FDM from node to element'
+      write(*,*) 'Interpolation to element'
+      call test_radial_3rd_FDM_nod_to_ele                               &
+     &   (kr_in, kr_out, sph_rj, r_ele, d_rj, dr_rj, de_rj,             &
+     &    r_n2e_3rd, fdm3e_vp0_ICB, fdm3e_vp0_CMB)
+!
+      write(*,*) '#'
+      write(*,*) '1st-order FDM from element to node'
+      call test_radial_1st_FDM_ele_to_nod(kr_in, kr_out, sph_rj,        &
+     &    de_rj, d_rj, dr_rj, r_e2n_1st)
+!
+      write(*,*) '#'
+      write(*,*) '4th-orderr FDM'
+      call test_radial_4th_FDM(kr_in, kr_out, sph_rj,                   &
+     &                         d_rj, dr_rj, d2r_rj, r_4th)
+!
+      end subroutine test_radial_FDM
+!
+!  -------------------------------------------------------------------
+!
+      subroutine test_radial_2nd_FDM(kr_in, kr_out, sph_rj,             &
+     &                               d_rj, dr_rj, d2r_rj, r_2nd)
+!
+      use second_fdm_node_coefs
+!
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dr_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: d2r_rj(sph_rj%nnod_rj)
+!
+      type(fdm_matrices), intent(in) :: r_2nd
+!
+      real(kind = kreal), allocatable :: dfdr_nod(:)
+      real(kind = kreal), allocatable :: d2fdr2_nod(:)
+!
+!
+      allocate(dfdr_nod(sph_rj%nnod_rj))
+      call cal_second_fdm_node(ione, kr_in, kr_out, sph_rj,             &
+     &                         r_2nd, d_rj, dfdr_nod)
+      write(*,*) '1st derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, dr_rj, dfdr_nod)
+!
+      allocate(d2fdr2_nod(sph_rj%nnod_rj))
+      call cal_second_fdm_node(itwo, kr_in, kr_out, sph_rj,             &
+     &                         r_2nd, d_rj, d2fdr2_nod)
+      write(*,*) '2nd derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, d2r_rj, d2fdr2_nod)
+!
+      deallocate(dfdr_nod, d2fdr2_nod)
+!
+      end subroutine test_radial_2nd_FDM
+!
+!  -------------------------------------------------------------------
+!
+      subroutine test_radial_3rd_FDM_nod_to_ele                         &
+     &         (kr_in, kr_out, sph_rj, r_ele, d_rj, dr_rj, de_rj,       &
+     &          r_n2e_3rd, fdm3e_vp0_ICB, fdm3e_vp0_CMB)
+!
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_zero_vp_CMB
+      use third_fdm_node_to_ele
+!
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: r_ele(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dr_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: de_rj(sph_rj%nnod_rj)
+!
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+!
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
+!
+      real(kind = kreal), allocatable :: dre_rj(:)
+      real(kind = kreal), allocatable :: d2re_rj(:)
+      real(kind = kreal), allocatable :: d3re_rj(:)
+!
+      real(kind = kreal), allocatable :: d_ele(:)
+      real(kind = kreal), allocatable :: dfdr_ele(:)
+      real(kind = kreal), allocatable :: d2fdr2_ele(:)
+      real(kind = kreal), allocatable :: d3fdr3_ele(:)
+!
+      integer(kind = kint) :: inod, j, k, ist_in, ist_out
+!
+!
       allocate(dre_rj(sph_rj%nnod_rj))
       allocate(d2re_rj(sph_rj%nnod_rj))
       allocate(d3re_rj(sph_rj%nnod_rj))
@@ -297,39 +381,10 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        de_rj(inod) =   r_ele(k)**j
         dre_rj(inod) =  dble(j) * r_ele(k)**(j-1)
         d2re_rj(inod) = dble(j*(j-1)) * r_ele(k)**(j-2)
         d3re_rj(inod) = dble(j*(j-1)*(j-2)) * r_ele(k)**(j-3)
       end do
-!
-!
-      allocate(dfdr_nod(sph_rj%nnod_rj))
-      call cal_second_fdm_node(ione, kr_in, kr_out, sph_rj,             &
-     &                         r_2nd, d_rj, dfdr_nod)
-      write(*,*) '1st derivative'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r =  sph_rj%radius_1d_rj_r(k)
-        write(*,*) j, r, k, (dfdr_nod(inod) - dr_rj(inod)),             &
-     &            dfdr_nod(inod), dr_rj(inod)
-       end do
-      end do
-!
-      allocate(d2fdr2_nod(sph_rj%nnod_rj))
-      call cal_second_fdm_node(itwo, kr_in, kr_out, sph_rj,             &
-     &                         r_2nd, d_rj, d2fdr2_nod)
-      write(*,*) '2nd derivative'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r =  sph_rj%radius_1d_rj_r(k)
-        write(*,*) j, r, k, (d2fdr2_nod(inod) - d2r_rj(inod)),          &
-     &            d2fdr2_nod(inod), d2r_rj(inod)
-       end do
-      end do
-!
 !
       ist_in =  1 + (kr_in- 1) * sph_rj%nidx_rj(2)
       ist_out = 1 + (kr_out-1) * sph_rj%nidx_rj(2)
@@ -345,14 +400,8 @@
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d_ele)
 !
       write(*,*) 'Interpolation to element'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r = r_ele(k)
-        write(*,*) j, r, k, (d_ele(inod) - de_rj(inod)),                &
-     &            d_ele(inod), de_rj(inod)
-       end do
-      end do
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                           r_ele, de_rj, d_ele)
 !
       allocate(dfdr_ele(sph_rj%nnod_rj))
       call cal_third_fdm_node_to_ele(ione, kr_in, kr_out, sph_rj,       &
@@ -364,14 +413,10 @@
      &   (ione, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, dfdr_ele)
       write(*,*) '1st derivative from node to element'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r = r_ele(k)
-        write(*,*) j, r, k, (dfdr_ele(inod) - dre_rj(inod)),            &
-     &            dfdr_ele(inod), dre_rj(inod)
-       end do
-      end do
+      write(*,*) 'order_of_reference, radius, r_ID, diff, ', &
+     &           'FDM, Reference'
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                           r_ele, dre_rj, dfdr_ele)
 !
       allocate(d2fdr2_ele(sph_rj%nnod_rj))
       call cal_third_fdm_node_to_ele(itwo, kr_in, kr_out, sph_rj,       &
@@ -383,14 +428,10 @@
      &   (itwo, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d2fdr2_ele)
       write(*,*) '2nd derivative from node to element'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r = r_ele(k)
-        write(*,*) j, r, k, (d2fdr2_ele(inod) - d2re_rj(inod)),         &
-     &            d2fdr2_ele(inod), d2re_rj(inod)
-       end do
-      end do
+      write(*,*) 'order_of_reference, radius, r_ID, diff, ', &
+     &           'FDM, Reference'
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                           r_ele, d2re_rj, d2fdr2_ele)
 !
       allocate(d3fdr3_ele(sph_rj%nnod_rj))
       call cal_third_fdm_node_to_ele(ithree, kr_in, kr_out, sph_rj,     &
@@ -401,44 +442,149 @@
       call cal_fdm3_zero_vp_CMB_ele                                     &
      &   (ithree, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d3fdr3_ele)
+!
       write(*,*) '3rd derivative from node to element'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r = r_ele(k)
-        write(*,*) j, r, k, (d3fdr3_ele(inod) - d3re_rj(inod)),         &
-     &            d3fdr3_ele(inod), d3re_rj(inod)
-       end do
-      end do
+      write(*,*) 'order_of_reference, radius, r_ID, diff, ',            &
+     &           'FDM, Reference'
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                           r_ele, d3re_rj, d3fdr3_ele)
+!
+      deallocate(d_ele, dfdr_ele, d2fdr2_ele, d3fdr3_ele)
+      deallocate(dre_rj, d2re_rj, d3re_rj)
+!
+      end subroutine test_radial_3rd_FDM_nod_to_ele
+!
+!  -------------------------------------------------------------------
+!
+      subroutine test_radial_1st_FDM_ele_to_nod(kr_in, kr_out, sph_rj,  &
+     &          de_rj, d_rj, dr_rj, r_e2n_1st)
+!
+      use first_fdm_ele_to_node
+!
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+!
+      real(kind = kreal), intent(in) :: de_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dr_rj(sph_rj%nnod_rj)
+!
+      real(kind = kreal), allocatable :: d_e2n(:)
+      real(kind = kreal), allocatable :: dfdr_e2n(:)
 !
 !
       allocate(d_e2n(sph_rj%nnod_rj))
       call cal_first_fdm_ele_to_node(izero, kr_in, kr_out, sph_rj,      &
      &                               r_e2n_1st, de_rj, d_e2n)
       write(*,*) 'Interpolation from element to node'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r =  sph_rj%radius_1d_rj_r(k)
-        write(*,*) j, r, k, (d_e2n(inod) - d_rj(inod)),                 &
-     &            d_e2n(inod), d_rj(inod)
-       end do
-      end do
+      write(*,*) 'order_of_reference, radius, r_ID, diff, ',            &
+     &           'FDM, Reference'
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                           sph_rj%radius_1d_rj_r, d_rj, d_e2n)
 !
       allocate(dfdr_e2n(sph_rj%nnod_rj))
       call cal_first_fdm_ele_to_node(ione, kr_in, kr_out, sph_rj,       &
      &                               r_e2n_1st, de_rj, dfdr_e2n)
       write(*,*) '1st derivative from element to node'
-      do j = 1, sph_rj%nidx_rj(2)
-       do k = kr_in, kr_out
-        inod = j + (k-1) * sph_rj%nidx_rj(2)
-        r =  sph_rj%radius_1d_rj_r(k)
-        write(*,*) j, r, k, (dfdr_e2n(inod) - dr_rj(inod)),             &
-     &            dfdr_e2n(inod), dr_rj(inod)
-       end do
+      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+     &                          sph_rj%radius_1d_rj_r, dr_rj, dfdr_e2n)
+!
+      deallocate(d_e2n, dfdr_e2n)
+!
+      end subroutine test_radial_1st_FDM_ele_to_nod
+!
+!  -------------------------------------------------------------------
+!
+      subroutine test_radial_4th_FDM(kr_in, kr_out, sph_rj,             &
+     &                               d_rj, dr_rj, d2r_rj, r_4th)
+!
+      use forth_fdm_node_coefs
+!
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: dr_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: d2r_rj(sph_rj%nnod_rj)
+!
+      type(fdm_matrices), intent(in) :: r_4th
+!
+      real(kind = kreal), allocatable :: d3r_rj(:)
+      real(kind = kreal), allocatable :: d4r_rj(:)
+      real(kind = kreal), allocatable :: dfdr_nod(:)
+!
+      integer(kind = kint) :: inod, j, k
+!
+      allocate(d3r_rj(sph_rj%nnod_rj))
+      allocate(d4r_rj(sph_rj%nnod_rj))
+      do inod = 1, sph_rj%nnod_rj
+        j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
+        k = 1 + (inod- j) / sph_rj%nidx_rj(2)
+        d3r_rj(inod) = dble(j*(j-1)*(j-2))                              &
+     &                * sph_rj%radius_1d_rj_r(k)**(j-3)
+        d4r_rj(inod) = dble(j*(j-1)*(j-2)*(j-3))                        &
+     &                * sph_rj%radius_1d_rj_r(k)**(j-4)
       end do
 !
-      end subroutine test_radial_FDM
+      allocate(dfdr_nod(sph_rj%nnod_rj))
+      call cal_forth_fdm_node(ione, kr_in, kr_out, sph_rj,              &
+     &                         r_4th, d_rj, dfdr_nod)
+      write(*,*) '1st derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, dr_rj, dfdr_nod)
+      deallocate(dfdr_nod)
+!
+      allocate(dfdr_nod(sph_rj%nnod_rj))
+      call cal_forth_fdm_node(itwo, kr_in, kr_out, sph_rj,              &
+     &                        r_4th, d_rj, dfdr_nod)
+      write(*,*) '2nd derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, d2r_rj, dfdr_nod)
+      deallocate(dfdr_nod)
+!
+      allocate(dfdr_nod(sph_rj%nnod_rj))
+      call cal_forth_fdm_node(ithree, kr_in, kr_out, sph_rj,            &
+     &                        r_4th, d_rj, dfdr_nod)
+      write(*,*) '3rd derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, d3r_rj, dfdr_nod)
+      deallocate(dfdr_nod)
+!
+      allocate(dfdr_nod(sph_rj%nnod_rj))
+      call cal_forth_fdm_node(ifour, kr_in, kr_out, sph_rj,             &
+     &                        r_4th, d_rj, dfdr_nod)
+      write(*,*) '4th derivative'
+      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+     &    sph_rj, sph_rj%radius_1d_rj_r, d4r_rj, dfdr_nod)
+      deallocate(dfdr_nod)
+      deallocate(d3r_rj, d4r_rj)
+!
+      end subroutine test_radial_4th_FDM
+!
+!  -------------------------------------------------------------------
+!
+      subroutine write_FDM_comparisons(id_file, kr_in, kr_out,          &
+     &          sph_rj, radius, d_ref, d_FDM)
+!
+      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: radius(sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(in) :: d_ref(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in) :: d_FDM(sph_rj%nnod_rj)
+!
+      integer(kind = kint) :: inod, j, k
+!
+      write(id_file,'(2a)') 'order_of_reference, radius, r_ID, diff, ', &
+     &                     'FDM, Reference'
+      do j = 1, sph_rj%nidx_rj(2)
+        do k = kr_in, kr_out
+          inod = j + (k-1) * sph_rj%nidx_rj(2)
+          write(id_file,'(i3,1pe23.15,i4,1p3e23.15)') j, radius(k), k,  &
+     &           (d_FDM(inod) - d_ref(inod)), d_FDM(inod), d_ref(inod)
+        end do
+      end do
+!
+      end subroutine write_FDM_comparisons
 !
 !  -------------------------------------------------------------------
 !
