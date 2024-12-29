@@ -148,8 +148,8 @@
 !
       fdm%nri_mat = nri
       fdm%n_plus =  n_plus
-      fdm%n_minus = n_minus
-      allocate( fdm%dmat(fdm%nri_mat,-fdm%n_minus:fdm%n_plus) )
+      fdm%n_minus = -n_minus
+      allocate( fdm%dmat(fdm%nri_mat,fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
 !

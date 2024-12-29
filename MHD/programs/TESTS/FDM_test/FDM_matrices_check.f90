@@ -252,6 +252,7 @@
       do kr = kr_st+2, kr_ed-1
         call set_sph_ele_pressure_FDM_mat7                              &
      &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+!
 !        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,           &
 !     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
 !     &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,         &
@@ -261,25 +262,28 @@
 !     &      hdiv_visous_mat, mat7)
       end do
 !$omp end parallel do
-      return
 !
-!$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
+      write(*,*) 'coef_d', coef_d
+!
+!!$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
       do kr = kr_st+1, kr_ed-1
         call set_sph_FDM_pressure_grad_mat                             &
      &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                   &
      &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,     &
      &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
-!
         call set_sph_FDM_viscosity_mat                                 &
      &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                     &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
      &      fdm_2(1)%nri_mat, fdm_2(1)%dmat, fdm_2(2)%dmat,            &
      &      mat2_viscous)
+      write(*,*) 'mat2_viscous', mat2_viscous(3,-1:1)
+!
         call sub_sph_pol_viscous_FDM2_mat                              &
      &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &      mat1_grad_p, mat2_viscous, mat7)
       end do
-!$omp end parallel do
+!!$omp end parallel do
+      write(*,*) 'fdm_2(1)%n_minus, fdm_2(1)%n_plus', fdm_2(1)%n_minus, fdm_2(1)%n_plus
 !
       end subroutine sph_FDM2_vpol_viscosity_mat2
 !
