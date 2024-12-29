@@ -146,17 +146,20 @@
      &    nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d3_mat,            &
      &    hdiv_visous_mat)
 !
-      call add_sph_FDM_val_hdiv_viscs_mat                               &
-     &   (kr, n_in, n_out, fl_prop%flag_viscous_variation,              &
-     &    fl_prop%flag_ref_density_valiation,                           &
-     &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
-     &    sph_rj%ar_ele_rj(kr,2), g_sph_rj,                             &
-     &    radial_variation%d_fld(kr,fl_prop%ir_nu),                     &
-     &    radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),               &
-     &    radial_variation%d_fld(kr,fl_prop%ir_drho_norm),              &
-     &    radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),             &
-     &    nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,            &
-     &    hdiv_visous_mat)
+      if(fl_prop%flag_viscous_variation                                 &
+     &    .or. fl_prop%flag_ref_density_valiation) then
+        call add_sph_FDM_val_hdiv_viscs_mat                             &
+     &     (kr, n_in, n_out, fl_prop%flag_viscous_variation,            &
+     &      fl_prop%flag_ref_density_valiation,                         &
+     &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
+     &      sph_rj%ar_ele_rj(kr,2), g_sph_rj,                           &
+     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
+     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
+     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,          &
+     &      hdiv_visous_mat)
+      end if
 !
       hdiv_visous_mat(1:sph_rj%nidx_rj(2),n_in:n_out)                   &
      &       = coef_d * hdiv_visous_mat(1:sph_rj%nidx_rj(2),n_in:n_out)

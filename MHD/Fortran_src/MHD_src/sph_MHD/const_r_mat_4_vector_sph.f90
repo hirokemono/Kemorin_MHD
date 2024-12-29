@@ -218,15 +218,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat7_vpol_press(dt, sph_rj, r_2nd,        &
+      subroutine const_radial_mat7_vpol_press(dt, sph_rj,               &
+     &          r_2nd, r_n2e_3rd, r_e2n_1st, &
      &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
-     &          band7_vsp_evo)
+     &          radial_variation, band7_vsp_evo)
+!
+      use t_phys_data
+      use cal_sph_pol_hdiv_viscousity
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+      type(phys_data), intent(in) :: radial_variation
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -237,11 +244,26 @@
 !      integer(kind = kint) :: j
       real(kind = kreal) :: coef_dvt
 !
+      real(kind = kreal) :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
+      real(kind = kreal) :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
+!
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+      else
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
+      end if
 !
       band7_vsp_evo%mat_name = vsp_evo_name
       call alloc_band_matrices_type(iseven, (2*sph_rj%nidx_rj(1)),      &
      &                              sph_rj%nidx_rj(2), band7_vsp_evo)
       call set_unit_on_diag(band7_vsp_evo)
+!
+      call sph_FDM2_vpol_viscosity_mat                                  &
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
+     &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
+     &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
+     &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
       end subroutine const_radial_mat7_vpol_press
 !

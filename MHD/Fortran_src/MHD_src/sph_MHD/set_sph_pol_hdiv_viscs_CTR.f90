@@ -340,19 +340,21 @@
 !
       real(kind = kreal) :: mat1_grad_p_CTR(sph_rj%nidx_rj(2),0:1)
 !
-        call set_sph_FDM_hdiv_viscosity_mat                             &
+      call set_sph_ele_pressure_FDM_mat7                                &
+     &   (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+      call set_sph_FDM_hdiv_viscosity_mat                               &
      &     (ione, izero, ione, sph_rj, fl_prop,                         &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
      &      fdm3e_center%dmat_vp0(-2,1),                                &
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,0))
-      call add_sph_ele_pressure_FDM_mat7                                &
-     &   (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_CTR                                &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    hdiv_visous_mat_CTR(1,0), mat7)
 !
+      call set_sph_ele_pressure_FDM_mat7                                &
+     &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (itwo, -ione, ione, sph_rj, fl_prop,                         &
      &      radial_variation, g_sph_rj, coef_d, ione,                   &
@@ -360,8 +362,6 @@
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
      &      fdm3e_center%dmat_vp0(-2,4), hdiv_visous_mat_CTR(1,-1))
-      call add_sph_ele_pressure_FDM_mat7                                &
-     &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_CTR1                               &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    hdiv_visous_mat_CTR(1,-1), mat7)

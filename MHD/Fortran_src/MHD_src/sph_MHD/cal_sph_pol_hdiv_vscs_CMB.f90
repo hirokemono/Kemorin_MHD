@@ -390,6 +390,8 @@
       integer(kind = kint) :: kr
 !
 !
+      call set_sph_ele_pressure_FDM_mat7(sph_bc_U%kr_out,               &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
@@ -406,8 +408,6 @@
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)
       end if
-      call add_sph_ele_pressure_FDM_mat7(sph_bc_U%kr_out,               &
-     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_CMB                                &
      &   (sph_bc_U%kr_out, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),        &
      &    hdiv_visous_mat_CMB(1,-2), mat7)

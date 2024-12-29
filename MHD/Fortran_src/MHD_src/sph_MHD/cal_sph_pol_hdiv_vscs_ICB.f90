@@ -396,12 +396,15 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
       else
         do kr = 1, sph_bc_U%kr_in
-          call add_sph_ele_pressure_FDM_mat7                            &
+          call set_sph_ele_pressure_FDM_mat7                            &
      &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
           call set_sph_pol_viscous_mat7_ICB                             &
      &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
         end do
       end if
+!
+      call set_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat                             &
@@ -419,8 +422,6 @@
      &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
      &      hdiv_visous_mat_ICB)
       end if
-      call add_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
-     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       call sub_sph_hdiv_viscous_mat7_ICB1((sph_bc_U%kr_in+1),           &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    hdiv_visous_mat_ICB(1,-1), mat7)

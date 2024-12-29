@@ -5,6 +5,7 @@
       use m_constants
       use t_spheric_parameter
       use t_spheric_rj_data
+      use t_phys_data
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
@@ -34,6 +35,7 @@
       type(work_SPH_MHD) :: SPH_WK1
       type(legendre_4_sph_trans) :: Plm_WK1
       type(fluid_property) :: fl_prop1
+      type(phys_data) :: radial_variation1
 !
       type(sph_MHD_boundary_data) :: sph_MHD_bc1
       character(len=kchara), parameter :: BC_label = 'Boundary'
@@ -91,18 +93,22 @@
       call check_fdm_coefs_4_BC2(6, BC_label, sph_MHD_bc1%sph_bc_U)
 !
       call init_FDM_boundaries_for_test(sph1%sph_params, sph1%sph_rj,   &
-     &    SPH_WK1%r_4th, sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
-      call check_sph_fdm_boundaries(6,                                  &
+     &   SPH_WK1%r_4th, sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center)
+      open(id_file,file='FDM_BC.txt')
+      call check_sph_fdm_boundaries(id_file,                            &
      &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, sph_MHD_bc1%bc_fdms_U)
-      call check_sph_4th_fdm_boundaries(6, sph_MHD_bc1%bc_fdms_U)
+      call check_sph_4th_fdm_boundaries(id_file, sph_MHD_bc1%bc_fdms_U)
+      close(id_file)
 !
-      call test_radial_FDM                                              &
-     &   (sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
+      open(id_file,file='FDM.txt')
+      call test_radial_FDM(id_file,                                     &
+     &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB,       &
      &    sph1%sph_rj, SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd,                &
      &    SPH_WK1%r_e2n_1st, SPH_WK1%r_4th,                             &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_ICB,                          &
      &    sph_MHD_bc1%bc_fdms_U%fdm3e_vp0_CMB)
+      close(id_file)
 !
 !
       call alloc_schmidt_normalize                                      &
@@ -113,18 +119,30 @@
 !      end do
 !
       i_debug = iflag_full_msg
-      call const_radial_mat_vort_2step                                  &
-     &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
-     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
+      call const_radial_mat_vort_2step(dt, sph1%sph_rj, SPH_WK1%r_2nd,  &
+     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
      &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
      &    SPH_WK1%MHD_mats%band_vs_poisson,                             &
      &    SPH_WK1%MHD_mats%band_vp_evo, SPH_WK1%MHD_mats%band_wt_evo)
 !
+      fl_prop1%flag_viscous_variation =     .FALSE.
+      fl_prop1%flag_ref_density_valiation = .FALSE.
+      fl_prop1%coef_press = 5.0d0
+      call const_radial_mat7_vpol_press2(dt, sph1%sph_rj,               &
+     &    SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,          &
+     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
+     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
+     &    radial_variation1, SPH_WK1%MHD_mats%band_vsp_evo)
+!
       if(i_debug .eq. iflag_full_msg) then
+        open(id_file,file='FDM_MAT.txt')
+        call check_velocity_matrices_sph(id_file, sph1%sph_rj,          &
+     &                                   SPH_WK1%MHD_mats)
         call check_radial_band_mat(id_file, sph1%sph_rj,                &
      &                             SPH_WK1%MHD_mats%band_wt_evo)
         call check_radial_band_mat(id_file, sph1%sph_rj,                &
      &                             SPH_WK1%MHD_mats%band_vp_evo)
+        close(id_file)
       end if
 !
 !      do j = 1, sph1%sph_rj%nidx_rj(2)
@@ -142,6 +160,130 @@
       contains
 !
 !  -------------------------------------------------------------------
+!
+      subroutine const_radial_mat7_vpol_press2(dt, sph_rj,              &
+     &          r_2nd, r_n2e_3rd, r_e2n_1st, &
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          radial_variation, band7_vsp_evo)
+!
+      use t_phys_data
+      use cal_sph_pol_hdiv_viscousity
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_n2e_3rd
+      type(fdm_matrices), intent(in) :: r_e2n_1st
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+      type(phys_data), intent(in) :: radial_variation
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
+!
+      type(band_matrices_type), intent(inout) :: band7_vsp_evo
+!
+!      integer(kind = kint) :: j
+      real(kind = kreal) :: coef_dvt
+!
+      real(kind = kreal) :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
+      real(kind = kreal) :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
+!
+!
+      if(fl_prop%coef_diffuse .eq. zero) then
+        coef_dvt = one
+      else
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
+      end if
+!
+      band7_vsp_evo%mat_name = vsp_evo_name
+      call alloc_band_matrices_type(iseven, (2*sph_rj%nidx_rj(1)),      &
+     &                              sph_rj%nidx_rj(2), band7_vsp_evo)
+      call set_unit_on_diag(band7_vsp_evo)
+!
+      call sph_FDM2_vpol_viscosity_mat2                                 &
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
+     &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
+     &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
+     &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
+!
+      end subroutine const_radial_mat7_vpol_press2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_FDM2_vpol_viscosity_mat2                           &
+     &        (kr_st, kr_ed, sph_rj, fl_prop, radial_variation,         &
+     &         g_sph_rj, coef_p, coef_d, fdm_2, fdm_3e, fdm_e1,         &
+     &         mat2_viscous, hdiv_visous_mat, mat7)
+!
+      use sph_FDM_viscosities_mat
+      use cal_sph_FDM3e_hdiv_viscous
+      use cal_sph_FDM_viscosity_mat
+      use set_sph_pol_vscs_FDM2_mat
+      use set_sph_hdiv_vscs_FDM_mat7
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(phys_data), intent(in) :: radial_variation
+!
+      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      real(kind = kreal), intent(in)                                    &
+     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+!
+      type(fdm_matrix), intent(in) :: fdm_2(2)
+      type(fdm_matrix), intent(in) :: fdm_3e(0:3)
+      type(fdm_matrix), intent(in) :: fdm_e1(0:1)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
+!
+      real(kind = kreal) :: mat1_grad_p(sph_rj%nidx_rj(2),0:1)
+      integer(kind = kint) :: kr
+!
+!
+!$omp parallel do private(kr,hdiv_visous_mat)
+      do kr = kr_st+2, kr_ed-1
+        call set_sph_ele_pressure_FDM_mat7                              &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+!        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,           &
+!     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
+!     &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,         &
+!     &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
+!        call sub_sph_hdiv_viscous_FDM_mat7                             &
+!     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
+!     &      hdiv_visous_mat, mat7)
+      end do
+!$omp end parallel do
+      return
+!
+!$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
+      do kr = kr_st+1, kr_ed-1
+        call set_sph_FDM_pressure_grad_mat                             &
+     &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                   &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,     &
+     &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
+!
+        call set_sph_FDM_viscosity_mat                                 &
+     &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                     &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
+     &      fdm_2(1)%nri_mat, fdm_2(1)%dmat, fdm_2(2)%dmat,            &
+     &      mat2_viscous)
+        call sub_sph_pol_viscous_FDM2_mat                              &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
+     &      mat1_grad_p, mat2_viscous, mat7)
+      end do
+!$omp end parallel do
+!
+      end subroutine sph_FDM2_vpol_viscosity_mat2
+!
+! -----------------------------------------------------------------------
 !
       subroutine init_FDM_coefs_for_test                                &
      &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, r_4th)
@@ -222,13 +364,14 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine test_radial_FDM(kr_in, kr_out, sph_rj,                 &
+      subroutine test_radial_FDM(id_file, kr_in, kr_out, sph_rj,        &
      &                           r_2nd, r_n2e_3rd, r_e2n_1st, r_4th,    &
      &                           fdm3e_vp0_ICB, fdm3e_vp0_CMB)
 !
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -278,37 +421,38 @@
         de_rj(inod) =   r_ele(k)**j
       end do
 !
-      write(*,*) '#'
-      write(*,*) '2nd-order FDM'
-      call test_radial_2nd_FDM(kr_in, kr_out, sph_rj,                   &
+      write(id_file,*) '#'
+      write(id_file,*) '2nd-order FDM'
+      call test_radial_2nd_FDM(id_file, kr_in, kr_out, sph_rj,          &
      &                         d_rj, dr_rj, d2r_rj, r_2nd)
 !
-      write(*,*) '#'
-      write(*,*) '3rd-order FDM from node to element'
-      write(*,*) 'Interpolation to element'
-      call test_radial_3rd_FDM_nod_to_ele                               &
-     &   (kr_in, kr_out, sph_rj, r_ele, d_rj, dr_rj, de_rj,             &
+      write(id_file,*) '#'
+      write(id_file,*) '3rd-order FDM from node to element'
+      write(id_file,*) 'Interpolation to element'
+      call test_radial_3rd_FDM_nod_to_ele(id_file, kr_in, kr_out,       &
+     &    sph_rj, r_ele, d_rj, dr_rj, de_rj,                            &
      &    r_n2e_3rd, fdm3e_vp0_ICB, fdm3e_vp0_CMB)
 !
-      write(*,*) '#'
-      write(*,*) '1st-order FDM from element to node'
-      call test_radial_1st_FDM_ele_to_nod(kr_in, kr_out, sph_rj,        &
-     &    de_rj, d_rj, dr_rj, r_e2n_1st)
+      write(id_file,*) '#'
+      write(id_file,*) '1st-order FDM from element to node'
+      call test_radial_1st_FDM_ele_to_nod(id_file, kr_in, kr_out,       &
+     &    sph_rj, de_rj, d_rj, dr_rj, r_e2n_1st)
 !
-      write(*,*) '#'
-      write(*,*) '4th-orderr FDM'
-      call test_radial_4th_FDM(kr_in, kr_out, sph_rj,                   &
+      write(id_file,*) '#'
+      write(id_file,*) '4th-orderr FDM'
+      call test_radial_4th_FDM(id_file, kr_in, kr_out, sph_rj,          &
      &                         d_rj, dr_rj, d2r_rj, r_4th)
 !
       end subroutine test_radial_FDM
 !
 !  -------------------------------------------------------------------
 !
-      subroutine test_radial_2nd_FDM(kr_in, kr_out, sph_rj,             &
+      subroutine test_radial_2nd_FDM(id_file, kr_in, kr_out, sph_rj,    &
      &                               d_rj, dr_rj, d2r_rj, r_2nd)
 !
       use second_fdm_node_coefs
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
@@ -324,15 +468,15 @@
       allocate(dfdr_nod(sph_rj%nnod_rj))
       call cal_second_fdm_node(ione, kr_in, kr_out, sph_rj,             &
      &                         r_2nd, d_rj, dfdr_nod)
-      write(*,*) '1st derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '1st derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, dr_rj, dfdr_nod)
 !
       allocate(d2fdr2_nod(sph_rj%nnod_rj))
       call cal_second_fdm_node(itwo, kr_in, kr_out, sph_rj,             &
      &                         r_2nd, d_rj, d2fdr2_nod)
-      write(*,*) '2nd derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '2nd derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, d2r_rj, d2fdr2_nod)
 !
       deallocate(dfdr_nod, d2fdr2_nod)
@@ -341,14 +485,15 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine test_radial_3rd_FDM_nod_to_ele                         &
-     &         (kr_in, kr_out, sph_rj, r_ele, d_rj, dr_rj, de_rj,       &
+      subroutine test_radial_3rd_FDM_nod_to_ele(id_file, kr_in, kr_out, &
+     &          sph_rj, r_ele, d_rj, dr_rj, de_rj,                      &
      &          r_n2e_3rd, fdm3e_vp0_ICB, fdm3e_vp0_CMB)
 !
       use t_coef_fdm3_n2e_zero_vp_ICB
       use t_coef_fdm3_n2e_zero_vp_CMB
       use third_fdm_node_to_ele
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       real(kind = kreal), intent(in) :: r_ele(sph_rj%nidx_rj(1))
@@ -398,8 +543,8 @@
      &   (izero, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),             &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d_ele)
 !
-      write(*,*) 'Interpolation to element'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      write(id_file,*) 'Interpolation to element'
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                           r_ele, de_rj, d_ele)
 !
       allocate(dfdr_ele(sph_rj%nnod_rj))
@@ -411,10 +556,8 @@
       call cal_fdm3_zero_vp_CMB_ele                                     &
      &   (ione, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, dfdr_ele)
-      write(*,*) '1st derivative from node to element'
-      write(*,*) 'order_of_reference, radius, r_ID, diff, ', &
-     &           'FDM, Reference'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      write(id_file,*) '1st derivative from node to element'
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                           r_ele, dre_rj, dfdr_ele)
 !
       allocate(d2fdr2_ele(sph_rj%nnod_rj))
@@ -426,10 +569,8 @@
       call cal_fdm3_zero_vp_CMB_ele                                     &
      &   (itwo, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),              &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d2fdr2_ele)
-      write(*,*) '2nd derivative from node to element'
-      write(*,*) 'order_of_reference, radius, r_ID, diff, ', &
-     &           'FDM, Reference'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      write(id_file,*) '2nd derivative from node to element'
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                           r_ele, d2re_rj, d2fdr2_ele)
 !
       allocate(d3fdr3_ele(sph_rj%nnod_rj))
@@ -442,10 +583,8 @@
      &   (ithree, kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),            &
      &    fdm3e_vp0_CMB, d_rj, dr_rj, d3fdr3_ele)
 !
-      write(*,*) '3rd derivative from node to element'
-      write(*,*) 'order_of_reference, radius, r_ID, diff, ',            &
-     &           'FDM, Reference'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      write(id_file,*) '3rd derivative from node to element'
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                           r_ele, d3re_rj, d3fdr3_ele)
 !
       deallocate(d_ele, dfdr_ele, d2fdr2_ele, d3fdr3_ele)
@@ -455,11 +594,12 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine test_radial_1st_FDM_ele_to_nod(kr_in, kr_out, sph_rj,  &
-     &          de_rj, d_rj, dr_rj, r_e2n_1st)
+      subroutine test_radial_1st_FDM_ele_to_nod(id_file, kr_in, kr_out, &
+     &          sph_rj, de_rj, d_rj, dr_rj, r_e2n_1st)
 !
       use first_fdm_ele_to_node
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_e2n_1st
@@ -475,17 +615,17 @@
       allocate(d_e2n(sph_rj%nnod_rj))
       call cal_first_fdm_ele_to_node(izero, kr_in, kr_out, sph_rj,      &
      &                               r_e2n_1st, de_rj, d_e2n)
-      write(*,*) 'Interpolation from element to node'
-      write(*,*) 'order_of_reference, radius, r_ID, diff, ',            &
+      write(id_file,*) 'Interpolation from element to node'
+      write(id_file,*) 'order_of_reference, radius, r_ID, diff, ',      &
      &           'FDM, Reference'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                           sph_rj%radius_1d_rj_r, d_rj, d_e2n)
 !
       allocate(dfdr_e2n(sph_rj%nnod_rj))
       call cal_first_fdm_ele_to_node(ione, kr_in, kr_out, sph_rj,       &
      &                               r_e2n_1st, de_rj, dfdr_e2n)
-      write(*,*) '1st derivative from element to node'
-      call write_FDM_comparisons(6, kr_in, kr_out, sph_rj,              &
+      write(id_file,*) '1st derivative from element to node'
+      call write_FDM_comparisons(id_file, kr_in, kr_out, sph_rj,        &
      &                          sph_rj%radius_1d_rj_r, dr_rj, dfdr_e2n)
 !
       deallocate(d_e2n, dfdr_e2n)
@@ -494,11 +634,12 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine test_radial_4th_FDM(kr_in, kr_out, sph_rj,             &
+      subroutine test_radial_4th_FDM(id_file, kr_in, kr_out, sph_rj,    &
      &                               d_rj, dr_rj, d2r_rj, r_4th)
 !
       use forth_fdm_node_coefs
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: kr_in, kr_out
       type(sph_rj_grid), intent(in) ::  sph_rj
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
@@ -527,32 +668,32 @@
       allocate(dfdr_nod(sph_rj%nnod_rj))
       call cal_forth_fdm_node(ione, kr_in, kr_out, sph_rj,              &
      &                         r_4th, d_rj, dfdr_nod)
-      write(*,*) '1st derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '1st derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, dr_rj, dfdr_nod)
       deallocate(dfdr_nod)
 !
       allocate(dfdr_nod(sph_rj%nnod_rj))
       call cal_forth_fdm_node(itwo, kr_in, kr_out, sph_rj,              &
      &                        r_4th, d_rj, dfdr_nod)
-      write(*,*) '2nd derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '2nd derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, d2r_rj, dfdr_nod)
       deallocate(dfdr_nod)
 !
       allocate(dfdr_nod(sph_rj%nnod_rj))
       call cal_forth_fdm_node(ithree, kr_in, kr_out, sph_rj,            &
      &                        r_4th, d_rj, dfdr_nod)
-      write(*,*) '3rd derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '3rd derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, d3r_rj, dfdr_nod)
       deallocate(dfdr_nod)
 !
       allocate(dfdr_nod(sph_rj%nnod_rj))
       call cal_forth_fdm_node(ifour, kr_in, kr_out, sph_rj,             &
      &                        r_4th, d_rj, dfdr_nod)
-      write(*,*) '4th derivative'
-      call write_FDM_comparisons(6, kr_in, kr_out,                      &
+      write(id_file,*) '4th derivative'
+      call write_FDM_comparisons(id_file, kr_in, kr_out,                &
      &    sph_rj, sph_rj%radius_1d_rj_r, d4r_rj, dfdr_nod)
       deallocate(dfdr_nod)
       deallocate(d3r_rj, d4r_rj)
