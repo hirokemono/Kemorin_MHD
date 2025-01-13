@@ -393,17 +393,17 @@
       call set_sph_ele_pressure_FDM_mat7(sph_bc_U%kr_out,               &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call set_sph_FDM_hdiv_viscosity_mat                             &
+        call each_sph_FDM_hdiv_viscosity_mat                            &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,4), hdiv_visous_mat_CMB)
       else
-        call set_sph_FDM_hdiv_viscosity_mat                             &
+        call each_sph_FDM_hdiv_viscosity_mat                            &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)

@@ -92,8 +92,6 @@
      &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
      &    mat1_grad_p, mat2_viscous, hdiv_visous_mat,                   &
      &    band_vsp_evo%mat)
-      call add_unit_mat_vsp_evo                                         &
-     &   (sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, band_vsp_evo%mat)
 !
 !   Boundary condition for ICB
 !
@@ -591,42 +589,6 @@
 !
       end subroutine cal_exp_sph_vp_val_diffuse_CTR
 !
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine add_unit_mat_vsp_evo(sph_rj, kr_in, kr_out, mat7)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-!
-      real(kind = kreal), intent(inout)                                 &
-     &           :: mat7(7,2*sph_rj%nidx_rj(1),sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: k, j
-!
-!
-!$omp parallel do private (k,j)
-      do j = 1, sph_rj%nidx_rj(2)
-        do k = 1, kr_in-1
-          mat7(4,2*k-1,j) = one
-          mat7(4,2*k,  j) = one
-        end do
-        mat7(4,2*kr_in-1,j) = one
-        mat7(4,2*kr_in,  j) = zero
-        do k = kr_in+1, kr_out
-!          mat7(4,2*k-1,j) = zero
-          mat7(4,2*k,  j) = mat7(4,2*k,  j) + one
-        end do
-        do k = kr_out+1, sph_rj%nidx_rj(1)
-          mat7(4,2*k-1,j) = one
-          mat7(4,2*k,  j) = one
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine add_unit_mat_vsp_evo
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -177,10 +177,10 @@
 !
       integer(kind = kint) :: kr
 !
-      write(id_file,*) 'kr, r, coefficients'
+      write(id_file,*) 'r, kr, coefficients'
       do kr = 1, nri
-        write(id_file,'(i5,1p40e20.12)')                                &
-     &       kr, r(kr), fdm%dmat(kr,-fdm%n_minus:fdm%n_plus)
+        write(id_file,'(1pe20.12,i5,1p40e20.12)')                       &
+     &       r(kr), kr, fdm%dmat(kr,fdm%n_minus:fdm%n_plus)
       end do
 !
       end subroutine check_fdm_coef

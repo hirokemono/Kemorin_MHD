@@ -83,6 +83,7 @@
       call set_sph_one_over_radius_rj(sph1%sph_rj)
 
 !
+      iflag_debug = iflag_full_msg
       call init_FDM_coefs_for_test                                      &
      &   (sph1, SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,    &
      &    SPH_WK1%r_4th)
@@ -118,23 +119,34 @@
 !        write(*,*) k, Plm_WK1%g_sph_rj(k,1:3)
 !      end do
 !
-      i_debug = iflag_full_msg
+      fl_prop1%flag_viscous_variation =     .FALSE.
+      fl_prop1%flag_ref_density_valiation = .FALSE.
+      fl_prop1%coef_diffuse = 1.0d0
+      fl_prop1%coef_press = 5.0d0
+!
+!      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_free_slip
+      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo
+!
+      call const_radial_mat7_vpol_press2(dt, sph1%sph_rj,               &
+     &    SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,          &
+     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
+     &    sph_MHD_bc1%fdm2_center,                    &
+     &    Plm_WK1%g_sph_rj, radial_variation1, &
+     &    SPH_WK1%MHD_mats%band_vsp_evo)
+!
+      call const_radial_mat_toroidal_flow                               &
+     &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
+     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
+     &    SPH_WK1%MHD_mats%band_vt_evo)
+!
       call const_radial_mat_vort_2step(dt, sph1%sph_rj, SPH_WK1%r_2nd,  &
      &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
      &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
      &    SPH_WK1%MHD_mats%band_vs_poisson,                             &
      &    SPH_WK1%MHD_mats%band_vp_evo, SPH_WK1%MHD_mats%band_wt_evo)
 !
-      fl_prop1%flag_viscous_variation =     .FALSE.
-      fl_prop1%flag_ref_density_valiation = .FALSE.
-      fl_prop1%coef_press = 5.0d0
-      call const_radial_mat7_vpol_press2(dt, sph1%sph_rj,               &
-     &    SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,          &
-     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
-     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
-     &    radial_variation1, SPH_WK1%MHD_mats%band_vsp_evo)
-!
-      if(i_debug .eq. iflag_full_msg) then
+      if(iflag_debug .eq. iflag_full_msg) then
         open(id_file,file='FDM_MAT.txt')
         call check_velocity_matrices_sph(id_file, sph1%sph_rj,          &
      &                                   SPH_WK1%MHD_mats)
@@ -163,11 +175,12 @@
 !
       subroutine const_radial_mat7_vpol_press2(dt, sph_rj,              &
      &          r_2nd, r_n2e_3rd, r_e2n_1st, &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
-     &          radial_variation, band7_vsp_evo)
+     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center,    &
+     &          g_sph_rj, radial_variation, band7_vsp_evo)
 !
       use t_phys_data
       use cal_sph_pol_hdiv_viscousity
+      use cal_sph_pol_hdiv_vscs_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -202,90 +215,19 @@
      &                              sph_rj%nidx_rj(2), band7_vsp_evo)
       call set_unit_on_diag(band7_vsp_evo)
 !
-      call sph_FDM2_vpol_viscosity_mat2                                 &
+      call sph_FDM2_vpol_viscosity_mat                                  &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
      &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
      &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
+      call sph_FDM2_vpol_viscosity_mat_CMB                              &
+     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
+     &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
+     &    bc_fdms_U%fdm3e_vp0_CMB, bc_fdms_U%fdm3e_free_CMB,            &
+     &    hdiv_visous_mat, band7_vsp_evo%mat)
+!
       end subroutine const_radial_mat7_vpol_press2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sph_FDM2_vpol_viscosity_mat2                           &
-     &        (kr_st, kr_ed, sph_rj, fl_prop, radial_variation,         &
-     &         g_sph_rj, coef_p, coef_d, fdm_2, fdm_3e, fdm_e1,         &
-     &         mat2_viscous, hdiv_visous_mat, mat7)
-!
-      use sph_FDM_viscosities_mat
-      use cal_sph_FDM3e_hdiv_viscous
-      use cal_sph_FDM_viscosity_mat
-      use set_sph_pol_vscs_FDM2_mat
-      use set_sph_hdiv_vscs_FDM_mat7
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
-!
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
-      real(kind = kreal), intent(in)                                    &
-     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
-      real(kind = kreal), intent(in) :: coef_p, coef_d
-!
-      type(fdm_matrix), intent(in) :: fdm_2(2)
-      type(fdm_matrix), intent(in) :: fdm_3e(0:3)
-      type(fdm_matrix), intent(in) :: fdm_e1(0:1)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &           :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
-      real(kind = kreal), intent(inout)                                 &
-     &           :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
-!
-      real(kind = kreal) :: mat1_grad_p(sph_rj%nidx_rj(2),0:1)
-      integer(kind = kint) :: kr
-!
-!
-!$omp parallel do private(kr,hdiv_visous_mat)
-      do kr = kr_st+2, kr_ed-1
-        call set_sph_ele_pressure_FDM_mat7                              &
-     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
-!
-!        call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,           &
-!     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
-!     &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,         &
-!     &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
-!        call sub_sph_hdiv_viscous_FDM_mat7                             &
-!     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
-!     &      hdiv_visous_mat, mat7)
-      end do
-!$omp end parallel do
-!
-      write(*,*) 'coef_d', coef_d
-!
-!!$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
-      do kr = kr_st+1, kr_ed-1
-        call set_sph_FDM_pressure_grad_mat                             &
-     &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                   &
-     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,     &
-     &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
-        call set_sph_FDM_viscosity_mat                                 &
-     &     (fdm_2(1)%n_minus, fdm_2(1)%n_plus, kr,                     &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,       &
-     &      fdm_2(1)%nri_mat, fdm_2(1)%dmat, fdm_2(2)%dmat,            &
-     &      mat2_viscous)
-      write(*,*) 'mat2_viscous', mat2_viscous(3,-1:1)
-!
-        call sub_sph_pol_viscous_FDM2_mat                              &
-     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
-     &      mat1_grad_p, mat2_viscous, mat7)
-      end do
-!!$omp end parallel do
-      write(*,*) 'fdm_2(1)%n_minus, fdm_2(1)%n_plus', fdm_2(1)%n_minus, fdm_2(1)%n_plus
-!
-      end subroutine sph_FDM2_vpol_viscosity_mat2
 !
 ! -----------------------------------------------------------------------
 !
@@ -305,18 +247,23 @@
       type(fdm_matrices), intent(inout) :: r_e2n_1st
       type(fdm_matrices), intent(inout) :: r_4th
 !
+      integer(kind = kint), parameter :: id_check = 50
 !
+      write(*,*) '...',id_check, iflag_debug
       if (iflag_debug.gt.0) write(*,*) 'set_delta_r_4_sph_mhd'
       call set_delta_r_4_sph_mhd(sph%sph_params, sph%sph_rj)
 !
+      open(id_check, file='FDM.dat')
       if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
-      call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
+      call const_second_fdm_coefs(id_check, sph%sph_params, sph%sph_rj, &
+     &                            r_2nd)
       if (iflag_debug.gt.0) write(*,*) 'const_first_fdm_ele_to_node'
-      call const_first_fdm_ele_to_node(sph%sph_rj, r_e2n_1st)
+      call const_first_fdm_ele_to_node(id_check, sph%sph_rj, r_e2n_1st)
       if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
-      call const_third_fdm_node_to_ele(sph%sph_rj, r_n2e_3rd)
+      call const_third_fdm_node_to_ele(id_check, sph%sph_rj, r_n2e_3rd)
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
-      call const_forth_fdm_coefs(sph%sph_rj, r_4th)
+      call const_forth_fdm_coefs(id_check, sph%sph_rj, r_4th)
+      close(id_check)
 !
       end subroutine init_FDM_coefs_for_test
 !

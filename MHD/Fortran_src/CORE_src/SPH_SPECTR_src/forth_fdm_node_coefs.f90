@@ -7,7 +7,8 @@
 !>@brief  Forth order FDM on nodes
 !!
 !!@verbatim
-!!      subroutine const_forth_fdm_coefs(sph_rj, fdm_4th)
+!!      subroutine const_forth_fdm_coefs(id_check, sph_rj, fdm_4th)
+!!        integer(kind = kint), intent(in) :: id_check
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_4th
 !!      subroutine cal_forth_fdm_node(i_th, kr_in, kr_out,              &
@@ -86,8 +87,9 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine const_forth_fdm_coefs(sph_rj, fdm_4th)
+      subroutine const_forth_fdm_coefs(id_check, sph_rj, fdm_4th)
 !
+      integer(kind = kint), intent(in) :: id_check
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(inout) :: fdm_4th
 !
@@ -98,8 +100,8 @@
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_4th)
 !
       if(iflag_debug .gt. 0) then
-        call check_fdm_coefs                                            &
-     &     (50, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_4th)
+        call check_fdm_coefs(id_check, sph_rj%nidx_rj(1),               &
+     &                       sph_rj%radius_1d_rj_r, fdm_4th)
       end if
 !
       end subroutine const_forth_fdm_coefs

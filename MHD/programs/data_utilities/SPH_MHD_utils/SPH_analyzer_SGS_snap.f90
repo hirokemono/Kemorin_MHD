@@ -104,9 +104,6 @@
      &    SPH_model%omega_sph, SPH_model%MHD_prop,                      &
      &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
-      call const_forth_fdm_coefs(SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
-!
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
