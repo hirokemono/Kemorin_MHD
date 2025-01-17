@@ -16,26 +16,26 @@
 !!       d_ele(k) = half *(d_nod(k-1) + d_nod(k))
 !!
 !!    2nd order derivatives on node by nodal field
-!!      dfdr =    fdmn_nod%fdm(1)%dmat(k,-1) * d_nod(k-1)
-!!              + fdmn_nod%fdm(1)%dmat(k, 0) * d_nod(k  )
-!!              + fdmn_nod%fdm(1)%dmat(k, 1) * d_nod(k+1)
-!!      d2fdr2 =  fdmn_nod%fdm(2)%dmat(k,-1) * d_nod(k-1)
-!!              + fdmn_nod%fdm(2)%dmat(k, 0) * d_nod(k  )
-!!              + fdmn_nod%fdm(2)%dmat(k, 1) * d_nod(k+1)
+!!      dfdr =    fdm_nod%fdm(1)%dmat(k,-1) * d_nod(k-1)
+!!              + fdm_nod%fdm(1)%dmat(k, 0) * d_nod(k  )
+!!              + fdm_nod%fdm(1)%dmat(k, 1) * d_nod(k+1)
+!!      d2fdr2 =  fdm_nod%fdm(2)%dmat(k,-1) * d_nod(k-1)
+!!              + fdm_nod%fdm(2)%dmat(k, 0) * d_nod(k  )
+!!              + fdm_nod%fdm(2)%dmat(k, 1) * d_nod(k+1)
 !! ----------------------------------------------------------------------
 !!
 !!      subroutine alloc_nod_fdm_matrices                               &
-!!     &         (nri, ist_order, num_order, n_minus, n_plus, fdmn_nod)
-!!      subroutine dealloc_nod_fdm_matrices(fdmn_nod)
+!!     &         (nri, ist_order, num_order, n_minus, n_plus, fdm_nod)
+!!      subroutine dealloc_nod_fdm_matrices(fdm_nod)
 !!        integer(kind = kint), intent(in) :: nri, num_order
 !!        integer(kind = kint), intent(in) :: n_minus, n_plus
-!!        type(fdm_matrices), intent(inout) :: fdmn_nod
+!!        type(fdm_matrices), intent(inout) :: fdm_nod
 !!
-!!      subroutine check_fdm_coefs(id_file, nri, r, fdmn_nod)
+!!      subroutine check_fdm_coefs(id_file, nri, r, fdm_nod)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: nri
 !!        real(kind = kreal), intent(in) :: r(nri)
-!!        type(fdm_matrices), intent(in) :: fdmn_nod
+!!        type(fdm_matrices), intent(in) :: fdm_nod
 !!@endverbatim
 !!
 !!@n @param nri    number of radial grid points
@@ -47,6 +47,19 @@
 !
       implicit none
 !
+!
+!>        Structure of FDM matrix
+      type fdm_r_matrix
+!>        Number of radial points
+        integer(kind = kint) :: nri_mat
+!>        Width of matrix (positive side)
+        integer(kind = kint) :: n_plus
+!>        Width of matrix (negative side)
+        integer(kind = kint) :: n_minus
+!>        Coefficients to evaluate radial derivative
+!!        from nodal field by FDM
+        real(kind = kreal), allocatable :: dmat(:,:)
+      end type fdm_r_matrix
 !
 !>        Structure of FDM matrix
       type fdm_matrix
@@ -68,6 +81,8 @@
 !>        Maximum order for derivative
         integer(kind = kint) :: n_order
 !>        Structure of FDM matrix
+        type(fdm_r_matrix), allocatable :: r_fdm(:)
+!>        Structure of FDM matrix
         type(fdm_matrix), allocatable :: fdm(:)
       end type fdm_matrices
 !
@@ -81,61 +96,119 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_nod_fdm_matrices                                 &
-     &         (nri, ist_order, num_order, n_minus, n_plus, fdmn_nod)
+     &         (nri, ist_order, num_order, n_minus, n_plus, fdm_nod)
 !
       integer(kind = kint), intent(in) :: nri, ist_order, num_order
       integer(kind = kint), intent(in) :: n_minus, n_plus
-      type(fdm_matrices), intent(inout) :: fdmn_nod
+      type(fdm_matrices), intent(inout) :: fdm_nod
 !
       integer(kind = kint) :: i
 !
 !
-      fdmn_nod%ist_order = ist_order
-      fdmn_nod%n_order =   num_order
-      allocate( fdmn_nod%fdm(ist_order:num_order) )
+      fdm_nod%ist_order = ist_order
+      fdm_nod%n_order =   num_order
+      allocate(fdm_nod%fdm(ist_order:num_order))
+      allocate(fdm_nod%r_fdm(ist_order:num_order))
 !
-      do i = fdmn_nod%ist_order, fdmn_nod%n_order
-        call alloc_fdm_matrix(nri, n_minus, n_plus, fdmn_nod%fdm(i))
+      do i = fdm_nod%ist_order, fdm_nod%n_order
+        call alloc_fdm_matrix(nri, n_minus, n_plus, fdm_nod%fdm(i))
+        call alloc_fdm_r_matrix(nri, n_minus, n_plus, fdm_nod%r_fdm(i))
       end do
 !
       end subroutine alloc_nod_fdm_matrices
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_nod_fdm_matrices(fdmn_nod)
+      subroutine dealloc_nod_fdm_matrices(fdm_nod)
 !
-      type(fdm_matrices), intent(inout) :: fdmn_nod
+      type(fdm_matrices), intent(inout) :: fdm_nod
 !
       integer(kind = kint) :: i
 !
 !
-      do i = fdmn_nod%ist_order, fdmn_nod%n_order
-        call dealloc_fdm_matrix(fdmn_nod%fdm(i))
+      do i = fdm_nod%ist_order, fdm_nod%n_order
+        call dealloc_fdm_matrix(fdm_nod%fdm(i))
+        call dealloc_fdm_r_matrix(fdm_nod%r_fdm(i))
       end do
 !
-      deallocate(fdmn_nod%fdm)
+      deallocate(fdm_nod%fdm)
 !
       end subroutine dealloc_nod_fdm_matrices
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_fdm_coefs(id_file, nri, r, fdmn_nod)
+      subroutine check_fdm_coefs(id_file, nri, r, fdm_nod)
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
-      type(fdm_matrices), intent(in) :: fdmn_nod
+      type(fdm_matrices), intent(in) :: fdm_nod
 !
       integer(kind = kint) :: i
 !
 !
-      do i = fdmn_nod%ist_order, fdmn_nod%n_order
+      do i = fdm_nod%ist_order, fdm_nod%n_order
         write(id_file,*) 'Matrix for differences: ', i
-        call check_fdm_coef(id_file, nri, r, fdmn_nod%fdm(i))
+        call check_r_fdm_coef(id_file, nri, r, fdm_nod%r_fdm(i))
+!
+        write(id_file,*) 'Matrix for differences: ', i
+        call check_fdm_coef(id_file, nri, r, fdm_nod%fdm(i))
       end do
 !
       end subroutine check_fdm_coefs
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_fdm_r_matrix(nri, n_minus, n_plus, r_fdm)
+!
+      integer(kind = kint), intent(in) :: nri, n_minus, n_plus
+      type(fdm_r_matrix), intent(inout) :: r_fdm
+!
+!
+      r_fdm%nri_mat =  nri
+      r_fdm%n_plus =   n_plus
+      r_fdm%n_minus = -n_minus
+      allocate(r_fdm%dmat(r_fdm%n_minus:r_fdm%n_plus,r_fdm%nri_mat))
+!
+      if(r_fdm%nri_mat .gt. 0) then
+!$omp parallel workshare
+        r_fdm%dmat(r_fdm%n_minus:r_fdm%n_plus,1:r_fdm%nri_mat) = 0.0d0
+!$omp end parallel workshare
+      end if
+!
+      end subroutine alloc_fdm_r_matrix
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_fdm_r_matrix(r_fdm)
+!
+      type(fdm_r_matrix), intent(inout) :: r_fdm
+!
+      deallocate(r_fdm%dmat)
+!
+      end subroutine dealloc_fdm_r_matrix
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_r_fdm_coef(id_file, nri, r, r_fdm)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: r(nri)
+      type(fdm_r_matrix), intent(in) :: r_fdm
+!
+      integer(kind = kint) :: kr
+!
+      write(id_file,*) 'r, kr, coefficients'
+      do kr = 1, nri
+        write(id_file,'(1pe20.12,i5,1p40e20.12)')                       &
+     &       r(kr), kr, r_fdm%dmat(r_fdm%n_minus:r_fdm%n_plus,kr)
+      end do
+!
+      end subroutine check_r_fdm_coef
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
