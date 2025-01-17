@@ -225,6 +225,9 @@
 !
       use t_phys_data
       use cal_sph_pol_hdiv_viscousity
+      use cal_sph_pol_hdiv_vscs_CMB
+      use cal_sph_pol_hdiv_vscs_ICB
+      use set_sph_pol_hdiv_viscs_CTR
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -244,6 +247,7 @@
 !      integer(kind = kint) :: j
       real(kind = kreal) :: coef_dvt
 !
+      real(kind = kreal) :: mat_grad_p(sph_rj%nidx_rj(2),0:1)
       real(kind = kreal) :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
       real(kind = kreal) :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
 !
@@ -264,6 +268,26 @@
      &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
      &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call sph_FDM2_vpol_viscosity_mat_CTR                            &
+     &     (sph_rj, fl_prop, radial_variation, g_sph_rj, coef_dvt,      &
+     &      r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),                         &
+     &      fdm2_center, bc_fdms_U%fdm3e_CTR,                           &
+     &      mat_grad_p, mat2_viscous, hdiv_visous_mat,                  &
+     &      band7_vsp_evo%mat)
+      else
+        call sph_FDM2_vpol_viscosity_mat_ICB(sph_rj, fl_prop,           &
+     &      radial_variation, sph_bc_U, g_sph_rj, coef_dvt,             &
+     &      bc_fdms_U%fdm3e_vp0_ICB, bc_fdms_U%fdm3e_free_ICB,          &
+     &      hdiv_visous_mat, band7_vsp_evo%mat)
+      end if
+!
+      call sph_FDM2_vpol_viscosity_mat_CMB                              &
+     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
+     &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
+     &    bc_fdms_U%fdm3e_vp0_CMB, bc_fdms_U%fdm3e_free_CMB,            &
+     &    hdiv_visous_mat, band7_vsp_evo%mat)
 !
       end subroutine const_radial_mat7_vpol_press
 !
