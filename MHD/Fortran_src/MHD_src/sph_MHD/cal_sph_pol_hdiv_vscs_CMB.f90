@@ -399,14 +399,14 @@
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
-     &      fdm3e_free_CMB%dmat_vp0(-2,4), hdiv_visous_mat_CMB)
+     &      fdm3e_free_CMB%dmat_vp0(-2,4), hdiv_visous_mat_CMB(1,-2))
       else
         call each_sph_FDM_hdiv_viscosity_mat                            &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
      &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
-     &      hdiv_visous_mat_CMB)
+     &      hdiv_visous_mat_CMB(1,-2))
       end if
       call sub_sph_hdiv_viscous_mat7_CMB                                &
      &   (sph_bc_U%kr_out, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),        &

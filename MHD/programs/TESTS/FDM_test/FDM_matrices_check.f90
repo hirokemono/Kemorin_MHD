@@ -124,6 +124,11 @@
       fl_prop1%coef_diffuse = 1.0d0
       fl_prop1%coef_press = 5.0d0
 !
+      sph_MHD_bc1%sph_bc_U%kr_in = 1
+      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_sph_fill_center
+!      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_free_slip
+!      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_fixed_velo
+!
 !      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_free_slip
       sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo
 !
@@ -200,6 +205,7 @@
 !      integer(kind = kint) :: j
       real(kind = kreal) :: coef_dvt
 !
+      real(kind = kreal) :: mat_grad_p(sph_rj%nidx_rj(2),0:1)
       real(kind = kreal) :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
       real(kind = kreal) :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
 !
@@ -221,6 +227,14 @@
      &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
+      call sph_FDM2_vpol_viscosity_mat_ICB2                             &
+     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
+     &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
+     &    r_e2n_1st%fdm(0), r_n2e_3rd%fdm(0),  bc_fdms_U%fdm3e_CTR,     &
+     &    bc_fdms_U%fdm3e_vp0_ICB, bc_fdms_U%fdm3e_free_ICB,            &
+     &    fdm2_center, mat_grad_p, mat2_viscous, hdiv_visous_mat,       &
+     &    band7_vsp_evo%mat)
+!
       call sph_FDM2_vpol_viscosity_mat_CMB                              &
      &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
      &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
@@ -230,6 +244,129 @@
       end subroutine const_radial_mat7_vpol_press2
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine sph_FDM2_vpol_viscosity_mat_ICB2                       &
+     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,  g_sph_rj,  &
+     &         coef_p, coef_d, fdm_e1, fdm_3e, fdm3e_CTR,               &
+     &         fdm3e_vp0_ICB, fdm3e_free_ICB, fdm2_center,              &
+     &         mat_grad_p, mat2_viscous, hdiv_visous_mat_ICB, mat7)
+!
+      use t_boundary_params_sph_MHD
+      use t_coef_fdm3_n2e_zero_vp_ICB
+      use t_coef_fdm3_n2e_free_vp_ICB
+      use t_coef_fdm3_n2e_zero_vp_CTR
+      use sph_FDM_viscosities_mat
+      use cal_sph_FDM3e_hdiv_viscous
+      use set_sph_pol_vscs_FDM2_mat
+      use set_sph_hdiv_vscs_FDM_mat7
+      use cal_sph_FDM_viscosity_mat
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(phys_data), intent(in) :: radial_variation
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+!
+      real(kind = kreal), intent(in)                                    &
+     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
+      real(kind = kreal), intent(in) :: coef_p, coef_d
+!
+      type(fdm_matrix), intent(in) :: fdm_3e(0:3)
+      type(fdm_matrix), intent(in) :: fdm_e1(0:1)
+      type(fdm3_n2e_CTR_vpol), intent(in) :: fdm3e_CTR
+      type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
+      type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat_grad_p(sph_rj%nidx_rj(2),0:1)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat2_viscous(sph_rj%nidx_rj(2),-1:1)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
+!
+      integer(kind = kint) :: kr
+!
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call set_sph_ele_pressure_FDM_mat7                              &
+     &     (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &      fl_prop%coef_press, mat7)
+        call each_sph_FDM_hdiv_viscosity_mat                            &
+     &     (ione, izero, ione, sph_rj, fl_prop,                         &
+     &      radial_variation, g_sph_rj, coef_d,                         &
+     &      fdm3e_CTR%dmat_vp0( 0,1), fdm3e_CTR%dmat_vp0( 0,2),         &
+     &      fdm3e_CTR%dmat_vp0( 0,3), fdm3e_CTR%dmat_vp0( 0,4),         &
+     &      hdiv_visous_mat_ICB(1,0))
+        write(*,*) 'hdiv_visous_mat_CTR0', hdiv_visous_mat_ICB(1,:)
+        call sub_sph_hdiv_viscous_mat7_CTR                              &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      hdiv_visous_mat_ICB(1,0), mat7)
+!
+        call set_sph_FDM_pressure_grad_mat                              &
+     &     (ione, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                  &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      fl_prop%coef_press, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat,      &
+     &      mat_grad_p(1,0))
+        write(*,*) 'g_sph_rj', g_sph_rj(:,3)
+        write(*,*) 'mat_grad_p', mat_grad_p(:,1)
+!
+        call each_sph_FDM_viscosity_mat(izero, ione, ione,              &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      fdm2_center%dmat_fix_fld(0,2),                              &
+     &      fdm2_center%dmat_fix_fld(0,3), mat2_viscous(1,0))
+        write(*,*) 'mat2_viscous', mat2_viscous(6,:)
+        call sub_sph_pol_viscous_mat7_CTR1                              &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      mat_grad_p(1,0), mat2_viscous(1,0), mat7)
+!
+        call set_sph_ele_pressure_FDM_mat7                              &
+     &     (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &      fl_prop%coef_press, mat7)
+        call set_sph_FDM_hdiv_viscosity_mat(itwo, -itwo, ione,          &
+     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
+     &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat_ICB(1,-2))
+        call sub_sph_hdiv_viscous_mat7_CTR1                             &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      hdiv_visous_mat_ICB(1,-1), mat7)
+        return
+      else
+        do kr = 1, sph_bc_U%kr_in
+          call set_sph_pol_viscous_mat7_ICB                             &
+     &       (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
+        end do
+      end if
+!
+      call set_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
+        call each_sph_FDM_hdiv_viscosity_mat                            &
+     &     ((sph_bc_U%kr_in+1), -ione, ione, sph_rj, fl_prop,           &
+     &      radial_variation, g_sph_rj, coef_d,                         &
+     &      fdm3e_free_ICB%dmat_vp0(-1,1),                              &
+     &      fdm3e_free_ICB%dmat_vp0(-1,2),                              &
+     &      fdm3e_free_ICB%dmat_vp0(-1,3),                              &
+     &      fdm3e_free_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB(1,-1))
+      else
+        call each_sph_FDM_hdiv_viscosity_mat                            &
+     &     ((sph_bc_U%kr_in+1), -ione, ione, sph_rj, fl_prop,           &
+     &      radial_variation, g_sph_rj, coef_d,                         &
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,1), fdm3e_vp0_ICB%dmat_vp0(-1,2), &
+     &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
+     &      hdiv_visous_mat_ICB(1,-1))
+      end if
+!
+      call sub_sph_hdiv_viscous_mat7_ICB1((sph_bc_U%kr_in+1),           &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &    hdiv_visous_mat_ICB(1,-1), mat7)
+!
+      end subroutine sph_FDM2_vpol_viscosity_mat_ICB2
+!
+!  -------------------------------------------------------------------
 !
       subroutine init_FDM_coefs_for_test                                &
      &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, r_4th)
