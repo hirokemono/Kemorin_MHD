@@ -281,7 +281,7 @@
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   (itwo, -ione, fdm_e3(1)%n_plus,                                &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(2), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CTR)
       call sum_exp4_sph_pol_grad_p                                      &
      &   (itwo, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
@@ -465,7 +465,7 @@
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   (itwo, -ione, fdm_e3(1)%n_plus,                                &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(2), g_sph_rj,        &
      &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CTR)
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &

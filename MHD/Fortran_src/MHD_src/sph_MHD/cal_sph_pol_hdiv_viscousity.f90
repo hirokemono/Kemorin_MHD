@@ -180,7 +180,7 @@
       do kr = kr_st+1, kr_ed-1
         call set_sph_FDM_pressure_grad_mat                              &
      &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                    &
-     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(kr), g_sph_rj,     &
      &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
         call sum_exp2_sph_pol_grad_p                                    &
      &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
@@ -264,7 +264,7 @@
       do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_pressure_grad_mat                              &
      &     (kr, fdm_e3(1)%n_minus, fdm_e3(1)%n_plus,                    &
-     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(kr), g_sph_rj,     &
      &      coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
         call sum_exp4_sph_pol_grad_p                                    &
      &     (kr, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
@@ -344,7 +344,7 @@
       do kr = kr_st+1, kr_ed-1
         call set_sph_FDM_pressure_grad_mat                              &
      &     (kr, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,                    &
-     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(kr), g_sph_rj,     &
      &      coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p)
 !
         call set_sph_FDM_viscosity_mat                                  &
@@ -416,7 +416,7 @@
       do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_pressure_grad_mat                              &
      &     (kr, fdm_e3(1)%n_minus, fdm_e3(1)%n_plus,                    &
-     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,      &
+     &      sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(kr), g_sph_rj,     &
      &      coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p)
 !
         call set_sph_FDM_viscosity_mat                                  &

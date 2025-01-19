@@ -202,8 +202,9 @@
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   (sph_bc_U%kr_out, fdm_e1(1)%n_minus, fdm_e1(1)%n_plus,         &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
-     &    coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat, mat1_grad_p_CMB)
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(sph_bc_U%kr_out),    &
+     &    g_sph_rj, coef_p, fdm_e1(1)%nri_mat, fdm_e1(1)%dmat,          &
+     &    mat1_grad_p_CMB)
       call sum_exp2_sph_pol_grad_p_CMB                                  &
      &   (sph_bc_U%kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),           &
      &    press_e, mat1_grad_p_CMB(1,-1), d_grad_p)
@@ -281,16 +282,18 @@
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   ((sph_bc_U%kr_out-1), fdm_e3(1)%n_minus, izero,                &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
-     &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CMB)
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(sph_bc_U%kr_out-1),  &
+     &    g_sph_rj, coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat,          &
+     &    mat3_grad_p_CMB)
       call sum_exp4_sph_pol_grad_p_CMB1                                 &
      &   ((sph_bc_U%kr_out-1), sph_rj%nnod_rj, sph_rj%nidx_rj(2),       &
      &    press_e, mat3_grad_p_CMB(1,-1), d_grad_p)
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   (sph_bc_U%kr_out, fdm_e3(1)%n_minus, izero,                    &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
-     &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CMB)
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(sph_bc_U%kr_out),    &
+     &    g_sph_rj, coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat,          &
+     &    mat3_grad_p_CMB)
       call sum_exp4_sph_pol_grad_p_CMB                                  &
      &   (sph_bc_U%kr_out, sph_rj%nnod_rj, sph_rj%nidx_rj(2),           &
      &    press_e, mat3_grad_p_CMB(1,-1), d_grad_p)
@@ -480,8 +483,9 @@
 !
       call set_sph_FDM_pressure_grad_mat                                &
      &   ((sph_bc_U%kr_out-1), fdm_e3(1)%n_minus, izero,                &
-     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(1), g_sph_rj,        &
-     &    coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat, mat3_grad_p_CMB)
+     &    sph_rj%nidx_rj(2), sph_rj%radius_1d_rj_r(sph_bc_U%kr_out-1),  &
+     &    g_sph_rj, coef_p, fdm_e3(1)%nri_mat, fdm_e3(1)%dmat,          &
+     &    mat3_grad_p_CMB)
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_viscosity_mat                                  &
