@@ -93,11 +93,18 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(inout) :: fdm_4th
 !
+      real(kind = kreal), allocatable :: mat_fdm(:,:,:)
+!
 !
       call alloc_nod_fdm_matrices                                       &
      &   (sph_rj%nidx_rj(1), ione, ifour, itwo, itwo, fdm_4th)
+!
+      allocate(mat_fdm(5,5,sph_rj%nidx_rj(1)))
       call set_forth_fdm_node                                           &
-     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_4th)
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
+      call copy_forth_fdm_node(sph_rj%nidx_rj(1), mat_fdm,              &
+     &                         fdm_4th%r_fdm, fdm_4th%fdm)
+      deallocate(mat_fdm)
 !
       if(iflag_debug .gt. 0) then
         call check_fdm_coefs(id_check, sph_rj%nidx_rj(1),               &
@@ -127,22 +134,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_forth_fdm_node(nri, r, fdm_4th)
+      subroutine set_forth_fdm_node(nri, r, mat_fdm)
 !
       use cal_inverse_small_matrix
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
-      type(fdm_matrices), intent(inout) :: fdm_4th
+      real(kind = kreal), intent(inout) :: mat_fdm(5,5,nri)
 !
       integer(kind = kint) :: kr, ierr
 !
-      real(kind = kreal), allocatable :: mat_fdm(:,:,:)
       real(kind = kreal) :: mat_taylor_5(5,5)
       real(kind = kreal) :: delta(-2:1)
 !
 !
-      allocate(mat_fdm(5,5,nri))
 !$omp parallel workshare
       mat_fdm(1:5,1:5,1:nri) = 0.0d0
 !$omp end parallel workshare
@@ -183,16 +188,15 @@
       end do
 !$omp end parallel do
 !
-      call copy_forth_fdm_node(nri, mat_fdm, fdm_4th%fdm)
-!
       end subroutine set_forth_fdm_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_forth_fdm_node(nri, mat_fdm, fdm)
+      subroutine copy_forth_fdm_node(nri, mat_fdm, r_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(5,5,nri)
+      type(fdm_r_matrix), intent(inout) :: r_fdm
       type(fdm_matrix), intent(inout) :: fdm(4)
 !
       integer(kind= kint) :: i, k
@@ -206,6 +210,18 @@
           fdm(i)%dmat(k, 0) = mat_fdm(i+1,1,k)
           fdm(i)%dmat(k, 1) = mat_fdm(i+1,3,k)
           fdm(i)%dmat(k, 2) = mat_fdm(i+1,5,k)
+        end do
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private (i,k)
+      do i = 0, 4
+        do k = 1, nri-1
+          r_fdm%dmat(-2,k,i) = mat_fdm(i+1,4,k)
+          r_fdm%dmat(-1,k,i) = mat_fdm(i+1,2,k)
+          r_fdm%dmat( 0,k,i) = mat_fdm(i+1,1,k)
+          r_fdm%dmat( 1,k,i) = mat_fdm(i+1,3,k)
+          r_fdm%dmat( 2,k,i) = mat_fdm(i+1,5,k)
         end do
       end do
 !$omp end parallel do

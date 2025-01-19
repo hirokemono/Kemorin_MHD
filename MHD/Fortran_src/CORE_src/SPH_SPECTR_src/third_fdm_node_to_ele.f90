@@ -97,8 +97,8 @@
       call set_third_fdm_node_to_ele                                    &
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
-      call copy_third_fdm_node_to_ele                                   &
-     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_3rd_ele%fdm)
+      call copy_third_fdm_node_to_ele(sph_rj%nidx_rj(1), mat_fdm,       &
+     &                              fdm_3rd_ele%r_fdm, fdm_3rd_ele%fdm)
       deallocate(mat_fdm)
 !
       if(iflag_debug .gt. 0) then
@@ -192,10 +192,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_third_fdm_node_to_ele(nri, mat_fdm, fdm)
+      subroutine copy_third_fdm_node_to_ele(nri, mat_fdm, r_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(4,4,nri)
+      type(fdm_r_matrix), intent(inout) :: r_fdm
       type(fdm_matrix), intent(inout) :: fdm(0:3)
 !
       integer(kind= kint) :: i, k
@@ -204,6 +205,11 @@
 !$omp parallel do private (i,k)
       do i = 0, 3
         do k = 1, nri-1
+          r_fdm%dmat(-2,k,i) = mat_fdm(i+1,1,k)
+          r_fdm%dmat(-1,k,i) = mat_fdm(i+1,2,k)
+          r_fdm%dmat( 0,k,i) = mat_fdm(i+1,3,k)
+          r_fdm%dmat( 1,k,i) = mat_fdm(i+1,4,k)
+!
           fdm(i)%dmat(k,-2) = mat_fdm(i+1,1,k)
           fdm(i)%dmat(k,-1) = mat_fdm(i+1,2,k)
           fdm(i)%dmat(k, 0) = mat_fdm(i+1,3,k)
