@@ -13,8 +13,8 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_2nd
-!!      subroutine cal_second_fdm_node(i_th, kr_in, kr_out,             &
-!!     &          sph_rj, fdm_2nd, d_rj, dfdr_rj)
+!!      subroutine cal_second_fdm_node(i_th, kr_in, kr_out, sph_rj,     &
+!!     &                               fdm_2nd, d_rj, dfdr_rj)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
 !!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
@@ -59,7 +59,6 @@
       implicit none
 !
       private :: copy_second_fdm_node
-      private :: cal_sph_vect_second_dxr_node
 !
 !  -------------------------------------------------------------------
 !
@@ -102,24 +101,6 @@
       end subroutine const_second_fdm_coefs
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine cal_second_fdm_node(i_th, kr_in, kr_out,               &
-     &          sph_rj, fdm_2nd, d_rj, dfdr_rj)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
-      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
-      type(fdm_matrices), intent(in) :: fdm_2nd
-!
-      real(kind = kreal), intent(inout) :: dfdr_rj(sph_rj%nnod_rj)
-!
-!
-      call cal_sph_vect_second_dxr_node(kr_in, kr_out, sph_rj,          &
-     &    fdm_2nd%fdm(i_th), d_rj, dfdr_rj)
-!
-      end subroutine cal_second_fdm_node
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine copy_second_fdm_node(nri, mat_fdm, r_fdm)
@@ -160,12 +141,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_vect_second_dxr_node(kr_in, kr_out, sph_rj,    &
-     &                                        fdm, d_rj, dfdr_rj)
+      subroutine cal_second_fdm_node(i_th, kr_in, kr_out, sph_rj,       &
+     &                               fdm_2nd, d_rj, dfdr_rj)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fdm_matrix), intent(in) :: fdm
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(fdm_matrices), intent(in) :: fdm_2nd
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dfdr_rj(sph_rj%nnod_rj)
@@ -183,13 +164,13 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dfdr_rj(inod) =  fdm%dmat(k,-1) * d_rj(i_n1)                    &
-     &                 + fdm%dmat(k, 0) * d_rj(inod)                    &
-     &                 + fdm%dmat(k, 1) * d_rj(i_p1)
+        dfdr_rj(inod) =  fdm_2nd%dmat(-1,k,i_th) * d_rj(i_n1)           &
+     &                 + fdm_2nd%dmat( 0,k,i_th) * d_rj(inod)           &
+     &                 + fdm_2nd%dmat( 1,k,i_th) * d_rj(i_p1)
       end do
 !$omp end parallel do
 !
-      end subroutine cal_sph_vect_second_dxr_node
+      end subroutine cal_second_fdm_node
 !
 ! -----------------------------------------------------------------------
 !

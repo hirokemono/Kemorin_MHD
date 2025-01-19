@@ -69,7 +69,6 @@
       implicit none
 !
       private :: set_third_fdm_node_to_ele, copy_third_fdm_node_to_ele
-      private :: cal_sph_vect_dxr_ele
 !
 !  -------------------------------------------------------------------
 !
@@ -108,24 +107,6 @@
       end if
 !
       end subroutine const_third_fdm_node_to_ele
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_third_fdm_node_to_ele(i_th, kr_in, kr_out,         &
-     &          sph_rj, fdm_3rd_ele, d_rj, dele_dr)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
-      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
-      type(fdm_matrices), intent(in) :: fdm_3rd_ele
-!
-      real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
-!
-!
-      call cal_sph_vect_dxr_ele(kr_in, kr_out, sph_rj,                  &
-     &    fdm_3rd_ele%fdm(i_th), d_rj, dele_dr)
-!
-      end subroutine cal_third_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -222,12 +203,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_vect_dxr_ele(kr_in, kr_out, sph_rj,            &
-     &                                fdm, d_rj, dele_dr)
+      subroutine cal_third_fdm_node_to_ele(i_th, kr_in, kr_out,         &
+     &          sph_rj, fdm_3rd_ele, d_rj, dele_dr)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fdm_matrix), intent(in) :: fdm
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(fdm_matrices), intent(in) :: fdm_3rd_ele
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
@@ -246,14 +227,14 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dele_dr(inod) =  fdm%dmat(k,-2) * d_rj(i_n2)                    &
-     &                 + fdm%dmat(k,-1) * d_rj(i_n1)                    &
-     &                 + fdm%dmat(k, 0) * d_rj(inod)                    &
-     &                 + fdm%dmat(k, 1) * d_rj(i_p1)
+        dele_dr(inod) =  fdm_3rd_ele%dmat(-2,k,i_th) * d_rj(i_n2)       &
+     &                 + fdm_3rd_ele%dmat(-1,k,i_th) * d_rj(i_n1)       &
+     &                 + fdm_3rd_ele%dmat( 0,k,i_th) * d_rj(inod)       &
+     &                 + fdm_3rd_ele%dmat( 1,k,i_th) * d_rj(i_p1)
       end do
 !$omp end parallel do
 !
-      end subroutine cal_sph_vect_dxr_ele
+      end subroutine cal_third_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 !

@@ -10,10 +10,10 @@
 !!      subroutine const_first_fdm_node_to_ele(sph_rj, fdm_1st_ele)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_1st_ele
-!!      subroutine cal_first_fdm_node_to_ele(kr_in, kr_out, sph_rj,     &
-!!     &          fdm_1st_ele, d_rj, dele_dr)
+!!      subroutine cal_first_fdm_node_to_ele(i_th, kr_in, kr_out,       &
+!!     &           sph_rj, fdm_1st_ele, d_rj, dele_dr)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
 !!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !!        type(fdm_matrices), intent(in) :: fdm_1st_ele
 !!        real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
@@ -24,8 +24,8 @@
 !!       r_ele(k) = half *(r_nod(k-1) + r_nod(k))
 !!
 !!    derivatives on node by element field
-!!      dfdr_ele(k) =    fdm_1st_ele%fdm(1)%dmat(k,-1) * d_nod(k-1)
-!!                     + fdm_1st_ele%fdm(1)%dmat(k, 0) * d_nod(k)
+!!      dfdr_ele(k) =    fdm_1st_ele%dmat(-1,k,i_th) * d_nod(k-1)
+!!                     + fdm_1st_ele%dmat( 0,k,i_th) * d_nod(k)
 !!
 !!    fdm_1st_ele%fdm(1)%dmat = d1nod_mat_fdm_2e
 !!
@@ -55,7 +55,6 @@
       implicit none
 !
       private :: set_first_fdm_node_to_ele, copy_first_fdm_node_to_ele
-      private :: cal_sph_vect_dr_ele_1
 !
 !  -------------------------------------------------------------------
 !
@@ -86,23 +85,6 @@
       deallocate(mat_fdm)
 !
       end subroutine const_first_fdm_node_to_ele
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_first_fdm_node_to_ele(kr_in, kr_out, sph_rj,       &
-     &          fdm_1st_ele, d_rj, dele_dr)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
-      type(fdm_matrices), intent(in) :: fdm_1st_ele
-!
-      real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
-!
-      call cal_sph_vect_dr_ele_1(kr_in, kr_out, sph_rj,                 &
-     &    fdm_1st_ele%fdm(1), d_rj, dele_dr)
-!
-      end subroutine cal_first_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -171,12 +153,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_vect_dr_ele_1(kr_in, kr_out, sph_rj,           &
-     &                                 fdm1, d_rj, dele_dr)
+      subroutine cal_first_fdm_node_to_ele(i_th, kr_in, kr_out,         &
+     &           sph_rj, fdm_1st_ele, d_rj, dele_dr)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fdm_matrix), intent(in) :: fdm1
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(fdm_matrices), intent(in) :: fdm_1st_ele
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
@@ -193,12 +175,12 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dele_dr(inod) =  fdm1%dmat(k,-1) * d_rj(i_n1)                   &
-     &                 + fdm1%dmat(k, 0) * d_rj(inod)
+        dele_dr(inod) =  fdm_1st_ele%dmat(-1,k,i_th) * d_rj(i_n1)       &
+     &                 + fdm_1st_ele%dmat( 0,k,i_th) * d_rj(inod)
       end do
 !$omp end parallel do
 !
-      end subroutine cal_sph_vect_dr_ele_1
+      end subroutine cal_first_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 !

@@ -59,7 +59,6 @@
       implicit none
 !
       private :: set_first_fdm_ele_to_node, copy_first_fdm_ele_to_node
-      private :: cal_sph_vect_dr_nod_1
 !
 !  -------------------------------------------------------------------
 !
@@ -98,23 +97,6 @@
       end if
 !
       end subroutine const_first_fdm_ele_to_node
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,         &
-     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
-      real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
-      type(fdm_matrices), intent(in) :: fdm_1st_nod
-!
-      real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
-!
-      call cal_sph_vect_dr_nod_1(kr_in, kr_out, sph_rj,                 &
-     &    fdm_1st_nod%fdm(i_th), dele_rj, dnod_dr)
-!
-      end subroutine cal_first_fdm_ele_to_node
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -185,12 +167,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_vect_dr_nod_1(kr_in, kr_out, sph_rj,           &
-     &                                 fdm1, dele_rj, dnod_dr)
+      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,         &
+     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fdm_matrix), intent(in) :: fdm1
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      type(fdm_matrices), intent(in) :: fdm_1st_nod
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
@@ -207,12 +189,12 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dnod_dr(inod) =  fdm1%dmat(k, 0) * dele_rj(inod)                &
-     &                 + fdm1%dmat(k, 1) * dele_rj(i_p1)
+        dnod_dr(inod) =  fdm_1st_nod%dmat(0,k,i_th) * dele_rj(inod)     &
+     &                 + fdm_1st_nod%dmat(1,k,i_th) * dele_rj(i_p1)
       end do
 !$omp end parallel do
 !
-      end subroutine cal_sph_vect_dr_nod_1
+      end subroutine cal_first_fdm_ele_to_node
 !
 ! -----------------------------------------------------------------------
 !
