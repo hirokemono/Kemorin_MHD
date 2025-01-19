@@ -90,8 +90,7 @@
       call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
-      call copy_second_fdm_node                                         &
-     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_2nd%r_fdm, fdm_2nd%fdm)
+      call copy_second_fdm_node(sph_rj%nidx_rj(1), mat_fdm, fdm_2nd)
       deallocate(mat_fdm)
 !
       if(iflag_debug .gt. 0) then
@@ -123,12 +122,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_second_fdm_node(nri, mat_fdm, r_fdm, fdm)
+      subroutine copy_second_fdm_node(nri, mat_fdm, r_fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(3,3,nri)
-      type(fdm_r_matrix), intent(inout) :: r_fdm
-      type(fdm_matrix), intent(inout) :: fdm(2)
+      type(fdm_matrices), intent(inout) :: r_fdm
 !
       integer(kind= kint) :: i, k
 !
@@ -149,9 +147,9 @@
       do i = 1, 2
 !$omp do private (k)
         do k = 1, nri
-          fdm(i)%dmat(k,-1) = mat_fdm(i+1,3,k)
-          fdm(i)%dmat(k, 0) = mat_fdm(i+1,1,k)
-          fdm(i)%dmat(k, 1) = mat_fdm(i+1,2,k)
+          r_fdm%fdm(i)%dmat(k,-1) = mat_fdm(i+1,3,k)
+          r_fdm%fdm(i)%dmat(k, 0) = mat_fdm(i+1,1,k)
+          r_fdm%fdm(i)%dmat(k, 1) = mat_fdm(i+1,2,k)
         end do
 !$omp end do nowait
       end do
