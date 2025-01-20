@@ -193,13 +193,13 @@
         call set_sph_FDM_viscosity_mat                                  &
      &     (izero, ione, sph_bc_U%kr_in,                                &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm2_free_ICB%dmat_vp(-1,2),                          &
-     &      fdm2_free_ICB%dmat_vp(-1,3), mat2_viscous_ICB)
+     &      fdm2_free_ICB%dmat_vp( 0,2),                                &
+     &      fdm2_free_ICB%dmat_vp( 0,3), mat2_viscous_ICB)
       else
         call set_sph_FDM_viscosity_mat                                  &
      &     (izero, ione, sph_bc_U%kr_in,                                &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm2_fix_dr_ICB(-1,2), fdm2_fix_dr_ICB(-1,3),         &
+     &      fdm2_fix_dr_ICB( 0,2), fdm2_fix_dr_ICB(-1,3),               &
      &      mat2_viscous_ICB)
       end if
       call sum_exp2_sph_pol_viscous_ICB                                 &
@@ -303,13 +303,13 @@
         call set_sph_FDM_viscosity_mat                                  &
      &     (izero, itwo, sph_bc_U%kr_in,                                &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_free_ICB%dmat_vp0(0,2),                          &
+     &      fdm4_free_ICB%dmat_vp0(0,2),                                &
      &      fdm4_free_ICB%dmat_vp0(0,3), mat4_viscous_ICB)
       else
         call set_sph_FDM_viscosity_mat                                  &
      &     (izero, ione, sph_bc_U%kr_in,                                &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_noslip_ICB%dmat_vp0(0,2),                        &
+     &      fdm4_noslip_ICB%dmat_vp0(0,2),                              &
      &      fdm4_noslip_ICB%dmat_vp0(0,3), mat4_viscous_ICB)
       end if
       call sum_exp4_sph_pol_viscous_ICB(sph_bc_U%kr_in,                 &
@@ -342,13 +342,13 @@
         call set_sph_FDM_viscosity_mat                                  &
      &     (-ione, itwo, (sph_bc_U%kr_in+1),                            &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_free_ICB%dmat_vp1(-1,2),                         &
+     &      fdm4_free_ICB%dmat_vp1(-1,2),                               &
      &      fdm4_free_ICB%dmat_vp1(-1,3), mat4_viscous_ICB)
       else
         call set_sph_FDM_viscosity_mat                                  &
      &     (-ione, itwo, (sph_bc_U%kr_in+1),                            &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_noslip_ICB%dmat_vp1(-1,2),                       &
+     &      fdm4_noslip_ICB%dmat_vp1(-1,2),                             &
      &      fdm4_noslip_ICB%dmat_vp1(-1,3), mat4_viscous_ICB)
       end if
       call sum_exp4_sph_pol_viscous_ICB1((sph_bc_U%kr_in+1),            &
@@ -515,13 +515,13 @@
         call set_sph_FDM_viscosity_mat                                  &
      &     (-ione, itwo, (sph_bc_U%kr_in+1),                            &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_free_ICB%dmat_vp1(-1,2),                         &
+     &      fdm4_free_ICB%dmat_vp1(-1,2),                               &
      &      fdm4_free_ICB%dmat_vp1(-1,3), mat4_viscous_CMB1)
       else
         call set_sph_FDM_viscosity_mat                                  &
      &     (-ione, itwo, (sph_bc_U%kr_in+1),                            &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
-     &      ione, fdm4_noslip_ICB%dmat_vp1(-1,2),                       &
+     &      fdm4_noslip_ICB%dmat_vp1(-1,2),                             &
      &      fdm4_noslip_ICB%dmat_vp1(-1,3), mat4_viscous_CMB1)
       end if
       call sub_sph_pol_viscous_mat9_ICB1((sph_bc_U%kr_in+1),            &

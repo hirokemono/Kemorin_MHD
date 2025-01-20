@@ -155,16 +155,16 @@
 !
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
-     &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
-     &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CTR)
+     &    fdm4_pol_CTR%dmat_vp1(-1,2),                                  &
+     &    fdm4_pol_CTR%dmat_vp1(-1,3), mat4_viscous_CTR)
       call sum_exp4_sph_viscous_CTR1                                    &
      &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
      &    mat4_viscous_CTR(1,0), d_viscous_p)
 !
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
-     &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
-     &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CTR)
+     &    fdm4_pol_CTR%dmat_vp1(-1,2),                                  &
+     &    fdm4_pol_CTR%dmat_vp1(-1,3), mat4_viscous_CTR)
       call sum_exp4_sph_viscous_CTR2                                    &
      &   (itwo, sph_rj%nnod_rj, sph_rj%nidx_rj(2), d_vpol,              &
      &    mat4_viscous_CTR(1,-1), d_viscous_p)
@@ -244,8 +244,8 @@
      &    fdm_e3%dmat(0,1,1), mat3_grad_p_CTR)
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
-     &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
-     &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CMB1)
+     &    fdm4_pol_CTR%dmat_vp1(-1,2),                                  &
+     &    fdm4_pol_CTR%dmat_vp1(-1,3), mat4_viscous_CMB1)
       call sub_sph_pol_viscous_mat9_CTR1                                &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    mat3_grad_p_CTR(1,0), mat4_viscous_CMB1(1,0), mat9)
@@ -256,8 +256,8 @@
      &    fdm_e3%dmat(-1,2,1), mat3_grad_p_CTR)
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
-     &    ione, fdm4_pol_CTR%dmat_vp1(-2,2),                            &
-     &    fdm4_pol_CTR%dmat_vp1(-2,3), mat4_viscous_CMB1)
+     &    fdm4_pol_CTR%dmat_vp1(-1,2),                                  &
+     &    fdm4_pol_CTR%dmat_vp1(-1,3), mat4_viscous_CMB1)
       call sub_sph_pol_viscous_mat9_CTR2                                &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    mat3_grad_p_CTR(1,-1), mat4_viscous_CMB1(1,-1), mat9)

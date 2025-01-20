@@ -148,7 +148,7 @@
 !
       call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
      &    sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,          &
-     &    ione, fdm2_center%dmat_fix_dr(-1,2),                          &
+     &    fdm2_center%dmat_fix_dr(-1,2),                                &
      &    fdm2_center%dmat_fix_dr(-1,3), mat2_viscous_CTR)
       call sum_exp2_sph_viscous_CTR1                                    &
      &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
