@@ -12,12 +12,13 @@
 !!     &          coef_d, fdm_d1_mat, fdm_d2_mat, mat_viscous)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
 !!        integer(kind = kint), intent(in) :: n_in, n_out
 !!        integer(kind = kint), intent(in) :: kr, nri_fdm
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_d
+!!        real(kind = kreal), intent(in) :: relative_d, h_nu
+!!        real(kind = kreal), intent(in) :: h_rho, h_drhodr
 !!        real(kind = kreal), intent(in) :: fdm_d1_mat(n_in:n_out)
 !!        real(kind = kreal), intent(in) :: fdm_d2_mat(n_in:n_out)
 !!        real(kind = kreal), intent(inout)                             &
@@ -65,20 +66,22 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_sph_FDM_viscosity_mat(n_in, n_out, kr,             &
-     &          sph_rj, fl_prop, radial_variation, g_sph_rj,            &
-     &          coef_d, fdm_d1_mat, fdm_d2_mat, mat_viscous)
+     &          sph_rj, fl_prop, g_sph_rj,                              &
+     &          coef_d, relative_d, h_nu, h_rho, h_drhodr,              &
+     &          fdm_d1_mat, fdm_d2_mat, mat_viscous)
 !
       use cal_sph_FDM_viscosity_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
 !
       integer(kind = kint), intent(in) :: n_in, n_out
       integer(kind = kint), intent(in) :: kr
       real(kind = kreal), intent(in)                                    &
      &                   :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_d
+      real(kind = kreal), intent(in) :: relative_d, h_nu
+      real(kind = kreal), intent(in) :: h_rho, h_drhodr
       real(kind = kreal), intent(in) :: fdm_d1_mat(n_in:n_out)
       real(kind = kreal), intent(in) :: fdm_d2_mat(n_in:n_out)
 !
@@ -94,11 +97,7 @@
      &    fl_prop%flag_viscous_variation,                               &
      &    fl_prop%flag_ref_density_valiation,                           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(kr,1),                     &
-     &    radial_variation%d_fld(kr+1,fl_prop%ir_nu),                   &
-     &    radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),             &
-     &    radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),            &
-     &    radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),           &
-     &    fdm_d1_mat, mat_viscous)
+     &    relative_d, h_nu, h_rho, h_drhodr, fdm_d1_mat, mat_viscous)
 !
       mat_viscous(1:sph_rj%nidx_rj(2),n_in:n_out)                       &
      &       = coef_d * mat_viscous(1:sph_rj%nidx_rj(2),n_in:n_out)

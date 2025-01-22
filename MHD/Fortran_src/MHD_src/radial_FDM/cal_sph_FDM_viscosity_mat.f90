@@ -17,8 +17,8 @@
 !!        real(kind = kreal), intent(in) :: fdm_e2n_d1_mat(n_in:n_out)
 !!      subroutine add_sph_FDM_val_viscous_mat(n_in, n_out,             &
 !!     &          flag_viscous_variation, flag_ref_density_valiation,   &
-!!     &          jmax, a1_radius, relative_d, h_nu, h_rho,             &
-!!     &          h_drhodr, fdm_d1_mat, mat_viscous)
+!!     &          jmax, a1_radius, relative_d, h_nu, h_rho, h_drhodr,   &
+!!     &          fdm_d1_mat, mat_viscous)
 !!        logical, intent(in) :: flag_viscous_variation
 !!        logical, intent(in) :: flag_ref_density_valiation
 !!        integer(kind = kint), intent(in) :: n_in, n_out
@@ -155,8 +155,8 @@
 !
       subroutine add_sph_FDM_val_viscous_mat(n_in, n_out,               &
      &          flag_viscous_variation, flag_ref_density_valiation,     &
-     &          jmax, a1_radius, relative_d, h_nu, h_rho,               &
-     &          h_drhodr, fdm_d1_mat, mat_viscous)
+     &          jmax, a1_radius, relative_d, h_nu, h_rho, h_drhodr,     &
+     &          fdm_d1_mat, mat_viscous)
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation

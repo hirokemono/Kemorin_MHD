@@ -192,7 +192,11 @@
       do kr = kr_st+1, kr_ed-1
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_2%n_minus, fdm_2%n_plus, kr,                            &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
      &      fdm_2%dmat(fdm_2%n_minus,kr,1),                             &
      &      fdm_2%dmat(fdm_2%n_minus,kr,2), mat2_viscous)
         call sum_exp2_sph_pol_viscous                                   &
@@ -245,6 +249,7 @@
      &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !
       real(kind = kreal) :: mat3_grad_p(-sph_rj%nidx_rj(2),1:2)
+!
       integer(kind = kint) :: kr
 !
 !
@@ -276,7 +281,11 @@
       do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_4%n_minus, fdm_4%n_plus, kr,                            &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
      &      fdm_4%dmat(fdm_4%n_minus,kr,1),                             &
      &      fdm_4%dmat(fdm_4%n_minus,kr,2), mat4_viscous)
         call sum_exp4_sph_pol_viscous                                   &
@@ -323,6 +332,7 @@
      &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
       real(kind = kreal) :: mat1_grad_p(sph_rj%nidx_rj(2),0:1)
+!
       integer(kind = kint) :: kr
 !
 !
@@ -349,7 +359,11 @@
 !
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_2%n_minus, fdm_2%n_plus, kr,                            &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
      &      fdm_2%dmat(fdm_2%n_minus,kr,1),                             &
      &      fdm_2%dmat(fdm_2%n_minus,kr,2), mat2_viscous)
         call sub_sph_pol_viscous_FDM2_mat                               &
@@ -395,6 +409,7 @@
      &           :: mat9(9,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
       real(kind = kreal) :: mat3_grad_p(-sph_rj%nidx_rj(2),1:2)
+!
       integer(kind = kint) :: kr
 !
 !
@@ -421,7 +436,11 @@
 !
         call set_sph_FDM_viscosity_mat                                  &
      &     (fdm_4%n_minus, fdm_4%n_plus, kr,                            &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
+     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
      &      fdm_4%dmat(fdm_4%n_minus,kr,1),                             &
      &      fdm_4%dmat(fdm_4%n_minus,kr,2), mat4_viscous)
         call sub_sph_pol_viscous_FDM4_mat                               &
