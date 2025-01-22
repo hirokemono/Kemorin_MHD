@@ -191,7 +191,8 @@
 !$omp parallel do private(kr,mat1_grad_p,mat2_viscous)
       do kr = kr_st+1, kr_ed-1
         call set_sph_FDM_viscosity_mat                                  &
-     &     (fdm_2%n_minus, fdm_2%n_plus, kr,                            &
+     &     (fdm_2%n_minus, fdm_2%n_plus,                                &
+     &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
      &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
@@ -280,7 +281,8 @@
 !$omp parallel do private(kr,mat3_grad_p,mat4_viscous)
       do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_viscosity_mat                                  &
-     &     (fdm_4%n_minus, fdm_4%n_plus, kr,                            &
+     &     (fdm_4%n_minus, fdm_4%n_plus,                                &
+     &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
      &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
@@ -358,7 +360,8 @@
      &      fdm_e1%dmat(fdm_e1%n_minus,kr,1), mat1_grad_p)
 !
         call set_sph_FDM_viscosity_mat                                  &
-     &     (fdm_2%n_minus, fdm_2%n_plus, kr,                            &
+     &     (fdm_2%n_minus, fdm_2%n_plus,                                &
+     &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
      &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
@@ -435,7 +438,8 @@
      &      fdm_e3%dmat(fdm_e3%n_minus,kr,1), mat3_grad_p)
 !
         call set_sph_FDM_viscosity_mat                                  &
-     &     (fdm_4%n_minus, fdm_4%n_plus, kr,                            &
+     &     (fdm_4%n_minus, fdm_4%n_plus,                                &
+     &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
      &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
      &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &

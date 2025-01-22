@@ -149,12 +149,13 @@
      &    press_e, mat1_grad_p_CTR(1,0), d_grad_p)
 !
       kr = 2
-      call set_sph_FDM_viscosity_mat(-ione, itwo, itwo,                 &
+      call set_sph_FDM_viscosity_mat(-ione, itwo,                       &
+     &    sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),                 &
      &    sph_rj, fl_prop, g_sph_rj, coef_d,                            &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &    radial_variation%d_fld(kr+1,fl_prop%ir_nu),                   &
+     &    radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),             &
+     &    radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),            &
+     &    radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),           &
      &    fdm2_center%dmat_fix_dr(-1,2),                                &
      &    fdm2_center%dmat_fix_dr(-1,3), mat2_viscous_CTR)
       call sum_exp2_sph_viscous_CTR1                                    &
