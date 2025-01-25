@@ -168,7 +168,11 @@
       do kr = kr_st+2, kr_ed-1
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (kr, fdm_3e%n_minus, fdm_3e%n_plus,                          &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             & 
+     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
+     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,0),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,1),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,2),                           &
@@ -263,7 +267,11 @@
       do kr = kr_st+2, kr_ed-1
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (kr, fdm_3e%n_minus, fdm_3e%n_plus,                          &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             & 
+     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
+     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,0),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,1),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,2),                           &
@@ -354,7 +362,11 @@
      &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (kr, fdm_3e%n_minus, fdm_3e%n_plus,                          &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             & 
+     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
+     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,0),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,1),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,2),                           &
@@ -435,7 +447,11 @@
       do kr = kr_st+2, kr_ed-2
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (kr, fdm_3e%n_minus, fdm_3e%n_plus,                          &
-     &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
+     &      sph_rj, fl_prop, g_sph_rj, coef_d,                          &
+     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             & 
+     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
+     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,0),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,1),                           &
      &      fdm_3e%dmat(fdm_3e%n_minus,kr,2),                           &
