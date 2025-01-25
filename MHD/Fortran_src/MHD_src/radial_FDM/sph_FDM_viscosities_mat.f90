@@ -24,14 +24,14 @@
 !!        real(kind = kreal), intent(in) :: fdm_d2_mat(n_in:n_out)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: mat_viscous(jmax,n_in:n_out)
-!!      subroutine set_sph_FDM_hdiv_viscosity_mat(n_in, n_out, jmax,    &
-!!     &          a1r_ele_rj, a2r_ele_rj, a3r_ele_rj,                   &
-!!     &          fl_prop, g_sph_rj, coef_d,                            &
-!!     &          relative_d, h_nu, h_rho, h_drhodr,                    &
+!!      subroutine set_sph_FDM_hdiv_viscosity_mat(n_in, n_out,          &
+!!     &          flag_viscous_variation, flag_ref_density_valiation,   &
+!!     &          jmax, a1r_ele_rj, a2r_ele_rj, a3r_ele_rj,             &
+!!     &          g_sph_rj, coef_d, relative_d, h_nu, h_rho, h_drhodr,  &
 !!     &          fdm3e_d0_mat, fdm3e_d1_mat,                           &
 !!     &          fdm3e_d2_mat, fdm3e_d3_mat, hdiv_visous_mat)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
+!!        logical, intent(in) :: flag_viscous_variation
+!!        logical, intent(in) :: flag_ref_density_valiation
 !!        integer(kind = kint), intent(in) :: n_in, n_out, jmax
 !!        real(kind = kreal), intent(in) :: a1r_ele_rj
 !!        real(kind = kreal), intent(in) :: a2r_ele_rj
@@ -106,17 +106,17 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_sph_FDM_hdiv_viscosity_mat(n_in, n_out, jmax,      &
-     &          a1r_ele_rj, a2r_ele_rj, a3r_ele_rj,                     &
-     &          fl_prop, g_sph_rj, coef_d,                              &
-     &          relative_d, h_nu, h_rho, h_drhodr,                      &
+      subroutine set_sph_FDM_hdiv_viscosity_mat(n_in, n_out,            &
+     &          flag_viscous_variation, flag_ref_density_valiation,     &
+     &          jmax, a1r_ele_rj, a2r_ele_rj, a3r_ele_rj,               &
+     &          g_sph_rj, coef_d, relative_d, h_nu, h_rho, h_drhodr,    &
      &          fdm3e_d0_mat, fdm3e_d1_mat,                             &
      &          fdm3e_d2_mat, fdm3e_d3_mat, hdiv_visous_mat)
 !
       use cal_sph_FDM3e_hdiv_viscous
 !
-      type(fluid_property), intent(in) :: fl_prop
-!
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
       integer(kind = kint), intent(in) :: n_in, n_out, jmax
       real(kind = kreal), intent(in) :: a1r_ele_rj
       real(kind = kreal), intent(in) :: a2r_ele_rj
@@ -138,12 +138,10 @@
      &    a2r_ele_rj, a3r_ele_rj, g_sph_rj,                             &
      &    fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d3_mat, hdiv_visous_mat)
 !
-      if(fl_prop%flag_viscous_variation                                 &
-     &    .or. fl_prop%flag_ref_density_valiation) then
-        call add_sph_FDM_val_hdiv_vscs_mat                              &
-     &     (n_in, n_out, fl_prop%flag_viscous_variation,                &
-     &      fl_prop%flag_ref_density_valiation, jmax,                   &
-     &      a1r_ele_rj, a2r_ele_rj, g_sph_rj,                           &
+      if(flag_viscous_variation .or. flag_ref_density_valiation) then
+        call add_sph_FDM_val_hdiv_vscs_mat(n_in, n_out,                 &
+     &      flag_viscous_variation,  flag_ref_density_valiation,        &
+     &      jmax, a1r_ele_rj, a2r_ele_rj, g_sph_rj,                     &
      &      relative_d, h_nu, h_rho, h_drhodr,                          &
      &      fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat, hdiv_visous_mat)
       end if

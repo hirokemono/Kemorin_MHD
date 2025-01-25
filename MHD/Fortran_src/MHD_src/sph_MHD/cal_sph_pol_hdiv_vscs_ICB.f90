@@ -225,9 +225,11 @@
       kr = sph_bc_U%kr_in+1
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -238,9 +240,11 @@
      &      fdm3e_free_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
       else
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -361,9 +365,11 @@
       kr = sph_bc_U%kr_in + 1
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -374,11 +380,13 @@
      &      fdm3e_free_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB)
       else
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             & 
+     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
      &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
      &      fdm3e_vp0_ICB%dmat_vp0(-1,1), fdm3e_vp0_ICB%dmat_vp0(-1,2), &
@@ -471,9 +479,11 @@
       kr = sph_bc_U%kr_in+1
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -484,9 +494,11 @@
      &      fdm3e_free_ICB%dmat_vp0(-1,4), hdiv_visous_mat_ICB(1,-1))
       else
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -564,9 +576,11 @@
       kr = sph_bc_U%kr_in+1
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -577,9 +591,11 @@
      &      fdm3e_free_ICB%dmat_vp0(-2,4), hdiv_visous_mat_ICB)
       else
         call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      fl_prop, g_sph_rj, coef_d,                                  &
+     &      g_sph_rj, coef_d,                                           &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
@@ -633,9 +649,11 @@
       kr = sph_bc_U%kr_in+2
       call set_sph_FDM_hdiv_viscosity_mat                               &
      &   (fdm_e3%n_minus, fdm_e3%n_plus,                                &
+     &    fl_prop%flag_viscous_variation,                               &
+     &    fl_prop%flag_ref_density_valiation,                           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),               &
-     &    fl_prop, g_sph_rj, coef_d,                                    &
+     &    g_sph_rj, coef_d,                                             &
      &    radial_variation%d_fld(kr,fl_prop%ir_nu),                     &
      &    radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),               &
      &    radial_variation%d_fld(kr,fl_prop%ir_drho_norm),              &
