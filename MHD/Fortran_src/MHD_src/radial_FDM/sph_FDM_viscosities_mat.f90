@@ -108,7 +108,7 @@
 !
       subroutine set_sph_FDM_hdiv_viscosity_mat(kr, n_in, n_out,        &
      &          sph_rj, fl_prop, radial_variation, g_sph_rj,            &
-     &          coef_d, nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat,            &
+     &          coef_d, fdm3e_d0_mat, fdm3e_d1_mat,                     &
      &          fdm3e_d2_mat, fdm3e_d3_mat, hdiv_visous_mat)
 !
       use cal_sph_FDM3e_hdiv_viscous
@@ -118,42 +118,36 @@
       type(phys_data), intent(in) :: radial_variation
 !
       integer(kind = kint), intent(in) :: n_in, n_out
-      integer(kind = kint), intent(in) :: kr, nri_fdm
+      integer(kind = kint), intent(in) :: kr
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d0_mat(nri_fdm,n_in:n_out)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d1_mat(nri_fdm,n_in:n_out)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d2_mat(nri_fdm,n_in:n_out)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d3_mat(nri_fdm,n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d0_mat(n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d1_mat(n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d2_mat(n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d3_mat(n_in:n_out)
 !
       real(kind = kreal), intent(inout)                                 &
      &     :: hdiv_visous_mat(sph_rj%nidx_rj(2),n_in:n_out)
 !
 !
       call set_sph_FDM_fix_hdiv_vscs_mat                                &
-     &   (kr, n_in, n_out, sph_rj%nidx_rj(2),                           &
-     &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
-     &    nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d3_mat,            &
+     &   (n_in, n_out, sph_rj%nidx_rj(2),                               &
+     &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),               &
+     &    g_sph_rj, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d3_mat,           &
      &    hdiv_visous_mat)
 !
       if(fl_prop%flag_viscous_variation                                 &
      &    .or. fl_prop%flag_ref_density_valiation) then
         call add_sph_FDM_val_hdiv_vscs_mat                              &
-     &     (kr, n_in, n_out, fl_prop%flag_viscous_variation,            &
-     &      fl_prop%flag_ref_density_valiation,                         &
-     &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), g_sph_rj,                           &
+     &     (n_in, n_out, fl_prop%flag_viscous_variation,                &
+     &      fl_prop%flag_ref_density_valiation, sph_rj%nidx_rj(2),      &
+     &      sph_rj%ar_ele_rj(kr,1), sph_rj%ar_ele_rj(kr,2), g_sph_rj,   &
      &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
      &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
      &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
      &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
-     &      nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,          &
-     &      hdiv_visous_mat)
+     &      fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat, hdiv_visous_mat)
       end if
 !
       hdiv_visous_mat(1:sph_rj%nidx_rj(2),n_in:n_out)                   &
@@ -188,7 +182,7 @@
      &     :: hdiv_visous_mat(sph_rj%nidx_rj(2),n_in:n_out)
 !
 !
-      call each_sph_FDM_fix_hdiv_vscs_mat                               &
+      call set_sph_FDM_fix_hdiv_vscs_mat                                &
      &   (n_in, n_out, sph_rj%nidx_rj(2),                               &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d3_mat, hdiv_visous_mat)
@@ -216,31 +210,27 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine add_sph_FDM_val_hdiv_vscs_mat(kr, n_in, n_out,         &
-     &         flag_viscous_variation, flag_ref_density_valiation,      &
-     &         jmax, a1r_ele_rj, a2r_ele_rj, g_sph_rj,                  &
-     &         relative_d, h_nu, h_rho, h_drhodr,                       &
-     &         nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,       &
-     &         hdiv_visous_mat)
+      subroutine add_sph_FDM_val_hdiv_vscs_mat(n_in, n_out,             &
+     &          flag_viscous_variation, flag_ref_density_valiation,     &
+     &          jmax, a1r_ele_rj, a2r_ele_rj, g_sph_rj,                 &
+     &          relative_d, h_nu, h_rho, h_drhodr,                      &
+     &          fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,               &
+     &          hdiv_visous_mat)
 !
       use cal_sph_FDM3e_hdiv_viscous
 !
       logical, intent(in) :: flag_viscous_variation
       logical, intent(in) :: flag_ref_density_valiation
       integer(kind = kint), intent(in) :: n_in, n_out
-      integer(kind = kint), intent(in) :: kr, nri_fdm
       integer(kind = kint), intent(in) :: jmax
       real(kind = kreal), intent(in) :: a1r_ele_rj
       real(kind = kreal), intent(in) :: a2r_ele_rj
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,17)
       real(kind = kreal), intent(in) :: relative_d(2), h_nu(2)
       real(kind = kreal), intent(in) :: h_rho(2), h_drhodr(2)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d0_mat(nri_fdm,n_in:n_out)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d1_mat(nri_fdm,n_in:n_out)
-      real(kind = kreal), intent(in)                                    &
-     &                    :: fdm3e_d2_mat(nri_fdm,n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d0_mat(n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d1_mat(n_in:n_out)
+      real(kind = kreal), intent(in) :: fdm3e_d2_mat(n_in:n_out)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: hdiv_visous_mat(jmax,n_in:n_out)
@@ -257,14 +247,13 @@
       h_drhodr_e =  half * (h_drhodr(1) + h_drhodr(2))
 !
       if(flag_ref_density_valiation) then
-        call add_sph_hdiv_viscous_rho_depend(kr, n_in, n_out, jmax,     &
+        call add_sph_hdiv_viscous_rho_depend(n_in, n_out, jmax,         &
      &      a1r_ele_rj, a2r_ele_rj, g_sph_rj, h_rho_e, h_drhodr_e,      &
-     &      nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,          &
-     &      hdiv_visous_mat)
+     &      fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat, hdiv_visous_mat)
 !
         if(flag_viscous_variation) then
           mat_tmp(n_in:n_out)                                           &
-     &       = h_nu_e * h_rho_e * fdm3e_d1_mat(kr,n_in:n_out)
+     &       = h_nu_e * h_rho_e * fdm3e_d1_mat(n_in:n_out)
           do i_next = n_in, n_out
             hdiv_visous_mat(1:jmax,i_next)                              &
      &        = hdiv_visous_mat(1:jmax,i_next) + mat_tmp(i_next)
@@ -272,10 +261,9 @@
         end if
       end if
       if(flag_viscous_variation) then
-        call add_sph_hdiv_viscous_nu_depend(kr, n_in, n_out, jmax,      &
+        call add_sph_hdiv_viscous_nu_depend(n_in, n_out, jmax,          &
      &      a1r_ele_rj, a2r_ele_rj, g_sph_rj, relative_de, h_nu_e,      &
-     &      nri_fdm, fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,          &
-     &      hdiv_visous_mat)
+     &      fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat, hdiv_visous_mat)
       end if
 !
       end subroutine add_sph_FDM_val_hdiv_vscs_mat
@@ -319,7 +307,7 @@
       h_drhodr_e =  half * (h_drhodr(1) + h_drhodr(2))
 !
       if(flag_ref_density_valiation) then
-        call each_sph_hdiv_vscs_rho_depend(n_in, n_out, jmax,           &
+        call add_sph_hdiv_viscous_rho_depend(n_in, n_out, jmax,         &
      &      a1r_ele_rj, a2r_ele_rj, g_sph_rj, h_rho_e, h_drhodr_e,      &
      &       fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat,                  &
      &      hdiv_visous_mat)
@@ -334,7 +322,7 @@
         end if
       end if
       if(flag_viscous_variation) then
-        call each_sph_hdiv_vscs_nu_depend(n_in, n_out, jmax,            &
+        call add_sph_hdiv_viscous_nu_depend(n_in, n_out, jmax,          &
      &      a1r_ele_rj, a2r_ele_rj, g_sph_rj, relative_de, h_nu_e,      &
      &      fdm3e_d0_mat, fdm3e_d1_mat, fdm3e_d2_mat, hdiv_visous_mat)
       end if

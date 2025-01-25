@@ -266,14 +266,13 @@
       call sph_FDM2_vpol_viscosity_mat                                  &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
      &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
-     &    r_2nd, r_n2e_3rd%fdm(0), r_e2n_1st,                           &
+     &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call sph_FDM2_vpol_viscosity_mat_CTR                            &
      &     (sph_rj, fl_prop, radial_variation, g_sph_rj, coef_dvt,      &
-     &      r_n2e_3rd%fdm(0), r_e2n_1st,                                &
-     &      fdm2_center, bc_fdms_U%fdm3e_CTR,                           &
+     &      r_n2e_3rd, r_e2n_1st, fdm2_center, bc_fdms_U%fdm3e_CTR,     &
      &      mat_grad_p, mat2_viscous, hdiv_visous_mat,                  &
      &      band7_vsp_evo%mat)
       else

@@ -97,7 +97,7 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
-!!        type(fdm_matrix), intent(in) :: fdm_3e(0:3)
+!!        type(fdm_matrices), intent(in) :: fdm_3e
 !!        type(fdm_matrices), intent(in) :: fdm_e3
 !!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
 !!        type(fdm4_CMB_zero_vpol), intent(in) :: fdm4_noslip_CMB
@@ -181,10 +181,11 @@
       integer(kind = kint) :: kr
 !
 !
+      kr = sph_bc_U%kr_out
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -192,7 +193,7 @@
       else
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)
@@ -349,7 +350,7 @@
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -357,7 +358,7 @@
       else
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)
@@ -494,7 +495,7 @@
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
 !
-      type(fdm_matrix), intent(in) :: fdm_3e(0:3)
+      type(fdm_matrices), intent(in) :: fdm_3e
       type(fdm_matrices), intent(in) :: fdm_e3
       type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
       type(fdm4_CMB_zero_vpol), intent(in) :: fdm4_noslip_CMB
@@ -514,11 +515,14 @@
       integer(kind = kreal) :: kr
 !
 !
+      kr = sph_bc_U%kr_out-1
       call set_sph_FDM_hdiv_viscosity_mat                               &
-     &   ((sph_bc_U%kr_out-1), -itwo, ione, sph_rj, fl_prop,            &
+     &   ((sph_bc_U%kr_out-1), fdm_e3%n_minus, fdm_e3%n_plus, sph_rj, fl_prop,            &
      &    radial_variation, g_sph_rj, coef_d,                           &
-     &    fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,            &
-     &    fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat_CMB)
+     &    fdm_3e%dmat(fdm_e3%n_minus,kr,0),                             &
+     &    fdm_3e%dmat(fdm_e3%n_minus,kr,1),                             &
+     &    fdm_3e%dmat(fdm_e3%n_minus,kr,2),                             &
+     &    fdm_3e%dmat(fdm_e3%n_minus,kr,3), hdiv_visous_mat_CMB)
       call add_sph_ele_pressure_FDM_mat9((sph_bc_U%kr_out-1),           &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat9)
       call sub_sph_hdiv_viscous_mat9_CMB1(sph_bc_U%kr_out,              &
@@ -567,7 +571,7 @@
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -575,7 +579,7 @@
       else
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (sph_bc_U%kr_out, -itwo, izero, sph_rj, fl_prop,             &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)

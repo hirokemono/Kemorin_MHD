@@ -119,7 +119,7 @@
 !
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (ione, izero, ione, sph_rj, fl_prop,                         &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_center%dmat_vp0(-2,1),                                &
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
@@ -130,7 +130,7 @@
 !
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (itwo, -ione, ione, sph_rj, fl_prop,                         &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_center%dmat_vp0(-2,1),                                &
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
@@ -234,7 +234,7 @@
 !
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (ione, izero, ione, sph_rj, fl_prop,                         &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_center%dmat_vp0(-2,1),                                &
      &      fdm3e_center%dmat_vp0(-2,2),                                &
      &      fdm3e_center%dmat_vp0(-2,3),                                &
@@ -247,7 +247,7 @@
 !
         call set_sph_FDM_hdiv_viscosity_mat                             &
      &     (itwo, -ione, ione, sph_rj, fl_prop,                         &
-     &      radial_variation, g_sph_rj, coef_d, ione,                   &
+     &      radial_variation, g_sph_rj, coef_d,                         &
      &      fdm3e_center1%dmat_vp0(-2,1),                               &
      &      fdm3e_center1%dmat_vp0(-2,2),                               &
      &      fdm3e_center1%dmat_vp0(-2,3),                               &
