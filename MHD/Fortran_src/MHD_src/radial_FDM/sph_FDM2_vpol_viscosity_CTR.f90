@@ -8,14 +8,15 @@
 !!      for Valuable density
 !!
 !!@verbatim
-!!      subroutine sph_exp_FDM2_vpol_viscosity_CTR                      &
-!!     &        (sph_rj, fl_prop, g_sph_rj,  coef_p, coef_d,            &
-!!     &         relative_d, h_nu, h_rho, h_drhodr,                     &
+!!      subroutine sph_exp_FDM2_vpol_viscosity_CTR(sph_rj, g_sph_rj,    &
+!!     &         flag_viscous_variation, flag_ref_density_valiation,    &
+!!     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
 !!     &         fdm_e1, fdm2_center, fdm3e_center, d_vpol, press_e,    &
 !!     &         mat2_viscous_CTR, hdiv_visous_mat_CTR,                 &
 !!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(fluid_property), intent(in) :: fl_prop
+!!        logical, intent(in) :: flag_viscous_variation
+!!        logical, intent(in) :: flag_ref_density_valiation
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -38,13 +39,15 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: hdiv_viscous_e(sph_rj%nnod_rj)
 !!
-!!      subroutine sph_FDM2_vpol_viscosity_mat_CTR(sph_rj, fl_prop,     &
-!!     &         g_sph_rj, coef_d, relative_d, h_nu, h_rho, h_drhodr,   &
+!!      subroutine sph_FDM2_vpol_viscosity_mat_CTR(sph_rj, g_sph_rj,    &
+!!     &         flag_viscous_variation, flag_ref_density_valiation,    &
+!!     &         corf_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
 !!     &         fdm_3e, fdm_e1, fdm2_center, fdm3e_CTR,                &
 !!     &         mat_grad_p_CTR, mat2_viscous_CTR1, hdiv_visous_mat_CTR,&
 !!     &         mat7)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(fluid_property), intent(in) :: fl_prop
+!!        logical, intent(in) :: flag_viscous_variation
+!!        logical, intent(in) :: flag_ref_density_valiation
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -79,9 +82,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_exp_FDM2_vpol_viscosity_CTR                        &
-     &        (sph_rj, fl_prop, g_sph_rj,  coef_p, coef_d,              &
-     &         relative_d, h_nu, h_rho, h_drhodr,                       &
+      subroutine sph_exp_FDM2_vpol_viscosity_CTR(sph_rj, g_sph_rj,      &
+     &         flag_viscous_variation, flag_ref_density_valiation,      &
+     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,       &
      &         fdm_e1, fdm2_center, fdm3e_center, d_vpol, press_e,      &
      &         mat2_viscous_CTR, hdiv_visous_mat_CTR,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
@@ -96,8 +99,9 @@
       use sum_sph_hdiv_vscs_FDM_exp
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fluid_property), intent(in) :: fl_prop
 !
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
@@ -130,8 +134,7 @@
 !
       kr = 1
       call set_sph_FDM_hdiv_viscosity_mat(izero, ione,                  &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
@@ -145,8 +148,7 @@
 !
       kr = 2
       call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                  &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
@@ -168,8 +170,7 @@
 !
       kr = 2
       call set_sph_FDM_viscosity_mat(-ione, itwo, sph_rj%nidx_rj(2),    &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2), g_sph_rj,       &
      &    coef_d, relative_d(kr+1), h_nu(kr+1),                         &
      &    h_rho(kr+1), h_drhodr(kr+1),                                  &
@@ -184,8 +185,9 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine sph_FDM2_vpol_viscosity_mat_CTR(sph_rj, fl_prop,       &
-     &         g_sph_rj, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
+      subroutine sph_FDM2_vpol_viscosity_mat_CTR(sph_rj, g_sph_rj,      &
+     &         flag_viscous_variation, flag_ref_density_valiation,      &
+     &         corf_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,       &
      &         fdm_3e, fdm_e1, fdm2_center, fdm3e_CTR,                  &
      &         mat_grad_p_CTR, mat2_viscous_CTR1, hdiv_visous_mat_CTR,  &
      &         mat7)
@@ -199,11 +201,12 @@
       use set_sph_hdiv_vscs_FDM_mat7
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fluid_property), intent(in) :: fl_prop
 !
+      logical, intent(in) :: flag_viscous_variation
+      logical, intent(in) :: flag_ref_density_valiation
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
-      real(kind = kreal), intent(in) :: coef_d
+      real(kind = kreal), intent(in) :: corf_p, coef_d
       real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
       real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
       real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
@@ -229,11 +232,9 @@
 !
       kr = 1
       call set_sph_ele_pressure_FDM_mat7                                &
-     &   (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                   &
-     &    fl_prop%coef_press, mat7)
+     &   (ione, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), corf_p, mat7)
       call set_sph_FDM_hdiv_viscosity_mat(izero, ione,                  &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
@@ -247,11 +248,10 @@
       kr = 1
       call set_sph_FDM_pressure_grad_mat                                &
      &   (fdm_e1%n_minus, fdm_e1%n_plus, sph_rj%nidx_rj(2),             &
-     &    sph_rj%radius_1d_rj_r(kr), g_sph_rj, fl_prop%coef_press,      &
+     &    sph_rj%radius_1d_rj_r(kr), g_sph_rj, corf_p,                  &
      &    fdm_e1%dmat(fdm_e1%n_minus,1,1),  mat_grad_p_CTR(1,0))
       call set_sph_FDM_viscosity_mat(izero, ione, sph_rj%nidx_rj(2),    &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),                 &
      &    g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),               &
      &    h_rho(kr+1), h_drhodr(kr+1),                                  &
@@ -263,11 +263,9 @@
 !
       kr = 2
       call set_sph_ele_pressure_FDM_mat7                                &
-     &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                   &
-     &    fl_prop%coef_press, mat7)
+     &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), corf_p, mat7)
       call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                  &
-     &    fl_prop%flag_viscous_variation,                               &
-     &    fl_prop%flag_ref_density_valiation,                           &
+     &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
