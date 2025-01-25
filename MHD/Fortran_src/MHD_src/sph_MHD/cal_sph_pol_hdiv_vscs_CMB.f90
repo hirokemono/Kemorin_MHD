@@ -8,19 +8,22 @@
 !!
 !!@verbatim
 !!      subroutine sph_exp_FDM2_vpol_viscosity_CMB                      &
-!!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
-!!     &         g_sph_rj, coef_p, coef_d, fdm_e1,                      &
-!!     &         fdm2_fix_dr_CMB, fdm2_free_CMB,                        &
+!!     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                   &
+!!     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
+!!     &         fdm_e1, fdm2_fix_dr_CMB, fdm2_free_CMB,                &
 !!     &         fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,        &
 !!     &         mat2_viscous_CMB, hdiv_visous_mat_CMB,                 &
 !!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
+!!        real(kind=kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !!        type(fdm_matrices), intent(in) :: fdm_e1
 !!        type(fdm2_CMB_free_slip), intent(in) :: fdm2_free_CMB
 !!        real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
@@ -37,19 +40,22 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !!      subroutine sph_exp_FDM4_vpol_viscosity_CMB                      &
-!!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
-!!     &         g_sph_rj, coef_p, coef_d, fdm_e3,                      &
-!!     &         fdm4_noslip_CMB, fdm4_free_vp_CMB,                     &
-!!     &         fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,        &
-!!     &         mat4_viscous_CMB, hdiv_visous_mat_CMB,                 &
-!!     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
+!!     &         (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                  &
+!!     &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,    &
+!!     &          fdm_e3, fdm4_noslip_CMB, fdm4_free_vp_CMB,            &
+!!     &          fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,       &
+!!     &          mat4_viscous_CMB, hdiv_visous_mat_CMB,                &
+!!     &          d_grad_p, d_viscous_p, hdiv_viscous_e)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
+!!        real(kind=kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !!        type(fdm_matrices), intent(in) :: fdm_e3
 !!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
 !!        type(fdm4_CMB_zero_vpol), intent(in) :: fdm4_noslip_CMB
@@ -67,17 +73,20 @@
 !!     &                   :: hdiv_viscous_e(sph_rj%nnod_rj)
 !!
 !!      subroutine sph_FDM2_vpol_viscosity_mat_CMB                      &
-!!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
-!!     &         g_sph_rj, coef_p, coef_d,                              &
+!!     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                   &
+!!     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
 !!     &         fdm3e_vp0_CMB, fdm3e_free_CMB,                         &
 !!     &         hdiv_visous_mat_CMB, mat7)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
+!!        real(kind=kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !!        type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
 !!        type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
 !!        real(kind = kreal), intent(inout)                             &
@@ -85,18 +94,21 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: mat7(7,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !!      subroutine sph_FDM4_vpol_viscosity_mat_CMB                      &
-!!     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,           &
-!!     &         g_sph_rj, coef_p, coef_d, fdm_3e, fdm_e3,              &
-!!     &         fdm4_noslip_CMB, fdm4_free_vp_CMB,                     &
+!!     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                   &
+!!     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,     &
+!!     &         fdm_3e, fdm_e3, fdm4_noslip_CMB, fdm4_free_vp_CMB,     &
 !!     &         fdm3e_vp0_CMB, fdm3e_free_CMB,                         &
 !!     &         mat4_viscous_CMB1, hdiv_visous_mat_CMB, mat9)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_data), intent(in) :: radial_variation
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
 !!        real(kind = kreal), intent(in) :: coef_p, coef_d
+!!        real(kind=kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+!!        real(kind=kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !!        type(fdm_matrices), intent(in) :: fdm_3e
 !!        type(fdm_matrices), intent(in) :: fdm_e3
 !!        type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
@@ -130,9 +142,9 @@
 !  -------------------------------------------------------------------
 !
       subroutine sph_exp_FDM2_vpol_viscosity_CMB                        &
-     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
-     &         g_sph_rj, coef_p, coef_d, fdm_e1,                        &
-     &         fdm2_fix_dr_CMB, fdm2_free_CMB,                          &
+     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                     &
+     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,       &
+     &         fdm_e1, fdm2_fix_dr_CMB, fdm2_free_CMB,                  &
      &         fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,          &
      &         mat2_viscous_CMB, hdiv_visous_mat_CMB,                   &
      &         d_grad_p, d_viscous_p, hdiv_viscous_e)
@@ -150,12 +162,15 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !
       type(fdm_matrices), intent(in) :: fdm_e1
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
@@ -187,12 +202,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -202,12 +213,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)
@@ -232,11 +239,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm2_free_CMB%dmat_vp(-1,2),                                &
      &      fdm2_free_CMB%dmat_vp(-1,3), mat2_viscous_CMB)
       else
@@ -244,11 +248,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm2_fix_dr_CMB(-1,2), fdm2_fix_dr_CMB(-1,3),               &
      &      mat2_viscous_CMB)
       end if
@@ -261,12 +262,12 @@
 !  -------------------------------------------------------------------
 !
       subroutine sph_exp_FDM4_vpol_viscosity_CMB                        &
-     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
-     &         g_sph_rj, coef_p, coef_d, fdm_e3,                        &
-     &         fdm4_noslip_CMB, fdm4_free_vp_CMB,                       &
-     &         fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,          &
-     &         mat4_viscous_CMB, hdiv_visous_mat_CMB,                   &
-     &         d_grad_p, d_viscous_p, hdiv_viscous_e)
+     &         (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                    &
+     &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,      &
+     &          fdm_e3, fdm4_noslip_CMB, fdm4_free_vp_CMB,              &
+     &          fdm3e_vp0_CMB, fdm3e_free_CMB, d_vpol, press_e,         &
+     &          mat4_viscous_CMB, hdiv_visous_mat_CMB,                  &
+     &          d_grad_p, d_viscous_p, hdiv_viscous_e)
 !
       use t_boundary_params_sph_MHD
       use t_coef_fdm3_n2e_zero_vp_CMB
@@ -282,12 +283,15 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !
       type(fdm_matrices), intent(in) :: fdm_e3
       type(fdm4_CMB_free_vpol), intent(in) :: fdm4_free_vp_CMB
@@ -336,11 +340,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_free_vp_CMB%dmat_vp1(-2,2),                            &
      &      fdm4_free_vp_CMB%dmat_vp1(-2,3), mat4_viscous_CMB)
       else
@@ -348,11 +349,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_noslip_CMB%dmat_vp1(-2,2),                             &
      &      fdm4_noslip_CMB%dmat_vp1(-2,3), mat4_viscous_CMB)
       end if
@@ -367,12 +365,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -382,12 +376,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)
@@ -402,11 +392,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_free_vp_CMB%dmat_vp0(-2,2),                            &
      &      fdm4_free_vp_CMB%dmat_vp0(-2,3), mat4_viscous_CMB)
       else
@@ -414,11 +401,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_noslip_CMB%dmat_vp0(-2,2),                             &
      &      fdm4_noslip_CMB%dmat_vp0(-2,3), mat4_viscous_CMB)
       end if
@@ -432,8 +416,8 @@
 !  -------------------------------------------------------------------
 !
       subroutine sph_FDM2_vpol_viscosity_mat_CMB                        &
-     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
-     &         g_sph_rj, coef_p, coef_d,                                &
+     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                     &
+     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,       &
      &         fdm3e_vp0_CMB, fdm3e_free_CMB,                           &
      &         hdiv_visous_mat_CMB, mat7)
 !
@@ -447,12 +431,15 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !
       type(fdm3_n2e_CMB_free_vpol), intent(in) :: fdm3e_free_CMB
       type(fdm3_n2e_CMB_zero_vpol), intent(in) :: fdm3e_vp0_CMB
@@ -475,12 +462,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -490,12 +473,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB(1,-2))
@@ -514,9 +493,9 @@
 !  -------------------------------------------------------------------
 !
       subroutine sph_FDM4_vpol_viscosity_mat_CMB                        &
-     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
-     &         g_sph_rj, coef_p, coef_d, fdm_3e, fdm_e3,                &
-     &         fdm4_noslip_CMB, fdm4_free_vp_CMB,                       &
+     &        (sph_rj, fl_prop, sph_bc_U, g_sph_rj,                     &
+     &         coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,       &
+     &         fdm_3e, fdm_e3, fdm4_noslip_CMB, fdm4_free_vp_CMB,       &
      &         fdm3e_vp0_CMB, fdm3e_free_CMB,                           &
      &         mat4_viscous_CMB1, hdiv_visous_mat_CMB, mat9)
 !
@@ -533,12 +512,15 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
-      type(phys_data), intent(in) :: radial_variation
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       real(kind = kreal), intent(in)                                    &
      &             :: g_sph_rj(sph_rj%nidx_rj(2),17)
       real(kind = kreal), intent(in) :: coef_p, coef_d
+      real(kind = kreal), intent(in) :: relative_d(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
+      real(kind = kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
 !
       type(fdm_matrices), intent(in) :: fdm_3e
       type(fdm_matrices), intent(in) :: fdm_e3
@@ -566,12 +548,8 @@
      &    fl_prop%flag_viscous_variation,                               &
      &    fl_prop%flag_ref_density_valiation,                           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
-     &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),               &
-     &    g_sph_rj, coef_d,                                             &
-     &    radial_variation%d_fld(kr,fl_prop%ir_nu),                     &
-     &    radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),               &
-     &    radial_variation%d_fld(kr,fl_prop%ir_drho_norm),              &
-     &    radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),             &
+     &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
+     &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
      &    fdm_3e%dmat(fdm_e3%n_minus,kr,0),                             &
      &    fdm_3e%dmat(fdm_e3%n_minus,kr,1),                             &
      &    fdm_3e%dmat(fdm_e3%n_minus,kr,2),                             &
@@ -594,11 +572,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_free_vp_CMB%dmat_vp1(-2,2),                            &
      &      fdm4_free_vp_CMB%dmat_vp1(-2,3), mat4_viscous_CMB1)
       else
@@ -606,11 +581,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2),               &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_nu),                 &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_dnu_norm),           &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_drho_norm),          &
-     &      radial_variation%d_fld(kr+1,fl_prop%ir_d2rho_norm),         &
+     &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
+     &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_noslip_CMB%dmat_vp1(-2,2),                             &
      &      fdm4_noslip_CMB%dmat_vp1(-2,3), mat4_viscous_CMB1)
       end if
@@ -627,12 +599,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_free_CMB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_CMB%dmat_vp0(-2,3),                              &
@@ -642,12 +610,8 @@
      &      fl_prop%flag_viscous_variation,                             &
      &      fl_prop%flag_ref_density_valiation,                         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
-     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3),             &
-     &      g_sph_rj, coef_d,                                           &
-     &      radial_variation%d_fld(kr,fl_prop%ir_nu),                   &
-     &      radial_variation%d_fld(kr,fl_prop%ir_dnu_norm),             &
-     &      radial_variation%d_fld(kr,fl_prop%ir_drho_norm),            &
-     &      radial_variation%d_fld(kr,fl_prop%ir_d2rho_norm),           &
+     &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
+     &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,1), fdm3e_vp0_CMB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_CMB%dmat_vp0(-2,3), fdm3e_vp0_CMB%dmat_vp0(-2,4), &
      &      hdiv_visous_mat_CMB)

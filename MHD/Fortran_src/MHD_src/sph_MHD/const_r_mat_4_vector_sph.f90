@@ -265,26 +265,41 @@
 !
       call sph_FDM2_vpol_viscosity_mat                                  &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
-     &    radial_variation, g_sph_rj, fl_prop%coef_press, coef_dvt,     &
+     &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
      &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call sph_FDM2_vpol_viscosity_mat_CTR                            &
-     &     (sph_rj, fl_prop, radial_variation, g_sph_rj, coef_dvt,      &
+     &     (sph_rj, fl_prop, g_sph_rj, coef_dvt,                        &
+     &      radial_variation%d_fld(1,fl_prop%ir_nu),                    &
+     &      radial_variation%d_fld(1,fl_prop%ir_dnu_norm),              &
+     &      radial_variation%d_fld(1,fl_prop%ir_drho_norm),             &
+     &      radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),            &
      &      r_n2e_3rd, r_e2n_1st, fdm2_center, bc_fdms_U%fdm3e_CTR,     &
      &      mat_grad_p, mat2_viscous, hdiv_visous_mat,                  &
      &      band7_vsp_evo%mat)
       else
-        call sph_FDM2_vpol_viscosity_mat_ICB(sph_rj, fl_prop,           &
-     &      radial_variation, sph_bc_U, g_sph_rj, coef_dvt,             &
+        call sph_FDM2_vpol_viscosity_mat_ICB                            &
+     &     (sph_rj, fl_prop, sph_bc_U, g_sph_rj, coef_dvt,              &
+     &      radial_variation%d_fld(1,fl_prop%ir_nu),                    &
+     &      radial_variation%d_fld(1,fl_prop%ir_dnu_norm),              &
+     &      radial_variation%d_fld(1,fl_prop%ir_drho_norm),             &
+     &      radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),            &
      &      bc_fdms_U%fdm3e_vp0_ICB, bc_fdms_U%fdm3e_free_ICB,          &
      &      hdiv_visous_mat, band7_vsp_evo%mat)
       end if
 !
-      call sph_FDM2_vpol_viscosity_mat_CMB                              &
-     &        (sph_rj, fl_prop, radial_variation, sph_bc_U,             &
+      call sph_FDM2_vpol_viscosity_mat_CMB(sph_rj, fl_prop, sph_bc_U,   &
      &    g_sph_rj, fl_prop%coef_press, coef_dvt,                       &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
      &    bc_fdms_U%fdm3e_vp0_CMB, bc_fdms_U%fdm3e_free_CMB,            &
      &    hdiv_visous_mat, band7_vsp_evo%mat)
 !

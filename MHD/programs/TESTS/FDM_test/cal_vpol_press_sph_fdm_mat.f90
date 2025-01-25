@@ -86,9 +86,13 @@
       else
         coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
       end if
-      call sph_FDM2_vpol_viscosity_mat(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &    sph_rj, fl_prop, radial_variation,                            &
+      call sph_FDM2_vpol_viscosity_mat
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
      &    Plm_WK%g_sph_rj, fl_prop%coef_press, coef_dvt,                &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
      &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    mat1_grad_p, mat2_viscous, hdiv_visous_mat,                   &
      &    band_vsp_evo%mat)
@@ -216,9 +220,13 @@
       else
         coef_dvt = (one - fl_prop%coef_imp) * fl_prop%coef_diffuse * dt
       end if
-      call sph_exp_FDM2_vpol_viscosity(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &   (sph_rj, fl_prop, radial_variation,                            &
+      call sph_exp_FDM2_vpol_viscosity                                  &
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
      &    Plm_WK%g_sph_rj, fl_prop%coef_press, coef_dvt,                &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
      &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    rj_fld%d_fld(1,ipol_base%i_velo), press_e,                    &
      &    mat1_grad_p, mat2_viscous, hdiv_visous_mat,                   &
