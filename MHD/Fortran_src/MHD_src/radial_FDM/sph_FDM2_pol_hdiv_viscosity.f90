@@ -57,7 +57,7 @@
 !!        real(kind=kreal), intent(in) :: h_nu(sph_rj%nidx_rj(1)+1)
 !!        real(kind=kreal), intent(in) :: h_rho(sph_rj%nidx_rj(1)+1)
 !!        real(kind=kreal), intent(in) :: h_drhodr(sph_rj%nidx_rj(1)+1)
-!!        type(fdm_matrix), intent(in) :: fdm_2(2)
+!!        type(fdm_matrices), intent(in) :: fdm_2
 !!        type(fdm_matrices), intent(in) :: fdm_3e
 !!        type(fdm_matrices), intent(in) :: fdm_e1
 !!        real(kind = kreal), intent(inout)                             &

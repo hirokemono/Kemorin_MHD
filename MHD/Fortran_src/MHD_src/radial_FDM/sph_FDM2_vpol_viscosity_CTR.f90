@@ -169,7 +169,7 @@
      &    press_e, mat1_grad_p_CTR(1,0), d_grad_p)
 !
       kr = 2
-      call set_sph_FDM_viscosity_mat(-ione, itwo, sph_rj%nidx_rj(2),    &
+      call set_sph_FDM_viscosity_mat(-ione, ione, sph_rj%nidx_rj(2),    &
      &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%ar_1d_rj(kr,1), sph_rj%ar_1d_rj(kr,2), g_sph_rj,       &
      &    coef_d, relative_d(kr+1), h_nu(kr+1),                         &
@@ -177,7 +177,7 @@
      &    fdm2_center%dmat_fix_dr(-1,2),                                &
      &    fdm2_center%dmat_fix_dr(-1,3), mat2_viscous_CTR)
       call sum_exp2_sph_viscous_CTR1                                    &
-     &   (ione, sph_rj%nnod_rj, sph_rj%nidx_rj(2),                      &
+     &   (sph_rj%nnod_rj, sph_rj%nidx_rj(2),                            &
      &    d_vpol, mat2_viscous_CTR(1,0), d_viscous_p)
 !
       end subroutine sph_exp_FDM2_vpol_viscosity_CTR
