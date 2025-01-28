@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine sph_center_fld_and_curl(nri, jmax, a2r_k1, g_sph_rj, &
-!!     &          d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_fld, is_rot,     &
+!!     &          fdm_d1_mat, fdm_d2_mat, is_fld, is_rot,               &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_dsdr_sph_center_2(nri, jmax, fdm_d1_mat,         &
 !!     &          is_fld,  n_point, ntot_phys_rj, d_rj)
@@ -24,7 +24,7 @@
 !!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
 !!        real (kind=kreal), intent(in) :: a2r_k1
 !!        real(kind = kreal), intent(in) :: coef_d
-!!        real(kind = kreal), intent(in) :: fdm_d1_mat(-1:1)
+!!        real(kind = kreal), intent(in) :: fdm_d1_mat(0:1)
 !!        real(kind = kreal), intent(in) :: fdm_d2_mat(0:1)
 !!        integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
 !!        real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -56,7 +56,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_center_fld_and_curl(nri, jmax, a2r_k1, g_sph_rj,   &
-     &          d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_fld, is_rot,       &
+     &          fdm_d1_mat, fdm_d2_mat, is_fld, is_rot,                 &
      &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: nri, jmax
@@ -64,8 +64,8 @@
       integer(kind = kint), intent(in) :: is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real (kind=kreal), intent(in) :: a2r_k1
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
+      real(kind = kreal), intent(in) :: fdm_d1_mat( 0:1)
+      real(kind = kreal), intent(in) :: fdm_d2_mat( 0:1)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -79,12 +79,12 @@
         inod = j
         i_p1 = inod + jmax
 !
-        d1s_dr1 =  d1nod_mat_fdm_2(ione,0) * d_rj(inod,is_fld)          &
-     &           + d1nod_mat_fdm_2(ione,1) * d_rj(i_p1,is_fld)
-        d2s_dr2 =  d2nod_mat_fdm_2(ione,0) * d_rj(inod,is_fld  )        &
-     &           + d2nod_mat_fdm_2(ione,1) * d_rj(i_p1,is_fld  )
-        d1t_dr1 =  d1nod_mat_fdm_2(ione,0) * d_rj(inod,is_fld+2)        &
-     &           + d1nod_mat_fdm_2(ione,1) * d_rj(i_p1,is_fld+2)
+        d1s_dr1 =  fdm_d1_mat(0) * d_rj(inod,is_fld)                    &
+     &           + fdm_d1_mat(1) * d_rj(i_p1,is_fld)
+        d2s_dr2 =  fdm_d2_mat(0) * d_rj(inod,is_fld  )                  &
+     &           + fdm_d2_mat(1) * d_rj(i_p1,is_fld  )
+        d1t_dr1 =  fdm_d1_mat(0) * d_rj(inod,is_fld+2)                  &
+     &           + fdm_d1_mat(1) * d_rj(i_p1,is_fld+2)
 !
         d_rj(inod,is_fld+1) = d1s_dr1
         d_rj(inod,is_rot  ) = d_rj(inod,is_fld+2)
@@ -135,8 +135,8 @@
       integer(kind = kint), intent(in) :: is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real (kind=kreal), intent(in) :: a2r_k1
-      real(kind = kreal), intent(in) :: fdm_d1_mat(-1:1)
-      real(kind = kreal), intent(in) :: fdm_d2_mat(-1:1)
+      real(kind = kreal), intent(in) :: fdm_d1_mat(0:1)
+      real(kind = kreal), intent(in) :: fdm_d2_mat(0:1)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
