@@ -45,7 +45,7 @@
       use t_sph_matrices
       use m_ludcmp_band
       use check_sph_radial_mat
-      use cal_sph_pol_hdiv_viscousity
+      use sph_FDM2_pol_hdiv_viscosity
 !
       integer(kind = kint), intent(in) :: id_file
       logical, intent(in) :: flag_viscous_variation
@@ -86,10 +86,16 @@
       else
         coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
       end if
-      call sph_FDM2_vpol_viscosity_mat(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &    sph_rj, fl_prop, radial_variation,                            &
-     &    Plm_WK%g_sph_rj, fl_prop%coef_press, coef_dvt,                &
-     &    r_2nd, r_n2e_3rd%fdm(0), r_e2n_1st,                           &
+      call sph_FDM2_vpol_viscosity_mat
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, Plm_WK%g_sph_rj,     &
+     &    fl_prop%flag_viscous_variation,                               &
+     &    fl_prop%flag_ref_density_valiation,                           &
+     &    fl_prop%coef_press, coef_dvt,                                 &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
+     &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    mat1_grad_p, mat2_viscous, hdiv_visous_mat,                   &
      &    band_vsp_evo%mat)
 !
@@ -216,10 +222,14 @@
       else
         coef_dvt = (one - fl_prop%coef_imp) * fl_prop%coef_diffuse * dt
       end if
-      call sph_exp_FDM2_vpol_viscosity(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &   (sph_rj, fl_prop, radial_variation,                            &
+      call sph_exp_FDM2_vpol_viscosity                                  &
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, fl_prop,             &
      &    Plm_WK%g_sph_rj, fl_prop%coef_press, coef_dvt,                &
-     &    r_2nd, r_n2e_3rd%fdm(0), r_e2n_1st,                           &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
+     &    r_2nd, r_n2e_3rd, r_e2n_1st,                                  &
      &    rj_fld%d_fld(1,ipol_base%i_velo), press_e,                    &
      &    mat1_grad_p, mat2_viscous, hdiv_visous_mat,                   &
      &    rj_fld%d_fld(1,ipol_base%ipol_diffusion), e_hdiv_viscous)
