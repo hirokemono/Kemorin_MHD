@@ -195,9 +195,9 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out, &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, r_2nd%fdm(1)%dmat, &
-     &    is_fld, is_rot, rj_fld%n_point, rj_fld%ntot_phys,             &
-     &    rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    r_2nd%dmat(-1,1,1), is_fld, is_rot,                           &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_rotation_uxb
 !
@@ -262,9 +262,9 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, r_2nd%fdm(1)%dmat, &
-     &    is_fld, is_rot, rj_fld%n_point, rj_fld%ntot_phys,             &
-     &    rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    r_2nd%dmat(-1,1,1), is_fld, is_rot,                           &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_force_rot2
 !
