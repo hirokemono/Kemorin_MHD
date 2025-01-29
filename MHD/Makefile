@@ -95,7 +95,7 @@ ifdef OPENGL_LIBS
   C_INCLUDE += -I$(MHDDIR)/C_src/GLSL
   C_INCLUDE += -I$(MHDDIR)/C_src/GTK
   C_INCLUDE += -I$(MHDDIR)/C_src/KEMO_GLUT
-
+  
   ifdef GLFW_LIBS
     CPP_FLAGS+= -DGLFW3
   endif
@@ -105,7 +105,8 @@ ifdef OPENGL_LIBS
   endif
 
   OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIBS)
-  OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)  
+  OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)
+  OPTFLAGS_GL += -Wno-error=incompatible-pointer-types
 endif
 
 ifdef COCOA_FLAG
