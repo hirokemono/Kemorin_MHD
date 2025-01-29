@@ -14,7 +14,7 @@
 !!        output: d_rj(:,is_fld+1), d_rj(:,is_rot:is_rot+2)
 !!
 !!      subroutine cal_sph_diff_poloidal2(kr_in, kr_out, nidx_rj,       &
-!!     &          d1nod_mat_fdm_2, is_fld, nnod_rj, ntot_phys_rj, d_rj)
+!!     &          fdm2_d1_mat, is_fld, nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld)
 !!        output: d_rj(:,is_fld+1)
 !!
@@ -96,6 +96,15 @@
       integer(kind = kint) :: ist, ied
 !
 !
+!      do k = 1, nidx_rj(1)
+!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d1_mat',  &
+!     &             d1nod_mat_fdm_2(k,-1:1) - fdm2_d1_mat(-1:1,k)
+!      end do
+!      do k = 1, nidx_rj(1)
+!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d2_mat',  &
+!     &             d2nod_mat_fdm_2(k,-1:1) - fdm2_d2_mat(-1:1,k)
+!      end do
+!
       ist = kr_in * nidx_rj(2) + 1
       ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k,d1s_dr1,d2s_dr2,d1t_dr1)
@@ -129,14 +138,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_diff_poloidal2(kr_in, kr_out, nidx_rj,         &
-     &          d1nod_mat_fdm_2, is_fld, nnod_rj, ntot_phys_rj, d_rj)
+     &          fdm2_d1_mat, is_fld, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real(kind = kreal), intent(in)                                    &
-     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in) :: fdm2_d1_mat(-1:1,nidx_rj(1))
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -154,9 +162,9 @@
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod-j) / nidx_rj(2)
 !
-        d1s_dr1 =  d1nod_mat_fdm_2(k,-1) * d_rj(i_n1,is_fld  )          &
-     &           + d1nod_mat_fdm_2(k, 0) * d_rj(inod,is_fld  )          &
-     &           + d1nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_fld  )
+        d1s_dr1 =  fdm2_d1_mat(-1,k) * d_rj(i_n1,is_fld  )              &
+     &           + fdm2_d1_mat( 0,k) * d_rj(inod,is_fld  )              &
+     &           + fdm2_d1_mat( 1,k) * d_rj(i_p1,is_fld  )
 !
         d_rj(inod,is_fld+1) = d1s_dr1
       end do
@@ -186,15 +194,6 @@
       integer(kind = kint) :: inod, i_p1, i_n1, j, k
       integer(kind = kint) :: ist, ied
 !
-!
-!      do k = 1, nidx_rj(1)
-!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d1_mat',  &
-!     &             d1nod_mat_fdm_2(k,-1:1) - fdm2_d1_mat(-1:1,k)
-!      end do
-!      do k = 1, nidx_rj(1)
-!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d2_mat',  &
-!     &             d2nod_mat_fdm_2(k,-1:1) - fdm2_d2_mat(-1:1,k)
-!      end do
 !
       ist = kr_in * nidx_rj(2) + 1
       ied = (kr_out-1) * nidx_rj(2)
