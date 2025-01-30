@@ -284,7 +284,7 @@
           mat3(1,k+1,j) = mat3(1,k+1,j)                                 &
      &                   - coef_p  * val_r(k) * (fdm2_d2_mat( 1,k)      &
      &                   + two * ar_1d_rj(k,1) * fdm2_d1_mat( 1,k))     &
-     &                    - coef_p * dval_r(k) * fdm2_d1_mat(-1,k)
+     &                    - coef_p * dval_r(k) * fdm2_d1_mat( 1,k)
         end do
       end do
 !$omp end parallel do
