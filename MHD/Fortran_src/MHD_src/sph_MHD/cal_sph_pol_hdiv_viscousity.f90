@@ -328,12 +328,12 @@
 !
 !$omp parallel do private(kr,hdiv_visous_mat)
       do kr = kr_st+2, kr_ed-1
+        call set_sph_ele_pressure_FDM_mat7                              &
+     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
         call set_sph_FDM_hdiv_viscosity_mat(kr, -itwo, ione,            &
      &      sph_rj, fl_prop, radial_variation, g_sph_rj, coef_d,        &
      &      fdm_3e(0)%nri_mat, fdm_3e(0)%dmat, fdm_3e(1)%dmat,          &
      &      fdm_3e(2)%dmat, fdm_3e(3)%dmat, hdiv_visous_mat)
-        call add_sph_ele_pressure_FDM_mat7                              &
-     &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat7)
         call sub_sph_hdiv_viscous_FDM_mat7                              &
      &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                   &
      &      hdiv_visous_mat, mat7)

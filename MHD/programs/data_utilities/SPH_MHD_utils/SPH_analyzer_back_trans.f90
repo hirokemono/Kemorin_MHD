@@ -103,7 +103,7 @@
      &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
-      call const_forth_fdm_coefs(SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
+      call const_forth_fdm_coefs(50, SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
 !
 !  -------------------------------
 !

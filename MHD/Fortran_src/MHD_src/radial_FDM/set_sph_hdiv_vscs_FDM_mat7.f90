@@ -7,7 +7,7 @@
 !>@brief Set poloidal diffusivity to 2nd order FDM matrix
 !!
 !!@verbatim
-!!      subroutine add_sph_ele_pressure_FDM_mat7(kr, nri, jmax,         &
+!!      subroutine set_sph_ele_pressure_FDM_mat7(kr, nri, jmax,         &
 !!     &                                         coef_p, mat7)
 !!        integer(kind = kint), intent(in) :: kr, nri, jmax
 !!        real(kind = kreal), intent(in) :: coef_p
@@ -56,7 +56,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_sph_ele_pressure_FDM_mat7(kr, nri, jmax,           &
+      subroutine set_sph_ele_pressure_FDM_mat7(kr, nri, jmax,           &
      &                                         coef_p, mat7)
 !
       integer(kind = kint), intent(in) :: kr, nri, jmax
@@ -65,9 +65,9 @@
       real(kind = kreal), intent(inout) :: mat7(7,2*nri,jmax)
 !
 !
-      mat7(4,2*kr-1,1:jmax) = mat7(4,2*kr-1,1:jmax) + coef_p
+      mat7(4,2*kr-1,1:jmax) = coef_p
 !
-      end subroutine add_sph_ele_pressure_FDM_mat7
+      end subroutine set_sph_ele_pressure_FDM_mat7
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

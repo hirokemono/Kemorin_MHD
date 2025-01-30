@@ -70,7 +70,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
-      call const_forth_fdm_coefs(sph%sph_rj, r_4th)
+      call const_forth_fdm_coefs(id_check, sph%sph_rj, r_4th)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call density_diff_at_boundaries                                 &
