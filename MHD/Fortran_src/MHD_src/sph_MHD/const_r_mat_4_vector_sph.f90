@@ -116,11 +116,11 @@
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_dvt, r_2nd%fdm(2)%dmat, band_wt_evo%mat)
+     &    coef_dvt, r_2nd%dmat(-1,1,2), band_wt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    one, r_2nd%fdm(2)%dmat, band_vs_poisson%mat)
+     &    one, r_2nd%dmat(-1,1,2), band_vs_poisson%mat)
 !
 !   Boundary condition for ICB
       call sel_sph_r_mat_vort_2step_ICB(sph_rj, sph_bc_U, bc_fdms_U,    &
@@ -192,7 +192,7 @@
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_dvt, r_2nd%fdm(2)%dmat, band_vt_evo%mat)
+     &    coef_dvt, r_2nd%dmat(-1,1,2), band_vt_evo%mat)
 !
 !   Boundary condition for ICB
       call sel_sph_r_mat_tor_flow_ICB(sph_rj, sph_bc_U,                 &
