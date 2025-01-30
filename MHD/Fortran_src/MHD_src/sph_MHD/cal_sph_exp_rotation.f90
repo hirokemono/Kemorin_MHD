@@ -94,15 +94,6 @@
       integer(kind = kint) :: ist, ied
 !
 !
-!      do k = 1, nidx_rj(1)
-!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d1_mat',  &
-!     &             d1nod_mat_fdm_2(k,-1:1) - fdm2_d1_mat(-1:1,k)
-!      end do
-!      do k = 1, nidx_rj(1)
-!        write(*,*) 'cal_sph_nod_diffuse_by_rot2 fdm2_d2_mat',  &
-!     &             d2nod_mat_fdm_2(k,-1:1) - fdm2_d2_mat(-1:1,k)
-!      end do
-!
       ist = kr_in * nidx_rj(2) + 1
       ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k,d1s_dr1,d2s_dr2,d1t_dr1)
