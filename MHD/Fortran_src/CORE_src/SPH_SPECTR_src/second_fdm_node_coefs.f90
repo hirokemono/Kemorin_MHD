@@ -24,12 +24,12 @@
 !!      Coeeficients for derivatives by 1d finite difference method
 !!
 !!    derivatives on node by element field
-!!      dfdr_rj(k) =    fdm_2nd%fdm(1)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_2nd%fdm(1)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_2nd%fdm(1)%dmat(k, 1) * d_nod(k+1)
-!!      d2fdr2_rj(k) =  fdm_2nd%fdm(2)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_2nd%fdm(2)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_2nd%fdm(2)%dmat(k, 1) * d_nod(k+1)
+!!      dfdr_rj(k) =    fdm_2nd%dmat(-1,k,1) * d_nod(k-1)
+!!                    + fdm_2nd%dmat( 0,k,1) * d_nod(k  )
+!!                    + fdm_2nd%dmat( 1,k,1) * d_nod(k+1)
+!!      d2fdr2_rj(k) =  fdm_2nd%dmat(-1,k,2) * d_nod(k-1)
+!!                    + fdm_2nd%dmat( 0,k,2) * d_nod(k  )
+!!                    + fdm_2nd%dmat( 1,k,2) * d_nod(k+1)
 !!
 !! ----------------------------------------------------------------------
 !!      Work array to obtain 1d FDM
@@ -119,18 +119,6 @@
           r_fdm%dmat(-1,k,i) = mat_fdm(i+1,3,k)
           r_fdm%dmat( 0,k,i) = mat_fdm(i+1,1,k)
           r_fdm%dmat( 1,k,i) = mat_fdm(i+1,2,k)
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-!$omp parallel private(i)
-      do i = 1, 2
-!$omp do private (k)
-        do k = 1, nri
-          r_fdm%fdm(i)%dmat(k,-1) = mat_fdm(i+1,3,k)
-          r_fdm%fdm(i)%dmat(k, 0) = mat_fdm(i+1,1,k)
-          r_fdm%fdm(i)%dmat(k, 1) = mat_fdm(i+1,2,k)
         end do
 !$omp end do nowait
       end do

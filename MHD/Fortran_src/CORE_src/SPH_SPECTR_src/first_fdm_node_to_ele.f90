@@ -27,8 +27,6 @@
 !!      dfdr_ele(k) =    fdm_1st_ele%dmat(-1,k,i_th) * d_nod(k-1)
 !!                     + fdm_1st_ele%dmat( 0,k,i_th) * d_nod(k)
 !!
-!!    fdm_1st_ele%fdm(1)%dmat = d1nod_mat_fdm_2e
-!!
 !! ----------------------------------------------------------------------
 !!      Work array to obtain 1d FDM
 !!
@@ -139,12 +137,6 @@
 !
         r_fdm%dmat(-1,k,1) = mat_fdm(2,1,k)
         r_fdm%dmat( 0,k,1) = mat_fdm(2,2,k)
-!
-        r_fdm%fdm(0)%dmat(k,-1) = mat_fdm(1,1,k)
-        r_fdm%fdm(0)%dmat(k, 0) = mat_fdm(1,2,k)
-!
-        r_fdm%fdm(1)%dmat(k,-1) = mat_fdm(2,1,k)
-        r_fdm%fdm(1)%dmat(k, 0) = mat_fdm(2,2,k)
       end do
 !$omp end parallel do
 !

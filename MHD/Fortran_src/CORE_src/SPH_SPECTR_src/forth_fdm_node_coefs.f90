@@ -26,28 +26,26 @@
 !!      Coeeficients for derivatives by 1d finite difference method
 !!
 !!    derivatives on node by element field
-!!      dfdr_rj(k) =    fdm_4th%fdm(1)%dmat(k,-2) * d_nod(k-2)
-!!                    + fdm_4th%fdm(1)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_4th%fdm(1)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_4th%fdm(1)%dmat(k, 1) * d_nod(k+1)
-!!                    + fdm_4th%fdm(1)%dmat(k, 2) * d_nod(k+2)
-!!      d2fdr2_rj(k) =  fdm_4th%fdm(2)%dmat(k,-2) * d_nod(k-2)
-!!                    + fdm_4th%fdm(2)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_4th%fdm(2)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_4th%fdm(2)%dmat(k, 1) * d_nod(k+1)
-!!                    + fdm_4th%fdm(2)%dmat(k, 2) * d_nod(k+02)
-!!      d3fdr3_rj(k) =  fdm_4th%fdm(3)%dmat(k,-2) * d_nod(k-2)
-!!                    + fdm_4th%fdm(3)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_4th%fdm(3)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_4th%fdm(3)%dmat(k, 1) * d_nod(k+1)
-!!                    + fdm_4th%fdm(3)%dmat(k, 2) * d_nod(k+2)
-!!      d4fdr4_rj(k) =  fdm_4th%fdm(4)%dmat(k,-2) * d_nod(k-2)
-!!                    + fdm_4th%fdm(4)%dmat(k,-1) * d_nod(k-1)
-!!                    + fdm_4th%fdm(4)%dmat(k, 0) * d_nod(k  )
-!!                    + fdm_4th%fdm(4)%dmat(k, 1) * d_nod(k+1)
-!!                    + fdm_4th%fdm(4)%dmat(k, 2) * d_nod(k+2)
-!!
-!!    fdm_4th%fdm(1)%dmat = d1nod_mat_fdm_2e
+!!      dfdr_rj(k) =    fdm_4th%dmat(-2,k,1) * d_nod(k-2)
+!!                    + fdm_4th%dmat(-1,k,1) * d_nod(k-1)
+!!                    + fdm_4th%dmat( 0,k,1) * d_nod(k  )
+!!                    + fdm_4th%dmat( 1,k,1) * d_nod(k+1)
+!!                    + fdm_4th%dmat( 2,k,1) * d_nod(k+2)
+!!      d2fdr2_rj(k) =  fdm_4th%dmat(-2,k,2) * d_nod(k-2)
+!!                    + fdm_4th%dmat(-1,k,2) * d_nod(k-1)
+!!                    + fdm_4th%dmat( 0,k,2) * d_nod(k  )
+!!                    + fdm_4th%dmat( 1,k,2) * d_nod(k+1)
+!!                    + fdm_4th%dmat( 2,k,2) * d_nod(k+02)
+!!      d3fdr3_rj(k) =  fdm_4th%dmat(-2,k,3) * d_nod(k-2)
+!!                    + fdm_4th%dmat(-1,k,3) * d_nod(k-1)
+!!                    + fdm_4th%dmat( 0,k,3) * d_nod(k  )
+!!                    + fdm_4th%dmat( 1,k,3) * d_nod(k+1)
+!!                    + fdm_4th%dmat( 2,k,3) * d_nod(k+2)
+!!      d4fdr4_rj(k) =  fdm_4th%dmat(-2,k,4) * d_nod(k-2)
+!!                    + fdm_4th%dmat(-1,k,4) * d_nod(k-1)
+!!                    + fdm_4th%dmat( 0,k,4) * d_nod(k  )
+!!                    + fdm_4th%dmat( 1,k,4) * d_nod(k+1)
+!!                    + fdm_4th%dmat( 2,k,4) * d_nod(k+2)
 !!
 !! ----------------------------------------------------------------------
 !!      Work array to obtain 1d FDM
@@ -180,18 +178,6 @@
 !
       integer(kind= kint) :: i, k
 !
-!
-!$omp parallel do private (i,k)
-      do i = 1, 4
-        do k = 1, nri-1
-          r_fdm%fdm(i)%dmat(k,-2) = mat_fdm(i+1,4,k)
-          r_fdm%fdm(i)%dmat(k,-1) = mat_fdm(i+1,2,k)
-          r_fdm%fdm(i)%dmat(k, 0) = mat_fdm(i+1,1,k)
-          r_fdm%fdm(i)%dmat(k, 1) = mat_fdm(i+1,3,k)
-          r_fdm%fdm(i)%dmat(k, 2) = mat_fdm(i+1,5,k)
-        end do
-      end do
-!$omp end parallel do
 !
 !$omp parallel do private (i,k)
       do i = 0, 4
