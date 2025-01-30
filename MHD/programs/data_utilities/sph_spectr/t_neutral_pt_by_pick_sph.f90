@@ -16,13 +16,13 @@
 !!        type(sph_rj_grid), intent(inout) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!      subroutine set_radial_grad_scalars(icou, istep, time,           &
-!!     &          sph_rj, pick_IO, d1nod_mat_fdm_2, buo_ratio, ntl)
+!!     &          sph_rj, pick_IO, fdm2_d1_mat, buo_ratio, ntl)
 !!        integer(kind = kint), intent(in) :: icou, istep
 !!        real(kind = kreal), intent(in) :: time, buo_ratio
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !!        real(kind = kreal), intent(in)                                &
-!!     &                   :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+!!     &                   :: fdm2_d1_mat(-1:1,sph_rj%nidx_rj(1))
 !!        type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !!@endverbatim
 !
@@ -196,7 +196,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_radial_grad_scalars(icou, istep, time,             &
-     &          sph_rj, pick_IO, d1nod_mat_fdm_2, buo_ratio, ntl)
+     &          sph_rj, pick_IO, fdm2_d1_mat, buo_ratio, ntl)
 !
       use t_spheric_rj_data
 !
@@ -206,7 +206,7 @@
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
       real(kind = kreal), intent(in)                                    &
-     &                   :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+     &                   :: fdm2_d1_mat(-1:1,sph_rj%nidx_rj(1))
 !
       type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !
@@ -228,37 +228,38 @@
       end do
 !
 !
+      k = 1
       if(ntl%ipick_l0m0(0) .gt. 0) then
         ntl%grad_temp00(0) = 0.0d0
         ntl%grad_comp00(0) = 0.0d0
 !
-        ntl%grad_temp00(1) =  d1nod_mat_fdm_2(1,-1) * ntl%temp00(0)     &
-     &                      + d1nod_mat_fdm_2(1, 0) * ntl%temp00(1)     &
-     &                      + d1nod_mat_fdm_2(1, 1) * ntl%temp00(2)
-        ntl%grad_comp00(1) =  d1nod_mat_fdm_2(1,-1) * ntl%comp00(0)     &
-     &                      + d1nod_mat_fdm_2(1, 0) * ntl%comp00(1)     &
-     &                      + d1nod_mat_fdm_2(1, 1) * ntl%comp00(2)
+        ntl%grad_temp00(1) =  fdm2_d1_mat(-1,k) * ntl%temp00(0)         &
+     &                      + fdm2_d1_mat( 0,k) * ntl%temp00(1)         &
+     &                      + fdm2_d1_mat( 1,k) * ntl%temp00(2)
+        ntl%grad_comp00(1) =  fdm2_d1_mat(-1,k) * ntl%comp00(0)         &
+     &                      + fdm2_d1_mat( 0,k) * ntl%comp00(1)         &
+     &                      + fdm2_d1_mat( 1,k) * ntl%comp00(2)
       else
-        ntl%grad_temp00(1) =  d1nod_mat_fdm_2(1, 0) * ntl%temp00(1)     &
-     &                      + d1nod_mat_fdm_2(1, 1) * ntl%temp00(2)
-        ntl%grad_comp00(1) =  d1nod_mat_fdm_2(1, 0) * ntl%comp00(1)     &
-     &                      + d1nod_mat_fdm_2(1, 1) * ntl%comp00(2)
+        ntl%grad_temp00(1) =  fdm2_d1_mat( 0,k) * ntl%temp00(1)         &
+     &                      + fdm2_d1_mat( 1,k) * ntl%temp00(2)
+        ntl%grad_comp00(1) =  fdm2_d1_mat( 0,k) * ntl%comp00(1)         &
+     &                      + fdm2_d1_mat( 1,k) * ntl%comp00(2)
       end if
 !
       do k = 2, pick_IO%num_layer - 1
-        ntl%grad_temp00(k) =  d1nod_mat_fdm_2(k,-1) * ntl%temp00(k-1)   &
-     &                      + d1nod_mat_fdm_2(k, 0) * ntl%temp00(k  )   &
-     &                      + d1nod_mat_fdm_2(k, 1) * ntl%temp00(k+1)
-        ntl%grad_comp00(k) =  d1nod_mat_fdm_2(k,-1) * ntl%comp00(k-1)   &
-     &                      + d1nod_mat_fdm_2(k, 0) * ntl%comp00(k  )   &
-     &                      + d1nod_mat_fdm_2(k, 1) * ntl%comp00(k+1)
+        ntl%grad_temp00(k) =  fdm2_d1_mat(-1,k) * ntl%temp00(k-1)       &
+     &                      + fdm2_d1_mat( 0,k) * ntl%temp00(k  )       &
+     &                      + fdm2_d1_mat( 1,k) * ntl%temp00(k+1)
+        ntl%grad_comp00(k) =  fdm2_d1_mat(-1,k) * ntl%comp00(k-1)       &
+     &                      + fdm2_d1_mat( 0,k) * ntl%comp00(k  )       &
+     &                      + fdm2_d1_mat( 1,k) * ntl%comp00(k+1)
       end do
 !
       k = pick_IO%num_layer
-        ntl%grad_temp00(k) =  d1nod_mat_fdm_2(k,-1) * ntl%temp00(k-1)   &
-     &                      + d1nod_mat_fdm_2(k, 0) * ntl%temp00(k  )
-        ntl%grad_comp00(k) =  d1nod_mat_fdm_2(k,-1) * ntl%comp00(k-1)   &
-     &                      + d1nod_mat_fdm_2(k, 0) * ntl%comp00(k  )
+        ntl%grad_temp00(k) =  fdm2_d1_mat(-1,k) * ntl%temp00(k-1)       &
+     &                      + fdm2_d1_mat( 0,k) * ntl%temp00(k  )
+        ntl%grad_comp00(k) =  fdm2_d1_mat(-1,k) * ntl%comp00(k-1)       &
+     &                      + fdm2_d1_mat( 0,k) * ntl%comp00(k  )
 !
       do k = 1, pick_IO%num_layer
         ntl%freq2(k) = buo_ratio * ntl%grad_comp00(k)                   &
