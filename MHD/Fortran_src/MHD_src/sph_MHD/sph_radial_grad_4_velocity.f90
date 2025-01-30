@@ -171,7 +171,7 @@
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    is_press, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,     &
-     &    g_sph_rj, r_2nd%fdm(1)%dmat,                                  &
+     &    g_sph_rj, r_2nd%dmat(-1,1,1),                                 &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
