@@ -316,12 +316,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat9_vpol_press(dt, sph_rj, r_2nd,        &
+      subroutine const_radial_mat9_vpol_press(dt, sph_rj, r_4th,        &
      &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
      &          band9_vsp_evo)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm_matrices), intent(in) :: r_4th
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
@@ -346,6 +346,18 @@
       call alloc_band_matrices_type(inine, (2*sph_rj%nidx_rj(1)),       &
      &                              sph_rj%nidx_rj(2), band9_vsp_evo)
       call set_unit_on_diag(band9_vsp_evo)
+!
+!      call sph_FDM4_vpol_viscosity_mat                                 &
+!     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj, g_sph_rj,           &
+!     &    fl_prop%flag_viscous_variation,                              &
+!     &    fl_prop%flag_ref_density_valiation,                          &
+!     &    fl_prop%coef_press, coef_dvt,                                &
+!     &    radial_variation%d_fld(1,fl_prop%ir_nu),                     &
+!     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),               &
+!     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),              &
+!     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),             &
+!     &    r_4th, r_n2e_3rd, fdm_e3, mat4_viscous, hdiv_visous_mat,   &
+!     &          mat9)
 !
       end subroutine const_radial_mat9_vpol_press
 !

@@ -118,7 +118,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
       call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
      &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
-     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
+     &    SPH_WK%r_4th, SPH_WK%r_e2n_3rd, SPH_model%sph_MHD_bc)
 !
 ! ---------------------------------
 !

@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine init_4th_fdms_for_sph_MHD(id_check, sph,  MHD_prop,  &
-!!     &          radial_variation, r_4th, sph_MHD_bc)
+!!     &          radial_variation, r_4th, r_e2n_3rd, sph_MHD_bc)
 !!        integer(kind = kint), intent(in) :: id_check
 !!        type(sph_grids), intent(in) :: sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_data), intent(in) :: radial_variation
-!!        type(fdm_matrices), intent(inout) :: r_4th
+!!        type(fdm_matrices), intent(inout) :: r_4th, r_e2n_3rd
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine init_sph_transform_SGS_MHD                           &
 !!     &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,       &
@@ -48,7 +48,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_4th_fdms_for_sph_MHD(id_check, sph,  MHD_prop,    &
-     &          radial_variation, r_4th, sph_MHD_bc)
+     &          radial_variation, r_4th, r_e2n_3rd, sph_MHD_bc)
 !
       use t_spheric_parameter
       use t_control_parameter
@@ -57,13 +57,14 @@
       use t_coef_sph_velocity_BCs
       use set_bc_sph_mhd
       use forth_fdm_node_coefs
+      use third_fdm_ele_to_node
 !
       integer(kind = kint), intent(in) :: id_check
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_data), intent(in) :: radial_variation
 !
-      type(fdm_matrices), intent(inout) :: r_4th
+      type(fdm_matrices), intent(inout) :: r_4th, r_e2n_3rd
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
       real(kind = kreal) :: h_rho_in, h_rho_out
@@ -71,6 +72,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
       call const_forth_fdm_coefs(id_check, sph%sph_rj, r_4th)
+      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_ele_to_node'
+      call const_third_fdm_ele_to_node(id_check, sph%sph_rj, r_e2n_3rd)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call density_diff_at_boundaries                                 &

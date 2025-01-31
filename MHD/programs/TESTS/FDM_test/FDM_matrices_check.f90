@@ -86,7 +86,7 @@
       iflag_debug = iflag_full_msg
       call init_FDM_coefs_for_test                                      &
      &   (sph1, SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,    &
-     &    SPH_WK1%r_4th)
+     &    SPH_WK1%r_4th, SPH_WK1%r_e2n_3rd)
 !
       sph_MHD_bc1%sph_bc_U%kr_in = sph1%sph_params%nlayer_ICB
       sph_MHD_bc1%sph_bc_U%kr_out = sph1%sph_params%nlayer_CMB
@@ -178,7 +178,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_FDM_coefs_for_test                                &
-     &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, r_4th)
+     &         (sph, r_2nd, r_n2e_3rd, r_e2n_1st, r_4th, r_e2n_3rd)
 !
       use parallel_load_data_4_sph
       use init_radial_infos_sph_mhd
@@ -186,12 +186,14 @@
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
       use forth_fdm_node_coefs
+      use third_fdm_ele_to_node
 !
       type(sph_grids), intent(inout) :: sph
       type(fdm_matrices), intent(inout) :: r_2nd
       type(fdm_matrices), intent(inout) :: r_n2e_3rd
       type(fdm_matrices), intent(inout) :: r_e2n_1st
       type(fdm_matrices), intent(inout) :: r_4th
+      type(fdm_matrices), intent(inout) :: r_e2n_3rd
 !
       integer(kind = kint), parameter :: id_check = 50
 !
@@ -209,6 +211,8 @@
       call const_third_fdm_node_to_ele(id_check, sph%sph_rj, r_n2e_3rd)
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
       call const_forth_fdm_coefs(id_check, sph%sph_rj, r_4th)
+      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_ele_to_node'
+      call const_third_fdm_ele_to_node(id_check, sph%sph_rj, r_e2n_3rd)
       close(id_check)
 !
       end subroutine init_FDM_coefs_for_test

@@ -78,6 +78,7 @@
       use back_sph_trans_4_all_field
       use sph_SGS_mhd_monitor_data_IO
       use forth_fdm_node_coefs
+      use third_fdm_ele_to_node
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -104,6 +105,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
       call const_forth_fdm_coefs(50, SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
+      if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_ele_to_node'
+      call const_third_fdm_ele_to_node(50, SPH_MHD%sph%sph_rj,          &
+     &                                 SPH_WK%r_e2n_3rd)
 !
 !  -------------------------------
 !
