@@ -250,10 +250,10 @@
      &     (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), mat7)
       end do
 !
-      call set_sph_ele_pressure_FDM_mat7((sph_bc_U%kr_in+1),            &
-     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), corf_p, mat7)
 !
       kr = sph_bc_U%kr_in+1
+      call set_sph_ele_pressure_FDM_mat7                                &
+     &   (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), corf_p, mat7)
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
      &      flag_viscous_variation, flag_ref_density_valiation,         &
@@ -274,8 +274,8 @@
      &      fdm3e_vp0_ICB%dmat_vp0(-1,3), fdm3e_vp0_ICB%dmat_vp0(-1,4), &
      &      hdiv_visous_mat_ICB(1,-1))
       end if
-      call sub_sph_hdiv_viscous_mat7_ICB1((sph_bc_U%kr_in+1),           &
-     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+      call sub_sph_hdiv_viscous_mat7_ICB1                               &
+     &   (kr, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &    hdiv_visous_mat_ICB(1,-1), mat7)
 !
       end subroutine sph_FDM2_vpol_viscosity_mat_ICB
