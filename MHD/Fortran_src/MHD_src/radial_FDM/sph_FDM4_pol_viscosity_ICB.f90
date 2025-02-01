@@ -48,7 +48,8 @@
 !!     &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,    &
 !!     &          fdm_3e, fdm_e3, fdm4_noslip_ICB, fdm4_free_ICB,       &
 !!     &          fdm3e_vp0_ICB, fdm3e_free_ICB,                        &
-!!     &          mat4_viscous_CMB1, hdiv_visous_mat_ICB, mat9)
+!!     &          mat4_grad_p_ICB, mat4_viscous_ICB1,                   &
+!!     &          hdiv_visous_mat_ICB, mat9)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        logical, intent(in) :: flag_viscous_variation
 !!        logical, intent(in) :: flag_ref_density_valiation
@@ -68,7 +69,9 @@
 !!        type(fdm3_n2e_ICB_free_vpol), intent(in) :: fdm3e_free_ICB
 !!        type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !!        real(kind = kreal), intent(inout)                             &
-!!     &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)
+!!     &           :: mat4_grad_p_ICB(sph_rj%nidx_rj(2),-2:2)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &           :: mat4_viscous_ICB1(sph_rj%nidx_rj(2),-2:2)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
 !!        real(kind = kreal), intent(inout)                             &
@@ -248,7 +251,8 @@
      &          coef_p, coef_d, relative_d, h_nu, h_rho, h_drhodr,      &
      &          fdm_3e, fdm_e3, fdm4_noslip_ICB, fdm4_free_ICB,         &
      &          fdm3e_vp0_ICB, fdm3e_free_ICB,                          &
-     &          mat4_viscous_CMB1, hdiv_visous_mat_ICB, mat9)
+     &          mat4_grad_p_ICB, mat4_viscous_ICB1,                     &
+     &          hdiv_visous_mat_ICB, mat9)
 !
       use t_boundary_params_sph_MHD
       use t_coef_fdm3_n2e_zero_vp_ICB
@@ -282,14 +286,15 @@
       type(fdm3_n2e_ICB_zero_vpol), intent(in) :: fdm3e_vp0_ICB
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: mat4_viscous_CMB1(sph_rj%nidx_rj(2),-2:2)
+     &           :: mat4_grad_p_ICB(sph_rj%nidx_rj(2),-2:2)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: mat4_viscous_ICB1(sph_rj%nidx_rj(2),-2:2)
       real(kind = kreal), intent(inout)                                 &
      &           :: hdiv_visous_mat_ICB(sph_rj%nidx_rj(2),-2:1)
 !
       real(kind = kreal), intent(inout)                                 &
      &           :: mat9(9,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
-      real(kind = kreal) :: mat3_grad_p_ICB(sph_rj%nidx_rj(2),-1:2)
 !
       integer(kind = kint) :: kr
 !
@@ -307,7 +312,7 @@
 !
       kr = sph_bc_U%kr_in+1
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-        call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                &
+        call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
      &      flag_viscous_variation, flag_ref_density_valiation,         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
@@ -315,16 +320,16 @@
      &      fdm3e_free_ICB%dmat_vp0(-2,1),                              &
      &      fdm3e_free_ICB%dmat_vp0(-2,2),                              &
      &      fdm3e_free_ICB%dmat_vp0(-2,3),                              &
-     &      fdm3e_free_ICB%dmat_vp0(-2,4), hdiv_visous_mat_ICB)
+     &      fdm3e_free_ICB%dmat_vp0(-2,4), hdiv_visous_mat_ICB(1,-1))
       else
-        call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                &
+        call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                &
      &      flag_viscous_variation, flag_ref_density_valiation,         &
      &      sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                  &
      &      sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,   &
      &      coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),  &
      &      fdm3e_vp0_ICB%dmat_vp0(-2,1), fdm3e_vp0_ICB%dmat_vp0(-2,2), &
      &      fdm3e_vp0_ICB%dmat_vp0(-2,3), fdm3e_vp0_ICB%dmat_vp0(-2,4), &
-     &      hdiv_visous_mat_ICB)
+     &      hdiv_visous_mat_ICB(1,-1))
       end if
       call add_sph_ele_pressure_FDM_mat9((sph_bc_U%kr_in+1),            &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), coef_p, mat9)
@@ -333,12 +338,11 @@
      &    hdiv_visous_mat_ICB(1,-1), mat9)
 !
 !
+      kr = sph_bc_U%kr_in + 1
       call set_sph_FDM_pressure_grad_mat                                &
      &   (-ione, fdm_e3%n_plus, sph_rj%nidx_rj(2),                      &
-     &    sph_rj%radius_1d_rj_r(sph_bc_U%kr_in+1), g_sph_rj, coef_p,    &
-     &    fdm_e3%dmat(-1,sph_bc_U%kr_in+1,1), mat3_grad_p_ICB)
-!
-      kr = sph_bc_U%kr_in + 1
+     &    sph_rj%radius_1d_rj_r(kr), g_sph_rj, coef_p,                  &
+     &    fdm_e3%dmat(-1,kr,1), mat4_grad_p_ICB(1,-1))
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_sph_FDM_viscosity_mat(-ione, itwo, sph_rj%nidx_rj(2),  &
      &      flag_viscous_variation, flag_ref_density_valiation,         &
@@ -346,7 +350,7 @@
      &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
      &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_free_ICB%dmat_vp1(-1,2),                               &
-     &      fdm4_free_ICB%dmat_vp1(-1,3), mat4_viscous_CMB1)
+     &      fdm4_free_ICB%dmat_vp1(-1,3), mat4_viscous_ICB1(1,-1))
       else
         call set_sph_FDM_viscosity_mat(-ione, itwo, sph_rj%nidx_rj(2),  &
      &      flag_viscous_variation, flag_ref_density_valiation,         &
@@ -354,11 +358,11 @@
      &      g_sph_rj, coef_d, relative_d(kr+1), h_nu(kr+1),             &
      &      h_rho(kr+1), h_drhodr(kr+1),                                &
      &      fdm4_noslip_ICB%dmat_vp1(-1,2),                             &
-     &      fdm4_noslip_ICB%dmat_vp1(-1,3), mat4_viscous_CMB1)
+     &      fdm4_noslip_ICB%dmat_vp1(-1,3), mat4_viscous_ICB1(1,-1))
       end if
       call sub_sph_pol_viscous_mat9_ICB1((sph_bc_U%kr_in+1),            &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    mat3_grad_p_ICB(1,0), mat4_viscous_CMB1(1,-1), mat9)
+     &    mat4_grad_p_ICB(1,-1), mat4_viscous_ICB1(1,-1), mat9)
 !
       kr = sph_bc_U%kr_in+2
       call set_sph_FDM_hdiv_viscosity_mat                               &

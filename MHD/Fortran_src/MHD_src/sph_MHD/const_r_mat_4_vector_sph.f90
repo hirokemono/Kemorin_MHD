@@ -318,11 +318,14 @@
 !
       subroutine const_radial_mat9_vpol_press(dt, sph_rj,               &
      &          r_4th, r_n2e_3rd, r_e2n_3rd,                            &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+     &          fl_prop, sph_bc_U, bc_fdms_U, g_sph_rj,                 &
      &          radial_variation, band9_vsp_evo)
 !
       use t_phys_data
       use sph_FDM4_pol_hdiv_viscosity
+      use sph_FDM4_pol_viscosity_CTR
+      use sph_FDM4_pol_viscosity_ICB
+      use sph_FDM4_pol_viscosity_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_4th
@@ -332,14 +335,13 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(phys_data), intent(in) :: radial_variation
-      type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
 !
       type(band_matrices_type), intent(inout) :: band9_vsp_evo
 !
-      real(kind = kreal) :: mat_grad_p(sph_rj%nidx_rj(2),-1:2)
+      real(kind = kreal) :: mat4_grad_p(sph_rj%nidx_rj(2),-2:2)
       real(kind = kreal) :: mat4_viscous(sph_rj%nidx_rj(2),-2:2)
       real(kind = kreal) :: hdiv_visous_mat(sph_rj%nidx_rj(2),-2:1)
 !
@@ -369,6 +371,36 @@
      &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
      &    r_4th, r_n2e_3rd, r_e2n_3rd, mat4_viscous, hdiv_visous_mat,   &
      &    band9_vsp_evo%mat)
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+        call sph_FDM4_vpol_viscosity_mat_CTR(sph_rj, g_sph_rj,          &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
+     &      fl_prop%coef_press, coef_dvt,                               &
+     &      radial_variation%d_fld(1,fl_prop%ir_nu),                    &
+     &      radial_variation%d_fld(1,fl_prop%ir_dnu_norm),              &
+     &      radial_variation%d_fld(1,fl_prop%ir_drho_norm),             &
+     &      radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),            &
+     &      r_n2e_3rd, r_e2n_3rd,                                       &
+     &      bc_fdms_U%fdm4_CTR, bc_fdms_U%fdm3e_CTR,                    &
+     &      mat4_grad_p, mat4_viscous, hdiv_visous_mat,                 &
+     &      band9_vsp_evo%mat)
+      else
+        call sph_FDM4_vpol_viscosity_mat_ICB                            &
+     &     (sph_rj, sph_bc_U, g_sph_rj,                                 &
+     &      fl_prop%flag_viscous_variation,                             &
+     &      fl_prop%flag_ref_density_valiation,                         &
+     &      fl_prop%coef_press, coef_dvt,                               &
+     &      radial_variation%d_fld(1,fl_prop%ir_nu),                    &
+     &      radial_variation%d_fld(1,fl_prop%ir_dnu_norm),              &
+     &      radial_variation%d_fld(1,fl_prop%ir_drho_norm),             &
+     &      radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),            &
+     &      r_n2e_3rd, r_e2n_3rd,                                       &
+     &      bc_fdms_U%fdm4_noslip_ICB, bc_fdms_U%fdm4_free_vp_ICB,      &
+     &      bc_fdms_U%fdm3e_vp0_ICB, bc_fdms_U%fdm3e_free_ICB,          &
+     &      mat4_grad_p, mat4_viscous, hdiv_visous_mat,                 &
+     &      band9_vsp_evo%mat)
+      end if
 !
       end subroutine const_radial_mat9_vpol_press
 !
