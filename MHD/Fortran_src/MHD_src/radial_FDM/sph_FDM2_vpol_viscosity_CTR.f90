@@ -271,7 +271,7 @@
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
      &    fdm_3e%dmat(-itwo,kr,0), fdm_3e%dmat(-itwo,kr,1),             &
      &    fdm_3e%dmat(-itwo,kr,2), fdm_3e%dmat(-itwo,kr,3),             &
-     &    hdiv_visous_mat_CTR(1,-2))
+     &    hdiv_visous_mat_CTR(1,-1))
       call sub_sph_hdiv_viscous_mat7_CTR1                               &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    hdiv_visous_mat_CTR(1,-1), mat7)
