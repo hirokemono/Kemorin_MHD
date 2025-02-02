@@ -402,6 +402,20 @@
      &      band9_vsp_evo%mat)
       end if
 !
+      call sph_FDM4_vpol_viscosity_mat_CMB(sph_rj, sph_bc_U, g_sph_rj,  &
+     &    fl_prop%flag_viscous_variation,                               &
+     &    fl_prop%flag_ref_density_valiation,                           &
+     &    fl_prop%coef_press, coef_dvt,                                 &
+     &    radial_variation%d_fld(1,fl_prop%ir_nu),                      &
+     &    radial_variation%d_fld(1,fl_prop%ir_dnu_norm),                &
+     &    radial_variation%d_fld(1,fl_prop%ir_drho_norm),               &
+     &    radial_variation%d_fld(1,fl_prop%ir_d2rho_norm),              &
+     &    r_n2e_3rd, r_e2n_3rd,                                         &
+     &    bc_fdms_U%fdm4_noslip_CMB, bc_fdms_U%fdm4_free_vp_CMB,        &
+     &    bc_fdms_U%fdm3e_vp0_CMB, bc_fdms_U%fdm3e_free_CMB,            &
+     &    mat4_grad_p, mat4_viscous, hdiv_visous_mat,                   &
+     &    band9_vsp_evo%mat)
+!
       end subroutine const_radial_mat9_vpol_press
 !
 ! -----------------------------------------------------------------------
