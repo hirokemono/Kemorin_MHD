@@ -264,13 +264,13 @@
       kr = 2
       call set_sph_ele_pressure_FDM_mat7                                &
      &   (itwo, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), corf_p, mat7)
-      call set_sph_FDM_hdiv_viscosity_mat(-itwo, ione,                  &
+      call set_sph_FDM_hdiv_viscosity_mat(-ione, ione,                  &
      &    flag_viscous_variation, flag_ref_density_valiation,           &
      &    sph_rj%nidx_rj(2), sph_rj%ar_ele_rj(kr,1),                    &
      &    sph_rj%ar_ele_rj(kr,2), sph_rj%ar_ele_rj(kr,3), g_sph_rj,     &
      &    coef_d, relative_d(kr), h_nu(kr), h_rho(kr), h_drhodr(kr),    &
-     &    fdm_3e%dmat(-itwo,kr,0), fdm_3e%dmat(-itwo,kr,1),             &
-     &    fdm_3e%dmat(-itwo,kr,2), fdm_3e%dmat(-itwo,kr,3),             &
+     &    fdm_3e%dmat(-1,kr,0), fdm_3e%dmat(-1,kr,1),                   &
+     &    fdm_3e%dmat(-1,kr,2), fdm_3e%dmat(-1,kr,3),                   &
      &    hdiv_visous_mat_CTR(1,-1))
       call sub_sph_hdiv_viscous_mat7_CTR1                               &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
