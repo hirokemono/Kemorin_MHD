@@ -218,10 +218,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat7_vpol_press(dt, sph_rj,               &
-     &          r_2nd, r_n2e_3rd, r_e2n_1st, &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
-     &          radial_variation, band7_vsp_evo)
+      subroutine const_radial_mat7_vpol_press                           &
+     &         (dt, sph_rj, g_sph_rj, fl_prop,                          &
+     &          r_2nd, r_n2e_3rd, r_e2n_1st, sph_bc_U, bc_fdms_U,       &
+     &          fdm2_center, radial_variation, band7_vsp_evo)
 !
       use t_phys_data
       use sph_FDM2_pol_hdiv_viscosity
@@ -316,9 +316,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat9_vpol_press(dt, sph_rj,               &
-     &          r_4th, r_n2e_3rd, r_e2n_3rd,                            &
-     &          fl_prop, sph_bc_U, bc_fdms_U, g_sph_rj,                 &
+      subroutine const_radial_mat9_vpol_press                           &
+     &         (dt, sph_rj, g_sph_rj, fl_prop,                          &
+     &          r_4th, r_n2e_3rd, r_e2n_3rd, sph_bc_U, bc_fdms_U,       &
      &          radial_variation, band9_vsp_evo)
 !
       use t_phys_data

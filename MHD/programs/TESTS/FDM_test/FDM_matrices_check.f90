@@ -131,16 +131,18 @@
 !      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_free_slip
       sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo
 !
-      call const_radial_mat7_vpol_press(dt, sph1%sph_rj,                &
+      call const_radial_mat7_vpol_press                                 &
+     &   (dt, sph1%sph_rj, Plm_WK1%g_sph_rj, fl_prop1,                  &
      &    SPH_WK1%r_2nd, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st,          &
-     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
-     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj, radial_variation1, &
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
+     &    sph_MHD_bc1%fdm2_center, radial_variation1,                   &
      &    SPH_WK1%MHD_mats%band_vsp_evo)
 !
-      call const_radial_mat9_vpol_press(dt, sph1%sph_rj,                &
+      call const_radial_mat9_vpol_press                                 &
+     &   (dt, sph1%sph_rj, Plm_WK1%g_sph_rj, fl_prop1,                  &
      &    SPH_WK1%r_4th, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_3rd,          &
-     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
-     &    Plm_WK1%g_sph_rj, radial_variation1, band9_vsp_evo)
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
+     &    radial_variation1, band9_vsp_evo)
 !
 !
       call const_radial_mat_toroidal_flow                               &
