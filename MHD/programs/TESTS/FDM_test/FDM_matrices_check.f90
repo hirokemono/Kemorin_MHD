@@ -49,6 +49,8 @@
       character(len=kchara), parameter                                  &
      &           :: vsp_evo_name = 'velocity_pressure_evolution'
 !
+      type(band_matrices_type) :: band9_vsp_evo
+!
       integer ::  k, l, ierr
 !
       iflag_debug = 0
@@ -134,6 +136,12 @@
      &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
      &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj, radial_variation1, &
      &    SPH_WK1%MHD_mats%band_vsp_evo)
+!
+      call const_radial_mat9_vpol_press(dt, sph1%sph_rj,                &
+     &    SPH_WK1%r_4th, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_3rd,          &
+     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
+     &    Plm_WK1%g_sph_rj, radial_variation1, band9_vsp_evo)
+!
 !
       call const_radial_mat_toroidal_flow                               &
      &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
