@@ -49,7 +49,7 @@
       character(len=kchara), parameter                                  &
      &           :: vsp_evo_name = 'velocity_pressure_evolution'
 !
-      type(band_matrices_type) :: band9_vsp_evo
+      type(band_matrices_type) :: band9_vsp_evo1
 !
       integer ::  k, l, ierr
 !
@@ -129,7 +129,7 @@
 !      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_fixed_velo
 !
 !      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_free_slip
-      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo
+      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo 
 !
       call const_radial_mat7_vpol_press                                 &
      &   (dt, sph1%sph_rj, Plm_WK1%g_sph_rj, fl_prop1,                  &
@@ -142,7 +142,7 @@
      &   (dt, sph1%sph_rj, Plm_WK1%g_sph_rj, fl_prop1,                  &
      &    SPH_WK1%r_4th, SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_3rd,          &
      &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
-     &    radial_variation1, band9_vsp_evo)
+     &    radial_variation1, band9_vsp_evo1)
 !
 !
       call const_radial_mat_toroidal_flow                               &
@@ -165,6 +165,8 @@
      &                             SPH_WK1%MHD_mats%band_wt_evo)
         call check_radial_band_mat(id_file, sph1%sph_rj,                &
      &                             SPH_WK1%MHD_mats%band_vp_evo)
+        call check_vpol_FDM4_matrix_sph(id_file, sph1%sph_rj,           &
+     &                                  band9_vsp_evo1)
         close(id_file)
       end if
 !
@@ -183,6 +185,32 @@
       contains
 !
 !  -------------------------------------------------------------------
+!
+      subroutine check_vpol_FDM4_matrix_sph                             &
+     &         (id_file, sph_rj, band9_vsp_evo)
+!
+      use check_sph_radial_mat
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type) :: band9_vsp_evo
+!
+      real(kind = kreal) :: rr(2*sph_rj%nidx_rj(1))
+      integer(kind = kint) :: k
+!
+!
+      do k = 1, sph_rj%nidx_rj(1)
+        rr(2*k-1) = sph_rj%radius_1d_rj_r(k)
+        rr(2*k) =   sph_rj%radius_1d_rj_r(k)
+      end do
+!
+      call check_radial_9band_mat                                       &
+     &   (id_file, (2*sph_rj%nidx_rj(1)), sph_rj%nidx_rj(2),            &
+     &    sph_rj%idx_gl_1d_rj_j, rr, band9_vsp_evo%mat)
+!
+      end subroutine check_vpol_FDM4_matrix_sph
+!
+! -----------------------------------------------------------------------
 !
       subroutine init_FDM_coefs_for_test(sph, SPH_WK)
 !
