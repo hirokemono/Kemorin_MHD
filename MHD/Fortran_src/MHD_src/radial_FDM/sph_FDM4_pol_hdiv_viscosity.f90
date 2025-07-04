@@ -221,7 +221,7 @@
       real(kind = kreal), intent(inout)                                 &
      &           :: mat9(9,2*sph_rj%nidx_rj(1), sph_rj%nidx_rj(2))
 !
-      real(kind = kreal) :: mat3_grad_p(-sph_rj%nidx_rj(2),1:2)
+      real(kind = kreal) :: mat3_grad_p(sph_rj%nidx_rj(2),-1:2)
 !
       integer(kind = kint) :: kr
 !

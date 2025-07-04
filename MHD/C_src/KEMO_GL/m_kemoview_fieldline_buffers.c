@@ -23,6 +23,8 @@ struct FieldLine_buffers * init_FieldLine_buffers(void)
     Fline_bufs->FLINE_line_buf =       init_strided_buffer(n_point);
     Fline_bufs->FLINE_tube_buf =       init_strided_buffer(n_point);
     Fline_bufs->FLINE_tube_index_buf = init_gl_index_buffer(12, 3);
+    Fline_bufs->FLINE_tube_index_buf->num_ele_buf = 0;
+    Fline_bufs->FLINE_tube_index_buf->ntot_vertex = 0;    
     return Fline_bufs;
 }
 
