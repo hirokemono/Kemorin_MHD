@@ -83,8 +83,8 @@
 !
       type(mesh_test_control), save :: mesh_tctl1
       type(mesh_test_files_param) ::  T_meshes
-      type(mesh_geometry) :: mesh_IO
-      type(surf_edge_IO_file) :: ele_mesh_IO
+!      type(mesh_geometry) :: mesh_IO
+!      type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
       call init_elapse_time_by_TOTAL

@@ -52,9 +52,6 @@
       use const_domain_tbl_by_file
       use input_ctl_filter_newdomain
 !
-      type(ctl_data_newdomain_filter) :: newd_fil_ctl1
-      integer(kind = kint) :: ierr
-!
 !
       if (my_rank.eq.0) then
         write(*,*) 'Transfer filtering table to another decomposition'

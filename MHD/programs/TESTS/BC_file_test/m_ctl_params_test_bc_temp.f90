@@ -36,7 +36,6 @@
 !
       type(ctl_data_bc_temp_test) :: bc_temp_test_ctl
 !
-      integer(kind = kint) :: ierr = 0
       type(buffer_for_control) :: c_buf1
 !
 !

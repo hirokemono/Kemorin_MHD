@@ -476,7 +476,7 @@ then
 # Check FFMPEG
 	if test ${USE_ffmpeg} = "yes"
 	then
-		PKG_CHECK_MODULES([FFMPEG], libavcodec libavformat libswscale, have_ffmpeg=yes, AC_MSG_ERROR(Cannot find avcodec, avformet, or swscale))
+		PKG_CHECK_MODULES([FFMPEG], libavcodec libavformat libavutil libswscale, have_ffmpeg=yes, AC_MSG_ERROR(Cannot find avcodec, avformat, avutil, or swscale))
 	fi
 	
 	if test ${have_ffmpeg} = "yes"
