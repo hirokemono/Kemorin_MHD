@@ -21,7 +21,6 @@
 #include "kemoview_gtk_viewmatrix_menu.h"
 #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_routines.h"
-#include "view_modifier_glfw.h"
 
 #include "view_modifier_glfw.h"
 
