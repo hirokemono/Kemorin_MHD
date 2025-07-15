@@ -47,14 +47,8 @@
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_max_line_step_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_max_trace_len_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_max_trace_len_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_seed_point_ctl(c_ctl)          &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_seed_point_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_geological_pnt_ctl(c_ctl)      &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_geological_pnt_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_spherical_pnt_ctl(c_ctl)       &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_spherical_pnt_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_seed_surface_ctl(c_ctl)        &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_seed_surface_ctl')
+!!      type(c_ptr) function c_VIZ_FLINE_seeds_lists_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_VIZ_FLINE_seeds_lists_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_VIZ_FLINE_ctl
@@ -264,44 +258,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_VIZ_FLINE_seed_point_ctl(c_ctl)            &
-     &          bind(C, NAME = 'c_VIZ_FLINE_seed_point_ctl')
+      type(c_ptr) function c_VIZ_FLINE_seeds_lists_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_VIZ_FLINE_seeds_lists_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(fline_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_seed_point_ctl= C_loc(f_ctl%seed_point_ctl)
-      end function c_VIZ_FLINE_seed_point_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_FLINE_geological_pnt_ctl(c_ctl)        &
-     &          bind(C, NAME = 'c_VIZ_FLINE_geological_pnt_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(fline_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_geological_pnt_ctl= C_loc(f_ctl%seed_geological_ctl)
-      end function c_VIZ_FLINE_geological_pnt_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_FLINE_spherical_pnt_ctl(c_ctl)         &
-     &          bind(C, NAME = 'c_VIZ_FLINE_spherical_pnt_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(fline_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_spherical_pnt_ctl= C_loc(f_ctl%seed_spherical_ctl)
-      end function c_VIZ_FLINE_spherical_pnt_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_FLINE_seed_surface_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_VIZ_FLINE_seed_surface_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(fline_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_seed_surface_ctl= C_loc(f_ctl%seed_surface_ctl)
-      end function c_VIZ_FLINE_seed_surface_ctl
+      c_VIZ_FLINE_seeds_lists_ctl= C_loc(f_ctl%seeds_ctl)
+      end function c_VIZ_FLINE_seeds_lists_ctl
 !
 !  ---------------------------------------------------------------------
 !

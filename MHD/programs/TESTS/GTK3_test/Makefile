@@ -70,6 +70,7 @@ c_ctl_data_MAP.o \
 c_ctl_data_PVR_colormap.o \
 c_ctl_data_PVR_view_matrix.o \
 c_ctl_data_PVR_sections.o \
+c_ctl_data_FLINE_seeds.o \
 c_ctl_data_FLINE.o \
 c_ctl_data_LIC.o \
 c_ctl_VIZ_repartition.o \
@@ -193,6 +194,10 @@ c_ctl_data_PVR_sections.o: GTK/c_ctl_data_PVR_sections.c GTK/c_ctl_data_PVR_sect
 c_ctl_data_LIC.o: GTK/c_ctl_data_LIC.c GTK/c_ctl_data_LIC.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_LIC.c
+
+c_ctl_data_FLINE_seeds.o: GTK/c_ctl_data_FLINE_seeds.c GTK/c_ctl_data_FLINE_seeds.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_FLINE_seeds.c
 
 c_ctl_data_FLINE.o: GTK/c_ctl_data_FLINE.c GTK/c_ctl_data_FLINE.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

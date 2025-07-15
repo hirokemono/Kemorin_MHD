@@ -13,8 +13,7 @@
 #include <string.h>
 
 #include "skip_comment_c.h"
-#include "t_control_c_lists.h"
-#include "t_control_c_lists.h"
+#include "c_ctl_data_FLINE_seeds.h"
 #include "t_control_c_lists.h"
 #include "t_control_chara_IO.h"
 #include "t_control_int_IO.h"
@@ -22,6 +21,7 @@
 #include "t_control_int2_IO.h"
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_real3_items_c.h"
+#include "t_ctl_array_int2_items_c.h"
 #include "t_ctl_array_int2_items_c.h"
 
 
@@ -47,8 +47,8 @@ struct f_VIZ_FLINE_ctl{
     struct int_ctl_item    *f_num_fieldline_ctl;
     struct int_ctl_item    *f_max_line_stepping_ctl;
     struct int_ctl_item    *f_max_trace_length_ctl;
-    struct real3_clist     *f_seed_point_ctl;
-    struct int2_clist      *f_seed_surface_ctl;
+    
+    struct f_VIZ_FLINE_seeds_ctl * f_fline_seeds_ctl;
     
     void *void_panel;
 };
