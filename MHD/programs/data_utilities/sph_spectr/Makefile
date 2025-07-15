@@ -97,10 +97,10 @@ write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
 time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o \
+ctl_data_SGS_SPH_MHD_IO.o
 
 
 MOD_MHD_CTL_DLL = \
-read_mhd_control_4_c.o \
 t_control_data_vizs.o \
 t_ctl_data_node_monitor.o \
 t_control_data_dynamo_vizs.o \
@@ -134,6 +134,8 @@ t_ctl_data_stratified_model.o \
 t_ctl_data_surf_boundary.o \
 t_ctl_data_temp_model.o \
 t_ctl_data_termal_norm.o \
+t_ctl_data_valuable_diffuse.o \
+t_ctl_data_valuable_density.o \
 \
 ctl_data_MHD_model_IO.o \
 ctl_data_SGS_MHD_model_IO.o \
@@ -152,6 +154,7 @@ set_surface_group_types.o
 
 
 MOD_VIZ_CTL_DLL = \
+t_ctl_params_viz_fields.o \
 t_control_data_4_pvr.o \
 t_control_data_pvr_isosurfs.o \
 t_control_data_pvr_sections.o \
@@ -171,16 +174,16 @@ t_ctl_data_pvr_isosurface.o \
 t_ctl_data_pvr_light.o \
 t_ctl_data_pvr_movie.o \
 t_ctl_data_pvr_section.o \
+t_control_data_pvr_tracers.o \
 t_ctl_data_quilt_image.o \
 t_ctl_data_view_transfers.o \
 t_ctl_data_map_section.o \
 m_pvr_control_labels.o \
 ctl_data_each_pvr_IO.o \
-ctl_data_four_vizs_IO.o \
 ctl_data_pvr_colorbar_IO.o \
 ctl_data_pvr_colormap_IO.o \
 ctl_data_pvr_movie_IO.o \
-ctl_data_three_vizs_IO.o \
+ctl_data_four_vizs_IO.o \
 ctl_data_view_transfer_IO.o \
 ctl_file_each_pvr_IO.o \
 ctl_file_pvr_light_IO.o \
@@ -188,6 +191,7 @@ ctl_file_pvr_modelview_IO.o \
 ctl_data_map_section_IO.o \
 \
 viz_step_ctls_to_time_ctl.o \
+viz4_step_ctls_to_time_ctl.o \
 t_control_data_LIC.o \
 t_control_data_LIC_kernel.o \
 t_control_data_LIC_noise.o \
@@ -206,6 +210,8 @@ t_control_data_4_psf_def.o \
 t_control_data_isosurfaces.o \
 t_control_data_sections.o \
 t_control_data_surfacings.o \
+t_ctl_data_pvr_tracer.o \
+t_control_data_tracers.o \
 \
 control_data_surfacing_IO.o \
 ctl_data_isosurface_IO.o \
@@ -221,6 +227,7 @@ t_control_data_4_map.o \
 t_control_data_maps.o \
 t_control_data_flines.o \
 t_ctl_data_field_line.o \
+t_fline_seeds_list_ctl.o \
 ctl_data_field_line_IO.o \
 ctl_file_fieldlines_IO.o \
 \
