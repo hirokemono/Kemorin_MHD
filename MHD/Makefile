@@ -208,7 +208,6 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'F90OPTFLAGS = $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'F90DLLFLAGS = -fPIC $$(F90OPTFLAGS)'         >> $(MAKENAME)
 	@echo 'OPTFLAGS = $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -413,6 +412,7 @@ makemake:
 	@echo '	cd $(PYTHONDIR); \' >> $(MAKENAME)
 	@echo '	$(GMAKE) -f $(MAKEDIR)/Makefile \' >> $(MAKENAME)
 	@echo '	F90OPTFLAGS="-fPIC $(F90OPTFLAGS) $$(F_INCLUDE)" \' >> $(MAKENAME)
+	@echo '	OPTFLAGS="-fPIC $(OPTFLAGS)" \' >> $(MAKENAME)
 	@echo '	pythons' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS) ; do \
