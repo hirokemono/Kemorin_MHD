@@ -12,7 +12,7 @@ INSTDIR= @prefix@
 MHDDIR =   $(SRCDIR)/MHD
 MAKEDIR=   $(SRCDIR)/work
 BUILDDIR=  $(SRCDIR)/bin
-PYTHONDIR= $(MHDDIR)/pythons
+PYTHONDIR= $(SRCDIR)/pythons
 
 MAKE64DIR= $(SRCDIR)/work_64
 BUILD64DIR= $(SRCDIR)/bin_64
@@ -132,8 +132,10 @@ MAKE_MOD_DEP= $(BUILDDIR)/make_f90depends
 #
 
 all: makemake makemake64
-	cd $(MAKEDIR); $(GMAKE)
+	cd $(MAKEDIR);   $(GMAKE)
+	cd $(MAKEDIR);   $(GMAKE) pythons
 	cd $(MAKE64DIR); $(GMAKE)
+	cd $(MAKE64DIR); $(GMAKE) pythons
 
 $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
 	mkdir -p $(MAKEDIR)
@@ -144,7 +146,7 @@ $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
 makemake: $(MAKE_MOD_DEP)
 	@echo "# Construct Makefile"; \
 	cd $(MHDDIR) ; \
-		$(GMAKE) \
+		$(GMAKE) -j 1 \
 		GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" \
 		INSTDIR="$(INSTDIR)" \
@@ -207,7 +209,7 @@ makemake: $(MAKE_MOD_DEP)
 makemake64: $(MAKE_MOD_DEP)
 	@echo "# Construct Makefile for 64-bit integer"; \
 	cd $(MHDDIR) ; \
-		$(GMAKE) \
+		$(GMAKE) -j 1 \
 		GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" \
 		INSTDIR="$(INSTDIR)" \

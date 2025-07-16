@@ -4,8 +4,8 @@
 
 PROG_DIR = $$(MHDDIR)/programs
 
-LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
-LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
+LIB_PYTHONS =      '-L$$(BUILDDIR) -lcalypso_to_pythons'
+LIB_FILE_PYTHONS = '$$(BUILDDIR)/libcalypso_to_pythons.so'
 
 MOD_PYTHONS = \
 '$$(MOD_MHD_F2003)' \

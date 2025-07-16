@@ -409,8 +409,12 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for libralies' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
+	@echo 'dll:' >> $(MAKENAME)
+	@echo '	cd $(PYTHONDIR); \' >> $(MAKENAME)
+	@echo '	$(GMAKE) -f $(MAKEDIR)/Makefile \' >> $(MAKENAME)
+	@echo '	F90OPTFLAGS="-fPIC $(F90OPTFLAGS) $$(F_INCLUDE)" \' >> $(MAKENAME)
+	@echo '	pythons' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS) ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -511,7 +515,12 @@ makemake:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
-	@echo '	cd $(PYTHONDIR); make clean'  >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*.o ;'       >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*.mod ;'     >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*~ ;'        >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*.par ;'     >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*.diag ;'    >> $(MAKENAME)
+	@echo '	rm -f $(PYTHONDIR)/*.h'         >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 clean:
