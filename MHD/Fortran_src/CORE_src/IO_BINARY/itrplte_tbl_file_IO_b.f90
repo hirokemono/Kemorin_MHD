@@ -74,7 +74,8 @@
       bbuf_tbl1%id_binary = id_write_tbl
       call open_write_binary_file(file_name, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
-      call write_each_itp_coef_table_b(id_rank, itp_tbl_IO, bbuf_tbl1)
+      call write_each_itp_coef_table_b                                  &
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -101,7 +102,8 @@
       bbuf_tbl1%id_binary = id_write_tbl
       call open_write_binary_file(file_name, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
-      call write_each_itp_idx_table_b(id_rank, itp_tbl_IO, bbuf_tbl1)
+      call write_each_itp_idx_table_b                                   &
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -130,9 +132,11 @@
       call open_write_binary_file(file_name, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
 !
-      call write_each_itp_coef_table_b(id_rank, itp_tbl1_IO, bbuf_tbl1)
+      call write_each_itp_coef_table_b(id_rank,                         &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
-      call write_each_itp_coef_table_b(id_rank, itp_tbl2_IO, bbuf_tbl1)
+      call write_each_itp_coef_table_b(id_rank,                         &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -161,9 +165,11 @@
       call open_write_binary_file(file_name, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
 !
-      call write_each_itp_idx_table_b(id_rank, itp_tbl1_IO, bbuf_tbl1)
+      call write_each_itp_idx_table_b(id_rank,                          &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) go to 99
-      call write_each_itp_idx_table_b(id_rank, itp_tbl2_IO, bbuf_tbl1)
+      call write_each_itp_idx_table_b(id_rank,                          &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -192,7 +198,8 @@
       call open_read_binary_file(file_name, id_rank, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .ne. 0) goto 99
 !
-      call read_each_itp_coef_table_b(id_rank, itp_tbl_IO, bbuf_tbl1)
+      call read_each_itp_coef_table_b                                   &
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -220,7 +227,8 @@
       call open_read_binary_file(file_name, id_rank, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .ne. 0) goto 99
 !
-      call read_each_itp_idx_table_b(id_rank, itp_tbl_IO, bbuf_tbl1)
+      call read_each_itp_idx_table_b                                    &
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -250,10 +258,12 @@
       call open_read_binary_file(file_name, id_rank, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .ne. 0) goto 99
 !
-      call read_each_itp_coef_table_b(id_rank, itp_tbl1_IO, bbuf_tbl1)
+      call read_each_itp_coef_table_b(id_rank,                          &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) goto 99
 !
-      call read_each_itp_coef_table_b(id_rank, itp_tbl2_IO, bbuf_tbl1)
+      call read_each_itp_coef_table_b(id_rank,                          &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
@@ -282,10 +292,12 @@
       call open_read_binary_file(file_name, id_rank, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .ne. 0) goto 99
 !
-      call read_each_itp_idx_table_b(id_rank, itp_tbl1_IO, bbuf_tbl1)
+      call read_each_itp_idx_table_b(id_rank,                           &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, bbuf_tbl1)
       if(bbuf_tbl1%ierr_bin .gt. 0) goto 99
 !
-      call read_each_itp_idx_table_b(id_rank, itp_tbl2_IO, bbuf_tbl1)
+      call read_each_itp_idx_table_b(id_rank,                           &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, bbuf_tbl1)
 !
   99  continue
       call close_binary_file(bbuf_tbl1)
