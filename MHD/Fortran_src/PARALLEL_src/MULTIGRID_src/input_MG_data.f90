@@ -1,8 +1,11 @@
+!>@file   input_MG_data.f90
+!!@brief  module input_MG_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!      module input_MG_data
-!
-!        programmed by H. Matsui on Dec., 2008
-!
+!>@brief DAta input for maultigrid mesh
+!!@verbatim
 !!      subroutine input_MG_mesh(MG_file, MGCG_WK, MGCG_FEM, mesh_file)
 !!        type(MGCG_file_list), intent(in) :: MG_file
 !!        type(MGCG_data), intent(in) :: MGCG_WK
@@ -13,7 +16,7 @@
 !!        type(MGCG_file_list), intent(in) :: MG_file
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
-!
+!!@endverbatim
       module input_MG_data
 !
       use m_precision

@@ -31,8 +31,6 @@
       use t_surface_group_connect
       use t_control_params_4_pvr
 !
-      use calypso_mpi
-!
       implicit  none
 !
       integer(kind = kint), parameter :: IFLAG_NONE =           0

@@ -59,7 +59,6 @@
       use t_read_control_elements
       use t_control_array_integer2
       use t_control_array_real3
-      use calypso_mpi
 !
       implicit  none
 !

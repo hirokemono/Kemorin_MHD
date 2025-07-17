@@ -90,7 +90,6 @@
       use t_control_array_real
       use t_control_array_real3
       use t_fline_seeds_list_ctl
-      use calypso_mpi
 !
       implicit  none
 !

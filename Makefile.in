@@ -245,21 +245,17 @@ makedll: $(MAKE_MOD_DEP)
 		ZLIB_LIBS="$(ZLIB_LIBS)"           \
 		OPTFLAGS="-fPIC $(OPTFLAGS)"       \
 		F90OPTFLAGS="-fPIC $(F90OPTFLAGS)" \
-		CXXFLAGS="$(CXXFLAGS)"     \
 		DEPFLAGS="$(DEPFLAGS)"     \
 		F90LIB="$(F90LIB)"         \
 		F90_LOCAL="$(F90_LOCAL)"   \
 		CC="$(CC)"                 \
-		CXX="$(CXX)"               \
-		AS="$(AS)"                 \
-		MPIF90="$(MPIF90)"         \
-		MPICC="$(MPICC)"           \
+		MPIF90="$(F90)"         \
 		AR="$(AR)"                 \
 		RANLIB="$(RANLIB)"         \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		64BIT_INT=""    \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
-		makemake
+		makedll
 
 
 install:

@@ -1,10 +1,11 @@
-!t_interpolate_table.f90
-!      module t_interpolate_table
+!>@file   t_interpolate_table.f90
+!!@brief  module t_interpolate_table
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!> @brief Structure of interpolation table
-!
-!      Written by H.Matsui on Dec., 2008
-!
+!>@brief Structure of interpolation in both direction
+!!@verbatim
 !!      subroutine dealloc_interpolate_table(itp_info)
 !!      subroutine alloc_zero_itp_tables(inp_smp, itp_info)
 !!      subroutine const_interporate_matrix(ele_org, tbl_org, mat)
@@ -12,8 +13,7 @@
 !!        type(element_data), intent(in) :: ele_org
 !!        type(interpolate_table_org), intent(in) :: tbl_org
 !!        type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: mat
-!
-!
+!!@endverbatim
       module t_interpolate_table
 !
       use m_precision

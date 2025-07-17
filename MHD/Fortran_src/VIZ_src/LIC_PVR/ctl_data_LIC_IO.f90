@@ -74,7 +74,6 @@
       module ctl_data_LIC_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_control_data_LIC

@@ -71,7 +71,6 @@
       module t_control_data_LIC
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements

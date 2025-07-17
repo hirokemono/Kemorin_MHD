@@ -181,11 +181,6 @@
 !
       subroutine dealloc_fem_mhd_control(fmctl_ctl)
 !
-      use calypso_mpi_int
-      use bcast_4_time_step_ctl
-      use bcast_4_solver_ctl
-      use bcast_4_fem_int_pts_ctl
-!
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !
 !

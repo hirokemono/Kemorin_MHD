@@ -30,7 +30,6 @@
       use m_precision
       use m_error_IDs
 !
-      use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest

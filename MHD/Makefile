@@ -35,12 +35,25 @@ OPENGL_LIBS=
 #
 PGPLOT_LIBS= 
 
-SUBDIRS =         \
+SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
 programs
 
+DLLDIRS =     \
+Fortran_src/CORE_src \
+Fortran_src/PARALLEL_src/modify_MESH \
+Fortran_src/PARALLEL_src/CONST_SPH_GRID \
+Fortran_src/MHD_src/common \
+Fortran_src/MHD_src/IO \
+Fortran_src/MHD_src/Fortran2003 \
+Fortran_src/VIZ_src/surfacing \
+Fortran_src/VIZ_src/map_rendering \
+Fortran_src/VIZ_src/volume_rendering \
+Fortran_src/VIZ_src/fieldline \
+Fortran_src/VIZ_src/LIC_PVR \
+programs/data_utilities/sph_spectr
 
 F_INCLUDE = -I.
 C_INCLUDE = -I.
@@ -130,11 +143,14 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 	$(F90) -o $@ @<
 
 
-all: makemake
+all: makemake makedll
 
-pythons:
+makemake: depends maketmp makeinstall makeclean
+
+makedll: dlldepends maketmp dllinstall makeclean
 
 depends:
+	echo "Create module list"
 	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
@@ -158,29 +174,36 @@ depends:
 		) \
 	done
 
+dlldepends:
+	echo "Create module list"
+	rm -f $(MAKEDIR)/Makefile.depends
+	for dir in $(DLLDIRS) ; do \
+		( \
+		cd $${dir};  \
+		echo  $${dir}; \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		CC="$(CC)"   \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		depends; \
+		) \
+	done
 
-makemake:
+maketmp:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
-	
-	echo "Create module list"
-	$(GMAKE) \
-	GMAKE='$(GMAKE)' \
-	MHDDIR='$(MHDDIR)' \
-	MAKEDIR='$(MAKEDIR)' \
-	MAKENAME='$(MAKENAME)' \
-	64BIT_INT='$(64BIT_INT)'   \
-	CC="$(CC)"   \
-	DEPFLAGS='$(DEPFLAGS)' \
-	OPTFLAGS_GL='$(OPTFLAGS_GL)' \
-	C_INCLUDE='$(C_INCLUDE)' \
-	GTK3_CFLAGS='$(GTK3_CFLAGS)' \
-	GLFW_CFLAGS="$(GLFW_CFLAGS)" \
-	FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
-	OPENGL_LIBS='$(OPENGL_LIBS)'  \
-	MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
-	depends
 	
 	echo "# create Makefile"
 	echo '#' > $(MAKENAME)
@@ -422,35 +445,45 @@ makemake:
 	@echo '' >> $(MAKENAME)
 	@echo 'Append compile list...'
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	cat $(MAKENAME).depends >> $(MAKENAME)
 	rm -f $(MAKEDIR)/Makefile.depends
+
+makeinstall:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for install' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 	@echo 'install:' >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR) ]; then \'       >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR); \'              >> $(MAKENAME)
-	@echo '	fi'                                   >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/lib ]; then \'   >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/lib ; \'         >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/bin ]; then \'     >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/bin; \'            >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/include ]; then \' >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/include; \'        >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)'             >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/lib'         >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/bin'         >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/bin/tests'   >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/include'     >> $(MAKENAME)
 	@echo '	cp -r $(BUILDDIR)/*  $$(INSTDIR)/bin' >> $(MAKENAME)
 #	@echo '	cp *.a  $$(INSTDIR)/lib'           >> $(MAKENAME)
 #	@echo '	cp kemoviewer.h   $$(INSTDIR)/include' >> $(MAKENAME)
 #	@echo '	cp *.mod  $$(INSTDIR)/include'     >> $(MAKENAME)
+
+dllinstall:
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Rules for install' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'install:' >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)'             >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/lib'         >> $(MAKENAME)
+	@echo '	cp *.so  $$(INSTDIR)/lib'         >> $(MAKENAME)
+
+makeclean:
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Clean up' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)

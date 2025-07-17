@@ -70,7 +70,7 @@
 !!      type(c_ptr) function surf_bc_label_potential_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function surf_bc_label_vector_p_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function surf_bc_label_current_bc_f(c_ctl)  bind(c)
-!!  v      type(c_ptr), value, intent(in) :: c_ctl
+!!      type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_MHD_boundary_ctl
 !

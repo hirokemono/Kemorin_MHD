@@ -164,7 +164,6 @@
       use t_control_array_charareal
       use t_control_data_4_map
       use t_ctl_data_pvr_section
-      use calypso_mpi
 !
       implicit  none
 !

@@ -44,7 +44,6 @@
       module ctl_data_map_section_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements

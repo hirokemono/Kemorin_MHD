@@ -84,7 +84,6 @@
       module t_control_data_4_pvr
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -243,7 +242,6 @@
       subroutine dup_pvr_ctl(org_pvr, new_pvr)
 !
       use t_ctl_data_4_view_transfer
-      use bcast_control_arrays
 !
       type(pvr_parameter_ctl), intent(in) :: org_pvr
       type(pvr_parameter_ctl), intent(inout) :: new_pvr
