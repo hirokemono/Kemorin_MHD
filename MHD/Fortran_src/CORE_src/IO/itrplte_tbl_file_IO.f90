@@ -66,8 +66,8 @@
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_coef_table_a                                  &
-     &   (id_tbl_file, id_rank, itp_tbl_IO)
+      call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       close(id_tbl_file)
 !
       end subroutine write_itp_table_coef_file_a
@@ -87,8 +87,8 @@
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_idx_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl_IO)
+      call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       close(id_tbl_file)
 !
       end subroutine write_itp_table_idx_file_a
@@ -110,10 +110,10 @@
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_coef_table_a                                  &
-     &   (id_tbl_file, id_rank, itp_tbl1_IO)
-      call write_each_itp_coef_table_a                                  &
-     &   (id_tbl_file, id_rank, itp_tbl2_IO)
+      call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest)
+      call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest)
       close(id_tbl_file)
 !
       end subroutine write_dbl_itp_tbl_coef_file_a
@@ -134,10 +134,10 @@
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_idx_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl1_IO)
-      call write_each_itp_idx_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl2_IO)
+      call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest)
+      call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest)
       close(id_tbl_file)
 !
       end subroutine write_dbl_itp_tbl_idx_file_a
@@ -162,8 +162,8 @@
      &  'Read ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
-      call read_each_itp_coef_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl_IO, ierr)
+      call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
 !
       close(id_tbl_file)
 !
@@ -188,8 +188,8 @@
      &  'Read ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
-      call read_each_itp_idx_table_a                                    &
-     &   (id_tbl_file, id_rank, itp_tbl_IO, ierr)
+      call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
 !
       close(id_tbl_file)
 !
@@ -216,10 +216,10 @@
      &  'Read ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
-      call read_each_itp_coef_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl1_IO, ierr)
-      call read_each_itp_coef_table_a                                   &
-     &   (id_tbl_file, id_rank, itp_tbl2_IO, ierr)
+      call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, ierr)
+      call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, ierr)
 !
       close(id_tbl_file)
 !
@@ -245,10 +245,10 @@
      &  'Read ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
-      call read_each_itp_idx_table_a                                    &
-     &   (id_tbl_file, id_rank, itp_tbl1_IO, ierr)
-      call read_each_itp_idx_table_a                                    &
-     &   (id_tbl_file, id_rank, itp_tbl2_IO, ierr)
+      call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, ierr)
+      call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, ierr)
 !
       close(id_tbl_file)
 !
