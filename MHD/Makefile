@@ -5,19 +5,18 @@
 #
 # MPI settings
 #
-MPICHDIR = /usr/local/mpich
-MPILIBDIR = $(MPICHDIR)/lib
-MPILIBS = -mpich -fmpich
-MPIBINDIR = $(MPICHDIR)/bin
-MPIINCDIR = $(MPICHDIR)/include
-MPIRUN = $(MPIBINDIR)/mpirun
+MPICHDIR =  # /usr/local/mpich
+MPILIBDIR = # $(MPICHDIR)/lib
+MPILIBS =   # -lmpich -lmpifch
+MPIBINDIR = # $(MPICHDIR)/bin
+MPIINCDIR = # $(MPICHDIR)/include
+MPIRUN =    # $(MPIBINDIR)/mpirun
 #
 #
 
 MAKEDIR=
 BUILDDIR=
 MHDDIR =
-PYTHONDIR = 
 
 MAKENAME= $(MAKEDIR)/Makefile
 
@@ -133,6 +132,8 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake
 
+pythons:
+
 depends:
 	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
@@ -162,7 +163,6 @@ makemake:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
-	mkdir -p $(PYTHONDIR)
 	
 	echo "Create module list"
 	$(GMAKE) \
@@ -282,7 +282,6 @@ makemake:
 	@echo BUILDDIR = $(BUILDDIR)  >> $(MAKENAME)
 	@echo MHDDIR =   $(MHDDIR)    >> $(MAKENAME)
 	@echo INSTDIR =  $(INSTDIR)   >> $(MAKENAME)
-	@echo PYTHONDIR= $(PYTHONDIR) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -408,13 +407,6 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for libralies' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'dll:' >> $(MAKENAME)
-	@echo '	cd $(PYTHONDIR); \' >> $(MAKENAME)
-	@echo '	$(GMAKE) -f $(MAKEDIR)/Makefile \' >> $(MAKENAME)
-	@echo '	F90OPTFLAGS="-fPIC $(F90OPTFLAGS) $$(F_INCLUDE)" \' >> $(MAKENAME)
-	@echo '	OPTFLAGS="-fPIC $(OPTFLAGS)" \' >> $(MAKENAME)
-	@echo '	pythons' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS) ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -515,12 +507,6 @@ makemake:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*.o ;'       >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*.mod ;'     >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*~ ;'        >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*.par ;'     >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*.diag ;'    >> $(MAKENAME)
-	@echo '	rm -f $(PYTHONDIR)/*.h'         >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 clean:
