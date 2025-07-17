@@ -246,16 +246,9 @@ makedll: $(MAKE_MOD_DEP)
 		ZLIB_LIBS="$(ZLIB_LIBS)"           \
 		PNG_CFLAGS="$(PNG_CFLAGS)"         \
 		PNG_LIBS="$(PNG_LIBS)"             \
-		X_LIBS="$(X_LIBS)"                 \
-		X_CFLAGS="$(X_CFLAGS)"             \
-		OPENGL_INC="$(OPENGL_INC)"         \
-		OPENGL_LIBS="$(OPENGL_LIBS)"       \
-		GTK3_CFLAGS="$(GTK3_CFLAGS)"       \
-		GTK3_LIBS="$(GTK3_LIBS)"           \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)"       \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)"     \
 		HDF5_FLIBS="$(HDF5_FLIBS)"         \
-		COCOA_FLAG="$(COCOA_FLAG)"         \
 		OPTFLAGS="-fPIC $(OPTFLAGS)"       \
 		F90OPTFLAGS="-fPIC $(F90OPTFLAGS)" \
 		OPENMP_FCFLAGS="$(OPENMP_FCFLAGS)" \
