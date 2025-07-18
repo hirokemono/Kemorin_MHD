@@ -55,7 +55,7 @@
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itrplte_tbl_file_IO
       use gz_MPI_itrplte_tbl_file_IO_b
-      use itrplte_tbl_idx_IO_select
+      use sel_interpolate_tbl_file_IO
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -90,8 +90,8 @@
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       else
-        call sel_read_itrplte_idx_tbl                                   &
-     &     (id_rank, table_file_IO, itp_tbl_IO, ierr)
+        call sel_read_itrplte_idx_tbl(id_rank, table_file_IO,           &
+     &      itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
       end if
 !
       end subroutine sel_mpi_read_interpolate_table
@@ -106,7 +106,7 @@
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itrplte_tbl_file_IO
       use gz_MPI_itrplte_tbl_file_IO_b
-      use itrplte_tbl_idx_IO_select
+      use sel_dbl_itrplt_tbl_file_IO
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -142,8 +142,9 @@
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_read_dbl_itrplte_idx_tbl                               &
-     &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
+        call sel_read_dbl_itrplte_idx_tbl(id_rank, table_file_IO,       &
+     &      itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest,                  &
+     &      itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, ierr)
       end if
 !
       end subroutine sel_mpi_read_dbl_itp_table
@@ -159,7 +160,7 @@
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itrplte_tbl_file_IO
       use gz_MPI_itrplte_tbl_file_IO_b
-      use itrplte_tbl_idx_IO_select
+      use sel_interpolate_tbl_file_IO
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -188,8 +189,8 @@
         call mpi_write_itp_table_idx_file_a(file_name, itp_tbl_IO)
 !
       else
-        call sel_write_itrplte_idx_tbl                                  &
-     &     (id_rank, table_file_IO, itp_tbl_IO)
+        call sel_write_itrplte_idx_tbl(id_rank, table_file_IO,          &
+     &      itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       end if
 !
       end subroutine sel_mpi_write_interpolate_table
@@ -204,7 +205,7 @@
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itrplte_tbl_file_IO
       use gz_MPI_itrplte_tbl_file_IO_b
-      use itrplte_tbl_idx_IO_select
+      use sel_dbl_itrplt_tbl_file_IO
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -238,8 +239,9 @@
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_write_dbl_itrplte_idx_tbl                              &
-     &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
+        call sel_write_dbl_itrplte_idx_tbl(id_rank, table_file_IO,      &
+     &      itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest,                  &
+     &      itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest)
       end if
 !
       end subroutine sel_mpi_write_dbl_itp_table

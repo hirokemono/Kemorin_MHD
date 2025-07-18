@@ -172,7 +172,7 @@
       use repartiton_by_volume
       use mesh_repartition_by_volume
       use copy_repart_and_itp_table
-      use itrplte_tbl_coef_IO_select
+      use sel_interpolate_tbl_file_IO
       use para_itrplte_table_IO_sel
       use compare_calypso_comm_tables
 !
@@ -223,7 +223,8 @@
 !
       call copy_itp_table_to_repart_tbl(my_rank,                        &
      &    fem_T%mesh, new_fem2%mesh, itp_nod_tbl_IO, part_nod_tbl2)
-      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
+      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO%tbl_org,          &
+     &                                 itp_nod_tbl_IO%tbl_dest)
       call calypso_MPI_barrier
 !
 !  --  load new repartition table

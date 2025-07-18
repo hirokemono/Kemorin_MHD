@@ -44,7 +44,7 @@
      &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
-      use itrplte_tbl_coef_IO_select
+      use sel_interpolate_tbl_file_IO
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -53,8 +53,8 @@
       integer(kind = kint) :: ierr
 !
 !
-      call sel_read_itrplte_coef_tbl                                    &
-     &   (id_rank, table_file_IO, itp_tbl_IO, ierr)
+      call sel_read_itrplte_coef_tbl(id_rank, table_file_IO,            &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
 !
       call copy_itp_tbl_types_dst                                       &
      &   (id_rank, itp_tbl_IO%tbl_dest, itp_table%tbl_dest)
@@ -87,7 +87,7 @@
      &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
-      use itrplte_tbl_coef_IO_select
+      use sel_interpolate_tbl_file_IO
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -102,9 +102,10 @@
       call dealloc_itp_table_org(itp_table%tbl_org)
       call dealloc_itp_num_org(itp_table%tbl_org)
 !
-      call sel_write_itrplte_coef_tbl                                   &
-     &   (id_rank, table_file_IO, itp_tbl_IO)
-      call dealloc_itp_tbl_after_write(itp_tbl_IO)
+      call sel_write_itrplte_coef_tbl(id_rank, table_file_IO,           &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+      call dealloc_itp_tbl_after_write(itp_tbl_IO%tbl_org,              &
+     &                                 itp_tbl_IO%tbl_dest)
 !
       end subroutine output_interpolate_table
 !

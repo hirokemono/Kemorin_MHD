@@ -68,7 +68,7 @@
 !
       use t_interpolate_table
       use copy_repart_and_itp_table
-      use itrplte_tbl_coef_IO_select
+      use sel_interpolate_tbl_file_IO
       use para_itrplte_table_IO_sel
 !
 !>     Stracture for Jacobians
@@ -153,7 +153,8 @@
      &      next_tbl1%neib_ele, repart_nod_tbl1, itp_nod_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_p1%repart_p%trans_tbl_file, itp_nod_tbl_IO)
-        call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
+        call dealloc_itp_tbl_after_write(itp_nod_tbl_IO%tbl_org,        &
+     &                                   itp_nod_tbl_IO%tbl_dest)
 !
       call dealloc_next_nod_ele_table(next_tbl1)
 !      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
