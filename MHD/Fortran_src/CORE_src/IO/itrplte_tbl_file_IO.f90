@@ -8,28 +8,23 @@
 !!
 !!@verbatim
 !!      subroutine write_itp_table_coef_file_a                          &
-!!     &         (file_name, my_rankt, itp_tbl_IO)
+!!     &         (file_name, my_rankt, itp_tbl_org_IO, itp_tbl_dest_IO)
 !!      subroutine write_itp_table_idx_file_a                           &
-!!     &         (file_name, my_rankt, itp_tbl_IO)
-!!        type(interpolate_table), intent(in) :: itp_tbl_IO
-!!      subroutine write_dbl_itp_tbl_coef_file_a                        &
-!!     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
-!!      subroutine write_dbl_itp_tbl_idx_file_a                         &
-!!     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
-!!        type(interpolate_table), intent(in) :: itp_tbl1_IO
-!!        type(interpolate_table), intent(in) :: itp_tbl2_IO
+!!     &         (file_name, id_rank, itp_tbl_org_IO, itp_tbl_dest_IO)
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer, intent(in) :: id_rank
+!!        type(interpolate_table_org), intent(in) :: itp_tbl_org_IO
+!!        type(interpolate_table_dest), intent(in) :: itp_tbl_dest_IO
 !!
-!!      subroutine read_itp_table_coef_file_a                           &
-!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
-!!      subroutine read_itp_table_idx_file_a                            &
-!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
-!!        type(interpolate_table), intent(inout) :: itp_tbl_IO
-!!      subroutine read_dbl_itp_tbl_coef_file_a                         &
-!!     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
-!!      subroutine read_dbl_itp_tbl_idx_file_a                          &
-!!     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
-!!        type(interpolate_table), intent(inout) :: itp_tbl1_IO
-!!        type(interpolate_table), intent(inout) :: itp_tbl2_IO
+!!      subroutine read_itp_table_coef_file_a(file_name, id_rank,       &
+!!     &          itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
+!!      subroutine read_itp_table_idx_file_a(file_name, id_rank,        &
+!!     &          itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer, intent(in) :: id_rank
+!!        type(interpolate_table_org), intent(inout) :: itp_tbl_org_IO
+!!        type(interpolate_table_dest), intent(inout) :: itp_tbl_dest_IO
+!!        integer(kind = kint), intent(inout) :: ierr
 !!@endverbatim
 !
       module itrplte_tbl_file_IO
@@ -37,7 +32,6 @@
       use m_precision
       use m_error_IDs
 !
-      use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
@@ -54,20 +48,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_itp_table_coef_file_a                            &
-     &         (file_name, id_rank, itp_tbl_IO)
+     &         (file_name, id_rank, itp_tbl_org_IO, itp_tbl_dest_IO)
 !
       use itrplte_table_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
-      type(interpolate_table), intent(in) :: itp_tbl_IO
+      type(interpolate_table_org), intent(in) :: itp_tbl_org_IO
+      type(interpolate_table_dest), intent(in) :: itp_tbl_dest_IO
 !
 !
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
       call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
-     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+     &                                 itp_tbl_org_IO, itp_tbl_dest_IO)
       close(id_tbl_file)
 !
       end subroutine write_itp_table_coef_file_a
@@ -75,20 +70,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_itp_table_idx_file_a                             &
-     &         (file_name, id_rank, itp_tbl_IO)
+     &         (file_name, id_rank, itp_tbl_org_IO, itp_tbl_dest_IO)
 !
       use itrplte_table_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
-      type(interpolate_table), intent(in) :: itp_tbl_IO
+      type(interpolate_table_org), intent(in) :: itp_tbl_org_IO
+      type(interpolate_table_dest), intent(in) :: itp_tbl_dest_IO
 !
 !
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
       call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+     &                                itp_tbl_org_IO, itp_tbl_dest_IO)
       close(id_tbl_file)
 !
       end subroutine write_itp_table_idx_file_a
@@ -96,64 +92,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_dbl_itp_tbl_coef_file_a                          &
-     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
-!
-      use itrplte_table_data_IO
-!
-      character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-      type(interpolate_table), intent(in) :: itp_tbl1_IO
-      type(interpolate_table), intent(in) :: itp_tbl2_IO
-!
-!
-      if(id_rank .eq. 0) write(*,*)                                     &
-     &  'Write ASCII interpolation table file: ', trim(file_name)
-      open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
-     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest)
-      call write_each_itp_coef_table_a(id_tbl_file, id_rank,            &
-     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest)
-      close(id_tbl_file)
-!
-      end subroutine write_dbl_itp_tbl_coef_file_a
-!
-!-----------------------------------------------------------------------
-!
-      subroutine write_dbl_itp_tbl_idx_file_a                           &
-     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
-!
-      use itrplte_table_data_IO
-!
-      character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-      type(interpolate_table), intent(in) :: itp_tbl1_IO
-      type(interpolate_table), intent(in) :: itp_tbl2_IO
-!
-!
-      if(id_rank .eq. 0) write(*,*)                                     &
-     &  'Write ASCII interpolation table file: ', trim(file_name)
-      open (id_tbl_file, file = file_name, form = 'formatted')
-      call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest)
-      call write_each_itp_idx_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest)
-      close(id_tbl_file)
-!
-      end subroutine write_dbl_itp_tbl_idx_file_a
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine read_itp_table_coef_file_a                             &
-     &         (file_name, id_rank, itp_tbl_IO, ierr)
+      subroutine read_itp_table_coef_file_a(file_name, id_rank,         &
+     &          itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
 !
       use itrplte_table_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
+      type(interpolate_table_org), intent(inout) :: itp_tbl_org_IO
+      type(interpolate_table_dest), intent(inout) :: itp_tbl_dest_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -163,7 +111,7 @@
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
       call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
+     &    itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
 !
       close(id_tbl_file)
 !
@@ -171,15 +119,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_itp_table_idx_file_a                              &
-     &         (file_name, id_rank, itp_tbl_IO, ierr)
+      subroutine read_itp_table_idx_file_a(file_name, id_rank,          &
+     &          itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
 !
       use itrplte_table_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
+      type(interpolate_table_org), intent(inout) :: itp_tbl_org_IO
+      type(interpolate_table_dest), intent(inout) :: itp_tbl_dest_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -189,70 +138,11 @@
       open (id_tbl_file, file = file_name, form = 'formatted')
 !
       call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
-     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, ierr)
+     &    itp_tbl_org_IO, itp_tbl_dest_IO, ierr)
 !
       close(id_tbl_file)
 !
       end subroutine read_itp_table_idx_file_a
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine read_dbl_itp_tbl_coef_file_a                           &
-     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
-!
-      use itrplte_table_data_IO
-!
-      character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-!
-      type(interpolate_table), intent(inout) :: itp_tbl1_IO
-      type(interpolate_table), intent(inout) :: itp_tbl2_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      ierr = 0
-      if(id_rank .eq. 0) write(*,*)                                     &
-     &  'Read ASCII interpolation table file: ', trim(file_name)
-      open (id_tbl_file, file = file_name, form = 'formatted')
-!
-      call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, ierr)
-      call read_each_itp_coef_table_a(id_tbl_file, id_rank,             &
-     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, ierr)
-!
-      close(id_tbl_file)
-!
-      end subroutine read_dbl_itp_tbl_coef_file_a
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_dbl_itp_tbl_idx_file_a                            &
-     &         (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
-!
-      use itrplte_table_data_IO
-!
-      character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-!
-      type(interpolate_table), intent(inout) :: itp_tbl1_IO
-      type(interpolate_table), intent(inout) :: itp_tbl2_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      ierr = 0
-      if(id_rank .eq. 0) write(*,*)                                     &
-     &  'Read ASCII interpolation table file: ', trim(file_name)
-      open (id_tbl_file, file = file_name, form = 'formatted')
-!
-      call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
-     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, ierr)
-      call read_each_itp_idx_table_a(id_tbl_file, id_rank,              &
-     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, ierr)
-!
-      close(id_tbl_file)
-!
-      end subroutine read_dbl_itp_tbl_idx_file_a
 !
 !-----------------------------------------------------------------------
 !
