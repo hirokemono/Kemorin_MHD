@@ -71,7 +71,7 @@
       call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_write_each_itp_coef_table_a(FPz_tbl, id_rank,             &
-     &                             itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -95,7 +95,7 @@
       call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_write_each_itp_idx_table_a(FPz_tbl, id_rank,              &
-     &                             itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -120,9 +120,9 @@
       call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_write_each_itp_coef_table_a(FPz_tbl, id_rank,             &
-     &                             itp_tbl1_IO, zbuf_itp1)
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       call gz_write_each_itp_coef_table_a(FPz_tbl, id_rank,             &
-     &                             itp_tbl2_IO, zbuf_itp1)
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -147,9 +147,9 @@
       call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_write_each_itp_idx_table_a(FPz_tbl, id_rank,              &
-     &                             itp_tbl1_IO, zbuf_itp1)
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       call gz_write_each_itp_idx_table_a(FPz_tbl, id_rank,              &
-     &                             itp_tbl2_IO, zbuf_itp1)
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -177,7 +177,7 @@
       call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_read_each_itp_coef_table_a(FPz_tbl, id_rank,              &
-     &                            itp_tbl_IO, zbuf_itp1, ierr)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1, ierr)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -204,7 +204,7 @@
       call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_read_each_itp_idx_table_a(FPz_tbl, id_rank,               &
-     &                            itp_tbl_IO, zbuf_itp1, ierr)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1, ierr)
 !
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
@@ -232,12 +232,12 @@
      &  'Read gzipped interpolation table file: ', trim(gzip_name)
       call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
-      call gz_read_each_itp_coef_table_a                                &
-     &   (FPz_tbl, id_rank, itp_tbl1_IO, zbuf_itp1, ierr)
+      call gz_read_each_itp_coef_table_a(FPz_tbl, id_rank,              &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1, ierr)
       if(ierr .gt. 0) go to 99
 !
-      call gz_read_each_itp_coef_table_a                                &
-     &   (FPz_tbl, id_rank, itp_tbl2_IO, zbuf_itp1, ierr)
+      call gz_read_each_itp_coef_table_a(FPz_tbl, id_rank,              &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1, ierr)
 !
   99  continue
       call close_gzfile_a(FPz_tbl, zbuf_itp1)
@@ -265,12 +265,12 @@
      &  'Read gzipped interpolation table file: ', trim(gzip_name)
       call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
-      call gz_read_each_itp_idx_table_a                                 &
-     &   (FPz_tbl, id_rank, itp_tbl1_IO, zbuf_itp1, ierr)
+      call gz_read_each_itp_idx_table_a(FPz_tbl, id_rank,               &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1, ierr)
       if(ierr .gt. 0) go to 99
 !
-      call gz_read_each_itp_idx_table_a                                 &
-     &   (FPz_tbl, id_rank, itp_tbl2_IO, zbuf_itp1, ierr)
+      call gz_read_each_itp_idx_table_a(FPz_tbl, id_rank,               &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1, ierr)
 !
   99  continue
       call close_gzfile_a(FPz_tbl, zbuf_itp1)

@@ -77,7 +77,7 @@
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
       call write_gz_each_itp_coef_table_b(FPz_itp, id_rank,             &
-     &                               itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -108,7 +108,7 @@
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
       call write_gz_each_itp_idx_table_b(FPz_itp, id_rank,              &
-     &                               itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -140,12 +140,12 @@
       call open_wt_gzfile_b(FPz_itp, gzip_name, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
-      call write_gz_each_itp_coef_table_b                               &
-     &  (FPz_itp, id_rank, itp_tbl1_IO, zbuf_itp1)
+      call write_gz_each_itp_coef_table_b(FPz_itp, id_rank,             &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
-      call write_gz_each_itp_coef_table_b                               &
-     &   (FPz_itp, id_rank, itp_tbl2_IO, zbuf_itp1)
+      call write_gz_each_itp_coef_table_b(FPz_itp, id_rank,             &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -176,12 +176,12 @@
       call open_wt_gzfile_b(FPz_itp, gzip_name, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
-      call write_gz_each_itp_idx_table_b                                &
-     &  (FPz_itp, id_rank, itp_tbl1_IO, zbuf_itp1)
+      call write_gz_each_itp_idx_table_b(FPz_itp, id_rank,              &
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
-      call write_gz_each_itp_idx_table_b                                &
-     &   (FPz_itp, id_rank, itp_tbl2_IO, zbuf_itp1)
+      call write_gz_each_itp_idx_table_b(FPz_itp, id_rank,              &
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -213,7 +213,7 @@
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_coef_table_b(FPz_itp, id_rank,              &
-     &                              itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -244,7 +244,7 @@
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_idx_table_b(FPz_itp, id_rank,               &
-     &                              itp_tbl_IO, zbuf_itp1)
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -277,11 +277,11 @@
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_coef_table_b(FPz_itp, id_rank,              &
-     &                              itp_tbl1_IO, zbuf_itp1)
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_coef_table_b(FPz_itp, id_rank,              &
-     &                              itp_tbl2_IO, zbuf_itp1)
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
@@ -313,11 +313,11 @@
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_idx_table_b(FPz_itp, id_rank,               &
-     &                              itp_tbl1_IO, zbuf_itp1)
+     &    itp_tbl1_IO%tbl_org, itp_tbl1_IO%tbl_dest, zbuf_itp1)
       if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
 !
       call read_gz_each_itp_idx_table_b(FPz_itp, id_rank,               &
-     &                              itp_tbl2_IO, zbuf_itp1)
+     &    itp_tbl2_IO%tbl_org, itp_tbl2_IO%tbl_dest, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b(FPz_itp)
