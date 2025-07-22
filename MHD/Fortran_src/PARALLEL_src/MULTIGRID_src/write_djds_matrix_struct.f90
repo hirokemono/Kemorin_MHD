@@ -1,27 +1,29 @@
-!write_djds_matrix_struct.f90
-!      module write_djds_matrix_struct
+!>@file   write_djds_matrix_struct.f90
+!!@brief  module write_djds_matrix_struct
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine write_djds_mat11_comp_type(id_file, np_smp,           &
-!     &          djds_tbl, mat11)
-!        integer(kind=kint ), intent(in) :: id_file
-!        integer(kind = kint), intent(in)  :: np_smp
-!        type(DJDS_ordering_table), intent(in) :: djds_tbl
-!        type(DJDS_MATRIX), intent(in) :: mat11
-!      subroutine write_djds_mat33_comp_type(id_file, np_smp,           &
-!     &          djds_tbl, mat33)
-!        integer(kind=kint ), intent(in) :: id_file
-!        integer(kind = kint), intent(in)  :: np_smp
-!        type(DJDS_ordering_table), intent(in) :: djds_tbl
-!        type(DJDS_MATRIX), intent(in) :: mat33
-!      subroutine write_djds_mat_connect_type(id_file, np_smp,          &
-!     &          comm_tbl, djds_tbl, mat)
-!        integer(kind=kint ), intent(in) :: id_file
-!        integer(kind = kint), intent(in)  :: np_smp
-!        type(communication_table), intent(in) :: comm_tbl
-!        type(DJDS_ordering_table), intent(in) :: djds_tbl
-!        type(DJDS_MATRIX), intent(in) :: mat
+!>@brief  Routines to output DJDS matrix data
+!!
+!!@verbatim
+!!      subroutine write_djds_mat11_comp_type(id_file, np_smp,          &
+!!     &          djds_tbl, mat11)
+!!      subroutine write_djds_mat33_comp_type(id_file, np_smp,          &
+!!     &          djds_tbl, mat33)
+!!        integer(kind=kint ), intent(in) :: id_file
+!!        integer(kind = kint), intent(in)  :: np_smp
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl
+!!        type(DJDS_MATRIX), intent(in) :: mat11
+!!        type(DJDS_MATRIX), intent(in) :: mat33
+!!      subroutine write_djds_mat_connect_type(id_file, np_smp,         &
+!!     &          comm_tbl, djds_tbl, mat)
+!!        integer(kind=kint ), intent(in) :: id_file
+!!        integer(kind = kint), intent(in)  :: np_smp
+!!        type(communication_table), intent(in) :: comm_tbl
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl
+!!        type(DJDS_MATRIX), intent(in) :: mat
+!!@endverbatim
 !
       module write_djds_matrix_struct
 !

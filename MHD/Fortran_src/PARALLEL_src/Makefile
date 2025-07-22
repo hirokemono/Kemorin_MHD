@@ -69,6 +69,7 @@ mod_list:
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
 	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         \
 	'$$(MOD_MODIFY_PARA_MESH)'                      >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

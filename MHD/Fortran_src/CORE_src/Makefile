@@ -82,7 +82,6 @@ mod_list:
 	'$$(MOD_IO)'          \
 	'$$(MOD_BINARY_IO)'   \
 	'$$(MOD_ZLIB_IO)'     \
-	'$$(MOD_MPI_IO)'      \
 	'$$(MOD_MESH)'        \
 	'$$(MOD_MESH_T)'      \
 	'$$(MOD_FIELDS)'      \
