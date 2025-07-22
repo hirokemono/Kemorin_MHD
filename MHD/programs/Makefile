@@ -134,16 +134,6 @@ lib_tasks:
 	'-L. $$(LIB_PYTHON_UTILS)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in $(DLIBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		BUILDDIR='$(BUILDDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		target_list \
-		) \
-	done
-	@echo '#' >> $(MAKENAME)
 	@for dir in Rayleigh_link; do \
 		( cd $${dir};  \
 		echo 'generate library for ' $$dir ; \
