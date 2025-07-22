@@ -1,11 +1,16 @@
+!>@file   allocate_array_MHD.f90
+!!@brief  module allocate_array_MHD
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in 2001
+!!@n    Modified by H. Matsui on July, 2006
+!!@n    Modified by H. Matsui on May, 2007
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!     module allocate_array_MHD
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        Modified by H. Matsui on July, 2006
-!        Modified by H. Matsui on May, 2007
-!
+!> @brief Allocate structures for FEM MHD
+!!
+!!@verbatim
 !!      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,      &
 !!     &          iphys, iphys_LES, nod_fld, iref_base, iref_grad,      &
 !!     &          ref_fld, Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
@@ -19,6 +24,7 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!@endverbatim
 !
       module allocate_array_MHD
 !

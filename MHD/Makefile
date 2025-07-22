@@ -45,7 +45,6 @@ DLLDIRS =     \
 Fortran_src/CORE_src \
 Fortran_src/PARALLEL_src/modify_MESH \
 Fortran_src/PARALLEL_src/CONST_SPH_GRID \
-Fortran_src/MHD_src/common \
 Fortran_src/MHD_src/IO \
 Fortran_src/MHD_src/Fortran2003 \
 Fortran_src/VIZ_src/surfacing \
