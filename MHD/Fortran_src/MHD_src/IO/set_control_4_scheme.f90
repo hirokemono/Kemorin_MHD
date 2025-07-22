@@ -3,7 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Matsui in 2002
-!!@n    Mmodified by H. Matsui in Aug., 2007
+!!@n    Modified by H. Matsui in Aug., 2007
 !
 !> @brief set schemes for time integration from control
 !!

@@ -1,9 +1,13 @@
-!t_ctl_data_test_bc_temp.f90
-!      module t_ctl_data_test_bc_temp
+!>@file   t_ctl_data_test_bc_temp.f90
+!!@brief  module t_ctl_data_test_bc_temp
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed  by H. Matsui in July, 2006
+!!@n    Modified by H. Matsui in June, 2007
 !
-!      Written by H. Matsui on July, 2006
-!      Mmodified by H. Matsui on June, 2007
-!
+!> @brief Control data for temperature boundary conditions
+!!
+!!@verbatim
 !!      subroutine read_control_4_bc_temp(file_name,                    &
 !!     &                                  bc_temp_test_ctl, c_buf)
 !!      subroutine reset_test_mesh_ctl_data(bc_temp_test_ctl)
@@ -29,6 +33,7 @@
 !!  end mesh_test
 !!
 !!    -------------------------------------------------------------------
+!!@endverbatim
 !
       module t_ctl_data_test_bc_temp
 !

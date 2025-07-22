@@ -3,7 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Matsui in 2002
-!!@n    Mmodified by H. Matsui in March, 2006
+!!@n    Modified by H. Matsui in March, 2006
 !
 !> @brief REad integration points for FEM
 !!

@@ -1,9 +1,13 @@
-!bcast_ctl_data_test_bc_temp.f90
-!      module bcast_ctl_data_test_bc_temp
+!>@file   bcast_ctl_data_test_bc_temp.f90
+!!@brief  module bcast_ctl_data_test_bc_temp
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed  by H. Matsui in July, 2006
+!!@n    Modified by H. Matsui in June, 2007
 !
-!      Written by H. Matsui on July, 2006
-!      Mmodified by H. Matsui on June, 2007
-!
+!> @brief Broadcast boundary conditios for temperature
+!!
+!!@verbatim
 !!      subroutine bcast_test_mesh_ctl_data(bc_temp_test_ctl)
 !!        type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
 !!
@@ -27,6 +31,7 @@
 !!  end mesh_test
 !!
 !!    -------------------------------------------------------------------
+!!@endverbatim
 !
       module bcast_ctl_data_test_bc_temp
 !

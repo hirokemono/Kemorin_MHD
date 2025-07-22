@@ -1,11 +1,13 @@
+!>@file   t_ctl_data_mesh_test.f90
+!!@brief  module t_ctl_data_mesh_test
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed  by H. Matsui in July, 2006
+!!@n    Modified by H. Matsui in June, 2007
 !
-!      module t_ctl_data_mesh_test
-!
-!      Written by H. Matsui on July, 2006
-!      Mmodified by H. Matsui on June, 2007
-!
-!      subroutine read_control_4_mesh_test
-!
+!> @brief Control data for mesh test
+!!
+!!@verbatim
 !!   --------------------------------------------------------------------
 !!    Example of control block
 !!
@@ -21,6 +23,7 @@
 !!  end  mesh_test
 !!
 !!    -------------------------------------------------------------------
+!!@endverbatim
 !
       module t_ctl_data_mesh_test
 !
