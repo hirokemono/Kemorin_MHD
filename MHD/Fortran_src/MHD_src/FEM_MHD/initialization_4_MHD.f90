@@ -1,8 +1,15 @@
-!initialization_4_MHD.f90
-!     module initialization_4_MHD
+!>@file   initialization_4_MHD.f90
+!!@brief  module initialization_4_MHD
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in 2001
+!!@n    Modified by H. Matsui in Aug., 2007
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!      Written by H. Matsui
-!
+!> @brief Initialization for FEM_MHD
+!!
+!!@verbatim
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
 !!     &          flex_MHD, MHD_step, geofem, MHD_mesh, FEM_filters,    &
 !!     &          MHD_prop, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,         &
@@ -33,6 +40,7 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module initialization_4_MHD
 !

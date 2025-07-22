@@ -1,10 +1,14 @@
+!>@file   cal_magnetic_field.f90
+!!@brief  module cal_magnetic_field
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui on July, 2006
+!!@n    Modified by H. Matsui on May, 2007
 !
-!      module cal_magnetic_field
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H.Matsui on July, 2006
-!
+!> @brief Time integration for the magnetic field
+!!
+!!@verbatim
 !!      subroutine cal_vector_potential                                 &
 !!     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,                  &
@@ -47,6 +51,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module cal_magnetic_field
 !

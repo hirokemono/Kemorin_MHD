@@ -1,8 +1,13 @@
-!check_deltat_by_previous.f90
-!     module check_deltat_by_previous
+!>@file   check_deltat_by_previous.f90
+!!@brief  module check_deltat_by_previous
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in Nov., 2009
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!      Written by H. Matsui on Nov., 2009
-!
+!> @brief Check size of delta t from previous step data
+!!
+!!@verbatim
 !!      subroutine s_check_deltat_by_previous                           &
 !!   &           (node, cd_prop, iphys, nod_fld, flex_data)
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -10,6 +15,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
+!!@endverbatim
 !
       module check_deltat_by_previous
 !

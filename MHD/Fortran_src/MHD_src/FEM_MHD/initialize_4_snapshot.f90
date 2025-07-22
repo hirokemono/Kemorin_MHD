@@ -1,8 +1,15 @@
-!initialize_4_snapshot.f90
-!     module initialize_4_snapshot
+!>@file   initialize_4_snapshot.f90
+!!@brief  module initialize_4_snapshot
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in 2001
+!!@n    Modified by H. Matsui in Aug., 2007
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!      Written by H. Matsui
-!
+!> @brief Initialization for FEM_MHD
+!!
+!!@verbatim
 !!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
 !!     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,       &
 !!     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD, &
@@ -33,6 +40,7 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module initialize_4_snapshot
 !

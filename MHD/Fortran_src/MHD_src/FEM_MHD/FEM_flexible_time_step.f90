@@ -1,8 +1,13 @@
-!FEM_flexible_time_step.f90
-!     module FEM_flexible_time_step
+!>@file   FEM_flexible_time_step.f90
+!!@brief  module FEM_flexible_time_step
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in Nov., 2009
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!      Written by H. Matsui on Nov., 2009
-!
+!> @brief Check size of delta t from previous step data
+!!
+!!@verbatim
 !!      subroutine set_new_time_and_step                                &
 !!     &         (MHD_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
@@ -16,6 +21,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(time_data), intent(inout) :: time_d
+!!@endverbatim
 !
       module FEM_flexible_time_step
 !

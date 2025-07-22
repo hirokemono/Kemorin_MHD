@@ -1,8 +1,13 @@
-!check_deltat_by_prev_rms.f90
-!     module check_deltat_by_prev_rms
+!>@file   check_deltat_by_prev_rms.f90
+!!@brief  module check_deltat_by_prev_rms
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in Nov., 2009
+!!@n    Modified by H. Matsui in Jan, 2017
 !
-!      Written by H. Matsui on Nov., 2009
-!
+!> @brief Check size of delta t from mean square
+!!
+!!@verbatim
 !!      subroutine s_check_deltat_by_prev_rms                           &
 !!     &         (MHD_step, mesh, MHD_mesh, MHD_prop, iphys, nod_fld,   &
 !!     &          fem_int, rhs_mat, flex_MHD)
@@ -33,6 +38,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
+!!@endverbatim
 !
       module check_deltat_by_prev_rms
 !

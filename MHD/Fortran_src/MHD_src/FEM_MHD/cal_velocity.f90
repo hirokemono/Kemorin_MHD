@@ -1,10 +1,14 @@
+!>@file   cal_velocity.f90
+!!@brief  module cal_velocity
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui on July, 2006
+!!@n    Modified by H. Matsui on May, 2007
 !
-!      module cal_velocity
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H.Matsui on July, 2006
-!
+!> @brief Time integration for the magnetic field
+!!
+!!@verbatim
 !!      subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,       &
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
@@ -43,6 +47,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_velocity
 !
