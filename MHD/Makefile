@@ -42,16 +42,9 @@ External_libs \
 programs
 
 DLLDIRS =     \
-Fortran_src/CORE_src \
-Fortran_src/PARALLEL_src/modify_MESH \
-Fortran_src/PARALLEL_src/CONST_SPH_GRID \
-Fortran_src/MHD_src/IO \
-Fortran_src/MHD_src/Fortran2003 \
-Fortran_src/VIZ_src/surfacing \
-Fortran_src/VIZ_src/map_rendering \
-Fortran_src/VIZ_src/volume_rendering \
-Fortran_src/VIZ_src/fieldline \
-Fortran_src/VIZ_src/LIC_PVR \
+Fortran_src   \
+C_src         \
+External_libs \
 programs/data_utilities/sph_spectr
 
 F_INCLUDE = -I.
@@ -144,9 +137,9 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake makedll
 
-makemake: depends maketmp makeinstall makeclean
+makemake: depends maketmp lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp dllinstall makeclean
+makedll: dlldepends maketmp lib_tasks dylib_tasks modules dllinstall makeclean
 
 depends:
 	echo "Create module list"
@@ -425,9 +418,13 @@ maketmp:
 		target_task \
 		) \
 	done
+
+lib_tasks:
 	@echo 'create library construct list...'
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# Rules for libralies' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS) ; do \
 		( cd $${dir};  \
@@ -442,6 +439,30 @@ maketmp:
 		 ) \
 	done
 	@echo '' >> $(MAKENAME)
+
+dylib_tasks:
+	@echo 'create dynamic library construct list...'
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Rules for dynamic libralies' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in programs ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
+		GTK3_LIBS='$(GTK3_LIBS)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		dylib_tasks; \
+		 ) \
+	done
+	@echo '' >> $(MAKENAME)
+
+
+modules:
 	@echo 'Append compile list...'
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)

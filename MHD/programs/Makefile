@@ -126,14 +126,6 @@ lib_name:
 
 lib_tasks:
 	@echo '#' >> $(MAKENAME)
-	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
-	'$$(LIB_FILES_PYTHON_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
-	'$$(MOD_PYTHONS)'  \
-	'-L. $$(LIB_PYTHON_UTILS)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@for dir in Rayleigh_link; do \
 		( cd $${dir};  \
 		echo 'generate library for ' $$dir ; \
@@ -145,6 +137,15 @@ lib_tasks:
 		) \
 	done
 
+dylib_tasks:
+	@echo '#' >> $(MAKENAME)
+	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
+	'$$(LIB_FILES_PYTHON_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
+	'$$(MOD_PYTHONS)'  \
+	'-L. $$(LIB_PYTHON_UTILS)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
 
 mod_list:
 	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)

@@ -80,6 +80,7 @@ mod_list:
 	@echo '$$(MOD_SGS_DYNAMIC)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_SGS_BC)'      \\  >> $(MAKENAME)
 	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_FEM_MHD)'     \\  >> $(MAKENAME)
 	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
 	@echo '$$(MOD_SPH_MHD_FDM)' \\  >> $(MAKENAME)
