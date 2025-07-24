@@ -142,6 +142,7 @@ makemake: depends maketmp lib_tasks modules makeinstall makeclean
 makedll: dlldepends maketmp dylib_tasks modules dllinstall makeclean
 
 depends:
+	mkdir -p $(MAKEDIR)
 	echo "Create module list"
 	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
@@ -167,6 +168,7 @@ depends:
 	done
 
 dlldepends:
+	mkdir -p $(MAKEDIR)
 	echo "Create module list"
 	rm -f $(MAKEDIR)/Makefile.depends
 	for dir in $(DLLDIRS) ; do \
@@ -193,7 +195,6 @@ dlldepends:
 	done
 
 maketmp:
-	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
 	
