@@ -137,9 +137,9 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake makedll
 
-makemake: depends maketmp lib_tasks modules makeinstall makeclean
+makemake: depends maketmp target_list lib_name mod_list target_task lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp dylib_tasks modules dllinstall makeclean
+makedll: dlldepends maketmp dylib_name mod_list dylib_tasks modules dllinstall makeclean
 
 depends:
 	mkdir -p $(MAKEDIR)
@@ -316,11 +316,12 @@ maketmp:
 		dir_list; \
 		 ) \
 	done
+
+target_list:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@echo '# target lists ' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'PROGRAMS= parallels utilities' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -352,10 +353,12 @@ maketmp:
 		target_list; \
 		 ) \
 	done
+
+lib_name:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@echo '# library lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'create library file name list...'
 	@for dir in  $(SUBDIRS) ; do \
@@ -372,10 +375,64 @@ maketmp:
 		lib_name; \
 		 ) \
 	done
+
+dylib_name:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# dynamic library lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@echo 'create library file name list...'
+	@for dir in Fortran_src/CORE_src ; do \
+		( \
+		echo 'generate library list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		lib_name; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@for dir in C_src ; do \
+		( \
+		echo 'generate library list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		lib_name; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@for dir in programs ; do \
+		( \
+		echo 'generate library list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		dylib_name; \
+		 ) \
+	done
+
+mod_list:
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# objects list' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'create object module list...'
 	@for dir in $(SUBDIRS) ; do \
@@ -400,8 +457,13 @@ maketmp:
 		mod_list; \
 		 ) \
 	done
-	@echo '' >> $(MAKENAME)
+
+target_task:
 	@echo 'create excecution construct list...'
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Rules for programs' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS) tests_with_f' >> $(MAKENAME)
 	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
@@ -441,8 +503,16 @@ lib_tasks:
 	done
 
 dylib_tasks:
-	@echo 'create dynamic library construct list...'
+	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Rules for programs' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'all: pythons' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create dynamic library construct list...'
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# Rules for dynamic libralies' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)

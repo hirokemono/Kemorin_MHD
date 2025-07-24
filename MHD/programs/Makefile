@@ -102,7 +102,8 @@ target_task:
 	done
 
 
-lib_name:
+dylib_name:
+	@echo  '#' >> $(MAKENAME)
 	@echo  LIB_PYTHONS=  \\           >> $(MAKENAME)
 	@echo  $(LIB_PYTHONS)             >> $(MAKENAME)
 	@echo  LIB_FILE_PYTHONS=  \\           >> $(MAKENAME)
@@ -112,6 +113,8 @@ lib_name:
 	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
 	@echo  LIB_FILES_PYTHON_UTILS=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_PYTHON_UTILS)       >> $(MAKENAME)
+
+lib_name:
 	@echo  '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
