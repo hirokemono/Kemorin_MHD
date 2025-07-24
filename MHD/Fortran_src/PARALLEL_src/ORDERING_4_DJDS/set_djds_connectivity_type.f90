@@ -122,6 +122,7 @@
      &          (nnod_1ele, node, ele, iele_start, iele_end,            &
      &           layer_comm, solver_C, DJDS_param, DJDS_tbl)
 !
+      use calypso_mpi
       use t_comm_table
       use set_element_id_4_node
 !
@@ -145,6 +146,7 @@
 !
       call const_next_nod_id_4_node(node, ele,                          &
      &    FEM_next%neib_ele, FEM_next%neib_nod)
+      call calypso_mpi_barrier
 !
       call s_set_crs_connection(node, FEM_next%neib_nod, CRS_table)
 !

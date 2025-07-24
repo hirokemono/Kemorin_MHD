@@ -76,6 +76,8 @@
 !
       subroutine dup_derived_node_data(nprocs, org_node, new_node)
 !
+      use set_size_4_smp_types
+!
       integer, intent(in) :: nprocs
       type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node

@@ -124,6 +124,7 @@
 !
       call const_next_nod_id_4_node                                     &
      &   (mesh%node, mesh%ele, ele_4_nod, neib_nod)
+      call calypso_mpi_barrier
 !
       end subroutine init_4_cal_fluid_fileters
 !

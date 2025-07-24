@@ -177,7 +177,7 @@
 !
       edge_q%numedge =     edge_l%numedge
       edge_q%nnod_4_edge = num_quad_edge
-      call allocate_inod_in_edge(edge_q)
+      call alloc_inod_in_edge(edge_q)
       call copy_inod_in_edge(edge_q%nnod_4_edge,                        &
      &    edge_q%node_on_edge, edge_q%node_on_edge_sf)
 !
