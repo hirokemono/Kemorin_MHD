@@ -139,7 +139,7 @@ all: makemake makedll
 
 makemake: depends maketmp lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp lib_tasks dylib_tasks modules dllinstall makeclean
+makedll: dlldepends maketmp dylib_tasks modules dllinstall makeclean
 
 depends:
 	echo "Create module list"
@@ -438,7 +438,6 @@ lib_tasks:
 		lib_tasks; \
 		 ) \
 	done
-	@echo '' >> $(MAKENAME)
 
 dylib_tasks:
 	@echo 'create dynamic library construct list...'
@@ -446,6 +445,32 @@ dylib_tasks:
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# Rules for dynamic libralies' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in Fortran_src/CORE_src ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
+		GTK3_LIBS='$(GTK3_LIBS)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		lib_tasks; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@for dir in C_src ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
+		GTK3_LIBS='$(GTK3_LIBS)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		lib_tasks; \
+		 ) \
+	done
 	@echo '#' >> $(MAKENAME)
 	@for dir in programs ; do \
 		( cd $${dir};  \
