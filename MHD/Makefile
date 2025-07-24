@@ -47,6 +47,13 @@ C_src         \
 External_libs \
 programs/data_utilities/sph_spectr
 
+SUBDIRS_D =     \
+Fortran_src   \
+C_src         \
+External_libs \
+programs/data_utilities/sph_spectr
+
+
 F_INCLUDE = -I.
 C_INCLUDE = -I.
 
@@ -137,9 +144,9 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake makedll
 
-makemake: depends maketmp target_list lib_name mod_list target_task lib_tasks modules makeinstall makeclean
+makemake: depends maketmp target_list lib_list mod_list target_task lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp dylib_name mod_list dylib_tasks modules dllinstall makeclean
+makedll: dlldepends maketmp dylib_list mod_list dylib_tasks modules dllinstall makeclean
 
 depends:
 	mkdir -p $(MAKEDIR)
@@ -289,8 +296,8 @@ maketmp:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@echo '# Directory lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -354,7 +361,7 @@ target_list:
 		 ) \
 	done
 
-lib_name:
+lib_list:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# library lists' >> $(MAKENAME)
@@ -376,7 +383,7 @@ lib_name:
 		 ) \
 	done
 
-dylib_name:
+dylib_list:
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# dynamic library lists' >> $(MAKENAME)
