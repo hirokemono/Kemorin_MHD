@@ -47,7 +47,7 @@ C_src         \
 External_libs \
 programs/data_utilities/sph_spectr
 
-SUBDIRS_D =     \
+SUBDIRS_D =   \
 Fortran_src   \
 C_src         \
 External_libs \
@@ -144,9 +144,9 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake makedll
 
-makemake: depends maketmp target_list lib_list mod_list target_task lib_tasks modules makeinstall makeclean
+makemake: depends maketmp dir_list target_list lib_list mod_list target_task lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp dylib_list mod_list dylib_tasks modules dllinstall makeclean
+makedll: dlldepends maketmp dylib_dir_list dylib_list mod_list dylib_tasks modules dllinstall makeclean
 
 depends:
 	mkdir -p $(MAKEDIR)
@@ -295,6 +295,9 @@ maketmp:
 	@echo 'FFMPEG_LIBS =    $(FFMPEG_LIBS)'           >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+
+dir_list:
+	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# Directory lists' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
@@ -310,6 +313,38 @@ maketmp:
 	@echo '#' >> $(MAKENAME)
 	@echo 'create directory list...'
 	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'generate diectory list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)'          \
+		MAKENAME='$(MAKENAME)'        \
+		64BIT_INT='$(64BIT_INT)'   \
+		F90_LOCAL='$(F90_LOCAL)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		dir_list; \
+		 ) \
+	done
+
+dylib_dir_list:
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Directory lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo MAKEDIR =  $(MAKEDIR)   >> $(MAKENAME)
+	@echo BUILDDIR = $(BUILDDIR)  >> $(MAKENAME)
+	@echo MHDDIR =   $(MHDDIR)    >> $(MAKENAME)
+	@echo INSTDIR =  $(INSTDIR)   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'PROG_DIR =       $$(MHDDIR)/programs'     >> $(MAKENAME)
+	@echo 'DATA_UTILS_DIR = $$(PROG_DIR)/data_utilities'   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create directory list...'
+	@for dir in $(SUBDIRS_D) ; do \
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
