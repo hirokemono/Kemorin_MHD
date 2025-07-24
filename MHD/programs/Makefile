@@ -113,6 +113,10 @@ dylib_name:
 	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
 	@echo  LIB_FILES_PYTHON_UTILS=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_PYTHON_UTILS)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)
+	@echo  $(MOD_PYTHONS)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 lib_name:
 	@echo  '#' >> $(MAKENAME)
@@ -151,9 +155,6 @@ dylib_tasks:
 	'$$(F90LIBS)' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)
-	@echo  $(MOD_PYTHONS)       >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

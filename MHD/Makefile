@@ -144,9 +144,9 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 all: makemake makedll
 
-makemake: depends maketmp dir_list target_list lib_list mod_list target_task lib_tasks modules makeinstall makeclean
+makemake: depends makehead maketmp dir_list target_list lib_list mod_list target_task lib_tasks modules makeinstall makeclean
 
-makedll: dlldepends maketmp dylib_dir_list dylib_list mod_list dylib_tasks modules dllinstall makeclean
+makedll: dlldepends makehead dylib_dir_list dylib_list dylib_mod_list dylib_tasks modules dllinstall makeclean
 
 depends:
 	mkdir -p $(MAKEDIR)
@@ -201,10 +201,9 @@ dlldepends:
 		) \
 	done
 
-maketmp:
+makehead:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
-	
 	echo "# create Makefile"
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
@@ -251,6 +250,8 @@ maketmp:
 	@echo '#' >> $(MAKENAME)
 	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
 	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
+
+maketmp:
 	@echo '#' >> $(MAKENAME)
 	@echo '# BLAS settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -478,6 +479,36 @@ mod_list:
 	@echo '#' >> $(MAKENAME)
 	@echo 'create object module list...'
 	@for dir in $(SUBDIRS) ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		ZLIB_LIBS='$(ZLIB_LIBS)'     \
+		PNG_LIBS='$(PNG_LIBS)'       \
+		FFTW3_LIBS='$(FFTW3_LIBS)'   \
+		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)'   \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
+		SSE_CPU="$(SSE_CPU)" \
+		SSE4="$(SSE4)" \
+		SSE8="$(SSE8)" \
+		mod_list; \
+		 ) \
+	done
+
+dylib_mod_list:
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# objects list' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create object module list...'
+	@for dir in $(SUBDIRS_D) ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
