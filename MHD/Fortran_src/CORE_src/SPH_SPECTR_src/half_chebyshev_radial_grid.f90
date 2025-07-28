@@ -51,7 +51,7 @@
       ked = min(num_layer, nlayer_CMB + nlayer_CMB/2)
       do k = kst, ked
         r_grid(k) = r_CMB + r_CMB * (one - sin(half*pi                  &
-     &                       * dble(k-nlayer_CMB)/dble(nlayer_CMB)) )
+     &                       * dble(k-nlayer_CMB)/dble(nlayer_CMB)))
       end do
       dr = r_grid(ked) - r_grid(ked-1)
 !
@@ -110,7 +110,7 @@
         ngrid_ext = k
       end if
 !
-      nlayer_ICB = 0
+      nlayer_ICB = 1
       nlayer_CMB = nri
       ntot_shell = nlayer_CMB + ngrid_ext
 !
