@@ -57,6 +57,10 @@ struct kemoviewer_gl_type{
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
+    void kemoview_get_gl_buffer_to_bmp2(struct kemoviewer_type *kemo_sgl,
+                                        struct kemoview_VAOs *kemo_VAOs,
+                                        struct kemoview_shaders *kemo_shaders,
+                                        struct gl_texure_image *image_t);
     void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                                 unsigned char *glimage, unsigned char *image_quilt);
 
