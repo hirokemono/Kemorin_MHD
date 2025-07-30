@@ -407,7 +407,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
         kemoview_modify_view(kemo_sgl, kemo_gl);
 		glutSwapBuffers();
 		
-        kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+        get_gl_buffer_to_bmp(npix_x, npix_y, image);
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
                                              npix_x, npix_y, image);
 	};
@@ -435,7 +435,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 			draw_mesh_keep_menu();
 			glutSwapBuffers();
             
-            kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+            get_gl_buffer_to_bmp(npix_x, npix_y, image);
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
                                                  npix_x, npix_y, image);
 		}

@@ -69,10 +69,20 @@ void write_rotate_views(GLFWwindow *glfw_win,
                                   kemo_gl->kemoview_data);
         kemoview_modify_anaglyph(kemo_gl);
         glfwSwapBuffers(glfw_win);
-		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+
+        struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
+        kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                       kemo_gl->kemo_shaders, image_t);
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                             npix_x, npix_y, image);
+                                             image_t->nipxel_xy[0], image_t->nipxel_xy[1],
+                                             image_t->texure_rgba);
+        dealloc_kemoview_gl_texure(image_t);
 	};
+    
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,
+                              kemo_gl->kemoview_data);
+    kemoview_modify_anaglyph(kemo_gl);
+    glfwSwapBuffers(glfw_win);
 	return;
 }
 
@@ -147,18 +157,28 @@ void write_evolution_views(GLFWwindow *glfw_win,
                            int ist_udt, int ied_udt, int inc_udt,
                            int iflag_img, struct kv_string *image_prefix,
                            int npix_x, int npix_y, unsigned char *image) {
-    int i;
-	for(i=ist_udt; i<(ied_udt+1); i++) {
+    int i_current = kemo_gl->kemoview_data->kemo_mul_psf->psf_a->file_step_disp;
+    
+	for(int i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			kemoview_viewer_evolution(i, kemo_gl->kemoview_data);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
             kemoview_gl_full_draw(kemo_gl);
 			glfwSwapBuffers(glfw_win);
-			
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+			            
+            struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
+            kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                           kemo_gl->kemo_shaders, image_t);
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
-                                                 npix_x, npix_y, image);
+                                                 image_t->nipxel_xy[0], image_t->nipxel_xy[1],
+                                                 image_t->texure_rgba);
+            dealloc_kemoview_gl_texure(image_t);
 		}
 	}
+    
+    kemoview_viewer_evolution(i_current, kemo_gl->kemoview_data);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    kemoview_gl_full_draw(kemo_gl);
+    glfwSwapBuffers(glfw_win);
 	return;
 };

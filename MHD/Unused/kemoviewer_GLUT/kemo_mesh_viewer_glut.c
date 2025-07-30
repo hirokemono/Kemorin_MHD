@@ -59,7 +59,7 @@ static void save_image_handler(){
     int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-    kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+    get_gl_buffer_to_bmp(npix_x, npix_y, image);
     kemoview_write_window_to_file(id_image, image_prefix,
                                   npix_x, npix_y, image);
     free(image);
