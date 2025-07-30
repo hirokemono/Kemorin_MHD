@@ -62,8 +62,12 @@ static void write_rotate_quilt_movie(GLFWwindow *glfw_win,
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
             kemoview_gl_quilt_draw(i_quilt, kemo_gl);
             glfwSwapBuffers(glfw_win);
-			kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                   image, quilt_image);
+
+            struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
+            kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   image_t, quilt_image);
+            dealloc_kemoview_gl_texure(image_t);
 		};
         encode_by_FFMPEG((nimg_column * npix_x),
                          (nimg_raw * npix_y),
@@ -131,8 +135,12 @@ static void write_evolution_quilt_movie(GLFWwindow *glfw_win,
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
                 kemoview_gl_quilt_draw(i_quilt, kemo_gl);
                 glfwSwapBuffers(glfw_win);
+                
+                struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
 				kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                       image, quilt_image);
+                                       kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                       image_t, quilt_image);
+                dealloc_kemoview_gl_texure(image_t);
 			};
             encode_by_FFMPEG((nimg_column * npix_x),
                              (nimg_raw * npix_y),

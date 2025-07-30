@@ -198,9 +198,12 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
             draw_quilt(i_quilt, kemo_gl);
+            struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
             kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                   image, quilt_image);
-        };
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   image_t, quilt_image);
+            dealloc_kemoview_gl_texure(image_t);
+       };
         kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
                                       (nimg_column * npix_x),
                                       (nimg_raw * npix_y), quilt_image);

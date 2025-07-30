@@ -106,12 +106,14 @@ void kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *kemo_sgl,
     draw_objects_to_rgb_gl(kemo_sgl, kemo_VAOs, kemo_shaders, image_t);
 };
 void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
-                            unsigned char *glimage, unsigned char *image_quilt){
-    get_gl_buffer_to_bmp(kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame, glimage);
+                            struct kemoview_VAOs *kemo_VAOs,
+                            struct kemoview_shaders *kemo_shaders,
+                            struct gl_texure_image *image_t,
+                            unsigned char *image_quilt){
+    draw_objects_to_rgb_gl(kemo_sgl, kemo_VAOs, kemo_shaders, image_t);
     set_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
-                        istep_quilt, kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame,
-                        glimage, image_quilt);
-    printf("Baka\n");
+                        istep_quilt, image_t->nipxel_xy[0], image_t->nipxel_xy[1],
+                        image_t->texure_rgba, image_quilt);
     return;
 };
 

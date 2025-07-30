@@ -106,8 +106,12 @@ void write_rotate_quilt_views(GLFWwindow *glfw_win,
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
             kemoview_gl_quilt_draw(i_quilt, kemo_gl);
             glfwSwapBuffers(glfw_win);
+            
+            struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
 			kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                   image, quilt_image);
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   image_t, quilt_image);
+            dealloc_kemoview_gl_texure(image_t);
 		};
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
                                              (nimg_column * npix_x),
@@ -138,8 +142,12 @@ void write_evolution_quilt_views(GLFWwindow *glfw_win,
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
                 kemoview_gl_quilt_draw(i_quilt, kemo_gl);
                 glfwSwapBuffers(glfw_win);
+                
+                struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
 				kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                       image, quilt_image);
+                                       kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                       image_t, quilt_image);
+                dealloc_kemoview_gl_texure(image_t);
 			};
             
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,

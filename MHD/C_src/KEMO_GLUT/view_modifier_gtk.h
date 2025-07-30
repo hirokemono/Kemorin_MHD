@@ -26,7 +26,7 @@ void set_GTKindowSize(int width, int height,
 
 void draw_fast(struct kemoviewer_type *kemo_sgl);
 void draw_full(struct kemoviewer_type *kemo_sgl);
-void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+void sel_write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
                             int iflag_img, struct kv_string *image_prefix,
                             int i_axis, int inc_deg);
 void sel_write_evolution_views(struct kemoviewer_gl_type *kemo_gl,

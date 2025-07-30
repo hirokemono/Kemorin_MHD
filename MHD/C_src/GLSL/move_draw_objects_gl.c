@@ -9,15 +9,6 @@
 
 #include "move_draw_objects_gl.h"
 
-void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
-    glReadBuffer(GL_FRONT);
-    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-    glReadPixels(IZERO, IZERO, (GLsizei) num_x, (GLsizei) num_y,
-                 GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
-    return;
-}
-
-
 static void full_draw_objects(struct kemoview_mul_psf *kemo_mul_psf, struct kemoview_fline *kemo_fline,
                               struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                               struct phong_lights *lights, struct kemoview_VAOs *kemo_VAOs,

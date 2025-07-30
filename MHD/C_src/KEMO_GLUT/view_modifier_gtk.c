@@ -335,29 +335,34 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 	return;
 };
 
-static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
+static void write_rotate_quilt_views(struct kemoviewer_gl_type *kemo_gl,
                                      int iflag_img, struct kv_string *image_prefix,
                                      int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-    int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+    int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_RAW);
 	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i, i_quilt, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_gl->kemoview_data);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_gl->kemoview_data);
 		for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-			draw_quilt(i_quilt, kemo_sgl);
-			kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
+			draw_quilt(i_quilt, kemo_gl->kemoview_data);
+            
+            struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
+			kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   image_t, quilt_image);
+            dealloc_kemoview_gl_texure(image_t);
 		};
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 											 (nimg_column * npix_x),
@@ -409,14 +414,14 @@ static void write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
 }
 
 
-static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
+static void write_quilt_evolution_views(struct kemoviewer_gl_type *kemo_gl,
                                         int iflag_img, struct kv_string *image_prefix,
                                         int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
-	int nimg_raw = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+	int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_RAW);
 	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i, i_quilt;
 
@@ -424,12 +429,17 @@ static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i, kemo_sgl);
+			kemoview_viewer_evolution(i, kemo_gl->kemoview_data);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-				draw_quilt(i_quilt, kemo_sgl);
-				kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
+				draw_quilt(i_quilt, kemo_gl->kemoview_data);
+                
+                struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
+				kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                       kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                       image_t, quilt_image);
+                dealloc_kemoview_gl_texure(image_t);
 			};
 			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 												 (nimg_column * npix_x),
@@ -477,14 +487,14 @@ static void write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
 	return;
 };
 
-void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+void sel_write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
                             int iflag_img, struct kv_string *image_prefix,
                             int i_axis, int inc_deg) {
-	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
-		write_rotate_quilt_views(kemo_sgl, iflag_img, image_prefix,
+	if(kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE) != 0){
+		write_rotate_quilt_views(kemo_gl->kemoview_data, iflag_img, image_prefix,
                                  i_axis, inc_deg);
 	} else {
-		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
+		write_rotate_views(kemo_gl->kemoview_data, iflag_img, image_prefix, i_axis, inc_deg);
 	};
     draw_full();
 	return;
@@ -494,7 +504,7 @@ void sel_write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
                                int iflag_img, struct kv_string *image_prefix,
 							   int ist_udt, int ied_udt, int inc_udt){
 	if(kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE) != 0){
-		write_quilt_evolution_views(kemo_gl->kemoview_data, iflag_img, image_prefix,
+		write_quilt_evolution_views(kemo_gl, iflag_img, image_prefix,
 									ist_udt, ied_udt, inc_udt);
 	} else {
 		write_evolution_views(kemo_gl, iflag_img, image_prefix,
