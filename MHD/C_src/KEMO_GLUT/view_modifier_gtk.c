@@ -390,8 +390,8 @@ static void write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
         kemoview_modify_view(kemo_gl->kemoview_data, kemoGL_GTK);
 		
         struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-        kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
-                                       kemo_gl->kemo_shaders, image_t);
+        kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                      kemo_gl->kemo_shaders, image_t);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
                                              image_t->nipxel_xy[0], image_t->nipxel_xy[1],
                                              image_t->texure_rgba);
@@ -461,8 +461,8 @@ static void write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
 /*		    gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 
             struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-            kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
-                                           kemo_gl->kemo_shaders, image_t);
+            kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                          kemo_gl->kemo_shaders, image_t);
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
                                                  image_t->nipxel_xy[0], image_t->nipxel_xy[1],
                                                  image_t->texure_rgba);

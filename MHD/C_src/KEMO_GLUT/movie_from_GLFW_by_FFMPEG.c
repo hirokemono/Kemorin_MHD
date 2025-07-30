@@ -23,8 +23,8 @@ static void write_rotate_movie(GLFWwindow *glfw_win,
         glfwSwapBuffers(glfw_win);
 
         struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-		kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
-                                       kemo_gl->kemo_shaders, image_t);
+        kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                      kemo_gl->kemo_shaders, image_t);
         encode_by_FFMPEG(image_t->nipxel_xy[0], image_t->nipxel_xy[1],
                          image_t->texure_rgba, kemo_encode);
         dealloc_kemoview_gl_texure(image_t);
@@ -92,8 +92,8 @@ static void write_evolution_movie(GLFWwindow *glfw_win,
 			glfwSwapBuffers(glfw_win);
 			
             struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-            kemoview_get_gl_buffer_to_bmp2(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
-                                           kemo_gl->kemo_shaders, image_t);
+            kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data, kemo_gl->kemo_VAOs,
+                                          kemo_gl->kemo_shaders, image_t);
             encode_by_FFMPEG(image_t->nipxel_xy[0], image_t->nipxel_xy[1],
                              image_t->texure_rgba, kemo_encode);
             dealloc_kemoview_gl_texure(image_t);
