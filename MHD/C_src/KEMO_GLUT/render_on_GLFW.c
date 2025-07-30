@@ -96,7 +96,6 @@ void write_rotate_quilt_views(GLFWwindow *glfw_win,
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
             kemoview_gl_quilt_draw(i_quilt, kemo_gl);
             glfwSwapBuffers(glfw_win);
-			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 			kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
                                    image, quilt_image);
 		};
@@ -129,7 +128,6 @@ void write_evolution_quilt_views(GLFWwindow *glfw_win,
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
                 kemoview_gl_quilt_draw(i_quilt, kemo_gl);
                 glfwSwapBuffers(glfw_win);
-				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 				kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
                                        image, quilt_image);
 			};
