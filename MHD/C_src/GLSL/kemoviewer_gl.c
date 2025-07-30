@@ -101,6 +101,7 @@ unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
 };
 void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image){
     get_gl_buffer_to_bmp(npix_x, npix_y, image);
+    printf("Tako\n");
 };
 void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                             unsigned char *glimage, unsigned char *image_quilt){
@@ -108,6 +109,7 @@ void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
     set_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
                         istep_quilt, kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame,
                         glimage, image_quilt);
+    printf("Baka\n");
     return;
 };
 
