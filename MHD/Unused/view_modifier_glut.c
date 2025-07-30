@@ -443,3 +443,14 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
     free(image);
 	return;
 };
+
+
+void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
+    glReadBuffer(GL_FRONT);
+    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+    glReadPixels(IZERO, IZERO, (GLsizei) num_x, (GLsizei) num_y,
+                 GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
+    return;
+}
+
+

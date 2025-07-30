@@ -61,7 +61,10 @@ struct kemoviewer_gl_type{
                                        struct kemoview_shaders *kemo_shaders,
                                        struct gl_texure_image *image_t);
     void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
-                                unsigned char *glimage, unsigned char *image_quilt);
+                                struct kemoview_VAOs *kemo_VAOs,
+                                struct kemoview_shaders *kemo_shaders,
+                                struct gl_texure_image *image_t,
+                                unsigned char *image_quilt);
 
 
 /* subroutines for IO */
