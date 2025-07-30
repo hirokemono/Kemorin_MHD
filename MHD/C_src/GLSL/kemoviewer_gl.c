@@ -103,6 +103,13 @@ void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image)
     get_gl_buffer_to_bmp(npix_x, npix_y, image);
     printf("Tako\n");
 };
+void kemoview_get_gl_buffer_to_bmp2(struct kemoviewer_type *kemo_sgl,
+                                    struct kemoview_VAOs *kemo_VAOs,
+                                    struct kemoview_shaders *kemo_shaders,
+                                    struct gl_texure_image *image_t){
+    draw_objects_to_rgb_gl(kemo_sgl, kemo_VAOs, kemo_shaders, image_t);
+    printf("Tako2\n");
+};
 void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                             unsigned char *glimage, unsigned char *image_quilt){
     get_gl_buffer_to_bmp(kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame, glimage);
