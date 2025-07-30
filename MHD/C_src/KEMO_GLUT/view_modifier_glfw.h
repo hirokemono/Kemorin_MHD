@@ -15,9 +15,7 @@
 #include "kemoviewer_gl.h"
 #include "render_on_GLFW.h"
 
-#ifdef FFMPEG
-  #include "movie_from_GLFW_by_FFMPEG.h"
-#endif
+#include "movie_from_GLFW_by_FFMPEG.h"
 
 #define ZOOM    1
 #define PAN     2
