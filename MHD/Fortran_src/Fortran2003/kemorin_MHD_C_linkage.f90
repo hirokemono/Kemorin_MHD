@@ -111,10 +111,9 @@
 !    void kemoview_get_text_color_code(struct kemoviewer_type *kemoviewer, float c_code[4]);
 !
 !    int kemoview_set_image_file_format_id(char *image_fmt);
-!    void kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *kemo_sgl,
-!                                       struct kemoview_VAOs *kemo_VAOs,
-!                                       struct kemoview_shaders *kemo_shaders,
-!                                       struct gl_texure_image *image_t);
+!    struct gl_texure_image *  kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *kemo_sgl,
+!                                                            struct kemoview_VAOs *kemo_VAOs,
+!                                                            struct kemoview_shaders *kemo_shaders);
 !    void kemoview_get_fliped_img(int npixel_x, int npixel_y,
 !                                 unsigned char *glimage, unsigned char *fliped_img);
 !    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
