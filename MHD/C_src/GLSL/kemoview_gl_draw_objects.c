@@ -44,18 +44,17 @@ void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
                              struct kemoview_VAOs *kemo_VAOs,
                              struct kemoview_shaders *kemo_shaders,
                              struct gl_texure_image *anaglyph_image){
-    struct gl_texure_image *left_img =  alloc_kemoview_gl_texure();
-    struct gl_texure_image *right_img = alloc_kemoview_gl_texure();
-
     alloc_draw_psf_texture(kemoview->view_s->nx_frame,
                            kemoview->view_s->ny_frame,
                            anaglyph_image);
 
     modify_left_viewmat(kemoview->view_s);
+    struct gl_texure_image *left_img =  alloc_kemoview_gl_texure();
     draw_objects_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders,
                            left_img);
     
     modify_right_viewmat(kemoview->view_s);
+    struct gl_texure_image *right_img = alloc_kemoview_gl_texure();
     draw_objects_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders,
                            right_img);
 
