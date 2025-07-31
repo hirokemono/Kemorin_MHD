@@ -46,10 +46,8 @@
     struct kv_string *psf_filehead = kemoview_alloc_kvstring();
     
     int i_file_step;
-    int iflag = kemoview_get_full_path_file_prefix_step(kemo_sgl,
-                                                        id_model,
-                                                        psf_filehead,
-                                                        &i_file_step);
+    kemoview_get_full_path_file_prefix_step(kemo_sgl, id_model,
+                                            psf_filehead, &i_file_step);
     self.CurrentStep =        i_file_step;
     self.EvolutionStartStep = i_file_step;
     self.EvolutionEndStep =   i_file_step;
@@ -237,6 +235,7 @@
 
 -(void) SaveQTmovieEvolution:(struct kemoviewer_type *) kemo_sgl;
 {
+    int istep_current = kemo_sgl->istep_evo;
     NSInteger iframe;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
@@ -280,13 +279,15 @@
         [_KemoviewQTMaker CloseKemoviewMovieFile];
     }
         
-    kemoview_viewer_evolution((int) self.EvolutionStartStep, kemo_sgl);
+    kemoview_viewer_evolution(istep_current, kemo_sgl);
+    self.CurrentStep = istep_current;
     [_metalView UpdateImage:kemo_sgl];
 }
 
 -(void) SaveQuiltMovieEvolution:(struct kemoviewer_type *) kemo_sgl;
 {
     NSInteger iframe;
+    int istep_current = kemo_sgl->istep_evo;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if([_KemoviewQTMaker OpenQuiltQTMovieFile:EvolutionImageFilename
@@ -334,8 +335,9 @@
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [_KemoviewQTMaker CloseKemoviewMovieFile];
     }
-        
-    kemoview_viewer_evolution((int) self.EvolutionStartStep, kemo_sgl);
+    
+    kemoview_viewer_evolution((int) istep_current, kemo_sgl);
+    self.CurrentStep = istep_current;
     [_metalView UpdateImage:kemo_sgl];
 }
 

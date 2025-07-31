@@ -23,8 +23,6 @@
 @synthesize currentPSFID;
 @synthesize currentPSFStep;
 
-@synthesize EvolutionStartStep;
-
 @synthesize PSFSelectedField;
 @synthesize PSFSelectedComponent;
 

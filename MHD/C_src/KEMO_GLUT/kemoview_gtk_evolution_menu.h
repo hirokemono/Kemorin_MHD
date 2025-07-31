@@ -59,9 +59,6 @@ struct evolution_gtk_menu{
 
 struct evolution_gtk_menu * init_evoluaiton_menu_box(struct kemoviewer_type *kemo_sgl);
 
-GtkWidget * init_evolution_menu_frame(struct kemoviewer_gl_type *kemo_gl,
-                                      struct evolution_gtk_menu *evo_gmenu,
-                                      GtkWidget *evoWindow);
 GtkWidget * init_evolution_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                          struct evolution_gtk_menu *evo_gmenu,
                                          GtkWidget *window);

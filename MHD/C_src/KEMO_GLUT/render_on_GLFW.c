@@ -45,6 +45,7 @@ double draw_rotate_views_lc(GLFWwindow *glfw_win,
 void draw_evolution_views_lc(GLFWwindow *glfw_win,
                              struct kemoviewer_gl_type *kemo_gl,
                              int ist_udt, int ied_udt, int inc_udt){
+    int i_current = kemo_gl->kemoview_data->istep_evo;
 	glfwFocusWindow(glfw_win);
 	glfwSwapBuffers(glfw_win);
 	for (int i=ist_udt; i<(ied_udt+1); i++) {
@@ -55,7 +56,12 @@ void draw_evolution_views_lc(GLFWwindow *glfw_win,
 			glfwSwapBuffers(glfw_win);
 		}
 	}
-	return;
+
+    kemoview_viewer_evolution(i_current, kemo_gl->kemoview_data);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    kemoview_gl_full_draw(kemo_gl);
+    glfwSwapBuffers(glfw_win);
+    return;
 };
 
 
@@ -125,6 +131,8 @@ void write_evolution_quilt_views(GLFWwindow *glfw_win,
                                  int ist_udt, int ied_udt, int inc_udt,
                                  int iflag_img, struct kv_string *image_prefix,
                                  int npix_x, int npix_y, unsigned char *image) {
+    int i_current = kemo_gl->kemoview_data->istep_evo;
+    
 	int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data,
                                               ISET_QUILT_COLUMN);
 	int nimg_raw =    kemoview_get_quilt_nums(kemo_gl->kemoview_data,
@@ -153,6 +161,11 @@ void write_evolution_quilt_views(GLFWwindow *glfw_win,
 		}
 	}
     free(quilt_image);
+    
+    kemoview_viewer_evolution(i_current, kemo_gl->kemoview_data);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    kemoview_gl_full_draw(kemo_gl);
+    glfwSwapBuffers(glfw_win);
 	return;
 };
 
@@ -161,7 +174,7 @@ void write_evolution_views(GLFWwindow *glfw_win,
                            int ist_udt, int ied_udt, int inc_udt,
                            int iflag_img, struct kv_string *image_prefix,
                            int npix_x, int npix_y, unsigned char *image) {
-    int i_current = kemo_gl->kemoview_data->kemo_mul_psf->psf_a->file_step_disp;
+    int i_current = kemo_gl->kemoview_data->istep_evo;
     
 	for(int i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {

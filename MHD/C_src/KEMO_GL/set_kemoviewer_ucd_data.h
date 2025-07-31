@@ -33,6 +33,7 @@ int kemoviewer_open_data(struct kv_string *filename,
                          struct kemoview_fline *kemo_fline,
                          struct kemoview_tracer *kemo_tracer,
                          struct psf_data *ucd_tmp,
-                         struct view_element *view);
+                         struct view_element *view,
+                         int *istep_file);
 
 #endif

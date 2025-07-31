@@ -387,6 +387,7 @@
 		1895A3432BE28BF700701DEB /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitonic_sort_pthread.c; sourceTree = "<group>"; };
 		1895A3452BE28C5700701DEB /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitonic_sort_c.c; sourceTree = "<group>"; };
 		1895A3462BE28C5800701DEB /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitonic_sort_c.h; sourceTree = "<group>"; };
+		1895B47D2E3B60CD00DD88E1 /* CalypsoView_Cocoa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CalypsoView_Cocoa.entitlements; path = CalypsoView_Cocoa/CalypsoView_Cocoa.entitlements; sourceTree = "<group>"; };
 		1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElasticMenuWindow.m; sourceTree = "<group>"; };
 		1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElasticMenuWindow.h; sourceTree = "<group>"; };
 		1899DCBF2BF2E6320041DE84 /* t_PSF_each_isoline_edge_list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = t_PSF_each_isoline_edge_list.c; sourceTree = "<group>"; };
@@ -1106,6 +1107,7 @@
 		29B97314FDCFA39411CA2CEA /* Kemoview_Cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				1895B47D2E3B60CD00DD88E1 /* CalypsoView_Cocoa.entitlements */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -1454,12 +1456,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CalypsoView_Cocoa/CalypsoView_Cocoa.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -1486,12 +1491,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CalypsoView_Cocoa/CalypsoView_Cocoa.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

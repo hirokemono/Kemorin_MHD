@@ -207,11 +207,7 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_rot_FPS), rot_gmenu->spin_rot_FPS, FALSE, FALSE, 0);
-    
-	GtkWidget *hbox_rotation_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), gtk_label_new("Image file: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), entry_rotation_file, TRUE, TRUE, 0);
-	
+    	
 	GtkWidget *hbox_rotation_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), rot_gmenu->combobox_rotation_fileformat,
@@ -226,7 +222,6 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_dir, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rot_increment, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(rot_box), hbox_rot_FPS, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_filename, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_fileformat, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_save, FALSE, FALSE, 0);
 	

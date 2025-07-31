@@ -22,6 +22,7 @@
 struct kemoviewer_type{
 	int window_ID;
     int image_format_id;
+    int istep_evo;
 	
 	struct kemoview_mesh      *kemo_mesh;
 	struct kemoview_mul_psf   *kemo_mul_psf;
