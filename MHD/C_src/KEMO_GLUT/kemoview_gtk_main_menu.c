@@ -68,8 +68,20 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
     init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
     init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
+    
+    if(iflag_datatype == 0 || iflag_datatype == IFLAG_MESH){
+        mbot->evo_gmenu->istart_evo = 1;
+        mbot->evo_gmenu->iend_evo =   1;
+    }else{
+        mbot->evo_gmenu->istart_evo = kemo_gl->kemoview_data->istep_evo;
+        mbot->evo_gmenu->iend_evo =   kemo_gl->kemoview_data->istep_evo;
+    }
+    printf("kemo_gl->kemoview_data->istep_evo %d\n", kemo_gl->kemoview_data->istep_evo);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_start), (double) mbot->evo_gmenu->istart_evo);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_end),   (double) mbot->evo_gmenu->iend_evo);
 
     activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
+    
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -227,11 +239,10 @@ GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
 
-    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
+//    mbot->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
     GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
                                                mbot->lightparams_vws,
-                                               mbot->evo_gmenu,
-                                               mbot->itemTEvo);
+                                               mbot->evo_gmenu);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",
@@ -288,9 +299,8 @@ GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
     GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
                                                           main_window);
-/*
-    GtkWidget *expander_evo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
-*/
+    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
+
     mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
                                                         main_window);
     mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
@@ -302,7 +312,7 @@ GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
 	gtk_box_pack_start(GTK_BOX(vbox_menu), hbox_viewtype, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_menu), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_menu), expander_rot, FALSE, FALSE, 0);
-//    gtk_box_pack_start(GTK_BOX(vbox_menu), expander_evo, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_menu), mbot->itemTEvo, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_menu), mbot->expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_menu), mbot->expander_view, FALSE, FALSE, 0);
     return vbox_menu;

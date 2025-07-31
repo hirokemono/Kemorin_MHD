@@ -116,7 +116,8 @@ int kemoview_open_data(struct kv_string *filename,
                                               kemoviewer->kemo_fline,
                                               kemoviewer->kemo_tracer,
                                               kemoviewer->psf_ucd_tmp,
-                                              kemoviewer->view_s);
+                                              kemoviewer->view_s,
+                                              &kemoviewer->istep_evo);
 	return iflag_datatype;
 }
 

@@ -142,12 +142,14 @@ void close_PSF_view(struct kemoview_mul_psf *kemo_mul_psf){
 void evolution_psf_viewer(struct psf_data *psf_ucd_tmp,
                           struct kemoview_mul_psf *kemo_mul_psf){
 	int id_load;
-	printf("Loading PSF %d \n",kemo_mul_psf->psf_a->nmax_loaded);
+/*	printf("Loading PSF %d \n",kemo_mul_psf->psf_a->nmax_loaded); */
 	for(id_load=0; id_load<kemo_mul_psf->psf_a->nmax_loaded; id_load++){
 		if(kemo_mul_psf->psf_a->iflag_loaded[id_load] > 0){
-			printf("Loaded PSF file %d %d %s\n", id_load, 
+/*
+            printf("Loaded PSF file %d %d %s\n", id_load,
                    kemo_mul_psf->psf_m[id_load]->iformat_viz_file,
                    kemo_mul_psf->psf_m[id_load]->viz_prefix_c->string);
+ */
             kemo_mul_psf->psf_m[id_load]->viz_step_c = kemo_mul_psf->psf_a->istep_sync;
 			evolution_PSF_data(kemo_mul_psf->psf_d[id_load],
                                kemo_mul_psf->psf_n[id_load],

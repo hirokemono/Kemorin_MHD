@@ -102,9 +102,7 @@
 	CGFloat PsfMinimumDigit;
 	CGFloat PsfMaximumDigit;
     CGFloat PsfSingleOpacity;
-	
-	NSInteger EvolutionStartStep;
-    
+	    
 	IBOutlet id _PSFVectorSwitchOutlet;
 	NSInteger PSFVectorMenuAcrive;
 	NSInteger DrawPSFVectorFlag;
@@ -116,7 +114,6 @@
 	CGFloat VectorDigit;
 }
 @property NSInteger psfMoreOpenFlag;
-@property NSInteger EvolutionStartStep;
 
 @property(retain) NSString* PsfWindowlabel;
 

@@ -25,7 +25,6 @@
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
                                 GtkWidget *main_window, 
                                 struct lightparams_view *lightparams_vws,
-                                struct evolution_gtk_menu *evo_gmenu,
-                                GtkWidget *itemTEvo);
+                                struct evolution_gtk_menu *evo_gmenu);
 
 #endif /* KEMOVIEW_GTK_MENU_BUTTON_ */
