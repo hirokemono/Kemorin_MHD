@@ -16,6 +16,7 @@
 #include "vartex_array_object_gl.h"
 
 #include "m_kemoviewer_data.h"
+#include "m_vertex_buffer.h"
 #include "m_kemoview_gl_VAOs.h"
 #include "m_kemoview_object_buffers.h"
 #include "m_kemoview_gl_VAOs.h"
@@ -31,15 +32,13 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                              struct kemoview_VAOs *kemo_VAOs,
                              struct kemoview_shaders *kemo_shaders);
 
-void draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
-                            struct kemoview_VAOs *kemo_VAOs,
-                            struct kemoview_shaders *kemo_shaders,
-                            struct gl_texure_image *image);
+struct gl_texure_image * draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                struct kemoview_VAOs *kemo_VAOs,
+                                                struct kemoview_shaders *kemo_shaders);
 
-void draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
-                             struct kemoview_VAOs *kemo_VAOs,
-                             struct kemoview_shaders *kemo_shaders,
-                             struct gl_texure_image *anaglyph_image);
+struct gl_texure_image * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                 struct kemoview_VAOs *kemo_VAOs,
+                                                 struct kemoview_shaders *kemo_shaders);
 
 void select_modify_anaglyph(struct kemoviewer_type *kemoview,
                             struct kemoview_VAOs *kemo_VAOs,

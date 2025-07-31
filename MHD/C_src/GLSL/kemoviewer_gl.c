@@ -103,8 +103,9 @@ unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
 struct gl_texure_image * kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *kemo_sgl,
                                                        struct kemoview_VAOs *kemo_VAOs,
                                                        struct kemoview_shaders *kemo_shaders){
-    struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-    draw_objects_to_rgb_gl(kemo_sgl, kemo_VAOs, kemo_shaders, image_t);
+    struct gl_texure_image *image_t = draw_objects_to_rgb_gl(kemo_sgl,
+                                                             kemo_VAOs,
+                                                             kemo_shaders);
     return image_t;
 };
 
@@ -112,8 +113,9 @@ void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                             struct kemoview_VAOs *kemo_VAOs,
                             struct kemoview_shaders *kemo_shaders,
                             unsigned char *image_quilt){
-    struct gl_texure_image *image_t = alloc_kemoview_gl_texure();
-    draw_objects_to_rgb_gl(kemo_sgl, kemo_VAOs, kemo_shaders, image_t);
+    struct gl_texure_image *image_t = draw_objects_to_rgb_gl(kemo_sgl,
+                                                             kemo_VAOs,
+                                                             kemo_shaders);
     set_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
                         istep_quilt, image_t->nipxel_xy[0], image_t->nipxel_xy[1],
                         image_t->texure_rgba, image_quilt);
