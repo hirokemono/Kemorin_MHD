@@ -96,7 +96,7 @@
       integer(kind = kint) :: k, j
 !
 !
-!$omp parallel do private (k,j)
+!zz$omp parallel do private (k,j)
       do k = kr_st+2, kr_ed-2
         do j = 1, mcomp
           a_prod(5,k-2,j) =  a_left(3,k-1,j) * a_right(3,k-2,j)
@@ -110,12 +110,12 @@
           a_prod(1,k+2,j) =  a_left(1,k+1,j) * a_right(1,k+2,j)
         end do
       end do
-!$omp end parallel do
+!zz$omp end parallel do
 !
 !
       k = kr_st + 1
-!$omp parallel
-!$omp do private(j)
+!zz$omp parallel
+!zz$omp do private(j)
       do j = 1, mcomp
 !        a_prod(5,k-2,j) =  zero
         a_prod(4,k-1,j) =  a_left(3,k-1,j) * a_right(2,k-1,j)           &
@@ -127,10 +127,10 @@
      &                   + a_left(1,k+1,j) * a_right(2,k+1,j)
         a_prod(1,k+2,j)  = a_left(1,k+1,j) * a_right(1,k+2,j)
       end do
-!$omp end do nowait
+!zz$omp end do nowait
 !
       k = kr_ed - 1
-!$omp do private(j)
+!zz$omp do private(j)
       do j = 1, mcomp
         a_prod(5,k-2,j) =  a_left(3,k-1,j) * a_right(3,k-2,j)
         a_prod(4,k-1,j) =  a_left(3,k-1,j) * a_right(2,k-1,j)           &
@@ -142,8 +142,8 @@
      &                   + a_left(1,k+1,j) * a_right(2,k+1,j)
 !        a_prod(1,k+2,j) = zero
       end do
-!$omp end do
-!$omp end parallel
+!zz$omp end do
+!zz$omp end parallel
 !
       end subroutine cal_mat_product_3band_mul
 !
@@ -162,7 +162,7 @@
       integer(kind = kint) :: k, j
 !
 !
-!$omp parallel do private (k,j)
+!zz$omp parallel do private (k,j)
       do k = kr_st+3, kr_ed-3
         do j = 1, mcomp
           a7_prod(7,k-3,j) =  a3_left(3,k-1,j) * a5_right(5,k-3,j)
@@ -182,11 +182,11 @@
           a7_prod(1,k+3,j) =  a3_left(1,k+1,j) * a5_right(1,k+3,j)
         end do
       end do
-!$omp end parallel do
+!zz$omp end parallel do
 !
-!$omp parallel
+!zz$omp parallel
       k = kr_st+1
-!$omp do private(j)
+!zz$omp do private(j)
       do j = 1, mcomp
         a7_prod(5,k-1,j) =  a3_left(3,k-1,j) * a5_right(3,k-1,j)        &
      &                    + a3_left(2,k  ,j) * a5_right(4,k-1,j)        &
@@ -201,10 +201,10 @@
      &                    + a3_left(1,k+1,j) * a5_right(2,k+2,j)
         a7_prod(1,k+3,j) =  a3_left(1,k+1,j) * a5_right(1,k+3,j)
       end do
-!$omp end do nowait
+!zz$omp end do nowait
 !
       k = kr_st+2
-!$omp do private(j)
+!zz$omp do private(j)
       do j = 1, mcomp
         a7_prod(6,k-2,j) =  a3_left(3,k-1,j) * a5_right(4,k-2,j)        &
      &                    + a3_left(2,k  ,j) * a5_right(5,k-2,j)
@@ -221,11 +221,11 @@
      &                    + a3_left(1,k+1,j) * a5_right(2,k+2,j)
         a7_prod(1,k+3,j) =  a3_left(1,k+1,j) * a5_right(1,k+3,j)
       end do
-!$omp end do nowait
+!zz$omp end do nowait
 !
 !
       k = kr_ed - 2
-!$omp do private(j)
+!zz$omp do private(j)
       do j = 1, mcomp
         a7_prod(7,k-3,j) =  a3_left(3,k-1,j) * a5_right(5,k-3,j) 
         a7_prod(6,k-2,j) =  a3_left(3,k-1,j) * a5_right(4,k-2,j)        &
@@ -242,10 +242,10 @@
         a7_prod(2,k+2,j) =  a3_left(2,k  ,j) * a5_right(1,k+2,j)        &
      &                    + a3_left(1,k+1,j) * a5_right(2,k+2,j)
       end do
-!$omp end do nowait
+!zz$omp end do nowait
 !
       k = kr_ed - 1
-!$omp do private(j)
+!zz$omp do private(j)
       do j = 1, mcomp
         a7_prod(7,k-3,j) =  a3_left(3,k-1,j) * a5_right(5,k-3,j) 
         a7_prod(6,k-2,j) =  a3_left(3,k-1,j) * a5_right(4,k-2,j)        &
@@ -260,8 +260,8 @@
      &                    + a3_left(2,k  ,j) * a5_right(2,k+1,j)        &
      &                    + a3_left(1,k+1,j) * a5_right(3,k+1,j)
       end do
-!$omp end do
-!$omp end parallel
+!zz$omp end do
+!zz$omp end parallel
 !
       end subroutine cal_mat_prod_3b5b_mul
 !
