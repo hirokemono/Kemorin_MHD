@@ -18,6 +18,9 @@
 !!
 !!   inertia_work             [i_m_advect_work]:  Work of Reynolds stress
 !!                                           -u \cdot (\omega \times u)
+!!   work_against_inertia     [i_uwu]:  Work against of Reynolds stress
+!!                                            u \cdot (\omega \times u)
+!!
 !!   Lorentz_work             [i_ujb]:  Work of Lorentz force
 !!                                            u \cdot (J \times B)
 !!   work_against_Lorentz     [i_nega_ujb]:  Work against Lorentz force
@@ -68,6 +71,13 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'inertia_work',                            &
      &                math = '$ -u_{i} (e_{ijk} \omega_{j} u_{k}) $')
+!>        Field label of work of inertia
+!!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
+      type(field_def), parameter :: work_against_inertia                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'work_against_inertia',                    &
+     &                math = '$ u_{i} (e_{ijk} \omega_{j} u_{k}) $')
+!
 !>        Field label of work against Lorentz force
 !!         @f$ - u_{i} (e_{ijk} J_{j} B_{k}) @f$
       type(field_def), parameter :: work_against_Lorentz                &
@@ -174,6 +184,7 @@
 !
       check_enegy_fluxes = .FALSE.
       if (    (field_name .eq. inertia_work%name)                       &
+     &   .or. (field_name .eq. work_against_inertia%name)               &
      &   .or. (field_name .eq. work_against_Lorentz%name)               &
      &   .or. (field_name .eq. Lorentz_work%name)                       &
      &   .or. (field_name .eq. mag_tension_work%name)                   &
@@ -206,6 +217,7 @@
       call alloc_control_array_c2_i(array_c2i)
 !
       call set_field_label_to_ctl(inertia_work,             array_c2i)
+      call set_field_label_to_ctl(work_against_inertia,     array_c2i)
       call set_field_label_to_ctl(work_against_Lorentz,     array_c2i)
       call set_field_label_to_ctl(Lorentz_work,             array_c2i)
       call set_field_label_to_ctl(mag_tension_work,         array_c2i)
