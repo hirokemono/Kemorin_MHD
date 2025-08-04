@@ -8,13 +8,22 @@
 !> @brief decomp base fields
 !!
 !!@verbatim
-!!      subroutine s_decomp_rj_base_field(ltr_filter, sph_rj,           &
-!!     &          base_fld, filter_fld, rj_fld)
-!!        integer(kind = kint), intent(in) :: ltr_filter
+!!      subroutine s_decomp_w_sym_rj_base_field(sph_rj,                 &
+!!     &          base_fld, sym_fld, asym_fld, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(base_field_address), intent(in) :: base_fld
-!!        type(base_field_address), intent(in) :: filter_fld
+!!        type(base_field_address), intent(in) :: sym_fld
+!!        type(base_field_address), intent(in) :: asym_fld
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine decomp_w_sym_rj_linear_force(sph_rj,                 &
+!!     &          base_force, sym_force, asym_force, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(base_force_address), intent(in) :: base_force
+!!        type(base_force_address), intent(in) :: sym_force
+!!        type(base_force_address), intent(in) :: asym_force
+!
+      type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
       module decomp_w_sym_rj_base_field
@@ -22,7 +31,6 @@
       use m_precision
       use t_spheric_rj_data
       use t_phys_data
-      use t_base_field_labels
 !
       implicit  none
 ! 
@@ -36,6 +44,8 @@
 !
       subroutine s_decomp_w_sym_rj_base_field(sph_rj,                   &
      &          base_fld, sym_fld, asym_fld, rj_fld)
+!
+      use t_base_field_labels
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(base_field_address), intent(in) :: base_fld
@@ -84,10 +94,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine decomp_rj_vector(sph_rj,                 &
+      subroutine decomp_w_sym_rj_linear_force(sph_rj,                   &
+     &          base_force, sym_force, asym_force, rj_fld)
+!
+      use t_base_force_labels
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(base_force_address), intent(in) :: base_force
+      type(base_force_address), intent(in) :: sym_force
+      type(base_force_address), intent(in) :: asym_force
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call decomp_rj_vector(sph_rj, rj_fld, base_force%i_coriolis,      &
+     &    sym_force%i_coriolis, asym_force%i_coriolis)
+!
+      call decomp_rj_vector(sph_rj, rj_fld, base_force%i_buoyancy,      &
+     &    sym_force%i_buoyancy, asym_force%i_buoyancy)
+      call decomp_rj_vector(sph_rj, rj_fld, base_force%i_comp_buo,      &
+     &    sym_force%i_comp_buo, asym_force%i_comp_buo)
+!
+      call decomp_rj_vector(sph_rj, rj_fld, base_force%i_press_grad,    &
+     &    sym_force%i_press_grad, asym_force%i_press_grad)
+!
+      end subroutine decomp_w_sym_rj_linear_force
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine decomp_rj_vector(sph_rj,                               &
      &          rj_fld, ipol_fld, ipol_sym, ipol_asym)
 !
-      integer(kind = kint), intent(in) :: ipol_fld, ipol_sym, ipol_asym
+      integer(kind = kint), intent(in) :: ipol_fld
+      integer(kind = kint), intent(in) :: ipol_sym, ipol_asym
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !

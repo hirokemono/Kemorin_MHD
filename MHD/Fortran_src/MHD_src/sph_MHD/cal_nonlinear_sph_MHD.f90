@@ -256,6 +256,14 @@
      &      frc_rtp(1,f_trns_frc%i_m_advect) )
       end if
 !
+      if(f_trns_frc%i_m_advect .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (nnod, MHD_prop%fl_prop%coef_cor,                            &
+     &      fld_rtp(1,b_trns_base_1%i_vort),                            &
+     &      fld_rtp(1,b_trns_base_2%i_velo),                            &
+     &      frc_rtp(1,f_trns_frc%i_coriolis) )
+      end if
+!
       if(f_trns_frc%i_lorentz .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
