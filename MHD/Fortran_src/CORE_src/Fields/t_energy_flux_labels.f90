@@ -17,12 +17,21 @@
 !!
 !!   inertia_work             [i_m_advect_work]:  Work of Reynolds stress
 !!                                           -u \cdot (\omega \times u)
+!!   work_against_inertia     [i_uwu]:  Work against of Reynolds stress
+!!                                            u \cdot (\omega \times u)
+!!   Coriolis_work            [i_Coriolis_work]:  Work of Coriolis force
+!!                                           -2u \cdot (\Omega \times u)
+!!   work_against_Coriolis    [i_work_against_Coriolis]
+!!                                      : Work against of Coriolis force
+!!                                            2u \cdot (\Omega \times u)
+!!
 !!   Lorentz_work             [i_ujb]:  Work of Lorentz force
 !!                                            u \cdot (J \times B)
 !!   work_against_Lorentz     [i_nega_ujb]:  Work against Lorentz force
 !!                                           -u \cdot (J \times B)
 !!   mag_tension_work         [i_m_tension_wk]: Work of magnetic tension
 !!                                            u \cdot( (B \nabla) B)
+!!
 !!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
 !!                                           -u \cdot (\alpha_{T} g T)
 !!   composite_buoyancy_flux  [i_c_buo_gen]:  Compositional buoyancy flux
@@ -64,8 +73,19 @@
 !>       Structure of start address of base forces
       type energy_flux_address
 !>        Field address of work of inertia
-!!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
+!!         @f$ -u_{i} (u_{j} \partial_{j} u_{i}) @f$
         integer (kind=kint) :: i_m_advect_work =   izero
+!>        Field label of work against of inertia
+!!         @f$ u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
+        integer (kind=kint) :: i_uwu =             izero
+!
+!>        Field label of work of Coriolis force
+!!         @f$ -2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) @f$
+        integer (kind=kint) :: i_Coriolis_work =         izero
+!>        Field label of work against of Coriolis force
+!!         @f$  2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) @f$
+        integer (kind=kint) :: i_work_against_Coriolis = izero
+!
 !>        Field address of work against Lorentz force
 !!         @f$ - u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_nega_ujb =        izero
@@ -74,6 +94,7 @@
         integer (kind=kint) :: i_ujb =             izero
 !>        Field address of work of magnetic tension
 !!         @f$ u_{i} (B_{j} \partial_{j}) B_{i} @f$
+!
         integer (kind=kint) :: i_m_tension_wk  =   izero
 !>        Field address of buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
@@ -131,13 +152,19 @@
       flag = check_enegy_fluxes(field_name)
       if(flag) then
         if (field_name .eq. inertia_work%name) then
-          ene_flux%i_m_advect_work = i_phys
-        else if (field_name .eq. work_against_Lorentz%name) then
-          ene_flux%i_nega_ujb =      i_phys
+          ene_flux%i_m_advect_work =         i_phys
+        else if (field_name .eq. work_against_inertia%name) then
+          ene_flux%i_uwu =                   i_phys
+        else if (field_name .eq. Coriolis_work%name) then
+          ene_flux%i_Coriolis_work =         i_phys
+        else if (field_name .eq. work_against_Coriolis%name) then
+          ene_flux%i_work_against_Coriolis = i_phys
         else if (field_name .eq. Lorentz_work%name) then
-          ene_flux%i_ujb =           i_phys
+          ene_flux%i_ujb =                   i_phys
+        else if (field_name .eq. work_against_Lorentz%name) then
+          ene_flux%i_nega_ujb =              i_phys
         else if (field_name .eq. mag_tension_work%name) then
-          ene_flux%i_m_tension_wk =  i_phys
+          ene_flux%i_m_tension_wk =          i_phys
 !
         else if (field_name .eq. buoyancy_flux%name) then
           ene_flux%i_buo_gen =       i_phys

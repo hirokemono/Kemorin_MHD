@@ -5,7 +5,8 @@
 !!@date   Programmed in July, 2021 by T. Kera (Tohoku Univ.)
 !!
 !!
-!> @brief Labels and addresses for forces by sym field
+!> @brief Labels and addresses for forces
+!!            decomposed by equatoreal symmetries
 !!
 !!@verbatim
 !!      subroutine set_sym_force_addresses                         &
@@ -15,7 +16,6 @@
 !!      subroutine set_sym_ene_flux_addresses                        &
 !!     &         (i_phys, field_name, eflux_by_sym, flag)
 !!        type(energy_flux_address), intent(inout) :: eflux_by_sym
-!!
 !! !!!!!  divergence of forces by sym field !!!!!!!!!!!!!!!!!!
 !!
 !!      Field label  [Address]
@@ -46,14 +46,9 @@
 !!   pert_c_flux_by_sym         [force_by_sym%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  List of energy flux  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
-!!
-!!   inertia_work_by_sym          [eflux_by_sym%i_m_advect_work]
-!!   wk_against_Lorentz_by_sym    [eflux_by_sym%i_nega_ujb]
-!!   Lorentz_work_by_sym          [eflux_by_sym%i_ujb]
-!!   mag_tension_work_by_sym      [eflux_by_sym%i_m_tension_wk]
 !!
 !!   sym_buoyancy_flux            [eflux_by_sym%i_buo_gen]
 !!   sym_comp_buoyancy_flux       [eflux_by_sym%i_c_buo_gen]
@@ -339,114 +334,6 @@
       end if
 !
       end subroutine set_asym_sym_force_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_sym_ene_flux_addresses_by_sym_asym                          &
-      &         (i_phys, field_name, eflux_s_sxa, flag)
-!
-      use m_sym_ene_flux_labels
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: eflux_s_sxa
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_enegy_fluxes_w_sym(field_name)
-      if(flag) then
-            if (field_name .eq. us_d_js_x_ba%name) then
-            eflux_s_sxa%i_ujb =           i_phys
-            else if (field_name .eq. mns_us_d_ws_x_ua%name) then
-            eflux_s_sxa%i_m_advect_work =       i_phys
-            else if (field_name .eq. sym_buoyancy_flux%name) then
-            eflux_s_sxa%i_buo_gen =       i_phys
-            end if
-      end if
-!
-      end subroutine set_sym_ene_flux_addresses_by_sym_asym
-!
-! ----------------------------------------------------------------------
-!
-!
-      subroutine set_sym_ene_flux_addresses_by_asym_sym                          &
-      &         (i_phys, field_name, eflux_s_axs, flag)
-!
-      use m_sym_ene_flux_labels
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: eflux_s_axs
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_enegy_fluxes_w_sym(field_name)
-      if(flag) then
-            if (field_name .eq. us_d_ja_x_bs%name) then
-            eflux_s_axs%i_ujb =           i_phys
-            else if (field_name .eq. mns_us_d_wa_x_us%name) then
-            eflux_s_axs%i_m_advect_work =       i_phys
-            end if
-      end if
-!
-      end subroutine set_sym_ene_flux_addresses_by_asym_sym
-!
-! ----------------------------------------------------------------------
-!
-!
-      subroutine set_asym_ene_flux_addresses_by_sym_sym                          &
-      &         (i_phys, field_name, eflux_a_sxs, flag)
-!
-      use m_sym_ene_flux_labels
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: eflux_a_sxs
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_enegy_fluxes_w_sym(field_name)
-      if(flag) then
-            if (field_name .eq. ua_d_js_x_bs%name) then
-            eflux_a_sxs%i_ujb =           i_phys
-            else if (field_name .eq. mns_ua_d_ws_x_us%name) then
-            eflux_a_sxs%i_m_advect_work =       i_phys
-            else if (field_name .eq. asym_buoyancy_flux%name) then
-            eflux_a_sxs%i_buo_gen =       i_phys
-            end if
-      end if
-!
-      end subroutine set_asym_ene_flux_addresses_by_sym_sym
-!
-! ----------------------------------------------------------------------
-!
-!
-      subroutine set_asym_ene_flux_addresses_by_asym_asym                          &
-      &         (i_phys, field_name, eflux_a_axa, flag)
-!
-      use m_sym_ene_flux_labels
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: eflux_a_axa
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_enegy_fluxes_w_sym(field_name)
-      if(flag) then
-            if (field_name .eq. ua_d_ja_x_ba%name) then
-            eflux_a_axa%i_ujb =           i_phys
-            else if (field_name .eq. mns_ua_d_wa_x_ua%name) then
-            eflux_a_axa%i_m_advect_work =       i_phys
-            end if
-      end if
-!
-      end subroutine set_asym_ene_flux_addresses_by_asym_asym
 !
 ! ----------------------------------------------------------------------
 !

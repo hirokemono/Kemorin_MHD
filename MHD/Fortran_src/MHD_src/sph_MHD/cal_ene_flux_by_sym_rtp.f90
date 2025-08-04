@@ -1,10 +1,11 @@
-!> @file  cal_ene_flux_by_filter_rtp.f90
-!!      module cal_ene_flux_by_filter_rtp
+!>@file  cal_ene_flux_by_sym_rtp.f90
+!!      module cal_ene_flux_by_sym_rtp
 !!
-!! @author  T. Kera (Tohoku University)
-!! @date Programmed in Aug., 2021
+!!@author  T. Kera (Tohoku University) and H. Matsui (Tokyo Tech.)
+!!@date Programmed by T. Kera in Aug., 2021
+!!      Modified by H. Matsui in Aug., 2025
 !
-!> @brief Evaluate energy fluxes by filtered field
+!>@brief Evaluate energy fluxes by filtered field
 !!
 !!@verbatim
 !!      subroutine s_cal_ene_flux_by_sym_rtp                            &
@@ -39,8 +40,6 @@
 !
       implicit  none
 !
-      private :: cal_work_of_lorentz_on_node
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -53,6 +52,7 @@
      &          trns_b_snap, trns_f_snap, trns_b_eflux, trns_f_eflux)
 !
       use cal_buoyancy_flux_sph
+      use cal_each_energy_flux_rtp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -130,6 +130,31 @@
      &    trns_f_snap%ncomp, trns_f_snap%fld_rtp,                       &
      &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
 ! 
+!     call cal_work_of_coriolis_on_node                                 &
+!     &   (bs_trns%sym_fld, fs_trns%forces_by_sym_asym,                 &
+!     &    fe_trns%eflux_to_sym_by_sym_asym, sph_rtp%nnod_rtp,          &
+!     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                      &
+!     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp,                      &
+!     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
+     call cal_work_of_coriolis_on_node                                  &
+     &   (bs_trns%sym_fld, fs_trns%forces_by_asym_sym,                  &
+     &    fe_trns%eflux_to_sym_by_asym_sym, sph_rtp%nnod_rtp,           &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp,                       &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
+!     call cal_work_of_coriolis_on_node                                 &
+!     &   (bs_trns%asym_fld, fs_trns%forces_by_sym_sym,                 &
+!     &    fe_trns%eflux_to_asym_by_sym_sym, sph_rtp%nnod_rtp,          &
+!     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                      &
+!     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp,                      &
+!     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
+     call cal_work_of_coriolis_on_node                                  &
+     &   (bs_trns%asym_fld, fs_trns%forces_by_asym_asym,                &
+     &    fe_trns%eflux_to_asym_by_asym_asym, sph_rtp%nnod_rtp,         &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp,                       &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
+! 
 !
      call cal_ene_flux_by_induct_on_node                                &
      &   (bs_trns%asym_fld, be_trns%forces_by_sym_asym,                 &
@@ -157,97 +182,6 @@
      &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
 !
       end subroutine s_cal_ene_flux_by_sym_rtp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_work_of_lorentz_on_node                            &
-     &         (bs_trns_base, f_trns_frc, fs_trns_eflux,                &
-     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,   &
-     &          ntot_comp_flx, flx_rtp)
-!
-      use cal_products_smp
-!
-      type(base_field_address), intent(in) :: bs_trns_base
-      type(base_force_address), intent(in) :: f_trns_frc
-      type(energy_flux_address), intent(in) :: fs_trns_eflux
-!
-      integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc
-      integer(kind = kint), intent(in) :: ntot_comp_flx
-      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
-      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
-!
-      real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
-!
-      if(fs_trns_eflux%i_ujb .gt. 0) then
-        call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
-     &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_ujb) )
-      end if
-!
-      end subroutine cal_work_of_lorentz_on_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_work_of_inertia_on_node                            &
-     &         (bs_trns_base, f_trns_frc, fs_trns_eflux,                &
-     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,   &
-     &          ntot_comp_flx, flx_rtp)
-!
-      use cal_products_smp
-!
-      type(base_field_address), intent(in) :: bs_trns_base
-      type(base_force_address), intent(in) :: f_trns_frc
-      type(energy_flux_address), intent(in) :: fs_trns_eflux
-!
-      integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc
-      integer(kind = kint), intent(in) :: ntot_comp_flx
-      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
-      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
-!
-      real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
-!
-      if(fs_trns_eflux%i_m_advect_work .gt. 0) then
-        call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      frc_rtp(1,f_trns_frc%i_m_advect),                           &
-     &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_m_advect_work) )
-      end if
-!
-      end subroutine cal_work_of_inertia_on_node
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_ene_flux_by_induct_on_node                         &
-     &         (bs_trns_base, ipol_frc, fs_trns_eflux,                  &
-     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,   &
-     &          ntot_comp_flx, flx_rtp)
-!
-      use cal_products_smp
-!
-      type(base_field_address), intent(in) :: bs_trns_base
-      type(base_force_address), intent(in) :: ipol_frc
-      type(energy_flux_address), intent(in) :: fs_trns_eflux
-!
-      integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc
-      integer(kind = kint), intent(in) :: ntot_comp_flx
-      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
-      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
-!
-      real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
-!
-      if(fs_trns_eflux%i_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      frc_rtp(1,ipol_frc%i_induction),                            &
-     &      fld_rtp(1,bs_trns_base%i_magne),                            &
-     &      flx_rtp(1,fs_trns_eflux%i_me_gen) )
-      end if
-!
-      end subroutine cal_ene_flux_by_induct_on_node
 !
 !-----------------------------------------------------------------------
 !

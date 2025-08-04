@@ -20,6 +20,11 @@
 !!                                           -u \cdot (\omega \times u)
 !!   work_against_inertia     [i_uwu]:  Work against of Reynolds stress
 !!                                            u \cdot (\omega \times u)
+!!   Coriolis_work            [i_Coriolis_work]:  Work of Coriolis force
+!!                                           -2u \cdot (\Omega \times u)
+!!   work_against_Coriolis    [i_work_against_Coriolis]
+!!                                      : Work against of Coriolis force
+!!                                            2u \cdot (\Omega \times u)
 !!
 !!   Lorentz_work             [i_ujb]:  Work of Lorentz force
 !!                                            u \cdot (J \times B)
@@ -27,6 +32,7 @@
 !!                                           -u \cdot (J \times B)
 !!   mag_tension_work         [i_m_tension_wk]: Work of magnetic tension
 !!                                            u \cdot( (B \nabla) B)
+!!
 !!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
 !!                                           -u \cdot (\alpha_{T} g T)
 !!   composite_buoyancy_flux  [i_c_buo_gen]:  Compositional buoyancy flux
@@ -69,14 +75,27 @@
 !!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
       type(field_def), parameter :: inertia_work                        &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'inertia_work',                            &
-     &                math = '$ -u_{i} (e_{ijk} \omega_{j} u_{k}) $')
-!>        Field label of work of inertia
-!!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
+     &             name = 'inertia_work',                               &
+     &             math = '$ -u_{i} (e_{ijk} \omega_{j} u_{k}) $')
+!>        Field label of work against of inertia
+!!         @f$  u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
       type(field_def), parameter :: work_against_inertia                &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'work_against_inertia',                    &
-     &                math = '$ u_{i} (e_{ijk} \omega_{j} u_{k}) $')
+     &             name = 'work_against_inertia',                       &
+     &             math = '$ u_{i} (e_{ijk} \omega_{j} u_{k}) $')
+!
+!>        Field label of work of Coriolis force
+!!         @f$ -2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) @f$
+      type(field_def), parameter :: Coriolis_work                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &             name = 'Coriolis_work',                              &
+     &             math = '$ -2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) $')
+!>        Field label of work against of Coriolis force
+!!         @f$  2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) @f$
+      type(field_def), parameter :: work_against_Coriolis               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &             name = 'work_against_Coriolis',                      &
+     &             math = '$ 2\Omega u_{i} (e_{ijk} \hat{z} u_{k}) $')
 !
 !>        Field label of work against Lorentz force
 !!         @f$ - u_{i} (e_{ijk} J_{j} B_{k}) @f$
@@ -185,8 +204,10 @@
       check_enegy_fluxes = .FALSE.
       if (    (field_name .eq. inertia_work%name)                       &
      &   .or. (field_name .eq. work_against_inertia%name)               &
-     &   .or. (field_name .eq. work_against_Lorentz%name)               &
+     &   .or. (field_name .eq. Coriolis_work%name)                      &
+     &   .or. (field_name .eq. work_against_Coriolis%name)              &
      &   .or. (field_name .eq. Lorentz_work%name)                       &
+     &   .or. (field_name .eq. work_against_Lorentz%name)               &
      &   .or. (field_name .eq. mag_tension_work%name)                   &
      &   .or. (field_name .eq. buoyancy_flux%name)                      &
      &   .or. (field_name .eq. composite_buoyancy_flux%name)            &
@@ -218,8 +239,10 @@
 !
       call set_field_label_to_ctl(inertia_work,             array_c2i)
       call set_field_label_to_ctl(work_against_inertia,     array_c2i)
-      call set_field_label_to_ctl(work_against_Lorentz,     array_c2i)
+      call set_field_label_to_ctl(Coriolis_work,            array_c2i)
+      call set_field_label_to_ctl(work_against_Coriolis,    array_c2i)
       call set_field_label_to_ctl(Lorentz_work,             array_c2i)
+      call set_field_label_to_ctl(work_against_Lorentz,     array_c2i)
       call set_field_label_to_ctl(mag_tension_work,         array_c2i)
       call set_field_label_to_ctl(buoyancy_flux,            array_c2i)
       call set_field_label_to_ctl(composite_buoyancy_flux,  array_c2i)

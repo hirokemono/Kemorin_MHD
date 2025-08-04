@@ -128,7 +128,7 @@
      &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,   &
      &          ntot_comp_uxb, fub_rtp, ntot_comp_flx, flx_rtp)
 !
-      use cal_products_smp
+      use cal_each_energy_flux_rtp
 !
       type(base_field_address), intent(in) :: bs_trns_base
       type(base_force_address), intent(in) :: f_trns_frc
@@ -144,26 +144,26 @@
 !
       real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
 !
-      if(fs_trns_eflux%i_ujb .gt. 0) then
-        call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
-     &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_ujb) )
-      end if
 !
-      if(fs_trns_eflux%i_nega_ujb .gt. 0) then
-        call cal_dot_prod_w_coef_smp(nnod, dminus,                      &
-     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
-     &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_nega_ujb))
-      end if
+      call cal_work_of_lorentz_on_node                                  &
+     &   (bs_trns_base, f_trns_frc, fs_trns_eflux,                      &
+     &    nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,         &
+     &    ntot_comp_flx, flx_rtp)
 !
-      if(fs_trns_eflux%i_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      fub_rtp(1,be_trns_frc%i_induction),                         &
-     &      fld_rtp(1,bs_trns_base%i_magne),                            &
-     &      flx_rtp(1,fs_trns_eflux%i_me_gen))
-      end if
+      call cal_ene_flux_by_induct_on_node                               &
+     &   (bs_trns_base, be_trns_frc, fs_trns_eflux,                     &
+     &    nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,         &
+     &    ntot_comp_flx, flx_rtp)
+!
+      call cal_work_of_inertia_on_node                                  &
+     &   (bs_trns_base, f_trns_frc, fs_trns_eflux,                      &
+     &    nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,         &
+     &    ntot_comp_flx, flx_rtp)
+!
+      call cal_work_of_coriolis_on_node                                 &
+     &   (bs_trns_base, f_trns_frc, fs_trns_eflux,                      &
+     &    nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,         &
+     &    ntot_comp_flx, flx_rtp)
 !
       end subroutine cal_energy_fluxes_on_node
 !

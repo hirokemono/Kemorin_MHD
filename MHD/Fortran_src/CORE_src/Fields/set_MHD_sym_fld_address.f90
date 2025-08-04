@@ -114,6 +114,7 @@
 !
       use set_sym_field_labels
       use set_sym_force_labels
+      use set_sym_energy_flux_labels
       use m_force_w_sym_labels
 !
       integer(kind = kint), intent(in) :: i_fld
@@ -124,32 +125,32 @@
       logical, intent(inout) :: flag
 !
 !
-      call set_sym_field_addresses                                       &
-      &   (i_fld, field_name, iphys%sym_fld, flag)
-      call set_asym_field_addresses                                      &
-      &   (i_fld, field_name, iphys%asym_fld, flag)
+      call set_sym_field_addresses                                      &
+     &   (i_fld, field_name, iphys%sym_fld, flag)
+      call set_asym_field_addresses                                     &
+     &   (i_fld, field_name, iphys%asym_fld, flag)
       if(flag) return
 !
 !
-      call set_sym_sym_force_addresses                                   &
-      &   (i_fld, field_name, iphys%forces_by_sym_sym, flag)
-      call set_asym_asym_force_addresses                                 &
-      &   (i_fld, field_name, iphys%forces_by_asym_asym, flag)
-      call set_sym_asym_force_addresses                                  &
-      &   (i_fld, field_name, iphys%forces_by_sym_asym, flag)
-      call set_asym_sym_force_addresses                                  &
-      &   (i_fld, field_name, iphys%forces_by_asym_sym, flag)
+      call set_sym_sym_force_addresses                                  &
+     &   (i_fld, field_name, iphys%forces_by_sym_sym, flag)
+      call set_asym_asym_force_addresses                                &
+     &   (i_fld, field_name, iphys%forces_by_asym_asym, flag)
+      call set_sym_asym_force_addresses                                 &
+     &   (i_fld, field_name, iphys%forces_by_sym_asym, flag)
+      call set_asym_sym_force_addresses                                 &
+     &   (i_fld, field_name, iphys%forces_by_asym_sym, flag)
       if(flag) return
 !
 ! 
-      call set_sym_ene_flux_addresses_by_sym_asym                        &
-      &   (i_fld, field_name, iphys%eflux_to_sym_by_sym_asym, flag)
-      call set_sym_ene_flux_addresses_by_asym_sym                        &
-      &   (i_fld, field_name, iphys%eflux_to_sym_by_asym_sym, flag)
-      call set_asym_ene_flux_addresses_by_sym_sym                        &
-      &   (i_fld, field_name, iphys%eflux_to_asym_by_sym_sym, flag)
-      call set_asym_ene_flux_addresses_by_asym_asym                      &
-      &   (i_fld, field_name, iphys%eflux_to_asym_by_asym_asym, flag)
+      call set_sym_eflx_address_by_sym_asm                              &
+     &   (i_fld, field_name, iphys%eflux_to_sym_by_sym_asym, flag)
+      call set_sym_eflx_address_by_asm_sym                              &
+     &   (i_fld, field_name, iphys%eflux_to_sym_by_asym_sym, flag)
+      call set_asm_eflx_address_by_sym_sym                              &
+     &   (i_fld, field_name, iphys%eflux_to_asym_by_sym_sym, flag)
+      call set_asm_eflx_address_by_asm_asm                              &
+     &   (i_fld, field_name, iphys%eflux_to_asym_by_asym_asym, flag)
       if(flag) return
 !
 !
