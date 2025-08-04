@@ -143,12 +143,12 @@
      &   (sph_bc_U, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),               &
      &    band_wt_evo%mat, band_vs_poisson%mat, band_vp_evo%mat)
 !
-      call check_specific_radial_band_mat(my_rank, (100+my_rank), 2, 0, &
-     &                                     sph_rj, band_vs_poisson)
-      call check_specific_radial_band_mat(my_rank, (200+my_rank), 2, 0, &
-     &                                     sph_rj, band_wt_evo)
-      call check_specific_radial_band_mat(my_rank, (300+my_rank), 2, 0, &
-     &                                     sph_rj, band_vp_evo)
+!      call check_specific_radial_band_mat(my_rank, (100+my_rank), 2, 0,&
+!     &                                     sph_rj, band_vs_poisson)
+!      call check_specific_radial_band_mat(my_rank, (200+my_rank), 2, 0,&
+!     &                                     sph_rj, band_wt_evo)
+!      call check_specific_radial_band_mat(my_rank, (300+my_rank), 2, 0,&
+!     &                                     sph_rj, band_vp_evo)
 !
       call ludcmp_5band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vp_evo)
