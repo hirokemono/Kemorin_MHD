@@ -24,9 +24,12 @@
 !!   Lorentz_force   [i_lorentz]:  Lorentz force     J \times B
 !!   magnetic_tension  [i_m_tension]:  magnetic tension   (B \nabla) B
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
-!!   buoyancy   [i_buoyancy]:   Thermal buoyancy       - \alpha_{T} g T
+!!   buoyancy   [i_buoyancy]:
+!!                       Total buoyancy - (\alpha_{T} T + \alpha_{C} C)g
+!!   thermal_buoyancy     [i_thermal_buo]:
+!!                       Thermal buoyancy  - \alpha_{T} T g
 !!   composite_buoyancy   [i_comp_buo]:
-!!                       compositional buoyancy  - \alpha_{C} g C
+!!                       compositional buoyancy  - \alpha_{C} C g
 !!
 !!   vecp_induction   [i_vp_induct]:     induction         u \times B
 !!   magnetic_induction   [i_induction]:
@@ -98,13 +101,19 @@
      &                name = 'Coriolis_force',                          &
      &                math = '$ -2 e_{ijk} \Omega_{j} u_{k} $')
 !>        Field label for buoyancy
-!!         @f$ -\alpha_{T} g_{i} T @f$
+!!         @f$ -(\alpha_{T} T + \alpha_{C} C) g_{i} @f$
       type(field_def), parameter :: buoyancy                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'buoyancy',                                &
      &                math = '$ -\alpha_{T} g_{i} T $')
+!>        Field label for thermal buoyancy
+!!         @f$ -\alpha_{T} T g_{i} @f$
+      type(field_def), parameter :: thermal_buoyancy                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'thermal_buoyancy',                        &
+     &                math = '$ -\alpha_{C} g_{i} C $')
 !>        Field label for compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} C @f$
+!!         @f$ -\alpha_{C} C  g_{i}@f$
       type(field_def), parameter :: composite_buoyancy                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'composite_buoyancy',                      &
@@ -235,6 +244,7 @@
      &   .or. (field_name .eq. Lorentz_force%name)                      &
      &   .or. (field_name .eq. magnetic_tension%name)                   &
      &   .or. (field_name .eq. buoyancy%name)                           &
+     &   .or. (field_name .eq. thermal_buoyancy%name)                   &
      &   .or. (field_name .eq. composite_buoyancy%name)                 &
      &   .or. (field_name .eq. vecp_induction%name)                     &
      &   .or. (field_name .eq. magnetic_induction%name)                 &
@@ -288,6 +298,7 @@
       call set_field_label_to_ctl(Lorentz_force,      array_c2i)
       call set_field_label_to_ctl(magnetic_tension,   array_c2i)
       call set_field_label_to_ctl(buoyancy,           array_c2i)
+      call set_field_label_to_ctl(thermal_buoyancy,   array_c2i)
       call set_field_label_to_ctl(composite_buoyancy, array_c2i)
       call set_field_label_to_ctl(magnetic_induction, array_c2i)
       call set_field_label_to_ctl(vecp_induction,     array_c2i)

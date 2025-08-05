@@ -27,9 +27,9 @@
 !!     Coriolis_force       (Coriolis)
 !!     Lorentz_force        (Lorentz)
 !!
-!!     buoyancy             (Thermal_buoyancy, Thermal_gravity, gravity)
-!!     composite_buoyancy   (Compositional_buoyancy, composite_gravity
-!!                           compositional_gravity)
+!!     Thermal_buoyancy         (buoyancy, Thermal_gravity, gravity)
+!!     Compositional_buoyancy   (Compositional_buoyancy, composite_gravity
+!!                               compositional_gravity)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -61,13 +61,12 @@
 !
 !>       Thermal buoyancy label
       character(len=kchara), parameter                                  &
-     &             :: gravity_label = 'Thermal_buoyancy'
+     &             :: thermal_gravity_label = 'Thermal_buoyancy'
+      character(len=kchara), parameter                                  &
+     &             :: thermal_gravity_e1 = 'Thermal_gravity'
 !
       character(len=kchara), parameter :: gravity_e1 =  'gravity'
       character(len=kchara), parameter :: gravity_e2 =  'buoyancy'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e5 = 'Thermal_gravity'
-!
 !
 !>       Compositional buoyancy label
       character(len=kchara), parameter                                  &
@@ -118,7 +117,7 @@
 !
       call append_c_to_ctl_array(Coriolis_force%name,     array_c)
       call append_c_to_ctl_array(Lorentz_force%name,      array_c)
-      call append_c_to_ctl_array(buoyancy%name,           array_c)
+      call append_c_to_ctl_array(thermal_buoyancy%name,   array_c)
       call append_c_to_ctl_array(composite_buoyancy%name, array_c)
 !
       end subroutine set_force_list_array
@@ -150,7 +149,7 @@
 !
       call append_c_to_ctl_array(coriolis_e1, array_c)
       call append_c_to_ctl_array(lorentz_label, array_c)
-      call append_c_to_ctl_array(gravity_label, array_c)
+      call append_c_to_ctl_array(thermal_gravity_label, array_c)
       call append_c_to_ctl_array(comp_gravity_label, array_c)
 !
       call append_c_to_ctl_array(Filtered_gravity_label, array_c)

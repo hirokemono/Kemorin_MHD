@@ -27,9 +27,12 @@
 !!   Lorentz_force   [i_lorentz]:  Lorentz force     J \times B
 !!   magnetic_tension  [i_m_tension]:  magnetic tension   (B \nabla) B
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
-!!   buoyancy   [i_buoyancy]:   Thermal buoyancy       - \alpha_{T} g T
+!!   buoyancy   [i_buoyancy]:
+!!                       Total buoyancy - (\alpha_{T} T + \alpha_{C} C)g
+!!   thermal_buoyancy     [i_thermal_buo]:
+!!                       Thermal buoyancy  - \alpha_{T} T g
 !!   composite_buoyancy   [i_comp_buo]:
-!!                       compositional buoyancy  - \alpha_{C} g C
+!!                       compositional buoyancy  - \alpha_{C} C g
 !!
 !!   vecp_induction   [i_vp_induct]:     induction         u \times B
 !!   magnetic_induction   [i_induction]:
@@ -87,10 +90,13 @@
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
         integer (kind=kint) :: i_coriolis =        izero
 !>        start address for buoyancy
-!!         @f$ -\alpha_{T} g_{i} T @f$
+!!         @f$ -(\alpha_{T} T + \alpha_{C} C) g_{i} @f$
         integer (kind=kint) :: i_buoyancy =        izero
+!>        start address for buoyancy
+!!         @f$ -\alpha_{T} T g_{i} @f$
+        integer (kind=kint) :: i_thermal_buo =     izero
 !>        start address for compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} C @f$
+!!         @f$ -\alpha_{C} C g_{i} @f$
         integer (kind=kint) :: i_comp_buo =        izero
 !
 !>        start address for magnetic induction
@@ -174,9 +180,11 @@
           forces%i_m_tension =  i_phys
 !
         else if (field_name .eq. buoyancy%name) then
-          forces%i_buoyancy =   i_phys
+          forces%i_buoyancy =    i_phys
         else if (field_name .eq. composite_buoyancy%name) then
-          forces%i_comp_buo =   i_phys
+          forces%i_thermal_buo = i_phys
+        else if (field_name .eq. composite_buoyancy%name) then
+          forces%i_comp_buo =    i_phys
 !
         else if (field_name .eq. vecp_induction%name) then
           forces%i_vp_induct =   i_phys

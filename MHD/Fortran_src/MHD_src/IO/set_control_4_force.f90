@@ -101,10 +101,10 @@
 !
         do i = 1, fl_prop%num_force
           tmpchara = fl_prop%name_force(i)
-          if(    cmp_no_case(tmpchara, gravity_label)                   &
+          if(    cmp_no_case(tmpchara, thermal_gravity_label)           &
      &      .or. cmp_no_case(tmpchara, gravity_e1)                      &
      &      .or. cmp_no_case(tmpchara, gravity_e2)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e5)                      &
+     &      .or. cmp_no_case(tmpchara, thermal_gravity_e1)              &
      &      ) fl_prop%flag_thermal_buoyancy =  .TRUE.
 !
           if(    cmp_no_case(tmpchara, comp_gravity_label)              &

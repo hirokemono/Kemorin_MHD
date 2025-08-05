@@ -215,14 +215,14 @@
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
-!     gravity, Coriolis, Lorentz
+!     Coriolis, Lorentz, Thermal_buoyancy, Composite_buoyancy
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
       array force_ctl
-        force_ctl   gravity
         force_ctl   Coriolis
         force_ctl   Lorentz
-        force_ctl   Composite_gravity
+        force_ctl   Thermal_buoyancy
+        force_ctl   Composite_buoyancy
       end array force_ctl
     end forces_define
 !

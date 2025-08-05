@@ -69,6 +69,7 @@ extern void * c_MHD_momentum_eq_iflag(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_viscous(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_inertia(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_grad_p(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_buoyancy(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_t_buoyancy(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_c_buoyancy(void *f_mom_eq_ctl);
 extern void * c_MHD_momentum_eq_coriolis(void *f_mom_eq_ctl);
@@ -372,7 +373,7 @@ static struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(
 	f_mom_eq_ctl->f_coef_4_grad_p =     init_f_ctl_cr_array(c_MHD_momentum_eq_grad_p, f_mom_eq_ctl->f_self);
 	f_mom_eq_ctl->f_coef_4_termal_buo = init_f_ctl_cr_array(c_MHD_momentum_eq_t_buoyancy, f_mom_eq_ctl->f_self);
 	f_mom_eq_ctl->f_coef_4_comp_buo =   init_f_ctl_cr_array(c_MHD_momentum_eq_c_buoyancy, f_mom_eq_ctl->f_self);
-	f_mom_eq_ctl->f_coef_4_Coriolis =   init_f_ctl_cr_array(c_MHD_momentum_eq_coriolis, f_mom_eq_ctl->f_self);
+    f_mom_eq_ctl->f_coef_4_Coriolis =   init_f_ctl_cr_array(c_MHD_momentum_eq_coriolis, f_mom_eq_ctl->f_self);
 	f_mom_eq_ctl->f_coef_4_Lorentz =    init_f_ctl_cr_array(c_MHD_momentum_eq_lorentz, f_mom_eq_ctl->f_self);
 	
 	return f_mom_eq_ctl;

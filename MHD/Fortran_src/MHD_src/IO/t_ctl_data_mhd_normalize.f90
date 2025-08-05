@@ -62,6 +62,7 @@
 !!     coef_4_buoyancy_ctl:   coefficients for buoyancy
 !!     coef_4_Coriolis_ctl:   coefficients for Coriolis force
 !!     coef_4_Lorentz_ctl:    coefficients for Lorantz force
+!!     coef_4_thermal_buoyancy_ctl:   coefficients for thermal uoyancy
 !!     coef_4_composit_buoyancy_ctl: coefficients for compositional buoyancy
 !!
 !!     One:  1, Zero (Ignore), Two:  2,   Radial_parameter: (1-ri/ro)

@@ -16,6 +16,8 @@
 !!     &          bind(C, NAME = 'c_MHD_momentum_eq_inertia')
 !!      type(c_ptr) function c_MHD_momentum_eq_grad_p(c_ctl)            &
 !!     &          bind(C, NAME = 'c_MHD_momentum_eq_grad_p')
+!!      type(c_ptr) function c_MHD_momentum_eq_buoyancy(c_ctl)          &
+!!     &          bind(C, NAME = 'c_MHD_momentum_eq_buoyancy')
 !!      type(c_ptr) function c_MHD_momentum_eq_t_buoyancy(c_ctl)        &
 !!     &          bind(C, NAME = 'c_MHD_momentum_eq_t_buoyancy')
 !!      type(c_ptr) function c_MHD_momentum_eq_c_buoyancy(c_ctl)        &
@@ -86,6 +88,16 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_momentum_eq_grad_p = C_loc(f_ctl%coef_4_grad_p)
       end function c_MHD_momentum_eq_grad_p
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_momentum_eq_buoyancy(c_ctl)            &
+     &          bind(C, NAME = 'c_MHD_momentum_eq_buoyancy')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(momentum_equation_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_momentum_eq_buoyancy = C_loc(f_ctl%coef_4_buoyancy)
+      end function c_MHD_momentum_eq_buoyancy
 !
 !  ---------------------------------------------------------------------
 !

@@ -84,19 +84,20 @@ begin MHD_control
       end array bc_velocity
 !
       array bc_magnetic_field
-        bc_magnetic_field  sph_to_center  to_Center  0.000  end
+        bc_magnetic_field  sph_to_center  to_Center   0.000  end
 !        bc_magnetic_field  insulator      ICB        0.000  end
-        bc_magnetic_field  insulator      CMB        0.000  end
+        bc_magnetic_field  insulator       CMB        0.000  end
       end array bc_magnetic_field
     end boundary_condition
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
-!     gravity, Coriolis, Lorentz
+!     Coriolis, Lorentz,
+!     Thermal_buoyancy, Composite_buoyancy
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
       array force_ctl
-        force_ctl   gravity
+        force_ctl   Thermal_buoyancy
         force_ctl   Coriolis
         force_ctl   Lorentz
       end array force_ctl
@@ -130,7 +131,9 @@ begin MHD_control
 !     coef_4_buoyancy_ctl:    coefficients for buoyancy
 !     coef_4_Coriolis_ctl:    coefficients for Coriolis force
 !     coef_4_Lorentz_ctl:     coefficients for Lorantz force
-!     coef_4_composit_buoyancy_ctl: 
+!     coef_4_thermal_buoyancy_ctl:
+!                             coefficients for thermal buoyancy
+!     coef_4_composit_buoyancy_ctl:
 !                             coefficients for compositional buoyancy
 !     coef_4_induction_ctl:   coefficients for magnetic induction
 !

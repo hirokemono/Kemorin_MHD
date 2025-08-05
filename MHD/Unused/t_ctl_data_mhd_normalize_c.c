@@ -7,7 +7,7 @@
 
 #include "t_ctl_data_mhd_normalize_c.h"
 
-#define NLBL_MOMENTUM_EQ_CTL   7
+#define NLBL_MOMENTUM_EQ_CTL   8
 #define NLBL_INDUCTION_EQ_CTL  4
 #define NLBL_HEAT_EQ_CTL       3
 
@@ -21,9 +21,10 @@ const char label_momentum_equation_ctl[NLBL_MOMENTUM_EQ_CTL][KCHARA_C] = {
 	/*[ 2]*/	{"coef_4_v_diffuse_ctl"},
 	
 	/*[ 3]*/	{"coef_4_buoyancy_ctl"},
-	/*[ 4]*/	{"coef_4_composit_buoyancy_ctl"},
-	/*[ 5]*/	{"coef_4_Coriolis_ctl"},
-	/*[ 6]*/	{"coef_4_Lorentz_ctl"},
+    /*[ 4]*/    {"coef_4_thermal_buoyancy_ctl"},
+	/*[ 5]*/	{"coef_4_composit_buoyancy_ctl"},
+	/*[ 6]*/	{"coef_4_Coriolis_ctl"},
+	/*[ 7]*/	{"coef_4_Lorentz_ctl"},
 };
 
 const char label_induction_equation_ctl[NLBL_INDUCTION_EQ_CTL][KCHARA_C] = {
@@ -151,10 +152,11 @@ void read_momentum_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *lab
 		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 1], mom_ctl_c->coef_4_grad_p_list);
 		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 2], mom_ctl_c->coef_4_viscous_list);
 		
-		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 3], mom_ctl_c->coef_4_termal_buo_list);
-		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 4], mom_ctl_c->coef_4_comp_buo_list);
-		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 5], mom_ctl_c->coef_4_Coriolis_list);
-		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 6], mom_ctl_c->coef_4_Lorentz_list);
+		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 4], mom_ctl_c->coef_4_termal_buo_list);
+		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 5], mom_ctl_c->coef_4_comp_buo_list);
+        read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 3], mom_ctl_c->coef_4_termal_buo_list);
+		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 6], mom_ctl_c->coef_4_Coriolis_list);
+		read_chara_real_clist(fp, buf, label_momentum_equation_ctl[ 7], mom_ctl_c->coef_4_Lorentz_list);
 	};
     mom_ctl_c->iflag_use = 1;
 	return;
@@ -172,10 +174,10 @@ int write_momentum_equation_ctl_c(FILE *fp, int level,
 	write_chara_real_clist(fp, level, label_momentum_equation_ctl[2], mom_ctl_c->coef_4_viscous_list);
 	
 	
-	write_chara_real_clist(fp, level, label_momentum_equation_ctl[3], mom_ctl_c->coef_4_termal_buo_list);
-	write_chara_real_clist(fp, level, label_momentum_equation_ctl[4], mom_ctl_c->coef_4_comp_buo_list);
-	write_chara_real_clist(fp, level, label_momentum_equation_ctl[5], mom_ctl_c->coef_4_Coriolis_list);
-	write_chara_real_clist(fp, level, label_momentum_equation_ctl[6], mom_ctl_c->coef_4_Lorentz_list);
+	write_chara_real_clist(fp, level, label_momentum_equation_ctl[4], mom_ctl_c->coef_4_termal_buo_list);
+	write_chara_real_clist(fp, level, label_momentum_equation_ctl[5], mom_ctl_c->coef_4_comp_buo_list);
+	write_chara_real_clist(fp, level, label_momentum_equation_ctl[6], mom_ctl_c->coef_4_Coriolis_list);
+	write_chara_real_clist(fp, level, label_momentum_equation_ctl[7], mom_ctl_c->coef_4_Lorentz_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

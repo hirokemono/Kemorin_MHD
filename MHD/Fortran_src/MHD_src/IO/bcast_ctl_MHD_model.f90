@@ -175,6 +175,7 @@
       call bcast_ctl_array_cr(mom_ctl%coef_4_grad_p)
       call bcast_ctl_array_cr(mom_ctl%coef_4_viscous)
 !
+      call bcast_ctl_array_cr(mom_ctl%coef_4_buoyancy)
       call bcast_ctl_array_cr(mom_ctl%coef_4_termal_buo)
       call bcast_ctl_array_cr(mom_ctl%coef_4_comp_buo)
       call bcast_ctl_array_cr(mom_ctl%coef_4_Coriolis)

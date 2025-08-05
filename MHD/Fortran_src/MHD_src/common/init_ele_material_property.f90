@@ -73,7 +73,7 @@
        end if
 !
        if ( allocated(ak_MHD%ak_buo) ) then
-        write(*,*)' coefficient for gravity:          ',                &
+        write(*,*)' coefficient for thermal buouyancy:          ',      &
       &            ak_MHD%ak_buo(1)
        end if
        if ( allocated(ak_MHD%ak_comp_buo) ) then

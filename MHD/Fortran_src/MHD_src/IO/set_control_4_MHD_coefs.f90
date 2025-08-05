@@ -130,6 +130,8 @@
       else
         coefs_momentum%num = mom_ctl%coef_4_intertia%num
       end if
+      call copy_power_and_names_from_ctl                                &
+     &   (mom_ctl%coef_4_intertia, coefs_momentum)
 !
       if (mom_ctl%coef_4_grad_p%icou .eq. 0) then
         e_message = 'Set coefficients for pressure gradient'
@@ -137,6 +139,8 @@
       else
         coefs_pressure%num = mom_ctl%coef_4_grad_p%num
       end if
+      call copy_power_and_names_from_ctl                                &
+     &   (mom_ctl%coef_4_grad_p, coefs_pressure)
 !
       if (mom_ctl%coef_4_viscous%icou .eq. 0) then
         e_message = 'Set coefficients for viscosity'
@@ -144,16 +148,26 @@
       else
         coefs_v_diffuse%num = mom_ctl%coef_4_viscous%num
       end if
+      call copy_power_and_names_from_ctl                                &
+     &   (mom_ctl%coef_4_viscous, coefs_v_diffuse)
 !
       if((fl_prop%flag_thermal_buoyancy .eqv. .FALSE.)                  &
      &     .and. (fl_prop%flag_filter_gravity .eqv. .FALSE.)) then
         coefs_buoyancy%num = 0
+        call copy_power_and_names_from_ctl                              &
+     &     (mom_ctl%coef_4_termal_buo, coefs_buoyancy)
       else
-        if (mom_ctl%coef_4_termal_buo%icou .eq. 0) then
-          e_message = 'Set coefficients for buoyancy'
-          call calypso_MPI_abort(ierr_dless, e_message)
-        else
+        if(mom_ctl%coef_4_termal_buo%icou .gt. 0) then
           coefs_buoyancy%num = mom_ctl%coef_4_termal_buo%num
+          call copy_power_and_names_from_ctl                            &
+     &       (mom_ctl%coef_4_termal_buo, coefs_buoyancy)
+        else if(mom_ctl%coef_4_buoyancy%icou .gt. 0) then
+          coefs_buoyancy%num = mom_ctl%coef_4_buoyancy%num
+          call copy_power_and_names_from_ctl                            &
+     &       (mom_ctl%coef_4_buoyancy, coefs_buoyancy)
+        else
+          e_message = 'Set coefficients for thermal buoyancy'
+          call calypso_MPI_abort(ierr_dless, e_message)
         end if
       end if
 !
@@ -168,6 +182,8 @@
           coefs_comp_buo%num = mom_ctl%coef_4_comp_buo%num
         end if
       end if
+      call copy_power_and_names_from_ctl                                &
+     &   (mom_ctl%coef_4_comp_buo, coefs_comp_buo)
 !
       if (fl_prop%flag_coriolis .eqv. .FALSE.) then
         coefs_Coriolis%num = 0
@@ -179,6 +195,8 @@
           coefs_Coriolis%num = mom_ctl%coef_4_Coriolis%num
         end if
       end if
+      call copy_power_and_names_from_ctl                                &
+     &   (mom_ctl%coef_4_Coriolis, coefs_Coriolis)
 !
       if (fl_prop%flag_lorentz .eqv. .FALSE.) then
         coefs_Lorentz%num = 0
@@ -190,20 +208,6 @@
           coefs_Lorentz%num = mom_ctl%coef_4_Lorentz%num
         end if
       end if
-!
-!
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_intertia, coefs_momentum)
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_grad_p, coefs_pressure)
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_viscous, coefs_v_diffuse)
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_termal_buo, coefs_buoyancy)
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_comp_buo, coefs_comp_buo)
-      call copy_power_and_names_from_ctl                                &
-     &   (mom_ctl%coef_4_Coriolis, coefs_Coriolis)
       call copy_power_and_names_from_ctl                                &
      &   (mom_ctl%coef_4_Lorentz, coefs_Lorentz)
 !

@@ -26,29 +26,34 @@
 !! example of control block
 !!
 !!  begin momentum
-!!    array coef_4_velocity_ctl            1
+!!    array coef_4_velocity_ctl
 !!      coef_4_velocity_ctl          One                        1.0
 !!    end array
-!!    array coef_4_press_ctl               1
+!!    array coef_4_press_ctl
 !!      coef_4_press_ctl             Ekman_number              -1.0
 !!    end array
-!!    array coef_4_v_diffuse_ctl           1
+!!    array coef_4_v_diffuse_ctl
 !!      coef_4_v_diffuse_ctl         One                        1.0
 !!    end array
-!!    array coef_4_buoyancy_ctl            3
+!!    array coef_4_buoyancy_ctl
 !!      coef_4_buoyancy_ctl          Radial_parameter           1.0
 !!      coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0
 !!      coef_4_buoyancy_ctl          Ekman_number              -1.0
 !!    end array
-!!    array coef_4_Coriolis_ctl            2
+!!    array coef_4_Coriolis_ctl
 !!      coef_4_Coriolis_ctl          Two                        1.0
 !!      coef_4_Coriolis_ctl          Ekman_number              -1.0
 !!    end array
-!!    array coef_4_Lorentz_ctl             2
+!!    array coef_4_Lorentz_ctl
 !!      coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0
 !!      coef_4_Lorentz_ctl           Ekman_number              -1.0
 !!    end array
-!!    array coef_4_composit_buoyancy_ctl   3
+!!    array coef_4_thermal_buoyancy_ctl
+!!      coef_4_buoyancy_ctl          Radial_parameter           1.0
+!!      coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0
+!!      coef_4_buoyancy_ctl          Ekman_number              -1.0
+!!    end array
+!!    array coef_4_composit_buoyancy_ctl
 !!      coef_4_composit_buoyancy_ctl  Radial_parameter           1.0
 !!      coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0
 !!      coef_4_composit_buoyancy_ctl  Ekman_number              -1.0
@@ -86,6 +91,10 @@
         type(ctl_array_cr) :: coef_4_grad_p
 !
 !
+!>        Structure for number and power to construct buoyancy (deprecated)
+!!@n        coef_4_buoyancy%c_tbl:  Name of number
+!!@n        coef_4_buoyancy%vect:   Power of the number
+        type(ctl_array_cr) :: coef_4_buoyancy
 !>        Structure for number and power to construct termal buoyancy
 !!@n        coef_4_termal_buo%c_tbl:  Name of number 
 !!@n        coef_4_termal_buo%vect:   Power of the number
@@ -112,14 +121,17 @@
       character(len=kchara) :: hd_n_press =  'coef_4_press_ctl'
       character(len=kchara) :: hd_n_v_diff = 'coef_4_v_diffuse_ctl'
       character(len=kchara) :: hd_n_buo =    'coef_4_buoyancy_ctl'
+      character(len=kchara) :: hd_n_t_buo                               &
+     &                     = 'coef_4_thermal_buoyancy_ctl'
       character(len=kchara) :: hd_n_c_buo                               &
-     &                      = 'coef_4_composit_buoyancy_ctl'
+     &                     = 'coef_4_composit_buoyancy_ctl'
       character(len=kchara) :: hd_n_cor =    'coef_4_Coriolis_ctl'
       character(len=kchara) :: hd_n_lor =    'coef_4_Lorentz_ctl'
 !
 !
       private :: hd_n_mom, hd_n_press, hd_n_v_diff
-      private :: hd_n_buo, hd_n_c_buo, hd_n_cor, hd_n_lor
+      private :: hd_n_buo, hd_n_t_buo, hd_n_c_buo
+      private :: hd_n_cor, hd_n_lor
 !
 ! -----------------------------------------------------------------------
 !
@@ -155,7 +167,9 @@
      &      hd_n_v_diff, mom_ctl%coef_4_viscous, c_buf)
 !
         call read_control_array_c_r(id_control,                         &
-     &      hd_n_buo, mom_ctl%coef_4_termal_buo, c_buf)
+     &      hd_n_buo, mom_ctl%coef_4_buoyancy, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_n_t_buo, mom_ctl%coef_4_termal_buo, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_n_c_buo, mom_ctl%coef_4_comp_buo, c_buf)
         call read_control_array_c_r(id_control,                         &
@@ -193,6 +207,8 @@
      &    mom_ctl%coef_4_viscous)
 !
       call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_buoyancy)
+      call write_control_array_c_r(id_control, level,                   &
      &    mom_ctl%coef_4_termal_buo)
       call write_control_array_c_r(id_control, level,                   &
      &    mom_ctl%coef_4_comp_buo)
@@ -223,7 +239,9 @@
      &     (hd_n_v_diff, mom_ctl%coef_4_viscous)
 !
         call init_c_r_ctl_array_label                                   &
-     &     (hd_n_buo, mom_ctl%coef_4_termal_buo)
+     &     (hd_n_buo, mom_ctl%coef_4_buoyancy)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_t_buo, mom_ctl%coef_4_termal_buo)
         call init_c_r_ctl_array_label                                   &
      &     (hd_n_c_buo, mom_ctl%coef_4_comp_buo)
         call init_c_r_ctl_array_label                                   &
@@ -244,6 +262,7 @@
       call dealloc_control_array_c_r(mom_ctl%coef_4_grad_p)
       call dealloc_control_array_c_r(mom_ctl%coef_4_viscous)
 !
+      call dealloc_control_array_c_r(mom_ctl%coef_4_buoyancy)
       call dealloc_control_array_c_r(mom_ctl%coef_4_termal_buo)
       call dealloc_control_array_c_r(mom_ctl%coef_4_comp_buo)
       call dealloc_control_array_c_r(mom_ctl%coef_4_Coriolis)
