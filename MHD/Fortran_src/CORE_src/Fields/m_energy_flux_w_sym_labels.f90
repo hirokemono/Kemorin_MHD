@@ -17,15 +17,6 @@
 !!
 !! field names 
 !!
-!!   u_dot_wsym_x_usym, u_dot_wasym_x_uasym,
-!!   u_dot_wsym_x_uasym, u_dot_wasym_x_usym:
-!!          Work of Reynolds stress   u \cdot (\omega \times u)
-!!   rev_u_dot_Jsym_x_Bsym, rev_u_dot_Jasym_x_Basym,
-!!   rev_u_dot_Jsym_x_Basym, rev_u_dot_Jasym_x_Bsym:
-!!          Work against Lorentz force       -u \cdot (J \times B)
-!!   u_dot_Jsym_x_Bsym, u_dot_Jasym_x_Basym,
-!!   u_dot_Jsym_x_Basym, u_dot_Jasym_x_Bsym:
-!!          Work of Lorentz force             u \cdot (J \times B)
 !!   u_dot_Bsym_nabla_Bsym, u_dot_Basym_nabla_Basym,
 !!   u_dot_Bsym_nabla_Basym, u_dot_Basym_nabla_Bsym:
 !!          Work of magnetic tension          u \cdot( (B \nabla) B)
@@ -70,89 +61,6 @@
 !
       implicit  none
 ! 
-!>        Field label of work of inertia
-!!         @f$ u \cdot (u_{symj} \partial_{j} u_{symi}) @f$
-!!         or @f$ u \cdot (\omega_{sym} \times u_{sym}) @f$
-      type(field_def), parameter :: u_dot_wsym_x_usym                   &
-     &    = field_def(n_comp = n_scalar,                                &
-     &         name = 'u_dot_wsym_x_usym',                              &
-     &         math = '$ u \cdot (u_{symj} \partial_{j} u_{symi})$, '   &
-     &             //' $ u \cdot (\omega_{sym} \times u_{sym})$')
-!>        Field label of work of inertia
-!!         @f$ u \cdot (u_{asymj} \partial_{j} u_{asymi}) @f$
-!!         or @f$ u \cdot (\omega_{asym} \times u_{asym}) @f$
-      type(field_def), parameter :: u_dot_wasym_x_uasym                 &
-     &    = field_def(n_comp = n_scalar,                                &
-     &         name = 'u_dot_wasym_x_uasym',                            &
-     &         math = '$ u \cdot (u_{asymj} \partial_{j} u_{asymi})$, ' &
-     &             //' $ u \cdot (\omega_{asym} \times u_{asym})$')
-!>        Field label of work of inertia
-!!         @f$ u \cdot (u_{symj} \partial_{j} u_{asymi}) @f$
-!!         or @f$ u \cdot (\omega_{sym} \times u_{asym}) @f$
-      type(field_def), parameter :: u_dot_wsym_x_uasym                  &
-     &    = field_def(n_comp = n_scalar,                                &
-     &         name = 'u_dot_wsym_x_uasym',                             &
-     &         math = '$ u \cdot (u_{symj} \partial_{j} u_{asymi})$, '  &
-     &             //' $ u \cdot (\omega_{sym} \times u_{asym})$')
-!>        Field label of work of inertia
-!!         @f$ u \cdot (u_{asymj} \partial_{j} u_{symi}) @f$
-!!         or @f$ u \cdot (\omega_{asym} \times u_{sym}) @f$
-      type(field_def), parameter :: u_dot_wasym_x_usym                  &
-     &    = field_def(n_comp = n_scalar,                                &
-     &         name = 'u_dot_wasym_x_usym',                             &
-     &         math = '$ u \cdot (u_{asymj} \partial_{j} u_{symi})$, '  &
-     &             //' $ u \cdot (\omega_{asym} \times u_{sym})$')
-!
-!>        Field label of work against Lorentz force
-!!         @f$ -u \cdot (J_{sym} \times B_{sym}) @f$
-      type(field_def), parameter :: rev_u_dot_Jsym_x_Bsym               &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'rev_u_dot_Jsym_x_Bsym',                       &
-     &            math = '$ -u \cdot (J_{sym} \times B_{sym}) $')
-!>        Field label of work against Lorentz force
-!!         @f$ -u \cdot (J_{asym} \times B_{asym}) @f$
-      type(field_def), parameter :: rev_u_dot_Jasym_x_Basym             &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'rev_u_dot_Jasym_x_Basym',                     &
-     &            math = '$ -u \cdot (J_{asym} \times B_{asym}) $')
-!>        Field label of work against Lorentz force
-!!         @f$ -u \cdot (J_{sym} \times B_{asym}) @f$
-      type(field_def), parameter :: rev_u_dot_Jsym_x_Basym              &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'rev_u_dot_Jsym_x_Basym',                      &
-     &            math = '$ -u \cdot (J_{sym} \times B_{asym}) $')
-!>        Field label of work against Lorentz force
-!!         @f$ -u \cdot (J_{asym} \times B_{sym}) @f$
-      type(field_def), parameter :: rev_u_dot_Jasym_x_Bsym              &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'rev_u_dot_Jasym_x_Bsym',                      &
-     &            math = '$ -u \cdot (J_{asym} \times B_{sym}) $')
-!
-!>        Field label of work of Lorentz force
-!!         @f$ u \cdot (J_{sym} \times B_{sym}) @f$
-      type(field_def), parameter :: u_dot_Jsym_x_Bsym                   &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'u_dot_Jsym_x_Bsym',                           &
-     &            math = '$ u \cdot (J_{sym} \times B_{sym}) $')
-!>        Field label of work of Lorentz force
-!!         @f$ u \cdot (J_{asym} \times B_{asym}) @f$
-      type(field_def), parameter :: u_dot_Jasym_x_Basym                 &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'u_dot_Jasym_x_Basym',                         &
-     &            math = '$ u \cdot (J_{asym} \times B_{asym}) $')
-!>        Field label of work of Lorentz force
-!!         @f$ u \cdot (J_{sym} \times B_{asym}) @f$
-      type(field_def), parameter :: u_dot_Jsym_x_Basym                  &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'u_dot_Jsym_x_Basym',                          &
-     &            math = '$ u \cdot (J_{sym} \times B_{asym}) $')
-!>        Field label of work of Lorentz force
-!!         @f$ u \cdot (J_{asym} \times B_{sym}) @f$
-      type(field_def), parameter :: u_dot_Jasym_x_Bsym                  &
-     &    = field_def(n_comp = n_scalar,                                &
-     &            name = 'u_dot_Jasym_x_Bsym',                          &
-     &            math = '$ u \cdot (J_{asym} \times B_{sym}) $')
-!
 !>        Field address of work of magnetic tension
 !!         @f$ u \cdot (B_{sym} \cdot \nabla) B_{sym} @f$
       type(field_def), parameter :: u_dot_Bsym_nabla_Bsym               &
@@ -401,22 +309,7 @@
 !
 !
       check_ene_fluxes_w_sym = .FALSE.
-      if (    (field_name .eq. u_dot_wsym_x_usym%name)                  &
-     &   .or. (field_name .eq. u_dot_wasym_x_uasym%name)                &
-     &   .or. (field_name .eq. u_dot_wsym_x_uasym%name)                 &
-     &   .or. (field_name .eq. u_dot_wasym_x_usym%name)                 &
-!
-     &   .or. (field_name .eq. rev_u_dot_Jsym_x_Bsym%name)              &
-     &   .or. (field_name .eq. rev_u_dot_Jasym_x_Basym%name)            &
-     &   .or. (field_name .eq. rev_u_dot_Jsym_x_Basym%name)             &
-     &   .or. (field_name .eq. rev_u_dot_Jasym_x_Bsym%name)             &
-!
-     &   .or. (field_name .eq. u_dot_Jsym_x_Bsym%name)                  &
-     &   .or. (field_name .eq. u_dot_Jasym_x_Basym%name)                &
-     &   .or. (field_name .eq. u_dot_Jsym_x_Basym%name)                 &
-     &   .or. (field_name .eq. u_dot_Jasym_x_Bsym%name)                 &
-!
-     &   .or. (field_name .eq. u_dot_Bsym_nabla_Bsym%name)              &
+      if (    (field_name .eq. u_dot_Bsym_nabla_Bsym%name)              &
      &   .or. (field_name .eq. u_dot_Basym_nabla_Basym%name)            &
      &   .or. (field_name .eq. u_dot_Bsym_nabla_Basym%name)             &
      &   .or. (field_name .eq. u_dot_Basym_nabla_Bsym%name)             &
@@ -470,21 +363,6 @@
       array_c2i%array_name = '  '
       array_c2i%num =         0
       call alloc_control_array_c2_i(array_c2i)
-!
-      call set_field_label_to_ctl(u_dot_wsym_x_usym,       array_c2i)
-      call set_field_label_to_ctl(u_dot_wasym_x_uasym,     array_c2i)
-      call set_field_label_to_ctl(u_dot_wsym_x_uasym,      array_c2i)
-      call set_field_label_to_ctl(u_dot_wasym_x_usym,      array_c2i)
-!
-      call set_field_label_to_ctl(rev_u_dot_Jsym_x_Bsym,   array_c2i)
-      call set_field_label_to_ctl(rev_u_dot_Jasym_x_Basym, array_c2i)
-      call set_field_label_to_ctl(rev_u_dot_Jsym_x_Basym,  array_c2i)
-      call set_field_label_to_ctl(rev_u_dot_Jasym_x_Bsym,  array_c2i)
-!
-      call set_field_label_to_ctl(u_dot_Jsym_x_Bsym,       array_c2i)
-      call set_field_label_to_ctl(u_dot_Jasym_x_Basym,     array_c2i)
-      call set_field_label_to_ctl(u_dot_Jsym_x_Basym,      array_c2i)
-      call set_field_label_to_ctl(u_dot_Jasym_x_Bsym,      array_c2i)
 !
       call set_field_label_to_ctl(u_dot_Bsym_nabla_Bsym,   array_c2i)
       call set_field_label_to_ctl(u_dot_Basym_nabla_Basym, array_c2i)

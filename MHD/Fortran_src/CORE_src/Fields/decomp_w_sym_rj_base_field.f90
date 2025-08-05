@@ -22,8 +22,7 @@
 !!        type(base_force_address), intent(in) :: base_force
 !!        type(base_force_address), intent(in) :: sym_force
 !!        type(base_force_address), intent(in) :: asym_force
-!
-      type(phys_data), intent(inout) :: rj_fld
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
       module decomp_w_sym_rj_base_field
@@ -103,6 +102,10 @@
       type(base_force_address), intent(in) :: base_force
       type(base_force_address), intent(in) :: sym_force
       type(base_force_address), intent(in) :: asym_force
+!      integer(kind = kint), intent(in) :: ipol_sym_t_buo
+!      integer(kind = kint), intent(in) :: ipol_asym_t_buo
+!      integer(kind = kint), intent(in) :: ipol_sym_c_buo
+!      integer(kind = kint), intent(in) :: ipol_asym_c_buo
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -134,7 +137,7 @@
       integer(kind = kint) :: inod, l_gl, m_gl, lm_odd
 !
 !
-      if(ipol_sym .le. 0 .and. ipol_asym .le. 0 ) return
+      if(ipol_sym .le. 0 .and. ipol_asym .le. 0) return
 !      write(*,*) 'Filtering vector', ipol_filtered
 !$omp parallel do private(inod, l_gl, m_gl, lm_odd)
       do inod = 1, sph_rj%nnod_rj

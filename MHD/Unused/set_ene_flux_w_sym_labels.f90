@@ -72,6 +72,89 @@
 !
       implicit  none
 ! 
+!>        Field label of work of inertia
+!!         @f$ u \cdot (u_{symj} \partial_{j} u_{symi}) @f$
+!!         or @f$ u \cdot (\omega_{sym} \times u_{sym}) @f$
+      type(field_def), parameter :: u_dot_wsym_x_usym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &         name = 'u_dot_wsym_x_usym',                              &
+     &         math = '$ u \cdot (u_{symj} \partial_{j} u_{symi})$, '   &
+     &             //' $ u \cdot (\omega_{sym} \times u_{sym})$')
+!>        Field label of work of inertia
+!!         @f$ u \cdot (u_{asymj} \partial_{j} u_{asymi}) @f$
+!!         or @f$ u \cdot (\omega_{asym} \times u_{asym}) @f$
+      type(field_def), parameter :: u_dot_wasym_x_uasym                 &
+     &    = field_def(n_comp = n_scalar,                                &
+     &         name = 'u_dot_wasym_x_uasym',                            &
+     &         math = '$ u \cdot (u_{asymj} \partial_{j} u_{asymi})$, ' &
+     &             //' $ u \cdot (\omega_{asym} \times u_{asym})$')
+!>        Field label of work of inertia
+!!         @f$ u \cdot (u_{symj} \partial_{j} u_{asymi}) @f$
+!!         or @f$ u \cdot (\omega_{sym} \times u_{asym}) @f$
+      type(field_def), parameter :: u_dot_wsym_x_uasym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &         name = 'u_dot_wsym_x_uasym',                             &
+     &         math = '$ u \cdot (u_{symj} \partial_{j} u_{asymi})$, '  &
+     &             //' $ u \cdot (\omega_{sym} \times u_{asym})$')
+!>        Field label of work of inertia
+!!         @f$ u \cdot (u_{asymj} \partial_{j} u_{symi}) @f$
+!!         or @f$ u \cdot (\omega_{asym} \times u_{sym}) @f$
+      type(field_def), parameter :: u_dot_wasym_x_usym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &         name = 'u_dot_wasym_x_usym',                             &
+     &         math = '$ u \cdot (u_{asymj} \partial_{j} u_{symi})$, '  &
+     &             //' $ u \cdot (\omega_{asym} \times u_{sym})$')
+!>        Field label of work against Lorentz force
+!!         @f$ -u \cdot (J_{sym} \times B_{sym}) @f$
+      type(field_def), parameter :: rev_u_dot_Jsym_x_Bsym               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'rev_u_dot_Jsym_x_Bsym',                       &
+     &            math = '$ -u \cdot (J_{sym} \times B_{sym}) $')
+!>        Field label of work against Lorentz force
+!!         @f$ -u \cdot (J_{asym} \times B_{asym}) @f$
+      type(field_def), parameter :: rev_u_dot_Jasym_x_Basym             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'rev_u_dot_Jasym_x_Basym',                     &
+     &            math = '$ -u \cdot (J_{asym} \times B_{asym}) $')
+!>        Field label of work against Lorentz force
+!!         @f$ -u \cdot (J_{sym} \times B_{asym}) @f$
+      type(field_def), parameter :: rev_u_dot_Jsym_x_Basym              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'rev_u_dot_Jsym_x_Basym',                      &
+     &            math = '$ -u \cdot (J_{sym} \times B_{asym}) $')
+!>        Field label of work against Lorentz force
+!!         @f$ -u \cdot (J_{asym} \times B_{sym}) @f$
+      type(field_def), parameter :: rev_u_dot_Jasym_x_Bsym              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'rev_u_dot_Jasym_x_Bsym',                      &
+     &            math = '$ -u \cdot (J_{asym} \times B_{sym}) $')
+!
+!>        Field label of work of Lorentz force
+!!         @f$ u \cdot (J_{sym} \times B_{sym}) @f$
+      type(field_def), parameter :: u_dot_Jsym_x_Bsym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'u_dot_Jsym_x_Bsym',                           &
+     &            math = '$ u \cdot (J_{sym} \times B_{sym}) $')
+!>        Field label of work of Lorentz force
+!!         @f$ u \cdot (J_{asym} \times B_{asym}) @f$
+      type(field_def), parameter :: u_dot_Jasym_x_Basym                 &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'u_dot_Jasym_x_Basym',                         &
+     &            math = '$ u \cdot (J_{asym} \times B_{asym}) $')
+!>        Field label of work of Lorentz force
+!!         @f$ u \cdot (J_{sym} \times B_{asym}) @f$
+      type(field_def), parameter :: u_dot_Jsym_x_Basym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'u_dot_Jsym_x_Basym',                          &
+     &            math = '$ u \cdot (J_{sym} \times B_{asym}) $')
+!>        Field label of work of Lorentz force
+!!         @f$ u \cdot (J_{asym} \times B_{sym}) @f$
+      type(field_def), parameter :: u_dot_Jasym_x_Bsym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'u_dot_Jasym_x_Bsym',                          &
+     &            math = '$ u \cdot (J_{asym} \times B_{sym}) $')
+!
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -199,6 +282,61 @@
       end if
 !
       end subroutine set_ene_flux_w_sym_addresses
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_ene_fluxes_w_sym(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_ene_fluxes_w_sym = .FALSE.
+      if (    (field_name .eq. u_dot_wsym_x_usym%name)                  &
+     &   .or. (field_name .eq. u_dot_wasym_x_uasym%name)                &
+     &   .or. (field_name .eq. u_dot_wsym_x_uasym%name)                 &
+     &   .or. (field_name .eq. u_dot_wasym_x_usym%name)                 &
+!
+     &   .or. (field_name .eq. rev_u_dot_Jsym_x_Bsym%name)              &
+     &   .or. (field_name .eq. rev_u_dot_Jasym_x_Basym%name)            &
+     &   .or. (field_name .eq. rev_u_dot_Jsym_x_Basym%name)             &
+     &   .or. (field_name .eq. rev_u_dot_Jasym_x_Bsym%name)             &
+!
+     &   .or. (field_name .eq. u_dot_Jsym_x_Bsym%name)                  &
+     &   .or. (field_name .eq. u_dot_Jasym_x_Basym%name)                &
+     &   .or. (field_name .eq. u_dot_Jsym_x_Basym%name)                 &
+     &   .or. (field_name .eq. u_dot_Jasym_x_Bsym%name)                 &
+!
+     &   )   check_ene_fluxes_w_sym = .TRUE.
+!
+      end function check_ene_fluxes_w_sym
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_ene_flux_w_symmetry_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
+!
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
+!
+      call set_field_label_to_ctl(u_dot_wsym_x_usym,       array_c2i)
+      call set_field_label_to_ctl(u_dot_wasym_x_uasym,     array_c2i)
+      call set_field_label_to_ctl(u_dot_wsym_x_uasym,      array_c2i)
+      call set_field_label_to_ctl(u_dot_wasym_x_usym,      array_c2i)
+!
+      call set_field_label_to_ctl(rev_u_dot_Jsym_x_Bsym,   array_c2i)
+      call set_field_label_to_ctl(rev_u_dot_Jasym_x_Basym, array_c2i)
+      call set_field_label_to_ctl(rev_u_dot_Jsym_x_Basym,  array_c2i)
+      call set_field_label_to_ctl(rev_u_dot_Jasym_x_Bsym,  array_c2i)
+!
+      call set_field_label_to_ctl(u_dot_Jsym_x_Bsym,       array_c2i)
+      call set_field_label_to_ctl(u_dot_Jasym_x_Basym,     array_c2i)
+      call set_field_label_to_ctl(u_dot_Jsym_x_Basym,      array_c2i)
+      call set_field_label_to_ctl(u_dot_Jasym_x_Bsym,      array_c2i)
+!
+      end subroutine set_ene_flux_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
 !

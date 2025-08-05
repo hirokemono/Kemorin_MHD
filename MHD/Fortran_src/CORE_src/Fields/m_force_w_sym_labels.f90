@@ -208,15 +208,15 @@
 !
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{sym} @f$
-      type(field_def), parameter :: sym_thermal_buoyancy                 &
+      type(field_def), parameter :: sym_thermal_buoyancy                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'sym_thermal_buoyancy',                   &
+     &                  name = 'sym_thermal_buoyancy',                  &
      &                  math = '$ -\alpha_{T} g_{i} T_{sym} $')
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{asym} @f$
-      type(field_def), parameter :: asym_thermal_buoyancy                &
+      type(field_def), parameter :: asym_thermal_buoyancy               &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'asym_thermal_buoyancy',                  &
+     &                  name = 'asym_thermal_buoyancy',                 &
      &                  math = '$ -\alpha_{T} g_{i} T_{asym} $')
 !
 !>        Field label of compositional buoyancy
@@ -232,6 +232,8 @@
      &                  name = 'asym_composite_buoyancy',               &
      &                  math = '$ -\alpha_{C} g_{i} C_{asym} $')
 !!
+!
+!
 !>        Field label of induction of vector potential
 !!         @f$ u_{sym} \times B_{sym} @f$
       type(field_def), parameter :: usym_x_Bsym                         &
