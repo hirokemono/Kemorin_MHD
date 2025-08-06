@@ -225,6 +225,9 @@
 !
         else if (field_name .eq. rot_filtered_buoyancy%name) then
           rot_frc_by_filter%i_buoyancy =   i_phys
+        else if (field_name .eq. rot_filtered_thermal_buoyancy%name)    &
+     &      then
+          rot_frc_by_filter%i_thrm_buo =   i_phys
         else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
           rot_frc_by_filter%i_comp_buo =   i_phys
         end if
