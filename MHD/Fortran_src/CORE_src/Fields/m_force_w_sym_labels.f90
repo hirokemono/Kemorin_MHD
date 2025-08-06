@@ -16,35 +16,43 @@
 !!      subroutine set_force_w_symmetry_names(array_c2i)
 !!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
-!! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!! Decomposed force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
-!! field names 
+!!   wsym_x_usym, wasym_x_uasym, wsym_x_uasym, wasym_x_usym
+!!     : Reynolds stress   e_{ijk} \omega_{j} u_{k}
 !!
-!!   inertia
-!!                 :        inertia (\omega \times u)
-!!   momentum_flux
-!!                 :  momentum flux     u_{i} u_{j}
-!!   Lorentz_force
-!!                 :  Lorentz force     J \times B
-!!   magnetic_tension
-!!                 :  magnetic tension   (B \nabla) B
+!!   m_flux_sym_sym, m_flux_asym_asym, m_flux_sym_asym
+!!     : momentum flux      u_{i} u_{j}
+!!
+!!   Jsym_x_Bsym, Jasym_x_Basym, Jsym_x_Basym, Jasym_x_Bsym
+!!     : Lorentz force      e_{ijk} J_{j} B_{k}
+!!
+!!   Bsym_nabla_Bsym, Basym_nabla_Basym, 
+!!   Bsym_nabla_Basym, Basym_nabla_Bsym
+!!     : magnetic tension   (B_{j} \cdot \nabla_{j}) B_{i}
+!!
 !!   maxwell_tensor_sym_sym, maxwell_tensor_asym_asym,
 !!   maxwell_tensor_sym_asym
-!!                 :  maxwell tensor       B_{i} B_{j}
+!!     :  maxwell tensor    B_{i} B_{j}
 !!
+!!   sym_buoyancy, asym_buoyancy
+!!     :   buoyancy     - (\alpha_{T} T + \alpha_{C} C) g
 !!   sym_thermal_buoyancy, asym_thermal_buoyancy
-!!                 :   Thermal buoyancy       - \alpha_{T} g T
+!!     :   Thermal buoyancy       - \alpha_{T} T g
 !!   sym_composite_buoyancy, asym_composite_buoyancy
-!!                 :   compositional buoyancy  - \alpha_{C} g C
+!!     :   compositional buoyancy  - \alpha_{C} C g
 !!
 !!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
-!!                 :     induction                           u \times B
+!!     :     induction   u \times B
+!!   rot_usym_x_Bsym, rot_uasym_x_Basym,
+!!   rot_usym_x_Basym, rot_uasym_x_Bsym
+!!     :     magnetic induction  \rot(u \times B)
+!
 !!   Bsym_nabla_usym, Basym_nabla_uasym,
 !!   Bsym_nabla_uasym, Basym_nabla_usym
-!!                 :    magneitic streatch         (B \nabla) u
+!!     :    magneitic streatch         (B \nabla) u
 !!   usym_Bsym, uasym_Basym, usym_Basym
-!!                 :    induction induction tensor
-!!                                 u_{i} B_{j}  - B_{i} u_{J}
+!!     :    induction tensor u_{i} B_{j}  - B_{i} u_{J}
 !!
 !!   usym_nabla_Tsym, uasym_nabla_Tasym,
 !!   usym_nabla_Tasym, uasym_nabla_Tsym
@@ -208,15 +216,15 @@
 !
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{sym} @f$
-      type(field_def), parameter :: sym_thermal_buoyancy                 &
+      type(field_def), parameter :: sym_thermal_buoyancy                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'sym_thermal_buoyancy',                   &
+     &                  name = 'sym_thermal_buoyancy',                  &
      &                  math = '$ -\alpha_{T} g_{i} T_{sym} $')
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{asym} @f$
-      type(field_def), parameter :: asym_thermal_buoyancy                &
+      type(field_def), parameter :: asym_thermal_buoyancy               &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'asym_thermal_buoyancy',                  &
+     &                  name = 'asym_thermal_buoyancy',                 &
      &                  math = '$ -\alpha_{T} g_{i} T_{asym} $')
 !
 !>        Field label of compositional buoyancy
