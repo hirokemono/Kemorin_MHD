@@ -308,7 +308,7 @@
      &     .or. i_fld .eq. iphys%forces%i_m_tension                     &
      &     .or. i_fld .eq. iphys%forces%i_lorentz                       &
      &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
-     &     .or. i_fld .eq. iphys%forces%i_thermal_buo                   &
+     &     .or. i_fld .eq. iphys%forces%i_thrm_buo                      &
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
      &     .or. i_fld .eq. iphys_LES%force_by_filter%i_buoyancy         &
      &     .or. i_fld .eq. iphys_LES%force_by_filter%i_comp_buo         &

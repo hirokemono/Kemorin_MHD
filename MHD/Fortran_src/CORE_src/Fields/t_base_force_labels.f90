@@ -29,7 +29,7 @@
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
 !!   buoyancy             [i_buoyancy]:
 !!                       Total buoyancy - (\alpha_{T} T + \alpha_{C} C)g
-!!   thermal_buoyancy     [i_thermal_buo]:
+!!   thermal_buoyancy     [i_thrm_buo]:
 !!                       Thermal buoyancy  - \alpha_{T} T g
 !!   composite_buoyancy   [i_comp_buo]:
 !!                       compositional buoyancy  - \alpha_{C} C g
@@ -94,7 +94,7 @@
         integer (kind=kint) :: i_buoyancy =        izero
 !>        start address for buoyancy
 !!         @f$ -\alpha_{T} T g_{i} @f$
-        integer (kind=kint) :: i_thermal_buo =     izero
+        integer (kind=kint) :: i_thrm_buo =        izero
 !>        start address for compositional buoyancy
 !!         @f$ -\alpha_{C} C g_{i} @f$
         integer (kind=kint) :: i_comp_buo =        izero
@@ -182,7 +182,7 @@
         else if (field_name .eq. buoyancy%name) then
           forces%i_buoyancy =    i_phys
         else if (field_name .eq. thermal_buoyancy%name) then
-          forces%i_thermal_buo = i_phys
+          forces%i_thrm_buo =    i_phys
         else if (field_name .eq. composite_buoyancy%name) then
           forces%i_comp_buo =    i_phys
 !
@@ -249,6 +249,8 @@
 !
         else if (field_name .eq. rot_buoyancy%name) then
           rot_forces%i_buoyancy =   i_phys
+        else if (field_name .eq. rot_thermal_buoyancy%name) then
+          rot_forces%i_thrm_buo =   i_phys
         else if (field_name .eq. rot_composite_buoyancy%name) then
           rot_forces%i_comp_buo =   i_phys
         end if

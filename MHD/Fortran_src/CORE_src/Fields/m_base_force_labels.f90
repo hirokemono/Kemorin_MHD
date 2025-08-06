@@ -26,7 +26,7 @@
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
 !!   buoyancy   [i_buoyancy]:
 !!                       Total buoyancy - (\alpha_{T} T + \alpha_{C} C)g
-!!   thermal_buoyancy     [i_thermal_buo]:
+!!   thermal_buoyancy     [i_thrm_buo]:
 !!                       Thermal buoyancy  - \alpha_{T} T g
 !!   composite_buoyancy   [i_comp_buo]:
 !!                       compositional buoyancy  - \alpha_{C} C g
