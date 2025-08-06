@@ -62,13 +62,20 @@
      &                    // '(e_{ijk} \tilde{J}_{j} \tilde{B}_{k})$')
 !
 !>        Field label for divergence of filtered buoyancy
-!!         @f$ -\partial_{i} \alpha_{T} g_{i} \tilde{T} @f$
+!!         @f$ -\partial_{i} \alpha_{T} \tilde{T} g_{i} @f$
       type(field_def), parameter :: div_filtered_buoyancy               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_filtered_buoyancy',                   &
+     &             math = '$-\partial_{i} (\alpha_{T} \tilde{T}'        &
+     &                 // ' \alpha_{C} \tilde{C}) g_{i}$')
+!>        Field label for divergence of filtered buoyancy
+!!         @f$ -\partial_{i} \alpha_{T} \tilde{T} g_{i} @f$
+      type(field_def), parameter :: div_filtered_thermal_buoyancy       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'div_filtered_thermal_buoyancy',           &
      &             math = '$-\partial_{i} \alpha_{T} \tilde{T} g_{i}$')
 !>        Field label for divergence of filtered compositional buoyancy
-!!         @f$ -\partial_{i} \alpha_{C} g_{i} \tilde{C} @f$
+!!         @f$ -\partial_{i} \alpha_{C} \tilde{C} g_{i} @f$
       type(field_def), parameter :: div_filtered_comp_buoyancy          &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_filtered_comp_buoyancy',              &
@@ -146,6 +153,7 @@
      &   =    (field_name .eq. div_inertia_by_filtered%name)            &
      &   .or. (field_name .eq. div_Lorentz_force_by_filtered%name)      &
      &   .or. (field_name .eq. div_filtered_buoyancy%name)              &
+     &   .or. (field_name .eq. div_filtered_thermal_buoyancy%name)      &
      &   .or. (field_name .eq. div_filtered_comp_buoyancy%name)         &
      &   .or. (field_name .eq. div_vecp_induction_by_filtered%name)
 !
@@ -195,7 +203,10 @@
       call set_field_label_to_ctl(div_Lorentz_force_by_filtered,        &
      &                            array_c2i)
       call set_field_label_to_ctl(div_filtered_buoyancy, array_c2i)
-      call set_field_label_to_ctl(div_filtered_comp_buoyancy, array_c2i)
+      call set_field_label_to_ctl(div_filtered_thermal_buoyancy,        &
+     &                            array_c2i)
+      call set_field_label_to_ctl(div_filtered_comp_buoyancy,           &
+     &                            array_c2i)
       call set_field_label_to_ctl(div_vecp_induction_by_filtered,       &
      &                            array_c2i)
       call set_field_label_to_ctl(div_m_flux_by_filtered,    array_c2i)

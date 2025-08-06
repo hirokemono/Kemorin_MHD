@@ -66,8 +66,8 @@
 !   filtered thermal buoyancy flag
         if(fl_prop%flag_filter_gravity) then
           call add_phys_name_ctl(filtered_thermal_buoyancy, field_ctl)
-!          call add_phys_name_ctl(div_filtered_thermal_buoyancy,         &
-!     &                           field_ctl)
+          call add_phys_name_ctl(div_filtered_thermal_buoyancy,         &
+     &                           field_ctl)
           call add_phys_name_ctl(rot_filtered_thermal_buoyancy,         &
      &                           field_ctl)
         end if
