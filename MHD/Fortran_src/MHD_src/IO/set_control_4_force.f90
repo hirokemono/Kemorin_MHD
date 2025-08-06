@@ -113,12 +113,14 @@
      &      .or. cmp_no_case(tmpchara, comp_gravity_e6)                 &
      &       ) fl_prop%flag_comp_buoyancy =  .TRUE.
 !
-          if(     cmp_no_case(tmpchara, Filtered_gravity_label)         &
-     &       .or. cmp_no_case(tmpchara, Filtered_gravity_e1)            &
+          if(     cmp_no_case(tmpchara, Filtered_thrm_gravity_label)    &
+     &       .or. cmp_no_case(tmpchara, Filtered_thrm_gravity_e1)       &
+     &       .or. cmp_no_case(tmpchara, Filtered_buoyancy_label)        &
+     &       .or. cmp_no_case(tmpchara, Filtered_buoyancy_e1)           &
      &       ) fl_prop%flag_filter_gravity =  .TRUE.
 !
-          if(   cmp_no_case(tmpchara, Filtered_comp_gravity_label)      &
-     &     .or. cmp_no_case(tmpchara, Filtered_comp_gravity_e1)         &
+          if(   cmp_no_case(tmpchara, Filtered_comp_buoyancy_label)     &
+     &     .or. cmp_no_case(tmpchara, Filtered_comp_buoyancy_e1)        &
      &       ) fl_prop%flag_filter_comp_buo = .TRUE.
 !
           if (cmp_no_case(tmpchara, coriolis_e1)                        &

@@ -68,34 +68,34 @@
 !!
 !!      Field label  [Address]
 !!
-!!   inertia_by_filtered             [force_by_filter%i_m_advect]
-!!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
-!!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
+!!   div_inertia_by_filtered             [div_frc_by_filter%i_m_advect]
+!!   div_Lorentz_force_by_filtered       [div_frc_by_filter%i_lorentz]
+!!   div_magnetic_tension_by_filtered    [div_frc_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
-!!   filtered_thermal_buoyancy       [force_by_filter%i_thrm_buo]
-!!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
+!!   div_filtered_buoyancy           [div_frc_by_filter%i_buoyancy]
+!!   div_filtered_thermal_buoyancy   [div_frc_by_filter%i_thrm_buo]
+!!   div_filtered_comp_buoyancy      [div_frc_by_filter%i_comp_buo]
 !!
-!!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
-!!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
-!!   magnetic_stretch_by_filtered    [force_by_filter%i_mag_stretch]
+!!   div_vecp_induction_by_filtered      [div_frc_by_filter%i_vp_induct]
+!!   div_magnetic_induction_by_filtered  [div_frc_by_filter%i_induction]
+!!   div_magnetic_stretch_by_filtered    [div_frc_by_filter%i_mag_stretch]
 !!
-!!   heat_advect_by_filtered         [force_by_filter%i_h_advect]
-!!   pert_h_advect_by_filtered       [force_by_filter%i_ph_advect]
-!!   comp_advect_by_filtered         [force_by_filter%i_c_advect]
-!!   pert_c_advect_by_filtered       [force_by_filter%i_pc_advect]
+!!   div_heat_advect_by_filtered         [div_frc_by_filter%i_h_advect]
+!!   div_pert_h_advect_by_filtered       [div_frc_by_filter%i_ph_advect]
+!!   div_comp_advect_by_filtered         [div_frc_by_filter%i_c_advect]
+!!   div_pert_c_advect_by_filtered       [div_frc_by_filter%i_pc_advect]
 !!
-!!   momentum_flux_by_filtered       [force_by_filter%i_m_flux]
-!!   maxwell_tensor_by_filtered      [force_by_filter%i_maxwell]
-!!   induction_tensor_by_filtered    [force_by_filter%i_induct_t]
+!!   div_momentum_flux_by_filtered       [div_frc_by_filter%i_m_flux]
+!!   div_maxwell_tensor_by_filtered      [div_frc_by_filter%i_maxwell]
+!!   div_induction_tensor_by_filtered    [div_frc_by_filter%i_induct_t]
 !!
-!!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
-!!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
-!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
-!!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
+!!   div_heat_flux_by_filtered           [div_frc_by_filter%i_h_flux]
+!!   div_pert_h_flux_by_filtered         [div_frc_by_filter%i_ph_flux]
+!!   div_composite_flux_by_filtered      [div_frc_by_filter%i_c_flux]
+!!   div_pert_c_flux_by_filtered         [div_frc_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
 !!
@@ -159,6 +159,8 @@
 !
         else if(field_name .eq. filtered_buoyancy%name) then
           force_by_filter%i_buoyancy =   i_phys
+        else if(field_name .eq. filtered_thermal_buoyancy%name) then
+          force_by_filter%i_thrm_buo =   i_phys
         else if(field_name .eq. filtered_comp_buoyancy%name) then
           force_by_filter%i_comp_buo =   i_phys
 !
@@ -256,6 +258,9 @@
 !
         else if (field_name .eq. div_filtered_buoyancy%name) then
           div_frc_by_filter%i_buoyancy =   i_phys
+!        else if(field_name                                              &
+!     &           .eq. div_filtered_thermal_buoyancy%name) then
+!          div_frc_by_filter%i_thrm_buo =   i_phys
         else if (field_name .eq. div_filtered_comp_buoyancy%name) then
           div_frc_by_filter%i_comp_buo =   i_phys
 !

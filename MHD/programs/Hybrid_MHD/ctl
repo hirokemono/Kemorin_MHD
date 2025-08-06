@@ -333,7 +333,7 @@ begin MHD_control
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
 !     Coriolis, Lorentz,
-!     Thermal_buoyancy, Composite_buoyancy, Filtered_buoyancy
+!     Thermal_buoyancy, Composite_buoyancy, Filtered_thermal_buoyancy
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
       array force_ctl
