@@ -134,6 +134,8 @@
 !
       if(check_field_list_ctl(rot_buoyancy, field_ctl))                 &
      &   call add_phys_name_ctl(buoyancy, field_ctl)
+!      if(check_field_list_ctl(rot_thermal_buoyancy, field_ctl))         &
+!     &   call add_phys_name_ctl(thermal_buoyancy, field_ctl)
       if(check_field_list_ctl(rot_composite_buoyancy, field_ctl))       &
      &   call add_phys_name_ctl(composite_buoyancy, field_ctl)
 !
@@ -160,6 +162,8 @@
 !
       if(check_field_list_ctl(div_buoyancy, field_ctl))                 &
         call add_phys_name_ctl(buoyancy, field_ctl)
+!      if(check_field_list_ctl(div_thermal_buoyancy, field_ctl))         &
+!        call add_phys_name_ctl(thermal_buoyancy, field_ctl)
       if(check_field_list_ctl(div_composite_buoyancy, field_ctl))       &
         call add_phys_name_ctl(composite_buoyancy, field_ctl)
 !

@@ -105,19 +105,19 @@
       type(field_def), parameter :: buoyancy                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'buoyancy',                                &
-     &                math = '$ -\alpha_{T} g_{i} T $')
+     &                math = '$-(\alpha_{T} T + \alpha_{C} C) g_{i} $')
 !>        Field label for thermal buoyancy
 !!         @f$ -\alpha_{T} T g_{i} @f$
       type(field_def), parameter :: thermal_buoyancy                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'thermal_buoyancy',                        &
-     &                math = '$ -\alpha_{C} g_{i} C $')
+     &                math = '$-\alpha_{T} T g_{i} $')
 !>        Field label for compositional buoyancy
 !!         @f$ -\alpha_{C} C  g_{i}@f$
       type(field_def), parameter :: composite_buoyancy                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'composite_buoyancy',                      &
-     &                math = '$ -\alpha_{C} g_{i} C $')
+     &                math = '$-\alpha_{C} C g_{i} $')
 !
 !>        Field label for induction for vector potential
 !!         @f$ e_{ijk} u_{j} B_{k} @f$

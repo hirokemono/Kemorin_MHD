@@ -64,8 +64,14 @@
       if(check_field_list_ctl(buoyancy_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(temperature, field_ctl)
+        call add_phys_name_ctl(composition, field_ctl)
         call add_phys_name_ctl(buoyancy, field_ctl)
       end if
+!      if(check_field_list_ctl(thermal_buoyancy_flux, field_ctl)) then
+!        call add_phys_name_ctl(velocity, field_ctl)
+!        call add_phys_name_ctl(temperature, field_ctl)
+!        call add_phys_name_ctl(thermal_buoyancy, field_ctl)
+!      end if
       if(check_field_list_ctl(composite_buoyancy_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(composition, field_ctl)

@@ -27,7 +27,7 @@
 !!   Lorentz_force   [i_lorentz]:  Lorentz force     J \times B
 !!   magnetic_tension  [i_m_tension]:  magnetic tension   (B \nabla) B
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
-!!   buoyancy   [i_buoyancy]:
+!!   buoyancy             [i_buoyancy]:
 !!                       Total buoyancy - (\alpha_{T} T + \alpha_{C} C)g
 !!   thermal_buoyancy     [i_thermal_buo]:
 !!                       Thermal buoyancy  - \alpha_{T} T g
@@ -181,7 +181,7 @@
 !
         else if (field_name .eq. buoyancy%name) then
           forces%i_buoyancy =    i_phys
-        else if (field_name .eq. composite_buoyancy%name) then
+        else if (field_name .eq. thermal_buoyancy%name) then
           forces%i_thermal_buo = i_phys
         else if (field_name .eq. composite_buoyancy%name) then
           forces%i_comp_buo =    i_phys
