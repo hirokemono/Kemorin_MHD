@@ -22,6 +22,7 @@
 !!   div_Coriolis_force         [div_forces%i_Coriolis]
 !!   div_Lorentz_force          [div_forces%i_lorentz]
 !!   div_buoyancy               [div_forces%i_buoyancy]
+!!   div_thermal_buoyancy       [div_forces%i_thrm_buo]
 !!   div_composite_buoyancy     [div_forces%i_comp_buo]
 !!
 !!   div_momentum_flux          [div_forces%i_m_flux]

@@ -31,6 +31,7 @@
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
 !!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_thermal_buoyancy       [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
@@ -59,6 +60,7 @@
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
 !!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_thermal_buoyancy     [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -71,6 +73,7 @@
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
 !!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_thermal_buoyancy       [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]

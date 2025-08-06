@@ -9,41 +9,79 @@
 !!            decomposed by equatoreal symmetries
 !!
 !!@verbatim
-!!      subroutine set_sym_force_addresses                         &
+!!      subroutine set_sym_force_addresses                           &
 !!     &         (i_phys, field_name, force_by_sym, flag)
 !!        type(base_force_address), intent(inout) :: force_by_sym
 !!
 !!      subroutine set_sym_ene_flux_addresses                        &
 !!     &         (i_phys, field_name, eflux_by_sym, flag)
 !!        type(energy_flux_address), intent(inout) :: eflux_by_sym
-!! !!!!!  divergence of forces by sym field !!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!! Decomposed force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
-!!      Field label  [Address]
+!!   wsym_x_usym, wasym_x_uasym, wsym_x_uasym, wasym_x_usym
+!!     : Reynolds stress   e_{ijk} \omega_{j} u_{k}
 !!
-!!   inertia_by_sym             [force_by_sym%i_m_advect]
-!!   Lorentz_force_by_sym       [force_by_sym%i_lorentz]
-!!   magnetic_tension_by_sym    [force_by_sym%i_m_tension]
+!!   m_flux_sym_sym, m_flux_asym_asym, m_flux_sym_asym
+!!     : momentum flux      u_{i} u_{j}
 !!
-!!   sym_buoyancy               [force_by_sym%i_buoyancy]
-!!   sym_comp_buoyancy          [force_by_sym%i_comp_buo]
+!!   Jsym_x_Bsym, Jasym_x_Basym, Jsym_x_Basym, Jasym_x_Bsym
+!!     : Lorentz force      e_{ijk} J_{j} B_{k}
 !!
-!!   vecp_induction_by_sym      [force_by_sym%i_vp_induct]
-!!   magnetic_induction_by_sym  [force_by_sym%i_induction]
-!!   magnetic_stretch_by_sym    [force_by_sym%i_mag_stretch]
+!!   Bsym_nabla_Bsym, Basym_nabla_Basym, 
+!!   Bsym_nabla_Basym, Basym_nabla_Bsym
+!!     : magnetic tension   (B_{j} \cdot \nabla_{j}) B_{i}
 !!
-!!   heat_advect_by_sym         [force_by_sym%i_h_advect]
-!!   pert_h_advect_by_sym       [force_by_sym%i_ph_advect]
-!!   comp_advect_by_sym         [force_by_sym%i_c_advect]
-!!   pert_c_advect_by_sym       [force_by_sym%i_pc_advect]
+!!   maxwell_tensor_sym_sym, maxwell_tensor_asym_asym,
+!!   maxwell_tensor_sym_asym
+!!     :  maxwell tensor    B_{i} B_{j}
 !!
-!!   momentum_flux_by_sym       [force_by_sym%i_m_flux]
-!!   maxwell_tensor_by_sym      [force_by_sym%i_maxwell]
-!!   induction_tensor_by_sym    [force_by_sym%i_induct_t]
+!!   sym_buoyancy, asym_buoyancy
+!!     :   buoyancy     - (\alpha_{T} T + \alpha_{C} C) g
+!!   sym_thermal_buoyancy, asym_thermal_buoyancy
+!!     :   Thermal buoyancy       - \alpha_{T} T g
+!!   sym_composite_buoyancy, asym_composite_buoyancy
+!!     :   compositional buoyancy  - \alpha_{C} C g
 !!
-!!   heat_flux_by_sym           [force_by_sym%i_h_flux]
-!!   pert_h_flux_by_sym         [force_by_sym%i_ph_flux]
-!!   composite_flux_by_sym      [force_by_sym%i_c_flux]
-!!   pert_c_flux_by_sym         [force_by_sym%i_pc_flux]
+!!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
+!!     :     induction   u \times B
+!!   rot_usym_x_Bsym, rot_uasym_x_Basym,
+!!   rot_usym_x_Basym, rot_uasym_x_Bsym
+!!     :     magnetic induction  \rot(u \times B)
+!
+!!   Bsym_nabla_usym, Basym_nabla_uasym,
+!!   Bsym_nabla_uasym, Basym_nabla_usym
+!!     :    magneitic streatch         (B \nabla) u
+!!   usym_Bsym, uasym_Basym, usym_Basym
+!!     :    induction tensor u_{i} B_{j}  - B_{i} u_{J}
+!!
+!!   usym_nabla_Tsym, uasym_nabla_Tasym,
+!!   usym_nabla_Tasym, uasym_nabla_Tsym
+!!                 :    heat advection     (u \cdot \nabla) T
+!!   usym_nabla_pTsym, uasym_nabla_pTasym,
+!!   usym_nabla_pTasym, uasym_nabla_pTsym
+!!                 :  perturbation of heat advection
+!!                                      (u \cdot \nabla) \Theta
+!!   heat_flux_sym_sym, heat_flux_asym_asym,
+!!   heat_flux_sym_asym, heat_flux_asym_sym
+!!                 :    heat flux                   uT
+!!   pert_h_flux_sym_sym, pert_h_flux_asym_asym
+!!   pert_h_flux_sym_asym, pert_h_flux_asym_sym
+!!                 :  perturbation of heat flux   u\Theta
+!!
+!!   usym_nabla_Csym, uasym_nabla_Casym
+!!   usym_nabla_Casym, uasym_nabla_Csym
+!!                 :    composition advection     (u \cdot \nabla) C
+!!   usym_nabla_pCsym, uasym_nabla_pCasym,
+!!   usym_nabla_pCasym, uasym_nabla_pCsym
+!!                 :  perturbation of composition advection
+!!                                      (u \cdot \nabla) (C-C_0)
+!!   composite_flux_sym_sym, composite_flux_asym_asym, 
+!!   composite_flux_sym_asym, composite_flux_asym_sym
+!!                 :    composition flux                   uC
+!!   pert_c_flux_sym_sym, pert_c_flux_asym_asym,
+!!   pert_c_flux_sym_asym, pert_c_flux_asym_sym
+!!                 :  perturbation of composition flux   u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! !!!!!  List of energy flux  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
