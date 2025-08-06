@@ -75,6 +75,13 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_buoyancy',                            &
      &                math = '$-\partial_{i} \alpha_{T} T g_{i}$')
+!>        Field label for divergence of filtered buoyancy
+!!         @f$ -\partial_{i} \alpha_{T} g_{i} T @f$
+      type(field_def), parameter :: div_thermal_buoyancy                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'div_thermal_buoyancy',                    &
+     &                math = '$-\partial_{i} (\alpha_{T} T '            &
+     &                      // ' + \alpha_{C} C) g_{i}$')
 !>        Field label for divergence of filtered compositional buoyancy
 !!         @f$ -\partial_{i} \alpha_{C} g_{i} C @f$
       type(field_def), parameter :: div_composite_buoyancy              &
@@ -144,6 +151,7 @@
      &   .or. (field_name .eq. div_Coriolis_force%name)                 &
      &   .or. (field_name .eq. div_Lorentz_force%name)                  &
      &   .or. (field_name .eq. div_buoyancy%name)                       &
+     &   .or. (field_name .eq. div_thermal_buoyancy%name)               &
      &   .or. (field_name .eq. div_composite_buoyancy%name)
 !
       end function check_div_force
@@ -192,6 +200,7 @@
       call set_field_label_to_ctl(div_Coriolis_force,        array_c2i)
       call set_field_label_to_ctl(div_Lorentz_force,         array_c2i)
       call set_field_label_to_ctl(div_buoyancy,              array_c2i)
+      call set_field_label_to_ctl(div_thermal_buoyancy,      array_c2i)
       call set_field_label_to_ctl(div_composite_buoyancy,    array_c2i)
       call set_field_label_to_ctl(div_momentum_flux,         array_c2i)
       call set_field_label_to_ctl(div_maxwell_tensor,        array_c2i)

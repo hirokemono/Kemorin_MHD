@@ -286,6 +286,8 @@
 !
         else if (field_name .eq. div_buoyancy%name) then
           div_forces%i_buoyancy =   i_phys
+        else if (field_name .eq. div_thermal_buoyancy%name) then
+          div_forces%i_thrm_buo =   i_phys
         else if (field_name .eq. div_composite_buoyancy%name) then
           div_forces%i_comp_buo =   i_phys
 !
