@@ -216,6 +216,9 @@
      &    call add_phys_name_ctl(thermal_buoyancy, field_ctl)
         if(fl_prop%flag_comp_buoyancy)                                  &
      &    call add_phys_name_ctl(composite_buoyancy, field_ctl)
+        if(fl_prop%flag_thermal_buoyancy                                &
+     &      .or. fl_prop%flag_comp_buoyancy)                            &
+     &    call add_phys_name_ctl(buoyancy, field_ctl)
       end if
 !
       end subroutine add_ctl_4_forces

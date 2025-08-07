@@ -47,6 +47,7 @@
       subroutine int_buoyancy_nod_exp(node, fl_prop, mlump_fl,          &
      &          iphys, iphys_LES, nod_fld, f_nl)
 !
+      use copy_nodal_fields
       use set_buoyancy_at_node
 !
       type(phys_address), intent(in) :: iphys
@@ -62,57 +63,31 @@
 !
 ! ---------  set buoyancy at each node
 !
-      if(fl_prop%flag_comp_buoyancy                                     &
-     &   .and. fl_prop%flag_thermal_buoyancy) then
-        call set_double_gravity_2_each_node(iphys%base%i_temp,          &
-     &      iphys%base%i_light, iphys%forces%i_buoyancy,                &
-     &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
-     &      fl_prop%grav, node, nod_fld)
+      call clear_field_data(nod_fld, n_vector, iphys%forces%i_buoyancy)
 !
-      else if(fl_prop%flag_filter_comp_buo                              &
-     &  .and. fl_prop%flag_filter_thermal_buo) then
-        call set_double_gravity_2_each_node                             &
-     &     (iphys_LES%filter_fld%i_temp, iphys_LES%filter_fld%i_light,  &
-     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
-     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
-     &      node, nod_fld)
-!
-      else if(fl_prop%flag_filter_comp_buo                              &
-     & .and. fl_prop%flag_thermal_buoyancy) then
-        call set_double_gravity_2_each_node                             &
-     &     (iphys%base%i_temp, iphys_LES%filter_fld%i_light,            &
-     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
-     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
-     &      node, nod_fld)
-!
-      else if(fl_prop%flag_comp_buoyancy                                &
-     & .and. fl_prop%flag_filter_thermal_buo) then
-        call set_double_gravity_2_each_node                             &
-     &     (iphys_LES%filter_fld%i_temp, iphys%base%i_light,            &
-     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
-     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
-     &      node, nod_fld)
-!
-!
-      else if (fl_prop%flag_thermal_buoyancy) then
-        call set_gravity_2_each_node                                    &
+      if (fl_prop%flag_thermal_buoyancy) then
+        call add_gravity_2_each_node                                    &
      &     (iphys%base%i_temp, iphys%forces%i_buoyancy,                 &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
+      end if
 !
-      else if (fl_prop%flag_comp_buoyancy) then
-        call set_gravity_2_each_node                                    &
+      if (fl_prop%flag_comp_buoyancy) then
+        call add_gravity_2_each_node                                    &
      &     (iphys%base%i_light, iphys%forces%i_buoyancy,                &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
+      end if
 !
-      else if(fl_prop%flag_filter_thermal_buo) then
-        call set_gravity_2_each_node                                    &
+      if(fl_prop%flag_filter_thermal_buo) then
+        call add_gravity_2_each_node                                    &
      &     (iphys_LES%filter_fld%i_temp, iphys%forces%i_buoyancy,       &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
-      else if(fl_prop%flag_filter_comp_buo) then
-        call set_gravity_2_each_node                                    &
+      end if
+!
+      if(fl_prop%flag_filter_comp_buo) then
+        call add_gravity_2_each_node                                    &
      &     (iphys_LES%filter_fld%i_light, iphys%forces%i_buoyancy,      &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
