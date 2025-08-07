@@ -101,6 +101,7 @@
       use cal_self_buoyancies_sph
       use rot_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
+      use sum_total_buoyancy
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
@@ -130,6 +131,7 @@
      &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
      &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
      &      SPH_MHD%fld)
+        call s_sum_total_buoyancy(SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
 !
 !   ----  lead filtered buoyancies
         call sel_buoyancies_sph_MHD                                     &
@@ -139,10 +141,13 @@
      &      SPH_MHD%fld)
 !
 !   ----   lead rotation of filtered buoyancies
-        if(iflag_debug.gt.0) write(*,*) 'sel_rot_filter_buoyancy_sph'
-        call sel_rot_filter_buoyancy_sph                                &
-     &     (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,          &
-     &      SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+        call sel_rot_buoyancy_sph_MHD                                   &
+     &     (SPH_MHD%sph%sph_rj, SPH_SGS%ipol_LES%filter_fld,            &
+     &      SPH_SGS%ipol_LES%rot_frc_by_filter,                         &
+     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
+     &      SPH_MHD%fld)
+        call s_sum_total_buoyancy(SPH_SGS%ipol_LES%rot_frc_by_filter,   &
+     &                            SPH_MHD%fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

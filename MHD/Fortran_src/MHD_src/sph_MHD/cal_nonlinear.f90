@@ -96,6 +96,7 @@
       use sum_rotation_of_forces
       use cal_self_buoyancies_sph
       use rot_self_buoyancies_sph
+      use sum_total_buoyancy
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -126,6 +127,7 @@
      &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
      &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
      &      SPH_MHD%fld)
+        call s_sum_total_buoyancy(SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
@@ -244,6 +246,7 @@
       use copy_nodal_fields
       use cal_nonlinear_sph_MHD
       use sum_rotation_of_forces
+      use sum_total_buoyancy
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -272,6 +275,7 @@
         call sel_rot_buoyancy_sph_MHD                                   &
      &     (sph%sph_rj, ipol%base, ipol%rot_forces,                     &
      &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
+        call s_sum_total_buoyancy(SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
       end if
 !*
 !*  ----  copy velocity for coriolis term ------------------

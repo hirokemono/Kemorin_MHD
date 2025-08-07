@@ -165,7 +165,7 @@
       use m_diffusion_term_labels
       use m_div_force_labels
 !
-      use copy_nodal_fields
+      use sum_total_buoyancy
       use cal_terms_for_heat
       use cal_momentum_terms
       use cal_magnetic_terms
@@ -329,38 +329,8 @@
         end if
       end do
 !
-      if(iphys%forces%i_buoyancy .gt. 0) then
-        if((iphys%forces%i_thrm_buo                                     &
-     &     * iphys%forces%i_comp_buo) .gt. 0) then
-          call add_2_nod_vectors(nod_fld,                               &
-     &        iphys%forces%i_thrm_buo, iphys%forces%i_comp_buo,         &
-     &        iphys%forces%i_buoyancy)
-        else if(iphys%forces%i_thrm_buo .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
-     &        iphys%forces%i_thrm_buo, iphys%forces%i_buoyancy)
-        else if(iphys%forces%i_comp_buo .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
-     &        iphys%forces%i_comp_buo, iphys%forces%i_buoyancy)
-        end if
-      end if
-!
-      if(iphys_LES%force_by_filter%i_buoyancy .gt. 0) then
-        if((iphys_LES%force_by_filter%i_thrm_buo                        &
-     &     * iphys_LES%force_by_filter%i_comp_buo) .gt. 0) then
-          call add_2_nod_vectors(nod_fld,                               &
-     &        iphys_LES%force_by_filter%i_thrm_buo,                     &
-     &        iphys_LES%force_by_filter%i_comp_buo,                     &
-     &        iphys_LES%force_by_filter%i_buoyancy)
-        else if(iphys_LES%force_by_filter%i_thrm_buo .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
-     &        iphys_LES%force_by_filter%i_thrm_buo,                     &
-     &        iphys_LES%force_by_filter%i_buoyancy)
-        else if(iphys_LES%force_by_filter%i_comp_buo .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
-     &        iphys_LES%force_by_filter%i_comp_buo,                     &
-     &        iphys_LES%force_by_filter%i_buoyancy)
-        end if
-      end if
+      call s_sum_total_buoyancy(iphys%forces, nod_fld)
+      call s_sum_total_buoyancy(iphys_LES%force_by_filter, nod_fld)
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1

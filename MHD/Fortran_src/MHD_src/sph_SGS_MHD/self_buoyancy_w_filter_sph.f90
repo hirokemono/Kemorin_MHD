@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine cal_self_buoyancy_sph_SGS_MHD                        &
 !!     &         (sph, leg, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
-!!      subroutine sel_rot_filter_buoyancy_sph                          &
-!!     &         (sph, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -55,6 +53,7 @@
 !
       use t_schmidt_poly_on_rtm
       use cal_self_buoyancies_sph
+      use sum_total_buoyancy
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_grids), intent(in) :: sph
@@ -73,33 +72,15 @@
       call sel_buoyancies_sph_MHD                                       &
      &   (sph%sph_rj, leg, ipol%forces, MHD_prop%fl_prop,               &
      &    sph_bc_U, ibuo_temp, ibuo_comp, rj_fld)
+      call s_sum_total_buoyancy(ipol%forces, rj_fld)
 !
       call sel_buoyancies_sph_MHD(sph%sph_rj, leg,                      &
      &    ipol_LES%force_by_filter, MHD_prop%fl_prop, sph_bc_U,         &
      &    ipol_LES%filter_fld%i_temp, ipol_LES%filter_fld%i_light,      &
      &    rj_fld)
+      call s_sum_total_buoyancy(ipol_LES%force_by_filter, rj_fld)
 !
       end subroutine cal_self_buoyancy_sph_SGS_MHD
-!
-!-----------------------------------------------------------------------
-!
-      subroutine sel_rot_filter_buoyancy_sph                            &
-     &         (sph, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
-!
-      use rot_self_buoyancies_sph
-! 
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_grids), intent(in) ::  sph
-      type(SGS_model_addresses), intent(in) :: ipol_LES
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      call sel_rot_buoyancy_sph_MHD                                     &
-     &   (sph%sph_rj, ipol_LES%filter_fld, ipol_LES%rot_frc_by_filter,  &
-     &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
-!
-      end subroutine sel_rot_filter_buoyancy_sph
 !
 !-----------------------------------------------------------------------
 !

@@ -115,6 +115,7 @@
       use cal_self_buoyancies_sph
       use decomp_w_sym_rj_base_field
       use adjust_scalar_rj_fields
+      use sum_total_buoyancy
 !
       type(sph_mhd_monitor_data), intent(in) :: monitor
       type(fdm_matrices), intent(in) :: r_2nd
@@ -138,6 +139,7 @@
      &   (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol%forces,         &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &
      &    ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call s_sum_total_buoyancy(SPH_MHD%ipol%forces, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
@@ -158,6 +160,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_asym, MHD_prop%fl_prop,            &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call s_sum_total_buoyancy(SPH_MHD%ipol%forces_by_sym_asym,        &
+     &                          SPH_MHD%fld)
 !
       call sel_field_address_for_buoyancies(SPH_MHD%ipol%asym_fld,      &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
@@ -165,6 +169,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_sym, MHD_prop%fl_prop,             &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call s_sum_total_buoyancy(SPH_MHD%ipol%forces_by_sym_sym,         &
+     &                          SPH_MHD%fld)
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
@@ -310,6 +316,7 @@
       use const_radial_forces_on_bc
       use cal_div_of_forces
       use sph_radial_grad_4_velocity
+      use s_sum_total_buoyancy
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -336,6 +343,7 @@
 !
       call sum_div_of_forces                                            &
      &    (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
+      call s_sum_total_buoyancy(ipol%div_forces, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v(sph%sph_rj, sph_MHD_bc%sph_bc_U,   &

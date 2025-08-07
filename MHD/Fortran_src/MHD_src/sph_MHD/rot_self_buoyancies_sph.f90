@@ -58,7 +58,7 @@
 !
 !
       call sel_rot_buoyancy_sph_rj(fl_prop%i_grav, sph_rj,              &
-     &    ipol_base%i_temp, ipol_rot_frc%i_buoyancy,                    &
+     &    ipol_base%i_temp, ipol_rot_frc%i_thrm_buo,                    &
      &    fl_prop%coef_buo, sph_bc_U, rj_fld)
 ! 
       call sel_rot_buoyancy_sph_rj(fl_prop%i_grav, sph_rj,              &
@@ -88,7 +88,7 @@
       if(i_grav .eq. iflag_radial_g) then
         call rot_r_const_buoyancy_sph_MHD                               &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                  &
-     &      ipol_scalar, ipol_buo, sph_rj%nidx_rj,  &
+     &      ipol_scalar, ipol_buo, sph_rj%nidx_rj,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call rot_self_buoyancy_sph_MHD                                  &

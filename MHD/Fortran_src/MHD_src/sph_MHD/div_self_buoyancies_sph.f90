@@ -37,8 +37,6 @@
 !
       implicit  none
 !
-      private :: cal_div_double_buoyancy_sph_MHD
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -94,31 +92,22 @@
         end if
       end if
 !
-      if(flag_thermal_buoyancy .and. flag_comp_buoyancy) then
-        if (iflag_debug.ge.1) write(*,*)                                &
-     &        'cal_div_double_buoyancy_sph_MHD', ipol_temp
-        call cal_div_double_buoyancy_sph_MHD                            &
-     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                  &
-     &      ipol_temp, igrad_temp, coef_comp_buo,                       &
-     &      ipol_comp, igrad_comp, ipol_div_frc%i_buoyancy,             &
-     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-!
-      else if(flag_thermal_buoyancy) then
+      if(flag_thermal_buoyancy) then
         if (iflag_debug.ge.1)  write(*,*)                               &
      &    'cal_div_buoyancy_sph_MHD by pert. temperature'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                  &
-     &      ipol_temp, igrad_temp, ipol_div_frc%i_buoyancy,             &
+     &      ipol_temp, igrad_temp, ipol_div_frc%i_thrm_buo,             &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
 !
-      else if(flag_comp_buoyancy) then
+      if(flag_comp_buoyancy) then
         if (iflag_debug.ge.1)  write(*,*)                               &
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_comp_buo,             &
-     &      ipol_comp, igrad_comp, ipol_div_frc%i_buoyancy,             &
+     &      ipol_comp, igrad_comp, ipol_div_frc%i_comp_buo,             &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -126,45 +115,6 @@
       end subroutine sel_div_buoyancies_sph_MHD
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_div_double_buoyancy_sph_MHD(kr_in, kr_out,         &
-     &          coef_t_buo, is_t, ids_t,  coef_c_buo, is_c, ids_c,      &
-     &          is_div, nidx_rj, radius_1d_rj_r,                        &
-     &          nnod_rj, ntot_phys_rj, d_rj)
-!
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      integer(kind= kint), intent(in) :: is_t, ids_t
-      integer(kind= kint), intent(in) :: is_c, ids_c
-      integer(kind= kint), intent(in) :: is_div
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
-!
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
-!
-      integer(kind= kint) :: ist, ied, inod, j, k
-!
-!
-        ist = (kr_in-1)*nidx_rj(2) + 1
-        ied = kr_out * nidx_rj(2)
-!$omp parallel do private (inod,j,k)
-        do inod = ist, ied
-          j = mod((inod-1),nidx_rj(2)) + 1
-          k = 1 + (inod- j) / nidx_rj(2)
-!
-          d_rj(inod,is_div)                                             &
-     &          = three * (coef_t_buo * d_rj(inod,is_t)                 &
-     &                   + coef_c_buo * d_rj(inod,is_c))                &
-     &                  + (coef_t_buo * d_rj(inod,ids_t)                &
-     &                   + coef_c_buo * d_rj(inod,ids_c) )              &
-     &                 * radius_1d_rj_r(k)
-        end do
-!$omp end parallel do
-!
-      end subroutine cal_div_double_buoyancy_sph_MHD
-!
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_buoyancy_sph_MHD(kr_in, kr_out, coef,          &

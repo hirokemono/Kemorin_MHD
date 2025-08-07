@@ -49,6 +49,7 @@
       use t_SGS_model_addresses
       use t_boundary_params_sph_MHD
       use rot_r_const_buoyancies_sph
+      use sum_total_buoyancy
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -61,10 +62,12 @@
       call cal_rot_r_const_buo_sph_mhd                                  &
      &   (sph_rj, ipol%base, ipol%rot_forces, MHD_prop%fl_prop,         &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, sph_bc_U, rj_fld)
+      call s_sum_total_buoyancy(ipol%rot_forces, rj_fld)
 !
       call sel_rot_r_const_fil_buo_sph                                  &
      &   (sph_rj, ipol_LES%filter_fld, ipol_LES%rot_frc_by_filter,      &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
+      call s_sum_total_buoyancy(ipol_LES%rot_frc_by_filter, rj_fld)
 !
       end subroutine cal_rot_r_const_buo_sph_SGS
 !
@@ -78,6 +81,7 @@
       use t_SGS_model_addresses
       use t_boundary_params_sph_MHD
       use div_r_const_buoyancies_sph
+      use sum_total_buoyancy
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -91,10 +95,12 @@
      &   (sph_rj, ipol%base, ipol%grad_fld, ipol%div_forces,            &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    sph_bc_U, rj_fld)
+      call s_sum_total_buoyancy(ipol%div_forces, rj_fld)
 !
       call sel_div_r_const_fil_buo_sph(sph_rj, ipol_LES%filter_fld,     &
      &    ipol_LES%grad_fil_fld, ipol_LES%div_frc_by_filter,            &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
+      call s_sum_total_buoyancy(ipol_LES%div_frc_by_filter, rj_fld)
 !
       end subroutine cal_div_r_const_buo_sph_SGS
 !
@@ -123,7 +129,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_fil%i_temp,                          &
-     &      ipol_rot_fil_frc%i_buoyancy, sph_rj%nidx_rj,                &
+     &      ipol_rot_fil_frc%i_thrm_buo, sph_rj%nidx_rj,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -165,7 +171,7 @@
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_fil%i_temp, ipol_gfl%i_grad_temp,                      &
-     &      ipol_div_fil_frc%i_buoyancy,                                &
+     &      ipol_div_fil_frc%i_thrm_buo,                                &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
