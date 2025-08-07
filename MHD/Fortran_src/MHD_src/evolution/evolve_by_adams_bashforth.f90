@@ -85,6 +85,7 @@
       use cal_multi_pass
       use cal_sol_field_explicit
       use int_vol_coriolis_term
+      use int_vol_buoyancies
 !
       real(kind = kreal), intent(in) :: dt
 !

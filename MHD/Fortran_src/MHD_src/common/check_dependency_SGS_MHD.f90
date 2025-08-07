@@ -100,7 +100,7 @@
 !
 !   check dependencies for time evolution
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(fl_prop%flag_filter_gravity) then
+        if(fl_prop%flag_filter_thermal_buo) then
           msg = 'Filtered thermal buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys_fil%i_temp)
         end if

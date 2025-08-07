@@ -90,7 +90,7 @@
 !
       use cal_fluxes
       use products_nodal_fields_smp
-      use int_vol_coriolis_term
+      use int_vol_buoyancies
 !
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop

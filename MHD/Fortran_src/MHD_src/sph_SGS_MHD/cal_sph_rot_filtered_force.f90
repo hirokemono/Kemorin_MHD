@@ -143,13 +143,13 @@
       end if
 !
       call cal_div_of_buoyancies_sph_2                                  &
-     &   (MHD_prop%fl_prop%flag_filter_gravity,                         &
+     &   (MHD_prop%fl_prop%flag_filter_thermal_buo,                     &
      &    MHD_prop%fl_prop%flag_filter_comp_buo,                        &
      &    sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                          &
      &    ipol_fil_frc, ipol_div_fil_frc, rj_fld)
 !
 !      call sel_div_buoyancies_sph_MHD                                  &
-!     &   (MHD_prop%fl_prop%flag_filter_gravity,                        &
+!     &   (MHD_prop%fl_prop%flag_filter_thermal_buo,                    &
 !     &    MHD_prop%fl_prop%flag_filter_comp_buo,                       &
 !     &    sph_rj, ipol_fil, ipol_graa_fil, ipol_div_fil_frc,           &
 !     &    MHD_prop%fl_prop%coef_buo,  MHD_prop%fl_prop%coef_comp_buo,  &
@@ -186,13 +186,13 @@
 !
 !
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%flag_filter_gravity,                                  &
+     &   (fl_prop%flag_filter_thermal_buo,                              &
      &    fl_prop%flag_filter_comp_buo,                                 &
      &    sph_bc_U%kr_in, sph_rj, ipol_fil, ipol_div_fil_frc,           &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%flag_filter_gravity,                                  &
+     &   (fl_prop%flag_filter_thermal_buo,                              &
      &    fl_prop%flag_filter_comp_buo,                                 &
      &    sph_bc_U%kr_out, sph_rj, ipol_fil, ipol_div_fil_frc,          &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &

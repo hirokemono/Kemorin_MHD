@@ -109,7 +109,7 @@
         fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
         if     (fl_prop%flag_thermal_buoyancy                           &
-     &     .or. fl_prop%flag_filter_gravity) then
+     &     .or. fl_prop%flag_filter_thermal_buo) then
           call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
      &      depth_top, depth_bottom)

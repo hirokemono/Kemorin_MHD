@@ -78,9 +78,9 @@
       fl_prop%flag_lorentz =          .FALSE.
       fl_prop%flag_comp_buoyancy =    .FALSE.
 !
-      fl_prop%flag_filter_gravity =  .FALSE.
-      fl_prop%flag_filter_comp_buo = .FALSE.
-      fl_prop%flag_filter_lorentz =  .FALSE.
+      fl_prop%flag_filter_thermal_buo =  .FALSE.
+      fl_prop%flag_filter_comp_buo =     .FALSE.
+      fl_prop%flag_filter_lorentz =      .FALSE.
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         fl_prop%num_force = 0
@@ -117,7 +117,7 @@
      &       .or. cmp_no_case(tmpchara, Filtered_thrm_gravity_e1)       &
      &       .or. cmp_no_case(tmpchara, Filtered_buoyancy_label)        &
      &       .or. cmp_no_case(tmpchara, Filtered_buoyancy_e1)           &
-     &       ) fl_prop%flag_filter_gravity =  .TRUE.
+     &       ) fl_prop%flag_filter_thermal_buo =  .TRUE.
 !
           if(   cmp_no_case(tmpchara, Filtered_comp_buoyancy_label)     &
      &     .or. cmp_no_case(tmpchara, Filtered_comp_buoyancy_e1)        &
@@ -170,7 +170,7 @@
       fl_prop%i_grav = iflag_no_gravity
       if(     fl_prop%flag_thermal_buoyancy                             &
      &   .or. fl_prop%flag_comp_buoyancy                                &
-     &   .or. fl_prop%flag_filter_gravity                               &
+     &   .or. fl_prop%flag_filter_thermal_buo                           &
      &   .or. fl_prop%flag_filter_comp_buo) then
         if(g_ctl%FEM_gravity_model%iflag .gt. 0                         &
      &    .and. cmp_no_case(g_ctl%FEM_gravity_model%charavalue,'node')  &

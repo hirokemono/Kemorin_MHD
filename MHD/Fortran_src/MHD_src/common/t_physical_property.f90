@@ -83,13 +83,13 @@
         logical :: flag_comp_buoyancy =    .FALSE.
 !
 !>        Force flag for Filtered inertia term
-        logical :: flag_filter_inertia = .FALSE.
+        logical :: flag_filter_inertia =      .FALSE.
 !>        Force flag for Filtered Lorentz force
-        logical :: flag_filter_lorentz =  .FALSE.
+        logical :: flag_filter_lorentz =      .FALSE.
 !>        Force flag for filtered thermal buoyancy
-        logical :: flag_filter_gravity =  .FALSE.
+        logical :: flag_filter_thermal_buo =  .FALSE.
 !>        Force flag for filtered compositional buoyancy
-        logical :: flag_filter_comp_buo = .FALSE.
+        logical :: flag_filter_comp_buo =     .FALSE.
 !
 !>       coefficient for Coriolis force
         real  (kind=kreal) :: coef_cor = zero

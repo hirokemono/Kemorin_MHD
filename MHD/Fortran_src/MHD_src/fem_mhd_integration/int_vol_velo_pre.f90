@@ -310,7 +310,7 @@
      &          iphys_base%i_temp, iphys_base%i_light,                  &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity                           &
+          else if(fl_prop%flag_filter_thermal_buo                       &
      &     .and. fl_prop%flag_filter_comp_buo) then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_fil%i_temp, iphys_fil%i_light,                    &
@@ -322,7 +322,7 @@
      &          iphys_base%i_temp, iphys_fil%i_light,                   &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity                           &
+          else if(fl_prop%flag_filter_thermal_buo                       &
      &     .and. fl_prop%flag_comp_buoyancy) then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_fil%i_temp, iphys_base%i_light,                   &
@@ -337,7 +337,7 @@
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_base%i_light, fl_prop%i_grav, fl_prop%grav,       &
      &          ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity) then
+          else if(fl_prop%flag_filter_thermal_buo) then
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_fil%i_temp, fl_prop%i_grav, fl_prop%grav,         &
      &          ak_MHD%ak_buo, fem_wk%vector_1)
@@ -611,7 +611,7 @@
      &          iphys_base%i_temp, iphys_base%i_light,                  &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity                           &
+          else if(fl_prop%flag_filter_thermal_buo                       &
      &     .and. fl_prop%flag_filter_comp_buo) then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
      &           iphys_fil%i_temp, iphys_fil%i_light,                   &
@@ -623,7 +623,7 @@
      &           iphys_base%i_temp, iphys_fil%i_light,                  &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity                           &
+          else if(fl_prop%flag_filter_thermal_buo                       &
      &     .and. fl_prop%flag_comp_buoyancy) then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
      &           iphys_fil%i_temp, iphys_base%i_light,                  &
@@ -638,7 +638,7 @@
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_base%i_light, fl_prop%i_grav, fl_prop%grav,       &
      &          ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          else if(fl_prop%flag_filter_gravity) then
+          else if(fl_prop%flag_filter_thermal_buo) then
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
      &          iphys_fil%i_temp, fl_prop%i_grav, fl_prop%grav,         &
      &          ak_MHD%ak_buo, fem_wk%vector_1)

@@ -152,7 +152,7 @@
      &   (mom_ctl%coef_4_viscous, coefs_v_diffuse)
 !
       if((fl_prop%flag_thermal_buoyancy .eqv. .FALSE.)                  &
-     &     .and. (fl_prop%flag_filter_gravity .eqv. .FALSE.)) then
+     &     .and. (fl_prop%flag_filter_thermal_buo .eqv. .FALSE.)) then
         coefs_buoyancy%num = 0
         call copy_power_and_names_from_ctl                              &
      &     (mom_ctl%coef_4_termal_buo, coefs_buoyancy)

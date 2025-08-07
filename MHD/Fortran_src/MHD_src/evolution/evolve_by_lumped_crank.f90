@@ -133,6 +133,7 @@
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
       use int_vol_coriolis_term
+      use int_vol_buoyancies
       use cal_sol_field_explicit
 !
       integer(kind = kint), intent(in) :: iflag_commute_velo
