@@ -165,6 +165,7 @@
       use m_diffusion_term_labels
       use m_div_force_labels
 !
+      use copy_nodal_fields
       use cal_terms_for_heat
       use cal_momentum_terms
       use cal_magnetic_terms
@@ -307,10 +308,9 @@
      &     .or. i_fld .eq. iphys%div_forces%i_maxwell                   &
      &     .or. i_fld .eq. iphys%forces%i_m_tension                     &
      &     .or. i_fld .eq. iphys%forces%i_lorentz                       &
-     &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
      &     .or. i_fld .eq. iphys%forces%i_thrm_buo                      &
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
-     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_buoyancy         &
+     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_thrm_buo         &
      &     .or. i_fld .eq. iphys_LES%force_by_filter%i_comp_buo         &
      &     .or. i_fld .eq. iphys%forces%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
@@ -329,6 +329,38 @@
         end if
       end do
 !
+      if(iphys%forces%i_buoyancy .gt. 0) then
+        if((iphys%forces%i_thrm_buo                                     &
+     &     * iphys%forces%i_comp_buo) .gt. 0) then
+          call add_2_nod_vectors(nod_fld,                               &
+     &        iphys%forces%i_thrm_buo, iphys%forces%i_comp_buo,         &
+     &        iphys%forces%i_buoyancy)
+        else if(iphys%forces%i_thrm_buo .gt. 0) then
+          call copy_vector_component(nod_fld,                           &
+     &        iphys%forces%i_thrm_buo, iphys%forces%i_buoyancy)
+        else if(iphys%forces%i_comp_buo .gt. 0) then
+          call copy_vector_component(nod_fld,                           &
+     &        iphys%forces%i_comp_buo, iphys%forces%i_buoyancy)
+        end if
+      end if
+!
+      if(iphys_LES%force_by_filter%i_buoyancy .gt. 0) then
+        if((iphys_LES%force_by_filter%i_thrm_buo                        &
+     &     * iphys_LES%force_by_filter%i_comp_buo) .gt. 0) then
+          call add_2_nod_vectors(nod_fld,                               &
+     &        iphys_LES%force_by_filter%i_thrm_buo,                     &
+     &        iphys_LES%force_by_filter%i_comp_buo,                     &
+     &        iphys_LES%force_by_filter%i_buoyancy)
+        else if(iphys_LES%force_by_filter%i_thrm_buo .gt. 0) then
+          call copy_vector_component(nod_fld,                           &
+     &        iphys_LES%force_by_filter%i_thrm_buo,                     &
+     &        iphys_LES%force_by_filter%i_buoyancy)
+        else if(iphys_LES%force_by_filter%i_comp_buo .gt. 0) then
+          call copy_vector_component(nod_fld,                           &
+     &        iphys_LES%force_by_filter%i_comp_buo,                     &
+     &        iphys_LES%force_by_filter%i_buoyancy)
+        end if
+      end if
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
