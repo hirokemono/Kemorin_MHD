@@ -57,6 +57,10 @@
         call add_phys_name_ctl(sym_magnetic_field, field_ctl)
       end if
 !
+      if( check_field_list_ctl(sym_buoyancy, field_ctl)) then
+         call add_phys_name_ctl(sym_temperature, field_ctl)
+         call add_phys_name_ctl(sym_composition, field_ctl)
+      end if
       if( check_field_list_ctl(sym_thermal_buoyancy, field_ctl)) then
         call add_phys_name_ctl(sym_temperature, field_ctl)
       end if

@@ -54,6 +54,10 @@
         call add_phys_name_ctl(Bsym_nabla_Bsym, field_ctl)
 !
       end if
+!      if(check_field_list_ctl(sym_buoyancy_flux, field_ctl)) then
+!        call add_phys_name_ctl(velocity, field_ctl)
+!        call add_phys_name_ctl(sym_buoyancy, field_ctl)
+!      end if
       if(check_field_list_ctl(sym_termal_buo_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(sym_thermal_buoyancy, field_ctl)
