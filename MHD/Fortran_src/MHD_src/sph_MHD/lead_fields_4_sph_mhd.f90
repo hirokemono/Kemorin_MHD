@@ -316,7 +316,7 @@
       use const_radial_forces_on_bc
       use cal_div_of_forces
       use sph_radial_grad_4_velocity
-      use s_sum_total_buoyancy
+      use sum_total_buoyancy
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc

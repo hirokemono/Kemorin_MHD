@@ -275,7 +275,7 @@
         call sel_rot_buoyancy_sph_MHD                                   &
      &     (sph%sph_rj, ipol%base, ipol%rot_forces,                     &
      &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
-        call s_sum_total_buoyancy(SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
+        call s_sum_total_buoyancy(ipol%rot_forces, rj_fld)
       end if
 !*
 !*  ----  copy velocity for coriolis term ------------------

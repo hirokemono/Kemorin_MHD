@@ -14,28 +14,15 @@
 !
       module sum_total_buoyancy
 !
-      implicit none
-!
       use m_precision
       use t_base_force_labels
       use t_phys_data
 !
+      implicit none
+!
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-!      call s_sum_total_buoyancy(iphys%forces, rj_fld)
-      call s_sum_total_buoyancy(iphys%rot_forces, rj_fld)
-!      call s_sum_total_buoyancy(iphys%div_forces, rj_fld)
-!
-!      call s_sum_total_buoyancy(iphys%forces_by_sym_sym, rj_fld)
-!      call s_sum_total_buoyancy(iphys%forces_by_sym_asym, rj_fld)
-!
-!      call s_sum_total_buoyancy(iphys%force_by_filter, rj_fld)
-      call s_sum_total_buoyancy(iphys%rot_frc_by_filter, rj_fld)
-!      call s_sum_total_buoyancy(iphys%div_frc_by_filter, rj_fld)
 !
 ! ----------------------------------------------------------------------
 !
