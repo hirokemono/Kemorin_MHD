@@ -105,6 +105,7 @@
 !!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
 !!
 !!   filtered_buoyancy_flux            [eflux_by_filter%i_buo_flux]
+!!   filtered_thermal_buoyancy_flux    [eflux_by_filter%i_t_buo_flux]
 !!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_flux]
 !!
 !!   mag_ene_generation_by_filtered    [eflux_by_filter%i_me_gen]
@@ -321,9 +322,11 @@
           eflux_by_filter%i_m_tension_wk =  i_phys
 !
         else if (field_name .eq. filtered_buoyancy_flux%name) then
-          eflux_by_filter%i_buo_flux =      i_phys
+          eflux_by_filter%i_buo_flux =   i_phys
+        else if (field_name .eq. filtered_buoyancy_flux%name) then
+          eflux_by_filter%i_t_buo_flux = i_phys
         else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
-          eflux_by_filter%i_c_buo_flux =    i_phys
+          eflux_by_filter%i_c_buo_flux = i_phys
 !
         else if (field_name .eq. mag_ene_generation_by_filtered%name)   &
      &   then

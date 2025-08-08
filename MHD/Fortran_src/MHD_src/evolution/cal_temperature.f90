@@ -138,7 +138,7 @@
       i_tensor =           iphys_LES%SGS_term%i_SGS_h_flux
       i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_temp
       iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_temp
-      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_flux
+      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_t_buo_flux
 !
       eps_4_crank = FEM_prm%eps_4_temp_crank
       iflag_supg = FEM_prm%iflag_temp_supg
@@ -147,14 +147,16 @@
       itype_Csym_flux = SGS_par%model_p%SGS_heat%itype_Csym_flux
       ifilter_final =   SGS_par%model_p%ifilter_final
 !
-      iflag_commute_flux = SGS_par%model_p%SGS_heat%iflag_commute_flux
-      iflag_commute_field = SGS_par%model_p%SGS_heat%iflag_commute_field
+      iflag_commute_flux                                                &
+     &             = SGS_par%model_p%SGS_heat%iflag_commute_flux
+      iflag_commute_field                                               &
+     &             = SGS_par%model_p%SGS_heat%iflag_commute_field
 !
       call scalar_evolution(i_scalar, i_pert,                           &
      &    iref_scalar, i_velo, i_pre_advect, i_gref,                    &
      &    i_filter_s, i_filter_v, i_tensor, i_SGS_wk_field,             &
      &    iphys_wfl_scalar, iphys_fefx_buo_gen,                         &
-     &    eps_4_crank, iflag_supg, iflag_SGS_flux, &
+     &    eps_4_crank, iflag_supg, iflag_SGS_flux,                      &
      &    itype_Csym_flux, ifilter_final,                               &
      &    iflag_commute_flux, iflag_commute_field,                      &
      &    time_d, FEM_prm, SGS_par, geofem, MHD_mesh, property,         &

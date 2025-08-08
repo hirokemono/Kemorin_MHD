@@ -113,11 +113,14 @@
 !
 !
       call add_field_name_4_sph_trns_snap(d_rj,                         &
-     &    ipol_fefx%i_buo_flux, iphys_fefx%i_buo_flux,                  &
-     &    f_trns_fefx%i_buo_flux, trns)
+     &    ipol_fefx%i_t_buo_flux, iphys_fefx%i_t_buo_flux,              &
+     &    f_trns_fefx%i_t_buo_flux, trns)
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_fefx%i_c_buo_flux, iphys_fefx%i_c_buo_flux,              &
      &    f_trns_fefx%i_c_buo_flux, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_fefx%i_buo_flux, iphys_fefx%i_buo_flux,                  &
+     &    f_trns_fefx%i_buo_flux, trns)
 !
       end subroutine add_fil_e_flux_4_sph_trns_snap
 !

@@ -172,11 +172,11 @@
           ene_flux%i_m_tension_wk =          i_phys
 !
         else if (field_name .eq. buoyancy_flux%name) then
-          ene_flux%i_buo_flux =      i_phys
+          ene_flux%i_buo_flux =         i_phys
         else if (field_name .eq. thermal_buoyancy_flux%name) then
-          ene_flux%i_t_buo_flux =    i_phys
+          ene_flux%i_t_buo_flux =       i_phys
         else if (field_name .eq. composite_buoyancy_flux%name) then
-          ene_flux%i_c_buo_flux =    i_phys
+          ene_flux%i_c_buo_flux =       i_phys
 !
         else if (field_name .eq. magnetic_ene_generation%name) then
           ene_flux%i_me_gen =           i_phys
@@ -184,14 +184,14 @@
           ene_flux%i_mag_stretch_flux = i_phys
 !
         else if (field_name .eq. temp_generation%name) then
-          ene_flux%i_temp_gen =  i_phys
+          ene_flux%i_temp_gen =      i_phys
         else if (field_name .eq. pert_temp_generation%name) then
-          ene_flux%i_par_t_gen = i_phys
+          ene_flux%i_par_t_gen =     i_phys
 !
         else if (field_name .eq. comp_generation%name) then
-          ene_flux%i_comp_gen =  i_phys
+          ene_flux%i_comp_gen =      i_phys
         else if (field_name .eq. pert_comp_generation%name) then
-          ene_flux%i_par_c_gen = i_phys
+          ene_flux%i_par_c_gen =     i_phys
 !
         else if (field_name .eq. viscous_ene_diffusion%name) then
           ene_flux%i_vis_e_diffuse = i_phys
