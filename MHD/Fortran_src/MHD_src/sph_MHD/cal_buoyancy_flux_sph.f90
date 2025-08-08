@@ -45,7 +45,7 @@
       implicit  none
 !
       private :: pole_sph_buoyancy_flux
-      private :: cal_buoyancy_flux_rin, cal_buoyancy_flux_pin
+      private :: cal_buoyancy_flux_rin, cal_buoyancy_flux_prt
 !
 ! -----------------------------------------------------------------------
 !
@@ -70,34 +70,35 @@
 !
       type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !
+      integer(kind = kint) :: i_scalar
+!
 !
       if(fs_trns_eflux%i_t_buo_flux .gt. 0) then
         if(ref_param_T%flag_ref_field) then
-          call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_buo,         &
-     &        trns_b_scl%fld_rtp(1,bs_trns_scalar%i_per_temp),          &
-     &        trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),               &
-     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_t_buo_flux))
+          i_scalar = bs_trns_scalar%i_per_temp
         else
-          call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_buo,         &
-     &        trns_b_scl%fld_rtp(1,bs_trns_scalar%i_temp),              &
-     &        trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),               &
-     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_t_buo_flux))
+          i_scalar = bs_trns_scalar%i_temp
         end if
+        call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_buo,           &
+     &      trns_b_scl%fld_rtp(1,i_scalar),                             &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_t_buo_flux))
       end if
 !
       if(fs_trns_eflux%i_c_buo_flux .gt. 0) then
         if(ref_param_C%flag_ref_field) then
-          call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,    &
-     &        trns_b_scl%fld_rtp(1,bs_trns_scalar%i_per_light),         &
-     &        trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),               &
-     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_flux))
+          i_scalar = bs_trns_scalar%i_per_light
         else
-          call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,    &
-     &        trns_b_scl%fld_rtp(1,bs_trns_scalar%i_light),             &
-     &        trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),               &
-     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_flux))
+          i_scalar = bs_trns_scalar%i_light
         end if
+        call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,      &
+     &      trns_b_scl%fld_rtp(1,i_scalar),                             &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_flux))
       end if
+!
+      call sum_total_buoyancy_flux(fs_trns_eflux, sph_rtp%nnod_rtp,     &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
 !
       end subroutine cal_buoyancy_flux_rtp
 !
@@ -120,42 +121,39 @@
 !
       type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !
+      integer(kind = kint) :: i_scalar
+!
 !
       if(fs_trns_eflux%i_t_buo_flux .gt. 0) then
         if(ref_param_T%flag_ref_field) then
-          call pole_sph_buoyancy_flux                                   &
-     &       (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                   &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                &
-     &        trns_b_scl%fld_pole(1,bs_trns_scalar%i_per_temp),         &
-     &        trns_b_snap%fld_pole(1,bs_trns_base%i_velo),              &
-     &        trns_f_eflux%fld_pole(1,fs_trns_eflux%i_t_buo_flux))
+          i_scalar = bs_trns_scalar%i_per_temp
         else
-          call pole_sph_buoyancy_flux                                   &
-     &       (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                   &
-     &        sph_rtp%radius_1d_rtp_r,  fl_prop%coef_buo,               &
-     &        trns_b_scl%fld_pole(1,bs_trns_scalar%i_temp),             &
-     &        trns_b_snap%fld_pole(1,bs_trns_base%i_velo),              &
-     &        trns_f_eflux%fld_pole(1,fs_trns_eflux%i_t_buo_flux))
+          i_scalar = bs_trns_scalar%i_temp
         end if
+        call pole_sph_buoyancy_flux                                     &
+     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                     &
+     &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                  &
+     &      trns_b_scl%fld_pole(1,i_scalar),                            &
+     &      trns_b_snap%fld_pole(1,bs_trns_base%i_velo),                &
+     &      trns_f_eflux%fld_pole(1,fs_trns_eflux%i_t_buo_flux))
       end if
 !
       if(fs_trns_eflux%i_c_buo_flux .gt. 0) then
         if(ref_param_C%flag_ref_field) then
-          call pole_sph_buoyancy_flux                                   &
-     &       (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                   &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
-     &        trns_b_scl%fld_pole(1,bs_trns_scalar%i_per_light),        &
-     &        trns_b_snap%fld_pole(1,bs_trns_base%i_velo),              &
-     &        trns_f_eflux%fld_pole(1,fs_trns_eflux%i_c_buo_flux))
+          i_scalar = bs_trns_scalar%i_per_light
         else
-          call pole_sph_buoyancy_flux                                   &
-     &       (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                   &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
-     &        trns_b_scl%fld_pole(1,bs_trns_scalar%i_light),            &
-     &        trns_b_snap%fld_pole(1,bs_trns_base%i_velo),              &
-     &        trns_f_eflux%fld_pole(1,fs_trns_eflux%i_c_buo_flux))
+          i_scalar = bs_trns_scalar%i_light
         end if
+        call pole_sph_buoyancy_flux                                     &
+     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                     &
+     &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,             &
+     &      trns_b_scl%fld_pole(1,i_scalar),                            &
+     &      trns_b_snap%fld_pole(1,bs_trns_base%i_velo),                &
+     &      trns_f_eflux%fld_pole(1,fs_trns_eflux%i_c_buo_flux))
       end if
+!
+      call sum_total_buoyancy_flux(fs_trns_eflux, sph_rtp%nnod_pole,    &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
       end subroutine pole_buoyancy_flux_rtp
 !
@@ -210,7 +208,7 @@
         call cal_buoyancy_flux_rin(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,  &
      &      sph_rtp%radius_1d_rtp_r, coef, scalar, vr, prod)
       else
-        call cal_buoyancy_flux_pin(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,  &
+        call cal_buoyancy_flux_prt(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,  &
      &      sph_rtp%radius_1d_rtp_r, coef, scalar, vr, prod)
       end if
 !
@@ -245,7 +243,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_buoyancy_flux_pin(nnod_rtp, nidx_rtp,              &
+      subroutine cal_buoyancy_flux_prt(nnod_rtp, nidx_rtp,              &
      &          radius, coef, scalar, vr, prod)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -273,8 +271,38 @@
       end do
 !$omp end parallel
 !
-      end subroutine cal_buoyancy_flux_pin
+      end subroutine cal_buoyancy_flux_prt
 !
+! ----------------------------------------------------------------------
+!
+      subroutine sum_total_buoyancy_flux                                &
+     &         (id_eflux, n_point, ntot_comp, d_nod)
+!
+      use t_energy_flux_labels
+      use copy_field_smp
+      use cal_add_smp
+!
+      type(energy_flux_address), intent(in) :: id_eflux
+      integer(kind = kint), intent(in) :: n_point, ntot_comp
+      real(kind = kreal), intent(inout) :: d_nod(n_point,ntot_comp)
+!
+!
+      if(id_eflux%i_buo_flux .le. 0) return
+      if((id_eflux%i_t_buo_flux * id_eflux%i_c_buo_flux) .gt. 0) then
+        call add_scalars_smp(n_point, d_nod(1,id_eflux%i_t_buo_flux),   &
+     &                                d_nod(1,id_eflux%i_c_buo_flux),   &
+     &                                d_nod(1,id_eflux%i_buo_flux))
+      else if(id_eflux%i_t_buo_flux .gt. 0) then
+        call copy_nod_scalar_smp(n_point,                               &
+     &                           d_nod(1,id_eflux%i_t_buo_flux),        &
+     &                           d_nod(1,id_eflux%i_buo_flux))
+      else if(id_eflux%i_c_buo_flux .gt. 0) then
+        call copy_nod_scalar_smp(n_point,                               &
+     &                           d_nod(1,id_eflux%i_c_buo_flux),        &
+     &                           d_nod(1,id_eflux%i_buo_flux))
+      end if
+!
+      end subroutine sum_total_buoyancy_flux
 !-----------------------------------------------------------------------
 !
       end module cal_buoyancy_flux_sph
