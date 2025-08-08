@@ -35,7 +35,7 @@
 !!
 !!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
 !!                                           -u \cdot (\alpha_{T} g T)
-!!   composite_buoyancy_flux  [i_c_buo_gen]:  Compositional buoyancy flux
+!!   composite_buoyancy_flux  [i_c_buo_flux]:  Compositional buoyancy flux
 !!                                           -u \cdot (\alpha_{C} g C)
 !!
 !!   magnetic_ene_generation  [i_me_gen]:

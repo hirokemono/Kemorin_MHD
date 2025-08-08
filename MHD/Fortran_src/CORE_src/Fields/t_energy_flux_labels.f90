@@ -34,7 +34,7 @@
 !!
 !!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
 !!                                           -u \cdot (\alpha_{T} g T)
-!!   composite_buoyancy_flux  [i_c_buo_gen]:  Compositional buoyancy flux
+!!   composite_buoyancy_flux  [i_c_buo_flux]:  Compositional buoyancy flux
 !!                                           -u \cdot (\alpha_{C} g C)
 !!
 !!   magnetic_ene_generation  [i_me_gen]:
@@ -101,7 +101,7 @@
         integer (kind=kint) :: i_buo_gen =         izero
 !>        Field address of compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
-        integer (kind=kint) :: i_c_buo_gen =       izero
+        integer (kind=kint) :: i_c_buo_flux =       izero
 !!
 !>        Field address of magnetic energy flux
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
@@ -169,7 +169,7 @@
         else if (field_name .eq. buoyancy_flux%name) then
           ene_flux%i_buo_gen =       i_phys
         else if (field_name .eq. composite_buoyancy_flux%name) then
-          ene_flux%i_c_buo_gen =     i_phys
+          ene_flux%i_c_buo_flux =    i_phys
 !
         else if (field_name .eq. magnetic_ene_generation%name) then
           ene_flux%i_me_gen =           i_phys

@@ -51,6 +51,7 @@
       use check_forces_w_symmetry
       use check_ene_flux_w_symmetry
       use check_workarea_4_explicit
+      use check_field_products
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl

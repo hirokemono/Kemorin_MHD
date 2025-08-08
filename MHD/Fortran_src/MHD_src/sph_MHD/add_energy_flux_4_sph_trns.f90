@@ -72,8 +72,8 @@
      &    ipol_efx%i_buo_gen, iphys_efx%i_buo_gen,                      &
      &    f_trns_efx%i_buo_gen, trns)
       call add_field_name_4_sph_trns_snap(d_rj,                         &
-     &    ipol_efx%i_c_buo_gen, iphys_efx%i_c_buo_gen,                  &
-     &    f_trns_efx%i_c_buo_gen, trns)
+     &    ipol_efx%i_c_buo_flux, iphys_efx%i_c_buo_flux,                &
+     &    f_trns_efx%i_c_buo_flux, trns)
 !
       end subroutine add_ene_flux_4_sph_trns_snap
 !

@@ -143,7 +143,7 @@
       i_tensor =           iphys_LES%SGS_term%i_SGS_c_flux
       i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_composit
       iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_light
-      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
+      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_flux
 !
       eps_4_crank = FEM_prm%eps_4_comp_crank
       iflag_supg =  FEM_prm%iflag_comp_supg
