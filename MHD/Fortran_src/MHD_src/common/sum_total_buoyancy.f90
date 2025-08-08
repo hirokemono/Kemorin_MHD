@@ -66,14 +66,14 @@
 !
       if(id_eflux%i_buo_flux .gt. 0) then
         if((id_eflux%i_t_buo_flux * id_eflux%i_c_buo_flux) .gt. 0) then
-          call add_2_nod_vectors(nod_fld,                               &
+          call add_2_nod_scalars(nod_fld,                               &
      &        id_eflux%i_t_buo_flux, id_eflux%i_c_buo_flux,             &
      &        id_eflux%i_buo_flux)
         else if(id_eflux%i_t_buo_flux .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
+          call copy_scalar_component(nod_fld,                           &
      &        id_eflux%i_t_buo_flux, id_eflux%i_buo_flux)
         else if(id_eflux%i_c_buo_flux .gt. 0) then
-          call copy_vector_component(nod_fld,                           &
+          call copy_scalar_component(nod_fld,                           &
      &        id_eflux%i_c_buo_flux, id_eflux%i_buo_flux)
         end if
       end if
