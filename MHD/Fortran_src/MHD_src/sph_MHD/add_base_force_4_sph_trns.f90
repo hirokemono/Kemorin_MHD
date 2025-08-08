@@ -262,6 +262,9 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_frc%i_comp_buo, iphys_frc%i_comp_buo,                    &
      &    b_trns_frc%i_comp_buo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_frc%i_buoyancy, iphys_frc%i_buoyancy,                    &
+     &    b_trns_frc%i_buoyancy, trns)
 !
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_frc%i_press_grad, iphys_frc%i_press_grad,                &
@@ -343,6 +346,9 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_rot_frc%i_comp_buo, iphys_rot_frc%i_comp_buo,            &
      &    b_trns_rot_frc%i_comp_buo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_rot_frc%i_buoyancy, iphys_rot_frc%i_buoyancy,            &
+     &    b_trns_rot_frc%i_buoyancy, trns)
 !
       end subroutine add_rot_force_4_sph_trns_snap
 !
