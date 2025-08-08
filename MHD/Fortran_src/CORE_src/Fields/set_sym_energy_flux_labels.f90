@@ -143,7 +143,7 @@
 !          eflux_s_sxa%i_work_against_Coriolis = i_phys
 !
         else if (field_name .eq. sym_buoyancy_flux%name) then
-          eflux_s_sxa%i_buo_gen =       i_phys
+          eflux_s_sxa%i_buo_flux =       i_phys
         end if
       end if
 !
@@ -214,7 +214,7 @@
 !          eflux_a_sxs%i_work_against_Coriolis = i_phys
 !
         else if (field_name .eq. asym_buoyancy_flux%name) then
-          eflux_a_sxs%i_buo_gen = i_phys
+          eflux_a_sxs%i_buo_flux = i_phys
         end if
       end if
 !

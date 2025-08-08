@@ -88,7 +88,7 @@
 !!
 !!    Field name [Address]
 !!
-!!   sym_buoyancy_flux            [eflux_by_sym%i_buo_gen]
+!!   sym_buoyancy_flux            [eflux_by_sym%i_buo_flux]
 !!   sym_comp_buoyancy_flux       [eflux_by_sym%i_c_buo_flux]
 !!
 !!   mag_ene_generation_by_sym    [eflux_by_sym%i_me_gen]

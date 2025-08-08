@@ -316,7 +316,7 @@
         i_filter_s =         iphys_LES%filter_fld%i_temp
         i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_temp
         iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_temp
-        iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
+        iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_flux
 !
         iflag_supg = FEM_prm%iflag_temp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int

@@ -32,10 +32,12 @@
 !!   mag_tension_work         [i_m_tension_wk]: Work of magnetic tension
 !!                                            u \cdot( (B \nabla) B)
 !!
-!!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
-!!                                           -u \cdot (\alpha_{T} g T)
+!!   buoyancy_flux            [i_buo_flux]:    Buoyancy flux
+!!                         -u \cdot (\alpha_{T} g T + \alpha_{C} g C) g
+!!   thermal_buoyancy_flux    [i_t_buo_flux]:  Thermal buoyancy flux
+!!                         -u \cdot (\alpha_{T} g T) g
 !!   composite_buoyancy_flux  [i_c_buo_flux]:  Compositional buoyancy flux
-!!                                           -u \cdot (\alpha_{C} g C)
+!!                         -u \cdot (\alpha_{C} g C) g
 !!
 !!   magnetic_ene_generation  [i_me_gen]:
 !!           energy flux by magneitic induction
@@ -97,10 +99,13 @@
 !
         integer (kind=kint) :: i_m_tension_wk  =   izero
 !>        Field address of buoyancy flux
-!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-        integer (kind=kint) :: i_buo_gen =         izero
+!!         @f$ -u_{i} (\alpha_{T} T + \alpha_{C} C) g_{i} @f$
+        integer (kind=kint) :: i_buo_flux =         izero
+!>        Field address of buoyancy flux
+!!         @f$ -u_{i} \alpha_{T} T g_{i} @f$
+        integer (kind=kint) :: i_t_buo_flux =       izero
 !>        Field address of compositional buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
+!!         @f$ -u_{i} \alpha_{C} C g_{i} @f$
         integer (kind=kint) :: i_c_buo_flux =       izero
 !!
 !>        Field address of magnetic energy flux
@@ -167,7 +172,9 @@
           ene_flux%i_m_tension_wk =          i_phys
 !
         else if (field_name .eq. buoyancy_flux%name) then
-          ene_flux%i_buo_gen =       i_phys
+          ene_flux%i_buo_flux =      i_phys
+        else if (field_name .eq. thermal_buoyancy_flux%name) then
+          ene_flux%i_t_buo_flux =    i_phys
         else if (field_name .eq. composite_buoyancy_flux%name) then
           ene_flux%i_c_buo_flux =    i_phys
 !

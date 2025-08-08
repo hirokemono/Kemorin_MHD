@@ -133,9 +133,9 @@
           eflux_asym1_sym2%i_m_tension_wk =  i_phys
 !
         else if (field_name .eq. sym_termal_buo_flux%name) then
-          eflux_sym1_sym2%i_buo_gen =     i_phys
+          eflux_sym1_sym2%i_buo_flux =     i_phys
         else if (field_name .eq. asym_termal_buo_flux%name) then
-          eflux_asym1_asym2%i_buo_gen =   i_phys
+          eflux_asym1_asym2%i_buo_flux =   i_phys
 !
         else if (field_name .eq. sym_composite_buo_flux%name) then
           eflux_sym1_sym2%i_c_buo_flux =   i_phys
