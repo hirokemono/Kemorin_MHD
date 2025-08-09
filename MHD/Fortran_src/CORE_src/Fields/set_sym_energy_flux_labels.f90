@@ -142,10 +142,10 @@
 !        else if (field_name .eq. us_d_z_x_ua%name) then
 !          eflux_s_sxa%i_work_against_Coriolis = i_phys
 !
-!        else if(field_name .eq. sym_thermal_buoyancy_flux%name) then
-!          eflux_s_sxa%i_t_buo_flux = i_phys
-!        else if(field_name .eq. sym_composite_buoyancy_flux%name) then
-!          eflux_s_sxa%i_c_buo_flux = i_phys
+        else if(field_name .eq. sym_thermal_buoyancy_flux%name) then
+          eflux_s_sxa%i_t_buo_flux = i_phys
+        else if(field_name .eq. sym_composite_buoyancy_flux%name) then
+          eflux_s_sxa%i_c_buo_flux = i_phys
         else if(field_name .eq. sym_buoyancy_flux%name) then
           eflux_s_sxa%i_buo_flux =   i_phys
         end if
@@ -217,12 +217,12 @@
 !        else if (field_name .eq. ua_d_z_x_ua%name) then
 !          eflux_a_sxs%i_work_against_Coriolis = i_phys
 !
-!        else if(field_name .eq. asym_thermal_buoyancy_flux%name) then
-!          eflux_a_sxs%i_t_buo_flux = i_phys
-!        else if(field_name .eq. asym_composite_buoyancy_flux%name) then
-!          eflux_a_sxs%i_c_buo_flux = i_phys
-!        else if(field_name .eq. asym_buoyancy_flux%name) then
-!          eflux_a_sxs%i_buo_flux =   i_phys
+        else if(field_name .eq. asym_thermal_buoyancy_flux%name) then
+          eflux_a_sxs%i_t_buo_flux = i_phys
+        else if(field_name .eq. asym_composite_buoyancy_flux%name) then
+          eflux_a_sxs%i_c_buo_flux = i_phys
+        else if(field_name .eq. asym_buoyancy_flux%name) then
+          eflux_a_sxs%i_buo_flux =   i_phys
         end if
       end if
 !

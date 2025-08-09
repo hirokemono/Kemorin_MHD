@@ -80,13 +80,20 @@
       type(field_def), parameter :: filtered_buoyancy_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filtered_buoyancy_flux',                  &
-     &                math = '$ -u_{i} \alpha_{T} g_{i} \tilde{T} $')
+     &                math = '$ -u_{i} (\alpha_{T} \tilde{T}'           &
+     &                    // ' + \alpha_{C} \tilde{C} g_{i} $')
+!>        Field label for filtered buoyancy flux
+!!         @f$ -u_{i} \alpha_{T} g_{i} \tilde{T} @f$
+      type(field_def), parameter :: filtered_thermal_buoyancy_flux      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filtered_thermal_buoyancy_flux',          &
+     &                math = '$ -u_{i} \alpha_{T} \tilde{T} g_{i} $')
 !>        Field label of compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{C} g_{i} \tilde{C} @f$
       type(field_def), parameter :: filtered_comp_buoyancy_flux         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filtered_comp_buoyancy_flux',             &
-     &                math = '$ -u_{i} \alpha_{C} g_{i} \tilde{C} $')
+     &                math = '$ -u_{i} \alpha_{C} \tilde{C} g_{i} $')
 !
 !>        Field label of magnetic energy flux
 !!         @f$ B_{i} e_{ijk} \partial_{j}
@@ -149,6 +156,7 @@
      &   .or. (field_name .eq. Lorentz_work_by_filtered%name)           &
      &   .or. (field_name .eq. mag_tension_work_by_filtered%name)       &
      &   .or. (field_name .eq. filtered_buoyancy_flux%name)             &
+     &   .or. (field_name .eq. filtered_thermal_buoyancy_flux%name)     &
      &   .or. (field_name .eq. filtered_comp_buoyancy_flux%name)        &
      &   .or. (field_name .eq. mag_ene_generation_by_filtered%name)     &
      &   .or. (field_name .eq. mag_stretch_flux_by_filtered%name)       &
@@ -177,6 +185,8 @@
       call set_field_label_to_ctl(mag_tension_work_by_filtered,         &
      &                            array_c2i)
       call set_field_label_to_ctl(filtered_buoyancy_flux, array_c2i)
+      call set_field_label_to_ctl(filtered_thermal_buoyancy_flux,       &
+     &                            array_c2i)
       call set_field_label_to_ctl(filtered_comp_buoyancy_flux,          &
      &                            array_c2i)
       call set_field_label_to_ctl(mag_ene_generation_by_filtered,       &

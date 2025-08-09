@@ -34,11 +34,18 @@
 !!   mns_us_d_js_x_ba  [eflux_s_sxa%i_nega_ujb]
 !!       :  Work against Lorentz force:  -u_s \cdot (J_s \times B_a)
 !!
+!!   sym_thermal_buoyancy_flux       [eflux_s_sxa%i_t_buo_flux]
+!!       : Thermal buoyancy flux            u_a \cdot \alpha_{T} T_a g
+!!   sym_composite_buoyancy_flux     [eflux_s_sxa%i_c_buo_flux]
+!!       : Compositional buoyancy flux      u_a \cdot \alpha_{C} C_a g
+!!   sym_buoyancy_flux               [eflux_s_sxa%i_buo_flux]
+!!       : Buoyancy flux  u_a \cdot (\alpha_{T} T_a + \alpha_{C} C_a) g
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!! Symmetric energy fluxes by rot(F_sym) X F_sym !!!!!!!!!!!!!!!
 !!
 !!   mns_us_d_wa_x_us  [eflux_s_axs%i_m_advect_work]
-!!       : Work of inertia:              -u_s \cdot (\omega_a \times u_s)
+!!       :  Work of inertia:              -u_s \cdot (\omega_a \times u_s)
 !!   mns_us_d_z_x_us   [i_Coriolis_work]
 !!       :  Work of Coriolis force:      -2u_s \cdot (\Omega \times u_s)
 !!   us_d_ja_x_bs      [eflux_s_axs%i_ujb]
@@ -63,6 +70,13 @@
 !!       : Work against of inertia:       u_a \cdot (\omega_s \times u_s)
 !!   mns_ua_d_js_x_bs  [eflux_a_sxs%i_nega_ujb]
 !!       :  Work against Lorentz force:    -u_a \cdot (J_s \times B_s)
+!!
+!!   asym_thermal_buoyancy_flux       [eflux_a_sxs%i_t_buo_flux]
+!!       : Thermal buoyancy flux            u_a \cdot \alpha_{T} T_a g
+!!   asym_composite_buoyancy_flux     [eflux_a_sxs%i_c_buo_flux]
+!!       : Compositional buoyancy flux      u_a \cdot \alpha_{C} C_a g
+!!   asym_buoyancy_flux               [eflux_a_sxs%i_buo_flux]
+!!       : Buoyancy flux  u_a \cdot (\alpha_{T} T_a + \alpha_{C} C_a) g
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!! Antisymmetric energy fluxes by rot(F_sym) X F_asym !!!!!!!!!!!!!!!
@@ -274,13 +288,41 @@
         type(field_def), parameter :: sym_buoyancy_flux                 &
         &    = field_def(n_comp = n_scalar,                             &
         &                name = 'sym_buoyancy_flux',                    &
-        &                math = '$ -u_{symi} \alpha_{T} g_{i} T_{sym} $')
+        &           math = '$ -u_{symi} (\alpha_{T} T_{sym}'            &
+        &                 // ' + \alpha_{C} C_{sym}) g_{i} $')
 !>        Field label for asym buoyancy flux
 !!         @f$ -u_{asymi} \alpha_{T} g_{i} T_{asym} @f$
         type(field_def), parameter :: asym_buoyancy_flux                &
         &    = field_def(n_comp = n_scalar,                             &
         &                name = 'asym_buoyancy_flux',                   &
-        &                math = '$ -u_{asymi} \alpha_{T} g_{i} T_{asym} $')
+        &           math = '$ -u_{asymi} (\alpha_{T} T_{asym}'          &
+        &                 // ' + \alpha_{C} C_{asym}) g_{i} $')
+!
+!>        Field label for sym buoyancy flux
+!!         @f$ -u_{symi} \alpha_{T} g_{i} T_{sym} @f$
+        type(field_def), parameter :: sym_thermal_buoyancy_flux         &
+        &    = field_def(n_comp = n_scalar,                             &
+        &                name = 'sym_thermal_buoyancy_flux',            &
+        &           math = '$ -u_{symi} \alpha_{T} T_{sym} g_{i} $')
+!>        Field label for asym buoyancy flux
+!!         @f$ -u_{asymi} \alpha_{T} g_{i} T_{asym} @f$
+        type(field_def), parameter :: asym_thermal_buoyancy_flux        &
+        &    = field_def(n_comp = n_scalar,                             &
+        &                name = 'asym_thermal_buoyancy_flux',           &
+        &           math = '$ -u_{asymi} \alpha_{T} T_{asym} g_{i} $')
+!
+!>        Field label for sym buoyancy flux
+!!         @f$ -u_{symi} \alpha_{T} g_{i} T_{sym} @f$
+        type(field_def), parameter :: sym_composite_buoyancy_flux       &
+        &    = field_def(n_comp = n_scalar,                             &
+        &                name = 'sym_composite_buoyancy_flux',          &
+        &           math = '$ -u_{symi} \alpha_{C} C_{sym} g_{i} $')
+!>        Field label for asym buoyancy flux
+!!         @f$ -u_{asymi} \alpha_{T} g_{i} T_{asym} @f$
+        type(field_def), parameter :: asym_composite_buoyancy_flux      &
+        &    = field_def(n_comp = n_scalar,                             &
+        &                name = 'asym_composite_buoyancy_flux',         &
+        &           math = '$ -u_{asymi} \alpha_{C} C_{asym} g_{i} $')
 !
 ! ----------------------------------------------------------------------
 !
@@ -335,6 +377,15 @@
       array_c2i%array_name = '  '
       array_c2i%num =         0
       call alloc_control_array_c2_i(array_c2i)
+!
+      call set_field_label_to_ctl(sym_thermal_buoyancy_flux,            &
+     &                            array_c2i)
+      call set_field_label_to_ctl(asym_thermal_buoyancy_flux,           &
+     &                            array_c2i)
+      call set_field_label_to_ctl(sym_composite_buoyancy_flux,          &
+     &                            array_c2i)
+      call set_field_label_to_ctl(asym_composite_buoyancy_flux,         &
+     &                            array_c2i)
 !
       call set_field_label_to_ctl(sym_buoyancy_flux,  array_c2i)
       call set_field_label_to_ctl(asym_buoyancy_flux, array_c2i)

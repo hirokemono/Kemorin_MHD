@@ -113,10 +113,6 @@
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
      &    bs_trns%base, bs_trns%base, fe_trns%ene_flux,                 &
      &    trns_b_snap, trns_b_snap, trns_f_eflux)
-      call pole_buoyancy_flux_rtp                                       &
-     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    bs_trns%base, bs_trns%base, fe_trns%ene_flux,                 &
-     &    trns_b_snap, trns_b_snap, trns_f_eflux)
 !
       end subroutine s_cal_energy_flux_rtp
 !
