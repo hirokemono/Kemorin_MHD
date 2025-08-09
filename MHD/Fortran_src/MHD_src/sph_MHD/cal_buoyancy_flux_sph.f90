@@ -12,10 +12,6 @@
 !!     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,           &
 !!     &          bs_trns_base, bs_trns_scalar, fs_trns_eflux,          &
 !!     &          trns_b_snap, trns_b_scl, trns_f_eflux)
-!!      subroutine pole_buoyancy_flux_rtp                               &
-!!     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,           &
-!!     &          bs_trns_base, bs_trns_scalar, fs_trns_eflux,          &
-!!     &          trns_b_snap, trns_b_scl, trns_f_eflux)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
@@ -79,57 +75,11 @@
         else
           i_scalar = bs_trns_scalar%i_temp
         end if
+!
         call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_buo,           &
      &      trns_b_scl%fld_rtp(1,i_scalar),                             &
      &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
      &      trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_t_buo_flux))
-      end if
-!
-      if(fs_trns_eflux%i_c_buo_flux .gt. 0) then
-        if(ref_param_C%flag_ref_field) then
-          i_scalar = bs_trns_scalar%i_per_light
-        else
-          i_scalar = bs_trns_scalar%i_light
-        end if
-        call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,      &
-     &      trns_b_scl%fld_rtp(1,i_scalar),                             &
-     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
-     &      trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_flux))
-      end if
-!
-      call sum_total_buoyancy_flux(fs_trns_eflux, sph_rtp%nnod_rtp,     &
-     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
-!
-      end subroutine cal_buoyancy_flux_rtp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine pole_buoyancy_flux_rtp                                 &
-     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,             &
-     &          bs_trns_base, bs_trns_scalar, fs_trns_eflux,            &
-     &          trns_b_snap, trns_b_scl, trns_f_eflux)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(fluid_property), intent(in) :: fl_prop
-      type(reference_scalar_param), intent(in) :: ref_param_T
-      type(reference_scalar_param), intent(in) :: ref_param_C
-      type(base_field_address), intent(in) :: bs_trns_base
-      type(base_field_address), intent(in) :: bs_trns_scalar
-      type(energy_flux_address), intent(in) :: fs_trns_eflux
-      type(spherical_transform_data), intent(in) :: trns_b_snap
-      type(spherical_transform_data), intent(in) :: trns_b_scl
-!
-      type(spherical_transform_data), intent(inout) :: trns_f_eflux
-!
-      integer(kind = kint) :: i_scalar
-!
-!
-      if(fs_trns_eflux%i_t_buo_flux .gt. 0) then
-        if(ref_param_T%flag_ref_field) then
-          i_scalar = bs_trns_scalar%i_per_temp
-        else
-          i_scalar = bs_trns_scalar%i_temp
-        end if
         call pole_sph_buoyancy_flux                                     &
      &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                     &
      &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                  &
@@ -144,6 +94,10 @@
         else
           i_scalar = bs_trns_scalar%i_light
         end if
+        call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,      &
+     &      trns_b_scl%fld_rtp(1,i_scalar),                             &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_flux))
         call pole_sph_buoyancy_flux                                     &
      &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp(1),                     &
      &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,             &
@@ -152,10 +106,12 @@
      &      trns_f_eflux%fld_pole(1,fs_trns_eflux%i_c_buo_flux))
       end if
 !
+      call sum_total_buoyancy_flux(fs_trns_eflux, sph_rtp%nnod_rtp,     &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
       call sum_total_buoyancy_flux(fs_trns_eflux, sph_rtp%nnod_pole,    &
      &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
-      end subroutine pole_buoyancy_flux_rtp
+      end subroutine cal_buoyancy_flux_rtp
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
