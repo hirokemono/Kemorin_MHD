@@ -303,6 +303,7 @@
       end if
 !
       end subroutine sum_total_buoyancy_flux
+!
 !-----------------------------------------------------------------------
 !
       end module cal_buoyancy_flux_sph

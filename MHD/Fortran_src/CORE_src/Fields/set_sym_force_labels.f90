@@ -9,13 +9,21 @@
 !!            decomposed by equatoreal symmetries
 !!
 !!@verbatim
-!!      subroutine set_sym_force_addresses                           &
-!!     &         (i_phys, field_name, force_by_sym, flag)
-!!        type(base_force_address), intent(inout) :: force_by_sym
-!!
-!!      subroutine set_sym_ene_flux_addresses                        &
-!!     &         (i_phys, field_name, eflux_by_sym, flag)
-!!        type(energy_flux_address), intent(inout) :: eflux_by_sym
+!!      subroutine set_sym_sym_force_addresses                          &
+!!      &         (i_phys, field_name, force_by_sym_sym, flag)
+!!      subroutine set_asym_asym_force_addresses                        &
+!!      &         (i_phys, field_name, force_by_asym_asym, flag)
+!!      subroutine set_sym_asym_force_addresses                         &
+!!      &         (i_phys, field_name, force_by_sym_asym, flag)
+!!      subroutine set_asym_sym_force_addresses                         &
+!!      &         (i_phys, field_name, force_by_asym_sym, flag)
+!!        integer(kind = kint), intent(in) :: i_phys
+!!        character(len = kchara), intent(in) :: field_name
+!!        type(base_force_address), intent(inout) :: force_by_sym_sym
+!!        type(base_force_address), intent(inout) :: force_by_asym_asym
+!!        type(base_force_address), intent(inout) :: force_by_sym_asym
+!!        type(base_force_address), intent(inout) :: force_by_asym_sym
+!!        logical, intent(inout) :: flag
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! !!!!! Decomposed force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -84,24 +92,6 @@
 !!                 :  perturbation of composition flux   u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! !!!!!  List of energy flux  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!
-!!    Field name [Address]
-!!
-!!   sym_buoyancy_flux            [eflux_by_sym%i_buo_flux]
-!!   sym_thermal_buoyancy_flux    [eflux_by_sym%i_t_buo_flux]
-!!   sym_comp_buoyancy_flux       [eflux_by_sym%i_c_buo_flux]
-!!
-!!   mag_ene_generation_by_sym    [eflux_by_sym%i_me_gen]
-!!   mag_stretch_flux_by_sym
-!!                              [eflux_by_sym%i_mag_stretch_flux]
-!!
-!!   temp_generation_by_sym       [eflux_by_sym%i_temp_gen]
-!!   part_temp_gen_by_sym         [eflux_by_sym%i_par_t_gen]
-!!   comp_generation_by_sym       [eflux_by_sym%i_comp_gen]
-!!   part_comp_gen_by_sym         [eflux_by_sym%i_par_c_gen]
-!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
       module set_sym_force_labels
@@ -119,7 +109,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sym_sym_force_addresses                           &
+      subroutine set_sym_sym_force_addresses                            &
       &         (i_phys, field_name, force_by_sym_sym, flag)
 !
       use m_force_w_sym_labels
@@ -131,9 +121,9 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_forces_w_sym(field_name)                           &
-      &      .or. check_flux_tensors_w_sym(field_name)                &
-      &      .or. check_scalar_advection_w_sym(field_name)            &
+      flag = check_forces_w_sym(field_name)                            &
+      &      .or. check_flux_tensors_w_sym(field_name)                 &
+      &      .or. check_scalar_advection_w_sym(field_name)             &
       &      .or. check_flux_asym_tensors_w_sym(field_name)
       if(flag) then
         if     (field_name .eq. wsym_x_usym%name) then
