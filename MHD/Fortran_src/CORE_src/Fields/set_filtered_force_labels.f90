@@ -323,7 +323,8 @@
 !
         else if (field_name .eq. filtered_buoyancy_flux%name) then
           eflux_by_filter%i_buo_flux =   i_phys
-        else if (field_name .eq. filtered_buoyancy_flux%name) then
+        else if (field_name .eq. filtered_thermal_buoyancy_flux%name)   &
+     &      then
           eflux_by_filter%i_t_buo_flux = i_phys
         else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
           eflux_by_filter%i_c_buo_flux = i_phys

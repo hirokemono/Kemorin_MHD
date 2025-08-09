@@ -223,11 +223,11 @@
          call add_phys_name_ctl(velocity, field_ctl)
          call add_phys_name_ctl(filtered_buoyancy, field_ctl)
       end if
-!      if(check_field_list_ctl(filtered_thermal_buoyancy_flux,           &
-!     &                        field_ctl)) then
-!         call add_phys_name_ctl(velocity, field_ctl)
-!         call add_phys_name_ctl(filtered_thermal_buoyancy, field_ctl)
-!      end if
+      if(check_field_list_ctl(filtered_thermal_buoyancy_flux,           &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(velocity, field_ctl)
+         call add_phys_name_ctl(filtered_thermal_buoyancy, field_ctl)
+      end if
       if(check_field_list_ctl(filtered_comp_buoyancy_flux,              &
      &                        field_ctl)) then
          call add_phys_name_ctl(velocity, field_ctl)
