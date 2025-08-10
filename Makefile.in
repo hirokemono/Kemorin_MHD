@@ -12,6 +12,7 @@ INSTDIR= @prefix@
 MHDDIR =   $(SRCDIR)/MHD
 MAKEDIR=   $(SRCDIR)/work
 BUILDDIR=  $(SRCDIR)/bin
+TESTDIR=   $(SRCDIR)/tests
 PYTHONDIR= $(MHDDIR)/pythons
 
 MAKE64DIR= $(SRCDIR)/work_64
@@ -275,7 +276,18 @@ install:
 		$(GMAKE) install
 install64:
 	cd $(MAKE64DIR) ; \
-		make install
+		$(GMAKE) install
+
+test:
+	echo "Test!!"; \
+	cd $(TESTDIR); \
+		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
+		BUILDDIR="$(BUILDDIR)" \
+		TESTDIR="$(TESTDIR)" \
+		MHDDIR="$(MHDDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		test
 
 clean:
 	for dir in $(MAKEDIR) $(MAKE64DIR) $(MHDDIR) ; do \
