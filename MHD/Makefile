@@ -36,7 +36,7 @@ OPENGL_LIBS=
 #
 PGPLOT_LIBS= 
 
-SUBDIRS =         \
+SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
@@ -131,6 +131,11 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 all: makemake
 
 depends:
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(BUILDDIR)/utilities
+	mkdir -p $(PYTHONDIR)
 	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
@@ -159,6 +164,7 @@ makemake:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(BUILDDIR)/utilities
 	mkdir -p $(PYTHONDIR)
 	
 	echo "Create module list"

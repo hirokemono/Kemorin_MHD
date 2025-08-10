@@ -4,7 +4,7 @@
 
 GEN_SPH_GRIDDIR = $$(MESHER_DIR)/spherical_shell
 
-TARGET_GEN_SPH_GRID =       gen_sph_grids
+TARGET_GEN_SPH_GRID =       utilities/gen_sph_grids
 TARGET_GEN_SPH_W_LIC =      gen_sph_w_repart
 
 TARGET_CHECK_SPH_GRID =     tests/check_sph_grids

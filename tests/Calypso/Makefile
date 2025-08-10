@@ -25,7 +25,10 @@ MPILIBS =
 #
 SUBDIRS = \
 Gauss_point_test \
-FFT_test
+FFT_test \
+\
+Communication_check
+
 
 # SUBDIRS = \
 # Gauss_point_test \
