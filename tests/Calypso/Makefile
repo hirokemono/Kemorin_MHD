@@ -24,7 +24,8 @@ MPILIBS =
 #  -------------------------------------------------------------------------
 #
 SUBDIRS = \
-Gauss_point_test
+Gauss_point_test \
+FFT_test
 
 # SUBDIRS = \
 # Gauss_point_test \
