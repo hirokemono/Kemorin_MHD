@@ -1,0 +1,149 @@
+
+ ========================================
+ Truncation level:                31
+ Longitudinal symmetry:            1
+ N_r for fluid shell:             48
+ N_theta:                         48
+ N_phi:                           96
+ Total MPI processes:            4
+ Total OopenMP threads:            2
+ Processes for spectr (r, l and m):                   1           4
+ Processes for Legendre trans. (r, l, m):            2           2
+ Processes for Legendre trans. (r, t, m):            2           1           2
+ Processes for physical space. (r, t, p):            2           2           1
+
+ Innermost loop for spectr (r, l and m):        modes
+ Innermost loop for Legendre trans. (r, l, m): radius
+ Innermost loop for Legendre trans. (r, t, m): radius
+ Innermost loop for physical space. (r, t, p): phi
+
+Elapsed time
+Average and standard deviation
+  1:    3.736278E+01   5.237500E-05: Total time
+  2:    1.464223E+00   6.725000E-04: Initialization time
+  3:    3.583200E+01   2.712500E-05: Time evolution loop time
+  4:    7.282479E+00   1.022125E-03: Data IO time
+  5:    6.178435E-01   1.267500E-04: Visualizatio time
+  7:    1.270115E-01   3.390750E-03: Field data IO time
+  8:    2.420518E+01   2.879500E-03: Evolution excluding IO
+ 11:    2.102208E+01   5.506863E-02: Nonlinear terms
+ 12:    3.669181E+00   5.540750E-03: Obtain field to output
+ 13:    2.100000E-05   4.000000E-06: output_sph_restart_control
+ 14:    2.536153E+00   1.816255E-01: output_rms_sph_mhd_control
+ 15:    1.124607E+00   1.723064E-01: Coriolis term
+ 16:    7.744834E+00   1.432188E-01: sph backward transform
+ 17:    1.629741E+00   9.713813E-02: cal nonlinear terms
+ 18:    1.022164E+01   7.497963E-02: sph forward transform
+ 19:    6.311675E-01   2.682425E-02: obtain explicit terms
+ 20:    9.981245E-01   3.485343E-01: transfer rj  => rlm
+ 21:    2.386964E+00   3.774784E-01: transfer rtm => rtp
+ 22:    1.689634E+00   1.387989E-01: transfer rtp => rtm
+ 23:    1.313389E+00   1.327019E-01: transfer rlm => rj
+ 24:    2.973821E+00   6.866250E-02: Legendre backward transform
+ 25:    3.021647E+00   2.858040E-01: Legendre forward transform
+ 26:    5.577396E+00   8.302662E-02: Fourier transform
+ 27:    6.138305E-01   1.615822E-01: mhd_spectr_to_sendbuf
+ 28:    9.086255E-01   6.127750E-03: mhd_spectr_from_recvbuf
+ 29:    6.388300E+00   1.240032E-01: Communication for transform
+ 38:    2.427817E-02   2.840833E-04: set_sp_rlm_vec from recv
+ 40:    7.685575E-02   2.017958E-03: matmul_bwd_leg_trans
+ 41:    1.027611E-01   4.456292E-03: cal_vr_rtm_vec to send
+ 42:    9.175200E-02   6.525833E-03: set_vr_rtm_vec from recv
+ 44:    6.702575E-02   7.094958E-03: matmul_fwd_leg_trans
+ 46:    2.432575E-02   3.682292E-03: cal_sp_rlm_vec to send
+ 47:    2.421493E-01   1.839850E-02: Copy_from_recv_bwd_FFT
+ 48:    1.668921E-01   8.452292E-03: Backward_FFT
+ 49:    6.753675E-02   1.811958E-03: Copy_to_data_bwd_FFT
+ 50:    7.658462E-02   3.486021E-03: Copy_from_data_fwd_FFT
+ 51:    3.030915E-01   5.077667E-03: Forward_FFT
+ 52:    2.539050E-01   1.426050E-02: Copy_to_send_fwd_FFT
+ 53:    1.295873E+00   1.619573E-01: set_to_send_buf_N
+ 54:    6.276981E+00   1.326476E-01: calypso_send_recv_core
+ 55:    9.215940E-01   6.290500E-03: set_from_recv_buf_rev_N
+ 61:    6.224750E-03   2.312500E-05: Construction of spherical harmonic indices table
+ 62:    1.573400E-02   6.805000E-04: Construction of FEM mesh data
+ 66:    2.284250E-03   1.613750E-04: Construction of spherical transform table
+ 67:    2.992750E-03   1.403750E-04: Construction of spherical mode and grid
+ 68:    1.170650E-02   5.622500E-04: Base FEM mesh construction
+ 70:    7.385985E-01   1.250000E-06: Sectioning initialization.
+ 71:    6.178270E-01   1.260000E-04: Sectioning.
+ 72:    1.500000E-06   2.500000E-07: Isosurfaceing initialization.
+ 73:    2.750000E-06   3.750000E-07: Isosurfaceing.
+ 74:    6.000000E-06   2.000000E-06: Map projection initialization.
+ 76:    1.500000E-06   2.500000E-07: Volume rendering initialization.
+ 77:    2.000000E-06   2.664535E-15: Volume rendering.
+ 78:    1.500000E-06   2.500000E-07: LIC rendering initialization.
+ 79:    4.000000E-06   2.664535E-15: LIC rendering.
+ 80:    1.750000E-06   3.750000E-07: Fieldline initialization.
+ 81:    2.250000E-06   3.750000E-07: Fieldline.
+ 82:    6.500000E-06   7.500000E-07: Tracer initialization.
+ 86:    3.272350E-02   9.125000E-05: edge comm. table for vizualization
+108:    6.399827E-01   2.391537E-02: Find Section patch
+109:    1.441900E-01   4.153150E-02: Interpolate data on Section
+110:    5.032012E-01   4.110863E-02: Output Sectioning data
+131:    1.236627E+00   2.677404E-01: Communication for field
+
+Minimum and maximum elapsed time
+  1:    3.736268E+01   3.736283E+01: Total time
+  2:    1.462878E+00   1.465003E+00: Initialization time
+  3:    3.583195E+01   3.583203E+01: Time evolution loop time
+  4:    7.280435E+00   7.283841E+00: Data IO time
+  5:    6.177270E-01   6.180970E-01: Visualizatio time
+  7:    1.202300E-01   1.334040E-01: Field data IO time
+  8:    2.419952E+01   2.421094E+01: Evolution excluding IO
+ 11:    2.091194E+01   2.106860E+01: Nonlinear terms
+ 12:    3.659998E+00   3.680263E+00: Obtain field to output
+ 13:    1.300000E-05   2.800000E-05: output_sph_restart_control
+ 14:    2.333352E+00   2.899404E+00: output_rms_sph_mhd_control
+ 15:    8.519210E-01   1.469220E+00: Coriolis term
+ 16:    7.458397E+00   7.933017E+00: sph backward transform
+ 17:    1.545671E+00   1.824017E+00: cal nonlinear terms
+ 18:    1.007168E+01   1.032553E+01: sph forward transform
+ 19:    5.796190E-01   6.848160E-01: obtain explicit terms
+ 20:    7.262490E-01   1.695193E+00: transfer rj  => rlm
+ 21:    1.686022E+00   3.141921E+00: transfer rtm => rtp
+ 22:    1.412036E+00   1.942585E+00: transfer rtp => rtm
+ 23:    1.047985E+00   1.526427E+00: transfer rlm => rj
+ 24:    2.836496E+00   3.088660E+00: Legendre backward transform
+ 25:    2.713590E+00   3.593255E+00: Legendre forward transform
+ 26:    5.437435E+00   5.743449E+00: Fourier transform
+ 27:    4.925920E-01   9.369950E-01: mhd_spectr_to_sendbuf
+ 28:    8.963700E-01   9.193370E-01: mhd_spectr_from_recvbuf
+ 29:    6.140293E+00   6.606507E+00: Communication for transform
+ 38:    2.381100E-02   2.484633E-02: set_sp_rlm_vec from recv
+ 40:    7.449633E-02   8.089167E-02: matmul_bwd_leg_trans
+ 41:    9.672833E-02   1.116737E-01: cal_vr_rtm_vec to send
+ 42:    7.965400E-02   1.048037E-01: set_vr_rtm_vec from recv
+ 44:    5.819233E-02   8.121567E-02: matmul_fwd_leg_trans
+ 46:    2.119900E-02   3.169033E-02: cal_sp_rlm_vec to send
+ 47:    2.168065E-01   2.789463E-01: Copy_from_recv_bwd_FFT
+ 48:    1.525320E-01   1.837967E-01: Backward_FFT
+ 49:    6.406683E-02   7.116067E-02: Copy_to_data_bwd_FFT
+ 50:    7.176467E-02   8.355667E-02: Copy_from_data_fwd_FFT
+ 51:    2.953332E-01   3.132468E-01: Forward_FFT
+ 52:    2.253840E-01   2.744468E-01: Copy_to_send_fwd_FFT
+ 53:    1.060190E+00   1.619787E+00: set_to_send_buf_N
+ 54:    6.011686E+00   6.380590E+00: calypso_send_recv_core
+ 55:    9.090130E-01   9.331920E-01: set_from_recv_buf_rev_N
+ 61:    6.192000E-03   6.271000E-03: Construction of spherical harmonic indices table
+ 62:    1.496600E-02   1.709500E-02: Construction of FEM mesh data
+ 66:    2.135000E-03   2.607000E-03: Construction of spherical transform table
+ 67:    2.712000E-03   3.146000E-03: Construction of spherical mode and grid
+ 68:    1.058200E-02   1.280500E-02: Base FEM mesh construction
+ 70:    7.385970E-01   7.386010E-01: Sectioning initialization.
+ 71:    6.177120E-01   6.180790E-01: Sectioning.
+ 72:    1.000000E-06   2.000000E-06: Isosurfaceing initialization.
+ 73:    2.000000E-06   3.000000E-06: Isosurfaceing.
+ 74:    4.000000E-06   1.000000E-05: Map projection initialization.
+ 76:    1.000000E-06   2.000000E-06: Volume rendering initialization.
+ 77:    2.000000E-06   2.000000E-06: Volume rendering.
+ 78:    1.000000E-06   2.000000E-06: LIC rendering initialization.
+ 79:    4.000000E-06   4.000000E-06: LIC rendering.
+ 80:    1.000000E-06   2.000000E-06: Fieldline initialization.
+ 81:    2.000000E-06   3.000000E-06: Fieldline.
+ 82:    5.000000E-06   7.000000E-06: Tracer initialization.
+ 86:    3.265000E-02   3.290600E-02: edge comm. table for vizualization
+108:    5.921520E-01   6.608560E-01: Find Section patch
+109:    1.021970E-01   2.272530E-01: Interpolate data on Section
+110:    4.209840E-01   5.460560E-01: Output Sectioning data
+131:    7.011460E-01   1.553811E+00: Communication for field

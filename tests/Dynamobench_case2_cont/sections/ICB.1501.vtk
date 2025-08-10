@@ -1,0 +1,12 @@
+# vtk DataFile Version 2.0
+converted data of tri-linear hexahedral element
+ASCII
+DATASET UNSTRUCTURED_GRID
+ POINTS                0 double 
+ CELLS                0               0
+ CELL_TYPES                0
+
+POINT_DATA                0
+ VECTORS magnetic_field double 
+ SCALARS magnetic_field_r double                1
+LOOKUP_TABLE default
