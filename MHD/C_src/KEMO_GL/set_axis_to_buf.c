@@ -522,13 +522,13 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
         }
         
         double a_inv[4][4];
-        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], a_inv);
-        transform_frame_xyzw(2, screeen_arrowx, a_inv, x_arrowx);
-        transform_frame_xyzw(2, screeen_arrowy, a_inv, x_arrowy);
-        transform_frame_xyzw(2, screeen_arrowz, a_inv, x_arrowz);
-        transform_frame_xyzw(4, screeen_charax, a_inv, x_charax);
-        transform_frame_xyzw(6, screeen_charay, a_inv, x_charay);
-        transform_frame_xyzw(6, screeen_charaz, a_inv, x_charaz);
+        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], (double *) a_inv);
+        transform_frame_xyzw(2, screeen_arrowx, (double **) a_inv, x_arrowx);
+        transform_frame_xyzw(2, screeen_arrowy, (double **) a_inv, x_arrowy);
+        transform_frame_xyzw(2, screeen_arrowz, (double **) a_inv, x_arrowz);
+        transform_frame_xyzw(4, screeen_charax, (double **) a_inv, x_charax);
+        transform_frame_xyzw(6, screeen_charay, (double **) a_inv, x_charay);
+        transform_frame_xyzw(6, screeen_charaz, (double **) a_inv, x_charaz);
         icou_patch = set_axis_rod_to_buf(icou_patch, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,
                                          x_charax, x_charay, x_charaz,
@@ -628,13 +628,13 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
         }
         
         double a_inv[4][4];
-        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], a_inv);
-        transform_frame_xyzw(2, screeen_arrowx, a_inv, x_arrowx);
-        transform_frame_xyzw(2, screeen_arrowy, a_inv, x_arrowy);
-        transform_frame_xyzw(2, screeen_arrowz, a_inv, x_arrowz);
-        transform_frame_xyzw(4, screeen_charax, a_inv, x_charax);
-        transform_frame_xyzw(6, screeen_charay, a_inv, x_charay);
-        transform_frame_xyzw(6, screeen_charaz, a_inv, x_charaz);
+        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], (double *) a_inv);
+        transform_frame_xyzw(2, screeen_arrowx, (double **) a_inv, x_arrowx);
+        transform_frame_xyzw(2, screeen_arrowy, (double **) a_inv, x_arrowy);
+        transform_frame_xyzw(2, screeen_arrowz, (double **) a_inv, x_arrowz);
+        transform_frame_xyzw(4, screeen_charax, (double **) a_inv, x_charax);
+        transform_frame_xyzw(6, screeen_charay, (double **) a_inv, x_charay);
+        transform_frame_xyzw(6, screeen_charaz, (double **) a_inv, x_charaz);
         
         icou_patch = set_axis_rod_to_buf(0, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,

@@ -4,7 +4,7 @@
 #include "transfer_matvec.h"
 
 
-void transform_frame_xyz(int num, double *xx_org, double coff_matrix[4][4], double *xx_new)
+void transform_frame_xyz(int num, double *xx_org, double **coff_matrix, double *xx_new)
 {
 	int i;
 	double xx, yy, zz;
@@ -20,7 +20,7 @@ void transform_frame_xyz(int num, double *xx_org, double coff_matrix[4][4], doub
 	return;
 }
 
-void transform_frame_xyzw(int num, double *xx_org, double coff_matrix[4][4], double *xx_new)
+void transform_frame_xyzw(int num, double *xx_org, double **coff_matrix, double *xx_new)
 {
 	int i;
 	double xx, yy, zz, ww;
