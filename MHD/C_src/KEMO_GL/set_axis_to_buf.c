@@ -49,7 +49,7 @@ static double set_minimum_length_view(struct view_element *view_s, double dist_m
     double min_l_ratio;
     
     double xx_axis[3];
-    double x_label[2], y_label[2], z_label[2];
+/*    double x_label[2], y_label[2], z_label[2]; */
     double l_axis[3];
 	
 	int zero_screen[2], end_screen[2];
@@ -67,37 +67,38 @@ static double set_minimum_length_view(struct view_element *view_s, double dist_m
 	xx_axis[2] = axis_org[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
                               view_s->nx_frame, view_s->ny_frame, view_s);
-	label_ratio[0] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[0]);
+    label_ratio[0] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[0]);
+    /*
 	x_label[0] = end_screen[0] / label_ratio[0];
 	x_label[1] = end_screen[1] / label_ratio[0];
-	
+	 printf("x_label %e, %e \n",x_label[0],x_label[1]);
+	*/
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1] + l_axis[1];
 	xx_axis[2] = axis_org[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
                               view_s->nx_frame, view_s->ny_frame, view_s);
-	label_ratio[1] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[1]);
+    label_ratio[1] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[1]);
+    /*
 	y_label[0] = end_screen[0] / label_ratio[0];
 	y_label[1] = end_screen[1] / label_ratio[0];
-	
+	 printf("y_label %e, %e \n",y_label[0],y_label[1]);
+	*/
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2] + l_axis[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
                               view_s->nx_frame, view_s->ny_frame, view_s);
-	label_ratio[2] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[2]);
+    label_ratio[2] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[2]);
+    /*
 	z_label[0] = end_screen[0] / label_ratio[0];
 	z_label[1] = end_screen[1] / label_ratio[0];
-	
+	 printf("z_label %e, %e \n",z_label[0],z_label[1]);
+	*/
 	min_l_ratio = label_ratio[0];
 	if(label_ratio[1] <= min_l_ratio) min_l_ratio = label_ratio[1];
 	if(label_ratio[2] <= min_l_ratio) min_l_ratio = label_ratio[2];
 	
-	/*
-	 printf("x_label %e, %e \n",x_label[0],x_label[1]);
-	 printf("y_label %e, %e \n",y_label[0],y_label[1]);
-	 printf("z_label %e, %e \n",z_label[0],z_label[1]);
-	 */
     return min_l_ratio;
 }
 
@@ -417,8 +418,6 @@ void set_flex_axis_to_buf(struct view_element *view_s,
     double radius;
 	long icou_patch = 0;
     
-    int i;
-    
     strided_buf->num_nod_buf = 0;
     index_buf->ntot_vertex =   0;
     if(iflag_draw_axis > 0){
@@ -495,18 +494,12 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
         double screeen_arrowx[8], screeen_arrowy[8], screeen_arrowz[8];
         double screeen_charax[16], screeen_charay[24], screeen_charaz[24];
         
-        transform_frame_xyzw(2, x_arrowx, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowx);
-        transform_frame_xyzw(2, x_arrowy, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowy);
-        transform_frame_xyzw(2, x_arrowz, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowz);
-        transform_frame_xyzw(4, x_charax, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charax);
-        transform_frame_xyzw(6, x_charay, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charay);
-        transform_frame_xyzw(6, x_charaz, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charaz);
+        transform_frame_xyzw(2, x_arrowx, view_s->mat_object_2_eye, screeen_arrowx);
+        transform_frame_xyzw(2, x_arrowy, view_s->mat_object_2_eye, screeen_arrowy);
+        transform_frame_xyzw(2, x_arrowz, view_s->mat_object_2_eye, screeen_arrowz);
+        transform_frame_xyzw(4, x_charax, view_s->mat_object_2_eye, screeen_charax);
+        transform_frame_xyzw(6, x_charay, view_s->mat_object_2_eye, screeen_charay);
+        transform_frame_xyzw(6, x_charaz, view_s->mat_object_2_eye, screeen_charaz);
         
         for(i=0;i<2;i++){
             for(nd=0;nd<3;nd++){screeen_arrowx[4*i+nd] = screeen_arrowx[4*i+nd] + shift_on_screen[nd];}
@@ -521,14 +514,14 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
             for(nd=0;nd<3;nd++){screeen_charaz[4*i+nd] = screeen_charaz[4*i+nd] + shift_on_screen[nd];}
         }
         
-        double a_inv[4][4];
-        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], (double *) a_inv);
-        transform_frame_xyzw(2, screeen_arrowx, (double **) a_inv, x_arrowx);
-        transform_frame_xyzw(2, screeen_arrowy, (double **) a_inv, x_arrowy);
-        transform_frame_xyzw(2, screeen_arrowz, (double **) a_inv, x_arrowz);
-        transform_frame_xyzw(4, screeen_charax, (double **) a_inv, x_charax);
-        transform_frame_xyzw(6, screeen_charay, (double **) a_inv, x_charay);
-        transform_frame_xyzw(6, screeen_charaz, (double **) a_inv, x_charaz);
+        double a_inv[16];
+        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], a_inv);
+        transform_frame_xyzw(2, screeen_arrowx, a_inv, x_arrowx);
+        transform_frame_xyzw(2, screeen_arrowy, a_inv, x_arrowy);
+        transform_frame_xyzw(2, screeen_arrowz, a_inv, x_arrowz);
+        transform_frame_xyzw(4, screeen_charax, a_inv, x_charax);
+        transform_frame_xyzw(6, screeen_charay, a_inv, x_charay);
+        transform_frame_xyzw(6, screeen_charaz, a_inv, x_charaz);
         icou_patch = set_axis_rod_to_buf(icou_patch, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,
                                          x_charax, x_charay, x_charaz,
@@ -601,18 +594,12 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
         double screeen_arrowx[8], screeen_arrowy[8], screeen_arrowz[8];
         double screeen_charax[16], screeen_charay[24], screeen_charaz[24];
         
-        transform_frame_xyzw(2, x_arrowx, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowx);
-        transform_frame_xyzw(2, x_arrowy, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowy);
-        transform_frame_xyzw(2, x_arrowz, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_arrowz);
-        transform_frame_xyzw(4, x_charax, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charax);
-        transform_frame_xyzw(6, x_charay, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charay);
-        transform_frame_xyzw(6, x_charaz, (double **) &view_s->mat_object_2_eye[0], 
-                             screeen_charaz);
+        transform_frame_xyzw(2, x_arrowx, view_s->mat_object_2_eye, screeen_arrowx);
+        transform_frame_xyzw(2, x_arrowy, view_s->mat_object_2_eye, screeen_arrowy);
+        transform_frame_xyzw(2, x_arrowz, view_s->mat_object_2_eye, screeen_arrowz);
+        transform_frame_xyzw(4, x_charax, view_s->mat_object_2_eye, screeen_charax);
+        transform_frame_xyzw(6, x_charay, view_s->mat_object_2_eye, screeen_charay);
+        transform_frame_xyzw(6, x_charaz, view_s->mat_object_2_eye, screeen_charaz);
         
         for(i=0;i<2;i++){
             for(nd=0;nd<3;nd++){screeen_arrowx[4*i+nd] = screeen_arrowx[4*i+nd] + shift_on_screen[nd];}
@@ -627,14 +614,14 @@ void set_lower_fixed_axis_to_buf(struct view_element *view_s,
             for(nd=0;nd<3;nd++){screeen_charaz[4*i+nd] = screeen_charaz[4*i+nd] + shift_on_screen[nd];}
         }
         
-        double a_inv[4][4];
-        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], (double *) a_inv);
-        transform_frame_xyzw(2, screeen_arrowx, (double **) a_inv, x_arrowx);
-        transform_frame_xyzw(2, screeen_arrowy, (double **) a_inv, x_arrowy);
-        transform_frame_xyzw(2, screeen_arrowz, (double **) a_inv, x_arrowz);
-        transform_frame_xyzw(4, screeen_charax, (double **) a_inv, x_charax);
-        transform_frame_xyzw(6, screeen_charay, (double **) a_inv, x_charay);
-        transform_frame_xyzw(6, screeen_charaz, (double **) a_inv, x_charaz);
+        double a_inv[16];
+        cal_inverse_44_matrix_c(&view_s->mat_object_2_eye[0], a_inv);
+        transform_frame_xyzw(2, screeen_arrowx, a_inv, x_arrowx);
+        transform_frame_xyzw(2, screeen_arrowy, a_inv, x_arrowy);
+        transform_frame_xyzw(2, screeen_arrowz, a_inv, x_arrowz);
+        transform_frame_xyzw(4, screeen_charax, a_inv, x_charax);
+        transform_frame_xyzw(6, screeen_charay, a_inv, x_charay);
+        transform_frame_xyzw(6, screeen_charaz, a_inv, x_charaz);
         
         icou_patch = set_axis_rod_to_buf(0, view_s->ncorner_tube, 0.7*(radius*radius_ref),
                                          x_arrowx, x_arrowy, x_arrowz,

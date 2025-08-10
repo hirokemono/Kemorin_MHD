@@ -17,13 +17,13 @@
 /* prototypes */
 
 
-int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_math, const double r_data, 
-			GtkTreeModel *child_model);
-int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head, 
-			GtkTreeView *cr_tree_view);
+int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_math, const double r_data,
+                           GtkTreeModel *child_model);
+int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head,
+                            GtkTreeView *cr_tree_view);
 
 void cr_tree_name_edited(gchar *path_str, gchar *new_text,
-			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist);
+                         GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist);
 void cr_tree_value_edited(gchar *path_str, gchar *new_text, 
 			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist);
 int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 

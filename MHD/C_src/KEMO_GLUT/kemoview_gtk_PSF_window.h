@@ -23,7 +23,6 @@
 #include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_evolution_menu.h"
 #include "kemoview_gtk_fline_selectors.h"
-#include "view_modifier_glfw.h"
 
 #include "view_modifier_glfw.h"
 

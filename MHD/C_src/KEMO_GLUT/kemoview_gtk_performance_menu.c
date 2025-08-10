@@ -25,7 +25,7 @@ static void NumThreadsChange_CB(GtkWidget *entry, gpointer data)
 static void rot_FPS_view_CB(GtkButton *button, gpointer user_data){
     GtkEntry *FPSentry = GTK_ENTRY(user_data);
     GtkWidget *window
-            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "parent");
+            = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 

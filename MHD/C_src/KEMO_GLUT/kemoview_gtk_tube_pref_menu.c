@@ -63,10 +63,10 @@ GtkWidget * init_tube_pref_frame(struct kemoviewer_gl_type *kemo_gl){
     int    current_digit;
     kemoview_get_coastline_thickness_w_exp(kemo_gl->kemoview_data,
                                            &current_thick, &current_digit);
-    GtkWidget *adj_thick = gtk_adjustment_new(current_thick, 0, 9, 1, 1, 0.0);
-    GtkWidget *adj_digit = gtk_adjustment_new(current_digit, -30, 30, 1, 1, 0.0);
-    GtkWidget *spin_cline_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
-    GtkWidget *spin_cline_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+    GtkAdjustment *adj_thick = gtk_adjustment_new(current_thick, 0, 9, 1, 1, 0.0);
+    GtkAdjustment *adj_digit = gtk_adjustment_new(current_digit, -30, 30, 1, 1, 0.0);
+    GtkWidget *spin_cline_thick = gtk_spin_button_new(adj_thick, 0, 0);
+    GtkWidget *spin_cline_digit = gtk_spin_button_new(adj_digit, 0, 0);
     g_signal_connect(spin_cline_thick, "value-changed",
                      G_CALLBACK(coasttube_thickness_CB), (gpointer) kemo_gl);
     g_signal_connect(spin_cline_digit, "value-changed",
