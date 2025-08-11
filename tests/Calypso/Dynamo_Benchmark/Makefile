@@ -18,6 +18,11 @@ TARGET_SPH_ENE_CHECK = $(SRCDIR)/bin/tests/sph_ene_check
 all: test
 
 test:
+	@echo "# Test in Dynamobench_Case0 directory..."
+	@cd Dynamobench_Case0; \
+		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		test
 	@echo "# Test in Dynamobench_Case1 directory..."
 	@cd Dynamobench_Case1; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
@@ -27,6 +32,7 @@ test:
 	rm -f *.o *.mod *~
 
 clean:
+	cd Dynamobench_Case0; make clean
 	cd Dynamobench_Case1; make clean
 	
 	rm -f *.o *.mod *~
