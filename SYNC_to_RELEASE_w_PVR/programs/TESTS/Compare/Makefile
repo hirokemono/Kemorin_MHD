@@ -4,7 +4,7 @@
 
 COMPARISON_DIR =     $$(TESTS_DIR)/Compare
 
-TARGET_COMPARE_PSF = compare_psf
+TARGET_COMPARE_PSF = tests/compare_psf
 
 SOURCES = $(shell ls *.f90)
 

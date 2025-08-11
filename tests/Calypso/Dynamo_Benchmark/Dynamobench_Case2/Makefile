@@ -41,6 +41,7 @@ test:
 		echo 'Failed dynamo benchmark data check'; \
 		exit 1;\
 	fi
+	@echo 'Dynamo Benchmark Case 2 check finished'
 
 clean:
 	rm -f *.dat *.txt

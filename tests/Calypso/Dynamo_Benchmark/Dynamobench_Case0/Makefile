@@ -34,6 +34,7 @@ test:
 		echo 'Failed axisymmetric mean square data check'; \
 		exit 1;\
 	fi
+	@echo 'Dynamo Benchmark Case 0 check finished'
 
 clean:
 	rm -f *.dat *.txt rst_4/rst.* monitor/*.dat field/out.*

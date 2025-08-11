@@ -21,7 +21,7 @@ TARGET_FIX_SGS_MF_WK_PSF = psf_fix_reynolds_wk
 
 TARGET_UPDATE_PSF_BIN = update_psf_bin
 
-TARGET_COMPARE_PSF = compare_psf
+TARGET_COMPARE_PSF = tests/compare_psf
 
 
 LIBS_PSF_UTIL = \
