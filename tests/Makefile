@@ -68,7 +68,7 @@ sym_test:
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
 clean:
-	for dir in $(SUBDIRS) sym_asym_field_test ; do \
+	for dir in $(SUBDIRS) ; do \
 	echo "# cleaning $${dir} directory..."; \
 		( cd $${dir}; \
 		make clean )\

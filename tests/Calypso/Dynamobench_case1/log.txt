@@ -1,2 +1,0 @@
- read ASCII file as stream: sph_pwr_volume_m0.dat
- read ASCII file as stream: reference/sph_pwr_volume_m0.dat

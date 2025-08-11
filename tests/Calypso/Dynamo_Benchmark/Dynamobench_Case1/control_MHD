@@ -251,7 +251,7 @@ begin MHD_control
    begin time_step_ctl
       elapsed_time_ctl      80000.
       i_step_init_ctl           0
-      i_step_finish_ctl       100
+      i_step_finish_ctl       500
 !
       i_step_check_ctl         50
       i_step_rst_ctl         1000
@@ -280,5 +280,10 @@ begin MHD_control
   begin sph_monitor_ctl
     volume_average_prefix        'sph_ave_volume'
     volume_pwr_spectr_prefix     'sph_pwr_volume'
+!
+    begin dynamo_benchmark_data_ctl
+      dynamo_benchmark_file_prefix     'dynamobench'
+      nphi_mid_eq_ctl                   512
+    end dynamo_benchmark_data_ctl
   end sph_monitor_ctl
 end MHD_control

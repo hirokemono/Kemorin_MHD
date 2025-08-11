@@ -24,7 +24,7 @@ MPILIBS =
 #  -------------------------------------------------------------------------
 #
 SUBDIRS = \
-restart_assemble
+Dynamo_Benchmark
 
 
 # SUBDIRS = \
@@ -34,7 +34,6 @@ restart_assemble
 # Communication_check \
 # restart_assemble \
 # \
-# Dynamobench_case1 \
 # Dynamobench_case2 \
 # Dynamobench_case2_cont \
 # snapshot_test \
