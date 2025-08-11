@@ -28,12 +28,18 @@ test:
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		test
+	@echo "# Test in Dynamobench_Case2 directory..."
+	@cd Dynamobench_Case2; \
+		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		test
 	
 	rm -f *.o *.mod *~
 
 clean:
 	cd Dynamobench_Case0; make clean
 	cd Dynamobench_Case1; make clean
+	cd Dynamobench_Case2; make clean
 	
 	rm -f *.o *.mod *~
 
