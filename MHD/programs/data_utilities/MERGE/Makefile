@@ -6,10 +6,10 @@ MERGE_SRCDIR =     $$(DATA_UTILS_DIR)/MERGE
 
 TARGET_M_MESH = merge_mesh
 
-TARGET_MERGE =  merge_field
-TARGET_NEWSPH = assemble_sph
-TARGET_NEWUDT = assemble_udt
-TARGET_NEWRST = assemble_restart
+TARGET_MERGE =  utilities/merge_field
+TARGET_NEWSPH = utilities/assemble_sph
+TARGET_NEWUDT = utilities/assemble_udt
+TARGET_NEWRST = utilities/assemble_restart
 
 TARGET_UPDATE_RST =   update_restart
 TARGET_ADD_TIME_SPH = add_time_4_fld

@@ -9,14 +9,11 @@ SHELL           = /bin/sh
 SRCDIR = /Users/matsui/src_kemo
 #
 BUILDDIR= $(SRCDIR)/bin
-TARGET_GEN_SPH_GRID=    $(BUILDDIR)/utilities/gen_sph_grids
-TARGET_CHECK_SPH_GRID = $(BUILDDIR)/tests/check_sph_grids
-TARGET_TEST_SPH_GRID =  $(BUILDDIR)/tests/check_sph_comms
 #
 NP = 6
-MPI_GEN =   $(MPIRUN) -np $(NP) $(TARGET_GEN_SPH_GRID)
-MPI_CHECK = $(MPIRUN) -np $(NP) $(TARGET_CHECK_SPH_GRID)
-MPI_TEST =  $(MPIRUN) -np $(NP) $(TARGET_TEST_SPH_GRID)
+MPI_GEN =   $(MPIRUN) -np $(NP) $(BUILDDIR)/utilities/gen_sph_grids
+MPI_CHECK = $(MPIRUN) -np $(NP) $(BUILDDIR)/tests/check_sph_grids
+MPI_TEST =  $(MPIRUN) -np $(NP) $(BUILDDIR)/tests/check_sph_comms
 #
 # MPI settings
 #
@@ -41,31 +38,49 @@ all: test
 
 test: 
 	@echo "# Test spherical harmonics indexining in ascii directory..."
-	@cd ascii; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd ascii; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in binary directory..."
-	@cd binary; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd binary; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in gzip directory..."
-	@cd gzip; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd gzip; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in binary_gz directory..."
-	@cd binary_gz; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd binary_gz; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in merged directory..."
-	@cd merged; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd merged; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in merged_bin directory..."
-	@cd merged_bin; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd merged_bin; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in merged_gz directory..."
-	@cd merged_gz; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd merged_gz; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in merged_bin_gz directory..."
-	@cd merged_bin_gz; $(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" test
+	@cd merged_bin_gz; \
+		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@echo "# Test spherical harmonics indexining in no_file directory..."
-	@cd no_file; $(GMAKE) MPI_TEST="$(MPI_TEST)" test
+	@cd no_file; \
+		$(GMAKE) MPI_TEST="$(MPI_TEST)" \
+		test
 	
 	@rm -f *.dat *.txt
 
