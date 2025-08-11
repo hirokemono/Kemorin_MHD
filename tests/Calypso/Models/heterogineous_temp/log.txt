@@ -1,0 +1,6 @@
+ read ASCII file as stream: monitor/sph_ave_volume.dat
+ read ASCII file as stream: reference/sph_ave_volume.dat
+ read ASCII file as stream: monitor/sph_pwr_volume_s.dat
+ read ASCII file as stream: reference/sph_pwr_volume_s.dat
+ read ASCII file as stream: monitor/sph_pwr_volume_m0.dat
+ read ASCII file as stream: reference/sph_pwr_volume_m0.dat

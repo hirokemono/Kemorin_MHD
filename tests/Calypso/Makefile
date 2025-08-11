@@ -24,7 +24,7 @@ MPILIBS =
 #  -------------------------------------------------------------------------
 #
 SUBDIRS = \
-Dynamo_Benchmark
+Models
 
 
 # SUBDIRS = \
@@ -34,10 +34,7 @@ Dynamo_Benchmark
 # Communication_check \
 # restart_assemble \
 # \
-# Dynamobench_case2 \
-# Dynamobench_case2_cont \
-# snapshot_test \
-# heterogineous_temp
+# Dynamo_Benchmark
 
 #
 #  -------------------------------------------------------------------------
