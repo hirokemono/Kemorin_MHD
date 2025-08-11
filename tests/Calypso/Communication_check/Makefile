@@ -8,31 +8,15 @@ SHELL           = /bin/sh
 #
 SRCDIR = /Users/matsui/src_kemo
 #
-BUILDDIR= $(SRCDIR)/bin
-#
 NP = 6
-MPI_GEN =   $(MPIRUN) -np $(NP) $(BUILDDIR)/utilities/gen_sph_grids
-MPI_CHECK = $(MPIRUN) -np $(NP) $(BUILDDIR)/tests/check_sph_grids
-MPI_TEST =  $(MPIRUN) -np $(NP) $(BUILDDIR)/tests/check_sph_comms
-#
-# MPI settings
-#
-MPICHDIR =    
-MPICHLIBDIR = $(MPICHDIR)/lib
-MPICHBINDIR = $(MPICHDIR)/bin
-MPICHINCDIR = 
-MPILIBS =      
+MPIRUN= mpirun
+MPI_GEN =   $(MPIRUN) -np $(NP) $(SRCDIR)/bin/utilities/gen_sph_grids
+MPI_CHECK = $(MPIRUN) -np $(NP) $(SRCDIR)/bin/tests/check_sph_grids
+MPI_TEST =  $(MPIRUN) -np $(NP) $(SRCDIR)/bin/tests/check_sph_comms
 #
 #
 #  -------------------------------------------------------------------------
 #
-SUBDIRS = \
-no_file
-
-#
-#  -------------------------------------------------------------------------
-#
-
 
 all: test
 

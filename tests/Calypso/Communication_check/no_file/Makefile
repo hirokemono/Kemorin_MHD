@@ -6,6 +6,16 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+SRCDIR = /Users/matsui/src_kemo
+#
+NP = 6
+MPIRUN= mpirun
+MPI_TEST =  $(MPIRUN) -np $(NP) $(SRCDIR)/bin/tests/check_sph_comms
+#
+#
+#  -------------------------------------------------------------------------
+#
+
 
 all: test
 
