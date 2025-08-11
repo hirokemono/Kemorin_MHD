@@ -4,7 +4,7 @@
 
 PSF_UTIL_MAINDIR = $$(DATA_UTILS_DIR)/PSF_utils
 
-TARGET_PSF_2_VTK = section_to_VTK
+TARGET_PSF_2_VTK = utilities/section_to_VTK
 TARGET_PSF_AVES =  psf_average
 TARGET_PSF_RANGE_AVES =  psf_range_ave
 

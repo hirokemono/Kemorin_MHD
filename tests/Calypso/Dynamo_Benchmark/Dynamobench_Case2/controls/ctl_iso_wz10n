@@ -2,7 +2,7 @@
 !!     example of control for Isosurface at \omega_z = -10
 !
 begin isosurface_ctl
-  isosurface_file_prefix    'isosurface/iso_w10n'
+  isosurface_file_prefix    'isosurfaces/iso_w10n'
   iso_output_type            VTK
 !
   begin isosurf_define

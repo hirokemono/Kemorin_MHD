@@ -2,7 +2,7 @@
 !     example of control for surface rendering on CMB
 !
 begin surface_rendering
-  psf_file_head    'section/psf_cmb'
+  psf_file_head    'sections/psf_cmb'
   psf_output_type   VTK
 !
   begin surface_define

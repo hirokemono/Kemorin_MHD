@@ -73,7 +73,6 @@ test:
 
 clean:
 	rm -f *.dat *.txt
-	rm -f rst_4/rst.*
 	rm -f monitor/*.dat monitor/*.dat.gz
 	rm -f sections/*.0.* sections/*.150?.*
 	rm -f isosurfaces/*.0.* isosurfaces/*.150?.*

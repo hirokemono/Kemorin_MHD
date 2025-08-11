@@ -47,7 +47,7 @@ clean:
 	rm -f *.dat *.txt
 	rm -f monitor/*.dat
 	rm -f rst_4/rst.*
-	rm -f section/*.vtk
-	rm -f isosurface/*.vtk
+	rm -f sections/*.vtk
+	rm -f isosurfaces/*.vtk
 
 distclean: clean

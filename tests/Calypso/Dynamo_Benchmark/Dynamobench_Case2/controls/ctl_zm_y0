@@ -2,7 +2,7 @@
 !     example of control for surface rendering on meridional section
 !
 begin surface_rendering
-  psf_file_head    'section/zm_y0'
+  psf_file_head    'sections/zm_y0'
   psf_output_type    VTK
 !
   begin surface_define
