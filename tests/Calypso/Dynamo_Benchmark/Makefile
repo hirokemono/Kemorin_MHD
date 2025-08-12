@@ -54,6 +54,7 @@ clean:
 	cd Dynamobench_Case1; make clean
 	cd Dynamobench_Case2; make clean
 	cd Dynamobench_Case2_cont; make clean
+	cd snapshot_test; make clean
 	
 	rm -f *.o *.mod *~
 
