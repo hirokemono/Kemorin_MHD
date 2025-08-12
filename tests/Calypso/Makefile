@@ -24,17 +24,14 @@ MPILIBS =
 #  -------------------------------------------------------------------------
 #
 SUBDIRS = \
+Gauss_point_test \
+FFT_test \
+\
+Communication_check \
+restart_assemble \
+\
+Dynamo_Benchmark \
 Models
-
-
-# SUBDIRS = \
-# Gauss_point_test \
-# FFT_test \
-# \
-# Communication_check \
-# restart_assemble \
-# \
-# Dynamo_Benchmark
 
 #
 #  -------------------------------------------------------------------------

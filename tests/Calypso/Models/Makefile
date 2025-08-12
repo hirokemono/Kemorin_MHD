@@ -21,8 +21,13 @@ TARGET_PSF_2_VTK =     $(SRCDIR)/bin/utilities/section_to_VTK
 all: test
 
 test:
-	@echo "# Test in heterogineous_temp directory..."
-	@cd heterogineous_temp; \
+	@echo "# Test in heterogineous_temp_static directory..."
+	@cd heterogineous_temp_static; \
+		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		test
+	@echo "# Test in heterogineous_temp_evolve directory..."
+	@cd heterogineous_temp_evolve; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		test
@@ -30,7 +35,8 @@ test:
 	rm -f *.o *.mod *~
 
 clean:
-	cd heterogineous_temp; make clean
+	cd heterogineous_temp_static; make clean
+	cd heterogineous_temp_evolve; make clean
 	
 	rm -f *.o *.mod *~
 

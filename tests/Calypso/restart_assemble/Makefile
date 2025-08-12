@@ -13,7 +13,7 @@ SRCDIR = /Users/matsui/src_kemo
 MPIRUN= mpirun   
 TARGET_GEN_SPH_GRID= $(SRCDIR)/bin/utilities/gen_sph_grids
 TARGET_NEWSPH= $(SRCDIR)/bin/utilities/assemble_sph
-TARGET_CMP_SPH_RST=  $(SRCDIR)/bin/tests/compare_sph_restart#
+TARGET_CMP_SPH_RST=  $(SRCDIR)/bin/tests/compare_sph_restart
 #
 #  -------------------------------------------------------------------------
 #

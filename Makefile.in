@@ -290,12 +290,17 @@ test:
 		test
 
 clean:
+	make testclean
 	for dir in $(MAKEDIR) $(MAKE64DIR) $(MHDDIR) ; do \
 	echo "# cleaning $${dir} directory..."; \
 		( cd $${dir}; \
 		$(GMAKE) clean )\
 	done; \
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+
+testclean:
+	echo "# cleaning tests directory..."
+	@cd $(TESTDIR); $(GMAKE) clean
 
 distclean:
 	echo "# Back to initial package"; \
