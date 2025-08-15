@@ -72,13 +72,13 @@
         end if
 !
         if(abs(v_pwr%c_inter_in) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_inside(1)
-          v_pwr%kr_inside(2) = kr_st
+          kr_st = v_pwr%kr_inside(2)
+          v_pwr%kr_inside(1) = kr_st
           v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_in =   one
         else if(abs(one - v_pwr%c_inter_in) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_inside(2)
-          v_pwr%kr_inside(1) = kr_st
+          kr_st = v_pwr%kr_inside(1)
+          v_pwr%kr_inside(2) = kr_st
           v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_in =   one
         end if
@@ -100,13 +100,13 @@
         end if
 !
         if(abs(v_pwr%c_inter_out) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_outside(1)
-          v_pwr%kr_outside(2) = kr_st
+          kr_st = v_pwr%kr_outside(2)
+          v_pwr%kr_outside(1) = kr_st
           v_pwr%r_outside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_out =   one
         else if(abs(one - v_pwr%c_inter_out) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_outside(2)
-          v_pwr%kr_outside(1) = kr_st
+          kr_st = v_pwr%kr_outside(1)
+          v_pwr%kr_outside(2) = kr_st
           v_pwr%r_outside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_out =   one
         end if
@@ -225,13 +225,13 @@
         end if
 !
         if(abs(pwr%c_gl_itp(k)) .lt. 1.0d-6) then
-          kr_st = pwr%kr_4_rms(k,1)
-          pwr%kr_4_rms(k,2) = kr_st
+          kr_st = pwr%kr_4_rms(k,2)
+          pwr%kr_4_rms(k,1) = kr_st
           pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
           pwr%c_gl_itp(k) =   one
         else if(abs(one - pwr%c_gl_itp(k)) .lt. 1.0d-6) then
-          kr_st = pwr%kr_4_rms(k,2)
-          pwr%kr_4_rms(k,1) = kr_st
+          kr_st = pwr%kr_4_rms(k,1)
+          pwr%kr_4_rms(k,2) = kr_st
           pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
           pwr%c_gl_itp(k) =   one
         end if
