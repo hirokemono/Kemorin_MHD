@@ -20,6 +20,7 @@ test:
 	
 	$(MPIRUN) -np 4 $(TARGET_SPH_MHD)
 	
+	@sync
 	@echo 'Compare with reference mean square data'
 	$(TARGET_SPH_ENE_CHECK)  reference/dynamobench       monitor/dynamobench       > log.txt
 	@if [ `tail -n 1 flag.txt` != 0 ]; then\
