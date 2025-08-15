@@ -86,7 +86,6 @@
       type(circle_fld_maker), intent(in) :: circ_mid_eq
 !
 !
-      write(*,*) 'write_dynamobench_files', v_pwr%r_inside, v_pwr%r_outside
       if(bench%iflag_dynamobench .le. izero) return
       if(my_rank .ne. 0) return
       call write_dynamobench_file(sph_params, sph_rj, ipol,             &

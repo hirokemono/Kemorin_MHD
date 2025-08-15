@@ -310,6 +310,9 @@
       call append_sph_gauss_coefs_file(time_d, sph_params, sph_rj,      &
      &    ipol, rj_fld, monitor%gauss_coef, SR_sig)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'write_dynamobench_files in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       call write_dynamobench_files                                      &
      &   (sph_params, sph_rj, ipol, sph_MHD_bc,                         &
      &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore), time_d,       &
