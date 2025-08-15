@@ -106,8 +106,6 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      write(*,*) monitor%bench%ipwr_ocore, 'cal_mean_squre_w_SGS_in_shell', &
-     &     monitor%pwr%v_spectr(1:2)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
@@ -115,11 +113,17 @@
       write(*,*) 'cal_mean_squre_w_SGS_in_shell out', &
      &     monitor%pwr%v_spectr(1:2)%r_outside
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'cal_lorentz_spctr_in_shell in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
       call cal_lorentz_spctr_in_shell                                   &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'sel_Nusselt_routine in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
         call sel_Nusselt_routine(ipol%base%i_temp,                      &
@@ -139,18 +143,30 @@
      &      sph_MHD_bc%fdm2_center, MHD_mats%band_C00_poisson_fixC,     &
      &      rj_fld, monitor%comp_Nusselt)
       end if
-!!
+!
+      write(*,*) monitor%bench%ipwr_ocore, 's_cal_CMB_dipolarity in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 's_cal_CMB_dipolarity'
       call s_cal_CMB_dipolarity(my_rank, rj_fld,                        &
      &                          monitor%pwr, monitor%dip)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'cal_typical_scales in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'const_dynamobench_data in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       call const_dynamobench_data                                       &
      &  (time_d, sph%sph_params, sph%sph_rj, sph_MHD_bc, trans_p, ipol, &
      &   rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'sph_forward_trans_on_circles in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       call sph_forward_trans_on_circles(trans_p%iflag_FFT,              &
      &    sph%sph_rj, rj_fld, monitor%mul_circle%num_circles,           &
      &    monitor%mul_circle%cdat(1))
