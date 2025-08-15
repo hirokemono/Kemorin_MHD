@@ -171,10 +171,16 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'cal_SGS_sph_monitor_data in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       call cal_SGS_sph_monitor_data(time_d, SPH_MHD%sph, MHD_prop,      &
      &    sph_MHD_bc, r_2nd, trans_p, MHD_mats, SPH_MHD%ipol,           &
      &    SPH_SGS%ipol_LES, SPH_MHD%fld, monitor)
 !
+      write(*,*) monitor%bench%ipwr_ocore, 'output_sph_monitor_data in ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
      &    sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
