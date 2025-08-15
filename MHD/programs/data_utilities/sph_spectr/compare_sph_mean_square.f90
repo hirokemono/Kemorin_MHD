@@ -90,10 +90,12 @@
         call gz_read_volume_pwr_sph(FPz_f2, id_file2, flag_gzip2,       &
      &      sph_IN2%ntot_sph_spec, sph_IN2%i_step, sph_IN2%time,        &
      &      spectr_IN2(1), zbuf2, ierr2)
-        if(ierr1*ierr2 .gt. 0) exit
-        if(ierr1+ierr1 .gt. 0 .and. ierr1*ierr2 .eq. 0) then
+        if(ierr1*ierr2 .gt. 0) then
           error = .TRUE.
-          exit
+          go to 99
+        else if(ierr1+ierr1 .gt. 0 .and. ierr1*ierr2 .eq. 0) then
+          error = .TRUE.
+          go to 99
         end if
 !
         error = .FALSE.
@@ -105,7 +107,7 @@
      &           trim(sph_IN1%ene_sph_spec_name(icomp2)),               &
      &           ': ', spectr_IN1(icomp), spectr_IN2(icomp), diff
             error = .TRUE.
-            exit
+            go to 99
           end if
         end do
       end do
@@ -115,6 +117,7 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f2, id_file2, flag_gzip2, zbuf2)
 !
+  99  continue
       if(error) then
         write(*,*) 'Time sequence data file ', trim(fname_rms_ref),     &
      &            ' and ', trim(fhead_rms_vol), ' does not match.'
