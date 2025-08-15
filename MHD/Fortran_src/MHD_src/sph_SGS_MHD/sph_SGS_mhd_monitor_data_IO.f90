@@ -59,7 +59,6 @@
       implicit none
 !
       private :: open_sph_vol_rms_file_SGS_mhd
-      private :: init_sph_lorentz_spectr_data
 !
 !  --------------------------------------------------------------------
 !
@@ -155,9 +154,9 @@
       use t_radial_matrices_sph_MHD
       use m_machine_parameter
 !
-      use cal_write_sph_monitor_data
       use cal_SGS_sph_rms_data
       use cal_write_sph_monitor_data
+      use sph_lorentz_spectr_IO
 !
       type(time_data), intent(in) :: time_d
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -179,9 +178,9 @@
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
      &    sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
-      call output_sph_mean_square_files(monitor%ene_labels, time_d,     &
-     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
-     &    monitor%lor_spectr)
+!
+      call output_sph_lorentz_spectr_data                               &
+     &   (time_d, SPH_MHD%sph, monitor%ene_labels, monitor%lor_spectr)
 !
       end subroutine output_rms_sph_SGS_mhd_control
 !
@@ -204,6 +203,7 @@
       use calypso_mpi_int
       use calypso_mpi_logical
       use init_energy_labels_sph_SGS
+      use sph_lorentz_spectr_IO
 !
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -221,8 +221,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
       call init_energy_labels_w_filter(monitor%ene_labels)
       call init_sph_spectr_data_and_file(sph, rj_fld, monitor)
-      call init_sph_Lorentz_spectr_data(sph, ipol, ipol_LES,            &
-     &                                  rj_fld, monitor)
+!
+      call init_sph_Lorentz_spectr_data(sph, ipol, ipol_LES, rj_fld,    &
+     &   monitor%ene_labels, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
       call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
      &                                  monitor%dip)
@@ -259,49 +260,6 @@
      &                                rj_fld, monitor)
 !
       end subroutine open_sph_vol_rms_file_SGS_mhd
-!
-!  --------------------------------------------------------------------
-!
-      subroutine init_sph_lorentz_spectr_data(sph, ipol, ipol_LES,      &
-     &                                        rj_fld, monitor)
-!
-      use m_error_IDs
-      use t_energy_label_parameters
-      use cal_rms_fields_by_sph
-      use init_sph_lorentz_spectr
-      use calypso_mpi_logical
-      use output_sph_pwr_volume_file
-!
-      type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: ipol
-      type(SGS_model_addresses), intent(in) :: ipol_LES
-!
-      type(phys_data), intent(inout) :: rj_fld
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
-!
-      logical :: flag
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 's_init_rms_4_sph_spectr'
-      call s_init_sph_lorentz_spectr                                    &
-     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
-     &    monitor%lor_spectr, monitor%WK_lor_spectr)
-!
-      if(monitor%lor_spectr%num_vol_spectr .le. 0) return
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &      'error_sph_vol_ms_file in init_sph_lorentz_spectr_data'
-      flag = error_sph_vol_ms_file(my_rank, monitor%ene_labels,         &
-     &                             sph%sph_params, sph%sph_rj,          &
-     &                             monitor%lor_spectr%v_spectr(1))
-      call calypso_mpi_bcast_one_logical                                &
-     &  (flag, monitor%lor_spectr%v_spectr(1)%irank_m)
-      if(flag) then
-        call calypso_mpi_barrier
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Field information might be updated.')
-      end if
-!
-      end subroutine init_sph_lorentz_spectr_data
 !
 !  --------------------------------------------------------------------
 !
