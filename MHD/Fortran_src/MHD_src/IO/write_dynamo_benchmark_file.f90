@@ -240,6 +240,7 @@
       sph_OUT%kr_outer = v_pwr%kr_outside(1)
       sph_OUT%r_inner =  v_pwr%r_inside
       sph_OUT%r_outer =  v_pwr%r_outside
+      write(*,*) 'v_pwr%r_outside', v_pwr%r_inside, v_pwr%r_outside
 !
       call count_dynamobench_monitor_name                               &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
