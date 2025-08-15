@@ -20,7 +20,7 @@ test:
 	
 	$(MPIRUN) -np 4 $(TARGET_SPH_MHD)
 	
-	echo 'Compare with reference mean square data'
+	@echo 'Compare with reference mean square data'
 	$(TARGET_SPH_ENE_CHECK)  reference/dynamobench       monitor/dynamobench       > log.txt
 	@if [ `tail -n 1 flag.txt` != 0 ]; then\
 		echo 'Failed dynamo benchmark data check'; \

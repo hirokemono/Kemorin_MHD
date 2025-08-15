@@ -19,7 +19,7 @@ test:
 	make clean
 	$(MPIRUN) -np 2 $(TARGET_SPH_MHD)
 	
-	echo 'Compare with reference mean square data'
+	@echo 'Compare with reference mean square data'
 	$(TARGET_SPH_ENE_CHECK)  reference/sph_ave_volume     monitor/sph_ave_volume    >> log.txt
 	@if [ `tail -n 1 flag.txt` != 0 ]; then\
 		echo 'Failed volume average data check'; \
