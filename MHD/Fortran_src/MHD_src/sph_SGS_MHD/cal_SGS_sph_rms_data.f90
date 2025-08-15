@@ -106,7 +106,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      write(*,*) 'cal_mean_squre_w_SGS_in_shell', &
+      write(*,*) monitor%bench%ipwr_ocore, 'cal_mean_squre_w_SGS_in_shell', &
      &     monitor%pwr%v_spectr(1:2)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
