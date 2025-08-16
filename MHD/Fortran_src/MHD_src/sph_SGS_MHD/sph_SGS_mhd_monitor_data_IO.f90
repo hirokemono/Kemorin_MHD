@@ -116,6 +116,9 @@
      &   (SPH_MHD%sph, sph_MHD_bc%sph_bc_U,                             &
      &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld,                  &
      &    monitor, SR_sig)
+      write(*,*) monitor%bench%ipwr_ocore, 'open_sph_vol_rms_file_SGS_mhd out ',  &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_inside, &
+     &     monitor%pwr%v_spectr(monitor%bench%ipwr_ocore)%r_outside
 !
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call init_circle_field_name_dbench(SPH_MHD%ipol,                &
