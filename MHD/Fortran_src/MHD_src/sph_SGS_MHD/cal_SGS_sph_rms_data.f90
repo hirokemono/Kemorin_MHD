@@ -195,9 +195,9 @@
       call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
-      write(*,*) monitor%bench%ipwr_icore, &
+      write(*,*) my_rank, &
      &        'cal_mean_squre_w_SGS_in_shell out',   &
-     &    monitor%pwr%v_spectr(monitor%bench%ipwr_icore)%v_sq(:)
+     &    pwr%v_spectr(4)%v_sq(:)
 !
       end subroutine cal_mean_squre_w_SGS_in_shell
 !
