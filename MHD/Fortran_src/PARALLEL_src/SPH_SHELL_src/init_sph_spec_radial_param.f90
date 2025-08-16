@@ -92,6 +92,10 @@
           v_pwr%c_inter_in =   one
         end if
 !
+        write(*,*) my_rank, 'v_pwr%r_inside done', v_pwr%r_inside
+        write(*,*) my_rank, 'v_pwr%kr_inside done', v_pwr%kr_inside
+        write(*,*) my_rank, 'v_pwr%c_inter_in done', v_pwr%c_inter_in
+!
         if(v_pwr%r_outside .le. zero) then
           v_pwr%kr_outside(1:2) = sph_params%nlayer_CMB
           v_pwr%r_outside = sph_params%radius_CMB
