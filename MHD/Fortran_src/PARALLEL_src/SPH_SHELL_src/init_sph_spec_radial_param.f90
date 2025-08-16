@@ -63,7 +63,8 @@
         else if(v_pwr%r_inside .le. sph_rj%radius_1d_rj_r(1)) then
           v_pwr%kr_inside(1) = 0
           v_pwr%kr_inside(2) = 1
-          v_pwr%c_inter_in = v_pwr%r_inside / sph_rj%radius_1d_rj_r(1)
+          v_pwr%c_inter_in = (sph_rj%radius_1d_rj_r(1)                  &
+     &                   - v_pwr%r_inside) / sph_rj%radius_1d_rj_r(1)
         else
           kr_st = 1
           call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
