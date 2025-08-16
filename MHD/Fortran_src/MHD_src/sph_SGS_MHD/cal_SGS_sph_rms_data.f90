@@ -114,7 +114,7 @@
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
       write(*,*) 'cal_mean_squre_w_SGS_in_shell out', &
-     &     monitor%pwr%v_spectr(1:2)%r_inside         &
+     &     monitor%pwr%v_spectr(1:2)%r_inside,         &
      &     monitor%pwr%v_spectr(1:2)%r_outside
 !
       write(*,*) monitor%bench%ipwr_ocore, 'cal_lorentz_spctr_in_shell in ',  &
