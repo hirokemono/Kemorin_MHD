@@ -120,6 +120,11 @@
      &         + (one - c_inter_st) * f_org(1)
 !          f_int = half * (radius(1) - r_in) * (f_org(1) + d_in)
           f_int = zero
+!
+        do kr = kg_st(1)+1, kg_ed(1)-1
+          f_int = f_int + half * (radius(kr+1) - radius(kr))            &
+     &                         * (f_org(kr) + f_org(kr+1))
+        end do
           return
         else
           r_in =          c_inter_st * radius(kg_st(1))                 &
