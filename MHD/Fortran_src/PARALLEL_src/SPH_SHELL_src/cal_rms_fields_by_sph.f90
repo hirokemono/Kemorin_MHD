@@ -316,6 +316,8 @@
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_lm)
         end if
       end do
+      write(*,*) my_rank, 'sum_mean_square_on_volume out',   &
+     &    v_pwr(4)%v_sq(:)
 !
       end subroutine sum_mean_square_on_volume
 !

@@ -110,9 +110,6 @@
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
-      write(*,*) monitor%bench%ipwr_icore, &
-     &        'cal_mean_squre_w_SGS_in_shell out',   &
-     &    monitor%pwr%v_spectr(monitor%bench%ipwr_icore)%v_sq(:)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
       call cal_lorentz_spctr_in_shell                                   &
@@ -198,6 +195,9 @@
       call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
+      write(*,*) monitor%bench%ipwr_icore, &
+     &        'cal_mean_squre_w_SGS_in_shell out',   &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_icore)%v_sq(:)
 !
       end subroutine cal_mean_squre_w_SGS_in_shell
 !
