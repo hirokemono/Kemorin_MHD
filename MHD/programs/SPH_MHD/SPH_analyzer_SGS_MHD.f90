@@ -202,6 +202,9 @@
      &    SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
       call calypso_mpi_barrier
+      write(*,*) SPH_WK%monitor%bench%ipwr_ocore, 'SPH_initialize_SGS_MHD out ',  &
+     &    SPH_WK%monitor%pwr%v_spectr(SPH_WK%monitor%bench%ipwr_ocore)%r_inside, &
+     &     SPH_WK%monitor%pwr%v_spectr(SPH_WK%monitor%bench%ipwr_ocore)%r_outside
 !
       end subroutine SPH_initialize_SGS_MHD
 !
