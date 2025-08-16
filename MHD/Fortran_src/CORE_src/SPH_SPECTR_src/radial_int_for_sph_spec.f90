@@ -120,6 +120,7 @@
      &         + (one - c_inter_st) * f_org(1)
 !          f_int = half * (radius(1) - r_in) * (f_org(1) + d_in)
           f_int = zero
+          return
         else
           r_in =          c_inter_st * radius(kg_st(1))                 &
      &           + (one - c_inter_st)* radius(kg_st(1)+1)
