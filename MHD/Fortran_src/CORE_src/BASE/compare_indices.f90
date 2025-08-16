@@ -88,8 +88,9 @@
         do icomp = 1, numdir
           diff = d_fld2(inod,icomp) - d_fld1(inod,icomp)
           if((abs(diff) / scale) .gt. TINY) then
-            write(*,*) icomp, '-component of ', trim(fld_name),     &
-     &                ' at ', inod, ' is different: ', diff
+            write(*,*) icomp, '-component of ', trim(fld_name),         &
+     &                ' at ', inod, ' is different: ', diff, ' data: ', &
+     &               d_fld2(inod,icomp), d_fld1(inod,icomp)
             icount_error = icount_error + 1
           end if
         end do
