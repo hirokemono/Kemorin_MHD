@@ -76,8 +76,9 @@
       error = .not. cmp_sph_volume_monitor_heads                        &
      &            (sph_lbl_IN1, sph_IN1, sph_lbl_IN2, sph_IN2)
       if(error) then
-        write(*,*) 'time sequence data header does not match'
-        stop 'Check failed'
+        write(*,*) 'Time sequence data header does not match.'
+        write(*,*) 'Check failed'
+        go to 99
       end if
 !
       allocate(spectr_IN1(sph_IN1%ntot_sph_spec))
@@ -90,10 +91,10 @@
         call gz_read_volume_pwr_sph(FPz_f2, id_file2, flag_gzip2,       &
      &      sph_IN2%ntot_sph_spec, sph_IN2%i_step, sph_IN2%time,        &
      &      spectr_IN2(1), zbuf2, ierr2)
-        if(ierr1*ierr2 .gt. 0) then
-          error = .TRUE.
-          go to 99
-        else if(ierr1+ierr1 .gt. 0 .and. ierr1*ierr2 .eq. 0) then
+        if(ierr1*ierr2 .gt. 0) exit
+!
+        if(ierr1+ierr1 .gt. 0 .and. ierr1*ierr2 .eq. 0) then
+          write(*,*) 'Read fails in either file'
           error = .TRUE.
           go to 99
         end if
