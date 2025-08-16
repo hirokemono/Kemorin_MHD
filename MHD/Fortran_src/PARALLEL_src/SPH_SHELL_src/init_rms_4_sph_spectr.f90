@@ -78,6 +78,9 @@
         call cal_one_over_volume( pwr%v_spectr(i)%r_inside,             &
      &      pwr%v_spectr(i)%r_outside, pwr%v_spectr(i)%avol)
       end do
+      write(*,*) 'pwr%v_spectr(i)%r_inside', my_rank, pwr%v_spectr(:)%r_inside
+      write(*,*) 'pwr%v_spectr(i)%r_outside', my_rank, pwr%v_spectr(:)%r_outside
+      write(*,*) 'pwr%v_spectr(i)%avol', my_rank, pwr%v_spectr(:)%avol
 !
       if(iflag_debug .gt. 0) then
 !      if(my_rank .eq. 0) then
