@@ -315,9 +315,14 @@
           call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_lm)
         end if
+!
+        if(i .eq. 4) then
+          write(*,*) my_rank, 'v_pwr(i)%v_m(:) out',          &
+     &        v_pwr(i)%v_m(:,11)
+          write(*,*) my_rank, 'v_pwr(i)%v_sq(:) out',          &
+     &        v_pwr(i)%v_sq(:)
+        end if
       end do
-      write(*,*) my_rank, 'sum_mean_square_on_volume out',   &
-     &    v_pwr(4)%v_sq(:)
 !
       end subroutine sum_mean_square_on_volume
 !
