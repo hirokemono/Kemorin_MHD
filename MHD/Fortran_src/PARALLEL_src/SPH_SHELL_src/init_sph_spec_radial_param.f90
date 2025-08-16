@@ -51,6 +51,10 @@
       integer(kind = kint) :: kr_st
 !
 !
+        write(*,*) my_rank, 'v_pwr%r_inside in', v_pwr%r_inside
+        write(*,*) my_rank, 'v_pwr%kr_inside in', v_pwr%kr_inside
+        write(*,*) my_rank, 'v_pwr%c_inter_in in', v_pwr%c_inter_in
+!
         if(v_pwr%r_inside .le. zero                                     &
      &                         .and. v_pwr%kr_inside(1) .eq. 0) then
           v_pwr%kr_inside(1:2) = sph_params%nlayer_ICB
@@ -71,6 +75,10 @@
      &        sph_rj%radius_1d_rj_r, v_pwr%r_inside, kr_st,             &
      &        v_pwr%kr_inside(1), v_pwr%kr_inside(2), v_pwr%c_inter_in)
         end if
+!
+        write(*,*) my_rank, 'v_pwr%r_inside mid', v_pwr%r_inside
+        write(*,*) my_rank, 'v_pwr%kr_inside mid', v_pwr%kr_inside
+        write(*,*) my_rank, 'v_pwr%c_inter_in mid', v_pwr%c_inter_in
 !
         if(abs(v_pwr%c_inter_in) .lt. 1.0d-6) then
           kr_st = v_pwr%kr_inside(2)
@@ -112,9 +120,9 @@
           v_pwr%c_inter_out =   one
         end if
 !
-        write(*,*) my_rank, 'v_pwr%r_inside', v_pwr%r_inside
-        write(*,*) my_rank, 'v_pwr%kr_inside', v_pwr%kr_inside
-        write(*,*) my_rank, 'v_pwr%c_inter_in', v_pwr%c_inter_in
+        write(*,*) my_rank, 'v_pwr%r_inside out', v_pwr%r_inside
+        write(*,*) my_rank, 'v_pwr%kr_inside out', v_pwr%kr_inside
+        write(*,*) my_rank, 'v_pwr%c_inter_in out', v_pwr%c_inter_in
 !
         write(*,*) my_rank, 'v_pwr%r_outside', v_pwr%r_outside
         write(*,*) my_rank, 'v_pwr%kr_outside', v_pwr%kr_outside
