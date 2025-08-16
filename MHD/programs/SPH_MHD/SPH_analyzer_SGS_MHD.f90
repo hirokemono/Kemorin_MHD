@@ -235,6 +235,9 @@
 !
 !*  ----------  add time evolution -----------------
 !*
+      write(*,*) SPH_WK%monitor%bench%ipwr_ocore, 'SPH_analyze_SGS_MHD in ',  &
+     &    SPH_WK%monitor%pwr%v_spectr(SPH_WK%monitor%bench%ipwr_ocore)%r_inside, &
+     &     SPH_WK%monitor%pwr%v_spectr(SPH_WK%monitor%bench%ipwr_ocore)%r_outside
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+1)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+2)
