@@ -209,6 +209,9 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell(sph%sph_params, sph%sph_rj, ipol,    &
      &    rj_fld, trans_p%leg, monitor%pwr, monitor%WK_pwr)
+      write(*,*) monitor%bench%ipwr_icore, &
+     &        'cal_mean_squre_in_shell out',   &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_icore)%v_sq(:)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         call sel_Nusselt_routine(ipol%base%i_temp,                      &
