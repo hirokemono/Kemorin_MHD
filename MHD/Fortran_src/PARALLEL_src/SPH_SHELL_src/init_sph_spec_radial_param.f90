@@ -78,10 +78,16 @@
           v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_in =   one
         else if(abs(one - v_pwr%c_inter_in) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_inside(1)
-          v_pwr%kr_inside(2) = kr_st
-          v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
-          v_pwr%c_inter_in =   one
+          if(v_pwr%kr_inside(1) .eq. 0) then
+            v_pwr%kr_inside(2) = 0
+            v_pwr%r_inside =     zero
+            v_pwr%c_inter_in =   one
+          else
+            kr_st = v_pwr%kr_inside(1)
+            v_pwr%kr_inside(2) = kr_st
+            v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
+            v_pwr%c_inter_in =   one
+          end if
         end if
 !
         if(v_pwr%r_outside .le. zero) then
