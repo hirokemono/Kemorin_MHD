@@ -195,7 +195,7 @@
       call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
-      write(*,*) my_rank, &
+      write(*,*) my_rank, pwr%v_spectr(4)%kr_inside, pwr%v_spectr(4)%kr_outside, &
      &        'cal_mean_squre_w_SGS_in_shell out',   &
      &    pwr%v_spectr(4)%v_sq(:)
 !
