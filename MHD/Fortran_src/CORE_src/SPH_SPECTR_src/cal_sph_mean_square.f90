@@ -209,7 +209,7 @@
      &                 * (g_sph_rj(j,3) * a_r_1d_rj_r(k)**2             &
      &                    * d_rj1(inod,1) * d_rj2(inod,1)               &
      &                  + d_rj1(inod,2) * d_rj2(inod,2))
-sq_rj(k,j,2) = g_sph_rj(j,12) * d_rj1(inod,3) * d_rj2(inod,3)
+          sq_rj(k,j,2) = g_sph_rj(j,12) * d_rj1(inod,3) * d_rj2(inod,3)
           sq_rj(k,j,3) =  sq_rj(k,j,1) + sq_rj(k,j,2)
         end do
       end do
