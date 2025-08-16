@@ -107,7 +107,7 @@
 !
 !
       write(*,*) 'cal_mean_squre_w_SGS_in_shell in', &
-     &     monitor%pwr%v_spectr(1:2)%r_inside         &
+     &     monitor%pwr%v_spectr(1:2)%r_inside,         &
      &     monitor%pwr%v_spectr(1:2)%r_outside
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
