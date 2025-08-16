@@ -111,6 +111,8 @@
      &      rj_fld%d_fld, bench%rotate_icore)
       end if
 !
+      write(*,*) bench%ipwr_icore, &
+     &        'bench%mene_icore', pwr%v_spectr(bench%ipwr_icore)%v_sq(:)
       if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         if(bench%ipwr_icore .gt. 0) then
           irank_copy = pwr%v_spectr(bench%ipwr_icore)%irank_m
@@ -122,6 +124,7 @@
      &                                cast_long(ithree), irank_copy)
         end if
       end if
+      write(*,*) 'bench%mene_icore', bench%mene_icore(1:3)
 !
       if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center       &
      &   .and. sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic)   &
