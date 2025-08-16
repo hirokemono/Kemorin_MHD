@@ -192,6 +192,7 @@
       type(mesh_data), save :: new_fem2
 !
       integer(kind = kint) :: icount_error, icou_error_gl
+      real(kind = kreal) :: diff_max
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
@@ -228,8 +229,10 @@
       &                 icou_error_gl
 !      write(*,*) my_rank, 'Compare node comm table: ', icount_error
 !
+      diff_max =      zero
+      icount_error = izero
       call compare_node_position(my_rank, new_fem%mesh%node,            &
-     &                           new_fem2%mesh%node, icount_error)
+     &    new_fem2%mesh%node, diff_max, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl

@@ -139,6 +139,7 @@
       real(kind = kreal), allocatable :: d_mask_org_S(:,:)
       real(kind = kreal), allocatable :: vect_ref_S(:,:)
       integer(kind = kint) :: icount_error, icou_error_gl
+      real(kind = kreal) :: diff_max
 !
 !
 !  ========= Generate spherical harmonics table ========================
@@ -235,8 +236,10 @@
       &                 icou_error_gl
 !      write(*,*) my_rank, 'Compare node comm table: ', icount_error
 !
+      diff_max =      zero
+      icount_error = izero
       call compare_node_position(my_rank, new_fem_S%mesh%node,          &
-     &                           new_fem_2%mesh%node, icount_error)
+     &    new_fem_2%mesh%node, diff_max, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl

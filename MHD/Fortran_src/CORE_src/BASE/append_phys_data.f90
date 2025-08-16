@@ -17,8 +17,10 @@
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
 !!
-!!      subroutine compare_field_data(fld1, fld2, icount_error)
+!!      subroutine compare_field_data(fld1, fld2,                       &
+!!     &                              diff_max, icount_error)
 !!        type(phys_data), intent(in) :: fld1, fld2
+!!        real(kind = kreal), intent(inout) :: diff_max
 !!        integer(kind = kint), intent(inout) :: icount_error
 !!@endverbatim
 !
@@ -128,7 +130,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine compare_field_data(fld1, fld2, icount_error)
+      subroutine compare_field_data(fld1, fld2,                         &
+     &                              diff_max, icount_error)
 !
       use compare_indices
 !
@@ -136,6 +139,7 @@
 !
       type(phys_data), intent(in) :: fld1, fld2
       integer(kind = kint), intent(inout) :: icount_error
+      real(kind = kreal), intent(inout) :: diff_max
 !
       integer(kind = kint) :: ifld, ist
       integer(kind = kint) :: icou_error
@@ -191,7 +195,8 @@
         ist = fld2%istack_component(ifld-1)
         call compare_field_vector(fld1%n_point,                         &
      &      fld1%num_component(ifld), fld1%phys_name(ifld),             &
-     &      fld1%d_fld(1,ist+1), fld2%d_fld(1,ist+1), icou_error)
+     &      fld1%d_fld(1,ist+1), fld2%d_fld(1,ist+1),                   &
+     &      diff_max, icou_error)
         icount_error = icount_error + icou_error
       end do
 !

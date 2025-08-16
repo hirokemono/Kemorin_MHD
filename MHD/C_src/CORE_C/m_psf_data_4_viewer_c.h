@@ -123,7 +123,7 @@ void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk
 void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 
 void check_psf_read(struct psf_data *psf_s);
-void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z);
+void compare_psf_data_c(struct psf_data *psf_s, struct psf_data *psf_z);
 
 void alloc_psf_norm_s(struct psf_data *psf_s,
                       struct psf_normals *psf_n);

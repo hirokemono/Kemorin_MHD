@@ -419,7 +419,7 @@ void check_psf_read(struct psf_data *psf_s){
 	
 }
 
-void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z){
+void compare_psf_data_c(struct psf_data *psf_s, struct psf_data *psf_z){
 	int i, j;
 	printf("Error xyzw_viz \n");
 	for(j=0;j<3;j++){

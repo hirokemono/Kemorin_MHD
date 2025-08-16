@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine compare_field_vector(n_point, numdir, fld_name,      &
-!!     &                                d_fld1, d_fld2, icount_error)
+!!     &          d_fld1, d_fld2, diff_max, icount_error)
 !!        character(len=kchara), intent(in) :: fld_name
 !!        integer(kind = kint), intent(in) :: n_point, numdir
 !!        real(kind = kreal), intent(in) :: d_fld1(n_point,numdir)
 !!        real(kind = kreal), intent(in) :: d_fld2(n_point,numdir)
 !!        integer(kind = kint), intent(inout) :: icount_error
+!!        real(kind = kreal), intent(inout) :: diff_max
 !!
 !!      integer(kind = kint) function                                   &
 !!     &                    check_4_on_3(i1, i2, i3, j1, j2, j3, j4)
@@ -47,7 +48,7 @@
 !------------------------------------------------------------------
 !
       subroutine compare_field_vector(n_point, numdir, fld_name,        &
-     &                                d_fld1, d_fld2, icount_error)
+     &          d_fld1, d_fld2, diff_max, icount_error)
 !
       use m_machine_parameter
 !
@@ -59,6 +60,7 @@
       real(kind = kreal), intent(in) :: d_fld2(n_point,numdir)
 !
       integer(kind = kint), intent(inout) :: icount_error
+      real(kind = kreal), intent(inout) :: diff_max
 !
       real(kind = kreal), allocatable :: vmin(:), vmax(:), size(:)
       real(kind = kreal) :: scale, diff
@@ -92,6 +94,7 @@
      &                ' at ', inod, ' is different: ', diff, ' data: ', &
      &               d_fld2(inod,icomp), d_fld1(inod,icomp)
             icount_error = icount_error + 1
+            if(abs(diff) .gt. diff_max) diff_max = abs(diff)
           end if
         end do
       end do

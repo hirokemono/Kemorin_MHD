@@ -9,8 +9,10 @@
 !!      subroutine set_control_for_psf_compare(psf_cmp_ctls, psf_cmp)
 !!        type(psf_compare_control), intent(in) :: psf_cmp_ctls
 !!        type(psf_compare_param), intent(inout):: psf_cmp
-!!      integer(kind = kint) function compare_psf_data(psf_cmp)
+!!      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
 !!        type(psf_compare_param), intent(in):: psf_cmp
+!!        integer(kind = kint), intent(inout) :: icount_error
+!!        real(kind = kreal), intent(inout) :: diff_max
 !!@endverbatim
 !
       module t_ctl_param_psf_compares
@@ -56,7 +58,7 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine compare_psf_data(psf_cmp, icount_error)
+      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
 !
       use m_precision
       use m_machine_parameter
@@ -70,6 +72,7 @@
 !
       type(psf_compare_param), intent(in):: psf_cmp
       integer(kind = kint), intent(inout) :: icount_error
+      real(kind = kreal), intent(inout) :: diff_max
 !
       type(psf_results) :: psf_1, psf_2
       type(time_data) :: t_IO_u
@@ -86,13 +89,15 @@
      &   (psf_cmp%istep_psf, psf_cmp%psf2_file_param,                   &
      &    np_ucd, t_IO_u, psf_2, psf_ucd)
 !
+      diff_max =      zero
+      icount_error = izero
       call compare_node_position(0, psf_1%psf_nod, psf_2%psf_nod,       &
-     &                           icount_error)
+     &    diff_max, icount_error)
       call compare_ele_connect(0, psf_1%psf_ele, psf_2%psf_ele,         &
      &                         icou_error)
       icount_error = icount_error + icou_error
       call compare_field_data(psf_1%psf_phys, psf_2%psf_phys,           &
-     &                        icou_error)
+     &                        diff_max, icou_error)
       icount_error = icount_error + icou_error
 !
       if(icount_error .eq. 0) then
