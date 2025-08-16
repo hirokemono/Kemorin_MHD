@@ -317,6 +317,8 @@
         end if
 !
         if(i .eq. 4) then
+          write(*,*) my_rank, 'v_pwr(i)%v_l(:) out',          &
+     &        v_pwr(i)%v_l(:,11)
           write(*,*) my_rank, 'v_pwr(i)%v_m(:) out',          &
      &        v_pwr(i)%v_m(:,11)
           write(*,*) my_rank, 'v_pwr(i)%v_sq(:) out',          &
