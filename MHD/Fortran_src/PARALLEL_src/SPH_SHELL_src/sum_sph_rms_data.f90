@@ -129,6 +129,7 @@
      &        pwr%v_spectr(i)%c_inter_in, pwr%v_spectr(i)%c_inter_out,  &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
      &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
+          write(*,*) i, 'WK_pwr%volume_j(:,1)', WK_pwr%volume_j(:,1)
 !
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,        &
