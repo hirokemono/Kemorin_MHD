@@ -280,6 +280,7 @@
 !
       integer(kind = kint) :: i
 !
+      write(*,*) my_rank, v_pwr(:)%avol, 'avol'
 !
       do i = 1, num_vol_spectr
 !
@@ -314,15 +315,6 @@
      &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_sq)
           call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_lm)
-        end if
-!
-        if(i .eq. 4) then
-          write(*,*) my_rank, v_pwr(4)%avol, 'v_pwr(i)%v_l(:) out',          &
-     &        v_pwr(i)%v_l(:,11)
-          write(*,*) my_rank, v_pwr(4)%avol, 'v_pwr(i)%v_m(:) out',          &
-     &        v_pwr(i)%v_m(:,11)
-          write(*,*) my_rank, v_pwr(4)%avol, 'v_pwr(i)%v_sq(:) out',          &
-     &        v_pwr(i)%v_sq(:)
         end if
       end do
 !
