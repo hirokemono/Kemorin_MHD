@@ -112,6 +112,14 @@
           v_pwr%c_inter_out =   one
         end if
 !
+        write(*,*) my_rank, 'v_pwr%r_inside', v_pwr%r_inside
+        write(*,*) my_rank, 'v_pwr%kr_inside', v_pwr%kr_inside
+        write(*,*) my_rank, 'v_pwr%c_inter_in', v_pwr%c_inter_in
+!
+        write(*,*) my_rank, 'v_pwr%r_outside', v_pwr%r_outside
+        write(*,*) my_rank, 'v_pwr%kr_outside', v_pwr%kr_outside
+        write(*,*) my_rank, 'v_pwr%c_inter_out', v_pwr%c_inter_out
+!
       end subroutine init_sph_vol_spectr_r_param
 !
 ! ----------------------------------------------------------------------
