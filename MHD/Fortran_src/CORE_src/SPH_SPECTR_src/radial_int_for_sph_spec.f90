@@ -124,6 +124,8 @@
         do kr = kg_st(1)+1, kg_ed(1)-1
           f_int = f_int + half * (radius(kr+1) - radius(kr))            &
      &                         * (f_org(kr) + f_org(kr+1))
+          write(*,*) '(radius(kr+1) - radius(kr))', (radius(kr+1) - radius(kr)), &
+     &          (f_org(kr) + f_org(kr+1))
         end do
           return
         else
