@@ -51,10 +51,6 @@
       integer(kind = kint) :: kr_st
 !
 !
-        write(*,*) my_rank, 'v_pwr%r_inside in', v_pwr%r_inside
-        write(*,*) my_rank, 'v_pwr%kr_inside in', v_pwr%kr_inside
-        write(*,*) my_rank, 'v_pwr%c_inter_in in', v_pwr%c_inter_in
-!
         if(v_pwr%r_inside .le. zero                                     &
      &                         .and. v_pwr%kr_inside(1) .eq. 0) then
           v_pwr%kr_inside(1:2) = sph_params%nlayer_ICB
@@ -76,25 +72,23 @@
      &        v_pwr%kr_inside(1), v_pwr%kr_inside(2), v_pwr%c_inter_in)
         end if
 !
-        write(*,*) my_rank, 'v_pwr%r_inside mid', v_pwr%r_inside
-        write(*,*) my_rank, 'v_pwr%kr_inside mid', v_pwr%kr_inside
-        write(*,*) my_rank, 'v_pwr%c_inter_in mid', v_pwr%c_inter_in
-!
         if(abs(v_pwr%c_inter_in) .lt. 1.0d-6) then
           kr_st = v_pwr%kr_inside(2)
           v_pwr%kr_inside(1) = kr_st
           v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_in =   one
         else if(abs(one - v_pwr%c_inter_in) .lt. 1.0d-6) then
-          kr_st = v_pwr%kr_inside(1)
-          v_pwr%kr_inside(2) = kr_st
-          v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
-          v_pwr%c_inter_in =   one
+          if(v_pwr%kr_inside(1) .eq. 0) then
+            v_pwr%kr_inside(2) = 0
+            v_pwr%r_inside =     zero
+            v_pwr%c_inter_in =   one
+          else
+            kr_st = v_pwr%kr_inside(1)
+            v_pwr%kr_inside(2) = kr_st
+            v_pwr%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
+            v_pwr%c_inter_in =   one
+          end if
         end if
-!
-        write(*,*) my_rank, 'v_pwr%r_inside done', v_pwr%r_inside
-        write(*,*) my_rank, 'v_pwr%kr_inside done', v_pwr%kr_inside
-        write(*,*) my_rank, 'v_pwr%c_inter_in done', v_pwr%c_inter_in
 !
         if(v_pwr%r_outside .le. zero) then
           v_pwr%kr_outside(1:2) = sph_params%nlayer_CMB
@@ -123,14 +117,6 @@
           v_pwr%r_outside =     sph_rj%radius_1d_rj_r(kr_st)
           v_pwr%c_inter_out =   one
         end if
-!
-        write(*,*) my_rank, 'v_pwr%r_inside out', v_pwr%r_inside
-        write(*,*) my_rank, 'v_pwr%kr_inside out', v_pwr%kr_inside
-        write(*,*) my_rank, 'v_pwr%c_inter_in out', v_pwr%c_inter_in
-!
-        write(*,*) my_rank, 'v_pwr%r_outside', v_pwr%r_outside
-        write(*,*) my_rank, 'v_pwr%kr_outside', v_pwr%kr_outside
-        write(*,*) my_rank, 'v_pwr%c_inter_out', v_pwr%c_inter_out
 !
       end subroutine init_sph_vol_spectr_r_param
 !
