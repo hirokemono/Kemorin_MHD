@@ -110,6 +110,9 @@
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
+      write(*,*) monitor%bench%ipwr_icore, &
+     &        'cal_mean_squre_w_SGS_in_shell out',   &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_icore)%v_sq(:)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
       call cal_lorentz_spctr_in_shell                                   &
