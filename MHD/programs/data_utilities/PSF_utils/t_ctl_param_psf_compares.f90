@@ -9,10 +9,8 @@
 !!      subroutine set_control_for_psf_compare(psf_cmp_ctls, psf_cmp)
 !!        type(psf_compare_control), intent(in) :: psf_cmp_ctls
 !!        type(psf_compare_param), intent(inout):: psf_cmp
-!!      subroutine compare_psf_data(psf_cmp, diff_limit,                &
-!!     &                            diff_max, icount_error)
+!!      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
 !!        type(psf_compare_param), intent(in):: psf_cmp
-!!        real(kind = kreal), intent(in) :: diff_limit
 !!        real(kind = kreal), intent(inout) :: diff_max
 !!        integer(kind = kint), intent(inout) :: icount_error
 !!@endverbatim
@@ -27,6 +25,7 @@
         type(field_IO_params) :: psf1_file_param
         type(field_IO_params) :: psf2_file_param
         integer(kind = kint) :: istep_psf
+        real(kind = kreal) :: diff_limit
       end type psf_compare_param
 !
 !  --------------------------------------------------------------------
@@ -54,14 +53,23 @@
      &    psf_cmp_ctls%second_psf%file_format_ctl,                      &
      &    psf_cmp%psf2_file_param)
 !
-      psf_cmp%istep_psf = psf_cmp_ctls%i_step_surface_ctl%intvalue
+      if(psf_cmp_ctls%i_step_surface_ctl%iflag .le. 0) then
+        stop 'Set section data step No.'
+      else
+        psf_cmp%istep_psf = psf_cmp_ctls%i_step_surface_ctl%intvalue
+      end if
+!
+      if(psf_cmp_ctls%diff_limit_ctl%iflag .le. 0) then
+        psf_cmp%diff_limit = TINY
+      else
+        psf_cmp%diff_limit = psf_cmp_ctls%diff_limit_ctl%realvalue
+      end if
 !
       end subroutine set_control_for_psf_compare
 !
 !  --------------------------------------------------------------------
 !
-      subroutine compare_psf_data(psf_cmp, diff_limit,                  &
-     &                            diff_max, icount_error)
+      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
 !
       use m_precision
       use m_machine_parameter
@@ -74,7 +82,6 @@
       implicit none
 !
       type(psf_compare_param), intent(in):: psf_cmp
-      real(kind = kreal), intent(in) :: diff_limit
 !
       real(kind = kreal), intent(inout) :: diff_max
       integer(kind = kint), intent(inout) :: icount_error
@@ -97,12 +104,12 @@
       diff_max =      zero
       icount_error = izero
       call compare_node_position(0, psf_1%psf_nod, psf_2%psf_nod,       &
-     &    diff_limit, diff_max, icount_error)
+     &    psf_cmp%diff_limit, diff_max, icount_error)
       call compare_ele_connect(0, psf_1%psf_ele, psf_2%psf_ele,         &
      &                         icou_error)
       icount_error = icount_error + icou_error
       call compare_field_data(psf_1%psf_phys, psf_2%psf_phys,           &
-     &                        diff_limit, diff_max, icou_error)
+     &                        psf_cmp%diff_limit, diff_max, icou_error)
       icount_error = icount_error + icou_error
 !
       if(icount_error .eq. 0) then
