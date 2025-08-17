@@ -33,6 +33,7 @@ TARGET_FIT_DIPOLE_RATIO =    sph_fitted_dipole_ratio
 
 TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 TARGET_SPH_V_SPEC_CHECK =    tests/sph_vol_spectr_check
+TARGET_SPH_PICK_MODE_CHECK = tests/sph_picked_mode_check
 
 
 LIBS_SPH_UTIL =  \
@@ -532,6 +533,16 @@ compare_sph_mean_spectr.o \
 old_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o
 
+MOD_SPH_PICK_MODE_CHECK = \
+compare_sph_picked_mode.o \
+t_picked_sph_spectr_data_IO.o \
+t_pick_copy_monitor_data.o \
+picked_sph_spectr_data_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
+\
+count_monitor_time_series.o
+
 #
 #  ------------------------------------------------------------------
 #
@@ -584,6 +595,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_V_SPEC_CHECK = $$(BUILDDIR)/$(TARGET_SPH_V_SPEC_CHECK)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_SPH_PICK_MODE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_PICK_MODE_CHECK)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_PSUM_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_PSUM_SPH_ENE_SPEC)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
@@ -593,14 +606,14 @@ target_task:
 	'$$(TARGET_SPH_ENE_SPEC)        $$(TARGET_SPH_ENE_LAYER)' \
 	'$$(TARGET_PICK_SPH_VOL_ENE)    $$(TARGET_PICK_SPH_ENE)'  \
 	'$$(TARGET_PICK_SPH_SPEC)       $$(TARGET_PICK_GAUSS_COEF)' \
-	'$$(TARGET_RENAME_SPH_FLD)      $$(TARGET_DIFF_SPH_SPEC)'  \
+	'$$(TARGET_RENAME_SPH_FLD)      $$(TARGET_DIFF_SPH_SPEC)'   \
 	'$$(TARGET_ZM_SPH_SPEC)         $$(TARGET_T_AVE_SPEC)'      \
-	'$$(TARGET_TAVE_SPH_ENE_SPEC)   $$(TARGET_SPH_NEUTRAL)'  \
-	'$$(TARGET_APPEND_SPH_MONITORS) $$(TARGET_TRIM_SPH_MONITORS)'  \
-	'$$(TARGET_MAX_SPH_ENE)         $$(TARGET_SPH_ULI_LSCALE)'     \
-	'$$(TARGET_FIT_DIPOLE_RATIO)    $$(TARGET_SPH_ENE_CHECK)'      \
-	'$$(TARGET_SPH_V_SPEC_CHECK) '      \
-	'$$(TARGET_PSUM_SPH_ENE_SPEC)   $$(TARGET_SPH_DYN_ELSASSER)'   \
+	'$$(TARGET_TAVE_SPH_ENE_SPEC)   $$(TARGET_SPH_NEUTRAL)'          \
+	'$$(TARGET_APPEND_SPH_MONITORS) $$(TARGET_TRIM_SPH_MONITORS)'    \
+	'$$(TARGET_MAX_SPH_ENE)         $$(TARGET_SPH_ULI_LSCALE)'       \
+	'$$(TARGET_FIT_DIPOLE_RATIO)    $$(TARGET_SPH_ENE_CHECK)'        \
+	'$$(TARGET_SPH_V_SPEC_CHECK)    $$(TARGET_SPH_PICK_MODE_CHECK)'  \
+	'$$(TARGET_PSUM_SPH_ENE_SPEC)   $$(TARGET_SPH_DYN_ELSASSER)'     \
 	'$$(TARGET_T_AVE_STABLE_REV)    $$(TARGET_T_AVE_STABLE_REV_SPEC)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
@@ -784,6 +797,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_PICK_MODE_CHECK)': '$$(MOD_SPH_PICK_MODE_CHECK)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_PICK_MODE_CHECK)' \
+	'$$(MOD_SPH_PICK_MODE_CHECK)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -849,6 +870,8 @@ mod_list:
 	@echo  $(MOD_SPH_ENE_CHECK)           >> $(MAKENAME)
 	@echo  MOD_SPH_V_SPEC_CHECK=  \\      >> $(MAKENAME)
 	@echo  $(MOD_SPH_V_SPEC_CHECK)        >> $(MAKENAME)
+	@echo  MOD_SPH_PICK_MODE_CHECK=  \\   >> $(MAKENAME)
+	@echo  $(MOD_SPH_PICK_MODE_CHECK)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 depends:

@@ -9,6 +9,8 @@ SHELL           = /bin/sh
 SRCDIR = /Users/matsui/src_kemo
 BUILDDIR= $(SRCDIR)/bin
 #
+GMAKE = make
+
 TARGET_GEN_SPH_GRID =    $(BUILDDIR)/utilities/gen_sph_grids
 TARGET_CHECK_SPH_GRID =  $(BUILDDIR)/tests/check_sph_grids
 TARGET_TEST_SPH_GRID =   $(BUILDDIR)/tests/check_sph_comms
