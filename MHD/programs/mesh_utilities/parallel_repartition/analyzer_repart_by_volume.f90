@@ -35,8 +35,6 @@
       character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
-      real(kind = kreal), parameter :: TINY = 1.0d-10
-!
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(communication_table), save :: ele_comm_T

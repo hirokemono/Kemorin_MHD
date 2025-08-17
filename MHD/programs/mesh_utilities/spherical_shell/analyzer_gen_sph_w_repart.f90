@@ -38,8 +38,6 @@
       character (len = kchara), private, parameter                      &
      &         :: control_file_name = 'control_sph_shell'
 !
-      real(kind = kreal), parameter :: TINY = 1.0d-10
-!
 !
 !>      Structure for file settings
       type(ctl_data_gen_sph_w_repart), save, private :: gen_SPH_wP_c1
