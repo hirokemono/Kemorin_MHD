@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine compare_field_vector(n_point, numdir, fld_name,      &
-!!     &          d_fld1, d_fld2, diff_max, icount_error)
+!!     &          d_fld1, d_fld2, diff_limit, diff_max, icount_error)
 !!        character(len=kchara), intent(in) :: fld_name
 !!        integer(kind = kint), intent(in) :: n_point, numdir
 !!        real(kind = kreal), intent(in) :: d_fld1(n_point,numdir)
 !!        real(kind = kreal), intent(in) :: d_fld2(n_point,numdir)
+!!        real(kind = kreal), intent(in) :: diff_limit
 !!        integer(kind = kint), intent(inout) :: icount_error
 !!        real(kind = kreal), intent(inout) :: diff_max
 !!
@@ -39,8 +40,6 @@
 !
       implicit none
 !
-      real(kind = kreal), parameter :: TINY = 1.0d-12
-!
 !------------------------------------------------------------------
 !
       contains
@@ -48,7 +47,7 @@
 !------------------------------------------------------------------
 !
       subroutine compare_field_vector(n_point, numdir, fld_name,        &
-     &          d_fld1, d_fld2, diff_max, icount_error)
+     &          d_fld1, d_fld2, diff_limit, diff_max, icount_error)
 !
       use m_machine_parameter
 !
@@ -58,6 +57,7 @@
       integer(kind = kint), intent(in) :: n_point, numdir
       real(kind = kreal), intent(in) :: d_fld1(n_point,numdir)
       real(kind = kreal), intent(in) :: d_fld2(n_point,numdir)
+      real(kind = kreal), intent(in) :: diff_limit
 !
       integer(kind = kint), intent(inout) :: icount_error
       real(kind = kreal), intent(inout) :: diff_max
@@ -89,7 +89,7 @@
       do inod = 1, n_point
         do icomp = 1, numdir
           diff = d_fld2(inod,icomp) - d_fld1(inod,icomp)
-          if((abs(diff) / scale) .gt. TINY) then
+          if((abs(diff) / scale) .gt. diff_limit) then
             write(*,*) icomp, '-component of ', trim(fld_name),         &
      &                ' at ', inod, ' is different: ', diff, ' data: ', &
      &               d_fld2(inod,icomp), d_fld1(inod,icomp)

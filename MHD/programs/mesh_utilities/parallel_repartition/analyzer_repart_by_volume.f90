@@ -35,6 +35,8 @@
       character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
+      real(kind = kreal), parameter :: TINY = 1.0d-10
+!
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(communication_table), save :: ele_comm_T
@@ -232,7 +234,7 @@
       diff_max =      zero
       icount_error = izero
       call compare_node_position(my_rank, new_fem%mesh%node,            &
-     &    new_fem2%mesh%node, diff_max, icount_error)
+     &    new_fem2%mesh%node, TINY, diff_max, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl

@@ -38,6 +38,8 @@
       character (len = kchara), private, parameter                      &
      &         :: control_file_name = 'control_sph_shell'
 !
+      real(kind = kreal), parameter :: TINY = 1.0d-10
+!
 !
 !>      Structure for file settings
       type(ctl_data_gen_sph_w_repart), save, private :: gen_SPH_wP_c1
@@ -239,7 +241,7 @@
       diff_max =      zero
       icount_error = izero
       call compare_node_position(my_rank, new_fem_S%mesh%node,          &
-     &    new_fem_2%mesh%node, diff_max, icount_error)
+     &    new_fem_2%mesh%node, TINY, diff_max, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl

@@ -9,10 +9,12 @@
 !!      subroutine set_control_for_psf_compare(psf_cmp_ctls, psf_cmp)
 !!        type(psf_compare_control), intent(in) :: psf_cmp_ctls
 !!        type(psf_compare_param), intent(inout):: psf_cmp
-!!      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
+!!      subroutine compare_psf_data(psf_cmp, diff_limit,                &
+!!     &                            diff_max, icount_error)
 !!        type(psf_compare_param), intent(in):: psf_cmp
-!!        integer(kind = kint), intent(inout) :: icount_error
+!!        real(kind = kreal), intent(in) :: diff_limit
 !!        real(kind = kreal), intent(inout) :: diff_max
+!!        integer(kind = kint), intent(inout) :: icount_error
 !!@endverbatim
 !
       module t_ctl_param_psf_compares
@@ -58,7 +60,8 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine compare_psf_data(psf_cmp, diff_max, icount_error)
+      subroutine compare_psf_data(psf_cmp, diff_limit,                  &
+     &                            diff_max, icount_error)
 !
       use m_precision
       use m_machine_parameter
@@ -71,8 +74,10 @@
       implicit none
 !
       type(psf_compare_param), intent(in):: psf_cmp
-      integer(kind = kint), intent(inout) :: icount_error
+      real(kind = kreal), intent(in) :: diff_limit
+!
       real(kind = kreal), intent(inout) :: diff_max
+      integer(kind = kint), intent(inout) :: icount_error
 !
       type(psf_results) :: psf_1, psf_2
       type(time_data) :: t_IO_u
@@ -92,12 +97,12 @@
       diff_max =      zero
       icount_error = izero
       call compare_node_position(0, psf_1%psf_nod, psf_2%psf_nod,       &
-     &    diff_max, icount_error)
+     &    diff_limit, diff_max, icount_error)
       call compare_ele_connect(0, psf_1%psf_ele, psf_2%psf_ele,         &
      &                         icou_error)
       icount_error = icount_error + icou_error
       call compare_field_data(psf_1%psf_phys, psf_2%psf_phys,           &
-     &                        diff_max, icou_error)
+     &                        diff_limit, diff_max, icou_error)
       icount_error = icount_error + icou_error
 !
       if(icount_error .eq. 0) then
