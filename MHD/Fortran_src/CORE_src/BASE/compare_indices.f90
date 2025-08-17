@@ -89,12 +89,12 @@
       do inod = 1, n_point
         do icomp = 1, numdir
           diff = d_fld2(inod,icomp) - d_fld1(inod,icomp)
+          if(abs(diff) .gt. diff_max) diff_max = abs(diff)
           if((abs(diff) / scale) .gt. diff_limit) then
             write(*,*) icomp, '-component of ', trim(fld_name),         &
      &                ' at ', inod, ' is different: ', diff, ' data: ', &
      &               d_fld2(inod,icomp), d_fld1(inod,icomp)
             icount_error = icount_error + 1
-            if(abs(diff) .gt. diff_max) diff_max = abs(diff)
           end if
         end do
       end do

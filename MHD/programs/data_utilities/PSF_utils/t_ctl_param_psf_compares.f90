@@ -121,6 +121,8 @@
      &             trim(psf_cmp%psf2_file_param%file_prefix),           &
      &            ' is different.'
       end if
+      write(*,*) 'error count and maximum difference: ',                &
+     &          icount_error, diff_max
 !
       call dealloc_psf_results(psf_1)
       call dealloc_psf_results(psf_2)
