@@ -251,7 +251,7 @@
      &                      + a3_left(2,k  ,j) * a5_right(5,k-2,j)
       
 
-    a7_prod(5,k-1,j) =  a3_left(3,k-1,j) * a5_right(3,k-1,j)      &
+          a7_prod(5,k-1,j) =  a3_left(3,k-1,j) * a5_right(3,k-1,j)      &
      &                      + a3_left(2,k  ,j) * a5_right(4,k-1,j)      &
      &                      + a3_left(1,k+1,j) * a5_right(5,k-1,j)
           a7_prod(4,k,  j) =  a3_left(3,k-1,j) * a5_right(2,k  ,j)      &
