@@ -62,7 +62,7 @@
 !
       do j = 1, jmax
         write(id_file,'(a,4i6)') '(j, global_j, l, m): ',               &
-     &                            j, j_sph(jmax,1:3)
+     &                            j, j_sph(j,1:3)
         call check_single_radial_3band_mat                              &
      &     (id_file, nri, rr, mat(1,1,j))
       end do
@@ -87,7 +87,7 @@
 !
       do j = 1, jmax
         write(id_file,'(a,4i6)') '(j, global_j, l, m): ',               &
-     &                            j, j_sph(jmax,1:3)
+     &                            j, j_sph(j,1:3)
         call check_single_radial_5band_mat(id_file, nri, rr,            &
      &                                     mat(1,1,j))
       end do
@@ -112,7 +112,7 @@
 !
       do j = 1, jmax
         write(id_file,'(a,4i6)') '(j, global_j, l, m): ',               &
-     &                            j, j_sph(jmax,1:3)
+     &                            j, j_sph(j,1:3)
         call check_single_radial_7band_mat(id_file, nri, rr,            &
      &                                     mat(1,1,j))
       end do
@@ -137,7 +137,7 @@
 !
       do j = 1, jmax
         write(id_file,'(a,4i6)') '(j, global_j, l, m): ',               &
-     &                            j, j_sph(jmax,1:3)
+     &                            j, j_sph(j,1:3)
         call check_single_radial_9band_mat(id_file, nri, rr,            &
      &                                     mat(1,1,j))
       end do
