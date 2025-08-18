@@ -280,7 +280,7 @@ install64:
 
 test:
 	echo "Test!!"; \
-	cd $(TESTDIR)/Calypso; \
+	cd $(TESTDIR); \
 		$(GMAKE) \
 		GMAKE="$(GMAKE)" \
 		BUILDDIR="$(BUILDDIR)" \

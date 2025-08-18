@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+!     index data directory for Full sphere shell model
+!-----------------------------------------------------------------------
+!
+     This test will generate full sphere dynamo model 
+    including external of the fluid saphere for 6 MPI processes.

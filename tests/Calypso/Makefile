@@ -22,26 +22,20 @@ TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
 TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 #
-TARGET_GAUSS_TEST =     $(BUILDDIR)/tests/gauss_points
-TARGET_CMP_GAUSS_TEST = $(BUILDDIR)/tests/compare_gauss_points
+TARGET_GAUSS_TEST =          $(BUILDDIR)/tests/gauss_points
+TARGET_CMP_GAUSS_TEST =      $(BUILDDIR)/tests/compare_gauss_points
 #
-TARGET_FFTPACK_TEST =  $(BUILDDIR)/tests/test_FFTPACK
-TARGET_FFW3_F_TEST =   $(BUILDDIR)/tests/test_FFTW3_f
-TARGET_SGL_FFW3_TEST = $(BUILDDIR)/tests/test_single_FFTW3
-TARGET_CMPR_FFT_TEST = $(BUILDDIR)/tests/compare_fft_test
+TARGET_FFTPACK_TEST =        $(BUILDDIR)/tests/test_FFTPACK
+TARGET_FFW3_F_TEST =         $(BUILDDIR)/tests/test_FFTW3_f
+TARGET_SGL_FFW3_TEST =       $(BUILDDIR)/tests/test_single_FFTW3
+TARGET_CMPR_FFT_TEST =       $(BUILDDIR)/tests/compare_fft_test
 
-TARGET_GEN_SPH_GRID =    $(BUILDDIR)/utilities/gen_sph_grids
-TARGET_CHECK_SPH_GRID =  $(BUILDDIR)/tests/check_sph_grids
-TARGET_TEST_SPH_GRID =   $(BUILDDIR)/tests/check_sph_comms
+TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
+TARGET_CHECK_SPH_GRID =      $(BUILDDIR)/tests/check_sph_grids
+TARGET_TEST_SPH_GRID =       $(BUILDDIR)/tests/check_sph_comms
 
-TARGET_GEN_SPH_GRID= $(BUILDDIR)/utilities/gen_sph_grids
-TARGET_NEWSPH=       $(BUILDDIR)/utilities/assemble_sph
-TARGET_CMP_SPH_RST=  $(BUILDDIR)/tests/compare_sph_restart
-
-#  -------------------------------------------------------------------------
-#
-SUBDIRS = \
-Models
+TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
+TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
 
 #
 #  -------------------------------------------------------------------------
@@ -75,7 +69,7 @@ test:
 		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)"  TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
 		TARGET_NEWSPH="$(TARGET_NEWSPH)" TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
-
+	
 	@echo "# Test in Dynamo_Benchmark directory..."
 	@cd Dynamo_Benchmark; \
 		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
