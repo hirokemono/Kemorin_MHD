@@ -73,7 +73,8 @@ const char boundary_type_def[NUM_BOUNDARY_TYPE_DEF][NCHARA_FLAG]
 			"sph_to_center",
 			"pseudo_vacuum",
 			"fix_at_center",
-			
+            "filter_to_center",
+
 			"rot_x",
 			"rot_y",
 			"rot_z",

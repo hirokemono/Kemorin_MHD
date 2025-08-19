@@ -264,9 +264,13 @@
         else if(surf_bc_list%ibc_type(i) .eq. iflag_sph_2_center        &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
          sph_bc%iflag_icb = iflag_sph_fill_center
-        else if ( surf_bc_list%ibc_type(i) .eq. iflag_sph_clip_center   &
+        else if ( surf_bc_list%ibc_type(i) .eq. iflag_fix_center        &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
          sph_bc%iflag_icb = iflag_sph_fix_center
+         sph_bc%CTR_fld =   surf_bc_list%bc_magnitude(i)
+        else if ( surf_bc_list%ibc_type(i) .eq. iflag_filter_center     &
+     &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
+         sph_bc%iflag_icb = iflag_sph_filter_center
          sph_bc%CTR_fld =   surf_bc_list%bc_magnitude(i)
         end if
 !
@@ -299,9 +303,13 @@
         else if(nod_bc_list%ibc_type(i) .eq. iflag_sph_2_center         &
      &    .and. nod_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
           sph_bc%iflag_icb = iflag_sph_fill_center
-        else if(nod_bc_list%ibc_type(i) .eq. iflag_sph_clip_center      &
+        else if(nod_bc_list%ibc_type(i) .eq. iflag_fix_center           &
      &    .and. nod_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
           sph_bc%iflag_icb = iflag_sph_fix_center
+          sph_bc%CTR_fld =   nod_bc_list%bc_magnitude(i)
+        else if(nod_bc_list%ibc_type(i) .eq. iflag_filter_center        &
+     &    .and. nod_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
+          sph_bc%iflag_icb = iflag_sph_filter_center
           sph_bc%CTR_fld =   nod_bc_list%bc_magnitude(i)
         end if
       end if

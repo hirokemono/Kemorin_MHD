@@ -45,7 +45,7 @@ begin MHD_control
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
-      array nod_value_ctl     6
+      array nod_value_ctl
         nod_value_ctl  velocity                Viz_On   Monitor_On
         nod_value_ctl  temperature             Viz_On   Monitor_On
         nod_value_ctl  pressure                Viz_Off  Monitor_Off
@@ -60,7 +60,7 @@ begin MHD_control
 !                    vector_potential, composition
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin time_evolution_ctl
-      array time_evo_ctl   3
+      array time_evo_ctl
         time_evo_ctl  temperature
         time_evo_ctl  velocity
         time_evo_ctl  magnetic_field
@@ -70,12 +70,12 @@ begin MHD_control
 !!!!!  setting for boundary condition
 !
     begin boundary_condition
-      array bc_temperature  2
+      array bc_temperature
         bc_temperature  fixed ICB  1.000
         bc_temperature  fixed CMB  0.000
       end array bc_temperature
 !
-      array bc_velocity    2
+      array bc_velocity
         bc_velocity  rot_inner_core  ICB   0.000
 !        bc_velocity  non_slip_sph   ICB   0.000
         bc_velocity  non_slip_sph    CMB   0.000
@@ -83,7 +83,7 @@ begin MHD_control
 !
       array bc_composition      0
 !
-      array bc_magnetic_field   2
+      array bc_magnetic_field
         bc_magnetic_field  sph_to_center  to_Center  0.000  end
 !        bc_magnetic_field  insulator      ICB        0.000  end
         bc_magnetic_field  insulator      CMB        0.000  end
@@ -95,7 +95,7 @@ begin MHD_control
 !     gravity, Coriolis, Lorentz
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
-      array force_ctl      3
+      array force_ctl
         force_ctl   gravity
         force_ctl   Coriolis
         force_ctl   Lorentz
@@ -110,7 +110,7 @@ begin MHD_control
 !     Taylor_number, Ekman_number
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin dimensionless_ctl
-      array dimless_ctl 4 
+      array dimless_ctl 
         dimless_ctl  Prandtl_number                   1.0e-0
         dimless_ctl  modified_Rayleigh_number         1.1E+2
         dimless_ctl  Ekman_number                     1.0e-3

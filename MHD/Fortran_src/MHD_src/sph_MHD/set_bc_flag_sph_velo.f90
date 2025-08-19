@@ -122,12 +122,14 @@
         sph_bc_U%iflag_icb = iflag_rotatable_ic
       else if (ibc_type .eq. iflag_sph_2_center) then
         sph_bc_U%iflag_icb = iflag_sph_fill_center
-      else if (ibc_type .eq. iflag_sph_clip_center) then
+      else if (ibc_type .eq. iflag_fix_center) then
         sph_bc_U%iflag_icb = iflag_sph_fix_center
+      else if (ibc_type .eq. iflag_filter_center) then
+        sph_bc_U%iflag_icb = iflag_sph_filter_center
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
         sph_bc_U%iflag_icb = iflag_fixed_field
-        if(sph_rj%idx_rj_degree_one( 1) .gt.0 ) then
+        if(sph_rj%idx_rj_degree_one( 1) .gt. 0) then
           j = sph_rj%idx_rj_degree_one( 1)
           ICB_Uspec%Vt_BC(j) = r_ICB*r_ICB * bc_mag
         end if

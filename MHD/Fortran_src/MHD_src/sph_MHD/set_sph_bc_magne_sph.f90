@@ -82,9 +82,10 @@
         if(sph_bc_B%icb_grp_name .eq. CTR_sf_grp_name) then
           if(magne_surf%ibc_type(i) .eq. iflag_sph_2_center) then
             sph_bc_B%iflag_icb =  iflag_sph_fill_center
-          else if(magne_surf%ibc_type(i) .eq. iflag_sph_clip_center)    &
-     &        then
+          else if(magne_surf%ibc_type(i) .eq. iflag_fix_center) then
             sph_bc_B%iflag_icb =  iflag_sph_fix_center
+          else if(magne_surf%ibc_type(i) .eq. iflag_filter_center) then
+            sph_bc_B%iflag_icb =  iflag_sph_filter_center
           end if
 !
         else if(magne_surf%ibc_type(i) .eq. iflag_pseudo_vacuum) then
@@ -94,9 +95,10 @@
         if(sph_bc_B%icb_grp_name .eq. CTR_nod_grp_name) then
           if(magne_nod%ibc_type(i) .eq. iflag_sph_2_center) then
             sph_bc_B%iflag_icb =  iflag_sph_fill_center
-          else if(magne_nod%ibc_type(i) .eq. iflag_sph_clip_center)     &
-     &        then
+          else if(magne_nod%ibc_type(i) .eq. iflag_fix_center) then
             sph_bc_B%iflag_icb =  iflag_sph_fix_center
+          else if(magne_nod%ibc_type(i) .eq. iflag_filter_center) then
+            sph_bc_B%iflag_icb =  iflag_sph_filter_center
           end if
 !
         else if(magne_nod%ibc_type(i) .eq. iflag_pseudo_vacuum) then
