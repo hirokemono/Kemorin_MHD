@@ -7,17 +7,17 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,       &
-!!     &         fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,   &
-!!     &         band_vs_poisson, band_vp_evo, band_wt_evo)
+!!     &          fl_prop, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,     &
+!!     &          g_sph_rj, band_vs_poisson, band_vp_evo, band_wt_evo)
 !!      subroutine const_radial_mat_toroidal_flow(dt, sph_rj, r_2nd,    &
-!!     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,  &
-!!     &          band_vt_evo)
+!!     &          fl_prop, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,     &
+!!     &          g_sph_rj, band_vt_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
-!!        type(sph_boundary_type), intent(in) :: sph_bc_B
+!!        type(sph_vector_boundary_data), intent(in) :: bcs_U
 !!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(band_matrices_type), intent(inout) :: band_vp_evo
@@ -39,6 +39,7 @@
       use t_sph_matrices
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
       use t_coef_sph_velocity_BCs
       use t_coef_fdm2_centre
 !
@@ -64,8 +65,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,         &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
-     &          band_vs_poisson, band_vp_evo, band_wt_evo)
+     &          fl_prop, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,       &
+     &          g_sph_rj, band_vs_poisson, band_vp_evo, band_wt_evo)
 !
       use calypso_mpi
       use m_ludcmp_band
@@ -78,6 +79,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_vector_boundary_data), intent(in) :: bcs_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
@@ -128,8 +130,9 @@
      &    one, r_2nd%fdm(2)%dmat, band_vs_poisson%mat)
 !
 !   Boundary condition for ICB
-      call sel_sph_r_mat_vort_2step_ICB(sph_rj, sph_bc_U, bc_fdms_U,    &
-     &   fdm2_center, g_sph_rj, coef_dvt, band_vs_poisson, band_wt_evo)
+      call sel_sph_r_mat_vort_2step_ICB                                 &
+     &   (sph_rj, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,              &
+     &    g_sph_rj, coef_dvt, band_vs_poisson, band_wt_evo)
 !
 !   Boundary condition for CMB
       call sel_sph_r_mat_vort_2step_CMB(sph_rj, sph_bc_U, bc_fdms_U,    &
@@ -163,8 +166,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_toroidal_flow(dt, sph_rj, r_2nd,      &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
-     &          band_vt_evo)
+     &          fl_prop, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,       &
+     &          g_sph_rj, band_vt_evo)
 !
       use m_ludcmp_band
       use select_sph_r_mat_vort_BC
@@ -176,6 +179,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_vector_boundary_data), intent(in) :: bcs_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
@@ -210,9 +214,9 @@
      &    coef_dvt, r_2nd%fdm(2)%dmat, band_vt_evo%mat)
 !
 !   Boundary condition for ICB
-      call sel_sph_r_mat_tor_flow_ICB(sph_rj, sph_bc_U,                 &
-     &    bc_fdms_U, fdm2_center, g_sph_rj, coef_dvt,                   &
-     &    band_vt_evo)
+      call sel_sph_r_mat_tor_flow_ICB                                   &
+     &   (sph_rj, sph_bc_U, bcs_U, bc_fdms_U, fdm2_center,              &
+     &    g_sph_rj, coef_dvt, band_vt_evo)
 !
 !   Overwrite rotation of inner core for degree 1
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then

@@ -10,15 +10,36 @@
 !!      subroutine copy_to_band3_mat_w_center(nri, c_evo, mat3, mat00_3)
 !!      subroutine copy_to_band3_mat_no_center(nri, mat3, mat00_3)
 !!      subroutine add_scalar_poisson_mat_fill_ctr(nri, r_CTR1,         &
-!!     &          fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef_p, mat00_3)
+!!     &         fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef_p, mat00_3)
 !!      subroutine add_scalar_poisson_mat_fix_ctr(nri, r_CTR1,          &
 !!     &          fdm2_fix_fld_ctr1, coef_p, mat00_3)
 !!      subroutine add_scalar_poisson_mat_no_fld(nri, mat00_3)
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(in) :: c_evo
+!!        real(kind = kreal), intent(in) :: mat3(3,nri)
+!!        real(kind = kreal), intent(in) :: r_CTR1(0:2)
+!!        real(kind = kreal), intent(in) :: coef_p
+!!        real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
+!!        real(kind = kreal), intent(inout) :: mat00_3(3,0:nri)
 !!
 !!      subroutine add_vector_poisson_mat_center(nri, jmax, g_sph_rj,   &
 !!     &          r_CTR1, fdm2_fix_fld_ctr1, coef_p, mat3)
 !!      subroutine add_scalar_poisson_mat_ctr1(nri, jmax, g_sph_rj,     &
 !!     &          r_CTR1, fdm2_fix_fld_ctr1, coef_p, mat3)
+!!        integer(kind = kint), intent(in) :: jmax, nri
+!!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
+!!        real(kind = kreal), intent(in) :: r_CTR1(0:2)
+!!        real(kind = kreal), intent(in) :: coef_p
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
+!!        real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
+!!
+!!      subroutine set_unit_mat_filter_to_center(nri, jmax, ICB_Vspec,  &
+!!     &                                         mat3)
+!!        integer(kind = kint), intent(in) :: jmax, nri
+!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        real(kind = kreal), intent(in) :: ICB_Vspec(jmax)
+!!        real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
 !!@endverbatim
 !
 !!@n @param jmax         Number of local spherical harmonics mode
@@ -223,6 +244,37 @@
       end do
 !
       end subroutine add_scalar_poisson_mat_ctr1
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_unit_mat_filter_to_center(nri, jmax, ICB_Vspec,    &
+     &                                         mat3)
+!
+      integer(kind = kint), intent(in) :: jmax, nri
+      real(kind = kreal), intent(in) :: ICB_Vspec(jmax)
+!
+      real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
+!
+      integer(kind = kint) :: k, j
+!
+!
+!$omp parallel do private(k,j)
+      do j = 1, jmax
+        if(ICB_Vspec(j) .gt. one) then
+          mat3(2,1,j) = one
+          mat3(1,2,j) = zero
+        else
+        end if
+        do k = 2, int(ICB_Vspec(j))
+          mat3(3,k-1,j) = zero
+          mat3(2,k,  j) = one
+          mat3(1,k+1,j) = zero
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_unit_mat_filter_to_center
 !
 ! -----------------------------------------------------------------------
 !

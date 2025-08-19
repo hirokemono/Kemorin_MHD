@@ -140,14 +140,15 @@
 !
       call const_radial_mat_toroidal_flow                               &
      &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
-     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,                  &
-     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
-     &    SPH_WK1%MHD_mats%band_vt_evo)
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bcs_U,                      &
+     &    sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center,               &
+     &    Plm_WK1%g_sph_rj, SPH_WK1%MHD_mats%band_vt_evo)
 !
-      call const_radial_mat_vort_2step(dt, sph1%sph_rj, SPH_WK1%r_2nd,  &
-     &    fl_prop1, sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bc_fdms_U,        &
-     &    sph_MHD_bc1%fdm2_center, Plm_WK1%g_sph_rj,                    &
-     &    SPH_WK1%MHD_mats%band_vs_poisson,                             &
+      call const_radial_mat_vort_2step                                  &
+     &   (dt, sph1%sph_rj, SPH_WK1%r_2nd, fl_prop1,                     &
+     &    sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%bcs_U,                      &
+     &    sph_MHD_bc1%bc_fdms_U, sph_MHD_bc1%fdm2_center,               &
+     &    Plm_WK1%g_sph_rj, SPH_WK1%MHD_mats%band_vs_poisson,           &
      &    SPH_WK1%MHD_mats%band_vp_evo, SPH_WK1%MHD_mats%band_wt_evo)
 !
       if(iflag_debug .eq. iflag_full_msg) then
