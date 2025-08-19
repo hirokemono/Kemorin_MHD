@@ -7,13 +7,12 @@
 !>@brief Set boundary conditions for scalar fields
 !!
 !!@verbatim
-!!      subroutine set_sph_bc_temp_sph                                  &
-!!     &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,  &
-!!     &          sph_bc_T, bcs_T)
-!!      subroutine set_sph_bc_composition_sph                           &
-!!     &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,  &
-!!     &          sph_bc_C, bcs_C)
+!!      subroutine set_sph_bc_temp_sph(bc_IO, sph_params, sph_rj,       &
+!!     &          radial_rj_grp, temp_nod, h_flux_surf, sph_bc_T, bcs_T)
+!!      subroutine set_sph_bc_composition_sph(bc_IO, sph_params, sph_rj,&
+!!     &          radial_rj_grp, light_nod, light_surf, sph_bc_C, bcs_C)
 !!        type(boundary_spectra), intent(in) :: bc_IO
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_T
@@ -40,6 +39,7 @@
       use m_machine_parameter
       use m_boundary_condition_IDs
 !
+      use t_spheric_parameter
       use t_spheric_rj_data
       use t_group_data
       use t_boundary_params_sph_MHD
@@ -90,14 +90,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_temp_sph                                    &
-     &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,    &
-     &          sph_bc_T, bcs_T)
+      subroutine set_sph_bc_temp_sph(bc_IO, sph_params, sph_rj,         &
+     &          radial_rj_grp, temp_nod, h_flux_surf, sph_bc_T, bcs_T)
 !
       use m_base_field_labels
       use m_base_force_labels
 !
       type(boundary_spectra), intent(in) :: bc_IO
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(boundary_condition_list), intent(in) :: temp_nod
@@ -108,7 +108,7 @@
 !
 !
       call set_sph_bc_scalar_sph(temperature, heat_flux, bc_IO,         &
-     &    sph_rj, radial_rj_grp, temp_nod, h_flux_surf,                 &
+     &    sph_params, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,     &
      &    sph_bc_T, bcs_T)
 !
       if(i_debug .gt. 0) then
@@ -139,14 +139,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_composition_sph                             &
-     &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,    &
-     &          sph_bc_C, bcs_C)
+      subroutine set_sph_bc_composition_sph(bc_IO, sph_params, sph_rj,  &
+     &          radial_rj_grp, light_nod, light_surf, sph_bc_C, bcs_C)
 !
       use m_base_field_labels
       use m_base_force_labels
 !
       type(boundary_spectra), intent(in) :: bc_IO
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(boundary_condition_list), intent(in) :: light_nod
@@ -157,7 +157,7 @@
 !
 !
       call set_sph_bc_scalar_sph(composition, composite_flux, bc_IO,    &
-     &    sph_rj, radial_rj_grp, light_nod, light_surf,                 &
+     &    sph_params, sph_rj, radial_rj_grp, light_nod, light_surf,     &
      &    sph_bc_C, bcs_C)
 !
       if(i_debug .gt. 0) then
@@ -190,11 +190,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_scalar_sph(field, flux, bc_IO,              &
-     &          sph_rj, radial_rj_grp, nod_bc_list, surf_bc_list,       &
-     &          sph_bc, bcs_S)
+      subroutine set_sph_bc_scalar_sph                                  &
+     &         (field, flux, bc_IO, sph_params, sph_rj, radial_rj_grp,  &
+     &          nod_bc_list, surf_bc_list, sph_bc, bcs_S)
 !
       type(field_def), intent(in) :: field, flux
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(boundary_condition_list), intent(in) :: nod_bc_list
@@ -215,7 +216,8 @@
 !      Boundary setting for inner boundary
       call inner_sph_bc_scalar_sph                                      &
      &   (field, flux, nod_bc_list, surf_bc_list, bc_IO, igrp_icb,      &
-     &    sph_rj, sph_bc, bcs_S%ICB_Sspec, bcs_S%ICB_Sevo)
+     &    sph_params%l_truncation, sph_rj,                              &
+     &    sph_bc, bcs_S%ICB_Sspec, bcs_S%ICB_Sevo)
 !
 !      Boundary setting for outer boundary
       call outer_sph_bc_scalar_sph                                      &
@@ -228,11 +230,14 @@
 !
       subroutine inner_sph_bc_scalar_sph                                &
      &         (field, flux, nod_bc_list, surf_bc_list, bc_IO,          &
-     &          igrp_icb, sph_rj, sph_bc, ICB_Sspec, ICB_Sevo)
+     &          igrp_icb, l_truncation, sph_rj,                         &
+     &          sph_bc, ICB_Sspec, ICB_Sevo)
 !
       use set_sph_bc_data_by_file
+      use set_filter_BC_to_center
 !
       integer(kind = kint), intent(in) :: igrp_icb
+      integer(kind = kint), intent(in) :: l_truncation
 !
       type(field_def), intent(in) :: field, flux
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -263,15 +268,16 @@
 !
         else if(surf_bc_list%ibc_type(i) .eq. iflag_sph_2_center        &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
-         sph_bc%iflag_icb = iflag_sph_fill_center
+          sph_bc%iflag_icb = iflag_sph_fill_center
         else if ( surf_bc_list%ibc_type(i) .eq. iflag_fix_center        &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
-         sph_bc%iflag_icb = iflag_sph_fix_center
-         sph_bc%CTR_fld =   surf_bc_list%bc_magnitude(i)
+          sph_bc%iflag_icb = iflag_sph_fix_center
+          sph_bc%CTR_fld =   surf_bc_list%bc_magnitude(i)
         else if ( surf_bc_list%ibc_type(i) .eq. iflag_filter_center     &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
-         sph_bc%iflag_icb = iflag_sph_filter_center
-         sph_bc%CTR_fld =   surf_bc_list%bc_magnitude(i)
+          sph_bc%iflag_icb = iflag_sph_filter_center
+          call sph_scalar_filter_to_center(l_truncation, sph_rj,        &
+     &        surf_bc_list%bc_magnitude(i), ICB_Sspec)
         end if
 !
       else if(igrp_icb .gt. 0) then
@@ -310,7 +316,8 @@
         else if(nod_bc_list%ibc_type(i) .eq. iflag_filter_center        &
      &    .and. nod_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
           sph_bc%iflag_icb = iflag_sph_filter_center
-          sph_bc%CTR_fld =   nod_bc_list%bc_magnitude(i)
+          call sph_scalar_filter_to_center(l_truncation, sph_rj,        &
+     &        nod_bc_list%bc_magnitude(i), ICB_Sspec)
         end if
       end if
 !
