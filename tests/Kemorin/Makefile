@@ -17,6 +17,7 @@ MPIRUN= mpirun
 
 TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
 TARGET_SPH_SNAP =            $(BUILDDIR)/sph_snapshot
+TARGET_SPH_LICV =            $(BUILDDIR)/sph_licv
 TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
 TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
@@ -48,12 +49,27 @@ test:
 	@echo "# Test in Mesh directory..."
 	@cd Mesh; \
 		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
-		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)"  TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
-		TARGET_CHECK_SPH_GRID="$(TARGET_CHECK_SPH_GRID)" TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
+		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
+		TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
+		TARGET_CHECK_SPH_GRID="$(TARGET_CHECK_SPH_GRID)" \
+		TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
 		test
+		
+	@echo "# Test in Models directory..."
+	@cd Models; \
+		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
+		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_LICV="$(TARGET_SPH_LICV)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
+		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
+		test
+
 
 clean:
 	cd Mesh; make clean
+	cd Models; make clean
 	
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 

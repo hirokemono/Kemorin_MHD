@@ -216,7 +216,7 @@
 !      Boundary setting for outer boundary
       i = abs(igrp_cmb)
       if(igrp_cmb .lt. 0) then
-        if ( surf_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
+        if(surf_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
           call set_homogenious_grad_bc                                  &
      &       (surf_bc_list%bc_name(i), surf_bc_list%bc_magnitude(i),    &
      &        sph_rj, sph_bc%cmb_grp_name, sph_bc%iflag_cmb,            &
