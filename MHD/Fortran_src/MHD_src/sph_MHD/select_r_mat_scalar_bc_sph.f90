@@ -76,7 +76,8 @@
 !
 !
 !   Boundary condition for ICB
-      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_U%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_U%iflag_icb .eq. iflag_sph_filter_center)) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
