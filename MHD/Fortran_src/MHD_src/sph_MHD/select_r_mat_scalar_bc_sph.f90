@@ -129,7 +129,7 @@
      &      sph_bc%r_ICB, fdm2_center%dmat_fix_fld, r_coef(1),          &
      &      band_s_evo%mat)
         if(sph_bc%iflag_icb .eq. iflag_sph_filter_center) then
-          call set_unit_mat_filter_to_center                            &
+          call set_unit_mat3_filter_to_center                           &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        bcs_S%ICB_Sspec%S_BC, band_s_evo%mat)
         end if
@@ -169,7 +169,7 @@
       subroutine sel_radial_mat00_scalar_bc_sph                         &
      &         (sph_rj, sph_bc, fdm2_center, r_coef, band_s00_poisson)
 !
-      use center_sph_matrices
+      use sph_zero_degree_matrices
       use set_sph_scalar_matrix_ICB
       use set_sph_scalar_matrix_CMB
 !
@@ -232,7 +232,7 @@
       subroutine sel_r_mat_poisson_fixBC_sph                            &
      &         (sph_rj, sph_bc, fdm2_center, band_s00_poisson)
 !
-      use center_sph_matrices
+      use sph_zero_degree_matrices
       use set_sph_scalar_matrix_ICB
       use set_sph_scalar_matrix_CMB
 !

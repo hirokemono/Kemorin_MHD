@@ -24,6 +24,25 @@
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!        type(band_matrices_type), intent(inout) :: band_wt_evo
 !!        type(band_matrices_type), intent(inout) :: band_vs_poisson
+!!
+!!      subroutine const_radial_mat7_vpol_press                         &
+!!     &         (dt, sph_rj, r_2nd, r_n2e_3rd, r_e2n_1st, fl_prop,     &
+!!     &          sph_bc_U, bcs_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+!!     &          radial_variation, band7_vsp_evo)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(fdm_matrices), intent(in) :: r_n2e_3rd
+!!        type(fdm_matrices), intent(in) :: r_e2n_1st
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(sph_vector_boundary_data), intent(in) :: bcs_U
+!!        type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
+!!        type(phys_data), intent(in) :: radial_variation
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!        real(kind = kreal), intent(in)                                &
+!!     &                     :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!!        real(kind = kreal), intent(in) :: dt
+!!        type(band_matrices_type), intent(inout) :: band7_vsp_evo
 !!@endverbatim
 !
       module const_r_mat_4_vector_sph
@@ -237,9 +256,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat7_vpol_press(dt, sph_rj,               &
-     &          r_2nd, r_n2e_3rd, r_e2n_1st, &
-     &          fl_prop, sph_bc_U, bc_fdms_U, fdm2_center, g_sph_rj,    &
+      subroutine const_radial_mat7_vpol_press                           &
+     &         (dt, sph_rj, r_2nd, r_n2e_3rd, r_e2n_1st, fl_prop,       &
+     &          sph_bc_U, bcs_U, bc_fdms_U, fdm2_center, g_sph_rj,      &
      &          radial_variation, band7_vsp_evo)
 !
       use t_phys_data
@@ -247,6 +266,7 @@
       use cal_sph_pol_hdiv_vscs_CMB
       use cal_sph_pol_hdiv_vscs_ICB
       use set_sph_pol_hdiv_viscs_CTR
+      use center_sph_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -254,6 +274,7 @@
       type(fdm_matrices), intent(in) :: r_e2n_1st
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_vector_boundary_data), intent(in) :: bcs_U
       type(velocity_boundary_FDMs), intent(in) :: bc_fdms_U
       type(phys_data), intent(in) :: radial_variation
       type(fdm2_center_mat), intent(in) :: fdm2_center
@@ -288,13 +309,20 @@
      &    r_2nd%fdm(1), r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),             &
      &    mat2_viscous, hdiv_visous_mat, band7_vsp_evo%mat)
 !
-      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_U%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_U%iflag_icb .eq. iflag_sph_filter_center)) then
         call sph_FDM2_vpol_viscosity_mat_CTR                            &
      &     (sph_rj, fl_prop, radial_variation, g_sph_rj, coef_dvt,      &
      &      r_n2e_3rd%fdm(0), r_e2n_1st%fdm(0),                         &
      &      fdm2_center, bc_fdms_U%fdm3e_CTR,                           &
      &      mat_grad_p, mat2_viscous, hdiv_visous_mat,                  &
      &      band7_vsp_evo%mat)
+!
+        if(sph_bc_U%iflag_icb .eq. iflag_sph_filter_center) then
+          call set_unit_mat7_filter_to_center                           &
+     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
+     &        bcs_U%ICB_Vspec%Vp_BC, band7_vsp_evo%mat)
+        end if
       else
         call sph_FDM2_vpol_viscosity_mat_ICB(sph_rj, fl_prop,           &
      &      radial_variation, sph_bc_U, g_sph_rj, coef_dvt,             &

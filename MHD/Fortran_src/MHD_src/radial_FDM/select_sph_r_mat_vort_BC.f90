@@ -97,10 +97,10 @@
      &      one, band_vs_poisson%mat)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_sph_filter_center) then
-!          call set_unit_mat_filter_to_center                           &
+!          call set_unit_mat3_filter_to_center                          &
 !     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                    &
 !     &        bcs_U%ICB_Vspec%Vp_BC, band_wt_evo%mat)
-          call set_unit_mat_filter_to_center                            &
+          call set_unit_mat3_filter_to_center                           &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        bcs_U%ICB_Vspec%Vp_BC, band_vs_poisson%mat)
         end if
@@ -159,7 +159,7 @@
      &      coef_dvt, band_vt_evo%mat)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_sph_filter_center) then
-          call set_unit_mat_filter_to_center                            &
+          call set_unit_mat3_filter_to_center                           &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        bcs_U%ICB_Vspec%Vp_BC, band_vt_evo%mat)
         end if

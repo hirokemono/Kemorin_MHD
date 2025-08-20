@@ -161,7 +161,7 @@ use t_coef_fdm2_centre
      &           n_vect, n_comp, p_poisson_mat, band_p00_poisson)
 !
       use m_ludcmp_3band
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -214,7 +214,7 @@ use t_coef_fdm2_centre
 !
       use m_ludcmp_3band
       use t_boundary_params_sph_MHD
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm2_center_mat), intent(in) :: fdm2_center
@@ -262,7 +262,7 @@ use t_coef_fdm2_centre
      &         (sph_rj, n_vect, n_comp, evo_mat, band_s00_poisson)
 !
       use m_ludcmp_3band
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
 !
