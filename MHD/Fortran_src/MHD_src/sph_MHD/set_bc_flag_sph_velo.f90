@@ -50,7 +50,7 @@
 !
       use t_group_data
       use t_bc_data_list
-      use set_bc_sph_scalars
+      use set_sph_homogenious_BCs
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj

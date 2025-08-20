@@ -48,7 +48,8 @@
      &          radial_rj_grp, magne_nod, magne_surf, sph_bc_B, bcs_B)
 !
       use m_base_field_labels
-      use set_bc_sph_scalars
+!
+      use set_sph_homogenious_BCs
       use set_sph_bc_data_by_file
       use set_filter_BC_to_center
 !
