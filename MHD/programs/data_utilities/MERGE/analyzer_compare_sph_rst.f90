@@ -138,7 +138,10 @@
 !
       do istep = asbl_param_s%istep_start, asbl_param_s%istep_end
         if(mod(istep, asbl_param_s%increment_step) .ne. 0) cycle
+!
         istep_in = istep / asbl_param_s%increment_step
+        if(i_debug .gt. 0) write(my_rank+100,*)                         &
+     &                   'restart file step: ', istep_in
 !
 !     Load original spectr data
         call load_org_sph_data(istep_in, asbl_param_s%org_fld_file,     &
