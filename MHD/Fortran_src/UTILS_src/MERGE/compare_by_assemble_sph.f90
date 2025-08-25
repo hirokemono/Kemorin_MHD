@@ -77,20 +77,22 @@
       end if
 !
       compare_assembled_sph_data                                        &
-     &    = compare_rj_phys_data_with_IO(delta, new_phys, new_fst_IO)
+     &    = compare_rj_phys_data_with_IO(delta, new_sph%sph_rj,         &
+     &                                   new_phys, new_fst_IO)
 !
       end function compare_assembled_sph_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function                                     &
-     &            compare_rj_phys_data_with_IO(delta, rj_fld, fld_IO)
+      integer(kind = kint) function compare_rj_phys_data_with_IO        &
+     &                            (delta, sph_rj, rj_fld, fld_IO)
 !
       use calypso_mpi_int
       use transfer_to_long_integers
 !
       real(kind = kreal), intent(in) :: delta
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(in) :: fld_IO
 !
@@ -106,11 +108,12 @@
         end if
 !
         if (rj_fld%num_component(i_fld) .eq. n_vector) then
-          iflag(1) = compare_each_sph_vector_with_IO(rj_fld, fld_IO,    &
-     &                                            i_fld, i_fld, delta)
+          iflag(1) = compare_each_sph_vector_with_IO                    &
+     &                    (sph_rj, rj_fld, fld_IO, i_fld, i_fld, delta)
         else
-          iflag(1) = compare_each_sph_field_with_IO(rj_fld, fld_IO,     &
-     &           rj_fld%num_component(i_fld), i_fld, i_fld, delta)
+          iflag(1) = compare_each_sph_field_with_IO(sph_rj, rj_fld,     &
+     &                    fld_IO, rj_fld%num_component(i_fld),          &
+     &                    i_fld, i_fld, delta)
         end if
         call calypso_mpi_allreduce_int(iflag(1), iflag_gl(1),           &
      &                                 cast_long(ione), MPI_SUM)
@@ -160,9 +163,10 @@
 ! -------------------------------------------------------------------
 !
       integer(kind = kint) function compare_each_sph_vector_with_IO     &
-     &                            (rj_fld, fld_IO, i_fld, j_IO, delta)
+     &                   (sph_rj, rj_fld, fld_IO, i_fld, j_IO, delta)
 !
       integer(kind = kint), intent(in) :: i_fld, j_IO
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(in) :: fld_IO
       real(kind = kreal), intent(in) :: delta
@@ -197,8 +201,9 @@
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,'(i15,1p6e25.13e3)') inod,                  &
-     &                      fld_IO%d_IO(inod,jst+1:jst+3), diff(1:3)
+          write(100+my_rank,'(3i15,1p6e25.13e3)') inod,                 &
+     &                        sph_rj%idx_global_rj(inod,1:2),           &
+     &                        fld_IO%d_IO(inod,jst+1:jst+3), diff(1:3)
         end if
       end do
       return
@@ -208,9 +213,10 @@
 ! -------------------------------------------------------------------
 !
       integer(kind = kint) function compare_each_sph_field_with_IO      &
-     &                   (rj_fld, fld_IO, numdir, i_fld, j_IO, delta)
+     &           (sph_rj, rj_fld, fld_IO, numdir, i_fld, j_IO, delta)
 !
       integer(kind = kint), intent(in) :: numdir, i_fld, j_IO
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(in) :: fld_IO
       real(kind = kreal), intent(in) :: delta
@@ -240,7 +246,8 @@
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,'(i15,1p12e25.13e3)') inod,                 &
+          write(100+my_rank,'(3i15,1p12e25.13e3)') inod,                &
+     &                        sph_rj%idx_global_rj(inod,1:2),           &
      &                        fld_IO%d_IO(inod,jst+1:jst+numdir),       &
      &                        diff(1:numdir)
         end if
