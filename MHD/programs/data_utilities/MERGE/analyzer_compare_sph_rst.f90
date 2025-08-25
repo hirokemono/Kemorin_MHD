@@ -41,6 +41,7 @@
       type(control_param_assemble), save :: asbl_param_s
       type(spectr_data_4_assemble), save :: sph_asbl_s
       type(time_data), save :: init_t
+      real(kind = kreal) :: delta = TINY
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,6 +79,7 @@
 !
       call set_control_4_newsph(mgd_ctl_s, asbl_param_s, sph_asbl_s,    &
      &    sph_org_maker_s, sph_asbl_s%new_sph_data)
+      delta = error_threshold_2_compare(mgd_ctl_s%delta_to_compare_ctl)
 !
       call alloc_spectr_data_4_assemble(sph_asbl_s)
 !
@@ -167,7 +169,7 @@
      &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
-        iflag = compare_assembled_sph_data(TINY, init_t,                &
+        iflag = compare_assembled_sph_data(delta, init_t,               &
      &        sph_asbl_s%new_sph_data%sph, sph_asbl_s%new_sph_data%fld, &
      &        sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !

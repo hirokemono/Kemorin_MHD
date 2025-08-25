@@ -59,6 +59,8 @@
 !
 !>        Re-normalization flag for magnetic field
         type(read_real_item) :: magnetic_ratio_ctl
+!>        Error limit for data comparison
+        type(read_real_item) :: delta_to_compare_ctl
 !
         integer (kind=kint) :: i_assemble = 0
         integer (kind=kint) :: i_model =         0
@@ -68,44 +70,44 @@
 !
 !   Top level
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_assemble = 'assemble_control'
 !
 !   2nd level for assemble_control
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                :: hd_new_data = 'new_data_files_def'
-      character(len=kchara), parameter :: hd_model =   'model'
-      character(len=kchara), parameter :: hd_control = 'control'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
+     &                :: hd_model =   'model'
+      character(len=kchara), parameter, private                         &
+     &                :: hd_control = 'control'
+      character(len=kchara), parameter, private                         &
      &                :: hd_newrst_magne = 'newrst_magne_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                :: hd_orgsph_shell = 'spherical_shell_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                :: hd_newsph_shell = 'new_spherical_shell_ctl'
 !
 !>      label for block
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_phys_values =  'phys_values_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_time_step = 'time_step_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
+     &      :: hd_time_step =     'time_step_ctl'
+      character(len=kchara), parameter, private                         &
      &      :: hd_new_time_step = 'new_time_step_ctl'
 !
 !   newrst_magne_ratio data
 !
-      character(len=kchara), parameter                                  &
-     &      :: hd_magnetic_field_ratio =  'magnetic_field_ratio_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_magnetic_field_ratio = 'magnetic_field_ratio_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &      :: hd_delta_to_compare =     'error_threshold_ctl'
 !
       private :: control_file_code
-      private :: hd_assemble
-      private :: hd_platform, hd_new_data, hd_model, hd_control
-      private :: hd_phys_values, hd_time_step, hd_new_time_step
-      private :: hd_newrst_magne, hd_magnetic_field_ratio
-      private :: hd_orgsph_shell, hd_newsph_shell
 !
       private :: read_merge_control_data
       private :: read_newrst_control
@@ -349,6 +351,8 @@
 !
         call read_real_ctl_type(c_buf, hd_magnetic_field_ratio,         &
      &      mgd_ctl%magnetic_ratio_ctl)
+        call read_real_ctl_type(c_buf, hd_delta_to_compare,             &
+     &      mgd_ctl%delta_to_compare_ctl)
       end do
       mgd_ctl%i_newrst_magne = 1
 !
@@ -361,7 +365,8 @@
       type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
-      mgd_ctl%magnetic_ratio_ctl%iflag = 0
+      mgd_ctl%magnetic_ratio_ctl%iflag =   0
+      mgd_ctl%delta_to_compare_ctl%iflag = 0
       mgd_ctl%i_newrst_magne = 0
 !
       end subroutine reset_newrst_control
