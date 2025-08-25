@@ -162,8 +162,8 @@
       type(field_IO), intent(in) :: fld_IO
       real(kind = kreal), intent(in) :: delta
 !
-      integer(kind = kint) :: ist, jst, inod, iflag
-      real(kind = kreal) :: diff(3)
+      integer(kind = kint) :: ist, jst, inod, iflag, nd
+      real(kind = kreal) :: diff(3), swap(3), tgt(3)
 !
 !
       compare_each_sph_vector_with_IO = 0
@@ -171,21 +171,29 @@
       jst = fld_IO%istack_comp_IO(j_IO-1)
       do inod = 1, rj_fld%n_point
         iflag = 0
-        diff(1) = fld_IO%d_IO(inod,jst+1) - rj_fld%d_fld(inod,ist+1)
-        if(abs(diff(1)) .gt. delta) iflag = iflag + 1
-        diff(2) = fld_IO%d_IO(inod,jst+2) - rj_fld%d_fld(inod,ist+3)
-        if(abs(diff(2)) .gt. delta) iflag = iflag + 1
-        diff(3) = fld_IO%d_IO(inod,jst+3) - rj_fld%d_fld(inod,ist+2)
-        if(abs(diff(3)) .gt. delta) iflag = iflag + 1
+        swap(1) = rj_fld%d_fld(inod,ist+1)
+        swap(2) = rj_fld%d_fld(inod,ist+3)
+        swap(3) = rj_fld%d_fld(inod,ist+2)
+        tgt(1:3) = fld_IO%d_IO(inod,jst+1:jst+3)
+!
+        do nd = 1, 3
+          diff(nd) = tgt(nd) - swap(nd)
+          if(diff(nd) .eq. 0.0d0) cycle
+!
+          diff(nd) = diff(nd) / max(abs(swap(nd)), abs(tgt(nd)))
+!
+          if(abs(diff(nd)) .gt. delta) then
+            iflag = iflag + 1
+          end if
+        end do
 !
         compare_each_sph_vector_with_IO                                 &
      &                   = compare_each_sph_vector_with_IO + iflag
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,*) inod, fld_IO%d_IO(inod,jst+1),           &
-     &                         fld_IO%d_IO(inod,jst+3),                 &
-     &                         fld_IO%d_IO(inod,jst+2), diff(1:3)
+          write(100+my_rank,'(i15,1p6e23.15e3)') inod,                  &
+     &                      fld_IO%d_IO(inod,jst+1:jst+3), diff(1:3)
         end if
       end do
       return
@@ -214,8 +222,12 @@
         do nd = 1, numdir
           diff(nd) = fld_IO%d_IO(inod,jst+nd)                           &
      &              - rj_fld%d_fld(inod,ist+nd)
-          if(abs(diff(nd)) .gt. delta) iflag = iflag + 1
+          if(diff(nd) .eq. 0.0d0) cycle
 !
+          diff(nd) = diff(nd) / max(abs(fld_IO%d_IO(inod,jst+nd)),      &
+     &                              abs(rj_fld%d_fld(inod,ist+nd)))
+!
+          if(abs(diff(nd)) .gt. delta) iflag = iflag + 1
           compare_each_sph_field_with_IO                                &
      &                   = compare_each_sph_field_with_IO + iflag
         end do
@@ -223,7 +235,7 @@
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,*) inod,                                    &
+          write(100+my_rank,'(i15,1p12e23.15e3)') inod,                 &
      &                        fld_IO%d_IO(inod,jst+1:jst+numdir),       &
      &                        diff(1:numdir)
         end if
