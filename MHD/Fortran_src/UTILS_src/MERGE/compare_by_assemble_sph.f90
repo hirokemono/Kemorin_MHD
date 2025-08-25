@@ -100,6 +100,11 @@
 !
       compare_rj_phys_data_with_IO = 0
       do i_fld = 1, rj_fld%num_phys
+        if(i_debug .gt. 0) then
+          write(100+my_rank,*) 'field name: ',                          &
+     &                        trim(rj_fld%phys_name(i_fld))
+        end if
+!
         if (rj_fld%num_component(i_fld) .eq. n_vector) then
           iflag(1) = compare_each_sph_vector_with_IO(rj_fld, fld_IO,    &
      &                                            i_fld, i_fld, delta)
@@ -192,7 +197,7 @@
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,'(i15,1p6e23.15e3)') inod,                  &
+          write(100+my_rank,'(i15,1p6e25.13e3)') inod,                  &
      &                      fld_IO%d_IO(inod,jst+1:jst+3), diff(1:3)
         end if
       end do
@@ -235,7 +240,7 @@
         if(iflag .gt. 0) then
           if(i_debug .eq. 0) return
 !
-          write(100+my_rank,'(i15,1p12e23.15e3)') inod,                 &
+          write(100+my_rank,'(i15,1p12e25.13e3)') inod,                 &
      &                        fld_IO%d_IO(inod,jst+1:jst+numdir),       &
      &                        diff(1:numdir)
         end if
