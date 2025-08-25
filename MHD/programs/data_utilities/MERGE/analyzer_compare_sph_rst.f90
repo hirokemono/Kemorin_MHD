@@ -36,7 +36,7 @@
       implicit none
 !
       character(len = kchara), parameter, private                       &
-     &               :: ctl_file_name = 'control_assemble_sph'
+     &               :: ctl_file_name = 'control_cmp_sph_rst'
 !
       type(control_param_assemble), save :: asbl_param_s
       type(spectr_data_4_assemble), save :: sph_asbl_s
