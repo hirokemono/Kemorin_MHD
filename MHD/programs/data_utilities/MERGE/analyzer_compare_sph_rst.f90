@@ -164,7 +164,7 @@
      &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
-        iflag = compare_assembled_sph_data(my_rank, init_t,             &
+        iflag = compare_assembled_sph_data(TINY, init_t,                &
      &        sph_asbl_s%new_sph_data%sph, sph_asbl_s%new_sph_data%fld, &
      &        sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !

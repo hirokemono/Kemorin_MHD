@@ -4,30 +4,30 @@
 
 SPH_UTILS_DIR = $$(DATA_UTILS_DIR)/sph_spectr
 
-TARGET_SPH_ENE_SPEC =      ene_sph_spec
-TARGET_SPH_ENE_LAYER =     ene_sph_layer
-TARGET_PICK_SPH_VOL_ENE =  pick_sph_vol_ene
-TARGET_PICK_SPH_ENE =      pick_sph_ene
+TARGET_SPH_ENE_SPEC =        ene_sph_spec
+TARGET_SPH_ENE_LAYER =       ene_sph_layer
+TARGET_PICK_SPH_VOL_ENE =    pick_sph_vol_ene
+TARGET_PICK_SPH_ENE =        pick_sph_ene
 
 TARGET_APPEND_SPH_MONITORS = append_sph_monitors
 TARGET_TRIM_SPH_MONITORS =   trim_sph_monitors
 
-TARGET_PICK_SPH_SPEC =     pick_sph_spec
-TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
+TARGET_PICK_SPH_SPEC =       pick_sph_spec
+TARGET_PICK_GAUSS_COEF =     pick_gauss_coefs
 
-TARGET_RENAME_SPH_FLD =    rename_spectr_field
-TARGET_DIFF_SPH_SPEC =     diff_spectr_data
-TARGET_ZM_SPH_SPEC =       zonal_mean_sph
-TARGET_T_AVE_SPEC =        t_ave_sph_spec
-TARGET_SPH_NEUTRAL =       sph_neutral_points
-TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_monitor_data
-TARGET_PSUM_SPH_ENE_SPEC =  part_sum_sph_mean_square
+TARGET_RENAME_SPH_FLD =      rename_spectr_field
+TARGET_DIFF_SPH_SPEC =       diff_spectr_data
+TARGET_ZM_SPH_SPEC =         zonal_mean_sph
+TARGET_T_AVE_SPEC =          t_ave_sph_spec
+TARGET_SPH_NEUTRAL =         sph_neutral_points
+TARGET_TAVE_SPH_ENE_SPEC =   t_ave_sph_monitor_data
+TARGET_PSUM_SPH_ENE_SPEC =   part_sum_sph_mean_square
 
 TARGET_T_AVE_STABLE_REV =      t_ave_stable_and_reversal
 TARGET_T_AVE_STABLE_REV_SPEC = t_ave_stable_and_rev_spectr
 
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
-TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
+TARGET_SPH_ULI_LSCALE =      sph_uli_lengthscale
 TARGET_SPH_DYN_ELSASSER =    sph_dyn_elsasser
 TARGET_FIT_DIPOLE_RATIO =    sph_fitted_dipole_ratio
 
