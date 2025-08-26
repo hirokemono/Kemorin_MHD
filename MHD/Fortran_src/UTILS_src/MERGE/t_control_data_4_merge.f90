@@ -218,6 +218,9 @@
      &      mgd_ctl%fname_src_psph_ctl,  mgd_ctl%src_psph_ctl, c_buf)
         call sel_read_ctl_gen_shell_grids(id_control, hd_newsph_shell,  &
      &      mgd_ctl%fname_asbl_psph_ctl, mgd_ctl%asbl_psph_ctl, c_buf)
+!
+        call read_real_ctl_type(c_buf, hd_delta_to_compare,             &
+     &      mgd_ctl%delta_to_compare_ctl)
       end do
       mgd_ctl%i_assemble = 1
 !
@@ -239,6 +242,7 @@
       call reset_merge_step_data(mgd_ctl)
       call reset_newrst_control(mgd_ctl)
 !
+      mgd_ctl%delta_to_compare_ctl%iflag = 0
       mgd_ctl%i_assemble = 0
 !
       end subroutine reset_merge_control_data
@@ -351,8 +355,6 @@
 !
         call read_real_ctl_type(c_buf, hd_magnetic_field_ratio,         &
      &      mgd_ctl%magnetic_ratio_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_to_compare,             &
-     &      mgd_ctl%delta_to_compare_ctl)
       end do
       mgd_ctl%i_newrst_magne = 1
 !
@@ -366,7 +368,6 @@
 !
 !
       mgd_ctl%magnetic_ratio_ctl%iflag =   0
-      mgd_ctl%delta_to_compare_ctl%iflag = 0
       mgd_ctl%i_newrst_magne = 0
 !
       end subroutine reset_newrst_control
