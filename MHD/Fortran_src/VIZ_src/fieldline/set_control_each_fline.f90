@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine count_control_4_fline(fln, ele_grp, sf_grp, fln_prm)
-!!      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
@@ -16,6 +15,12 @@
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        integer(kind = kint), intent(inout) :: ierr
+!!
+!!      subroutine set_control_fieldline_field(fln, nod_fld, fln_prm)
+!!      subroutine set_control_tracer_density(fln, nod_fld, fln_prm)
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fline_ctl), intent(in) :: fln
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!      subroutine set_fline_ctl_4_tracer_seed(num_tracer, tracer_prm,  &
 !!     &                                       fln, fln_prm)
 !!        integer(kind = kint), intent(in) :: num_tracer
@@ -36,10 +41,7 @@
       use t_ctl_data_field_line
       use t_geometry_data
       use t_group_data
-!
-      use set_area_4_viz
-      use set_field_comp_for_viz
-      use set_fields_for_fieldline
+      use t_phys_data
 !
       implicit  none
 !
@@ -190,18 +192,16 @@
       end subroutine count_control_4_fline
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_fline(fln, ele_grp, nod_fld, fln_prm)
+      subroutine set_control_fieldline_field(fln, nod_fld, fln_prm)
 !
       use t_source_of_filed_line
       use set_components_flags
-      use set_area_4_viz
-      use coordinate_converter
+      use set_field_comp_for_viz
 !
-      type(group_data), intent(in) :: ele_grp
       type(phys_data), intent(in) :: nod_fld
-!
-      type(fline_ctl), intent(inout) :: fln
+      type(fline_ctl), intent(in) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
@@ -225,6 +225,26 @@
       fln_prm%iphys_4_fline                                             &
      &       = nod_fld%istack_component(ifield_tmp(1)-1) + 1
 !
+      end subroutine set_control_fieldline_field
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_tracer_density(fln, nod_fld, fln_prm)
+!
+      use t_source_of_filed_line
+      use set_field_comp_for_viz
+!
+      type(phys_data), intent(in) :: nod_fld
+      type(fline_ctl), intent(in) :: fln
+!
+      type(fieldline_paramter), intent(inout) :: fln_prm
+!
+      integer(kind = kint) :: ncomp(1), ncomp_org(1)
+      integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
+      character(len=kchara) :: tmpfield(1)
+      character(len=kchara) :: tmpcomp(1)
+      character(len=kchara) :: tmpchara(1)
+!
 !
       tmpfield(1) = fln%seed_ref_field_ctl%charavalue
       tmpcomp(1) =  fln%seed_ref_comp_ctl%charavalue
@@ -234,14 +254,7 @@
       fln_prm%ifield_4_density = ifield_tmp(1)
       fln_prm%icomp_4_density =  icomp_tmp(1)
 !
-      call set_ctl_params_viz_fields(fln%fline_field_output_ctl,        &
-     &                               nod_fld, fln_prm%fline_fields)
-!
-      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
-     &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
-     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)
-!
-      end subroutine set_control_4_fline
+      end subroutine set_control_tracer_density
 !
 !  ---------------------------------------------------------------------
 !

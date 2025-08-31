@@ -170,7 +170,6 @@
      &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
      &    tracer%fln_SR, tracer%fln_bcast, m_SR)
 !
-!
       if(elps_tracer%flag_elapsed)                                      &
      &        call start_elapsed_time(elps_tracer%ist_elapsed+3)
       call output_tracer_restarts(time_d, finish_d, rst_step,           &

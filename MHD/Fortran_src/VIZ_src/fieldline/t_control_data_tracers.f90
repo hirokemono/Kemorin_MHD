@@ -34,7 +34,6 @@
 !!        ...
 !!      end   tracer_ctl
 !!    end array tracer_ctl
-!!  end  tracers_control
 !!
 !!    delta_t_tracer_output            1.0e-1
 !!    i_step_tracer_output             400

@@ -25,8 +25,11 @@
 !!    fline_file_prefix    'fline'
 !!    fline_output_format   ucd
 !!
+!!    tracer_restart_prefix   'tracer'
+!!    tracer_restart_format   'merged_bin'
+!!
 !!    array chosen_ele_grp_ctl
-!!      chosen_ele_grp_ctl   outer_core   end
+!!      chosen_ele_grp_ctl   outer_core
 !!    end array chosen_ele_grp_ctl
 !!
 !!    starting_type:    position_list, surface_list,
@@ -56,7 +59,7 @@
 !!      end array seed_geological_ctl
 !!
 !!      array seed_spherical_ctl
-!!        seed_geological_ctl 0.75    -1.047    3.141592
+!!        seed_spherical_ctl    0.75    -1.047    3.141592
 !!      end array seed_spherical_ctl
 !!
 !!      array starting_gl_surface_id  10

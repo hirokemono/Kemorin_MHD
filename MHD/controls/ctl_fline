@@ -35,7 +35,7 @@ begin fieldline
     end array seed_geological_ctl
 !
     array seed_spherical_ctl  10
-      seed_geological_ctl 0.75    -1.047197551196598    3.141592653589793
+      seed_spherical_ctl    0.75    -1.047197551196598    3.141592653589793
     end array seed_spherical_ctl
 !
     array starting_gl_surface_id  10

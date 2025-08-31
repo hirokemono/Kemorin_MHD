@@ -71,9 +71,9 @@
 !!      ...
 !!    end    dynamo_vizs_control
 !!
-!!    begin  tracer_control
+!!    begin  tracers_control
 !!      ...
-!!    end    tracer_control
+!!    end    tracers_control
 !!  end MHD_control
 !!
 !! ----------------------------------------------------------------------
