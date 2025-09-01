@@ -332,14 +332,15 @@ begin MHD_control
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
-!     gravity, Coriolis, Lorentz, Composite_gravity, Filtered_gravity
+!     gravity, Coriolis, Lorentz,
+!     Compositional_buoyancy, Filtered_gravity
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
       array force_ctl
         force_ctl   gravity
         force_ctl   Coriolis
         force_ctl   Lorentz
-        force_ctl   Composite_gravity
+        force_ctl   Compositional_buoyancy
       end array force_ctl
     end  forces_define
 !

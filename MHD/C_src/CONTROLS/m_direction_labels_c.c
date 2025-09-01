@@ -32,7 +32,7 @@ const struct direction_flag_def surface_equation_flags[NTERM_PLANE] = {
 
 const struct direction_flag_def force_flag_def[NUM_TOTAL_FORCE] = {
 			{"Thermal_buoyancy", "$$  -\\alpha g T   $$"},
-			{"Composite_buoyancy", "$$  -\\alpha g C  $$"},
+			{"Compositional_buoyancy", "$$  -\\alpha g C  $$"},
 			{"Coriolis", "$$  (- \\Omega \\times \bvec{u})  $$"},
 			{"Lorentz", "$$  \\bvec{J} \\times \\bvec{B}  $$"},
 			
