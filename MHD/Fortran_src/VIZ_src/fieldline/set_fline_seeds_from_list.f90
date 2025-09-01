@@ -17,8 +17,9 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FLINE_element_size), intent(inout) :: fln_dist
-!!      subroutine init_FLINE_seed_from_list(node, ele,                 &
+!!      subroutine init_FLINE_seed_from_list(i_fln, node, ele,          &
 !!     &                                     fln_prm, fln_src, fln_dist)
+!!        integer(kind = kint), intent(in) :: i_fln
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
@@ -149,7 +150,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_FLINE_seed_from_list(node, ele,                   &
+      subroutine init_FLINE_seed_from_list(i_fln, node, ele,            &
      &                                     fln_prm, fln_src, fln_dist)
 !
       use calypso_mpi_int
@@ -158,6 +159,7 @@
       use set_fline_control
       use quicksort
 !
+      integer(kind = kint), intent(in) :: i_fln
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(fieldline_paramter), intent(inout) :: fln_prm
@@ -170,10 +172,9 @@
       real(kind = kreal) :: x, y, z
       real(kind = kreal) :: dist_tmp
       real(kind = kreal) :: xi(3)
-      integer(kind = kint) :: i, iele, inum
+      integer(kind = kint) :: i, ip, iele, inum
       integer(kind = kint) :: num_search
-!      integer(kind = kint) :: ip, i_fln
-
+!
 !
       call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
 !
@@ -194,8 +195,8 @@
         end do
 
         if(num_search .gt. 1) then
-          call quicksort_real_w_index(ele%numele,                       &
-    &         fln_dist%distance(1), ione, num_search, fln_dist%index(1))
+          call quicksort_real_w_index(ele%numele, fln_dist%distance(1), &
+    &         ione, num_search, fln_dist%index(1))
         end if
 !
         fln_src%ip_surf_start_fline(i) = -1
@@ -219,7 +220,7 @@
         end do
       end do
       call dealloc_work_4_interpolate(itp_ele_work_f)
-        
+!
 !      do ip = 1, nprocs
 !        call calypso_mpi_barrier
 !        if(my_rank .ne. ip-1) cycle
@@ -233,16 +234,18 @@
 !          end if
 !        end do
 !      end do
+!      call calypso_mpi_barrier()
 !
-!        call calypso_mpi_barrier
       fln_src%num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
       if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
         fln_src%num_line_local = fln_src%num_line_local + 1
       end do
+!
 !        call calypso_mpi_barrier
-!        write(*,*) my_rank, 'fln_src%num_line_local',                  &
-!     &            fln_src%num_line_local
+!      if(fln_src%num_line_local .gt. 0) write(*,*) my_rank,            &
+!      write(*,*) my_rank,                                              &
+!     &    'fln_src%num_line_local',  fln_src%num_line_local
 !
       end subroutine init_FLINE_seed_from_list
 !

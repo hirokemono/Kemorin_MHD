@@ -138,6 +138,7 @@
       subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
      &                                      fln_prm, fln_src)
 !
+      use calypso_mpi
       use m_connect_hexa_2_tetra
       use t_find_interpolate_in_ele
       use set_fline_control
@@ -147,7 +148,6 @@
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
-!
 !
       integer(kind = kint) :: i_fln
       type(FLINE_element_size) :: fln_dist
@@ -159,6 +159,7 @@
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &      .eq. iflag_position_list) flag_fln_dist = .TRUE.
       end do
+!
       if(flag_fln_dist) then
         call alloc_FLINE_element_size(mesh%ele, fln_dist)
         call cal_FLINE_element_size(mesh%node, mesh%ele, fln_dist)
@@ -168,11 +169,14 @@
      &                       .eq. iflag_position_list) then
           call alloc_init_tracer_position(fln_prm(i_fln),               &
      &                                    fln_src(i_fln))
-          call init_FLINE_seed_from_list(mesh%node, mesh%ele,           &
+          call init_FLINE_seed_from_list(i_fln, mesh%node, mesh%ele,    &
      &        fln_prm(i_fln), fln_src(i_fln), fln_dist)
         end if
       end do
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
+!
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(100,'Tako')
 !
       end subroutine set_fixed_FLINE_seed_points
 !
