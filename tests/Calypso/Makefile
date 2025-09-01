@@ -89,7 +89,7 @@ test:
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
 sym_test: 
-	echo "# Test in sym_asym_field_test directory..."; \
+	@echo "# Test in sym_asym_field_test directory..."; \
 	cd sym_asym_field_test; \
 		$(GMAKE) \
 		GMAKE="$(GMAKE)" \
@@ -103,6 +103,7 @@ sym_test:
 		TARGET_NEWSPH="$(TARGET_NEWSPH)" \
 		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
+	@echo "# Calypso test finished!"; \
 
 clean:
 	cd Gauss_point_test; make clean
