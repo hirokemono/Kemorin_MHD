@@ -299,9 +299,10 @@ clean:
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
 testclean:
-	echo "# cleaning tests directory..."
+	@echo "# cleaning tests directory..."
 	@cd $(TESTDIR); $(GMAKE) clean
 
 distclean:
 	echo "# Back to initial package"; \
+	make testclean
 	rm -fr $(MAKEDIR) $(MAKE64DIR) $(BUILDDIR) $(BUILD64DIR) Makefile config.log

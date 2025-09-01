@@ -327,12 +327,12 @@ begin MHD_control
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
-!     gravity, Coriolis, Lorentz
+!     Thermal_buoyancy, Coriolis, Lorentz
 !     Compositional_buoyancy, Filtered_gravity
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
       array force_ctl
-        force_ctl   gravity
+        force_ctl   Thermal_buoyancy
         force_ctl   Coriolis
         force_ctl   Lorentz
         force_ctl   Compositional_buoyancy
@@ -635,26 +635,26 @@ begin MHD_control
       delta_to_shrink_ctl      1.0d-2
       delta_to_extend_ctl      1.0d-3
 !
-      array SGS_terms_ctl      5
-        SGS_terms_ctl    heat              end
-        SGS_terms_ctl    inertia           end
-        SGS_terms_ctl    gravity           end
-        SGS_terms_ctl    Lorentz           end
-        SGS_terms_ctl    induction         end
+      array SGS_terms_ctl
+        SGS_terms_ctl    heat
+        SGS_terms_ctl    inertia
+        SGS_terms_ctl    Thermal_buoyancy
+        SGS_terms_ctl    Lorentz
+        SGS_terms_ctl    induction
       end array SGS_terms_ctl
       SGS_perturbation_ctl    reference
 !
-      array commutation_ctl    9
-        commutation_ctl    velocity          end
-        commutation_ctl    vector_potential  end
-        commutation_ctl    temperature       end
-        commutation_ctl    dumnmy_scalar     end
+      array commutation_ctl
+        commutation_ctl    velocity
+        commutation_ctl    vector_potential
+        commutation_ctl    temperature
+        commutation_ctl    dumnmy_scalar
 !
-        commutation_ctl    heat              end
-        commutation_ctl    inertia           end
-        commutation_ctl    Lorentz           end
-        commutation_ctl    induction         end
-        commutation_ctl    composit_flux     end
+        commutation_ctl    heat
+        commutation_ctl    inertia
+        commutation_ctl    Lorentz
+        commutation_ctl    induction
+        commutation_ctl    composit_flux
       end array commutation_ctl
 !
       begin 3d_filtering_ctl

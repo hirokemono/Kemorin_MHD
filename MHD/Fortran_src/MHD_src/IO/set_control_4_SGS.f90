@@ -26,7 +26,7 @@
 !!       magnetic_induction   (induction)
 !!       heat_advect          (heat)
 !!       composition_advect   (comp_flux)
-!!       buoyancy             (gravity)
+!!       Thermal_buoyancy     (gravity)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim

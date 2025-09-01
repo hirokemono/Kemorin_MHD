@@ -68,12 +68,12 @@
       &            ak_MHD%ak_d_magne(1)
        end if
        if ( allocated(ak_MHD%ak_d_composit) ) then
-        write(*,*)' coefficient for chemical diffusion:',               &
+        write(*,*)' coefficient for chemical diffusion:     ',          &
       &            ak_MHD%ak_d_composit(1)
        end if
 !
        if ( allocated(ak_MHD%ak_buo) ) then
-        write(*,*)' coefficient for gravity:          ',                &
+        write(*,*)' coefficient for thermal buoyancy:       ',          &
       &            ak_MHD%ak_buo(1)
        end if
        if ( allocated(ak_MHD%ak_comp_buo) ) then
