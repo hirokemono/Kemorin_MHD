@@ -380,11 +380,11 @@ begin fluid_control
         array coef_4_v_diffuse_ctl
           coef_4_v_diffuse_ctl         One                        1.0
         end array coef_4_v_diffuse_ctl
-        array coef_4_buoyancy_ctl
-          coef_4_buoyancy_ctl          Radial_parameter           1.0
-          coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0
-          coef_4_buoyancy_ctl          Ekman_number              -1.0
-        end array coef_4_buoyancy_ctl
+        array coef_4_thermal_buoyancy_ctl
+          coef_4_thermal_buoyancy_ctl  Radial_parameter           1.0
+          coef_4_thermal_buoyancy_ctl  modified_Rayleigh_number   1.0
+          coef_4_thermal_buoyancy_ctl  Ekman_number              -1.0
+        end array coef_4_thermal_buoyancy_ctl   
         array coef_4_Coriolis_ctl
           coef_4_Coriolis_ctl          Two                        1.0
           coef_4_Coriolis_ctl          Ekman_number              -1.0
