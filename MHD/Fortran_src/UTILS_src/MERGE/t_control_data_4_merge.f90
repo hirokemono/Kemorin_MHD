@@ -7,9 +7,10 @@
 !>@brief  Control data for merge program
 !!
 !!@verbatim
-!!       subroutine read_control_4_merge(ctl_file_name, mgd_ctl)
-!!       subroutine read_control_assemble_sph(mgd_ctl)
-!!       subroutine reset_merge_control_data(mgd_ctl)
+!!      subroutine read_control_4_merge(file_name, mgd_ctl)
+!!      subroutine read_control_assemble_sph(mgd_ctl)
+!!      subroutine reset_merge_control_data(mgd_ctl)
+!!        character (len = kchara), intent(in) :: file_name
 !!        type(control_data_4_merge), intent(inout) :: mgd_ctl
 !!@endverbatim
 !
