@@ -179,7 +179,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_FLINE_seed_fields(mesh, group, para_surf, &
+      subroutine set_FLINE_seed_fields(mesh, group, para_surf,          &
      &          nod_fld, num_fline, fln_prm, fln_src, fln_tce)
 !
       use set_fields_for_fieldline
@@ -200,11 +200,9 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
 !
       integer(kind = kint) :: i_fln
-!  
+!
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
-     &                       .eq. iflag_position_list) then
-        else if(fln_prm(i_fln)%id_fline_seed_type                       &
      &                       .eq. iflag_position_list) then
           call count_FLINE_seed_from_list                               &
      &       (fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))

@@ -20,6 +20,11 @@
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
+!!
+!!      subroutine local_tracer_from_seeds(fln_prm, fln_tce, fline_lc)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_trace), intent(in) :: fln_tce
+!!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
       module trace_particle

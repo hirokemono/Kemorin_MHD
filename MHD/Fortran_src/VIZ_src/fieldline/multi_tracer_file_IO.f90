@@ -160,12 +160,10 @@
 !
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_read_reastart) then
-!          write(*,*) 'input_tracer_restart', fln_prm(i_fln)%id_fline_seed_type
           call input_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,       &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fline_lc(i_fln))
         else
-!          write(*,*) 'local_tracer_from_seeds', fln_prm(i_fln)%id_fline_seed_type
           call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
      &                                 fline_lc(i_fln))
           call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
