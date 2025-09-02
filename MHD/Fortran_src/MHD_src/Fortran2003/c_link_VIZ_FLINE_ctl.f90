@@ -16,10 +16,10 @@
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_file_head_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_output_type_ctl(c_ctl)         &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_output_type_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_rst_prefix_ctl(c_ctl)          &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_rst_prefix_ctl')
-!!      type(c_ptr) function c_VIZ_FLINE_rst_prefix_ctl(c_ctl)          &
-!!     &          bind(C, NAME = 'c_VIZ_FLINE_rst_prefix_ctl')
+!!      type(c_ptr) function c_VIZ_TRACER_rst_prefix_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_VIZ_TRACER_rst_prefix_ctl')
+!!      type(c_ptr) function c_VIZ_TRACER_rst_format_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_VIZ_TRACER_rst_format_ctl')
 !!
 !!      type(c_ptr) function c_VIZ_FLINE_field_ctl(c_ctl)               &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_field_ctl')
@@ -111,23 +111,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_VIZ_FLINE_rst_prefix_ctl(c_ctl)            &
-     &          bind(C, NAME = 'c_VIZ_FLINE_rst_prefix_ctl')
+      type(c_ptr) function c_VIZ_TRACER_rst_prefix_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_VIZ_TRACER_rst_prefix_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(fline_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_rst_prefix_ctl = C_loc(f_ctl%fline_rst_prefix_ctl)
-      end function c_VIZ_FLINE_rst_prefix_ctl
+      c_VIZ_TRACER_rst_prefix_ctl = C_loc(f_ctl%tracer_rst_prefix_ctl)
+      end function c_VIZ_TRACER_rst_prefix_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_VIZ_FLINE_rst_format_ctl(c_ctl)            &
-     &          bind(C, NAME = 'c_VIZ_FLINE_rst_format_ctl')
+      type(c_ptr) function c_VIZ_TRACER_rst_format_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_VIZ_TRACER_rst_format_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(fline_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_FLINE_rst_format_ctl = C_loc(f_ctl%fline_rst_format_ctl)
-      end function c_VIZ_FLINE_rst_format_ctl
+      c_VIZ_TRACER_rst_format_ctl = C_loc(f_ctl%tracer_rst_format_ctl)
+      end function c_VIZ_TRACER_rst_format_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -98,11 +98,6 @@
      &      = sel_iso_file_format(fln%fline_output_type_ctl%charavalue)
       end if
 !
-      call set_ctl_parallel_file_w_def(default_tracer_prefix,           &
-     &    fln%fline_rst_prefix_ctl, fln%fline_rst_format_ctl,           &
-     &    fln_prm%fline_rst_IO)
-!
-!
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    fln_prm%nele_grp_area_fline)

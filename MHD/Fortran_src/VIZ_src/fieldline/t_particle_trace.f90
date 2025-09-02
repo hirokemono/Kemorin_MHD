@@ -108,8 +108,9 @@
 !
       call alloc_TRACER_modules(tracer)
 
-      call set_tracer_controls(geofem%mesh, geofem%group, nod_fld,      &
-     &    tracer%num_trace, tracer_ctls, tracer%fln_prm)
+      call set_tracer_controls                                          &
+     &   (init_d, rst_step, geofem%mesh, geofem%group,                  &
+     &    nod_fld, tracer%num_trace, tracer_ctls, tracer%fln_prm)
       call dealloc_fline_ctl_struct(tracer_ctls)
 !
       call alloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,      &

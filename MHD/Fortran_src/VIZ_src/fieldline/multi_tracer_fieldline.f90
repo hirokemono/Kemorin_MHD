@@ -175,9 +175,6 @@
       end do
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(100,'Tako')
-!
       end subroutine set_fixed_FLINE_seed_points
 !
 !  ---------------------------------------------------------------------

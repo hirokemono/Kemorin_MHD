@@ -17,8 +17,10 @@
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fline_ctl), intent(inout)  :: fline_ctl_struct
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
-!!      subroutine s_set_tracer_control(mesh, group, nod_fld,           &
-!!     &          fline_ctl_struct, fln_prm)
+!!      subroutine s_set_tracer_control(init_d, rst_step, mesh, group,  &
+!!     &          nod_fld, fline_ctl_struct, fln_prm)
+!!        type(time_data), intent(in) :: init_d
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -33,10 +35,12 @@
 !
       use m_machine_parameter
 !
+      use t_time_data
       use t_mesh_data
       use t_geometry_data
       use t_group_data
       use t_phys_data
+      use t_IO_step_parameter
       use t_control_params_4_fline
 !
       implicit none
@@ -94,13 +98,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_set_tracer_control(mesh, group, nod_fld,             &
-     &                                fline_ctl_struct, fln_prm)
+      subroutine s_set_tracer_control(init_d, rst_step, mesh, group,    &
+     &          nod_fld, fline_ctl_struct, fln_prm)
 !
       use t_control_data_flines
       use set_control_each_fline
       use set_control_fline_seeds
 !
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
@@ -123,8 +129,8 @@
       call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(fln_prm)
 !
-      call set_control_4_tracer(fline_ctl_struct, mesh,                 &
-     &                          group%ele_grp, nod_fld, fln_prm)
+      call set_control_4_tracer(fline_ctl_struct, init_d, rst_step,     &
+     &    mesh, group%ele_grp, nod_fld, fln_prm)
       call deallocate_cont_dat_fline(fline_ctl_struct)
 !
       if(iflag_debug .gt. 0) then
@@ -183,18 +189,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_tracer(fln, mesh, ele_grp, nod_fld,      &
-     &                                fln_prm)
+      subroutine set_control_4_tracer(fln, init_d, rst_step,            &
+     &          mesh, ele_grp, nod_fld, fln_prm)
 !
       use t_ctl_data_field_line
       use t_source_of_filed_line
+      use calypso_mpi_logical
       use set_components_flags
       use set_area_4_viz
       use coordinate_converter
+      use set_control_platform_data
       use set_control_each_fline
       use set_control_fline_seeds
       use set_iflag_for_used_ele
+      use particle_MPI_IO_select
 !
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
       type(mesh_geometry), intent(in) :: mesh
       type(group_data), intent(in) :: ele_grp
       type(phys_data), intent(in) :: nod_fld
@@ -203,6 +214,19 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
+      integer(kind = kint) :: istep_rst
+      logical :: bflag_lc, bflag_gl
+!
+!
+      call set_ctl_parallel_file_w_def(default_tracer_prefix,           &
+     &    fln%tracer_rst_prefix_ctl, fln%tracer_rst_format_ctl,         &
+     &    fln_prm%tracer_rst_IO)
+!
+      istep_rst = set_IO_step(init_d%i_time_step, rst_step)
+      bflag_lc = check_particle_file_exist(fln_prm%tracer_rst_IO,       &
+     &                                     istep_rst)
+      call calypso_mpi_allreduce_one_bin(bflag_lc, bflag_gl, MPI_LAND)
+      if(bflag_gl) fln_prm%id_fline_seed_type = iflag_read_reastart
 !
       call set_control_tracer_density(fln, nod_fld, fln_prm)
 !

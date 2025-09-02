@@ -7,8 +7,10 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine set_tracer_controls(mesh, group, nod_fld,            &
-!!     &                               num_fline, fline_ctls, fln_prm)
+!!      subroutine set_tracer_controls(init_d, rst_step, mesh, group,   &
+!!     &          nod_fld, num_fline, fline_ctls, fln_prm)
+!!        type(time_data), intent(in) :: init_d
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -64,6 +66,7 @@
       use t_tracing_data
       use t_local_fline
       use t_ucd_data
+      use t_IO_step_parameter
 !
       implicit  none
 !
@@ -73,12 +76,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_tracer_controls(mesh, group, nod_fld,              &
-     &                               num_fline, fline_ctls, fln_prm)
+      subroutine set_tracer_controls(init_d, rst_step, mesh, group,     &
+     &          nod_fld, num_fline, fline_ctls, fln_prm)
 !
       use t_control_data_flines
       use set_fline_control
 
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: rst_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
@@ -91,7 +96,8 @@
       integer(kind = kint) :: i_fln
 !
       do i_fln = 1, num_fline
-        call s_set_tracer_control(mesh, group, nod_fld,                 &
+        call s_set_tracer_control                                       &
+     &     (init_d, rst_step, mesh, group, nod_fld,                     &
      &      fline_ctls%fline_ctl_struct(i_fln), fln_prm(i_fln))
       end do
 !

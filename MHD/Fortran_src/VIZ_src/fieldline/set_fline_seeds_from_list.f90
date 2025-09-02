@@ -221,20 +221,22 @@
       end do
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-!      do ip = 1, nprocs
-!        call calypso_mpi_barrier
-!        if(my_rank .ne. ip-1) cycle
-!        do i = 1, fln_prm%num_each_field_line
-!          if(fln_src%ip_surf_start_fline(i) .ge. 0) then
-!          write(*,*) my_rank, i_fln, i, 'fln_prm',                     &
-!     &              fln_src%ip_surf_start_fline(i),                    &
-!     &              fln_src%iele_surf_start_fline(i),                  &
-!     &              fln_src%xi_surf_start_fline(1:3,i),                &
-!     &              ele%numele, ierr_inter
-!          end if
-!        end do
-!      end do
-!      call calypso_mpi_barrier()
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(my_rank .ne. ip-1) cycle
+        write(*,*) my_rank, i_fln, i, 'fln_prm%num_each_field_line', &
+    &             fln_prm%num_each_field_line
+        do i = 1, fln_prm%num_each_field_line
+          if(fln_src%ip_surf_start_fline(i) .ge. 0) then
+          write(*,*) my_rank, i_fln, i, 'fln_prm',                     &
+     &              fln_src%ip_surf_start_fline(i),                    &
+     &              fln_src%iele_surf_start_fline(i),                  &
+     &              fln_src%xi_surf_start_fline(1:3,i),                &
+     &              ele%numele, ierr_inter
+          end if
+        end do
+      end do
+      call calypso_mpi_barrier()
 !
       fln_src%num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
