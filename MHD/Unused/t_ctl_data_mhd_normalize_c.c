@@ -20,7 +20,7 @@ const char label_momentum_equation_ctl[NLBL_MOMENTUM_EQ_CTL][KCHARA_C] = {
 	/*[ 1]*/	{"coef_4_press_ctl"},
 	/*[ 2]*/	{"coef_4_v_diffuse_ctl"},
 	
-	/*[ 3]*/	{"coef_4_buoyancy_ctl"},
+	/*[ 3]*/	{"coef_4_thermal_buoyancy_ctl"},
 	/*[ 4]*/	{"coef_4_composit_buoyancy_ctl"},
 	/*[ 5]*/	{"coef_4_Coriolis_ctl"},
 	/*[ 6]*/	{"coef_4_Lorentz_ctl"},

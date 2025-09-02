@@ -55,7 +55,7 @@
       call add_field_4_sph_trns_by_pol(d_rj,                            &
      &    ipol_sef%i_reynolds_wk, iphys_sef%i_reynolds_wk,              &
      &    f_trns_sef%i_reynolds_wk, trns)
-!   work of SGS buoyancy
+!   work of SGS thermal buoyancy
       call add_field_4_sph_trns_by_pol(d_rj,                            &
      &    ipol_sef%i_SGS_buo_wk, iphys_sef%i_SGS_buo_wk,                &
      &    f_trns_sef%i_SGS_buo_wk, trns)
