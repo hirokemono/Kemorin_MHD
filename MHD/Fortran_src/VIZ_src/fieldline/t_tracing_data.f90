@@ -35,18 +35,35 @@
       implicit  none
 !
       type each_fieldline_trace
+!>  Number of trace in each PE
         integer(kind = kint) :: num_current_fline
+!>  Stack of number of trace in each PE
         integer(kind = kint), allocatable :: istack_current_fline(:)
 !
+!>  Size of array for trace in each PE
         integer(kind = kint) :: num_trace_buf
+!>  Global trace ID
         integer(kind= kint_gl), allocatable :: iline_original(:)
+!>  Trace direction flag
         integer(kind= kint), allocatable :: iflag_direction(:)
+!>  Counts of line trace
         integer(kind= kint), allocatable :: icount_fline(:)
+!>  Trace communication flag
         integer(kind= kint), allocatable :: iflag_comm_start(:)
+!>  Double numbering for trace element ID for starting point
+!!         isf_dbl_start(1,:):: Belonged domain ID
+!!         isf_dbl_start(2,:):: Belonged local element ID
+!!         isf_dbl_start(3,:):: Belonged surface ID in each element
         integer(kind= kint), allocatable :: isf_dbl_start(:,:)
+!>  Position of starting point
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
+!!>  position of starting point in each element coordinate
+!        real(kind = kreal), allocatable ::  xi_fline_start(:,:)
+!>  Velocity at starting point
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
+!>  Field data at starting point
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
+!>  Trace length for each tracing
         real(kind = kreal), allocatable ::  trace_length(:)
       end type each_fieldline_trace
 !
@@ -90,25 +107,43 @@
       allocate(fln_tce%icount_fline(fln_tce%num_trace_buf))
       allocate(fln_tce%isf_dbl_start(3,fln_tce%num_trace_buf))
 !
+!$omp parallel
+!$omp workshare
+      fln_tce%iflag_direction(1:fln_tce%num_trace_buf) =   0
+      fln_tce%iflag_comm_start(1:fln_tce%num_trace_buf) =  0
+      fln_tce%icount_fline(1:fln_tce%num_trace_buf) =      0
+!$omp end workshare nowait
+!$omp workshare
+      fln_tce%isf_dbl_start(1:3,1:fln_tce%num_trace_buf) = 0
+!$omp end workshare nowait
+!
+!$omp do
       do i = 1, fln_tce%num_trace_buf
         fln_tce%iline_original(i) = i
       end do
+!$omp end do
+!$omp end parallel
 !
-      num = viz_fields%ntot_color_comp
       allocate(fln_tce%xx_fline_start(4,fln_tce%num_trace_buf))
+!      allocate(fln_tce%xi_fline_start(4,fln_tce%num_trace_buf))
       allocate(fln_tce%v_fline_start(4,fln_tce%num_trace_buf))
-      allocate(fln_tce%c_fline_start(num, fln_tce%num_trace_buf))
       allocate(fln_tce%trace_length(fln_tce%num_trace_buf))
 !
+!$omp parallel
+!$omp workshare
+      fln_tce%xx_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
+!      fln_tce%xi_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
+      fln_tce%v_fline_start(1:4,1:fln_tce%num_trace_buf) =  0.0d0
+!$omp end workshare nowait
+!$omp workshare
+      fln_tce%trace_length(1:fln_tce%num_trace_buf) = 0.0d0
+!$omp end workshare
+!$omp end parallel
+!
+      num = viz_fields%ntot_color_comp
+      allocate(fln_tce%c_fline_start(num, fln_tce%num_trace_buf))
 !$omp parallel workshare
-      fln_tce%iflag_direction =  0
-      fln_tce%iflag_comm_start =  0
-      fln_tce%icount_fline = 0
-      fln_tce%isf_dbl_start = 0
-      fln_tce%v_fline_start =  0.0d0
-      fln_tce%c_fline_start =  0.0d0
-      fln_tce%xx_fline_start = 0.0d0
-      fln_tce%trace_length = 0.0d0
+      fln_tce%c_fline_start(1:num, 1:fln_tce%num_trace_buf) =  0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_line_start_fline
@@ -143,6 +178,8 @@
 !
           fln_tce%xx_fline_start(1:4,i_copied)                          &
      &          = fln_tce%xx_fline_start(1:4,i_org)
+!          fln_tce%xi_fline_start(1:4,i_copied)                         &
+!     &          = fln_tce%xi_fline_start(1:4,i_org)
           fln_tce%v_fline_start(1:4,i_copied)                           &
      &          = fln_tce%v_fline_start(1:4,i_org)
           fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_copied)  &
@@ -164,6 +201,7 @@
       deallocate(fln_tce%icount_fline)
       deallocate(fln_tce%isf_dbl_start)
       deallocate(fln_tce%xx_fline_start)
+!      deallocate(fln_tce%xi_fline_start)
       deallocate(fln_tce%v_fline_start)
       deallocate(fln_tce%c_fline_start)
       deallocate(fln_tce%trace_length)

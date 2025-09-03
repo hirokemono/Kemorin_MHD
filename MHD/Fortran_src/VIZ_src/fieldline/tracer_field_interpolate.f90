@@ -240,7 +240,7 @@
      &        viz_fields%ncomp_color_field(inum),                       &
      &        viz_fields%ncomp_org_color_field(inum),                   &
      &        viz_fields%icomp_color_field(inum),                       &
-     &         c_xyz(1), c_tgt(jst+1))
+     &        c_xyz(1), c_tgt(jst+1))
         end if
       end do
 !

@@ -36,12 +36,11 @@ begin fieldline
     array seed_spherical_ctl
       seed_spherical_ctl     0.75    -1.047197551196598    3.141592653589793
     end array seed_spherical_ctl
-  end seed_lists_ctl
-
 !
-  array starting_gl_surface_id
-    starting_gl_surface_id  12  3
-  end array starting_gl_surface_id
+    array starting_gl_surface_id
+      starting_gl_surface_id  12  3
+    end array starting_gl_surface_id
+  end seed_lists_ctl
 !
 !   field type:
 !     scalar, vector, sym_tensor, asym_tensor

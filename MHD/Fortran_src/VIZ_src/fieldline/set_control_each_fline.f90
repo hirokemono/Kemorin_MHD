@@ -16,7 +16,15 @@
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        integer(kind = kint), intent(inout) :: ierr
 !!
-!!      subroutine set_control_fieldline_field(fln, nod_fld, fln_prm)
+!!      integer(kind = kint) function                                   &
+!!     &              set_ctl_fieldline_field(fline_field_ctl, nod_fld)
+!!        type(read_character_item), intent(in) :: fline_field_ctl
+!!        type(phys_data), intent(in) :: nod_fld
+!!      integer(kind = kint) function                                   &
+!!     &                    set_ctl_field_to_trace(field_name, nod_fld)
+!!        character(len=kchara), intent(in) :: field_name
+!!        type(phys_data), intent(in) :: nod_fld
+!!
 !!      subroutine set_control_tracer_density(fln, nod_fld, fln_prm)
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fline_ctl), intent(in) :: fln
@@ -183,16 +191,27 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_fieldline_field(fln, nod_fld, fln_prm)
+      integer(kind = kint) function                                     &
+     &              set_ctl_fieldline_field(fline_field_ctl, nod_fld)
 !
-      use t_source_of_filed_line
+      type(read_character_item), intent(in) :: fline_field_ctl
+      type(phys_data), intent(in) :: nod_fld
+!
+      set_ctl_fieldline_field                                           &
+     &    = set_ctl_field_to_trace(fline_field_ctl%charavalue, nod_fld)
+!
+      end function set_ctl_fieldline_field
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &                    set_ctl_field_to_trace(field_name, nod_fld)
+!
       use set_components_flags
       use set_field_comp_for_viz
 !
+      character(len=kchara), intent(in) :: field_name
       type(phys_data), intent(in) :: nod_fld
-      type(fline_ctl), intent(in) :: fln
-!
-      type(fieldline_paramter), intent(inout) :: fln_prm
 !
       integer(kind = kint) :: ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
@@ -201,7 +220,7 @@
       character(len=kchara) :: tmpchara(1)
 !
 !
-      tmpfield(1) = fln%fline_field_ctl%charavalue
+      tmpfield(1) = field_name
       tmpcomp(1) =  'vector'
       call set_components_4_viz                                         &
      &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp, &
@@ -211,10 +230,10 @@
         call calypso_MPI_abort(ierr_fld,                                &
      &      'Choose vector field for field line')
       end if
-      fln_prm%iphys_4_fline                                             &
+      set_ctl_field_to_trace                                            &
      &       = nod_fld%istack_component(ifield_tmp(1)-1) + 1
 !
-      end subroutine set_control_fieldline_field
+      end function set_ctl_field_to_trace
 !
 !  ---------------------------------------------------------------------
 !

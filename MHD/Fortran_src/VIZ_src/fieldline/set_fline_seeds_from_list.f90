@@ -301,9 +301,10 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: icou, inum
+      integer(kind = kint) :: ip
 !
+      write(*,*) my_rank, icou, 'fln_prm%iphys_4_fline',  fln_prm%iphys_4_fline
 !
-      write(*,*) my_rank, 'fln_prm%id_fline_direction', fln_prm%id_fline_direction
       icou = 0
       do inum = 1, fln_prm%num_each_field_line
           if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
@@ -380,6 +381,19 @@
 
           end if
         end do
+!
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(my_rank .ne. ip-1) cycle
+        do icou = 1, fln_tce%istack_current_fline(ip) - fln_tce%istack_current_fline(ip-1)
+          write(*,*) my_rank, icou, 'fln_tce',                          &
+     &        fln_tce%xx_fline_start(1:3,icou),                         &
+     &        fln_tce%isf_dbl_start(1:3,icou),                          &
+     &        fln_tce%v_fline_start(1:3,icou),                          &
+     &        fln_tce%c_fline_start(:,icou)
+        end do
+      end do
+      call calypso_mpi_barrier()
 !
       end subroutine set_FLINE_seed_field_from_list
 !
