@@ -303,7 +303,6 @@
       integer(kind = kint) :: icou, inum
       integer(kind = kint) :: ip
 !
-      write(*,*) my_rank, icou, 'fln_prm%iphys_4_fline',  fln_prm%iphys_4_fline
 !
       icou = 0
       do inum = 1, fln_prm%num_each_field_line
@@ -385,7 +384,8 @@
       do ip = 1, nprocs
         call calypso_mpi_barrier
         if(my_rank .ne. ip-1) cycle
-        do icou = 1, fln_tce%istack_current_fline(ip) - fln_tce%istack_current_fline(ip-1)
+        do icou = 1, fln_tce%istack_current_fline(ip)                   &
+     &              - fln_tce%istack_current_fline(ip-1)
           write(*,*) my_rank, icou, 'fln_tce',                          &
      &        fln_tce%xx_fline_start(1:3,icou),                         &
      &        fln_tce%isf_dbl_start(1:3,icou),                          &
