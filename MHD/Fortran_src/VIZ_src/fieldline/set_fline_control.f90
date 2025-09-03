@@ -8,24 +8,24 @@
 !!@verbatim
 !!      subroutine s_set_fline_control                                  &
 !!     &         (mesh, group, nod_fld, num_tracer, tracer_prm,         &
-!!     &          fline_ctl_struct, fln_prm)
+!!     &          fline_c, fln_prm)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in) :: num_tracer
 !!      type(fieldline_paramter), intent(in) :: tracer_prm(num_tracer)
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fline_ctl), intent(inout)  :: fline_ctl_struct
+!!        type(fline_ctl), intent(inout)  :: fline_c
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!      subroutine s_set_tracer_control(init_d, rst_step, mesh, group,  &
-!!     &          nod_fld, fline_ctl_struct, fln_prm)
+!!     &          nod_fld, fline_c, fln_prm)
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(tracer_module), intent(in) :: tracer
-!!        type(fline_ctl), intent(inout)  :: fline_ctl_struct
+!!        type(fline_ctl), intent(inout)  :: fline_c
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!@endverbatim
 !
@@ -55,7 +55,7 @@
 !
       subroutine s_set_fline_control                                    &
      &         (mesh, group, nod_fld, num_tracer, tracer_prm,           &
-     &          fline_ctl_struct, fln_prm)
+     &          fline_c, fln_prm)
 !
       use t_control_data_flines
       use set_control_each_fline
@@ -67,16 +67,18 @@
       integer(kind = kint), intent(in) :: num_tracer
       type(fieldline_paramter), intent(in) :: tracer_prm(num_tracer)
 !
-      type(fline_ctl), intent(inout)  :: fline_ctl_struct
+      type(fline_ctl), intent(inout)  :: fline_c
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
       integer(kind = kint) :: i, ierr
 !
 !
-      call count_control_4_fline(fline_ctl_struct,                      &
-     &     group%ele_grp, group%surf_grp, fln_prm, ierr)
-      call count_control_fline_seeds(fline_ctl_struct%seeds_ctl,        &
-     &                               fln_prm)
+      call count_control_4_fline(fline_c,                               &
+     &    group%ele_grp, group%surf_grp, fln_prm, ierr)
+      fln_prm%id_fline_direction                                        &
+     &    = set_ctl_fieldline_direction(fline_c%line_direction_ctl)
+!
+      call count_control_fline_seeds(fline_c%seeds_ctl, fln_prm)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr,                                    &
      &                         'Check Directory for Fieldline output')
@@ -85,9 +87,9 @@
       call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(fln_prm)
 !
-      call set_control_4_fline(fline_ctl_struct, mesh, group%ele_grp,   &
+      call set_control_4_fline(fline_c, mesh, group%ele_grp,            &
      &                        nod_fld, num_tracer, tracer_prm, fln_prm)
-      call deallocate_cont_dat_fline(fline_ctl_struct)
+      call deallocate_cont_dat_fline(fline_c)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'field line parameters for No.', i
@@ -99,7 +101,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_set_tracer_control(init_d, rst_step, mesh, group,    &
-     &          nod_fld, fline_ctl_struct, fln_prm)
+     &          nod_fld, fline_c, fln_prm)
 !
       use t_control_data_flines
       use set_control_each_fline
@@ -111,16 +113,17 @@
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
-      type(fline_ctl), intent(inout)  :: fline_ctl_struct
+      type(fline_ctl), intent(inout)  :: fline_c
       type(fieldline_paramter), intent(inout) :: fln_prm
 !
       integer(kind = kint) :: i, ierr
 !
 !
-      call count_control_4_fline(fline_ctl_struct,                      &
+      call count_control_4_fline(fline_c,                               &
      &    group%ele_grp, group%surf_grp, fln_prm, ierr)
-      call count_control_fline_seeds(fline_ctl_struct%seeds_ctl,        &
-     &                               fln_prm)
+      fln_prm%id_fline_direction =  iflag_forward_trace
+!
+      call count_control_fline_seeds(fline_c%seeds_ctl, fln_prm)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr,                                    &
      &                         'Check Directory for tracer output')
@@ -129,9 +132,9 @@
       call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(fln_prm)
 !
-      call set_control_4_tracer(fline_ctl_struct, init_d, rst_step,     &
+      call set_control_4_tracer(fline_c, init_d, rst_step,              &
      &    mesh, group%ele_grp, nod_fld, fln_prm)
-      call deallocate_cont_dat_fline(fline_ctl_struct)
+      call deallocate_cont_dat_fline(fline_c)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'field line parameters for No.', i

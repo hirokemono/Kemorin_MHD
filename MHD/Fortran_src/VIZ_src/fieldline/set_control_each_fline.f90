@@ -27,6 +27,10 @@
 !!        type(fieldline_paramter), intent(in) :: tracer_prm(num_tracer)
 !!        type(fline_ctl), intent(in) :: fln
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
+!!
+!!      integer(kind = kint) function                                   &
+!!     &            set_ctl_fieldline_direction(line_direction_ctl)
+!!        type(read_character_item), intent(in) :: line_direction_ctl
 !!@endverbatim
 !
       module set_control_each_fline
@@ -123,16 +127,6 @@
         fln_prm%id_fline_seed_type =  iflag_spray_in_domain
       else if(cmp_no_case(character_256, cflag_seed_from_tracer)) then 
         fln_prm%id_fline_seed_type =  iflag_tracer_seeds
-      end if
-!
-!
-      character_256 = fln%line_direction_ctl%charavalue
-      if     (cmp_no_case(character_256, cflag_forward_trace)) then
-        fln_prm%id_fline_direction =  iflag_forward_trace
-      else if(cmp_no_case(character_256, cflag_backward_trace)) then 
-        fln_prm%id_fline_direction =  iflag_backward_trace
-      else if(cmp_no_case(character_256, cflag_both_trace)) then 
-        fln_prm%id_fline_direction =  iflag_both_trace
       end if
 !
 !
@@ -288,6 +282,34 @@
       end if
 !
       end subroutine set_fline_ctl_4_tracer_seed
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &            set_ctl_fieldline_direction(line_direction_ctl)
+!
+      use m_control_fline_flags
+      use t_control_array_character
+      use skip_comment_f
+!
+      type(read_character_item), intent(in) :: line_direction_ctl
+!
+      character(len=kchara) :: character_256
+!
+!
+      set_ctl_fieldline_direction =  iflag_forward_trace
+      if(line_direction_ctl%iflag .le. 0) return
+!
+      character_256 = line_direction_ctl%charavalue
+      if     (cmp_no_case(character_256, cflag_forward_trace)) then
+        set_ctl_fieldline_direction =  iflag_forward_trace
+      else if(cmp_no_case(character_256, cflag_backward_trace)) then 
+        set_ctl_fieldline_direction =  iflag_backward_trace
+      else if(cmp_no_case(character_256, cflag_both_trace)) then 
+        set_ctl_fieldline_direction =  iflag_both_trace
+      end if
+!
+      end function set_ctl_fieldline_direction
 !
 !  ---------------------------------------------------------------------
 !

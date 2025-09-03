@@ -302,6 +302,8 @@
 !
       integer(kind = kint) :: icou, inum
 !
+!
+      write(*,*) my_rank, 'fln_prm%id_fline_direction', fln_prm%id_fline_direction
       icou = 0
       do inum = 1, fln_prm%num_each_field_line
           if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
