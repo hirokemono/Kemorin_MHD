@@ -95,7 +95,7 @@
       call dealloc_fline_ctl_struct(fline_ctls)
 !
       call alloc_each_FLINE_data                                        &
-     &   (fline%num_fline, fline%fln_prm, fline%fln_src, fline%fln_tce, &
+     &   (fline%num_fline, fline%fln_prm, fline%fln_tce,                &
      &    fline%fline_lc, fline%fln_SR, fline%fln_bcast)
       call set_fixed_FLINE_seed_points(geofem%mesh, fline%num_fline,    &
      &    fline%fln_prm, fline%fln_src)
@@ -169,8 +169,8 @@
 !
 !
       call dealloc_each_FLINE_data(fline%num_fline, fline%fln_prm,      &
-     &    fline%fln_src, fline%fln_tce, fline%fline_lc,                 &
-     &    fline%fln_SR, fline%fln_bcast)           
+     &                             fline%fln_tce, fline%fline_lc,       &
+     &                             fline%fln_SR, fline%fln_bcast)
       deallocate(fline%fln_src, fline%fline_lc, fline%fln_bcast)
       deallocate(fline%fln_tce, fline%fln_prm, fline%fln_SR)
 !

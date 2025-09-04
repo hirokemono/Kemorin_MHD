@@ -7,12 +7,10 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_src,   &
-!!     &                                 fln_tce, fline_lc,             &
-!!     &                                 fln_SR, fln_bcast)
-!!      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_src, &
-!!     &                                   fln_tce, fline_lc,           &
-!!     &                                   fln_SR, fln_bcast)
+!!      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_tce,   &
+!!     &                                 fline_lc, fln_SR, fln_bcast)
+!!      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_tce, &
+!!     &                                   fline_lc, fln_SR, fln_bcast)
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
@@ -59,6 +57,8 @@
       use t_IO_step_parameter
       use t_ucd_data
 !
+      use calypso_mpi
+!
       implicit  none
 !
 !  ---------------------------------------------------------------------
@@ -67,14 +67,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_src,     &
-     &                                 fln_tce, fline_lc,               &
-     &                                 fln_SR, fln_bcast)
+      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_tce,     &
+     &                                 fline_lc, fln_SR, fln_bcast)
 !
       integer(kind = kint), intent(in) :: num_fline
 !
       type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
@@ -84,8 +82,6 @@
 !
 !
       do i_fln = 1, num_fline
-        call alloc_start_point_fline(nprocs, fln_prm(i_fln),            &
-     &                               fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
      &                     fln_prm(i_fln)%fline_fields, fln_tce(i_fln))
         call alloc_broadcast_trace_data                                 &
@@ -101,14 +97,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_src,   &
-     &                                   fln_tce, fline_lc,             &
-     &                                   fln_SR, fln_bcast)
+      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_tce,   &
+     &                                   fline_lc, fln_SR, fln_bcast)
 !
       integer(kind = kint), intent(in) :: num_fline
 !
       type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
@@ -124,7 +118,6 @@
         call dealloc_iflag_fline_used_ele(fln_prm(i_fln))
         call dealloc_fline_starts_ctl(fln_prm(i_fln))
 !
-        call dealloc_start_point_fline(fln_src(i_fln))
         call dealloc_num_gl_start_fline(fln_tce(i_fln))
         call dealloc_broadcast_trace_data(fln_bcast(i_fln))
         call dealloc_trace_data_SR_num(fln_SR(i_fln))

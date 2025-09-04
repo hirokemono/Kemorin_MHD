@@ -29,8 +29,6 @@
       type each_fieldline_source
         integer(kind = kint) :: num_line_local = 0
 !
-        real(kind = kreal),   allocatable :: flux_stack_fline(:)
-!
         integer(kind = kint) :: n_points_prev = 0
 !>        velocity of previous step
         real(kind = kreal), allocatable :: v_prev(:,:)
@@ -76,22 +74,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
-!
-      integer, intent(in) :: num_pe
-      type(fieldline_paramter), intent(in) :: fln_prm
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-      integer(kind = kint) :: num
-!
-!
-      allocate(fln_src%flux_stack_fline(0:num_pe))
-      fln_src%flux_stack_fline = 0.0d0
-!
-      end subroutine alloc_start_point_fline
-!
-!  ---------------------------------------------------------------------
-!
       subroutine alloc_init_tracer_position(fln_prm, fln_src)
 !
       type(fieldline_paramter), intent(in) :: fln_prm
@@ -114,16 +96,6 @@
       end subroutine alloc_init_tracer_position
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_start_point_fline(fln_src)
-!
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-      deallocate(fln_src%flux_stack_fline)
-!
-      end subroutine dealloc_start_point_fline
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_init_tracer_position(fln_src)

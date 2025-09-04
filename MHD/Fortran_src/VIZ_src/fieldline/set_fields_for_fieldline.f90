@@ -69,23 +69,24 @@
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (mesh%ele, mesh%surf, group%surf_grp, nod_fld,               &
-     &      fln_prm, fln_src, fln_tce)
+     &      fln_prm, fln_tce, fln_src%num_line_local)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'
         call s_start_surface_by_volume                                  &
      &     (mesh%node, mesh%ele, group%ele_grp, nod_fld,                &
-     &      fln_prm, fln_src, fln_tce)
+     &      fln_prm, fln_tce, fln_src%num_line_local)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
-     &     (mesh%ele, group%ele_grp, fln_prm, fln_src)
+     &     (mesh%ele, group%ele_grp, fln_prm, fln_src%num_line_local)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
       call s_start_surface_4_fline                                      &
      &   (mesh%node, mesh%ele, mesh%surf, nod_fld,                      &
-     &    para_surf%isf_4_ele_dbl, fln_prm, fln_src, fln_tce)
+     &    para_surf%isf_4_ele_dbl, fln_src%num_line_local,              &
+     &    fln_prm, fln_tce)
 !
       end subroutine s_set_fields_for_fieldline
 !

@@ -114,8 +114,8 @@
       call dealloc_fline_ctl_struct(tracer_ctls)
 !
       call alloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,      &
-     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
-     &    tracer%fln_SR, tracer%fln_bcast)
+     &                           tracer%fln_tce, tracer%fline_lc,       &
+     &                           tracer%fln_SR, tracer%fln_bcast)
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_src)
 !
@@ -223,8 +223,8 @@
       if (tracer%num_trace .le. 0) return
       call dealloc_each_TRACER_data(tracer%num_trace, tracer%fln_src)
       call dealloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,    &
-     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
-     &    tracer%fln_SR, tracer%fln_bcast)           
+     &                             tracer%fln_tce, tracer%fline_lc,     &
+     &                             tracer%fln_SR, tracer%fln_bcast)
       deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
       deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
 !
