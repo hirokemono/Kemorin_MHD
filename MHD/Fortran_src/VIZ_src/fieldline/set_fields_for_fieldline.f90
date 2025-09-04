@@ -86,7 +86,6 @@
       call s_start_surface_4_fline                                      &
      &   (mesh%node, mesh%ele, mesh%surf, nod_fld,                      &
      &    para_surf%isf_4_ele_dbl, fln_prm, fln_src, fln_tce)
-      if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline end'
 !
       end subroutine s_set_fields_for_fieldline
 !

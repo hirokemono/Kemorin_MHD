@@ -31,6 +31,12 @@
 !
       implicit  none
 !
+        real(kind = kreal), private, allocatable                        &
+     &                       :: xx4_initial_fline(:,:)
+!>        outward flux flag
+        integer(kind = kint), private, allocatable                      &
+     &                       :: iflag_outward_flux_fline(:)
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -57,12 +63,22 @@
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, ist, ied, inum
+      integer(kind = kint) :: i, ist, ied, inum, num
 !
+!
+      num = fln_prm%num_each_field_line
+      allocate(iflag_outward_flux_fline(num))
+      allocate(xx4_initial_fline(4,num))
+!
+      iflag_outward_flux_fline(1:num) =      0
+      xx4_initial_fline(1:4,1:num) = 0.0d0
 !
       fln_tce%num_current_fline                                         &
      &        = count_fline_start_surf(node, ele, surf, isf_4_ele_dbl,  &
-     &                                nod_fld, fln_prm, fln_src)
+     &                                nod_fld, fln_prm,                 &
+     &                                fln_src%num_line_local,           &
+     &                                iflag_outward_flux_fline,         &
+     &                                xx4_initial_fline)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
 !
@@ -76,7 +92,18 @@
       end do
 !
       call set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,         &
-     &                          nod_fld, fln_prm, fln_src, fln_tce)
+     &                        nod_fld, fln_prm, fln_src%num_line_local, &
+     &                        iflag_outward_flux_fline, fln_tce)
+!
+      if(i_debug .gt. iflag_full_msg) then
+        do i = 1, fln_src%num_line_local
+          write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
+     &                  xx4_initial_fline(1:3,i)
+        end do
+      end if
+!
+      deallocate(xx4_initial_fline)
+      deallocate(iflag_outward_flux_fline)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &
@@ -88,8 +115,6 @@
         do i = 1, fln_src%num_line_local
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
      &                  fln_prm%id_surf_start_fline(1:2,i)
-          write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
-     &                  fln_src%xx4_initial_fline(1:3,i)
         end do
 !
 !
