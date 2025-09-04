@@ -102,6 +102,12 @@
 !  -----   Initialize tracer
       if(elps_VIZ%flag_elapsed_V)                                       &
      &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+13)
+!
+      call SPH_to_TRACER_bridge_SGS_MHD(SSNAPs%SPH_MHD%sph,             &
+     &    SSNAPs%SPH_MHD%comms, SSNAPs%SPH_MHD%fld,                     &
+     &    SSNAPs%SPH_WK%trans_p, SSNAPs%SPH_WK%trns_WK%trns_MHD,        &
+     &    SVIZs%FEM_DAT%geofem, SVIZs%FEM_DAT%field, SSNAPs%m_SR)
+!
       call TRACER_initialize                                            &
      &   (SSNAPs%MHD_step%init_d,  SSNAPs%MHD_step%finish_d,            &
      &    SSNAPs%MHD_step%rst_step, SVIZs%FEM_DAT%geofem,               &

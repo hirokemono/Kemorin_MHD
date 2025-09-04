@@ -65,7 +65,7 @@
       use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
-!
+!      integer :: inod, i
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       SSMHDs%MHD_step%finish_d%started_time = MPI_WTIME()
@@ -118,6 +118,12 @@
 !  -----   Initialize tracer
       if(elps_VIZ1%flag_elapsed_V)                                      &
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
+!
+      call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,             &
+     &    SSMHDs%SPH_MHD%comms, SSMHDs%SPH_MHD%fld,                     &
+     &    SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK%trns_MHD,        &
+     &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SSMHDs%m_SR)
+!
       call TRACER_initialize                                            &
      &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
      &    SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,              &

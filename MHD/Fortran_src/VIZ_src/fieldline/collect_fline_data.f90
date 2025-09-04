@@ -55,8 +55,8 @@
      &                                ucd%istack_merged_nod)
       call count_number_of_node_stack(fline_lc%nele_line_l,             &
      &                                ucd%istack_merged_ele)
-      write(*,*) 'ucd%istack_merged_nod', ucd%istack_merged_nod
-      write(*,*) 'ucd%istack_merged_ele', ucd%istack_merged_ele
+!      write(*,*) 'ucd%istack_merged_nod', ucd%istack_merged_nod
+!      write(*,*) 'ucd%istack_merged_ele', ucd%istack_merged_ele
 !
 !$omp parallel workshare
       ucd%istack_merged_intnod(0:nprocs)                                &
