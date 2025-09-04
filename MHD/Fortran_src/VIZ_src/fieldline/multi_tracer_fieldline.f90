@@ -136,6 +136,7 @@
       use t_find_interpolate_in_ele
       use set_fline_control
       use set_fline_seeds_from_list
+      use field_at_each_seed_point
 !
       type(mesh_geometry), intent(in) :: mesh
       integer(kind = kint), intent(in) :: num_fline
@@ -155,7 +156,8 @@
 !
       if(flag_fln_dist) then
         call alloc_FLINE_element_size(mesh%ele, fln_dist)
-        call cal_FLINE_element_size(mesh%node, mesh%ele, fln_dist)
+        call cal_FLINE_element_size(mesh%node, mesh%ele,                &
+     &                              fln_dist%ele_size)
       end if
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
@@ -163,7 +165,8 @@
           call alloc_init_tracer_position(fln_prm(i_fln),               &
      &                                    fln_src(i_fln))
           call init_FLINE_seed_from_list(i_fln, mesh%node, mesh%ele,    &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_dist)
+     &        fln_prm(i_fln), fln_src(i_fln), fln_dist,                 &
+     &        fln_src(i_fln)%num_line_local)
         end if
       end do
       if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
@@ -198,14 +201,16 @@
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then
           call count_FLINE_seed_from_list                               &
-     &       (fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+     &       (fln_src(i_fln)%num_line_local,                            &
+     &        fln_prm(i_fln), fln_tce(i_fln))
           call set_FLINE_seed_field_from_list                           &
      &       (mesh%node, mesh%ele, nod_fld,                             &
      &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
         else
           call s_set_fields_for_fieldline                               &
      &       (mesh, group, para_surf, nod_fld,                          &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+     &        fln_src(i_fln)%num_line_local,                            &
+     &        fln_prm(i_fln), fln_tce(i_fln))
         end if
       end do
 !

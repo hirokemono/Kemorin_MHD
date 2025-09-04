@@ -29,10 +29,6 @@
       type each_fieldline_source
         integer(kind = kint) :: num_line_local = 0
 !
-        integer(kind = kint) :: n_points_prev = 0
-!>        velocity of previous step
-        real(kind = kreal), allocatable :: v_prev(:,:)
-!
 !>        Position list of seed point in start element
         real(kind = kreal), allocatable :: xi_surf_start_fline(:,:)
 !>        domain list of seed point
@@ -44,33 +40,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_velocity_at_previous(numnod, fln_src)
-!
-      integer(kind = kint), intent(in) :: numnod
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-!
-      fln_src%n_points_prev = numnod
-      allocate(fln_src%v_prev(fln_src%n_points_prev,3))
-      if(fln_src%n_points_prev .gt. 0) then
-!$omp parallel workshare
-        fln_src%v_prev(1:fln_src%n_points_prev,1:3) = 0.0d0
-!$omp end parallel workshare
-      end if
-!
-      end subroutine alloc_velocity_at_previous
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_velocity_at_previous(fln_src)
-      type(each_fieldline_source), intent(inout) :: fln_src
-!
-      deallocate(fln_src%v_prev)
-!
-      end subroutine dealloc_velocity_at_previous
 !
 !  ---------------------------------------------------------------------
 !

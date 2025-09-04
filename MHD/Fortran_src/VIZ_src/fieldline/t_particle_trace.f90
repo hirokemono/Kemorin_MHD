@@ -117,7 +117,7 @@
      &                           tracer%fln_tce, tracer%fline_lc,       &
      &                           tracer%fln_SR, tracer%fln_bcast)
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
-     &                            tracer%fln_src)
+     &                            tracer%fln_tce)
 !
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_trace,   &
      &    tracer%fln_prm, tracer%fln_src)
@@ -167,9 +167,8 @@
 
       call s_multi_trace_particle                                       &
      &   (time_d, elps_tracer, geofem%mesh, para_surf,                  &
-     &    nod_fld, tracer%num_trace, tracer%fln_prm,                    &
-     &    tracer%fln_src, tracer%fln_tce, tracer%fline_lc,              &
-     &    tracer%fln_SR, tracer%fln_bcast, m_SR)
+     &    nod_fld, tracer%num_trace, tracer%fln_prm, tracer%fln_tce,    &
+     &    tracer%fline_lc, tracer%fln_SR, tracer%fln_bcast, m_SR)
 !
       if(elps_tracer%flag_elapsed)                                      &
      &        call start_elapsed_time(elps_tracer%ist_elapsed+3)
@@ -221,7 +220,7 @@
 !
 !
       if (tracer%num_trace .le. 0) return
-      call dealloc_each_TRACER_data(tracer%num_trace, tracer%fln_src)
+      call dealloc_each_TRACER_data(tracer%num_trace, tracer%fln_tce)
       call dealloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,    &
      &                             tracer%fln_tce, tracer%fline_lc,     &
      &                             tracer%fln_SR, tracer%fln_bcast)

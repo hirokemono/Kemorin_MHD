@@ -24,6 +24,11 @@
 !!      subroutine dealloc_line_start_fline(fln_tce)
 !!      subroutine dealloc_num_gl_start_fline(fln_tce)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!
+!!      subroutine alloc_velocity_at_previous(numnod, fln_tce)
+!!      subroutine dealloc_velocity_at_previous(fln_tce)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!@endverbatim
 !
       module t_tracing_data
@@ -57,7 +62,7 @@
         integer(kind= kint), allocatable :: isf_dbl_start(:,:)
 !>  Position of starting point
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
-!!>  position of starting point in each element coordinate
+!>  position of starting point in each element coordinate
 !        real(kind = kreal), allocatable ::  xi_fline_start(:,:)
 !>  Velocity at starting point
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
@@ -65,6 +70,11 @@
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
 !>  Trace length for each tracing
         real(kind = kreal), allocatable ::  trace_length(:)
+!
+!>  Size of array for previous velocity in each PE
+        integer(kind = kint) :: n_points_prev = 0
+!>  Velocity at previous step
+        real(kind = kreal), allocatable :: v_prev(:,:)
       end type each_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -220,6 +230,34 @@
       deallocate(fln_tce%istack_current_fline)
 !
       end subroutine dealloc_num_gl_start_fline
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_velocity_at_previous(numnod, fln_tce)
+!
+      integer(kind = kint), intent(in) :: numnod
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+!
+      fln_tce%n_points_prev = numnod
+      allocate(fln_tce%v_prev(fln_tce%n_points_prev,3))
+      if(fln_tce%n_points_prev .gt. 0) then
+!$omp parallel workshare
+        fln_tce%v_prev(1:fln_tce%n_points_prev,1:3) = 0.0d0
+!$omp end parallel workshare
+      end if
+!
+      end subroutine alloc_velocity_at_previous
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_velocity_at_previous(fln_tce)
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      deallocate(fln_tce%v_prev)
+!
+      end subroutine dealloc_velocity_at_previous
 !
 !  ---------------------------------------------------------------------
 !
