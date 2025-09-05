@@ -7,28 +7,12 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine init_FLINE_seed_from_list(i_fln, node, ele,          &
-!!     &          fln_prm, fln_src, fln_dist, num_line_local)
-!!        integer(kind = kint), intent(in) :: i_fln
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(fieldline_paramter), intent(inout) :: fln_prm
-!!        type(each_fieldline_source), intent(inout) :: fln_src
-!!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!        type(FLINE_element_size), intent(inout) :: fln_dist
-!!        integer(kind = kint), intent(inout) :: num_line_local
 !!      subroutine set_FLINE_seed_field_from_list                       &
 !!     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
 !!         type(node_data), intent(in) :: node
 !!         type(element_data), intent(in) :: ele
 !!         type(phys_data), intent(in) :: nod_fld
 !!         type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!
-!!      subroutine count_FLINE_seed_from_list(num_line_local,           &
-!!     &                                      fln_prm, fln_tce)
-!!        integer(kind = kint), intent(in) :: num_line_local
-!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine set_field_at_each_seed_point(node, ele, nod_fld,     &
@@ -44,6 +28,22 @@
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &         :: c_fline_start(fline_fields%ntot_color_comp)
+!!
+!!      subroutine find_seed_point_in_each_ele                          &
+!!     &         (node, ele, xx_surf_start_fline, idx_fln_dist,         &
+!!     &          num_search, itp_ele_work, ip_surf_start_fline,        &
+!!     &          iele_surf_start_fline, xi_surf_start_fline,           &
+!!     &          ierr_inter)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: xx_surf_start_fline(3)
+!!        integer(kind = kint), intent(in) :: idx_fln_dist(ele%numele)
+!!        integer(kind = kint), intent(in) :: num_search
+!!        type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
+!!        integer(kind = kint), intent(inout) :: ip_surf_start_fline
+!!        integer(kind = kint), intent(inout) :: iele_surf_start_fline
+!!        real(kind = kreal), intent(inout) :: xi_surf_start_fline(3)
+!!        integer(kind = kint), intent(inout) :: ierr_inter
 !!@endverbatim
 !
       module set_fline_seeds_from_list
@@ -65,6 +65,9 @@
       real(kind = kreal), parameter, private ::   eps_iter = 1.0d-9
       integer(kind = kint), parameter, private :: iflag_nomessage = 0
       real(kind = kreal), parameter, private ::   error_level = 1.0d-9
+!
+      private :: count_FLINE_seed_from_list
+      private :: set_FLINE_seed_field_from_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -91,61 +94,6 @@
       if(i_debug .gt. 0) call check_line_start_fline(fln_tce)
 !
       end subroutine const_FLINE_seed_from_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_FLINE_seed_from_list(i_fln, node, ele,            &
-     &          fln_prm, fln_src, fln_dist, num_line_local)
-!
-      use calypso_mpi_int
-      use t_control_data_flines
-      use t_find_interpolate_in_ele
-      use field_at_each_seed_point
-      use set_fline_control
-      use quicksort
-!
-      integer(kind = kint), intent(in) :: i_fln
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(fieldline_paramter), intent(inout) :: fln_prm
-      type(each_fieldline_source), intent(inout) :: fln_src
-      type(FLINE_element_size), intent(inout) :: fln_dist
-      integer(kind = kint), intent(inout) :: num_line_local
-!
-      integer(kind = kint) :: ierr_inter
-      integer(kind = kint) :: num_search
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, fln_prm%num_each_field_line
-        call seed_distance_from_ele_center                              &
-     &     (ele, fln_prm%xx_surf_start_fline(1,i), fln_dist%ele_size,   &
-     &      fln_dist%index, fln_dist%distance, num_search)
-!
-        if(num_search .gt. 1) then
-          call quicksort_real_w_index(ele%numele, fln_dist%distance(1), &
-     &        ione, num_search, fln_dist%index(1))
-        end if
-!
-        call find_seed_point_in_each_ele                                &
-     &     (node, ele, fln_prm%xx_surf_start_fline(1,i),                &
-     &      fln_dist%index, num_search, fln_dist%itp_ele_work_f,        &
-     &      fln_src%ip_surf_start_fline(i),                             &
-     &      fln_src%iele_surf_start_fline(i),                           &
-     &      fln_src%xi_surf_start_fline(1:3,i), ierr_inter)
-      end do
-!
-      num_line_local = 0
-      do i = 1, fln_prm%num_each_field_line
-      if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
-        num_line_local = num_line_local + 1
-      end do
-!
-      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
-      call check_each_fieldline_source(i_fln, ele%numele, fln_src)
-!
-      end subroutine init_FLINE_seed_from_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -199,7 +147,6 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: icou, inum
-      integer(kind = kint) :: ip
 !
 !
       icou = 0
@@ -260,6 +207,7 @@
       end subroutine set_FLINE_seed_field_from_list
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine set_field_at_each_seed_point(node, ele, nod_fld,       &
      &          fline_fields, iphys_4_fline, iele_seed, x4_seed,        &
@@ -304,7 +252,7 @@
 !
       subroutine find_seed_point_in_each_ele                            &
      &         (node, ele, xx_surf_start_fline, idx_fln_dist,           &
-     &          num_search, itp_ele_work_f, ip_surf_start_fline,        &
+     &          num_search, itp_ele_work, ip_surf_start_fline,          &
      &          iele_surf_start_fline, xi_surf_start_fline,             &
      &          ierr_inter)
 !
@@ -316,7 +264,7 @@
       integer(kind = kint), intent(in) :: idx_fln_dist(ele%numele)
       integer(kind = kint), intent(in) :: num_search
 !
-      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work_f
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
       integer(kind = kint), intent(inout) :: ip_surf_start_fline
       integer(kind = kint), intent(inout) :: iele_surf_start_fline
       real(kind = kreal), intent(inout) :: xi_surf_start_fline(3)
@@ -338,7 +286,7 @@
         call find_interpolate_in_ele                                    &
      &     (xx_surf_start_fline(1), maxitr, eps_iter,                   &
      &      my_rank, iflag_nomessage, error_level,                      &
-     &      node, ele, iele, itp_ele_work_f, xi, ierr_inter) 
+     &      node, ele, iele, itp_ele_work, xi, ierr_inter) 
         if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
           ip_surf_start_fline =      my_rank
           iele_surf_start_fline =    iele

@@ -61,6 +61,8 @@
 !
       implicit  none
 !
+      private :: init_FLINE_seed_from_list
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -129,7 +131,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_FLINE_seed_points(mesh, num_fline,           &
-     &                                      fln_prm, fln_src)
+     &                                       fln_prm, fln_src)
 !
       use calypso_mpi
       use m_connect_hexa_2_tetra
@@ -218,6 +220,63 @@
       end do
 !
       end subroutine set_FLINE_seed_fields
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine init_FLINE_seed_from_list(i_fln, node, ele,            &
+     &          fln_prm, fln_src, fln_dist, num_line_local)
+!
+      use calypso_mpi_int
+      use t_control_data_flines
+      use t_find_interpolate_in_ele
+      use field_at_each_seed_point
+      use set_fline_control
+      use set_fline_seeds_from_list
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: i_fln
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(fieldline_paramter), intent(inout) :: fln_prm
+      type(each_fieldline_source), intent(inout) :: fln_src
+      type(FLINE_element_size), intent(inout) :: fln_dist
+      integer(kind = kint), intent(inout) :: num_line_local
+!
+      integer(kind = kint) :: ierr_inter
+      integer(kind = kint) :: num_search
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, fln_prm%num_each_field_line
+        call seed_distance_from_ele_center                              &
+     &     (ele, fln_prm%xx_surf_start_fline(1,i), fln_dist%ele_size,   &
+     &      fln_dist%index, fln_dist%distance, num_search)
+!
+        if(num_search .gt. 1) then
+          call quicksort_real_w_index(ele%numele, fln_dist%distance(1), &
+     &        ione, num_search, fln_dist%index(1))
+        end if
+!
+        call find_seed_point_in_each_ele                                &
+     &     (node, ele, fln_prm%xx_surf_start_fline(1,i),                &
+     &      fln_dist%index, num_search, fln_dist%itp_ele_work_f,        &
+     &      fln_src%ip_surf_start_fline(i),                             &
+     &      fln_src%iele_surf_start_fline(i),                           &
+     &      fln_src%xi_surf_start_fline(1:3,i), ierr_inter)
+      end do
+!
+      num_line_local = 0
+      do i = 1, fln_prm%num_each_field_line
+      if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
+        num_line_local = num_line_local + 1
+      end do
+!
+      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
+      call check_each_fieldline_source(i_fln, ele%numele, fln_src)
+!
+      end subroutine init_FLINE_seed_from_list
 !
 !  ---------------------------------------------------------------------
 !
