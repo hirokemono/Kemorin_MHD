@@ -155,12 +155,16 @@
           if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
           icou = icou + 1
 !
-          call cal_each_seed_field_in_ele(node, ele, nod_fld,           &
-     &        fln_prm%fline_fields, fln_prm%iphys_4_fline,              &
+          call cal_each_seed_velocity_in_ele                            &
+     &       (ele, nod_fld, fln_prm%iphys_4_fline,                      &
      &        fln_src%iele_surf_start_fline(inum),                      &
      &        fln_src%xi_surf_start_fline(1,inum),                      &
+     &        fln_tce%v_fline_start(1,icou))
+          call cal_fields_in_element                                    &
+     &       (fln_src%iele_surf_start_fline(inum),                      &
+     &        fln_src%xi_surf_start_fline(1,inum),                      &
      &        fln_prm%xx_surf_start_fline(1,inum),                      &
-     &        fln_tce%v_fline_start(1,icou),                            &
+     &        ele, nod_fld, fln_prm%fline_fields,                       &
      &        fln_tce%c_fline_start(1,icou))
 !
 !
@@ -216,6 +220,7 @@
 !
       use t_find_interpolate_in_ele
       use field_at_each_seed_point
+      use tracer_field_interpolate
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -242,9 +247,10 @@
      &    iele_seed(1), itp_ele_work_f, xi_in_ele, ierr_inter)
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-      call cal_each_seed_field_in_ele                                   &
-     &   (node, ele, nod_fld, fline_fields, iphys_4_fline,              &
-     &    iele_seed, xi_in_ele, x4_seed, v_fline_start, c_fline_start)
+      call cal_each_seed_velocity_in_ele(ele, nod_fld,                  &
+     &    iphys_4_fline, iele_seed, xi_in_ele, v_fline_start)
+      call cal_fields_in_element(iele_seed, xi_in_ele, x4_seed,         &
+     &    ele, nod_fld, fline_fields, c_fline_start)
 !
       end subroutine set_field_at_each_seed_point
 !
@@ -287,7 +293,7 @@
         call find_interpolate_in_ele                                    &
      &     (xx_surf_start_fline(1), maxitr, eps_iter,                   &
      &      my_rank, iflag_nomessage, error_level,                      &
-     &      node, ele, iele, itp_ele_work, xi, ierr_inter) 
+     &      node, ele, iele, itp_ele_work, xi, ierr_inter)
         if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
           ip_surf_start_fline =      my_rank
           iele_surf_start_fline =    iele

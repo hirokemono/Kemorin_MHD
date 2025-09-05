@@ -26,21 +26,15 @@
 !!        real(kind = kreal), intent(in) :: error_level
 !!        real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
 !!
-!!      subroutine cal_each_seed_field_in_ele                           &
-!!     &         (node, ele, nod_fld, fline_fields, iphys_4_fline,      &
-!!     &          iele_surf_start_fline, xi_surf_start_fline,           &
-!!     &          xx_surf_start_fline, v_fline_start, c_fline_start)
-!!        type(node_data), intent(in) :: node
+!!      subroutine cal_each_seed_velocity_in_ele                        &
+!!     &         (ele, nod_fld, iphys_4_fline, iele_surf_start_fline,   &
+!!     &          xi_surf_start_fline, v_fline_start)
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(ctl_params_viz_fields), intent(in) :: fline_fields
 !!        integer(kind = kint), intent(in) :: iphys_4_fline
 !!        integer(kind = kint), intent(in) :: iele_surf_start_fline(1)
 !!        real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
-!!        real(kind = kreal), intent(in) :: xx_surf_start_fline(3)
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &         :: c_fline_start(fline_fields%ntot_color_comp)
 !!@endverbatim
 !
       module field_at_each_seed_point
@@ -150,52 +144,41 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_each_seed_field_in_ele                             &
-     &         (node, ele, nod_fld, fline_fields, iphys_4_fline,        &
-     &          iele_surf_start_fline, xi_surf_start_fline,             &
-     &          xx_surf_start_fline, v_fline_start, c_fline_start)
+      subroutine cal_each_seed_velocity_in_ele                          &
+     &         (ele, nod_fld, iphys_4_fline, iele_surf_start_fline,     &
+     &          xi_surf_start_fline, v_fline_start)
 !
       use sel_interpolate_scalar
       use extend_field_line
       use trace_in_element
       use tracer_field_interpolate
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
 !
-      type(ctl_params_viz_fields), intent(in) :: fline_fields
       integer(kind = kint), intent(in) :: iphys_4_fline
 !
       integer(kind = kint), intent(in) :: iele_surf_start_fline(1)
       real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
-      real(kind = kreal), intent(in) :: xx_surf_start_fline(3)
 !
       real(kind = kreal), intent(inout) :: v_fline_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &         :: c_fline_start(fline_fields%ntot_color_comp)
 !
-!      real(kind = kreal) :: position_check(3)
 ! 
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
      &    nod_fld%d_fld(1,iphys_4_fline), iele_surf_start_fline(1),     &
      &    xi_surf_start_fline, v_fline_start(1))
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
      &    nod_fld%d_fld(1,iphys_4_fline+1), iele_surf_start_fline(1),   &
      &    xi_surf_start_fline, v_fline_start(2))
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
      &    nod_fld%d_fld(1,iphys_4_fline+2), iele_surf_start_fline(1),   &
      &    xi_surf_start_fline, v_fline_start(3))
       v_fline_start(4) = one
 !
-      call cal_fields_in_element(iele_surf_start_fline,                 &
-     &    xi_surf_start_fline, xx_surf_start_fline,                     &
-     &    ele, nod_fld, fline_fields, c_fline_start(1))
-!
-      end subroutine cal_each_seed_field_in_ele
+      end subroutine cal_each_seed_velocity_in_ele
 !
 !  ---------------------------------------------------------------------
 !

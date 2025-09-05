@@ -255,6 +255,8 @@
         if(num_search .gt. 1) then
           call quicksort_real_w_index(ele%numele, fln_dist%distance(1), &
      &        ione, num_search, fln_dist%index(1))
+        else
+          ierr_inter = 0
         end if
 !
         call find_seed_point_in_each_ele                                &
@@ -271,7 +273,7 @@
         fln_src%num_line_local = fln_src%num_line_local + 1
       end do
 !
-      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
+!      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
       call check_each_fieldline_source(i_fln, ele%numele, fln_src)
 !
       end subroutine init_FLINE_seed_from_list

@@ -127,7 +127,8 @@
      &    tracer%num_trace, tracer%fln_prm, tracer%fln_src,             &
      &    tracer%fln_tce)
 !
-      call sel_input_tracer_restarts(init_d, rst_step,                  &
+      call sel_input_tracer_restarts                                    &
+     &   (init_d, rst_step, geofem%mesh, nod_fld,    &
      &                               tracer%num_trace, tracer%fln_prm,  &
      &                               tracer%fln_tce, tracer%fline_lc)
 !
@@ -172,7 +173,8 @@
 !
       if(elps_tracer%flag_elapsed)                                      &
      &        call start_elapsed_time(elps_tracer%ist_elapsed+3)
-      call output_tracer_restarts(time_d, finish_d, rst_step,           &
+      call output_tracer_restarts                                       &
+     &   (time_d, finish_d, rst_step, geofem%mesh, nod_fld,             &
      &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
       if(istep_tracer .le. 0) return
       call output_tracer_viz_files(istep_tracer, time_d,                &
