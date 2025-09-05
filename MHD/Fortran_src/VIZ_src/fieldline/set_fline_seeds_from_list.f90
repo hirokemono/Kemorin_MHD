@@ -7,12 +7,13 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine set_FLINE_seed_field_from_list                       &
-!!     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
-!!         type(node_data), intent(in) :: node
-!!         type(element_data), intent(in) :: ele
-!!         type(phys_data), intent(in) :: nod_fld
-!!         type(fieldline_paramter), intent(in) :: fln_prm
+!!      subroutine const_FLINE_seed_from_list(node, ele, nod_fld,       &
+!!     &                                      fln_prm, fln_src, fln_tce)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine set_field_at_each_seed_point(node, ele, nod_fld,     &
@@ -76,19 +77,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_FLINE_seed_from_list(node, ele, nod_fld,         &
-     &          fln_prm, fln_src, num_line_local, fln_tce)
+     &                                      fln_prm, fln_src, fln_tce)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
-      integer(kind = kint), intent(in) :: num_line_local
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
 !
-      call count_FLINE_seed_from_list(num_line_local, fln_prm, fln_tce)
+      call count_FLINE_seed_from_list(fln_src%num_line_local,           &
+     &                                fln_prm, fln_tce)
       call set_FLINE_seed_field_from_list(node, ele, nod_fld, fln_prm,  &
      &                                    fln_src, fln_tce)
       if(i_debug .gt. 0) call check_line_start_fline(fln_tce)

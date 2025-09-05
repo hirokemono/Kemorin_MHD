@@ -170,8 +170,7 @@
           call alloc_init_tracer_position(fln_prm(i_fln),               &
      &                                    fln_src(i_fln))
           call init_FLINE_seed_from_list(i_fln, mesh%node, mesh%ele,    &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_dist,                 &
-     &        fln_src(i_fln)%num_line_local)
+     &        fln_prm(i_fln), fln_src(i_fln), fln_dist)
         end if
       end do
       if(flag_fln_dist) then
@@ -210,7 +209,7 @@
      &                       .eq. iflag_position_list) then
           call const_FLINE_seed_from_list                               &
      &       (mesh%node, mesh%ele, nod_fld, fln_prm(i_fln),             &
-     &        fln_src(i_fln), fln_src(i_fln)%num_line_local, fln_tce(i_fln))
+     &        fln_src(i_fln), fln_tce(i_fln))
         else
           call s_set_fields_for_fieldline                               &
      &       (mesh, group, para_surf, nod_fld,                          &
@@ -225,7 +224,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_FLINE_seed_from_list(i_fln, node, ele,            &
-     &          fln_prm, fln_src, fln_dist, num_line_local)
+     &                                     fln_prm, fln_src, fln_dist)
 !
       use calypso_mpi_int
       use t_control_data_flines
@@ -241,7 +240,6 @@
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(FLINE_element_size), intent(inout) :: fln_dist
-      integer(kind = kint), intent(inout) :: num_line_local
 !
       integer(kind = kint) :: ierr_inter
       integer(kind = kint) :: num_search
@@ -267,10 +265,10 @@
      &      fln_src%xi_surf_start_fline(1:3,i), ierr_inter)
       end do
 !
-      num_line_local = 0
+      fln_src%num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
       if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
-        num_line_local = num_line_local + 1
+        fln_src%num_line_local = fln_src%num_line_local + 1
       end do
 !
       write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
