@@ -176,7 +176,7 @@
           call find_interpolate_in_ele                                  &
      &       (fln_prm%xx_surf_start_fline(1,i), maxitr, eps_iter,       &
      &        my_rank, iflag_nomessage, error_level,                    &
-     &        node, ele, iele, itp_ele_work_f, xi, ierr_inter)  
+     &        node, ele, iele, itp_ele_work_f, xi, ierr_inter) 
           if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
             fln_src%ip_surf_start_fline(i) = my_rank
             fln_src%iele_surf_start_fline(i) = iele
@@ -187,28 +187,14 @@
       end do
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-      do ip = 1, nprocs
-        call calypso_mpi_barrier
-        if(my_rank .ne. ip-1) cycle
-        write(*,*) my_rank, i_fln, i, 'fln_prm%num_each_field_line', &
-    &             fln_prm%num_each_field_line
-        do i = 1, fln_prm%num_each_field_line
-          if(fln_src%ip_surf_start_fline(i) .ge. 0) then
-          write(*,*) my_rank, i_fln, i, 'fln_prm',                     &
-     &              fln_src%ip_surf_start_fline(i),                    &
-     &              fln_src%iele_surf_start_fline(i),                  &
-     &              fln_src%xi_surf_start_fline(1:3,i),                &
-     &              ele%numele, ierr_inter
-          end if
-        end do
-      end do
-      call calypso_mpi_barrier()
-!
       num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
       if(fln_src%ip_surf_start_fline(i) .eq. my_rank)                   &
         num_line_local = num_line_local + 1
       end do
+!
+      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
+      call check_each_fieldline_source(i_fln, ele%numele, fln_src)
 !
       end subroutine init_FLINE_seed_from_list
 !

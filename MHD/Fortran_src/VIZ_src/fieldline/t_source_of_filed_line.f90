@@ -29,6 +29,7 @@
       type each_fieldline_source
         integer(kind = kint) :: num_line_local = 0
 !
+        integer(kind = kint) :: num_line_global = 0
 !>        Position list of seed point in start element
         real(kind = kreal), allocatable :: xi_surf_start_fline(:,:)
 !>        domain list of seed point
@@ -51,11 +52,12 @@
       integer(kind = kint) :: num
 !
 !
-      num = fln_prm%num_each_field_line
-      allocate(fln_src%xi_surf_start_fline(3,num))
-      allocate(fln_src%ip_surf_start_fline(num))
-      allocate(fln_src%iele_surf_start_fline(num))
+      fln_src%num_line_global = fln_prm%num_each_field_line
+      allocate(fln_src%xi_surf_start_fline(3,fln_src%num_line_global))
+      allocate(fln_src%ip_surf_start_fline(fln_src%num_line_global))
+      allocate(fln_src%iele_surf_start_fline(fln_src%num_line_global))
 !
+      num = fln_src%num_line_global
       if(num .gt. 0) then
         fln_src%xi_surf_start_fline(1:3,1:num) = 0.0d0
         fln_src%ip_surf_start_fline(1:num) =        0
@@ -76,6 +78,38 @@
       deallocate(fln_src%iele_surf_start_fline)
 !
       end subroutine dealloc_init_tracer_position
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_each_fieldline_source(i_fln, numele, fln_src)
+!
+      use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: i_fln, numele
+      type(each_fieldline_source), intent(in) :: fln_src
+!
+      integer(kind = kint) :: i, ip
+!
+!
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(my_rank .ne. ip-1) cycle
+        write(*,*) my_rank, i_fln, 'fln_src%num_line_global', &
+    &             fln_src%num_line_global
+        do i = 1, fln_src%num_line_global
+          if(fln_src%ip_surf_start_fline(i) .ge. 0) then
+          write(*,*) i, 'xi_surf_start_fline',                         &
+     &              fln_src%ip_surf_start_fline(i),                    &
+     &              fln_src%iele_surf_start_fline(i),                  &
+     &              fln_src%xi_surf_start_fline(1:3,i),                &
+     &              numele
+          end if
+        end do
+      end do
+      call calypso_mpi_barrier()
+!
+      end subroutine check_each_fieldline_source
 !
 !  ---------------------------------------------------------------------
 !

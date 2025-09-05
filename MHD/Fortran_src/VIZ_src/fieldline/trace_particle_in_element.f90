@@ -20,7 +20,7 @@
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !!        integer(kind = kint), intent(in) :: i_tracer
 !!        integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
-!!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
+!!        real(kind = kreal), intent(inout) :: v4_start(4), x4_start(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: c_field(viz_fields%ntot_color_comp)
 !!        real(kind = kreal), intent(inout) :: progress
@@ -39,7 +39,7 @@
 !
       use t_geometry_data
       use t_surface_data
-      use t_paralell_surface_indices
+      use t_parallel_surface_indices
       use t_phys_data
       use t_ctl_params_viz_fields
 !
