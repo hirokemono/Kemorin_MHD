@@ -156,6 +156,9 @@
 !
       if(flag_fln_dist) then
         call alloc_FLINE_element_size(mesh%ele, fln_dist)
+        call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,              &
+     &                                fln_dist%itp_ele_work_f)
+
         call cal_FLINE_element_size(mesh%node, mesh%ele,                &
      &                              fln_dist%ele_size)
       end if
@@ -169,7 +172,10 @@
      &        fln_src(i_fln)%num_line_local)
         end if
       end do
-      if(flag_fln_dist) call dealloc_FLINE_element_size(fln_dist)
+      if(flag_fln_dist) then
+        call dealloc_work_4_interpolate(fln_dist%itp_ele_work_f)
+        call dealloc_FLINE_element_size(fln_dist)
+      end if
 !
       end subroutine set_fixed_FLINE_seed_points
 !
@@ -200,12 +206,9 @@
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then
-          call count_FLINE_seed_from_list                               &
-     &       (fln_src(i_fln)%num_line_local,                            &
-     &        fln_prm(i_fln), fln_tce(i_fln))
-          call set_FLINE_seed_field_from_list                           &
-     &       (mesh%node, mesh%ele, nod_fld,                             &
-     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
+          call const_FLINE_seed_from_list                               &
+     &       (mesh%node, mesh%ele, nod_fld, fln_prm(i_fln),             &
+     &        fln_src(i_fln), fln_src(i_fln)%num_line_local, fln_tce(i_fln))
         else
           call s_set_fields_for_fieldline                               &
      &       (mesh, group, para_surf, nod_fld,                          &

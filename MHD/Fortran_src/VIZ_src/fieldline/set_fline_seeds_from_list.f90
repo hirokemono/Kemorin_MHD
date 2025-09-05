@@ -7,12 +7,6 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine alloc_FLINE_element_size(ele, fln_dist)
-!!      subroutine dealloc_FLINE_element_size(fln_dist)
-!!        type(element_data), intent(in) :: ele
-!!        type(FLINE_element_size), intent(inout) :: fln_dist
-!!        type(FLINE_element_size), intent(inout) :: fln_dist
-!!
 !!      subroutine init_FLINE_seed_from_list(i_fln, node, ele,          &
 !!     &          fln_prm, fln_src, fln_dist, num_line_local)
 !!        integer(kind = kint), intent(in) :: i_fln
@@ -72,47 +66,32 @@
       integer(kind = kint), parameter, private :: iflag_nomessage = 0
       real(kind = kreal), parameter, private ::   error_level = 1.0d-9
 !
-      type FLINE_element_size
-        real(kind = kreal), allocatable :: ele_size(:)
-        real(kind = kreal), allocatable :: distance(:)
-        integer(kind = kint), allocatable :: index(:)
-      end type FLINE_element_size
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_FLINE_element_size(ele, fln_dist)
+      subroutine const_FLINE_seed_from_list(node, ele, nod_fld,         &
+     &          fln_prm, fln_src, num_line_local, fln_tce)
+!
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(FLINE_element_size), intent(inout) :: fln_dist
+      type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramter), intent(in) :: fln_prm
+      type(each_fieldline_source), intent(in) :: fln_src
+      integer(kind = kint), intent(in) :: num_line_local
 !
-      allocate(fln_dist%ele_size(ele%numele))
-      allocate(fln_dist%distance(ele%numele))
-      allocate(fln_dist%index(ele%numele))
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      if(ele%numele .le. 0) return
-!$omp parallel workshare 
-      fln_dist%ele_size(1:ele%numele) = 0.0d0
-      fln_dist%distance(1:ele%numele) = 0.0d0
-      fln_dist%index(1:ele%numele) =    0
-!$omp end parallel workshare 
 !
-      end subroutine alloc_FLINE_element_size
+      call count_FLINE_seed_from_list(num_line_local, fln_prm, fln_tce)
+      call set_FLINE_seed_field_from_list(node, ele, nod_fld, fln_prm,  &
+     &                                    fln_src, fln_tce)
+      if(i_debug .gt. 0) call check_line_start_fline(fln_tce)
 !
-!  ---------------------------------------------------------------------
+      end subroutine const_FLINE_seed_from_list
 !
-      subroutine dealloc_FLINE_element_size(fln_dist)
-      type(FLINE_element_size), intent(inout) :: fln_dist
-!
-      if(allocated(fln_dist%ele_size) .eqv. .FALSE.) return
-      deallocate(fln_dist%ele_size)
-      deallocate(fln_dist%distance, fln_dist%index)
-!
-      end subroutine dealloc_FLINE_element_size
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine init_FLINE_seed_from_list(i_fln, node, ele,            &
@@ -121,6 +100,7 @@
       use calypso_mpi_int
       use t_control_data_flines
       use t_find_interpolate_in_ele
+      use field_at_each_seed_point
       use set_fline_control
       use quicksort
 !
@@ -132,60 +112,29 @@
       type(FLINE_element_size), intent(inout) :: fln_dist
       integer(kind = kint), intent(inout) :: num_line_local
 !
-      type(cal_interpolate_coefs_work), save :: itp_ele_work_f
       integer(kind = kint) :: ierr_inter
-!
-      real(kind = kreal) :: x, y, z
-      real(kind = kreal) :: dist_tmp
-      real(kind = kreal) :: xi(3)
-      integer(kind = kint) :: i, ip, iele, inum
       integer(kind = kint) :: num_search
 !
+      integer(kind = kint) :: i
 !
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
 !
       do i = 1, fln_prm%num_each_field_line
-        x = fln_prm%xx_surf_start_fline(1,i)
-        y = fln_prm%xx_surf_start_fline(2,i)
-        z = fln_prm%xx_surf_start_fline(3,i)
-        num_search = 0
-        do iele = 1, ele%numele
-          dist_tmp = sqrt ((x - ele%x_ele(iele,1))**2                   &
-     &                   + (y - ele%x_ele(iele,2))**2                   &
-     &                   + (z - ele%x_ele(iele,3))**2)
-          if(dist_tmp .le. fln_dist%ele_size(iele)) then
-            num_search = num_search + 1
-            fln_dist%index(num_search) =    iele
-            fln_dist%distance(num_search) = dist_tmp
-          end if
-        end do
-
+        call seed_distance_from_ele_center                              &
+     &     (ele, fln_prm%xx_surf_start_fline(1,i), fln_dist%ele_size,   &
+     &      fln_dist%index, fln_dist%distance, num_search)
+!
         if(num_search .gt. 1) then
           call quicksort_real_w_index(ele%numele, fln_dist%distance(1), &
-    &         ione, num_search, fln_dist%index(1))
+     &        ione, num_search, fln_dist%index(1))
         end if
 !
-        fln_src%ip_surf_start_fline(i) = -1
-        fln_src%iele_surf_start_fline(i) = 0
-        fln_src%xi_surf_start_fline(1:3,i) = -2.0
-        do inum = 1, num_search
-          iele = fln_dist%index(inum)
-          if(ele%interior_ele(iele) .le. 0) cycle
-          ierr_inter = 0
-          xi(1:3) = -2.0
-          call find_interpolate_in_ele                                  &
-     &       (fln_prm%xx_surf_start_fline(1,i), maxitr, eps_iter,       &
-     &        my_rank, iflag_nomessage, error_level,                    &
-     &        node, ele, iele, itp_ele_work_f, xi, ierr_inter) 
-          if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
-            fln_src%ip_surf_start_fline(i) = my_rank
-            fln_src%iele_surf_start_fline(i) = iele
-            fln_src%xi_surf_start_fline(1:3,i) = xi(1:3)
-            exit
-          end if
-        end do
+        call find_seed_point_in_each_ele                                &
+     &     (node, ele, fln_prm%xx_surf_start_fline(1,i),                &
+     &      fln_dist%index, num_search, fln_dist%itp_ele_work_f,        &
+     &      fln_src%ip_surf_start_fline(i),                             &
+     &      fln_src%iele_surf_start_fline(i),                           &
+     &      fln_src%xi_surf_start_fline(1:3,i), ierr_inter)
       end do
-      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       num_line_local = 0
       do i = 1, fln_prm%num_each_field_line
@@ -244,9 +193,9 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-!
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
+!
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: icou, inum
@@ -308,20 +257,6 @@
           end if
         end do
 !
-      do ip = 1, nprocs
-        call calypso_mpi_barrier
-        if(my_rank .ne. ip-1) cycle
-        do icou = 1, fln_tce%istack_current_fline(ip)                   &
-     &              - fln_tce%istack_current_fline(ip-1)
-          write(*,*) my_rank, icou, 'fln_tce',                          &
-     &        fln_tce%xx_fline_start(1:3,icou),                         &
-     &        fln_tce%isf_dbl_start(1:3,icou),                          &
-     &        fln_tce%v_fline_start(1:3,icou),                          &
-     &        fln_tce%c_fline_start(:,icou)
-        end do
-      end do
-      call calypso_mpi_barrier()
-!
       end subroutine set_FLINE_seed_field_from_list
 !
 !  ---------------------------------------------------------------------
@@ -363,6 +298,56 @@
      &    iele_seed, xi_in_ele, x4_seed, v_fline_start, c_fline_start)
 !
       end subroutine set_field_at_each_seed_point
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine find_seed_point_in_each_ele                            &
+     &         (node, ele, xx_surf_start_fline, idx_fln_dist,           &
+     &          num_search, itp_ele_work_f, ip_surf_start_fline,        &
+     &          iele_surf_start_fline, xi_surf_start_fline,             &
+     &          ierr_inter)
+!
+      use t_find_interpolate_in_ele
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: xx_surf_start_fline(3)
+      integer(kind = kint), intent(in) :: idx_fln_dist(ele%numele)
+      integer(kind = kint), intent(in) :: num_search
+!
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work_f
+      integer(kind = kint), intent(inout) :: ip_surf_start_fline
+      integer(kind = kint), intent(inout) :: iele_surf_start_fline
+      real(kind = kreal), intent(inout) :: xi_surf_start_fline(3)
+      integer(kind = kint), intent(inout) :: ierr_inter
+!
+      real(kind = kreal) :: xi(3)
+      integer(kind = kint) :: iele, inum
+!
+!
+      ip_surf_start_fline = -1
+      iele_surf_start_fline = 0
+      xi_surf_start_fline(1:3) = -2.0
+      do inum = 1, num_search
+        iele = idx_fln_dist(inum)
+        if(ele%interior_ele(iele) .le. 0) cycle
+!
+        ierr_inter = 0
+        xi(1:3) = -2.0
+        call find_interpolate_in_ele                                    &
+     &     (xx_surf_start_fline(1), maxitr, eps_iter,                   &
+     &      my_rank, iflag_nomessage, error_level,                      &
+     &      node, ele, iele, itp_ele_work_f, xi, ierr_inter) 
+        if(ierr_inter.gt.1 .and. ierr_inter.le.maxitr) then
+          ip_surf_start_fline =      my_rank
+          iele_surf_start_fline =    iele
+          xi_surf_start_fline(1:3) = xi(1:3)
+          exit
+        end if
+      end do
+!
+      end subroutine find_seed_point_in_each_ele
 !
 !  ---------------------------------------------------------------------
 !

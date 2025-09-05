@@ -7,14 +7,16 @@
 !> @brief Structure of start point data for line tracing iteration
 !!
 !!@verbatim
-!!      subroutine alloc_start_point_fline(num_pe, fln_prm, fln_src)
 !!      subroutine alloc_init_tracer_position(fln_prm, fln_src)
+!!      subroutine dealloc_init_tracer_position(fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!
-!!      subroutine dealloc_start_point_fline(fln_src)
-!!      subroutine dealloc_init_tracer_position(fln_prm)
-!!        type(each_fieldline_source), intent(inout) :: fln_src
+!!      subroutine alloc_FLINE_element_size(ele, fln_dist)
+!!      subroutine dealloc_FLINE_element_size(fln_dist)
+!!        type(element_data), intent(in) :: ele
+!!        type(FLINE_element_size), intent(inout) :: fln_dist
+!!
 !!@endverbatim
 !
       module t_source_of_filed_line
@@ -22,6 +24,7 @@
       use m_precision
       use m_constants
       use t_control_params_4_fline
+      use t_find_interpolate_in_ele
 !
       implicit  none
 !
@@ -37,6 +40,16 @@
 !>        element list of seed point
         integer(kind = kint), allocatable :: iele_surf_start_fline(:)
       end type each_fieldline_source
+!
+      type FLINE_element_size
+        integer(kind = kint) :: numele_dist
+        real(kind = kreal), allocatable :: ele_size(:)
+!
+        real(kind = kreal), allocatable :: distance(:)
+        integer(kind = kint), allocatable :: index(:)
+!
+        type(cal_interpolate_coefs_work) :: itp_ele_work_f
+      end type FLINE_element_size
 !
 !  ---------------------------------------------------------------------
 !
@@ -67,6 +80,30 @@
       end subroutine alloc_init_tracer_position
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine alloc_FLINE_element_size(ele, fln_dist)
+!
+      use t_geometry_data
+!
+      type(element_data), intent(in) :: ele
+      type(FLINE_element_size), intent(inout) :: fln_dist
+!
+!
+      fln_dist%numele_dist = ele%numele
+      allocate(fln_dist%ele_size(fln_dist%numele_dist))
+      allocate(fln_dist%distance(fln_dist%numele_dist))
+      allocate(fln_dist%index(fln_dist%numele_dist))
+!
+      if(fln_dist%numele_dist .le. 0) return
+!$omp parallel workshare
+      fln_dist%ele_size(1:fln_dist%numele_dist) = 0.0d0
+      fln_dist%distance(1:fln_dist%numele_dist) = 0.0d0
+      fln_dist%index(1:fln_dist%numele_dist) =    0
+!$omp end parallel workshare 
+!
+      end subroutine alloc_FLINE_element_size
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_init_tracer_position(fln_src)
@@ -78,6 +115,17 @@
       deallocate(fln_src%iele_surf_start_fline)
 !
       end subroutine dealloc_init_tracer_position
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_FLINE_element_size(fln_dist)
+      type(FLINE_element_size), intent(inout) :: fln_dist
+!
+      if(allocated(fln_dist%ele_size) .eqv. .FALSE.) return
+      deallocate(fln_dist%ele_size)
+      deallocate(fln_dist%distance, fln_dist%index)
+!
+      end subroutine dealloc_FLINE_element_size
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
