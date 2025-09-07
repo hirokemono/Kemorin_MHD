@@ -101,6 +101,13 @@
      &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%trace_length(inum),                               &
      &        fln_tce%iflag_comm_start(inum), inum)
+          write(*,*) my_rank, inum, ' to check_each_tracer_data:  '
+          call check_each_tracer_data                                 &
+     &       (inum, mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline, &
+     &        fln_tce%isf_dbl_start(2,inum), &
+     &        fln_tce%isf_dbl_start(3,inum), &
+     &        fln_tce%xx_fline_start(1,inum), &
+     &        fln_tce%v_fline_start(1,inum))
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
             call set_field_at_each_seed_point(mesh%node, mesh%ele,      &
@@ -124,6 +131,10 @@
         end do
         if(elps_tracer%flag_elapsed)                                    &
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
+!
+         write(*,*) 'check at', inum
+        call check_tracer_restarts                                  &
+     &    (inum, mesh, nod_fld, fln_prm, fline_lc)
 !
         if(elps_tracer%flag_elapsed)                                    &
      &         call start_elapsed_time(elps_tracer%ist_elapsed+2)

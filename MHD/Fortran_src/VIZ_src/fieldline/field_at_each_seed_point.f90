@@ -149,9 +149,6 @@
      &          xi_surf_start_fline, v_fline_start)
 !
       use sel_interpolate_scalar
-      use extend_field_line
-      use trace_in_element
-      use tracer_field_interpolate
 !
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
