@@ -279,7 +279,7 @@
         if(my_rank .ne. ip-1) cycle
         do icou = 1, fln_tce%istack_current_fline(ip)                   &
      &              - fln_tce%istack_current_fline(ip-1)
-          write(*,*) my_rank, icou, 'fln_tce',                          &
+          write(*,*) my_rank, icou, 'check_line_start_fline',           &
      &        fln_tce%xx_fline_start(1:3,icou),                         &
      &        fln_tce%isf_dbl_start(1:3,icou),                          &
      &        fln_tce%v_fline_start(1:3,icou),                          &

@@ -23,7 +23,7 @@
 !!      subroutine trace_to_element_wall                                &
 !!     &         (isf_org, iflag_dir, ele, surf, viz_fields,            &
 !!     &          x4_ele, v4_ele, c_ele, x4_start, v4_start,            &
-!!     &          isf_tgt_8, x4_tgt_8, v4_tgt_8, c_tgt_8)
+!!     &          isf_tgt_8, xi_surf_8, x4_tgt_8, v4_tgt_8, c_tgt_8)
 !!        integer(kind = kint), intent(in) :: isf_org
 !!        integer(kind = kint), intent(in) :: iflag_dir
 !!        type(element_data), intent(in) :: ele
@@ -36,6 +36,7 @@
 !!        real(kind = kreal), intent(in) :: x4_start(4)
 !!        real(kind = kreal), intent(in) :: v4_start(4)
 !!        integer(kind = kint), intent(inout) :: isf_tgt_8
+!!        real(kind = kreal), intent(inout) :: xi_surf_8(2)
 !!        real(kind = kreal), intent(inout) :: x4_tgt_8(4)
 !!        real(kind = kreal), intent(inout) :: v4_tgt_8(4)
 !!        real(kind = kreal), intent(inout)                             &
@@ -137,7 +138,7 @@
       subroutine trace_to_element_wall                                  &
      &         (isf_org, iflag_dir, ele, surf, viz_fields,              &
      &          x4_ele, v4_ele, c_ele, x4_start, v4_start,              &
-     &          isf_tgt_8, x4_tgt_8, v4_tgt_8, c_tgt_8)
+     &          isf_tgt_8, xi_surf_8, x4_tgt_8, v4_tgt_8, c_tgt_8)
 !
       use cal_fline_in_cube
       use set_fields_after_tracing
@@ -157,14 +158,13 @@
       real(kind = kreal), intent(in) :: v4_start(4)
 !
       integer(kind = kint), intent(inout) :: isf_tgt_8
+      real(kind = kreal), intent(inout) :: xi_surf_8(2)
       real(kind = kreal), intent(inout) :: x4_tgt_8(4)
       real(kind = kreal), intent(inout) :: v4_tgt_8(4)
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_tgt_8(viz_fields%ntot_color_comp)
 !
-      real(kind = kreal) :: xi_surf_8(2)
 !
-
       call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
      &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
      &    v4_start, x4_start, x4_ele, isf_tgt_8, x4_tgt_8, xi_surf_8)

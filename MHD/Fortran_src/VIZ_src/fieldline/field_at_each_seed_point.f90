@@ -27,11 +27,11 @@
 !!        real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
 !!
 !!      subroutine cal_each_seed_velocity_in_ele                        &
-!!     &         (ele, nod_fld, iphys_4_fline, iele_surf_start_fline,   &
+!!     &         (ele, n_point, d_velo, iele_surf_start_fline,          &
 !!     &          xi_surf_start_fline, v_fline_start)
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_data), intent(in) :: nod_fld
-!!        integer(kind = kint), intent(in) :: iphys_4_fline
+!!        integer(kind = kint), intent(in) :: n_point
+!!        real(kind = kreal), intent(in) :: d_nod(n_point,3)
 !!        integer(kind = kint), intent(in) :: iele_surf_start_fline(1)
 !!        real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
@@ -40,11 +40,11 @@
       module field_at_each_seed_point
 !
       use m_precision
+      use m_constants
 !
       use m_machine_parameter
       use m_geometry_constants
       use t_geometry_data
-      use t_phys_data
       use t_ctl_params_viz_fields
 !
       implicit none
@@ -145,15 +145,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_each_seed_velocity_in_ele                          &
-     &         (ele, nod_fld, iphys_4_fline, iele_surf_start_fline,     &
+     &         (ele, n_point, d_velo, iele_surf_start_fline,            &
      &          xi_surf_start_fline, v_fline_start)
 !
       use sel_interpolate_scalar
 !
       type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: iphys_4_fline
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(in) :: d_velo(n_point,3)
 !
       integer(kind = kint), intent(in) :: iele_surf_start_fline(1)
       real(kind = kreal), intent(in) :: xi_surf_start_fline(3)
@@ -162,17 +162,17 @@
 !
 ! 
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
-     &    nod_fld%d_fld(1,iphys_4_fline), iele_surf_start_fline(1),     &
-     &    xi_surf_start_fline, v_fline_start(1))
+     &   (n_point, ele%numele, ele%nnod_4_ele, ele%ie, d_velo(1,1),     &
+     &    iele_surf_start_fline(1), xi_surf_start_fline,                &
+     &    v_fline_start(1))
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
-     &    nod_fld%d_fld(1,iphys_4_fline+1), iele_surf_start_fline(1),   &
-     &    xi_surf_start_fline, v_fline_start(2))
+     &   (n_point, ele%numele, ele%nnod_4_ele, ele%ie, d_velo(1,2),     &
+     &    iele_surf_start_fline(1), xi_surf_start_fline,                &
+     &    v_fline_start(2))
       call sel_sgl_interpolate_scalar_ele                               &
-     &   (nod_fld%n_point, ele%numele, ele%nnod_4_ele, ele%ie,          &
-     &    nod_fld%d_fld(1,iphys_4_fline+2), iele_surf_start_fline(1),   &
-     &    xi_surf_start_fline, v_fline_start(3))
+     &   (n_point, ele%numele, ele%nnod_4_ele, ele%ie, d_velo(1,3),     &
+     &    iele_surf_start_fline(1), xi_surf_start_fline,                &
+     &    v_fline_start(3))
       v_fline_start(4) = one
 !
       end subroutine cal_each_seed_velocity_in_ele

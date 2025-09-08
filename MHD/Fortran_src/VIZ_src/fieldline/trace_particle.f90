@@ -102,11 +102,11 @@
      &        fln_tce%trace_length(inum),                               &
      &        fln_tce%iflag_comm_start(inum), inum)
           write(*,*) my_rank, inum, ' to check_each_tracer_data:  '
-          call check_each_tracer_data                                 &
-     &       (inum, mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline, &
-     &        fln_tce%isf_dbl_start(2,inum), &
-     &        fln_tce%isf_dbl_start(3,inum), &
-     &        fln_tce%xx_fline_start(1,inum), &
+          call check_each_tracer_data(inum, mesh%node, mesh%ele,        &
+     &        nod_fld%d_fld(1,fln_prm%iphys_4_fline),                   &
+     &        fln_tce%isf_dbl_start(2,inum),                            &
+     &        fln_tce%isf_dbl_start(3,inum),                            &
+     &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum))
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then

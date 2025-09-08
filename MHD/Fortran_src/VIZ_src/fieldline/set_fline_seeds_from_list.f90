@@ -92,7 +92,7 @@
      &                                fln_prm, fln_tce)
       call set_FLINE_seed_field_from_list(node, ele, nod_fld, fln_prm,  &
      &                                    fln_src, fln_tce)
-      if(i_debug .gt. 0) call check_line_start_fline(fln_tce)
+      call check_line_start_fline(fln_tce)
 !
       end subroutine const_FLINE_seed_from_list
 !
@@ -155,8 +155,8 @@
           if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
           icou = icou + 1
 !
-          call cal_each_seed_velocity_in_ele                            &
-     &       (ele, nod_fld, fln_prm%iphys_4_fline,                      &
+          call cal_each_seed_velocity_in_ele(ele, nod_fld%n_point,      &
+     &        nod_fld%d_fld(1,fln_prm%iphys_4_fline),                   &
      &        fln_src%iele_surf_start_fline(inum),                      &
      &        fln_src%xi_surf_start_fline(1,inum),                      &
      &        fln_tce%v_fline_start(1,icou))
@@ -247,8 +247,9 @@
      &    iele_seed(1), itp_ele_work_f, xi_in_ele, ierr_inter)
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
-      call cal_each_seed_velocity_in_ele(ele, nod_fld,                  &
-     &    iphys_4_fline, iele_seed, xi_in_ele, v_fline_start)
+      call cal_each_seed_velocity_in_ele(ele,                           &
+     &    nod_fld%n_point, nod_fld%d_fld(1,iphys_4_fline),              &
+     &    iele_seed, xi_in_ele, v_fline_start)
       call cal_fields_in_element(iele_seed, xi_in_ele, x4_seed,         &
      &    ele, nod_fld, fline_fields, c_fline_start)
 !

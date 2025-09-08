@@ -439,9 +439,10 @@
      &              itp_ele_work_g, xi_in_ele, ierr_inter)
                 iflag = surface_mode_in_each_ele(error_level, xi_in_ele)
                 call cal_each_seed_velocity_in_ele                      &
-     &             (mesh%ele, nod_fld, fln_prm%iphys_4_fline,    &
-     &              fline_lc%iedge_line_l(1,i),                  &
-     &              xi_in_ele, v_fline_start)
+     &             (mesh%ele, nod_fld%n_point,                          &
+     &              nod_fld%d_fld(1,fln_prm%iphys_4_fline),             &
+     &              fline_lc%iedge_line_l(1,i), xi_in_ele,              &
+     &              v_fline_start)
                 write(*,*) i, fline_lc%iedge_line_l(1,i),        &
      &                        fline_lc%xx_line_l(1:3,i),         &
      &                        fline_lc%iedge_line_l(2,i), iflag, &

@@ -213,6 +213,7 @@
       use cal_fline_in_cube
       use trace_in_element
       use tracer_field_interpolate
+      use modify_local_surf_positions
 !
       real(kind = kreal), intent(in) :: trace_ratio
       real(kind = kreal), intent(in) ::   end_trace
@@ -236,6 +237,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: c_field(viz_fields%ntot_color_comp)
 !
+      real(kind = kreal) :: xi_surf_tgt(2)
       real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
       real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
       real(kind = kreal) :: ratio
@@ -248,7 +250,7 @@
 !
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
      &    viz_fields, x4_ele, v4_ele, c_ele, x4_start, v4_start,        &
-     &    isf_tgt, x4_tgt_8, v4_tgt, c_tgt)
+     &    isf_tgt, xi_surf_tgt, x4_tgt_8, v4_tgt, c_tgt)
       if(isf_tgt .le. 0) return
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
