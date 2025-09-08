@@ -122,13 +122,13 @@
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_trace,   &
      &    tracer%fln_prm, tracer%fln_src)
 
-      call set_FLINE_seed_fields                                        &
+      call set_TRACER_seed_fields                                       &
      &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
      &    tracer%num_trace, tracer%fln_prm, tracer%fln_src,             &
      &    tracer%fln_tce)
 !
       call sel_input_tracer_restarts                                    &
-     &   (init_d, rst_step, geofem%mesh, nod_fld,    &
+     &   (init_d, rst_step, geofem%mesh, nod_fld,                       &
      &                               tracer%num_trace, tracer%fln_prm,  &
      &                               tracer%fln_tce, tracer%fline_lc)
 !

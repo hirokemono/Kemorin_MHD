@@ -26,7 +26,7 @@
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source),intent(inout) :: fln_src(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!      subroutine set_FLINE_seed_fields(mesh, group, para_surf,        &
+!!      subroutine set_TRACER_seed_fields(mesh, group, para_surf,       &
 !!     &          nod_fld, num_fline, fln_prm, fln_src, fln_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -182,7 +182,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_FLINE_seed_fields(mesh, group, para_surf,          &
+      subroutine set_TRACER_seed_fields(mesh, group, para_surf,         &
      &          nod_fld, num_fline, fln_prm, fln_src, fln_tce)
 !
       use set_fields_for_fieldline
@@ -190,7 +190,7 @@
       use collect_fline_data
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list
-!
+      use copy_field_smp
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -202,7 +202,7 @@
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
 !
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_fln, i_velo
 !
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
@@ -216,9 +216,13 @@
      &        fln_src(i_fln)%num_line_local,                            &
      &        fln_prm(i_fln), fln_tce(i_fln))
         end if
+!
+        i_velo = fln_prm(i_fln)%iphys_4_fline
+        call copy_nod_vector_smp(mesh%node%numnod,                      &
+     &      nod_fld%d_fld(1,i_velo), fln_tce(i_fln)%v_prev(1,1))
       end do
 !
-      end subroutine set_FLINE_seed_fields
+      end subroutine set_TRACER_seed_fields
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
