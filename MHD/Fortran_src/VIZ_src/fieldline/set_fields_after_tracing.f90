@@ -23,21 +23,15 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
 !!
-!!      subroutine fields_on_surf_from_one_ele                          &
-!!     &         (isf_tgt, xi_surf, ele, surf, viz_fields,              &
-!!     &          v4_ele, c_ele, x4_tgt, v4_tgt, c_tgt)
+!!      subroutine fields_on_surf_from_one_ele(isf_tgt, xi_surf,        &
+!!     &          ele, surf, v4_ele, x4_tgt, v4_tgt)
 !!        integer(kind = kint), intent(in) :: isf_tgt
 !!        real(kind = kreal), intent(in) :: xi_surf(2)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
-!!        real(kind = kreal), intent(in)                                &
-!!     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
 !!        real(kind = kreal), intent(in) :: x4_tgt(4)
 !!        real(kind = kreal), intent(inout) :: v4_tgt(4)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                   :: c_tgt(viz_fields%ntot_color_comp)
 !!@endverbatim
 !
       module set_fields_after_tracing
@@ -111,33 +105,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine fields_on_surf_from_one_ele                            &
-     &         (isf_tgt, xi_surf, ele, surf, viz_fields,                &
-     &          v4_ele, c_ele, x4_tgt, v4_tgt, c_tgt)
-!
-      use coordinate_converter
-      use convert_components_4_viz
-      use cal_field_on_surf_viz
+      subroutine fields_on_surf_from_one_ele(isf_tgt, xi_surf,          &
+     &          ele, surf, v4_ele, x4_tgt, v4_tgt)
 !
       integer(kind = kint), intent(in) :: isf_tgt
       real(kind = kreal), intent(in) :: xi_surf(2)
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
       real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in)                                    &
-     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
 !
       real(kind = kreal), intent(in) :: x4_tgt(4)
       real(kind = kreal), intent(inout) :: v4_tgt(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: c_tgt(viz_fields%ntot_color_comp)
 !
-      real(kind = kreal) :: c_xyz(viz_fields%ntot_org_comp)
       real(kind = kreal) :: v_work(4*surf%nnod_4_surf)
-      real(kind = kreal)                                                &
-     &         :: c_work(viz_fields%ntot_org_comp*surf%nnod_4_surf)
       real(kind = kreal) :: r(1), theta(1), phi(1)
       real(kind = kreal) :: a_r(1), rs(1), a_rs(1)
       integer(kind = kint) :: istack_single(0:1) = (/0, 1/)
@@ -146,21 +127,6 @@
 !
       call field_on_surf_of_one_ele(isf_tgt, ele, surf, xi_surf,        &
      &    ifour, v4_ele(1,1), v4_tgt(1), v_work(1))
-      call field_on_surf_of_one_ele(isf_tgt, ele, surf, xi_surf,        &
-     &    viz_fields%ntot_org_comp, c_ele(1,1), c_xyz(1), c_work(1))
-!
-      call position_2_sph(ione, x4_tgt(1), r, theta, phi,               &
-     &                    a_r, rs, a_rs)
-      do inum = 1, viz_fields%num_color_fields
-        ist = viz_fields%istack_org_ncomp(inum-1)
-        jst = viz_fields%istack_color_field(inum-1)
-        call convert_comps_4_viz                                        &
-     &     (ione, istack_single, x4_tgt(1), r, a_r, rs, a_rs,           &
-     &      viz_fields%ncomp_color_field(inum),                         &
-     &      viz_fields%ncomp_org_color_field(inum),                     &
-     &      viz_fields%icomp_color_field(inum),                         &
-     &      c_xyz(ist+1), c_tgt(jst+1))
-      end do
 !
       end subroutine fields_on_surf_from_one_ele
 !

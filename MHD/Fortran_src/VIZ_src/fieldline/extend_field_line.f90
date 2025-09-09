@@ -92,8 +92,6 @@
 !
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal)                                                &
-     &           :: color_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
       integer(kind = kint) :: isf_tgt, jcou
       integer(kind = kint) :: isurf_org(2)
 !
@@ -125,14 +123,11 @@
      &                                  node%xx, x4_ele)
         call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &      nod_fld%d_fld(1,i_fline), v4_ele)
-        call fline_colors_at_one_element(isurf_org(1), ele,             &
-     &      nod_fld, viz_fields, color_ele)
 !
 !   extend in the middle of element
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(2), iflag_dir, ele, surf,                         &
-     &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, xx4_start, v4_start, c_field)
+     &      x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -156,8 +151,7 @@
 !   extend to surface of element
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      izero, iflag_dir, ele, surf,                                &
-     &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, xx4_start, v4_start, c_field)
+     &      x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -220,8 +214,7 @@
       subroutine fline_trace_in_element                                 &
      &         (trace_ratio, end_trace, trace_length,                   &
      &          isf_org, iflag_dir, ele, surf,                          &
-     &          viz_fields, x4_ele, v4_ele, c_ele,                      &
-     &          isf_tgt, xx4_start, v4_start, c_field)
+     &          x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -240,22 +233,16 @@
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in)                                    &
-     &           :: c_ele(viz_fields%ntot_org_comp, ele%nnod_4_ele)
 !
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: c_field(viz_fields%ntot_color_comp)
 !
       real(kind = kreal) :: xi_surf_tgt(2)
       real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
-      real(kind = kreal) :: c_tgt(viz_fields%ntot_color_comp)
       real(kind = kreal) :: ratio
 !
 !
@@ -265,16 +252,15 @@
       end if
 !
       call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
-     &    viz_fields, x4_ele, v4_ele, c_ele, xx4_start, v4_start,       &
-     &    isf_tgt, xi_surf_tgt, x4_tgt_8, v4_tgt, c_tgt)
+     &    x4_ele, v4_ele, xx4_start, v4_start,                          &
+     &    isf_tgt, xi_surf_tgt, x4_tgt_8, v4_tgt)
       if(isf_tgt .le. 0) return
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, xx4_start,            &
      &                                  ratio, trace_length)
-      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
-     &                           x4_tgt_8, v4_tgt, c_tgt,               &
-     &                           xx4_start, v4_start, c_field)
+      call update_fline_position(ratio, x4_tgt_8, v4_tgt,               &
+     &                           xx4_start, v4_start)
 !
       end subroutine fline_trace_in_element
 !

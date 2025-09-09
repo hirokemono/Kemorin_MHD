@@ -93,12 +93,11 @@
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
      &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
-     &        v_prev, fln_prm%fline_fields, fln_prm%iphys_4_fline,      &
+     &        v_prev, fln_prm%iphys_4_fline,                            &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%trace_length(inum),                               &
      &        fln_tce%iflag_comm_start(inum), inum)
           call set_field_at_each_seed_point                             &

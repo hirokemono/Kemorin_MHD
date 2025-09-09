@@ -208,9 +208,8 @@
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then
-          call const_FLINE_seed_from_list                               &
-     &       (mesh%node, mesh%ele, nod_fld, fln_prm(i_fln),             &
-     &        fln_src(i_fln), fln_tce(i_fln))
+          call const_FLINE_seed_from_list(mesh%ele, nod_fld,            &
+     &        fln_prm(i_fln), fln_src(i_fln), fln_tce(i_fln))
         else
           call s_set_fields_for_fieldline                               &
      &       (mesh, group, para_surf, nod_fld,                          &
