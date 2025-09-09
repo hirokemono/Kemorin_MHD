@@ -63,6 +63,7 @@
       use t_local_fline
       use trace_in_element
       use set_fields_after_tracing
+      use set_fields_at_seed_points
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -109,6 +110,9 @@
      &                             v4_start, isurf_org)
       end if
 !
+      call set_field_at_each_seed_point                                 &
+     &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
+     &    xx4_start, v4_start, c_field)
       call add_fline_start(xx4_start, xi4_start, v4_start,              &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
@@ -141,6 +145,9 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+        call set_field_at_each_seed_point                               &
+     &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
+     &      xx4_start, v4_start, c_field)
         call add_fline_list                                             &
      &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
@@ -163,6 +170,9 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+        call set_field_at_each_seed_point                               &
+     &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
+     &      xx4_start, v4_start, c_field)
         call add_fline_list                                             &
      &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)

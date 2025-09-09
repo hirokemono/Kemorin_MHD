@@ -84,7 +84,7 @@
       subroutine s_set_fline_seed_from_tracer(node, ele, nod_fld,       &
      &          org_fln_tce, fln_prm, fln_tce)
 !
-      use set_fline_seeds_from_list
+      use set_fields_at_seed_points
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

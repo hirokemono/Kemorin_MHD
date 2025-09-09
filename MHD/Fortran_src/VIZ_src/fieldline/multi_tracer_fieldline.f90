@@ -236,7 +236,7 @@
       use t_find_interpolate_in_ele
       use field_at_each_seed_point
       use set_fline_control
-      use set_fline_seeds_from_list
+      use set_fields_at_seed_points
       use quicksort
 !
       integer(kind = kint), intent(in) :: i_fln
