@@ -164,6 +164,7 @@
         call cal_FLINE_element_size(mesh%node, mesh%ele,                &
      &                              fln_dist%ele_size)
       end if
+!
       do i_fln = 1, num_fline
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_position_list) then

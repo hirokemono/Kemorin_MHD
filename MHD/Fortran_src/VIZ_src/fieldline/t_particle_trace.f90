@@ -119,6 +119,7 @@
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_tce)
 !
+      allocate(tracer%fln_src(tracer%num_trace))
       call set_fixed_FLINE_seed_points(geofem%mesh, tracer%num_trace,   &
      &    tracer%fln_prm, tracer%fln_src)
 
@@ -126,6 +127,7 @@
      &   (geofem%mesh, geofem%group, para_surf, nod_fld,                &
      &    tracer%num_trace, tracer%fln_prm, tracer%fln_src,             &
      &    tracer%fln_tce)
+      deallocate(tracer%fln_src)
 !
       call sel_input_tracer_restarts                                    &
      &   (init_d, rst_step, geofem%mesh, nod_fld,                       &
@@ -226,7 +228,7 @@
       call dealloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,    &
      &                             tracer%fln_tce, tracer%fline_lc,     &
      &                             tracer%fln_SR, tracer%fln_bcast)
-      deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
+      deallocate(tracer%fline_lc, tracer%fln_bcast)
       deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
 !
       end subroutine TRACER_finalize
@@ -239,7 +241,6 @@
       type(tracer_module), intent(inout) :: tracer
 !
       allocate(tracer%fln_prm(tracer%num_trace))
-      allocate(tracer%fln_src(tracer%num_trace))
       allocate(tracer%fln_tce(tracer%num_trace))
       allocate(tracer%fln_SR(tracer%num_trace))
       allocate(tracer%fln_bcast(tracer%num_trace))

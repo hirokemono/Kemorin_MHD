@@ -282,6 +282,7 @@
           write(*,*) my_rank, icou, 'check_line_start_fline',           &
      &        fln_tce%xx_fline_start(1:3,icou),                         &
      &        fln_tce%isf_dbl_start(1:3,icou),                          &
+     &        fln_tce%xi_fline_start(1:3,icou),                         &
      &        fln_tce%v_fline_start(1:3,icou),                          &
      &        fln_tce%c_fline_start(:,icou)
         end do

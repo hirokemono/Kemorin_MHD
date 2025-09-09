@@ -17,6 +17,9 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(FLINE_element_size), intent(inout) :: fln_dist
 !!
+!!      subroutine check_each_fieldline_source(i_fln, numele, fln_src)
+!!        integer(kind = kint), intent(in) :: i_fln, numele
+!!        type(each_fieldline_source), intent(in) :: fln_src
 !!@endverbatim
 !
       module t_source_of_filed_line
@@ -143,7 +146,7 @@
       do ip = 1, nprocs
         call calypso_mpi_barrier
         if(my_rank .ne. ip-1) cycle
-        write(*,*) my_rank, i_fln, 'fln_src%num_line_global', &
+        write(*,*) my_rank, i_fln, 'fln_src%num_line_global',           &
     &             fln_src%num_line_global
         do i = 1, fln_src%num_line_global
           if(fln_src%ip_surf_start_fline(i) .ge. 0) then
