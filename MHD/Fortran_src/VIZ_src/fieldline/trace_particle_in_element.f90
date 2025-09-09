@@ -120,16 +120,6 @@
         call velocity_at_each_seed_point(node, ele, progress,           &
      &      v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1),            &
      &      x4_start, v4_start)
-        allocate(v_middle(node%numnod,3))
-        v_middle(1:node%numnod,1:3)                                     &
-     &   = (1.0 - progress) * v_prev(1:node%numnod,1:3)                 &
-     &    + progress * nod_fld%d_fld(1:node%numnod,i_tracer:i_tracer+2)
-!
-        write(*,*) 'mid...', progress
-        call check_each_tracer_data(-1, node, ele, v_middle,            &
-     &      isurf_org_dbl(2), isurf_org_dbl(3),                         &
-     &      x4_start(1), v4_start(1))
-        deallocate(v_middle)
 !
 !   extend to surface of element
         call s_trace_in_element                                         &
@@ -139,16 +129,6 @@
         call velocity_at_each_seed_point(node, ele, progress,           &
      &      v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1),            &
      &      x4_start, v4_start)
-        allocate(v_middle(node%numnod,3))
-        v_middle(1:node%numnod,1:3)                                     &
-     &   = (1.0 - progress) * v_prev(1:node%numnod,1:3)                 &
-     &    + progress * nod_fld%d_fld(1:node%numnod,i_tracer:i_tracer+2)
-        write(*,*) 'second...', progress
-        call check_each_tracer_data(-2, node, ele, v_middle,            &
-     &      isurf_org_dbl(2), isurf_org_dbl(3),                         &
-     &      x4_start(1), v4_start(1))
-        deallocate(v_middle)
-!
 !
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
