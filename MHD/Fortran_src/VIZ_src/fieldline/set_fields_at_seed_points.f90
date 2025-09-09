@@ -7,6 +7,24 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
+!!      subroutine fline_vector_at_one_element(iele, node, ele, v_trace,&
+!!     &                                      v4_ele)
+!!        integer(kind = kint), intent(in) :: iele
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
+!!        real(kind = kreal), intent(inout) :: v4_ele(4,ele%nnod_4_ele)
+!!
+!!      subroutine velocity_at_each_seed_point(node, ele, progress,     &
+!!     &          v_prev, d_velo, iele_seed, x4_seed, v_fline_start)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: progress
+!!        real(kind = kreal), intent(in) :: v_prev(node%numnod,3)
+!!        real(kind = kreal), intent(in) :: d_velo(node%numnod,3)
+!!        integer(kind = kint), intent(in) :: iele_seed(1)
+!!        real(kind = kreal), intent(in) ::   x4_seed(4)
+!!        real(kind = kreal), intent(inout) :: v_fline_start(4)
 !!      subroutine set_field_at_each_seed_point(node, ele, nod_fld,     &
 !!     &          fline_fields, iphys_4_fline, iele_seed, x4_seed,      &
 !!     &          v_fline_start, c_fline_start)
@@ -61,6 +79,74 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine fline_vector_at_one_element(iele, node, ele, v_trace,  &
+     &                                       v4_ele)
+!
+      integer(kind = kint), intent(in) :: iele
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: v_trace(node%numnod,3)
+!
+      real(kind = kreal), intent(inout) :: v4_ele(4,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: k1, inod
+!
+      do k1 = 1, ele%nnod_4_ele
+        inod = ele%ie(iele,k1)
+        v4_ele(1:3,k1) = v_trace(inod,1:3)
+        v4_ele(4,k1) = one
+      end do
+!
+      end subroutine fline_vector_at_one_element
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine velocity_at_each_seed_point(node, ele, progress,       &
+     &          v_prev, d_velo, iele_seed, x4_seed, v_fline_start)
+!
+      use t_find_interpolate_in_ele
+      use field_at_each_seed_point
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      real(kind = kreal), intent(in) :: progress
+      real(kind = kreal), intent(in) :: v_prev(node%numnod,3)
+      real(kind = kreal), intent(in) :: d_velo(node%numnod,3)
+!
+      integer(kind = kint), intent(in) :: iele_seed(1)
+      real(kind = kreal), intent(in) ::   x4_seed(4)
+!
+      real(kind = kreal), intent(inout) :: v_fline_start(4)
+!
+      type(cal_interpolate_coefs_work), save :: itp_ele_work_f
+      integer(kind = kint) :: ierr_inter
+      real(kind = kreal) :: v_prev_start(4)
+      real(kind = kreal) :: xi_in_ele(3)
+!
+!
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
+      xi_in_ele(1:3) = -2.0
+      call find_interpolate_in_ele(x4_seed, maxitr, eps_iter,           &
+     &    my_rank, iflag_nomessage, error_level, node, ele,             &
+     &    iele_seed(1), itp_ele_work_f, xi_in_ele, ierr_inter)
+      call dealloc_work_4_interpolate(itp_ele_work_f)
+!
+      call cal_each_seed_velocity_in_ele(ele, node%numnod, v_prev,      &
+     &    iele_seed, xi_in_ele, v_prev_start)
+      call cal_each_seed_velocity_in_ele(ele, node%numnod, d_velo,      &
+     &    iele_seed, xi_in_ele, v_fline_start)
+!
+!$omp parallel workshare
+      v_fline_start(1:4) = (one - progress) * v_prev_start(1:4)         &
+     &                           + progress * v_fline_start(1:4)
+!$omp end parallel workshare
+!
+      end subroutine velocity_at_each_seed_point
 !
 !  ---------------------------------------------------------------------
 !
