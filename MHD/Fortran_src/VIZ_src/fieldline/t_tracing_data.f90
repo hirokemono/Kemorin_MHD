@@ -66,7 +66,7 @@
 !>  Position of starting point
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
 !>  position of starting point in each element coordinate
-!        real(kind = kreal), allocatable ::  xi_fline_start(:,:)
+        real(kind = kreal), allocatable ::  xi_fline_start(:,:)
 !>  Velocity at starting point
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
 !>  Field data at starting point
@@ -138,14 +138,14 @@
 !$omp end parallel
 !
       allocate(fln_tce%xx_fline_start(4,fln_tce%num_trace_buf))
-!      allocate(fln_tce%xi_fline_start(4,fln_tce%num_trace_buf))
+      allocate(fln_tce%xi_fline_start(4,fln_tce%num_trace_buf))
       allocate(fln_tce%v_fline_start(4,fln_tce%num_trace_buf))
       allocate(fln_tce%trace_length(fln_tce%num_trace_buf))
 !
 !$omp parallel
 !$omp workshare
       fln_tce%xx_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
-!      fln_tce%xi_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
+      fln_tce%xi_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
       fln_tce%v_fline_start(1:4,1:fln_tce%num_trace_buf) =  0.0d0
 !$omp end workshare nowait
 !$omp workshare
@@ -191,8 +191,8 @@
 !
           fln_tce%xx_fline_start(1:4,i_copied)                          &
      &          = fln_tce%xx_fline_start(1:4,i_org)
-!          fln_tce%xi_fline_start(1:4,i_copied)                         &
-!     &          = fln_tce%xi_fline_start(1:4,i_org)
+          fln_tce%xi_fline_start(1:4,i_copied)                          &
+     &          = fln_tce%xi_fline_start(1:4,i_org)
           fln_tce%v_fline_start(1:4,i_copied)                           &
      &          = fln_tce%v_fline_start(1:4,i_org)
           fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_copied)  &
@@ -214,7 +214,7 @@
       deallocate(fln_tce%icount_fline)
       deallocate(fln_tce%isf_dbl_start)
       deallocate(fln_tce%xx_fline_start)
-!      deallocate(fln_tce%xi_fline_start)
+      deallocate(fln_tce%xi_fline_start)
       deallocate(fln_tce%v_fline_start)
       deallocate(fln_tce%c_fline_start)
       deallocate(fln_tce%trace_length)

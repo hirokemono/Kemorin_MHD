@@ -10,7 +10,7 @@
 !!      subroutine s_extend_field_line(node, ele, surf, para_surf,      &
 !!     &          nod_fld, viz_fields, max_line_step, end_trace,        &
 !!     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,    &
-!!     &          isurf_org_dbl, x4_start, v4_start, c_field,           &
+!!     &          isurf_org_dbl, xx4_start, xi4_start, v4_start, c_field,&
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -23,7 +23,9 @@
 !!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !!        integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
 !!        integer(kind = kint), intent(inout) :: icount_line, iflag_comm
-!!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
+!!        real(kind = kreal), intent(inout) ::   v4_start(4)
+!!        real(kind = kreal), intent(inout) ::   xx4_start(4)
+!!        real(kind = kreal), intent(inout) ::   xi4_start(4)
 !!        real(kind = kreal), intent(inout) ::   c_field(1)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
@@ -55,7 +57,7 @@
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
      &          nod_fld, viz_fields, max_line_step, end_trace,          &
      &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,      &
-     &          isurf_org_dbl, x4_start, v4_start, c_field,             &
+     &          isurf_org_dbl, xx4_start, xi4_start, v4_start, c_field, &
      &          icount_line, trace_length, iflag_comm, fline_lc, inum)
 !
       use t_local_fline
@@ -77,7 +79,9 @@
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
 !
       integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
-      real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
+      real(kind = kreal), intent(inout) ::   v4_start(4)
+      real(kind = kreal), intent(inout) ::   xx4_start(4)
+      real(kind = kreal), intent(inout) ::   xi4_start(4)
       real(kind = kreal), intent(inout)                                 &
      &                    :: c_field(viz_fields%ntot_color_comp)
 !
@@ -105,7 +109,7 @@
      &                             v4_start, isurf_org)
       end if
 !
-      call add_fline_start(x4_start, v4_start,                          &
+      call add_fline_start(xx4_start, xi4_start, v4_start,              &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
       jcou = 0
@@ -124,7 +128,7 @@
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(2), iflag_dir, ele, surf,                         &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, x4_start, v4_start, c_field)
+     &      isf_tgt, xx4_start, v4_start, c_field)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -137,7 +141,8 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-        call add_fline_list(iglobal_fline, x4_start, v4_start,          &
+        call add_fline_list                                             &
+     &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
@@ -145,7 +150,7 @@
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      izero, iflag_dir, ele, surf,                                &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, x4_start, v4_start, c_field)
+     &      isf_tgt, xx4_start, v4_start, c_field)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -158,7 +163,8 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-        call add_fline_list(iglobal_fline, x4_start, v4_start,          &
+        call add_fline_list                                             &
+     &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !

@@ -221,6 +221,7 @@
         call copy_nod_vector_smp(mesh%node%numnod,                      &
      &      nod_fld%d_fld(1,i_velo), fln_tce(i_fln)%v_prev(1,1))
       end do
+      write(*,*) my_rank, 'set_TRACER_seed_fields end'
 !
       end subroutine set_TRACER_seed_fields
 !
