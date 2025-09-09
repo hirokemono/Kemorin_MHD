@@ -257,52 +257,5 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_each_tracer_data(i_trace, node, ele, d_velo,     &
-     &          iele_start, isf_start, xx_start, v_line_l)
-!
-      use t_mesh_data
-      use t_control_params_4_fline
-      use calypso_mpi
-      use field_at_each_seed_point
-!
-      use t_find_interpolate_in_ele
-!
-      integer(kind = kint), intent(in) :: i_trace
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      real(kind = kreal), intent(in) :: d_velo(node%numnod,3)
-!
-      integer(kind = kint), intent(in) :: iele_start(1), isf_start(1)
-      real(kind = kreal), intent(in) :: xx_start(3)
-      real(kind = kreal), intent(in) :: v_line_l(3)
-!
-      integer(kind = kint) :: ierr_inter, iflag
-      real(kind = kreal) :: xi_in_ele(3), v_fline_start(4)
-      type(cal_interpolate_coefs_work) :: itp_ele_work_g
-!
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-13
-      integer(kind = kint), parameter :: iflag_nomessage = 0
-      real(kind = kreal), parameter ::   error_level = 1.0d-13
-!
-!
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_g)
-      call find_interpolate_in_ele(xx_start(1), maxitr, eps_iter,       &
-     &    my_rank, iflag_nomessage, error_level, node, ele,             &
-     &    iele_start(1), itp_ele_work_g, xi_in_ele, ierr_inter)
-      iflag = surface_mode_in_each_ele(error_level,xi_in_ele)
-      call cal_each_seed_velocity_in_ele(ele, node%numnod, d_velo(1,1), &
-     &    iele_start(1), xi_in_ele, v_fline_start)
-      write(*,*) i_trace, iele_start(1), xx_start(1:3), isf_start(1),   &
-     &          iflag, xi_in_ele(1:3), ierr_inter,                      &
-     &          v_fline_start(1), v_line_l(1),                          &
-     &          v_fline_start(2), v_line_l(2),                          &
-     &          v_fline_start(3), v_line_l(3)
-      call dealloc_work_4_interpolate(itp_ele_work_g)
-!
-      end subroutine check_each_tracer_data
-!
-!  ---------------------------------------------------------------------
-!
       end module trace_particle_in_element
 
