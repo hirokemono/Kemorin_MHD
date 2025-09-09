@@ -175,12 +175,15 @@
         else
           call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
      &                                 fline_lc(i_fln))
+          write(*,*) my_rank, i_fln, 'local_tracer_from_seeds end'
           call check_tracer_restarts                                    &
      &         (i_fln, mesh, nod_fld, fln_prm(i_fln), fline_lc(i_fln))
+          write(*,*) my_rank, i_fln, 'check_tracer_restarts end'
 !
           call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fline_lc(i_fln))
+          write(*,*) my_rank, i_fln, 'output_tracer_restart end'
         end if
       end do
 !

@@ -95,6 +95,7 @@
      &        fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,     &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
+     &        fln_tce%xi_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
