@@ -63,8 +63,6 @@
       particle_IO%node%numnod =        fline_lc%nnod_line_l
       particle_IO%node%internal_node = fline_lc%nnod_line_l
       call alloc_node_geometry_base(particle_IO%node)
-      call alloc_ele_vector_IO(particle_IO%node, particle_IO%sfed)
-      call alloc_ele_scalar_IO(particle_IO%node, particle_IO%sfed)
 !
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
@@ -72,12 +70,6 @@
         particle_IO%node%xx(i,1) = fline_lc%xx_line_l(1,i)
         particle_IO%node%xx(i,2) = fline_lc%xx_line_l(2,i)
         particle_IO%node%xx(i,3) = fline_lc%xx_line_l(3,i)
-!
-        particle_IO%sfed%ele_vector(i,1) = fline_lc%v_line_l(1,i)
-        particle_IO%sfed%ele_vector(i,2) = fline_lc%v_line_l(2,i)
-        particle_IO%sfed%ele_vector(i,3) = fline_lc%v_line_l(3,i)
-!
-        particle_IO%sfed%ele_scalar(i) =   fline_lc%col_line_l(1,i)
       end do
 !$omp end parallel do
 !
@@ -121,10 +113,6 @@
         fline_lc%xx_line_l(1,i) = particle_IO%node%xx(i,1)
         fline_lc%xx_line_l(2,i) = particle_IO%node%xx(i,2)
         fline_lc%xx_line_l(3,i) = particle_IO%node%xx(i,3)
-        fline_lc%v_line_l(1,i) =  particle_IO%sfed%ele_vector(i,1)
-        fline_lc%v_line_l(2,i) =  particle_IO%sfed%ele_vector(i,2)
-        fline_lc%v_line_l(3,i) =  particle_IO%sfed%ele_vector(i,3)
-        fline_lc%col_line_l(1,i) =  particle_IO%sfed%ele_scalar(i)
       end do
 !$omp end parallel do
 !
