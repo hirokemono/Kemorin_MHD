@@ -404,6 +404,9 @@
       real(kind = kreal), parameter ::   error_level = 1.0d-9
 !
 !
+      write(*,*) 'calypso_mpi_barrier', my_rank, fline_lc%nnod_line_l
+      call calypso_mpi_barrier()
+
           call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,            &
      &                                  itp_ele_work_g)
           do ip = 1, nprocs

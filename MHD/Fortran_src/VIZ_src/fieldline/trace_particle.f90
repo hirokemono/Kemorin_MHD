@@ -125,7 +125,7 @@
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
 !
          write(*,*) 'check at', inum
-        call check_tracer_restarts                                  &
+        call check_tracer_restarts                                      &
      &    (inum, mesh, nod_fld, fln_prm, fline_lc)
 !
         if(elps_tracer%flag_elapsed)                                    &
