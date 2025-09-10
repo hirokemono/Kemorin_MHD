@@ -81,6 +81,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: nline, inum
+      real(kind = kreal) :: c_trecer(4)
 !
 !
       call return_to_trace_list(fln_prm, fline_lc, fln_tce)
@@ -105,7 +106,7 @@
      &        fln_prm%iphys_4_fline, fln_tce%isf_dbl_start(2,inum),     &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(1,inum))
+     &        c_trecer)
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
             fln_tce%iflag_comm_start(inum) = 0
@@ -117,8 +118,7 @@
      &                           fln_tce%xx_fline_start(1,inum),        &
      &                           fln_tce%v_fline_start(1,inum),         &
      &                           fln_prm%fline_fields%ntot_color_comp,  &
-     &                           fln_tce%c_fline_start(1,inum),         &
-     &                           fline_lc)
+     &                           c_trecer, fline_lc)
           end if
         end do
         if(elps_tracer%flag_elapsed)                                    &
@@ -214,6 +214,7 @@
       do i = 1, fln_tce%num_current_fline
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
         fln_tce%xx_fline_start(1:3,i) = fline_lc%xx_line_l(1:3,i)
+        fln_tce%xi_fline_start(1:3,i) = fline_lc%xi_line_l(1:3,i)
         fln_tce%v_fline_start(1:3,i) =  fline_lc%v_line_l(1:3,i)
         fln_tce%c_fline_start(1:ntot_comp,i)                            &
      &                = fline_lc%col_line_l(1:ntot_comp,i)
@@ -250,6 +251,7 @@
       do i = 1, fln_tce%num_current_fline
         fline_lc%iglobal_fline(i) = fln_tce%iline_original(i)
         fline_lc%xx_line_l(1:3,i) = fln_tce%xx_fline_start(1:3,i)
+        fline_lc%xi_line_l(1:3,i) = fln_tce%xi_fline_start(1:3,i)
         fline_lc%v_line_l(1:3,i)  = fln_tce%v_fline_start(1:3,i)
         fline_lc%col_line_l(1:ntot_comp,i)                              &
      &       = fln_tce%c_fline_start(1:ntot_comp,i)

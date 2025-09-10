@@ -68,7 +68,7 @@
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
      &                                 time_IO, particle_IO)
       call dealloc_neib_id(particle_IO%comm)
-      call dealloc_surf_geometry_data(particle_IO)
+      call dealloc_node_geometry_base(particle_IO%node)
       call dealloc_ele_connect(particle_IO%ele)
 !
       end subroutine output_tracer_restart

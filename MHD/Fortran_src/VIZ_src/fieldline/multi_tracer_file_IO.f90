@@ -98,9 +98,6 @@
       if(output_IO_flag(time_d%i_time_step, rst_step)) then
         istep_rst = set_IO_step(time_d%i_time_step, rst_step)
         do i_fln = 1, num_fline
-          call check_tracer_restarts                                    &
-     &         (i_fln, mesh, nod_fld, fln_prm(i_fln), fline_lc(i_fln))
-!
           call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
      &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
      &        fline_lc(i_fln))
@@ -186,10 +183,6 @@
           call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
      &                                 fline_lc(i_fln))
           write(*,*) my_rank, i_fln, 'local_tracer_from_seeds end'
-          call check_tracer_restarts                                    &
-     &         (i_fln, mesh, nod_fld, fln_prm(i_fln), fline_lc(i_fln))
-          write(*,*) my_rank, i_fln, 'check_tracer_restarts end'
-!
           call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fline_lc(i_fln))

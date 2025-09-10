@@ -87,6 +87,7 @@
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+2)
         do inum = 1, fln_tce%num_current_fline
+          write(*,*) my_rank, 's_extend_field_line', inum
           call s_extend_field_line(mesh%node, mesh%ele, mesh%surf,      &
      &        para_surf, nod_fld, fln_prm%fline_fields,                 &
      &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
@@ -104,13 +105,16 @@
         call calypso_mpi_barrier()
         if(elps_fline%flag_elapsed)                                     &
      &           call end_elapsed_time(elps_fline%ist_elapsed+2)
+        write(*,*) my_rank, 'trace end', jcou
 !
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+3)
         if(fln_prm%flag_use_broadcast) then
+        write(*,*) my_rank, 's_broadcast_trace_data', jcou
           call s_broadcast_trace_data(fln_prm, fln_tce,                 &
      &                                 fln_bcast, nline)
         else
+         write(*,*) my_rank, 's_trace_data_send_recv', jcou
           call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
      &                                m_SR%SR_sig, nline)
         end if

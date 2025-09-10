@@ -395,12 +395,7 @@
 !
       integer(kind = kint) :: ip, i
       integer(kind = kint) :: ierr_inter, iflag
-      real(kind = kreal) :: v_fline_start(4)
-      type(cal_interpolate_coefs_work) :: itp_ele_work_g
 !
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
-      integer(kind = kint), parameter :: iflag_nomessage = 0
       real(kind = kreal), parameter ::   error_level = 1.0d-9
 !
 !
@@ -410,9 +405,7 @@
       write(*,*) 'calypso_mpi_barrier', my_rank, fline_lc%nnod_line_l
       call calypso_mpi_barrier()
 
-      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
-     &                              itp_ele_work_g)
-          do ip = 1, nprocs
+      do ip = 1, nprocs
             call calypso_mpi_barrier()
             if(my_rank .eq. (ip-1)) then
               write(*,*) i_fln, my_rank, 'restart: ',                   &
@@ -424,14 +417,11 @@
      &                        fline_lc%xx_line_l(1:3,i),         &
      &                        fline_lc%iedge_line_l(2,i), iflag, &
      &                        fline_lc%xi_line_l(1:3,i), ierr_inter,    &
-     &                 v_fline_start(1), fline_lc%v_line_l(1,i), &
-     &                 v_fline_start(2), fline_lc%v_line_l(2,i), &
-     &                 v_fline_start(3), fline_lc%v_line_l(3,i)
+     &                        fline_lc%v_line_l(1:3,i)
               end do
             end if
           end do
           call calypso_mpi_barrier()
-          call dealloc_work_4_interpolate(itp_ele_work_g)
 !
       end subroutine check_tracer_restarts
 !

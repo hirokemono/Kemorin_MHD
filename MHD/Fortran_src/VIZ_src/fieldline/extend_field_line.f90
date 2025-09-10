@@ -106,9 +106,11 @@
      &                             v4_start, isurf_org)
       end if
 !
+      write(*,*) my_rank, 'set_field_at_each_seed_point'
       call set_field_at_each_seed_point                                 &
      &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
      &    xx4_start, v4_start, c_field)
+      write(*,*) my_rank, 'add_fline_start'
       call add_fline_start(xx4_start, xi4_start, v4_start,              &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
@@ -117,10 +119,12 @@
       do
         jcou = jcou + 1
         icount_line = icount_line + 1
+        write(*,*) my_rank, 'fline_vector_at_one_element', jcou
         call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &                                  node%xx, x4_ele)
 !
 !   extend in the middle of element
+        write(*,*) my_rank, 'fline_trace_in_element', jcou
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(2), iflag_dir, ele, surf,                         &
      &      v4_start, x4_ele, isf_tgt, xx4_start)
@@ -136,15 +140,18 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+        write(*,*) my_rank, 'set_field_at_each_seed_point', jcou
         call set_field_at_each_seed_point                               &
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
      &      xx4_start, v4_start, c_field)
+        write(*,*) my_rank, 'add_fline_list', jcou
         call add_fline_list                                             &
      &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
 !
 !   extend to surface of element
+        write(*,*) my_rank, 'fline_trace_in_element', jcou
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      izero, iflag_dir, ele, surf,                                &
      &      v4_start, x4_ele, isf_tgt, xx4_start)
@@ -160,9 +167,11 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+        write(*,*) my_rank, 'set_field_at_each_seed_point', jcou
         call set_field_at_each_seed_point                               &
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
      &      xx4_start, v4_start, c_field)
+        write(*,*) my_rank, 'add_fline_list', jcou
         call add_fline_list                                             &
      &     (iglobal_fline, xx4_start, xi4_start, v4_start,              &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
@@ -171,6 +180,7 @@
         isurf_org(2) = isf_tgt
 !
 !   Check domain of new starting surface
+        write(*,*) my_rank, 'check_exit_in_double_number', jcou
         call check_exit_in_double_number(surf, para_surf,               &
      &                                   isurf_org, isurf_org_dbl)
         if(isurf_org_dbl(1) .ne. my_rank                                &
@@ -183,8 +193,10 @@
         end if
 !
 !   Check domain of backside element and surface
+        write(*,*) my_rank, 'find_backside_by_flux', jcou
         call find_backside_by_flux(surf, iflag_dir,                     &
      &                             v4_start, isurf_org)
+        write(*,*) my_rank, 'find_backside_by_flux end', iflag_comm
 !
         if(max_line_step.gt.0 .and. icount_line.gt.max_line_step) then
             iflag_comm = 0
