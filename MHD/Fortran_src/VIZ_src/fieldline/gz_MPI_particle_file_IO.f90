@@ -75,14 +75,6 @@
       call gz_mpi_skip_header(IO_param, len(hd_particle_connect()))
       call gz_mpi_read_element_info(IO_param, particle_IO%ele)
 !
-      call gz_mpi_skip_header(IO_param, len(hd_particle_velocity()))
-      call gz_mpi_read_vect_in_ele(IO_param, particle_IO%node,          &
-     &                             particle_IO%sfed)
-!
-      call gz_mpi_skip_header(IO_param, len(hd_particle_marker()))
-      call gz_mpi_read_scl_in_ele(IO_param, particle_IO%node,           &
-     &                            particle_IO%sfed)
-!
       call read_field_step_gz_mpi(IO_param%id_file, nprocs,             &
      &                            IO_param%ioff_gl,t_IO)
       call close_mpi_file(IO_param)
@@ -124,16 +116,6 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_particle_connect()), hd_particle_connect())
       call gz_mpi_write_element_info(IO_param, particle_IO%ele)
-!
-      call gz_mpi_write_charahead                                       &
-     &  (IO_param, len(hd_particle_velocity()), hd_particle_velocity())
-      call gz_mpi_write_vect_in_ele(IO_param, particle_IO%node,         &
-     &                             particle_IO%sfed)
-!
-      call gz_mpi_write_charahead                                       &
-     &  (IO_param, len(hd_particle_marker()), hd_particle_marker())
-      call gz_mpi_write_scl_in_ele(IO_param, particle_IO%node,          &
-     &                             particle_IO%sfed)
 !
       call gz_mpi_write_charahead(IO_param,                             &
      &                         len(step_data_buffer(my_rank, t_IO)),    &
