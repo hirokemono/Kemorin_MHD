@@ -122,8 +122,10 @@
 !  Load tracer data
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
-        call TRACER_visualize(t_VIZ1%viz_step%istep_tracer,             &
-     &      t_VIZ1%time_d, t_VIZ1%ucd_step, tracers_v)
+        call TRACER_visualize                                           &
+     &     (t_VIZ1%viz_step%istep_tracer, t_VIZ1%time_d,                &
+     &      t_VIZ1%ucd_step, FEM_viz1%geofem, FEM_viz1%field,           &
+     &      tracers_v)
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
 !

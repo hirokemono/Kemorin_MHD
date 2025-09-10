@@ -119,6 +119,7 @@
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(FMHDs%MHD_step%viz_step%istep_tracer,     &
      &      FMHDs%MHD_step%time_d, FMHDs%MHD_step%rst_step,             &
+     &      FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                  &
      &      FMVIZs%tracers)
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
