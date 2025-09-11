@@ -95,7 +95,7 @@
       end if
       fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
 !
-      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
+      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
       fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &       = col_add(1:ntot_comp)
@@ -130,7 +130,7 @@
      &      = fline_lc%nnod_line_l
 !
       fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_add
-      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
+      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
       fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &      = col_add(1:ntot_comp)
@@ -212,7 +212,7 @@
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
         fline_lc%iglobal_tmp(i) =   fline_lc%iglobal_fline(i)
-        fline_lc%xx_line_tmp(1:3,i) = fline_lc%xx_line_l(1:3,i)
+        fline_lc%xx_line_tmp(1:4,i) = fline_lc%xx_line_l(1:4,i)
         fline_lc%v_line_tmp(1,i) =  fline_lc%v_line_l(1,i)
         fline_lc%v_line_tmp(2,i) =  fline_lc%v_line_l(2,i)
         fline_lc%v_line_tmp(3,i) =  fline_lc%v_line_l(3,i)
@@ -227,7 +227,7 @@
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
         fline_lc%iglobal_fline(i) = fline_lc%iglobal_tmp(i)
-        fline_lc%xx_line_l(1:3,i) =   fline_lc%xx_line_tmp(1:3,i)
+        fline_lc%xx_line_l(1:4,i) =   fline_lc%xx_line_tmp(1:4,i)
         fline_lc%v_line_l(1,i) =    fline_lc%v_line_tmp(1,i)
         fline_lc%v_line_l(2,i) =    fline_lc%v_line_tmp(2,i)
         fline_lc%v_line_l(3,i) =    fline_lc%v_line_tmp(3,i)
@@ -263,7 +263,7 @@
 !
       fline_lc%nnod_line_buf = nnod_buf
       allocate(fline_lc%iglobal_fline(fline_lc%nnod_line_buf))
-      allocate(fline_lc%xx_line_l(3,fline_lc%nnod_line_buf))
+      allocate(fline_lc%xx_line_l(4,fline_lc%nnod_line_buf))
       allocate(fline_lc%v_line_l(3,fline_lc%nnod_line_buf))
       allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
      &                             fline_lc%nnod_line_buf))
@@ -359,7 +359,7 @@
 !
       write(id_file,*) 'xx_line_l', fline_lc%nnod_line_l
       do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(i16,1p3e16.7)') i, fline_lc%xx_line_l(1:3,i)
+        write(id_file,'(i16,1p4e16.7)') i, fline_lc%xx_line_l(1:4,i)
       end do
 !
       write(id_file,*) 'v_line_l', fline_lc%nnod_line_l

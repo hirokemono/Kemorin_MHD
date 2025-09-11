@@ -183,7 +183,7 @@
       fline_lc%iedge_line_l(2,fline_lc%nele_line_l) = isf_dbl_start(3)
 !
       fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_tracer
-      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) =   xx4_add(1:3)
+      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) =   xx4_add(1:4)
       fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =    v4_add(1:3)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &      = col_add(1:ntot_comp)
