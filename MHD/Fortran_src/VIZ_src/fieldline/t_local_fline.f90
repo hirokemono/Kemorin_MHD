@@ -48,20 +48,10 @@
         real(kind = kreal), allocatable ::   xx_line_l(:,:)
         real(kind = kreal), allocatable ::   v_line_l(:,:)
         real(kind = kreal), allocatable ::   col_line_l(:,:)
-!
-        integer(kind = kint), allocatable :: iedge_line_tmp(:,:)
-        integer(kind = kint_gl), allocatable :: iglobal_tmp(:)
-        real(kind = kreal), allocatable ::   xx_line_tmp(:,:)
-        real(kind = kreal), allocatable ::   v_line_tmp(:,:)
-        real(kind = kreal), allocatable ::   col_line_tmp(:,:)
       end type local_fieldline
 !
       private :: alloc_local_fline_data
       private :: dealloc_local_fline_conn, dealloc_local_fline_data
-      private :: allocate_local_fline_conn_tmp
-      private :: allocate_local_fline_data_tmp
-      private :: deallocate_local_fline_conn_tmp
-      private :: deallocate_local_fline_data_tmp
 !
 !  ---------------------------------------------------------------------
 !
@@ -96,7 +86,7 @@
       fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
 !
       fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
-      fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
+      fline_lc%v_line_l(1:4,fline_lc%nnod_line_l) =  v4_add(1:4)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &       = col_add(1:ntot_comp)
 !
@@ -131,7 +121,7 @@
 !
       fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_add
       fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
-      fline_lc%v_line_l(1:3,fline_lc%nnod_line_l) =  v4_add(1:3)
+      fline_lc%v_line_l(1:4,fline_lc%nnod_line_l) =  v4_add(1:4)
       fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
      &      = col_add(1:ntot_comp)
 !
@@ -174,28 +164,21 @@
       subroutine raise_local_fline_connect(fline_lc)
 !
       type(local_fieldline), intent(inout) :: fline_lc
-      integer(kind = kint) :: i
+      type(local_fieldline) :: fline_tmp
 !
 !
-      call allocate_local_fline_conn_tmp(fline_lc)
-!$omp parallel do
-      do i = 1, fline_lc%nele_line_l
-        fline_lc%iedge_line_tmp(1,i) = fline_lc%iedge_line_l(1,i)
-        fline_lc%iedge_line_tmp(2,i) = fline_lc%iedge_line_l(2,i)
-      end do
-!$omp end parallel do
+      fline_tmp%nele_line_l = fline_lc%nele_line_l
+      call alloc_local_fline_conn(fline_lc%nele_line_buf, fline_tmp)
+      call copy_local_fline_connect(fline_lc%nele_line_l, fline_lc,     &
+     &                              fline_tmp)
 !
       call dealloc_local_fline_conn(fline_lc)
-      call alloc_local_fline_conn(itwo*fline_lc%nele_line_l, fline_lc)
+      call alloc_local_fline_conn((itwo*fline_lc%nele_line_l),          &
+     &                             fline_lc)
 !
-!$omp parallel do
-      do i = 1, fline_lc%nele_line_l
-        fline_lc%iedge_line_l(1,i) = fline_lc%iedge_line_tmp(1,i)
-        fline_lc%iedge_line_l(2,i) = fline_lc%iedge_line_tmp(2,i)
-      end do
-!$omp end parallel do
-!
-      call deallocate_local_fline_conn_tmp(fline_lc)
+      call copy_local_fline_connect(fline_lc%nele_line_l, fline_tmp,    &
+     &                              fline_lc)
+      call dealloc_local_fline_conn(fline_tmp)
 !
       end subroutine raise_local_fline_connect
 !
@@ -204,41 +187,66 @@
       subroutine raise_local_fline_data(fline_lc)
 !
       type(local_fieldline), intent(inout) :: fline_lc
+      type(local_fieldline) :: fline_tmp
+!
+!
+      fline_tmp%nnod_line_l = fline_lc%nnod_line_l
+      fline_tmp%ntot_comp_l = fline_lc%ntot_comp_l
+      call alloc_local_fline_data(fline_lc%nnod_line_buf, fline_tmp)
+      call copy_local_fline_data(fline_lc%nnod_line_l, fline_lc,        &
+     &                           fline_tmp)
+!
+      call dealloc_local_fline_data(fline_lc)
+      call alloc_local_fline_data((itwo*fline_lc%nnod_line_l),          &
+     &                            fline_lc)
+!
+      call copy_local_fline_data(fline_lc%nnod_line_l, fline_tmp,       &
+     &                           fline_lc)
+      call dealloc_local_fline_data(fline_tmp)
+!
+      end subroutine raise_local_fline_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_local_fline_connect(nele_copy, fline_lc,          &
+     &                                    fline_new)
+!
+      integer(kind = kint), intent(in) :: nele_copy
+      type(local_fieldline), intent(in) :: fline_lc
+      type(local_fieldline), intent(inout) :: fline_new
+!
       integer(kind = kint) :: i
 !
+!$omp parallel do
+      do i = 1, nele_copy
+        fline_new%iedge_line_l(1:2,i) = fline_lc%iedge_line_l(1:2,i)
+      end do
+!$omp end parallel do
 !
-      call allocate_local_fline_data_tmp(fline_lc)
+      end subroutine copy_local_fline_connect
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_local_fline_data(num_copy, fline_lc, fline_new)
+!
+      integer(kind = kint), intent(in) :: num_copy
+      type(local_fieldline), intent(in) :: fline_lc
+      type(local_fieldline), intent(inout) :: fline_new
+!
+      integer(kind = kint) :: i
 !
 !$omp parallel do
-      do i = 1, fline_lc%nnod_line_l
-        fline_lc%iglobal_tmp(i) =   fline_lc%iglobal_fline(i)
-        fline_lc%xx_line_tmp(1:4,i) = fline_lc%xx_line_l(1:4,i)
-        fline_lc%v_line_tmp(1,i) =  fline_lc%v_line_l(1,i)
-        fline_lc%v_line_tmp(2,i) =  fline_lc%v_line_l(2,i)
-        fline_lc%v_line_tmp(3,i) =  fline_lc%v_line_l(3,i)
-        fline_lc%col_line_tmp(1:fline_lc%ntot_comp_l,i)                 &
+      do i = 1, num_copy
+        fline_new%iglobal_fline(i) = fline_lc%iglobal_fline(i)
+        fline_new%xx_line_l(1:4,i) = fline_lc%xx_line_l(1:4,i)
+        fline_new%v_line_l(1:4,i) =  fline_lc%v_line_l(1:4,i)
+        fline_new%col_line_l(1:fline_lc%ntot_comp_l,i)                  &
      &           =  fline_lc%col_line_l(1:fline_lc%ntot_comp_l,i)
       end do
 !$omp end parallel do
 !
-      call dealloc_local_fline_data(fline_lc)
-      call alloc_local_fline_data(itwo*fline_lc%nnod_line_l, fline_lc)
-!
-!$omp parallel do
-      do i = 1, fline_lc%nnod_line_l
-        fline_lc%iglobal_fline(i) = fline_lc%iglobal_tmp(i)
-        fline_lc%xx_line_l(1:4,i) =   fline_lc%xx_line_tmp(1:4,i)
-        fline_lc%v_line_l(1,i) =    fline_lc%v_line_tmp(1,i)
-        fline_lc%v_line_l(2,i) =    fline_lc%v_line_tmp(2,i)
-        fline_lc%v_line_l(3,i) =    fline_lc%v_line_tmp(3,i)
-        fline_lc%col_line_l(1:fline_lc%ntot_comp_l,i)                   &
-     &        =  fline_lc%col_line_tmp(1:fline_lc%ntot_comp_l,i)
-      end do
-!$omp end parallel do
-!
-      call deallocate_local_fline_data_tmp(fline_lc)
-!
-      end subroutine raise_local_fline_data
+      end subroutine copy_local_fline_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -264,7 +272,7 @@
       fline_lc%nnod_line_buf = nnod_buf
       allocate(fline_lc%iglobal_fline(fline_lc%nnod_line_buf))
       allocate(fline_lc%xx_line_l(4,fline_lc%nnod_line_buf))
-      allocate(fline_lc%v_line_l(3,fline_lc%nnod_line_buf))
+      allocate(fline_lc%v_line_l(4,fline_lc%nnod_line_buf))
       allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
      &                             fline_lc%nnod_line_buf))
       if(fline_lc%nele_line_buf .gt. 0) fline_lc%iglobal_fline = 0
@@ -273,37 +281,6 @@
       if(fline_lc%nnod_line_buf .gt. 0) fline_lc%col_line_l = 0.0d0
 !
       end subroutine alloc_local_fline_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_local_fline_conn_tmp(fline_lc)
-!
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-      allocate(fline_lc%iedge_line_tmp(2,fline_lc%nele_line_l))
-      if(fline_lc%nele_line_l .gt. 0) fline_lc%iedge_line_tmp = 0
-!
-      end subroutine allocate_local_fline_conn_tmp
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_local_fline_data_tmp(fline_lc)
-!
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-      allocate(fline_lc%iglobal_tmp(fline_lc%nnod_line_l))
-      allocate(fline_lc%xx_line_tmp(4,fline_lc%nnod_line_l))
-      allocate(fline_lc%v_line_tmp(3,fline_lc%nnod_line_l))
-      allocate(fline_lc%col_line_tmp(fline_lc%ntot_comp_l,              &
-     &                               fline_lc%nnod_line_l))
-!
-      if(fline_lc%nele_line_l .le. 0) return
-      fline_lc%iglobal_tmp =    0
-      fline_lc%xx_line_tmp = 0.0d0
-      fline_lc%v_line_tmp =  0.0d0
-      fline_lc%col_line_tmp = 0.0d0
-!
-      end subroutine allocate_local_fline_data_tmp
 !
 !  ---------------------------------------------------------------------
 !
@@ -328,26 +305,6 @@
       end subroutine dealloc_local_fline_data
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine deallocate_local_fline_conn_tmp(fline_lc)
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-      deallocate(fline_lc%iedge_line_tmp)
-!
-      end subroutine deallocate_local_fline_conn_tmp
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_local_fline_data_tmp(fline_lc)
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-!
-      deallocate(fline_lc%xx_line_tmp, fline_lc%v_line_tmp)
-      deallocate(fline_lc%col_line_tmp, fline_lc%iglobal_tmp)
-!
-      end subroutine deallocate_local_fline_data_tmp
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine check_local_fline(id_file, fline_lc)
@@ -364,7 +321,7 @@
 !
       write(id_file,*) 'v_line_l', fline_lc%nnod_line_l
       do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(i16,1p3e16.7)') i, fline_lc%v_line_l(1:3,i)
+        write(id_file,'(i16,1p4e16.7)') i, fline_lc%v_line_l(1:4,i)
       end do
 !
       write(id_file,*) 'iedge_line_l', fline_lc%nele_line_l
@@ -409,7 +366,7 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: ierr_inter, i, iflag
-      real(kind = kreal) :: xi_in_ele(3), v_fline_start(4)
+      real(kind = kreal) :: xi_in_ele(3)
       type(cal_interpolate_coefs_work) :: itp_ele_work_g
 !
       integer(kind = kint), parameter :: maxitr = 20
@@ -432,8 +389,7 @@
      &     (mesh%ele, nod_fld%n_point,                          &
      &      nod_fld%d_fld(1,fln_prm%iphys_4_fline),             &
      &      fline_lc%iedge_line_l(1,i), xi_in_ele,              &
-     &      v_fline_start(1))
-        fline_lc%v_line_l(1:3,i) = v_fline_start(1:3)
+     &      fline_lc%v_line_l(1,i))
 !
         call cal_fields_in_element                                      &
      &     (fline_lc%iedge_line_l(1,i), xi_in_ele,                      &
@@ -502,7 +458,8 @@
      &                        xi_in_ele(1:3), ierr_inter,               &
      &                 v_fline_start(1), fline_lc%v_line_l(1,i), &
      &                 v_fline_start(2), fline_lc%v_line_l(2,i), &
-     &                 v_fline_start(3), fline_lc%v_line_l(3,i)
+     &                 v_fline_start(3), fline_lc%v_line_l(3,i), &
+     &                 v_fline_start(4), fline_lc%v_line_l(4,i)
               end do
             end if
           end do
