@@ -221,8 +221,8 @@
 !
       do i = 1, fln_tce%num_current_fline
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
-        fln_tce%xx_fline_start(1:3,i) = fline_lc%xx_line_l(1:3,i)
-        fln_tce%v_fline_start(1:3,i) =  fline_lc%v_line_l(1:3,i)
+        fln_tce%xx_fline_start(1:4,i) = fline_lc%xx_line_l(1:4,i)
+        fln_tce%v_fline_start(1:4,i) =  fline_lc%v_line_l(1:4,i)
         fln_tce%c_fline_start(1:ntot_comp,i)                            &
      &                = fline_lc%col_line_l(1:ntot_comp,i)
       end do
@@ -257,8 +257,8 @@
 !
       do i = 1, fln_tce%num_current_fline
         fline_lc%iglobal_fline(i) = fln_tce%iline_original(i)
-        fline_lc%xx_line_l(1:3,i) = fln_tce%xx_fline_start(1:3,i)
-        fline_lc%v_line_l(1:3,i)  = fln_tce%v_fline_start(1:3,i)
+        fline_lc%xx_line_l(1:4,i) = fln_tce%xx_fline_start(1:4,i)
+        fline_lc%v_line_l(1:4,i)  = fln_tce%v_fline_start(1:4,i)
         fline_lc%col_line_l(1:ntot_comp,i)                              &
      &       = fln_tce%c_fline_start(1:ntot_comp,i)
 !
