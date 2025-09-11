@@ -41,17 +41,6 @@
 !!        real(kind = kreal), intent(inout) :: v4_tgt_8(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: c_tgt_8(viz_fields%ntot_color_comp)
-!!      subroutine update_fline_position(ratio, ntot_color_comp,        &
-!!     &                                 x4_tgt, v4_tgt, c_tgt,         &
-!!     &                                 x4_start, v4_start, c_field)
-!!        real(kind = kreal), intent(in) :: ratio
-!!        integer(kind = kint), intent(in) :: ntot_color_comp
-!!        real(kind = kreal), intent(in) :: x4_tgt(4), v4_tgt(4)
-!!        real(kind = kreal), intent(in) :: c_tgt(ntot_color_comp)
-!!        real(kind = kreal), intent(inout) :: x4_start(4)
-!!        real(kind = kreal), intent(inout) :: v4_start(4)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                   :: c_field(ntot_color_comp)
 !!@endverbatim
 !
       module trace_in_element
@@ -174,33 +163,6 @@
      &    v4_ele, c_ele, x4_tgt_8, v4_tgt_8, c_tgt_8)
 !
       end subroutine trace_to_element_wall
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine update_fline_position(ratio, ntot_color_comp,          &
-     &                                 x4_tgt, v4_tgt, c_tgt,           &
-     &                                 x4_start, v4_start, c_field)
-!
-      real(kind = kreal), intent(in) :: ratio
-!
-      integer(kind = kint), intent(in) :: ntot_color_comp
-      real(kind = kreal), intent(in) :: x4_tgt(4), v4_tgt(4)
-      real(kind = kreal), intent(in) :: c_tgt(ntot_color_comp)
-!
-      real(kind = kreal), intent(inout) :: x4_start(4)
-      real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: c_field(ntot_color_comp)
-!
-       x4_start(1:4) = ratio * x4_tgt(1:4)                              &
-     &               + (one - ratio) * x4_start(1:4)
-       v4_start(1:4) = ratio * v4_tgt(1:4)                              &
-     &               + (one - ratio) * v4_start(1:4)
-       c_field(1:ntot_color_comp) =  ratio * c_tgt(1:ntot_color_comp)   &
-     &                     + (one - ratio) * c_field(1:ntot_color_comp)
-!
-      end subroutine update_fline_position
 !
 !  ---------------------------------------------------------------------
 !

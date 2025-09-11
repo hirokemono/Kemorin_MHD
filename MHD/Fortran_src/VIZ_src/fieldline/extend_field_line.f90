@@ -132,7 +132,7 @@
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(2), iflag_dir, ele, surf,                         &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, xx4_start, v4_start, c_field)
+     &      isf_tgt, xx4_start, v4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -156,7 +156,7 @@
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      izero, iflag_dir, ele, surf,                                &
      &      viz_fields, x4_ele, v4_ele, color_ele,                      &
-     &      isf_tgt, xx4_start, v4_start, c_field)
+     &      isf_tgt, xx4_start, v4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -219,7 +219,7 @@
      &         (trace_ratio, end_trace, trace_length,                   &
      &          isf_org, iflag_dir, ele, surf,                          &
      &          viz_fields, x4_ele, v4_ele, c_ele,                      &
-     &          isf_tgt, xx4_start, v4_start, c_field)
+     &          isf_tgt, xx4_start, v4_start)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -248,8 +248,6 @@
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: c_field(viz_fields%ntot_color_comp)
 !
       real(kind = kreal) :: xi_surf_tgt(2)
       real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
@@ -270,9 +268,10 @@
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
      &                                  x4_tgt_8, xx4_start,            &
      &                                  ratio, trace_length)
-      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
-     &                           x4_tgt_8, v4_tgt, c_tgt,               &
-     &                           xx4_start, v4_start, c_field)
+       xx4_start(1:4) = ratio * x4_tgt_8(1:4)                           &
+     &               + (one - ratio) * xx4_start(1:4)
+       v4_start(1:4) = ratio * v4_tgt(1:4)                              &
+     &               + (one - ratio) * v4_start(1:4)
 !
       end subroutine fline_trace_in_element
 !

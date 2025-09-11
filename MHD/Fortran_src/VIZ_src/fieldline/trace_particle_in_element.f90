@@ -10,7 +10,7 @@
 !!      subroutine s_trace_particle_in_element(dt, node, ele, surf,     &
 !!     &          para_surf, nod_fld, v_prev, viz_fields,               &
 !!     &          i_tracer, iflag_used_ele, isurf_org_dbl,              &
-!!     &          xx4_start, xi4_start, v4_start, c_field, progress,    &
+!!     &          xx4_start, xi4_start, v4_start, progress,             &
 !!     &          iflag_comm, inum)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
@@ -23,8 +23,6 @@
 !!        real(kind = kreal), intent(inout) :: xx4_start(4)
 !!        real(kind = kreal), intent(inout) :: xi4_start(4)
 !!        real(kind = kreal), intent(inout) :: v4_start(4)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                    :: c_field(viz_fields%ntot_color_comp)
 !!        real(kind = kreal), intent(inout) :: progress
 !!        real(kind = kreal), intent(inout) :: dt
 !!        real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
@@ -58,7 +56,7 @@
       subroutine s_trace_particle_in_element(dt, node, ele, surf,       &
      &          para_surf, nod_fld, v_prev, viz_fields,                 &
      &          i_tracer, iflag_used_ele, isurf_org_dbl,                &
-     &          xx4_start, xi4_start, v4_start, c_field, progress,      &
+     &          xx4_start, xi4_start, v4_start, progress,               &
      &          iflag_comm, inum)
 !
       use t_local_fline
@@ -81,8 +79,6 @@
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: xi4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: c_field(viz_fields%ntot_color_comp)
       real(kind = kreal), intent(inout) :: progress
 !
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
@@ -136,7 +132,7 @@
      &     (i_tracer, isurf_org, half, dt, isurf_org(2),                &
      &      node, ele, surf, nod_fld, viz_fields,                       &
      &      x4_ele, v4_pre, v4_ele, color_ele,                          &
-     &      isf_tgt, xx4_start, v4_start, c_field, progress)
+     &      isf_tgt, xx4_start, v4_start, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,       &
@@ -154,7 +150,7 @@
      &     (i_tracer, isurf_org, one, dt, izero,                        &
      &      node, ele, surf, nod_fld, viz_fields,                       &
      &      x4_ele, v4_pre, v4_ele, color_ele,                          &
-     &      isf_tgt, xx4_start, v4_start, c_field, progress)
+     &      isf_tgt, xx4_start, v4_start, progress)
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
 !            write(*,*) 'Finish tracing', my_rank, inum
@@ -206,7 +202,7 @@
      &         (i_tracer, isurf_org, trace_ratio, dt, isf_org,          &
      &          node, ele, surf, nod_fld, viz_fields,                   &
      &          x4_ele, v4_pre, v4_ele, c_ele, isf_tgt,                 &
-     &          xx4_start, v4_start, c_field, progress)
+     &          xx4_start, v4_start, progress)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -238,8 +234,6 @@
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: c_field(viz_fields%ntot_color_comp)
       real(kind = kreal), intent(inout) :: progress
 !
       real(kind = kreal) :: xi_surf_tgt(2)
@@ -292,9 +286,10 @@
 !
       call ratio_of_trace_to_wall_tracer(trace_ratio,                   &
      &    v4_start, x4_tgt, xx4_start, dt, ratio, progress)
-      call update_fline_position(ratio, viz_fields%ntot_color_comp,     &
-     &                           x4_tgt, v4_tgt, c_tgt,                 &
-     &                           xx4_start, v4_start, c_field)
+       xx4_start(1:4) = ratio * x4_tgt(1:4)                             &
+     &               + (one - ratio) * xx4_start(1:4)
+       v4_start(1:4) = ratio * v4_tgt(1:4)                              &
+     &               + (one - ratio) * v4_start(1:4)
 !
       end subroutine s_trace_in_element
 !

@@ -99,7 +99,6 @@
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%xi_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%trace_length(inum),                               &
      &        fln_tce%iflag_comm_start(inum), inum)
           write(*,*) my_rank, inum, ' to check_each_tracer_data:  '
