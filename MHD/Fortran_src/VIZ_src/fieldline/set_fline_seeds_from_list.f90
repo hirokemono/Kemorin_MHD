@@ -16,16 +16,17 @@
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
-!!      subroutine set_field_at_each_seed_point(node, ele, nod_fld,     &
-!!     &          fline_fields, iphys_4_fline, iele_seed, x4_seed,      &
-!!     &          v_fline_start, c_fline_start)
+!!      subroutine set_field_at_each_tracer(node, ele, nod_fld,         &
+!!     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,     &
+!!     &          xi4_fline_start, v_fline_start, c_fline_start)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_params_viz_fields), intent(in) :: fline_fields
 !!        integer(kind = kint), intent(in) :: iphys_4_fline
 !!        integer(kind = kint), intent(in) :: iele_seed(1)
-!!        real(kind = kreal), intent(in) :: x4_seed(4)
+!!        real(kind = kreal), intent(inout) :: xi4_fline_start(4)
+!!        real(kind = kreal), intent(in) :: xx4_seed(4)
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &         :: c_fline_start(fline_fields%ntot_color_comp)
@@ -134,7 +135,6 @@
      &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
 !
       use sel_interpolate_scalar
-      use extend_field_line
       use trace_in_element
       use tracer_field_interpolate
       use field_at_each_seed_point
@@ -214,9 +214,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_field_at_each_seed_point(node, ele, nod_fld,       &
-     &          fline_fields, iphys_4_fline, iele_seed, x4_seed,        &
-     &          v_fline_start, c_fline_start)
+      subroutine set_field_at_each_tracer(node, ele, nod_fld,           &
+     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,       &
+     &          xi4_fline_start, v_fline_start, c_fline_start)
 !
       use t_find_interpolate_in_ele
       use field_at_each_seed_point
@@ -230,30 +230,31 @@
       integer(kind = kint), intent(in) :: iphys_4_fline
 !
       integer(kind = kint), intent(in) :: iele_seed(1)
-      real(kind = kreal), intent(in) :: x4_seed(4)
+      real(kind = kreal), intent(in) :: xx4_seed(4)
 !
+      real(kind = kreal), intent(inout) :: xi4_fline_start(4)
       real(kind = kreal), intent(inout) :: v_fline_start(4)
       real(kind = kreal), intent(inout)                                 &
      &         :: c_fline_start(fline_fields%ntot_color_comp)
 !
       type(cal_interpolate_coefs_work), save :: itp_ele_work_f
       integer(kind = kint) :: ierr_inter
-      real(kind = kreal) :: xi_in_ele(3)
+!
 !
       call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
-      xi_in_ele(1:3) = -2.0
-      call find_interpolate_in_ele(x4_seed, maxitr, eps_iter,           &
+      xi4_fline_start(1:3) = -2.0
+      call find_interpolate_in_ele(xx4_seed, maxitr, eps_iter,          &
      &    my_rank, iflag_nomessage, error_level, node, ele,             &
-     &    iele_seed(1), itp_ele_work_f, xi_in_ele, ierr_inter)
+     &    iele_seed(1), itp_ele_work_f, xi4_fline_start(1), ierr_inter)
       call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       call cal_each_seed_velocity_in_ele(ele,                           &
      &    nod_fld%n_point, nod_fld%d_fld(1,iphys_4_fline),              &
-     &    iele_seed, xi_in_ele, v_fline_start)
-      call cal_fields_in_element(iele_seed, xi_in_ele, x4_seed,         &
-     &    ele, nod_fld, fline_fields, c_fline_start)
+     &    iele_seed, xi4_fline_start(1), v_fline_start)
+      call cal_fields_in_element(iele_seed, xi4_fline_start(1),         &
+     &    xx4_seed, ele, nod_fld, fline_fields, c_fline_start)
 !
-      end subroutine set_field_at_each_seed_point
+      end subroutine set_field_at_each_tracer
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
