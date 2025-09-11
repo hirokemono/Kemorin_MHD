@@ -133,6 +133,7 @@
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(SSNAPs%MHD_step%viz_step%istep_tracer,    &
      &      SSNAPs%MHD_step%time_d, SSNAPs%MHD_step%rst_step,           &
+     &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &      SVIZ_m%tracers)
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)

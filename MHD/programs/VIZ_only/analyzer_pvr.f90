@@ -136,7 +136,8 @@
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
         call TRACER_visualize(t_VIZ3%viz_step%istep_tracer,             &
-     &      t_VIZ3%time_d, t_VIZ3%ucd_step, vizs_tracer3)
+     &      t_VIZ3%time_d, t_VIZ3%ucd_step,                             &
+     &      FEM_viz3%geofem, FEM_viz3%field,  vizs_tracer3)
         if(elps_VIZ1%flag_elapsed_V)                                    &
      &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
 !

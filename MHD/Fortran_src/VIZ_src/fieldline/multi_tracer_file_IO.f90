@@ -15,10 +15,12 @@
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
-!!      subroutine input_tracer_restarts(init_d, rst_step, num_fline,   &
-!!     &                                 fln_prm, fline_lc)
+!!      subroutine input_tracer_restarts(init_d, rst_step,              &
+!!     &          mesh, nod_fld, num_fline, fln_prm, fline_lc)
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(in) :: rst_step
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
@@ -115,14 +117,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_tracer_restarts(init_d, rst_step, num_fline,     &
-     &                                 fln_prm, fline_lc)
+      subroutine input_tracer_restarts(init_d, rst_step,                &
+     &          mesh, nod_fld, num_fline, fln_prm, fline_lc)
 !
       use trace_particle
       use tracer_restart_file_IO
 !
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(in) :: rst_step
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
@@ -136,6 +140,8 @@
         call input_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,         &
      &      istep_rst, init_d, fln_prm(i_fln)%fline_fields,             &
      &      fline_lc(i_fln))
+        call cal_local_tracer_fields(mesh, nod_fld,                     &
+     &      fln_prm(i_fln), fline_lc(i_fln))
       end do
 !
       end subroutine input_tracer_restarts
@@ -172,6 +178,8 @@
           call input_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,       &
      &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
      &        fline_lc(i_fln))
+          call cal_local_tracer_fields(mesh, nod_fld,                   &
+     &        fln_prm(i_fln), fline_lc(i_fln))
         else
           call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
      &                                 fline_lc(i_fln))
