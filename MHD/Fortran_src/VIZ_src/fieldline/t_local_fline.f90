@@ -212,9 +212,7 @@
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
         fline_lc%iglobal_tmp(i) =   fline_lc%iglobal_fline(i)
-        fline_lc%xx_line_tmp(1,i) = fline_lc%xx_line_l(1,i)
-        fline_lc%xx_line_tmp(2,i) = fline_lc%xx_line_l(2,i)
-        fline_lc%xx_line_tmp(3,i) = fline_lc%xx_line_l(3,i)
+        fline_lc%xx_line_tmp(1:3,i) = fline_lc%xx_line_l(1:3,i)
         fline_lc%v_line_tmp(1,i) =  fline_lc%v_line_l(1,i)
         fline_lc%v_line_tmp(2,i) =  fline_lc%v_line_l(2,i)
         fline_lc%v_line_tmp(3,i) =  fline_lc%v_line_l(3,i)
@@ -229,9 +227,7 @@
 !$omp parallel do
       do i = 1, fline_lc%nnod_line_l
         fline_lc%iglobal_fline(i) = fline_lc%iglobal_tmp(i)
-        fline_lc%xx_line_l(1,i) =   fline_lc%xx_line_tmp(1,i)
-        fline_lc%xx_line_l(2,i) =   fline_lc%xx_line_tmp(2,i)
-        fline_lc%xx_line_l(3,i) =   fline_lc%xx_line_tmp(3,i)
+        fline_lc%xx_line_l(1:3,i) =   fline_lc%xx_line_tmp(1:3,i)
         fline_lc%v_line_l(1,i) =    fline_lc%v_line_tmp(1,i)
         fline_lc%v_line_l(2,i) =    fline_lc%v_line_tmp(2,i)
         fline_lc%v_line_l(3,i) =    fline_lc%v_line_tmp(3,i)
@@ -296,7 +292,7 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       allocate(fline_lc%iglobal_tmp(fline_lc%nnod_line_l))
-      allocate(fline_lc%xx_line_tmp(3,fline_lc%nnod_line_l))
+      allocate(fline_lc%xx_line_tmp(4,fline_lc%nnod_line_l))
       allocate(fline_lc%v_line_tmp(3,fline_lc%nnod_line_l))
       allocate(fline_lc%col_line_tmp(fline_lc%ntot_comp_l,              &
      &                               fline_lc%nnod_line_l))
