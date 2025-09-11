@@ -97,6 +97,7 @@
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
+     &        fln_tce%xi_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(1,inum),                            &
      &        fln_tce%trace_length(inum),                               &
