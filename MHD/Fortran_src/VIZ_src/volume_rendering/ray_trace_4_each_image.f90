@@ -599,7 +599,7 @@
       i1 = fline_lc%iedge_line_l(1,iedge)
       i2 = fline_lc%iedge_line_l(2,iedge)
       norm(1:3) = xx4_tgt(1:3) - half * (fline_lc%xx_line_l(1:3,i1)     &
-     &                                 + fline_lc%xx_line_l(1:3,i1))
+     &                                 + fline_lc%xx_line_l(1:3,i2))
       call single_normalize_vector(norm)
 !
       end subroutine normal_of_single_fline
