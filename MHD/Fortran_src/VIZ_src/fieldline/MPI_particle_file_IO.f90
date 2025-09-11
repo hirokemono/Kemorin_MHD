@@ -7,8 +7,8 @@
 !>@brief File IO for element communication table
 !!
 !!@verbatim
-!!      subroutine mpi_read_perticle_file                               &
-!!     &         (num_pe, id_rank, file_name, t_IO, particle_IO)
+!!      subroutine mpi_read_perticle_file(num_pe, id_rank, file_name,   &
+!!     &                                  t_IO, particle_IO)
 !!        integer, intent(in) :: num_pe, id_rank
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(time_data), intent(inout) :: t_IO
@@ -41,8 +41,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_perticle_file                                 &
-     &         (num_pe, id_rank, file_name, t_IO, particle_IO)
+      subroutine mpi_read_perticle_file(num_pe, id_rank, file_name,     &
+     &                                  t_IO, particle_IO)
 !
       use m_fem_mesh_labels
       use mesh_data_IO

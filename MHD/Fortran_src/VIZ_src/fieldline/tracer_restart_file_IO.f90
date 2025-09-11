@@ -70,8 +70,8 @@
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
      &                                 time_IO, particle_IO)
       call dealloc_neib_id(particle_IO%comm)
-      call dealloc_surf_geometry_data(particle_IO)
       call dealloc_ele_connect(particle_IO%ele)
+      call dealloc_node_geometry_base(particle_IO%node)
 !
 !
       if(viz_fields%num_color_fields .le. 1) return
@@ -119,7 +119,7 @@
       call copy_local_tracer_from_IO(particle_IO, fline_lc)
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
-      call dealloc_surf_geometry_data(particle_IO)
+      call dealloc_node_geometry_base(particle_IO%node)
 !
       if(viz_fields%num_color_fields .le. 1) return
 !
