@@ -103,15 +103,16 @@
       end if
 !
       isurf_org(1:2) = isurf_org_dbl(2:3)
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
+      call set_field_at_each_tracer                                     &
+     &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
+     &    xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+!
       if(isurf_org(2) .gt. 0) then
         call find_backside_by_flux(surf, iflag_dir,                     &
      &                             v4_start, isurf_org)
       end if
 !
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
-      call set_field_at_each_tracer                                     &
-     &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
-     &    xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
       call add_fline_start(xx4_start, v4_start,                         &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !

@@ -43,9 +43,9 @@
 !
       integer(kind= kint), parameter, private :: nitem8_bcast = 1
       integer(kind= kint), parameter, private :: nitem_bcast =  6
+      integer(kind= kint), parameter, private :: ncomp_bcast =  5
 !
       type broadcast_trace_data
-        integer(kind= kint) :: ncomp_bcast
         integer(kind= kint_gl), allocatable :: igl_fline_export(:,:)
         integer(kind= kint), allocatable :: id_fline_export(:,:)
         real(kind = kreal), allocatable ::  fline_export(:,:)
@@ -71,10 +71,9 @@
 !
 !
       num = 2 * num_each_field_line
-      fln_bcast%ncomp_bcast = 9
       allocate(fln_bcast%igl_fline_export(nitem8_bcast,num))
       allocate(fln_bcast%id_fline_export(nitem_bcast,num))
-      allocate(fln_bcast%fline_export(fln_bcast%ncomp_bcast,num))
+      allocate(fln_bcast%fline_export(ncomp_bcast,num))
       fln_bcast%id_fline_export = 0
       fln_bcast%fline_export = 0.0d0
 !
@@ -130,9 +129,8 @@
           call calypso_mpi_bcast_int                                    &
      &       (fln_bcast%id_fline_export(1,ist+1),                       &
      &        (num64*nitem_bcast), src_rank)
-          call calypso_mpi_bcast_real                                   &
-     &       (fln_bcast%fline_export(1,ist+1),                          &
-     &        (num64*fln_bcast%ncomp_bcast), src_rank)
+          call calypso_mpi_bcast_real(fln_bcast%fline_export(1,ist+1),  &
+     &                                (num64*ncomp_bcast), src_rank)
       end do
 !
       call set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
@@ -169,13 +167,11 @@
 !
         fln_bcast%fline_export(1:4,i+ist)                               &
      &               = fln_tce%xx_fline_start(1:4,i)
-        fln_bcast%fline_export(5:8,i+ist)                               &
-     &               = fln_tce%v_fline_start(1:4,i)
-        fln_bcast%fline_export(9,i+ist) =   fln_tce%trace_length(i)
+        fln_bcast%fline_export(5,i+ist) =   fln_tce%trace_length(i)
       else
         fln_bcast%id_fline_export(1:6,i+ist) = izero
         fln_bcast%id_fline_export(4,i+ist) =  -ione
-        fln_bcast%fline_export(1:fln_bcast%ncomp_bcast,i+ist) = zero
+        fln_bcast%fline_export(1:ncomp_bcast,i+ist) = zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -231,9 +227,7 @@
 !
           fln_tce%xx_fline_start(1:4,icou)                              &
      &                               = fln_bcast%fline_export(1:4,i)
-          fln_tce%v_fline_start(1:4,icou)                               &
-     &                               = fln_bcast%fline_export(5:8,i)
-          fln_tce%trace_length(icou) = fln_bcast%fline_export(9,i)
+          fln_tce%trace_length(icou) = fln_bcast%fline_export(5,i)
       end do
 !
       end subroutine set_fline_start_from_neib

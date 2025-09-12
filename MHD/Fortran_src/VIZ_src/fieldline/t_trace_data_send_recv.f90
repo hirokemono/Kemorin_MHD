@@ -29,8 +29,9 @@
 !
       implicit  none
 !
-      integer(kind= kint), parameter, private :: nitem8_export = 1
-      integer(kind= kint), parameter, private :: nitem_export =  6
+      integer(kind = kint), parameter, private :: nitem8_export = 1
+      integer(kind = kint), parameter, private :: nitem_export =  6
+      integer(kind = kint), parameter, private :: ncomp_export =  5
 !
       type trace_data_send_recv
         integer(kind = kint) :: npe_send
@@ -49,7 +50,6 @@
         integer(kind = kint), allocatable :: istack_recv(:)
         integer(kind = kint), allocatable :: istack_irecv(:)
 !
-        integer(kind = kint) :: ncomp_export
         integer(kind = kint) :: ntot_send
         integer(kind = kint) :: ntot_sendbuf
         integer(kind = kint), allocatable ::    item_send(:)
@@ -78,7 +78,6 @@
 !
       fln_SR%ntot_sendbuf = 0
       fln_SR%ntot_recvbuf = 0
-      fln_SR%ncomp_export = 9
 
       allocate(fln_SR%num_send(nprocs))
       allocate(fln_SR%num_recv(nprocs))
@@ -148,7 +147,7 @@
 !
       call resize_SR_flag(fln_SR%npe_send, fln_SR%npe_recv, SR_sig)
       call calypso_send_recv_core                                       &
-     &   (fln_SR%ncomp_export, fln_SR%npe_send, fln_SR%id_pe_send,      &
+     &   (ncomp_export, fln_SR%npe_send, fln_SR%id_pe_send,             &
      &    fln_SR%istack_send, fln_SR%rSend(1,1),                        &
      &    fln_SR%npe_recv, fln_SR%id_pe_recv,                           &
      &    fln_SR%istack_recv, 0, fln_SR%rRecv, SR_sig)
@@ -225,7 +224,7 @@
       fln_SR%ntot_sendbuf = ntot
       allocate(fln_SR%item_send(ntot))
       allocate(fln_SR%iSend(nitem_export,ntot))
-      allocate(fln_SR%rSend(fln_SR%ncomp_export,ntot))
+      allocate(fln_SR%rSend(ncomp_export,ntot))
       return
 !
       if(ntot .le. 0) return
@@ -255,7 +254,7 @@
       allocate(fln_SR%item_recv(ntot))
       allocate(fln_SR%iRecv(nitem_export,ntot))
       allocate(fln_SR%i8Recv(nitem8_export,ntot))
-      allocate(fln_SR%rRecv(fln_SR%ncomp_export,ntot))
+      allocate(fln_SR%rRecv(ncomp_export,ntot))
       return
 !
       if(ntot .le. 0) return
@@ -437,8 +436,7 @@
         fln_SR%iSend(4:6,icou) = fln_tce%isf_dbl_start(1:3,inum)   
 !
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
-        fln_SR%rSend(5:8,icou) = fln_tce%v_fline_start(1:4,inum)
-        fln_SR%rSend(9,icou) =   fln_tce%trace_length(inum)
+        fln_SR%rSend(5,icou) =   fln_tce%trace_length(inum)
       end do
 !$omp end parallel do
 !
@@ -478,8 +476,7 @@
         fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(4:6,i)
 !
         fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
-        fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)
-        fln_tce%trace_length(i) =       fln_SR%rRecv(9,i)
+        fln_tce%trace_length(i) =       fln_SR%rRecv(5,i)
       end do
 !
       end subroutine set_trace_data_from_SR

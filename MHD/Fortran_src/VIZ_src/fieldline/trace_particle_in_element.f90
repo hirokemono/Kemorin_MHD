@@ -96,13 +96,14 @@
       end if
 !
       isurf_org(1:2) = isurf_org_dbl(2:3)
+      call find_valocity_at_tracer                                      &
+     &   (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1),   &
+     &    progress, xx4_start, xi4_start, v4_start, itp_ele_work)
+!
       if(isurf_org(2) .gt. 0) then
         call find_backside_by_flux(surf, iflag_forward_trace,           &
      &                             v4_start, isurf_org)
       end if
-      call find_valocity_at_tracer                                      &
-     &   (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1),   &
-     &    progress, xx4_start, xi4_start, v4_start, itp_ele_work)
 !
       jcou = 0
       iflag_comm = 0
