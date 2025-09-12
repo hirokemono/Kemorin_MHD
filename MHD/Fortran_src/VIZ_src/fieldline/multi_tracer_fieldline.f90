@@ -87,12 +87,10 @@
         call alloc_num_gl_start_fline(nprocs,                           &
      &                     fln_prm(i_fln)%fline_fields, fln_tce(i_fln))
         call alloc_broadcast_trace_data                                 &
-     &     (fln_prm(i_fln)%num_each_field_line,                         &
-     &      fln_prm(i_fln)%fline_fields, fln_bcast(i_fln))
+     &     (fln_prm(i_fln)%num_each_field_line, fln_bcast(i_fln))
         call alloc_local_fline(fln_prm(i_fln)%fline_fields,             &
      &                         fline_lc(i_fln))
-        call alloc_trace_data_SR_num(fln_prm(i_fln)%fline_fields,       &
-     &                               fln_SR(i_fln))
+        call alloc_trace_data_SR_num(fln_SR(i_fln))
       end do
 !
       end subroutine alloc_each_FLINE_data

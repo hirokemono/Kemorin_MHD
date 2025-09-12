@@ -7,7 +7,7 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine alloc_trace_data_SR_num(viz_fields, fln_SR)
+!!      subroutine alloc_trace_data_SR_num(fln_SR)
 !!      subroutine dealloc_trace_data_SR_num(fln_SR)
 !!      subroutine s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,     &
 !!     &                                  SR_sig, nline_global)
@@ -70,16 +70,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_trace_data_SR_num(viz_fields, fln_SR)
+      subroutine alloc_trace_data_SR_num(fln_SR)
 !
       use t_ctl_params_viz_fields
 !
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(trace_data_send_recv), intent(inout) :: fln_SR
 !
       fln_SR%ntot_sendbuf = 0
       fln_SR%ntot_recvbuf = 0
-      fln_SR%ncomp_export = 9 + viz_fields%ntot_color_comp
+      fln_SR%ncomp_export = 9
 
       allocate(fln_SR%num_send(nprocs))
       allocate(fln_SR%num_recv(nprocs))
@@ -440,8 +439,6 @@
         fln_SR%rSend(1:4,icou) = fln_tce%xx_fline_start(1:4,inum)
         fln_SR%rSend(5:8,icou) = fln_tce%v_fline_start(1:4,inum)
         fln_SR%rSend(9,icou) =   fln_tce%trace_length(inum)
-        fln_SR%rSend(9+1:fln_SR%ncomp_export,icou)                      &
-    &         = fln_tce%c_fline_start(1:fln_SR%ncomp_export-9,inum)
       end do
 !$omp end parallel do
 !
@@ -474,17 +471,15 @@
      &                    + fln_tce%istack_current_fline(ip)
       end do
       do i = 1, fln_SR%ntot_recv
-          fln_tce%iline_original(i) =      fln_SR%i8Recv(1,i)
+        fln_tce%iline_original(i) =      fln_SR%i8Recv(1,i)
 !
-          fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
-          fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
-          fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(4:6,i)
+        fln_tce%iflag_direction(i) =     fln_SR%iRecv(2,i)
+        fln_tce%icount_fline(i) =        fln_SR%iRecv(3,i)
+        fln_tce%isf_dbl_start(1:3,i) =   fln_SR%iRecv(4:6,i)
 !
-          fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
-          fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)
-          fln_tce%trace_length(i) =       fln_SR%rRecv(9,i)
-          fln_tce%c_fline_start(1:fln_SR%ncomp_export-9,i)              &
-     &            = fln_SR%rRecv(9+1:fln_SR%ncomp_export,i)
+        fln_tce%xx_fline_start(1:4,i) = fln_SR%rRecv(1:4,i)
+        fln_tce%v_fline_start(1:4,i) =  fln_SR%rRecv(5:8,i)
+        fln_tce%trace_length(i) =       fln_SR%rRecv(9,i)
       end do
 !
       end subroutine set_trace_data_from_SR
