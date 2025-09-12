@@ -83,9 +83,7 @@
       integer(kind = kint), intent(inout) :: iflag_comm
       type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
-      real(kind = kreal) :: v4_pre(4,ele%nnod_4_ele)
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       integer(kind = kint) :: isurf_org(2)
       integer(kind = kint) :: isf_tgt
       integer(kind = kint) :: jcou
@@ -102,6 +100,9 @@
         call find_backside_by_flux(surf, iflag_forward_trace,           &
      &                             v4_start, isurf_org)
       end if
+      call find_valocity_at_tracer                                      &
+     &   (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1),   &
+     &    progress, xx4_start, xi4_start, v4_start, itp_ele_work)
 !
       jcou = 0
       iflag_comm = 0
@@ -109,34 +110,26 @@
         jcou = jcou + 1
         call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &                                  node%xx, x4_ele)
-        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
-     &                                  v_prev, v4_pre)
-        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
-     &      nod_fld%d_fld(1,i_tracer), v4_ele)
 !
 !   extend in the middle of element
-        call find_valocity_at_tracer                                    &
-     &     (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1), &
-     &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
         call s_trace_in_element                                         &
      &     (i_tracer, isurf_org, half, dt, isurf_org(2),                &
-     &      node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,           &
-     &      v4_start, isf_tgt, xx4_start, progress)
+     &      node, ele, surf, nod_fld, x4_ele, v4_start,                 &
+     &      isf_tgt, xx4_start, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,       &
      &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
-!
-!   extend to surface of element
         call find_valocity_at_tracer                                    &
      &     (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1), &
      &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
-        call s_trace_in_element                                         &
-     &     (i_tracer, isurf_org, one, dt, izero,                        &
-     &      node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,           &
-     &      v4_start, isf_tgt, xx4_start, progress)
+!
+!   extend to surface of element
+        call s_trace_in_element(i_tracer, isurf_org, one, dt, izero,    &
+     &      node, ele, surf, nod_fld, x4_ele, v4_start,                 &
+     &      isf_tgt, xx4_start, progress)
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
 !            write(*,*) 'Finish tracing', my_rank, inum
@@ -167,6 +160,10 @@
      &                               v4_start, isurf_org)
         end if
 !
+        call find_valocity_at_tracer                                    &
+     &     (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1), &
+     &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
+!
         if(iflag_used_ele(isurf_org(1)) .eq. 0) then
 !          isurf_org(2) = isf_tgt
           iflag_comm = 1
@@ -186,17 +183,11 @@
 !
       subroutine s_trace_in_element                                     &
      &         (i_tracer, isurf_org, trace_ratio, dt, isf_org,          &
-     &          node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,       &
-     &          v4_start, isf_tgt, xx4_start, progress)
+     &          node, ele, surf, nod_fld, x4_ele, v4_start,             &
+     &          isf_tgt, xx4_start, progress)
 !
-      use coordinate_converter
-      use convert_components_4_viz
-      use cal_field_on_surf_viz
       use cal_fline_in_cube
-      use trace_in_element
       use tracer_field_interpolate
-      use modify_local_surf_positions
-      use t_local_fline
 !
       integer(kind = kint), intent(in) :: i_tracer
       integer(kind = kint), intent(in) :: isurf_org(2)
@@ -210,8 +201,6 @@
       type(phys_data), intent(in) :: nod_fld
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in) :: v4_pre(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_start(4)
 !
       integer(kind = kint), intent(inout) :: isf_tgt
@@ -219,8 +208,7 @@
       real(kind = kreal), intent(inout) :: progress
 !
       real(kind = kreal) :: xi_surf_tgt(2)
-      real(kind = kreal) :: v4_current_e(4,ele%nnod_4_ele)
-      real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
+      real(kind = kreal) :: x4_tgt(4)
       real(kind = kreal) :: ratio
 !
       real(kind = kreal) :: differ
@@ -236,18 +224,11 @@
         return
       end if
 !
-!$omp parallel workshare
-      v4_current_e(1:4,1:ele%nnod_4_ele)                                &
-     &   = (one - progress) * v4_pre(1:4,1:ele%nnod_4_ele)              &
-     &           + progress * v4_ele(1:4,1:ele%nnod_4_ele)
-!$omp end parallel workshare
-!
-      call trace_to_element_wall                                        &
-     &   (isf_org, iflag_forward_line, ele, surf,                       &
-     &    x4_ele, v4_current_e, xx4_start, v4_start,                    &
-     &    isf_tgt, xi_surf_tgt, x4_tgt, v4_tgt)
+      call find_line_end_in_ele_8(iflag_forward_line, isf_org,          &
+     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
+     &    v4_start, xx4_start, x4_ele, isf_tgt, x4_tgt, xi_surf_tgt)
       call ratio_of_trace_to_wall_tracer(trace_ratio,                   &
-     &    v4_current_e, x4_tgt, xx4_start, dt, ratio, progress)
+     &    v4_start, x4_tgt, xx4_start, dt, ratio, progress)
        xx4_start(1:4) = ratio * x4_tgt(1:4)                             &
      &               + (one - ratio) * xx4_start(1:4)
 !
@@ -271,13 +252,11 @@
 !
       real(kind = kreal) :: trip, dl, actual
 !
-      dl = dt * sqrt(v4_start(1) * v4_start(1)                          &
-     &            +  v4_start(2) * v4_start(2)                          &
-     &            +  v4_start(3) * v4_start(3))                         &
-     &        * (one - progress)
+      dl = sqrt(v4_start(1)*v4_start(1) + v4_start(2)*v4_start(2)       &
+     &        + v4_start(3)*v4_start(3)) * (one - progress) * dt
       trip = sqrt((x4_tgt(1)-x4_start(1)) * (x4_tgt(1) - x4_start(1))   &
-     &         + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))    &
-     &         + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
+     &          + (x4_tgt(2)-x4_start(2)) * (x4_tgt(2) - x4_start(2))   &
+     &          + (x4_tgt(3)-x4_start(3)) * (x4_tgt(3) - x4_start(3)))
 !
       actual = trace_ratio * min(trip, dl)
       ratio =  actual / trip

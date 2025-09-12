@@ -92,7 +92,6 @@
 !
       type(cal_interpolate_coefs_work) :: itp_ele_work_f
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       integer(kind = kint) :: isf_tgt, jcou
       integer(kind = kint) :: isurf_org(2)
 !
@@ -123,13 +122,11 @@
         icount_line = icount_line + 1
         call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &                                  node%xx, x4_ele)
-        call fline_vector_at_one_element(isurf_org(1), node, ele,       &
-     &      nod_fld%d_fld(1,i_fline), v4_ele)
 !
 !   extend in the middle of element
         call fline_trace_in_element(half, end_trace, trace_length,      &
      &      isurf_org(2), iflag_dir, ele, surf,                         &
-     &      x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
+     &      x4_ele, v4_start, isf_tgt, xx4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -153,7 +150,7 @@
 !   extend to surface of element
         call fline_trace_in_element(one, end_trace, trace_length,       &
      &      izero, iflag_dir, ele, surf,                                &
-     &      x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
+     &      x4_ele, v4_start, isf_tgt, xx4_start)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
 !          write(*,*) 'Trace stops by zero vector', my_rank, inum,      &
@@ -218,15 +215,10 @@
       subroutine fline_trace_in_element                                 &
      &         (trace_ratio, end_trace, trace_length,                   &
      &          isf_org, iflag_dir, ele, surf,                          &
-     &          x4_ele, v4_ele, isf_tgt, xx4_start, v4_start)
+     &          x4_ele, v4_start, isf_tgt, xx4_start)
 !
-      use coordinate_converter
-      use convert_components_4_viz
-      use cal_field_on_surf_viz
       use cal_fline_in_cube
       use trace_in_element
-      use tracer_field_interpolate
-      use modify_local_surf_positions
 !
       real(kind = kreal), intent(in) :: trace_ratio
       real(kind = kreal), intent(in) ::   end_trace
@@ -239,11 +231,10 @@
       type(surface_data), intent(in) :: surf
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
-      real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_start(4)
 !
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: xx4_start(4)
-      real(kind = kreal), intent(inout) :: v4_start(4)
 !
       real(kind = kreal) :: xi_surf_tgt(2)
       real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
@@ -255,9 +246,9 @@
         return
       end if
 !
-      call trace_to_element_wall(isf_org, iflag_dir, ele, surf,         &
-     &                          x4_ele, v4_ele, xx4_start, v4_start,    &
-     &                          isf_tgt, xi_surf_tgt, x4_tgt_8, v4_tgt)
+      call find_line_end_in_ele_8(iflag_dir, isf_org,                   &
+     &    ele%nnod_4_ele, surf%nnod_4_surf, surf%node_on_sf,            &
+     &    v4_start, xx4_start, x4_ele, isf_tgt, x4_tgt_8, xi_surf_tgt)
       if(isf_tgt .le. 0) return
 !
       call ratio_of_trace_to_wall_fline(end_trace, trace_ratio,         &
@@ -265,8 +256,6 @@
      &                                  ratio, trace_length)
        xx4_start(1:4) = ratio * x4_tgt_8(1:4)                           &
      &               + (one - ratio) * xx4_start(1:4)
-       v4_start(1:4) = ratio * v4_tgt(1:4)                              &
-     &               + (one - ratio) * v4_start(1:4)
 !
       end subroutine fline_trace_in_element
 !
