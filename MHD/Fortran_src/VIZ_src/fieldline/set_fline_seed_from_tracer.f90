@@ -84,6 +84,7 @@
       subroutine s_set_fline_seed_from_tracer(node, ele, nod_fld,       &
      &          org_fln_tce, fln_prm, fln_tce)
 !
+      use t_find_interpolate_in_ele
       use set_fline_seeds_from_list
 !
       type(node_data), intent(in) :: node
@@ -94,6 +95,7 @@
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
+      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       integer(kind= kint) :: inum, icou
 !
 !
@@ -107,13 +109,16 @@
      &             = org_fln_tce%isf_dbl_start(1:3,inum)
         fln_tce%xx_fline_start(1:4,icou)                                &
      &             = org_fln_tce%xx_fline_start(1:4,icou)
+!
+        call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
         call set_field_at_each_tracer(node, ele, nod_fld,               &
      &      fln_prm%fline_fields, fln_prm%iphys_4_fline,                &
      &      fln_tce%isf_dbl_start(2,inum),                              &
      &      fln_tce%xx_fline_start(1,inum),                             &
      &      fln_tce%xi_fline_start(1,inum),                             &
      &      fln_tce%v_fline_start(1,inum),                              &
-     &      fln_tce%c_fline_start(1,inum))
+     &      fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+        call dealloc_work_4_interpolate(itp_ele_work_f)
 !
         fln_tce%trace_length(icou) = 0.0d0
         fln_tce%icount_fline(icou) = 0

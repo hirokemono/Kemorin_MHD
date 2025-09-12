@@ -61,6 +61,7 @@
      &          nod_fld, fln_prm, fln_tce, fline_lc,                    &
      &          fln_SR, fln_bcast, v_prev, m_SR)
 !
+      use t_find_interpolate_in_ele
       use transfer_to_long_integers
       use trace_particle_in_element
       use set_fline_seeds_from_list
@@ -80,6 +81,7 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       type(mesh_SR), intent(inout) :: m_SR
 !
+      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       integer(kind = kint) :: nline, inum
 !
 !
@@ -110,24 +112,31 @@
      &        fln_tce%v_fline_start(1,inum))
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
+            call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,          &
+     &                                    itp_ele_work_f)
             call set_field_at_each_tracer(mesh%node, mesh%ele,          &
      &          nod_fld, fln_prm%fline_fields, fln_prm%iphys_4_fline,   &
      &          fln_tce%isf_dbl_start(2,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,inum),                          &
-     &          fln_tce%c_fline_start(1,inum))
+     &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+            call dealloc_work_4_interpolate(itp_ele_work_f)
             fln_tce%iflag_comm_start(inum) = 0
           end if
 !
           if(fln_tce%iflag_comm_start(inum) .eq. 0) then
+            call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,          &
+     &                                    itp_ele_work_f)
             call set_field_at_each_tracer(mesh%node, mesh%ele, nod_fld, &
      &          fln_prm%fline_fields, fln_prm%iphys_4_fline,            &
      &          fln_tce%isf_dbl_start(1,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,inum),                          &
-     &          fln_tce%c_fline_start(1,inum))
+     &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+            call dealloc_work_4_interpolate(itp_ele_work_f)
+!
             call add_traced_list(fln_tce%iline_original(inum),          &
      &                           fln_tce%isf_dbl_start(1,inum),         &
      &                           fln_tce%xx_fline_start(1,inum),        &

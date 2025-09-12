@@ -18,7 +18,8 @@
 !!
 !!      subroutine set_field_at_each_tracer(node, ele, nod_fld,         &
 !!     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,     &
-!!     &          xi4_fline_start, v_fline_start, c_fline_start)
+!!     &          xi4_fline_start, v_fline_start, c_fline_start,        &
+!!     &          itp_ele_work)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -30,6 +31,8 @@
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &         :: c_fline_start(fline_fields%ntot_color_comp)
+!!        type(cal_interpolate_coefs_work), intent(inout)               &
+!!     &                                   :: itp_ele_work
 !!
 !!      subroutine find_seed_point_in_each_ele                          &
 !!     &         (node, ele, xx_surf_start_fline, idx_fln_dist,         &
@@ -216,7 +219,8 @@
 !
       subroutine set_field_at_each_tracer(node, ele, nod_fld,           &
      &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,       &
-     &          xi4_fline_start, v_fline_start, c_fline_start)
+     &          xi4_fline_start, v_fline_start, c_fline_start,          &
+     &          itp_ele_work)
 !
       use t_find_interpolate_in_ele
       use field_at_each_seed_point
@@ -236,17 +240,16 @@
       real(kind = kreal), intent(inout) :: v_fline_start(4)
       real(kind = kreal), intent(inout)                                 &
      &         :: c_fline_start(fline_fields%ntot_color_comp)
+      type(cal_interpolate_coefs_work), intent(inout)                   &
+     &                                  :: itp_ele_work
 !
-      type(cal_interpolate_coefs_work), save :: itp_ele_work_f
       integer(kind = kint) :: ierr_inter
 !
 !
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       xi4_fline_start(1:3) = -2.0
       call find_interpolate_in_ele(xx4_seed, maxitr, eps_iter,          &
      &    my_rank, iflag_nomessage, error_level, node, ele,             &
-     &    iele_seed(1), itp_ele_work_f, xi4_fline_start(1), ierr_inter)
-      call dealloc_work_4_interpolate(itp_ele_work_f)
+     &    iele_seed(1), itp_ele_work, xi4_fline_start(1), ierr_inter)
 !
       call cal_each_seed_velocity_in_ele(ele,                           &
      &    nod_fld%n_point, nod_fld%d_fld(1,iphys_4_fline),              &

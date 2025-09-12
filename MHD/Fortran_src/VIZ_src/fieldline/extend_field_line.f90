@@ -61,6 +61,7 @@
      &         icount_line, trace_length, iflag_comm, fline_lc, inum)
 !
       use t_local_fline
+      use t_find_interpolate_in_ele
       use trace_in_element
       use set_fields_after_tracing
       use set_fline_seeds_from_list
@@ -90,6 +91,7 @@
       real(kind = kreal), intent(inout) :: trace_length
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !
+      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_ele(4,ele%nnod_4_ele)
       real(kind = kreal)                                                &
@@ -110,9 +112,11 @@
      &                             v4_start, isurf_org)
       end if
 !
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       call set_field_at_each_tracer                                     &
      &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
-     &    xx4_start, xi4_start, v4_start, c_field)
+     &    xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+      call dealloc_work_4_interpolate(itp_ele_work_f)
       call add_fline_start(xx4_start, v4_start,                         &
      &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
 !
@@ -145,12 +149,15 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+!
+        call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
         call set_field_at_each_tracer                                   &
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
-     &      xx4_start, xi4_start, v4_start, c_field)
+     &      xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+        call dealloc_work_4_interpolate(itp_ele_work_f)
         call add_fline_list(iglobal_fline, xx4_start, v4_start,         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
-        if(trace_length.ge.end_trace .and. end_trace.gt.zero) return
+        if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
 !   extend to surface of element
         call fline_trace_in_element(one, end_trace, trace_length,       &
@@ -169,9 +176,12 @@
 !     &              ' at ', jcou, ': ', isurf_org(1:2)
           exit
         end if
+!
+        call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
         call set_field_at_each_tracer                                   &
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
-     &      xx4_start, xi4_start, v4_start, c_field)
+     &      xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+        call dealloc_work_4_interpolate(itp_ele_work_f)
         call add_fline_list(iglobal_fline, xx4_start, v4_start,         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
@@ -210,6 +220,7 @@
           exit
         end if
       end do
+      
 !
       end subroutine s_extend_field_line
 !
