@@ -41,6 +41,7 @@
       use t_parallel_surface_indices
       use t_phys_data
       use t_ctl_params_viz_fields
+      use t_find_interpolate_in_ele
 !
       implicit  none
 !
@@ -56,7 +57,7 @@
      &         (dt, node, ele, surf, para_surf, nod_fld, v_prev,        &
      &          i_tracer, iflag_used_ele, isurf_org_dbl,                &
      &          xx4_start, xi4_start, v4_start, progress,               &
-     &          iflag_comm, inum)
+     &          iflag_comm, itp_ele_work, inum)
 !
       use t_local_fline
       use t_control_params_4_fline
@@ -80,6 +81,7 @@
 !
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       integer(kind = kint), intent(inout) :: iflag_comm
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
       real(kind = kreal) :: v4_pre(4,ele%nnod_4_ele)
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
@@ -112,18 +114,14 @@
         call fline_vector_at_one_element(isurf_org(1), node, ele,       &
      &      nod_fld%d_fld(1,i_tracer), v4_ele)
 !
-        write(*,*) 'v4_start...    ',   v4_start
-        write(*,*) 'start...       ',   v4_pre
-        write(*,*) 'current...     ',   v4_ele
-        write(*,*) 'x4_ele...      ',   x4_ele
-        call check_each_tracer_data(-99, node, ele, v_prev(1,1),        &
-     &      isurf_org(1), isurf_org(2), xx4_start(1), v4_start(1))
-!
 !   extend in the middle of element
+        call find_valocity_at_tracer                                    &
+     &     (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1), &
+     &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
         call s_trace_in_element                                         &
      &     (i_tracer, isurf_org, half, dt, isurf_org(2),                &
      &      node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,           &
-     &      isf_tgt, xx4_start, v4_start, progress)
+     &      v4_start, isf_tgt, xx4_start, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,       &
@@ -131,16 +129,14 @@
           exit
         end if
 !
-        write(*,*) 'mid...'
-        call check_each_tracer_data                                     &
-     &     (-1, node, ele, nod_fld%d_fld(1,i_tracer),                   &
-     &      isurf_org_dbl(2), isurf_org_dbl(3),                         &
-     &      xx4_start(1), v4_start(1))
 !   extend to surface of element
+        call find_valocity_at_tracer                                    &
+     &     (node, ele, v_prev, nod_fld%d_fld(1,i_tracer), isurf_org(1), &
+     &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
         call s_trace_in_element                                         &
      &     (i_tracer, isurf_org, one, dt, izero,                        &
      &      node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,           &
-     &      isf_tgt, xx4_start, v4_start, progress)
+     &      v4_start, isf_tgt, xx4_start, progress)
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
 !            write(*,*) 'Finish tracing', my_rank, inum
@@ -191,7 +187,7 @@
       subroutine s_trace_in_element                                     &
      &         (i_tracer, isurf_org, trace_ratio, dt, isf_org,          &
      &          node, ele, surf, nod_fld, x4_ele, v4_pre, v4_ele,       &
-     &          isf_tgt, xx4_start, v4_start, progress)
+     &          v4_start, isf_tgt, xx4_start, progress)
 !
       use coordinate_converter
       use convert_components_4_viz
@@ -216,10 +212,10 @@
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_pre(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal), intent(in) :: v4_start(4)
 !
       integer(kind = kint), intent(inout) :: isf_tgt
       real(kind = kreal), intent(inout) :: xx4_start(4)
-      real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout) :: progress
 !
       real(kind = kreal) :: xi_surf_tgt(2)
@@ -228,14 +224,11 @@
       real(kind = kreal) :: ratio
 !
       real(kind = kreal) :: differ
-      real(kind = kreal) :: xi_surf_neo(2)
-      real(kind = kreal) :: x4_tmp(4), xx_surf(4,4)
-      integer(kind = kint) :: inod(4), i, ierr_modify
+      real(kind = kreal) :: xx_surf(4,4)
+      integer(kind = kint) :: ierr_modify
 !
       integer(kind = kint), parameter :: maxitr = 20
       real(kind = kreal), parameter ::   eps_iter = 1.0d-9
-      integer(kind = kint), parameter :: iflag_nomessage = 0
-      real(kind = kreal), parameter ::   error_level = 1.0d-9
 !
 !
       if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
@@ -253,28 +246,16 @@
      &   (isf_org, iflag_forward_line, ele, surf,                       &
      &    x4_ele, v4_current_e, xx4_start, v4_start,                    &
      &    isf_tgt, xi_surf_tgt, x4_tgt, v4_tgt)
-!
-      inod(1:4) = surf%node_on_sf(1:4,isf_tgt)
-      xx_surf(1,1:4) = x4_ele(1:4,inod(1))
-      xx_surf(2,1:4) = x4_ele(1:4,inod(2))
-      xx_surf(3,1:4) = x4_ele(1:4,inod(3))
-      xx_surf(4,1:4) = x4_ele(1:4,inod(4))
-!
-      call s_modify_local_surf_positions(maxitr, eps_iter, xi_surf_tgt, &
-     &    x4_tgt, surf%nnod_4_surf, xx_surf(1,1), ione,                 &
-     &    differ, ierr_modify)
-!
-        write(*,*) 'Wall...'
-        call check_each_tracer_data                                     &
-     &     (-100, node, ele, nod_fld%d_fld(1,i_tracer),                 &
-     &      isurf_org(1), isurf_org(2), x4_tgt(1), v4_tgt(1))
-!
       call ratio_of_trace_to_wall_tracer(trace_ratio,                   &
-     &    v4_start, x4_tgt, xx4_start, dt, ratio, progress)
+     &    v4_current_e, x4_tgt, xx4_start, dt, ratio, progress)
        xx4_start(1:4) = ratio * x4_tgt(1:4)                             &
      &               + (one - ratio) * xx4_start(1:4)
-       v4_start(1:4) = ratio * v4_tgt(1:4)                              &
-     &               + (one - ratio) * v4_start(1:4)
+!
+!      call pick_surf_position4_from_ele(ele, surf, isf_tgt,            &
+!     &                                  x4_ele, xx_surf)
+!      call s_modify_local_surf_positions(maxitr, eps_iter,             &
+!     &    x4_tgt, surf%nnod_4_surf, xx_surf(1,1), ione,                &
+!     &    xi_surf_tgt, differ, ierr_modify)
 !
       end subroutine s_trace_in_element
 !
@@ -306,28 +287,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_each_tracer_data(i_trace, node, ele, d_velo,     &
-     &          iele_start, isf_start, xx_start, v_line_l)
+      subroutine find_valocity_at_tracer(node, ele, v_prev, d_velo,     &
+     &          iele_start, progress, xx4_start, xi4_start, v4_current, &
+     &          itp_ele_work)
 !
       use t_mesh_data
       use t_control_params_4_fline
-      use calypso_mpi
       use field_at_each_seed_point
 !
-      use t_find_interpolate_in_ele
-!
-      integer(kind = kint), intent(in) :: i_trace
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: v_prev(node%numnod,3)
       real(kind = kreal), intent(in) :: d_velo(node%numnod,3)
 !
-      integer(kind = kint), intent(in) :: iele_start(1), isf_start(1)
-      real(kind = kreal), intent(in) :: xx_start(3)
-      real(kind = kreal), intent(in) :: v_line_l(3)
+      integer(kind = kint), intent(in) :: iele_start(1)
+      real(kind = kreal), intent(in) :: progress
+      real(kind = kreal), intent(in) :: xx4_start(4)
 !
+      real(kind = kreal), intent(inout) :: xi4_start(4)
+      real(kind = kreal), intent(inout) :: v4_current(4)
+      type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
+!
+      real(kind = kreal) :: v4_prev(4), v4_now(4)
       integer(kind = kint) :: ierr_inter, iflag
-      real(kind = kreal) :: xi_in_ele(3), v_fline_start(4)
-      type(cal_interpolate_coefs_work) :: itp_ele_work_g
 !
       integer(kind = kint), parameter :: maxitr = 20
       real(kind = kreal), parameter ::   eps_iter = 1.0d-9
@@ -335,23 +317,46 @@
       real(kind = kreal), parameter ::   error_level = 1.0d-9
 !
 !
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_g)
-      call find_interpolate_in_ele(xx_start(1), maxitr, eps_iter,       &
+      call find_interpolate_in_ele(xx4_start(1), maxitr, eps_iter,      &
      &    my_rank, iflag_nomessage, error_level, node, ele,             &
-     &    iele_start(1), itp_ele_work_g, xi_in_ele, ierr_inter)
-      iflag = surface_mode_in_each_ele(error_level,xi_in_ele)
-      call cal_each_seed_velocity_in_ele(ele, node%numnod, d_velo(1,1), &
-     &    iele_start(1), xi_in_ele, v_fline_start)
-      write(*,*) i_trace, iele_start(1), xx_start(1:3), isf_start(1),   &
-     &          iflag, xi_in_ele(1:3), ierr_inter,                      &
-     &          v_fline_start(1), v_line_l(1),                          &
-     &          v_fline_start(2), v_line_l(2),                          &
-     &          v_fline_start(3), v_line_l(3)
-      call dealloc_work_4_interpolate(itp_ele_work_g)
+     &    iele_start(1), itp_ele_work, xi4_start, ierr_inter)
+      iflag = surface_mode_in_each_ele(error_level,xi4_start)
 !
-      end subroutine check_each_tracer_data
+      call cal_each_seed_velocity_in_ele(ele, node%numnod, v_prev(1,1), &
+     &    iele_start(1), xi4_start, v4_prev)
+      call cal_each_seed_velocity_in_ele(ele, node%numnod, d_velo(1,1), &
+     &    iele_start(1), xi4_start, v4_now)
+!
+!$omp parallel workshare
+      v4_current(1:4) = (one - progress) * v4_prev(1:4)                 &
+     &                        + progress * v4_now(1:4)
+!$omp end parallel workshare
+!
+      end subroutine find_valocity_at_tracer
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine pick_surf_position4_from_ele(ele, surf, isf_local,     &
+     &                                        xx4_ele, xx4_surf)
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: isf_local
+      real(kind = kreal), intent(in) :: xx4_ele(4,ele%nnod_4_ele)
+!
+      real(kind = kreal), intent(inout) :: xx4_surf(4,surf%nnod_4_surf)
+!
+      integer(kind = kint) :: inod, k1
+!
+!
+      do k1 = 1, surf%nnod_4_surf
+        inod = surf%node_on_sf(k1,isf_local)
+        xx4_surf(k1,1:4) = xx4_ele(1:4,inod)
+      end do
+!
+      end subroutine pick_surf_position4_from_ele
+!
+!-----------------------------------------------------------------------
 !
       end module trace_particle_in_element
 

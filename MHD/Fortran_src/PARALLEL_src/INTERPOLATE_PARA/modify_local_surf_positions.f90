@@ -6,12 +6,12 @@
 !>@brief find point in one surface and return local coordinate
 !!
 !!@verbatim
-!!      subroutine s_modify_local_surf_positions(maxitr, eps_iter, xi,  &
+!!      subroutine s_modify_local_surf_positions(maxitr, eps_iter,      &
 !!     &          x_target, nnod_surf, x_local_ele, iflag_message,      &
-!!     &          differ, ierr_modify)
-!!      subroutine modify_local_surf_posi_no_fix(maxitr, eps_iter, xi,  &
+!!     &          xi, differ, ierr_modify)
+!!      subroutine modify_local_surf_posi_no_fix(maxitr, eps_iter,      &
 !!     &          x_target, nnod_surf, x_local_ele, iflag_message,      &
-!!     &          differ, ierr_modify)
+!!     &          xi, differ, ierr_modify)
 !!        integer(kind= kint), intent(in) :: iflag_message
 !!        integer(kind= kint), intent(in) :: maxitr
 !!        real(kind = kreal), intent(in) :: x_target(3)
@@ -35,9 +35,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_modify_local_surf_positions(maxitr, eps_iter, xi,    &
+      subroutine s_modify_local_surf_positions(maxitr, eps_iter,        &
      &          x_target, nnod_surf, x_local_ele, iflag_message,        &
-     &          differ, ierr_modify)
+     &          xi, differ, ierr_modify)
 !
       use solver_33_array
       use cal_position_and_grad
@@ -74,12 +74,12 @@
         dx(1:3) = xx_z(1:3)-x_target(1:3)
         differ = sqrt( dx(1)**2 + dx(2)**2 + dx(3)**2 )
 !
-!        if(iflag_message .eq. 1) then
+        if(iflag_message .eq. 1) then
           write(*,*) 'iteration, differ', iter, differ
 !          write(60+my_rank,*) xx_z(1:3)
 !          write(60+my_rank,*) x_target(1:3)
 !          write(60+my_rank,*) dnxi, dnei, dnzi
-!        end if
+        end if
 !
         if(differ .lt. eps_iter) then
           ierr_modify = iter
@@ -99,7 +99,8 @@
         s_correct(3) =    zero
         call solve_33_array(s_correct, dx, dnxi_mat)
 !
-        if(iflag_message .eq. 1) write(*,*) differ, 's_correct', s_correct
+        if(iflag_message .eq. 1)                                        &
+     &                  write(*,*) differ, 's_correct', s_correct
         xi(1:2) = xi(1:2) - s_correct(1:2)
 !
         if(xi(1) .gt.  1.0d0) xi(1) = 1.0d0
@@ -112,9 +113,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine modify_local_surf_posi_no_fix(maxitr, eps_iter, xi,    &
+      subroutine modify_local_surf_posi_no_fix(maxitr, eps_iter,        &
      &          x_target, nnod_surf, x_local_ele, iflag_message,        &
-     &          differ, ierr_modify)
+     &          xi, differ, ierr_modify)
 !
       use solver_33_array
       use cal_position_and_grad
