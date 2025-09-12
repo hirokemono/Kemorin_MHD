@@ -88,6 +88,8 @@
       call return_to_trace_list(fln_prm, fline_lc, fln_tce)
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 
+      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
+     &                              itp_ele_work_f)
       call reset_fline_start(fline_lc)
       do
         if(elps_tracer%flag_elapsed)                                    &
@@ -112,8 +114,6 @@
      &        fln_tce%v_fline_start(1,inum))
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
-            call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,          &
-     &                                    itp_ele_work_f)
             call set_field_at_each_tracer(mesh%node, mesh%ele,          &
      &          nod_fld, fln_prm%fline_fields, fln_prm%iphys_4_fline,   &
      &          fln_tce%isf_dbl_start(2,inum),                          &
@@ -121,13 +121,10 @@
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,inum),                          &
      &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
-            call dealloc_work_4_interpolate(itp_ele_work_f)
             fln_tce%iflag_comm_start(inum) = 0
           end if
 !
           if(fln_tce%iflag_comm_start(inum) .eq. 0) then
-            call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,          &
-     &                                    itp_ele_work_f)
             call set_field_at_each_tracer(mesh%node, mesh%ele, nod_fld, &
      &          fln_prm%fline_fields, fln_prm%iphys_4_fline,            &
      &          fln_tce%isf_dbl_start(1,inum),                          &
@@ -135,7 +132,6 @@
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,inum),                          &
      &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
-            call dealloc_work_4_interpolate(itp_ele_work_f)
 !
             call add_traced_list(fln_tce%iline_original(inum),          &
      &                           fln_tce%isf_dbl_start(1,inum),         &
@@ -146,6 +142,7 @@
      &                           fline_lc)
           end if
         end do
+        call dealloc_work_4_interpolate(itp_ele_work_f)
         if(elps_tracer%flag_elapsed)                                    &
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
 !

@@ -100,6 +100,7 @@
 !
 !
       icou = 0
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       do inum = 1, fln_tce%num_current_fline
         icou = icou + 1
         fln_tce%iflag_direction(icou) = fln_prm%id_fline_direction
@@ -110,7 +111,6 @@
         fln_tce%xx_fline_start(1:4,icou)                                &
      &             = org_fln_tce%xx_fline_start(1:4,icou)
 !
-        call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
         call set_field_at_each_tracer(node, ele, nod_fld,               &
      &      fln_prm%fline_fields, fln_prm%iphys_4_fline,                &
      &      fln_tce%isf_dbl_start(2,inum),                              &
@@ -118,7 +118,6 @@
      &      fln_tce%xi_fline_start(1,inum),                             &
      &      fln_tce%v_fline_start(1,inum),                              &
      &      fln_tce%c_fline_start(1,inum), itp_ele_work_f)
-        call dealloc_work_4_interpolate(itp_ele_work_f)
 !
         fln_tce%trace_length(icou) = 0.0d0
         fln_tce%icount_fline(icou) = 0
@@ -137,6 +136,7 @@
           fln_tce%icount_fline(icou) = 0
         end if
       end do
+      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       end subroutine s_set_fline_seed_from_tracer
 !
