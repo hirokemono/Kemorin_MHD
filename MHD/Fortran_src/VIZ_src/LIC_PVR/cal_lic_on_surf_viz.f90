@@ -23,8 +23,6 @@
 !!        real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
 !!        real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
 !!        integer(kind = kint), intent(inout) :: iflag_comm, int_iter
-!!
-!!      subroutine cal_surf_field_value_2d(nd, xi, fd, ft)
 !!@endverbatim
 !
       module cal_lic_on_surf_viz
