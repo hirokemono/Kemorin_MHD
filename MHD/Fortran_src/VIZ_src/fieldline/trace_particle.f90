@@ -107,13 +107,12 @@
      &        fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
-            call set_field_at_each_tracer(mesh%node, mesh%ele,          &
-     &          nod_fld, fln_prm%fline_fields, fln_prm%iphys_4_fline,   &
+            call set_veclocity_at_each_tracer                           &
+     &         (mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline,    &
      &          fln_tce%isf_dbl_start(2,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
-     &          fln_tce%v_fline_start(1,inum),                          &
-     &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+     &          fln_tce%v_fline_start(1,inum), itp_ele_work_f)
             fln_tce%iflag_comm_start(inum) = 0
           end if
 !
@@ -124,15 +123,14 @@
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,inum),                          &
-     &          fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+     &          fln_tce%c_fline_start(1,1), itp_ele_work_f)
 !
             call add_traced_list(fln_tce%iline_original(inum),          &
      &                           fln_tce%isf_dbl_start(1,inum),         &
      &                           fln_tce%xx_fline_start(1,inum),        &
      &                           fln_tce%v_fline_start(1,inum),         &
      &                           fln_prm%fline_fields%ntot_color_comp,  &
-     &                           fln_tce%c_fline_start(1,inum),         &
-     &                           fline_lc)
+     &                           fln_tce%c_fline_start(1,1), fline_lc)
           end if
         end do
         call dealloc_work_4_interpolate(itp_ele_work_f)
@@ -230,8 +228,6 @@
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
         fln_tce%xx_fline_start(1:4,i) = fline_lc%xx_line_l(1:4,i)
         fln_tce%v_fline_start(1:4,i) =  fline_lc%v_line_l(1:4,i)
-        fln_tce%c_fline_start(1:ntot_comp,i)                            &
-     &                = fline_lc%col_line_l(1:ntot_comp,i)
       end do
       do i = 1, fln_tce%num_current_fline
         fln_tce%isf_dbl_start(1,i) =    my_rank
@@ -266,8 +262,6 @@
         fline_lc%iglobal_fline(i) = fln_tce%iline_original(i)
         fline_lc%xx_line_l(1:4,i) = fln_tce%xx_fline_start(1:4,i)
         fline_lc%v_line_l(1:4,i)  = fln_tce%v_fline_start(1:4,i)
-        fline_lc%col_line_l(1:ntot_comp,i)                              &
-     &       = fln_tce%c_fline_start(1:ntot_comp,i)
 !
         fline_lc%iedge_line_l(1,i) = fln_tce%isf_dbl_start(2,i)
         fline_lc%iedge_line_l(2,i) = fln_tce%isf_dbl_start(3,i)

@@ -111,13 +111,12 @@
         fln_tce%xx_fline_start(1:4,icou)                                &
      &             = org_fln_tce%xx_fline_start(1:4,icou)
 !
-        call set_field_at_each_tracer(node, ele, nod_fld,               &
-     &      fln_prm%fline_fields, fln_prm%iphys_4_fline,                &
+        call set_veclocity_at_each_tracer                               &
+     &     (node, ele, nod_fld, fln_prm%iphys_4_fline,                  &
      &      fln_tce%isf_dbl_start(2,inum),                              &
      &      fln_tce%xx_fline_start(1,inum),                             &
      &      fln_tce%xi_fline_start(1,inum),                             &
-     &      fln_tce%v_fline_start(1,inum),                              &
-     &      fln_tce%c_fline_start(1,inum), itp_ele_work_f)
+     &      fln_tce%v_fline_start(1,inum), itp_ele_work_f)
 !
         fln_tce%trace_length(icou) = 0.0d0
         fln_tce%icount_fline(icou) = 0

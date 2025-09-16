@@ -192,10 +192,6 @@
           fln_tce%v_fline_start(1:4,icou) =  vec_surf(1:4)
           fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0
-!
-          call cal_fields_on_line(isurf, xi, xyz_surf(1),               &
-     &                          surf, nod_fld, fln_prm%fline_fields,    &
-     &                          fln_tce%c_fline_start(1,icou))
         else
           fln_tce%iflag_direction(icou) = iflag_forward_trace
 !
@@ -215,10 +211,6 @@
             fln_tce%v_fline_start(1:4,icou) =  vec_surf(1:4)
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
-!
-            call cal_fields_on_line(isurf, xi, xyz_surf(1),             &
-     &                          surf, nod_fld, fln_prm%fline_fields,    &
-     &                          fln_tce%c_fline_start(1,icou))
           end if
 !
           call choose_fline_start_surf(iflag_outward_flux_fline(i),     &

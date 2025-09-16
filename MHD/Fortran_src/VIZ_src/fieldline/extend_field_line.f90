@@ -58,7 +58,7 @@
      &         nod_fld, viz_fields, max_line_step, end_trace,           &
      &         iflag_used_ele, iglobal_fline, iflag_dir, i_fline,       &
      &         isurf_org_dbl, xx4_start, xi4_start, v4_start, c_field,  &
-     &         icount_line, trace_length, iflag_comm, fline_lc, inum)
+     &         icount_line, trace_length, iflag_comm, fline_lc)
 !
       use t_local_fline
       use t_find_interpolate_in_ele
@@ -74,7 +74,7 @@
       integer(kind = kint), intent(in) :: i_fline
       integer(kind = kint_gl), intent(in) :: iglobal_fline
 !
-      integer(kind = kint), intent(in) :: inum
+!      integer(kind = kint), intent(in) :: inum
       real(kind = kreal), intent(in) ::   end_trace
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
       integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
@@ -167,7 +167,7 @@
 !
         call set_field_at_each_tracer                                   &
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
-     &      xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+     &      xx4_start, xi4_start, v4_start, c_field(1), itp_ele_work_f)
         call add_fline_list(iglobal_fline, xx4_start, v4_start,         &
      &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit

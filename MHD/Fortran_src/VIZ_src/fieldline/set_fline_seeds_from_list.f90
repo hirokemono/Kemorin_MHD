@@ -16,6 +16,9 @@
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
+!!      subroutine set_veclocity_at_each_tracer(node, ele, nod_fld,     &
+!!     &          iphys_4_fline, iele_seed, xx4_seed,                   &
+!!     &          xi4_fline_start, v_fline_start, itp_ele_work)
 !!      subroutine set_field_at_each_tracer(node, ele, nod_fld,         &
 !!     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,     &
 !!     &          xi4_fline_start, v_fline_start, c_fline_start,        &
@@ -163,13 +166,6 @@
      &        fln_src%iele_surf_start_fline(inum),                      &
      &        fln_src%xi_surf_start_fline(1,inum),                      &
      &        fln_tce%v_fline_start(1,icou))
-          call cal_fields_in_element                                    &
-     &       (fln_src%iele_surf_start_fline(inum),                      &
-     &        fln_src%xi_surf_start_fline(1,inum),                      &
-     &        fln_prm%xx_surf_start_fline(1,inum),                      &
-     &        ele, nod_fld, fln_prm%fline_fields,                       &
-     &        fln_tce%c_fline_start(1,icou))
-!
 !
           fln_tce%isf_dbl_start(1,icou) = my_rank
           fln_tce%isf_dbl_start(2,icou)                                 &
@@ -217,6 +213,42 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine set_veclocity_at_each_tracer(node, ele, nod_fld,       &
+     &          iphys_4_fline, iele_seed, xx4_seed,                     &
+     &          xi4_fline_start, v_fline_start, itp_ele_work)
+!
+      use t_find_interpolate_in_ele
+      use field_at_each_seed_point
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: iphys_4_fline
+!
+      integer(kind = kint), intent(in) :: iele_seed(1)
+      real(kind = kreal), intent(in) :: xx4_seed(4)
+!
+      real(kind = kreal), intent(inout) :: xi4_fline_start(4)
+      real(kind = kreal), intent(inout) :: v_fline_start(4)
+      type(cal_interpolate_coefs_work), intent(inout)                   &
+     &                                  :: itp_ele_work
+!
+      integer(kind = kint) :: ierr_inter
+!
+!
+      xi4_fline_start(1:3) = -2.0
+      call find_interpolate_in_ele(xx4_seed, maxitr, eps_iter,          &
+     &    my_rank, iflag_nomessage, error_level, node, ele,             &
+     &    iele_seed(1), itp_ele_work, xi4_fline_start(1), ierr_inter)
+      call cal_each_seed_velocity_in_ele(ele,                           &
+     &    nod_fld%n_point, nod_fld%d_fld(1,iphys_4_fline),              &
+     &    iele_seed, xi4_fline_start(1), v_fline_start)
+!
+      end subroutine set_veclocity_at_each_tracer
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_field_at_each_tracer(node, ele, nod_fld,           &
      &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,       &
      &          xi4_fline_start, v_fline_start, c_fline_start,          &
@@ -246,14 +278,9 @@
       integer(kind = kint) :: ierr_inter
 !
 !
-      xi4_fline_start(1:3) = -2.0
-      call find_interpolate_in_ele(xx4_seed, maxitr, eps_iter,          &
-     &    my_rank, iflag_nomessage, error_level, node, ele,             &
-     &    iele_seed(1), itp_ele_work, xi4_fline_start(1), ierr_inter)
-!
-      call cal_each_seed_velocity_in_ele(ele,                           &
-     &    nod_fld%n_point, nod_fld%d_fld(1,iphys_4_fline),              &
-     &    iele_seed, xi4_fline_start(1), v_fline_start)
+      call set_veclocity_at_each_tracer                                 &
+     &   (node, ele, nod_fld, iphys_4_fline, iele_seed, xx4_seed,       &
+     &    xi4_fline_start, v_fline_start, itp_ele_work)
       call cal_fields_in_element(iele_seed, xi4_fline_start(1),         &
      &    xx4_seed, ele, nod_fld, fline_fields, c_fline_start)
 !

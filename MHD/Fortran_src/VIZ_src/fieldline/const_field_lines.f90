@@ -97,9 +97,9 @@
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%xi_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(1,inum),                            &
+     &        fln_tce%c_fline_start(1,1),                               &
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
-     &        fln_tce%iflag_comm_start(inum), fline_lc, inum)
+     &        fln_tce%iflag_comm_start(inum), fline_lc)
         end do
         call calypso_mpi_barrier()
         if(elps_fline%flag_elapsed)                                     &

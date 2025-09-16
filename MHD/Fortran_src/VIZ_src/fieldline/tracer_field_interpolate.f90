@@ -221,7 +221,7 @@
       integer(kind = kint) :: inum, ifield, ist, jst, nd
 !
       call position_2_sph(ione, xyz(1), r, theta, phi,                  &
-     &                    a_r, rs, a_rs )
+     &                    a_r, rs, a_rs)
       do inum = 1, viz_fields%num_color_fields
         ifield = viz_fields%ifleld_color_field(inum)
         if(ifield .le. 0) then
