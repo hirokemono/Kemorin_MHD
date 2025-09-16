@@ -91,25 +91,25 @@
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
       type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
-      integer(kind = kint) :: i_fln, istep_rst
+      integer(kind = kint) :: i_tcr, istep_rst
 !
       if(output_IO_flag(time_d%i_time_step, rst_step)) then
         istep_rst = set_IO_step(time_d%i_time_step, rst_step)
-        do i_fln = 1, num_fline
+        do i_tcr = 1, num_fline
           call check_tracer_restarts                                    &
-     &         (i_fln, mesh, nod_fld, fln_prm(i_fln), fline_lc(i_fln))
+     &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
 !
-          call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
-     &        istep_rst, time_d, fln_prm(i_fln)%fline_fields,           &
-     &        fline_lc(i_fln))
+          call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
+     &        istep_rst, time_d, fln_prm(i_tcr)%fline_fields,           &
+     &        fline_lc(i_tcr))
         end do
       end if
 !
       if(finish_d%flag_terminate_by_elapsed) then
-        do i_fln = 1, num_fline
-          call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
-     &        -1, time_d, fln_prm(i_fln)%fline_fields,                  &
-     &        fline_lc(i_fln))
+        do i_tcr = 1, num_fline
+          call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
+     &        -1, time_d, fln_prm(i_tcr)%fline_fields,                  &
+     &        fline_lc(i_tcr))
         end do
       end if
 !
@@ -132,16 +132,16 @@
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
       type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
-      integer(kind = kint) :: i_fln, istep_rst
+      integer(kind = kint) :: i_tcr, istep_rst
 !
 !
       istep_rst = set_IO_step(init_d%i_time_step, rst_step)
-      do i_fln = 1, num_fline
-        call input_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,         &
-     &      istep_rst, init_d, fln_prm(i_fln)%fline_fields,             &
-     &      fline_lc(i_fln))
+      do i_tcr = 1, num_fline
+        call input_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,         &
+     &      istep_rst, init_d, fln_prm(i_tcr)%fline_fields,             &
+     &      fline_lc(i_tcr))
         call cal_local_tracer_fields(mesh, nod_fld,                     &
-     &      fln_prm(i_fln), fline_lc(i_fln))
+     &      fln_prm(i_tcr), fline_lc(i_tcr))
       end do
 !
       end subroutine input_tracer_restarts
@@ -166,29 +166,29 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
-      integer(kind = kint) :: i_fln, istep_rst, ntot_comp
+      integer(kind = kint) :: i_tcr, istep_rst, ntot_comp
 !
 !
       istep_rst = set_IO_step(init_d%i_time_step, rst_step)
-      do i_fln = 1, num_fline
-        ntot_comp = fln_prm(i_fln)%fline_fields%ntot_color_comp
+      do i_tcr = 1, num_fline
+        ntot_comp = fln_prm(i_tcr)%fline_fields%ntot_color_comp
 !
-        if(fln_prm(i_fln)%id_fline_seed_type                            &
+        if(fln_prm(i_tcr)%id_fline_seed_type                            &
      &                       .eq. iflag_read_reastart) then
-          call input_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,       &
-     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fline_lc(i_fln))
+          call input_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,       &
+     &        istep_rst, init_d, fln_prm(i_tcr)%fline_fields,           &
+     &        fline_lc(i_tcr))
           call cal_local_tracer_fields(mesh, nod_fld,                   &
-     &        fln_prm(i_fln), fline_lc(i_fln))
+     &        fln_prm(i_tcr), fline_lc(i_tcr))
         else
-          call local_tracer_from_seeds(fln_prm(i_fln), fln_tce(i_fln),  &
-     &                                 fline_lc(i_fln))
+          call local_tracer_from_seeds(fln_prm(i_tcr), fln_tce(i_tcr),  &
+     &                                 fline_lc(i_tcr))
           call check_tracer_restarts                                    &
-     &         (i_fln, mesh, nod_fld, fln_prm(i_fln), fline_lc(i_fln))
+     &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
 !
-          call output_tracer_restart(fln_prm(i_fln)%tracer_rst_IO,      &
-     &        istep_rst, init_d, fln_prm(i_fln)%fline_fields,           &
-     &        fline_lc(i_fln))
+          call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
+     &        istep_rst, init_d, fln_prm(i_tcr)%fline_fields,           &
+     &        fline_lc(i_tcr))
         end if
       end do
 !
@@ -213,15 +213,15 @@
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_tcr
 !
 !
-      do i_fln = 1, num_fline
+      do i_tcr = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO                                 &
-     &     (fln_prm(i_fln)%fline_fields, fline_lc(i_fln), fline_ucd)
+     &     (fln_prm(i_tcr)%fline_fields, fline_lc(i_tcr), fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+     &     (istep_file, fln_prm(i_tcr)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
       end do
 !
@@ -246,15 +246,15 @@
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_tcr
 !  
 !
-      do i_fln = 1, num_fline
+      do i_tcr = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_fieldline_to_IO(fln_prm(i_fln)%fline_fields,    &
-     &                                  fline_lc(i_fln), fline_ucd)
+        call copy_local_fieldline_to_IO(fln_prm(i_tcr)%fline_fields,    &
+     &                                  fline_lc(i_tcr), fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
+     &     (istep_file, fln_prm(i_tcr)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
         call calypso_mpi_barrier
       end do

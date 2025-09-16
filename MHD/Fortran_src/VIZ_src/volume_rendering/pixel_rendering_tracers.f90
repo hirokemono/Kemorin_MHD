@@ -41,8 +41,6 @@
 !
       implicit none
 !
-      private :: distance_from_tracer, distance_from_fline_segment
-      private :: normal_of_single_tracer, normal_of_single_fline
       private :: distance_from_point, single_normalize_vector
       private :: distance_from_line_segment
 !
@@ -74,6 +72,7 @@
       integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
       real(kind = kreal) :: rgb_color(3), opacity
+      real(kind = kreal) :: xyzw(4)
 !
 !
       if(tracer_pvr_prm%num_pvr_tracer .le. 0) return
@@ -86,13 +85,15 @@
           i_global = particle_lc(i_fln)%iglobal_fline(inum)
           if(mod(i_global-1,increment) .ne. 0) cycle
 !
-          distance = distance_from_tracer(xx4_tgt, inum,                &
-     &                                    particle_lc(i_fln))
+          xyzw(1:3) = particle_lc(i_fln)%xx_line_l(1:3,inum)
+          xyzw(4) =   one
+          distance = distance_from_point(xx4_tgt, xyzw(1))
           if(distance .ge. radius) cycle
-!
 !          opacity = opacity * (one - sqrt(distance / radius))
-          call normal_of_single_tracer                                  &
-     &       (xx4_tgt, inum, particle_lc(i_fln), grad_tgt)
+!
+          grad_tgt(1:3) = xx4_tgt(1:3)                                  &
+     &                   - particle_lc(i_fln)%xx_line_l(1:3,inum)
+          call single_normalize_vector(grad_tgt)
 !
           if(tracer_pvr_prm%iflag_color_mode(i_fln)                     &
      &                          .eq. iflag_single_color) then
@@ -130,9 +131,11 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint) :: i_fln, iedge, inod, increment
+      integer(kind = kint) :: i1, i2
       integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
       real(kind = kreal) :: rgb_color(3), opacity
+      real(kind = kreal) :: xyzw_1(4), xyzw_2(4)
 !
 !
       if(fline_pvr_prm%num_pvr_tracer .le. 0) return
@@ -146,13 +149,23 @@
           i_global = fline_lc(i_fln)%iglobal_fline(inod)
           if(mod(i_global-1,increment) .ne. 0) cycle
 !
-          distance = distance_from_fline_segment(xx4_tgt, iedge,        &
-     &                                           fline_lc(i_fln))
-          if(distance .ge. radius) cycle
+          i1 = fline_lc(i_fln)%iedge_line_l(1,iedge)
+          i2 = fline_lc(i_fln)%iedge_line_l(2,iedge)
+          xyzw_1(1:3) = fline_lc(i_fln)%xx_line_l(1:3,i1)
+          xyzw_1(4) =   one
+          xyzw_2(1:3) = fline_lc(i_fln)%xx_line_l(1:3,i2)
+          xyzw_2(4) =   one
+          distance = distance_from_line_segment(xx4_tgt,                &
+     &                                            xyzw_1(1), xyzw_2(1))
 !
+          if(distance .ge. radius) cycle
 !          opacity = opacity * (one - sqrt(distance / radius))
-          call normal_of_single_fline                                   &
-     &       (xx4_tgt, iedge, fline_lc(i_fln), grad_tgt)
+          i1 = fline_lc(i_fln)%iedge_line_l(1,iedge)
+          i2 = fline_lc(i_fln)%iedge_line_l(2,iedge)
+          grad_tgt(1:3) = xx4_tgt(1:3)                                  &
+     &                 - half * (fline_lc(i_fln)%xx_line_l(1:3,i1)      &
+     &                         + fline_lc(i_fln)%xx_line_l(1:3,i2))
+      call single_normalize_vector(grad_tgt)
 !
           if(fline_pvr_prm%iflag_color_mode(i_fln)                      &
      &                          .eq. iflag_single_color) then
@@ -169,88 +182,6 @@
       end do
 !
       end subroutine rendering_fieldlines
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      real(kind = kreal) function distance_from_tracer(point,           &
-     &                                                 inum, fline_lc)
-!
-      real(kind = kreal), intent(in) :: point(4)
-      integer(kind = kint), intent(in) :: inum
-      type(local_fieldline), intent(in) :: fline_lc
-!
-      real(kind = kreal) :: xyzw(4)
-!
-      xyzw(1:3) = fline_lc%xx_line_l(1:3,inum)
-      xyzw(4) =   one
-      distance_from_tracer = distance_from_point(point, xyzw(1))
-!
-      end function distance_from_tracer
-!
-! ----------------------------------------------------------------------
-!
-      real(kind = kreal) function distance_from_fline_segment           &
-     &                                     (point, iedge, fline_lc)
-!
-      real(kind = kreal), intent(in) :: point(4)
-      integer(kind = kint), intent(in) :: iedge
-      type(local_fieldline), intent(in) :: fline_lc
-!
-      real(kind = kreal) :: xyzw_1(4), xyzw_2(4)
-      integer(kind = kint) :: i1, i2
-!
-      i1 = fline_lc%iedge_line_l(1,iedge)
-      i2 = fline_lc%iedge_line_l(2,iedge)
-      xyzw_1(1:3) = fline_lc%xx_line_l(1:3,i1)
-      xyzw_1(4) =   one
-      xyzw_2(1:3) = fline_lc%xx_line_l(1:3,i2)
-      xyzw_2(4) =   one
-!
-      distance_from_fline_segment                                       &
-     &     = distance_from_line_segment(point, xyzw_1(1), xyzw_2(1))
-!
-      end function distance_from_fline_segment
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine normal_of_single_tracer(xx4_tgt, inum, fline_lc,       &
-     &                                   norm)
-!
-      use cal_vector_products
-!
-      real(kind = kreal), intent(in) :: xx4_tgt(4)
-      integer(kind = kint), intent(in) :: inum
-      type(local_fieldline), intent(in) :: fline_lc
-      real(kind = kreal), intent(inout) :: norm(3)
-!
-      norm(1:3) = xx4_tgt(1:3) - fline_lc%xx_line_l(1:3,inum)
-      call single_normalize_vector(norm)
-!
-      end subroutine normal_of_single_tracer
-!
-! ----------------------------------------------------------------------
-!
-      subroutine normal_of_single_fline(xx4_tgt, iedge, fline_lc,       &
-     &                                  norm)
-!
-      use cal_vector_products
-!
-      real(kind = kreal), intent(in) :: xx4_tgt(4)
-      integer(kind = kint), intent(in) :: iedge
-      type(local_fieldline), intent(in) :: fline_lc
-      real(kind = kreal), intent(inout) :: norm(3)
-!
-      integer(kind = kint) :: i1, i2
-!
-      i1 = fline_lc%iedge_line_l(1,iedge)
-      i2 = fline_lc%iedge_line_l(2,iedge)
-      norm(1:3) = xx4_tgt(1:3) - half * (fline_lc%xx_line_l(1:3,i1)     &
-     &                                 + fline_lc%xx_line_l(1:3,i2))
-      call single_normalize_vector(norm)
-!
-      end subroutine normal_of_single_fline
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
