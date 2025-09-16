@@ -239,9 +239,8 @@
      &         call start_elapsed_time(elps_fline%ist_elapsed+1)
         if(fln_prm(i_fln)%id_fline_seed_type                            &
      &                       .eq. iflag_tracer_seeds) then
-          call const_fline_seed_from_tracer(mesh%node, mesh%ele,        &
-     &        nod_fld, tracer%num_trace, tracer%fln_tce,                &
-     &        fln_prm(i_fln), fln_tce(i_fln))
+          call const_fline_seed_from_tracer(mesh%ele, fln_prm(i_fln),   &
+     &        tracer%num_trace, tracer%fln_tce, fln_tce(i_fln))
         else if(fln_prm(i_fln)%id_fline_seed_type                       &
      &                       .eq. iflag_position_list) then
           call const_FLINE_seed_from_list                               &

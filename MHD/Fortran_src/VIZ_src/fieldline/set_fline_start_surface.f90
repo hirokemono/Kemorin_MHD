@@ -189,7 +189,6 @@
           fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
           fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)
           fln_tce%xx_fline_start(1:4,icou) = xyz_surf(1:4)
-          fln_tce%v_fline_start(1:4,icou) =  vec_surf(1:4)
           fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0
         else
@@ -208,7 +207,6 @@
             fln_tce%isf_dbl_start(2,icou) = isf_dbl_st_tmp(1)
             fln_tce%isf_dbl_start(3,icou) = isf_dbl_st_tmp(2)
             fln_tce%xx_fline_start(1:4,icou) = xyz_surf(1:4)
-            fln_tce%v_fline_start(1:4,icou) =  vec_surf(1:4)
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
           end if

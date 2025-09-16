@@ -161,15 +161,9 @@
           if(fln_src%ip_surf_start_fline(inum) .ne. my_rank) cycle
           icou = icou + 1
 !
-          call cal_each_seed_velocity_in_ele(ele, nod_fld%n_point,      &
-     &        nod_fld%d_fld(1,fln_prm%iphys_4_fline),                   &
-     &        fln_src%iele_surf_start_fline(inum),                      &
-     &        fln_src%xi_surf_start_fline(1,inum),                      &
-     &        fln_tce%v_fline_start(1,icou))
-!
           fln_tce%isf_dbl_start(1,icou) = my_rank
           fln_tce%isf_dbl_start(2,icou)                                 &
-     &      = fln_src%iele_surf_start_fline(inum)
+     &            = fln_src%iele_surf_start_fline(inum)
           fln_tce%isf_dbl_start(3,icou)                                 &
      &            = surface_mode_in_each_ele(error_level,               &
      &             fln_src%xi_surf_start_fline(1,inum))

@@ -107,16 +107,8 @@
      &        fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
 !
           if(fln_tce%iflag_comm_start(inum) .eq. -3) then
-            call set_veclocity_at_each_tracer                           &
-     &         (mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline,    &
-     &          fln_tce%isf_dbl_start(2,inum),                          &
-     &          fln_tce%xx_fline_start(1,inum),                         &
-     &          fln_tce%xi_fline_start(1,inum),                         &
-     &          fln_tce%v_fline_start(1,inum), itp_ele_work_f)
             fln_tce%iflag_comm_start(inum) = 0
-          end if
-!
-          if(fln_tce%iflag_comm_start(inum) .eq. 0) then
+          else if(fln_tce%iflag_comm_start(inum) .eq. 0) then
             call set_field_at_each_tracer(mesh%node, mesh%ele, nod_fld, &
      &          fln_prm%fline_fields, fln_prm%iphys_4_fline,            &
      &          fln_tce%isf_dbl_start(1,inum),                          &
@@ -227,7 +219,6 @@
       do i = 1, fln_tce%num_current_fline
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
         fln_tce%xx_fline_start(1:4,i) = fline_lc%xx_line_l(1:4,i)
-        fln_tce%v_fline_start(1:4,i) =  fline_lc%v_line_l(1:4,i)
       end do
       do i = 1, fln_tce%num_current_fline
         fln_tce%isf_dbl_start(1,i) =    my_rank
@@ -261,7 +252,6 @@
       do i = 1, fln_tce%num_current_fline
         fline_lc%iglobal_fline(i) = fln_tce%iline_original(i)
         fline_lc%xx_line_l(1:4,i) = fln_tce%xx_fline_start(1:4,i)
-        fline_lc%v_line_l(1:4,i)  = fln_tce%v_fline_start(1:4,i)
 !
         fline_lc%iedge_line_l(1,i) = fln_tce%isf_dbl_start(2,i)
         fline_lc%iedge_line_l(2,i) = fln_tce%isf_dbl_start(3,i)
