@@ -37,6 +37,7 @@
       module t_tracing_data
 !
       use m_precision
+      use m_machine_parameter
       use m_constants
       use t_control_params_4_fline
 !
@@ -154,9 +155,9 @@
 !$omp end parallel
 !
       num = viz_fields%ntot_color_comp
-      allocate(fln_tce%c_fline_start(num, fln_tce%num_trace_buf))
+      allocate(fln_tce%c_fline_start(num,np_smp))
 !$omp parallel workshare
-      fln_tce%c_fline_start(1:num, 1:fln_tce%num_trace_buf) =  0.0d0
+      fln_tce%c_fline_start(1:num,1:np_smp) =  0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_line_start_fline
@@ -189,14 +190,12 @@
       type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-          fln_tce%xx_fline_start(1:4,i_copied)                          &
+      fln_tce%xx_fline_start(1:4,i_copied)                              &
      &          = fln_tce%xx_fline_start(1:4,i_org)
-          fln_tce%xi_fline_start(1:4,i_copied)                          &
+      fln_tce%xi_fline_start(1:4,i_copied)                              &
      &          = fln_tce%xi_fline_start(1:4,i_org)
-          fln_tce%v_fline_start(1:4,i_copied)                           &
+      fln_tce%v_fline_start(1:4,i_copied)                               &
      &          = fln_tce%v_fline_start(1:4,i_org)
-          fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_copied)  &
-     &      = fln_tce%c_fline_start(1:viz_fields%ntot_color_comp,i_org)
 !
       end subroutine copy_global_start_fline
 !
@@ -283,8 +282,7 @@
      &        fln_tce%xx_fline_start(1:4,icou),                         &
      &        fln_tce%xi_fline_start(1:4,icou),                         &
      &        fln_tce%isf_dbl_start(1:3,icou),                          &
-     &        fln_tce%v_fline_start(1:4,icou),                          &
-     &        fln_tce%c_fline_start(:,icou)
+     &        fln_tce%v_fline_start(1:4,icou)
         end do
       end do
       call calypso_mpi_barrier()
