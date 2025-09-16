@@ -140,14 +140,12 @@
 !
       allocate(fln_tce%xx_fline_start(4,fln_tce%num_trace_buf))
       allocate(fln_tce%xi_fline_start(4,fln_tce%num_trace_buf))
-      allocate(fln_tce%v_fline_start(4,fln_tce%num_trace_buf))
       allocate(fln_tce%trace_length(fln_tce%num_trace_buf))
 !
 !$omp parallel
 !$omp workshare
       fln_tce%xx_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
       fln_tce%xi_fline_start(1:4,1:fln_tce%num_trace_buf) = 0.0d0
-      fln_tce%v_fline_start(1:4,1:fln_tce%num_trace_buf) =  0.0d0
 !$omp end workshare nowait
 !$omp workshare
       fln_tce%trace_length(1:fln_tce%num_trace_buf) = 0.0d0
@@ -156,8 +154,10 @@
 !
       num = viz_fields%ntot_color_comp
       allocate(fln_tce%c_fline_start(num,np_smp))
+      allocate(fln_tce%v_fline_start(4,np_smp))
 !$omp parallel workshare
-      fln_tce%c_fline_start(1:num,1:np_smp) =  0.0d0
+      fln_tce%c_fline_start(1:num,1:np_smp) = 0.0d0
+      fln_tce%v_fline_start(1:4,1:np_smp) =   0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_line_start_fline
@@ -194,8 +194,6 @@
      &          = fln_tce%xx_fline_start(1:4,i_org)
       fln_tce%xi_fline_start(1:4,i_copied)                              &
      &          = fln_tce%xi_fline_start(1:4,i_org)
-      fln_tce%v_fline_start(1:4,i_copied)                               &
-     &          = fln_tce%v_fline_start(1:4,i_org)
 !
       end subroutine copy_global_start_fline
 !
@@ -281,8 +279,7 @@
           write(*,*) my_rank, icou, 'check_line_start_fline',           &
      &        fln_tce%xx_fline_start(1:4,icou),                         &
      &        fln_tce%xi_fline_start(1:4,icou),                         &
-     &        fln_tce%isf_dbl_start(1:3,icou),                          &
-     &        fln_tce%v_fline_start(1:4,icou)
+     &        fln_tce%isf_dbl_start(1:3,icou)
         end do
       end do
       call calypso_mpi_barrier()

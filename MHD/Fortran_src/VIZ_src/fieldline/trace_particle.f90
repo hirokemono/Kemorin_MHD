@@ -102,7 +102,7 @@
      &        fln_tce%isf_dbl_start(1,inum),                            &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%xi_fline_start(1,inum),                           &
-     &        fln_tce%v_fline_start(1,inum),                            &
+     &        fln_tce%v_fline_start(1,1),                               &
      &        fln_tce%trace_length(inum),                               &
      &        fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
 !
@@ -114,13 +114,13 @@
      &          fln_tce%isf_dbl_start(1,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
-     &          fln_tce%v_fline_start(1,inum),                          &
+     &          fln_tce%v_fline_start(1,1),                             &
      &          fln_tce%c_fline_start(1,1), itp_ele_work_f)
 !
             call add_traced_list(fln_tce%iline_original(inum),          &
      &                           fln_tce%isf_dbl_start(1,inum),         &
      &                           fln_tce%xx_fline_start(1,inum),        &
-     &                           fln_tce%v_fline_start(1,inum),         &
+     &                           fln_tce%v_fline_start(1,1),            &
      &                           fln_prm%fline_fields%ntot_color_comp,  &
      &                           fln_tce%c_fline_start(1,1), fline_lc)
           end if

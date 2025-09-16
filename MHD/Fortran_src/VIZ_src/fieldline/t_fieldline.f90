@@ -58,6 +58,7 @@
         type(ucd_data) :: fline_ucd
       end type fieldline_module
 !
+      private :: alloc_FLINE_modules
       private :: set_fline_controls, s_const_field_lines
 !
 !  ---------------------------------------------------------------------
@@ -101,21 +102,6 @@
      &    fline%fln_prm, fline%fln_src)
 !
       end subroutine FLINE_initialize
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_FLINE_modules(fline)
-!
-      type(fieldline_module), intent(inout) :: fline
-!
-      allocate(fline%fln_prm(fline%num_fline))
-      allocate(fline%fln_src(fline%num_fline))
-      allocate(fline%fln_tce(fline%num_fline))
-      allocate(fline%fln_SR(fline%num_fline))
-      allocate(fline%fln_bcast(fline%num_fline))
-      allocate(fline%fline_lc(fline%num_fline))
-!
-      end subroutine alloc_FLINE_modules
 !
 !  ---------------------------------------------------------------------
 !
@@ -177,6 +163,21 @@
       end subroutine FLINE_finalize
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_FLINE_modules(fline)
+!
+      type(fieldline_module), intent(inout) :: fline
+!
+      allocate(fline%fln_prm(fline%num_fline))
+      allocate(fline%fln_src(fline%num_fline))
+      allocate(fline%fln_tce(fline%num_fline))
+      allocate(fline%fln_SR(fline%num_fline))
+      allocate(fline%fln_bcast(fline%num_fline))
+      allocate(fline%fline_lc(fline%num_fline))
+!
+      end subroutine alloc_FLINE_modules
+!
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_controls(mesh, group, nod_fld, tracer,       &
