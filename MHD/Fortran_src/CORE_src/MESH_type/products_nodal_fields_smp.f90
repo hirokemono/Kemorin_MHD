@@ -91,7 +91,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_scalar_prod_no_coef_smp(nod_fld%n_point,                 &
+      call cal_scalar_product_no_coef(nod_fld%n_point,                  &
      &    nod_fld%d_fld(1,i_s1), nod_fld%d_fld(1,i_s2),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -101,13 +101,13 @@
 !
       subroutine cal_phys_dot_product(i_v1, i_v2, i_r, nod_fld)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       integer (kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_dot_prod_no_coef_smp(nod_fld%n_point,                    &
+      call cal_dot_product_no_coef(nod_fld%n_point,                     &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -117,13 +117,13 @@
 !
       subroutine cal_phys_cross_product(i_v1, i_v2, i_r, nod_fld)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_cross_prod_no_coef_smp(nod_fld%n_point,                  &
+      call cal_cross_product_no_coef(nod_fld%n_point,                   &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -135,14 +135,14 @@
       subroutine cal_phys_dot_prod_w_coef                               &
      &         (i_v1, i_v2, i_r, coef, nod_fld)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       real (kind = kreal), intent(in) :: coef
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_dot_prod_w_coef_smp(nod_fld%n_point, coef,               &
+      call cal_dot_product_w_coef(nod_fld%n_point, coef,                &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -153,14 +153,14 @@
       subroutine cal_phys_cross_prod_w_coef                             &
      &         (i_v1, i_v2, i_r, coef, nod_fld)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       real (kind = kreal), intent(in) :: coef
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_cross_prod_w_coef_smp(nod_fld%n_point, coef,             &
+      call cal_cross_product_w_coef(nod_fld%n_point, coef,              &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -196,7 +196,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_vec_scalar_prod_no_coef_smp(nod_fld%n_point,             &
+      call cal_vec_scalar_product_no_coef(nod_fld%n_point,              &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_s1),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
@@ -206,13 +206,13 @@
 !
       subroutine cal_phys_sym_matvec(i_t1, i_v2, i_r, nod_fld)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       integer(kind = kint), intent(in) :: i_r, i_t1, i_v2
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_tensor_vec_prod_no_coef_smp(nod_fld%n_point,             &
+      call cal_tensor_vec_product_no_coef(nod_fld%n_point,              &
      &    nod_fld%d_fld(1,i_t1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_r))
 !
@@ -246,7 +246,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_vec_scalar_prod_w_coef_smp(nod_fld%n_point, coef,        &
+      call cal_vec_scalar_product_w_coef(nod_fld%n_point, coef,         &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_s1),                 &
      &    nod_fld%d_fld(1,i_r) )
 !
