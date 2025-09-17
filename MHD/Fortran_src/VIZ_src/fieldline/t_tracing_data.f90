@@ -15,10 +15,8 @@
 !!        integer, intent(in) :: num_pe
 !!        integer(kind = kint), intent(in) :: num_each_field_line
 !!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
-!!      subroutine copy_global_start_fline(i_copied, i_org,             &
-!!     &                                   viz_fields, fln_tce)
+!!      subroutine copy_global_start_fline(i_copied, i_org, fln_tce)
 !!        integer(kind = kint), intent(in) :: i_copied, i_org
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine dealloc_line_start_fline(fln_tce)
@@ -185,13 +183,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_global_start_fline(i_copied, i_org,               &
-     &                                   viz_fields, fln_tce)
+      subroutine copy_global_start_fline(i_copied, i_org, fln_tce)
 !
       use t_ctl_params_viz_fields
 !
       integer(kind = kint), intent(in) :: i_copied, i_org
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       fln_tce%xx_fline_start(1:4,i_copied)                              &

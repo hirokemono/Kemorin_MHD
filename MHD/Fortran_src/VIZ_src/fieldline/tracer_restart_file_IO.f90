@@ -8,19 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine output_tracer_restart(tracer_file_prm, istep_rst,    &
-!!     &         time_d, rst_step, viz_fields, fline_lc)
+!!     &                                 time_d, rst_step, fline_lc)
 !!        integer(kind = kint), intent(in) :: istep_rst
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!      subroutine input_tracer_restart(tracer_file_prm, init_d,        &
-!!     &          rst_step, viz_fields, fline_lc)
+!!     &                                rst_step, fline_lc)
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(inout) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
@@ -30,7 +28,6 @@
       use t_time_data
       use t_file_IO_parameter
       use t_IO_step_parameter
-      use t_ctl_params_viz_fields
       use t_local_fline
       use t_read_mesh_data
       use t_field_data_IO
@@ -44,7 +41,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_tracer_restart(tracer_file_prm, istep_rst,      &
-     &          time_d, viz_fields, fline_lc)
+     &                                 time_d, fline_lc)
 !
       use set_sph_restart_IO
       use local_fline_restart_IO
@@ -55,7 +52,6 @@
       integer(kind = kint), intent(in) :: istep_rst
       type(field_IO_params), intent(in) :: tracer_file_prm
       type(time_data), intent(in) :: time_d
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(local_fieldline), intent(inout) :: fline_lc
 !
       type(surf_edge_IO_file) :: particle_IO
@@ -78,7 +74,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_tracer_restart(tracer_file_prm, istep_rst,       &
-     &          init_d, viz_fields, fline_lc)
+     &                                init_d, fline_lc)
 !
       use set_sph_restart_IO
       use local_fline_restart_IO
@@ -88,7 +84,6 @@
 !
       integer(kind = kint), intent(in) :: istep_rst
       type(time_data), intent(in) :: init_d
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(local_fieldline), intent(inout) :: fline_lc
 !
       type(surf_edge_IO_file) :: particle_IO

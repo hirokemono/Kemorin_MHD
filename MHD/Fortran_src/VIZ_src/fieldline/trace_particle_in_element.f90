@@ -113,10 +113,8 @@
      &                                  node%xx, x4_ele)
 !
 !   extend in the middle of element
-        call s_trace_in_element                                         &
-     &     (i_tracer, isurf_org, half, dt, isurf_org(2),                &
-     &      node, ele, surf, nod_fld, x4_ele, v4_start,                 &
-     &      isf_tgt, xx4_start, progress)
+        call s_trace_in_element(i_tracer, half, dt, isurf_org(2),       &
+     &      ele, surf, x4_ele, v4_start, isf_tgt, xx4_start, progress)
         if(isf_tgt .lt. 0) then
           iflag_comm = isf_tgt
           write(*,*) 'Trace stops by zero vector', my_rank, inum,       &
@@ -128,9 +126,8 @@
      &      progress, xx4_start, xi4_start, v4_start, itp_ele_work)
 !
 !   extend to surface of element
-        call s_trace_in_element(i_tracer, isurf_org, one, dt, izero,    &
-     &      node, ele, surf, nod_fld, x4_ele, v4_start,                 &
-     &      isf_tgt, xx4_start, progress)
+        call s_trace_in_element(i_tracer, one, dt, izero,               &
+     &      ele, surf, x4_ele, v4_start, isf_tgt, xx4_start, progress)
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
 !            write(*,*) 'Finish tracing', my_rank, inum
@@ -182,24 +179,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_in_element                                     &
-     &         (i_tracer, isurf_org, trace_ratio, dt, isf_org,          &
-     &          node, ele, surf, nod_fld, x4_ele, v4_start,             &
-     &          isf_tgt, xx4_start, progress)
+      subroutine s_trace_in_element(i_tracer, trace_ratio, dt, isf_org, &
+     &                              ele, surf, x4_ele, v4_start,        &
+     &                              isf_tgt, xx4_start, progress)
 !
       use cal_fline_in_cube
       use tracer_field_interpolate
 !
       integer(kind = kint), intent(in) :: i_tracer
-      integer(kind = kint), intent(in) :: isurf_org(2)
       real(kind = kreal), intent(in) :: trace_ratio
       real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: isf_org
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(phys_data), intent(in) :: nod_fld
 !
       real(kind = kreal), intent(in) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal), intent(in) :: v4_start(4)
@@ -211,13 +204,6 @@
       real(kind = kreal) :: xi_surf_tgt(2)
       real(kind = kreal) :: x4_tgt(4)
       real(kind = kreal) :: ratio
-!
-      real(kind = kreal) :: differ
-      real(kind = kreal) :: xx_surf(4,4)
-      integer(kind = kint) :: ierr_modify
-!
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
 !
 !
       if((v4_start(1)**2+v4_start(2)**2+v4_start(3)**2) .le. zero) then
@@ -232,12 +218,6 @@
      &    v4_start, x4_tgt, xx4_start, dt, ratio, progress)
        xx4_start(1:4) = ratio * x4_tgt(1:4)                             &
      &               + (one - ratio) * xx4_start(1:4)
-!
-!      call pick_surf_position4_from_ele(ele, surf, isf_tgt,            &
-!     &                                  x4_ele, xx_surf)
-!      call s_modify_local_surf_positions(maxitr, eps_iter,             &
-!     &    x4_tgt, surf%nnod_4_surf, xx_surf(1,1), ione,                &
-!     &    xi_surf_tgt, differ, ierr_modify)
 !
       end subroutine s_trace_in_element
 !

@@ -86,6 +86,7 @@
         jcou = jcou + 1
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+2)
+        ip = 1
         do inum = 1, fln_tce%num_current_fline
           call s_extend_field_line(mesh%node, mesh%ele, mesh%surf,      &
      &        para_surf, nod_fld, fln_prm%fline_fields,                 &
@@ -100,6 +101,7 @@
      &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
      &        fln_tce%iflag_comm_start(inum), fline_lc)
         end do
+!
         call calypso_mpi_barrier()
         if(elps_fline%flag_elapsed)                                     &
      &           call end_elapsed_time(elps_fline%ist_elapsed+2)

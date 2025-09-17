@@ -121,7 +121,6 @@
      &                           fln_tce%isf_dbl_start(1,inum),         &
      &                           fln_tce%xx_fline_start(1,inum),        &
      &                           fln_tce%v_fline_start(1,1),            &
-     &                           fln_prm%fline_fields%ntot_color_comp,  &
      &                           fline_lc)
           end if
         end do
@@ -156,12 +155,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine add_traced_list(iglobal_tracer, isf_dbl_start,         &
-     &          xx4_add, v4_add, ntot_comp, fline_lc)
+     &                           xx4_add, v4_add, fline_lc)
 !
       integer(kind = kint_gl), intent(in) :: iglobal_tracer
       integer(kind = kint), intent(in) :: isf_dbl_start(3)
       real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
-      integer(kind = kint), intent(in) :: ntot_comp
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !

@@ -115,8 +115,7 @@
           fln_tce%iline_original(icou) = fln_tce%iline_original(icou-1)
           fln_tce%isf_dbl_start(1:3,icou)                               &
      &             = org_fln_tce%isf_dbl_start(1:3,icou-1)
-          call copy_global_start_fline(icou, (icou-1),                  &
-     &                                 fln_prm%fline_fields, fln_tce)
+          call copy_global_start_fline(icou, (icou-1), fln_tce)
 !
           fln_tce%trace_length(icou) = 0.0d0
           fln_tce%icount_fline(icou) = 0

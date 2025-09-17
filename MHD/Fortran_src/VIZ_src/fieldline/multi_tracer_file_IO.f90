@@ -100,16 +100,14 @@
      &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
 !
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        istep_rst, time_d, fln_prm(i_tcr)%fline_fields,           &
-     &        fline_lc(i_tcr))
+     &        istep_rst, time_d, fline_lc(i_tcr))
         end do
       end if
 !
       if(finish_d%flag_terminate_by_elapsed) then
         do i_tcr = 1, num_fline
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        -1, time_d, fln_prm(i_tcr)%fline_fields,                  &
-     &        fline_lc(i_tcr))
+     &        -1, time_d, fline_lc(i_tcr))
         end do
       end if
 !
@@ -138,8 +136,7 @@
       istep_rst = set_IO_step(init_d%i_time_step, rst_step)
       do i_tcr = 1, num_fline
         call input_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,         &
-     &      istep_rst, init_d, fln_prm(i_tcr)%fline_fields,             &
-     &      fline_lc(i_tcr))
+     &                            istep_rst, init_d, fline_lc(i_tcr))
         call cal_local_tracer_fields(mesh, nod_fld,                     &
      &      fln_prm(i_tcr), fline_lc(i_tcr))
       end do
@@ -176,8 +173,7 @@
         if(fln_prm(i_tcr)%id_fline_seed_type                            &
      &                       .eq. iflag_read_reastart) then
           call input_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,       &
-     &        istep_rst, init_d, fln_prm(i_tcr)%fline_fields,           &
-     &        fline_lc(i_tcr))
+     &                              istep_rst, init_d, fline_lc(i_tcr))
           call cal_local_tracer_fields(mesh, nod_fld,                   &
      &        fln_prm(i_tcr), fline_lc(i_tcr))
         else
@@ -187,8 +183,7 @@
      &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
 !
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        istep_rst, init_d, fln_prm(i_tcr)%fline_fields,           &
-     &        fline_lc(i_tcr))
+     &        istep_rst, init_d, fline_lc(i_tcr))
         end if
       end do
 !

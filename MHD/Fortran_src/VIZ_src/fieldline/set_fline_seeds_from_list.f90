@@ -7,11 +7,7 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine const_FLINE_seed_from_list(node, ele, nod_fld,       &
-!!     &                                      fln_prm, fln_src, fln_tce)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(phys_data), intent(in) :: nod_fld
+!!      subroutine const_FLINE_seed_from_list(fln_prm, fln_src, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -83,12 +79,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_FLINE_seed_from_list(node, ele, nod_fld,         &
-     &                                      fln_prm, fln_src, fln_tce)
+      subroutine const_FLINE_seed_from_list(fln_prm, fln_src, fln_tce)
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
@@ -97,8 +89,7 @@
 !
       call count_FLINE_seed_from_list(fln_src%num_line_local,           &
      &                                fln_prm, fln_tce)
-      call set_FLINE_seed_field_from_list(node, ele, nod_fld, fln_prm,  &
-     &                                    fln_src, fln_tce)
+      call set_FLINE_seed_field_from_list(fln_prm, fln_src, fln_tce)
       call check_line_start_fline(fln_tce)
 !
       end subroutine const_FLINE_seed_from_list
@@ -137,17 +128,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_FLINE_seed_field_from_list                         &
-     &         (node, ele, nod_fld, fln_prm, fln_src, fln_tce)
+      subroutine set_FLINE_seed_field_from_list(fln_prm, fln_src,       &
+     &                                          fln_tce)
 !
       use sel_interpolate_scalar
       use trace_in_element
       use tracer_field_interpolate
       use field_at_each_seed_point
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
@@ -196,8 +184,7 @@
 !
             fln_tce%trace_length(icou) = 0.0d0
             fln_tce%icount_fline(icou) = 0
-            call copy_global_start_fline(icou, (icou-1),                &
-     &                                   fln_prm%fline_fields, fln_tce)
+            call copy_global_start_fline(icou, (icou-1), fln_tce)
 
           end if
         end do
