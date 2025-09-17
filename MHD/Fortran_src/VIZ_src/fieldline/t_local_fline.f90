@@ -25,6 +25,18 @@
 !!      subroutine raise_local_fline_data(fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
+!!      subroutine alloc_local_fline_conn(nele_buf, fline_lc)
+!!        integer(kind = kint), intent(in) :: nele_buf
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!      subroutine alloc_local_fline_data(nnod_buf, fline_lc)
+!!      subroutine alloc_local_fline_field(fline_lc)
+!!        integer(kind = kint), intent(in) :: nnod_buf
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!      subroutine dealloc_local_fline_conn(fline_lc)
+!!      subroutine dealloc_local_fline_data(fline_lc)
+!!      subroutine dealloc_local_fline_field(fline_lc)
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!
 !!      subroutine check_local_fline(id_file, fline_lc)
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!@endverbatim
@@ -49,9 +61,6 @@
         real(kind = kreal), allocatable ::   v_line_l(:,:)
         real(kind = kreal), allocatable ::   col_line_l(:,:)
       end type local_fieldline
-!
-      private :: alloc_local_fline_data
-      private :: dealloc_local_fline_conn, dealloc_local_fline_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -143,6 +152,7 @@
       fline_lc%ntot_comp_l = viz_fields%ntot_color_comp
       call alloc_local_fline_conn(ione, fline_lc)
       call alloc_local_fline_data(itwo, fline_lc)
+      call alloc_local_fline_field(fline_lc)
 !
       end subroutine alloc_local_fline
 !
@@ -155,6 +165,7 @@
 !
       call dealloc_local_fline_conn(fline_lc)
       call dealloc_local_fline_data(fline_lc)
+      call dealloc_local_fline_field(fline_lc)
 !
       end subroutine dealloc_local_fline
 !
@@ -193,15 +204,19 @@
       fline_tmp%nnod_line_l = fline_lc%nnod_line_l
       fline_tmp%ntot_comp_l = fline_lc%ntot_comp_l
       call alloc_local_fline_data(fline_lc%nnod_line_buf, fline_tmp)
+      call alloc_local_fline_field(fline_tmp)
       call copy_local_fline_data(fline_lc%nnod_line_l, fline_lc,        &
      &                           fline_tmp)
 !
+      call dealloc_local_fline_field(fline_lc)
       call dealloc_local_fline_data(fline_lc)
       call alloc_local_fline_data((itwo*fline_lc%nnod_line_l),          &
      &                            fline_lc)
+      call alloc_local_fline_field(fline_lc)
 !
       call copy_local_fline_data(fline_lc%nnod_line_l, fline_tmp,       &
      &                           fline_lc)
+      call dealloc_local_fline_field(fline_tmp)
       call dealloc_local_fline_data(fline_tmp)
 !
       end subroutine raise_local_fline_data
@@ -272,16 +287,26 @@
       fline_lc%nnod_line_buf = nnod_buf
       allocate(fline_lc%iglobal_fline(fline_lc%nnod_line_buf))
       allocate(fline_lc%xx_line_l(4,fline_lc%nnod_line_buf))
-      allocate(fline_lc%v_line_l(4,fline_lc%nnod_line_buf))
-      allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
-     &                             fline_lc%nnod_line_buf))
       if(fline_lc%nele_line_buf .gt. 0) fline_lc%iglobal_fline = 0
       if(fline_lc%nnod_line_buf .gt. 0) fline_lc%xx_line_l =  0.0d0
-      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%v_line_l =   0.0d0
-      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%col_line_l = 0.0d0
 !
       end subroutine alloc_local_fline_data
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_local_fline_field(fline_lc)
+!
+      type(local_fieldline), intent(inout) :: fline_lc
+!
+      allocate(fline_lc%v_line_l(4,fline_lc%nnod_line_buf))
+      allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
+     &                             fline_lc%nnod_line_buf))
+      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%v_line_l =   0.0d0
+      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%col_line_l = 0.0d0
+!
+      end subroutine alloc_local_fline_field
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_local_fline_conn(fline_lc)
@@ -298,11 +323,19 @@
 !
       type(local_fieldline), intent(inout) :: fline_lc
 !
-!
-      deallocate(fline_lc%xx_line_l, fline_lc%v_line_l)
-      deallocate(fline_lc%iglobal_fline, fline_lc%col_line_l)
+      deallocate(fline_lc%iglobal_fline, fline_lc%xx_line_l)
 !
       end subroutine dealloc_local_fline_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_local_fline_field(fline_lc)
+!
+      type(local_fieldline), intent(inout) :: fline_lc
+!
+      deallocate(fline_lc%v_line_l, fline_lc%col_line_l)
+!
+      end subroutine dealloc_local_fline_field
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
