@@ -111,7 +111,7 @@
           else if(fln_tce%iflag_comm_start(inum) .eq. 0) then
             call set_field_at_each_tracer(mesh%node, mesh%ele, nod_fld, &
      &          fln_prm%fline_fields, fln_prm%iphys_4_fline,            &
-     &          fln_tce%isf_dbl_start(1,inum),                          &
+     &          fln_tce%isf_dbl_start(2,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%v_fline_start(1,1),                             &
@@ -122,7 +122,7 @@
      &                           fln_tce%xx_fline_start(1,inum),        &
      &                           fln_tce%v_fline_start(1,1),            &
      &                           fln_prm%fline_fields%ntot_color_comp,  &
-     &                           fln_tce%c_fline_start(1,1), fline_lc)
+     &                           fline_lc)
           end if
         end do
         call dealloc_work_4_interpolate(itp_ele_work_f)
@@ -156,13 +156,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine add_traced_list(iglobal_tracer, isf_dbl_start,         &
-     &          xx4_add, v4_add, ntot_comp, col_add, fline_lc)
+     &          xx4_add, v4_add, ntot_comp, fline_lc)
 !
       integer(kind = kint_gl), intent(in) :: iglobal_tracer
       integer(kind = kint), intent(in) :: isf_dbl_start(3)
       real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
       integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: col_add(ntot_comp)
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
@@ -182,8 +181,6 @@
       fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_tracer
       fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) =   xx4_add(1:4)
       fline_lc%v_line_l(1:4,fline_lc%nnod_line_l) =    v4_add(1:4)
-      fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
-     &      = col_add(1:ntot_comp)
 !
       end subroutine add_traced_list
 !
