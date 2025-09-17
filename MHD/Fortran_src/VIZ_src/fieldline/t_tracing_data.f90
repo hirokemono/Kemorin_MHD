@@ -48,6 +48,8 @@
         integer(kind = kint) :: num_current_fline
 !>  Stack of number of trace in each PE
         integer(kind = kint), allocatable :: istack_current_fline(:)
+!>  Stack of number of trace for SMP parallelization
+        integer(kind = kint), allocatable :: istack_smp_cur_fline(:)
 !
 !>  Size of array for trace in each PE
         integer(kind = kint) :: num_trace_buf
@@ -95,7 +97,9 @@
 !
 !
       allocate(fln_tce%istack_current_fline(0:num_pe))
-      fln_tce%istack_current_fline = 0
+      allocate(fln_tce%istack_smp_cur_fline(0:np_smp))
+      fln_tce%istack_current_fline(0:num_pe) = 0
+      fln_tce%istack_smp_cur_fline(0:np_smp) = 0
       fln_tce%num_current_fline =    0
 !
       call alloc_line_start_fline(ione, viz_fields, fln_tce)
@@ -226,8 +230,9 @@
 !
 !
       call dealloc_line_start_fline(fln_tce)
-
+!
       deallocate(fln_tce%istack_current_fline)
+      deallocate(fln_tce%istack_smp_cur_fline)
 !
       end subroutine dealloc_num_gl_start_fline
 !
