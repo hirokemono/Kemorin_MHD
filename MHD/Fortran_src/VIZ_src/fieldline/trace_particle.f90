@@ -150,6 +150,7 @@
 !
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
+      call return_to_trace_list(fline_lc, fln_tce)
 !
       end subroutine s_trace_particle
 !

@@ -177,7 +177,7 @@
      &        call start_elapsed_time(elps_tracer%ist_elapsed+3)
       call output_tracer_restarts                                       &
      &   (time_d, finish_d, rst_step, geofem%mesh, nod_fld,             &
-     &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
+     &    tracer%num_trace, tracer%fln_prm, tracer%fln_tce)
       if(istep_tracer .le. 0) return
       call output_tracer_viz_files(istep_tracer, time_d,                &
      &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)

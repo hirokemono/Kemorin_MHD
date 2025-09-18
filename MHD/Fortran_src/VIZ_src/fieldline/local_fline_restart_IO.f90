@@ -14,6 +14,13 @@
 !!        type(surf_edge_IO_file), intent(in) :: particle_IO
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
+!!      subroutine copy_restart_tracer_to_IO(fln_tce, particle_IO)
+!!        type(each_fieldline_trace), intent(in) :: fln_tce
+!!        type(surf_edge_IO_file), intent(inout) :: particle_IO
+!!      subroutine copy_restart_tracer_from_IO(particle_IO, fln_tce)
+!!        type(surf_edge_IO_file), intent(in) :: particle_IO
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!
 !!      character(len=ilen_hd_particle_connect)                         &
 !!     &                         function hd_particle_connect()
 !!      character(len=ilen_hd_particle_velocity)                        &
@@ -134,12 +141,11 @@
 !
       subroutine copy_restart_tracer_to_IO(fln_tce, particle_IO)
 !
-      use calypso_mpi
       use t_tracing_data
       use set_nnod_4_ele_by_type
 !
-      type(surf_edge_IO_file), intent(inout) :: particle_IO
       type(each_fieldline_trace), intent(in) :: fln_tce
+      type(surf_edge_IO_file), intent(inout) :: particle_IO
 !
       integer(kind = kint) :: i
 !
@@ -179,7 +185,6 @@
 !
       subroutine copy_restart_tracer_from_IO(particle_IO, fln_tce)
 !
-      use calypso_mpi
       use t_tracing_data
 !
       type(surf_edge_IO_file), intent(in) :: particle_IO

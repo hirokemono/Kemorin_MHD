@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine output_tracer_restart(tracer_file_prm, istep_rst,    &
-!!     &                                 time_d, rst_step, fline_lc)
+!!     &                                 time_d, rst_step, fln_tce)
 !!        integer(kind = kint), intent(in) :: istep_rst
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
-!!        type(local_fieldline), intent(inout) :: fline_lc
+!!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!      subroutine input_tracer_restart(tracer_file_prm, init_d,        &
 !!     &                                rst_step, fline_lc)
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
@@ -31,6 +31,7 @@
       use t_local_fline
       use t_read_mesh_data
       use t_field_data_IO
+      use t_tracing_data
 !
       implicit none
 !
@@ -41,7 +42,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_tracer_restart(tracer_file_prm, istep_rst,      &
-     &                                 time_d, fline_lc)
+     &                                 time_d, fln_tce)
 !
       use set_sph_restart_IO
       use local_fline_restart_IO
@@ -52,21 +53,20 @@
       integer(kind = kint), intent(in) :: istep_rst
       type(field_IO_params), intent(in) :: tracer_file_prm
       type(time_data), intent(in) :: time_d
-      type(local_fieldline), intent(inout) :: fline_lc
+      type(each_fieldline_trace), intent(in) :: fln_tce
 !
       type(surf_edge_IO_file) :: particle_IO
       type(time_data) :: time_IO
 !
 !
       call copy_time_step_size_data(time_d, time_IO)
-      call copy_local_tracer_to_IO(fline_lc, particle_IO)
+      call copy_restart_tracer_to_IO(fln_tce, particle_IO)
 
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
      &                                 time_IO, particle_IO)
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_node_geometry_base(particle_IO%node)
-!
 !
       end subroutine output_tracer_restart
 !

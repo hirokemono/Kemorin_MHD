@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine output_tracer_restarts(time_d, finish_d, rst_step,   &
-!!     &                                  num_fline, fln_prm, fline_lc)
+!!     &                                  num_fline, fln_prm, fln_tce)
 !!        type(time_data), intent(in) :: time_d
 !!        type(finish_data), intent(in) :: finish_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!!        type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
 !!      subroutine input_tracer_restarts(init_d, rst_step,              &
 !!     &          mesh, nod_fld, num_fline, fln_prm, fline_lc)
 !!        type(time_data), intent(in) :: init_d
@@ -77,7 +77,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_tracer_restarts(time_d, finish_d, rst_step,     &
-     &          mesh, nod_fld, num_fline, fln_prm, fline_lc)
+     &          mesh, nod_fld, num_fline, fln_prm, fln_tce)
 !
       use tracer_restart_file_IO
 !
@@ -89,25 +89,22 @@
 !
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
 !
       integer(kind = kint) :: i_tcr, istep_rst
 !
       if(output_IO_flag(time_d%i_time_step, rst_step)) then
         istep_rst = set_IO_step(time_d%i_time_step, rst_step)
         do i_tcr = 1, num_fline
-          call check_tracer_restarts                                    &
-     &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
-!
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        istep_rst, time_d, fline_lc(i_tcr))
+     &                               istep_rst, time_d, fln_tce(i_tcr))
         end do
       end if
 !
       if(finish_d%flag_terminate_by_elapsed) then
         do i_tcr = 1, num_fline
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        -1, time_d, fline_lc(i_tcr))
+     &                               -1, time_d, fln_tce(i_tcr))
         end do
       end if
 !
@@ -174,14 +171,12 @@
      &                       .eq. iflag_read_reastart) then
           call input_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,       &
      &                              istep_rst, init_d, fline_lc(i_tcr))
-          call cal_local_tracer_fields(mesh, nod_fld,                   &
-     &        fln_prm(i_tcr), fline_lc(i_tcr))
         else
+          call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
+     &        istep_rst, init_d, fln_tce(i_tcr))
           call local_tracer_from_seeds                                  &
      &       (izero, fln_tce(i_tcr)%num_current_fline,                  &
      &        fln_tce(i_tcr), fline_lc(i_tcr))
-          call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
-     &        istep_rst, init_d, fline_lc(i_tcr))
         end if
       end do
 !
