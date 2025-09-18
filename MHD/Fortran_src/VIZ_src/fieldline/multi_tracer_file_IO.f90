@@ -15,24 +15,20 @@
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
-!!      subroutine input_tracer_restarts(init_d, rst_step,              &
-!!     &          mesh, nod_fld, num_fline, fln_prm, fln_tce, fline_lc)
+!!      subroutine input_tracer_restarts(init_d, rst_step, num_fline,   &
+!!     &                                 fln_prm, fln_tce)
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(in) :: rst_step
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!      subroutine sel_input_tracer_restarts(init_d, rst_step,          &
-!!     &          num_fline, fln_prm, fln_tce, fline_lc)
+!!     &          num_fline, fln_prm, fln_tce)
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !!
 !!      subroutine output_tracer_viz_files(istep_file, time_d,          &
 !!     &          mesh, nod_fld, num_fline, fln_prm, fline_lc)
@@ -113,21 +109,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_tracer_restarts(init_d, rst_step,                &
-     &          mesh, nod_fld, num_fline, fln_prm, fln_tce, fline_lc)
+      subroutine input_tracer_restarts(init_d, rst_step, num_fline,     &
+     &                                 fln_prm, fln_tce)
 !
-      use trace_particle
       use tracer_restart_file_IO
 !
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(in) :: rst_step
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
       integer(kind = kint) :: i_tcr, istep_rst
 !
@@ -138,21 +130,14 @@
      &                            istep_rst, init_d, fln_tce(i_tcr))
       end do
 !
-      do i_tcr = 1, num_fline
-        call local_tracer_from_seeds                                    &
-     &     (ione, fln_tce(i_tcr)%num_current_fline,                     &
-     &      fln_tce(i_tcr), fline_lc(i_tcr))
-      end do
-!
       end subroutine input_tracer_restarts
 !
 !  ---------------------------------------------------------------------
 !
       subroutine sel_input_tracer_restarts(init_d, rst_step,            &
-     &          num_fline, fln_prm, fln_tce, fline_lc)
+     &          num_fline, fln_prm, fln_tce)
 !
       use calypso_mpi
-      use trace_particle
       use tracer_restart_file_IO
       use field_at_each_seed_point
 !
@@ -162,7 +147,6 @@
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
       integer(kind = kint) :: i_tcr, istep_rst
 !
@@ -177,12 +161,6 @@
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
      &        istep_rst, init_d, fln_tce(i_tcr))
         end if
-      end do
-!
-      do i_tcr = 1, num_fline
-        call local_tracer_from_seeds                                    &
-     &     (izero, fln_tce(i_tcr)%num_current_fline,                    &
-     &      fln_tce(i_tcr), fline_lc(i_tcr))
       end do
 !
       end subroutine sel_input_tracer_restarts
