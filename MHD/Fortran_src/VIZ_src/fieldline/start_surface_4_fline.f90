@@ -83,8 +83,7 @@
      &                                iflag_outward_flux_fline,         &
      &                                xx4_initial_fline)
       call count_parallel_current_fline(num_fline, fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline,           &
-     &                             fln_prm%fline_fields, fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
       call set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,         &
      &                        nod_fld, fln_prm, num_line_local,         &

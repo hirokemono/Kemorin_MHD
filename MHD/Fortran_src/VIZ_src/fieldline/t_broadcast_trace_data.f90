@@ -12,8 +12,8 @@
 !!      subroutine dealloc_broadcast_trace_data(fln_bcast)
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
 !!
-!!      subroutine s_broadcast_trace_data(fln_prm, fln_tce,             &
-!!     &                                  fln_bcast, nline_global)
+!!      subroutine s_broadcast_trace_data(fln_tce, fln_bcast,           &
+!!     &                                  nline_global)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
 !!        type(element_data), intent(in) :: ele
@@ -94,16 +94,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_broadcast_trace_data(fln_prm, fln_tce,               &
-     &                                  fln_bcast, nline_global)
+      subroutine s_broadcast_trace_data(fln_tce, fln_bcast,             &
+     &                                  nline_global)
 !
       use t_tracing_data
       use calypso_mpi_real
       use calypso_mpi_int
       use calypso_mpi_int8
       use transfer_to_long_integers
-!
-      type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(broadcast_trace_data), intent(inout) :: fln_bcast
@@ -133,7 +131,7 @@
      &                                (num64*ncomp_bcast), src_rank)
       end do
 !
-      call set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
+      call set_fline_start_from_neib(fln_bcast, fln_tce)
 !
       nline_global = fln_tce%istack_current_fline(nprocs)               &
      &               - fln_tce%istack_current_fline(0)
@@ -178,12 +176,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
+      subroutine set_fline_start_from_neib(fln_bcast, fln_tce)
 !
       use t_tracing_data
 !
       type(broadcast_trace_data), intent(in) :: fln_bcast
-      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ied_lin, i, icou, ip
@@ -199,8 +196,7 @@
       end do
 !
       call count_parallel_current_fline(icou, fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline,           &
-     &                             fln_prm%fline_fields, fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
       icou = 0
       do i = 1, ied_lin

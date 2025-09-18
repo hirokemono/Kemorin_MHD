@@ -9,8 +9,12 @@
 !!@verbatim
 !!      subroutine alloc_trace_data_SR_num(fln_SR)
 !!      subroutine dealloc_trace_data_SR_num(fln_SR)
-!!      subroutine s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,     &
+!!      subroutine s_trace_data_send_recv(fln_tce, fln_SR,              &
 !!     &                                  SR_sig, nline_global)
+!!        integer(kind = kint), intent(inout) :: nline_global
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!        type(trace_data_send_recv), intent(inout) :: fln_SR
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module t_trace_data_send_recv
@@ -64,6 +68,8 @@
         real(kind = kreal),   allocatable ::    rRecv(:,:)
       end type trace_data_send_recv
 !
+      private :: set_trace_data_from_SR
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -116,8 +122,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,       &
-     &                                  SR_sig, nline_global)
+      subroutine s_trace_data_send_recv(fln_tce, fln_SR, SR_sig,        &
+     &                                  nline_global)
 !
       use calypso_SR
       use calypso_SR_core
@@ -128,8 +134,6 @@
       use select_copy_from_recv
       use t_solver_SR
       use t_tracing_data
-!
-      type(fieldline_paramter), intent(in) :: fln_prm
 !
       integer(kind = kint), intent(inout) :: nline_global
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -167,7 +171,7 @@
      &    fln_SR%istack_irecv, fln_SR%i8Recv(1,1), SR_sig)
       call calypso_send_recv_fin(fln_SR%npe_send, 0, SR_sig)
 !
-      call set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
+      call set_trace_data_from_SR(fln_SR, fln_tce)
       nline_global = fln_tce%istack_current_fline(nprocs)               &
      &              - fln_tce%istack_current_fline(0)
 !
@@ -444,20 +448,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
+      subroutine set_trace_data_from_SR(fln_SR, fln_tce)
 !
       use t_tracing_data
 !
       type(trace_data_send_recv), intent(in) :: fln_SR
-      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ip, i, max_4_smp
 !
 !
       call count_parallel_current_fline(fln_SR%ntot_recv, fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline,           &
-     &                             fln_prm%fline_fields, fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
       do i = 1, fln_SR%ntot_recv
         fln_tce%iline_original(i) =      fln_SR%i8Recv(1,i)

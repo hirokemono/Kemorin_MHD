@@ -111,8 +111,7 @@
         num_fline = 2 * num_fline
       end if
       call count_parallel_current_fline(num_fline, fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline,           &
-     &                             fln_prm%fline_fields, fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
       end subroutine count_FLINE_seed_from_list
 !

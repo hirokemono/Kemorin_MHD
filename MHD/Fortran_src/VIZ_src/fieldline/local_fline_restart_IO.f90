@@ -96,7 +96,7 @@
 !
       subroutine copy_local_tracer_from_IO(particle_IO, fline_lc)
 !
-      type(surf_edge_IO_file), intent(inout) :: particle_IO
+      type(surf_edge_IO_file), intent(in) :: particle_IO
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: i
@@ -131,6 +131,83 @@
       end subroutine copy_local_tracer_from_IO
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine copy_restart_tracer_to_IO(fln_tce, particle_IO)
+!
+      use calypso_mpi
+      use t_tracing_data
+      use set_nnod_4_ele_by_type
+!
+      type(surf_edge_IO_file), intent(inout) :: particle_IO
+      type(each_fieldline_trace), intent(in) :: fln_tce
+!
+      integer(kind = kint) :: i
+!
+!
+      particle_IO%comm%num_neib = 0
+      call alloc_neighbouring_id(particle_IO%comm)
+!
+      particle_IO%node%numnod =        fln_tce%num_current_fline
+      particle_IO%node%internal_node = fln_tce%num_current_fline
+      particle_IO%ele%numele =         fln_tce%num_current_fline
+      particle_IO%ele%nnod_4_ele = 2
+!
+      call alloc_node_geometry_base(particle_IO%node)
+      call alloc_element_types(particle_IO%ele)
+      call alloc_ele_connectivity(particle_IO%ele)
+!
+!$omp parallel do
+      do i = 1, fln_tce%num_current_fline
+        particle_IO%node%inod_global(i) = fln_tce%iline_original(i)
+        particle_IO%node%xx(i,1) = fln_tce%xx_fline_start(1,i)
+        particle_IO%node%xx(i,2) = fln_tce%xx_fline_start(2,i)
+        particle_IO%node%xx(i,3) = fln_tce%xx_fline_start(3,i)
+!
+        particle_IO%ele%iele_global(i) = my_rank
+        particle_IO%ele%nodelm(i) = particle_IO%ele%nnod_4_ele
+        particle_IO%ele%elmtyp(i)                                       &
+     &       = linear_eletype_from_num(particle_IO%ele%nnod_4_ele)
+!
+        particle_IO%ele%ie(i,1) = fln_tce%isf_dbl_start(2,i)
+        particle_IO%ele%ie(i,2) = fln_tce%isf_dbl_start(3,i)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_restart_tracer_to_IO
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_restart_tracer_from_IO(particle_IO, fln_tce)
+!
+      use calypso_mpi
+      use t_tracing_data
+!
+      type(surf_edge_IO_file), intent(in) :: particle_IO
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      integer(kind = kint) :: i
+!
+!
+      call count_parallel_current_fline(particle_IO%node%numnod,        &
+     &                                  fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
+!
+!$omp parallel do
+      do i = 1, fln_tce%num_current_fline
+        fln_tce%iline_original(i) =   particle_IO%node%inod_global(i)
+        fln_tce%xx_fline_start(1,i) = particle_IO%node%xx(i,1)
+        fln_tce%xx_fline_start(2,i) = particle_IO%node%xx(i,2)
+        fln_tce%xx_fline_start(3,i) = particle_IO%node%xx(i,3)
+        fln_tce%xx_fline_start(4,i) = one
+!
+        fln_tce%isf_dbl_start(1,i) = my_rank
+        fln_tce%isf_dbl_start(2,i) = particle_IO%ele%ie(i,1)
+        fln_tce%isf_dbl_start(3,i) = particle_IO%ele%ie(i,2)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_restart_tracer_from_IO
+!
 !  ---------------------------------------------------------------------
 !
       character(len=ilen_hd_particle_connect)                           &

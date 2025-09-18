@@ -8,10 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_num_gl_start_fline(num_pe, viz_fields, fln_tce)
-!!      subroutine alloc_line_start_fline(num_each_field_line,          &
-!!     &                                  viz_fields, fln_tce)
-!!      subroutine resize_line_start_fline(num_each_field_line,         &
-!!     &                                   viz_fields, fln_tce)
+!!      subroutine resize_line_start_fline(num_each_field_line, fln_tce)
 !!        integer, intent(in) :: num_pe
 !!        integer(kind = kint), intent(in) :: num_each_field_line
 !!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
@@ -85,6 +82,8 @@
         real(kind = kreal), allocatable :: v_prev(:,:)
       end type each_fieldline_trace
 !
+      private :: alloc_line_start_fline, dealloc_line_field_fline
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -104,20 +103,19 @@
       fln_tce%istack_smp_cur_fline(0:np_smp) = 0
       fln_tce%num_current_fline =    0
 !
-      call alloc_line_start_fline(ione, viz_fields, fln_tce)
+      call alloc_line_start_fline(ione, fln_tce)
+      call alloc_line_field_fline(viz_fields, fln_tce)
 !
       end subroutine alloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_line_start_fline(num_each_field_line,            &
-     &                                  viz_fields, fln_tce)
+      subroutine alloc_line_start_fline(num_each_field_line, fln_tce)
 !
       integer(kind = kint), intent(in) :: num_each_field_line
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: num, i
+      integer(kind = kint) :: i
 !
 !
       fln_tce%num_trace_buf = 2 * num_each_field_line
@@ -158,6 +156,17 @@
 !$omp end workshare
 !$omp end parallel
 !
+      end subroutine alloc_line_start_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_line_field_fline(viz_fields, fln_tce)
+!
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      integer(kind = kint) :: num
+!
       num = viz_fields%ntot_color_comp
       allocate(fln_tce%c_fline_start(num,np_smp))
       allocate(fln_tce%v_fline_start(4,np_smp))
@@ -166,21 +175,18 @@
       fln_tce%v_fline_start(1:4,1:np_smp) =   0.0d0
 !$omp end parallel workshare
 !
-      end subroutine alloc_line_start_fline
+      end subroutine alloc_line_field_fline
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine resize_line_start_fline(num_each_field_line,           &
-     &                                   viz_fields, fln_tce)
+      subroutine resize_line_start_fline(num_each_field_line, fln_tce)
       integer(kind = kint), intent(in) :: num_each_field_line
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       if(num_each_field_line .le. fln_tce%num_trace_buf) return
 !      write(*,*) 'change local number of lines for',num_each_field_line
       call dealloc_line_start_fline(fln_tce)
-      call alloc_line_start_fline(num_each_field_line,                  &
-     &                            viz_fields, fln_tce)
+      call alloc_line_start_fline(num_each_field_line, fln_tce)
 !
       end subroutine resize_line_start_fline
 !
@@ -216,11 +222,20 @@
       deallocate(fln_tce%isf_dbl_start)
       deallocate(fln_tce%xx_fline_start)
       deallocate(fln_tce%xi_fline_start)
-      deallocate(fln_tce%v_fline_start)
-      deallocate(fln_tce%c_fline_start)
       deallocate(fln_tce%trace_length)
 !
       end subroutine dealloc_line_start_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_line_field_fline(fln_tce)
+!
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      deallocate(fln_tce%c_fline_start)
+      deallocate(fln_tce%v_fline_start)
+!
+      end subroutine dealloc_line_field_fline
 !
 !  ---------------------------------------------------------------------
 !
@@ -230,6 +245,7 @@
 !
 !
       call dealloc_line_start_fline(fln_tce)
+      call dealloc_line_field_fline(fln_tce)
 !
       deallocate(fln_tce%istack_current_fline)
       deallocate(fln_tce%istack_smp_cur_fline)

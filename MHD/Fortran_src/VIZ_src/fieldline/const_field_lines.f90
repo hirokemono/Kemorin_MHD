@@ -109,10 +109,9 @@
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+3)
         if(fln_prm%flag_use_broadcast) then
-          call s_broadcast_trace_data(fln_prm, fln_tce,                 &
-     &                                 fln_bcast, nline)
+          call s_broadcast_trace_data(fln_tce, fln_bcast, nline)
         else
-          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
+          call s_trace_data_send_recv(fln_tce, fln_SR,                  &
      &                                m_SR%SR_sig, nline)
         end if
         if(elps_fline%flag_elapsed)                                     &

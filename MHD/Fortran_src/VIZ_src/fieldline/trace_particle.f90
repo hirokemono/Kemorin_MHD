@@ -52,6 +52,8 @@
 !
       implicit  none
 !
+      private :: return_to_trace_list
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -86,7 +88,7 @@
       integer(kind = kint) :: nline, inum
 !
 !
-      call return_to_trace_list(fln_prm, fline_lc, fln_tce)
+      call return_to_trace_list(fline_lc, fln_tce)
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 
       call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
@@ -135,10 +137,9 @@
         if(elps_tracer%flag_elapsed)                                    &
      &         call start_elapsed_time(elps_tracer%ist_elapsed+2)
         if(fln_prm%flag_use_broadcast) then
-          call s_broadcast_trace_data(fln_prm, fln_tce,                 &
-     &                                fln_bcast, nline)
+          call s_broadcast_trace_data(fln_tce, fln_bcast, nline)
         else
-          call s_trace_data_send_recv(fln_prm, fln_tce, fln_SR,         &
+          call s_trace_data_send_recv(fln_tce, fln_SR,                  &
      &                                m_SR%SR_sig, nline)
         end if
         if(elps_tracer%flag_elapsed)                                    &
@@ -184,19 +185,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine return_to_trace_list(fln_prm, fline_lc, fln_tce)
+      subroutine return_to_trace_list(fline_lc, fln_tce)
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
       type(local_fieldline), intent(in) :: fline_lc
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, ip, ntot_comp, max_4_smp
+      integer(kind = kint) :: i, ip, max_4_smp
 !
 !
-      ntot_comp = fln_prm%fline_fields%ntot_color_comp
       call count_parallel_current_fline(fline_lc%nnod_line_l, fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline,           &
-     &                             fln_prm%fline_fields, fln_tce)
+      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
       do i = 1, fln_tce%num_current_fline
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
