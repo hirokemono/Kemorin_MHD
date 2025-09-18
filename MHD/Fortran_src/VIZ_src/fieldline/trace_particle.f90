@@ -97,6 +97,7 @@
       do
         if(elps_tracer%flag_elapsed)                                    &
      &         call start_elapsed_time(elps_tracer%ist_elapsed+1)
+!
         do inum = 1, fln_tce%num_current_fline
           call s_trace_particle_in_element                              &
      &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
@@ -126,13 +127,8 @@
      &                           fline_lc)
           end if
         end do
-        call dealloc_work_4_interpolate(itp_ele_work_f)
         if(elps_tracer%flag_elapsed)                                    &
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
-!
-         write(*,*) 'check at', inum
-        call check_tracer_restarts                                  &
-     &    (inum, mesh, nod_fld, fln_prm, fline_lc)
 !
         if(elps_tracer%flag_elapsed)                                    &
      &         call start_elapsed_time(elps_tracer%ist_elapsed+2)
@@ -147,6 +143,7 @@
 !
         if(nline .le. 0) exit
       end do
+      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
@@ -200,8 +197,7 @@
       do i = 1, fln_tce%num_current_fline
         fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
         fln_tce%xx_fline_start(1:4,i) = fline_lc%xx_line_l(1:4,i)
-      end do
-      do i = 1, fln_tce%num_current_fline
+!
         fln_tce%isf_dbl_start(1,i) =    my_rank
         fln_tce%isf_dbl_start(2:3,i) =  fline_lc%iedge_line_l(1:2,i)
       end do

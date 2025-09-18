@@ -15,11 +15,11 @@
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!      subroutine input_tracer_restart(tracer_file_prm, init_d,        &
-!!     &                                rst_step, fline_lc)
+!!     &                                rst_step, fln_tce)
 !!        type(field_IO_params), intent(in) :: tracer_file_prm
 !!        type(time_data), intent(inout) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
-!!        type(local_fieldline), intent(inout) :: fline_lc
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!@endverbatim
 !
       module tracer_restart_file_IO
@@ -28,7 +28,6 @@
       use t_time_data
       use t_file_IO_parameter
       use t_IO_step_parameter
-      use t_local_fline
       use t_read_mesh_data
       use t_field_data_IO
       use t_tracing_data
@@ -45,7 +44,6 @@
      &                                 time_d, fln_tce)
 !
       use set_sph_restart_IO
-      use local_fline_restart_IO
       use particle_MPI_IO_select
       use local_fline_restart_IO
       use const_global_element_ids
@@ -74,7 +72,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_tracer_restart(tracer_file_prm, istep_rst,       &
-     &                                init_d, fline_lc)
+     &                                init_d, fln_tce)
 !
       use set_sph_restart_IO
       use local_fline_restart_IO
@@ -84,7 +82,7 @@
 !
       integer(kind = kint), intent(in) :: istep_rst
       type(time_data), intent(in) :: init_d
-      type(local_fieldline), intent(inout) :: fline_lc
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       type(surf_edge_IO_file) :: particle_IO
       type(time_data) :: time_IO
@@ -92,7 +90,7 @@
 !
       call sel_mpi_read_particle_file(tracer_file_prm, istep_rst,       &
      &                                time_IO, particle_IO)
-      call copy_local_tracer_from_IO(particle_IO, fline_lc)
+      call copy_restart_tracer_from_IO(particle_IO, fln_tce)
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_node_geometry_base(particle_IO%node)

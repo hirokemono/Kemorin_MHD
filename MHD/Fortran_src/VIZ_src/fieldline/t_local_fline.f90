@@ -37,6 +37,13 @@
 !!      subroutine dealloc_local_fline_field(fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
+!!      subroutine cal_local_tracer_fields(mesh, nod_fld,               &
+!!     &                                   fln_prm, fline_lc)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(local_fieldline), intent(inout) :: fline_lc
+!!
 !!      subroutine check_local_fline(id_file, fline_lc)
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!@endverbatim
@@ -408,98 +415,27 @@
       real(kind = kreal), parameter ::   error_level = 1.0d-9
 !
 !
-      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,            &
+      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
      &                                  itp_ele_work_g)
       do i = 1, fline_lc%nnod_line_l
-        call find_interpolate_in_ele                            &
-     &     (fline_lc%xx_line_l(1,i), maxitr, eps_iter,   &
-     &      my_rank, iflag_nomessage, error_level,              &
-     &      mesh%node, mesh%ele,                                &
-     &      fline_lc%iedge_line_l(1,i),                  &
-     &      itp_ele_work_g, xi_in_ele, ierr_inter)
+        call find_interpolate_in_ele                                    &
+     &     (fline_lc%xx_line_l(1,i), maxitr, eps_iter,                  &
+     &      my_rank, iflag_nomessage, error_level, mesh%node, mesh%ele, &
+     &      fline_lc%iedge_line_l(1,i), itp_ele_work_g,                 &
+     &      xi_in_ele, ierr_inter)
         iflag = surface_mode_in_each_ele(error_level, xi_in_ele)
-        call cal_each_seed_velocity_in_ele                      &
-     &     (mesh%ele, nod_fld%n_point,                          &
-     &      nod_fld%d_fld(1,fln_prm%iphys_4_fline),             &
-     &      fline_lc%iedge_line_l(1,i), xi_in_ele,              &
+        call cal_each_seed_velocity_in_ele(mesh%ele, nod_fld%n_point,   &
+     &      nod_fld%d_fld(1,fln_prm%iphys_4_fline),                     &
+     &      fline_lc%iedge_line_l(1,i), xi_in_ele,                      &
      &      fline_lc%v_line_l(1,i))
 !
-        call cal_fields_in_element                                      &
-     &     (fline_lc%iedge_line_l(1,i), xi_in_ele,                      &
-     &      fline_lc%xx_line_l(1,i),                           &
-     &      mesh%ele, nod_fld, fln_prm%fline_fields,                    &
-     &      fline_lc%col_line_l(1,i))
+        call cal_fields_in_element(fline_lc%iedge_line_l(1,i),          &
+     &      xi_in_ele, fline_lc%xx_line_l(1,i), mesh%ele, nod_fld,      &
+     &      fln_prm%fline_fields, fline_lc%col_line_l(1,i))
       end do
       call dealloc_work_4_interpolate(itp_ele_work_g)
 !
       end subroutine cal_local_tracer_fields
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_tracer_restarts                                  &
-     &         (i_fln, mesh, nod_fld, fln_prm, fline_lc)
-!
-      use t_mesh_data
-      use t_phys_data
-      use t_control_params_4_fline
-      use calypso_mpi
-      use field_at_each_seed_point
-!
-      use t_find_interpolate_in_ele
-!
-      integer(kind = kint), intent(in) :: i_fln
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(in) :: nod_fld
-!
-      type(fieldline_paramter), intent(in) :: fln_prm
-      type(local_fieldline), intent(in) :: fline_lc
-!
-      integer(kind = kint) :: ip, i
-      integer(kind = kint) :: ierr_inter, iflag
-      real(kind = kreal) :: xi_in_ele(3), v_fline_start(4)
-      type(cal_interpolate_coefs_work) :: itp_ele_work_g
-!
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
-      integer(kind = kint), parameter :: iflag_nomessage = 0
-      real(kind = kreal), parameter ::   error_level = 1.0d-9
-!
-!
-          call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,            &
-     &                                  itp_ele_work_g)
-          do ip = 1, nprocs
-            call calypso_mpi_barrier()
-            if(my_rank .eq. (ip-1)) then
-              write(*,*) i_fln, my_rank, 'restart: ',                   &
-     &                  fline_lc%nnod_line_l
-              do i = 1, fline_lc%nnod_line_l
-                call find_interpolate_in_ele                            &
-     &             (fline_lc%xx_line_l(1,i), maxitr, eps_iter,   &
-     &              my_rank, iflag_nomessage, error_level,              &
-     &              mesh%node, mesh%ele,                                &
-     &              fline_lc%iedge_line_l(1,i),                  &
-     &              itp_ele_work_g, xi_in_ele, ierr_inter)
-                iflag = surface_mode_in_each_ele(error_level, xi_in_ele)
-                call cal_each_seed_velocity_in_ele                      &
-     &             (mesh%ele, nod_fld%n_point,                          &
-     &              nod_fld%d_fld(1,fln_prm%iphys_4_fline),             &
-     &              fline_lc%iedge_line_l(1,i), xi_in_ele,              &
-     &              v_fline_start)
-                write(*,*) i, fline_lc%iedge_line_l(1,i),        &
-     &                        fline_lc%xx_line_l(1:3,i),         &
-     &                        fline_lc%iedge_line_l(2,i), iflag, &
-     &                        xi_in_ele(1:3), ierr_inter,               &
-     &                 v_fline_start(1), fline_lc%v_line_l(1,i), &
-     &                 v_fline_start(2), fline_lc%v_line_l(2,i), &
-     &                 v_fline_start(3), fline_lc%v_line_l(3,i), &
-     &                 v_fline_start(4), fline_lc%v_line_l(4,i)
-              end do
-            end if
-          end do
-          call calypso_mpi_barrier()
-          call dealloc_work_4_interpolate(itp_ele_work_g)
-!
-      end subroutine check_tracer_restarts
 !
 !  ---------------------------------------------------------------------
 !
