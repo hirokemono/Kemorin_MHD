@@ -186,15 +186,18 @@
       subroutine return_to_trace_list(fln_prm, fline_lc, fln_tce)
 !
       use calypso_mpi_int
+      use cal_minmax_and_stacks
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(local_fieldline), intent(in) :: fline_lc
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, ip, ntot_comp
+      integer(kind = kint) :: i, ip, ntot_comp, max_4_smp
 !
       ntot_comp = fln_prm%fline_fields%ntot_color_comp
       fln_tce%num_current_fline = fline_lc%nnod_line_l
+      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
+     &                        fln_tce%istack_smp_cur_fline, max_4_smp)
 !
       fln_tce%istack_current_fline(0) = 0
       call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
