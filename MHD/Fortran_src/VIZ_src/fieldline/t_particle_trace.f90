@@ -93,6 +93,7 @@
       use multi_tracer_fieldline
       use multi_tracer_file_IO
       use multi_trace_particle
+      use trace_particle
 !
       type(time_data), intent(in) :: init_d
       type(finish_data), intent(in) :: finish_d
@@ -201,7 +202,6 @@
       use set_fields_for_fieldline
       use multi_tracer_file_IO
       use trace_particle
-!
 !
       integer(kind = kint), intent(in) :: istep_tracer
       type(time_data), intent(in) :: time_d
