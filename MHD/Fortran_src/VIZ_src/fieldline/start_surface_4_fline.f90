@@ -49,7 +49,6 @@
       subroutine s_start_surface_4_fline(node, ele, surf, nod_fld,      &
      &          isf_4_ele_dbl, num_line_local, fln_prm, fln_tce)
 !
-      use calypso_mpi_int
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
@@ -68,33 +67,24 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ist, ied, inum, num
+      integer(kind = kint) :: num_fline
 !
 !
       num = fln_prm%num_each_field_line
       allocate(iflag_outward_flux_fline(num))
       allocate(xx4_initial_fline(4,num))
 !
-      iflag_outward_flux_fline(1:num) =      0
+      iflag_outward_flux_fline(1:num) = 0
       xx4_initial_fline(1:4,1:num) = 0.0d0
 !
-      fln_tce%num_current_fline                                         &
-     &        = count_fline_start_surf(node, ele, surf, isf_4_ele_dbl,  &
+      num_fline = count_fline_start_surf                                &
+     &                               (node, ele, surf, isf_4_ele_dbl,   &
      &                                nod_fld, fln_prm, num_line_local, &
      &                                iflag_outward_flux_fline,         &
      &                                xx4_initial_fline)
-      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
-     &                        fln_tce%istack_smp_cur_fline, num)
+      call count_parallel_current_fline(num_fline, fln_tce)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
-!
-      fln_tce%istack_current_fline(0) = 0
-      call calypso_mpi_allgather_one_int                                &
-     &   (fln_tce%num_current_fline, fln_tce%istack_current_fline(1))
-      do i = 1, nprocs
-        fln_tce%istack_current_fline(i)                                 &
-     &        = fln_tce%istack_current_fline(i-1)                       &
-     &         + fln_tce%istack_current_fline(i)
-      end do
 !
       call set_fline_start_surf(node, ele, surf, isf_4_ele_dbl,         &
      &                        nod_fld, fln_prm, num_line_local,         &

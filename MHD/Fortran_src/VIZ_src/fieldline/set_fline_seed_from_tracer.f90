@@ -38,8 +38,6 @@
       subroutine const_fline_seed_from_tracer(ele, fln_prm,             &
      &          num_tracer, tracer_tce, fln_tce)
 !
-      use cal_minmax_and_stacks
-!
       type(element_data), intent(in) :: ele
       type(fieldline_paramter), intent(in) :: fln_prm
       integer(kind = kint), intent(in) :: num_tracer
@@ -48,13 +46,13 @@
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: nmax
+      integer(kind = kint) :: num_fline
 !
 !
-      fln_tce%num_current_fline = count_fline_seed_from_tracer          &
-     &                (tracer_tce(fln_prm%id_tracer_for_seed), fln_prm)
-      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
-                              fln_tce%istack_smp_cur_fline, nmax)
+      num_fline = count_fline_seed_from_tracer                          &
+     &             (tracer_tce(fln_prm%id_tracer_for_seed), fln_prm)
+      call count_parallel_current_fline(num_fline, fln_tce)
+
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
       call s_set_fline_seed_from_tracer                                 &

@@ -177,11 +177,9 @@
           call cal_local_tracer_fields(mesh, nod_fld,                   &
      &        fln_prm(i_tcr), fline_lc(i_tcr))
         else
-          call local_tracer_from_seeds(fln_prm(i_tcr), fln_tce(i_tcr),  &
-     &                                 fline_lc(i_tcr))
-          call check_tracer_restarts                                    &
-     &         (i_tcr, mesh, nod_fld, fln_prm(i_tcr), fline_lc(i_tcr))
-!
+          call local_tracer_from_seeds                                  &
+     &       (izero, fln_tce(i_tcr)%num_current_fline,                  &
+     &        fln_tce(i_tcr), fline_lc(i_tcr))
           call output_tracer_restart(fln_prm(i_tcr)%tracer_rst_IO,      &
      &        istep_rst, init_d, fline_lc(i_tcr))
         end if

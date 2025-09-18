@@ -446,9 +446,7 @@
 !
       subroutine set_trace_data_from_SR(fln_SR, fln_prm, fln_tce)
 !
-      use calypso_mpi_int
       use t_tracing_data
-      use cal_minmax_and_stacks
 !
       type(trace_data_send_recv), intent(in) :: fln_SR
       type(fieldline_paramter), intent(in) :: fln_prm
@@ -457,22 +455,10 @@
       integer(kind = kint) :: ip, i, max_4_smp
 !
 !
-      fln_tce%num_current_fline = fln_SR%ntot_recv
-      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
-     &                        fln_tce%istack_smp_cur_fline, max_4_smp)
-!
+      call count_parallel_current_fline(fln_SR%ntot_recv, fln_tce)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
 !
-      fln_tce%istack_current_fline(0) = 0
-      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
-     &                                 fln_tce%istack_current_fline(1))
-!
-      do ip = 1, nprocs
-        fln_tce%istack_current_fline(ip)                                &
-     &                   = fln_tce%istack_current_fline(ip-1)           &
-     &                    + fln_tce%istack_current_fline(ip)
-      end do
       do i = 1, fln_SR%ntot_recv
         fln_tce%iline_original(i) =      fln_SR%i8Recv(1,i)
 !

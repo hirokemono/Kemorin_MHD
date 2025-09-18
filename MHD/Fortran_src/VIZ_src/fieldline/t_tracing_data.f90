@@ -28,6 +28,10 @@
 !!        integer(kind = kint), intent(in) :: numnod
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
+!!      subroutine count_parallel_current_fline(num_fline, fln_tce)
+!!        integer(kind = kint), intent(in) :: num_fline
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!
 !!      subroutine check_line_start_fline(fln_tce)
 !!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!@endverbatim
@@ -259,6 +263,34 @@
       deallocate(fln_tce%v_prev)
 !
       end subroutine dealloc_velocity_at_previous
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine count_parallel_current_fline(num_fline, fln_tce)
+!
+      use calypso_mpi
+      use calypso_mpi_int
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+!
+      integer(kind = kint) :: i, nmax
+!
+      fln_tce%num_current_fline = num_fline
+      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
+                              fln_tce%istack_smp_cur_fline, nmax)
+      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
+     &                                 fln_tce%istack_current_fline(1))
+      fln_tce%istack_current_fline(0) = 0
+      do i = 1, nprocs
+        fln_tce%istack_current_fline(i)                                 &
+     &     = fln_tce%istack_current_fline(i-1)                          &
+     &      + fln_tce%istack_current_fline(i)
+      end do
+!
+      end subroutine count_parallel_current_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

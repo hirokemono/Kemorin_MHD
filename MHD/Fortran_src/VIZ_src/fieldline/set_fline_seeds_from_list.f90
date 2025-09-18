@@ -99,33 +99,20 @@
       subroutine count_FLINE_seed_from_list(num_line_local,             &
      &                                      fln_prm, fln_tce)
 !
-      use calypso_mpi_int
-      use cal_minmax_and_stacks
-!
       integer(kind = kint), intent(in) :: num_line_local
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, nmax
+      integer(kind = kint) :: num_fline
 !
 !
-      fln_tce%num_current_fline = num_line_local
+      num_fline = num_line_local
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
-        fln_tce%num_current_fline = 2 * fln_tce%num_current_fline
+        num_fline = 2 * num_fline
       end if
-      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
-     &                        fln_tce%istack_smp_cur_fline, nmax)
+      call count_parallel_current_fline(num_fline, fln_tce)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
-!
-      fln_tce%istack_current_fline(0) = 0
-      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
-     &                                 fln_tce%istack_current_fline(1))
-      do i = 1, nprocs
-        fln_tce%istack_current_fline(i)                                 &
-     &     = fln_tce%istack_current_fline(i-1)                          &
-     &      + fln_tce%istack_current_fline(i)
-      end do
 !
       end subroutine count_FLINE_seed_from_list
 !

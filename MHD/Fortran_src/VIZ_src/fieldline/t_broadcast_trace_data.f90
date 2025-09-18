@@ -180,15 +180,13 @@
 !
       subroutine set_fline_start_from_neib(fln_bcast, fln_prm, fln_tce)
 !
-      use calypso_mpi_int
       use t_tracing_data
-      use cal_minmax_and_stacks
 !
       type(broadcast_trace_data), intent(in) :: fln_bcast
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: ied_lin, i, icou, ip, max_4_smp
+      integer(kind = kint) :: ied_lin, i, icou, ip
 !
 !
 !
@@ -199,22 +197,10 @@
 !
         icou = icou + 1
       end do
-      fln_tce%num_current_fline = icou
 !
-      call count_number_4_smp(np_smp, ione, fln_tce%num_current_fline,  &
-     &                        fln_tce%istack_smp_cur_fline, max_4_smp)
+      call count_parallel_current_fline(icou, fln_tce)
       call resize_line_start_fline(fln_tce%num_current_fline,           &
      &                             fln_prm%fline_fields, fln_tce)
-!
-      fln_tce%istack_current_fline(0) = 0
-      call calypso_mpi_allgather_one_int(fln_tce%num_current_fline,     &
-     &                                 fln_tce%istack_current_fline(1))
-!
-      do ip = 1, nprocs
-        fln_tce%istack_current_fline(ip)                                &
-     &                   = fln_tce%istack_current_fline(ip-1)           &
-     &                    + fln_tce%istack_current_fline(ip)
-      end do
 !
       icou = 0
       do i = 1, ied_lin
