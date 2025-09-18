@@ -186,8 +186,8 @@
      &    tracer%num_trace, tracer%fln_prm, tracer%fln_tce)
       if(istep_tracer .le. 0) return
       call output_tracer_viz_files                                      &
-     &   (istep_tracer, time_d, geofem%mesh, nod_fld,                   &
-     &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
+     &   (istep_tracer, time_d, geofem%mesh, nod_fld, tracer%num_trace, &
+     &    tracer%fln_prm, tracer%fln_tce)
       if(elps_tracer%flag_elapsed)                                      &
      &        call end_elapsed_time(elps_tracer%ist_elapsed+3)
 !
@@ -201,7 +201,6 @@
       use t_mesh_SR
       use set_fields_for_fieldline
       use multi_tracer_file_IO
-      use trace_particle
 !
       integer(kind = kint), intent(in) :: istep_tracer
       type(time_data), intent(in) :: time_d
@@ -210,24 +209,15 @@
       type(phys_data), intent(in) :: nod_fld
       type(tracer_module), intent(inout) :: tracer
 !
-      integer(kind = kint) :: i_tcr
-!
 !
       if(tracer%num_trace .le. 0) return
-!
       call input_tracer_restarts(time_d, rst_step, tracer%num_trace,    &
      &                           tracer%fln_prm, tracer%fln_tce)
-!
-      do i_tcr = 1, tracer%num_trace
-        call local_tracer_from_seeds                                    &
-     &     (ione, tracer%fln_tce(i_tcr)%num_current_fline,              &
-     &      tracer%fln_tce(i_tcr), tracer%fline_lc(i_tcr))
-      end do
 !
       if(istep_tracer .le. 0) return
       call output_tracer_viz_files                                      &
      &   (istep_tracer, time_d, geofem%mesh, nod_fld,                   &
-     &    tracer%num_trace, tracer%fln_prm, tracer%fline_lc)
+     &    tracer%num_trace, tracer%fln_prm, tracer%fln_tce)
 !
       end subroutine TRACER_visualize
 !
