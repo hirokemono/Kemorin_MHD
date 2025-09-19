@@ -14,7 +14,8 @@
 !!        type(tracer_render_param), intent(in) :: tracer_pvr_prm
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        integer(kind = kint), intent(in) :: num_tracer
-!!        type(local_fieldline), intent(in) :: particle_lc(num_tracer)
+!!        type(local_fieldline), intent(in)                             &
+!!     &                      :: particle_lc(np_smp,num_tracer)
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1)
 !!        real(kind = kreal), intent(inout) :: rgba_ray(4)
@@ -25,7 +26,7 @@
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(tracer_render_param), intent(in) :: fline_pvr_prm
 !!        integer(kind = kint), intent(in) :: num_fline
-!!        type(local_fieldline), intent(in) :: fline_lc(num_fline)
+!!        type(local_fieldline), intent(in) :: fline_lc(np_smp,num_fline)
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1)
 !!        real(kind = kreal), intent(inout) :: rgba_ray(4)
@@ -34,6 +35,7 @@
       module pixel_rendering_tracers
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_local_fline
       use t_pvr_colormap_parameter
@@ -61,14 +63,15 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(in) :: num_tracer
-      type(local_fieldline), intent(in) :: particle_lc(num_tracer)
+      type(local_fieldline), intent(in)                                 &
+     &                      :: particle_lc(np_smp,num_tracer)
 !
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
 !
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      integer(kind = kint) :: i_fln, inum, increment
+      integer(kind = kint) :: i_fln, inum, increment, ip
       integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
       real(kind = kreal) :: rgb_color(3), opacity
@@ -81,31 +84,33 @@
         radius =         tracer_pvr_prm%rendering_radius(i_fln)
         opacity =        tracer_pvr_prm%tracer_opacity(i_fln)
         rgb_color(1:3) = tracer_pvr_prm%tracer_RGB(1:3,i_fln)
-        do inum = 1, particle_lc(i_fln)%nnod_line_l
-          i_global = particle_lc(i_fln)%iglobal_fline(inum)
-          if(mod(i_global-1,increment) .ne. 0) cycle
+        do ip = 1, np_smp
+          do inum = 1, particle_lc(ip,i_fln)%nnod_line_l
+            i_global = particle_lc(ip,i_fln)%iglobal_fline(inum)
+            if(mod(i_global-1,increment) .ne. 0) cycle
 !
-          xyzw(1:3) = particle_lc(i_fln)%xx_line_l(1:3,inum)
-          xyzw(4) =   one
-          distance = distance_from_point(xx4_tgt, xyzw(1))
-          if(distance .ge. radius) cycle
-!          opacity = opacity * (one - sqrt(distance / radius))
+            xyzw(1:3) = particle_lc(ip,i_fln)%xx_line_l(1:3,inum)
+            xyzw(4) =   one
+            distance = distance_from_point(xx4_tgt, xyzw(1))
+            if(distance .ge. radius) cycle
+!            opacity = opacity * (one - sqrt(distance / radius))
 !
-          grad_tgt(1:3) = xx4_tgt(1:3)                                  &
-     &                   - particle_lc(i_fln)%xx_line_l(1:3,inum)
-          call single_normalize_vector(grad_tgt)
+            grad_tgt(1:3) = xx4_tgt(1:3)                                &
+     &                     - particle_lc(ip,i_fln)%xx_line_l(1:3,inum)
+            call single_normalize_vector(grad_tgt)
 !
-          if(tracer_pvr_prm%iflag_color_mode(i_fln)                     &
+            if(tracer_pvr_prm%iflag_color_mode(i_fln)                   &
      &                          .eq. iflag_single_color) then
-            call surface_rendering_with_light                           &
-     &         (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,            &
-     &          opacity, color_param, rgba_ray)
-          else
-            call color_plane_with_light                                 &
-     &         (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,             &
-     &          opacity, color_param, rgba_ray)
-          end if
+              call surface_rendering_with_light                         &
+     &           (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,          &
+     &            opacity, color_param, rgba_ray)
+            else
+              call color_plane_with_light                               &
+     &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
+     &            opacity, color_param, rgba_ray)
+            end if
 !
+          end do
         end do
       end do
 !
@@ -124,13 +129,13 @@
       type(tracer_render_param), intent(in) :: fline_pvr_prm
 !
       integer(kind = kint), intent(in) :: num_fline
-      type(local_fieldline), intent(in) :: fline_lc(num_fline)
+      type(local_fieldline), intent(in) :: fline_lc(np_smp,num_fline)
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
 !
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      integer(kind = kint) :: i_fln, iedge, inod, increment
+      integer(kind = kint) :: i_fln, iedge, inod, increment, ip
       integer(kind = kint) :: i1, i2
       integer(kind = kint_gl) :: i_global
       real(kind = kreal) :: grad_tgt(3), radius, distance
@@ -144,40 +149,42 @@
         radius =    fline_pvr_prm%rendering_radius(i_fln)
         opacity =   fline_pvr_prm%tracer_opacity(i_fln)
         rgb_color(1:3) = fline_pvr_prm%tracer_RGB(1:3,i_fln)
-        do iedge = 1, fline_lc(i_fln)%nele_line_l
-          inod =     fline_lc(i_fln)%iedge_line_l(1,iedge)
-          i_global = fline_lc(i_fln)%iglobal_fline(inod)
-          if(mod(i_global-1,increment) .ne. 0) cycle
+        do ip = 1, np_smp
+          do iedge = 1, fline_lc(ip,i_fln)%nele_line_l
+            inod =     fline_lc(ip,i_fln)%iedge_line_l(1,iedge)
+            i_global = fline_lc(ip,i_fln)%iglobal_fline(inod)
+            if(mod(i_global-1,increment) .ne. 0) cycle
 !
-          i1 = fline_lc(i_fln)%iedge_line_l(1,iedge)
-          i2 = fline_lc(i_fln)%iedge_line_l(2,iedge)
-          xyzw_1(1:3) = fline_lc(i_fln)%xx_line_l(1:3,i1)
-          xyzw_1(4) =   one
-          xyzw_2(1:3) = fline_lc(i_fln)%xx_line_l(1:3,i2)
-          xyzw_2(4) =   one
-          distance = distance_from_line_segment(xx4_tgt,                &
+            i1 = fline_lc(ip,i_fln)%iedge_line_l(1,iedge)
+            i2 = fline_lc(ip,i_fln)%iedge_line_l(2,iedge)
+            xyzw_1(1:3) = fline_lc(ip,i_fln)%xx_line_l(1:3,i1)
+            xyzw_1(4) =   one
+            xyzw_2(1:3) = fline_lc(ip,i_fln)%xx_line_l(1:3,i2)
+            xyzw_2(4) =   one
+            distance = distance_from_line_segment(xx4_tgt,              &
      &                                            xyzw_1(1), xyzw_2(1))
 !
-          if(distance .ge. radius) cycle
-!          opacity = opacity * (one - sqrt(distance / radius))
-          i1 = fline_lc(i_fln)%iedge_line_l(1,iedge)
-          i2 = fline_lc(i_fln)%iedge_line_l(2,iedge)
-          grad_tgt(1:3) = xx4_tgt(1:3)                                  &
-     &                 - half * (fline_lc(i_fln)%xx_line_l(1:3,i1)      &
-     &                         + fline_lc(i_fln)%xx_line_l(1:3,i2))
-      call single_normalize_vector(grad_tgt)
+            if(distance .ge. radius) cycle
+!            opacity = opacity * (one - sqrt(distance / radius))
+            i1 = fline_lc(ip,i_fln)%iedge_line_l(1,iedge)
+            i2 = fline_lc(ip,i_fln)%iedge_line_l(2,iedge)
+            grad_tgt(1:3) = xx4_tgt(1:3)                                &
+     &                 - half * (fline_lc(ip,i_fln)%xx_line_l(1:3,i1)   &
+     &                         + fline_lc(ip,i_fln)%xx_line_l(1:3,i2))
+            call single_normalize_vector(grad_tgt)
 !
-          if(fline_pvr_prm%iflag_color_mode(i_fln)                      &
+            if(fline_pvr_prm%iflag_color_mode(i_fln)                    &
      &                          .eq. iflag_single_color) then
-            call surface_rendering_with_light                           &
-     &         (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,            &
-     &          opacity, color_param, rgba_ray)
-          else
-            call color_plane_with_light                                 &
-     &         (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,             &
-     &          opacity, color_param, rgba_ray)
-          end if
+              call surface_rendering_with_light                         &
+     &           (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,          &
+     &            opacity, color_param, rgba_ray)
+            else
+              call color_plane_with_light                               &
+     &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
+     &            opacity, color_param, rgba_ray)
+            end if
 !
+          end do
         end do
       end do
 !

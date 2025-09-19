@@ -236,7 +236,7 @@
 !
           call rendering_tracers                                        &
      &       (viewpoint_vec, color_param, draw_param%tracer_pvr_prm,    &
-     &        tracer%num_trace, tracer%fline_lc,                        &
+     &        tracer%num_trace, tracer%particle_lc,                     &
      &        xx4_tgt, c_tgt, rgba_ray)
           call rendering_fieldlines                                     &
      &       (viewpoint_vec, color_param, draw_param%fline_pvr_prm,     &

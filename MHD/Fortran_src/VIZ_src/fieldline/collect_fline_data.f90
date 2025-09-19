@@ -12,7 +12,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
-!!        type(local_fieldline), intent(in) :: fline_lc
+!!        type(local_fieldline), intent(in) :: fline_lc(np_smp)
 !!        type(ucd_data), intent(inout) :: ucd
 !!      subroutine copy_local_particles_to_IO(ele, nod_fld, viz_fields, &
 !!     &                                      fln_tce, ucd)
@@ -55,51 +55,72 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      type(local_fieldline), intent(in) :: fline_lc
+      type(local_fieldline), intent(in) :: fline_lc(np_smp)
 !
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint_gl) :: i, nd
-      integer(kind = kint) :: j
+      integer(kind = kint_gl) :: i, ist
+      integer(kind = kint) :: ip
+      integer(kind = kint), allocatable :: istack_line_nod_smp(:)
+      integer(kind = kint), allocatable :: istack_line_edge_smp(:)
       real(kind = kreal), allocatable :: c_ref(:)
 !
 !
-      ucd%nnod = fline_lc%nnod_line_l
-      ucd%nele = fline_lc%nele_line_l
+      allocate(istack_line_nod_smp(0:np_smp))
+      allocate(istack_line_edge_smp(0:np_smp))
+      istack_line_nod_smp(0) =  0
+      istack_line_edge_smp(0) = 0
+      do ip = 1, np_smp
+        istack_line_nod_smp(ip) =  istack_line_nod_smp(ip-1)            &
+     &                            + fline_lc(ip)%nnod_line_l
+        istack_line_edge_smp(ip) = istack_line_edge_smp(ip-1)           &
+     &                            + fline_lc(ip)%nele_line_l
+      end do
+      ucd%nnod =       istack_line_nod_smp(np_smp)
+      ucd%nele =       istack_line_edge_smp(np_smp)
       ucd%nnod_4_ele = num_linear_edge
 !
       call alloc_merged_ucd_nod_stack(nprocs, ucd)
       call alloc_merged_ucd_ele_stack(nprocs, ucd)
-      call count_number_of_node_stack(fline_lc%nnod_line_l,             &
+      call count_number_of_node_stack(istack_line_nod_smp(np_smp),      &
      &                                ucd%istack_merged_nod)
-      call count_number_of_node_stack(fline_lc%nele_line_l,             &
+      call count_number_of_node_stack(istack_line_edge_smp(np_smp),     &
      &                                ucd%istack_merged_ele)
-!      write(*,*) 'ucd%istack_merged_nod', ucd%istack_merged_nod
-!      write(*,*) 'ucd%istack_merged_ele', ucd%istack_merged_ele
 !
 !$omp parallel workshare
       ucd%istack_merged_intnod(0:nprocs)                                &
      &                  = ucd%istack_merged_nod(0:nprocs)
 !$omp end parallel workshare
+!      write(*,*) 'ucd%istack_merged_nod', ucd%istack_merged_nod
+!      write(*,*) 'ucd%istack_merged_ele', ucd%istack_merged_ele
 !
       call allocate_ucd_node(ucd)
-!$omp parallel do
-      do i = 1, ucd%nnod
-        ucd%inod_global(i) = fline_lc%iglobal_fline(i)
-        ucd%xx(i,1) = fline_lc%xx_line_l(1,i)
-        ucd%xx(i,2) = fline_lc%xx_line_l(2,i)
-        ucd%xx(i,3) = fline_lc%xx_line_l(3,i)
+!$omp parallel do private(ip,i,ist)
+      do ip = 1, np_smp
+        ist = istack_line_nod_smp(ip-1)
+        do i = 1, fline_lc(ip)%nnod_line_l
+          ucd%inod_global(i+ist) = fline_lc(ip)%iglobal_fline(i)
+          ucd%xx(i+ist,1) =        fline_lc(ip)%xx_line_l(1,i)
+          ucd%xx(i+ist,2) =        fline_lc(ip)%xx_line_l(2,i)
+          ucd%xx(i+ist,3) =        fline_lc(ip)%xx_line_l(3,i)
+        end do
       end do
 !$omp end parallel do
 
       call allocate_ucd_ele(ucd)
 !$omp parallel do
-      do i = 1, ucd%nele
-        ucd%iele_global(i) = i + ucd%istack_merged_ele(my_rank)
-        ucd%ie(i,1) = fline_lc%iedge_line_l(1,i)                        &
-     &               + ucd%istack_merged_nod(my_rank)
-        ucd%ie(i,2) = fline_lc%iedge_line_l(2,i)                        &
-     &               + ucd%istack_merged_nod(my_rank)
+      do ip = 1, np_smp
+        ist = istack_line_edge_smp(ip-1)
+        do i = 1, fline_lc(ip)%nele_line_l
+          ucd%iele_global(i+ist) = i + ist                              &
+     &                            + ucd%istack_merged_ele(my_rank)
+          ucd%ie(i+ist,1) =        fline_lc(ip)%iedge_line_l(1,i)       &
+     &                            + istack_line_nod_smp(ip-1)           &
+     &                            + ucd%istack_merged_nod(my_rank)
+          ucd%ie(i+ist,2) =        fline_lc(ip)%iedge_line_l(2,i)       &
+     &                            + istack_line_nod_smp(ip-1)           &
+     &                            + ucd%istack_merged_nod(my_rank)
+        end do
       end do
 !$omp end parallel do
       
@@ -116,16 +137,21 @@
       call allocate_ucd_phys_data(ucd)
 !
       allocate(c_ref(viz_fields%ntot_color_comp))
-!$omp parallel do private(c_ref)
-      do i = 1, ucd%nnod
-        call cal_fields_in_element(fline_lc%iele_fline(i),            &
-     &     fline_lc%xi_line_l(1,i), fline_lc%xx_line_l(1,i),          &
-     &     ele, nod_fld, viz_fields, c_ref(1))
+!$omp parallel do private(ip,i,ist,c_ref)
+      do ip = 1, np_smp
+        ist = istack_line_nod_smp(ip-1)
+        do i = 1, fline_lc(ip)%nnod_line_l
+          call cal_fields_in_element(fline_lc(ip)%iele_fline(i),        &
+     &       fline_lc(ip)%xi_line_l(1,i), fline_lc(ip)%xx_line_l(1,i),  &
+     &       ele, nod_fld, viz_fields, c_ref(1))
 !
-        ucd%d_ucd(i,1:ucd%ntot_comp) = c_ref(1:ucd%ntot_comp)
+          ucd%d_ucd(i+ist,1:ucd%ntot_comp) = c_ref(1:ucd%ntot_comp)
+        end do
       end do
 !$omp end parallel do
+!
       deallocate(c_ref)
+      deallocate(istack_line_nod_smp, istack_line_edge_smp)
 !
       end subroutine copy_local_fieldline_to_IO
 !

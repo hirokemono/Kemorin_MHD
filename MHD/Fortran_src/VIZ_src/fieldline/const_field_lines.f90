@@ -16,7 +16,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!        type(local_fieldline), intent(inout) :: fline_lc
+!!        type(local_fieldline), intent(inout) :: fline_lc(np_smp)
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -68,39 +68,46 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
-      type(local_fieldline), intent(inout) :: fline_lc
+      type(local_fieldline), intent(inout) :: fline_lc(np_smp)
       type(trace_data_send_recv), intent(inout) :: fln_SR
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: nline, inum, ip
+      integer(kind = kint) :: nline, inum, ip, ist, ied
       integer(kind = kint) ::  jcou
 !
 !
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 !      write(*,*) my_rank, 'reset_fline_start loop'
-      call reset_fline_start(fline_lc)
+      do ip = 1, np_smp
+        call reset_fline_start(fline_lc(ip))
+      end do
 !
       jcou = 0
       do
         jcou = jcou + 1
         if(elps_fline%flag_elapsed)                                     &
      &           call start_elapsed_time(elps_fline%ist_elapsed+2)
-        ip = 1
-        do inum = 1, fln_tce%num_current_fline
-          call s_extend_field_line(mesh%node, mesh%ele, mesh%surf,      &
-     &        para_surf, nod_fld, fln_prm%fline_fields,                 &
-     &        fln_prm%max_line_stepping, fln_prm%max_trace_length,      &
-     &        fln_prm%iflag_fline_used_ele,                             &
-     &        fln_tce%iline_original(inum),                             &
-     &        fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,     &
-     &        fln_tce%isf_dbl_start(1,inum),                            &
-     &        fln_tce%xx_fline_start(1,inum),                           &
-     &        fln_tce%xi_fline_start(1,inum),                           &
-     &        fln_tce%v_fline_start(1,1), fln_tce%c_fline_start(1,1),   &
-     &        fln_tce%icount_fline(inum), fln_tce%trace_length(inum),   &
-     &        fln_tce%iflag_comm_start(inum), fline_lc)
+!$omp parallel do private(ip,ist,ied,inum)
+        do ip = 1, np_smp
+          ist = fln_tce%istack_smp_cur_fline(ip-1) + 1
+          ied = fln_tce%istack_smp_cur_fline(ip  )
+          do inum = ist, ied
+            call s_extend_field_line                                    &
+     &         (mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,     &
+     &          fln_prm%max_line_stepping, fln_prm%max_trace_length,    &
+     &          fln_prm%iflag_fline_used_ele,                           &
+     &          fln_tce%iline_original(inum),                           &
+     &          fln_tce%iflag_direction(inum), fln_prm%iphys_4_fline,   &
+     &          fln_tce%isf_dbl_start(1,inum),                          &
+     &          fln_tce%xx_fline_start(1,inum),                         &
+     &          fln_tce%xi_fline_start(1,inum),                         &
+     &          fln_tce%v_fline_start(1,ip),                            &
+     &          fln_tce%icount_fline(inum), fln_tce%trace_length(inum), &
+     &          fln_tce%iflag_comm_start(inum), fline_lc(ip))
+          end do
         end do
+!$omp end parallel do
 !
         call calypso_mpi_barrier()
         if(elps_fline%flag_elapsed)                                     &

@@ -20,7 +20,7 @@
 !!
 !!      subroutine s_multi_trace_particle(time_d, elps_tracer,          &
 !!     &          mesh, para_surf, nod_fld, num_trace, fln_prm,         &
-!!     &          fln_tce, fline_lc, fln_SR, fln_bcast, m_SR)
+!!     &          fln_tce, particle_lc, fln_SR, fln_bcast, m_SR)
 !!        type(time_data), intent(in) :: time_d
 !!        type(elapsed_lables), intent(in) :: elps_tracer
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -29,7 +29,8 @@
 !!        integer(kind = kint), intent(in) :: num_trace
 !!        type(fieldline_paramter), intent(in) ::      fln_prm(num_trace)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_trace)
-!!        type(local_fieldline), intent(inout) ::fline_lc(num_trace)
+!!        type(local_fieldline), intent(inout)                          &
+!!     &                      :: particle_lc(np_smp,num_trace)
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_trace)
 !!        type(broadcast_trace_data), intent(inout)                     &
 !!     &                              :: fln_bcast(num_trace)
@@ -101,7 +102,7 @@
 !
       subroutine s_multi_trace_particle(time_d, elps_tracer,            &
      &          mesh, para_surf, nod_fld, num_trace, fln_prm,           &
-     &          fln_tce, fline_lc, fln_SR, fln_bcast, m_SR)
+     &          fln_tce, particle_lc, fln_SR, fln_bcast, m_SR)
 !
       use m_work_time
       use trace_particle
@@ -115,21 +116,20 @@
       integer(kind = kint), intent(in) :: num_trace
       type(fieldline_paramter), intent(in) ::      fln_prm(num_trace)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_trace)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_trace)
+      type(local_fieldline), intent(inout)                              &
+     &                      :: particle_lc(np_smp,num_trace)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_trace)
       type(broadcast_trace_data), intent(inout) :: fln_bcast(num_trace)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_trc
 !  
-      do i_fln = 1, num_trace
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &      's_trace_particle start', i_fln
+      do i_trc = 1, num_trace
         call s_trace_particle                                           &
      &     (time_d%dt, elps_tracer, mesh, para_surf, nod_fld,           &
-     &      fln_prm(i_fln), fln_tce(i_fln), fline_lc(i_fln),            &
-     &      fln_SR(i_fln), fln_bcast(i_fln), fln_tce(i_fln)%v_prev,     &
-     &      m_SR)
+     &      fln_prm(i_trc), fln_tce(i_trc),                             &
+     &      particle_lc(1,i_trc), fln_SR(i_trc),                        &
+     &      fln_bcast(i_trc), fln_tce(i_trc)%v_prev, m_SR)
       end do
 !
       end subroutine s_multi_trace_particle

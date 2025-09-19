@@ -45,7 +45,8 @@
 !!        type(time_data), intent(in) :: time_d
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!!        type(local_fieldline), intent(inout)                          &
+!!     &                      :: fline_lc(np_smp,num_fline)
 !!@endverbatim
 !
       module multi_tracer_file_IO
@@ -218,7 +219,8 @@
       type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in) :: num_fline
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+      type(local_fieldline), intent(inout)                              &
+     &                      :: fline_lc(np_smp,num_fline)
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
@@ -228,7 +230,7 @@
       do i_fln = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_fieldline_to_IO(mesh%ele, nod_fld,              &
-     &      fln_prm(i_fln)%fline_fields, fline_lc(i_fln), fline_ucd)
+     &      fln_prm(i_fln)%fline_fields, fline_lc(1,i_fln), fline_ucd)
         call sel_write_parallel_ucd_file                                &
      &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)

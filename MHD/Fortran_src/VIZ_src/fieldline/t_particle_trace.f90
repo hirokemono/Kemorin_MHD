@@ -73,7 +73,7 @@
 !
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
-        type(local_fieldline), allocatable  :: fline_lc(:)
+        type(local_fieldline), allocatable  :: particle_lc(:,:)
         type(broadcast_trace_data), allocatable :: fln_bcast(:)
         type(trace_data_send_recv), allocatable :: fln_SR(:)
       end type tracer_module
@@ -118,7 +118,7 @@
       call dealloc_fline_ctl_struct(tracer_ctls)
 !
       call alloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,      &
-     &                           tracer%fln_tce, tracer%fline_lc,       &
+     &                           tracer%fln_tce, tracer%particle_lc,    &
      &                           tracer%fln_SR, tracer%fln_bcast)
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_tce)
@@ -171,7 +171,7 @@
       call s_multi_trace_particle                                       &
      &   (time_d, elps_tracer, geofem%mesh, para_surf,                  &
      &    nod_fld, tracer%num_trace, tracer%fln_prm, tracer%fln_tce,    &
-     &    tracer%fline_lc, tracer%fln_SR, tracer%fln_bcast, m_SR)
+     &    tracer%particle_lc, tracer%fln_SR, tracer%fln_bcast, m_SR)
 !
       if(elps_tracer%flag_elapsed)                                      &
      &        call start_elapsed_time(elps_tracer%ist_elapsed+3)
@@ -227,9 +227,9 @@
       if (tracer%num_trace .le. 0) return
       call dealloc_each_TRACER_data(tracer%num_trace, tracer%fln_tce)
       call dealloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,    &
-     &                             tracer%fln_tce, tracer%fline_lc,     &
+     &                             tracer%fln_tce, tracer%particle_lc,  &
      &                             tracer%fln_SR, tracer%fln_bcast)
-      deallocate(tracer%fln_src, tracer%fline_lc, tracer%fln_bcast)
+      deallocate(tracer%fln_src, tracer%particle_lc, tracer%fln_bcast)
       deallocate(tracer%fln_tce, tracer%fln_prm, tracer%fln_SR)
 !
       end subroutine TRACER_finalize
@@ -246,7 +246,7 @@
       allocate(tracer%fln_tce(tracer%num_trace))
       allocate(tracer%fln_SR(tracer%num_trace))
       allocate(tracer%fln_bcast(tracer%num_trace))
-      allocate(tracer%fline_lc(tracer%num_trace))
+      allocate(tracer%particle_lc(np_smp,tracer%num_trace))
 !
       end subroutine alloc_TRACER_modules
 !

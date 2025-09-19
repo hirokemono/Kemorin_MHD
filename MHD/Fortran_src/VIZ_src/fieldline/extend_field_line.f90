@@ -8,15 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine s_extend_field_line(node, ele, surf, para_surf,      &
-!!     &          nod_fld, viz_fields, max_line_step, end_trace,        &
+!!     &          nod_fld, max_line_step, end_trace,                    &
 !!     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,    &
-!!     &          isurf_org_dbl, x4_start, v4_start, c_field,           &
-!!     &          c_field, icount_line, iflag_comm, fline_lc)
+!!     &          isurf_org_dbl, x4_start, v4_start,                    &
+!!     &          icount_line, iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        real(kind = kreal), intent(in) ::   end_trace
 !!        integer(kind = kint_gl), intent(in) :: iglobal_fline
 !!        integer(kind = kint), intent(in) :: iflag_dir, max_line_step
@@ -26,7 +25,6 @@
 !!        real(kind = kreal), intent(inout) :: xx4_start(4)
 !!        real(kind = kreal), intent(inout) :: xi4_start(4)
 !!        real(kind = kreal), intent(inout) :: v4_start(4)
-!!        real(kind = kreal), intent(inout) ::   c_field(1)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
@@ -42,7 +40,6 @@
       use t_surface_data
       use t_parallel_surface_indices
       use t_phys_data
-      use t_ctl_params_viz_fields
 !
       implicit  none
 !
@@ -55,10 +52,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
-     &         nod_fld, viz_fields, max_line_step, end_trace,           &
-     &         iflag_used_ele, iglobal_fline, iflag_dir, i_fline,       &
-     &         isurf_org_dbl, xx4_start, xi4_start, v4_start, c_field,  &
-     &         icount_line, trace_length, iflag_comm, fline_lc)
+     &          nod_fld, max_line_step, end_trace,                      &
+     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,      &
+     &          isurf_org_dbl, xx4_start, xi4_start, v4_start,          &
+     &          icount_line, trace_length, iflag_comm, fline_lc)
 !
       use t_local_fline
       use t_find_interpolate_in_ele
@@ -70,7 +67,6 @@
       type(surface_data), intent(in) :: surf
       type(paralell_surface_indices), intent(in) :: para_surf
       type(phys_data), intent(in) :: nod_fld
-      type(ctl_params_viz_fields), intent(in) :: viz_fields
       integer(kind = kint), intent(in) :: i_fline
       integer(kind = kint_gl), intent(in) :: iglobal_fline
 !
@@ -83,8 +79,6 @@
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: xi4_start(4)
       real(kind = kreal), intent(inout) :: v4_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: c_field(viz_fields%ntot_color_comp)
 !
       type(local_fieldline), intent(inout) :: fline_lc
       real(kind = kreal), intent(inout) :: trace_length
@@ -105,7 +99,7 @@
       isurf_org(1:2) = isurf_org_dbl(2:3)
       call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       call set_veclocity_at_each_tracer                                 &
-     &   (node, ele, nod_fld, i_fline, isurf_org(1),        &
+     &   (node, ele, nod_fld, i_fline, isurf_org(1),                    &
      &    xx4_start, xi4_start, v4_start, itp_ele_work_f)
       call add_fline_start(iglobal_fline, isurf_org(1),                 &
      &                     xx4_start, xi4_start, fline_lc)
@@ -139,7 +133,7 @@
         end if
 !
         call set_veclocity_at_each_tracer                               &
-     &     (node, ele, nod_fld, i_fline, isurf_org(1),      &
+     &     (node, ele, nod_fld, i_fline, isurf_org(1),                  &
      &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)
@@ -163,7 +157,7 @@
         end if
 !
         call set_veclocity_at_each_tracer                               &
-     &     (node, ele, nod_fld, i_fline, isurf_org(1),      &
+     &     (node, ele, nod_fld, i_fline, isurf_org(1),                  &
      &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)

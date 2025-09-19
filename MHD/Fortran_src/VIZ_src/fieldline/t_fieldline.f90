@@ -51,7 +51,7 @@
 !
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
-        type(local_fieldline), allocatable  :: fline_lc(:)
+        type(local_fieldline), allocatable  :: fline_lc(:,:)
         type(broadcast_trace_data), allocatable :: fln_bcast(:)
         type(trace_data_send_recv), allocatable :: fln_SR(:)
 !
@@ -175,7 +175,7 @@
       allocate(fline%fln_tce(fline%num_fline))
       allocate(fline%fln_SR(fline%num_fline))
       allocate(fline%fln_bcast(fline%num_fline))
-      allocate(fline%fline_lc(fline%num_fline))
+      allocate(fline%fline_lc(np_smp,fline%num_fline))
 !
       end subroutine alloc_FLINE_modules
 !
@@ -229,7 +229,8 @@
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(local_fieldline), intent(inout)                              &
+     &                      :: fline_lc(np_smp,num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
       type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
       type(mesh_SR), intent(inout) :: m_SR
@@ -259,7 +260,7 @@
 !
         call const_each_field_line(elps_fline, mesh, para_surf,         &
      &      nod_fld, fln_prm(i_fln), fln_tce(i_fln), fln_SR(i_fln),     &
-     &      fln_bcast(i_fln), fline_lc(i_fln), m_SR)
+     &      fln_bcast(i_fln), fline_lc(1,i_fln), m_SR)
         call calypso_mpi_barrier()
       end do
 !

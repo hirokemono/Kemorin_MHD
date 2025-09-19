@@ -15,7 +15,8 @@
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!        type(local_fieldline), intent(inout) :: fline_lc(num_fline)
+!!        type(local_fieldline), intent(inout)                          &
+!!     &                      :: fline_lc(np_smp,num_fline)
 !!        type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
 !!        type(broadcast_trace_data),intent(inout):: fln_bcast(num_fline)
 !!
@@ -76,11 +77,12 @@
 !
       type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(local_fieldline), intent(inout)                              &
+     &                      :: fline_lc(np_smp,num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
       type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
 !
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_fln, ip
 !
 !
       do i_fln = 1, num_fline
@@ -88,8 +90,11 @@
      &                     fln_prm(i_fln)%fline_fields, fln_tce(i_fln))
         call alloc_broadcast_trace_data                                 &
      &     (fln_prm(i_fln)%num_each_field_line, fln_bcast(i_fln))
-        call alloc_local_fline(fline_lc(i_fln))
         call alloc_trace_data_SR_num(fln_SR(i_fln))
+!
+        do ip = 1, np_smp
+          call alloc_local_fline(fline_lc(ip,i_fln))
+        end do
       end do
 !
       end subroutine alloc_each_FLINE_data
@@ -103,23 +108,27 @@
 !
       type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-      type(local_fieldline), intent(inout) ::      fline_lc(num_fline)
+      type(local_fieldline), intent(inout)                              &
+     &                      :: fline_lc(np_smp,num_fline)
       type(trace_data_send_recv), intent(inout) :: fln_SR(num_fline)
       type(broadcast_trace_data), intent(inout) :: fln_bcast(num_fline)
 !
-      integer(kind = kint) :: i_fln
+      integer(kind = kint) :: i_fln, ip
 !
 !
       if (num_fline .le. 0) return
 !
       do i_fln = 1, num_fline
-        call dealloc_local_fline(fline_lc(i_fln))
         call dealloc_iflag_fline_used_ele(fln_prm(i_fln))
         call dealloc_fline_starts_ctl(fln_prm(i_fln))
 !
         call dealloc_num_gl_start_fline(fln_tce(i_fln))
         call dealloc_broadcast_trace_data(fln_bcast(i_fln))
         call dealloc_trace_data_SR_num(fln_SR(i_fln))
+!
+        do ip = 1, np_smp*num_fline
+          call dealloc_local_fline(fline_lc(ip,i_fln))
+        end do
       end do
 !
       end subroutine dealloc_each_FLINE_data

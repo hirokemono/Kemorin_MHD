@@ -19,9 +19,11 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!        type(local_fieldline), intent(inout) :: fline_lc(np_smp)
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
-!!
-!!@endverbatim
+!!        real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!endverbatim
 !
       module trace_particle
 !
@@ -73,53 +75,62 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
-      type(local_fieldline), intent(inout) :: fline_lc
+      type(local_fieldline), intent(inout) :: fline_lc(np_smp)
       type(trace_data_send_recv), intent(inout) :: fln_SR
       type(broadcast_trace_data), intent(inout) :: fln_bcast
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(cal_interpolate_coefs_work) :: itp_ele_work_f
-      integer(kind = kint) :: nline, inum
+      integer(kind = kint) :: nline, inum, ip, ist, ied
 !
 !
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 
       call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
      &                              itp_ele_work_f)
-      call reset_fline_start(fline_lc)
+!
+      do ip = 1, np_smp
+        call reset_fline_start(fline_lc(ip))
+      end do
+!
       do
         if(elps_tracer%flag_elapsed)                                    &
      &         call start_elapsed_time(elps_tracer%ist_elapsed+1)
 !
-        do inum = 1, fln_tce%num_current_fline
-          call s_trace_particle_in_element                              &
-     &       (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld,   &
-     &        v_prev, fln_prm%iphys_4_fline,                            &
-     &        fln_prm%iflag_fline_used_ele,                             &
-     &        fln_tce%isf_dbl_start(1,inum),                            &
-     &        fln_tce%xx_fline_start(1,inum),                           &
-     &        fln_tce%xi_fline_start(1,inum),                           &
-     &        fln_tce%v_fline_start(1,1),                               &
-     &        fln_tce%trace_length(inum),                               &
-     &        fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
-!
-          if(fln_tce%iflag_comm_start(inum) .eq. -3) then
-            fln_tce%iflag_comm_start(inum) = 0
-          else if(fln_tce%iflag_comm_start(inum) .eq. 0) then
-            call set_veclocity_at_each_tracer                           &
-     &         (mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline,    &
-     &          fln_tce%isf_dbl_start(2,inum),                          &
+!$omp parallel do private(ip,ist,ied,inum)
+        do ip = 1, np_smp
+          ist = fln_tce%istack_smp_cur_fline(ip-1) + 1
+          ied = fln_tce%istack_smp_cur_fline(ip  )
+          do inum = ist, ied
+            call s_trace_particle_in_element                            &
+     &         (dt, mesh%node, mesh%ele, mesh%surf, para_surf, nod_fld, &
+     &          v_prev, fln_prm%iphys_4_fline,                          &
+     &          fln_prm%iflag_fline_used_ele,                           &
+     &          fln_tce%isf_dbl_start(1,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
-     &          fln_tce%v_fline_start(1,1), itp_ele_work_f)
+     &          fln_tce%v_fline_start(1,ip),                            &
+     &          fln_tce%trace_length(inum),                             &
+     &          fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
 !
-            call add_traced_list(fln_tce%iline_original(inum),          &
-     &                           fln_tce%isf_dbl_start(1,inum),         &
-     &                           fln_tce%xx_fline_start(1,inum),        &
-     &                           fln_tce%v_fline_start(1,1),            &
-     &                           fline_lc)
-          end if
+            if(fln_tce%iflag_comm_start(inum) .eq. -3) then
+              fln_tce%iflag_comm_start(inum) = 0
+            else if(fln_tce%iflag_comm_start(inum) .eq. 0) then
+              call set_veclocity_at_each_tracer                         &
+     &           (mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline,  &
+     &            fln_tce%isf_dbl_start(2,inum),                        &
+     &            fln_tce%xx_fline_start(1,inum),                       &
+     &            fln_tce%xi_fline_start(1,inum),                       &
+     &            fln_tce%v_fline_start(1,ip), itp_ele_work_f)
+!
+              call add_traced_list(fln_tce%iline_original(inum),        &
+     &                             fln_tce%isf_dbl_start(1,inum),       &
+     &                             fln_tce%xx_fline_start(1,inum),      &
+     &                             fln_tce%v_fline_start(1,ip),         &
+     &                             fline_lc(ip))
+            end if
+          end do
         end do
         if(elps_tracer%flag_elapsed)                                    &
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)
@@ -141,7 +152,7 @@
 !
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
-      call return_to_trace_list(fline_lc, fln_tce)
+      call return_to_trace_list(fline_lc(1), fln_tce)
 !
       end subroutine s_trace_particle
 !
@@ -179,22 +190,40 @@
 !
       subroutine return_to_trace_list(fline_lc, fln_tce)
 !
-      type(local_fieldline), intent(in) :: fline_lc
+      type(local_fieldline), intent(in) :: fline_lc(np_smp)
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: i, ip, max_4_smp
+      integer(kind = kint), allocatable :: istack_line_nod_smp(:)
+      integer(kind = kint) :: i, ip, ist
 !
 !
-      call count_parallel_current_fline(fline_lc%nnod_line_l, fln_tce)
+      allocate(istack_line_nod_smp(0:np_smp))
+      istack_line_nod_smp(0) =  0
+      do ip = 1, np_smp
+        istack_line_nod_smp(ip) =  istack_line_nod_smp(ip-1)            &
+     &                            + fline_lc(ip)%nnod_line_l
+      end do
+!
+      call count_parallel_current_fline(istack_line_nod_smp(np_smp),    &
+     &                                  fln_tce)
       call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
 !
-      do i = 1, fln_tce%num_current_fline
-        fln_tce%iline_original(i) =     fline_lc%iglobal_fline(i)
-        fln_tce%xx_fline_start(1:4,i) = fline_lc%xx_line_l(1:4,i)
+!$omp parallel do private(ip,i,ist)
+      do ip = 1, np_smp
+        ist = istack_line_nod_smp(ip-1)
+        do i = 1, fline_lc(ip)%nnod_line_l
+          fln_tce%iline_original(i+ist)                                 &
+     &       = fline_lc(ip)%iglobal_fline(i)
+          fln_tce%xx_fline_start(1:4,i+ist)                             &
+     &       = fline_lc(ip)%xx_line_l(1:4,i)
 !
-        fln_tce%isf_dbl_start(1,i) =    my_rank
-        fln_tce%isf_dbl_start(2:3,i) =  fline_lc%iedge_line_l(1:2,i)
+          fln_tce%isf_dbl_start(1,i+ist) =    my_rank
+          fln_tce%isf_dbl_start(2:3,i+ist)                              &
+     &       =  fline_lc(ip)%iedge_line_l(1:2,i)
+        end do
       end do
+!$omp end parallel do
+      deallocate(istack_line_nod_smp)
 !
       end subroutine return_to_trace_list
 !
