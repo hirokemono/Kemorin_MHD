@@ -88,8 +88,7 @@
      &                     fln_prm(i_fln)%fline_fields, fln_tce(i_fln))
         call alloc_broadcast_trace_data                                 &
      &     (fln_prm(i_fln)%num_each_field_line, fln_bcast(i_fln))
-        call alloc_local_fline(fln_prm(i_fln)%fline_fields,             &
-     &                         fline_lc(i_fln))
+        call alloc_local_fline(fline_lc(i_fln))
         call alloc_trace_data_SR_num(fln_SR(i_fln))
       end do
 !
