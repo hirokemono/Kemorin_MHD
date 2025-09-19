@@ -7,10 +7,12 @@
 !> @brief MPI communication To collect field line data
 !!
 !!@verbatim
-!!      subroutine copy_local_fieldline_to_IO(viz_fields, fline_lc, ucd)
+!!      subroutine copy_local_fieldline_to_IO(ele, nod_fld, viz_fields, &
+!!     &                                      fline_lc, ucd)
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(ctl_params_viz_fields), intent(in) :: viz_fields
 !!        type(local_fieldline), intent(in) :: fline_lc
-!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(ucd_data), intent(inout) :: ucd
 !!      subroutine copy_local_particles_to_IO(ele, nod_fld, viz_fields, &
 !!     &                                      fln_tce, ucd)
@@ -45,7 +47,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_local_fieldline_to_IO(ele, nod_fld, viz_fields,   &
-     &                                      fln_tce, fline_lc, ucd)
+     &                                      fline_lc, ucd)
 !
       use const_global_element_ids
       use tracer_field_interpolate
@@ -53,7 +55,6 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
-      type(each_fieldline_trace), intent(in) :: fln_tce
       type(local_fieldline), intent(in) :: fline_lc
 !
       type(ucd_data), intent(inout) :: ucd

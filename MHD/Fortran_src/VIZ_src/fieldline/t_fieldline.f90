@@ -137,7 +137,7 @@
      &         call start_elapsed_time(elps_fline%ist_elapsed+4)
       call output_field_lines                                           &
      &   (istep_fline, time_d, geofem%mesh, nod_fld,                    &
-     &    fline%num_fline, fline%fln_prm, fline%fln_tce, fline%fline_lc)
+     &    fline%num_fline, fline%fln_prm, fline%fline_lc)
       if(elps_fline%flag_elapsed)                                       &
      &         call end_elapsed_time(elps_fline%ist_elapsed+4)
 !
