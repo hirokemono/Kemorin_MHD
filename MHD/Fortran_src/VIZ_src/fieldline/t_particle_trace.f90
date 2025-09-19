@@ -93,7 +93,6 @@
       use multi_tracer_fieldline
       use multi_tracer_file_IO
       use multi_trace_particle
-      use trace_particle
 !
       type(time_data), intent(in) :: init_d
       type(finish_data), intent(in) :: finish_d
@@ -134,12 +133,6 @@
 !
       call sel_input_tracer_restarts(init_d, rst_step,                  &
      &    tracer%num_trace, tracer%fln_prm, tracer%fln_tce)
-!
-      do i_tcr = 1, tracer%num_trace
-        call local_tracer_from_seeds                                    &
-     &     (izero, tracer%fln_tce(i_tcr)%num_current_fline,             &
-     &      tracer%fln_tce(i_tcr), tracer%fline_lc(i_tcr))
-      end do
 !
       end subroutine TRACER_initialize
 !

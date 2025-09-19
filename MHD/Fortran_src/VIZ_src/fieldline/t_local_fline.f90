@@ -36,16 +36,6 @@
 !!      subroutine dealloc_local_fline_data(fline_lc)
 !!      subroutine dealloc_local_fline_field(fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
-!!
-!!      subroutine cal_local_tracer_fields(mesh, nod_fld,               &
-!!     &                                   fln_prm, fline_lc)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(phys_data), intent(in) :: nod_fld
-!!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(local_fieldline), intent(inout) :: fline_lc
-!!
-!!      subroutine check_local_fline(id_file, fline_lc)
-!!        type(local_fieldline), intent(in) :: fline_lc
 !!@endverbatim
 !
       module t_local_fline
@@ -343,99 +333,6 @@
       deallocate(fline_lc%v_line_l, fline_lc%col_line_l)
 !
       end subroutine dealloc_local_fline_field
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine check_local_fline(id_file, fline_lc)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(local_fieldline), intent(in) :: fline_lc
-      integer(kind = kint) :: i, nd
-!
-!
-      write(id_file,*) 'xx_line_l', fline_lc%nnod_line_l
-      do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(i16,1p4e16.7)') i, fline_lc%xx_line_l(1:4,i)
-      end do
-!
-      write(id_file,*) 'v_line_l', fline_lc%nnod_line_l
-      do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(i16,1p4e16.7)') i, fline_lc%v_line_l(1:4,i)
-      end do
-!
-      write(id_file,*) 'iedge_line_l', fline_lc%nele_line_l
-      do i = 1, fline_lc%nele_line_l
-        write(id_file,'(2i16,a7,2i16)') i, ione, '  line ',             &
-     &                                 fline_lc%iedge_line_l(1:2,i)
-      end do
-!
-      write(id_file,'(2i4)') ione, ione
-      write(id_file,'(a)') 'color col_line_l,'
-      do i = 1, fline_lc%nnod_line_l
-        write(id_file,'(i16)', ADVANCE='NO') i
-        do nd = 1, fline_lc%ntot_comp_l
-           write(id_file,'(i16,1pe16.7)', ADVANCE='NO')                 &
-     &       fline_lc%iglobal_fline(i), fline_lc%col_line_l(nd,i)
-        end do
-        write(id_file,*)
-      end do
-!
-      close(id_file)
-!
-      end subroutine check_local_fline
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine cal_local_tracer_fields(mesh, nod_fld,                 &
-     &                                   fln_prm, fline_lc)
-!
-      use t_mesh_data
-      use t_phys_data
-      use t_control_params_4_fline
-      use calypso_mpi
-      use field_at_each_seed_point
-      use tracer_field_interpolate
-
-      use t_find_interpolate_in_ele
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(in) :: nod_fld
-      type(fieldline_paramter), intent(in) :: fln_prm
-!
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-      integer(kind = kint) :: ierr_inter, i, iflag
-      real(kind = kreal) :: xi_in_ele(3)
-      type(cal_interpolate_coefs_work) :: itp_ele_work_g
-!
-      integer(kind = kint), parameter :: maxitr = 20
-      real(kind = kreal), parameter ::   eps_iter = 1.0d-9
-      integer(kind = kint), parameter :: iflag_nomessage = 0
-      real(kind = kreal), parameter ::   error_level = 1.0d-9
-!
-!
-      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
-     &                                  itp_ele_work_g)
-      do i = 1, fline_lc%nnod_line_l
-        call find_interpolate_in_ele                                    &
-     &     (fline_lc%xx_line_l(1,i), maxitr, eps_iter,                  &
-     &      my_rank, iflag_nomessage, error_level, mesh%node, mesh%ele, &
-     &      fline_lc%iedge_line_l(1,i), itp_ele_work_g,                 &
-     &      xi_in_ele, ierr_inter)
-        iflag = surface_mode_in_each_ele(error_level, xi_in_ele)
-        call cal_each_seed_velocity_in_ele(mesh%ele, nod_fld%n_point,   &
-     &      nod_fld%d_fld(1,fln_prm%iphys_4_fline),                     &
-     &      fline_lc%iedge_line_l(1,i), xi_in_ele,                      &
-     &      fline_lc%v_line_l(1,i))
-!
-        call cal_fields_in_element(fline_lc%iedge_line_l(1,i),          &
-     &      xi_in_ele, fline_lc%xx_line_l(1,i), mesh%ele, nod_fld,      &
-     &      fln_prm%fline_fields, fline_lc%col_line_l(1,i))
-      end do
-      call dealloc_work_4_interpolate(itp_ele_work_g)
-!
-      end subroutine cal_local_tracer_fields
 !
 !  ---------------------------------------------------------------------
 !

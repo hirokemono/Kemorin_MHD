@@ -184,7 +184,6 @@
      &          nod_fld, num_fline, fln_prm, fln_src, fln_tce)
 !
       use set_fields_for_fieldline
-      use const_field_lines
       use collect_fline_data
       use parallel_ucd_IO_select
       use set_fline_seeds_from_list

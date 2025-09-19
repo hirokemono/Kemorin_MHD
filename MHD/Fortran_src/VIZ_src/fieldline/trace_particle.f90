@@ -21,11 +21,6 @@
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(broadcast_trace_data), intent(inout) :: fln_bcast
 !!
-!!      subroutine local_tracer_from_seeds(ist_smp, ied_smp,            &
-!!     &                                   fln_tce, perticle_smp)
-!!      integer(kind = kint), intent(in) :: ist_smp, ied_smp
-!!      type(each_fieldline_trace), intent(in) :: fln_tce
-!!      type(local_fieldline), intent(inout) :: perticle_smp
 !!@endverbatim
 !
       module trace_particle
@@ -52,7 +47,7 @@
 !
       implicit  none
 !
-      private :: return_to_trace_list
+      private :: add_traced_list, return_to_trace_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -88,7 +83,6 @@
       integer(kind = kint) :: nline, inum
 !
 !
-      call return_to_trace_list(fline_lc, fln_tce)
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
 
       call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
@@ -152,6 +146,7 @@
       end subroutine s_trace_particle
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine add_traced_list(iglobal_tracer, isf_dbl_start,         &
      &                           xx4_add, v4_add, fline_lc)
@@ -203,42 +198,6 @@
       end do
 !
       end subroutine return_to_trace_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine local_tracer_from_seeds(ist_smp, ied_smp,              &
-     &                                   fln_tce, perticle_smp)
-!
-      integer(kind = kint), intent(in) :: ist_smp, ied_smp
-      type(each_fieldline_trace), intent(in) :: fln_tce
-      type(local_fieldline), intent(inout) :: perticle_smp
-!
-      integer(kind = kint) :: i, num
-!
-!
-      num = ied_smp - ist_smp
-      perticle_smp%nnod_line_l = num
-      perticle_smp%nele_line_l = num
-      if(perticle_smp%nele_line_l .ge. perticle_smp%nele_line_buf) then
-        call raise_local_fline_connect(perticle_smp)
-      end if
-      if(perticle_smp%nnod_line_l .ge. perticle_smp%nnod_line_buf) then
-        call raise_local_fline_data(perticle_smp)
-      end if
-!
-      do i = 1, num
-        perticle_smp%iglobal_fline(i)                                   &
-     &     = fln_tce%iline_original(i+ist_smp)
-        perticle_smp%xx_line_l(1:4,i)                                   &
-     &     = fln_tce%xx_fline_start(1:4,i+ist_smp)
-!
-        perticle_smp%iedge_line_l(1,i)                                  &
-     &     = fln_tce%isf_dbl_start(2,i+ist_smp)
-        perticle_smp%iedge_line_l(2,i)                                  &
-     &     = fln_tce%isf_dbl_start(3,i+ist_smp)
-      end do
-!
-      end subroutine local_tracer_from_seeds
 !
 !  ---------------------------------------------------------------------
 !
