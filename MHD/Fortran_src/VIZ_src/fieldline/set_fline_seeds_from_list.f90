@@ -15,21 +15,14 @@
 !!      subroutine set_veclocity_at_each_tracer(node, ele, nod_fld,     &
 !!     &          iphys_4_fline, iele_seed, xx4_seed,                   &
 !!     &          xi4_fline_start, v_fline_start, itp_ele_work)
-!!      subroutine set_field_at_each_tracer(node, ele, nod_fld,         &
-!!     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,     &
-!!     &          xi4_fline_start, v_fline_start, c_fline_start,        &
-!!     &          itp_ele_work)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(ctl_params_viz_fields), intent(in) :: fline_fields
 !!        integer(kind = kint), intent(in) :: iphys_4_fline
 !!        integer(kind = kint), intent(in) :: iele_seed(1)
 !!        real(kind = kreal), intent(inout) :: xi4_fline_start(4)
 !!        real(kind = kreal), intent(in) :: xx4_seed(4)
 !!        real(kind = kreal), intent(inout) :: v_fline_start(4)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &         :: c_fline_start(fline_fields%ntot_color_comp)
 !!        type(cal_interpolate_coefs_work), intent(inout)               &
 !!     &                                   :: itp_ele_work
 !!
@@ -216,45 +209,6 @@
      &    iele_seed, xi4_fline_start(1), v_fline_start)
 !
       end subroutine set_veclocity_at_each_tracer
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_field_at_each_tracer(node, ele, nod_fld,           &
-     &          fline_fields, iphys_4_fline, iele_seed, xx4_seed,       &
-     &          xi4_fline_start, v_fline_start, c_fline_start,          &
-     &          itp_ele_work)
-!
-      use t_find_interpolate_in_ele
-      use field_at_each_seed_point
-      use tracer_field_interpolate
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
-!
-      type(ctl_params_viz_fields), intent(in) :: fline_fields
-      integer(kind = kint), intent(in) :: iphys_4_fline
-!
-      integer(kind = kint), intent(in) :: iele_seed(1)
-      real(kind = kreal), intent(in) :: xx4_seed(4)
-!
-      real(kind = kreal), intent(inout) :: xi4_fline_start(4)
-      real(kind = kreal), intent(inout) :: v_fline_start(4)
-      real(kind = kreal), intent(inout)                                 &
-     &         :: c_fline_start(fline_fields%ntot_color_comp)
-      type(cal_interpolate_coefs_work), intent(inout)                   &
-     &                                  :: itp_ele_work
-!
-      integer(kind = kint) :: ierr_inter
-!
-!
-      call set_veclocity_at_each_tracer                                 &
-     &   (node, ele, nod_fld, iphys_4_fline, iele_seed, xx4_seed,       &
-     &    xi4_fline_start, v_fline_start, itp_ele_work)
-      call cal_fields_in_element(iele_seed, xi4_fline_start(1),         &
-     &    xx4_seed, ele, nod_fld, fline_fields, c_fline_start)
-!
-      end subroutine set_field_at_each_tracer
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -104,9 +104,9 @@
 !
       isurf_org(1:2) = isurf_org_dbl(2:3)
       call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
-      call set_field_at_each_tracer                                     &
-     &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
-     &    xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+      call set_veclocity_at_each_tracer                                 &
+     &   (node, ele, nod_fld, i_fline, isurf_org(1),        &
+     &    xx4_start, xi4_start, v4_start, itp_ele_work_f)
       call add_fline_start(iglobal_fline, isurf_org(1),                 &
      &                     xx4_start, xi4_start, fline_lc)
 !
@@ -138,9 +138,9 @@
           exit
         end if
 !
-        call set_field_at_each_tracer                                   &
-     &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
-     &      xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
+        call set_veclocity_at_each_tracer                               &
+     &     (node, ele, nod_fld, i_fline, isurf_org(1),      &
+     &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
@@ -162,9 +162,9 @@
           exit
         end if
 !
-        call set_field_at_each_tracer                                   &
-     &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
-     &      xx4_start, xi4_start, v4_start, c_field(1), itp_ele_work_f)
+        call set_veclocity_at_each_tracer                               &
+     &     (node, ele, nod_fld, i_fline, isurf_org(1),      &
+     &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
