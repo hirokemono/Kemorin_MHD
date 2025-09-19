@@ -29,6 +29,9 @@
       use calypso_mpi
       use m_constants
       use m_geometry_constants
+      use t_geometry_data
+      use t_phys_data
+      use t_ucd_data
       use t_control_params_4_fline
       use t_tracing_data
       use t_local_fline
@@ -41,17 +44,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_local_fieldline_to_IO(viz_fields, fline_lc, ucd)
+      subroutine copy_local_fieldline_to_IO(ele, nod_fld, viz_fields,   &
+     &                                      fln_tce, fline_lc, ucd)
 !
-      use t_ucd_data
       use const_global_element_ids
+      use tracer_field_interpolate
 !
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
       type(ctl_params_viz_fields), intent(in) :: viz_fields
+      type(each_fieldline_trace), intent(in) :: fln_tce
       type(local_fieldline), intent(in) :: fline_lc
 !
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint_gl) :: i, nd
+      integer(kind = kint) :: j
+      real(kind = kreal), allocatable :: c_ref(:)
 !
 !
       ucd%nnod = fline_lc%nnod_line_l
@@ -101,14 +110,21 @@
       ucd%num_comp(1:ucd%num_field)                                     &
      &     = viz_fields%ncomp_color_field(1:ucd%num_field)
 !$omp end parallel workshare
-
+!
       ucd%ntot_comp = viz_fields%ntot_color_comp
       call allocate_ucd_phys_data(ucd)
-      do nd = 1, ucd%ntot_comp
-!$omp parallel workshare
-        ucd%d_ucd(1:ucd%nnod,nd) = fline_lc%col_line_l(nd,1:ucd%nnod)
-!$omp end parallel workshare
+!
+      allocate(c_ref(viz_fields%ntot_color_comp))
+!$omp parallel do private(c_ref)
+      do i = 1, ucd%nnod
+        call cal_fields_in_element(fline_lc%iele_fline(i),            &
+     &     fline_lc%xi_line_l(1,i), fline_lc%xx_line_l(1,i),          &
+     &     ele, nod_fld, viz_fields, c_ref(1))
+!
+        ucd%d_ucd(i,1:ucd%ntot_comp) = c_ref(1:ucd%ntot_comp)
       end do
+!$omp end parallel do
+      deallocate(c_ref)
 !
       end subroutine copy_local_fieldline_to_IO
 !
@@ -117,9 +133,6 @@
       subroutine copy_local_particles_to_IO(ele, nod_fld, viz_fields,   &
      &                                      fln_tce, ucd)
 !
-      use t_geometry_data
-      use t_phys_data
-      use t_ucd_data
       use t_source_of_filed_line
       use const_global_element_ids
       use tracer_field_interpolate

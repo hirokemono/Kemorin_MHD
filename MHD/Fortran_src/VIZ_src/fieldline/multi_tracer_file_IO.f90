@@ -39,8 +39,8 @@
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!!      subroutine output_field_lines(istep_file, time_d,               &
-!!     &                              num_fline, fln_prm, fline_lc)
+!!      subroutine output_field_lines(istep_file, time_d, mesh, nod_fld,&
+!!     &                              num_fline, fln_prm, fln_tce, fline_lc)
 !!        integer(kind = kint), intent(in) :: istep_file
 !!        type(time_data), intent(in) :: time_d
 !!        integer(kind = kint), intent(in) :: num_fline
@@ -203,8 +203,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_field_lines(istep_file, time_d,                 &
-     &                              num_fline, fln_prm, fline_lc)
+      subroutine output_field_lines(istep_file, time_d, mesh, nod_fld,  &
+     &                              num_fline, fln_prm, fln_tce, fline_lc)
 !
       use set_fields_for_fieldline
       use collect_fline_data
@@ -214,21 +214,24 @@
 !
       integer(kind = kint), intent(in) :: istep_file
       type(time_data), intent(in) :: time_d
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
+      type(each_fieldline_trace), intent(in) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout) :: fline_lc(num_fline)
 !
       type(time_data) :: t_IO
       type(ucd_data) :: fline_ucd
-      integer(kind = kint) :: i_tcr
-!  
+      integer(kind = kint) :: i_fln
 !
-      do i_tcr = 1, num_fline
+!
+      do i_fln = 1, num_fline
         call copy_time_step_size_data(time_d, t_IO)
-        call copy_local_fieldline_to_IO(fln_prm(i_tcr)%fline_fields,    &
-     &                                  fline_lc(i_tcr), fline_ucd)
+        call copy_local_fieldline_to_IO(mesh%ele, nod_fld,              &
+     &      fln_prm(i_fln)%fline_fields, fln_tce(i_fln), fline_lc(i_fln), fline_ucd)
         call sel_write_parallel_ucd_file                                &
-     &     (istep_file, fln_prm(i_tcr)%fline_file_IO, t_IO, fline_ucd)
+     &     (istep_file, fln_prm(i_fln)%fline_file_IO, t_IO, fline_ucd)
         call deallocate_parallel_ucd_mesh(fline_ucd)
         call calypso_mpi_barrier
       end do
