@@ -107,9 +107,8 @@
       call set_field_at_each_tracer                                     &
      &   (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),        &
      &    xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
-      call add_fline_start                                              &
-     &   (iglobal_fline, isurf_org(1), xx4_start, xi4_start, v4_start,  &
-     &    viz_fields%ntot_color_comp, c_field(1), fline_lc)
+      call add_fline_start(iglobal_fline, isurf_org(1),                 &
+     &                     xx4_start, xi4_start, v4_start, fline_lc)
 !
       if(isurf_org(2) .gt. 0) call find_backside_by_flux(surf,          &
      &                            iflag_dir, v4_start, isurf_org)
@@ -143,8 +142,7 @@
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
      &      xx4_start, xi4_start, v4_start, c_field, itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
-     &      xx4_start, xi4_start, v4_start,                             &
-     &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
+     &      xx4_start, xi4_start, v4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
 !   extend to surface of element
@@ -168,8 +166,7 @@
      &     (node, ele, nod_fld, viz_fields, i_fline, isurf_org(1),      &
      &      xx4_start, xi4_start, v4_start, c_field(1), itp_ele_work_f)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
-     &      xx4_start, xi4_start, v4_start,                             &
-     &      viz_fields%ntot_color_comp, c_field(1), fline_lc)
+     &      xx4_start, xi4_start, v4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
 !
         isurf_org(2) = isf_tgt

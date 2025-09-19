@@ -12,12 +12,10 @@
 !!        type(ctl_params_viz_fields), intent(inout) :: viz_fields
 !!      subroutine dealloc_local_fline(fline_lc)
 !!
-!!      subroutine add_fline_start                                      &
-!!     &         (iglobal_add, iele_add, xx4_add, xi4_add, v4_add,      &
-!!     &          ntot_comp, col_add, fline_lc)
-!!      subroutine add_fline_list                                       &
-!!     &         (iglobal_add, iele_add, xx4_add, xi4_add, v4_add,      &
-!!     &          ntot_comp, col_add, fline_lc)
+!!      subroutine add_fline_start(iglobal_add, iele_add,               &
+!!     &                           xx4_add, xi4_add, v4_add, fline_lc)
+!!      subroutine add_fline_list(iglobal_add, iele_add,                &
+!!     &          xx4_add, xi4_add, v4_add, fline_lc)
 !!        integer(kind = kint_gl), intent(in) :: iglobal_add
 !!        integer(kind = kint), intent(in) :: iele_add
 !!        integer(kind = kint), intent(in) :: ntot_comp
@@ -63,7 +61,6 @@
         real(kind = kreal), allocatable ::   xx_line_l(:,:)
         real(kind = kreal), allocatable ::   xi_line_l(:,:)
         real(kind = kreal), allocatable ::   v_line_l(:,:)
-        real(kind = kreal), allocatable ::   col_line_l(:,:)
       end type local_fieldline
 !
 !  ---------------------------------------------------------------------
@@ -84,16 +81,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_start                                        &
-     &         (iglobal_add, iele_add, xx4_add, xi4_add, v4_add,        &
-     &          ntot_comp, col_add, fline_lc)
+      subroutine add_fline_start(iglobal_add, iele_add,                 &
+     &                           xx4_add, xi4_add, v4_add, fline_lc)
 !
       integer(kind = kint_gl), intent(in) :: iglobal_add
       integer(kind = kint), intent(in) :: iele_add
       real(kind = kreal), intent(in) :: xx4_add(4), xi4_add(4)
       real(kind = kreal), intent(in) :: v4_add(4)
-      integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: col_add(ntot_comp)
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
@@ -107,23 +101,18 @@
       fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
       fline_lc%xi_line_l(1:4,fline_lc%nnod_line_l) = xi4_add(1:4)
       fline_lc%v_line_l(1:4,fline_lc%nnod_line_l) =  v4_add(1:4)
-      fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
-     &       = col_add(1:ntot_comp)
 !
       end subroutine add_fline_start
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_list                                         &
-     &         (iglobal_add, iele_add, xx4_add, xi4_add, v4_add,        &
-     &          ntot_comp, col_add, fline_lc)
+      subroutine add_fline_list(iglobal_add, iele_add,                  &
+     &          xx4_add, xi4_add, v4_add, fline_lc)
 !
       integer(kind = kint_gl), intent(in) :: iglobal_add
       integer(kind = kint), intent(in) :: iele_add
       real(kind = kreal), intent(in) :: xx4_add(4), xi4_add(4)
       real(kind = kreal), intent(in) :: v4_add(4)
-      integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: col_add(ntot_comp)
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
@@ -147,8 +136,6 @@
       fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
       fline_lc%xi_line_l(1:4,fline_lc%nnod_line_l) = xi4_add(1:4)
       fline_lc%v_line_l(1:4,fline_lc%nnod_line_l) =  v4_add(1:4)
-      fline_lc%col_line_l(1:ntot_comp,fline_lc%nnod_line_l)             &
-     &      = col_add(1:ntot_comp)
 !
       end subroutine add_fline_list
 !
@@ -274,8 +261,6 @@
         fline_new%xx_line_l(1:4,i) = fline_lc%xx_line_l(1:4,i)
         fline_new%xi_line_l(1:4,i) = fline_lc%xi_line_l(1:4,i)
         fline_new%v_line_l(1:4,i) =  fline_lc%v_line_l(1:4,i)
-        fline_new%col_line_l(1:fline_lc%ntot_comp_l,i)                  &
-     &           =  fline_lc%col_line_l(1:fline_lc%ntot_comp_l,i)
       end do
 !$omp end parallel do
 !
@@ -325,10 +310,7 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       allocate(fline_lc%v_line_l(4,fline_lc%nnod_line_buf))
-      allocate(fline_lc%col_line_l(fline_lc%ntot_comp_l,                &
-     &                             fline_lc%nnod_line_buf))
       if(fline_lc%nnod_line_buf .gt. 0) fline_lc%v_line_l =   0.0d0
-      if(fline_lc%nnod_line_buf .gt. 0) fline_lc%col_line_l = 0.0d0
 !
       end subroutine alloc_local_fline_field
 !
@@ -360,7 +342,7 @@
 !
       type(local_fieldline), intent(inout) :: fline_lc
 !
-      deallocate(fline_lc%v_line_l, fline_lc%col_line_l)
+      deallocate(fline_lc%v_line_l)
 !
       end subroutine dealloc_local_fline_field
 !
