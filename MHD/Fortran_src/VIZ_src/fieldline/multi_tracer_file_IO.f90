@@ -195,8 +195,10 @@
         call copy_time_step_size_data(time_d, t_IO)
         call copy_local_particles_to_IO(mesh%ele, nod_fld,              &
      &      fln_prm(i_tcr)%fline_fields, fln_tce(i_tcr), fline_ucd)
+        call calypso_mpi_barrier()
         call sel_write_parallel_ucd_file                                &
      &     (istep_file, fln_prm(i_tcr)%fline_file_IO, t_IO, fline_ucd)
+        call calypso_mpi_barrier()
         call deallocate_parallel_ucd_mesh(fline_ucd)
       end do
 !
