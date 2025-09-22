@@ -73,6 +73,7 @@
       call gz_mpi_read_geometry_info(IO_param, particle_IO%node)
 !
       call gz_mpi_skip_header(IO_param, len(hd_particle_connect()))
+      call gz_mpi_read_num_element(IO_param, particle_IO%ele)
       call gz_mpi_read_element_info(IO_param, particle_IO%ele)
 !
       call read_field_step_gz_mpi(IO_param%id_file, nprocs,             &

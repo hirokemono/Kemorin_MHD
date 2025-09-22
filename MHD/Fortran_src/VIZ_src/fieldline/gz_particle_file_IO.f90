@@ -74,6 +74,7 @@
      &    (FPz_p, id_rank, particle_IO%comm, zbuf_p, ierr)
 !
       call gz_read_geometry_info(FPz_p, particle_IO%node,zbuf_p)
+      call gz_read_number_of_element(FPz_p, particle_IO%ele, zbuf_p)
       call gz_read_element_info(FPz_p, particle_IO%ele, zbuf_p)
 !
       call read_gz_step_data(FPz_p, id_rank, t_IO%i_time_step,          &
