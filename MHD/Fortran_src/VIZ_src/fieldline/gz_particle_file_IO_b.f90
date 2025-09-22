@@ -72,13 +72,13 @@
 !
       call gz_read_domain_info_b(FPz_p, id_rank, zbuf_p,                &
      &                           particle_IO%comm)
-      if(zbuf_p%ierr_zlib .ne. 0) return
+      if(zbuf_p%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_geometry_info_b(FPz_p, zbuf_p, particle_IO%node)
-      if(zbuf_p%ierr_zlib .ne. 0) return
+      if(zbuf_p%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_element_info_b(FPz_p, zbuf_p, particle_IO%ele)
-      if(zbuf_p%ierr_zlib .ne. 0) return
+      if(zbuf_p%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_step_data_b(FPz_p, zbuf_p, id_rank,                  &
      &                         t_IO%i_time_step, t_IO%time, t_IO%dt)
@@ -110,6 +110,10 @@
      &   'Write gzipped binary particle file: ', trim(file_name)
 !
       call open_wt_gzfile_b(FPz_p, file_name, zbuf_p)
+!
+      call gz_write_domain_info_b(FPz_p, id_rank,                       &
+     &                            particle_IO%comm, zbuf_p)
+      if(zbuf_p%ierr_zlib .ne. 0) return
 !
       call gz_write_geometry_info_b(FPz_p, particle_IO%node, zbuf_p)
       if(zbuf_p%ierr_zlib .ne. 0) return
