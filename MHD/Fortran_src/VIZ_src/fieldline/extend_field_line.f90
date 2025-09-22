@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_extend_field_line(node, ele, surf, para_surf,      &
-!!     &          nod_fld, max_line_step, end_trace,                    &
-!!     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,    &
-!!     &          isurf_org_dbl, x4_start, v4_start,                    &
-!!     &          icount_line, iflag_comm, fline_lc)
+!!     &          nod_fld, max_line_step, end_trace, iflag_used_ele,    &
+!!     &          iglobal_fline, iflag_dir, i_fline, isurf_org_dbl,     &
+!!     &          xx4_start, xi4_start, icount_line, trace_length,      &
+!!     &          iflag_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -24,7 +24,6 @@
 !!        integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !!        real(kind = kreal), intent(inout) :: xx4_start(4)
 !!        real(kind = kreal), intent(inout) :: xi4_start(4)
-!!        real(kind = kreal), intent(inout) :: v4_start(4)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
@@ -52,10 +51,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_field_line(node, ele, surf, para_surf,        &
-     &          nod_fld, max_line_step, end_trace,                      &
-     &          iflag_used_ele, iglobal_fline, iflag_dir, i_fline,      &
-     &          isurf_org_dbl, xx4_start, xi4_start, v4_start,          &
-     &          icount_line, trace_length, iflag_comm, fline_lc)
+     &          nod_fld, max_line_step, end_trace, iflag_used_ele,      &
+     &          iglobal_fline, iflag_dir, i_fline, isurf_org_dbl,       &
+     &          xx4_start, xi4_start, icount_line, trace_length,        &
+     &          iflag_comm, fline_lc)
 !
       use t_local_fline
       use t_find_interpolate_in_ele
@@ -79,7 +78,6 @@
       integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: xi4_start(4)
-      real(kind = kreal), intent(inout) :: v4_start(4)
 !
       type(local_fieldline), intent(inout) :: fline_lc
       real(kind = kreal), intent(inout) :: trace_length
@@ -87,6 +85,7 @@
 !
       type(cal_interpolate_coefs_work) :: itp_ele_work_f
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal) :: v4_start(4)
       integer(kind = kint) :: isf_tgt, jcou
       integer(kind = kint) :: isurf_org(2)
 !

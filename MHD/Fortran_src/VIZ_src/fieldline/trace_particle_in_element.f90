@@ -7,11 +7,10 @@
 !> @brief extend field line in each domain
 !!
 !!@verbatim
-!!      subroutine s_trace_particle_in_element                          &
-!!     &         (dt, node, ele, surf, para_surf, nod_fld, v_prev,      &
-!!     &          i_tracer, iflag_used_ele, isurf_org_dbl,              &
-!!     &          xx4_start, xi4_start, v4_start, progress,             &
-!!     &          iflag_comm, inum)
+!!      subroutine s_trace_particle_in_element(dt, node, ele, surf,     &
+!!     &          para_surf, nod_fld, v_prev, i_tracer, iflag_used_ele, &
+!!     &          isurf_org_dbl, xx4_start, xi4_start, progress,        &
+!!     &          iflag_comm, itp_ele_work, inum)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!        type(paralell_surface_indices), intent(in) :: para_surf
@@ -53,10 +52,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_trace_particle_in_element                            &
-     &         (dt, node, ele, surf, para_surf, nod_fld, v_prev,        &
-     &          i_tracer, iflag_used_ele, isurf_org_dbl,                &
-     &          xx4_start, xi4_start, v4_start, progress,               &
+      subroutine s_trace_particle_in_element(dt, node, ele, surf,       &
+     &          para_surf, nod_fld, v_prev, i_tracer, iflag_used_ele,   &
+     &          isurf_org_dbl, xx4_start, xi4_start, progress,          &
      &          iflag_comm, itp_ele_work, inum)
 !
       use t_local_fline
@@ -76,7 +74,6 @@
       integer(kind = kint), intent(inout) :: isurf_org_dbl(3)
       real(kind = kreal), intent(inout) :: xx4_start(4)
       real(kind = kreal), intent(inout) :: xi4_start(4)
-      real(kind = kreal), intent(inout) :: v4_start(4)
       real(kind = kreal), intent(inout) :: progress
 !
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
@@ -84,6 +81,7 @@
       type(cal_interpolate_coefs_work), intent(inout) :: itp_ele_work
 !
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
+      real(kind = kreal) :: v4_start(4)
       integer(kind = kint) :: isurf_org(2)
       integer(kind = kint) :: isf_tgt
       integer(kind = kint) :: jcou

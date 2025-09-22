@@ -102,7 +102,6 @@
      &          fln_tce%isf_dbl_start(1,inum),                          &
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
-     &          fln_tce%v_fline_start(1,ip),                            &
      &          fln_tce%icount_fline(inum), fln_tce%trace_length(inum), &
      &          fln_tce%iflag_comm_start(inum), fline_lc(ip))
           end do

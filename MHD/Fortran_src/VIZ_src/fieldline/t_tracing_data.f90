@@ -28,9 +28,6 @@
 !!      subroutine count_parallel_current_fline(num_fline, fln_tce)
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!
-!!      subroutine check_line_start_fline(fln_tce)
-!!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!@endverbatim
 !
       module t_tracing_data
@@ -307,33 +304,6 @@
       end do
 !
       end subroutine count_parallel_current_fline
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine check_line_start_fline(fln_tce)
-!
-      use calypso_mpi
-!
-      type(each_fieldline_trace), intent(in) :: fln_tce
-!
-      integer(kind = kint) :: ip, icou
-!
-!
-      do ip = 1, nprocs
-        call calypso_mpi_barrier
-        if(my_rank .ne. ip-1) cycle
-        do icou = 1, fln_tce%istack_current_fline(ip)                   &
-     &              - fln_tce%istack_current_fline(ip-1)
-          write(*,*) my_rank, icou, 'check_line_start_fline',           &
-     &        fln_tce%xx_fline_start(1:4,icou),                         &
-     &        fln_tce%xi_fline_start(1:4,icou),                         &
-     &        fln_tce%isf_dbl_start(1:3,icou)
-        end do
-      end do
-      call calypso_mpi_barrier()
-!
-      end subroutine check_line_start_fline
 !
 !  ---------------------------------------------------------------------
 !

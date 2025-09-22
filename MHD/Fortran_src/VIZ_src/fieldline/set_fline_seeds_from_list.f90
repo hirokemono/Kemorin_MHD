@@ -83,7 +83,6 @@
       call count_FLINE_seed_from_list(fln_src%num_line_local,           &
      &                                fln_prm, fln_tce)
       call set_FLINE_seed_field_from_list(fln_prm, fln_src, fln_tce)
-      call check_line_start_fline(fln_tce)
 !
       end subroutine const_FLINE_seed_from_list
 !
