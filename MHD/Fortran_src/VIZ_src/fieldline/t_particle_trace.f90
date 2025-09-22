@@ -104,8 +104,6 @@
       type(fieldline_controls), intent(inout) :: tracer_ctls
       type(tracer_module), intent(inout) :: tracer
 !
-      integer(kind = kint) :: i_tcr
-!
 !
       tracer%num_trace = tracer_ctls%num_fline_ctl
       if(tracer%num_trace .le. 0) return

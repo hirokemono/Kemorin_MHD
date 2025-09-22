@@ -64,7 +64,6 @@
       type(fieldline_seeds_surf_group) :: seed_sf_grp
 !
       integer(kind = kint) :: ip, i
-      integer(kind = kint) :: num_sf
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
       real(kind = kreal) :: abs_flux_start, abs_flux_start_l

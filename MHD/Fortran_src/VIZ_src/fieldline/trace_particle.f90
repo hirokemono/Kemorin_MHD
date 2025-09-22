@@ -49,8 +49,6 @@
 !
       implicit  none
 !
-      private :: add_traced_list, return_to_trace_list
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -65,6 +63,7 @@
       use transfer_to_long_integers
       use trace_particle_in_element
       use set_fline_seeds_from_list
+      use add_tracer_fieldline_list
       use copy_field_smp
 !
       real(kind = kreal), intent(in) :: dt
@@ -127,7 +126,6 @@
               call add_traced_list(fln_tce%iline_original(inum),        &
      &                             fln_tce%isf_dbl_start(1,inum),       &
      &                             fln_tce%xx_fline_start(1,inum),      &
-     &                             fln_tce%v_fline_start(1,ip),         &
      &                             fline_lc(ip))
             end if
           end do
@@ -152,80 +150,9 @@
 !
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)
-      call return_to_trace_list(fline_lc(1), fln_tce)
+      call return_to_trace_list(my_rank, fline_lc(1), fln_tce)
 !
       end subroutine s_trace_particle
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine add_traced_list(iglobal_tracer, isf_dbl_start,         &
-     &                           xx4_add, v4_add, fline_lc)
-!
-      integer(kind = kint_gl), intent(in) :: iglobal_tracer
-      integer(kind = kint), intent(in) :: isf_dbl_start(3)
-      real(kind = kreal), intent(in) :: xx4_add(4), v4_add(4)
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-!
-      fline_lc%nele_line_l = fline_lc%nele_line_l + 1
-      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
-!
-      if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
-         call raise_local_fline_connect(fline_lc)
-      end if
-      if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
-        call raise_local_fline_data(fline_lc)
-      end if
-!
-      fline_lc%iedge_line_l(1,fline_lc%nele_line_l) = isf_dbl_start(2)
-      fline_lc%iedge_line_l(2,fline_lc%nele_line_l) = isf_dbl_start(3)
-!
-      fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_tracer
-      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) =   xx4_add(1:4)
-!
-      end subroutine add_traced_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine return_to_trace_list(fline_lc, fln_tce)
-!
-      type(local_fieldline), intent(in) :: fline_lc(np_smp)
-      type(each_fieldline_trace), intent(inout) :: fln_tce
-!
-      integer(kind = kint), allocatable :: istack_line_nod_smp(:)
-      integer(kind = kint) :: i, ip, ist
-!
-!
-      allocate(istack_line_nod_smp(0:np_smp))
-      istack_line_nod_smp(0) =  0
-      do ip = 1, np_smp
-        istack_line_nod_smp(ip) =  istack_line_nod_smp(ip-1)            &
-     &                            + fline_lc(ip)%nnod_line_l
-      end do
-!
-      call count_parallel_current_fline(istack_line_nod_smp(np_smp),    &
-     &                                  fln_tce)
-      call resize_line_start_fline(fln_tce%num_current_fline, fln_tce)
-!
-!$omp parallel do private(ip,i,ist)
-      do ip = 1, np_smp
-        ist = istack_line_nod_smp(ip-1)
-        do i = 1, fline_lc(ip)%nnod_line_l
-          fln_tce%iline_original(i+ist)                                 &
-     &       = fline_lc(ip)%iglobal_fline(i)
-          fln_tce%xx_fline_start(1:4,i+ist)                             &
-     &       = fline_lc(ip)%xx_line_l(1:4,i)
-!
-          fln_tce%isf_dbl_start(1,i+ist) =    my_rank
-          fln_tce%isf_dbl_start(2:3,i+ist)                              &
-     &       =  fline_lc(ip)%iedge_line_l(1:2,i)
-        end do
-      end do
-!$omp end parallel do
-      deallocate(istack_line_nod_smp)
-!
-      end subroutine return_to_trace_list
 !
 !  ---------------------------------------------------------------------
 !

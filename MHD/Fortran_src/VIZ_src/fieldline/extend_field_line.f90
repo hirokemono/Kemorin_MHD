@@ -61,6 +61,7 @@
       use t_find_interpolate_in_ele
       use trace_in_element
       use set_fline_seeds_from_list
+      use add_tracer_fieldline_list
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -229,7 +230,7 @@
       real(kind = kreal), intent(inout) :: xx4_start(4)
 !
       real(kind = kreal) :: xi_surf_tgt(2)
-      real(kind = kreal) :: v4_tgt(4), x4_tgt_8(4)
+      real(kind = kreal) :: x4_tgt_8(4)
       real(kind = kreal) :: ratio
 !
 !

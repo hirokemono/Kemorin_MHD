@@ -12,17 +12,6 @@
 !!      subroutine dealloc_local_fline(fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
-!!      subroutine add_fline_start(iglobal_add, iele_add,               &
-!!     &                           xx4_add, xi4_add, fline_lc)
-!!      subroutine add_fline_list(iglobal_add, iele_add,                &
-!!     &                          xx4_add, xi4_add, fline_lc)
-!!        integer(kind = kint_gl), intent(in) :: iglobal_add
-!!        integer(kind = kint), intent(in) :: iele_add
-!!        integer(kind = kint), intent(in) :: ntot_comp
-!!        real(kind = kreal), intent(in) :: xx4_add(4), xi4_add(4)
-!!        real(kind = kreal), intent(in) :: col_add(ntot_comp)
-!!        type(local_fieldline), intent(inout) :: fline_lc
-!!
 !!      subroutine raise_local_fline_connect(fline_lc)
 !!      subroutine raise_local_fline_data(fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
@@ -73,62 +62,6 @@
       fline_lc%nele_line_l = 0
 !
       end subroutine reset_fline_start
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine add_fline_start(iglobal_add, iele_add,                 &
-     &                           xx4_add, xi4_add, fline_lc)
-!
-      integer(kind = kint_gl), intent(in) :: iglobal_add
-      integer(kind = kint), intent(in) :: iele_add
-      real(kind = kreal), intent(in) :: xx4_add(4), xi4_add(4)
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-!
-      if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
-        call raise_local_fline_data(fline_lc)
-      end if
-      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
-!
-      fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_add
-      fline_lc%iele_fline(fline_lc%nnod_line_l) =    iele_add
-      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
-      fline_lc%xi_line_l(1:4,fline_lc%nnod_line_l) = xi4_add(1:4)
-!
-      end subroutine add_fline_start
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine add_fline_list(iglobal_add, iele_add,                  &
-     &                          xx4_add, xi4_add, fline_lc)
-!
-      integer(kind = kint_gl), intent(in) :: iglobal_add
-      integer(kind = kint), intent(in) :: iele_add
-      real(kind = kreal), intent(in) :: xx4_add(4), xi4_add(4)
-      type(local_fieldline), intent(inout) :: fline_lc
-!
-!
-      if(fline_lc%nele_line_l .ge. fline_lc%nele_line_buf) then
-         call raise_local_fline_connect(fline_lc)
-      end if
-      if(fline_lc%nnod_line_l .ge. fline_lc%nnod_line_buf) then
-        call raise_local_fline_data(fline_lc)
-      end if
-!
-      fline_lc%nele_line_l = fline_lc%nele_line_l + 1
-      fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
-!
-      fline_lc%iedge_line_l(1,fline_lc%nele_line_l)                     &
-     &      = fline_lc%nnod_line_l - 1
-      fline_lc%iedge_line_l(2,fline_lc%nele_line_l)                     &
-     &      = fline_lc%nnod_line_l
-!
-      fline_lc%iglobal_fline(fline_lc%nnod_line_l) = iglobal_add
-      fline_lc%iele_fline(fline_lc%nnod_line_l) =    iele_add
-      fline_lc%xx_line_l(1:4,fline_lc%nnod_line_l) = xx4_add(1:4)
-      fline_lc%xi_line_l(1:4,fline_lc%nnod_line_l) = xi4_add(1:4)
-!
-      end subroutine add_fline_list
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
