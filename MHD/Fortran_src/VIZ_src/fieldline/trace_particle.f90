@@ -62,7 +62,6 @@
       use t_find_interpolate_in_ele
       use transfer_to_long_integers
       use trace_particle_in_element
-      use set_fline_seeds_from_list
       use add_tracer_fieldline_list
       use copy_field_smp
 !
@@ -115,13 +114,6 @@
             if(fln_tce%iflag_comm_start(inum) .eq. -3) then
               fln_tce%iflag_comm_start(inum) = 0
             else if(fln_tce%iflag_comm_start(inum) .eq. 0) then
-              call set_veclocity_at_each_tracer                         &
-     &           (mesh%node, mesh%ele, nod_fld, fln_prm%iphys_4_fline,  &
-     &            fln_tce%isf_dbl_start(2,inum),                        &
-     &            fln_tce%xx_fline_start(1,inum),                       &
-     &            fln_tce%xi_fline_start(1,inum),                       &
-     &            fln_tce%v_fline_start(1,ip), itp_ele_work_f)
-!
               call add_traced_list(fln_tce%iline_original(inum),        &
      &                             fln_tce%isf_dbl_start(1,inum),       &
      &                             fln_tce%xx_fline_start(1,inum),      &

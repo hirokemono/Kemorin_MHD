@@ -66,8 +66,6 @@
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
 !>  position of starting point in each element coordinate
         real(kind = kreal), allocatable ::  xi_fline_start(:,:)
-!>  Velocity at starting point
-        real(kind = kreal), allocatable ::  v_fline_start(:,:)
 !>  Field data at starting point
         real(kind = kreal), allocatable ::  c_fline_start(:,:)
 !>  Trace length for each tracing
@@ -166,10 +164,8 @@
 !
       num = viz_fields%ntot_color_comp
       allocate(fln_tce%c_fline_start(num,np_smp))
-      allocate(fln_tce%v_fline_start(4,np_smp))
 !$omp parallel workshare
       fln_tce%c_fline_start(1:num,1:np_smp) = 0.0d0
-      fln_tce%v_fline_start(1:4,1:np_smp) =   0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_line_field_fline
@@ -230,7 +226,6 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       deallocate(fln_tce%c_fline_start)
-      deallocate(fln_tce%v_fline_start)
 !
       end subroutine dealloc_line_field_fline
 !

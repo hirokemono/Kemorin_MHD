@@ -281,9 +281,6 @@
         fln_src%num_line_local = fln_src%num_line_local + 1
       end do
 !
-!      write(*,*) my_rank, i_fln, 'ierr_inter ', ierr_inter
-      call check_each_fieldline_source(i_fln, ele%numele, fln_src)
-!
       end subroutine init_FLINE_seed_from_list
 !
 !  ---------------------------------------------------------------------
