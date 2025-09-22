@@ -64,6 +64,7 @@
 
       call sel_mpi_write_particle_file(tracer_file_prm, istep_rst,      &
      &                                 time_IO, particle_IO)
+      call calypso_mpi_barrier()
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_node_geometry_base(particle_IO%node)
@@ -92,6 +93,7 @@
 !
       call sel_mpi_read_particle_file(tracer_file_prm, istep_rst,       &
      &                                time_IO, particle_IO)
+      call calypso_mpi_barrier()
       call copy_restart_tracer_from_IO(particle_IO, fln_tce)
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)

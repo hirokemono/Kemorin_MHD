@@ -72,7 +72,13 @@
       call read_domain_info_b(id_rank, bbuf_p, particle_IO%comm)
       if(bbuf_p%ierr_bin .ne. 0) go to 99
 !
+      call read_number_of_node_b(bbuf_p, particle_IO%node)
+      if(bbuf_p%ierr_bin .gt. 0) go to 99
+!
       call read_geometry_info_b(bbuf_p, particle_IO%node)
+      if(bbuf_p%ierr_bin .ne. 0) go to 99
+!
+      call read_number_of_element_b(bbuf_p, particle_IO%ele)
       if(bbuf_p%ierr_bin .ne. 0) go to 99
 !
       call read_element_info_b(bbuf_p, particle_IO%ele)
