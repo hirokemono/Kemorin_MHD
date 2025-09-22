@@ -102,6 +102,7 @@
       subroutine write_ref_filter_param_gz(FPz_f, filter_conf, zbuf)
 !
       use t_filter_elength
+      use gz_data_IO
       use gzip_file_access
 !
       character, pointer, intent(in) :: FPz_f
@@ -124,13 +125,8 @@
       write(zbuf%fixbuf(1),'(a,2a1)') '! filter width ',                &
      &                                char(10), char(0)
       call gz_write_textbuf_no_lf(FPz_f, zbuf)
-!
-      write(fmt_txt,'(a3,i1,a13)') '(1p', filter_conf%nf_type,          &
-     &                            'E25.15e3,2a1)'
-      write(zbuf%fixbuf(1),fmt_txt)                                     &
-     &         filter_conf%f_width(1:filter_conf%nf_type),              &
-     &         char(10), char(0)
-      call gz_write_textbuf_no_lf(FPz_f, zbuf)
+      call write_gz_multi_real(FPz_f, filter_conf%nf_type,              &
+     &                         filter_conf%f_width, zbuf)
 !
       write(zbuf%fixbuf(1),'(a,2a1)')                                   &
      &        '! original 1d-moment of filters ', char(10), char(0)

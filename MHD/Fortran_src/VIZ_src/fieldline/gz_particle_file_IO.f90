@@ -107,6 +107,12 @@
 !
       call open_wt_gzfile_a(FPz_p, file_name, zbuf_p)
 !
+      zbuf_p%fixbuf(1) = hd_fem_para() // char(0)
+      call gz_write_textbuf_no_lf(FPz_p, zbuf_p)
+!
+      call gz_write_domain_info(FPz_p, id_rank,                         &
+     &                          particle_IO%comm, zbuf_p)
+!
       zbuf_p%fixbuf(1) = hd_fem_node() // char(0)
       call gz_write_textbuf_no_lf(FPz_p, zbuf_p)
 !

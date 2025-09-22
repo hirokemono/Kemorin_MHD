@@ -106,7 +106,8 @@
       open(input_file_code, file = file_name, form = 'formatted')
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_para()
-      call write_domain_info(input_file_code, id_rank, particle_IO%comm)
+      call write_domain_info(input_file_code, id_rank,                  &
+     &                       particle_IO%comm)
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_node()
       call write_geometry_info(input_file_code, particle_IO%node)
