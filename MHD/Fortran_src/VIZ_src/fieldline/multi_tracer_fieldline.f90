@@ -7,10 +7,11 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_tce,   &
-!!     &                                 fline_lc, fln_SR, fln_bcast)
+!!      subroutine alloc_each_FLINE_data(mesh, num_fline, fln_prm,      &
+!!     &          fln_tce, fline_lc, fln_SR, fln_bcast)
 !!      subroutine dealloc_each_FLINE_data(num_fline, fln_prm, fln_tce, &
 !!     &                                   fline_lc, fln_SR, fln_bcast)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        integer(kind = kint), intent(in) :: num_fline
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
@@ -70,11 +71,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_each_FLINE_data(num_fline, fln_prm, fln_tce,     &
-     &                                 fline_lc, fln_SR, fln_bcast)
+      subroutine alloc_each_FLINE_data(mesh, num_fline, fln_prm,        &
+     &          fln_tce, fline_lc, fln_SR, fln_bcast)
+!
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: mesh
 !
       integer(kind = kint), intent(in) :: num_fline
-!
       type(fieldline_paramter), intent(inout) ::    fln_prm(num_fline)
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(local_fieldline), intent(inout)                              &
@@ -93,7 +97,7 @@
         call alloc_trace_data_SR_num(fln_SR(i_fln))
 !
         do ip = 1, np_smp
-          call alloc_local_fline(fline_lc(ip,i_fln))
+          call alloc_local_fline(mesh%ele, fline_lc(ip,i_fln))
         end do
       end do
 !

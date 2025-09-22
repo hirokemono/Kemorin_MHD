@@ -7,6 +7,13 @@
 !>@brief  tracer or field line data in each domain
 !!
 !!@verbatim
+!!      character(len=ilen_hd_particle_connect)                         &
+!!     &                         function hd_particle_connect()
+!!      character(len=ilen_hd_particle_velocity)                        &
+!!     &                         function hd_particle_velocity()
+!!      character(len=ilen_hd_particle_marker)                          &
+!!     &                         function hd_particle_marker()
+!!
 !!      subroutine copy_restart_tracer_to_IO(fln_tce, particle_IO)
 !!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!        type(surf_edge_IO_file), intent(inout) :: particle_IO
@@ -14,12 +21,8 @@
 !!        type(surf_edge_IO_file), intent(in) :: particle_IO
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
-!!      character(len=ilen_hd_particle_connect)                         &
-!!     &                         function hd_particle_connect()
-!!      character(len=ilen_hd_particle_velocity)                        &
-!!     &                         function hd_particle_velocity()
-!!      character(len=ilen_hd_particle_marker)                          &
-!!     &                         function hd_particle_marker()
+!!      subroutine check_tracer_restart(fln_tce)
+!!        type(each_fieldline_trace), intent(in) :: fln_tce
 !!@endverbatim
 !
       module local_fline_restart_IO
@@ -46,6 +49,45 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      character(len=ilen_hd_particle_connect)                           &
+     &                         function hd_particle_connect()
+!
+      hd_particle_connect                                               &
+     &      = '!' // char(10)                                           &
+     &     // '!  2    Particle indexing' // char(10)                   &
+     &     // '!  2.1   local element ID' // char(10)                   &
+     &     // '!     and surface ID in elememnt' // char(10)            &
+     &     // '!' // char(10)
+!
+      end function hd_particle_connect
+!
+!------------------------------------------------------------------
+!
+      character(len=ilen_hd_particle_velocity)                          &
+     &                         function hd_particle_velocity()
+!
+      hd_particle_velocity                                              &
+     &      = '!' // char(10)                                           &
+     &     // '!  3.1  particle velocity' // char(10)                   &
+     &     // '!' // char(10)
+!
+      end function hd_particle_velocity
+!
+!------------------------------------------------------------------
+!
+      character(len=ilen_hd_particle_marker)                            &
+     &                         function hd_particle_marker()
+!
+      hd_particle_marker                                                &
+     &      = '!' // char(10)                                           &
+     &     // '!  3.2   scalar marker' // char(10)                      &
+     &     // '!' // char(10)
+!
+      end function hd_particle_marker
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
 !
       subroutine copy_restart_tracer_to_IO(fln_tce, particle_IO)
 !
@@ -122,43 +164,32 @@
       end subroutine copy_restart_tracer_from_IO
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      character(len=ilen_hd_particle_connect)                           &
-     &                         function hd_particle_connect()
+      subroutine check_tracer_restart(fln_tce)
 !
-      hd_particle_connect                                               &
-     &      = '!' // char(10)                                           &
-     &     // '!  2    Particle indexing' // char(10)                   &
-     &     // '!  2.1   local element ID' // char(10)                   &
-     &     // '!     and surface ID in elememnt' // char(10)            &
-     &     // '!' // char(10)
+      use t_tracing_data
 !
-      end function hd_particle_connect
+      type(each_fieldline_trace), intent(in) :: fln_tce
 !
-!------------------------------------------------------------------
+      integer(kind = kint) :: ip, i
 !
-      character(len=ilen_hd_particle_velocity)                          &
-     &                         function hd_particle_velocity()
+      do ip = 1, nprocs
+        call calypso_mpi_barrier()
+        if((ip-1) .ne. my_rank) cycle
 !
-      hd_particle_velocity                                              &
-     &      = '!' // char(10)                                           &
-     &     // '!  3.1  particle velocity' // char(10)                   &
-     &     // '!' // char(10)
+        write(*,*) my_rank, 'fln_tce%num_current_fline',                &
+     &            fln_tce%num_current_fline
+        do i = 1, fln_tce%num_current_fline
+          write(*,*) 'xx_fline_start', i, fln_tce%iline_original(i),    &
+     &              fln_tce%xx_fline_start(1:3,i),                      &
+     &              fln_tce%isf_dbl_start(1:3,i)
+        end do
+      end do
+      call calypso_mpi_barrier()
 !
-      end function hd_particle_velocity
+      end subroutine check_tracer_restart
 !
-!------------------------------------------------------------------
-!
-      character(len=ilen_hd_particle_marker)                            &
-     &                         function hd_particle_marker()
-!
-      hd_particle_marker                                                &
-     &      = '!' // char(10)                                           &
-     &     // '!  3.2   scalar marker' // char(10)                      &
-     &     // '!' // char(10)
-!
-      end function hd_particle_marker
-!
-!------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       end module local_fline_restart_IO

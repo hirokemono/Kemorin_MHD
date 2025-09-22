@@ -57,6 +57,8 @@
       type(time_data) :: time_IO
 !
 !
+      call check_tracer_restart(fln_tce)
+!
       call copy_time_step_size_data(time_d, time_IO)
       call copy_restart_tracer_to_IO(fln_tce, particle_IO)
 
@@ -94,6 +96,8 @@
       call dealloc_neib_id(particle_IO%comm)
       call dealloc_ele_connect(particle_IO%ele)
       call dealloc_node_geometry_base(particle_IO%node)
+!
+      call check_tracer_restart(fln_tce)
 !
       if(my_rank .ne. 0) return
       if(init_d%i_time_step .ne. time_IO%i_time_step) then

@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine reset_fline_start(fline_lc)
-!!      subroutine alloc_local_fline(fline_lc)
+!!      subroutine alloc_local_fline(ele, fline_lc)
 !!      subroutine dealloc_local_fline(fline_lc)
+!!        type(element_data), intent(in) :: ele
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
 !!      subroutine raise_local_fline_connect(fline_lc)
@@ -69,8 +70,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_fline(fline_lc)
+      subroutine alloc_local_fline(ele, fline_lc)
 !
+      use t_geometry_data
+!
+      type(element_data), intent(in) :: ele
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !

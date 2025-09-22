@@ -115,9 +115,9 @@
      &    nod_fld, tracer%num_trace, tracer_ctls, tracer%fln_prm)
       call dealloc_fline_ctl_struct(tracer_ctls)
 !
-      call alloc_each_FLINE_data(tracer%num_trace, tracer%fln_prm,      &
-     &                           tracer%fln_tce, tracer%particle_lc,    &
-     &                           tracer%fln_SR, tracer%fln_bcast)
+      call alloc_each_FLINE_data(geofem%mesh, tracer%num_trace,         &
+     &    tracer%fln_prm, tracer%fln_tce, tracer%particle_lc,           &
+     &    tracer%fln_SR, tracer%fln_bcast)
       call alloc_each_TRACER_data(geofem%mesh%node, tracer%num_trace,   &
      &                            tracer%fln_tce)
 !
