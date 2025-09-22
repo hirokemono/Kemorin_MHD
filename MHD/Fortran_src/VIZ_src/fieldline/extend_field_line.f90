@@ -83,7 +83,6 @@
       real(kind = kreal), intent(inout) :: trace_length
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
 !
-      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       real(kind = kreal) :: x4_ele(4,ele%nnod_4_ele)
       real(kind = kreal) :: v4_start(4)
       integer(kind = kint) :: isf_tgt, jcou
@@ -97,10 +96,9 @@
       end if
 !
       isurf_org(1:2) = isurf_org_dbl(2:3)
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       call set_veclocity_at_each_tracer                                 &
      &   (node, ele, nod_fld, i_fline, isurf_org(1),                    &
-     &    xx4_start, xi4_start, v4_start, itp_ele_work_f)
+     &    xx4_start, xi4_start, v4_start, fline_lc%itp_ele_work_l)
       call add_fline_start(iglobal_fline, isurf_org(1),                 &
      &                     xx4_start, xi4_start, fline_lc)
 !
@@ -134,7 +132,7 @@
 !
         call set_veclocity_at_each_tracer                               &
      &     (node, ele, nod_fld, i_fline, isurf_org(1),                  &
-     &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
+     &      xx4_start, xi4_start, v4_start, fline_lc%itp_ele_work_l)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
@@ -158,7 +156,7 @@
 !
         call set_veclocity_at_each_tracer                               &
      &     (node, ele, nod_fld, i_fline, isurf_org(1),                  &
-     &      xx4_start, xi4_start, v4_start, itp_ele_work_f)
+     &      xx4_start, xi4_start, v4_start, fline_lc%itp_ele_work_l)
         call add_fline_list(iglobal_fline, isurf_org(1),                &
      &      xx4_start, xi4_start, fline_lc)
         if(trace_length.ge.end_trace .and. end_trace.gt.zero) exit
@@ -197,8 +195,6 @@
           exit
         end if
       end do
-!
-      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       end subroutine s_extend_field_line
 !

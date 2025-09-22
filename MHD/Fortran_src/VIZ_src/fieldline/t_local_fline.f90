@@ -31,6 +31,7 @@
 !
       use m_precision
       use m_constants
+      use t_find_interpolate_in_ele
 !
       implicit  none
 !
@@ -45,6 +46,8 @@
         integer(kind = kint), allocatable :: iele_fline(:)
         real(kind = kreal), allocatable ::   xx_line_l(:,:)
         real(kind = kreal), allocatable ::   xi_line_l(:,:)
+!
+        type(cal_interpolate_coefs_work) :: itp_ele_work_l
       end type local_fieldline
 !
 !  ---------------------------------------------------------------------
@@ -76,6 +79,9 @@
       call alloc_local_fline_conn(ione, fline_lc)
       call alloc_local_fline_data(itwo, fline_lc)
 !
+      call alloc_work_4_interpolate(ele%nnod_4_ele,                     &
+     &                              fline_lc%itp_ele_work_l)
+!
       end subroutine alloc_local_fline
 !
 !  ---------------------------------------------------------------------
@@ -84,6 +90,8 @@
       subroutine dealloc_local_fline(fline_lc)
 !
       type(local_fieldline), intent(inout) :: fline_lc
+!
+      call dealloc_work_4_interpolate(fline_lc%itp_ele_work_l)
 !
       call dealloc_local_fline_conn(fline_lc)
       call dealloc_local_fline_data(fline_lc)

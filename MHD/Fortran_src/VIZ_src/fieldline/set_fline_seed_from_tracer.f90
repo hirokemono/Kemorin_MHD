@@ -92,12 +92,10 @@
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       integer(kind= kint) :: inum, icou
 !
 !
       icou = 0
-      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
       do inum = 1, fln_tce%num_current_fline
         icou = icou + 1
         fln_tce%iflag_direction(icou) = fln_prm%id_fline_direction
@@ -124,7 +122,6 @@
           fln_tce%icount_fline(icou) = 0
         end if
       end do
-      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       end subroutine s_set_fline_seed_from_tracer
 !

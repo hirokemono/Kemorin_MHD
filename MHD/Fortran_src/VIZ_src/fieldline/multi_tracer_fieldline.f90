@@ -141,7 +141,6 @@
 !
       use calypso_mpi
       use m_connect_hexa_2_tetra
-      use t_find_interpolate_in_ele
       use set_fline_control
       use set_fline_seeds_from_list
       use field_at_each_seed_point
@@ -164,9 +163,6 @@
 !
       if(flag_fln_dist) then
         call alloc_FLINE_element_size(mesh%ele, fln_dist)
-        call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,              &
-     &                                fln_dist%itp_ele_work_f)
-
         call cal_FLINE_element_size(mesh%node, mesh%ele,                &
      &                              fln_dist%ele_size)
       end if
@@ -179,10 +175,7 @@
      &        fln_prm(i_fln), fln_src(i_fln), fln_dist)
         end if
       end do
-      if(flag_fln_dist) then
-        call dealloc_work_4_interpolate(fln_dist%itp_ele_work_f)
-        call dealloc_FLINE_element_size(fln_dist)
-      end if
+      if(flag_fln_dist)  call dealloc_FLINE_element_size(fln_dist)
 !
       end subroutine set_fixed_FLINE_seed_points
 !
@@ -249,11 +242,14 @@
       type(each_fieldline_source), intent(inout) :: fln_src
       type(FLINE_element_size), intent(inout) :: fln_dist
 !
+      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       integer(kind = kint) :: ierr_inter
       integer(kind = kint) :: num_search
 !
       integer(kind = kint) :: i
 !
+!
+      call alloc_work_4_interpolate(ele%nnod_4_ele, itp_ele_work_f)
 !
       do i = 1, fln_prm%num_each_field_line
         call seed_distance_from_ele_center                              &
@@ -269,11 +265,12 @@
 !
         call find_seed_point_in_each_ele                                &
      &     (node, ele, fln_prm%xx_surf_start_fline(1,i),                &
-     &      fln_dist%index, num_search, fln_dist%itp_ele_work_f,        &
+     &      fln_dist%index, num_search, itp_ele_work_f,                 &
      &      fln_src%ip_surf_start_fline(i),                             &
      &      fln_src%iele_surf_start_fline(i),                           &
      &      fln_src%xi_surf_start_fline(1:3,i), ierr_inter)
       end do
+      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       fln_src%num_line_local = 0
       do i = 1, fln_prm%num_each_field_line

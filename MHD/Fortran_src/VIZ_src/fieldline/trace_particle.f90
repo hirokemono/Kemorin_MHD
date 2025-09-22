@@ -59,7 +59,6 @@
      &          nod_fld, fln_prm, fln_tce, fline_lc,                    &
      &          fln_SR, fln_bcast, v_prev, m_SR)
 !
-      use t_find_interpolate_in_ele
       use transfer_to_long_integers
       use trace_particle_in_element
       use add_tracer_fieldline_list
@@ -79,14 +78,10 @@
       real(kind = kreal), intent(inout) :: v_prev(nod_fld%n_point,3)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      type(cal_interpolate_coefs_work) :: itp_ele_work_f
       integer(kind = kint) :: nline, inum, ip, ist, ied
 !
 !
       fln_tce%trace_length(1:fln_tce%num_current_fline) = 0.0d0
-
-      call alloc_work_4_interpolate(mesh%ele%nnod_4_ele,                &
-     &                              itp_ele_work_f)
 !
       do ip = 1, np_smp
         call reset_fline_start(fline_lc(ip))
@@ -109,7 +104,8 @@
      &          fln_tce%xx_fline_start(1,inum),                         &
      &          fln_tce%xi_fline_start(1,inum),                         &
      &          fln_tce%trace_length(inum),                             &
-     &          fln_tce%iflag_comm_start(inum), itp_ele_work_f, inum)
+     &          fln_tce%iflag_comm_start(inum),                         &
+     &          fline_lc(ip)%itp_ele_work_l, inum)
 !
             if(fln_tce%iflag_comm_start(inum) .eq. -3) then
               fln_tce%iflag_comm_start(inum) = 0
@@ -137,7 +133,6 @@
 !
         if(nline .le. 0) exit
       end do
-      call dealloc_work_4_interpolate(itp_ele_work_f)
 !
       call copy_nod_vector_smp(nod_fld%n_point,                        &
      &    nod_fld%d_fld(1,fln_prm%iphys_4_fline), v_prev)

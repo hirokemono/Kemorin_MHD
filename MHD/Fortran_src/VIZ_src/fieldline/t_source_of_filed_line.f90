@@ -27,7 +27,6 @@
       use m_precision
       use m_constants
       use t_control_params_4_fline
-      use t_find_interpolate_in_ele
 !
       implicit  none
 !
@@ -50,8 +49,6 @@
 !
         real(kind = kreal), allocatable :: distance(:)
         integer(kind = kint), allocatable :: index(:)
-!
-        type(cal_interpolate_coefs_work) :: itp_ele_work_f
       end type FLINE_element_size
 !
 !  ---------------------------------------------------------------------
