@@ -163,10 +163,7 @@
         ioffset = ioff_gl
         call mpi_read_one_chara_b                                       &
      &     (id_fld, ioffset, len_step_data_buf, textbuf_c)
-        write(*,*) 'textbuf_c: ', textbuf_c
         call read_step_data_buffer(textbuf_c, iread, t_IO)
-        write(*,*) 't_IO: ', iread, t_IO%i_time_step, &
-     &            t_IO%time, t_IO%dt
 !
         if(num_pe .ne. iread) then
           call calypso_mpi_abort                                        &
