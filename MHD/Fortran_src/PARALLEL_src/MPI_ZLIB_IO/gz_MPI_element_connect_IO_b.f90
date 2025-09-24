@@ -121,7 +121,7 @@
       subroutine gz_mpi_read_ele_info_b(IO_param, ele_IO)
 !
       use gz_MPI_binary_data_IO
-      use set_nnod_4_ele_by_type
+      use set_element_data_4_IO
 !
       use calypso_mpi_int
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -139,12 +139,7 @@
       call gz_mpi_read_int_vector_b                                     &
      &   (IO_param, num64, ele_IO%elmtyp)
 !
-      nnod_ele_lc = 0
-      do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_eletype                                &
-     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
-        nnod_ele_lc = max(nnod_ele_lc,ele_IO%nodelm(i))
-      end do
+      call find_max_nnod_4_ele_by_eletype(ele_IO, nnod_ele_lc)
       call calypso_mpi_allreduce_one_int                                &
      &   (nnod_ele_lc, ele_IO%nnod_4_ele, MPI_MAX)
 !
