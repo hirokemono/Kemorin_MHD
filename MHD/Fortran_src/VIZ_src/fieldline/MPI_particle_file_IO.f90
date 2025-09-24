@@ -119,8 +119,8 @@
       call mpi_write_element_info(IO_param, particle_IO%ele)
 !
       call mpi_write_charahead(IO_param,                                &
-     &                         len(step_data_buffer(my_rank, t_IO)),    &
-     &                         step_data_buffer(my_rank, t_IO))
+     &                         len(step_data_buffer(nprocs, t_IO)),     &
+     &                         step_data_buffer(nprocs, t_IO))
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_perticle_file

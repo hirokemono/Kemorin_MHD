@@ -160,7 +160,7 @@
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele
-         call s_set_nnod_4_ele_by_type                                  &
+         call s_set_nnod_4_ele_by_eletype                               &
      &      (ele_IO%elmtyp(i), ele_IO%nodelm(i))
          ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
