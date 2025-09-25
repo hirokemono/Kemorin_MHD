@@ -114,7 +114,6 @@
 !
       use const_sph_divergence
       use cal_sph_divergence_of_force
-!      use div_self_buoyancies_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -147,14 +146,6 @@
      &    MHD_prop%fl_prop%flag_filter_comp_buo,                        &
      &    sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                          &
      &    ipol_fil_frc, ipol_div_fil_frc, rj_fld)
-!
-!      call sel_div_buoyancies_sph_MHD                                  &
-!     &   (MHD_prop%fl_prop%flag_filter_gravity,                        &
-!     &    MHD_prop%fl_prop%flag_filter_comp_buo,                       &
-!     &    sph_rj, ipol_fil, ipol_graa_fil, ipol_div_fil_frc,           &
-!     &    MHD_prop%fl_prop%coef_buo,  MHD_prop%fl_prop%coef_comp_buo,  &
-!     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                  &
-!     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_filter_forces_sph_2
 !
