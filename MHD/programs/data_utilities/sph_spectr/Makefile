@@ -135,6 +135,8 @@ t_ctl_data_stratified_model.o \
 t_ctl_data_surf_boundary.o \
 t_ctl_data_temp_model.o \
 t_ctl_data_termal_norm.o \
+t_ctl_data_valuable_density.o \
+t_ctl_data_valuable_diffuse.o \
 \
 ctl_data_MHD_model_IO.o \
 ctl_data_SGS_MHD_model_IO.o \
@@ -145,6 +147,7 @@ ctl_data_mhd_evo_scheme_IO.o \
 ctl_data_node_boundary_IO.o \
 ctl_data_surf_boundary_IO.o \
 ctl_data_temp_model_IO.o \
+ctl_data_SGS_SPH_MHD_IO.o \
 \
 m_sph_node_group_types.o \
 m_fem_node_group_types.o \
@@ -160,6 +163,7 @@ t_control_data_pvrs.o \
 t_control_data_viz4.o \
 t_control_params_4_pvr.o \
 t_control_params_stereo_pvr.o \
+t_control_data_tracers.o \
 t_ctl_data_4_projection.o \
 t_ctl_data_4_screen_pixel.o \
 t_ctl_data_4_streo_view.o \
@@ -175,13 +179,13 @@ t_ctl_data_pvr_section.o \
 t_ctl_data_quilt_image.o \
 t_ctl_data_view_transfers.o \
 t_ctl_data_map_section.o \
+t_ctl_data_pvr_tracer.o \
 m_pvr_control_labels.o \
 ctl_data_each_pvr_IO.o \
-ctl_data_four_vizs_IO.o \
 ctl_data_pvr_colorbar_IO.o \
 ctl_data_pvr_colormap_IO.o \
 ctl_data_pvr_movie_IO.o \
-ctl_data_three_vizs_IO.o \
+ctl_data_four_vizs_IO.o \
 ctl_data_view_transfer_IO.o \
 ctl_file_each_pvr_IO.o \
 ctl_file_pvr_light_IO.o \
@@ -221,7 +225,10 @@ ctl_file_map_renderings_IO.o \
 t_control_data_4_map.o \
 t_control_data_maps.o \
 t_control_data_flines.o \
+t_control_data_pvr_tracers.o \
 t_ctl_data_field_line.o \
+t_fline_seeds_list_ctl.o \
+t_ctl_params_viz_fields.o \
 ctl_data_field_line_IO.o \
 ctl_file_fieldlines_IO.o \
 \
@@ -246,6 +253,7 @@ set_isosurface_file_ctl.o \
 set_field_comp_for_viz.o \
 t_psf_patch_data.o \
 set_area_4_viz.o \
+viz4_step_ctls_to_time_ctl.o \
 \
 m_control_fline_flags.o
 

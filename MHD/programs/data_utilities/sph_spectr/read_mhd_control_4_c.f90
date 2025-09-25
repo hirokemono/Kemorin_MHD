@@ -27,8 +27,9 @@
         type(sph_dynamo_viz_controls) :: zm_ctls
       end type add_sgs_sph_mhd_ctl
 !
-      type(mhd_simulation_control), save, target :: MHD_ctl_C
-      type(add_sgs_sph_mhd_ctl), save, target, private :: add_SSMHD_ctl_C
+      type(mhd_simulation_control), save, target, private :: MHD_ctl_C
+      type(add_sgs_sph_mhd_ctl), save, target, private                  &
+     &                                        :: add_SSMHD_ctl_C
       type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
@@ -206,14 +207,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_MHD_viz3_ctls(c_ctl)                       &
-     &          bind(C, NAME = 'c_MHD_viz3_ctls')
+      type(c_ptr) function c_MHD_viz4_ctls(c_ctl)                       &
+     &          bind(C, NAME = 'c_MHD_viz4_ctls')
       use t_ctl_data_sph_MHD_w_vizs
       type(c_ptr), value, intent(in) :: c_ctl
       type(add_vizs_sph_mhd_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_MHD_viz3_ctls = C_loc(f_ctl%viz3_ctls)
-      end function c_MHD_viz3_ctls
+      c_MHD_viz4_ctls = C_loc(f_ctl%viz4_ctls)
+      end function c_MHD_viz4_ctls
 !
 !  ---------------------------------------------------------------------
 !
@@ -640,17 +641,17 @@
      &  MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%num,           &
      & allocated(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%vect)
       
-      write(*,'(a,z16)') 'smonitor_ctl', c_loc(MHD_ctl_C%smonitor_ctl)
-      write(*,'(a,z16)') 'pspec_ctl',                                   &
-     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl)
-      write(*,'(a,z16)') 'pick_radius_ctl',                             &
-     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl)
+!      write(*,'(a,z16)') 'smonitor_ctl', c_loc(MHD_ctl_C%smonitor_ctl)
+!      write(*,'(a,z16)') 'pspec_ctl',                                   &
+!     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl)
+!      write(*,'(a,z16)') 'pick_radius_ctl',                             &
+!     &      c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl)
 
-      len = len_trim(MHD_ctl_C%block_name) + 1
-      write(MHD_ctl_C%block_name(len:len),'(a1)') char(0)
+!      len = len_trim(MHD_ctl_C%block_name) + 1
+!      write(MHD_ctl_C%block_name(len:len),'(a1)') char(0)
       c_read_control_sph_SGS_MHD = C_loc(MHD_ctl_C)
-      write(*,'(a,z16)') 'c_read_control_sph_SGS_MHD in F', &
-     &                  c_read_control_sph_SGS_MHD
+!      write(*,'(a,z16)') 'c_read_control_sph_SGS_MHD in F',             &
+!     &                  c_loc(c_read_control_sph_SGS_MHD)
 !
       end function c_read_control_sph_SGS_MHD
 !
