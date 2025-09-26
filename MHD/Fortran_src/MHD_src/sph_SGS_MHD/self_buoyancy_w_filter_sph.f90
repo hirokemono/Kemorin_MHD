@@ -67,6 +67,7 @@
       integer(kind = kint) :: ibuo_temp,  ibuo_comp
 !
 !
+!   ----  lead buoyancies
       call sel_field_address_for_buoyancies                             &
      &   (ipol%base, MHD_prop%ref_param_T, MHD_prop%ref_param_C,        &
      &    ibuo_temp, ibuo_comp)
@@ -74,6 +75,7 @@
      &   (sph%sph_rj, leg, ipol%forces, MHD_prop%fl_prop,               &
      &    sph_bc_U, ibuo_temp, ibuo_comp, rj_fld)
 !
+!   ----  lead filtered buoyancies
       call sel_buoyancies_sph_MHD(sph%sph_rj, leg,                      &
      &    ipol_LES%force_by_filter, MHD_prop%fl_prop, sph_bc_U,         &
      &    ipol_LES%filter_fld%i_temp, ipol_LES%filter_fld%i_light,      &

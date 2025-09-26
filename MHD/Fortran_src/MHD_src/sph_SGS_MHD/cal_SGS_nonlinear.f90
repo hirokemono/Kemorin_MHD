@@ -117,13 +117,6 @@
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
      &                         .gt. id_no_evolution) then
 !
-!   ----  lead buoyancies
-        call sel_buoyancies_sph_MHD                                     &
-     &     (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol%forces,       &
-     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
-     &      SPH_MHD%ipol%base%i_temp, SPH_MHD%ipol%base%i_light,        &
-     &      SPH_MHD%fld)
-!
 !   ----  lead rotation of buoyancies
         if(iflag_debug.gt.0) write(*,*) 'sel_rot_buoyancy_sph_MHD'
         call sel_rot_buoyancy_sph_MHD(SPH_MHD%sph%sph_rj,               &
@@ -131,17 +124,15 @@
      &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
      &      SPH_MHD%fld)
 !
-!   ----  lead filtered buoyancies
-        call sel_buoyancies_sph_MHD                                     &
-     &     (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol%forces,       &
-     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
-     &      SPH_MHD%ipol%base%i_temp, SPH_MHD%ipol%base%i_light,        &
-     &      SPH_MHD%fld)
-!
 !   ----   lead rotation of filtered buoyancies
         if(iflag_debug.gt.0) write(*,*) 'sel_rot_filter_buoyancy_sph'
         call sel_rot_filter_buoyancy_sph                                &
      &     (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,          &
+     &      SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+!
+!   ----  lead buoyancies
+        call cal_self_buoyancy_sph_SGS_MHD(SPH_MHD%sph, trans_p%leg,    &
+     &      SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_model%MHD_prop,         &
      &      SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
       end if
 !
