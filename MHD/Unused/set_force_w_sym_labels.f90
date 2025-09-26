@@ -38,7 +38,7 @@
 !!   sym_thermal_buoyancy, asym_thermal_buoyancy
 !!                 :   Thermal buoyancy       - \alpha_{T} g T
 !!   sym_composite_buoyancy, asym_composite_buoyancy
-!!                 :   compositional buoyancy  - \alpha_{C} g C
+!!                 :   Compositional buoyancy  - \alpha_{C} g C
 !!
 !!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
 !!                 :     induction                           u \times B

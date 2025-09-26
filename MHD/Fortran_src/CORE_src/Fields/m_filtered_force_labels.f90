@@ -86,13 +86,13 @@
      &                name = 'maxwell_tensor_by_filtered',              &
      &                math = '$ \tilde{B}_{i} \tilde{B}_{j} $')
 !
-!>        Field label for filtered buoyancy
+!>        Field label for filtered thermal buoyancy
 !!         @f$ -\alpha_{T} g_{i} \tilde{T} @f$
       type(field_def), parameter :: filtered_buoyancy                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filtered_buoyancy',                       &
      &                math = '$ -\alpha_{T} g_{i} \tilde{T} $')
-!>        Field label for compositional buoyancy
+!>        Field label for filtered compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} \tilde{C} @f$
       type(field_def), parameter :: filtered_comp_buoyancy              &
      &    = field_def(n_comp = n_vector,                                &

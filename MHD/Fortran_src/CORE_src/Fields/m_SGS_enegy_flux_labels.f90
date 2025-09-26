@@ -18,7 +18,7 @@
 !!
 !!   Reynolds_work [i_reynolds_wk]:   Reynolds stress
 !!   SGS_Lorentz_work [i_SGS_Lor_wk]: work of SGS Lorentz force
-!!   SGS_buoyancy_flux [i_SGS_buo_wk]: SGS buoyancy flux
+!!   SGS_buoyancy_flux [i_SGS_buo_wk]: SGS thermal buoyancy flux
 !!   SGS_comp_buoyancy_flux [i_SGS_comp_buo_wk]: 
 !!                          SGS compositional buoyancy flux
 !!
@@ -60,7 +60,7 @@
      &                math = '$ \partial_{i} e_{ijk}'                   &
      &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
      &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
-!>        Field label for work of SGS buoyancy
+!>        Field label for work of SGS thermal uoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
       type(field_def), parameter :: SGS_buoyancy_flux                   &
      &    = field_def(n_comp = n_scalar,                                &

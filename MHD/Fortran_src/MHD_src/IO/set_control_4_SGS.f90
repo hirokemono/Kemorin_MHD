@@ -163,7 +163,8 @@
             else if(cmp_no_case(tmpchara, magnetic_induction%name)      &
      &         .or. cmp_no_case(tmpchara, induction_1)) then
               SGS_param%iflag_SGS_uxb =     SGS_param%iflag_SGS
-            else if(cmp_no_case(tmpchara, buoyancy%name)                &
+            else if(cmp_no_case(tmpchara, thermal_buoyancy%name)        &
+     &         .or. cmp_no_case(tmpchara, buoyancy%name)                &
      &         .or. cmp_no_case(tmpchara, gravity_e1)) then
               SGS_param%iflag_SGS_gravity = SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, composition_advect%name)      &
