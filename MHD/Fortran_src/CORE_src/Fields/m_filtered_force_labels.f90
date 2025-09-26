@@ -23,7 +23,7 @@
 !!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_buoyancy               [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]

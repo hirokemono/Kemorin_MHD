@@ -18,7 +18,7 @@
 !!
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
-!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

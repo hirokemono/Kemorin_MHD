@@ -30,7 +30,7 @@
 !!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_buoyancy               [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
@@ -58,7 +58,7 @@
 !!
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
-!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -70,7 +70,7 @@
 !!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_buoyancy               [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
@@ -155,7 +155,7 @@
           force_by_filter%i_m_tension =  i_phys
 !
         else if(field_name .eq. filtered_buoyancy%name) then
-          force_by_filter%i_buoyancy =   i_phys
+          force_by_filter%i_thrm_buo =   i_phys
         else if(field_name .eq. filtered_comp_buoyancy%name) then
           force_by_filter%i_comp_buo =   i_phys
 !
@@ -219,7 +219,7 @@
           rot_frc_by_filter%i_lorentz =    i_phys
 !
         else if (field_name .eq. rot_filtered_buoyancy%name) then
-          rot_frc_by_filter%i_buoyancy =   i_phys
+          rot_frc_by_filter%i_thrm_buo =   i_phys
         else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
           rot_frc_by_filter%i_comp_buo =   i_phys
         end if
@@ -252,7 +252,7 @@
           div_frc_by_filter%i_lorentz =    i_phys
 !
         else if (field_name .eq. div_filtered_buoyancy%name) then
-          div_frc_by_filter%i_buoyancy =   i_phys
+          div_frc_by_filter%i_thrm_buo =   i_phys
         else if (field_name .eq. div_filtered_comp_buoyancy%name) then
           div_frc_by_filter%i_comp_buo =   i_phys
 !

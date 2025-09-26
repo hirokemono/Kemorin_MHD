@@ -73,7 +73,7 @@
 !
       if(fl_prop%flag_filter_gravity) then
         call add_each_force_to_forces                                   &
-     &     (ipol_exp%i_forces, ipol_div_fil_frc%i_buoyancy,             &
+     &     (ipol_exp%i_forces, ipol_div_fil_frc%i_thrm_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%flag_filter_comp_buo) then
@@ -117,7 +117,7 @@
       end if
       if(fl_prop%flag_filter_gravity) then
         call add_term_to_div_force                                      &
-     &     (ipol_base%i_press, ipol_div_fil_frc%i_buoyancy,             &
+     &     (ipol_base%i_press, ipol_div_fil_frc%i_thrm_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(fl_prop%flag_filter_comp_buo) then

@@ -80,7 +80,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_scalar, igrad_scalar, ipol_div_frc%i_buoyancy,         &
+     &      ipol_scalar, igrad_scalar, ipol_div_frc%i_thrm_buo,         &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

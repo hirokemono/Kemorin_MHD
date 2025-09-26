@@ -19,7 +19,7 @@
 !!
 !!   div_inertia_by_filtered           [div_frc_by_filter%i_m_advect]
 !!   div_Lorentz_force_by_filtered     [div_frc_by_filter%i_lorentz]
-!!   div_filtered_buoyancy             [div_frc_by_filter%i_buoyancy]
+!!   div_filtered_buoyancy             [div_frc_by_filter%i_thrm_buo]
 !!   div_filtered_comp_buoyancy        [div_frc_by_filter%i_comp_buo]
 !!
 !!   div_vecp_induction_by_filtered    [div_frc_by_filter%i_vp_induct]

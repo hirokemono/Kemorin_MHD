@@ -157,33 +157,33 @@
 !
       if (fl_prop%flag_thermal_buoyancy) then
         call set_gravity_2_each_node                                    &
-     &     (iphys%base%i_temp, iphys%forces%i_buoyancy,                 &
+     &     (iphys%base%i_temp, iphys%forces%i_thrm_buo,                 &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
       else if(fl_prop%flag_filter_gravity) then
         call set_gravity_2_each_node                                    &
-     &     (iphys_LES%filter_fld%i_temp, iphys%forces%i_buoyancy,       &
+     &     (iphys_LES%filter_fld%i_temp, iphys%forces%i_thrm_buo,       &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
       end if
       call add_int_nodal_buoyancy(node%numnod, node%istack_nod_smp,     &
-     &    nod_fld%ntot_phys, iphys%forces%i_buoyancy, nod_fld%d_fld,    &
+     &    nod_fld%ntot_phys, iphys%forces%i_thrm_buo, nod_fld%d_fld,    &
      &    mlump_fl%ml_o, f_nl%ff)
 !
 !
       if (fl_prop%flag_comp_buoyancy) then
         call set_gravity_2_each_node                                    &
-     &     (iphys%base%i_light, iphys%forces%i_buoyancy,                &
+     &     (iphys%base%i_light, iphys%forces%i_thrm_buo,                &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
       else if(fl_prop%flag_filter_comp_buo) then
         call set_gravity_2_each_node                                    &
-     &     (iphys_LES%filter_fld%i_light, iphys%forces%i_buoyancy,      &
+     &     (iphys_LES%filter_fld%i_light, iphys%forces%i_thrm_buo,      &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
       end if
       call add_int_nodal_buoyancy(node%numnod, node%istack_nod_smp,     &
-     &    nod_fld%ntot_phys, iphys%forces%i_buoyancy, nod_fld%d_fld,    &
+     &    nod_fld%ntot_phys, iphys%forces%i_thrm_buo, nod_fld%d_fld,    &
      &    mlump_fl%ml_o, f_nl%ff)
 !
       end subroutine int_buoyancy_nod_exp

@@ -123,7 +123,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_fil%i_temp,                          &
-     &      ipol_rot_fil_frc%i_buoyancy, sph_rj%nidx_rj,                &
+     &      ipol_rot_fil_frc%i_thrm_buo, sph_rj%nidx_rj,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -165,7 +165,7 @@
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_fil%i_temp, ipol_gfl%i_grad_temp,                      &
-     &      ipol_div_fil_frc%i_buoyancy,                                &
+     &      ipol_div_fil_frc%i_thrm_buo,                                &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj(1,1),                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

@@ -75,7 +75,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_scalar,                              &
-     &      ipol_rot_frc%i_buoyancy, sph_rj%nidx_rj,                    &
+     &      ipol_rot_frc%i_thrm_buo, sph_rj%nidx_rj,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
