@@ -37,6 +37,8 @@
 !!          Thermal buoyancy flux            -u \cdot (\alpha_{T} g T)
 !!   sym_composite_buo_flux, asym_composite_buo_flux:
 !!          Compositional buoyancy flux      -u \cdot (\alpha_{C} g C)
+!!   sym_buoyancy_flux, asym_buoyancy_flux:  Total buoyancy flux
+!!                            -u \cdot (\alpha_{T} T + \alpha_{C} C) g
 !!
 !!   B_rot_Bsym_x_usym, B_rot_Basym_x_uasym,
 !!   B_rot_Bsym_x_uasym, B_rot_Basym_x_usym:
@@ -133,9 +135,9 @@
           eflux_asym1_sym2%i_m_tension_wk =  i_phys
 !
         else if (field_name .eq. sym_termal_buo_flux%name) then
-          eflux_sym1_sym2%i_buo_gen =   i_phys
+          eflux_sym1_sym2%i_t_buo_gen =   i_phys
         else if (field_name .eq. asym_termal_buo_flux%name) then
-          eflux_asym1_asym2%i_buo_gen =   i_phys
+          eflux_asym1_asym2%i_t_buo_gen = i_phys
 !
         else if (field_name .eq. sym_composite_buo_flux%name) then
           eflux_sym1_sym2%i_c_buo_gen =   i_phys
