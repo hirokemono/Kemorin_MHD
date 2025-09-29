@@ -59,8 +59,9 @@
 !!
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
-!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_thrm_buo]
+!!   rot_filtered_thermal_buoyancy     [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -189,14 +190,17 @@
       if(flag) then
         if (field_name .eq. rot_inertia_by_filtered%name) then
           rot_frc_by_filter%i_m_advect =   i_phys
-        else if (field_name .eq. rot_Lorentz_force_by_filtered%name)    &
-     &   then
+        else if(field_name .eq. rot_Lorentz_force_by_filtered%name)     &
+     &       then
           rot_frc_by_filter%i_lorentz =    i_phys
 !
-        else if (field_name .eq. rot_filtered_buoyancy%name) then
+        else if(field_name .eq. rot_filtered_thermal_buoyancy%name)     &
+     &      then
           rot_frc_by_filter%i_thrm_buo =   i_phys
-        else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
+        else if(field_name .eq. rot_filtered_comp_buoyancy%name) then
           rot_frc_by_filter%i_comp_buo =   i_phys
+        else if (field_name .eq. rot_filtered_buoyancy%name) then
+          rot_frc_by_filter%i_buoyancy =   i_phys
         end if
       end if
 !
