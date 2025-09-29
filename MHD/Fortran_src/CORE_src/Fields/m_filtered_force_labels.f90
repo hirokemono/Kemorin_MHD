@@ -23,8 +23,9 @@
 !!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_thrm_buo]
+!!   filtered_thermal_buoyancy       [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
+!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
 !!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
@@ -41,7 +42,7 @@
 !!
 !!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
 !!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
-!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
+!!   composition_flux_by_filtered    [force_by_filter%i_c_flux]
 !!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -87,18 +88,25 @@
      &                math = '$ \tilde{B}_{i} \tilde{B}_{j} $')
 !
 !>        Field label for filtered thermal buoyancy
-!!         @f$ -\alpha_{T} g_{i} \tilde{T} @f$
-      type(field_def), parameter :: filtered_buoyancy                   &
+!!         @f$ -\alpha_{T} \tilde{T} g_{i}@f$
+      type(field_def), parameter :: filtered_thermal_buoyancy           &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'filtered_buoyancy',                       &
-     &                math = '$ -\alpha_{T} g_{i} \tilde{T} $')
+     &                name = 'filtered_thermal_buoyancy',               &
+     &                math = '$ -\alpha_{T} \tilde{T} g_{i}$')
 !>        Field label for filtered compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} \tilde{C} @f$
+!!         @f$ -\alpha_{C} \tilde{C} g_{i} @f$
       type(field_def), parameter :: filtered_comp_buoyancy              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filtered_comp_buoyancy',                  &
-     &                math = '$ -\alpha_{C} g_{i} \tilde{C} $')
-!!
+     &                math = '$ -\alpha_{C} \tilde{C} g_{i} $')
+!>        Field label for filtered total buoyancy
+!!         @f$ -(\alpha_{T} \tilde{T} + \alpha_{C} \tilde{C}) g_{i} @f$
+      type(field_def), parameter :: filtered_buoyancy                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filtered_buoyancy',                       &
+     &                math = '$ -(\alpha_{T} \tilde{T} '                &
+     &                    // ' + \alpha_{C} \tilde{C}) g_{i} $')
+!
 !>        Field label for induction for vector potential
 !!         @f$ e_{ijk} \tilde{u}_{j} \tilde{B}_{k} @f$
       type(field_def), parameter :: vecp_induction_by_filtered          &
@@ -168,9 +176,9 @@
      &      math = '$ \tilde{u}_{i} \partial_{i} \tilde{\Theta}_{C} $')
 !>        Field label for compositinoal flux
 !!         @f$ \tilde{u}_{i} \tilde{C} @f$
-      type(field_def), parameter :: composite_flux_by_filtered          &
+      type(field_def), parameter :: composition_flux_by_filtered        &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'composite_flux_by_filtered',              &
+     &                name = 'composition_flux_by_filtered',            &
      &                math = '$ \tilde{u}_{i} \tilde{C} $')
 !>        Field label for perturbation of composition flux
 !!         @f$ \tilde{u}_{i} \tilde{\Theta}_{C} @f$
@@ -195,8 +203,9 @@
      &   .or. (field_name .eq. Lorentz_force_by_filtered%name)          &
      &   .or. (field_name .eq. magnetic_tension_by_filtered%name)       &
 !
-     &   .or. (field_name .eq. filtered_buoyancy%name)                  &
+     &   .or. (field_name .eq. filtered_thermal_buoyancy%name)          &
      &   .or. (field_name .eq. filtered_comp_buoyancy%name)             &
+     &   .or. (field_name .eq. filtered_buoyancy%name)                  &
 !
      &   .or. (field_name .eq. vecp_induction_by_filtered%name)         &
      &   .or. (field_name .eq. magnetic_induction_by_filtered%name)     &
@@ -205,7 +214,7 @@
 !
      &   .or. (field_name .eq. heat_flux_by_filtered%name)              &
      &   .or. (field_name .eq. pert_h_flux_by_filtered%name)            &
-     &   .or. (field_name .eq. composite_flux_by_filtered%name)         &
+     &   .or. (field_name .eq. composition_flux_by_filtered%name)       &
      &   .or. (field_name .eq. pert_c_flux_by_filtered%name)
 !
       end function check_filtered_force
@@ -253,8 +262,10 @@
       call set_field_label_to_ctl(Lorentz_force_by_filtered, array_c2i)
       call set_field_label_to_ctl(magnetic_tension_by_filtered,         &
      &                            array_c2i)
-      call set_field_label_to_ctl(filtered_buoyancy,       array_c2i)
-      call set_field_label_to_ctl(filtered_comp_buoyancy,  array_c2i)
+      call set_field_label_to_ctl(filtered_thermal_buoyancy, array_c2i)
+      call set_field_label_to_ctl(filtered_comp_buoyancy,    array_c2i)
+      call set_field_label_to_ctl(filtered_buoyancy,         array_c2i)
+!
       call set_field_label_to_ctl(vecp_induction_by_filtered,           &
      &                            array_c2i)
       call set_field_label_to_ctl(magnetic_induction_by_filtered,       &
@@ -272,7 +283,7 @@
      &                            array_c2i)
       call set_field_label_to_ctl(heat_flux_by_filtered,     array_c2i)
       call set_field_label_to_ctl(pert_h_flux_by_filtered,   array_c2i)
-      call set_field_label_to_ctl(composite_flux_by_filtered,           &
+      call set_field_label_to_ctl(composition_flux_by_filtered,         &
      &                            array_c2i)
       call set_field_label_to_ctl(pert_c_flux_by_filtered,   array_c2i)
 !
