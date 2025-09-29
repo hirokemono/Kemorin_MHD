@@ -226,30 +226,33 @@
      &   then
           div_frc_by_filter%i_lorentz =    i_phys
 !
-        else if (field_name .eq. div_filtered_buoyancy%name) then
+        else if(field_name                                              &
+     &     .eq. div_filtered_thermal_buoyancy%name)     then
           div_frc_by_filter%i_thrm_buo =   i_phys
-        else if (field_name .eq. div_filtered_comp_buoyancy%name) then
+        else if(field_name .eq. div_filtered_comp_buoyancy%name) then
           div_frc_by_filter%i_comp_buo =   i_phys
+        else if(field_name .eq. div_filtered_buoyancy%name) then
+          div_frc_by_filter%i_buoyancy =   i_phys
 !
-        else if (field_name .eq. div_vecp_induction_by_filtered%name)   &
-     &   then
+        else if(field_name                                              &
+     &     .eq. div_vecp_induction_by_filtered%name) then
           div_frc_by_filter%i_vp_induct =  i_phys
 !
-        else if (field_name .eq. div_h_flux_by_filtered%name) then
+        else if(field_name .eq. div_h_flux_by_filtered%name) then
           div_frc_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. div_pert_h_flux_by_filtered%name) then
+        else if(field_name .eq. div_pert_h_flux_by_filtered%name) then
           div_frc_by_filter%i_ph_flux =   i_phys
 !
-        else if (field_name .eq. div_c_flux_by_filtered%name) then
+        else if(field_name .eq. div_c_flux_by_filtered%name) then
           div_frc_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. div_pert_c_flux_by_filtered%name) then
+        else if(field_name .eq. div_pert_c_flux_by_filtered%name) then
           div_frc_by_filter%i_pc_flux =   i_phys
 !
-        else if (field_name .eq. div_m_flux_by_filtered%name) then
+        else if(field_name .eq. div_m_flux_by_filtered%name) then
           div_frc_by_filter%i_m_flux =   i_phys
-        else if (field_name .eq. div_maxwell_t_by_filtered%name) then
+        else if(field_name .eq. div_maxwell_t_by_filtered%name) then
           div_frc_by_filter%i_maxwell =  i_phys
-        else if (field_name .eq. div_induct_t_by_filtered%name) then
+        else if(field_name .eq. div_induct_t_by_filtered%name) then
           div_frc_by_filter%i_induct_t = i_phys
         end if
       end if

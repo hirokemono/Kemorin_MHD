@@ -148,10 +148,13 @@
      &                        field_ctl))                               &
      &   call add_phys_name_ctl(Lorentz_force_by_filtered, field_ctl)
 !
-      if(check_field_list_ctl(div_filtered_buoyancy, field_ctl))        &
+      if(check_field_list_ctl(div_filtered_thermal_buoyancy,            &
+     &                        field_ctl))                               &
      &   call add_phys_name_ctl(filtered_thermal_buoyancy, field_ctl)
       if(check_field_list_ctl(div_filtered_comp_buoyancy, field_ctl))   &
      &   call add_phys_name_ctl(filtered_comp_buoyancy, field_ctl)
+      if(check_field_list_ctl(div_filtered_buoyancy, field_ctl))        &
+     &   call add_phys_name_ctl(filtered_buoyancy, field_ctl)
 !
       if(check_field_list_ctl(div_vecp_induction_by_filtered,           &
      &                        field_ctl))                               &
