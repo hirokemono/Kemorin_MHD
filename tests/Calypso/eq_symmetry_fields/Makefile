@@ -8,21 +8,47 @@ SHELL           = /bin/sh
 #
 SRCDIR = /Users/matsui/src_kemo
 #
-MHDDIR =  $(SRCDIR)/MHD
+MPIRUN = mpirun
+TARGET_SPH_MHD =       $(SRCDIR)/bin/sph_mhd
+TARGET_SPH_ENE_CHECK = $(SRCDIR)/bin/tests/sph_ene_check
+TARGET_COMPARE_PSF =   $(SRCDIR)/bin/tests/compare_psf
+#
 
 all: test
 
 test: 
-	rm -f *.dat
-	$(MPIRUN) -np 4 $(MHDDIR)/bin/sph_mhd
-#	@sync
-#	@echo 'Compare with reference mean square data'
-#	$(MHDDIR)/bin/tests/sph_ene_check sph_pwr_volume_s reference/sph_pwr_volume_s >> log.txt
+	make clean
+	$(MPIRUN) -np 6 $(TARGET_SPH_MHD)
+	
+	@sync
+	$(TARGET_SPH_ENE_CHECK)  reference/sph_pwr_volume_s  monitor/sph_pwr_volume_s  >> log.txt
+	@if [ `tail -n 1 flag.txt` != 0 ]; then\
+		echo 'Failed dynamo benchmark data check'; \
+		exit 1;\
+	fi
+	$(TARGET_SPH_ENE_CHECK)  reference/sph_pwr_volume_m0 monitor/sph_pwr_volume_m0 >> log.txt
+	@if [ `tail -n 1 flag.txt` != 0 ]; then\
+		echo 'Failed dynamo benchmark data check'; \
+		exit 1;\
+	fi
+	$(TARGET_SPH_ENE_CHECK)  reference/gauss_coefs_Re    monitor/gauss_coefs_Re    >> log.txt
+	@if [ `tail -n 1 flag.txt` != 0 ]; then\
+		echo 'Failed dynamo benchmark data check'; \
+		exit 1;\
+	fi
+	
+	$(TARGET_COMPARE_PSF)
+	@if [ `tail -n 1 flag.txt` != 0 ]; then\
+		echo 'Failed sectioning data check'; \
+		exit 1;\
+	fi
+	@echo 'Equatorially symmetric field check finished'
+
 
 clean:
-	rm -f *.dat *.txt fort.*
-	rm -f rst_4/rst.*
-	rm -f section/*.vtk
-	rm -f isosurface/*.vtk
+	rm -f *.dat *.txt
+	rm -f monitor/[a-q,s-z]*
+	rm -f sections/[a-q,s-z]*
+	rm -f isosurfaces/[a-q,s-z]*
 
 distclean: clean

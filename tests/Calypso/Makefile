@@ -77,6 +77,13 @@ test:
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
 		test
+	@echo "# Test in eq_symmetry_fields directory..."
+	@cd eq_symmetry_fields; \
+		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
+		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)"  TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
+		test
 	@echo "# Test in Models directory..."
 	@cd Models; \
 		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
@@ -111,10 +118,9 @@ clean:
 	cd Communication_check; make clean
 	cd restart_assemble; make clean
 	cd Dynamo_Benchmark; make clean
+	cd eq_symmetry_fields; make clean
 	cd Models; make clean
 	
-	cd sym_asym_field_test; make clean
-
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
 distclean: clean

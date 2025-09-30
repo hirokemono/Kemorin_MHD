@@ -131,6 +131,7 @@ begin MHD_control
         nod_value_ctl  sym_buoyancy_flux       Viz_On   Monitor_On
         nod_value_ctl  asym_buoyancy_flux      Viz_On   Monitor_On
 !
+!
         nod_value_ctl  rot_buoyancy            Viz_On   Monitor_On
         nod_value_ctl  rot_Lorentz_force       Viz_On   Monitor_On
         nod_value_ctl  rot_Coriolis_force      Viz_On   Monitor_On
@@ -319,13 +320,17 @@ begin MHD_control
    begin time_step_ctl
       elapsed_time_ctl      80000.
       i_step_init_ctl       280000000
-      i_step_finish_ctl     280000400
+      i_step_finish_ctl     280000600
 !
       i_step_rst_ctl             1000
       i_step_check_ctl             10
       i_step_field_ctl              0
-      i_step_sectioning_ctl       200
-      i_step_isosurface_ctl       200
+      i_step_sectioning_ctl       100
+      i_step_isosurface_ctl       100
+      i_step_map_projection_ctl   100
+      i_step_pvr_ctl              100
+      i_step_fline_ctl            100
+      i_step_tracer_output        100
 !
       dt_ctl              2.0e-6
       time_init_ctl       0.0e-8
@@ -367,27 +372,55 @@ begin MHD_control
     end gauss_coefficient_ctl
   end sph_monitor_ctl
 !
+!  begin tracers_control
+    array tracer_ctl
+      file tracer_ctl           'FIELDLINE_defs/ctl_tracer_x'
+    end array tracer_ctl
+  end   tracers_control
+!
   begin visual_control
     array cross_section_ctl
-      file  cross_section_ctl   'controls/control_section_cmb'
-      file  cross_section_ctl   'controls/control_section_z0'
-      file  cross_section_ctl   'controls/control_section_z0.3'
-      file  cross_section_ctl   'controls/control_section_z1.0'
-      file  cross_section_ctl   'controls/control_section_icb'
+      file  cross_section_ctl   'SECTION_defs/ctl_psf_cmb'
+      file  cross_section_ctl   'SECTION_defs/ctl_psf_z0'
+      file  cross_section_ctl   'SECTION_defs/ctl_psf_z0.3'
+      file  cross_section_ctl   'SECTION_defs/ctl_psf_z1.0'
+      file  cross_section_ctl   'SECTION_defs/ctl_psf_icb'
     end array cross_section_ctl
 !
     array isosurface_ctl
-      file  isosurface_ctl      'controls/control_isosurf_t0.3'
-      file  isosurface_ctl      'controls/control_isosurf_wz10n'
-      file  isosurface_ctl      'controls/control_isosurf_wz10p'
+      file  isosurface_ctl      'ISOSURFACE_defs/ctl_iso_temp'
+      file  isosurface_ctl      'ISOSURFACE_defs/ctl_iso_wz10n'
+      file  isosurface_ctl      'ISOSURFACE_defs/ctl_iso_wz10p'
     end array isosurface_ctl
+!
+!    array map_rendering_ctl
+      file  map_rendering_ctl        'MAP_defs/ctl_map_cmb_Br'
+      file  map_rendering_ctl        'MAP_defs/ctl_map_cmb_T'
+    end array map_rendering_ctl
+!    
+!    array volume_rendering
+      file volume_rendering   'PVR_defs/ctl_pvr_temp'
+      file volume_rendering   'PVR_defs/ctl_pvr_Bpole'
+      file volume_rendering   'PVR_defs/ctl_pvr_Bz'
+      file volume_rendering   'PVR_defs/ctl_pvr_wz'
+      file volume_rendering   'PVR_defs/ctl_pvr_vr'
+    end array  volume_rendering
+!
+!    array  fieldline
+      file  fieldline         'FIELDLINE_defs/ctl_fline_magne'
+    end array fieldline
+!
   end visual_control
 !
   begin dynamo_vizs_control
     begin crustal_filtering_ctl
       truncation_degree_ctl        13
     end crustal_filtering_ctl
-!
-    file zonal_mean_section_ctl      'controls/control_zonal_mean'
+!!
+    file zonal_mean_section_ctl      'SECTION_defs/ctl_zm_y0'
+!    array zonal_mean_rendering_ctl
+      file zonal_mean_rendering_ctl  'MAP_defs/ctl_zm_yz_velo'
+      file zonal_mean_rendering_ctl  'MAP_defs/ctl_zm_yz_magne'
+    end array zonal_mean_rendering_ctl
   end dynamo_vizs_control
 end MHD_control
