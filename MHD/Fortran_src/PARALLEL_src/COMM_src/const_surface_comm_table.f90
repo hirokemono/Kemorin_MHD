@@ -112,11 +112,12 @@
      &    m_SR%SR_sig, m_SR%SR_il)
       deallocate(istack_inersurf)
 !
-      call calypso_mpi_barrier
+      call calypso_mpi_barrier()
       call check_element_position                                       &
      &   (txt_surf, node%inod_global, surf%numsurf,                     &
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
      &    surf%x_surf, inod_dbl, surf_comm, m_SR%SR_sig, m_SR%SR_r)
+      call calypso_mpi_barrier()
       call dealloc_sum_of_local_id_list(sum_list_s)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
