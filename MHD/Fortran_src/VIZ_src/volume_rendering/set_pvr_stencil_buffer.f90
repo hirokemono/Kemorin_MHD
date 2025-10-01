@@ -209,6 +209,7 @@
 !$omp end parallel workshare
 !
       do ip = 1, nprocs
+        if(npixel_4_composit .le. 0) cycle
         ist = stencil_wk%istack_recv_image(ip-1)
         ipix = stencil_wk%item_recv_image(ist+1)
         if(stencil_wk%irank_4_composit(ipix) .eq. my_rank) then
