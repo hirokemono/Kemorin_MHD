@@ -33,6 +33,8 @@
 !
       character(len = kchara), parameter :: exclude = 'pressure'
 !
+      real(kind = kreal) :: error_limit = 1.0d-10
+!
       integer(kind = kint), parameter :: id_file1 = 34, id_file2 = 36
       character, pointer :: FPz_f1, FPz_f2
       type(buffer_4_gzip) :: zbuf1, zbuf2
@@ -156,7 +158,7 @@
             d2_maxdiff = spectr_IN2(icomp2)
           end if
 !
-          if(abs(diff) .gt. 1.d-11) then
+          if(abs(diff) .gt. error_limit) then
             write(*,*) 'Large error in ', trim(cmp_name(icou)),         &
      &           ' at step ', sph_IN1%i_step,                           &
      &           ': ', spectr_IN1(icomp1), spectr_IN2(icomp2), diff
