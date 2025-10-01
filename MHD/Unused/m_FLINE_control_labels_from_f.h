@@ -14,8 +14,8 @@ label[1]   fline_output_format
 label[2]   chosen_ele_grp_ctl 
 label[3]   field_line_field_ctl 
 label[4]   coloring_field_ctl 
-label[5]   coloring_comp_ctl 
-label[6]   num_fieldline_ctl 
+label[5]   coloring_component_ctl 
+label[6]   num_fieldline_ctl
 label[7]   line_direction_ctl 
 label[8]   max_line_stepping_ctl 
 label[14]   max_trace_length_ctl

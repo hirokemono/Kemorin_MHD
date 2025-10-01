@@ -119,11 +119,15 @@
       if(elps_VIZ1%flag_elapsed_V)                                      &
      &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
 !
+      write(*,*) my_rank, 'SPH_to_TRACER_bridge_SGS_MHD'
+      call calypso_mpi_barrier()
       call SPH_to_TRACER_bridge_SGS_MHD(SSMHDs%SPH_MHD%sph,             &
      &    SSMHDs%SPH_MHD%comms, SSMHDs%SPH_MHD%fld,                     &
      &    SSMHDs%SPH_WK%trans_p, SSMHDs%SPH_WK%trns_WK%trns_MHD,        &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SSMHDs%m_SR)
 !
+      write(*,*) my_rank, 'TRACER_initialize'
+      call calypso_mpi_barrier()
       call TRACER_initialize                                            &
      &   (SSMHDs%MHD_step%init_d,  SSMHDs%MHD_step%finish_d,            &
      &    SSMHDs%MHD_step%rst_step, SVIZ_m%FEM_DAT%geofem,              &
@@ -135,11 +139,15 @@
 !
 !  -----   Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
+      write(*,*) my_rank, 'init_visualize'
+      call calypso_mpi_barrier()
       call init_visualize(elps_VIZ1, SSMHDs%MHD_step%viz_step,          &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%tracers,  &
      &    SVIZ_m%VIZ_FEM, viz_ctls1, SVIZ_m%VIZs, SSMHDs%m_SR)
       call dealloc_viz_controls(viz_ctls1)
 
+      write(*,*) my_rank, 'init_zonal_mean_vizs'
+      call calypso_mpi_barrier()
       call init_zonal_mean_vizs                                         &
      &   (elps_VIZ1, SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,   &
      &    SVIZ_m%VIZ_FEM%edge_comm, SVIZ_m%FEM_DAT%field,               &

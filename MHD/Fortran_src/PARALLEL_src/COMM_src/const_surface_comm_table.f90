@@ -106,12 +106,15 @@
       allocate(istack_inersurf(0:nprocs))
       istack_inersurf(0:nprocs) = 0
 !
+      write(*,*) my_rank, 'count_number_of_node_stack surface '
+      call calypso_mpi_barrier()
       call count_number_of_node_stack(internal_num, istack_inersurf)
       call set_global_ele_id(txt_surf, surf%numsurf, istack_inersurf,   &
      &    surf%interior_surf, surf_comm, surf%isurf_global,             &
      &    m_SR%SR_sig, m_SR%SR_il)
       deallocate(istack_inersurf)
 !
+      write(*,*) my_rank, 'check_element_position surface'
       call calypso_mpi_barrier()
       call check_element_position                                       &
      &   (txt_surf, node%inod_global, surf%numsurf,                     &
