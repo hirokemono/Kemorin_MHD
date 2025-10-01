@@ -104,6 +104,8 @@
       ist_pvr = PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = PVR_sort%istack_PVR_modes(1)
       do i_pvr = ist_pvr, ied_pvr
+        call calypso_mpi_barrier()
+        write(*,*) my_rank, 'single_PVR_view_matrices', i_pvr
         ist_img = PVR_sort%istack_pvr_images(i_pvr-1)
         call single_PVR_view_matrices                                   &
      &     (elps_PVR, mesh, pvr_rgb(ist_img+1), pvr_param(i_pvr),       &
@@ -114,6 +116,8 @@
       ist_pvr = PVR_sort%istack_PVR_modes(1) + 1
       ied_pvr = PVR_sort%istack_PVR_modes(2)
       do i_pvr = ist_pvr, ied_pvr
+        call calypso_mpi_barrier()
+        write(*,*) my_rank, 'quilt_PVR_view_matrices', i_pvr
         ist_img = PVR_sort%istack_pvr_images(i_pvr-1)
         num_img = PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         call quilt_PVR_view_matrices(num_img, elps_PVR, mesh,           &
