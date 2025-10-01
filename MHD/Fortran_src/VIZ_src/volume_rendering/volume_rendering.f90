@@ -115,15 +115,11 @@
 !      end do
 !
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'init_sf_grp_list_each_surf'
       if(elps_PVR%flag_elapsed)                                         &
      &           call start_elapsed_time(elps_PVR%ist_elapsed+7)
       call init_sf_grp_list_each_surf                                   &
      &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
       do i_pvr = 1, pvr%num_pvr
-        call calypso_mpi_barrier()
-        write(*,*) my_rank, 'init_each_PVR_image', i_pvr
         ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
         num_img = pvr%PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
@@ -133,13 +129,9 @@
       end do
 !
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'set_PVR_view_and_images'
       call set_PVR_view_and_images(pvr%num_pvr, pvr%num_pvr_images,     &
      &    elps_PVR, geofem%mesh, pvr%PVR_sort, pvr%pvr_rgb,             &
      &    pvr%pvr_param, pvr%pvr_bound, pvr%pvr_proj, m_SR)
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'PVR_anaglyph_view_and_images'
       call PVR_anaglyph_view_and_images                                 &
      &   (pvr%num_pvr, pvr%num_pvr_images, elps_PVR, geofem%mesh,       &
      &    pvr%PVR_sort, pvr%pvr_rgb, pvr%pvr_param,                     &
@@ -147,8 +139,6 @@
       if(elps_PVR%flag_elapsed)                                         &
      &           call end_elapsed_time(elps_PVR%ist_elapsed+7)
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'PVR_initialize end'
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
 !

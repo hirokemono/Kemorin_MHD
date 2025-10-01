@@ -88,9 +88,6 @@
       img_stack%npixel_4_composit                                       &
      &           = num_parallel_stencil_buffer(stencil_wk)
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 's_const_comm_tbl_img_output'
-!
 !      write(*,*) 's_const_comm_tbl_img_output'
       if(elps_PVR%flag_elapsed)                                         &
      &       call start_elapsed_time(elps_PVR%ist_elapsed+8)
@@ -100,9 +97,6 @@
       if(elps_PVR%flag_elapsed)                                         &
      &       call end_elapsed_time(elps_PVR%ist_elapsed+8)
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'set_global_pixel_4_composit'
-!
 !      write(*,*) 'set_global_pixel_4_composit'
       call alloc_pvr_ipixel_4_composit(num_pixel_xy, img_stack)
       call set_global_pixel_4_composit                                  &
@@ -110,9 +104,6 @@
      &    img_stack%ipixel_4_composit, img_stack%item_4_composit)
 !
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 's_const_comm_tbl_img_composit'
-
 !      write(*,*) 's_const_comm_tbl_img_composit'
       if(elps_PVR%flag_elapsed)                                         &
      &       call start_elapsed_time(elps_PVR%ist_elapsed+9)
@@ -133,8 +124,6 @@
      &      = - pvr_start%xx4_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
 !$omp end parallel workshare
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'calypso_SR_type_int'
       if(elps_PVR%flag_elapsed)                                         &
      &       call start_elapsed_time(elps_PVR%ist_elapsed+10)
       call calypso_SR_type_int(0, img_composit_tbl,                     &
@@ -153,16 +142,12 @@
       if(elps_PVR%flag_elapsed)                                         &
      &       call end_elapsed_time(elps_PVR%ist_elapsed+11)
 !
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'set_image_stacking_and_recv'
       call alloc_pvr_image_stack_table(img_stack)
       call set_image_stacking_and_recv                                  &
      &   (num_pixel_xy, img_stack%item_4_composit,                      &
      &    img_stack%npixel_4_composit, img_stack%ipix_4_composit,       &
      &    img_stack%depth_pixel_composit, img_stack%istack_composition, &
      &    img_composit_tbl)
-      call calypso_mpi_barrier()
-      write(*,*) my_rank, 'check_img_output_communication'
 !
       if(i_debug .gt. 0) then
         fname_tmp = add_int_suffix(my_rank, check_fhead)

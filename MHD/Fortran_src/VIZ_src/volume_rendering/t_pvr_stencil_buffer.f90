@@ -78,8 +78,6 @@
      &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
      &    pvr_rgb%num_pixel_xy, pvr_start, stencil_wk)
 !
-        call calypso_mpi_barrier()
-        write(*,*) my_rank, 's_set_pvr_stencil_buffer'
       call s_set_pvr_stencil_buffer                                     &
      &   (pvr_rgb%irank_image_file, pvr_rgb%irank_end_composit,         &
      &    pvr_rgb%num_pixel_xy, elps_PVR, pvr_start, stencil_wk,        &
@@ -87,8 +85,6 @@
      &    pvr_stencil%img_composit_tbl, pvr_stencil%img_stack,          &
      &    SR_sig, SR_r, SR_i)
 !
-        call calypso_mpi_barrier()
-        write(*,*) my_rank, 'dealloc_pvr_ipixel_4_composit'
       if(i_debug .eq. 0) then
         call dealloc_pvr_ipixel_4_composit(pvr_stencil%img_stack)
         call dealloc_depth_pixel_composit(pvr_stencil%img_stack)
