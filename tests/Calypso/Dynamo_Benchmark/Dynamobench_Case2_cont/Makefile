@@ -75,8 +75,8 @@ test:
 
 clean:
 	rm -f *.dat *.txt
-	rm -f monitor/[a-q,s-z]*
-	rm -f sections/[a-q,s-z]*
-	rm -f isosurfaces/[a-q,s-z]*
+	rm -f monitor/[A-Q,a-q,s-z]*
+	rm -f sections/[A-Q,a-q,s-z]*
+	rm -f isosurfaces/[A-Q,a-q,s-z]*
 
 distclean: clean

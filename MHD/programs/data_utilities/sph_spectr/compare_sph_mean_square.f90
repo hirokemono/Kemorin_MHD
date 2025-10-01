@@ -166,6 +166,7 @@
         end do
       end do
 !
+  99  continue
       write(*,*) 'Maxmum difference at step ', istep_maxdiff
       write(*,*) 'Maxmum difference in ', trim(cmp_name(icomp_maxdiff))
       write(*,*) 'Relative difference: ', max_diff
@@ -176,7 +177,6 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f2, id_file2, flag_gzip2, zbuf2)
 !
-  99  continue
       if(error) then
         write(*,*) 'Time sequence data file ', trim(fname_rms_ref),     &
      &            ' and ', trim(fhead_rms_vol), ' does not match.'
