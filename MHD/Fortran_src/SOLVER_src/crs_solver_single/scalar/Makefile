@@ -18,12 +18,8 @@ mod_list:
 	@echo $(MOD_SOLVER_11_S) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_11S_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_11S_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

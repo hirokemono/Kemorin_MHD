@@ -15,12 +15,12 @@ dir_list:
 
 lib_name:
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_PVR)' \
 	>> $(MAKENAME)
 
@@ -31,11 +31,8 @@ mod_list:
 	@echo  $(MOD_PVR) >> $(MAKENAME)
 	@echo  >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PVR_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PVR_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

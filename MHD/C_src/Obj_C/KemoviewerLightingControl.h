@@ -8,35 +8,41 @@
 #ifndef KemoviewerLightingControl_h__
 #define KemoviewerLightingControl_h__
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface LightTableController : NSObject {
-	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet id _lightTableView;
-
-	IBOutlet NSTableView * idlightTableView;
-
-	IBOutlet NSSlider * radialPositionSlider;
-	IBOutlet NSSlider * elevarionPositionSlider;
-	IBOutlet NSSlider * azimuthPositionSlider;
-
-	NSInteger  numLightTable;
-	NSMutableArray *radialLightPosition;
-	NSMutableArray *elevationLightPosition;
-	NSMutableArray *azimuthLightPosition;
-
-	CGFloat ambientMaterial;
-	CGFloat diffuseMaterial;
-	CGFloat specularMaterial;
-	CGFloat shinessMaterial;
-
-	CGFloat radialSliderValue;
-	CGFloat elevationSliderValue;
-	CGFloat azimuthSliderValue;
+    IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
+    IBOutlet KemoViewerMetalView*  _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+    
+    IBOutlet id _lightTableView;
+    
+    IBOutlet NSTableView * idlightTableView;
+    
+    IBOutlet NSSlider * radialPositionSlider;
+    IBOutlet NSSlider * elevarionPositionSlider;
+    IBOutlet NSSlider * azimuthPositionSlider;
+    
+    NSInteger  lightCheckFlag;
+    NSInteger  numLightTable;
+    NSMutableArray *radialLightPosition;
+    NSMutableArray *elevationLightPosition;
+    NSMutableArray *azimuthLightPosition;
+    
+    CGFloat ambientMaterial;
+    CGFloat diffuseMaterial;
+    CGFloat specularMaterial;
+    CGFloat shinessMaterial;
+    
+    CGFloat radialSliderValue;
+    CGFloat elevationSliderValue;
+    CGFloat azimuthSliderValue;
 }
 @property (assign) NSMutableArray * radialLightPosition;
 @property (assign) NSMutableArray * elevationLightPosition;
@@ -53,6 +59,7 @@
 @property CGFloat radialSliderValue;
 @property CGFloat elevationSliderValue;
 @property CGFloat azimuthSliderValue;
+@property NSInteger lightCheckFlag;
 
 - (void)awakeFromNib;
 
@@ -60,13 +67,13 @@
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 - (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender;
 
 - (void)InitLightTable;
-- (void)SetLightTable;
+- (void)SetLightTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)UpdateLightTable:(id)pID;
 
@@ -78,6 +85,8 @@
 - (IBAction)SetRadialLightPositionAction:(id)sender;
 - (IBAction)SetelevationLightPositionAction:(id)sender;
 - (IBAction)SetAzimuthLightPositionAction:(id)sender;
+
+- (IBAction)SetLightCheckAction:(id)sender;
 
 @end
 

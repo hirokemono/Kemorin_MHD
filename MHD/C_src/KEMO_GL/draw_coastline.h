@@ -6,8 +6,7 @@
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
-#include "vartex_array_object_gl.h"
-#include "glsl.h"
+#include "m_vertex_buffer.h"
 #include "set_coastline_to_buf.h"
 #include "set_axis_to_buf.h"
 
@@ -15,12 +14,18 @@
 #define DRAW_COASTLINE_
 
 /* prototypes */
+long count_coastline_line_buffer(struct mesh_menu_val *mesh_m);
 
-void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
-			struct VAO_ids *mesh_VAO);
+void set_coastline_line_buffer(struct mesh_menu_val *mesh_m,
+                               struct gl_strided_buffer *coast_buf);
+void set_coastline_tube_buffer(struct mesh_menu_val *mesh_m, struct view_element *view_s,
+                               struct gl_strided_buffer *coast_buf,
+                               struct gl_index_buffer *coast_index_buf);
 
-void map_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_VAO,
-							struct gl_strided_buffer *map_buf);
 
-void set_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_VAO);
+void set_map_coastline_line_buffer(struct mesh_menu_val *mesh_m,
+                                   struct gl_strided_buffer *coast_buf);
+void set_map_coastline_tube_buffer(struct mesh_menu_val *mesh_m, struct view_element *view_s,
+                                   struct gl_strided_buffer *coast_buf,
+                                   struct gl_index_buffer *coast_index_buf);
 #endif

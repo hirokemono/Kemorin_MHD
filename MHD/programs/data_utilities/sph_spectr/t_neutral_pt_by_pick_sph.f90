@@ -15,9 +15,15 @@
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rj_grid), intent(inout) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: r_2nd
-!!      subroutine set_radial_grad_scalars(istep, time,                 &
-!!     &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio,      &
-!!     &          picked, ntl1)
+!!      subroutine set_radial_grad_scalars(icou, istep, time,           &
+!!     &          sph_rj, pick_IO, d1nod_mat_fdm_2, buo_ratio, ntl)
+!!        integer(kind = kint), intent(in) :: icou, istep
+!!        real(kind = kreal), intent(in) :: time, buo_ratio
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(picked_spectrum_data_IO), intent(in) :: pick_IO
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
+!!        type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !!@endverbatim
 !
       module t_neutral_pt_by_pick_sph
@@ -178,7 +184,8 @@
       call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
       call set_dr_for_nonequi(sph_params%nlayer_CMB,                    &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
-      call const_second_fdm_coefs(sph_params, sph_rj, r_2nd)
+      call const_second_fdm_coefs(50, sph_params, sph_rj, r_2nd)
+!
 !
       write(*,*) 'icomp_temp, icomp_light',                             &
      &           ntl%icomp_temp, ntl%icomp_light
@@ -189,16 +196,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_radial_grad_scalars(icou, istep, time,             &
-     &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio,        &
-     &          pick_IO, ntl)
+     &          sph_rj, pick_IO, d1nod_mat_fdm_2, buo_ratio, ntl)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: icou, istep
       real(kind = kreal), intent(in) :: time, buo_ratio
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(sph_rj%nidx_rj(1),-1:1)
 !
       type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !
@@ -256,13 +264,13 @@
         ntl%freq2(k) = buo_ratio * ntl%grad_comp00(k)                   &
      &                           + ntl%grad_temp00(k)
         if(ntl%freq2(k) .gt. 0.0d0) ntl%freq(k) = sqrt(ntl%freq2(k))
-        ntl%freq2(k) = ntl%freq2(k) * radius_1d_rj_r(k  )**2
+        ntl%freq2(k) = ntl%freq2(k) * sph_rj%radius_1d_rj_r(k  )**2
       end do
 !
       do k = pick_IO%num_layer - 2, 2, - 1
         if(ntl%freq2(k).lt.0.0d0 .and. ntl%freq2(k+1).ge.0.0d0) then
-          r_neut = (radius_1d_rj_r(k  )*abs(ntl%freq2(k+1))             &
-     &            + radius_1d_rj_r(k+1)*abs(ntl%freq2(k)  ) )           &
+          r_neut = (sph_rj%radius_1d_rj_r(k  )*abs(ntl%freq2(k+1))      &
+     &            + sph_rj%radius_1d_rj_r(k+1)*abs(ntl%freq2(k)  ))     &
      &             / (abs(ntl%freq2(k+1) - ntl%freq2(k)))
           write(id_neutral_pt,'(i15,1p2E25.15e3)') istep, time, r_neut
         end if
@@ -270,7 +278,7 @@
 !
       do k = 1, pick_IO%num_layer
         write(id_ave_den,'(i15,1pE25.15e3,i15,1p7E25.15e3)')            &
-     &           istep, time, k, radius_1d_rj_r(k),                     &
+     &           istep, time, k, sph_rj%radius_1d_rj_r(k),              &
      &           ntl%temp00(k), ntl%comp00(k),                          &
      &           ntl%grad_temp00(k), ntl%grad_comp00(k),                &
      &           ntl%freq2(k), ntl%freq(k)

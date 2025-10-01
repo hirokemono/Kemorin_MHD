@@ -55,7 +55,7 @@
       subroutine input_element_file                                     &
      &         (id_rank, file_name, ele_mesh_IO, ierr)
 !
-      use element_data_IO
+      use comm_table_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -67,10 +67,10 @@
      &  'Read ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call read_element_comm_table                                      &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm, ierr)
+      call read_comm_table(input_file_code, id_rank,                    &
+     &                     ele_mesh_IO%comm, ierr)
 !      call read_element_geometry(input_file_code,                      &
-!     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
+!     &    ele_mesh_IO%node, ele_mesh_IO%sfed, ierr)
       close(input_file_code)
 !
       end subroutine input_element_file
@@ -96,7 +96,7 @@
      &  (input_file_code, id_rank, surf_mesh_IO%comm,                   &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
 !      call read_surface_geometry(input_file_code,                      &
-!     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &    surf_mesh_IO%node, surf_mesh_IO%sfed, ierr)
       close (input_file_code)
 !
       end subroutine input_surface_file
@@ -122,7 +122,7 @@
      &   (input_file_code, id_rank, edge_mesh_IO%comm,                  &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
 !      call read_edge_geometry(input_file_code,                         &
-!     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
+!     &    edge_mesh_IO%node, edge_mesh_IO%sfed, ierr)
       close (input_file_code)
 !
       end subroutine input_edge_file
@@ -133,7 +133,8 @@
       subroutine output_element_file                                    &
      &         (id_rank, file_name, ele_mesh_IO)
 !
-      use element_data_IO
+      use comm_table_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -144,8 +145,8 @@
      &  'Write ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm)
+      write(input_file_code,'(a)', advance='NO') hd_ecomm_para()
+      call write_comm_table(input_file_code, id_rank, ele_mesh_IO%comm)
 !      call write_element_geometry(input_file_code,                     &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)

@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
-!!     &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,         &
+!!      subroutine cal_sgs_uxb_2_ff_grad                                &
+!!     &         (itype_Csym_uxb, icoord_Csim, i_filter, dt, FEM_prm,   &
 !!     &          node, ele, conduct, cd_prop, iphys_base, nod_fld,     &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!     &          Csim_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_sgs_vp_induct_grad_no_coef                       &
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
@@ -26,7 +26,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -52,7 +52,7 @@
       use t_finite_element_mat
       use t_filter_elength
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_vector_for_solver
       use t_solver_SR
@@ -65,19 +65,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
-     &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,           &
+      subroutine cal_sgs_uxb_2_ff_grad                                  &
+     &         (itype_Csym_uxb, icoord_Csim, i_filter, dt, FEM_prm,     &
      &          node, ele, conduct, cd_prop, iphys_base, nod_fld,       &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &          Csim_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_sgs_uxb
       use cal_skv_to_ff_smp
       use product_model_coefs_to_sk
 !
       integer (kind=kint), intent(in) :: itype_Csym_uxb, icoord_Csim
-      integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
-      integer (kind=kint), intent(in) :: ie_dvx
+      integer (kind=kint), intent(in) :: i_filter
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -92,7 +91,7 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -101,15 +100,15 @@
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
-      call sel_int_vol_sgs_uxb                                          &
-     &   (i_filter, iphys_base%i_magne, ie_dvx, dt, FEM_prm,            &
+      call sel_int_vol_sgs_uxb(i_filter, iphys_base%i_magne,            &
+     &    mhd_fem_wk%iphys_elediff_v, dt, FEM_prm,                      &
      &    node, ele, conduct, nod_fld, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(ele, itype_Csym_uxb, icoord_Csim,  &
-     &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
+     &    Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_nl%ff_smp)

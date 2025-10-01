@@ -1,5 +1,51 @@
-!
-!
+!>@file   append_sph_monitor_files.f90
+!!        program append_sph_monitor_files
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2012
+!!
+!!
+!> @brief Program to append spherical harmonics monitor files
+!!
+!!@verbatim
+!! -----------------------------------------------------------------
+!!
+!!      control file name: control_append_monitor
+!!
+!!  begin monitor_data_connect_ctl
+!!    folder_to_read_ctl    'no02'
+!!    folder_to_add_ctl     'monitor'
+!!
+!!    begin monitor_file_list_ctl
+!!      array volume_integrate_prefix
+!!        volume_integrate_prefix     'sph_ave_volume'
+!!        ...
+!!      end array volume_integrate_prefix
+!!
+!!      array volume_sph_spectr_prefix
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_l'
+!!        ...
+!!      end array volume_sph_spectr_prefix
+!!
+!!      array sphere_integrate_prefix
+!!        sphere_integrate_prefix     'sph_pwr_layer_s'
+!!        ...
+!!      end array sphere_integrate_prefix
+!!
+!!      array layer_sph_spectr_prefix
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_l'
+!!        ...
+!!      end array layer_sph_spectr_prefix
+!!
+!!      array picked_sph_prefix
+!!        picked_sph_prefix        'monitor/picked_mode'
+!!        ...
+!!      end array picked_sph_prefix
+!!    end monitor_file_list_ctl
+!!  end monitor_data_connect_ctl
+!!
+!! -----------------------------------------------------------------
+!!@endverbatim
 !
       program append_sph_monitor_files
 !
@@ -9,12 +55,15 @@
       use t_ctl_data_sph_monitor_list
       use t_ctl_param_sph_series_util
       use t_read_sph_spectra
-      use t_append_sph_mean_sq_data
       use t_append_picked_spectr_file
 !
       use set_control_4_pickup_sph
       use count_monitor_time_series
       use set_parallel_file_name
+      use append_sph_volume_mean
+      use append_sph_volume_spectr
+      use append_sph_layer_mean
+      use append_sph_layer_spectr
 !
       implicit none
 !
@@ -31,11 +80,9 @@
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
 !
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_read_ctl,  &
-     &    add_mtr_ctl1%read_monitor_fmt_ctl,                            &
      &    add_mtr_ctl1%monitor_list_ctl, spec_evo_append)
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_add_ctl,   &
-     &    dummy_item, add_mtr_ctl1%monitor_list_ctl,                    &
-     &    spec_evo_target)
+     &    add_mtr_ctl1%monitor_list_ctl, spec_evo_target)
 !
 !
       call dealloc_ctl_data_add_sph_mntr(add_mtr_ctl1)
@@ -48,8 +95,8 @@
         stop
       end if
       do i = 1, spec_evo_target%vol_series%num_file
-        call append_sph_mean_sq_file(spectr_off, volume_on,             &
-     &      spec_evo_append%vol_series%evo_file_name(i),                &
+        call append_sph_volume_mean_file                                &
+     &     (spec_evo_append%vol_series%evo_file_name(i),                &
      &      spec_evo_target%vol_series%evo_file_name(i))
       end do
 !
@@ -61,8 +108,8 @@
         stop
       end if
       do i = 1, spec_evo_target%vol_spec_series%num_file
-        call append_sph_mean_sq_file(spectr_on, volume_on,              &
-     &      spec_evo_append%vol_spec_series%evo_file_name(i),           &
+        call append_sph_volume_spectr_file                              &
+     &     (spec_evo_append%vol_spec_series%evo_file_name(i),           &
      &      spec_evo_target%vol_spec_series%evo_file_name(i))
       end do
 !
@@ -74,8 +121,8 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_series%num_file
-        call append_sph_mean_sq_file(spectr_off, volume_off,            &
-     &      spec_evo_append%layer_series%evo_file_name(i),              &
+        call append_sph_layer_mean_file                                 &
+     &     (spec_evo_append%layer_series%evo_file_name(i),              &
      &      spec_evo_target%layer_series%evo_file_name(i))
       end do
 !
@@ -87,8 +134,8 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_spec_series%num_file
-        call append_sph_mean_sq_file(spectr_on, volume_off,             &
-     &      spec_evo_append%layer_spec_series%evo_file_name(i),         &
+        call append_sph_layer_spectr_file                               &
+     &     (spec_evo_append%layer_spec_series%evo_file_name(i),         &
      &      spec_evo_target%layer_spec_series%evo_file_name(i))
       end do
 !

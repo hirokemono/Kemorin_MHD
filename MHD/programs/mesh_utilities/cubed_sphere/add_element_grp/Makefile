@@ -11,11 +11,11 @@ MOD_ADDGRP_SPH = \
 add_elegrp_sph.o \
 \
 t_control_data_add_ele_grp.o \
-m_add_ele_grp_parameter.o \
+t_add_ele_grp_parameter.o \
 m_work_4_add_egrp_sph.o \
 \
 analyzer_add_ele_group.o \
-set_control_add_2d_egrp.o \
+input_control_add_elegrp.o \
 set_new_2d_element_group.o \
 set_ele_grp2_by_2d.o \
 start_end_4_2d_ele_grping.o
@@ -52,10 +52,5 @@ mod_list:
 	@echo  $(MOD_ADDGRP_SPH) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ELE_GRP_SPH_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ELE_GRP_SPH_DIR)' $(SOURCES)

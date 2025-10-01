@@ -26,6 +26,9 @@ t_SPH_data_4_SPH_trans.o \
 t_global_gauss_coefs.o \
 copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
+ctl_data_sph_trans_IO.o \
+bcast_ctl_data_4_sph_trans.o \
+input_controls_sph_trans.o \
 sph_transfer_all_field.o
 
 
@@ -213,8 +216,5 @@ mod_list:
 	@echo  MOD_ZMEAN_KENE=  \\      >> $(MAKENAME)
 	@echo  $(MOD_ZMEAN_KENE)        >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_TRANSFORM_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_TRANSFORM_DIR)' $(SOURCES)

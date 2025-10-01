@@ -3,11 +3,11 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine alloc_r_ele_cubed_sph(numele)
-!      subroutine dealloc_r_ele_cubed_sph
-!      subroutine count_new_2d_element_group
-!      subroutine set_rele_cubed_sph(numnod, numele, ie, radius, r_ele)
-!      subroutine set_new_2d_ele_group(ele_grp)
+!!      subroutine alloc_r_ele_cubed_sph(numele)
+!!      subroutine dealloc_r_ele_cubed_sph
+!!      subroutine set_rele_cubed_sph(numnod, numele, ie, radius, r_ele)
+!!      subroutine count_new_2d_element_group(add_egrp_param, org_ele)
+!!      subroutine set_new_2d_ele_group(add_egrp_param, ele_grp)
 !
       module set_new_2d_element_group
 !
@@ -88,40 +88,49 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_new_2d_element_group(org_ele)
+      subroutine count_new_2d_element_group(add_egrp_param, org_ele)
 !
       use calypso_mpi
       use calypso_mpi_int
       use t_geometry_data
-      use m_add_ele_grp_parameter
+      use t_add_ele_grp_parameter
       use set_ele_grp2_by_2d
 !
+      type(add_ele_grp_param), intent(in) :: add_egrp_param
       type(element_data), intent(in) :: org_ele
 !
       integer(kind = kint_gl) :: num64
 !
-      if (iflag_grping_direction .eq. 0) then
+      if (add_egrp_param%iflag_grping_direction .eq. 0) then
         call count_added_egrp_item                                      &
      &     (org_ele%numele, r_ele_sph, org_ele%theta_ele,               &
-     &      num_r_ele_grp, minmax_r_ele_grping,                         &
-     &      num_t_ele_grp, minmax_t_ele_grping)
+     &      add_egrp_param%num_r_ele_grp,                               &
+     &      add_egrp_param%minmax_r_ele_grping,                         &
+     &      add_egrp_param%num_t_ele_grp,                               &
+     &      add_egrp_param%minmax_t_ele_grping)
 !
-      else if (iflag_grping_direction .eq. 1) then
+      else if (add_egrp_param%iflag_grping_direction .eq. 1) then
         call count_added_egrp_item                                      &
      &     (org_ele%numele, r_ele_sph, org_ele%s_ele,                   &
-     &      num_r_ele_grp, minmax_r_ele_grping,                         &
-     &      num_s_ele_grp, minmax_s_ele_grping)
+     &      add_egrp_param%num_r_ele_grp,                               &
+     &      add_egrp_param%minmax_r_ele_grping,                         &
+     &      add_egrp_param%num_s_ele_grp,                               &
+     &      add_egrp_param%minmax_s_ele_grping)
 !
-      else if (iflag_grping_direction .eq. 2) then
+      else if (add_egrp_param%iflag_grping_direction .eq. 2) then
         call count_added_egrp_item(org_ele%numele, org_ele%s_ele,       &
      &      org_ele%x_ele(1:org_ele%numele,3),                          &
-     &      num_s_ele_grp, minmax_s_ele_grping,                         &
-     &      num_z_ele_grp, minmax_z_ele_grping)
-      else if (iflag_grping_direction .eq. 3) then
+     &      add_egrp_param%num_s_ele_grp,                               &
+     &      add_egrp_param%minmax_s_ele_grping,                         &
+     &      add_egrp_param%num_z_ele_grp,                               &
+     &      add_egrp_param%minmax_z_ele_grping)
+      else if (add_egrp_param%iflag_grping_direction .eq. 3) then
         call count_added_egrp_item(org_ele%numele,                      &
      &      org_ele%x_ele(1:org_ele%numele,3), org_ele%theta_ele,       &
-     &      num_z_ele_grp, minmax_z_ele_grping,                         &
-     &      num_t_ele_grp, minmax_t_ele_grping)
+     &      add_egrp_param%num_z_ele_grp,                               &
+     &      add_egrp_param%minmax_z_ele_grping,                         &
+     &      add_egrp_param%num_t_ele_grp,                               &
+     &      add_egrp_param%minmax_t_ele_grping)
       end if
 !
       num64 = int(ngrp_added,KIND(num64))
@@ -132,45 +141,50 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_2d_ele_group(org_ele, ele_grp)
+      subroutine set_new_2d_ele_group(add_egrp_param, org_ele, ele_grp)
 !
-      use m_add_ele_grp_parameter
+      use t_add_ele_grp_parameter
       use t_geometry_data
       use t_group_data
       use set_ele_grp2_by_2d
 !
+      type(add_ele_grp_param), intent(in) :: add_egrp_param
       type(element_data), intent(in) :: org_ele
       type(group_data), intent(inout) :: ele_grp
 !
 !
-      if (iflag_grping_direction .eq. 0) then
+      if (add_egrp_param%iflag_grping_direction .eq. 0) then
         call const_ele_grp_item_by_2d                                   &
-     &     (org_ele%numele, r_ele_sph, org_ele%theta_ele,               &
-     &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
-     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
-     &      ele_grp)
+     &    (org_ele%numele, r_ele_sph, org_ele%theta_ele,                &
+     &     add_egrp_param%num_r_ele_grp, add_egrp_param%r_ele_grp_name, &
+     &     add_egrp_param%minmax_r_ele_grping,                          &
+     &     add_egrp_param%num_t_ele_grp, add_egrp_param%t_ele_grp_name, &
+     &     add_egrp_param%minmax_t_ele_grping, ele_grp)
 !
-      else if (iflag_grping_direction .eq. 1) then
+      else if (add_egrp_param%iflag_grping_direction .eq. 1) then
         call const_ele_grp_item_by_2d                                   &
-     &     (org_ele%numele, r_ele_sph, org_ele%s_ele,                   &
-     &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
-     &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
-     &      ele_grp)
+     &   (org_ele%numele, r_ele_sph, org_ele%s_ele,                     &
+     &    add_egrp_param%num_r_ele_grp, add_egrp_param%r_ele_grp_name,  &
+     &    add_egrp_param%minmax_r_ele_grping,                           &
+     &    add_egrp_param%num_s_ele_grp, add_egrp_param%s_ele_grp_name,  &
+     &    add_egrp_param%minmax_s_ele_grping, ele_grp)
 
 !
-      else if (iflag_grping_direction .eq. 2) then
+      else if (add_egrp_param%iflag_grping_direction .eq. 2) then
         call const_ele_grp_item_by_2d(org_ele%numele, org_ele%s_ele,    &
-     &      org_ele%x_ele(1:org_ele%numele,3),                          &
-     &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
-     &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
-     &      ele_grp)
+     &     org_ele%x_ele(1:org_ele%numele,3),                           &
+     &     add_egrp_param%num_s_ele_grp, add_egrp_param%s_ele_grp_name, &
+     &     add_egrp_param%minmax_s_ele_grping,                          &
+     &     add_egrp_param%num_z_ele_grp, add_egrp_param%z_ele_grp_name, &
+     &     add_egrp_param%minmax_z_ele_grping, ele_grp)
 
-      else if (iflag_grping_direction .eq. 3) then
+      else if (add_egrp_param%iflag_grping_direction .eq. 3) then
         call const_ele_grp_item_by_2d(org_ele%numele,                   &
-     &      org_ele%x_ele(1:org_ele%numele,3), org_ele%theta_ele,       &
-     &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
-     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
-     &      ele_grp)
+     &     org_ele%x_ele(1:org_ele%numele,3), org_ele%theta_ele,        &
+     &     add_egrp_param%num_z_ele_grp, add_egrp_param%z_ele_grp_name, &
+     &     add_egrp_param%minmax_z_ele_grping,                          &
+     &     add_egrp_param%num_t_ele_grp, add_egrp_param%t_ele_grp_name, &
+     &     add_egrp_param%minmax_t_ele_grping, ele_grp)
       end if
 !
       end subroutine set_new_2d_ele_group

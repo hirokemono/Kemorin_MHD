@@ -13,7 +13,9 @@ MOD_SOLVER_SET_ORDER = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'DJDS_ORDER_DIR = $(DJDS_ORDER_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SOLVER_SET_ORDER)' >> $(MAKENAME)
 
 
@@ -22,12 +24,8 @@ mod_list:
 	@echo $(MOD_SOLVER_SET_ORDER) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(DJDS_ORDER_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(DJDS_ORDER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

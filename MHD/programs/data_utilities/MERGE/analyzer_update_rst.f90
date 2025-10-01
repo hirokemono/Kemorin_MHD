@@ -34,6 +34,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &         :: ctl_file_name = 'control_merge'
+!
       integer, save :: ndomain_org
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
@@ -68,7 +71,8 @@
       use input_old_file_sel_4_zlib
       use bcast_4_assemble_sph_ctl
 !
-      integer(kind = kint) :: ierr, istep_in
+      integer(kind = kint) :: ierr = 0
+      integer(kind = kint) :: istep_in
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -84,15 +88,20 @@
 !
 !   read control data
 !
-      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_f)
+      if(my_rank .eq. 0) call read_control_4_merge(ctl_file_name,       &
+     &                                             mgd_ctl_f)
       call bcast_merge_control_data(mgd_ctl_f)
+      if(mgd_ctl_f%i_assemble .ne. 1) then
+        call calypso_MPI_abort(mgd_ctl_f%i_assemble,                    &
+     &                         trim(ctl_file_name))
+      end if
 !
       call set_control_4_merge(mgd_ctl_f, asbl_param_f, ndomain_org)
       call set_control_4_newrst                                         &
      &   (nprocs, mgd_ctl_f, asbl_param_f, ierr)
       if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
-     &     'No. of processes and targed sub domain shold be the same.'
+     &     'No. of processes and targed sub domain should be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
 !
@@ -129,7 +138,10 @@
         istep_in = asbl_param_f%istep_start                             &
      &            / asbl_param_f%increment_step
         call sel_read_rst_comps(0, istep_in, asbl_param_f%org_fld_file, &
-     &      t_IO_m, fld_IO_m)
+     &      t_IO_m, fld_IO_m, ierr)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr,                    &
+     &                 'Read file error in sel_read_rst_comps')
+!
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)

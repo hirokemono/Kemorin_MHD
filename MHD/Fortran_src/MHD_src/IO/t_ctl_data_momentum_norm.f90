@@ -8,9 +8,17 @@
 !!@n        Modified by H. Matsui on Merch, 2006
 !!
 !!@verbatim
+!!      subroutine init_momentum_ctl_label(hd_block, mom_ctl)
 !!      subroutine read_momentum_ctl                                    &
 !!     &         (id_control, hd_block, mom_ctl, c_buf)
-!!      subroutine bcast_momentum_ctl(mom_ctl)
+!!         integer(kind = kint), intent(in) :: id_control
+!!         character(len=kchara), intent(in) :: hd_block
+!!         type(momentum_equation_control), intent(inout) :: mom_ctl
+!!         type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_momentum_ctl(id_control, mom_ctl, level)
+!!         integer(kind = kint), intent(in) :: id_control
+!!         type(momentum_equation_control), intent(in) :: mom_ctl
+!!         integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_momentum_ctl(mom_ctl)
 !!        type(momentum_equation_control), intent(inout) :: mom_ctl
 !!
@@ -18,33 +26,33 @@
 !! example of control block
 !!
 !!  begin momentum
-!!    array coef_4_velocity_ctl            1
+!!    array coef_4_velocity_ctl
 !!      coef_4_velocity_ctl          One                        1.0
-!!    end array
-!!    array coef_4_press_ctl               1
+!!    end array coef_4_velocity_ctl
+!!    array coef_4_press_ctl
 !!      coef_4_press_ctl             Ekman_number              -1.0
-!!    end array
-!!    array coef_4_v_diffuse_ctl           1
+!!    end array coef_4_press_ctl
+!!    array coef_4_v_diffuse_ctl
 !!      coef_4_v_diffuse_ctl         One                        1.0
-!!    end array
-!!    array coef_4_buoyancy_ctl            3
-!!      coef_4_buoyancy_ctl          Radial_parameter           1.0
-!!      coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0
-!!      coef_4_buoyancy_ctl          Ekman_number              -1.0
-!!    end array
-!!    array coef_4_Coriolis_ctl            2
+!!    end array coef_4_v_diffuse_ctl
+!!    array coef_4_thermal_buoyancy_ctl
+!!      coef_4_thermal_buoyancy_ctl  Radial_parameter           1.0
+!!      coef_4_thermal_buoyancy_ctl  modified_Rayleigh_number   1.0
+!!      coef_4_thermal_buoyancy_ctl  Ekman_number              -1.0
+!!    end array coef_4_thermal_buoyancy_ctl
+!!    array coef_4_Coriolis_ctl
 !!      coef_4_Coriolis_ctl          Two                        1.0
 !!      coef_4_Coriolis_ctl          Ekman_number              -1.0
-!!    end array
-!!    array coef_4_Lorentz_ctl             2
+!!    end array coef_4_Coriolis_ctl
+!!    array coef_4_Lorentz_ctl
 !!      coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0
 !!      coef_4_Lorentz_ctl           Ekman_number              -1.0
-!!    end array
-!!    array coef_4_composit_buoyancy_ctl   3
+!!    end array coef_4_Lorentz_ctl
+!!    array coef_4_composit_buoyancy_ctl
 !!      coef_4_composit_buoyancy_ctl  Radial_parameter           1.0
 !!      coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0
 !!      coef_4_composit_buoyancy_ctl  Ekman_number              -1.0
-!!    end array
+!!    end array coef_4_composit_buoyancy_ctl
 !!  end  momentum
 !!   --------------------------------------------------------------------
 !!@endverbatim
@@ -61,6 +69,8 @@
 !
 !>      Structure for coefficients of momentum equation
       type momentum_equation_control
+!>        Block name
+        character(len=kchara) :: block_name = 'momentum'
 !>        Structure for number and power to construct viscousity term
 !!@n        coef_4_viscous%c_tbl:  Name of number 
 !!@n        coef_4_viscous%vect:   Power of the number
@@ -98,18 +108,25 @@
 !
 !   5th level for coefs for momentum
 !
-      character(len=kchara) :: hd_n_mom =    'coef_4_velocity_ctl'
-      character(len=kchara) :: hd_n_press =  'coef_4_press_ctl'
-      character(len=kchara) :: hd_n_v_diff = 'coef_4_v_diffuse_ctl'
-      character(len=kchara) :: hd_n_buo =    'coef_4_buoyancy_ctl'
-      character(len=kchara) :: hd_n_c_buo                               &
-     &                      = 'coef_4_composit_buoyancy_ctl'
-      character(len=kchara) :: hd_n_cor =    'coef_4_Coriolis_ctl'
-      character(len=kchara) :: hd_n_lor =    'coef_4_Lorentz_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_mom =    'coef_4_velocity_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_press =  'coef_4_press_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_v_diff = 'coef_4_v_diffuse_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_t_buo =  'coef_4_thermal_buoyancy_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_c_buo =  'coef_4_composit_buoyancy_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_cor =    'coef_4_Coriolis_ctl'
+      character(len=kchara), private                                    &
+     &                  :: hd_n_lor =    'coef_4_Lorentz_ctl'
 !
+!  Deprecated label
 !
-      private :: hd_n_mom, hd_n_press, hd_n_v_diff
-      private :: hd_n_buo, hd_n_c_buo, hd_n_cor, hd_n_lor
+      character(len=kchara), private                                    &
+     &                  :: hd_n_buo =    'coef_4_buoyancy_ctl'
 !
 ! -----------------------------------------------------------------------
 !
@@ -130,10 +147,11 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(mom_ctl%i_momentum .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_r(id_control,                         &
@@ -144,13 +162,16 @@
      &      hd_n_v_diff, mom_ctl%coef_4_viscous, c_buf)
 !
         call read_control_array_c_r(id_control,                         &
-     &      hd_n_buo, mom_ctl%coef_4_termal_buo, c_buf)
+     &      hd_n_t_buo, mom_ctl%coef_4_termal_buo, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_n_c_buo, mom_ctl%coef_4_comp_buo, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_n_cor, mom_ctl%coef_4_Coriolis, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_n_lor, mom_ctl%coef_4_Lorentz, c_buf)
+!
+        call read_control_array_c_r(id_control,                         &
+     &      hd_n_buo, mom_ctl%coef_4_termal_buo, c_buf)
       end do
       mom_ctl%i_momentum = 1
 !
@@ -158,26 +179,69 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_momentum_ctl(mom_ctl)
+      subroutine write_momentum_ctl(id_control, mom_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use t_read_control_elements
+      use skip_comment_f
+      use write_control_elements
 !
+      integer(kind = kint), intent(in) :: id_control
+      type(momentum_equation_control), intent(in) :: mom_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(mom_ctl%i_momentum .le. 0) return
+!
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mom_ctl%block_name)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_intertia)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_grad_p)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_viscous)
+!
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_termal_buo)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_comp_buo)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_Coriolis)
+      call write_control_array_c_r(id_control, level,                   &
+     &    mom_ctl%coef_4_Lorentz)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mom_ctl%block_name)
+!
+      end subroutine write_momentum_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_momentum_ctl_label(hd_block, mom_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
       type(momentum_equation_control), intent(inout) :: mom_ctl
 !
 !
-      call bcast_ctl_array_cr(mom_ctl%coef_4_intertia)
-      call bcast_ctl_array_cr(mom_ctl%coef_4_grad_p)
-      call bcast_ctl_array_cr(mom_ctl%coef_4_viscous)
+      if(mom_ctl%i_momentum .gt. 0) return
+      mom_ctl%block_name = trim(hd_block)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_mom, mom_ctl%coef_4_intertia)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_press, mom_ctl%coef_4_grad_p)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_v_diff, mom_ctl%coef_4_viscous)
 !
-      call bcast_ctl_array_cr(mom_ctl%coef_4_termal_buo)
-      call bcast_ctl_array_cr(mom_ctl%coef_4_comp_buo)
-      call bcast_ctl_array_cr(mom_ctl%coef_4_Coriolis)
-      call bcast_ctl_array_cr(mom_ctl%coef_4_Lorentz)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_t_buo, mom_ctl%coef_4_termal_buo)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_c_buo, mom_ctl%coef_4_comp_buo)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_cor, mom_ctl%coef_4_Coriolis)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_lor, mom_ctl%coef_4_Lorentz)
 !
-      call calypso_mpi_bcast_one_int(mom_ctl%i_momentum, 0)
-!
-      end subroutine bcast_momentum_ctl
+      end subroutine init_momentum_ctl_label
 !
 !   --------------------------------------------------------------------
 !

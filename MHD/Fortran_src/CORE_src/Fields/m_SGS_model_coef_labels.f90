@@ -12,10 +12,9 @@
 !!      logical function check_dynamic_SGS_work(field_name)
 !!      logical function check_commute_SGS_work(field_name)
 !!
-!!      integer(kind = kint) function num_SGS_model_coefs()
-!!      integer(kind = kint) function num_dynamic_SGS_work()
-!!      subroutine set_SGS_model_coefs_labels(n_comps, names, maths)
-!!      subroutine set_dynamic_SGS_work_labels(n_comps, names, maths)
+!!      subroutine set_SGS_model_coefs_names(array_c2i)
+!!      subroutine set_dynamic_SGS_work_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  SGS model coefficients names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -56,10 +55,6 @@
       use t_field_labels
 !
       implicit  none
-! 
-      integer(kind = kint), parameter, private :: num_SGS_Csim = 7
-      integer(kind = kint), parameter, private :: num_SGS_work = 6
-!
 !
 !>        Field label for model coefficient of SGS heat flux
 !!         @f$ C^{sim}_{I} @f$
@@ -197,69 +192,42 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_SGS_model_coefs()
-      num_SGS_model_coefs = num_SGS_Csim
-      return
-      end function num_SGS_model_coefs
+      subroutine set_SGS_model_coefs_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
+!
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
+!
+      call set_field_label_to_ctl(Csim_SGS_heat_flux,     array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_composit_flux, array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_inertia,       array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_Lorentz,       array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_induction,     array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_buoyancy,      array_c2i)
+      call set_field_label_to_ctl(Csim_SGS_composit_buo,  array_c2i)
+!
+      end subroutine set_SGS_model_coefs_names
 !
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_dynamic_SGS_work()
-      num_dynamic_SGS_work = num_SGS_work
-      return
-      end function num_dynamic_SGS_work
+      subroutine set_dynamic_SGS_work_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_SGS_model_coefs_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(SGS_diffuse,  array_c2i)
+      call set_field_label_to_ctl(SGS_simi,  array_c2i)
+      call set_field_label_to_ctl(SGS_grad,  array_c2i)
+      call set_field_label_to_ctl(SGS_grad_f,  array_c2i)
+      call set_field_label_to_ctl(temp_4_SGS,  array_c2i)
+      call set_field_label_to_ctl(comp_4_SGS,  array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(num_SGS_Csim)
-      character(len = kchara), intent(inout) :: names(num_SGS_Csim)
-      character(len = kchara), intent(inout) :: maths(num_SGS_Csim)
-!
-!
-      call set_field_labels(Csim_SGS_heat_flux,                         &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(Csim_SGS_composit_flux,                     &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(Csim_SGS_inertia,                           &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(Csim_SGS_Lorentz,                           &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(Csim_SGS_induction,                         &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(Csim_SGS_buoyancy,                          &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(Csim_SGS_composit_buo,                      &
-     &    n_comps( 7), names( 7), maths( 7))
-!
-      end subroutine set_SGS_model_coefs_labels
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_dynamic_SGS_work_labels(n_comps, names, maths)
-!
-      integer(kind = kint_4b), intent(inout) :: n_comps(num_SGS_work)
-      character(len = kchara), intent(inout) :: names(num_SGS_work)
-      character(len = kchara), intent(inout) :: maths(num_SGS_work)
-!
-!
-      call set_field_labels(SGS_diffuse,                                &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(SGS_simi,                                   &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(SGS_grad,                                   &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(SGS_grad_f,                                 &
-     &    n_comps( 4), names( 4), maths( 4))
-!
-      call set_field_labels(temp_4_SGS,                                 &
-     &    n_comps( 5), names( 5), maths( 5))
-      call set_field_labels(comp_4_SGS,                                 &
-     &    n_comps( 6), names( 6), maths( 6))
-!
-      end subroutine set_dynamic_SGS_work_labels
+      end subroutine set_dynamic_SGS_work_names
 !
 ! ----------------------------------------------------------------------
 !

@@ -15,12 +15,12 @@ dir_list:
 
 lib_name:
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_FFT_PLANE_COMMON)' >> $(MAKENAME)
 
 mod_list:
@@ -28,9 +28,5 @@ mod_list:
 	@echo  $(MOD_FFT_PLANE_COMMON) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_PLANE_SRCDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FFT_PLANE_SRCDIR)' $(SOURCES)

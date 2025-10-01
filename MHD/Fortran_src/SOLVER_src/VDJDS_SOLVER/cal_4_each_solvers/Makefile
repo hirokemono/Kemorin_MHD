@@ -18,12 +18,8 @@ mod_list:
 	@echo $(MOD_SOLVE_EACH) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_EACH_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_EACH_DIR)' $(SOURCES)
 
 
 clean:

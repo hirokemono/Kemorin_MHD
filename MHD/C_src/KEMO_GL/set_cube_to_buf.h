@@ -12,14 +12,27 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
+
+struct initial_cube_buffers{
+    struct gl_strided_buffer *cube_buf;
+    struct gl_index_buffer *cube_index_buf;
+};
+
 
 /* prototypes */
+struct initial_cube_buffers * init_initial_cube_buffers(void);
+void dealloc_initial_cube_buffers(struct initial_cube_buffers *initial_bufs);
 
-void cube_surf_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_edge_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
+                     struct gl_index_buffer *index_buf);
+int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf);
 
-void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+long flatEdgeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf);
+long flatNodeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf);
 
 #endif

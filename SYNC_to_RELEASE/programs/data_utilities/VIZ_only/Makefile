@@ -4,9 +4,9 @@
 
 VIZ_PLUG_DIR = $$(DATA_UTILS_DIR)/VIZ_only
 
-TARGET_PSF =         sectioning
-TARGET_VTK_CONVERT = field_to_VTK
-TARGET_PSF_2_VTK =   psf_to_vtk
+TARGET_PSF =         utilities/sectioning
+TARGET_VTK_CONVERT = utilities/field_to_VTK
+TARGET_PSF_2_VTK =   utilities/section_to_VTK
 
 SOURCES = $(shell ls *.f90)
 
@@ -14,6 +14,7 @@ MOD_PSF_PLUG = \
 main_surface_rendering.o \
 analyzer_psf.o \
 FEM_analyzer_viz_surf.o \
+input_control_section_only.o \
 \
 t_control_data_section_only.o \
 t_field_list_for_vizs.o \
@@ -23,6 +24,7 @@ MOD_VTK_CONVERT_PLUG = \
 main_VTK_convert.o \
 analyzer_VTK_convert.o \
 FEM_analyzer_viz_surf.o \
+input_control_section_only.o \
 t_viz_VTK_convert.o \
 \
 t_control_data_section_only.o \
@@ -81,9 +83,5 @@ mod_list:
 	@echo  $(MOD_PSF_2_VTK)          >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(VIZ_PLUG_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(VIZ_PLUG_DIR)' $(SOURCES)

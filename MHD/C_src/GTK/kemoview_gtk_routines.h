@@ -16,10 +16,14 @@
 #include "calypso_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
+
 /*  prototypes */
 
 GtkWidget * wrap_into_frame_gtk(const char *title, GtkWidget *box_in);
-GtkWidget * wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
+GtkWidget * wrap_into_scrollbox_gtk(int width, int height, GtkWidget *box_in);
+GtkWidget * wrap_into_expanded_frame_gtk(const char *title, GtkWidget *window,
+                                         GtkWidget *box_in);
+GtkWidget * wrap_into_scroll_expansion_gtk(const char *title, int width, int height,
                                   GtkWidget *window, GtkWidget *box_in);
 
 int gtk_selected_combobox_index(GtkComboBox *combobox);

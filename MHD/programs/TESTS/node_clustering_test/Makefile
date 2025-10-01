@@ -23,7 +23,7 @@ dir_list:
 	@echo 'NODE_CLUSTERING_TEST_DIR = $(NODE_CLUSTERING_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_GROUPING_BY_VOLUME = $$(BUILDDIR)/$(TARGET_GROUPING_BY_VOLUME)' >> $(MAKENAME)
+	@echo 'TARGET_GROUPING_BY_VOLUME = $$(TEST_BUILD_DIR)/$(TARGET_GROUPING_BY_VOLUME)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -47,12 +47,8 @@ mod_list:
 	@echo  $(MOD_GROUPING_BY_VOLUME) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SOURCES)
 
 
 clean:

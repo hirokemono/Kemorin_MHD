@@ -203,9 +203,9 @@
       integer(kind = kint) ::  k2
 !
 !
-!$omp workshare
+!$omp parallel workshare
       fem_wk%scalar_1(1:ele%numele) =  0.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
 ! -------- loop for shape function for phsical values
 !

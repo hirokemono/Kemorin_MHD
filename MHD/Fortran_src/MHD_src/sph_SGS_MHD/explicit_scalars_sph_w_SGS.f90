@@ -78,7 +78,8 @@
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scl_diff_adv_SGS_src_adams temperature'
-        call sel_scl_diff_adv_SGS_src_adams(SGS_param%iflag_SGS_h_flux, &
+        call sel_scl_diff_adv_SGS_src_adams                             &
+     &    (SGS_param%SGS_heat%iflag_SGS_flux,                           &
      &     sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,       &
      &     ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,              &
      &     ipol_base%i_heat_source, ipol_base%i_temp,                   &
@@ -89,7 +90,7 @@
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scl_diff_adv_SGS_src_adams composition'
-        call sel_scl_diff_adv_SGS_src_adams(SGS_param%iflag_SGS_c_flux, &
+        call sel_scl_diff_adv_SGS_src_adams(SGS_param%SGS_light%iflag_SGS_flux, &
      &     sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,       &
      &     ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,              &
      &     ipol_base%i_light_source, ipol_base%i_light,                 &
@@ -104,7 +105,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_SGS_dadv_src_adms temperature'
         call sel_ctr_scl_SGS_dadv_src_adms                              &
-     &     (SGS_param%iflag_SGS_h_flux, ipol_dif%i_t_diffuse,           &
+     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,    &
      &      ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,             &
      &      ipol_base%i_heat_source, ipol_base%i_temp,                  &
      &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
@@ -114,7 +115,7 @@
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_ctr_scl_SGS_dadv_src_adms composition'
-        call sel_ctr_scl_SGS_dadv_src_adms(SGS_param%iflag_SGS_c_flux,  &
+        call sel_ctr_scl_SGS_dadv_src_adms(SGS_param%SGS_light%iflag_SGS_flux,  &
      &      ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
      &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
      &      ipol_base%i_light, ipol_exp%i_pre_composit,                 &
@@ -147,7 +148,8 @@
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scl_diff_adv_SGS_src_elr temperature'
-        call sel_scl_diff_adv_SGS_src_elr(SGS_param%iflag_SGS_h_flux,   &
+        call sel_scl_diff_adv_SGS_src_elr                               &
+     &    (SGS_param%SGS_heat%iflag_SGS_flux,                           &
      &     sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,       &
      &     ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,              &
      &     ipol_base%i_heat_source, ipol_base%i_temp, dt,               &
@@ -158,7 +160,7 @@
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scl_diff_adv_SGS_src_elr composition'
-        call sel_scl_diff_adv_SGS_src_elr(SGS_param%iflag_SGS_c_flux,   &
+        call sel_scl_diff_adv_SGS_src_elr(SGS_param%SGS_light%iflag_SGS_flux,   &
      &     sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,       &
      &     ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,              &
      &     ipol_base%i_light_source, ipol_base%i_light, dt,             &
@@ -173,7 +175,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_SGS_dadv_src_elr temperature'
         call sel_ctr_scl_SGS_dadv_src_elr                               &
-     &     (SGS_param%iflag_SGS_h_flux, ipol_dif%i_t_diffuse,           &
+     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,    &
      &      ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,             &
      &      ipol_base%i_heat_source, ipol_base%i_temp, dt,              &
      &      ht_prop%coef_exp, ht_prop%coef_advect, ht_prop%coef_source, &
@@ -184,7 +186,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_SGS_dadv_src_elr composition'
         call sel_ctr_scl_SGS_dadv_src_elr                               &
-     &     (SGS_param%iflag_SGS_c_flux, ipol_dif%i_c_diffuse,           &
+     &     (SGS_param%SGS_light%iflag_SGS_flux, ipol_dif%i_c_diffuse,           &
      &      ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,             &
      &      ipol_base%i_light_source, ipol_base%i_light, dt,            &
      &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
@@ -213,14 +215,15 @@
 !
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        call sel_ini_adams_sscl_w_src_SGS(SGS_param%iflag_SGS_h_flux,   &
+        call sel_ini_adams_sscl_w_src_SGS                               &
+     &     (SGS_param%SGS_heat%iflag_SGS_flux,                          &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_frc%i_h_advect,       &
      &      ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,         &
      &      ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ini_adams_sscl_w_src_SGS(SGS_param%iflag_SGS_c_flux,   &
+        call sel_ini_adams_sscl_w_src_SGS(SGS_param%SGS_light%iflag_SGS_flux,   &
      &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,       &
      &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
      &      ipol_exp%i_pre_composit, cp_prop%coef_source,               &
@@ -231,14 +234,14 @@
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%iflag_SGS_h_flux, ipol_frc%i_h_advect,            &
+     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_frc%i_h_advect,     &
      &      ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,         &
      &      ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%iflag_SGS_c_flux, ipol_frc%i_c_advect,            &
+     &     (SGS_param%SGS_light%iflag_SGS_flux, ipol_frc%i_c_advect,            &
      &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
      &      ipol_exp%i_pre_composit, cp_prop%coef_source,               &
      &      sph_rj, rj_fld)

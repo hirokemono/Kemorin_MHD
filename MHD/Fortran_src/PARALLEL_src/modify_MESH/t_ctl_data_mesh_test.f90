@@ -36,6 +36,9 @@
      &                        :: fname_test_mesh_ctl = "ctl_mesh"
 !
       type mesh_test_control
+!>        Block name
+        character(len=kchara) :: block_name = 'mesh_test'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Structure of mesh IO controls and sleeve informations
@@ -75,10 +78,15 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(mest_ctl_file_code,file=fname_test_mesh_ctl,status='old')
 !
         do
-          call load_one_line_from_control(mest_ctl_file_code, c_buf1)
+          call load_one_line_from_control(mest_ctl_file_code,           &
+     &        hd_mesh_test_ctl, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_test_mesh_ctl_data                                  &
      &       (mest_ctl_file_code, hd_mesh_test_ctl, mesh_tctl, c_buf1)
           if(mesh_tctl%i_mesh_test_ctl .gt. 0) exit
@@ -89,6 +97,10 @@
       call bcast_ctl_data_4_platform(mesh_tctl%plt)
       call bcast_FEM_mesh_control(mesh_tctl%Fmesh_ctl)
 !
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(c_buf1%iend, trim(fname_test_mesh_ctl))
+      end if
+!
       end subroutine read_control_4_mesh_test
 !
 !   --------------------------------------------------------------------
@@ -98,6 +110,7 @@
      &         (id_control, hd_block, mesh_tctl, c_buf)
 !
       use t_read_control_elements
+      use ctl_data_platforms_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -107,10 +120,14 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(mesh_tctl%i_mesh_test_ctl .gt. 0) return
+      mesh_tctl%block_name = hd_block
+      call init_platforms_labels(hd_platform, mesh_tctl%plt)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, mesh_tctl%Fmesh_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &

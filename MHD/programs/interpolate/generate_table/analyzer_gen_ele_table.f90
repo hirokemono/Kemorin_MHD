@@ -22,6 +22,7 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
+      use set_2nd_geometry_4_table
 !
       implicit none
 !
@@ -37,6 +38,8 @@
 !
       type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wke
+!
+      type(parallel_mesh_for_itp),save  :: itp_org
 !
       character(len=kchara), parameter, private :: work_header = 'work'
 !
@@ -89,7 +92,7 @@
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
       call set_2nd_geometry_type_itp_tbl                                &
-     &   (gen_itp_p1%itp_org_mesh_file, nprocs_2nd)
+     &   (gen_itp_p1%itp_org_mesh_file, nprocs_2nd, itp_org)
 !
 !  -------------------------------
 !  -------------------------------
@@ -106,7 +109,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest(nprocs_2nd, org_femmesh%mesh%node, &
+      call s_set_serach_data_4_dest(itp_org, org_femmesh%mesh%node,     &
      &    itp_ele%tbl_dest, itp_e_coef, cst_itp_wke, itp_blks1)
 !
       end subroutine init_analyzer
@@ -133,8 +136,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table(nprocs_2nd,                    &
-     &    gen_itp_p1, org_femmesh%mesh%node, next_tbl_i%neib_nod,       &
+      call s_construct_interpolate_table(itp_org, gen_itp_p1,           &
+     &    org_femmesh%mesh%node%numnod,                                 &
+     &    org_femmesh%mesh%node%internal_node,                          &
+     &    org_femmesh%mesh%node%xx, next_tbl_i%neib_nod,                &
      &    itp_blks1%org_blocks, itp_e_coef,                             &
      &    cst_itp_wke%iflag_org_domain, ierr_missing)
 !

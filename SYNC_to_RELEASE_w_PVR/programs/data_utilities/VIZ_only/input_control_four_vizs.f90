@@ -1,0 +1,1 @@
+../../../../MHD/programs/VIZ_only/input_control_four_vizs.f90

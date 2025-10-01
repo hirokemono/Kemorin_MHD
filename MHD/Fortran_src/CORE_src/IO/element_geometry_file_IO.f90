@@ -41,7 +41,6 @@
 !
       use m_file_format_switch
       use t_read_mesh_data
-      use set_mesh_file_names
 !
       implicit none
 !
@@ -61,7 +60,10 @@
       subroutine output_element_xyz_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
+      use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -78,8 +80,8 @@
      &  'Write ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm)
+      write(input_file_code,'(a)', advance='NO') hd_ecomm_para()
+      call write_comm_table(input_file_code, id_rank, ele_mesh_IO%comm)
       call write_element_geometry(input_file_code,                      &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
@@ -94,7 +96,10 @@
       subroutine output_element_sph_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
+      use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -111,8 +116,8 @@
      &  'Write ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm)
+      write(input_file_code,'(a)', advance='NO') hd_ecomm_para()
+      call write_comm_table(input_file_code, id_rank, ele_mesh_IO%comm)
       call write_element_geometry_sph(input_file_code,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
@@ -127,7 +132,10 @@
       subroutine output_element_cyl_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
+      use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -144,8 +152,8 @@
      &  'Write ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm)
+      write(input_file_code,'(a)', advance='NO') hd_ecomm_para()
+      call write_comm_table(input_file_code, id_rank, ele_mesh_IO%comm)
       call write_element_geometry_cyl(input_file_code,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
@@ -161,6 +169,7 @@
       subroutine output_surface_xyz_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -195,6 +204,7 @@
       subroutine output_surface_sph_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -226,6 +236,7 @@
       subroutine output_surface_cyl_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -258,6 +269,7 @@
       subroutine output_edge_xyz_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -292,6 +304,7 @@
       subroutine output_edge_sph_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -323,6 +336,7 @@
       subroutine output_edge_cyl_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix

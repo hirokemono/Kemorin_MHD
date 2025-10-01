@@ -34,6 +34,11 @@
 !
       character(len=kchara), parameter, private :: work_header = 'work'
 !
+      character(len=3), parameter, private :: itp_ext = "itp"
+      character(len=3), parameter, private :: itb_ext = "itb"
+!
+      private :: add_itp_extension, add_itb_extension
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -211,6 +216,31 @@
       end if
 !
       end function set_interpolate_work_name
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len=kchara) function add_itp_extension(file_head)
+!
+      use set_parallel_file_name
+!
+      character(len=kchara), intent(in) :: file_head
+!
+      add_itp_extension = add_3chara_extension(file_head, itp_ext)
+!
+      end function add_itp_extension
+!
+!-----------------------------------------------------------------------
+!
+      character(len=kchara) function add_itb_extension(file_head)
+!
+      use set_parallel_file_name
+!
+      character(len=kchara), intent(in) :: file_head
+!
+      add_itb_extension = add_3chara_extension(file_head, itb_ext)
+!
+      end function add_itb_extension
 !
 !-----------------------------------------------------------------------
 !

@@ -231,7 +231,7 @@
 #endif
 !
         call read_num_filter_mom_type_file(file_name, id_rank,          &
-      &     FEM_elens, FEM_moms)
+      &     FEM_elens, FEM_moms, ierr)
 !
       end subroutine sel_read_num_filter_mom_file
 !

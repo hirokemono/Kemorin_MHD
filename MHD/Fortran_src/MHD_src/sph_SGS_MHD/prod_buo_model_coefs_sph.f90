@@ -183,7 +183,7 @@
       integer(kind = kint) :: k, j, i1
 !
 !
-!$omp do private(k,j,i1)
+!$omp parallel do private(k,j,i1)
       do k = 1, nidx_rj(1)
         do j = 1, nidx_rj(2)
             i1 = j + (k-1) * nidx_rj(2)
@@ -192,7 +192,7 @@
             d_rj(i1,ifld+2) = (one + sgs_c(k)) * d_rj(i1,ifld+2)
           end do
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine prod_sgl_radial_buo_coefs_rj
 !
@@ -211,7 +211,7 @@
       integer(kind = kint) :: k, j, i1
 !
 !
-!$omp do private(k,j,i1)
+!$omp parallel do private(k,j,i1)
       do k = 1, nidx_rj(1)
         do j = 1, nidx_rj(2)
             i1 = j + (k-1) * nidx_rj(2)
@@ -223,7 +223,7 @@
      &                       * d_rj(i1,ifld+2)
           end do
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine prod_dbl_radial_buo_coefs_rj
 !

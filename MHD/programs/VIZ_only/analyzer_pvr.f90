@@ -13,29 +13,39 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_control_data_four_vizs
+      use input_control_four_vizs
       use t_volume_rendering
+      use t_particle_trace
+      use t_fieldline
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
       use t_mesh_SR
-      use FEM_analyzer_four_vizs
+      use t_control_data_all_vizs
+      use m_elapsed_labels_4_VIZ
 !
       implicit none
+!
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
-      type(control_data_four_vizs), save :: pvr_ctl3
+      type(control_data_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of work area for mesh communications
       type(mesh_SR) :: m_SR13
 !>      Structure of mesh and field for visualization only
-      type(VIZ_mesh_field), save :: pvr3
-!>      Structure of viualization modules
+      type(VIZ_mesh_field), save :: FEM_pvr3
+!>      Structure of volume rendering
       type(volume_rendering_module), save :: vizs_pvr3
+!>      Structure of fieldline module
+      type(fieldline_module), save :: vizs_fline3
+!>      Structure of tracer module
+      type(tracer_module), save ::    vizs_tracer3
 !
 !  ---------------------------------------------------------------------
 !
@@ -45,34 +55,59 @@
 !
       subroutine initialize_pvr
 !
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use input_control_all_vizs
       use volume_rendering
-!
-      integer(kind = kint) :: ierr
+      use FEM_analyzer_viz
+      use FEM_to_VIZ_bridge
 !
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
-!     read controls
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_four_vizs'
-      call read_control_file_four_vizs(pvr_ctl3)
-      call set_ctl_params_four_vizs(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+!  Load controls
+      if (iflag_debug.gt.0) write(*,*) 's_inoput_control_four_vizs'
+      call s_input_control_all_vizs(fname_viz_ctl, pvr_ctl3,            &
+     &                              FEM_viz3, t_VIZ3)
 !
 !  FEM Initialization
-      call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
-     &    t_VIZ3%viz_step, FEM_viz3, pvr3, m_SR13)
+      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
+      call FEM_initialize_viz(t_VIZ3%init_d,  t_VIZ3%ucd_step,          &
+     &                        FEM_viz3, m_SR13)
+      if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(elps_VIZ1, t_VIZ3%viz_step,           &
+     &                            FEM_viz3%geofem, FEM_pvr3, m_SR13)
+!
+!  Tracer Initialization
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
+      call TRACER_initialize                                            &
+     &   (t_VIZ3%init_d, t_VIZ3%finish_d, t_VIZ3%ucd_step,              &
+     &    FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,          &
+     &    pvr_ctl3%tracer_ctls%tracer_controls, vizs_tracer3)
+      call dealloc_tracer_controls(pvr_ctl3%tracer_ctls)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+13)
 !
 !  VIZ Initialization
+      if(iflag_debug .gt. 0)  write(*,*) 'FLINE_initialize'
+      call FLINE_initialize(t_VIZ3%viz_step%FLINE_t%increment,          &
+     &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3,                &
+     &    pvr_ctl3%viz_ctl_v%fline_ctls, vizs_fline3)
+!
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
-      call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
-     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz4_ctl%pvr_ctls,  &
-     &    vizs_pvr3, m_SR13)
+      call PVR_initialize                                               &
+     &   (t_VIZ3%viz_step%PVR_t%increment, elps_VIZ1%elps_PVR,          &
+     &    FEM_viz3%geofem, FEM_viz3%field, vizs_tracer3, vizs_fline3,   &
+     &    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3, m_SR13)
+      call dealloc_viz_controls(pvr_ctl3%viz_ctl_v)
+      if(elps_VIZ1%flag_elapsed_V)                                      &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+7)
 !
       end subroutine initialize_pvr
 !
@@ -82,8 +117,10 @@
 !
       use t_IO_step_parameter
       use volume_rendering
+      use FEM_analyzer_viz
+      use FEM_to_VIZ_bridge
 !
-      integer(kind = kint) :: i_step, istep_pvr
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = t_VIZ3%init_d%i_time_step, t_VIZ3%finish_d%i_end_step
@@ -92,16 +129,39 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3, m_SR13)
+        call FEM_analyze_viz(i_step, t_VIZ3%ucd_step, t_VIZ3%time_d,    &
+     &                       FEM_viz3, m_SR13)
 !
-!  Rendering
+!  Load tracer data
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
+        call TRACER_visualize(t_VIZ3%viz_step%istep_tracer,             &
+     &      t_VIZ3%time_d, t_VIZ3%ucd_step,                             &
+     &      FEM_viz3%geofem, FEM_viz3%field,  vizs_tracer3)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+14)
+!
+!  Const fieldlines
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
-        call PVR_visualize                                              &
-     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
-     &     FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field,             &
-     &     vizs_pvr3, m_SR13)
+        call FLINE_visualize(t_VIZ3%viz_step%istep_fline,               &
+     &      elps_VIZ1%elps_FLINE, t_VIZ3%time_d,                        &
+     &      FEM_viz3%geofem, FEM_pvr3%para_surf, FEM_viz3%field,        &
+     &      vizs_tracer3, vizs_fline3, m_SR13)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+12)
+!
+!  Rendering
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call start_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
+        call PVR_visualize(t_VIZ3%viz_step%istep_pvr,                   &
+     &      t_VIZ3%time_d%time, elps_VIZ1%elps_PVR,                     &
+     &      FEM_viz3%geofem, FEM_pvr3%jacobians, FEM_viz3%field,        &
+     &      vizs_tracer3, vizs_fline3, vizs_pvr3, m_SR13)
+        if(elps_VIZ1%flag_elapsed_V)                                    &
+     &           call end_elapsed_time(elps_VIZ1%ist_elapsed_V+8)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

@@ -1,0 +1,1 @@
+../../../../MHD/C_src/GLSL/colormap_sym_grayscale.frag

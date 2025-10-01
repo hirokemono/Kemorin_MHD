@@ -17,7 +17,6 @@
 !!
 !!      subroutine dealloc_masking_range(masking)
 !!      subroutine alloc_masking_range(num, masking)
-!!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        type(masking_parameter), intent(inout) :: masking
 !!@endverbatim
 !

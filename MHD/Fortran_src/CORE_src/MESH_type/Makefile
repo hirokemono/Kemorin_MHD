@@ -14,7 +14,9 @@ MOD_MESH_T = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MESH_TYPE_DIR = $(MESH_TYPE_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MESH_T)' >> $(MAKENAME)
 
 
@@ -23,12 +25,8 @@ mod_list:
 	@echo  $(MOD_MESH_T) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TYPE_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MESH_TYPE_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

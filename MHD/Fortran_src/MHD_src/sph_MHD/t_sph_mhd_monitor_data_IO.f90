@@ -17,6 +17,11 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
+!!
+!!      subroutine init_sph_spectr_data_and_file(sph, rj_fld, monitor)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
 !
       module t_sph_mhd_monitor_data_IO
@@ -39,14 +44,16 @@
       use t_sum_sph_rms_data
       use t_energy_label_parameters
       use t_boundary_params_sph_MHD
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       use pickup_sph_spectr_data
 !
       implicit none
 !
-!
+!>      STructure for monitor data for spherical dynamos
       type sph_mhd_monitor_data
-!>        Structure for pickup list
+!>         Structure for pickup list
         type(pickup_mode_list) :: pick_list
 !>          Structure for pickup list
         type(picked_spectrum_data) :: pick_coef
@@ -55,7 +62,7 @@
         type(pickup_mode_list) :: gauss_list
 !>        Structure for gauss coeffciients
 !!        Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
-!!        gauss_coef%radius_gl(1) = 2.82
+!!        gauss_coef%radius_gl(1,1) = 2.82
         type(picked_spectrum_data) :: gauss_coef
 !
 !>        Structure for Nusselt number data
@@ -76,8 +83,21 @@
 !
 !>        Structure of label for energies
         type(energy_label_param) :: ene_labels
-!
+!>        Truncation level for crustal filtering
         integer(kind = kint) :: ltr_crust
+!
+!>        Data on equator of mid-depth
+        type(circle_fld_maker) :: circ_mid_eq
+!>        Data for dynamo benchmark
+        type(dynamobench_monitor) :: bench
+!
+!>        Data on circles
+        type(mul_fields_on_circle) :: mul_circle
+!
+!>        Structure of mean square data
+        type(sph_mean_squares) :: lor_spectr
+!>        Work area of mean square data
+        type(sph_mean_square_work) :: WK_lor_spectr
       end type sph_mhd_monitor_data
 !
 !  --------------------------------------------------------------------
@@ -123,7 +143,7 @@
       if(ierr_gl .gt. 0) then
         write(e_message,*) ierr_gl,                                     &
      &      ' pickup mode files have wrong header. Check field defs.'
-        call calypso_mpi_barrier()
+        call calypso_mpi_barrier
         call calypso_MPI_abort(ierr_file, e_message)
       end if
 !

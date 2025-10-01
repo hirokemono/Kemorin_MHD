@@ -6,9 +6,9 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array_FEM_MHD                               &
-!!     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,   &
-!!     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
+!!      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,      &
+!!     &          iphys, iphys_LES, nod_fld, iref_base, iref_grad,      &
+!!     &          ref_fld, Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -29,6 +29,8 @@
 !
       use t_control_parameter
       use t_phys_address
+      use t_base_field_labels
+      use t_grad_field_labels
       use t_SGS_model_addresses
       use t_phys_data
       use t_SGS_control_parameter
@@ -47,9 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array_FEM_MHD                                 &
-     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,     &
-     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
+      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,        &
+     &          iphys, iphys_LES, nod_fld, iref_base, iref_grad,        &
+     &          ref_fld, Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_phys_constants
 !
@@ -58,14 +60,13 @@
       use t_work_FEM_integration
       use t_material_property
       use t_FEM_SGS_model_coefs
-      use t_SGS_model_coefs
       use t_FEM_MHD_mean_square
 !
       use set_control_field_data
       use count_sgs_components
-      use node_monitor_IO
       use dependency_FEM_SGS_MHD
       use set_mean_square_array
+      use init_reference_field_data
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -73,6 +74,10 @@
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
+      type(base_field_address), intent(inout) :: iref_base
+      type(gradient_field_address), intent(inout) :: iref_grad
+      type(phys_data), intent(inout) :: ref_fld
+!
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
@@ -95,8 +100,7 @@
          (SGS_par%model_p, MHD_prop%cd_prop, SGS_MHD_wk%mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, SGS_MHD_wk%mhd_fem_wk)
       call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
-     &    Csims_FEM_MHD%iphys_elediff_vec,                              &
-     &    Csims_FEM_MHD%iphys_elediff_fil)
+     &                               SGS_MHD_wk%mhd_fem_wk)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'
@@ -108,6 +112,10 @@
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_FEM_MHD_mean_square'
       call init_FEM_MHD_mean_square(nod_fld, iphys, iphys_LES, fem_sq)
+!
+!
+      call s_init_reference_field_data(mesh%node, iphys,                &
+     &                                 iref_base, iref_grad, ref_fld)
 !
       end subroutine allocate_array_FEM_MHD
 !
@@ -122,9 +130,9 @@
 !
       mhd_fem_wk%n_dvx = 0
       if ( SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (  SGS_param%iflag_SGS_h_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none               &
+        if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
+     &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
@@ -137,9 +145,9 @@
         end if
 !
       else if(SGS_param%iflag_SGS .ne. id_SGS_none) then
-        if (  SGS_param%iflag_SGS_h_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none               &
+        if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
+     &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none ) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if

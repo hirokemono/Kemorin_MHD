@@ -23,7 +23,12 @@
 
 -(void)linkToFieldclist:(struct all_field_ctl_c *) ref_all_fld_list
 { 
-    mhd_ctl_m = link_to_mhd_ctl();
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+    if(f_MHD_ctl == NULL){
+        printf("malloc error for f_MHD_ctl\n");
+        exit(0);
+    };
+    f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD("control_MHD");
     all_fld_list = ref_all_fld_list;
 }
 
@@ -44,12 +49,14 @@
 {
     int i;
     char *c1_out;
-    
+    struct chara2_int_ctl_item *tmp_item;
+
     /*
      for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
-     printf("%d %s %d %d %d %d \n", i, all_fld_list->fld_list->field_name[i], 
-     all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
-     all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
+        tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+        printf("%d %s %d %d %d %d \n", i, tmp_item->c1_tbl,
+        all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
+        all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
      }
      */
     
@@ -57,8 +64,9 @@
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
         if(all_fld_list->iflag_use[i] > 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
-            NSNumber *num2 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_viz[i]];
+            tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+            NSString *data1 = [NSString stringWithCString:tmp_item->c1_tbl encoding:NSUTF8StringEncoding];
+            NSNumber *num2 = [[NSNumber alloc] initWithInt:tmp_item->c1_tbl];
             NSNumber *num3 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_monitor[i]];
             NSNumber *num4 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_quad[i]];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];

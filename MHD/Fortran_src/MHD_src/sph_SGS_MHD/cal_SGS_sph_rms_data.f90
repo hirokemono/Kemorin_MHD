@@ -7,8 +7,9 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,  &
-!!     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
+!!      subroutine cal_SGS_sph_monitor_data                             &
+!!     &         (time_d, sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,    &
+!!     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor, cdat, bench)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -19,12 +20,15 @@
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
-!!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
+!!     &          ipol, ipol_LES, rj_fld, leg, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!      subroutine cvt_filtered_ene_one_mode                            &
@@ -43,9 +47,10 @@
       use t_spheric_parameter
       use t_spheric_rj_data
       use t_physical_property
-      use t_schmidt_poly_on_rtm
+      use t_time_data
       use t_phys_data
       use t_phys_address
+      use t_work_4_sph_trans
       use t_SGS_model_addresses
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
@@ -70,9 +75,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,    &
-     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
+      subroutine cal_SGS_sph_monitor_data                               &
+     &         (time_d, sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,      &
+     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor)
 !
+      use t_field_on_circle
+      use t_field_4_dynamobench
       use calypso_mpi
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -80,12 +88,16 @@
       use cal_heat_source_Nu
       use cal_CMB_dipolarity
       use cal_typical_scale
+      use const_data_4_dynamobench
+      use sph_fwd_trans_on_circles
+      use lorentz_spctr_in_shell
 !
+      type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(MHD_radial_matrices), intent(in) :: MHD_mats
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -97,7 +109,12 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
-     &   leg%g_sph_rj, monitor%pwr, monitor%WK_pwr)
+     &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
+!
+      if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
+      call cal_lorentz_spctr_in_shell                                   &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
+     &    trans_p%leg, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
@@ -126,12 +143,20 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
+      call const_dynamobench_data                                       &
+     &  (time_d, sph%sph_params, sph%sph_rj, sph_MHD_bc, trans_p, ipol, &
+     &   rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
+!
+      call sph_forward_trans_on_circles(trans_p%iflag_FFT,              &
+     &    sph%sph_rj, rj_fld, monitor%mul_circle%num_circles,           &
+     &    monitor%mul_circle%cdat(1))
+!
       end subroutine cal_SGS_sph_monitor_data
 !
 !  --------------------------------------------------------------------
 !
       subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,      &
-     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
+     &          ipol, ipol_LES, rj_fld, leg, pwr, WK_pwr)
 !
       use calypso_mpi
 !
@@ -145,7 +170,7 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
@@ -154,11 +179,8 @@
       if(pwr%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_SGS_sph_layerd_rms'
-      call sum_SGS_sph_layerd_rms                                       &
-     &   (sph_params%l_truncation, sph_rj, ipol, ipol_LES, g_sph_rj,    &
-     &    rj_fld, pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,      &
-     &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
-     &    pwr%v_spectr, WK_pwr)
+      call sum_SGS_sph_layerd_rms(sph_params%l_truncation, sph_rj, pwr, &
+     &    ipol, ipol_LES, leg%g_sph_rj, rj_fld, WK_pwr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_square'
       call global_sum_sph_layerd_square                                 &
@@ -170,7 +192,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
       call cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
-      call sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+      call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
 !
@@ -178,14 +200,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sum_SGS_sph_layerd_rms(l_truncation, sph_rj,           &
-     &          ipol, ipol_LES, g_sph_rj, rj_fld, nri_rms, num_rms_rj,  &
-     &          istack_rms_comp_rj, ifield_rms_rj, kr_for_rms,          &
-     &          num_vol_spectr, v_pwr, WK_pwr)
+      subroutine sum_SGS_sph_layerd_rms(l_truncation, sph_rj, pwr,      &
+     &          ipol, ipol_LES, g_sph_rj, rj_fld, WK_pwr)
 !
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
+      use sum_sph_rms_by_degree
       use sum_sph_rms_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -193,22 +214,15 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: l_truncation
-      integer(kind = kint), intent(in) :: nri_rms
-      integer(kind = kint), intent(in) :: num_rms_rj
-      integer(kind = kint), intent(in)                                  &
-     &            :: istack_rms_comp_rj(0:num_rms_rj)
-      integer(kind = kint), intent(in) :: ifield_rms_rj(num_rms_rj)
-      integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
-      integer(kind = kint), intent(in) :: num_vol_spectr
-      type(sph_vol_mean_squares), intent(in) :: v_pwr(num_vol_spectr)
+      type(sph_mean_squares), intent(in) :: pwr
 !
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
-      integer(kind = kint) :: num, inum
+      integer(kind = kint) :: num
 !
 !
 !$omp parallel workshare
@@ -220,53 +234,25 @@
       WK_pwr%vol_lm_local = zero
 !$omp end parallel workshare
 !
-      do j_fld = 1, num_rms_rj
-        i_fld = ifield_rms_rj(j_fld)
+      do j_fld = 1, pwr%num_fld_sq
+        i_fld = pwr%id_field(j_fld)
         icomp_rj = rj_fld%istack_component(i_fld-1) + 1
-        jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
-        ncomp_rj = istack_rms_comp_rj(j_fld)                            &
-     &            - istack_rms_comp_rj(j_fld-1)
+        jcomp_st = pwr%istack_comp_sq(j_fld-1) + 1
+        ncomp_rj = pwr%istack_comp_sq(j_fld)                            &
+     &            - pwr%istack_comp_sq(j_fld-1)
         num = sph_rj%nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field                                 &
-     &     (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,                 &
+     &     (sph_rj, ncomp_rj, g_sph_rj, icomp_rj, icomp_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      WK_pwr%shl_rj(0,1,1))
-        call cvt_filtered_ene_spectr                                    &
-     &     (sph_rj, ipol_LES, ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
 !
-        do inum = 1, num_vol_spectr
-          call radial_integration                                       &
-     &       (v_pwr(inum)%kr_inside, v_pwr(inum)%kr_outside,            &
-     &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
-     &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
+        if(ncomp_rj .eq. n_vector) then
+          call cvt_filtered_ene_spectr(sph_rj, ipol, ipol_LES,          &
+     &      ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
+        end if
 !
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_l_local(0,jcomp_st,inum))
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_m_local(0,jcomp_st,inum))
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_lm_local(0,jcomp_st,inum))
-        end do
-!
-        if(nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
-     &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
-     &      WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,          &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
-     &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
+        call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
+     &                               ncomp_rj, jcomp_st, WK_pwr)
       end do
 !
       end subroutine sum_SGS_sph_layerd_rms
@@ -275,11 +261,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cvt_filtered_ene_spectr                                &
-     &        (sph_rj, ipol_LES, ncomp_rj, icomp_rj, rms_sph_rj)
+     &         (sph_rj, ipol, ipol_LES, ncomp_rj, icomp_rj, rms_sph_rj)
 !
       use cal_rms_by_sph_spectr
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
 !
@@ -287,13 +274,14 @@
      &    :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),ncomp_rj)
 !
 !
-      if(ncomp_rj .ne. n_scalar) return
+      call cvt_mag_or_kin_ene_spectr(sph_rj, ipol%base,                 &
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%filter_fld,       &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%wide_filter_fld,  &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%dbl_filter_fld,   &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
 !
       end subroutine cvt_filtered_ene_spectr
 !

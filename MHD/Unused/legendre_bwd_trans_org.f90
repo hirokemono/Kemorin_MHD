@@ -93,7 +93,7 @@
         kst = sph_rtm%istack_rtm_kr_smp(ip-1) + 1
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
         do k_rlm = kst, ked
-          a1r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)
+          a1r_1d_rlm_r = sph_rlm%ar_1d_rlm(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r * a1r_1d_rlm_r
           do j_rlm = 1, sph_rlm%nidx_rlm(2)
             do nd = 1, nvector

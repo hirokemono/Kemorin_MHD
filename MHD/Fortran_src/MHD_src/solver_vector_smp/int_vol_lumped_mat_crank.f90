@@ -72,7 +72,6 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_light
 !
 !
-!$omp parallel
       if (fl_prop%iflag_scheme .eq. id_Crank_nicolson                   &
      &     .and. fl_prop%coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
@@ -112,7 +111,6 @@
      &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &
      &      mat_light%num_non0, mat_light%aiccg)
       end if
-!$omp end parallel
 !
       end subroutine int_vol_crank_mat_lump
 !

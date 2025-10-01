@@ -7,7 +7,12 @@ PROG_DIR = $$(MHDDIR)/programs
 LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
 LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
 
-MOD_PYTHONS = '$$(MOD_SPH_UTIL_DLL)'
+MOD_PYTHONS = \
+'$$(MOD_MHD_F2003)' \
+'$$(MOD_VIZ_F2003)' \
+'$$(MOD_SPH_UTIL_DLL)' \
+'$$(MOD_MHD_CTL_DLL)' \
+'$$(MOD_VIZ_CTL_DLL)'
 
 SUBDIRS = \
 FEM_MHD \
@@ -164,21 +169,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
@@ -190,6 +184,7 @@ depends:
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
+		FFMPEG_CFLAGS='$(FFMPEG_CFLAGS)' \
 		depends; \
 		) \
 	done

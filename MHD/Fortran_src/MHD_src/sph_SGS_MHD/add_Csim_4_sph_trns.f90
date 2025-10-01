@@ -67,7 +67,7 @@
      &    ipol_Csim%i_SGS_c_flux, iphys_Csim%i_SGS_c_flux,              &
      &    f_trns_Csim%i_SGS_c_flux, trns)
 !
-!   SGS buoyancy
+!   SGS thermal buoyancy
       call add_field_4_sph_trns_by_pol(d_rj,                            &
      &    ipol_Csim%i_SGS_buoyancy, iphys_Csim%i_SGS_buoyancy,          &
      &    f_trns_Csim%i_SGS_buoyancy, trns)
@@ -112,7 +112,7 @@
      &    ipol_Csim%i_SGS_c_flux, iphys_Csim%i_SGS_c_flux,              &
      &    f_trns_Csim%i_SGS_c_flux, trns)
 !
-!   SGS buoyancy
+!   SGS thermal buoyancy
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_Csim%i_SGS_buoyancy, iphys_Csim%i_SGS_buoyancy,          &
      &    f_trns_Csim%i_SGS_buoyancy, trns)

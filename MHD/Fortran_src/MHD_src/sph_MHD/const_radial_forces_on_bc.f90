@@ -67,17 +67,16 @@
 !
 !
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_gravity, fl_prop%iflag_4_composit_buo,        &
+     &   (fl_prop%flag_thermal_buoyancy, fl_prop%flag_comp_buoyancy,    &
      &    sph_bc_U%kr_in, sph_rj, ipol_base, ipol_div_frc,              &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_gravity, fl_prop%iflag_4_composit_buo,        &
+     &   (fl_prop%flag_thermal_buoyancy, fl_prop%flag_comp_buoyancy,    &
      &    sph_bc_U%kr_out, sph_rj, ipol_base, ipol_div_frc,             &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
 !
-!$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol_dif%i_v_diffuse, ipol_dif%i_div_viscous,               &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -87,7 +86,7 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(fl_prop%iflag_4_inertia) then
+      if(fl_prop%flag_inertia) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_frc%i_m_advect, ipol_div_frc%i_m_advect,               &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -98,7 +97,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_lorentz) then
+      if(fl_prop%flag_lorentz) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_frc%i_lorentz, ipol_div_frc%i_lorentz,                 &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -108,7 +107,6 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine s_const_radial_forces_on_bc
 !
@@ -131,13 +129,13 @@
       integer(kind = kint) :: inod, j
 !
 !
-!$omp do private(inod,j)
+!$omp parallel do private(inod,j)
       do j = 1, nidx_rj(2)
         inod = j + (kr-1) * nidx_rj(2)
         d_rj(inod,is_fr) = d_rj(inod,is_fld)                            &
      &                     * max(g_sph_rj(j,3),half)*ar_1d_rj(kr,2)
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine cal_radial_force_on_sph
 !

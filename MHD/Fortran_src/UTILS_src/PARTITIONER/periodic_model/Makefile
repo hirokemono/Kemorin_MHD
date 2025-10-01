@@ -20,7 +20,7 @@ lib_tasks:
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 
 
 mod_list:
@@ -28,9 +28,5 @@ mod_list:
 	@echo  $(MOD_PART_PERI) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_PERIDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PART_PERIDIR)' $(SOURCES)

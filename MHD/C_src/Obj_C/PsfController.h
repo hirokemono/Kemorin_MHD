@@ -6,32 +6,36 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#include "math.h"
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#include "math.h"
+
+#import "KemoviewerMovieMaker.h"
 #import "KemoviewerController.h"
 #import "RGBAMapController.h"
 #import "ElasticMenuWindow.h"
-#include "kemoviewer.h"
+#import "KemoViewerObject.h"
+#import "fillRectView.h"
+
+#include "Kemoviewer.h"
 
 @interface PsfController : NSObject {
     
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet fillRectView* _fillRectView;
+    IBOutlet KemoViewerObject *_kmv;
+
     IBOutlet NSPathControl *_psfPathControl;
     IBOutlet NSColorWell *PSFPatchColorWell;
     
     IBOutlet ElasticMenuWindowController * _ElasticControl;
     
-	RGBAMapController * rgbaMapObject;
-	ColorMapController * colorMapObject;
-	OpacityMapController * opacityMapObject;
+    IBOutlet RGBAMapController * _rgbaMapObject;
 	
 	NSInteger psfMoreOpenFlag;
 	NSInteger DrawPsfFlag;
-	NSString *PsfOpenDirectory;
     
 	NSString *PsfWindowlabel;
     
@@ -39,15 +43,7 @@
 	NSMutableArray *LoadedPsfID;
 	NSMutableArray *LoadedPsfFileHead;
     
-	
-	NSInteger PsfNumberOfField;
-	NSInteger PsfTotalComponent;
-	NSMutableArray *PsfNumberOfComponent;
-	NSMutableArray *PsfFieldName;
-	NSMutableArray *PsfMinimum;
-	NSMutableArray *PsfMaximum;
-	
-	NSNumber *PsfPatchFlag;
+    NSNumber *PsfPatchFlag;
 	NSNumber *PsfIsolineFlag;
 	NSNumber *PsfZerolineFlag;
 	NSNumber *PsfDrawFieldId;
@@ -58,8 +54,9 @@
 	NSNumber *PsfIsolineNumber;
 	
 	IBOutlet id _currentPsfMenu;
-	IBOutlet id _psfFieldMenu;
-	IBOutlet id _psfComponentMenu;
+	IBOutlet NSPopUpButton * _psfFieldMenu;
+	IBOutlet NSPopUpButton * _psfComponentMenu;
+    IBOutlet NSTabView     * _controlTabView;
     
 	IBOutlet id _psfLineColorMenu;
 	IBOutlet id _psfPatchColorMenu;
@@ -105,9 +102,7 @@
 	CGFloat PsfMinimumDigit;
 	CGFloat PsfMaximumDigit;
     CGFloat PsfSingleOpacity;
-	
-	NSInteger EvolutionStartStep;
-    
+	    
 	IBOutlet id _PSFVectorSwitchOutlet;
 	NSInteger PSFVectorMenuAcrive;
 	NSInteger DrawPSFVectorFlag;
@@ -119,11 +114,6 @@
 	CGFloat VectorDigit;
 }
 @property NSInteger psfMoreOpenFlag;
-@property NSInteger EvolutionStartStep;
-
-@property (assign) RGBAMapController * rgbaMapObject;
-@property (assign) ColorMapController * colorMapObject;
-@property (assign) OpacityMapController * opacityMapObject;
 
 @property(retain) NSString* PsfWindowlabel;
 
@@ -169,28 +159,35 @@
 @property CGFloat VectorDigit;
 
 
+void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
+                   double *dataMin, double *dataMax,
+                   double *cmapMinValue, int *cmapMinDigit,
+                   double *cmapMaxValue, int *cmapMaxDigit);
+
+
 - (id)init;
 - (id)dealloc;
 
 - (void)awakeFromNib;
 
+- (void) SetFieldMenuItems:(int) id_model
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
+                 fieldMenu:(NSPopUpButton *) psfFieldMenu;
 
-- (id) CopyPsfDisplayFlagsFromC;
+- (void) SetComponentMenuItems:(NSInteger) isel
+                   activeModel:(NSInteger) id_model
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
+                 componentMenu:(NSPopUpButton *) psfComponentMenu;
 
-- (void) ChooseTextureFile;
-- (void) SetCurrentPsfMenu;
-- (void) SetCurrentPSFFile;
-- (void) SetPsfFieldMenu;
-- (void) UpdateCurrentPsfMenu;
-- (void) ResetCurrentPsfParam;
-- (void) SetPsfComponentMenu:(int)isel;
-- (void) SetPsfRanges;
-- (void) DrawPsfFile:(NSString*) PsfOpenFilehead;
+- (void) DrawPsfFile:(NSString*) PsfOpenFilehead
+            kemoview:(struct kemoviewer_type *) kemo_sgl;
+
+- (int) PSFColorbarSwitchStatus;
+- (void) setPSFColorbarSwitchStatus:(int) isel;
+
 
 - (IBAction) OpenPsfFile:(id)pId;
-
 - (IBAction) ClosePsfFile:(id)pId;
-- (IBAction) UpdatePsfAction:(id)sender;
 
 - (IBAction) CurrentPsfAction:(id)sender;
 - (IBAction) PsfFieldAction:(id)sender;
@@ -199,7 +196,6 @@
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 - (IBAction)PsfLineSwitchAction:(id)sender;
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
-- (IBAction)PsfColorbarSwitchAction:(id)sender;
 
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 - (IBAction)ChoosePsfLineColorAction:(id)sender;
@@ -217,7 +213,12 @@
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
-- (void)SetPSFColorFromColorWell;
+- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl
+                       colorwell:(NSColorWell *) viewColorWell;
+- (void)SetPSFSingleOpacity:(struct kemoviewer_type *) kemo_sgl
+                    opacity:(CGFloat) const_opacity
+                  colorwell:(NSColorWell *) viewColorWell;
+
 - (IBAction)SetPSFPatchColorAction:(id)sender;
 - (IBAction)SetPSFSingleOpacityAction:(id)sender;
 @end

@@ -41,7 +41,7 @@
 !
       integer, parameter :: id_file = 15
       character(len = kchara) :: file_name
-      integer :: i4_tmp(1)
+      integer :: i4_tmp(32), i
       real(kind = kreal) :: r_tmp(1)
       integer(kind = kint_gl) :: l8_byte
 !
@@ -67,21 +67,40 @@
 !
       if(ra_rst%iflag_swap .eq. iendian_FLIP) then
         l8_byte = 1
+!
+        i4_tmp(1) = ra_rst%i_version_from_file 
         call byte_swap_int4_f(l8_byte, i4_tmp)
         ra_rst%i_version_from_file = i4_tmp(1)
+!
+        i4_tmp(1) = ra_rst%nri_org 
         call byte_swap_int4_f(l8_byte, i4_tmp)
         ra_rst%nri_org = i4_tmp(1)
+!
+        i4_tmp(1) = ra_rst%iflag_rtype 
         call byte_swap_int4_f(l8_byte, i4_tmp)
         ra_rst%iflag_rtype = i4_tmp(1)
+!
+        i4_tmp(1) = ra_rst%ltr_org 
         call byte_swap_int4_f(l8_byte, i4_tmp)
         ra_rst%ltr_org = i4_tmp(1)
+!
+        r_tmp(1) = ra_rst%dt_org
         call byte_swap_real_f(l8_byte, r_tmp)
         ra_rst%dt_org = r_tmp(1)
+!
+        r_tmp(1) = ra_rst%dt_new
         call byte_swap_real_f(l8_byte, r_tmp)
         ra_rst%dt_new = r_tmp(1)
+!        r_tmp(1) = ra_rst%new_dt_org
 !        call byte_swap_real_f(l8_byte, ra_rst%new_dt_org)
-!         = r_tmp(1)
+!        ra_rst%new_dt_org = r_tmp(1)
       end if
+      write(*,*) 'ra_rst%nri_org', ra_rst%nri_org
+      write(*,*) 'ra_rst%iflag_rtype', ra_rst%iflag_rtype
+      write(*,*) 'ra_rst%ltr_org', ra_rst%ltr_org
+!
+      write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
+      write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !

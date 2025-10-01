@@ -15,14 +15,15 @@
 !!        type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
 !!
 !!      subroutine read_djds_mat11_comp                                 &
-!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO)
+!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO, iend)
 !!      subroutine read_djds_mat33_comp                                 &
-!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO)
-!!      subroutine read_djds_mat_connects                               &
-!!     &         (id_file, NP_IO, PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO)
+!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO, iend)
+!!      subroutine read_djds_mat_connects(id_file, NP_IO,               &
+!!     &          PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO, iend)
 !!        type(DJDS_ordering_table), intent(inout) :: DJDS_IO
 !!        type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
 !!        type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
+!!        integer(kind = kint), intent(inout) :: iend
 !!@endverbatim
 !
       module t_read_djds_matrix_IO
@@ -111,7 +112,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_djds_mat11_comp                                   &
-     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO)
+     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO, iend)
 !
       integer(kind=kint ), intent(in) :: id_file
       integer(kind=kint), intent(in) :: PEsmpTOT_IO
@@ -119,12 +120,14 @@
       integer(kind=kint), intent(inout) :: N_IO
       type(DJDS_ordering_table), intent(inout) :: DJDS_IO
       type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
+      integer(kind = kint), intent(inout) :: iend
 !
       character(len=255) :: character_4_read
       integer(kind = kint) :: i, j, itmp, num
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp,  DJDS_IO%NLmax, DJDS_IO%npLX1
 !
       num = PEsmpTOT_IO * DJDS_IO%NLmax * DJDS_IO%NHYP
@@ -135,7 +138,8 @@
         read(id_file,*) itmp, DJDS_IO%indexDJDS_L(i)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp,  DJDS_IO%NUmax, DJDS_IO%npUX1
 !
       num = PEsmpTOT_IO * DJDS_IO%NUmax * DJDS_IO%NHYP
@@ -147,7 +151,8 @@
       end do
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DMAT11_IO%num_diag, DMAT11_IO%num_non0
       DMAT11_IO%istart_diag = 1
 !
@@ -158,7 +163,8 @@
       end do
       DMAT11_IO%istart_l = DMAT11_IO%num_diag + 1
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DJDS_IO%itotal_l
 !
       allocate (DJDS_IO%itemDJDS_L(DJDS_IO%itotal_l))
@@ -168,7 +174,8 @@
       end do
       DMAT11_IO%istart_u = (DMAT11_IO%num_diag + DJDS_IO%itotal_l) + 1
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DJDS_IO%itotal_u
 !
       allocate (DJDS_IO%itemDJDS_U(DJDS_IO%itotal_u))
@@ -177,7 +184,8 @@
         read(id_file,*) itmp, DJDS_IO%itemDJDS_U(i), DMAT11_IO%aiccg(j)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) N_IO
 !
       allocate (DMAT11_IO%ALUG_L(N_IO))
@@ -191,7 +199,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_djds_mat33_comp                                   &
-     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO)
+     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO, iend)
 !
       integer(kind=kint ), intent(in) :: id_file
       integer(kind=kint), intent(in) :: PEsmpTOT_IO
@@ -199,6 +207,7 @@
       integer(kind=kint), intent(inout) :: N_IO
       type(DJDS_ordering_table), intent(inout) :: DJDS_IO
       type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
+      integer(kind = kint), intent(inout) :: iend
 !
 !
       character(len=255) :: character_4_read
@@ -206,7 +215,8 @@
 !
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp,  DJDS_IO%NLmax, DJDS_IO%npLX1
 !
       num = PEsmpTOT_IO*DJDS_IO%NLmax*DJDS_IO%NHYP
@@ -217,7 +227,8 @@
         read(id_file,*) itmp, DJDS_IO%indexDJDS_L(i)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp,  DJDS_IO%NUmax, DJDS_IO%npUX1
 !
       num = PEsmpTOT_IO*DJDS_IO%NUmax*DJDS_IO%NHYP
@@ -229,7 +240,8 @@
       end do
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DMAT33_IO%num_diag, DMAT33_IO%num_non0
       DMAT33_IO%NB = 3
 !      DMAT33_IO%internal_diag = internal_node
@@ -243,7 +255,8 @@
       end do
       DMAT33_IO%istart_l = 9*DMAT33_IO%num_diag + 1
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DJDS_IO%itotal_l
 !
       allocate (DJDS_IO%itemDJDS_L(DJDS_IO%itotal_l))
@@ -254,7 +267,8 @@
       end do
       DMAT33_IO%istart_u = 9*(DMAT33_IO%num_diag+DJDS_IO%itotal_l) + 1
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DJDS_IO%itotal_u
 !
       allocate (DJDS_IO%itemDJDS_U(DJDS_IO%itotal_u))
@@ -264,7 +278,8 @@
      &                        DMAT33_IO%aiccg(j+1:j+9)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) N_IO
 !
       allocate (DMAT33_IO%ALUG_L(9*N_IO))
@@ -278,8 +293,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_djds_mat_connects                                 &
-     &         (id_file, NP_IO, PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO)
+      subroutine read_djds_mat_connects(id_file, NP_IO,                 &
+     &          PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO, iend)
 !
       integer(kind=kint ), intent(in) :: id_file
 !
@@ -287,12 +302,14 @@
       integer(kind=kint), intent(inout) :: PEsmpTOT_IO
       integer(kind=kint), intent(inout) :: NTOT_EXPORT_IO
       type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+      integer(kind = kint), intent(inout) :: iend
 !
       character(len=255) :: character_4_read
       integer(kind = kint) :: i, itmp
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) PEsmpTOT_IO
 !
       allocate (DJDS_IO%STACKmcG(0:PEsmpTOT_IO))
@@ -301,7 +318,8 @@
         read(id_file,*) itmp, DJDS_IO%STACKmcG(i)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) DJDS_IO%NHYP
 !
       allocate (DJDS_IO%IVECT(0:DJDS_IO%NHYP))
@@ -313,7 +331,8 @@
      &                  DJDS_IO%NLmaxHYP(i), DJDS_IO%NUmaxHYP(i)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp
 !
       allocate (DJDS_IO%STACKmc(0:PEsmpTOT_IO*DJDS_IO%NHYP))
@@ -322,7 +341,8 @@
         read(id_file,*) itmp, DJDS_IO%STACKmc(i)
       end do
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) NP_IO
 !
       allocate (DJDS_IO%NEWtoOLD_DJDS_U(NP_IO))
@@ -336,7 +356,8 @@
       end do
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) NTOT_EXPORT_IO
 !
       allocate (DJDS_IO%NOD_EXPORT_NEW(NTOT_EXPORT_IO))

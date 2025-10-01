@@ -27,11 +27,13 @@
       use m_precision
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
-      use t_coef_fdm2_MHD_boundaries
-      use t_coef_fdm4_MHD_boundaries
-      use t_time_data
+      use t_coef_sph_velocity_BCs
+!
+      use t_coef_fdm2_centre
+      use t_coef_fdm4_vpol_centre
       use t_spheric_parameter
       use t_control_parameter
+      use t_time_data
 !
       implicit none
 !
@@ -56,22 +58,10 @@
 !>        Structure for boundary composition spectr
         type(sph_scalar_boundary_data) :: bcs_C
 !
+!>        Structure for Additional velocity boundary condition matrices
+        type(velocity_boundary_FDMs) :: bc_fdms_U
 !>        Structure for FDM matrix of center
         type(fdm2_center_mat) :: fdm2_center
-!>        Structure for FDM matrix of free slip boundary at ICB
-        type(fdm2_free_slip) :: fdm2_free_ICB
-!>        Structure for FDM matrix of free slip boundary at CMB
-        type(fdm2_free_slip) :: fdm2_free_CMB
-!
-!>        Structure for 4th order FDM matrix of non-slip boundary at ICB
-        type(fdm4_ICB_vpol) :: fdm4_noslip_ICB
-!>        Structure for 4th order FDM matrix of free slip boundary at ICB
-        type(fdm4_ICB_vpol) :: fdm4_free_ICB
-!
-!>        Structure for 4th order FDM matrix of non-slip boundary at CMB
-        type(fdm4_CMB_vpol) :: fdm4_noslip_CMB
-!>        Structure for 4th order FDM matrix of free slip boundary at CMB
-        type(fdm4_CMB_vpol) :: fdm4_free_CMB
       end type sph_MHD_boundary_data
 !
 ! ----------------------------------------------------------------------

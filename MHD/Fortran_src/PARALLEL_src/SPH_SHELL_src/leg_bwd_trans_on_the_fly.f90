@@ -108,13 +108,12 @@
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
           call set_sp_rlm_sym_mat_rin                                   &
-     &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
-     &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,            &
-     &        leg%g_sph_rlm, &
-     &        jst, WK_l_otf%n_jk_e(mp_rlm),  WK_l_otf%n_jk_o(mp_rlm),   &
-     &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,      &
-     &        WK_l_otf%Smat(1)%pol_e(1), WK_l_otf%Smat(1)%tor_e(1),     &
-     &        WK_l_otf%Smat(1)%pol_o(1), WK_l_otf%Smat(1)%tor_o(1) )
+     &      (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,     &
+     &       sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm, &
+     &       jst, WK_l_otf%n_jk_e(mp_rlm),  WK_l_otf%n_jk_o(mp_rlm),    &
+     &       ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,       &
+     &       WK_l_otf%Smat(1)%pol_e(1), WK_l_otf%Smat(1)%tor_e(1),      &
+     &       WK_l_otf%Smat(1)%pol_o(1), WK_l_otf%Smat(1)%tor_o(1) )
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
 !
 !
@@ -130,8 +129,7 @@
             call leg_bwd_trans_1latitude(lp_rtm, jst, mm,               &
      &          mp_rlm, idx_trns%mn_rlm(mp_rlm), nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
-     &          idx_trns, leg, n_WR, n_WS, WR, WS,                      &
+     &          sph_rlm, sph_rtm, comm_rtm, leg, n_WR, n_WS, WR, WS,    &
      &          WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),       &
      &          WK_l_otf%Smat(1), WK_l_otf%Pjt_mat(ip),                 &
      &          WK_l_otf%Fmat(ip), WK_l_otf%wk_plm(ip))
@@ -175,8 +173,7 @@
       subroutine leg_bwd_trans_1latitude                                &
      &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
-     &          idx_trns, leg, n_WR, n_WS, WR, WS,                      &
+     &          sph_rlm, sph_rtm, comm_rtm, leg, n_WR, n_WS, WR, WS,    &
      &          n_jk_e, n_jk_o, Smat, Pjt_mat, Fmat, wk_plm)
 !
       use t_schmidt_poly_on_rtm
@@ -192,9 +189,8 @@
       integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rtm
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(index_4_sph_trans), intent(in) :: idx_trns
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS

@@ -28,8 +28,6 @@
 !
       implicit none
 !
-      type(shape_finctions_at_points), save, private :: spfs_TRNS
-!
 !-----------------------------------------------------------------------
 !
       contains

@@ -128,7 +128,7 @@
       type(calypso_comm_table), intent(inout) :: add_nod_comm
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, num_rev, ierr
 !
 !
       call count_import_item_for_extend(nod_comm, ext_nod_trim,         &
@@ -137,8 +137,7 @@
       call s_cal_total_and_stacks                                       &
      &   (add_nod_comm%nrank_import, add_nod_comm%num_import, izero,    &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
-      call alloc_calypso_import_item                                    &
-     &   (add_nod_comm%ntot_import, add_nod_comm)
+      call alloc_calypso_import_item(add_nod_comm)
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
@@ -154,6 +153,10 @@
      &    trim_nod_to_ext%inod_added_import)
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
+!
+      num_rev = maxval(add_nod_comm%item_import)
+      call alloc_calypso_import_rev(num_rev, add_nod_comm)
+      call set_calypso_import_rev(add_nod_comm, ierr)
 !
       call num_items_send_recv                                          &
      &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &

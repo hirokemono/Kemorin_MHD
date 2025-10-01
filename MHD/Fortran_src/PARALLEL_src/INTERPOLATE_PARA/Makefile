@@ -13,7 +13,9 @@ MOD_ITP_PARA = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'ITP_PARA_DIR = $(ITP_PARA_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_ITP_PARA)' >> $(MAKENAME)
 
 mod_list:
@@ -21,11 +23,8 @@ mod_list:
 	@echo  $(MOD_ITP_PARA) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_PARA_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_PARA_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

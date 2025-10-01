@@ -11,6 +11,7 @@
       module analyzer_test_djds
 !
       use m_precision
+      use m_work_time
 !
       use t_geometry_data
       use t_comm_table
@@ -21,7 +22,9 @@
 !
       implicit none
 !
-      type(ctl_data_solver_test), save :: solvertest_c1
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_stest_ctl = "ctl_solver_test"
+!
       type(communication_table), save :: nod_comm
       type(node_data), save :: node
       type(CRS_matrix_connect), save :: tbl_crs
@@ -47,18 +50,13 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use set_control_solver_test
-!
+      use input_control_solver_test
       use crs_matrix_io
 !
-!
 !C-- CNTL DATA
-
-      call read_control_4_solver_test(solvertest_c1)
-      call set_ctl_params_4_solver_test                                 &
-     &   (solvertest_c1, mat_crs, CG_param_t, DJDS_param_t)
-!
-!C 
+      call s_input_control_solver_test                                  &
+     &   (fname_stest_ctl, mat_crs, CG_param_t, DJDS_param_t)
+!C
 !C +-------------+
 !C | MATRIX file |
 !C +-------------+
@@ -80,7 +78,25 @@
 !
       type(DJDS_ordering_table) :: djds_tbl
       type(DJDS_MATRIX) :: djds_mat
+!
+      real(kind = kreal) :: INITtime, PRECtime
+      real(kind = kreal) :: COMPtime, COMMtime
       integer(kind = kint) :: itr_res, ierr
+!
+      logical :: flag_DJDS_TEST = .FALSE.
+      integer(kind = kint) :: ist_elapsed_DJDS_TEST =  0
+      integer(kind = kint) :: ied_elapsed_DJDS_TEST =  0
+      integer(kind = kint), parameter :: num_append = 4
+!
+      call init_elapse_time_by_TOTAL
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_DJDS_TEST, ied_elapsed_DJDS_TEST)
+!
+      elps1%labels(ist_elapsed_DJDS_TEST+1)= 'initialization time '
+      elps1%labels(ist_elapsed_DJDS_TEST+2)= 'precondition time   '
+      elps1%labels(ist_elapsed_DJDS_TEST+3)= 'main time           '
+      elps1%labels(ist_elapsed_DJDS_TEST+4)= 'communication time  '
+      flag_DJDS_TEST = .TRUE.
 !
 !      call check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
 !C
@@ -90,21 +106,32 @@
 !
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
-        call solve_by_djds_solver11                                     &
-     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      SR_sig1, SR_r1, itr_res, ierr)
+        call solve_by_djds_solver11(node, nod_comm, CG_param_t,         &
+     &      mat_crs, djds_tbl, djds_mat, SR_sig1, SR_r1, itr_res, ierr, &
+     &      INITtime, PRECtime, COMPtime, COMMtime)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
-        call solve_by_djds_solver33                                     &
-     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      SR_sig1, SR_r1, itr_res, ierr)
+        call solve_by_djds_solver33(node, nod_comm, CG_param_t,         &
+     &      mat_crs, djds_tbl, djds_mat, SR_sig1, SR_r1, itr_res, ierr, &
+     &      INITtime, PRECtime, COMPtime, COMMtime)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
-        call solve_by_djds_solverNN                                     &
-     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      SR_sig1, SR_r1, itr_res, ierr)
+        call solve_by_djds_solverNN(node, nod_comm, CG_param_t,         &
+     &      mat_crs, djds_tbl, djds_mat, SR_sig1, SR_r1, itr_res, ierr, &
+     &      INITtime, PRECtime, COMPtime, COMMtime)
       end if
 
+      if(flag_DJDS_TEST) then
+        elps1%elapsed(ist_elapsed_DJDS_TEST+1)                          &
+     &        = elps1%elapsed(ist_elapsed_DJDS_TEST+1) + INITtime
+        elps1%elapsed(ist_elapsed_DJDS_TEST+2)                          &
+     &        = elps1%elapsed(ist_elapsed_DJDS_TEST+2) + INITtime
+        elps1%elapsed(ist_elapsed_DJDS_TEST+3)                          &
+     &        = elps1%elapsed(ist_elapsed_DJDS_TEST+3) + COMPtime
+        elps1%elapsed(ist_elapsed_DJDS_TEST+4)                          &
+     &        = elps1%elapsed(ist_elapsed_DJDS_TEST+4) + COMMtime
+      end if
+!
       call output_solution(node, mat_crs)
 
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"

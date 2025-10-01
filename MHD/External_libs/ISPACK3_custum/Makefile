@@ -2,6 +2,7 @@
 #
 #
 
+CURRENTDIR = $(shell pwd)
 ISPACK3_DIR =     $$(EXT_DIR)/ISPACK3_custum
 FXPACK3_DIR = $$(ISPACK3_DIR)/ispack-3.0.1/fxpack/src
 MXPACK3_DIR = $$(ISPACK3_DIR)/ispack-3.0.1/mxpack/src
@@ -68,14 +69,14 @@ lib_name:
 	@echo  'LIB_ISPACK3_FILE = $(LIB_ISPACK3_FILE)' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_ISPACK3_FILE): $$(MOD_ISPACK3)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_ISPACK3)' >> $(MAKENAME)
 
 mod_list:
@@ -84,62 +85,60 @@ mod_list:
 	@echo  '#' >> $(MAKENAME)
 
 
-module:
-	echo 'm_ISPACK3_constants.o: $$(FXPACK3_DIR)/m_ISPACK3_constants.f90' >> $(MAKENAME); \
-	echo '	'$(F90BUILD) >> $(MAKENAME)
+depends:
+	echo 'm_ISPACK3_constants.o: $$(FXPACK3_DIR)/m_ISPACK3_constants.f90' >> $(MAKENAME).depends; \
+	echo '	'$(F90BUILD) >> $(MAKENAME).depends
 	
 	@for src in $(basename $(SRC_FXPACK3_BASE)) ; do \
 		( \
-		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90 m_ISPACK3_constants.o' >> $(MAKENAME); \
-		echo '	'$(F90BUILD) >> $(MAKENAME); \
+		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90 m_ISPACK3_constants.o' >> $(MAKENAME).depends; \
+		echo '	'$(F90BUILD) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	@for src in $(basename $(SRC_FXPACK3_SSE4)) ; do \
 		( \
-		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'$(EXT4)' >> $(MAKENAME); \
-		echo '	'$(BUILD4) >> $(MAKENAME); \
+		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'$(EXT4)' >> $(MAKENAME).depends; \
+		echo '	'$(BUILD4) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	@for src in $(basename $(SRC_FXPACK3_SSE8)) ; do \
 		( \
-		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'$(EXT8)' >> $(MAKENAME); \
-		echo '	'$(BUILD8) >> $(MAKENAME); \
+		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'$(EXT8)' >> $(MAKENAME).depends; \
+		echo '	'$(BUILD8) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	
 	@for src in $(basename $(SRC_MXPACK3_C)) ; do \
 		( \
-		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.c' >> $(MAKENAME); \
-		echo '	''$$(CC) -c $$(OPTFLAGS) $$<' >> $(MAKENAME); \
+		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.c' >> $(MAKENAME).depends; \
+		echo '	''$$(CC) -c $$(OPTFLAGS) $$<' >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	@for src in $(basename $(SRC_MXPACK3_F)) ; do \
 		( \
-		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME); \
-		echo '	'$(F90BUILD) >> $(MAKENAME); \
+		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME).depends; \
+		echo '	'$(F90BUILD) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	@for src in $(basename $(SRC_MXPACK3_SSE4)) ; do \
 		( \
-		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME); \
-		echo '	'$(BUILD) >> $(MAKENAME); \
+		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME).depends; \
+		echo '	'$(BUILD) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo   >> $(MAKENAME)
+	@echo   >> $(MAKENAME).depends
 	@for src in $(basename $(SRC_MXPACK3_SSE8)) ; do \
 		( \
-		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME); \
-		echo '	'$(BUILD) >> $(MAKENAME); \
+		echo $$src'.o: $$(MXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME).depends; \
+		echo '	'$(BUILD) >> $(MAKENAME).depends; \
 		 ) \
 	done
-	@echo '#' >> $(MAKENAME)
-
-depends:
+	@echo '#' >> $(MAKENAME).depends
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

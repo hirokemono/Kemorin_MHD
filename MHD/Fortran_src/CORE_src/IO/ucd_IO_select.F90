@@ -257,7 +257,7 @@
       if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_alloc_udt_params(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
-        call read_alloc_vtk_phys(id_rank, file_name, ucd)
+        call read_alloc_vtk_phys(id_rank, file_name, ucd, ierr)
 !
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
         call read_alloc_psf_bin_file(file_name, np_udt, t_IO, ucd)
@@ -276,14 +276,15 @@
      &     (id_rank, file_name, t_IO, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_bin_gz) then
         call gz_read_alloc_ucd_2_fld_file_b                             &
-     &     (id_rank, file_name, t_IO, ucd, ierr)
+     &     (id_rank, file_name, t_IO, ucd)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_alloc_ucd_2_fld_header_b                              &
      &     (id_rank, file_name, t_IO, ucd, ierr)
       else
-        call read_alloc_ucd_2_fld_file(id_rank, file_name, t_IO, ucd)
+        call read_alloc_ucd_2_fld_file                                  &
+     &     (id_rank, file_name, t_IO, ucd, ierr)
       end if
 !
       if(ierr .gt. 0) stop "sel_read_udt_file error"
@@ -313,7 +314,7 @@
       if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_alloc_udt_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
-        call read_alloc_vtk_phys(id_rank, file_name, ucd)
+        call read_alloc_vtk_phys(id_rank, file_name, ucd, ierr)
 !
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
         call read_alloc_psf_bin_file(file_name, np_udt, t_IO, ucd)
@@ -332,14 +333,15 @@
      &     (id_rank, file_name, t_IO, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_bin_gz) then
         call gz_read_alloc_ucd_2_fld_file_b                             &
-     &     (id_rank, file_name, t_IO, ucd, ierr)
+     &     (id_rank, file_name, t_IO, ucd)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_alloc_ucd_2_fld_file_b                                &
      &     (id_rank, file_name, t_IO, ucd, ierr)
       else
-        call read_alloc_ucd_2_fld_file(id_rank, file_name, t_IO, ucd)
+        call read_alloc_ucd_2_fld_file                                  &
+     &     (id_rank, file_name, t_IO, ucd, ierr)
       end if
 !
       if(ierr .gt. 0) stop "sel_read_udt_file error"
@@ -359,6 +361,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name, grid_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
@@ -378,10 +381,10 @@
       if (ucd_param%iflag_format .eq. iflag_ucd) then
         call read_alloc_ucd_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtk) then
-        call read_alloc_vtk_file(id_rank, file_name, ucd)
+        call read_alloc_vtk_file(id_rank, file_name, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_alloc_vtk_grid(id_rank, grid_name, ucd)
-        call read_alloc_vtk_phys(id_rank, file_name, ucd)
+        call read_alloc_vtk_phys(id_rank, file_name, ucd, ierr)
 !
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin) then
         call read_alloc_iso_bin_file(file_name, t_IO, ucd)
@@ -412,6 +415,8 @@
         call read_alloc_grd_file(id_rank, grid_name, ucd)
         call read_alloc_udt_file(id_rank, file_name, ucd)
       end if
+!
+      if(ierr .gt. 0) stop 'Field file read error'
 !
       end subroutine sel_read_alloc_ucd_file
 !
@@ -457,13 +462,13 @@
      &     (id_rank, file_name, t_IO, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_bin_gz) then
         call gz_read_ucd_2_fld_file_b                                   &
-     &     (id_rank, file_name, t_IO, ucd, ierr)
+     &     (id_rank, file_name, t_IO, ucd)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_ucd_2_fld_file_b(id_rank, file_name, t_IO, ucd, ierr)
       else
-        call read_ucd_2_fld_file(id_rank, file_name, t_IO, ucd)
+        call read_ucd_2_fld_file(id_rank, file_name, t_IO, ucd, ierr)
       end if
 !
       if(ierr .gt. 0) stop "sel_read_udt_file error"

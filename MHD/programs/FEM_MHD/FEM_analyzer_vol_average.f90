@@ -63,7 +63,6 @@
 !
       use initialize_4_snapshot
 !
-      use node_monitor_IO
       use open_sgs_model_coefs
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -86,6 +85,7 @@
      &   MHD_step, FEM_MHD%geofem, FEM_model%MHD_mesh,                  &
      &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,               &
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
+     &   FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,         &
      &   FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field, SNAP_time_IO, &
      &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
      &   m_SR, FEM_MHD%label_sim)
@@ -117,8 +117,6 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: iflag
-!
 !     ---- Load field data --- 
 !
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
@@ -131,8 +129,9 @@
 !
 !     ---------------------
 !
-      call set_perturbation_to_scalar                                   &
-     &   (FEM_model%MHD_prop, FEM_MHD%iphys, FEM_MHD%field)
+      call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
+     &    FEM_MHD%iref_base, FEM_MHD%ref_fld,                           &
+     &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------
 !

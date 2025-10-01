@@ -264,8 +264,6 @@
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      integer(kind = kint) :: i, irev
-!
 !
       sph%sph_params%iflag_shell_mode = iflag_MESH_same
 !
@@ -290,7 +288,7 @@
 !
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
-      integer(kind = kint) :: i, irev
+      integer(kind = kint) :: i, irev, k
 !
 !
       sph_rj%nidx_global_rj(1) = rayleigh_rtp%nri_gl
@@ -299,10 +297,14 @@
       sph_rj%nidx_rj(2) = sph_rj%nidx_global_rj(2) / nprocs
 !
       call alloc_sph_1d_index_rj(sph_rj)
+!$omp parallel do private(k)
       do i = 1, rayleigh_rtp%nri_gl
         irev = rayleigh_rtp%nri_gl - i + 1
         sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
       end do
+!$omp end parallel do
+!
+      call set_sph_one_over_radius_rj(sph_rj)
 !
       end subroutine sph_rj_params_from_rayleigh
 !

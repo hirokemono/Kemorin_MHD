@@ -22,6 +22,6 @@ void set_window_id_glut3(int *id3_window, int *id3_menu);
 void link_glut_menu_address();
 void draw_mesh_w_menu();
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+void draw_mesh_kemo(void);
 
 #endif

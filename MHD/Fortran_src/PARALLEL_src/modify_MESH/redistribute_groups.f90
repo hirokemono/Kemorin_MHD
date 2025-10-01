@@ -7,8 +7,10 @@
 !>@brief  Re-distribute group data
 !!
 !!@verbatim
-!!      subroutine s_redistribute_groups(org_mesh, org_groups, ele_comm,&
-!!     &          new_mesh, part_tbl, ele_tbl, new_groups, SR_sig, SR_i)
+!!      subroutine s_redistribute_groups(flag_new_element_comm,         &
+!!     &         org_mesh, org_groups, ele_comm, new_mesh, new_ele_comm,&
+!!     &         part_tbl, ele_tbl, new_groups, SR_sig, SR_i)
+!!        logical, intent(in) :: flag_new_element_comm
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(mesh_groups), intent(in) :: org_groups
 !!        type(communication_table), intent(in) :: ele_comm
@@ -52,12 +54,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_redistribute_groups(org_mesh, org_groups, ele_comm,  &
-     &          new_mesh, part_tbl, ele_tbl, new_groups, SR_sig, SR_i)
+      subroutine s_redistribute_groups(flag_new_element_comm,           &
+     &         org_mesh, org_groups, ele_comm, new_mesh, new_ele_comm,  &
+     &         part_tbl, ele_tbl, new_groups, SR_sig, SR_i)
 !
+      logical, intent(in) :: flag_new_element_comm
       type(mesh_geometry), intent(in) :: org_mesh
       type(mesh_groups), intent(in) :: org_groups
-      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: ele_comm, new_ele_comm
       type(mesh_geometry), intent(in) :: new_mesh
 !
       type(calypso_comm_table), intent(in) :: part_tbl
@@ -72,12 +76,12 @@
      &   (org_mesh%node, org_groups%nod_grp, part_tbl,                  &
      &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp,         &
      &    SR_sig, SR_i)
-      call repartition_element_group                                    &
-     &   (org_mesh%ele, org_groups%ele_grp, ele_comm, ele_tbl,          &
-     &    new_mesh%ele, new_groups%ele_grp, SR_sig, SR_i)
-      call repartition_surface_group                                    &
-     &   (org_mesh%ele, org_groups%surf_grp, ele_comm, ele_tbl,         &
-     &    new_mesh%ele, new_groups%surf_grp, SR_sig, SR_i)
+      call repartition_element_group(flag_new_element_comm,             &
+     &    org_mesh%ele, org_groups%ele_grp, ele_comm, ele_tbl,          &
+     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp, SR_sig, SR_i)
+      call repartition_surface_group(flag_new_element_comm,             &
+     &    org_mesh%ele, org_groups%surf_grp, ele_comm, ele_tbl,         &
+     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp, SR_sig, SR_i)
 !
       end subroutine s_redistribute_groups
 !
@@ -190,8 +194,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine repartition_element_group(ele, ele_grp, ele_comm,      &
-     &          ele_tbl, new_ele, new_ele_grp, SR_sig, SR_i)
+      subroutine repartition_element_group(flag_new_element_comm,       &
+     &          ele, ele_grp, ele_comm, ele_tbl, new_ele,               &
+     &          new_ele_comm, new_ele_grp, SR_sig, SR_i)
 !
       use calypso_SR_type
       use solver_SR_type
@@ -199,20 +204,23 @@
       use redistribute_group_data
       use cal_minmax_and_stacks
 !
+      logical, intent(in) :: flag_new_element_comm
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
       type(calypso_comm_table), intent(in) :: ele_tbl
 !
       type(element_data), intent(in) :: new_ele
-      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: ele_comm, new_ele_comm
 !
       type(group_data), intent(inout) :: new_ele_grp
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, icou, i
+      integer(kind = kint) :: igrp, icou, i, num_import_flag
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+!
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_ele_grp%num_grp = ele_grp%num_grp
       call alloc_group_num(new_ele_grp)
@@ -225,7 +233,7 @@
 !
       do igrp = 1, ele_grp%num_grp
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -236,6 +244,10 @@
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1), SR_sig, SR_i)
+        if(flag_new_element_comm) then
+          call SOLVER_SEND_RECV_int_type                                &
+     &       (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
+        end if
 !
         icou = 0
 !$omp parallel do reduction(+:icou)
@@ -254,7 +266,7 @@
       do igrp = 1, ele_grp%num_grp
         icou = new_ele_grp%istack_grp(igrp-1)
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -265,6 +277,10 @@
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1), SR_sig, SR_i)
+        if(flag_new_element_comm) then
+          call SOLVER_SEND_RECV_int_type                                &
+     &       (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
+        end if
 !
         call set_group_item_repart                                      &
      &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
@@ -275,8 +291,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine repartition_surface_group(ele, surf_grp, ele_comm,     &
-     &          ele_tbl, new_ele, new_surf_grp, SR_sig, SR_i)
+      subroutine repartition_surface_group(flag_new_element_comm,       &
+     &          ele, surf_grp, ele_comm, ele_tbl, new_ele,              &
+     &          new_ele_comm, new_surf_grp, SR_sig, SR_i)
 !
       use calypso_SR_type
       use solver_SR_type
@@ -284,21 +301,23 @@
       use redistribute_group_data
       use cal_minmax_and_stacks
 !
+      logical, intent(in) :: flag_new_element_comm
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
       type(calypso_comm_table), intent(in) :: ele_tbl
 !
       type(element_data), intent(in) :: new_ele
-      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: ele_comm, new_ele_comm
 !
       type(surface_group_data), intent(inout) :: new_surf_grp
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, k1, icou, i
+      integer(kind = kint) :: igrp, k1, icou, i, num_import_flag
 !
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_surf_grp%num_grp = surf_grp%num_grp
       call alloc_sf_group_num(new_surf_grp)
@@ -312,7 +331,7 @@
         new_surf_grp%nitem_grp(igrp) = 0
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &
@@ -323,8 +342,12 @@
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
      &        iflag_org(1), iflag_new(1), SR_sig, SR_i)
+          if(flag_new_element_comm) then
+            call SOLVER_SEND_RECV_int_type                              &
+     &         (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
+          end if
 !
-        icou = 0
+          icou = 0
 !$omp parallel do reduction(+:icou)
           do i = 1, new_ele%numele
             icou = icou + iflag_new(i)
@@ -344,7 +367,7 @@
         icou = new_surf_grp%istack_grp(igrp-1)
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &
@@ -355,6 +378,10 @@
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
      &        iflag_org(1), iflag_new(1), SR_sig, SR_i)
+          if(flag_new_element_comm) then
+            call SOLVER_SEND_RECV_int_type                              &
+     &         (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
+          end if
 !
           call set_surf_group_item_repart                               &
      &       (k1, new_ele%numele, iflag_new(1), new_surf_grp, icou)

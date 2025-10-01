@@ -23,7 +23,13 @@
 !!      subroutine set_fem_center_mode_4_SPH                            &
 !!     &         (internal_node, sph_rtp, sph_param)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!      type(sph_shell_parameters), intent(inout) :: sph_param
+!!        type(sph_shell_parameters), intent(inout) :: sph_param
+!!
+!!      subroutine count_interval_4_each_dir(numdir, nnod, idx_global,  &
+!!     &                                     istep)
+!!        integer(kind = kint), intent(in) :: numdir, nnod
+!!        integer(kind = kint), intent(in) :: idx_global(nnod,numdir)
+!!        integer(kind = kint), intent(inout) :: istep(numdir)
 !!@endverbatim
 !
       module set_loaded_data_4_sph
@@ -36,7 +42,7 @@
 !
       implicit none
 !
-      private :: count_interval_4_each_dir, self_comm_flag
+      private :: self_comm_flag
 !
 ! -----------------------------------------------------------------------
 !
@@ -193,7 +199,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_interval_4_each_dir(numdir, nnod, idx_global,    &
-     &         istep)
+     &                                     istep)
 !
       use calypso_mpi_int
 !
@@ -202,13 +208,13 @@
 !
       integer(kind = kint), intent(inout) :: istep(numdir)
 !
-      integer(kind = kint) :: nd, inod, iref
+      integer(kind = kint) :: nd, inod, i_ref
 !
 !
       do nd = 1, numdir
-        iref = idx_global(1,nd)
+        i_ref = idx_global(1,nd)
         do inod = 2, nnod
-          if(idx_global(inod,nd) .ne. iref) then
+          if(idx_global(inod,nd) .ne. i_ref) then
             istep(nd) = inod - 1
             exit
           end if

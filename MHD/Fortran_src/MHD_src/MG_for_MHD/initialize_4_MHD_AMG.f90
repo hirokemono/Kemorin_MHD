@@ -17,7 +17,7 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
@@ -42,7 +42,7 @@
       use t_iccg_parameter
       use t_solver_djds_MHD
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_next_node_ele_4_node
       use t_MGCG_data
       use t_MGCG_data_4_MHD
@@ -93,7 +93,7 @@
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(DJDS_poarameter), intent(in) :: DJDS_param
@@ -182,12 +182,6 @@
      &      MGCG_MHD_FEM%ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
-!
-        call copy_SGS_num_coefs                                         &
-     &     (diff_coefs, MGCG_MHD_FEM%MG_diff_coefs(i_level))
-        call alloc_SGS_coefs                                            &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%numele,                  &
-     &      MGCG_MHD_FEM%MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 

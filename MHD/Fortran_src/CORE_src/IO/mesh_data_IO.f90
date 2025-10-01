@@ -13,12 +13,12 @@
 !!        type(mesh_geometry), intent(in) :: mesh_IO
 !!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
-!!      subroutine read_num_node(id_file, id_rank, mesh_IO, ierr)
-!!      subroutine read_num_node_ele(id_file, id_rank, mesh_IO, ierr)
 !!      subroutine read_geometry_data(id_file, id_rank, mesh_IO, ierr)
-!!      subroutine read_mesh_groups(id_file, mesh_group_IO)
+!!      subroutine read_mesh_groups(id_file, mesh_group_IO, ierr)
+!!        integer(kind = kint), intent(in) :: id_file
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
+!!        integer(kind = kint), intent(inout) :: ierr
 !!
 !!      subroutine write_filter_geometry                                &
 !!     &         (id_file, id_rank, comm_IO, nod_IO)
@@ -112,48 +112,6 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_num_node(id_file, id_rank, mesh_IO, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer, intent(in) :: id_rank
-!
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!        write(*,*) 'read_domain_info'
-      call read_domain_info                                             &
-     &   (id_file, id_rank, mesh_IO%nod_comm, ierr)
-      if(ierr .ne. 0) return
-!        write(*,*) 'read_number_of_node'
-      call read_number_of_node(id_file, mesh_IO%node)
-!
-      end subroutine read_num_node
-!
-!------------------------------------------------------------------
-!
-      subroutine read_num_node_ele(id_file, id_rank, mesh_IO, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer, intent(in) :: id_rank
-!
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      call read_num_node(id_file, id_rank, mesh_IO, ierr)
-      if(ierr .ne. 0) return
-!
-      call read_geometry_info(id_file, mesh_IO%node)
-!
-!  ----  read element data -------
-!
-!        write(*,*) 'read_number_of_element'
-      call read_number_of_element(id_file, mesh_IO%ele)
-!
-      end subroutine read_num_node_ele
-!
-!------------------------------------------------------------------
-!
       subroutine read_geometry_data(id_file, id_rank, mesh_IO, ierr)
 !
       integer(kind = kint), intent(in) :: id_file
@@ -164,42 +122,50 @@
 !
 !
 !        write(*,*) 'read_number_of_element'
-      call read_num_node_ele(id_file, id_rank, mesh_IO, ierr)
+      call read_domain_info                                             &
+     &   (id_file, id_rank, mesh_IO%nod_comm, ierr)
+      if(ierr .ne. 0) return
+!
+!  ----  read node data -------
+      call read_geometry_info(id_file, mesh_IO%node, ierr)
       if(ierr .ne. 0) return
 !
 !  ----  read element data -------
 !
 !        write(*,*) 'read_element_info'
-      call read_element_info(id_file, mesh_IO%ele)
+      call read_element_info(id_file, mesh_IO%ele, ierr)
+      if(ierr .ne. 0) return
 !
 ! ----  import & export 
 !
 !        write(*,*) 'read_import_data'
-      call read_import_data(id_file, mesh_IO%nod_comm)
+      call read_import_data(id_file, mesh_IO%nod_comm, ierr)
+      if(ierr .ne. 0) return
 !        write(*,*) 'read_export_data'
-      call read_export_data(id_file, mesh_IO%nod_comm)
+      call read_export_data(id_file, mesh_IO%nod_comm, ierr)
 !
       end subroutine read_geometry_data
 !
 !------------------------------------------------------------------
 !
-      subroutine read_mesh_groups(id_file, mesh_group_IO)
+      subroutine read_mesh_groups(id_file, mesh_group_IO, ierr)
 !
       use groups_IO
 !
       integer(kind = kint), intent(in) :: id_file
       type(mesh_groups), intent(inout) ::   mesh_group_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
 !   read node group
 !      write(*,*) 'read_group_data node'
-      call read_group_data(id_file, mesh_group_IO%nod_grp)
+      call read_group_data(id_file, mesh_group_IO%nod_grp, ierr)
 !  read element group
 !      write(*,*) 'read_group_data ele'
-      call read_group_data(id_file, mesh_group_IO%ele_grp)
+      call read_group_data(id_file, mesh_group_IO%ele_grp, ierr)
 !  read surface group
 !      write(*,*) 'read_surf_grp_data surf'
-      call read_surf_grp_data(id_file, mesh_group_IO%surf_grp)
+      call read_surf_grp_data(id_file, mesh_group_IO%surf_grp, ierr)
 !
       end subroutine read_mesh_groups
 !
@@ -252,17 +218,18 @@
 !
 !      write(*,*) 'read_domain_info'
       call read_domain_info(id_file, id_rank, comm_IO, ierr)
+       if(ierr .ne. 0) return
 !
-!      write(*,*) 'read_geometry_info'
-      call read_number_of_node(id_file, nod_IO)
-      call read_geometry_info(id_file, nod_IO)
+      call read_geometry_info(id_file, nod_IO, ierr)
+       if(ierr .ne. 0) return
 !
 ! ----  import & export 
 !
 !        write(*,*) 'read_import_data'
-       call read_import_data(id_file, comm_IO)
+       call read_import_data(id_file, comm_IO, ierr)
+       if(ierr .ne. 0) return
 !        write(*,*) 'read_export_data'
-       call read_export_data(id_file, comm_IO)
+       call read_export_data(id_file, comm_IO, ierr)
 !
        end subroutine read_filter_geometry
 !

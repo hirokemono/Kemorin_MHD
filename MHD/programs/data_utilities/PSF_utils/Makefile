@@ -4,7 +4,7 @@
 
 PSF_UTIL_MAINDIR = $$(DATA_UTILS_DIR)/PSF_utils
 
-TARGET_PSF_2_VTK = psf_to_vtk
+TARGET_PSF_2_VTK = utilities/section_to_VTK
 TARGET_PSF_AVES =  psf_average
 TARGET_PSF_RANGE_AVES =  psf_range_ave
 
@@ -21,7 +21,7 @@ TARGET_FIX_SGS_MF_WK_PSF = psf_fix_reynolds_wk
 
 TARGET_UPDATE_PSF_BIN = update_psf_bin
 
-TARGET_COMPARE_PSF = compare_psf
+TARGET_COMPARE_PSF = tests/compare_psf
 
 
 LIBS_PSF_UTIL = \
@@ -83,28 +83,54 @@ take_normals_4_psf.o
 
 MOD_ZCPLANE_PG = \
 drcz_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 
 MOD_XCPLANE_PG = \
 drcx_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 MOD_YCPLANE_PG = \
 drcy_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 MOD_MAP_PG = \
 drmap_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
-t_norms_4_psf.o
+t_norms_4_psf.o \
+t_map_patch_from_1patch.o \
+map_patch_from_1patch.o
 
 MOD_LINE_ON_PSF = \
 section_from_psf.o \
@@ -322,12 +348,8 @@ mod_list:
 	@echo  $(MOD_FIX_SGS_MF_WK_PSF)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PSF_UTIL_MAINDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PSF_UTIL_MAINDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

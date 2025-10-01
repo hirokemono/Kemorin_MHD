@@ -4,20 +4,20 @@
 #define M_MAP_DATA_4_VIEWER_C_
 
 struct psf_map_data{
-	int nnod_map;
-	int nele_map;
+	long nnod_map;
+    long nele_map;
 	int nnod_add_map;
 	int nele_add_map;
 	
-	int ncomptot_map;
+	long ncomptot_map;
 	
-	int *inod_map;
-	int **ie_map;
+	long *inod_map;
+	long **ie_map;
 	
 	double **xx_map;
 	double **d_nod_map;
 	
-	int **inod_org_map;
+    long **inod_org_map;
 	double **coef_itp_map;
 };
 

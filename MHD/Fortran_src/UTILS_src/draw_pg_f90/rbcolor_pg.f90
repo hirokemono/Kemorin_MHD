@@ -20,7 +20,7 @@
 !
       implicit none
 !
-      private :: color_rb1, color_gray1
+      private :: color_rb1
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,19 +58,17 @@
       call pgscr(ithree, 0.5, 0.5, 0.5)
       call pgscr(ifour,  1.0, 1.0, 1.0)
 !
-      if (icolor_mode .eq. ione) then
-        call color_rb1(num_color)
-      else if (icolor_mode .eq. izero) then
-        call color_gray1(num_color)
-      end if
+      call color_rb1(icolor_mode, num_color)
 !
       end subroutine set_colormap_pg
 !
 ! ----------------------------------------------------------------------
 !*
-      subroutine color_rb1(num_color)
+      subroutine color_rb1(icolor_mode, num_color)
 !*
-      integer(kind = kint), intent(in) :: num_color
+      use set_color_4_pvr
+!
+      integer(kind = kint), intent(in) :: icolor_mode, num_color
 !
       integer(kind = kint) :: inum, nd
       real(kind = kreal) :: scalar_normed
@@ -83,7 +81,7 @@
         idx_color = int(inum) + 4
         scalar_normed = (dble(inum) - half) / dble(num_color-5)
 !
-        call color_rainbow(scalar_normed, drgb(1), drgb(2), drgb(3))
+        call normvalue_to_rgb(icolor_mode, scalar_normed, drgb)
 !
         rgb(1:3) = real(drgb(1:3))
         do nd = 1, 3
@@ -95,37 +93,6 @@
       end do
 !
       end subroutine color_rb1
-!
-! ----------------------------------------------------------------------
-!
-      subroutine color_gray1(num_color)
-!
-      integer(kind = kint), intent(in) :: num_color
-!
-      integer(kind = kint) :: inum, nd
-      real(kind = kreal) :: scalar_normed
-      real(kind = kreal) ::  drgb(3)
-      integer :: idx_color
-      real rgb(3)
-!
-!
-      do inum = 1, num_color-5
-        idx_color = int(inum) + 4
-        scalar_normed = (dble(inum) - half) / dble(num_color-5)
-!
-        call color_sym_grayscale(scalar_normed,                         &
-     &      drgb(1), drgb(2), drgb(3))
-!
-        rgb(1:3) = real(drgb(1:3))
-        do nd = 1, 3
-          if(rgb(nd) .lt.0.0) rgb(nd) = 0.0
-          if(rgb(nd) .gt.1.0) rgb(nd) = 1.0
-        end do
-!
-        call pgscr( idx_color, rgb(1), rgb(2), rgb(3))
-      end do
-!
-      end subroutine color_gray1
 !
 ! ----------------------------------------------------------------------
 !

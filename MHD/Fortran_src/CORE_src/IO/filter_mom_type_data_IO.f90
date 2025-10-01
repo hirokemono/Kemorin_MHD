@@ -101,7 +101,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_filter_moment_num_type(id_file,                   &
-     &          FEM_elens, FEM_moms)
+     &          FEM_elens, FEM_moms, iend)
 !
       use t_filter_moments
       use filter_moments_IO
@@ -109,11 +109,12 @@
       integer (kind=kint), intent(in) :: id_file
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+      integer(kind = kint), intent(inout) :: iend
 !
 !
       call read_filter_moms_head(id_file, FEM_elens%nnod_filter_mom,    &
      &    FEM_elens%nele_filter_mom, FEM_moms%num_filter_moms,          &
-     &    FEM_elens%filter_conf%nf_type)
+     &    FEM_elens%filter_conf%nf_type, iend)
 !
       end subroutine read_filter_moment_num_type
 !
@@ -135,7 +136,7 @@
 !
       call read_filter_elen_head(id_file,                               &
      &    FEM_elens%nnod_filter_mom, FEM_elens%nele_filter_mom,         &
-     &    FEM_elens%filter_conf%nf_type)
+     &    FEM_elens%filter_conf%nf_type, ierr)
 !
       if (FEM_elens%nnod_filter_mom.ne.numnod) then
         ierr = 500
@@ -150,9 +151,10 @@
      &    FEM_elens%elen_ele)
 !
       if (FEM_elens%filter_conf%nf_type .gt. 0) then
-        call read_base_filter_info_type(id_file, FEM_elens%filter_conf)
+        call read_base_filter_info_type                                 &
+     &     (id_file, FEM_elens%filter_conf, ierr)
         call read_elen_ele_type(id_file, FEM_elens%nele_filter_mom,     &
-     &      FEM_elens%elen_ele)
+     &      FEM_elens%elen_ele, ierr)
       end if
 !
       end subroutine read_filter_elen_data_type
@@ -175,7 +177,8 @@
       integer (kind=kint) :: ifil
 !
 !
-      call read_filter_moment_num_type(id_file, FEM_elens, FEM_moms)
+      call read_filter_moment_num_type                                  &
+     &   (id_file, FEM_elens, FEM_moms, ierr)
 !
       if (FEM_elens%nnod_filter_mom.ne.numnod) then
         ierr = 500
@@ -192,10 +195,11 @@
 !
       if (FEM_elens%filter_conf%nf_type .gt. 0) then
 !
-        call read_base_filter_info_type(id_file, FEM_elens%filter_conf)
+        call read_base_filter_info_type                                 &
+     &     (id_file, FEM_elens%filter_conf, ierr)
         do ifil = 1, FEM_moms%num_filter_moms
           call read_filter_moms_ele_type(id_file,                       &
-     &        FEM_moms%nele_fmom, FEM_moms%mom_ele(ifil))
+     &        FEM_moms%nele_fmom, FEM_moms%mom_ele(ifil), ierr)
         end do
 !
       end if

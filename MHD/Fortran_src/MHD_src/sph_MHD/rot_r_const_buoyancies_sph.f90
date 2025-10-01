@@ -67,27 +67,21 @@
       integer(kind = kint) :: ipol_temp,  ipol_comp
 !
 !
-      if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp          &
-     &  .or. ref_param_T%iflag_reference .eq. id_numerical_solution     &
-     &   ) then
+      if(ref_param_T%flag_ref_field) then
         ipol_temp =  ipol_base%i_per_temp
       else
         ipol_temp =  ipol_base%i_temp
       end if
 !
-      if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp          &
-     &  .or. ref_param_C%iflag_reference .eq. id_numerical_solution     &
-     &   ) then
+      if(ref_param_C%flag_ref_field) then
         ipol_comp =  ipol_base%i_per_light
       else
         ipol_comp =  ipol_base%i_light
       end if
 !
 !
-      if(fl_prop%iflag_4_gravity                                        &
-     &     .and. fl_prop%iflag_4_composit_buo) then
+      if(fl_prop%flag_thermal_buoyancy                                  &
+     &     .and. fl_prop%flag_comp_buoyancy) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'cal_rot_double_cst_buo_sph', ipol_temp, ipol_comp
           call cal_rot_double_cst_buo_sph                               &
@@ -96,14 +90,14 @@
      &        ipol_rot_frc%i_buoyancy, sph_rj%nidx_rj,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if (fl_prop%iflag_4_gravity) then
+      else if (fl_prop%flag_thermal_buoyancy) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_temp,                                &
      &      ipol_rot_frc%i_buoyancy, sph_rj%nidx_rj,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if(fl_prop%iflag_4_composit_buo) then
+      else if(fl_prop%flag_comp_buoyancy) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_comp_buo, ipol_comp,                           &

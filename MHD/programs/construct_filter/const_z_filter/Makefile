@@ -29,6 +29,8 @@ m_int_edge_data.o
 MOD_Z_FILTER_PLUG = \
 main_gen_z_filter.o \
 analyzer_gen_z_filter.o \
+cal_delta_z_4_z_filter.o \
+solve_by_mass_z.o \
 \
 m_int_commtative_filter.o \
 m_z_filter_values.o \
@@ -120,12 +122,8 @@ mod_list:
 	@echo  $(MOD_TEST_DZ_PLUG)  $(MOD_Z_FILTER_CTL)  >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CONST_FILTER_Z_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CONST_FILTER_Z_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

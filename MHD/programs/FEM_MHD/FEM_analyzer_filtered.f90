@@ -62,7 +62,6 @@
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
-      use node_monitor_IO
       use FEM_sgs_model_coefs_IO
       use output_viz_file_control
       use filter_all_fields
@@ -115,8 +114,9 @@
 !
 !     ---------------------
 !
-      call set_perturbation_to_scalar                                   &
-     &   (FEM_model%MHD_prop, FEM_MHD%iphys, FEM_MHD%field)
+      call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
+     &    FEM_MHD%iref_base, FEM_MHD%ref_fld,                           &
+     &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------
 !
@@ -129,7 +129,7 @@
      &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_SGS%Csims, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
@@ -138,17 +138,14 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_SGS%Csims, m_SR)
 !
 !     ========  Data output
 !
       call lead_fields_by_FEM                                           &
-     &   (MHD_step%flex_p%istep_max_dt, MHD_step, FEM_model%FEM_prm,    &
-     &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
-     &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs, FEM_MHD%iphys,     &
-     &    FEM_SGS%iphys_LES, ak_MHD, FEM_SGS%FEM_filters,               &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,                     &
-     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &  (MHD_step%flex_p%istep_max_dt, MHD_step, FEM_model,             &
+     &   FEM_SGS%SGS_par, FEM_SGS%iphys_LES, ak_MHD,                    &
+     &   FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk, FEM_SGS%Csims, m_SR)
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
@@ -171,7 +168,7 @@
 !
       call output_monitor_control(MHD_step%flex_p%istep_max_dt,         &
      &    MHD_step%point_step, MHD_step%time_d,                         &
-     &    FEM_MHD%geofem%mesh, FEM_MHD%field)
+     &    FEM_MHD%geofem%mesh, FEM_MHD%field, FEM_MHD%nod_mntr)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs(MHD_step%flex_p%istep_max_dt,       &

@@ -131,15 +131,20 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = control_file_name)
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_plane_mesh, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_plane_mesh_ctl_data                                   &
      &     (control_file_code, hd_plane_mesh, cubmesh_c, c_buf1)
         if(cubmesh_c%i_plane_mesh .gt. 0) exit
       end do
       close(control_file_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken.'
 !
       end subroutine read_control_data_plane_mesh
 !
@@ -148,6 +153,7 @@
       subroutine read_plane_mesh_ctl_data                               &
      &         (id_control, hd_block, cubmesh_c, c_buf)
 !
+      use ctl_data_platforms_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -157,10 +163,14 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubmesh_c%i_plane_mesh .gt. 0) return
+      call init_platforms_labels(hd_platform, cubmesh_c%cubmesh_plt)
+      call init_filter_fnames_ctl_label(hd_filter_fnames,               &
+     &                                  cubmesh_c%ffile_cub_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -209,7 +219,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubmesh_c%i_l_filter_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_z_filter_header,             &

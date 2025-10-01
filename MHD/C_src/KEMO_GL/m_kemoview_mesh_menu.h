@@ -13,17 +13,12 @@
 #include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_color_table_c.h"
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
+#include "m_kemoview_mesh.h"
 #include "rainbow_color_code_c.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
 #include "numbers_to_bin_c.h"
-
-
-#define SHUTTER_OFF 0
-#define SHUTTER_ON  1
-#define ANAGLYPH_OFF 0
-#define ANAGLYPH_ON  1
 
 struct mesh_menu_val{
 	struct kv_string *mesh_file_name;
@@ -36,12 +31,17 @@ struct mesh_menu_val{
 	int num_of_color_loop;
 	
 	int iflag_draw_axis;
-	
+    int iflag_axis_position;
+
 	int iflag_draw_coast;
 	int iflag_draw_sph_grid;
 	double radius_coast;
 	
-	int draw_surface_nod;
+    int iflag_draw_tangent_cyl;
+    double r_ICB;
+
+    
+    int draw_surface_nod;
 	int draw_surface_grid;
 	int draw_surface_solid;
 	
@@ -80,9 +80,6 @@ struct mesh_menu_val{
 	double ele_grp_opacity;
 	double surf_grp_opacity;
 	
-	float bg_color[4];
-	float text_color[4];
-	
 	float domain_surface_color_code[4];
 	float ele_surface_color_code[4];
 	float surf_surface_color_code[4];
@@ -118,8 +115,11 @@ void set_domain_distance(double dist, struct mesh_menu_val *mesh_m);
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_axis_position(int iflag, struct mesh_menu_val *mesh_m);
+
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m);
 
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m);
 int toggle_draw_axis(struct mesh_menu_val *mesh_m);
@@ -145,7 +145,8 @@ int get_draw_elegrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
 int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
 
 
-void set_domain_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
+void set_domain_color_flag(int selected, int icolor,
+                           struct mesh_menu_val *mesh_m);
 void set_node_grp_color_flag(int icolor, struct mesh_menu_val *mesh_m);
 void set_ele_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
 void set_surf_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
@@ -156,18 +157,18 @@ int get_ele_grp_color_flag(int selected, struct mesh_menu_val *mesh_m);
 int get_surf_grp_color_flag(int selected, struct mesh_menu_val *mesh_m);
 
 void set_domain_color_code(int selected, float color_code4[4],
-			struct mesh_menu_val *mesh_m);
-void set_node_grp_color_code(GLfloat color_code4[4], struct mesh_menu_val *mesh_m);
-void set_ele_grp_color_code(int selected, GLfloat color_code4[4],
-			struct mesh_menu_val *mesh_m);
-void set_surf_grp_color_code(int selected, GLfloat color_code4[4], 
-			struct mesh_menu_val *mesh_m);
+                           struct mesh_menu_val *mesh_m);
+void set_node_grp_color_code(float color_code4[4], struct mesh_menu_val *mesh_m);
+void set_ele_grp_color_code(int selected, float color_code4[4],
+                            struct mesh_menu_val *mesh_m);
+void set_surf_grp_color_code(int selected, float color_code4[4],
+                             struct mesh_menu_val *mesh_m);
 
 void send_domain_color_code(struct mesh_menu_val *mesh_m, int selected,
-			float color_code4[4]);
-void send_node_grp_color_code(struct mesh_menu_val *mesh_m, GLfloat color_code4[4]);
+                            float color_code4[4]);
+void send_node_grp_color_code(struct mesh_menu_val *mesh_m, float color_code4[4]);
 void send_ele_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
-			float color_code4[4]);
+                             float color_code4[4]);
 void send_surf_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
-			float color_code4[4]);
+                              float color_code4[4]);
 #endif

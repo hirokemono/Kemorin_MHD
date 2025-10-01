@@ -15,68 +15,63 @@
 
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "kemoview_fileselector_gtk.h"
+#include "tree_view_viewer_colormap.h"
+#include "tree_view_4_light_position.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_evolution_menu.h"
 #include "kemoview_gtk_rotation_menu.h"
 #include "kemoview_gtk_quilt_menu.h"
 #include "kemoview_gtk_axis_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_gtk_PSF_menu.h"
-#include "kemoview_gtk_fieldline_menu.h"
 #include "kemoview_gtk_viewmatrix_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
+#include "kemoview_gtk_PSF_window.h"
+#include "kemoview_gtk_Fline_window.h"
+#include "kemoview_gtk_viewmode_menu.h"
+#include "kemoview_gtk_menu_button.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 
 struct main_buttons{
-	GtkWidget *menuHbox;
-	
-	GtkWidget *vbox_menu;
+    int id_current[1];
+    struct psf_gtk_menu *psf_gmenu;
+    struct fieldline_gtk_menu *fline_gmenu;
+    struct fieldline_gtk_menu *tracer_gmenu;
 
+    GtkWidget *meshWin;
+    struct kemoview_mesh_view *mesh_vws;
+    
+    GtkWidget *itemTEvo;
+    struct evolution_gtk_menu *evo_gmenu;
+
+    GtkWidget *expander_view;
     struct view_widgets *view_menu;
 	
-	GtkWidget *psfBox;
-	struct psf_gtk_menu *psf_gmenu;
-	
-	struct preference_gtk_menu  *pref_gmenu;
-	
-	GtkWidget *flineBox;
-	struct fieldline_gtk_menu *fline_menu;
-	
-	GtkWidget *meshBox;
-	struct kemoview_mesh_view *mesh_vws;
-	
+    GtkWidget *expander_pref;
+    struct lightparams_view *lightparams_vws;
+
 	struct rotation_gtk_menu *rot_gmenu;
+    
+    GtkWidget *expander_quilt;
 	struct quilt_gtk_menu *quilt_gmenu;
-	
-	GtkWidget *evolutionBox;
-	struct evolution_gtk_menu *evo_gmenu;
-	
-	GtkWidget *ComboboxImageFormat;
-	int id_iamge_format;
 };
 
 
 /*  prototypes */
-
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data);
 void dealloc_main_buttons(struct main_buttons *mbot);
 
-void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
-							   GtkWidget *window_main);
+void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
+                               struct kv_string *filename, 
+                               struct main_buttons *mbot,
+                               GtkWidget *main_window);
 
-void gtk_psf_menu_box(struct main_buttons *mbot, GtkWidget *window);
-void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window);
-void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window);
-
-void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
-                            GtkWidget *window_main);
+GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
+                                   GtkWidget *quitButton, GtkWidget *main_window,
+                                   struct kemoviewer_gl_type *kemo_gl);
 
 #endif

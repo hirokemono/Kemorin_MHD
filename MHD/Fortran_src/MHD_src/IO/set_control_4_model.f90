@@ -10,14 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_model(reft_ctl, refc_ctl,            &
-!!     &          mevo_ctl, evo_ctl, nmtr_ctl, MHD_prop)
+!!     &                                 mevo_ctl, evo_ctl, MHD_prop)
 !!      subroutine s_set_control_4_crank                                &
 !!     &         (mevo_ctl, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(in) :: evo_ctl
-!!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!@endverbatim
 !
@@ -42,21 +41,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_model(reft_ctl, refc_ctl,              &
-     &          mevo_ctl, evo_ctl, nmtr_ctl, MHD_prop)
+     &                                 mevo_ctl, evo_ctl, MHD_prop)
 !
       use calypso_mpi
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
-      use t_ctl_data_node_monitor
       use t_reference_scalar_param
       use m_base_field_labels
-      use node_monitor_IO
+      use set_reference_scalar_param
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
       type(reference_temperature_ctl), intent(in) :: refc_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(in) :: evo_ctl
-      type(node_monitor_control), intent(in) :: nmtr_ctl
 !
       type(MHD_evolution_param), intent(inout) :: MHD_prop
 !
@@ -157,27 +154,6 @@
       call set_filtered_advection_ctl                                   &
      &   (refc_ctl%filterd_advect_ctl, MHD_prop%cp_prop)
 !
-!
-      if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then
-        num_monitor = 0
-      else
-        num_monitor = nmtr_ctl%group_4_monitor_ctl%num
-      end if
-!
-      if (num_monitor .ne. 0) then
-        call allocate_monitor_group
-!
-        do i = 1, num_monitor
-          monitor_grp(i) = nmtr_ctl%group_4_monitor_ctl%c_tbl(i)
-        end do
-!
-        if (iflag_debug .ge. iflag_routine_msg) then
-          do i = 1, num_monitor
-            write(*,*) 'monitor_grp',i,monitor_grp(i)
-          end do
-        end if
-      end if
-!
       end subroutine s_set_control_4_model
 !
 ! -----------------------------------------------------------------------
@@ -192,18 +168,32 @@
       type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !
 !
+      call set_implicit_coefs(mevo_ctl%coef_implicit_ctl,               &
+     &    fl_prop%iflag_scheme, fl_prop%coef_imp, fl_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &
      &    fl_prop%iflag_scheme, fl_prop%coef_imp, fl_prop%coef_exp)
+!
+      call set_implicit_coefs(mevo_ctl%coef_implicit_ctl,               &
+     &    ht_prop%iflag_scheme, ht_prop%coef_imp, ht_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
      &    ht_prop%iflag_scheme, ht_prop%coef_imp, ht_prop%coef_exp)
+!
+      call set_implicit_coefs(mevo_ctl%coef_implicit_ctl,               &
+     &    cp_prop%iflag_scheme, cp_prop%coef_imp, cp_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
      &    cp_prop%iflag_scheme, cp_prop%coef_imp, cp_prop%coef_exp)
 !
       if(cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         call set_implicit_coefs                                         &
+     &     (mevo_ctl%coef_implicit_ctl, cd_prop%iflag_Bevo_scheme,      &
+     &      cd_prop%coef_imp, cd_prop%coef_exp)
+        call set_implicit_coefs                                         &
      &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Bevo_scheme,         &
      &      cd_prop%coef_imp, cd_prop%coef_exp)
       else if(cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
+        call set_implicit_coefs                                         &
+     &     (mevo_ctl%coef_implicit_ctl, cd_prop%iflag_Aevo_scheme,      &
+     &      cd_prop%coef_imp, cd_prop%coef_exp)
         call set_implicit_coefs                                         &
      &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Aevo_scheme,         &
      &      cd_prop%coef_imp, cd_prop%coef_exp)

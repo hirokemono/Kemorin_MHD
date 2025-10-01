@@ -12,9 +12,13 @@
 
 -(void)linkToFieldclist
 {
-    load_MHD_control_c();
-    mhd_ctl_m = link_to_mhd_ctl();
-    
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+    if(f_MHD_ctl == NULL){
+        printf("malloc error for f_MHD_ctl\n");
+        exit(0);
+    };
+    f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD("control_MHD");
+
     all_fld_list = init_all_field_ctl_c();
 
     load_field_w_qflag_from_ctl(mhd_ctl_m->model_ctl->fld_ctl, all_fld_list);

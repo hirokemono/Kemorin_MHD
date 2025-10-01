@@ -24,7 +24,7 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
@@ -40,7 +40,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_reference_scalar_param
       use t_physical_property
@@ -90,7 +90,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -115,7 +115,7 @@
 !
       call copy_time_step_data(init_d, time_d)
 !
-      if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
+      if(time_d%flag_flex_step) then
         flex_p%istep_max_dt = nint(init_d%time / flex_p%dt_max)
         flex_p%interval_flex_2_max = nint(flex_p%dt_max / time_d%dt)
         flex_p%istep_flex_to_max = izero

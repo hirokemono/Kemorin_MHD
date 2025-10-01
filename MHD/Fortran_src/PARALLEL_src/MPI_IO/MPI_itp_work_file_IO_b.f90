@@ -9,7 +9,11 @@
 !!@verbatim
 !!      subroutine mpi_wrt_itp_coefs_dest_file_b                        &
 !!     &         (file_name, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine mpi_wrt_itp_index_dest_file_b                        &
+!!     &         (file_name, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine mpi_read_itp_coefs_dest_file_b                       &
+!!     &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine mpi_read_itp_index_dest_file_b                       &
 !!     &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine mpi_read_itp_table_dest_file_b                       &
 !!     &         (file_name, id_rank, num_pe, IO_itp_dest)
@@ -44,7 +48,7 @@
       subroutine mpi_wrt_itp_coefs_dest_file_b                          &
      &         (file_name, IO_itp_dest, IO_itp_c_dest)
 !
-      use MPI_itp_table_data_IO_b
+      use MPI_itp_tbl_dest_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -60,6 +64,8 @@
       call open_write_mpi_file_b(file_name, IO_param)
       call mpi_write_itp_domain_dest_b(IO_param, IO_itp_dest)
       call mpi_write_itp_table_dest_b(IO_param, IO_itp_dest)
+      call mpi_write_itp_idx_dest_b                                     &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call mpi_write_itp_coefs_dest_b                                   &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
@@ -68,10 +74,38 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine mpi_wrt_itp_index_dest_file_b                          &
+     &         (file_name, IO_itp_dest, IO_itp_c_dest)
+!
+      use MPI_itp_tbl_dest_data_IO_b
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write binary export coefs file: ', trim(file_name)
+!
+      call open_write_mpi_file_b(file_name, IO_param)
+      call mpi_write_itp_domain_dest_b(IO_param, IO_itp_dest)
+      call mpi_write_itp_table_dest_b(IO_param, IO_itp_dest)
+      call mpi_write_itp_idx_dest_b                                     &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
+      call close_mpi_file(IO_param)
+!
+      end subroutine mpi_wrt_itp_index_dest_file_b
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine mpi_read_itp_coefs_dest_file_b                         &
      &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
-      use MPI_itp_table_data_IO_b
+      use MPI_itp_tbl_dest_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -88,6 +122,8 @@
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
       call mpi_read_itp_domain_dest_b(IO_param, IO_itp_dest)
       call mpi_read_itp_table_dest_b(IO_param, IO_itp_dest)
+      call mpi_read_itp_idx_dest_b                                      &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call mpi_read_itp_coefs_dest_b                                    &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
@@ -96,10 +132,38 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine mpi_read_itp_index_dest_file_b                         &
+     &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
+!
+      use MPI_itp_tbl_dest_data_IO_b
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
+!
+      character(len=kchara), intent(in) :: file_name
+      integer, intent(in) :: id_rank, num_pe
+!
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read binary export coefs file: ', trim(file_name)
+!
+      call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
+      call mpi_read_itp_domain_dest_b(IO_param, IO_itp_dest)
+      call mpi_read_itp_table_dest_b(IO_param, IO_itp_dest)
+      call mpi_read_itp_idx_dest_b                                      &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
+      call close_mpi_file(IO_param)
+!
+      end subroutine mpi_read_itp_index_dest_file_b
+!
+!-----------------------------------------------------------------------
+!
       subroutine mpi_read_itp_table_dest_file_b                         &
      &         (file_name, id_rank, num_pe, IO_itp_dest)
 !
-      use MPI_itp_table_data_IO_b
+      use MPI_itp_tbl_dest_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -124,7 +188,7 @@
       subroutine mpi_read_itp_domain_dest_file_b                        &
      &         (file_name, id_rank, num_pe, IO_itp_dest)
 !
-      use MPI_itp_table_data_IO_b
+      use MPI_itp_tbl_dest_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !

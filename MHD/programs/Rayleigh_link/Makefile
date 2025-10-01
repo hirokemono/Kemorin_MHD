@@ -160,14 +160,14 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_RAYLEIGH_LINK_FILE): $$(MOD_RAYLEIGH_CONNECT)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_RAYLEIGH_CONNECT)' >> $(MAKENAME)
 
 
@@ -186,12 +186,8 @@ mod_list:
 	@echo  $(MOD_PICK_RAYLEIGH_SPH)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(RAYLEIGH_LINK_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(RAYLEIGH_LINK_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

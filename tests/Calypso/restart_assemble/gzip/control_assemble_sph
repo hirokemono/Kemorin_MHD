@@ -1,0 +1,28 @@
+begin assemble_control
+!
+  begin data_files_def
+    num_subdomain_ctl             4
+    restart_file_prefix  '../reference/rst'
+    restart_file_fmt_ctl       'ascii'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_subdomain_ctl           4
+    restart_file_prefix         'restart/rst'
+    restart_file_fmt_ctl        'gzip'
+  end new_data_files_def
+!
+  file spherical_shell_ctl       '../sph_lm7t12r14c_ic_4/control_resolution'
+  file new_spherical_shell_ctl   '../sph_lm7t12r14c_ic_4/control_resolution'
+!
+  begin control
+!!!!!  information for time integration
+    begin time_step_ctl
+      i_step_init_ctl         110
+      i_step_number_ctl       110
+      i_step_rst_ctl          1
+      i_step_ucd_ctl          1
+    end time_step_ctl
+  end control
+end assemble_control
+

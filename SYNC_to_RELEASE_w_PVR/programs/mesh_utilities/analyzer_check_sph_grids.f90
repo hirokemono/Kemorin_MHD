@@ -1,0 +1,1 @@
+../../../MHD/programs/mesh_utilities/spherical_shell/analyzer_check_sph_grids.f90

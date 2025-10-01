@@ -6,22 +6,20 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,     &
-!!     &          hd_pvr_ctl, pvr_ctl_type)
 !!      subroutine bcast_pvr_controls                                   &
 !!     &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !!        integer(kind = kint), intent(in) :: num_pvr_ctl
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
-!!      subroutine s_set_pvr_controls(group, nod_fld,                   &
-!!     &          num_pvr, pvr_ctl_type, pvr_param)
+!!      subroutine s_set_pvr_controls(group, nod_fld, tracer, fline,    &
+!!     &                              pvr_ctl_type, pvr_param)
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
-!!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type
+!!        type(PVR_control_params), intent(inout) :: pvr_param
 !!
-!!      subroutine read_control_pvr_update                              &
-!!     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
 !!      subroutine flush_each_pvr_control(pvr_param)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!@endverbatim
@@ -35,7 +33,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: pvr_ctl_file_code = 11
+      private :: init_multi_view_parameters
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,7 +44,7 @@
       subroutine bcast_pvr_controls                                     &
      &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl
@@ -69,11 +67,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_controls(group, nod_fld,                     &
-     &          num_pvr, pvr_ctl_type, pvr_param)
+      subroutine s_set_pvr_controls(group, nod_fld, tracer, fline,      &
+     &                              pvr_ctl_type, pvr_param)
 !
+      use m_error_IDs
       use t_group_data
       use t_phys_data
+      use t_particle_trace
+      use t_fieldline
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_sections
@@ -82,46 +83,41 @@
       use set_pvr_modelview_matrix
       use set_control_pvr_movie
 !
-      integer(kind = kint), intent(in) :: num_pvr
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type
 !
-      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+      type(PVR_control_params), intent(inout) :: pvr_param
 !
-      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: icheck_ncomp(1)
+      integer(kind = kint) :: n_field
 !
 !
-      do i_pvr = 1, num_pvr
-        call set_pvr_stereo_control(pvr_ctl_type(i_pvr),                &
-     &                              pvr_param(i_pvr)%stereo_def)
-        call s_set_control_pvr_movie(pvr_ctl_type(i_pvr)%movie,         &
-     &                               pvr_param(i_pvr)%movie_def)
+      call s_set_control_pvr_movie(pvr_ctl_type%movie,                  &
+     &                             pvr_param%movie_def)
 !
-        call check_pvr_field_control(pvr_ctl_type(i_pvr),               &
-     &      nod_fld%num_phys, nod_fld%phys_name)
+      n_field = check_pvr_field_control(pvr_ctl_type, nod_fld%num_phys, &
+     &                                  nod_fld%phys_name)
+      if(n_field .le. 0) call calypso_MPI_abort(ierr_PVR, e_message)
 !
-        call set_control_field_4_pvr                                    &
-     &     (pvr_ctl_type(i_pvr)%pvr_field_ctl,                          &
-     &      pvr_ctl_type(i_pvr)%pvr_comp_ctl,                           &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      pvr_param(i_pvr)%field_def, icheck_ncomp)
-        if (icheck_ncomp(1) .gt. 1)                                     &
-     &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
+      call set_control_field_4_pvr                                      &
+     &   (pvr_ctl_type%pvr_field_ctl, pvr_ctl_type%pvr_comp_ctl,        &
+     &    nod_fld%num_phys, nod_fld%phys_name,                          &
+     &    pvr_param%field_def, icheck_ncomp)
+      if (icheck_ncomp(1) .gt. 1)                                       &
+     &   call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
 !
-        if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
-        call set_control_pvr                                            &
-     &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,     &
-     &      pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
+      if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
+      call set_control_pvr(pvr_ctl_type, group%ele_grp, group%surf_grp, &
+     &    tracer, fline, pvr_param%area_def, pvr_param%draw_param,      &
+     &    pvr_param%color, pvr_param%colorbar)
 !
-!   set transfer matrix
-!
-        call set_pvr_mul_view_params(pvr_ctl_type(i_pvr)%mat,           &
-     &      pvr_ctl_type(i_pvr)%quilt_c, pvr_ctl_type(i_pvr)%movie,     &
-     &      pvr_param(i_pvr))
-      end do
+!   set parameters for stereo views
+      call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
+      call set_pvr_mul_view_params(pvr_ctl_type%mat,                    &
+     &    pvr_ctl_type%quilt_c, pvr_ctl_type%movie, pvr_param)
 !
       end subroutine s_set_pvr_controls
 !
@@ -142,24 +138,22 @@
       type(PVR_control_params), intent(inout) :: pvr_param
 !
       integer(kind = kint) :: num_views
-      integer(kind = kint) :: icheck_ncomp(1)
 !
 !
       if(quilt_c%mul_qmats_c%num_modelviews_c .gt. 0) then
         num_views = quilt_c%mul_qmats_c%num_modelviews_c
         if(num_views .lt.  pvr_param%stereo_def%num_views) then
-          write(e_message,*) 'The number of view paramter shold be',    &
+          write(e_message,*) 'The number of view paramter should be',   &
      &                 ' more than number of quilt image. (Stop)'
           call calypso_mpi_abort(1,e_message)
        else
-         pvr_param%flag_mulview_quilt = .TRUE.
          call init_multi_view_parameters(num_views,                     &
      &       quilt_c%mul_qmats_c, pvr_param)
          end if
        else if(movie_ctl%mul_mmats_c%num_modelviews_c .gt. 0) then
          num_views = movie_ctl%mul_mmats_c%num_modelviews_c
          if(num_views .lt. pvr_param%movie_def%num_frame) then
-          write(e_message,*) 'The number of view paramter shold be',    &
+          write(e_message,*) 'The number of view paramter should be',   &
      &                     ' more than number of movie image. (Stop)'
           call calypso_mpi_abort(1,e_message)
         else
@@ -186,7 +180,7 @@
       use set_pvr_modelview_matrix
 !
       integer(kind = kint), intent(in) :: num_views
-      type(multi_modeview_ctl), intent(in) :: mul_mmats_c
+      type(multi_modelview_ctl), intent(in) :: mul_mmats_c
 !
       type(PVR_control_params), intent(inout) :: pvr_param
 !
@@ -196,8 +190,7 @@
       call alloc_multi_view_parameters(num_views, pvr_param)
       do i = 1, pvr_param%num_multi_views
         call s_set_pvr_modelview_matrix                                 &
-     &     (mul_mmats_c%mat_file_ctl(i)%matrices,                       &
-     &      pvr_param%multi_view(i))
+     &     (mul_mmats_c%matrices(i), pvr_param%multi_view(i))
       end do
 !
       end subroutine init_multi_view_parameters
@@ -206,6 +199,7 @@
 !
       subroutine flush_each_pvr_control(pvr_param)
 !
+      use t_pvr_colormap_parameter
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
 !
@@ -220,71 +214,14 @@
         call dealloc_pvr_isosurfaces(pvr_param%draw_param)
       end if
 !
+      call dealloc_pvr_tracer_param(pvr_param%draw_param%tracer_pvr_prm)
+      call dealloc_pvr_tracer_param(pvr_param%draw_param%fline_pvr_prm)
+!
       call dealloc_pvr_element_group(pvr_param%area_def)
       call dealloc_pvr_color_parameteres(pvr_param%color)
 !
       end subroutine flush_each_pvr_control
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,       &
-     &          hd_pvr_ctl, pvr_ctl_type)
-!
-      use read_pvr_control
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: fname_pvr_ctl
-      character(len = kchara), intent(in) :: hd_pvr_ctl
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      write(*,*) 'PVR control:  ', trim(fname_pvr_ctl)
-!
-      open(id_control, file=fname_pvr_ctl, status='old')
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_pvr_ctl(id_control, hd_pvr_ctl,                       &
-     &                    pvr_ctl_type, c_buf1)
-        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_control_pvr_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_pvr_update                                &
-     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
-!
-      use read_pvr_control
-      use bcast_control_data_4_pvr
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in)  :: fname_pvr_ctl
-      character(len = kchara), intent(in)  :: hd_pvr_ctl
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!
-      type(buffer_for_control) :: c_buf1
-!
-      if(fname_pvr_ctl .eq. 'NO_FILE') return
-      open(id_control, file=fname_pvr_ctl, status='old')
-      pvr_ctl_type%i_pvr_ctl = 0
-!
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_pvr_update_flag                                       &
-     &     (id_control, hd_pvr_ctl, pvr_ctl_type, c_buf1)
-        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
-      end do
-      close(id_control)
-!
-      call bcast_pvr_update_flag(pvr_ctl_type)
-!
-      end subroutine read_control_pvr_update
-!
-!  ---------------------------------------------------------------------
-!
+
       end module set_pvr_control

@@ -17,11 +17,13 @@
 !
       implicit none
 !
+      character(len=kchara), parameter                                  &
+     &                      :: back_ctl_name = 'control_sph_back_trans'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_back_trans
-!
+      call initialize_sph_back_trans(back_ctl_name)
       call evolution_sph_back_trans
 !
       call calypso_MPI_finalize

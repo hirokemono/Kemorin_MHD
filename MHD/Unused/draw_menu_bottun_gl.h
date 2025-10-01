@@ -5,6 +5,7 @@
 #define DRAW_MENUBOTTUN_GL_
 
 #include <math.h>
+#include "m_vertex_buffer.h"
 #include "ysglfontdata.h"
 #include "vartex_array_object_gl.h"
 #include "glsl.h"

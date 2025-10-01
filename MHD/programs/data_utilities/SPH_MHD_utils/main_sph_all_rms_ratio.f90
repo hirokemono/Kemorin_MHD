@@ -17,11 +17,13 @@
 !
       implicit none
 !
+      character(len=kchara), parameter                                  &
+     &                      :: ratio_ctl_name = 'control_sph_rms_ratio'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_all_rms_ratio
-!
+      call initialize_sph_all_rms_ratio(ratio_ctl_name)
       call evolution_sph_all_rms_ratio
 !
       call calypso_MPI_finalize

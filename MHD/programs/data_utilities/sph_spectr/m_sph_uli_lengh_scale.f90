@@ -8,12 +8,12 @@
 !> @brief Obtain lengh scale from spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine sph_volume_uli_lscale_by_spectr                      &
+!!      subroutine sph_volume_uli_lscale_by_spec                        &
 !!     &         (fname_org, spec_evo_p, sph_IN)
-!!      subroutine sph_layer_uli_lscale_by_spectr                       &
+!!      subroutine sph_layer_uli_lscale_by_spec                         &
 !!     &         (fname_org, spec_evo_p, sph_IN)
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
-!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_sph_uli_lengh_scale
@@ -21,9 +21,6 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
-      use t_sph_monitor_data_IO
-      use t_buffer_4_gzip
-      use t_ctl_param_sph_series_util
 !
       implicit none
 !
@@ -32,9 +29,7 @@
       integer(kind = kint), parameter :: id_file_rms_m =    37
       integer(kind = kint), parameter :: id_file_lscale =   44
 !
-      type(read_sph_spectr_params), save :: sph_OUT1
-      type(volume_mean_data_IO), save :: v_mean_OUT1
-      type(volume_spectr_data_IO), save :: v_spec_IN1
+      type(read_sph_spectr_data), save :: sph_OUT1
 !
       real(kind = kreal), allocatable :: total_msq(:,:)
       real(kind = kreal), allocatable :: spec_times_l(:,:)
@@ -50,20 +45,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_volume_uli_lscale_by_spectr                        &
+      subroutine sph_volume_uli_lscale_by_spec                          &
      &         (fname_org, spec_evo_p, sph_IN)
 !
+      use t_buffer_4_gzip
+      use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
-      use write_sph_monitor_data
+      use gz_open_sph_vol_mntr_file
+      use sph_monitor_data_text
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
-      use gz_spl_sph_spectr_data_IO
       use set_parallel_file_name
-      use sph_monitor_data_text
 !
       character(len = kchara), intent(in) :: fname_org
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -71,14 +67,14 @@
       type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_u
+      real(kind = kreal), allocatable :: spectr_l(:,:)
+      real(kind = kreal), allocatable :: scale_uli(:)
 !
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms_l,          &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
-     &    spec_evo_p%flag_old_fmt, spectr_on, .TRUE.,             &
-     &    sph_lbl_IN_u, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms_l,           &
+     &    flag_gzip1, sph_lbl_IN_u, sph_IN, zbuf1)
 !
       sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
@@ -86,16 +82,22 @@
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
+      allocate(spectr_l(sph_IN%ntot_sph_spec,0:sph_IN%ltr_sph))
+      allocate(scale_uli(sph_IN%ntot_sph_spec))
+!$omp parallel workshare
+      spectr_l(1:sph_IN%ntot_sph_spec,0:sph_IN%ltr_sph) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      scale_uli(1:sph_IN%ntot_sph_spec) = 0.0d0
+!$omp end parallel workshare
+!
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
-      open(id_file_lscale, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_lscale, .TRUE., sph_OUT1, zbuf_s)
+      open(id_file_lscale, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
+      call write_sph_pwr_vol_head(.FALSE., id_file_lscale,              &
+     &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_lscale_espec_data(sph_IN)
-      call alloc_volume_spectr_data_IO                                  &
-     &   (sph_IN%ntot_sph_spec, sph_IN%ltr_sph, v_spec_IN1)
-      call alloc_volume_mean_data_IO                                    &
-     &   (sph_OUT1%ntot_sph_spec, v_mean_OUT1)
 !
       icou = 0
       ist_true = -1
@@ -106,21 +108,20 @@
         call sel_gz_read_volume_spectr_mtr(FPz_f1, id_file_rms_l,       &
      &      flag_gzip1, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,           &
      &      sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                  &
-     &      v_spec_IN1%spec_v_IO(1,0), zbuf1, ierr)
+     &      spectr_l(1,0), zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
           sph_OUT1%time =   sph_IN%time
           sph_OUT1%i_step = sph_IN%i_step
           call cal_uli_length_scale_sph                                 &
-     &       (sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
-     &        v_spec_IN1%spec_v_IO(1,0), total_msq, spec_times_l,       &
-     &        v_mean_OUT1%sq_v_IO(1))
+     &       (ione, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,               &
+     &        spectr_l(1,0), total_msq, spec_times_l, scale_uli(1))
           icou = icou + 1
 !
           call sel_gz_write_text_stream(.FALSE., id_file_lscale,        &
      &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
-     &        sph_OUT1%ntot_sph_spec, v_mean_OUT1%sq_v_IO(1)), zbuf_s)
+     &        sph_OUT1%ntot_sph_spec, scale_uli), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -136,33 +137,32 @@
       close(id_file_lscale)
 !
 !
+      deallocate(scale_uli, spectr_l)
       call deallocate_lscale_espec_data
-      call dealloc_volume_spectr_data_IO(v_spec_IN1)
       call dealloc_sph_espec_data(sph_IN)
       call dealloc_sph_espec_name(sph_IN)
-      call dealloc_volume_mean_data_IO(v_mean_OUT1)
       call dealloc_sph_espec_data(sph_OUT1)
       call dealloc_sph_espec_name(sph_OUT1)
 !
-      end subroutine sph_volume_uli_lscale_by_spectr
+      end subroutine sph_volume_uli_lscale_by_spec
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_layer_uli_lscale_by_spectr                         &
+      subroutine sph_layer_uli_lscale_by_spec                           &
      &         (fname_org, spec_evo_p, sph_IN)
 !
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
-      use write_sph_monitor_data
+      use gz_open_sph_layer_mntr_file
+      use gz_layer_mean_monitor_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
-      use gz_layer_mean_monitor_IO
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -170,16 +170,14 @@
       type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_u
-      type(layer_spectr_data_IO) :: l_spec_IN1
-      type(layer_mean_data_IO) :: l_mean_OUT1
+      real(kind = kreal), allocatable :: scale_uli(:,:)
+      real(kind = kreal), allocatable :: spectr_l(:,:,:)
 !
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms_l,          &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
-     &    spec_evo_p%flag_old_fmt, spectr_on, .FALSE.,                  &
-     &    sph_lbl_IN_u, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms_l,           &
+     &    flag_gzip1, sph_lbl_IN_u, sph_IN, zbuf1)
 !
       sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
@@ -187,17 +185,24 @@
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
+      allocate(spectr_l(sph_IN%ntot_sph_spec,                           &
+     &                  0:sph_IN%ltr_sph,1:sph_IN%nri_sph))
+      allocate(scale_uli(sph_IN%ntot_sph_spec,1:sph_IN%nri_sph))
+!$omp parallel workshare
+      spectr_l(1:sph_IN%ntot_sph_spec,                                  &
+     &         0:sph_IN%ltr_sph,1:sph_IN%nri_sph) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      scale_uli(1:sph_IN%ntot_sph_spec,1:sph_IN%nri_sph) = 0.0d0
+!$omp end parallel workshare
+!
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
-      open(id_file_lscale, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_lscale, .FALSE., sph_OUT1, zbuf_s)
+      open(id_file_lscale, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
+      call write_sph_pwr_layer_head(.FALSE., id_file_lscale,            &
+     &                              sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_lscale_espec_data(sph_IN)
-      call alloc_layer_spectr_data_IO                                   &
-     &   (sph_IN%ntot_sph_spec, sph_IN%ltr_sph, sph_IN%nri_sph,         &
-     &    l_spec_IN1)
-      call alloc_layer_mean_data_IO                                     &
-     &   (sph_IN%ntot_sph_spec, sph_IN%nri_sph, l_mean_OUT1)
 !
       icou = 0
       ist_true = -1
@@ -205,9 +210,11 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call sel_gz_input_sph_layer_spectr                              &
+        call sel_gz_input_sph_layer_spec                                &
      &     (FPz_f1, id_file_rms_l, flag_gzip1, spec_evo_p%flag_old_fmt, &
-     &      sph_IN, l_spec_IN1, zbuf1, ierr)
+     &      sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,       &
+     &      sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                  &
+     &      sph_IN%r_sph, sph_IN%i_mode, spectr_l, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -215,14 +222,13 @@
           sph_OUT1%i_step = sph_IN%i_step
           call cal_uli_length_scale_sph                                 &
      &       (sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
-     &        l_spec_IN1%spec_r_IO, total_msq, spec_times_l,            &
-     &        l_mean_OUT1%sq_r_IO)
+     &        spectr_l(1,0,1), total_msq, spec_times_l, scale_uli(1,1))
           icou = icou + 1
 !
-          call sel_gz_write_layer_mean_mtr                              &
-     &       (.FALSE., id_file_lscale, sph_OUT1%i_step, sph_OUT1%time,  &
-     &          sph_OUT1%nri_sph, sph_OUT1%kr_sph, sph_OUT1%r_sph,      &
-     &          sph_OUT1%ntot_sph_spec, l_mean_OUT1%sq_r_IO, zbuf_s)
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_lscale,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        scale_uli(1,1), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -238,15 +244,14 @@
       close(id_file_lscale)
 !
 !
+      deallocate(scale_uli, spectr_l)
       call deallocate_lscale_espec_data
-      call dealloc_layer_spectr_data_IO(l_spec_IN1)
       call dealloc_sph_espec_data(sph_IN)
       call dealloc_sph_espec_name(sph_IN)
-      call dealloc_layer_mean_data_IO(l_mean_OUT1)
       call dealloc_sph_espec_data(sph_OUT1)
       call dealloc_sph_espec_name(sph_OUT1)
 !
-      end subroutine sph_layer_uli_lscale_by_spectr
+      end subroutine sph_layer_uli_lscale_by_spec
 !
 !   --------------------------------------------------------------------
 !
@@ -262,8 +267,7 @@
      &                    :: total_msq(ncomp,nri_sph)
       real(kind = kreal), intent(inout)                                 &
      &                    :: spec_times_l(ncomp,nri_sph)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: scale_uli(ncomp,nri_sph)
+      real(kind = kreal), intent(inout) :: scale_uli(ncomp,nri_sph)
 !
       integer(kind = kint) :: kr, nd, lth
 !
@@ -315,7 +319,7 @@
 !
       subroutine allocate_lscale_espec_data(sph_IN)
 !
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
       allocate( total_msq(sph_IN%ntot_sph_spec,sph_IN%nri_sph) )

@@ -1,0 +1,97 @@
+#
+#
+#
+
+C_SRCDIR = $$(MHDDIR)/C_libraries
+
+LIB_CALYPSO_C =       -lcalypso_c
+LIB_CALYPSO_C_FILE = libcalypso_c.a
+
+OBJS_C= $$(OBJ_BASE_C)
+
+SUBDIRS = \
+BASE
+
+#
+#  -------------------------------------------------------------------------
+#
+
+dir_list:
+	@echo 'C_SRCDIR =     $(C_SRCDIR)'      >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'generate diectory list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)'     \
+		MAKENAME='$(MAKENAME)'   \
+		dir_list; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+
+lib_name:
+	@echo  'LIB_CALYPSO_C =      $(LIB_CALYPSO_C)'       >> $(MAKENAME)
+	@echo  'LIB_CALYPSO_C_FILE = $(LIB_CALYPSO_C_FILE)'  >> $(MAKENAME)
+	@echo   >> $(MAKENAME)
+
+lib_tasks: libtarget lib_archve
+	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+
+libtarget:
+	@echo  '$$(LIB_CALYPSO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
+
+lib_archve:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		lib_archve \
+		) \
+	done
+
+
+mod_list:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		ZLIB_LIBS='$(ZLIB_LIBS)'     \
+		PNG_LIBS='$(PNG_LIBS)'       \
+		MAKENAME='$(MAKENAME)' \
+		mod_list \
+		) \
+	done
+
+depends:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		echo 'generate compile list for ' $$dir ; \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		CC="$(CC)"   \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS='$(OPTFLAGS)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		depends \
+		) \
+	done
+
+clean:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		clean \
+		) \
+	done
+	
+	rm -f *.o *.mod *~ *.par *.diag *.a

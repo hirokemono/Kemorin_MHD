@@ -15,27 +15,26 @@
 
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_chara_int_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_routines.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct rotation_gtk_menu{
 	int id_fmt_rot;
 	
+    int i_FPS;
 	int inc_deg;
 	int iaxis_rot;
 		
 	GtkWidget *combobox_rotation_dir;
 	GtkWidget *spin_rot_increment;
-	
+    GtkWidget *spin_rot_FPS;
+
 	GtkWidget *combobox_rotation_fileformat;
 	GtkWidget *rotView_Button;
 	GtkWidget *rotSave_Button;
@@ -45,6 +44,8 @@ struct rotation_gtk_menu{
 /*  prototypes */
 
 struct rotation_gtk_menu * init_rotation_menu_box(void);
-GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, GtkWidget *window);
-	
+GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
+                                        struct rotation_gtk_menu *rot_gmenu,
+                                        GtkWidget *window);
+
 #endif

@@ -15,11 +15,11 @@ dir_list:
 
 lib_name:
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SPH_GRID)' \
 	>> $(MAKENAME)
 
@@ -29,12 +29,8 @@ mod_list:
 	@echo  $(MOD_SPH_GRID)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_GRID_SRCDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_GRID_SRCDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod $(EXE) $(LIB) *~

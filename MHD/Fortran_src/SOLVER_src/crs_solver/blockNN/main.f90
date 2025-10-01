@@ -182,7 +182,7 @@
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR,                             &
      &                   METHOD, PRECOND, INTARRAY, REALARRAY,          &
-     &                   SR_sig1, SR_r1)
+     &                   SR_sig1, SR_r1, PRECtime, COMPtime, COMMtime)
 
 
       if (my_rank.eq.0) then

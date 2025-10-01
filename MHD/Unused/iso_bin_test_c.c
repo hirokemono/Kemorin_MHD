@@ -16,6 +16,6 @@ int main(){
 	read_alloc_iso_bin_gz(gzip_name, psf_z);
 	check_psf_read(psf_z);
 	
-	compare_psf_data(psf_b, psf_z);
+	compare_psf_data_c(psf_b, psf_z);
 	return 0;
 }

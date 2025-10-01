@@ -6,15 +6,21 @@
 !>@brief Set each PVR parameters from control
 !!
 !!@verbatim
-!!      subroutine check_pvr_field_control                              &
-!!     &         (pvr_ctl, num_nod_phys, phys_nod_name)
+!!      integer(kind = kint) function                                   &
+!!     &   check_pvr_field_control(pvr_ctl, num_nod_phys, phys_name)
+!!        integer(kind = kint), intent(in) :: num_nod_phys
+!!        character(len=kchara), intent(in) :: phys_name(num_nod_phys)
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !!
 !!      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,         &
-!!     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
-!!      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,&
-!!     &          view_param, draw_param, color_param, cbar_param)
+!!     &          num_nod_phys, phys_name, fld_param, icheck_ncomp)
+!!      subroutine set_control_pvr                                      &
+!!     &         (pvr_ctl, ele_grp, surf_grp, tracer, fline,            &
+!!     &          pvr_area, draw_param, color_param, cbar_param)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(tracer_module), intent(in) :: tracer
+!!        type(fieldline_module), intent(in) :: fline
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
@@ -29,6 +35,7 @@
       use m_precision
 !
       use m_constants
+      use m_machine_parameter
       use m_error_IDs
       use t_control_data_4_pvr
       use calypso_mpi
@@ -46,14 +53,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_pvr_field_control                                &
-     &         (pvr_ctl, num_nod_phys, phys_nod_name)
+      integer(kind = kint) function                                     &
+     &   check_pvr_field_control(pvr_ctl, num_nod_phys, phys_name)
 !
       use t_control_params_4_pvr
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      character(len=kchara), intent(in) :: phys_name(num_nod_phys)
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !
@@ -62,25 +69,28 @@
 !
 !
       tmpfield(1) = pvr_ctl%pvr_field_ctl%charavalue
-      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    ione, tmpfield, num_field, num_phys_viz)
-      if(num_field .eq. 0) then
-        call calypso_MPI_abort(ierr_PVR,'set correct field name')
+      num_field = count_field_4_viz(num_nod_phys, phys_name,            &
+     &                              ione, tmpfield)
+      num_phys_viz = num_field
+      if(num_field .le. 0) then
+        write(e_message,*) 'Field ', trim(tmpfield(1)),                 &
+     &                       ' is not in the field list.'
       end if
+      check_pvr_field_control = num_field
 !
-      end subroutine check_pvr_field_control
+      end function check_pvr_field_control
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_field_4_pvr(field_ctl, comp_ctl,           &
-     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
+     &          num_nod_phys, phys_name, fld_param, icheck_ncomp)
 !
       use t_control_array_character
       use t_control_params_4_pvr
 !
       integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      character(len=kchara), intent(in) :: phys_name(num_nod_phys)
       type(read_character_item), intent(in) :: field_ctl
       type(read_character_item), intent(in) :: comp_ctl
 !
@@ -95,7 +105,7 @@
       tmpfield(1) = field_ctl%charavalue
       tmpcomp(1) =  comp_ctl%charavalue
       call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,   &
+     &   (num_nod_phys, phys_name, ione, tmpfield, tmpcomp, ione,       &
      &    ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
       fld_param%id_field =          ifld_tmp(1)
       fld_param%id_component =      icomp_tmp(1)
@@ -106,12 +116,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,  &
-     &          draw_param, color_param, cbar_param)
+      subroutine set_control_pvr                                        &
+     &         (pvr_ctl, ele_grp, surf_grp, tracer, fline,              &
+     &          pvr_area, draw_param, color_param, cbar_param)
 !
       use t_group_data
+      use t_particle_trace
+      use t_fieldline
       use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
       use t_geometries_in_pvr_screen
+      use t_ctl_param_tracer_render
       use set_color_4_pvr
       use set_rgba_4_each_pixel
       use set_coefs_of_sections
@@ -120,6 +135,8 @@
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: surf_grp
+      type(tracer_module), intent(in) :: tracer
+      type(fieldline_module), intent(in) :: fline
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !
       type(rendering_parameter), intent(inout) :: draw_param
@@ -134,6 +151,13 @@
       call set_control_pvr_sections(pvr_ctl%pvr_scts_c, draw_param)
 !
       call set_control_pvr_isosurf(pvr_ctl%pvr_isos_c, draw_param)
+!
+      call set_control_pvr_tracer(tracer%num_trace, tracer%fln_prm,     &
+     &    pvr_ctl%pvr_tracers_c%num_pvr_tracer_ctl,                     &
+     &    pvr_ctl%pvr_tracers_c%pvr_trc_c, draw_param%tracer_pvr_prm)
+      call set_control_pvr_tracer(fline%num_fline, fline%fln_prm,       &
+     &    pvr_ctl%pvr_flines_c%num_pvr_tracer_ctl,                      &
+     &    pvr_ctl%pvr_flines_c%pvr_trc_c, draw_param%fline_pvr_prm)
 !
 !    set colormap setting
       call set_control_pvr_lighting(pvr_ctl%light, color_param)
@@ -150,7 +174,7 @@
      &         (render_area_c, ele_grp, surf_grp, pvr_area, draw_param)
 !
       use t_group_data
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use skip_comment_f
@@ -211,6 +235,7 @@
       type(rendering_parameter), intent(inout) :: draw_param
 !
       integer(kind = kint) :: id_section_method, ierr, i
+      character(len=kchara) :: tmpchara
 !
 !
       draw_param%num_sections = pvr_scts_c%num_pvr_sect_ctl
@@ -228,6 +253,14 @@
             draw_param%sect_opacity(i)                                  &
      &        = pvr_scts_c%pvr_sect_ctl(i)%opacity_ctl%realvalue
           end if
+!
+          draw_param%iflag_psf_zeoline(i) = 0
+          if(pvr_scts_c%pvr_sect_ctl(i)%zeroline_switch_ctl%iflag       &
+     &                                                     .gt. 0) then
+            tmpchara                                                    &
+     &      = pvr_scts_c%pvr_sect_ctl(i)%zeroline_switch_ctl%charavalue
+            if(yes_flag(tmpchara)) draw_param%iflag_psf_zeoline(i) = 1
+          end if
         end do
       end if
 !
@@ -239,6 +272,7 @@
 !
       use t_control_data_pvr_isosurfs
       use t_geometries_in_pvr_screen
+      use m_pvr_control_labels
       use pvr_surface_enhancement
 !
       type(pvr_isosurfs_ctl), intent(in) :: pvr_isos_c

@@ -4,20 +4,23 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !!      subroutine read_filter_neib_4_sort(id_file, filter_node,        &
-!!     &          fil_area, f_sorting, nmax_nod_near_all)
-!!         type(filter_area_flag), intent(inout) :: fil_area
-!!         type(filter_func_4_sorting), intent(inout) :: f_sorting
+!!     &          fil_area, f_sorting, nmax_nod_near_all, iend)
+!!        type(filter_area_flag), intent(inout) :: fil_area
+!!        type(filter_func_4_sorting), intent(inout) :: f_sorting
+!!        integer(kind = kint), intent(inout) :: iend
 !!
 !!      subroutine read_filter_coef_4_sort                              &
 !!     &         (id_file, filter_node, whole_area, fluid_area,         &
-!!     &          fil_coef, fil_sorted)
+!!     &          fil_coef, fil_sorted, iend)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_coefficients_type), intent(inout) :: fil_sorted
+!!        integer(kind = kint), intent(inout) :: iend
 !!
 !!      subroutine write_filter_coef_4_each(id_file, fil_coef)
 !!        type(each_filter_coef), intent(in) :: fil_coef
-!!      subroutine read_filter_coef_4_each(id_file, fil_coef)
+!!      subroutine read_filter_coef_4_each(id_file, fil_coef, iend)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
+!!        integer(kind = kint), intent(inout) :: iend
 !!
 !!      subroutine read_filter_neib_4_sort_b(filter_node,               &
 !!     &          fil_area, f_sorting, nmax_nod_near_all, bbuf)
@@ -60,7 +63,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_neib_4_sort(id_file, filter_node,          &
-     &          fil_area, f_sorting, nmax_nod_near_all)
+     &          fil_area, f_sorting, nmax_nod_near_all, iend)
 !
       use skip_comment_f
 !
@@ -70,6 +73,7 @@
       integer(kind = kint), intent(inout) :: nmax_nod_near_all
       type(filter_area_flag), intent(inout) :: fil_area
       type(filter_func_4_sorting), intent(inout) :: f_sorting
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: inod, itmp, jnod
 !
@@ -79,7 +83,8 @@
      &                             f_sorting)
 !
       do inod = 1, filter_node%internal_node
-        call skip_comment(character_4_read,id_file)
+        call skip_comment(id_file, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*)                                        &
      &        itmp, f_sorting%nnod_near_nod_filter(inod),               &
      &        fil_area%i_exp_level(inod)
@@ -97,7 +102,7 @@
 !
       subroutine read_filter_coef_4_sort                                &
      &         (id_file, filter_node, whole_area, fluid_area,           &
-     &          fil_coef, fil_sorted)
+     &          fil_coef, fil_sorted, iend)
 !
       use skip_comment_f
 !
@@ -106,19 +111,22 @@
       type(filter_area_flag), intent(in) :: whole_area, fluid_area
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_coefficients_type), intent(inout) :: fil_sorted
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: inod, icou
 !
 !
       do inod = 1, filter_node%internal_node
-        call read_filter_coef_4_each(id_file, fil_coef)
+        call read_filter_coef_4_each(id_file, fil_coef, iend)
+        if(iend .gt. 0) return
 !
         icou = whole_area%itbl_near_nod(inod)
         call set_filtering_item_4_sorting(icou, fil_coef, fil_sorted)
       end do
 !
       do inod = 1, filter_node%internal_node
-        call read_filter_coef_4_each(id_file, fil_coef)
+        call read_filter_coef_4_each(id_file, fil_coef, iend)
+        if(iend .gt. 0) return
 !
         icou = fluid_area%itbl_near_nod(inod)
         call set_filtering_item_4_sorting(icou, fil_coef, fil_sorted)
@@ -172,17 +180,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_each(id_file, fil_coef)
+      subroutine read_filter_coef_4_each(id_file, fil_coef, iend)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       type(each_filter_coef), intent(inout) :: fil_coef
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: inum, itmp
       character(len=255) :: character_4_read = ''
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*)  itmp, fil_coef%nnod_4_1nod_w,           &
      &                                fil_coef%ilevel_exp_1nod_w
 !

@@ -53,7 +53,6 @@
       implicit none
 !
 !
-      private :: count_num_marked_in_export
       private :: set_marked_distance_in_export
       private :: set_dist_from_marke_in_export
 !
@@ -97,17 +96,8 @@
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
 !
-        call alloc_istack_marked_export(nod_comm, marked_export(icou))
-        call count_num_marked_in_export(nod_comm, each_exp_flags,       &
-     &      marked_export(icou)%istack_marked_export(0),                &
-     &      marked_export(icou)%ntot_marked_export)
-!
-        call alloc_items_marked_export(marked_export(icou))
         call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
-     &      marked_export(icou)%ntot_marked_export,                     &
-     &      marked_export(icou)%istack_marked_export(0),                &
-     &      marked_export(icou)%item_marked_export,                     &
-     &      marked_export(icou)%dist_marked_export)
+     &                                     marked_export(icou))
       end do
 !
       end subroutine comm_marked_export_for_extend
@@ -164,75 +154,57 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_marked_in_export(nod_comm, each_exp_flags,   &
-     &          istack_marked, ntot_marked)
+      subroutine set_marked_distance_in_export                          &
+     &         (nod_comm, each_exp_flags, marked_ex)
 !
       type(communication_table), intent(in) :: nod_comm
       type(flags_each_comm_extend), intent(in) :: each_exp_flags
 !
-      integer(kind = kint), intent(inout)                               &
-     &                  :: istack_marked(0:nod_comm%num_neib)
-      integer(kind = kint), intent(inout) :: ntot_marked
+      type(mark_in_export), intent(inout) :: marked_ex
 !
+      integer(kind = kint), allocatable :: item_tmp(:)
+      real(kind = kreal), allocatable :: dist_tmp(:)
       integer(kind = kint) :: icou, inum, inod, ip, ist, ied
 !
 !
-!$omp parallel do private(ip,icou,ist,ied,inum,inod)
+      allocate(item_tmp(nod_comm%ntot_import))
+      allocate(dist_tmp(nod_comm%ntot_import))
+
+      item_tmp(1:nod_comm%ntot_import) = 0
+      dist_tmp(1:nod_comm%ntot_import) = 0.0d0
+!
+      call alloc_istack_marked_export(nod_comm, marked_ex)
+!
+      icou = 0
+      marked_ex%istack_marked_export(0) = 0
       do ip = 1, nod_comm%num_neib
-        icou = 0
-        ist = nod_comm%istack_import(ip-1) + 1
-        ied = nod_comm%istack_import(ip  )
-        do inum = ist, ied
-          inod = nod_comm%item_import(inum)
-          if(each_exp_flags%distance(inod) .gt. 0.0d0) icou = icou + 1
-        end do
-        istack_marked(ip) = icou
-      end do
-!$omp end parallel do
-!
-      istack_marked(0) = 0
-      do ip = 1, nod_comm%num_neib
-        istack_marked(ip) = istack_marked(ip-1) + istack_marked(ip)
-      end do
-      ntot_marked = istack_marked(nod_comm%num_neib)
-!
-      end subroutine count_num_marked_in_export
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_marked_distance_in_export                          &
-     &         (nod_comm, each_exp_flags, ntot_marked,                  &
-     &          istack_marked, item_marked, dist_marked)
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(flags_each_comm_extend), intent(in) :: each_exp_flags
-      integer(kind = kint), intent(in) :: ntot_marked
-      integer(kind = kint), intent(in)                                  &
-     &                  :: istack_marked(0:nod_comm%num_neib)
-!
-      integer(kind = kint), intent(inout) :: item_marked(ntot_marked)
-      real(kind = kreal), intent(inout) :: dist_marked(ntot_marked)
-!
-      integer(kind = kint) :: icou, inod, ip, ist, ied, inum
-!
-!
-      if(ntot_marked .le. 0) return
-!
-!$omp parallel do private(ip,icou,ist,ied,inum,inod)
-      do ip = 1, nod_comm%num_neib
-        icou = istack_marked(ip-1)
         ist = nod_comm%istack_import(ip-1) + 1
         ied = nod_comm%istack_import(ip  )
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
           if(each_exp_flags%distance(inod) .gt. 0.0d0) then
             icou = icou + 1
-            item_marked(icou) =  inod
-            dist_marked(icou) = each_exp_flags%distance(inod)
+            item_tmp(icou) = inod
+            dist_tmp(icou) = each_exp_flags%distance(inod)
           end if
         end do
+        marked_ex%istack_marked_export(ip) = icou
       end do
-!$omp end parallel do
+      marked_ex%ntot_marked_export                                      &
+     &      = marked_ex%istack_marked_export(nod_comm%num_neib)
+!
+      call alloc_items_marked_export(marked_ex)
+!
+      if(marked_ex%ntot_marked_export .gt. 0) then
+!$omp parallel workshare
+        marked_ex%item_marked_export(1:marked_ex%ntot_marked_export)    &
+     &    =  item_tmp(1:marked_ex%ntot_marked_export)
+        marked_ex%dist_marked_export(1:marked_ex%ntot_marked_export)    &
+     &      = dist_tmp(1:marked_ex%ntot_marked_export)
+!$omp end parallel workshare
+      end if
+!
+      deallocate(item_tmp, dist_tmp)
 !
       end subroutine set_marked_distance_in_export
 !

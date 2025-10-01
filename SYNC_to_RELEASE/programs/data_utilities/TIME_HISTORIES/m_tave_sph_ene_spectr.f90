@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/m_tave_sph_ene_spectr.f90

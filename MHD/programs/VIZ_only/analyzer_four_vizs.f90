@@ -20,8 +20,12 @@
       use t_VIZ_mesh_field
       use t_mesh_SR
       use FEM_analyzer_four_vizs
+      use m_elapsed_labels_4_VIZ
 !
       implicit none
+!
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
@@ -46,35 +50,32 @@
 !
       subroutine initialize_four_vizs
 !
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-!
-      integer(kind = kint) :: ierr
+      use input_control_four_vizs
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call set_elpsed_label_4_VIZ(flag_detailed1, elps_VIZ1, elps1)
       call elpsed_label_field_send_recv
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
-!     read controls
-!
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_four_vizs(vizs_ctl4)
-      call set_ctl_params_four_vizs(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
-!
+!  Load controls
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_four_vizs'
+      call s_input_control_four_vizs(fname_viz_ctl, vizs_ctl4,          &
+     &                               FEM_viz4, t_VIZ4)
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_four_vizs'
-      call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
+      call FEM_initialize_four_vizs                                     &
+     &   (elps_VIZ1, t_VIZ4%init_d, t_VIZ4%ucd_step,                    &
      &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4, m_SR14)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
-      call init_four_visualize(t_VIZ4%viz_step,                         &
+      call init_four_visualize(elps_VIZ1, t_VIZ4%viz_step,              &
      &    FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4,                    &
      &    vizs_ctl4%viz4_ctl, vizs_m4, m_SR14)
+      call dealloc_viz4_controls(vizs_ctl4%viz4_ctl)
 !
       end subroutine initialize_four_vizs
 !
@@ -99,7 +100,7 @@
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ4%viz_step)
-        call visualize_four(t_VIZ4%viz_step, t_VIZ4%time_d,             &
+        call visualize_four(elps_VIZ1, t_VIZ4%viz_step, t_VIZ4%time_d,  &
      &      FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4, vizs_m4, m_SR14)
       end do
 !

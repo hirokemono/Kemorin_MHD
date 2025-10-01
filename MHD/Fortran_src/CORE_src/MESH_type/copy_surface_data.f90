@@ -118,6 +118,7 @@
       call alloc_surf_param_smp(new_surf)
       call count_surf_size_smp(new_surf)
 !
+      call alloc_global_surf_id(new_surf)
       call alloc_interior_surf(new_surf)
       call copy_global_surface_id(org_surf, new_surf%numsurf,           &
      &    new_surf%isurf_global, new_surf%interior_surf)

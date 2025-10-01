@@ -31,8 +31,8 @@ SOURCES = $(shell ls *.f90)
 
 MOD_SOLVERTEST_CORE = \
 t_ctl_data_solver_test.o \
-crs_matrix_io.o \
-set_control_solver_test.o \
+input_control_solver_test.o \
+crs_matrix_io.o
 
 MOD_SOLVERTEST = \
 solve_by_crs_solver.o \
@@ -68,15 +68,15 @@ dir_list:
 	@echo 'SOLVERTEST_DIR =  $(SOLVERTEST_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_SOLVERTEST = $$(BUILDDIR)/$(TARGET_SOLVERTEST)' \
+	@echo 'TARGET_SOLVERTEST = $$(TEST_BUILD_DIR)/$(TARGET_SOLVERTEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_DJDSTEST =   $$(BUILDDIR)/$(TARGET_DJDSTEST)'   \
+	@echo 'TARGET_DJDSTEST =   $$(TEST_BUILD_DIR)/$(TARGET_DJDSTEST)'   \
 	>> $(MAKENAME)
-	@echo 'TARGET_LUTEST =     $$(BUILDDIR)/$(TARGET_LUTEST)'     \
+	@echo 'TARGET_LUTEST =     $$(TEST_BUILD_DIR)/$(TARGET_LUTEST)'     \
 	>> $(MAKENAME)
-	@echo 'TARGET_5LUTEST =     $$(BUILDDIR)/$(TARGET_5LUTEST)'   \
+	@echo 'TARGET_5LUTEST =     $$(TEST_BUILD_DIR)/$(TARGET_5LUTEST)'   \
 	>> $(MAKENAME)
-	@echo 'TARGET_MUL_LUTEST = $$(BUILDDIR)/$(TARGET_MUL_LUTEST)' \
+	@echo 'TARGET_MUL_LUTEST = $$(TEST_BUILD_DIR)/$(TARGET_MUL_LUTEST)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -150,12 +150,8 @@ mod_list:
 	@echo  $(MOD_5LUTEST)      >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVERTEST_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVERTEST_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

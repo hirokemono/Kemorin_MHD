@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Nov., 2006
 !
-!!      subroutine read_control_4_prod_udt(prod_udt_c)
+!!      subroutine read_control_4_prod_udt(file_name, prod_udt_c)
 !!      subroutine reset_prod_control_data(prod_udt_c)
 !!        type(product_udt_ctl), intent(inout) :: prod_udt_c
 !
@@ -24,10 +24,6 @@
 !
 !
       integer(kind = kint), parameter :: prod_ctl_file_code = 11
-!
-!
-      character(len = kchara), parameter                                &
-     &                 :: fname_prod_ctl = "ctl_prod_udt"
 !
       type product_model_ctl
         type(read_character_item) :: product_udt_1_head_ctl
@@ -95,7 +91,6 @@
      &      :: hd_product_type =    'product_type_ctl'
 !
       private :: prod_ctl_file_code
-      private :: fname_prod_ctl
 !
       private :: hd_prod_control
       private :: hd_platform, hd_org_data, hd_time_step
@@ -105,9 +100,8 @@
       private :: hd_product_field_1, hd_product_field_2
       private :: hd_result_field
 !
-      private :: read_prod_control_data, bcast_prod_control_data
+      private :: read_prod_control_data
       private :: read_prod_files_ctl, read_product_model_ctl
-      private :: bcast_prod_files_ctl, bcast_product_model_ctl
       private :: reset_prod_files_ctl, reset_product_model_ctl
 !
 !   --------------------------------------------------------------------
@@ -116,26 +110,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_prod_udt(prod_udt_c)
+      subroutine read_control_4_prod_udt(file_name, prod_udt_c)
 !
+      character(len=kchara), intent(in) :: file_name
       type(product_udt_ctl), intent(inout) :: prod_udt_c
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
+      c_buf1%level = 0
+      open(prod_ctl_file_code, file=file_name, status='old')
+      do
+        call load_one_line_from_control                                 &
+     &     (prod_ctl_file_code, hd_prod_control, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
 !
-        open(prod_ctl_file_code, file=fname_prod_ctl, status='old')
-        do
-          call load_one_line_from_control(prod_ctl_file_code, c_buf1)
-          call read_prod_control_data                                   &
-     &       (prod_ctl_file_code, hd_prod_control, prod_udt_c, c_buf1)
-          if(prod_udt_c%i_prod_control .gt. 0) exit
-        end do
-        close(prod_ctl_file_code)
-      end if
-!
-      call bcast_prod_control_data(prod_udt_c)
+        call read_prod_control_data                                     &
+     &     (prod_ctl_file_code, hd_prod_control, prod_udt_c, c_buf1)
+        if(prod_udt_c%i_prod_control .gt. 0) exit
+      end do
+      close(prod_ctl_file_code)
+      if(c_buf1%iend .gt. 0) prod_udt_c%i_prod_control = c_buf1%iend
 !
       end subroutine read_control_4_prod_udt
 !
@@ -145,6 +140,8 @@
       subroutine read_prod_control_data                                 &
      &         (id_control, hd_block, prod_udt_c, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -152,10 +149,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(prod_udt_c%i_prod_control .gt. 0) return
+      call init_platforms_labels(hd_platform, prod_udt_c%pu_plt)
+      call init_platforms_labels(hd_org_data, prod_udt_c%org_pu_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -171,26 +171,6 @@
       prod_udt_c%i_prod_control = 1
 !
       end subroutine read_prod_control_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_prod_control_data(prod_udt_c)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(product_udt_ctl), intent(inout) :: prod_udt_c
-!
-!
-      call bcast_prod_files_ctl(prod_udt_c%prod_ctl)
-      call bcast_product_model_ctl(prod_udt_c%prod_ctl)
-!
-      call bcast_ctl_data_4_platform(prod_udt_c%pu_plt)
-      call bcast_ctl_data_4_platform(prod_udt_c%org_pu_plt)
-!
-      call calypso_mpi_bcast_one_int(prod_udt_c%i_prod_control, 0)
-!
-      end subroutine bcast_prod_control_data
 !
 !   --------------------------------------------------------------------
 !
@@ -225,7 +205,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(prod_ctl%i_prod_files.gt.0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -237,23 +218,6 @@
       prod_ctl%i_prod_files = 1
 !
       end subroutine read_prod_files_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_prod_files_ctl(prod_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(product_model_ctl), intent(inout) :: prod_ctl
-!
-!
-      call bcast_ctl_type_c1(prod_ctl%product_udt_1_head_ctl)
-      call bcast_ctl_type_c1(prod_ctl%product_udt_2_head_ctl)
-!
-      call calypso_mpi_bcast_one_int(prod_ctl%i_prod_files, 0)
-!
-      end subroutine bcast_prod_files_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -275,6 +239,8 @@
       subroutine read_product_model_ctl                                 &
      &         (id_control, hd_block, prod_ctl, c_buf)
 !
+      use ctl_data_4_time_steps_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -282,10 +248,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(prod_ctl%i_prod_model.gt.0) return
+      call init_ctl_time_step_label(hd_time_step, prod_ctl%t_pu_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -304,28 +272,6 @@
       prod_ctl%i_prod_model = 1
 !
       end subroutine read_product_model_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_product_model_ctl(prod_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_time_step_ctl
-      use bcast_control_arrays
-!
-      type(product_model_ctl), intent(inout) :: prod_ctl
-!
-!
-      call bcast_ctl_data_4_time_step(prod_ctl%t_pu_ctl)
-!
-      call bcast_ctl_type_c1(prod_ctl%result_field_ctl)
-      call bcast_ctl_type_c1(prod_ctl%product_field_1_ctl)
-      call bcast_ctl_type_c1(prod_ctl%product_field_2_ctl)
-      call bcast_ctl_type_c1(prod_ctl%product_type_ctl)
-!
-      call calypso_mpi_bcast_one_int(prod_ctl%i_prod_model, 0)
-!
-      end subroutine bcast_product_model_ctl
 !
 !   --------------------------------------------------------------------
 !

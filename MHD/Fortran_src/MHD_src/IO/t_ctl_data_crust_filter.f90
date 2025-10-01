@@ -7,10 +7,20 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
-!!      subroutine read_crustal_filtering_ctl                       &
+!!      subroutine init_crustal_filtering_ctl(hd_block, crust_filter_c)
+!!      subroutine read_crustal_filtering_ctl                           &
 !!     &         (id_control, hd_block, crust_filter_c, c_buf)
-!!      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_crustal_filtering_ctl                          &
+!!     &         (id_control, crust_filter_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        type(clust_filtering_ctl), intent(in) :: crust_filter_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_crustal_filtering_ctl(crust_filter_c)
+!!        type(clust_filtering_ctl), intent(inout) :: crust_filter_c
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
@@ -37,6 +47,8 @@
 !
 !>      Structure of crustal filtering of mangeitc field
       type clust_filtering_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'crustal_filtering_ctl'
 !>        Truncation dgree by crustal field
         type(read_integer_item) :: crust_truncation_ctl
 !
@@ -55,7 +67,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_crustal_filtering_ctl                         &
+      subroutine read_crustal_filtering_ctl                             &
      &         (id_control, hd_block, crust_filter_c, c_buf)
 !
       use t_read_control_elements
@@ -68,10 +80,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(crust_filter_c%i_crustal_filtering .gt. 0) return
+      crust_filter_c%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_integer_ctl_type(c_buf, hd_crustal_truncation,        &
@@ -83,25 +97,51 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
+      subroutine write_crustal_filtering_ctl                            &
+     &         (id_control, crust_filter_c, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use t_read_control_elements
+      use write_control_elements
+      use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+      type(clust_filtering_ctl), intent(in) :: crust_filter_c
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(crust_filter_c%i_crustal_filtering .le. 0) return
+!
+      maxlen = len_trim(hd_crustal_truncation)
+!
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 crust_filter_c%block_name)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    crust_filter_c%crust_truncation_ctl)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                crust_filter_c%block_name)
+!
+      end subroutine write_crustal_filtering_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_crustal_filtering_ctl(hd_block, crust_filter_c)
+!
+      character(len=kchara), intent(in) :: hd_block
       type(clust_filtering_ctl), intent(inout) :: crust_filter_c
 !
+      crust_filter_c%block_name = hd_block
+      call init_int_ctl_item_label(hd_crustal_truncation,               &
+     &    crust_filter_c%crust_truncation_ctl)
 !
-      call bcast_ctl_type_i1(crust_filter_c%crust_truncation_ctl)
-      call calypso_mpi_bcast_one_int                                    &
-     &   (crust_filter_c%i_crustal_filtering, 0)
+      end subroutine init_crustal_filtering_ctl
 !
-      end subroutine bcast_crustal_filtering_ctl
-!
-!   --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine reset_crustal_filtering_ctl(crust_filter_c)
-!
-      use bcast_control_arrays
 !
       type(clust_filtering_ctl), intent(inout) :: crust_filter_c
 !

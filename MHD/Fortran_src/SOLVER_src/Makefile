@@ -72,20 +72,10 @@ mod_list:
 		) \
 	done
 
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		(cd $${dir};  \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \

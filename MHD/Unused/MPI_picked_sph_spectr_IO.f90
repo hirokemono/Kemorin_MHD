@@ -187,7 +187,7 @@
              pickedbuf(ipick+ist)                                       &
      &         = picked_each_mode_to_text                               &
      &           (time_d%i_time_step, time_d%time,                      &
-     &            picked%radius_gl(knum), picked%id_radius(knum),       &
+     &            picked%radius_gl(knum,1), picked%id_radius(knum,1),   &
      &            picked%idx_out(inum,1), picked%idx_out(inum,2),       &
      &            ntot_comp_rj, d_rj_out)
           end do
@@ -269,7 +269,7 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
 !
-      type(read_sph_spectr_params) :: sph_OUT
+      type(read_sph_spectr_data) :: sph_OUT
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
 !
@@ -293,7 +293,7 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
 !
-      type(read_sph_spectr_params), intent(inout) :: sph_OUT
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
 !
       sph_OUT%ltr_sph = picked%num_sph_mode

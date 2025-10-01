@@ -95,14 +95,14 @@
               write(*,*) i, iachar(gray(i,1))
             end do
 !
-!$omp workshare
+!$omp parallel workshare
             quilt_d1%images(icou)%rgb(1,1:ntmp_x,1:ntmp_y)              &
      &           = gray(1:ntmp_x,1:ntmp_y)
             quilt_d1%images(icou)%rgb(2,1:ntmp_x,1:ntmp_y)              &
      &           = gray(1:ntmp_x,1:ntmp_y)
             quilt_d1%images(icou)%rgb(3,1:ntmp_x,1:ntmp_y)              &
      &           = gray(1:ntmp_x,1:ntmp_y)
-!$omp end workshare
+!$omp end parallel workshare
             deallocate(gray)
 !   For color image
           else

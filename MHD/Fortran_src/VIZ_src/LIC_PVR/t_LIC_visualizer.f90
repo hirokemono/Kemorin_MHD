@@ -7,10 +7,11 @@
 !>@brief Main module to access LIC visualization programs
 !!
 !!@verbatim
-!!      subroutine init_LIC_visualize(viz_step, geofem, nod_fld,        &
-!!     &          VIZ_DAT, viz_ctls, lic_v, m_SR)
-!!      subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,     &
-!!     &          VIZ_DAT, lic_v, m_SR)
+!!      subroutine init_LIC_visualize(elps_VIZ, viz_step,               &
+!!     &          geofem, nod_fld, VIZ_DAT, viz_ctls, lic_v, m_SR)
+!!      subroutine visualize_LIC(elps_VIZ, viz_step, time_d,            &
+!!     &                         geofem, nod_fld, VIZ_DAT, lic_v, m_SR)
+!!        type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -27,9 +28,9 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
+      use t_elapsed_labels_4_VIZ
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
       use t_time_data
@@ -47,7 +48,6 @@
 !
       type lic_visualize_modules
         type(lic_volume_rendering_module) :: lic
-        type(lic_volume_rendering_module) :: anaglyph_lic
       end type lic_visualize_modules
 !
 !  ---------------------------------------------------------------------
@@ -56,14 +56,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_LIC_visualize(viz_step, geofem, nod_fld,          &
-     &                              VIZ_DAT, viz_ctls, lic_v, m_SR)
+      subroutine init_LIC_visualize(elps_VIZ, viz_step,                 &
+     &          geofem, nod_fld, VIZ_DAT, viz_ctls, lic_v, m_SR)
 !
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
-      use anaglyph_lic_rendering
 !
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -74,15 +74,14 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+9)
       call LIC_initialize(viz_step%LIC_t%increment,                     &
+     &    elps_VIZ%elps_PVR, elps_VIZ%elps_LIC,                         &
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic, m_SR)
-      call anaglyph_LIC_initialize(viz_step%LIC_t%increment,            &
-     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
-     &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
-     &    lic_v%anaglyph_lic, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+9)
 !
       call calypso_mpi_barrier
       call dealloc_viz_controls(viz_ctls)
@@ -91,11 +90,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,       &
-     &                         VIZ_DAT, lic_v, m_SR)
+      subroutine visualize_LIC(elps_VIZ, viz_step, time_d,              &
+     &                         geofem, nod_fld, VIZ_DAT, lic_v, m_SR)
 !
-      use anaglyph_lic_rendering
-!
+      type(elapsed_labels_4_VIZ), intent(in) :: elps_VIZ
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -107,13 +105,14 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%istep_lic, time_d%time, geofem,       &
-     &    VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, m_SR)
-      call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call start_elapsed_time(elps_VIZ%ist_elapsed_V+10)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &    elps_VIZ%elps_PVR, elps_VIZ%elps_LIC,                         &
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
-     &    lic_v%anaglyph_lic, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
+     &    lic_v%lic, m_SR)
+      if(elps_VIZ%flag_elapsed_V)                                       &
+     &           call end_elapsed_time(elps_VIZ%ist_elapsed_V+10)
 !
       call calypso_mpi_barrier
 !

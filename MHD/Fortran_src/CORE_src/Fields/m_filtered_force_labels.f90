@@ -12,8 +12,8 @@
 !!      logical function check_filtered_flux_tensor(field_name)
 !!      logical function check_filtered_scalar_flux(field_name)
 !!
-!!      integer(kind = kint) function num_filter_force()
-!!        subroutine set_filter_force_labels(n_comps, names, maths)
+!!      subroutine set_filter_force_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
@@ -54,8 +54,6 @@
       use t_field_labels
 !
       implicit  none
-!
-      integer(kind = kint), parameter, private :: nforce_filter = 19
 !
 !>        Field label for advection for momentum by filtered field
 !!         @f$ -e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} @f$
@@ -242,66 +240,43 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-! 
-      integer(kind = kint) function num_filter_force()
-      num_filter_force = nforce_filter
-      return
-      end function num_filter_force
 !
-! ----------------------------------------------------------------------
+      subroutine set_filter_force_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-      subroutine set_filter_force_labels(n_comps, names, maths)
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_filter)
-      character(len = kchara), intent(inout) :: names(nforce_filter)
-      character(len = kchara), intent(inout) :: maths(nforce_filter)
+      call set_field_label_to_ctl(inertia_by_filtered,       array_c2i)
+      call set_field_label_to_ctl(Lorentz_force_by_filtered, array_c2i)
+      call set_field_label_to_ctl(magnetic_tension_by_filtered,         &
+     &                            array_c2i)
+      call set_field_label_to_ctl(filtered_buoyancy,       array_c2i)
+      call set_field_label_to_ctl(filtered_comp_buoyancy,  array_c2i)
+      call set_field_label_to_ctl(vecp_induction_by_filtered,           &
+     &                            array_c2i)
+      call set_field_label_to_ctl(magnetic_induction_by_filtered,       &
+     &                            array_c2i)
+      call set_field_label_to_ctl(magnetic_stretch_by_filtered,         &
+     &                            array_c2i)
+      call set_field_label_to_ctl(heat_advect_by_filtered,   array_c2i)
+      call set_field_label_to_ctl(pert_h_advect_by_filtered, array_c2i)
+      call set_field_label_to_ctl(comp_advect_by_filtered,   array_c2i)
+      call set_field_label_to_ctl(pert_c_advect_by_filtered, array_c2i)
+      call set_field_label_to_ctl(momentum_flux_by_filtered, array_c2i)
+      call set_field_label_to_ctl(maxwell_tensor_by_filtered,           &
+     &                            array_c2i)
+      call set_field_label_to_ctl(induction_tensor_by_filtered,         &
+     &                            array_c2i)
+      call set_field_label_to_ctl(heat_flux_by_filtered,     array_c2i)
+      call set_field_label_to_ctl(pert_h_flux_by_filtered,   array_c2i)
+      call set_field_label_to_ctl(composite_flux_by_filtered,           &
+     &                            array_c2i)
+      call set_field_label_to_ctl(pert_c_flux_by_filtered,   array_c2i)
 !
-!
-      call set_field_labels(inertia_by_filtered,                        &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(Lorentz_force_by_filtered,                  &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(magnetic_tension_by_filtered,               &
-     &    n_comps( 3), names( 3), maths( 3))
-!
-      call set_field_labels(filtered_buoyancy,                          &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(filtered_comp_buoyancy,                     &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(vecp_induction_by_filtered,                 &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(magnetic_induction_by_filtered,             &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(magnetic_stretch_by_filtered,               &
-     &    n_comps( 8), names( 8), maths( 8))
-!
-      call set_field_labels(heat_advect_by_filtered,                    &
-     &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(pert_h_advect_by_filtered,                  &
-     &    n_comps(10), names(10), maths(10))
-      call set_field_labels(comp_advect_by_filtered,                    &
-     &    n_comps(11), names(11), maths(11))
-      call set_field_labels(pert_c_advect_by_filtered,                  &
-     &    n_comps(12), names(12), maths(12))
-!
-      call set_field_labels(momentum_flux_by_filtered,                  &
-     &    n_comps(13), names(13), maths(13))
-      call set_field_labels(maxwell_tensor_by_filtered,                 &
-     &    n_comps(14), names(14), maths(14))
-      call set_field_labels(induction_tensor_by_filtered,               &
-     &    n_comps(15), names(15), maths(15))
-!
-      call set_field_labels(heat_flux_by_filtered,                      &
-     &    n_comps(16), names(16), maths(16))
-      call set_field_labels(pert_h_flux_by_filtered,                    &
-     &    n_comps(17), names(17), maths(17))
-      call set_field_labels(composite_flux_by_filtered,                 &
-     &    n_comps(18), names(18), maths(18))
-      call set_field_labels(pert_c_flux_by_filtered,                    &
-     &    n_comps(19), names(19), maths(19))
-!
-      end subroutine set_filter_force_labels
+      end subroutine set_filter_force_names
 !
 ! ----------------------------------------------------------------------
 !

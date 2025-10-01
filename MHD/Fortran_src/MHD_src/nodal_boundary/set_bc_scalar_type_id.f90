@@ -21,8 +21,8 @@
 !        integer (kind = kint), intent(inout) :: ii
 !      subroutine s_set_bc_scalar_type_id(num_bc_field, bc_field_name,  &
 !     &          ibc_field_type, bc_field_mag, nod_grp, scalar_bc,      &
-!     &          iref, ii)
-!        integer (kind=kint), intent(in) :: iref
+!     &          i_ref, ii)
+!        integer (kind=kint), intent(in) :: i_ref
 !        integer (kind=kint), intent(in) :: num_bc_field
 !        real (kind=kreal), intent(in) :: bc_field_mag(num_bc_field)
 !        integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
@@ -108,9 +108,9 @@
 !
       subroutine s_set_bc_scalar_type_id(num_bc_field, bc_field_name,   &
      &          ibc_field_type, bc_field_mag, nod_grp, scalar_bc,       &
-     &          iref, ii)
+     &          i_ref, ii)
 !
-      integer (kind=kint), intent(in) :: iref
+      integer (kind=kint), intent(in) :: i_ref
 !
       integer (kind=kint), intent(in) :: num_bc_field
       real (kind=kreal), intent(in) :: bc_field_mag(num_bc_field)
@@ -129,7 +129,7 @@
         do j=1, num_bc_field
           if ( nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
-            if ( ibc_field_type(j) .eq. iref) then
+            if ( ibc_field_type(j) .eq. i_ref) then
               call set_nod_bc_type_from_ctl (ii, i, nod_grp,            &
      &              scalar_bc, bc_field_mag(j) )
             end if

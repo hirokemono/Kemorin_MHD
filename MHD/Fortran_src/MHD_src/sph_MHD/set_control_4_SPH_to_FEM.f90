@@ -37,24 +37,26 @@
 !
       subroutine sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
+      use calypso_mpi_int
       use check_read_bc_file
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(boundary_spectra), intent(inout) :: bc_IO
 !
-      integer(kind = kint) :: iflag
+      integer(kind = kint) :: iflag, iend
 !
 !
-      call calypso_mpi_barrier
       iflag = check_read_boundary_files(MHD_prop, MHD_BC)
       if (iflag .eq. id_no_boundary_file) return
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-      if(my_rank .eq. 0) call read_boundary_spectr_file(bc_IO)
-      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'read_boundary_spectr_file'
+      if(my_rank .eq. 0) call read_boundary_spectr_file(bc_IO, iend)
+      call calypso_mpi_bcast_one_int(iend, 0)
+      if(iend .gt. 0) call calypso_MPI_abort(iend,                      &
+     &               'Boundary condition file is broken')
+!
       call bcast_boundary_spectr_file(bc_IO)
-      call calypso_mpi_barrier
 !
       end subroutine sph_boundary_IO_control
 !

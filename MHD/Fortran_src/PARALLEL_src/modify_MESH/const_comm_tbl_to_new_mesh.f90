@@ -90,6 +90,7 @@
       subroutine const_comm_tbl_to_new_part                             &
      &         (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
 !
+      use m_error_IDs
       use set_comm_tbl_to_new_part
 !
       type(group_data), intent(in) :: part_grp
@@ -99,6 +100,8 @@
      &                     :: num_recv_tmp(part_grp%num_grp)
 !
       type(calypso_comm_table), intent(inout) :: part_tbl
+!
+      integer(kind = kint) :: ntot_rev, ierr
 !
 !
       part_tbl%iflag_self_copy = 0
@@ -128,10 +131,16 @@
      &    part_tbl%irank_import, part_tbl%num_import,                   &
      &    part_tbl%istack_import)
 !
-      call alloc_calypso_import_item(part_tbl%ntot_import, part_tbl)
+      call alloc_calypso_import_item(part_tbl)
       call set_import_item_for_repart                                   &
-     &     (part_tbl%ntot_import, part_tbl%ntot_import,                 &
-     &      part_tbl%item_import, part_tbl%irev_import)
+     &     (part_tbl%ntot_import, part_tbl%item_import, ntot_rev)
+!
+      call alloc_calypso_import_rev(ntot_rev, part_tbl)
+      call set_calypso_import_rev(part_tbl, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr_repart,                             &
+     &                         'Failed repatition table loading')
+      end if
 !
       end subroutine const_comm_tbl_to_new_part
 !
@@ -218,18 +227,18 @@
       integer(kind = kint) :: i, ip
 !
 !
-!$omp do private(ip)
-        do ip = 1, nprocs
-          num_recv_tmp(ip) = -1
-        end do
-!$omp end do
-!$omp do private(i,ip)
-        do i = 1, ext_tbl%nrank_import
-          ip = ext_tbl%irank_import(i) + 1
-          num_recv_tmp(ip) = ext_tbl%istack_import(i-1)                 &
-     &                            + part_tbl%ntot_import
-        end do
-!$omp end do
+!$omp parallel do private(ip)
+      do ip = 1, nprocs
+        num_recv_tmp(ip) = -1
+      end do
+!$omp end parallel do
+!$omp parallel do private(i,ip)
+      do i = 1, ext_tbl%nrank_import
+        ip = ext_tbl%irank_import(i) + 1
+        num_recv_tmp(ip) = ext_tbl%istack_import(i-1)                   &
+     &                          + part_tbl%ntot_import
+      end do
+!$omp end parallel do
 !
       call calypso_mpi_alltoall_one_int                                 &
      &   (num_recv_tmp(1), num_send_tmp(1))

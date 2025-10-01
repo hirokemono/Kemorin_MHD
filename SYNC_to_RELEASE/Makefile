@@ -90,29 +90,13 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 	$(F90) -o $@ @<
 
 
-
-all: fluid
-
-fluid:
-	echo "# Compiling start"; \
-		cd work;  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		fluid
+all: makemake
 
 depends:
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
-	if [ ! -d $(BUILDDIR)/tests ]; then \
-		mkdir $(BUILDDIR)/tests; \
-	fi
+	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
-		echo 'Construct dependencies'; \
+		echo 'Construct compile list'; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
@@ -132,9 +116,22 @@ depends:
 makemake:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/utilities
 	mkdir -p $(BUILDDIR)/tests
-	echo '#' > $(MAKENAME)
-	@echo # create module list
+	
+	echo "# create module list"
+	$(GMAKE) \
+	GMAKE='$(GMAKE)' \
+	MHDDIR='$(MHDDIR)' \
+	MAKEDIR='$(MAKEDIR)' \
+	MAKENAME='$(MAKENAME)' \
+	CC="$(CC)"   \
+	MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
+	DEPFLAGS='$(DEPFLAGS)' \
+	OPTFLAGS='$(OPTFLAGS)' \
+	C_INCLUDE='$(C_INCLUDE)' \
+	depends
+	
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
 	echo '#' >> $(MAKENAME)
@@ -295,38 +292,21 @@ makemake:
 		 ) \
 	done
 	@echo '' >> $(MAKENAME)
-	@echo 'create objects construct list...'
+	@echo 'Append compile list...'
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'generate compile commands for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
+	cat $(MAKENAME).depends >> $(MAKENAME)
+	rm -f $(MAKEDIR)/Makefile.depends
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for install' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'install:' >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR) ]; then \'       >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR); \'              >> $(MAKENAME)
-	@echo '	fi'                                   >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/lib ]; then \'   >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/lib ; \'         >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/bin ]; then \'     >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/bin; \'            >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
-	@echo '	if [ ! -d $$(INSTDIR)/include ]; then \' >> $(MAKENAME)
-	@echo '		mkdir $$(INSTDIR)/include; \'        >> $(MAKENAME)
-	@echo '	fi'                                     >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)'              >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/lib '         >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/bin'          >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/include'      >> $(MAKENAME)
 	@echo '	cp $(BUILDDIR)/*  $$(INSTDIR)/bin' >> $(MAKENAME)
 	@echo ''       >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)
@@ -386,26 +366,6 @@ makemake:
 	@echo '' >> $(MAKENAME)
 
 install:
-	if [ ! -d $$(INSTDIR) ]; then \
-		mkdir $$(INSTDIR); \
-	fi
-	if [ ! -d $$(INSTDIR)/lib ]; then \
-		mkdir $$(INSTDIR)/lib ; \
-	fi
-	if [ ! -d $$(INSTDIR)/bin ]; then \
-		mkdir $$(INSTDIR)/bin; \
-	fi
-	if [ ! -d $$(INSTDIR)/include ]; then \
-		mkdir $$(INSTDIR)/include; \
-	fi
-	@for dir in geoutil solver MHD surface marge_fluid; do \
-	 (cd $${dir}; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		INSTDIR=$$(INSTDIR) RANLIB=$(RANLIB) \
-		install; \
-		) \
-	done
 
 clean:
 	rm -f *~

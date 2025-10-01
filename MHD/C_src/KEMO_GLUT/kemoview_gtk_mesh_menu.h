@@ -22,14 +22,11 @@
 #include "tree_view_4_ele_group_viewer.h"
 #include "tree_view_4_surf_group_viewer.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 
 /*  prototypes */
-void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
-                       GtkWidget *window, GtkWidget *vbox_add);
+void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
+                      struct kemoview_mesh_view *mesh_vws,
+                      GtkWidget *main_window, GtkWidget *meshWin);
 #endif

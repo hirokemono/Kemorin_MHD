@@ -62,7 +62,7 @@
       type(work_for_comm_check), intent(in) :: nod_check, ele_check
       type(work_for_comm_check), intent(in) :: surf_check, edge_check
 !
-      integer(kind = kint) :: ntot_error
+      integer(kind = kint_gl) :: ntot_error
 !
       if(my_rank .gt. 0) return
       ntot_error = nod_check%istack_diff_pe(nprocs)                     &
@@ -124,14 +124,15 @@
       subroutine write_diff_comm_test                                   &
      &         (istack_diff_pe, id_diff_IO, x_diff_IO)
 !
-      integer(kind = kint), intent(in) :: istack_diff_pe(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: istack_diff_pe(0:nprocs)
       integer(kind = kint), intent(in)                                  &
      &                     :: id_diff_IO(istack_diff_pe(nprocs))
       real(kind = kreal), intent(in)                                    &
      &                     :: x_diff_IO(6*istack_diff_pe(nprocs))
 !
-      integer(kind = kint) :: ip, id_rank, ist, ied, inum
-      integer(kind = kint) :: j1, j2, k1, k2
+      integer(kind = kint) :: ip, id_rank
+      integer(kind = kint_gl) :: ist, ied, inum
+      integer(kind = kint_gl) :: j1, j2, k1, k2
 !
 !
       do ip = 1, nprocs

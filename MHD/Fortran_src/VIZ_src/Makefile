@@ -6,12 +6,11 @@ LIB_VIZ =       -lkemo_viz
 LIB_VIZ_FILE = libkemo_viz.a
 
 SUBDIRS = \
-surfacing       \
+surfacing        \
 fieldline        \
+map_rendering    \
 volume_rendering \
-LIC_PVR          \
-\
-Fortran2003
+LIC_PVR
 
 #
 #  -------------------------------------------------------------------------
@@ -61,7 +60,7 @@ mod_list:
 	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
 	@echo '$$(MOD_LIC)'        \\ >> $(MAKENAME)
-	@echo '$$(MOD_VIZ_F2003)'  \\ >> $(MAKENAME)
+	@echo '$$(MOD_MAP)'        \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
@@ -73,21 +72,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \

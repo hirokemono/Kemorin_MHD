@@ -8,6 +8,10 @@
 !> @brief Interpolation for vector in tri-linear element
 !!
 !!@verbatim
+!!      subroutine s_interpolate_vector_ele8(np_smp, numnod, numele, ie,&
+!!     &          v_org, istack_smp, num_points, iele_gauss,            &
+!!     &          xi_gauss, vect)
+!
 !!      subroutine itp_matvec_vector_node(np_smp, NP, v_org,            &
 !!     &          NC, NCM, INM, IAM, IEND_SUM_smp, vect)
 !!      subroutine itp_matvec_vector_edge2(np_smp, NP, v_org,           &

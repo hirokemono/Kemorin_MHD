@@ -61,9 +61,10 @@
      &      form='formatted', status= 'old')
       call read_filter_geometry(filter_coef_code, id_rank,              &
      &    filter_IO%nod_comm, filter_IO%node, ierr)
-      call read_3d_filter_stack(filter_coef_code, filter_IO%filters)
+      call read_3d_filter_stack(filter_coef_code,                       &
+     &                          filter_IO%filters, ierr)
       call read_3d_filter_weights_coef                                  &
-     &   (filter_coef_code, filter_IO%filters)
+     &   (filter_coef_code, filter_IO%filters, ierr)
       close (filter_coef_code)
 !
       end subroutine read_sorted_filter_coef_file
@@ -157,19 +158,21 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_3d_filter_stack(id_file, IO_filters)
+      subroutine read_3d_filter_stack(id_file, IO_filters, iend)
 !
       use skip_comment_f
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: id_file
       type(filter_coefficients_type), intent(inout) :: IO_filters
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: i, j, ist, ied
       character(len=255) :: character_4_read
 !
 !
-      call skip_comment(character_4_read,id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) IO_filters%ngrp_node
 !
       call alloc_num_filtering_comb(ione, IO_filters)
@@ -202,12 +205,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_3d_filter_weights_coef(id_file, IO_filters)
+      subroutine read_3d_filter_weights_coef(id_file, IO_filters, iend)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       type(filter_coefficients_type), intent(inout) :: IO_filters
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: j, itmp
       character(len=255) :: character_4_read
@@ -216,7 +220,8 @@
       call alloc_3d_filter_comb(IO_filters)
       call alloc_3d_filter_func(IO_filters)
 !
-      call skip_comment(character_4_read,id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp
 !
       do j = 1, IO_filters%ntot_near_nod

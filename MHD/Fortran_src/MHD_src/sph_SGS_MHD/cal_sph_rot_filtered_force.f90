@@ -60,7 +60,6 @@
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -88,9 +87,8 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2                                      &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
-     &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
+      call cal_rot_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj,         &
+     &    sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U,                    &
      &    ipol_fil_frc, ipol_rot_fil_frc, rj_fld)
 !
       call cal_rot_of_induction_sph                                     &
@@ -131,28 +129,28 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%fl_prop%iflag_4_filter_inertia) then
+      if(MHD_prop%fl_prop%flag_filter_inertia) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_fil_frc%i_m_advect, ipol_div_fil_frc%i_m_advect,       &
      &      rj_fld)
       end if
 !
-      if(MHD_prop%fl_prop%iflag_4_filter_lorentz) then
+      if(MHD_prop%fl_prop%flag_filter_lorentz) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_fil_frc%i_lorentz, ipol_div_fil_frc%i_lorentz, rj_fld)
       end if
 !
       call cal_div_of_buoyancies_sph_2                                  &
-     &   (MHD_prop%fl_prop%iflag_4_filter_gravity,                      &
-     &    MHD_prop%fl_prop%iflag_4_filter_comp_buo,                     &
+     &   (MHD_prop%fl_prop%flag_filter_gravity,                         &
+     &    MHD_prop%fl_prop%flag_filter_comp_buo,                        &
      &    sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                          &
      &    ipol_fil_frc, ipol_div_fil_frc, rj_fld)
 !
 !      call sel_div_buoyancies_sph_MHD                                  &
-!     &   (MHD_prop%fl_prop%iflag_4_filter_gravity,                     &
-!     &    MHD_prop%fl_prop%iflag_4_filter_comp_buo,                    &
+!     &   (MHD_prop%fl_prop%flag_filter_gravity,                        &
+!     &    MHD_prop%fl_prop%flag_filter_comp_buo,                       &
 !     &    sph_rj, ipol_fil, ipol_graa_fil, ipol_div_fil_frc,           &
 !     &    MHD_prop%fl_prop%coef_buo,  MHD_prop%fl_prop%coef_comp_buo,  &
 !     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                  &
@@ -188,20 +186,19 @@
 !
 !
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_filter_gravity,                               &
-     &    fl_prop%iflag_4_filter_comp_buo,                              &
+     &   (fl_prop%flag_filter_gravity,                                  &
+     &    fl_prop%flag_filter_comp_buo,                                 &
      &    sph_bc_U%kr_in, sph_rj, ipol_fil, ipol_div_fil_frc,           &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
       call r_buoyancy_on_sphere                                         &
-     &   (fl_prop%iflag_4_filter_gravity,                               &
-     &    fl_prop%iflag_4_filter_comp_buo,                              &
+     &   (fl_prop%flag_filter_gravity,                                  &
+     &    fl_prop%flag_filter_comp_buo,                                 &
      &    sph_bc_U%kr_out, sph_rj, ipol_fil, ipol_div_fil_frc,          &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    ref_param_T, ref_param_C, rj_fld)
 !
-!$omp parallel
-      if(fl_prop%iflag_4_filter_inertia) then
+      if(fl_prop%flag_filter_inertia) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_fil_frc%i_m_advect, ipol_div_fil_frc%i_m_advect,       &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -212,7 +209,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_lorentz) then
+      if(fl_prop%flag_filter_lorentz) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol_fil_frc%i_lorentz, ipol_div_fil_frc%i_lorentz,         &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
@@ -222,7 +219,6 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine const_radial_fil_forces_on_bc
 !

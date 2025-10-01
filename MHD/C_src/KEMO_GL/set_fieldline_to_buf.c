@@ -3,66 +3,59 @@
 
 #include "set_fieldline_to_buf.h"
 
-int count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
-	int num_patch = 2 * fline_s->nele_viz * ncorner; 
-	return num_patch;
-};
-int count_fieldlines_to_buf(struct psf_data *fline_s){
-	return fline_s->nele_viz;
+
+long count_fieldlines_to_buf(struct psf_data *fline_d){
+	return fline_d->nele_viz;
 }
 
-int set_fieldtubes_to_buf(int ncorner,
-			struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int num_wall, inum_patch;
-	int inod, iele, k, nd;
-	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
-	double x_line[6], dir_line[6], color_line[8];
-	double norm_line[6];
-	
-	set_color_code_for_fieldlines(fline_s, fline_m);
-	
-	inum_patch = 0;
-	for (iele = 0; iele < fline_s->nele_viz; iele++) {
-		for (k = 0; k < 2; k++) {
-			inod = fline_s->ie_viz[iele][k] - 1;
-			for (nd=0; nd<3; nd++) {
-				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
-				dir_line[3*k+nd] = (float) fline_s->dir_nod[inod][nd];
+long set_fieldtubes_to_buf(long ist_patch, long ist_line, long ied_line,
+                           double tube_width,
+                           struct psf_data *fline_d,
+                           struct fline_directions *fline_dir,
+                           struct psf_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_index_buffer *index_buf){
+    long inod, nd;
+	double x_line[8], dir_line[8], color_line[8];
+    
+    long iele, k;
+	long inum_tube = ist_patch;
+	for(iele=ist_line; iele<ied_line; iele++) {
+		for(k = 0; k < 2; k++) {
+			inod = fline_d->ie_viz[iele][k] - 1;
+			for(nd=0; nd<3; nd++) {
+				x_line[4*k+nd] =   (float) fline_d->xyzw_viz[4*inod + nd];
+				dir_line[4*k+nd] = (float) fline_dir->dir_nod[4*inod + nd];
 			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
+			for(nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_d->color_nod[4*inod+nd];};
 		};
-		find_normal_of_line(norm_line, x_line, dir_line);
-		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, 
-								   x_line, dir_line, norm_line, color_line,
-								   xyz, nor, col);
-		
-		for (k=0; k<3*num_wall; k++) {
-			set_node_stride_VBO((ITHREE*inum_patch+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
-			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
-		};
-		inum_patch = inum_patch + num_wall; 
+        inum_tube = set_tube_node_index_buffer(inum_tube,
+                                               fline_m->ncorner_viz_line, tube_width,
+                                               x_line, dir_line, color_line,
+                                               strided_buf, index_buf);
 	};
-	return inum_patch;
+	return inum_tube;
 };
 
+long set_fieldlines_to_buf(long ist_patch, long ist_line, long ied_line,
+                           struct psf_data *fline_d,
+                           struct psf_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf){
+    double xyzw_line[8], color_line[8];
+	long iele, k, nd, inod;
 
-int set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int inod, iele, k, nd;
-	
-	set_color_code_for_fieldlines(fline_s, fline_m);
-	
-	for(iele=0; iele<fline_s->nele_viz; iele++){
+    long inum_line = ist_patch;
+	for(iele=ist_line; iele<ied_line; iele++){
 		for(k=0;k<ITWO;k++){
-			inod =fline_s->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITWO*iele+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod][nd];};
+			inod = fline_d->ie_viz[iele][k] - 1;
+			for(nd=0;nd<4;nd++){
+                xyzw_line[4*k+nd] =  fline_d->xyzw_viz[4*inod + nd];
+                color_line[4*k+nd] = fline_d->color_nod[4*inod + nd];
+            };
 		};
+        inum_line = set_line_strided_buffer(inum_line, xyzw_line, color_line,
+                                            strided_buf);
 	};
 	
-	return fline_s->nele_viz;
+	return fline_d->nele_viz;
 }

@@ -1,0 +1,1 @@
+../../../../MHD/C_src/GLSL/phong_w_colormap.frag

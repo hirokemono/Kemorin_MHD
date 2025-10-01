@@ -23,7 +23,7 @@
 #define NUM_GRAVITY_DEF  3
 
 #define NUM_BASIC_BC_TYPE_DEF  10
-#define NUM_BOUNDARY_TYPE_DEF  25
+#define NUM_BOUNDARY_TYPE_DEF  26
 
 #define NCHARA_FLAG 30
 
@@ -39,8 +39,6 @@ struct constant_flag_def{
 };
 
 
-extern const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG];
-extern const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG];
 extern const struct direction_flag_def xyz_vector_flags[NUM_XYZ_FLAG];
 extern const struct direction_flag_def surface_equation_flags[NTERM_PLANE];
 

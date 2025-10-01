@@ -15,13 +15,14 @@
 #include "kemoviewer_base.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
-#include "m_colorbar_work.h"
-#include "read_data_4_kemoviewer.h"
+#include "m_colorbar_buffer.h"
 
 struct kemoview_mesh{
     struct viewer_mesh        *mesh_d;
     struct mesh_menu_val      *mesh_m;
-    struct msg_work           *msg_wk;
+        
+    float bg_color[4];
+    float text_color[4];
 };
 
 /* prototypes */ 

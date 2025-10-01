@@ -104,7 +104,7 @@
 !
       type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
-!$omp parallel
+!
       if(fg_trns_SGS%i_SGS_inertia .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
@@ -149,7 +149,6 @@
      &      trns_b_SGS%fld_rtp(1,bg_trns_fil%i_temp),                   &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux))
       end if
-!$omp end parallel
 !
       end subroutine similarity_SGS_terms_rtp
 !
@@ -182,7 +181,6 @@
       type(spherical_transform_data), intent(inout) :: trns_b_DYNS
 !
 !
-!$omp parallel
       if(bg_trns_wSGS%i_SGS_inertia .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
@@ -222,7 +220,6 @@
      &      trns_b_DYNS%fld_rtp(1,bg_trns_wfil%i_light),                &
      &      trns_b_DYNS%fld_rtp(1,bg_trns_wSGS%i_SGS_c_flux))
       end if
-!$omp end parallel
 !
       end subroutine wider_similarity_SGS_rtp
 !
@@ -240,7 +237,7 @@
       real (kind=kreal), intent(inout) :: sgs_X(numnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sgs_X(1:numnod,1) = force(1:numnod,1)                             &
      &                 - (vect1(1:numnod,2)*vect2(1:numnod,3)           &
      &                  - vect1(1:numnod,3)*vect2(1:numnod,2)) * coef
@@ -250,7 +247,7 @@
       sgs_X(1:numnod,3) = force(1:numnod,3)                             &
      &                 - (vect1(1:numnod,1)*vect2(1:numnod,2)           &
      &                  - vect1(1:numnod,2)*vect2(1:numnod,1)) * coef
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine subcract_X_product_w_coef_smp
 !
@@ -267,14 +264,14 @@
       real (kind=kreal), intent(inout) :: sgs_X(numnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sgs_X(1:numnod,1) = flux(1:numnod,1)                              &
      &                 -  vect1(1:numnod,1)*scalar(1:numnod) * coef
       sgs_X(1:numnod,2) = flux(1:numnod,2)                              &
      &                 -  vect1(1:numnod,2)*scalar(1:numnod) * coef
       sgs_X(1:numnod,3) = flux(1:numnod,3)                              &
      &                 -  vect1(1:numnod,3)*scalar(1:numnod) * coef
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine subtract_scl_flux_w_coef_smp
 !
@@ -291,7 +288,7 @@
       real (kind=kreal), intent(inout) :: sgs_X(numnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sgs_X(1:numnod,1) = sgs_X(1:numnod,1)                             &
      &                 - (vect1(1:numnod,2)*vect2(1:numnod,3)           &
      &                  - vect1(1:numnod,3)*vect2(1:numnod,2)) * coef
@@ -301,7 +298,7 @@
       sgs_X(1:numnod,3) = sgs_X(1:numnod,3)                             &
      &                 - (vect1(1:numnod,1)*vect2(1:numnod,2)           &
      &                  - vect1(1:numnod,2)*vect2(1:numnod,1)) * coef
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine overwrt_sub_X_prod_w_coef_smp
 !
@@ -317,14 +314,14 @@
       real (kind=kreal), intent(inout) :: sgs_X(numnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       sgs_X(1:numnod,1) = sgs_X(1:numnod,1)                             &
      &                 -  vect1(1:numnod,1)*scalar(1:numnod) * coef
       sgs_X(1:numnod,2) = sgs_X(1:numnod,2)                             &
      &                 -  vect1(1:numnod,2)*scalar(1:numnod) * coef
       sgs_X(1:numnod,3) = sgs_X(1:numnod,3)                             &
      &                 -  vect1(1:numnod,3)*scalar(1:numnod) * coef
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
       end subroutine overwrt_sub_scl_flux_w_coef_smp
 !

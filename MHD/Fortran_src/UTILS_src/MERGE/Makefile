@@ -15,12 +15,12 @@ dir_list:
 
 lib_name:
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB)' '$$@' >> $(MAKENAME)
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MERGE)' >> $(MAKENAME)
 
 mod_list:
@@ -28,10 +28,6 @@ mod_list:
 	@echo  $(MOD_MERGE) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MERGE_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MERGE_DIR)' $(SOURCES)
 

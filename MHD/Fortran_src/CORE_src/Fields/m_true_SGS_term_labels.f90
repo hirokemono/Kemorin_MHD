@@ -16,8 +16,8 @@
 !!      logical function check_true_SGS_ene_fluxes(field_name)
 !!        type(SGS_ene_flux_address), intent(inout) :: true_SGS_eflux
 !!
-!!      integer(kind = kint) function num_true_SGS_terms()
-!!      subroutine set_true_SGS_term_labels(n_comps, names, maths)
+!!      subroutine set_true_SGS_term_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  product of fields names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -46,9 +46,6 @@
       use t_field_labels
 !
       implicit  none
-! 
-      integer(kind = kint), parameter, private :: ntrue_SGS = 10
-!
 !
 !>        Field label for true divergence of SGS Maxwell tensor
 !!         @f$ e_{ijk} \left(\widetilde{J_{j}B_{k}}
@@ -209,45 +206,27 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_true_SGS_terms()
-      num_true_SGS_terms = ntrue_SGS
-      return
-      end function num_true_SGS_terms
+      subroutine set_true_SGS_term_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_true_SGS_term_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(SGS_Lorentz_true,       array_c2i)
+      call set_field_label_to_ctl(SGS_mag_induction_true, array_c2i)
+      call set_field_label_to_ctl(SGS_div_m_flux_true,    array_c2i)
+      call set_field_label_to_ctl(SGS_div_h_flux_true,    array_c2i)
+      call set_field_label_to_ctl(SGS_div_c_flux_true,    array_c2i)
+      call set_field_label_to_ctl(Reynolds_work_true,     array_c2i)
+      call set_field_label_to_ctl(SGS_Lorentz_work_true,  array_c2i)
+      call set_field_label_to_ctl(SGS_mag_induction_flux_true,          &
+     &                            array_c2i)
+      call set_field_label_to_ctl(SGS_temp_flux_gen_true, array_c2i)
+      call set_field_label_to_ctl(SGS_comp_flux_gen_true, array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(ntrue_SGS)
-      character(len = kchara), intent(inout) :: names(ntrue_SGS)
-      character(len = kchara), intent(inout) :: maths(ntrue_SGS)
-!
-!
-      call set_field_labels(SGS_Lorentz_true,                           &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(SGS_mag_induction_true,                     &
-     &    n_comps( 2), names( 2), maths( 2))
-!
-      call set_field_labels(SGS_div_m_flux_true,                        &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(SGS_div_h_flux_true,                        &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(SGS_div_c_flux_true,                        &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(Reynolds_work_true,                         &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(SGS_Lorentz_work_true,                      &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(SGS_mag_induction_flux_true,                &
-     &    n_comps( 8), names( 8), maths( 8))
-      call set_field_labels(SGS_temp_flux_gen_true,                     &
-     &    n_comps( 9), names( 9), maths( 9))
-!
-      call set_field_labels(SGS_comp_flux_gen_true,                     &
-     &    n_comps(10), names(10), maths(10))
-!
-      end subroutine set_true_SGS_term_labels
+      end subroutine set_true_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !

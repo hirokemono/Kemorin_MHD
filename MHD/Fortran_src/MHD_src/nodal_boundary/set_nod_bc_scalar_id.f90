@@ -13,7 +13,7 @@
 !!      subroutine set_bc_scalar_id                                     &
 !!     &         (node, nod_grp, num_bc_field, bc_field_name,           &
 !!     &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,  &
-!!     &          ibc_id, bc_apt, iref, ii)
+!!     &          ibc_id, bc_apt, i_ref, ii)
 !!      subroutine set_bc_sph_magne_p_id(node, nod_grp, e_potential_nod,&
 !!     &          num_bc_field, bc_field_name, ibc_field_type,          &
 !!     &          ii, nod_bc_f)
@@ -101,9 +101,9 @@
       subroutine set_bc_scalar_id                                       &
      &         (node, nod_grp, num_bc_field, bc_field_name,             &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,    &
-     &          ibc_id, bc_apt, iref, ii)
+     &          ibc_id, bc_apt, i_ref, ii)
 !
-      integer (kind=kint), intent(in) :: iref
+      integer (kind=kint), intent(in) :: i_ref
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -129,7 +129,7 @@
         do j=1, num_bc_field
           if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
-            if ( ibc_field_type(j) .eq. iref) then
+            if ( ibc_field_type(j) .eq. i_ref) then
               call set_nod_bc_from_ctl(nod_grp, node%numnod,            &
      &            num_bc_nod, ii, i, ibc_id, ibc, ibc2, bc_apt,         &
      &            bc_field_mag(j) )

@@ -104,8 +104,5 @@ mod_list:
 	@echo  $(MOD_INI_B_CUBE) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_MODEL_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(PLANE_MODEL_DIR)' $(SOURCES)

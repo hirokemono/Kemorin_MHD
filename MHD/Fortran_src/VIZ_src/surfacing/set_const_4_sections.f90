@@ -52,7 +52,7 @@
         if(psf_def(i_psf)%id_section_method .gt. 0) then
           call set_constant_4_psf                                       &
      &       (node%numnod, node%istack_nod_smp, node%xx,                &
-     &        psf_def(i_psf)%const_psf, psf_list(i_psf)%ref_fld)
+     &        psf_def(i_psf)%const_psf, psf_list(i_psf)%section_fld)
         end if
       end do
 !
@@ -83,7 +83,7 @@
      &     (iso_def(i_iso), node%numnod, node%istack_nod_smp, node%xx,  &
      &      node%rr, node%a_r, node%ss, node%a_s, nod_fld%num_phys,     &
      &      nod_fld%ntot_phys,  nod_fld%istack_component,               &
-     &      nod_fld%d_fld, iso_list(i_iso)%ref_fld)
+     &      nod_fld%d_fld, iso_list(i_iso)%section_fld)
       end do
 !
       end subroutine set_const_4_isosurfaces
@@ -169,61 +169,44 @@
 !
 !
       if (ncomp_org .eq. 1) then
-!$omp parallel
         call copy_nod_scalar_smp(nnod, d_nod(1,ist_field), c_ref_iso)
-!$omp end parallel
 !
       else if (ncomp_org .eq. 3) then
-!$omp parallel
         if (i_comp.eq.0) then
-          call cal_vector_magnitude(np_smp, nnod, istack_nod_smp,       &
-     &         d_nod(1,ist_field), c_ref_iso)
+          call cal_vector_magnitude(nnod, d_nod(1,ist_field),           &
+     &                              c_ref_iso)
 !
         else if (i_comp.ge.1 .and. i_comp.le.3) then
           ic = ist_field+i_comp-1
           call copy_nod_scalar_smp(nnod, d_nod(1,ic), c_ref_iso)
 !
         else if (i_comp.eq.11) then
-          call cal_radial_comp_smp(np_smp, nnod, istack_nod_smp,        &
-     &        d_nod(1,ist_field), c_ref_iso, xx(1,1), xx(1,2), xx(1,3), &
-     &        radius, a_r)
+          call cal_radial_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso, &
+     &        xx(1,1), xx(1,2), xx(1,3), radius, a_r)
         else if (i_comp.eq.12) then
-          call cal_theta_comp_smp(np_smp, nnod, istack_nod_smp,         &
-     &        d_nod(1,ist_field), c_ref_iso,                            &
+          call cal_theta_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso,  &
      &        xx(1,1), xx(1,2), xx(1,3), radius, s_radius, a_r, a_s)
         else if (i_comp.eq.13) then
-          call cal_phi_comp_smp(np_smp, nnod, istack_nod_smp,           &
-     &        d_nod(1,ist_field), c_ref_iso,                            &
-     &        xx(1,1), xx(1,2), s_radius, a_s)
+          call cal_phi_comp_smp(nnod, d_nod(1,ist_field), c_ref_iso,    &
+     &                          xx(1,1), xx(1,2), s_radius, a_s)
         else if (i_comp.eq.14) then
-          call cal_cylinder_r_comp_smp(np_smp, nnod, istack_nod_smp,    &
-     &        d_nod(1,ist_field), c_ref_iso,                            &
-     &        xx(1,1), xx(1,2), s_radius, a_s)
+          call cal_cylinder_r_comp_smp(nnod, d_nod(1,ist_field),        &
+     &        c_ref_iso, xx(1,1), xx(1,2), s_radius, a_s)
         end if
-!$omp end parallel
 !
       else if (ncomp_org .eq. 6) then
         if (i_comp.eq.0) then
-!
-!$omp parallel
-          call cal_sym_tensor_magnitude(np_smp, nnod, istack_nod_smp,   &
-     &        d_nod(1,ist_field), c_ref_iso)
-!$omp end parallel
+          call cal_sym_tensor_magnitude(nnod, d_nod(1,ist_field),       &
+     &                                  c_ref_iso)
 !
         else if (i_comp.ge.1 .and. i_comp.le.6) then
-!
           ic = ist_field+i_comp-1
-!$omp parallel
           call copy_nod_scalar_smp(nnod, d_nod(1,ic), c_ref_iso)
-!$omp end parallel
-!
         end if
       end if
 !
-!$omp parallel
       call subtruct_const_4_scalar_smp_ow                               &
      &   (nnod, c_ref_iso, iso_def%isosurf_value)
-!$omp end parallel
 !
       end subroutine set_constant_4_iso
 !

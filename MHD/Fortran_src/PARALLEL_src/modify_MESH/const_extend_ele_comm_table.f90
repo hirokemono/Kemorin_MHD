@@ -135,7 +135,7 @@
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(data_for_trim_import), save :: ext_ele_trim
 !
-      integer(kind = kint) :: ntot_mix
+      integer(kind = kint) :: ntot_mix, num_rev, ierr
 !
 !
       add_ele_comm%iflag_self_copy = add_nod_comm%iflag_self_copy
@@ -176,8 +176,7 @@
       call s_cal_total_and_stacks                                       &
      &   (add_ele_comm%nrank_import, add_ele_comm%num_import, izero,    &
      &    add_ele_comm%istack_import, add_ele_comm%ntot_import)
-      call alloc_calypso_import_item                                    &
-     &   (add_ele_comm%ntot_import, add_ele_comm)
+      call alloc_calypso_import_item(add_ele_comm)
 !
       allocate(iele_lc_import_trim(add_ele_comm%ntot_import))
       call alloc_ele_data_sleeve_ext(add_ele_comm%ntot_import,          &
@@ -186,6 +185,10 @@
       call set_trimmed_import_items                                     &
      &   (ele, expand_ele_comm, ext_ele_trim, exp_import_ie,            &
      &    iele_lc_import_trim, add_ele_comm, trim_import_ie)
+!
+      num_rev = maxval(add_ele_comm%item_import)
+      call alloc_calypso_import_rev(num_rev, add_ele_comm)
+      call set_calypso_import_rev(add_ele_comm, ierr)
 !
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       call dealloc_idx_trimed_to_sorted(ext_ele_trim)

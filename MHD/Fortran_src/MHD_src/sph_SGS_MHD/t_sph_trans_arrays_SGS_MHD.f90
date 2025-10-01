@@ -5,14 +5,14 @@
 !!@date Programmed in Jan., 2010
 !
 !!@verbatim
-!!      subroutine alloc_SGS_sph_trans_address(sph_rtp, WK_LES)
+!!      subroutine alloc_SGS_sph_trans_address(sph, WK_LES)
 !!      subroutine dealloc_SGS_sph_trans_address(WK_LES)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_grids), intent(in) :: sph
 !!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!
-!!      subroutine alloc_SGS_sph_trns_area_snap(sph_rtp, WK_LES)
+!!      subroutine alloc_SGS_sph_trns_area_snap(sph, WK_LES)
 !!      subroutine dealloc_SGS_sph_trns_area_snap(WK_LES)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_grids), intent(in) :: sph
 !!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!@endverbatim
 !
@@ -23,7 +23,7 @@
 !
       use m_precision
 !
-      use t_spheric_rtp_data
+      use t_spheric_parameter
       use t_phys_address
       use t_SGS_model_addresses
       use t_addresses_sph_transform
@@ -92,31 +92,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_SGS_sph_trans_address(sph_rtp, WK_LES)
+      subroutine alloc_SGS_sph_trans_address(sph, WK_LES)
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_grids), intent(in) :: sph
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS)
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNS)
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_Csim)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_SGS)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_DYNS)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_Csim)
 !
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNS)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_Csim)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_SGS)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_DYNS)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_Csim)
 !
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_ngTMP)
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SIMI)
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNG)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_ngTMP)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_SIMI)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_DYNG)
 !
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_ngTMP)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SIMI)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNG)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_ngTMP)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_SIMI)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_DYNG)
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_MHD)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_MHD)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp, WK_LES%trns_fil_MHD)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp, WK_LES%trns_fil_MHD)
 !
       end subroutine alloc_SGS_sph_trans_address
 !
@@ -152,20 +152,26 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_SGS_sph_trns_area_snap(sph_rtp, WK_LES)
+      subroutine alloc_SGS_sph_trns_area_snap(sph, WK_LES)
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_grids), intent(in) :: sph
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_snap)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_snap)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp,                      &
+     &                                WK_LES%trns_fil_snap)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp,                      &
+     &                                WK_LES%trns_fil_snap)
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_difv)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_difv)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp,                      &
+     &                                WK_LES%trns_fil_difv)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp,                      &
+     &                                WK_LES%trns_fil_difv)
 !
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS_snap)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS_snap)
+      call alloc_nonlinear_w_SGS_data(sph%sph_rtp,                      &
+     &                                WK_LES%trns_SGS_snap)
+      call alloc_nonlinear_pole_w_SGS(sph%sph_rtp,                      &
+     &                                WK_LES%trns_SGS_snap)
 !
       end subroutine alloc_SGS_sph_trns_area_snap
 !

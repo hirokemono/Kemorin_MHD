@@ -24,7 +24,7 @@
       use m_error_IDs
       use calypso_mpi
 !
-      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
       use skip_comment_f
 !
       implicit  none
@@ -45,7 +45,8 @@
 !
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, icou
+      real(kind = kreal) :: r, t, p
 !
 !
       if(light%ambient_coef_ctl%iflag .gt. 0) then
@@ -70,23 +71,46 @@
       end if
 !
 !
+      color_param%num_pvr_lights = 0
       if(light%light_position_ctl%num .gt. 0) then
-        color_param%num_pvr_lights = light%light_position_ctl%num
-      else
-        color_param%num_pvr_lights = 1
+        color_param%num_pvr_lights = color_param%num_pvr_lights         &
+     &                              + light%light_position_ctl%num
       end if
+!
+      if(light%light_sph_posi_ctl%num .gt. 0) then
+        color_param%num_pvr_lights = color_param%num_pvr_lights         &
+     &                              + light%light_sph_posi_ctl%num
+      end if
+      if(color_param%num_pvr_lights .eq. 0)                             &
+     &                             color_param%num_pvr_lights = 1
 !
       call alloc_light_posi_in_view(color_param)
 !
+      i = 0
       if(light%light_position_ctl%num .gt. 0) then
-        do i = 1, color_param%num_pvr_lights
+        do icou = 1, light%light_position_ctl%num
+          i = i + 1
           color_param%xyz_pvr_lights(1,i)                               &
-     &          = light%light_position_ctl%vec1(i)
+     &          = light%light_position_ctl%vec1(icou)
           color_param%xyz_pvr_lights(2,i)                               &
-     &          = light%light_position_ctl%vec2(i)
+     &          = light%light_position_ctl%vec2(icou)
           color_param%xyz_pvr_lights(3,i)                               &
-     &          = light%light_position_ctl%vec3(i)
+     &          = light%light_position_ctl%vec3(icou)
         end do
+      end if
+      if(light%light_sph_posi_ctl%num .gt. 0) then
+        do icou = 1, light%light_sph_posi_ctl%num
+          i = i + 1
+          r = light%light_sph_posi_ctl%vec1(icou)
+          t = light%light_sph_posi_ctl%vec2(icou) * atan(one) / 45.0
+          p = light%light_sph_posi_ctl%vec3(icou) * atan(one) / 45.0
+          color_param%xyz_pvr_lights(1,i) = r * sin(t) * cos(p)
+          color_param%xyz_pvr_lights(2,i) = r * sin(t) * sin(p)
+          color_param%xyz_pvr_lights(3,i) = r * cos(t)
+        end do
+      end if
+
+      if(i .gt. 0) then
         color_param%iflag_pvr_lights = 1
       else
         color_param%xyz_pvr_lights(1,1) = one
@@ -126,8 +150,22 @@
           color_param%id_pvr_color(1) = iflag_grayscale
         else if(cmp_no_case(tmpchara, hd_sym_gray)) then
           color_param%id_pvr_color(1) = iflag_sym_gray
+        else if(cmp_no_case(tmpchara, hd_orangecyan)) then
+          color_param%id_pvr_color(1) = iflag_orangecyan
+        else if(cmp_no_case(tmpchara, hd_moltenmetal)) then
+          color_param%id_pvr_color(1) = iflag_moltenmetal
+        else if(cmp_no_case(tmpchara, hd_spacecolor)) then
+          color_param%id_pvr_color(1) = iflag_spacecolor
         end if
       end if
+!
+      color_param%bg_rgba_real(1:4) = 0.0d0
+      if(color%background_color_ctl%iflag .gt. 0) then
+        color_param%bg_rgba_real(1:3)                                   &
+     &        = color%background_color_ctl%realvalue(1:3)
+        color_param%bg_rgba_real(4) = 1.0d0
+      end if
+!
 !
       color_param%id_pvr_color(2) = iflag_automatic
       color_param%num_pvr_datamap_pnt = 2
@@ -183,19 +221,7 @@
 !        if     (cmp_no_case(tmpchara, hd_intensity) then
 !          color_param%id_pvr_color(3) = iflag_intense
 !        end if
-        if     (cmp_no_case(tmpchara, hd_pointdelta)) then
-          if( color%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointdelta
-            color_param%num_opacity_pnt = color%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointrange)) then
-          if( color%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointrange
-            color_param%num_opacity_pnt = color%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointlinear)) then
+        if(cmp_no_case(tmpchara, hd_pointlinear)) then
           if( color%linear_opacity_ctl%num .gt. 0) then
             color_param%id_pvr_color(3) = iflag_pointlinear
             color_param%num_opacity_pnt = color%linear_opacity_ctl%num
@@ -205,21 +231,7 @@
 !
       call alloc_pvr_opacity_list(color_param)
 !
-      if    (color_param%id_pvr_color(3) .eq. iflag_pointdelta          &
-     &  .or. color_param%id_pvr_color(3) .eq. iflag_pointrange) then
-        do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i)                            &
-     &                  = color%step_opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i)                            &
-     &                  = color%step_opacity_ctl%vec2(i)
-          color_param%pvr_opacity_param(3,i)                            &
-     &                  = color%step_opacity_ctl%vec3(i)
-          color_param%pvr_max_opacity                                   &
-     &       = max(color_param%pvr_max_opacity,                         &
-     &             color_param%pvr_opacity_param(3,i))
-        end do
-!
-      else if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
+      if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
         do i = 1, color_param%num_opacity_pnt
           color_param%pvr_opacity_param(1,i)                            &
      &                  = color%linear_opacity_ctl%vec1(i)
@@ -254,6 +266,7 @@
       subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
 !
       use t_ctl_data_pvr_colorbar
+      use t_pvr_colormap_parameter
 !
       type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
@@ -261,31 +274,38 @@
       character(len = kchara) :: tmpchara
 !
 !    set axis label setting
-      cbar_param%iflag_pvr_axis = .FALSE.
+      cbar_param%flag_pvr_axis = .FALSE.
       if( cbar_ctl%axis_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%axis_switch_ctl%charavalue
-        cbar_param%iflag_pvr_axis = cmp_no_case(tmpchara, 'on')
+        cbar_param%flag_pvr_axis = cmp_no_case(tmpchara, 'on')
       end if
 !
 !    set time label setting
-      cbar_param%iflag_draw_time = .FALSE.
+      cbar_param%flag_draw_time = .FALSE.
       if( cbar_ctl%time_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%time_switch_ctl%charavalue
-        cbar_param%iflag_draw_time = cmp_no_case(tmpchara, 'on')
+        cbar_param%flag_draw_time = cmp_no_case(tmpchara, 'on')
+      end if
+!
+!    set mapgrid setting
+      cbar_param%flag_draw_mapgrid = .FALSE.
+      if( cbar_ctl%mapgrid_switch_ctl%iflag .gt. 0) then
+        tmpchara = cbar_ctl%mapgrid_switch_ctl%charavalue
+        cbar_param%flag_draw_mapgrid = cmp_no_case(tmpchara, 'on')
       end if
 !
 !    set colorbar setting
 !
-      cbar_param%iflag_pvr_colorbar = .FALSE.
+      cbar_param%flag_pvr_colorbar = .FALSE.
       if( cbar_ctl%colorbar_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%colorbar_switch_ctl%charavalue
-        cbar_param%iflag_pvr_colorbar                                   &
+        cbar_param%flag_pvr_colorbar                                    &
      &       = cmp_no_case(tmpchara, 'on')                              &
      &   .or. cmp_no_case(tmpchara, 'data')                             &
      &   .or. cmp_no_case(tmpchara, 'equi_data')
       end if
 !
-      if(cbar_param%iflag_pvr_colorbar) then
+      if(cbar_param%flag_pvr_colorbar) then
         cbar_param%flag_pvr_cbar_bottom = .FALSE.
         if( cbar_ctl%colorbar_position_ctl%iflag .gt. 0) then
           tmpchara = cbar_ctl%colorbar_position_ctl%charavalue

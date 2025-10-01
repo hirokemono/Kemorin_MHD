@@ -23,7 +23,6 @@
 !
       call  calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program main_gen_FEM_4_rayleigh

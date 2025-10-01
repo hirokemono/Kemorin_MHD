@@ -21,7 +21,7 @@ CFLAGS='-Ofast -Wall -g' FCFLAGS='-Ofast -g' \
 --with-blas --enable-fftw3 --enable-cocoa --with-libpng \
 --enable-gl --with-gtk --with-glfw --with-zlib=/Users/matsui/local/intel \
 --with-hdf5=/Users/matsui/local/intel/bin/h5pcc \
---with-pgplot=/Users/matsui/local/pgplot_intel --with-aquaterm=/Library/Frameworks \
+--with-pgplot=/Users/matsui/local/pgplot_intel \
 PKG_CONFIG_PATH=/Users/matsui/local/intel/lib/pkgconfig:/usr/local/lib/pkgconfig \
 MPIRUN=/Users/matsui/local/intel/bin/mpirun
 
@@ -123,7 +123,7 @@ OPENGL_LIBS= -framework OpenGL  -framework CoreVideo  -framework IOKit -framewor
 #
 #   PGPLOT settings (Requirement: pgplot, libpng)
 #
-PGPLOT_LIBS=  -L/Users/matsui/local/pgplot_intel -lpgplot -L/usr/X11/lib -lX11 -F/Library/Frameworks  -framework AquaTerm -Wl,-framework -Wl,Foundation
+PGPLOT_LIBS=  -L/Users/matsui/local/pgplot_intel -lpgplot -L/usr/X11/lib -lX11 -F/Library/Frameworks -Wl,-framework -Wl,Foundation
 #
 #   GTK+ settings (Requirement: OpenGL, libpng)
 GTK3_CFLAGS= -I/usr/local/Cellar/libffi/3.3_2/include -I/usr/local/Cellar/gtk+3/3.24.24/include/gtk-3.0 -I/usr/local/Cellar/glib/2.66.4_1/include/gio-unix-2.0 -I/usr/local/Cellar/cairo/1.16.0_4/include/cairo -I/usr/local/Cellar/libepoxy/1.5.5_1/include -I/usr/local/Cellar/pango/1.48.1/include/pango-1.0 -I/usr/local/Cellar/harfbuzz/2.7.4/include/harfbuzz -I/usr/local/Cellar/pango/1.48.1/include/pango-1.0 -I/usr/local/Cellar/fribidi/1.0.10/include/fribidi -I/usr/local/Cellar/harfbuzz/2.7.4/include/harfbuzz -I/usr/local/Cellar/graphite2/1.3.14/include -I/usr/local/Cellar/atk/2.36.0/include/atk-1.0 -I/usr/local/Cellar/cairo/1.16.0_4/include/cairo -I/usr/local/Cellar/pixman/0.40.0/include/pixman-1 -I/usr/local/Cellar/fontconfig/2.13.1/include -I/usr/local/opt/freetype/include/freetype2 -I/usr/local/Cellar/libpng/1.6.37/include/libpng16 -I/usr/local/Cellar/gdk-pixbuf/2.42.2/include/gdk-pixbuf-2.0 -I/usr/local/Cellar/glib/2.66.4_1/include -I/usr/local/Cellar/glib/2.66.4_1/include/glib-2.0 -I/usr/local/Cellar/glib/2.66.4_1/lib/glib-2.0/include -I/usr/local/opt/gettext/include -I/usr/local/Cellar/pcre/8.44/include
@@ -156,7 +156,7 @@ CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
 --with-blas --enable-fftw3 --enable-cocoa --with-libpng \
 --enable-gl --with-gtk --with-glfw --with-zlib=/usr/local/opt/zlib \
 --with-hdf5=/usr/local/bin/h5pcc \
---with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks \
+--with-pgplot=/Users/matsui/local/pgplot \
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
 MPIRUN='mpirun --oversubscribe'
 
@@ -183,7 +183,7 @@ CC=mpiicc FC=mpiifort MPICC=mpiicc MPIFC=mpiifort \
 AR=xiar  PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS='-Ofast -Wall -g' FCFLAGS='-Ofast -g' \
 --enable-fftw3 --with-libpng --with-hdf5=/home/matsui/local/intel/bin --with-zlib \
---with-pgplot=/home/matsui/local/pgplot_intel --without-aquaterm --with-blas --enable-gl \
+--with-pgplot=/home/matsui/local/pgplot_intel --with-blas --enable-gl \
 --with-gtk --with-glfw \
 PKG_CONFIG_PATH=/home/matsui/local/intel/lib/pkgconfig:/$PKG_CONFIG_PATH
 
@@ -217,7 +217,7 @@ MPIFC=/usr/mpi/gcc/openmpi-4.0.3rc4/bin/mpif90 \
 AR=ar  PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
 --enable-fftw3 --with-libpng --with-hdf5=/usr --with-zlib \
---without-pgplot --without-aquaterm --with-blas --enable-gl \
+--without-pgplot --with-blas --enable-gl \
 --with-gtk --with-glfw \
 PKG_CONFIG_PATH=/home/matsui/local/gcc/lib/pkgconfig:/$PKG_CONFIG_PATH
 
@@ -230,7 +230,7 @@ PKG_CONFIG_PATH=/home/matsui/local/gcc/lib/pkgconfig:/$PKG_CONFIG_PATH
 CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
 --with-blas --enable-fftw3 --enable-cocoa --with-libpng \
 --enable-gl --with-gtk --with-glfw --with-zlib \
---with-hdf5=/opt/local/bin/h5pcc --without-pgplot --without-aquaterm \
+--with-hdf5=/opt/local/bin/h5pcc --without-pgplot \
 PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/opt/local/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
@@ -243,7 +243,7 @@ PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS='-xCORE-AVX512 -O3 -Wall -g' FCFLAGS='-xCORE-AVX512 -O3 -align array64byte -warn all -g -nogen-interfaces -qopt-zmm-usage=high -qopt-report-file=stderr -qopt-report=3' \
 FFTW3_CFLAGS='$(TACC_FFTW3_INC)' FFTW3_LIBS=-L'$(TACC_FFTW3_LIB) -lfftw3_omp -lfftw3 -lm' \
 --with-blas=-mkl=sequential --enable-fftw3 --with-libpng   --with-hdf5 \
---with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+--with-zlib=/usr/lib64 --without-pgplot \
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
@@ -257,7 +257,7 @@ CFLAGS='-O3 -Wall -g -xCORE-AVX2 -axMIC-AVX512' \
 FCFLAGS='-O3 -xCORE-AVX2 -axMIC-AVX512 -warn all -g -nogen-interfaces' \
 FFTW3_CFLAGS= FFTW3_LIBS='-L$(TACC_FFTW3_LIB) -lfftw3' \
 --with-blas=-mkl=sequential --enable-fftw3 --with-libpng \
---with-hdf5 --with-zlib=/usr/lib64 --without-pgplot --without-aquaterm  \
+--with-hdf5 --with-zlib=/usr/lib64 --without-pgplot  \
 PKG_CONFIG_PATH=/opt/apps/intel18/impi18_0/fftw3/3.3.8/lib/pkgconfig:/usr/lib64/pkgconfig:/home
 #
 # -------------------------------------------------------------------------------
@@ -271,7 +271,7 @@ CFLAGS='-Ofast -Wall -g -axCORE-AVX512 -mcmodel=large' \
 FCFLAGS='-Ofast -axCORE-AVX512 -align array64byte -warn all -g -nogen-interfaces -mcmodel=large' \
 FFTW3_CFLAGS= FFTW3_LIBS=-mkl=sequential --with-blas=-mkl=sequential \
 --enable-fftw3 --with-libpng --without-hdf5 \
---with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+--with-zlib=/usr/lib64 --without-pgplot \
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/home/matsui/local/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
@@ -322,7 +322,7 @@ CFLAGS="-xCORE-AVX512 -O3 -Wall -g" \
 FCFLAGS="-xCORE-AVX512 -O3 -warn all -g -nogen-interfaces -qopt-zmm-usage=high -qopt-report-file=stderr -qopt-report=3" \
 FFTW3_CFLAGS="$$(TACC_FFTW3_INC)" FFTW3_LIBS="-L$$(TACC_FFTW3_LIB) -lfftw3_omp -lfftw3 -lm" \
 --with-blas="-mkl=sequential" --enable-fftw3 --with-libpng \
---with-hdf5 --with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+--with-hdf5 --with-zlib=/usr/lib64 --without-pgplot \
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
@@ -335,7 +335,7 @@ F77=gfortran-mp-8 FC=gfortran-mp-8 CC=gcc-mp-8 CXX=g++-mp-8 \
 RANLIB='ranlib -c' --enable-cocoa --with-blas=yes --enable-fftw3 \
 --enable-gl --with-glfw --with-gtk --with-libpng \
 --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
---with-pgplot=/Users/matsui/local --with-aquaterm=/Library/Frameworks \
+--with-pgplot=/Users/matsui/local \
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
 
 ./configure --prefix=/Users/matsui/local FC=mpif90 CC=mpicc \
@@ -355,7 +355,7 @@ CFLAGS='-Os -Wall -g -xCORE-AVX2 -axMIC-AVX512' \
 FCFLAGS='-Ofast -xCORE-AVX2 -axMIC-AVX512 -warn all -g -nogen-interfaces ' \
 FFTW3_CFLAGS='$(TACC_FFTW3_INC)' FFTW3_LIBS='-L$(TACC_FFTW3_LIB) -llibfftw3_omp -lfftw3' \
 --with-blas=-mkl=sequential --enable-fftw3 --with-libpng --with-hdf5 \
---with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+--with-zlib=/usr/lib64 --without-pgplot \
 PKG_CONFIG_PATH=$TACC_FFTW3_LIB/pkgconfig:/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 
 #
@@ -368,7 +368,7 @@ MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS='-Os -Wall -g -xHost' \
 FCFLAGS='-Os -xHost -warn all -g -nogen-interfaces ' \
 --with-blas=-mkl=sequential --enable-fftw3 --with-libpng --with-hdf5 \
---with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+--with-zlib=/usr/lib64 --without-pgplot \
 PKG_CONFIG=/usr/bin/pkg-config
 
 #
@@ -500,8 +500,7 @@ CC=icc FC=ifort F77=ifort CXX=gcc AR=xiar MPICC=mpiicc MPIFC=mpiifort \
 CFLAGS='-O3  -Wall -g' FCFLAGS='-O3 -warn all -g' \
 PKG_CONFIG='/usr/bin/pkg-config' --enable-glui --with-libpng \
 --enable-fftw3 --with-blas='-mkl=sequential' --with-hdf5 --with-zlib=/usr/lib64 --without-pgplot \
-PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/lib/pkgconfig' \
---without-aquaterm
+PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/lib/pkgconfig'
 #
 # -------------------------------------------------------------------------------
 # IBM Blue Zene/Q
@@ -606,7 +605,7 @@ FCFLAGS='-O4 -Wall -g -march=westmere  -ffpe-trap=invalid,underflow,denormal -ff
 F77=gfortran-mp-5 FC=gfortran-mp-5 CC=gcc-mp-5 CXX=g++-mp-5 RANLIB='ranlib -c' \
 --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --with-gtk \
 --with-libpng  --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
---with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
+--with-pgplot=/Users/matsui/local/pgplot \
 PKG_CONFIG_PATH='/usr/lib/pkgconfig:/opt/local/lib/pkgconfig'
 
 #
@@ -618,7 +617,7 @@ PKG_CONFIG_PATH='/usr/lib/pkgconfig:/opt/local/lib/pkgconfig'
   F77=gfortran-mp-4.8 FC=gfortran-mp-4.8 CC=gcc-mp-4.8 CXX=g++-mp-4.8 RANLIB='ranlib -c' \
   --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --with-gtk \
   --with-libpng  --with-zlib=/opt/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
+  --with-pgplot=/Users/matsui/local/pgplot \
 PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/opt/local/lib/pkgconfig'
 #
 # -------------------------------------------------------------------------------
@@ -628,7 +627,7 @@ PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/opt/local/lib/pkgcon
 ./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
   --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --with-gtk \
   --with-libpng  --with-zlib=/Users/matsui/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
+  --with-pgplot=/Users/matsui/local/pgplot \
 PKG_CONFIG_PATH='/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig'
 #
 #
@@ -706,7 +705,7 @@ GTK3_LIBS= -L/usr/local/homebrew/Cellar/gtk+/2.24.10/lib -L/usr/local/homebrew/C
 #  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
 #  --enable-cocoa --disable-fftw3 --enable-gl --enable-glui --disable-gtk \
 #  --with-libpng --with-zlib=/Users/matsui/local \
-#  --with-pgplot=/usr/local/pgplot --with-aquaterm=/Library/Frameworks
+#  --with-pgplot=/usr/local/pgplot
 #
 #  directories of CALYPSO
 #
@@ -781,7 +780,7 @@ GTK3_LIBS=
 #  CFLAGS='-O3  -Wall -g'  FCFLAGS='-O3 -warn all -g' \
 #  --disable-cocoa --enable-fftw3 --enable-gl --enable-glui --with-gtk \
 #  --with-libpng  --with-zlib=/home/matsui/local \
-#  --with-pgplot=/home/matsui/local/pgplot --without-aquaterm \
+#  --with-pgplot=/home/matsui/local/pgplot \
 #  PNG_CFLAGS='-I/home/matsui/local/include' PNG_LIBS='-L/home/matsui/local/lib -lpng'
 #
 #./configure  --prefix='/home/matsui/local' CC=icc FC=ifort CXX=icc AR="xiar" \
@@ -791,7 +790,7 @@ GTK3_LIBS=
 #  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' \
 #  --disable-cocoa --enable-gl --enable-glui --with-gtk \
 #  --with-libpng  --with-zlib=/home/matsui/local \
-#  --with-pgplot=/home/matsui/local/pgplot --without-aquaterm \
+#  --with-pgplot=/home/matsui/local/pgplot \
 #  PNG_CFLAGS='-I/home/matsui/local/include' PNG_LIBS='-L/home/matsui/local/lib -lpng'
 #
 # -------------------------------------------------------------------------------
@@ -804,8 +803,7 @@ GTK3_LIBS=
   FCFLAGS='-O3 -no-prec-div -warn all -g' \
   PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/usr/local/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig' \
   --enable-gl --enable-glui --with-gtk \
-  --with-libpng  --with-zlib=/usr/lib64/ --with-blas=yes --enable-fftw3 \
-  --without-pgplot --without-aquaterm
+  --with-libpng  --with-zlib=/usr/lib64/ --with-blas=yes --enable-fftw3  --without-pgplot
 #
 # -------------------------------------------------------------------------------
 # Intel XEON cluster in Texas (stampede)
@@ -820,8 +818,7 @@ module load phdf5
   MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
   CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
   --with-blas=-mkl=sequential --enable-fftw3 --enable-gl --enable-glui \
-  --with-libpng  --with-hdf5  --with-zlib=/usr/lib64 \
-  --without-pgplot --without-aquaterm
+  --with-libpng  --with-hdf5  --with-zlib=/usr/lib64  --without-pgplot
 #
 #   compile with Intel MPI   (no HDF5 support)
 #
@@ -831,8 +828,7 @@ module swap mvapich2 impi/4.1.1.036
   MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
   CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
   --with-blas=-mkl=sequential --enable-fftw3 --enable-gl --enable-glui \
-  --with-libpng  --with-hdf5  --with-zlib=/usr/lib64 \
-  --without-pgplot --without-aquaterm
+  --with-libpng  --with-hdf5  --with-zlib=/usr/lib64  --without-pgplot
 #
 #
 # -------------------------------------------------------------------------------
@@ -847,7 +843,7 @@ module swap mvapich2 impi/4.1.1.036
    MPICC=mpcc_r MPIFC=mpif90_r \
   --disable-fftw3  --with-mpi=/usr/lpp/ppe.poe \
   --with-libpng --with-zlib=/home0/matsui/local \
-  --without-opengl  --without-pgplot --without-aquaterm \
+  --without-opengl  --without-pgplot \
 PKG_CONFIG_PATH="/home0/matsui/local/lib/pkgconfig"
 #
   --without-blas="-L/usr/local/lib -lblas_p64" --with-mpi=/usr/lpp/ppe.poe \
@@ -967,7 +963,7 @@ CXXFLAGS =
 ./configure --prefix='/home/hrmatsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
   --enable-fftw3 --enable-gl --enable-glui --with-gtk \
   --with-libpng  --with-zlib=/Users/matsui/local \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks
+  --with-pgplot=/Users/matsui/local/pgplot
 #
 #
 # -------------------------------------------------------------------------------

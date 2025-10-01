@@ -418,7 +418,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  double *orthogonal = orthogonal_projection_mat_c(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   objects();
@@ -439,7 +439,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  double *orthogonal = orthogonal_projection_mat_c(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   glPushMatrix();

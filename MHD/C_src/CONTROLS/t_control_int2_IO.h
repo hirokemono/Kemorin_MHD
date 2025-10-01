@@ -17,7 +17,9 @@
 
 
 struct int2_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	int i_data[2];
 };
@@ -32,16 +34,22 @@ struct int2_ctl_list{
 struct int2_clist{
 	struct int2_ctl_list i2_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *i1_name;
     char *i2_name;
+
+    int index_bc;
 };
 
 
 /* prototypes */
 
 struct int2_ctl_item * init_int2_ctl_item_c(void);
-int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+void dealloc_f_ctl_i2_item(struct int2_ctl_item *i2_item);
+
+int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct int2_ctl_item *i2_item);
 int write_int2_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct int2_ctl_item *i2_item);
@@ -68,6 +76,7 @@ void update_int2_clist_by_index(int index, int i1_in, int i2_in,
 			struct int2_clist *i2_clst);
 void set_from_int2_clist_at_index(int index, struct int2_clist *i2_clst,
 			int *i1_out, int *i2_out);
+struct int2_ctl_item *int2_clist_at_index(int index, struct int2_clist *i2_clst);
 
 void add_int2_clist_before_c_tbl(int iref_1, int iref_2, 
 			int i1_in, int i2_in, struct int2_clist *i2_clst);

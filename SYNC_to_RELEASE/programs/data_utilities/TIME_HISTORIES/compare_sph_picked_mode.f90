@@ -1,0 +1,1 @@
+../../../../MHD/programs/data_utilities/sph_spectr/compare_sph_picked_mode.f90

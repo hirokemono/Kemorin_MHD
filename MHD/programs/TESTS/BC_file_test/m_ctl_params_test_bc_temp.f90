@@ -3,8 +3,7 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_sph_bc_temp                           &
-!!     &         (bc_temp_test_ctl, mesh_file)
+!!      subroutine input_control_bc_temp(ctl_file_name, mesh_file)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !
       module m_ctl_params_test_bc_temp
@@ -19,11 +18,46 @@
       integer(kind = kint) :: igrp_nod_bc
       character(len = kchara) :: grp_name_nod_bc = 'CMB'
 !
+      private :: set_ctl_params_sph_bc_temp
+!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine input_control_bc_temp(ctl_file_name, mesh_file)
+!
+      use t_read_control_elements
+      use bcast_ctl_data_test_bc_temp
+!
+      character(len = kchara), intent(in) :: ctl_file_name
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+      type(ctl_data_bc_temp_test) :: bc_temp_test_ctl
+!
+      integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
+!
+!
+      c_buf1%level = 0
+      if(my_rank .eq. 0) then
+        call read_control_4_bc_temp(ctl_file_name,                      &
+     &                              bc_temp_test_ctl, c_buf1)
+      end if
+!
+      call bcast_test_mesh_ctl_data(bc_temp_test_ctl)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(bc_temp_test_ctl%i_mesh_test_ctl,        &
+     &                             'control file is broken')
+      end if
+!
+      call set_ctl_params_sph_bc_temp(bc_temp_test_ctl, mesh_file)
+!
+      end subroutine input_control_bc_temp
+!
+!  ---------------------------------------------------------------------
 !
       subroutine set_ctl_params_sph_bc_temp                             &
      &         (bc_temp_test_ctl, mesh_file)

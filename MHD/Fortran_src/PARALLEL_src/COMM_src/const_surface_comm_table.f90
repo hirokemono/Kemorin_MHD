@@ -79,6 +79,8 @@
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
 !
+      call dealloc_interior_surf(surf)
+      call alloc_global_surf_id(surf)
       call alloc_interior_surf(surf)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
@@ -95,8 +97,8 @@
 !
       call alloc_failed_export(0, fail_tbl_s)
       call const_comm_table_by_connenct                                 &
-     &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &    surf%x_surf, node, nod_comm, inod_dbl, isurf_dbl, neib_surf,  &
+     &   (surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
+     &    surf%x_surf, nod_comm, inod_dbl, isurf_dbl, neib_surf,        &
      &    sum_list_s, surf_comm, fail_tbl_s, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_surf)
       call dealloc_failed_export(fail_tbl_s)
@@ -112,10 +114,9 @@
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
-     &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
+     &   (txt_surf, node%inod_global, surf%numsurf,                     &
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
-     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm,                  &
-     &    m_SR%SR_sig, m_SR%SR_r)
+     &    surf%x_surf, inod_dbl, surf_comm, m_SR%SR_sig, m_SR%SR_r)
       call dealloc_sum_of_local_id_list(sum_list_s)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
@@ -131,6 +132,7 @@
 !
       call dealloc_comm_table(surf_comm)
       call dealloc_interior_surf(surf)
+      call dealloc_global_surf_id(surf)
 !
       end subroutine dealloc_surf_comm_table
 !

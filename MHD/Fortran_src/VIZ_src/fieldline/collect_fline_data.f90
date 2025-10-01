@@ -1,5 +1,5 @@
-!>@file   collect_fline_position.f90
-!!@brief  module collect_fline_position
+!>@file   collect_fline_data.f90
+!!@brief  module collect_fline_data
 !!
 !!@author  H. Matsui
 !!@date Programmed on Aug., 2011
@@ -7,20 +7,35 @@
 !> @brief MPI communication To collect field line data
 !!
 !!@verbatim
-!!      subroutine s_collect_fline_data(istep_fline, fln_prm,           &
-!!     &          fline_lc, fline_gl)
-!!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(local_fieldline), intent(in) :: fline_lc
-!!        type(global_fieldline_data), intent(inout) :: fline_gl
+!!      subroutine copy_local_fieldline_to_IO(ele, nod_fld, viz_fields, &
+!!     &                                      fline_lc, ucd)
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
+!!        type(local_fieldline), intent(in) :: fline_lc(np_smp)
+!!        type(ucd_data), intent(inout) :: ucd
+!!      subroutine copy_local_particles_to_IO(ele, nod_fld, viz_fields, &
+!!     &                                      fln_tce, ucd)
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(ctl_params_viz_fields), intent(in) :: viz_fields
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
+!!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !
       module collect_fline_data
 !
       use m_precision
+      use m_machine_parameter
 !
       use calypso_mpi
       use m_constants
-      use t_global_fieldline
+      use m_geometry_constants
+      use t_geometry_data
+      use t_phys_data
+      use t_ucd_data
+      use t_control_params_4_fline
+      use t_tracing_data
       use t_local_fline
 !
       implicit  none
@@ -31,75 +46,195 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_collect_fline_data(istep_fline, fln_prm,             &
-     &          fline_lc, fline_gl)
+      subroutine copy_local_fieldline_to_IO(ele, nod_fld, viz_fields,   &
+     &                                      fline_lc, ucd)
 !
-      use t_control_params_4_fline
-      use m_field_file_format
-      use set_ucd_file_names
-      use set_parallel_file_name
-      use set_ucd_extensions
-      use collect_fline_connectivity
-      use collect_fline_position
+      use const_global_element_ids
+      use tracer_field_interpolate
 !
-      integer(kind = kint), intent(in) :: istep_fline
-      type(fieldline_paramter), intent(in) :: fln_prm
-      type(local_fieldline), intent(in) :: fline_lc
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+      type(local_fieldline), intent(in) :: fline_lc(np_smp)
 !
-      type(global_fieldline_data), intent(inout) :: fline_gl
+      type(ucd_data), intent(inout) :: ucd
 !
-      character(len=kchara) :: file_name
-!
-!
-      fline_gl%color_name_gl = fln_prm%name_color_output
-      call collect_number_of_fline(fline_lc, fline_gl)
-!
-      if(fline_gl%ntot_nod_line_gl                                      &
-     &        .gt. fline_gl%ntot_nod_line_gl_buf) then
-        call raise_global_fline_data(fline_gl)
-      end if
-!
-      if(fline_gl%ntot_ele_line_gl                                      &
-     &       .gt. fline_gl%ntot_ele_line_gl_buf) then
-        call raise_global_fline_connect(fline_gl)
-      end if
-!
-      call collect_fline_connection(fline_lc, fline_gl)
-      call s_collect_fline_position(fline_lc, fline_gl)
-      call collect_fline_color(fline_lc, fline_gl)
+      integer(kind = kint_gl) :: i, ist
+      integer(kind = kint) :: ip
+      integer(kind = kint), allocatable :: istack_line_nod_smp(:)
+      integer(kind = kint), allocatable :: istack_line_edge_smp(:)
+      real(kind = kreal), allocatable :: c_ref(:)
 !
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'output format ', fln_prm%iformat_file_file
-        if(fln_prm%iformat_file_file .eq. iflag_ucd) then
-          file_name = set_single_ucd_file_name(fln_prm%fline_prefix,    &
-     &               fln_prm%iformat_file_file, istep_fline)
-          write(*,*) 'output ', trim(file_name)
-          open(id_fline_data_code, file=file_name)
+      allocate(istack_line_nod_smp(0:np_smp))
+      allocate(istack_line_edge_smp(0:np_smp))
+      istack_line_nod_smp(0) =  0
+      istack_line_edge_smp(0) = 0
+      do ip = 1, np_smp
+        istack_line_nod_smp(ip) =  istack_line_nod_smp(ip-1)            &
+     &                            + fline_lc(ip)%nnod_line_l
+        istack_line_edge_smp(ip) = istack_line_edge_smp(ip-1)           &
+     &                            + fline_lc(ip)%nele_line_l
+      end do
+      ucd%nnod =       istack_line_nod_smp(np_smp)
+      ucd%nele =       istack_line_edge_smp(np_smp)
+      ucd%nnod_4_ele = num_linear_edge
 !
-          call write_global_fline_ucd(id_fline_data_code, fline_gl)
-          close(id_fline_data_code)
-        else if(fln_prm%iformat_file_file .eq. iflag_vtk)               &
-     &        then
-          file_name = set_single_ucd_file_name(fln_prm%fline_prefix,    &
-     &               fln_prm%iformat_file_file, istep_fline)
-          write(*,*) 'output ', trim(file_name)
-          open(id_fline_data_code, file=file_name)
+      call alloc_merged_ucd_nod_stack(nprocs, ucd)
+      call alloc_merged_ucd_ele_stack(nprocs, ucd)
+      call count_number_of_node_stack(istack_line_nod_smp(np_smp),      &
+     &                                ucd%istack_merged_nod)
+      call count_number_of_node_stack(istack_line_edge_smp(np_smp),     &
+     &                                ucd%istack_merged_ele)
 !
-          call write_global_fline_vtk(id_fline_data_code, fline_gl)
-          close(id_fline_data_code)
-        else
-          file_name = add_int_suffix(istep_fline, fln_prm%fline_prefix)
-          file_name = add_dx_extension(file_name)
-          write(*,*) 'output ', trim(file_name)
-          open(id_fline_data_code, file=file_name)
+!$omp parallel workshare
+      ucd%istack_merged_intnod(0:nprocs)                                &
+     &                  = ucd%istack_merged_nod(0:nprocs)
+!$omp end parallel workshare
+!      write(*,*) 'ucd%istack_merged_nod', ucd%istack_merged_nod
+!      write(*,*) 'ucd%istack_merged_ele', ucd%istack_merged_ele
 !
-          call write_global_fline_dx(id_fline_data_code, fline_gl)
-          close(id_fline_data_code)
-        end if
-      end if
+      call allocate_ucd_node(ucd)
+!$omp parallel do private(ip,i,ist)
+      do ip = 1, np_smp
+        ist = istack_line_nod_smp(ip-1)
+        do i = 1, fline_lc(ip)%nnod_line_l
+          ucd%inod_global(i+ist) = fline_lc(ip)%iglobal_fline(i)
+          ucd%xx(i+ist,1) =        fline_lc(ip)%xx_line_l(1,i)
+          ucd%xx(i+ist,2) =        fline_lc(ip)%xx_line_l(2,i)
+          ucd%xx(i+ist,3) =        fline_lc(ip)%xx_line_l(3,i)
+        end do
+      end do
+!$omp end parallel do
+
+      call allocate_ucd_ele(ucd)
+!$omp parallel do
+      do ip = 1, np_smp
+        ist = istack_line_edge_smp(ip-1)
+        do i = 1, fline_lc(ip)%nele_line_l
+          ucd%iele_global(i+ist) = i + ist                              &
+     &                            + ucd%istack_merged_ele(my_rank)
+          ucd%ie(i+ist,1) =        fline_lc(ip)%iedge_line_l(1,i)       &
+     &                            + istack_line_nod_smp(ip-1)           &
+     &                            + ucd%istack_merged_nod(my_rank)
+          ucd%ie(i+ist,2) =        fline_lc(ip)%iedge_line_l(2,i)       &
+     &                            + istack_line_nod_smp(ip-1)           &
+     &                            + ucd%istack_merged_nod(my_rank)
+        end do
+      end do
+!$omp end parallel do
+      
+      ucd%num_field = viz_fields%num_color_fields
+      call allocate_ucd_phys_name(ucd)
+!$omp parallel workshare
+      ucd%phys_name(1:ucd%num_field)                                    &
+     &     = viz_fields%color_field_name(1:ucd%num_field)
+      ucd%num_comp(1:ucd%num_field)                                     &
+     &     = viz_fields%ncomp_color_field(1:ucd%num_field)
+!$omp end parallel workshare
 !
-      end subroutine s_collect_fline_data
+      ucd%ntot_comp = viz_fields%ntot_color_comp
+      call allocate_ucd_phys_data(ucd)
+!
+      allocate(c_ref(viz_fields%ntot_color_comp))
+!$omp parallel do private(ip,i,ist,c_ref)
+      do ip = 1, np_smp
+        ist = istack_line_nod_smp(ip-1)
+        do i = 1, fline_lc(ip)%nnod_line_l
+          call cal_fields_in_element(fline_lc(ip)%iele_fline(i),        &
+     &       fline_lc(ip)%xi_line_l(1,i), fline_lc(ip)%xx_line_l(1,i),  &
+     &       ele, nod_fld, viz_fields, c_ref(1))
+!
+          ucd%d_ucd(i+ist,1:ucd%ntot_comp) = c_ref(1:ucd%ntot_comp)
+        end do
+      end do
+!$omp end parallel do
+!
+      deallocate(c_ref)
+      deallocate(istack_line_nod_smp, istack_line_edge_smp)
+!
+      end subroutine copy_local_fieldline_to_IO
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_local_particles_to_IO(ele, nod_fld, viz_fields,   &
+     &                                      fln_tce, ucd)
+!
+      use t_source_of_filed_line
+      use const_global_element_ids
+      use tracer_field_interpolate
+!
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(ctl_params_viz_fields), intent(in) :: viz_fields
+!
+      type(each_fieldline_trace), intent(inout) :: fln_tce
+      type(ucd_data), intent(inout) :: ucd
+!
+      integer(kind = kint_gl) :: i, ip, ist, num
+!
+!
+      ucd%nnod = fln_tce%num_current_fline
+      ucd%nele = ucd%nnod
+      ucd%nnod_4_ele = num_linear_point
+!
+      call alloc_merged_ucd_nod_stack(nprocs, ucd)
+      call alloc_merged_ucd_ele_stack(nprocs, ucd)
+      ucd%istack_merged_nod(0:nprocs)                                   &
+     &    = fln_tce%istack_current_fline(0:nprocs) 
+!
+!$omp parallel workshare
+      ucd%istack_merged_ele(0:nprocs)                                   &
+     &                  = ucd%istack_merged_nod(0:nprocs)
+      ucd%istack_merged_intnod(0:nprocs)                                &
+     &                  = ucd%istack_merged_nod(0:nprocs)
+!$omp end parallel workshare
+!
+      call allocate_ucd_node(ucd)
+!$omp parallel do
+      do i = 1, ucd%nnod
+        ucd%inod_global(i) = fln_tce%iline_original(i)
+        ucd%xx(i,1) =        fln_tce%xx_fline_start(1,i)
+        ucd%xx(i,2) =        fln_tce%xx_fline_start(2,i)
+        ucd%xx(i,3) =        fln_tce%xx_fline_start(3,i)
+      end do
+!$omp end parallel do
+
+      call allocate_ucd_ele(ucd)
+!$omp parallel do
+      do i = 1, ucd%nele
+        ucd%iele_global(i) = ucd%inod_global(i)
+        ucd%ie(i,1) =        fln_tce%iline_original(i)
+      end do
+!$omp end parallel do
+      
+      ucd%num_field = viz_fields%num_color_fields
+      call allocate_ucd_phys_name(ucd)
+!$omp parallel workshare
+      ucd%phys_name(1:ucd%num_field)                                    &
+     &     = viz_fields%color_field_name(1:ucd%num_field)
+      ucd%num_comp(1:ucd%num_field)                                     &
+     &     = viz_fields%ncomp_color_field(1:ucd%num_field)
+!$omp end parallel workshare
+
+      ucd%ntot_comp = viz_fields%ntot_color_comp
+      call allocate_ucd_phys_data(ucd)
+!
+!$omp parallel do private(ip,ist,num,i)
+      do ip = 1, np_smp
+        ist = fln_tce%istack_smp_cur_fline(ip-1)
+        num = fln_tce%istack_smp_cur_fline(ip) - ist
+        do i = 1, num
+          call cal_fields_in_element(fln_tce%isf_dbl_start(2,i),        &
+     &        fln_tce%xi_fline_start(1,i), fln_tce%xx_fline_start(1,i), &
+     &        ele, nod_fld, viz_fields, fln_tce%c_fline_start(1,ip))
+          ucd%d_ucd(i+ist,1:ucd%ntot_comp)                              &
+     &       = fln_tce%c_fline_start(1:ucd%ntot_comp,ip)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_local_particles_to_IO
 !
 !  ---------------------------------------------------------------------
 !

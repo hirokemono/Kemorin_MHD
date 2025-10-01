@@ -58,14 +58,13 @@
         logical :: gzip_flag_rms_layer = .FALSE.
 !
 !>        Output flag for spectrum with respect to degree
-        integer(kind = kint) :: iflag_spectr_l =  1
+        logical :: flag_skip_spectr_l =  .FALSE.
 !>        Output flag for spectrum with respect to order
-        integer(kind = kint) :: iflag_spectr_m =  1
+        logical :: flag_skip_spectr_m =  .FALSE.
 !>        Output flag for spectrum with respect to l-m
-        integer(kind = kint) :: iflag_spectr_lm = 1
-!
+        logical :: flag_skip_spectr_lm = .FALSE.
 !>        Output flag for spectrum for axis-symmetric component
-        integer(kind = kint) :: iflag_spectr_m0 = 1
+        logical :: flag_skip_spectr_m0 = .FALSE.
 !
 !>        MPI rank for l-spectr data output
         integer :: irank_l
@@ -78,9 +77,13 @@
         integer(kind=kint) :: nri_rms
 !
 !>        Radial ID from layered mean square
-        integer(kind=kint), allocatable :: kr_4_rms(:)
+        integer(kind=kint), allocatable :: kr_4_rms(:,:)
 !>        Radius from layered mean square
-        real(kind = kreal), allocatable :: r_4_rms(:)
+!!                       r_4_rms(:,1): radius
+!!                       r_4_rms(:,2): 1 / r
+        real(kind = kreal), allocatable :: r_4_rms(:,:)
+!>        Interpolation coefficient for layerd spectra
+        real(kind = kreal), allocatable :: c_gl_itp(:)
 !
 !>        Mean square spectrum for degree on spheres
         real(kind = kreal), allocatable :: shl_l(:,:,:)
@@ -139,10 +142,10 @@
         pwr%v_spectr(i)%ltr = 0
         pwr%v_spectr(i)%ntot_comp_sq = 0
 !
-        pwr%v_spectr(i)%r_inside =  0
-        pwr%v_spectr(i)%r_outside = 0
-        pwr%v_spectr(i)%kr_inside =  0.0d0
-        pwr%v_spectr(i)%kr_outside = 0.0d0
+        pwr%v_spectr(i)%r_inside =  0.0d0
+        pwr%v_spectr(i)%r_outside = 0.0d0
+        pwr%v_spectr(i)%kr_inside(1:2) =  0
+        pwr%v_spectr(i)%kr_outside(1:2) = 0
       end do
 !
       end subroutine alloc_volume_spectr_data
@@ -167,11 +170,13 @@
 !
       pwr%nri_rms = nri_in
 !
-      allocate( pwr%kr_4_rms(pwr%nri_rms) )
-      allocate( pwr%r_4_rms(pwr%nri_rms) )
+      allocate( pwr%kr_4_rms(pwr%nri_rms,2) )
+      allocate( pwr%r_4_rms(pwr%nri_rms,2) )
+      allocate( pwr%c_gl_itp(pwr%nri_rms) )
       if(pwr%nri_rms .gt. 0) then
         pwr%kr_4_rms = 0
         pwr%r_4_rms =  0.0d0
+        pwr%c_gl_itp =  0.0d0
       end if
 !
       end subroutine alloc_num_spec_layer
@@ -289,7 +294,7 @@
 !
 !
       pwr%nri_rms = 0
-      deallocate(pwr%r_4_rms, pwr%kr_4_rms)
+      deallocate(pwr%r_4_rms, pwr%kr_4_rms, pwr%c_gl_itp)
 !
       end subroutine dealloc_num_spec_layer
 !

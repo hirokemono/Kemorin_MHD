@@ -42,7 +42,7 @@ libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_GEN_FILTER_FILE): $$(MOD_GEN_FILTER)' >> $(MAKENAME)
 
-lib_archve:
+lib_archve: 
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -69,20 +69,10 @@ mod_list:
 		) \
 	done
 
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \

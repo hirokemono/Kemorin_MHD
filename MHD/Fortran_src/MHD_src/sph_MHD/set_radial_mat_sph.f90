@@ -269,17 +269,17 @@
         do j = 1, jmax
           mat3(3,k-1,j) = mat3(3,k-1,j)                                 &
      &                   - coef_p * val_r(k) * (d2nod_mat_fdm_2(k,-1)   &
-     &                 + two * ar_1d_rj(k,1) * d1nod_mat_fdm_2(k,-1))   &
+     &                  + two * ar_1d_rj(k,1) * d1nod_mat_fdm_2(k,-1))  &
      &                   - coef_p * dval_r(k) * d1nod_mat_fdm_2(k,-1)
           mat3(2,k,  j) = mat3(2,k,  j)                                 &
      &                   - coef_p * val_r(k) * (d2nod_mat_fdm_2(k, 0)   &
      &                  + two * ar_1d_rj(k,1) * d1nod_mat_fdm_2(k, 0)   &
      &                 - g_sph_rj(j,3)*ar_1d_rj(k,2) )                  &
-     &                   - coef_p * dval_r(k) * d1nod_mat_fdm_2(k,-1)
+     &                   - coef_p * dval_r(k) * d1nod_mat_fdm_2(k, 0)
           mat3(1,k+1,j) = mat3(1,k+1,j)                                 &
-     &                   - coef_p  * val_r(k) * (d2nod_mat_fdm_2(k, 1)  &
-     &                 + two * ar_1d_rj(k,1) * d1nod_mat_fdm_2(k, 1))   &
-     &                   - coef_p * dval_r(k) * d1nod_mat_fdm_2(k,-1)
+     &                  - coef_p  * val_r(k) * (d2nod_mat_fdm_2(k, 1)   &
+     &                  + two * ar_1d_rj(k,1) * d1nod_mat_fdm_2(k, 1))  &
+     &                   - coef_p * dval_r(k) * d1nod_mat_fdm_2(k, 1)
         end do
       end do
 !$omp end parallel do

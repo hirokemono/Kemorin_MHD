@@ -18,16 +18,18 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter                                  &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_snap
-!
+      call initialize_sph_special_snap(snap_ctl_name)
       call evolution_sph_special_snap
 !
       call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program kemorin_sph_snapshot

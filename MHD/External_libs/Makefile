@@ -70,7 +70,7 @@ mod_list:
 	done
 
 
-module:
+depends:
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'generate compile commands for ' $$dir ; \
@@ -83,19 +83,6 @@ module:
 		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
-		module; \
-		) \
-	done
-
-depends:
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'generate dependencies for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends; \
 		) \
 	done

@@ -51,11 +51,11 @@
           write(*,*) i, iachar(gray(i,1))
         end do
 !
-!$omp workshare
+!$omp parallel workshare
         rgb(1,1:npixel_x,1:npixel_y) = gray(1:npixel_x,1:npixel_y)
         rgb(2,1:npixel_x,1:npixel_y) = gray(1:npixel_x,1:npixel_y)
         rgb(3,1:npixel_x,1:npixel_y) = gray(1:npixel_x,1:npixel_y)
-!$omp end workshare
+!$omp end parallel workshare
 !
 !   For color image
       else

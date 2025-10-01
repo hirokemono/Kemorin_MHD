@@ -13,7 +13,9 @@ MOD_BASE = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'BASEDIR = $(BASEDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_BASE)' >> $(MAKENAME)
 
 
@@ -23,11 +25,8 @@ mod_list:
 	@echo  '#'  >> $(MAKENAME)
 
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(BASEDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(BASEDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

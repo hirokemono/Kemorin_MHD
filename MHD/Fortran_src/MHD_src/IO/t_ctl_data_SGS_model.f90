@@ -11,9 +11,6 @@
 !!      subroutine dealloc_sgs_ctl(sgs_ctl)
 !!      subroutine dealloc_sph_filter_ctl(sgs_ctl)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!      subroutine append_SGS_filter_ctls(add_sfil_c, sgs_ctl)
-!!        type(sph_filter_ctl_type), intent(inout) :: add_sfil_c
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!
 !!!!!!!!!  SGS Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     SGS_model_ctl: gradient.........nonlinear gradient model
@@ -82,6 +79,7 @@
       use t_control_array_integer
       use t_control_array_character
       use t_ctl_data_SGS_filter
+      use t_ctl_SGS_3d_filter
       use t_ctl_data_filter_files
       use t_ctl_data_ele_layering
 !
@@ -89,6 +87,9 @@
 !
 !
       type SGS_model_control
+!>        Block name
+        character(len=kchara) :: block_name = 'SGS_control'
+!
         type(read_character_item) :: SGS_model_name_ctl
         type(read_character_item) :: SGS_filter_name_ctl
         type(read_character_item) :: DIFF_model_coef_ctl
@@ -137,15 +138,18 @@
 !>        Structure for element layering
         type(layering_control) :: elayer_ctl
 !
+!>        Structure for 3-D filtering controls
         type(SGS_3d_filter_control) :: s3df_ctl
 !
+!>        Array name of spherical shell model filter
+        character(len=kchara) :: sph_filters_name = 'sph_filter_ctl'
+!>        Number of array of spherical shell model filter
         integer(kind = kint) :: num_sph_filter_ctl
+!>        array of spherical shell model filter
         type(sph_filter_ctl_type), allocatable :: sph_filter_ctl(:)
 !
         integer (kind=kint) :: i_sgs_ctl =       0
       end type SGS_model_control
-!
-      private :: copy_SGS_filter_ctls
 !
 !   --------------------------------------------------------------------
 !
@@ -252,52 +256,5 @@
       end subroutine dealloc_sph_filter_ctl
 !
 !   --------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine append_SGS_filter_ctls(add_sfil_c, sgs_ctl)
-!
-      type(sph_filter_ctl_type), intent(inout) :: add_sfil_c
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-!
-      integer(kind = kint) :: num_tmp = 0
-      type(sph_filter_ctl_type), allocatable :: tmp_sfil_c(:)
-!
-!
-      num_tmp = sgs_ctl%num_sph_filter_ctl
-      allocate(tmp_sfil_c(num_tmp))
-      call copy_SGS_filter_ctls                                         &
-     &   (num_tmp, sgs_ctl%sph_filter_ctl, tmp_sfil_c)
-      call dealloc_sph_filter_ctl(sgs_ctl)
-!
-      sgs_ctl%num_sph_filter_ctl = num_tmp + 1
-      call alloc_sph_filter_ctl(sgs_ctl)
-!
-      call copy_SGS_filter_ctls                                         &
-     &   (num_tmp, tmp_sfil_c, sgs_ctl%sph_filter_ctl(1))
-      deallocate(tmp_sfil_c)
-!
-      call copy_control_4_SGS_filter(add_sfil_c,                        &
-     &    sgs_ctl%sph_filter_ctl(sgs_ctl%num_sph_filter_ctl))
-      call reset_control_4_SGS_filter(add_sfil_c)
-!
-      end subroutine append_SGS_filter_ctls
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_SGS_filter_ctls(num_ctl, org_sfil_c, new_sfil_c)
-!
-      integer(kind = kint), intent(in) :: num_ctl
-      type(sph_filter_ctl_type), intent(in) :: org_sfil_c(num_ctl)
-      type(sph_filter_ctl_type), intent(inout) :: new_sfil_c(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_ctl
-        call copy_control_4_SGS_filter(org_sfil_c(i), new_sfil_c(i))
-      end do
-!
-      end subroutine copy_SGS_filter_ctls
-!
-! -----------------------------------------------------------------------
 !
       end module t_ctl_data_SGS_model

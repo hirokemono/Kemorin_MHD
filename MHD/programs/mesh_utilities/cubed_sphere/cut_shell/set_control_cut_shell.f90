@@ -3,8 +3,13 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!!      subroutine s_set_control_4_cutshell(cutshell_ctl)
+!!      subroutine s_set_control_4_cutshell                             &
+!!     &         (cutshell_ctl, iflag_reduce_type,                      &
+!!     &          original_mesh_file, modified_mesh_file)
 !!        type(ctl_data_cutshell), intent(in)  :: cutshell_ctl
+!!        integer(kind = kint), intent(inout) :: iflag_reduce_type
+!!        type(field_IO_params), intent(inout) ::  original_mesh_file
+!!        type(field_IO_params), intent(inout) ::  modified_mesh_file
 !
       module set_control_cut_shell
 !
@@ -18,7 +23,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_cutshell(cutshell_ctl)
+      subroutine s_set_control_4_cutshell                               &
+     &         (cutshell_ctl, iflag_reduce_type,                        &
+     &          original_mesh_file, modified_mesh_file)
 !
       use m_default_file_prefix
       use t_control_data_4_cutshell
@@ -27,6 +34,9 @@
       use skip_comment_f
 !
       type(ctl_data_cutshell), intent(in)  :: cutshell_ctl
+      integer(kind = kint), intent(inout) :: iflag_reduce_type
+      type(field_IO_params), intent(inout) ::  original_mesh_file
+      type(field_IO_params), intent(inout) ::  modified_mesh_file
 !
       character(len=kchara) :: tmpchara
 !

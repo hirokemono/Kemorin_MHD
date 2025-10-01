@@ -27,7 +27,9 @@ dir_list:
 	done
 	@echo '#' >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_CRS_SOLVER_S)' >> $(MAKENAME)
 
 
@@ -45,21 +47,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \

@@ -54,6 +54,17 @@
 !>        assembled SGS tensor in each element
         real (kind=kreal), allocatable  :: sgs_t1(:,:)
 !
+!
+!>        Address of differenciation of velocity
+        integer(kind = kint) :: iphys_elediff_v
+!>        Address of differenciation of magnetic field
+        integer(kind = kint) :: iphys_elediff_b
+!
+!>        Address of differenciation of filtered velocity
+        integer(kind = kint) :: ifil_elediff_v
+!>        Address of differenciation of filtered magnetic field
+        integer(kind = kint) :: ifil_elediff_b
+!
 !>        Number of components for work dvx in each element
         integer(kind=kint) :: n_dvx
 !>        Work of diffence of field in each element

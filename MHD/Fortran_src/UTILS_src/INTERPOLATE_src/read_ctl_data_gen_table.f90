@@ -55,9 +55,14 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(table_ctl_file_code, file=fname_table_ctl, status='old')
         do
-          call load_one_line_from_control(table_ctl_file_code, c_buf1)
+          call load_one_line_from_control(table_ctl_file_code,          &
+     &                                    hd_table_control, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_const_itp_tbl_ctl_data                              &
      &       (table_ctl_file_code, hd_table_control, gtbl_ctl, c_buf1)
           if(gtbl_ctl%i_table_control .gt. 0) exit
@@ -66,6 +71,11 @@
       end if
 !
       call bcast_const_itp_tbl_ctl_data(gtbl_ctl)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(gtbl_ctl%i_table_control,                &
+     &                         trim(fname_table_ctl))
+      end if
 !
       end subroutine read_control_4_gen_itp_table
 !
@@ -79,9 +89,14 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(table_ctl_file_code, file=fname_itp_ctl, status='old')
         do
-          call load_one_line_from_control(table_ctl_file_code, c_buf1)
+          call load_one_line_from_control(table_ctl_file_code,          &
+     &                                    hd_table_control, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_const_itp_tbl_ctl_data                              &
      &       (table_ctl_file_code, hd_table_control, gtbl_ctl, c_buf1)
           if(gtbl_ctl%i_table_control .gt. 0) exit
@@ -90,6 +105,11 @@
       end if
 !
       call bcast_const_itp_tbl_ctl_data(gtbl_ctl)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(gtbl_ctl%i_table_control,                &
+     &                         trim(fname_table_ctl))
+      end if
 !
       end subroutine read_control_4_interpolate
 !

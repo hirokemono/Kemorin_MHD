@@ -11,8 +11,8 @@
 !!      logical function check_wide_SGS_vector_terms(field_name)
 !!      logical function check_double_SGS_vector_terms(field_name)
 !!
-!!      integer(kind = kint) function num_wide_SGS_terms()
-!!      subroutine set_wide_SGS_term_labels(n_comps, names, maths)
+!!      subroutine set_wide_SGS_term_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -45,9 +45,6 @@
 !
       implicit  none
 ! 
-!
-      integer(kind = kint), parameter, private :: nterms_wide_SGS = 10
-!
 !      SGS terms by wider filter
 !
 !>        Field label for SGS heat flux with wider filter
@@ -179,44 +176,26 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_wide_SGS_terms()
-      num_wide_SGS_terms = nterms_wide_SGS
-      return
-      end function num_wide_SGS_terms
+      subroutine set_wide_SGS_term_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_wide_SGS_term_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(wide_SGS_heat_flux,       array_c2i)
+      call set_field_label_to_ctl(wide_SGS_composit_flux,   array_c2i)
+      call set_field_label_to_ctl(wide_SGS_inertia,         array_c2i)
+      call set_field_label_to_ctl(wide_SGS_Lorentz,         array_c2i)
+      call set_field_label_to_ctl(wide_SGS_vp_induction,    array_c2i)
+      call set_field_label_to_ctl(double_SGS_heat_flux,     array_c2i)
+      call set_field_label_to_ctl(double_SGS_composit_flux, array_c2i)
+      call set_field_label_to_ctl(double_SGS_inertia,       array_c2i)
+      call set_field_label_to_ctl(double_SGS_Lorentz,       array_c2i)
+      call set_field_label_to_ctl(double_SGS_vp_induction,  array_c2i)
 !
-      integer(kind = kint_4b), intent(inout)                            &
-     &                        :: n_comps(nterms_wide_SGS)
-      character(len = kchara), intent(inout) :: names(nterms_wide_SGS)
-      character(len = kchara), intent(inout) :: maths(nterms_wide_SGS)
-!
-!
-      call set_field_labels(wide_SGS_heat_flux,                         &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(wide_SGS_composit_flux,                     &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(wide_SGS_inertia,                           &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(wide_SGS_Lorentz,                           &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(wide_SGS_vp_induction,                      &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(double_SGS_heat_flux,                       &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(double_SGS_composit_flux,                   &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(double_SGS_inertia,                         &
-     &    n_comps( 8), names( 8), maths( 8))
-      call set_field_labels(double_SGS_Lorentz,                         &
-     &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(double_SGS_vp_induction,                    &
-     &    n_comps(10), names(10), maths(10))
-!
-      end subroutine set_wide_SGS_term_labels
+      end subroutine set_wide_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !

@@ -14,6 +14,7 @@ struct kemoviewer_type *single_kemoview;
 
 - (id) init{
     single_kemoview = kemoview_allocate_single_viwewer_struct();
+    kemoview_init_cube_buf(single_kemoview);
     return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {

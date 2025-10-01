@@ -123,7 +123,7 @@
       real(kind = kreal) :: r_4_gauss_coefs, a2r_4_gauss
 !
 !
-      r_4_gauss_coefs = gauss_coef%radius_gl(1)
+      r_4_gauss_coefs = gauss_coef%radius_gl(1,1)
       r_ICB = sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)
       r_CMB = sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB)
       if(r_4_gauss_coefs .ge. r_CMB) then
@@ -180,12 +180,10 @@
           write(gauss_head,'(a1)') 'g'
         end if
 !
-        call add_index_after_name                                       &
-     &     (l, gauss_head, gauss%gauss_mode_name_lc(inum))
+        gauss%gauss_mode_name_lc(inum) = append_index(l, gauss_head)
         write(gauss_head,'(a,a1)')                                      &
      &     trim(gauss%gauss_mode_name_lc(inum)), '_'
-        call add_index_after_name                                       &
-     &     (mm, gauss_head, gauss%gauss_mode_name_lc(inum))
+        gauss%gauss_mode_name_lc(inum) = append_index(mm, gauss_head)
       end do
 !
       end subroutine set_gauss_coefs_labels

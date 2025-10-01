@@ -5,11 +5,11 @@
 !
 !!      subroutine choose_cal_rotation_sgs                              &
 !!     &         (iflag_commute, iflag_4_supg, num_int, dt,             &
-!!     &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,   &
+!!     &          i_vector, i_rot, iele_fsmp_stack, m_lump,             &
 !!     &          SGS_param, nod_comm, node, ele, surf, sf_grp,         &
-!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs, &
-!!     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,             &
-!!     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
+!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, nod_bc,     &
+!!     &          sgs_sf, ak_diff, rhs_tbl, fem_wk, surf_wk, f_nl,      &
+!!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -22,7 +22,6 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -57,7 +56,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_vector_for_solver
       use t_solver_SR
 !
@@ -77,11 +76,11 @@
 !
       subroutine choose_cal_rotation_sgs                                &
      &         (iflag_commute, iflag_4_supg, num_int, dt,               &
-     &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,     &
+     &          i_vector, i_rot, iele_fsmp_stack, m_lump,               &
      &          SGS_param, nod_comm, node, ele, surf, sf_grp,           &
-     &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs,   &
-     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,               &
-     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &          iphys_ele_base, ele_fld, jacs, FEM_elens, nod_bc,       &
+     &          sgs_sf, ak_diff, rhs_tbl, fem_wk, surf_wk, f_nl,        &
+     &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_rotation
       use set_boundary_scalars
@@ -98,15 +97,15 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer(kind = kint), intent(in) :: iflag_commute
-      integer(kind = kint), intent(in) :: iak_diff, i_vector, i_rot
+      integer(kind = kint), intent(in) :: i_vector, i_rot
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: dt
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -119,11 +118,10 @@
 !
       if(SGS_param%iflag_SGS .ne. id_SGS_none                           &
      &     .and. iflag_commute .eq. id_SGS_commute_ON) then
-        call choose_int_vol_rot_sgs                                     &
-     &     (iflag_4_supg, num_int, dt, iele_fsmp_stack,                 &
-     &      SGS_param%ifilter_final, iak_diff, i_vector,                &
+        call choose_int_vol_rot_sgs(iflag_4_supg, num_int, dt,          &
+     &      iele_fsmp_stack, SGS_param%ifilter_final, i_vector,         &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele_base, ele_fld,  &
-     &      jacs, FEM_elens, diff_coefs, sgs_sf, rhs_tbl,               &
+     &      jacs, FEM_elens, sgs_sf, ak_diff, rhs_tbl,                  &
      &      fem_wk, surf_wk, f_nl)
       else
         call choose_int_vol_rotations                                   &
@@ -147,10 +145,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine choose_int_vol_rot_sgs(iflag_4_supg, num_int, dt,      &
-     &          iele_fsmp_stack, ifilter_final, iak_diff, i_vector,     &
-     &          node, ele, surf, sf_grp, nod_fld,                       &
-     &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs,   &
-     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl)
+     &          iele_fsmp_stack, ifilter_final, i_vector,               &
+     &          node, ele, surf, sf_grp, nod_fld, iphys_ele_base,       &
+     &          ele_fld, jacs, FEM_elens, sgs_sf, ak_diff, rhs_tbl,     &
+     &          fem_wk, surf_wk, f_nl)
 !
       use int_sgs_vect_differences
       use int_sgs_vect_diff_upw
@@ -165,15 +163,15 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer(kind = kint), intent(in) :: ifilter_final
-      integer(kind = kint), intent(in) :: iak_diff, i_vector
+      integer(kind = kint), intent(in) :: i_vector
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: dt
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -183,31 +181,28 @@
       call reset_ff_smp(n_vector, node, f_nl)
 !
       if(iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_sgs_rotation_upw                                       &
-     &     (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl, nod_fld,       &
-     &      FEM_elens, iele_fsmp_stack, num_int, dt, ifilter_final,     &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
+        call int_sgs_rotation_upw(node, ele, jacs%g_FEM, jacs%jac_3d,   &
+     &      rhs_tbl, nod_fld, FEM_elens, iele_fsmp_stack,               &
+     &      num_int, dt, ifilter_final, ak_diff, i_vector,              &
      &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
      &      fem_wk, f_nl)
       else if(iflag_4_supg .eq. id_turn_ON) then
-        call int_sgs_rotation_upw                                       &
-     &     (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl, nod_fld,       &
-     &      FEM_elens, iele_fsmp_stack, num_int, dt, ifilter_final,     &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
+        call int_sgs_rotation_upw(node, ele, jacs%g_FEM, jacs%jac_3d,   &
+     &      rhs_tbl, nod_fld, FEM_elens, iele_fsmp_stack,               &
+     &      num_int, dt, ifilter_final, ak_diff, i_vector,              &
      &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else
         call int_sgs_rotation                                           &
      &     (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl, nod_fld,       &
      &      FEM_elens, iele_fsmp_stack, num_int, ifilter_final,         &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
-     &      fem_wk, f_nl)
+     &      ak_diff, i_vector, fem_wk, f_nl)
       end if
 !
       call int_surf_rotation_sgs(node, ele, surf, sf_grp, nod_fld,      &
-     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens,              &
-     &    diff_coefs, sgs_sf, num_int, ifilter_final, iak_diff,         &
-     &    i_vector, fem_wk, surf_wk, f_nl)
+     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
+     &    num_int, ifilter_final, ak_diff, i_vector, fem_wk, surf_wk,   &
+     &    f_nl)
 !
       end subroutine choose_int_vol_rot_sgs
 !

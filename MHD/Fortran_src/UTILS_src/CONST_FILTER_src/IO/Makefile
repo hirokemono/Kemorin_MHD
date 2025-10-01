@@ -13,7 +13,9 @@ MOD_GEN_FILTER_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'FILTER_3D_IODIR =  $(FILTER_3D_IODIR)'          >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
 	'$$(MOD_GEN_FILTER_IO)' \
 	>> $(MAKENAME)
@@ -23,12 +25,8 @@ mod_list:
 	@echo  $(MOD_GEN_FILTER_IO) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_IODIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FILTER_3D_IODIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

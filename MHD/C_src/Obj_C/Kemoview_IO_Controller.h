@@ -6,40 +6,50 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
+#import "KemoviewerController.h"
 #import "DomainTableController.h"
+#import "ElasticMenuWindow.h"
 #import "PsfController.h"
 #import "FlineController.h"
+#import "TracerController.h"
+#import "KemoviewerImageMaker.h"
 #import "KemoviewerMovieMaker.h"
+#import "KemoViewerObject.h"
+
+#include "kemoviewer.h"
 
 // ==================================
 
 @interface Kemoview_IO_Controller : NSObject {
-
-	IBOutlet NSUserDefaultsController* _user_defaults_controller;
+    
+    IBOutlet NSUserDefaultsController* _user_defaults_controller;
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet DomainTableController* _domainTableController;
-	IBOutlet PsfController*         _psfController;
-	IBOutlet FlineController*       _flineController;
-	IBOutlet KemoviewerMovieMaker*  _movieMakerController;
-		
-	NSInteger ImageFormatFlag;
-	NSInteger CurrentImageFormat;
-	IBOutlet id _ImageFormat_item;
-
-	NSString *ImageFileExt;
-
-	NSInteger PsfNumberOfField;
-	NSMutableArray *PsfNumberOfComponent;
-	NSMutableArray *PsfFieldName;
-	NSMutableArray *PsfMinimum;
-	NSMutableArray *PsfMaximum;
+    IBOutlet KemoViewerMetalView   * _metalView;
+    IBOutlet KemoviewerController  * _kemoviewControl;
+    IBOutlet DomainTableController * _domainTableController;
+    IBOutlet PsfController         * _psfController;
+    IBOutlet FlineController       * _flineController;
+    IBOutlet TracerController      * _tracerController;
+    IBOutlet KemoviewerImageMaker  * _kemoImageMaker;
+    IBOutlet KemoviewerMovieMaker  * _movieMakerController;
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
+    
+    IBOutlet KemoViewerObject      * _kmv;
+    
+    
+    NSInteger ImageFormatFlag;
+    NSInteger CurrentImageFormat;
+    IBOutlet id _ImageFormat_item;
+    
+    NSString *ImageFileExt;
 }
 @property NSInteger ImageFormatFlag;
 
-- (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename;
+- (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename
+                   kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;
 - (IBAction) SaveViewMatrixFile:(id)pId;
@@ -47,4 +57,6 @@
 - (IBAction) SaveImageFile:(id)pId;
 
 - (IBAction)ChooseImageFormatAction:(id)sender;
+
+- (IBAction)ColorbarSwitchAction:(id)sender;
 @end

@@ -110,7 +110,7 @@ void read_png_file_c(const char *fhead, int *num_x, int *num_y, int *iflag_rgba)
 	png_uint_32     i;
 	png_uint_32 width;
 	png_uint_32 height;
-	double      file_gamma;
+/*	double      file_gamma; */
 	png_structp png_ptr;
 	png_infop   info_ptr;
 	double	display_gamma = 1.0;
@@ -122,12 +122,13 @@ void read_png_file_c(const char *fhead, int *num_x, int *num_y, int *iflag_rgba)
 	read_png_image_w_gamma(fp, png_ptr, info_ptr, &bimage, &width, &height, 
 			iflag_rgba, display_gamma);
 	fclose(fp);
-	
+/*
 	{
-		/* Display gAMA Chunk */
+//		 Display gAMA Chunk 
 		if (png_get_gAMA(png_ptr, info_ptr, &file_gamma))
 		printf("gamma = %lf\n", file_gamma);
 	}
+*/
 	{
 		/* Display tEXT Chunk */
 		png_textp       text_ptr;
@@ -144,41 +145,42 @@ void read_png_file_c(const char *fhead, int *num_x, int *num_y, int *iflag_rgba)
 	return;
 }
 
-void copy_rgb_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+void copy_rgb_from_png_c(const int num_x, const int num_y,
+                         const int iflag_rgba, unsigned char *cimage)
 {
 	int k, j, l;
 	
-	if(*iflag_rgba == RGBA_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	if(iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[3*k  ] = bimage[j][4*l  ];
 				cimage[3*k+1] = bimage[j][4*l+1];
 				cimage[3*k+2] = bimage[j][4*l+2];
 			}
 		};
-	} else if(*iflag_rgba == RGB_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == RGB_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[3*k  ] = bimage[j][3*l  ];
 				cimage[3*k+1] = bimage[j][3*l+1];
 				cimage[3*k+2] = bimage[j][3*l+2];
 			}
 		};
-	} else if(*iflag_rgba == BW_ALPHA){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == BW_ALPHA){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[3*k  ] = bimage[j][2*l];
 				cimage[3*k+1] = bimage[j][2*l];
 				cimage[3*k+2] = bimage[j][2*l];
 			}
 		};
-	} else if(*iflag_rgba == B_AND_W){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == B_AND_W){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[3*k  ] = bimage[j][l];
 				cimage[3*k+1] = bimage[j][l];
 				cimage[3*k+2] = bimage[j][l];
@@ -189,44 +191,45 @@ void copy_rgb_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char 
 	free(bimage);
 };
 
-void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+void copy_rgba_from_png_c(const int num_x, const int num_y,
+                          const int iflag_rgba, unsigned char *cimage)
 {
 	int i, k, j, l;
 	
-	if(*iflag_rgba == RGBA_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	if(iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[4*k  ] = bimage[j][4*l  ];
 				cimage[4*k+1] = bimage[j][4*l+1];
 				cimage[4*k+2] = bimage[j][4*l+2];
 				cimage[4*k+3] = bimage[j][4*l+3];
 			}
 		};
-	} else if(*iflag_rgba == RGB_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == RGB_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[4*k  ] = bimage[j][3*l  ];
 				cimage[4*k+1] = bimage[j][3*l+1];
 				cimage[4*k+2] = bimage[j][3*l+2];
 				cimage[4*k+3] = (unsigned char) 255;
 			}
 		};
-	} else if(*iflag_rgba == BW_ALPHA){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == BW_ALPHA){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[4*k  ] = bimage[j][2*l  ];
 				cimage[4*k+1] = bimage[j][2*l  ];
 				cimage[4*k+2] = bimage[j][2*l  ];
 				cimage[4*k+3] = bimage[j][2*l+1];
 			}
 		};
-	} else if(*iflag_rgba == B_AND_W){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == B_AND_W){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[4*k  ] = bimage[j][l];
 				cimage[4*k+1] = bimage[j][l];
 				cimage[4*k+2] = bimage[j][l];
@@ -235,41 +238,42 @@ void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char
 		};
 	};
 	
-	for (i = 0; i < *num_y; i++) free(bimage[i]);
+	for (i = 0; i < num_y; i++) free(bimage[i]);
 	free(bimage);
 };
 
-void copy_grayscale_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+void copy_grayscale_from_png_c(const int num_x, const int num_y,
+                               const int iflag_rgba, unsigned char *cimage)
 {
 	int k, j, l, mixed;
 	
-	if(*iflag_rgba == RGBA_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	if(iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				mixed = ((int) bimage[j][4*l  ] + (int) bimage[j][4*l+1] + (int) bimage[j][4*l+2]) / 3;
 				cimage[k  ] = (unsigned char) mixed;
 			}
 		};
-	} else if(*iflag_rgba == RGB_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == RGB_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				mixed = ((int) bimage[j][3*l  ] + (int) bimage[j][3*l+1] + (int) bimage[j][3*l+2]) / 3;
 				cimage[k  ] = (unsigned char) mixed;
 			}
 		};
-	} else if(*iflag_rgba == BW_ALPHA){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == BW_ALPHA){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[k  ] = bimage[j][2*l  ];
 			}
 		};
-	} else if(*iflag_rgba == B_AND_W){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == B_AND_W){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[k  ] = bimage[j][l];
 			}
 		};
@@ -278,46 +282,47 @@ void copy_grayscale_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned
 	free(bimage);
 };
 
-void copy_grayalpha_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+void copy_grayalpha_from_png_c(const int num_x, const int num_y,
+                               const int iflag_rgba, unsigned char *cimage)
 {
 	int i, k, j, l, mixed;
 	
-	if(*iflag_rgba == RGBA_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	if(iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				mixed = ((int) bimage[j][4*l  ] + (int) bimage[j][4*l+1] + (int) bimage[j][4*l+2]) / 3;
 				cimage[2*k  ] = (unsigned char) mixed;
 				cimage[2*k+1] = bimage[j][2*l+1];
 			}
 		};
-	} else if(*iflag_rgba == RGB_COLOR){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == RGB_COLOR){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				mixed = ((int) bimage[j][3*l  ] + (int) bimage[j][3*l+1] + (int) bimage[j][3*l+2]) / 3;
 				cimage[2*k  ] = (unsigned char) mixed;
 				cimage[2*k+3] = (unsigned char) 255;
 			}
 		};
-	} else if(*iflag_rgba == BW_ALPHA){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == BW_ALPHA){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[2*k  ] = bimage[j][2*l  ];
 				cimage[2*k+1] = bimage[j][2*l+1];
 			}
 		};
-	} else if(*iflag_rgba == B_AND_W){
-		for (l = 0; l < *num_x; l++) {
-			for (j = 0; j < *num_y; j++) {
-				k = (*num_y-j-1) * (*num_x) + l;
+	} else if(iflag_rgba == B_AND_W){
+		for (l = 0; l < num_x; l++) {
+			for (j = 0; j < num_y; j++) {
+				k = (num_y-j-1) * num_x + l;
 				cimage[2*k  ] = bimage[j][l];
 				cimage[2*k+3] = (unsigned char) 255;
 			}
 		};
 	};
 	
-	for (i = 0; i < *num_y; i++) free(bimage[i]);
+	for (i = 0; i < num_y; i++) free(bimage[i]);
 	free(bimage);
 };

@@ -301,9 +301,10 @@
      &       = int(real(ilength) * 1.01) + 24
           call alloc_zip_buffer(gz_bufs(iloop))
  !
-          call calypso_gzip_defleat_once                                &
-     &       (ilength, fld_IO(iloop)%d_IO, gz_bufs(iloop)%ilen_gz,      &
-     &        gz_bufs(iloop)%ilen_gzipped, gz_bufs(iloop)%gzip_buf)
+          gz_bufs(iloop)%ilen_gzipped                                   &
+     &       = calypso_gzip_defleat_once(ilength, fld_IO(iloop)%d_IO,   &
+     &                                   gz_bufs(iloop)%ilen_gz,        &
+     &                                   gz_bufs(iloop)%gzip_buf)
           len_gz_lc(id_rank+1) =       gz_bufs(iloop)%ilen_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0

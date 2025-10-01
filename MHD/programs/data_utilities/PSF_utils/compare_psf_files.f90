@@ -18,7 +18,11 @@
       integer(kind = kint) :: num_psf_list
       type(psf_compare_param), allocatable, save:: psf_cmp1(:)
 !
-      integer(kind = kint) :: i, iflag
+      real(kind = kreal) :: diff_max
+      integer(kind = kint) :: i, icount_error, icou_error
+      character(len = kchara) :: charaint
+!
+      real(kind = kreal), parameter :: TINY = 1.0d-9
 !
 !
       call read_ctl_file_psf_compares(0, psf_cmp_list1)
@@ -33,10 +37,19 @@
 !
       call dealloc_psf_compares_ctl(psf_cmp_list1)
 !
-      iflag = 0
+      icount_error = 0
+      diff_max = 0.0d0
       do i = 1, num_psf_list
-        iflag = iflag + compare_psf_data(psf_cmp1(i))
+        call compare_psf_data(psf_cmp1(i), diff_max, icou_error)
+        icount_error = icount_error + icou_error
       end do
+      write(*,*) 'total count and maximum difference: ',                &
+     &          icount_error, diff_max
       deallocate(psf_cmp1)
+!
+      open(999,file='flag.txt')
+      write(charaint,*) icount_error
+      write(999,'(a)') trim(ADJUSTL(charaint))
+      close(999)
 !
       end program compare_psf_files

@@ -11,7 +11,10 @@
 !!      subroutine dealloc_element_refine_IO(e_ref_IO)
 !!
 !!      subroutine write_element_refine_data(id_file, e_ref_IO)
-!!      subroutine read_element_refine_data(id_file, e_ref_IO)
+!!      subroutine read_element_refine_data(id_file, e_ref_IO, iend)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+!!        integer(kind = kint), intent(inout) :: iend
 !!
 !!      subroutine write_element_refine_data_b(e_ref_IO, bbuf)
 !!      subroutine read_element_refine_data_b(bbuf, e_ref_IO)
@@ -117,21 +120,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_element_refine_data(id_file, e_ref_IO)
+      subroutine read_element_refine_data(id_file, e_ref_IO, iend)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: iele_neo
       character(len=255) :: character_4_read
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) e_ref_IO%nele_ref, e_ref_IO%nele_org
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) e_ref_IO%nele_ref
       call alloc_element_refine_IO(e_ref_IO)
 !

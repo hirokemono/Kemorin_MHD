@@ -13,9 +13,9 @@
 !!        type(ucd_data), intent(in) :: ucd
 !!
 !!      subroutine gz_read_ucd_2_fld_file_b                             &
-!!     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
+!!     &         (id_rank, gzip_name, t_IO, ucd)
 !!      subroutine gz_read_alloc_ucd_2_fld_file_b                       &
-!!     &         (id_rank, gzip_name, t_IO, ucd, ierr)
+!!     &         (id_rank, gzip_name, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -81,7 +81,7 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_ucd_2_fld_file_b                               &
-     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
+     &         (id_rank, gzip_name, t_IO, ucd)
 !
       use skip_gz_comment
       use gzip_file_access
@@ -89,7 +89,6 @@
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(inout) :: ierr_IO
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -104,8 +103,11 @@
       if(zbuf_fu%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_step_data_b(FPz_udt, zbuf_fu,                        &
-     &    id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
-     &    istack_merged, ucd%num_field)
+     &    id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+      if(zbuf_fu%ierr_zlib .ne. 0) go to 99
+!
+      call gz_read_num_field_b(FPz_udt, zbuf_fu,                        &
+     &                         istack_merged, ucd%num_field)
       if(zbuf_fu%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_mul_integer_b                                        &
@@ -128,7 +130,7 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_alloc_ucd_2_fld_file_b                         &
-     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
+     &         (id_rank, gzip_name, t_IO, ucd)
 !
       use skip_gz_comment
       use gzip_file_access
@@ -136,7 +138,6 @@
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(inout) :: ierr_IO
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -151,8 +152,11 @@
       if(zbuf_fu%ierr_zlib .ne. 0) go to 99
 !
       call gz_read_step_data_b(FPz_udt, zbuf_fu,                        &
-     &    id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
-     &    istack_merged, ucd%num_field)
+     &    id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+      if(zbuf_fu%ierr_zlib .ne. 0) go to 99
+!
+      call gz_read_num_field_b(FPz_udt, zbuf_fu,                        &
+     &                         istack_merged, ucd%num_field)
       if(zbuf_fu%ierr_zlib .ne. 0) go to 99
 !
       call allocate_ucd_phys_name(ucd)

@@ -30,13 +30,13 @@ ZLIB_LIBS =
 PNG_CFLAGS =
 PNG_LIBS = 
 #
-COCOA_FLAG= -DWITH_COCOA 
+COCOA_FLAG= -D__APPLE__
 OPENGL_INC = 
 OPENGL_LIBS= 
 #
 PGPLOT_LIBS= 
 
-SUBDIRS =         \
+SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
@@ -100,8 +100,16 @@ ifdef OPENGL_LIBS
     CPP_FLAGS+= -DGLFW3
   endif
 
+  ifdef FFMPEG_LIBS
+    CPP_FLAGS+= -DFFMPEG
+  endif
+
   OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIBS)
   OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)  
+endif
+
+ifdef COCOA_FLAG
+  OPENGL_LIBRARIES+= -framework accelerate
 endif
 
 ifdef MPILIBS
@@ -120,22 +128,15 @@ DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 	$(F90) -o $@ @<
 
 
-
-all: fluid
-
-fluid:
-	echo "# Compiling start"; \
-		cd work;  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		fluid
+all: makemake
 
 depends:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(BUILDDIR)/utilities
 	mkdir -p $(PYTHONDIR)
-	
+	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
@@ -150,7 +151,8 @@ depends:
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
-		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends; \
@@ -162,9 +164,28 @@ makemake:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(BUILDDIR)/utilities
 	mkdir -p $(PYTHONDIR)
 	
-	@echo # create module list
+	echo "Create module list"
+	$(GMAKE) \
+	GMAKE='$(GMAKE)' \
+	MHDDIR='$(MHDDIR)' \
+	MAKEDIR='$(MAKEDIR)' \
+	MAKENAME='$(MAKENAME)' \
+	64BIT_INT='$(64BIT_INT)'   \
+	CC="$(CC)"   \
+	DEPFLAGS='$(DEPFLAGS)' \
+	OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+	C_INCLUDE='$(C_INCLUDE)' \
+	GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+	GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+	FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
+	OPENGL_LIBS='$(OPENGL_LIBS)'  \
+	MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+	depends
+	
+	echo "# create Makefile"
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
 	echo '#' >> $(MAKENAME)
@@ -248,6 +269,11 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'GLFW_CFLAGS =  $(GLFW_CFLAGS)'         >> $(MAKENAME)
 	@echo 'GLFW_LIBS =    $(GLFW_LIBS)'           >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# FFMPEG settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'FFMPEG_CFLAGS =  $(FFMPEG_CFLAGS)'         >> $(MAKENAME)
+	@echo 'FFMPEG_LIBS =    $(FFMPEG_LIBS)'           >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
@@ -349,7 +375,8 @@ makemake:
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
 		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)'   \
-		GLFW_LIBS='$(GLFW_LIBS)'   \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
@@ -400,28 +427,12 @@ makemake:
 		 ) \
 	done
 	@echo '' >> $(MAKENAME)
-	@echo 'create objects construct list...'
+	@echo 'Append compile list...'
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'generate compile commands for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		64BIT_INT='$(64BIT_INT)'   \
-		OPENGL_LIBS='$(OPENGL_LIBS)'  \
-		SSE_FLAG="$(SSE_FLAG)" \
-		SSE_CPU="$(SSE_CPU)" \
-		SSE_CPU="$(SSE_CPU)" \
-		SSE4="$(SSE4)" \
-		SSE8="$(SSE8)" \
-		module; \
-		) \
-	done
+	cat $(MAKENAME).depends >> $(MAKENAME)
+	rm -f $(MAKEDIR)/Makefile.depends
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

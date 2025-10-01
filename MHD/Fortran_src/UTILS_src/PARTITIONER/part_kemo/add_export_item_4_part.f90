@@ -110,7 +110,9 @@
           num_export_copy(1:nneib2_old)                                 &
      &              = new_comm%num_export(1:nneib2_old)
 !
-          call dealloc_comm_tbl_num(new_comm)
+          call dealloc_neib_id(new_comm)
+          call dealloc_import_num(new_comm)
+          call dealloc_export_num(new_comm)
           call alloc_comm_table_num(new_comm)
 !
           new_comm%id_neib(1:nneib2_old) = id_neib_copy(1:nneib2_old)

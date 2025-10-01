@@ -69,7 +69,7 @@
 !
       type(mesh_test_control), save :: mesh_tctl1
       type(field_IO_params) :: mesh_file_name
-      integer(kind = kint) :: iflag_output_SURF = 0
+      logical :: flag_output_SURF = .FALSE.
 !
       type(next_nod_ele_table), save :: next_tbl_T
 !
@@ -96,7 +96,7 @@
 !
       call set_minimum_fem_platform                                     &
      &   (mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                         &
-     &    mesh_file_name, iflag_output_SURF)
+     &    mesh_file_name, flag_output_SURF)
 !
 !  --  read geometry
 !

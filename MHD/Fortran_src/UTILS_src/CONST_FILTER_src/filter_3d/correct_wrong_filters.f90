@@ -106,7 +106,8 @@
 !
       do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
-     &     (id_org_filter, fil_coef, bbuf_org)
+     &     (id_org_filter, fil_coef, bbuf_org, ierr)
+        if(ierr .gt. 0) return
 !
         call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
@@ -197,7 +198,8 @@
 !
       do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
-     &     (id_org_filter, fil_coef, bbuf_org)
+     &     (id_org_filter, fil_coef, bbuf_org, ierr)
+        if(ierr .gt. 0) return
 !
         if ( fil_coef%nnod_4_1nod_w .gt. 0) then
           call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)

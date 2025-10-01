@@ -7,13 +7,15 @@
 !>@brief  First order FDM from element to node
 !!
 !!@verbatim
-!!      subroutine const_first_fdm_ele_to_node(sph_rj, fdm_1st_nod)
+!!      subroutine const_first_fdm_ele_to_node(id_check, sph_rj,        &
+!!     &                                       fdm_1st_nod)
+!!        integer(kind = kint), intent(in) :: id_check
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_1st_nod
-!!      subroutine cal_first_fdm_ele_to_node(kr_in, kr_out, sph_rj,     &
-!!     &          fdm_1st_nod, dele_rj, dnod_dr)
+!!      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,       &
+!!     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
 !!        real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
 !!        type(fdm_matrices), intent(in) :: fdm_1st_nod
 !!        real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
@@ -50,6 +52,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use t_spheric_parameter
       use t_fdm_coefs
 !
@@ -64,8 +67,10 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine const_first_fdm_ele_to_node(sph_rj, fdm_1st_nod)
+      subroutine const_first_fdm_ele_to_node(id_check, sph_rj,          &
+     &                                       fdm_1st_nod)
 !
+      integer(kind = kint), intent(in) :: id_check
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
       type(fdm_matrices), intent(inout) :: fdm_1st_nod
@@ -74,7 +79,7 @@
 !
 !
       call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ione, izero, ione, fdm_1st_nod)
+     &   (sph_rj%nidx_rj(1), izero, ione, izero, ione, fdm_1st_nod)
 !
       allocate(mat_fdm(2,2,sph_rj%nidx_rj(1)))
       mat_fdm(1:2,1:2,1:sph_rj%nidx_rj(1)) = 0.0d0
@@ -83,25 +88,31 @@
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
       call copy_first_fdm_ele_to_node                                   &
-     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_1st_nod%fdm(1))
+     &   (sph_rj%nidx_rj(1), mat_fdm, fdm_1st_nod%fdm)
       deallocate(mat_fdm)
+!
+      if(iflag_debug .gt. 0) then
+        write(id_check,*) 'check First order FDM from element'
+        call check_fdm_coefs(id_check, sph_rj%nidx_rj(1),               &
+     &                       sph_rj%radius_1d_rj_r, fdm_1st_nod)
+      end if
 !
       end subroutine const_first_fdm_ele_to_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_first_fdm_ele_to_node(kr_in, kr_out, sph_rj,       &
-     &          fdm_1st_nod, dele_rj, dnod_dr)
+      subroutine cal_first_fdm_ele_to_node(i_th, kr_in, kr_out,         &
+     &          sph_rj, fdm_1st_nod, dele_rj, dnod_dr)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: i_th, kr_in, kr_out
       real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
       type(fdm_matrices), intent(in) :: fdm_1st_nod
 !
       real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
 !
       call cal_sph_vect_dr_nod_1(kr_in, kr_out, sph_rj,                 &
-     &    fdm_1st_nod%fdm(1), dele_rj, dnod_dr)
+     &    fdm_1st_nod%fdm(i_th), dele_rj, dnod_dr)
 !
       end subroutine cal_first_fdm_ele_to_node
 !
@@ -124,9 +135,9 @@
       do kr = 1, nri
         mat_taylor_2(1,1) = one
         if (kr .eq. 1) then
-          mat_taylor_2(1,2) = half * r(1)
+          mat_taylor_2(1,2) = - half * r(1)
         else
-          mat_taylor_2(1,2) = half * (r(kr) - r(kr-1))
+          mat_taylor_2(1,2) = - half * (r(kr) - r(kr-1))
         end if
 !
         mat_taylor_2(2,1) = one
@@ -144,19 +155,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_first_fdm_ele_to_node(nri, mat_fdm, fdm1)
+      subroutine copy_first_fdm_ele_to_node(nri, mat_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(2,2,nri)
-      type(fdm_matrix), intent(inout) :: fdm1
+      type(fdm_matrix), intent(inout) :: fdm(0:1)
 !
       integer(kind= kint) :: k
 !
 !
 !$omp parallel do private (k)
       do k = 1, nri-1
-        fdm1%dmat(k, 0) = mat_fdm(2,1,k)
-        fdm1%dmat(k, 1) = mat_fdm(2,2,k)
+        fdm(0)%dmat(k, 0) = mat_fdm(1,1,k)
+        fdm(0)%dmat(k, 1) = mat_fdm(1,2,k)
+!
+        fdm(1)%dmat(k, 0) = mat_fdm(2,1,k)
+        fdm(1)%dmat(k, 1) = mat_fdm(2,2,k)
       end do
 !$omp end parallel do
 !

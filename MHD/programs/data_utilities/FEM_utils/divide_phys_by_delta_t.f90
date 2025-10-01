@@ -36,7 +36,6 @@
 !
       ddt = one / dt
 !
-!$omp parallel private(i,ist)
       do i = 1, nod_fld%num_phys
         ist = nod_fld%istack_component(i-1) + 1
 !
@@ -48,7 +47,6 @@
           call multi_by_const_nod_tensor(ist, ist, ddt, nod_fld)
         end if
       end do
-!$omp end parallel
 !
       end subroutine s_divide_phys_by_delta_t
 !
@@ -68,7 +66,6 @@
 !
 !
       dnum = one / dble(icou)
-!$omp parallel private(i,ist)
       do i = 1, nod_fld%num_phys
         ist = nod_fld%istack_component(i-1) + 1
 !
@@ -80,7 +77,6 @@
           call multi_by_const_nod_tensor(ist, ist, dnum, nod_fld)
         end if
       end do
-!$omp end parallel
 !
       end subroutine s_divide_phys_by_num_udt
 !

@@ -12,7 +12,6 @@
 !!     &                kr_inside, r_inside, kr_outside, r_outside,     &
 !!     &                num_fld_sq, num_comp_sq, pwr_name,              &
 !!     &                ntot_comp_sq, pwr_label)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len = kchara), intent(in) :: mode_label
@@ -83,30 +82,47 @@
 !
       character(len=255) :: character_4_read
       character(len=kchara) :: label(2)
+      integer(kind = kint) :: iend = 0
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) then
+        error_sph_vol_monitor_head = .TRUE.
+        return
+      end if
       read(character_4_read, *) label(1:2)
       error_sph_vol_monitor_head                                        &
      &    = error_sph_moniter_two_int(id_file, label, nri_sph, ltr_sph)
       if(error_sph_vol_monitor_head) return
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) then
+        error_sph_vol_monitor_head = .TRUE.
+        return
+      end if
       read(character_4_read, *) label(1:2)
       error_sph_vol_monitor_head                                        &
      &    = error_sph_moniter_two_int(id_file, label,                   &
      &                                nlayer_ICB, nlayer_CMB)
       if(error_sph_vol_monitor_head) return
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) then
+        error_sph_vol_monitor_head = .TRUE.
+        return
+      end if
       read(character_4_read, *) label(1:2)
       error_sph_vol_monitor_head                                        &
      &    = error_sph_moniter_int_real(id_file, label,                  &
      &                                 kr_inside, r_inside)
       if(error_sph_vol_monitor_head) return
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) then
+        error_sph_vol_monitor_head = .TRUE.
+        return
+      end if
       read(character_4_read, *) label(1:2)
       error_sph_vol_monitor_head                                        &
      &    = error_sph_moniter_int_real(id_file, label,                  &
@@ -114,7 +130,11 @@
       if(error_sph_vol_monitor_head) return
 !
 !
-      call skip_comment(character_4_read, id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) then
+        error_sph_vol_monitor_head = .TRUE.
+        return
+      end if
       label(1) = 'Number_of_field'
       label(2) = 'Number_of_component'
       error_sph_vol_monitor_head                                        &

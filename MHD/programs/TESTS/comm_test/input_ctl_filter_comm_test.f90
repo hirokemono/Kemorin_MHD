@@ -12,8 +12,12 @@
       module input_ctl_filter_comm_test
 !
       use m_precision
+      use calypso_mpi
 !
       implicit none
+!
+      character(len = kchara), parameter, private                       &
+     &               :: fname_test_mesh_ctl = "ctl_filter_comm_test"
 !
       private :: set_ctl_param_filter_comm_test
 !
@@ -26,11 +30,11 @@
       subroutine s_input_ctl_filter_comm_test                           &
      &         (filtering, filter_node, wk_filter)
 !
-      use calypso_mpi
       use t_geometry_data
       use t_filter_file_data
       use t_filtering_data
       use t_ctl_data_filter_comm_test
+      use t_read_control_elements
       use m_machine_parameter
       use m_filter_file_names
 !
@@ -45,10 +49,21 @@
       type(filter_file_data) :: filter_IO_t
       character(len=kchara) :: file_name
       integer(kind = kint) :: ierr
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if (iflag_debug.eq.1) write(*,*) 'read_control_filter_comm_test'
-      call read_control_filter_comm_test(fc_test_ctl)
+      if(my_rank .eq. 0) then
+        call read_control_filter_comm_test(fname_test_mesh_ctl,         &
+     &                                     fc_test_ctl, c_buf1)
+      end if
+      call bcast_filter_comm_test_data(fc_test_ctl)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(fc_test_ctl%i_filter_test_ctl,           &
+     &                             'control file is broken')
+      end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_param_filter_comm_test(fc_test_ctl%ffile_ctest_ctl)
@@ -91,6 +106,25 @@
       ifmt_filter_file = id_ascii_file_fmt
 !
       end subroutine set_ctl_param_filter_comm_test
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_filter_comm_test_data(fc_test_ctl)
+!
+      use t_ctl_data_filter_comm_test
+      use calypso_mpi_int
+      use bcast_4_platform_ctl
+      use bcast_4_filter_files_ctl
+!
+      type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
+!
+!
+      call bcast_ctl_data_4_platform(fc_test_ctl%f_comm_plt)
+      call bcast_filter_fnames_control(fc_test_ctl%ffile_ctest_ctl)
+!
+      call calypso_mpi_bcast_one_int(fc_test_ctl%i_filter_test_ctl, 0)
+!
+      end subroutine bcast_filter_comm_test_data
 !
 !   --------------------------------------------------------------------
 !

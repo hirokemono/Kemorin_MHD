@@ -55,7 +55,7 @@
      &          b_trns_base, fg_trns_SGS, fs_trns_sef,                  &
      &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -69,21 +69,19 @@
       type(spherical_transform_data), intent(inout) :: trns_f_DYNS
 !
 !
-!$omp parallel
-      call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                   &
+      call cal_dot_product_no_coef(sph_rtp%nnod_rtp,                    &
      &    trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),              &
      &    trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                     &
      &    trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
-!$omp end parallel
 !
-      if(fl_prop%iflag_4_gravity) then
+      if(fl_prop%flag_thermal_buoyancy) then
         call sel_SGS_buoyancy_flux_rtp                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
      &     trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),              &
      &     trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_buo_wk))
       end if
-      if(fl_prop%iflag_4_composit_buo) then
+      if(fl_prop%flag_comp_buoyancy) then
         call sel_SGS_buoyancy_flux_rtp                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &   sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,                &
@@ -99,7 +97,7 @@
      &          b_trns_base, fg_trns_SGS, bs_trns_SGS, fs_trns_sef,     &
      &          trns_b_snap, trns_f_SGS, trns_bs_SGS, trns_f_snap)
 !
-      use cal_products_smp
+      use cal_vector_products
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -115,30 +113,27 @@
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
-!$omp parallel
       if(fs_trns_sef%i_reynolds_wk .gt. 0) then
-        call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
+        call cal_dot_product_w_coef(sph_rtp%nnod_rtp, dminus,           &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),            &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
       end if
 !
       if(fs_trns_sef%i_SGS_Lor_wk .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+        call cal_dot_product_no_coef(sph_rtp%nnod_rtp,                  &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_Lorentz),            &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_Lor_wk))
       end if
 !
       if(fs_trns_sef%i_SGS_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+        call cal_dot_product_no_coef(sph_rtp%nnod_rtp,                  &
      &      trns_bs_SGS%fld_rtp(1,bs_trns_SGS%i_SGS_induction),         &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_magne),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_me_gen))
       end if
-!$omp end parallel
 !
-!$omp parallel
       if(fs_trns_sef%i_SGS_buo_wk .gt. 0) then
         call cal_buoyancy_flux_rtp_rin                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
@@ -153,7 +148,6 @@
      &   trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),                &
      &   trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_comp_buo_wk))
       end if
-!$omp end parallel
 !
       end subroutine SGS_fluxes_for_snapshot
 !
@@ -174,7 +168,6 @@
       real(kind = kreal), intent(inout) :: frc_buo(nnod_rtp)
 !
 !
-!$omp parallel
       if(istep_rtp(3) .eq. 1) then
         call cal_buoyancy_flux_rtp_pin                                  &
      &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
@@ -184,7 +177,6 @@
      &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
      &      coef, frc_hf, frc_buo)
       end if
-!$omp end parallel
 !
       end subroutine sel_SGS_buoyancy_flux_rtp
 !
@@ -207,7 +199,7 @@
       integer(kind = kint) :: k, l, m, i1
 !
 !
-!$omp do private(k,l,m,i1)
+!$omp parallel do private(k,l,m,i1)
       do l = 1, nidx_rtp(2)
         do k = 1, nidx_rtp(1)
           do m = 1, nidx_rtp(3)
@@ -216,7 +208,7 @@
           end do
         end do
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine cal_buoyancy_flux_rtp_pin
 !
@@ -238,6 +230,7 @@
       integer(kind = kint) :: k, l, m, i1
 !
 !
+!$omp parallel
       do m = 1, nidx_rtp(3)
 !$omp do private(k,l,i1)
         do l = 1, nidx_rtp(2)
@@ -248,6 +241,7 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
  !
       end subroutine cal_buoyancy_flux_rtp_rin
 !

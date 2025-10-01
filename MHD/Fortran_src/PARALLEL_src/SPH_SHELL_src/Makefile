@@ -13,7 +13,9 @@ MOD_COMM_SPH = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'SPH_COMMDIR = $(SPH_COMMDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_COMM_SPH)' >> $(MAKENAME)
 
 
@@ -22,12 +24,8 @@ mod_list:
 	@echo  $(MOD_COMM_SPH) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_COMMDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SPH_COMMDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

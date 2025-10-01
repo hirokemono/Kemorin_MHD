@@ -8,6 +8,10 @@
 !> @brief control data to append monitor files
 !!
 !!@verbatim
+!!      subroutine read_ctl_file_add_sph_mntr(file_name, add_mtr_ctl)
+!!      subroutine dealloc_ctl_data_add_sph_mntr(add_mtr_ctl)
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(ctl_data_add_sph_monitor), intent(inout) :: add_mtr_ctl
 !! -----------------------------------------------------------------
 !!
 !!      control block for pickup spherical harmonics
@@ -16,13 +20,10 @@
 !!    folder_to_read_ctl    'no02'
 !!    folder_to_add_ctl     'monitor'
 !!
-!!    read_monitor_file_format_ctl    'gzip'
-!!
-!!    begin monitor_data_list_ctl
-!!      volume_average_prefix        'no02/sph_ave_volume'
+!!    begin monitor_file_list_ctl
 !!      ...
-!!    end monitor_data_list_ctl
-!!  begin monitor_data_connect_ctl
+!!    end monitor_file_list_ctl
+!!  end monitor_data_connect_ctl
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim
@@ -33,6 +34,7 @@
 !
       use t_ctl_data_sph_monitor_list
       use t_control_array_character
+      use t_control_array_real
 !
       implicit none
 !
@@ -41,9 +43,11 @@
         type(read_character_item) :: folder_to_read_ctl
 !>        directory of time series to add
         type(read_character_item) :: folder_to_add_ctl
-!>        file format of time series to be read
-        type(read_character_item) :: read_monitor_fmt_ctl
 !
+!>        End time for trim time series
+        type(read_real_item) :: end_time_ctl
+!
+!>        List of monitor file prefixes
         type(sph_monitor_files_ctl) :: monitor_list_ctl
 !
         integer (kind = kint) :: i_add_sph_monitor = 0
@@ -57,10 +61,12 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_folder_to_add_ctl = 'folder_to_add_ctl'
       character(len=kchara), parameter, private                         &
-     &      :: hd_read_monitor_format = 'read_monitor_file_format_ctl'
+     &      :: hd_end_time_ctl = 'end_time_ctl'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_monitor_file_list = 'monitor_file_list_ctl'
+!
+      private :: read_ctl_data_add_sph_mntr
 !
 ! -----------------------------------------------------------------------
 !
@@ -80,14 +86,19 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(ctl_file_code, file = file_name, status='old' )
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (ctl_file_code, hd_monitor_data_connect, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ctl_data_add_sph_mntr(ctl_file_code,                  &
      &      hd_monitor_data_connect, add_mtr_ctl, c_buf1)
         if(add_mtr_ctl%i_add_sph_monitor .gt. 0) exit
       end do
       close(ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_add_sph_mntr
 !
@@ -109,15 +120,16 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(add_mtr_ctl%i_add_sph_monitor  .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_folder_to_read_ctl,          &
      &      add_mtr_ctl%folder_to_read_ctl)
         call read_chara_ctl_type(c_buf, hd_folder_to_add_ctl,           &
      &      add_mtr_ctl%folder_to_add_ctl)
-        call read_chara_ctl_type(c_buf, hd_read_monitor_format,         &
-     &      add_mtr_ctl%read_monitor_fmt_ctl)
+        call read_real_ctl_type(c_buf, hd_end_time_ctl,                 &
+     &      add_mtr_ctl%end_time_ctl)
 !
         call read_ctl_sph_monitor_list                                  &
      &     (id_control, hd_monitor_file_list,                           &
@@ -133,13 +145,11 @@
 !
       type(ctl_data_add_sph_monitor), intent(inout) :: add_mtr_ctl
 !
-      integer(kind = kint) :: i
-!
 !
       add_mtr_ctl%folder_to_read_ctl%iflag = 0
-      add_mtr_ctl%folder_to_add_ctl%iflag = 0
-      add_mtr_ctl%read_monitor_fmt_ctl%iflag = 0
-      add_mtr_ctl%i_add_sph_monitor = 0
+      add_mtr_ctl%folder_to_add_ctl%iflag =  0
+      add_mtr_ctl%end_time_ctl%iflag = 0
+      add_mtr_ctl%i_add_sph_monitor =  0
 !
       call dealloc_ctl_sph_monitor_list(add_mtr_ctl%monitor_list_ctl)
 !

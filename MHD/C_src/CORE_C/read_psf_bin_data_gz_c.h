@@ -18,6 +18,7 @@
 
 /*  prototype  */
 
+void read_psf_num_node_bin_gz(const char *gzip_name, struct psf_data *psf_z);
 int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z);
 int read_alloc_psf_bin_gz(const char *gzip_name, double *time, struct psf_data *psf_z);
 int read_alloc_iso_bin_gz(const char *gzip_name, double *time, struct psf_data *psf_z);

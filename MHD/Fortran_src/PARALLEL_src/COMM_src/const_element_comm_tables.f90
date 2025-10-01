@@ -26,6 +26,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine const_global_numnod_list(node)
+!!      subroutine const_global_numele_list(ele)
 !!      subroutine set_node_ele_double_address                          &
 !!     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl,    &
 !!     &          SR_sig, SR_i)
@@ -173,8 +174,8 @@
 !
       call alloc_failed_export(0, fail_tbl_e)
       call const_comm_table_by_connenct                                 &
-     &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
-     &    ele%x_ele, node, nod_comm, inod_dbl, iele_dbl, neib_ele,      &
+     &   (ele%numele, ele%nnod_4_ele, ele%ie,                           &
+     &    ele%x_ele, nod_comm, inod_dbl, iele_dbl, neib_ele,            &
      &    sum_list_e, ele_comm, fail_tbl_e, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
@@ -184,9 +185,9 @@
      &    m_SR%SR_sig, m_SR%SR_il)
 !
       call check_element_position                                       &
-     &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
+     &   (txt_ele, node%inod_global, ele%numele,                        &
      &    ele%nnod_4_ele, ele%ie, ele%iele_global, ele%x_ele,           &
-     &    inod_dbl, iele_dbl, ele_comm, m_SR%SR_sig, m_SR%SR_r)
+     &    inod_dbl, ele_comm, m_SR%SR_sig, m_SR%SR_r)
       call dealloc_sum_of_local_id_list(sum_list_e)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iele_dbl)
@@ -243,8 +244,8 @@
      &          ' const_comm_table_by_connenct in edge'
       call alloc_failed_export(0, fail_tbl_d)
       call const_comm_table_by_connenct                                 &
-     &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
-     &    edge%x_edge, node, nod_comm, inod_dbl, iedge_dbl, neib_edge,  &
+     &   (edge%numedge, edge%nnod_4_edge, edge%ie_edge,                 &
+     &    edge%x_edge, nod_comm, inod_dbl, iedge_dbl, neib_edge,        &
      &    sum_list_d, edge_comm, fail_tbl_d, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_edge)
       call dealloc_failed_export(fail_tbl_d)
@@ -261,10 +262,9 @@
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
-     &   (txt_edge, node%numnod, node%inod_global, edge%numedge,        &
+     &   (txt_edge, node%inod_global, edge%numedge,                     &
      &    edge%nnod_4_edge, edge%ie_edge, edge%iedge_global,            &
-     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm,                  &
-     &    m_SR%SR_sig, m_SR%SR_r)
+     &    edge%x_edge, inod_dbl, edge_comm, m_SR%SR_sig, m_SR%SR_r)
       call dealloc_sum_of_local_id_list(sum_list_d)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iedge_dbl)
@@ -334,8 +334,8 @@
 !
       call set_node_double_numbering(node, nod_comm, inod_dbl,          &
      &                               SR_sig, SR_i)
-      call set_ele_double_numbering(ele, ele_comm, inod_dbl, iele_dbl,  &
-     &                              SR_sig, SR_i)
+      call set_ele_double_numbering(ele%numele, ele%ie(1,1), ele_comm,  &
+     &                              inod_dbl, iele_dbl, SR_sig, SR_i)
 !
       end subroutine set_node_ele_double_address
 !

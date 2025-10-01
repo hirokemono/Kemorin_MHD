@@ -20,8 +20,9 @@
 !!        type(mesh_groups_p), intent(inout) :: group_l
 !!        type(phys_data), intent(inout) :: nod_fld_l
 !!
-!!      subroutine dealloc_linear_data_by_quad                          &
-!!     &         (mesh_l, group_l, nod_fld_l)
+!!      subroutine dealloc_linear_data_by_quad(mesh_l, group_l)
+!!        type(mesh_geometry_p), intent(inout) :: mesh_l
+!!        type(mesh_groups_p), intent(inout) :: group_l
 !!@endverbatim
 !
       module const_linear_mesh_by_quad
@@ -138,15 +139,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_linear_data_by_quad                            &
-     &         (mesh_l, group_l, nod_fld_l)
+      subroutine dealloc_linear_data_by_quad(mesh_l, group_l)
 !
       use set_size_4_smp_types
       use single_edge_information
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l
-      type(phys_data), intent(inout) :: nod_fld_l
 !
 !
       call finalize_size_4_smp_mesh(mesh_l%node, mesh_l%ele)

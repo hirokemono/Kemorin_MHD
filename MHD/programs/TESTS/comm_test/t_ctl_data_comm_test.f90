@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!!      subroutine read_control_4_comm_test(comm_tctl)
+!!      subroutine read_control_4_comm_test(comm_tctl, c_buf)
 !!      subroutine reset_test_comm_ctl_data(comm_tctl)
 !!        type(comm_test_control), intent(inout) :: comm_tctl
 !!
@@ -27,7 +27,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
       use t_read_control_elements
@@ -37,8 +36,6 @@
 !
 !
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &                        :: fname_test_mesh_ctl = "ctl_mesh"
 !
 !>      Structure for file settings
       type comm_test_control
@@ -47,7 +44,7 @@
 !>        Structure of mesh IO controls and sleeve informations
         type(FEM_mesh_control) :: Fmesh_ctl
 !
-        integer (kind=kint), private :: i_mesh_test_ctl = 0
+        integer (kind=kint) :: i_mesh_test_ctl = 0
       end type comm_test_control
 !
 !     Label for the entry
@@ -61,7 +58,7 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
 !
-      private :: read_test_comm_ctl_data, bcast_test_comm_ctl_data
+      private :: read_test_comm_ctl_data
 !
 !   --------------------------------------------------------------------
 !
@@ -69,29 +66,30 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_comm_test(comm_tctl)
+      subroutine read_control_4_comm_test(file_name, comm_tctl, c_buf)
 !
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: file_name
       type(comm_test_control), intent(inout) :: comm_tctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
+      c_buf%level = c_buf%level + 1
+      open(test_mest_ctl_file_code, file = file_name, status='old')
+      do
+        call load_one_line_from_control                                 &
+     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
-      if(my_rank .eq. 0) then
-        open(test_mest_ctl_file_code, file = fname_test_mesh_ctl,       &
-     &       status='old')
-        do
-          call load_one_line_from_control                               &
-     &       (test_mest_ctl_file_code, c_buf1)
-          call read_test_comm_ctl_data(test_mest_ctl_file_code,         &
-     &        hd_mesh_test_ctl, comm_tctl, c_buf1)
-          if(comm_tctl%i_mesh_test_ctl .gt. 0) exit
-        end do
-        close(test_mest_ctl_file_code)
-      end if
+        call read_test_comm_ctl_data(test_mest_ctl_file_code,         &
+     &      hd_mesh_test_ctl, comm_tctl, c_buf)
+        if(comm_tctl%i_mesh_test_ctl .gt. 0) exit
+      end do
+      close(test_mest_ctl_file_code)
 !
-      call bcast_test_comm_ctl_data(comm_tctl)
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_4_comm_test
 !
@@ -101,6 +99,7 @@
       subroutine read_test_comm_ctl_data                                &
      &         (id_control, hd_block, comm_tctl, c_buf)
 !
+      use ctl_data_platforms_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -110,10 +109,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(comm_tctl%i_mesh_test_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, comm_tctl%plt)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, comm_tctl%Fmesh_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -124,23 +126,6 @@
       comm_tctl%i_mesh_test_ctl = 1
 !
       end subroutine read_test_comm_ctl_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_test_comm_ctl_data(comm_tctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(comm_test_control), intent(inout) :: comm_tctl
-!
-!
-      call bcast_ctl_data_4_platform(comm_tctl%plt)
-      call bcast_FEM_mesh_control(comm_tctl%Fmesh_ctl)
-!
-      call calypso_mpi_bcast_one_int(comm_tctl%i_mesh_test_ctl, 0)
-!
-      end subroutine bcast_test_comm_ctl_data
 !
 !   --------------------------------------------------------------------
 !

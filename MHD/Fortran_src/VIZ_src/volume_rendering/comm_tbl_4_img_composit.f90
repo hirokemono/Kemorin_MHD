@@ -25,7 +25,7 @@
 !!     &          item_send_pixel_composit)
 !!
 !!      subroutine set_item_recv_tmp_composit(ntot_recv_pixel_composit, &
-!!     &          item_recv_pixel_composit, irev_recv_pixel_composit)
+!!     &                                      item_recv_pixel_composit)
 !!      subroutine set_image_composition_stack(num_pixel_xy,            &
 !!     &          item_4_composit, npixel_4_composit,                   &
 !!     &          ntot_recv_pixel_composit, ipix_4_composit,            &
@@ -173,6 +173,7 @@
 !
 !
       icou = 0
+      if(icou .ge. num_pvr_ray) return
       do 
         isrt = index_pvr_start(icou+1)
         ipix =  id_pixel_start(isrt)
@@ -197,14 +198,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_item_recv_tmp_composit(ntot_recv_pixel_composit,   &
-     &          item_recv_pixel_composit, irev_recv_pixel_composit)
+     &                                      item_recv_pixel_composit)
 !
       integer(kind = kint), intent(in) :: ntot_recv_pixel_composit
 !
       integer(kind = kint), intent(inout)                               &
      &      :: item_recv_pixel_composit(ntot_recv_pixel_composit)
-      integer(kind = kint), intent(inout)                               &
-     &      :: irev_recv_pixel_composit(ntot_recv_pixel_composit)
 !
       integer(kind = kint) :: inum
 !
@@ -212,7 +211,6 @@
 !$omp parallel do
       do inum = 1, ntot_recv_pixel_composit
         item_recv_pixel_composit(inum) = inum
-        irev_recv_pixel_composit(inum) = inum
       end do
 !$omp end parallel do
 !

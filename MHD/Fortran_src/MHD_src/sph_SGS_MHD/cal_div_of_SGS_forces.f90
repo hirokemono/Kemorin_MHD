@@ -43,14 +43,12 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!$omp parallel
       if(ipol_div_SGS%i_SGS_inertia  .ne. 0                             &
      &  .and.  ipol_div_SGS%i_SGS_Lorentz .ne. 0) then
         call set_SGS_forces_to_div_force                                &
      &     (ipol_base%i_press, ipol_div_SGS,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-!
         if(ipol_div_SGS%i_SGS_inertia .ne. id_turn_OFF) then
           call add_term_to_div_force                                    &
      &       (ipol_base%i_press, ipol_div_SGS%i_SGS_inertia,            &
@@ -62,7 +60,6 @@
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
       end if
-!$omp end parallel
 !
       end subroutine sum_div_of_SGS_forces
 !
@@ -81,13 +78,13 @@
       integer(kind = kint) :: inod
 !
 !
-!$omp do private (inod)
+!$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,is_press) =  d_rj(inod,is_press)                      &
      &                       - d_rj(inod,ipol_div_SGS%i_SGS_inertia)    &
      &                       + d_rj(inod,ipol_div_SGS%i_SGS_Lorentz)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine set_SGS_forces_to_div_force
 !

@@ -178,9 +178,9 @@
       ist_nod_sf(i_dest) = ist_nod_sf(i_dest-1)                         &
      &        + inod_stack_sf_grp(igrp) - inod_stack_sf_grp(igrp-1)
 !
-!$omp workshare
+!$omp parallel workshare
       d_surf_nod_tmp(1:numnod) = 0.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
       ist = surf_istack(igrp-1)+1
       ied = surf_istack(igrp)

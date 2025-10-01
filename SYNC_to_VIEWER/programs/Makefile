@@ -74,21 +74,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
@@ -100,6 +89,7 @@ depends:
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
+		FFMPEG_CFLAGS='$(FFMPEG_CFLAGS)' \
 		depends; \
 		) \
 	done

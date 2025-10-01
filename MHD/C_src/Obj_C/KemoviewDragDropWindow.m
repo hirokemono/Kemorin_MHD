@@ -11,42 +11,36 @@
 
 @implementation KemoviewDragDropWindow
 
-@synthesize kemoview_s;
-
 - (id)init
 {
-//	self = [super init];
-	
-//	if (self) {
-//        kemoview_allocate_viwewer_struct(kemoview_s, IZERO);
-        id_window = kemoview_get_current_viewer_id();
-        
-//        NSLog(@"init KemoviewDragDropWindow %d", id_window);
-//		[NSBundle loadNibNamed:@"Kemoviewer" owner:self];
-//    }
-	
+	self = [super init];
 	return(self);
 }
 
 - (void) awakeFromNib
 {
     [self registerForDraggedTypes:[NSArray arrayWithObjects:
-                                   NSFilenamesPboardType, nil]];
+                                   NSPasteboardTypeFileURL, nil]];
 };
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
 {
 	NSPasteboard *pbd = [sender draggingPasteboard];
-    
-    if ( [[pbd types] containsObject:NSFilenamesPboardType] ) {
-        NSArray *filearray = [pbd propertyListForType:NSFilenamesPboardType];
- //       int numberOfFiles = [filearray count];
-        NSString *filename = [filearray objectAtIndex:0];
+    NSArray<Class> *classes = @[[NSURL class]];
+    NSDictionary *options = @{};
+    NSArray<NSURL*> *files = [pbd readObjectsForClasses:classes options:options];
+    for (NSURL *url in files)
+    {
+       NSString *filename = [url path];
 
+       // TODO: do something with str.
         [self setAlphaValue:1.0];
-        [_kemoviewIOControl OpenKemoviewerFile:filename];
-   };
-    return YES;    
+        
+        struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+        [_kemoviewIOControl OpenKemoviewerFile:filename
+                                      kemoview:kemo_sgl];
+    }
+    return YES;
 }
 
 - (unsigned int)draggingEntered:(id <NSDraggingInfo>)sender
@@ -66,14 +60,11 @@
 
 - (void)windowWillClose:(NSNotification *)aNotofication;
 {
-//	NSLog(@"Window %d is closing", id_window);
-//    kemoview_set_single_viewer_id(id_window);
 //	[self release];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotofication;
 {
 //	NSLog(@"Window %d is front", id_window);
-//    kemoview_set_single_viewer_id(id_window);
 }
 @end

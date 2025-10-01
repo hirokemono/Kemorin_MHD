@@ -158,11 +158,7 @@
      &    g_FEM%int_start3, g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,    &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
-     &    FEM_elens%nele_filter_mom,                                    &
-     &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
-     &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
-     &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, vector_1, sk_v)
+     &    FEM_elens%elen_ele, ak_diff, vector_1, sk_v)
 !
       end subroutine fem_skv_rot_sgs_galerkin
 !

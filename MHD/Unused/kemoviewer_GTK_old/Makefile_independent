@@ -34,7 +34,7 @@ TARGET_KEMOVIEW_GTK = kemoviewer_GTK
 
 MOD_KEMOVIEW_GTK = \
 kemo_mesh_viewer_gtk.o \
-kemoview_fileselector_gtk.o \
+kemoview_gtk_fileselector.o \
 kemoviewer_gtk.o \
 \
 const_viewer_menu_glut.o \
@@ -57,9 +57,9 @@ $(TARGET_KEMOVIEW_GTK): $(MOD_KEMOVIEW_GTK)
 
 kemoviewer_gtk.o: kemoviewer_gtk.c kemo_mesh_viewer_gtk.o
 
-kemo_mesh_viewer_gtk.o: kemo_mesh_viewer_gtk.c kemoview_fileselector_gtk.o const_viewer_menu_glut.o view_modifier_glut.o
+kemo_mesh_viewer_gtk.o: kemo_mesh_viewer_gtk.c kemoview_gtk_fileselector.o const_viewer_menu_glut.o view_modifier_glut.o
 
-kemoview_fileselector_gtk.o: kemoview_fileselector_gtk.c
+kemoview_gtk_fileselector.o: kemoview_gtk_fileselector.c
 
 view_modifier_glut.o: $(KEMO_C_GLUTDIR)/view_modifier_glut.c $(KEMO_C_GLUTDIR)/view_modifier_glut.h
 	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $<

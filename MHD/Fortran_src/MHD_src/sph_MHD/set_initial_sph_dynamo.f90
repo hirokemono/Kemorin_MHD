@@ -78,15 +78,14 @@
       if (iflag_restart .ne. i_rst_by_file) return
         if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
         call read_alloc_sph_restart_data                                &
-     &     (MHD_files%fst_file_IO, MHD_step%init_d, rj_fld,             &
-     &      MHD_step%rst_step)
+     &     (MHD_files%fst_file_IO, MHD_step%init_d, MHD_step%time_d,    &
+     &      rj_fld, MHD_step%rst_step)
 !
         call extend_by_potential_with_j                                 &
      &     (sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,                  &
      &      ipol%base%i_magne, ipol%base%i_current, rj_fld)
 !
         if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
-        call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
         call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
         call calypso_mpi_barrier
 !
@@ -116,8 +115,8 @@
       type(SPH_MHD_model_data), intent(in) :: SPH_model 
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
+      type(MHD_step_param), intent(in) :: MHD_step
 !
-      type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: sph_fst_IO
 !
@@ -149,7 +148,6 @@
      &    ipol%base%i_magne, ipol%base%i_current, rj_fld)
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
-      call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
 !
       if (iflag_restart.ne.i_rst_by_file                                &
@@ -179,6 +177,7 @@
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
       use set_initial_sph_scalars
+      use calypso_mpi
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -189,10 +188,14 @@
       integer(kind = kint) :: isig
 !
 !
+        call calypso_mpi_barrier
+        if(iflag_debug .gt. 0) write(*,*) 'set_initial_velo_sph'
         isig = 400
         call set_initial_velo_sph(ipol%base%i_velo,                     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%base%i_temp .gt. 0) then
+          call calypso_mpi_barrier
+          if(iflag_debug.gt.0) write(*,*) 'initilal for temperature'
           call set_ini_ref_temp_benchmark                               &
      &       (sph_rj, sph_params%nlayer_ICB, sph_params%nlayer_CMB,     &
      &        rj_fld%d_fld(1,ipol%base%i_temp))
@@ -202,9 +205,12 @@
      &        rj_fld%d_fld(1,ipol%base%i_temp))
         end if
         if(ipol%base%i_light .gt. 0) then
+          call calypso_mpi_barrier
+          if(iflag_debug.gt.0) write(*,*) 'initilal for composition'
           call set_ini_ref_temp_benchmark                               &
      &       (sph_rj, sph_params%nlayer_ICB, sph_params%nlayer_CMB,     &
      &        rj_fld%d_fld(1,ipol%base%i_light))
+!
           call set_initial_temp_sph(isig, sph_rj,                       &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
@@ -213,6 +219,8 @@
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%base%i_magne .gt. 0) then
+            call calypso_mpi_barrier
+            if(iflag_debug.gt.0) write(*,*) 'initilal for magnetic'
             call initial_b_dynamobench_1(sph_rj, ipol,                  &
      &          sph_params%radius_ICB, sph_params%radius_CMB,           &
      &          sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
@@ -220,6 +228,8 @@
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%base%i_magne .gt. 0) then
+            call calypso_mpi_barrier
+            if(iflag_debug.gt.0) write(*,*) 'initilal for magnetic'
             call initial_b_dynamobench_2(sph_rj, ipol,                  &
      &          sph_params%nlayer_CMB, sph_params%radius_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

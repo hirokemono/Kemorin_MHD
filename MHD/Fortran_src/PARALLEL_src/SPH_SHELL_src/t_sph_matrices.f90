@@ -8,6 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine alloc_band_mat_sph(nband, sph_rj, smat)
+!!        integer(kind = kint), intent(in) :: nband
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(band_matrices_type), intent(inout) :: smat
+!!      subroutine alloc_band_matrices_type(nband, nri, jmax, smat)
+!!        integer(kind = kint), intent(in) :: nband, nri, jmax
+!!        type(band_matrices_type), intent(inout) :: smat
+!!
 !!      subroutine set_unit_on_diag(smat)
 !!      subroutine dealloc_band_mat_sph(smat)
 !!
@@ -21,7 +28,17 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(band_matrices_type), intent(inout) :: smat
 !!
-!!      subroutine check_radial_band_mat(id_rank, sph_rj, smat)
+!!      subroutine check_radial_band_mat(id_file, sph_rj, smat)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(band_matrices_type), intent(in) :: smat
+!!      subroutine check_specific_radial_band_mat(my_rank, id_file,     &
+!!     &                                          l, m, sph_rj, smat)
+!!        integer, intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: l, m
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(band_matrices_type), intent(in) :: smat
 !!@endverbatim
 !
       module t_sph_matrices
@@ -75,9 +92,23 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(band_matrices_type), intent(inout) :: smat
 !
+      call alloc_band_matrices_type                                     &
+     &   (nband, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), smat)
 !
-      smat%n_vect =      sph_rj%nidx_rj(1)
-      smat%n_comp =      sph_rj%nidx_rj(2)
+      end subroutine alloc_band_mat_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_band_matrices_type(nband, nri, jmax, smat)
+!
+      use t_spheric_rj_data
+!
+      integer(kind = kint), intent(in) :: nband, nri, jmax
+      type(band_matrices_type), intent(inout) :: smat
+!
+!
+      smat%n_vect =      nri
+      smat%n_comp =      jmax
       smat%n_band =      nband
       smat%n_band_lu = 2*nband - 1
 !
@@ -92,7 +123,7 @@
       smat%det =   0.0d0
       smat%i_pivot =   0
 !
-      end subroutine alloc_band_mat_sph
+      end subroutine alloc_band_matrices_type
 !
 ! -----------------------------------------------------------------------
 !
@@ -229,33 +260,76 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_radial_band_mat(id_rank, sph_rj, smat)
+      subroutine check_radial_band_mat(id_file, sph_rj, smat)
 !
       use t_spheric_rj_data
       use check_sph_radial_mat
 !
-      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: id_file
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(band_matrices_type), intent(in) :: smat
 !
 !
-      write(50+id_rank,'(a,a)') 'Matrix ', trim(smat%mat_name)
+      write(id_file,'(a,a)') 'Matrix ', trim(smat%mat_name)
 !
       if(smat%n_band .eq. ithree) then
-        call check_radial_3band_mat(id_rank, smat%n_vect, smat%n_comp,  &
+        call check_radial_3band_mat(id_file, smat%n_vect, smat%n_comp,  &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
 !
       else if(smat%n_band .eq. ifive) then
-        call check_radial_5band_mat(id_rank, smat%n_vect, smat%n_comp,  &
+        call check_radial_5band_mat(id_file, smat%n_vect, smat%n_comp,  &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
 !
       else if(smat%n_band .eq. iseven) then
-        call check_radial_7band_mat(id_rank, smat%n_vect, smat%n_comp,  &
+        call check_radial_7band_mat(id_file, smat%n_vect, smat%n_comp,  &
+     &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
+!
+      else if(smat%n_band .eq. inine) then
+        call check_radial_9band_mat(id_file, smat%n_vect, smat%n_comp,  &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
       end if
 !
 !
       end subroutine check_radial_band_mat
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_specific_radial_band_mat(my_rank, id_file,       &
+     &                                          l, m, sph_rj, smat)
+!
+      use t_spheric_rj_data
+      use check_single_radial_mat
+!
+      integer, intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: l, m
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrices_type), intent(in) :: smat
+!
+      integer(kind = kint) :: j
+!
+!
+      j = find_local_sph_address(sph_rj, l, m)
+      if(j .le. 0) return
+!
+      write(id_file,'(a,4i6)') '(MPI_rank, global_j, l, m): ',          &
+     &                         my_rank, j, l, m
+!
+      if(smat%n_band .eq. ithree) then
+        call check_single_radial_3band_mat(id_file,                     &
+     &      smat%n_vect, sph_rj%radius_1d_rj_r, smat%mat(1,1,j))
+      else if(smat%n_band .eq. ifive) then
+        call check_single_radial_5band_mat(id_file,                     &
+     &      smat%n_vect, sph_rj%radius_1d_rj_r, smat%mat(1,1,j))
+      else if(smat%n_band .eq. iseven) then
+        call check_single_radial_7band_mat(id_file,                     &
+     &      smat%n_vect, sph_rj%radius_1d_rj_r, smat%mat(1,1,j))
+      else if(smat%n_band .eq. inine) then
+        call check_single_radial_9band_mat(id_file,                     &
+     &      smat%n_vect, sph_rj%radius_1d_rj_r, smat%mat(1,1,j))
+      end if
+!
+      end subroutine check_specific_radial_band_mat
 !
 ! -----------------------------------------------------------------------
 !

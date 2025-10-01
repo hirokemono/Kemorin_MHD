@@ -130,10 +130,12 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->ele_grp_opacity =   INIT_OPACITY;
 	mesh_m->surf_grp_opacity =  INIT_OPACITY;
 	
-	mesh_m->iflag_draw_coast =     OFF;
-	mesh_m->iflag_draw_sph_grid =  OFF;
-	mesh_m->radius_coast =         ONE;
-	
+	mesh_m->iflag_draw_tangent_cyl = OFF;
+    mesh_m->iflag_draw_coast =       OFF;
+	mesh_m->iflag_draw_sph_grid =    OFF;
+	mesh_m->radius_coast =           ONE;
+    mesh_m->r_ICB =                  0.35;
+
 	init_single_color(mesh_m->domain_surface_color_code);
 	init_single_color(mesh_m->domain_grid_color_code);
 	init_single_color(mesh_m->surf_surface_color_code);
@@ -168,8 +170,12 @@ void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
+void set_axis_position(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_axis_position = iflag;};
+
+
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
+void set_tangent_cylinder_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_tangent_cyl = iflag;};
 
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m){
 	return mesh_m->polygon_mode = toggle_value_c(mesh_m->polygon_mode);
@@ -335,13 +341,14 @@ int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
 };
 
 
-void set_domain_color_flag(int icolor, int selected, struct mesh_menu_val *mesh_m){
+void set_domain_color_flag(int selected, int icolor,
+                           struct mesh_menu_val *mesh_m){
 	if(selected == SURFSOLID_TOGGLE){
-		mesh_m->domain_node_color = icolor;
+        mesh_m->domain_surface_color = icolor;
 	}else if(selected == SURFGRID_TOGGLE){
 		mesh_m->domain_grid_color = icolor;
 	}else if(selected == SURFNOD_TOGGLE){
-		mesh_m->domain_surface_color = icolor;
+        mesh_m->domain_node_color = icolor;
 	};
 	return;
 }
@@ -411,7 +418,6 @@ void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_surface_color_code);
-        kemoview_set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -428,7 +434,6 @@ void set_ele_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_surface_color_code);
-        kemoview_set_mesh_opacity(ELEM_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -441,7 +446,6 @@ void set_surf_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_surface_color_code);
-        kemoview_set_mesh_opacity(SURF_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){

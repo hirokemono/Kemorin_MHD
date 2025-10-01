@@ -65,9 +65,6 @@
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
 !
-      use set_sph_exp_fix_vector_ICB
-      use cal_sph_exp_nod_icb_ins
-      use cal_sph_exp_nod_icb_qvac
       use set_sph_exp_nod_center
 !
       implicit none
@@ -82,6 +79,10 @@
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
+      use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -94,7 +95,8 @@
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call sph_center_fld_and_curl                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
      &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
@@ -130,6 +132,10 @@
      &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,           &
      &          is_magne, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
+      use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -142,7 +148,14 @@
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(sph_bc_B%iflag_icb .eq. iflag_sph_filter_center) then
+        call set_sph_filter_vect_to_center                              &
+     &     (sph_rj%nidx_rj, ICB_Bspec%Vp_BC, is_magne,                  &
+     &      n_point, ntot_phys_rj, d_rj)
+      end if
+!
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call cal_dsdr_sph_center_2                                      &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), r_2nd%fdm(1)%dmat,    &
      &      is_magne, n_point, ntot_phys_rj, d_rj)
@@ -172,6 +185,10 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_magne, is_current, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
+      use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
+!
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -183,7 +200,8 @@
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call cal_sph_nod_center_rot2                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
      &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
@@ -214,6 +232,10 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                      &
      &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
+      use sph_exp_fix_vector_ICB
+      use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
+!
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -225,7 +247,8 @@
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call cal_sph_nod_center_rot2                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
      &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
@@ -251,7 +274,10 @@
      &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,        &
      &          is_magne, is_ohmic, n_point, ntot_phys_rj, d_rj)
 !
-      use cal_sph_exp_fixed_scalar
+      use sph_exp_fix_scalar_ICB
+      use sph_exp_fix_vector_ICB
+      use sph_exp_nod_insulate_ICB
+      use sph_exp_nod_psd_vacuum_ICB
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -268,7 +294,8 @@
       integer(kind = kint) :: ids_ohmic
 !
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call cal_sph_nod_center_diffuse2                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
      &      g_sph_rj, r_2nd%fdm(2)%dmat, coef_diffuse,                  &
@@ -282,8 +309,8 @@
      &      n_point, ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_fixed_diffuse2(sph_rj%nidx_rj(2),          &
-     &      g_sph_rj, sph_bc_B%kr_out, sph_bc_B%r_CMB,                  &
-     &      sph_bc_B%fdm2_fix_fld_CMB, sph_bc_B%fdm2_fix_dr_CMB,        &
+     &      g_sph_rj, sph_bc_B%kr_in, sph_bc_B%r_ICB,                   &
+     &      sph_bc_B%fdm2_fix_fld_ICB, sph_bc_B%fdm2_fix_dr_ICB,        &
      &      coef_diffuse, is_magne, is_ohmic,                           &
      &      n_point, ntot_phys_rj, d_rj)
 !      else if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
@@ -295,7 +322,8 @@
      &      n_point, ntot_phys_rj, d_rj)
       end if
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
         call cal_dsdr_sph_center_2                                      &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), r_2nd%fdm(1)%dmat,    &
      &      is_ohmic, n_point, ntot_phys_rj, d_rj)

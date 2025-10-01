@@ -26,14 +26,14 @@ lib_name:
 	@echo  'LIB_FFTPACK_FILE = $(LIB_FFTPACK_FILE)' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_FFTPACK_FILE): $$(MOD_FFTPACK)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_FFTPACK)' >> $(MAKENAME)
 
 mod_list:
@@ -42,10 +42,8 @@ mod_list:
 	@echo  '#' >> $(MAKENAME)
 
 depends:
-
-module:
-	@echo '$(MOD_FFTPACK): $$(FFTPACK_DIR)/$(SRC_FFTPACK)' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(FFTPACKFLAG) $$<' >> $(MAKENAME)
+	@echo '$(MOD_FFTPACK): $$(FFTPACK_DIR)/$(SRC_FFTPACK)' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(FFTPACKFLAG) $$<' >> $(MAKENAME).depends
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

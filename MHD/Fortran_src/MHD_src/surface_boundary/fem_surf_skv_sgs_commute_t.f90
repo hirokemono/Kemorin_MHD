@@ -17,34 +17,31 @@
 !!      subroutine fem_sf_grp_skv_sgs_vect_diff_p                       &
 !!     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
 !!     &          igrp, k2, nd, n_int, i_filter, n_diff,                &
-!!     &          dxe_sf, scalar_sf, iak_diff, ncomp_diff, ak_diff,     &
-!!     &          coef, sk_v)
+!!     &          dxe_sf, scalar_sf, ak_diff, coef, sk_v)
 !!      subroutine fem_sf_grp_skv_sgs_grad_p                            &
 !!     &          (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,     &
 !!     &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,         &
-!!     &          iak_diff, ncomp_diff, ak_diff, coef, sk_v)
+!!     &          ak_diff, coef, sk_v)
 !!      subroutine fem_sf_grp_skv_sgs_div_flux_p                        &
 !!     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
 !!     &          igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
-!!     &          iak_diff, ncomp_diff, ak_diff, coef, sk_v)
+!!     &          ak_diff, coef, sk_v)
 !!
 !!      subroutine fem_sf_grp_skv_sgs_div_lin_p(ele, surf, sf_grp,      &
 !!     &          g_FEM, jac_sf_grp, jac_sf_grp_l, FEM_elens,           &
 !!     &          igrp, k2, n_diff, n_int, i_filter, dxe_sf, scalar_sf, &
-!!     &          iak_diff, ncomp_diff, ak_diff, sk_v)
+!!     &          ak_diff, sk_v)
 !!      subroutine fem_sf_grp_skv_sgs_velo_co_p(ele, surf, sf_grp,      &
 !!     &          g_FEM, jac_sf_grp, jac_sf_grp_l, FEM_elens,           &
 !!     &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,         &
-!!     &          iak_diff, ncomp_diff, ak_diff, sk_v)
+!!     &          ak_diff, sk_v)
 !!
 !!      subroutine fem_sf_grp_skv_poisson_sgs                           &
 !!     &         (ele, surf, sf_grp, g_FEM, jac_3d_l, FEM_elens, igrp,  &
-!!     &          k2, n_int, i_filter, phi_sf, iak_diff,                &
-!!     &          ncomp_diff, ak_diff, sk_v)
+!!     &          k2, n_int, i_filter, phi_sf, ak_diff, sk_v)
 !!      subroutine fem_sf_grp_skv_diffusion_sgs(ele, surf, sf_grp,      &
 !!     &          g_FEM, jac_3d, FEM_elens, igrp, k2, n_int,            &
-!!     &          i_filter, vect_sf, iak_diff, ncomp_diff, ak_diff,     &
-!!     &          ak_d, nd_v, sk_v)
+!!     &          i_filter, vect_sf, ak_diff, ak_d, nd_v, sk_v)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -211,8 +208,7 @@
       subroutine fem_sf_grp_skv_sgs_vect_diff_p                         &
      &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,        &
      &          igrp, k2, nd, n_int, i_filter, n_diff,                  &
-     &          dxe_sf, scalar_sf, iak_diff, ncomp_diff, ak_diff,       &
-     &          coef, sk_v)
+     &          dxe_sf, scalar_sf, ak_diff, coef, sk_v)
 !
       use fem_surf_skv_sgs_commute
 !
@@ -230,9 +226,7 @@
      &                  :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
       real (kind=kreal), intent(in) :: coef
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele, ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -252,7 +246,7 @@
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, nd, n_diff, dxe_sf, scalar_sf,               &
-     &    ak_diff(1,iak_diff), coef, sk_v)
+     &    ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_grp_skv_sgs_vect_diff_p
 !
@@ -261,7 +255,7 @@
       subroutine fem_sf_grp_skv_sgs_grad_p                              &
      &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,        &
      &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,           &
-     &          iak_diff, ncomp_diff, ak_diff, coef, sk_v)
+     &          ak_diff, coef, sk_v)
 !
       use fem_surf_skv_sgs_grad
 !
@@ -278,9 +272,7 @@
      &                  :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
       real (kind=kreal), intent(in) :: coef
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -298,8 +290,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff(1,iak_diff),      &
-     &    coef, sk_v)
+     &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_grp_skv_sgs_grad_p
 !
@@ -308,7 +299,7 @@
       subroutine fem_sf_grp_skv_sgs_div_flux_p                          &
      &        (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,         &
      &         igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,          &
-     &         iak_diff, ncomp_diff, ak_diff, coef, sk_v)
+     &         ak_diff, coef, sk_v)
 !
       use fem_surf_skv_sgs_div
 !
@@ -326,9 +317,7 @@
      &                  :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
       real (kind=kreal), intent(in) :: coef
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele, ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -347,8 +336,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff(1,iak_diff),    &
-     &    coef, sk_v)
+     &    igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_grp_skv_sgs_div_flux_p
 !
@@ -358,7 +346,7 @@
       subroutine fem_sf_grp_skv_sgs_div_lin_p(ele, surf, sf_grp,        &
      &          g_FEM, jac_sf_grp, jac_sf_grp_l, FEM_elens,             &
      &          igrp, k2, n_diff, n_int, i_filter, dxe_sf, scalar_sf,   &
-     &          iak_diff, ncomp_diff, ak_diff, sk_v)
+     &          ak_diff, sk_v)
 !
       use fem_surf_skv_sgs_commute
 !
@@ -376,9 +364,7 @@
       real (kind=kreal), intent(in)                                     &
      &                  :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -397,7 +383,7 @@
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, ione, n_diff, dxe_sf, scalar_sf,             &
-     &    ak_diff(1,iak_diff), one, sk_v)
+     &    ak_diff, one, sk_v)
 !
       end subroutine fem_sf_grp_skv_sgs_div_lin_p
 !
@@ -406,7 +392,7 @@
       subroutine fem_sf_grp_skv_sgs_velo_co_p(ele, surf, sf_grp,        &
      &          g_FEM, jac_sf_grp, jac_sf_grp_l, FEM_elens,             &
      &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,           &
-     &          iak_diff, ncomp_diff, ak_diff, sk_v)
+     &          ak_diff, sk_v)
 !
       use fem_surf_skv_sgs_grad
 !
@@ -424,9 +410,7 @@
       real (kind=kreal), intent(in)                                     &
      &                  :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -444,8 +428,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff(1,iak_diff),      &
-     &    one, sk_v)
+     &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, one, sk_v)
 !
       end subroutine fem_sf_grp_skv_sgs_velo_co_p
 !
@@ -454,8 +437,7 @@
 !
       subroutine fem_sf_grp_skv_poisson_sgs                             &
      &         (ele, surf, sf_grp, g_FEM, jac_3d_l, FEM_elens, igrp,    &
-     &          k2, n_int, i_filter, phi_sf, iak_diff,                  &
-     &          ncomp_diff, ak_diff, sk_v)
+     &          k2, n_int, i_filter, phi_sf, ak_diff, sk_v)
 !
       use fem_surf_skv_diffuse_sgs
 !
@@ -470,9 +452,7 @@
       integer(kind = kint), intent(in) :: i_filter
 !
       real (kind=kreal), intent(in) :: phi_sf(sf_grp%num_item)
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
      &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -485,11 +465,8 @@
      &  g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,     &
      &  g_FEM%owe3d, jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%dnx,    &
      &  jac_3d_l%dnx, FEM_elens%filter_conf%xmom_1d_org(i_filter,2),    &
-     &  FEM_elens%nele_filter_mom,                                      &
-     &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
-     &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
-     &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  igrp, k2, n_int, ak_diff(1,iak_diff), phi_sf, sk_v)
+     &  FEM_elens%elen_ele%diff2, igrp, k2, n_int, ak_diff,             &
+     &  phi_sf, sk_v)
 !
       end subroutine fem_sf_grp_skv_poisson_sgs
 !
@@ -497,8 +474,7 @@
 !
       subroutine fem_sf_grp_skv_diffusion_sgs(ele, surf, sf_grp,        &
      &          g_FEM, jac_3d, FEM_elens, igrp, k2, n_int,              &
-     &          i_filter, vect_sf, iak_diff, ncomp_diff, ak_diff,       &
-     &          ak_d, nd_v, sk_v)
+     &          i_filter, vect_sf, ak_diff, ak_d, nd_v, sk_v)
 !
       use fem_surf_skv_diffuse_sgs
 !
@@ -513,9 +489,7 @@
       integer(kind = kint), intent(in) :: i_filter, nd_v
 !
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
-!
-      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
       real (kind=kreal), intent(in) :: ak_d(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
@@ -529,12 +503,8 @@
      &  g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,     &
      &  g_FEM%owe3d, jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx,          &
      &  jac_3d%dnx, FEM_elens%filter_conf%xmom_1d_org(i_filter,2),      &
-     &  FEM_elens%nele_filter_mom,                                      &
-     &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
-     &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
-     &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  igrp, k2, n_int, ak_diff(1,iak_diff), vect_sf,                  &
-     &  ak_d, nd_v, sk_v)
+     &  FEM_elens%elen_ele%diff2, igrp, k2, n_int, ak_diff,             &
+     &  vect_sf, ak_d, nd_v, sk_v)
 !
       end subroutine fem_sf_grp_skv_diffusion_sgs
 !

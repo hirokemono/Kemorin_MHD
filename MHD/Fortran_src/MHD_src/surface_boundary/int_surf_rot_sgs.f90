@@ -5,8 +5,8 @@
 !
 !!      subroutine int_surf_rotation_sgs                                &
 !!     &         (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp_q,&
-!!     &          rhs_tbl, FEM_elens, diff_coefs, sgs_sf, n_int,        &
-!!     &          i_filter, iak_diff, i_vect, fem_wk, surf_wk, f_nl)
+!!     &          rhs_tbl, FEM_elens, sgs_sf, n_int, i_filter, ak_diff, &
+!!     &          i_vect, fem_wk, surf_wk, f_nl)
 !!      subroutine int_surf_rot_commute_sgs                             &
 !!     &         (node, ele, surf, sf_grp, nod_fld,                     &
 !!     &          g_FEM, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,      &
@@ -20,7 +20,6 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -43,7 +42,7 @@
       use t_int_surface_data
       use t_filter_elength
       use t_surface_bc_data
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -55,8 +54,8 @@
 !
       subroutine int_surf_rotation_sgs                                  &
      &         (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp_q,  &
-     &          rhs_tbl, FEM_elens, diff_coefs, sgs_sf, n_int,          &
-     &          i_filter, iak_diff, i_vect, fem_wk, surf_wk, f_nl)
+     &          rhs_tbl, FEM_elens, sgs_sf, n_int, i_filter, ak_diff,   &
+     &          i_vect, fem_wk, surf_wk, f_nl)
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -71,12 +70,11 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_vect, i_filter
-      integer(kind=kint), intent(in) :: iak_diff
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -113,8 +111,7 @@
               call fem_sf_grp_skv_sgs_vect_diff_p                       &
      &           (ele, surf, sf_grp, g_FEM, jac_sf_grp_q, FEM_elens,    &
      &            igrp, k2, nd, n_int, i_filter, nrot1,                 &
-     &            surf_wk%dxe_sf, surf_wk%scalar_sf,                    &
-     &            iak_diff, diff_coefs%num_field, diff_coefs%ak,        &
+     &            surf_wk%dxe_sf, surf_wk%scalar_sf, ak_diff,           &
      &            one, fem_wk%sk6)
               end do
 !
@@ -134,8 +131,7 @@
               call fem_sf_grp_skv_sgs_vect_diff_p                       &
      &           (ele, surf, sf_grp, g_FEM, jac_sf_grp_q, FEM_elens,    &
      &            igrp, k2, nd, n_int, i_filter, nrot2,                 &
-     &            surf_wk%dxe_sf, surf_wk%scalar_sf,                    &
-     &            iak_diff, diff_coefs%num_field, diff_coefs%ak,        &
+     &            surf_wk%dxe_sf, surf_wk%scalar_sf, ak_diff,           &
      &            one, fem_wk%sk6)
             end do
 !

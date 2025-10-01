@@ -104,9 +104,5 @@ mod_list:
 	@echo  $(MOD_ITP_RESTART)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_FIELD_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_FIELD_DIR)' $(SOURCES)

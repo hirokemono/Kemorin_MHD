@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_error_IDs
+      use calypso_mpi
 !
       implicit none
 !
@@ -37,13 +38,11 @@
      &        "     ELEMENT type", nn
         if (IFLAG.eq.ierr_econ) write (*,'(  a,i12/)')                  &
      &        "     ELEMENT connectivity in ", nn
-        stop
       endif
 
       if (IFLAG.eq. ierr_ovnod) then
         write (*,'(/,a,i12/)')                                          &
      &        " ### ABORT : local node ID > numnod appears in ELEMENT", nn
-        stop
       endif
 
       if (IFLAG.eq.ierr_ov_grp) then
@@ -51,52 +50,45 @@
      &        " ### ABORT : local node/elem ID > numnod appears in GROUPS"
         write (*,'(  a,i12/  )')                                        &
      &        "     (1:node, 2:elem, 3:suf)", nn
-        stop
       endif
 
       if (IFLAG.eq.ierr_sf_grp) then
         write (*,'(/,a,i12/)')                                          &
      &       " ### ABORT : local surface ID inconsistent in SUF.GRP.",  &
      &          nn
-        stop
       endif
 
       if (IFLAG.eq.ierr_file) then
         write (*,'(/,a,/)')                                             &
      &       " ### ABORT : ERROR in ORIGINAL GRID FILE : Parallel Info"
-        stop
       endif
 
       if (IFLAG.eq.ierr_MeTISfile) then
         write (*,'(/,a,/)')                                             &
      &        " ### ABORT : ERROR in GRID/MeTiS FILE"
-        stop
       endif
 
       if (IFLAG.eq.ierr_MeTISData) then
         write (*,'(/,a,/)')                                             &
      &        " ### ABORT : UNEXPECTED EOF in GRID/MeTiS FILE"
-        stop
       endif
 
       if (IFLAG.eq.ierr_P_MPI) then
         write (*,'(/,a,2i12/)')                                         &
      &        " ### ABORT : INVALID PE  and node #", nn
-        stop
       endif
 
       if (IFLAG.eq.5000) then
         write (*,'(/,a,i12/)')                                          &
      &        " ### ABORT : INVALID element type", nn
-        stop
       endif
 
       if (IFLAG.eq.5001) then
         write (*,'(/,a,i12/)')                                          &
      &        " ### ABORT : UNSUPPORTED element type", nn
-        stop
       endif
-
+      if(IFLAG .GT. 0) call calypso_MPI_abort(IFLAG, 'Read file error')
+!
       end subroutine ERROR_EXIT
 !
 !   --------------------------------------------------------------------

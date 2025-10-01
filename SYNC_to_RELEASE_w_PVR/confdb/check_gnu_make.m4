@@ -1,0 +1,1 @@
+/Users/matsui/git/Kemorin_MHD/MHD/confdb/check_gnu_make.m4

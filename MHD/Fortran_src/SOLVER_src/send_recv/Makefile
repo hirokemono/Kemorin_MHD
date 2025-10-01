@@ -13,16 +13,14 @@ MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'SR_DIR =  $(SR_DIR)'       >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SR)' >> $(MAKENAME)
 
 mod_list:
 	@echo MOD_SR=  \\ >> $(MAKENAME)
 	@echo $(MOD_SR) >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SR_DIR)' $(SOURCES)

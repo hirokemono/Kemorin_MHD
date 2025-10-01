@@ -185,7 +185,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, ref_rj_fld,       &
-     &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
+     &    trans_p%leg, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
         do nd = 1, pwr%ntot_comp_sq
@@ -203,7 +203,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
-     &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
+     &    trans_p%leg, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
         do nd = 1, pwr%ntot_comp_sq
@@ -219,7 +219,7 @@
       end if
 !
       call cal_correlate_in_shell(sph%sph_params, sph%sph_rj,           &
-     &    rj_fld, ref_rj_fld, trans_p%leg%g_sph_rj, pwr, WK_pwr)
+     &    rj_fld, ref_rj_fld, trans_p%leg, pwr, WK_pwr)
 !
 !
       if(my_rank .eq. 0) then
@@ -289,7 +289,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, ref_rj_fld,       &
-     &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
+     &    trans_p%leg, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
         do nd = 1, pwr%ntot_comp_sq
@@ -305,7 +305,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
-     &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
+     &    trans_p%leg, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
         do nd = 1, pwr%ntot_comp_sq

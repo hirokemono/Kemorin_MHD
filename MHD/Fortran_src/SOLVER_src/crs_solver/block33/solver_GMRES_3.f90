@@ -2,6 +2,15 @@
 !C*** 
 !C*** module solver_GMRES_3
 !C***
+!!      subroutine GMRES_3                                              &
+!!     &                 (N, NP,  NPL, NPU,                             &
+!!     &                  D,  AL, INL, IAL, AU, INU, IAU,               &
+!!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA, NREST,      &
+!!     &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,       &
+!!     &                  STACK_IMPORT, NOD_IMPORT,                     &
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET,               &
+!!     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
+!!
 !
       module solver_GMRES_3
 !
@@ -24,7 +33,8 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA, NREST,        &
      &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET,                 &
+     &                  SR_sig, SR_r, PRECtime, COMPtime, COMMtime)
 
 ! \beginSUBROUTINE
 !     GMRES solves the linear system Ax = b using the
@@ -84,6 +94,14 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!>      Elapsed time for solver preconditioning
+      real(kind = kreal), intent(inout) :: PRECtime
+!>      Elapsed time for solver iteration
+      real(kind = kreal), intent(inout) :: COMPtime
+!>      Elapsed time for communication
+      real(kind = kreal), intent(inout) :: COMMtime
+!
+      real(kind = kreal) :: START_TIME, S1_TIME, S2_TIME
 
       real(kind=kreal), dimension(:),    allocatable, save ::  DD
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
@@ -120,6 +138,7 @@
 
       MAXIT = ITER
       TOL   = RESID
+      S1_TIME= MPI_WTIME()
 
       if (IFLAG.eq.0) then
         allocate (DD   (3*NP))
@@ -142,6 +161,7 @@
       SN= CS    + 1
 
       if (NSET.ge.1) then
+        S2_TIME= MPI_WTIME()
 !C
 !C +-------------------+
 !C | ILU decomposition |
@@ -156,9 +176,11 @@
         WW(3*ik  ,R)= D(3,3,ik)
       enddo
 
-        call SOLVER_SEND_RECV_3                                         &
-     &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
+      START_TIME= MPI_WTIME()
+      call SOLVER_SEND_RECV_3                                           &
+     &   (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,              &
+     &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         do ik= N+1, NP
           D(1,1,ik)= WW(3*ik-2,R)
@@ -242,6 +264,7 @@
         enddo
       endif
 !C===
+        PRECtime = MPI_WTIME() - S2_TIME
       endif
 
 !C
@@ -253,9 +276,11 @@
 !C
 !C-- INTERFACE data EXCHANGE
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
 !C
 !C-- BEGIN calculation
@@ -293,9 +318,11 @@
 
       enddo
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT,NOD_EXPORT, SR_sig, SR_r, WW(1,AV))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do ik= 1, NP
         WW(3*ik-2,R)= WW(3*ik-2,AV)
@@ -400,8 +427,11 @@
         BNRM20= BNRM20+B(3*ik-2)**2+B(3*ik-1)**2+B(3*ik)**2
       enddo
 
+      START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
+
       if (BNRM2.eq.ZERO) BNRM2= ONE
 !C===
       
@@ -420,9 +450,12 @@
         DNRM20= ZERO
         do ik= 1, N
           DNRM20= DNRM20+WW(3*ik-2,R)**2+WW(3*ik-1,R)**2+WW(3*ik,R)**2
-        enddo
+        end do
+
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
      &                      MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         RNORM= dsqrt(DNRM2)
         coef= ONE/RNORM
@@ -459,9 +492,11 @@
 !C | [M]{w}= [A]{v} |
 !C +----------------+
 !C===
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,V+I-1))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do j= 1, N
            X1= WW(3*j-2,V+I-1)
@@ -496,9 +531,11 @@
         WW(3*j  ,W)= WVAL3
       enddo
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,W))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
 !C
 !C-- incomplete CHOLESKY
@@ -608,9 +645,12 @@
      &                 + WW(3*ik-1,W)*WW(3*ik-1,V+K-1)                  &
      &                 + WW(3*ik  ,W)*WW(3*ik  ,V+K-1)                 
 
-          enddo
+          end do
+
+          START_TIME= MPI_WTIME()
           call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,               &
      &                        MPI_SUM, CALYPSO_COMM, ierr_MPI)
+          COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
  
           do ik= 1, N
             WW(3*ik-2,W)= WW(3*ik-2,W) - VAL * WW(3*ik-2,V+K-1)
@@ -623,9 +663,12 @@
         VAL0= 0.d0
         do ik= 1, N
           VAL0= VAL0+WW(3*ik-2,W)**2+WW(3*ik-1,W)**2+WW(3*ik,W)**2
-        enddo
+        end do
+
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,                 &
      &                      MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         H(I+1,I)= dsqrt(VAL)
         coef= ONE / H(I+1,I)
@@ -751,9 +794,11 @@
 !C
 !C-- Compute residual vector R, find norm, then check for tolerance.        
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       do j= 1, N
            X1= X(3*j-2)
@@ -794,9 +839,11 @@
         WW(3*ik  ,R)= WW(3*ik  ,AV)
       enddo
 
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
 !C
 !C-- incomplete CHOLESKY
@@ -896,8 +943,10 @@
           DNRM20= DNRM20+WW(3*ik-2,R)**2+WW(3*ik-1,R)**2+WW(3*ik,R)**2
         enddo
 
+        START_TIME= MPI_WTIME()
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
      &                       MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
         WW(I+1,S)= dsqrt(DNRM2/BNRM2)
         RESID    = WW( I+1,S )
@@ -942,9 +991,11 @@
    70 continue
 !C
 !C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
+      COMMtime = COMMtime + (MPI_WTIME() - START_TIME)
 
       deallocate (H)
       deallocate (WW)

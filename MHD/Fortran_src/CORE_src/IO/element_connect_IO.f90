@@ -13,10 +13,14 @@
 !!      subroutine write_edge_4_element(id_file, sfed_IO)
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
-!!      subroutine read_number_of_element(id_file, ele_IO)
-!!      subroutine read_element_info(id_file, ele_IO)
+!!      subroutine read_number_of_element(id_file, ele_IO, iend)
+!!        integer (kind = kint), intent(in) :: id_file
+!!        type(element_data), intent(inout) :: ele_IO
+!!        integer (kind=kint), intent(inout) :: iend
+!!      subroutine read_element_info(id_file, ele_IO, iend)
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        integer (kind=kint), intent(inout) :: iend
 !!      subroutine read_surface_4_element(id_file, sfed_IO)
 !!      subroutine read_edge_4_element(id_file, sfed_IO)
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -100,15 +104,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_element(id_file, ele_IO)
+      subroutine read_number_of_element(id_file, ele_IO, iend)
 !
       use skip_comment_f
 !
       integer (kind = kint), intent(in) :: id_file
       type(element_data), intent(inout) :: ele_IO
+      integer (kind=kint), intent(inout) :: iend
 !
 !
-      call skip_comment(character_4_read,id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
 !
       read(character_4_read,*) ele_IO%numele
 !
@@ -116,35 +122,33 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_element_info(id_file, ele_IO)
+      subroutine read_element_info(id_file, ele_IO, iend)
 !
-      use set_nnod_4_ele_by_type
+      use set_element_data_4_IO
 !
       integer (kind = kint), intent(in) :: id_file
       type(element_data), intent(inout) :: ele_IO
+      integer (kind=kint), intent(inout) :: iend
 !
       integer (kind = kint) :: i
 !
 !
+       call read_number_of_element(id_file, ele_IO, iend)
+      if(iend .ne. 0) return
        call alloc_element_types(ele_IO)
 !
        read(id_file,*) (ele_IO%elmtyp(i),i=1,ele_IO%numele)
 !
-       ele_IO%nnod_4_ele = 0
-       do i = 1, ele_IO%numele
-         call s_set_nnod_4_ele_by_type                                  &
-     &      (ele_IO%elmtyp(i), ele_IO%nodelm(i))
-         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
-       end do
 !
-       call alloc_ele_connectivity(ele_IO)
+      call find_max_nnod_4_ele_by_eletype(ele_IO, ele_IO%nnod_4_ele)
+      call alloc_ele_connectivity(ele_IO)
 !
-       do i=1, ele_IO%numele
-         read(id_file,*) ele_IO%iele_global(i),                         &
+      do i=1, ele_IO%numele
+        read(id_file,*) ele_IO%iele_global(i),                          &
      &                  ele_IO%ie(i,1:ele_IO%nodelm(i))
-       end do
+      end do
 !
-       end subroutine read_element_info
+      end subroutine read_element_info
 !
 !------------------------------------------------------------------
 !

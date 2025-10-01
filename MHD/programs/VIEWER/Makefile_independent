@@ -5,7 +5,7 @@
 HOMEDIR= $(HOME)
 LOCALDIR= $(HOMEDIR)/local
 
-MHDDIR =    $(HOMEDIR)/src_0323
+MHDDIR =    $(HOMEDIR)/src_kemo
 KEMO_C_GLUTDIR =  $(MHDDIR)/MHD/C_src/KEMO_GLUT
 
 CC=mpicc

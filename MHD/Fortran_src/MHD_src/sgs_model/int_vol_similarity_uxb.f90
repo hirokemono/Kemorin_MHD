@@ -8,13 +8,13 @@
 !>@brief  Integration of SGS induction term by scale similarity model
 !!
 !!@verbatim
-!!      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,           &
-!!     &          node, ele, conduct, iphys_SGS_wk, nod_fld,            &
-!!     &          g_FEM, jac_3d, rhs_tbl, sgs_coefs, fem_wk, f_nl)
-!!      subroutine int_simi_vp_induct_upm                               &
-!!     &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,       &
+!!      subroutine int_simi_vp_induct(num_int, node, ele, conduct,      &
 !!     &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d, rhs_tbl,        &
-!!     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
+!!     &          Csim_SGS_uxb, fem_wk, f_nl)
+!!      subroutine int_simi_vp_induct_upm                               &
+!!     &         (num_int, dt, node, ele, conduct, iphys_SGS_wk,        &
+!!     &          nod_fld, g_FEM, jac_3d, rhs_tbl, Csim_SGS_uxb,        &
+!!     &          ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -23,7 +23,7 @@
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!@endverbatim
@@ -46,7 +46,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -56,17 +56,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,             &
-     &          node, ele, conduct, iphys_SGS_wk, nod_fld,              &
-     &          g_FEM, jac_3d, rhs_tbl, sgs_coefs, fem_wk, f_nl)
+      subroutine int_simi_vp_induct(num_int, node, ele, conduct,        &
+     &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d, rhs_tbl,          &
+     &          Csim_SGS_uxb, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_field
-      use cal_products_within_skv
       use cal_skv_to_ff_smp
+      use cal_product_to_skv
 !
       integer (kind=kint), intent(in) :: num_int
-      integer (kind=kint), intent(in) :: icomp_sgs_uxb
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -76,7 +75,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -96,9 +95,9 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d%ntot_int, num_int, k2, jac_3d%xjac,     &
      &      jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
-        call scalar_prod_to_tensor_skv                                  &
-     &     (ele, conduct%istack_ele_fld_smp, sgs_coefs%ntot_comp,       &
-     &      icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
+        call scalar_prod_to_skv_tensor                                  &
+     &     (ele%numele, conduct%istack_ele_fld_smp, ele%nnod_4_ele,     &
+     &      Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -109,17 +108,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_simi_vp_induct_upm                                 &
-     &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,         &
-     &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d, rhs_tbl,          &
-     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
+     &         (num_int, dt, node, ele, conduct, iphys_SGS_wk,          &
+     &          nod_fld, g_FEM, jac_3d, rhs_tbl, Csim_SGS_uxb,          &
+     &          ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_fld_upwind
-      use cal_products_within_skv
       use cal_skv_to_ff_smp
+      use cal_product_to_skv
 !
       integer (kind=kint), intent(in) :: num_int
-      integer (kind=kint), intent(in) :: icomp_sgs_uxb
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -129,7 +127,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -151,9 +149,9 @@
      &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM, jac_3d,   &
      &      fem_wk%vector_1, fem_wk%sk6)
 !
-        call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &
-     &      sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak,           &
-     &      fem_wk%sk6)
+        call scalar_prod_to_skv_tensor                                  &
+     &     (ele%numele, conduct%istack_ele_fld_smp, ele%nnod_4_ele,     &
+     &      Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

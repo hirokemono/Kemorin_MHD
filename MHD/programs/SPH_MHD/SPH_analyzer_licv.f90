@@ -1,36 +1,32 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(MHD_files, iphys,         &
-!!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,             &
-!!     &          SPH_WK, SR_sig, SR_r)
+!!      subroutine SPH_initialize_linear_conv(MHD_files, FEM_dat,       &
+!!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK,     &
+!!     &          m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(phys_address), intent(in) :: iphys
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!      subroutine SPH_analyze_linear_conv(i_step, MHD_files,           &
-!!     &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,        &
-!!     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine SPH_analyze_linear_conv(MHD_files, iflag_finish,     &
+!!     &         SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
 !      Written by H. Matsui
 !
       module SPH_analyzer_licv
 !
       use m_precision
-      use m_MHD_step_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_phys_address
@@ -38,11 +34,12 @@
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
+      use t_FEM_mesh_field_data
       use t_control_parameter
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_field_data_IO
-      use t_solver_SR
+      use t_mesh_SR
 !
       implicit none
 !
@@ -52,9 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(MHD_files, iphys,           &
-     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,               &
-     &          SPH_WK, SR_sig, SR_r)
+      subroutine SPH_initialize_linear_conv(MHD_files, FEM_dat,         &
+     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK,       &
+     &          m_SR)
 !
       use calypso_mpi
       use m_constants
@@ -66,7 +63,6 @@
       use set_initial_sph_dynamo
       use adjust_reference_fields
       use set_bc_sph_mhd
-      use adjust_reference_fields
       use material_property
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
@@ -81,15 +77,14 @@
       use m_work_time
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(phys_address), intent(in) :: iphys
+      type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !   Allocate spectr field data
 !
@@ -99,14 +94,17 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,    &
-     &   SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,     &
-     &   SPH_model%omega_sph, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+     &    SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,    &
+     &    SPH_WK%r_n2e_3rd, SPH_WK%r_e2n_1st,                           &
+     &    SPH_model%omega_sph, SPH_model%MHD_prop,                      &
+     &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
-     &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
+      call init_sph_transform_MHD(SPH_model, FEM_dat%iphys,             &
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD,                      &
+     &    m_SR%SR_sig, m_SR%SR_r)
 !
 ! ---------------------------------
 !
@@ -117,8 +115,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
-      call init_reference_scalars                                       &
+      if (iflag_debug.gt.0) write(*,*) 'init_reference_fields '
+      call init_reference_fields                                        &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
@@ -161,15 +159,16 @@
      &   (SPH_model%refs, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                 &
-     &    SPH_MHD%fld, SR_sig, SR_r)
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
 !
 !* -----  Open Volume integration data files -----------------
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_mhd_control'
       call init_rms_sph_mhd_control                                     &
-     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%r_2nd,       &
-     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig)
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, FEM_dat%field, SPH_MHD,         &
+     &    SPH_WK%MHD_mats, SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_initialize_linear_conv
@@ -177,10 +176,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_linear_conv(i_step, MHD_files,             &
-     &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,          &
-     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
+      subroutine SPH_analyze_linear_conv(MHD_files, iflag_finish,       &
+     &         SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK, m_SR)
 !
+      use t_field_4_dynamobench
       use calypso_mpi_real
       use cal_momentum_eq_explicit
       use cal_sol_sph_MHD_crank
@@ -191,7 +190,6 @@
       use cal_write_sph_monitor_data
       use cal_nonlinear
 !
-      integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       integer(kind = kint), intent(inout) :: iflag_finish
@@ -200,13 +198,13 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !*  ----------  add time evolution -----------------
 !*
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
-      call sel_explicit_sph(i_step, MHD_step%time_d%dt,                 &
+      call sel_explicit_sph                                             &
+     &   (MHD_step%time_d%i_time_step, MHD_step%time_d%dt,              &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_MHD%sph,        &
      &    SPH_MHD%ipol, SPH_MHD%fld)
 !*
@@ -226,7 +224,7 @@
      &    (SPH_model%refs, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,    &
      &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
      &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &
-     &     SPH_MHD%fld, SR_sig, SR_r)
+     &     SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
 !
 !* ----  Update fields after time evolution ------------------------
 !*
@@ -267,12 +265,13 @@
 !*  -----------  lead energy data --------------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      if(output_IO_flag(i_step, MHD_step%rms_step)) then
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rms_step)) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
-     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
-     &      SPH_WK%monitor, SR_sig)
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%r_2nd,     &
+     &      SPH_WK%trans_p, SPH_WK%MHD_mats, SPH_WK%monitor,            &
+     &      m_SR%SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !
@@ -282,7 +281,7 @@
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
-      if(i_step .ge. MHD_step%finish_d%i_end_step                       &
+      if(MHD_step%time_d%i_time_step .ge. MHD_step%finish_d%i_end_step  &
      &     .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if

@@ -22,7 +22,7 @@ lib_name:
 	@echo  'LIB_MODIFY_PARA_MESH_FILE = $(LIB_MODIFY_PARA_MESH_FILE)' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
@@ -40,9 +40,5 @@ mod_list:
 	@echo  $(MOD_MODIFY_PARA_MESH) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MODIFY_PARA_MESHDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MODIFY_PARA_MESHDIR)' $(SOURCES)

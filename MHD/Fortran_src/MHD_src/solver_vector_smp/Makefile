@@ -13,7 +13,9 @@ MOD_MHD_SOLVE = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_SOLVER_DIR = $(MHD_SOLVER_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_MHD_SOLVE)' \
 	>> $(MAKENAME)
 
@@ -22,12 +24,8 @@ mod_list:
 	@echo $(MOD_MHD_SOLVE) >> $(MAKENAME)
 	@echo '#'>> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SOLVER_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_SOLVER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

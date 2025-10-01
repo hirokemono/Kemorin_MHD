@@ -16,9 +16,13 @@
       use t_control_data_section_only
       use t_FEM_mesh_field_4_viz
       use t_mesh_SR
+      use t_elapsed_labels_4_SECTIONS
       use FEM_analyzer_viz_surf
 !
       implicit none
+!
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
@@ -34,6 +38,10 @@
 !>      Edge communication table
       type(communication_table), save :: edge_comm_PSF
 !
+!>          Elapsed time labels
+      logical, parameter :: flag_detailed1 = .TRUE.
+      type(elapsed_labels_4_SECTIONS), save :: elps_SECT1
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -43,30 +51,27 @@
       subroutine init_analyzer_psf
 !
       use calypso_mpi
-      use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use input_control_section_only
 !
-      integer(kind = kint) :: ierr
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_VIZ
+      call elpsed_label_4_SECT(flag_detailed1, elps_SECT1, elps1)
       call elpsed_label_field_send_recv
 !
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_sections'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      call read_control_file_section_only(sec_viz_ctl2)
-      call set_control_params_4_sections(sec_viz_ctl2,                  &
-     &                                   FEM_viz2, t_VIZ2, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+      call s_input_control_section_only(fname_viz_ctl, sec_viz_ctl2,    &
+     &                                  FEM_viz2, t_VIZ2)
 !
 !  FEM Initialization
       call FEM_initialize_surface(t_VIZ2%ucd_step, t_VIZ2%init_d,       &
      &                            FEM_viz2, edge_comm_PSF, m_SR12)
 !
 !  VIZ Initialization
-      call init_visualize_surface(t_VIZ2%viz_step,                      &
+      call init_visualize_surface(elps_SECT1, t_VIZ2%viz_step,          &
      &    FEM_viz2%geofem, edge_comm_PSF, FEM_viz2%field,               &
      &    sec_viz_ctl2%surfacing_ctls, viz_psfs2, m_SR12)
 !
@@ -88,13 +93,14 @@
         call FEM_analyze_surface                                        &
      &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2, m_SR12)
 !
-!  Generate field lines
+!  Generate SEctions
         t_VIZ2%viz_step%istep_psf                                       &
      &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%PSF_t)
         t_VIZ2%viz_step%istep_iso                                       &
      &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
 !
-        call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
+        call visualize_surface(elps_SECT1,                              &
+     &                         t_VIZ2%viz_step, t_VIZ2%time_d,          &
      &                         FEM_viz2%geofem, edge_comm_PSF,          &
      &                         FEM_viz2%field, viz_psfs2, m_SR12)
       end do

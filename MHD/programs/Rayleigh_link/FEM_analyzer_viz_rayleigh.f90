@@ -174,7 +174,7 @@
       do nd = 1, FEM_Rayleigh%iphys_ftb%ntot_comp
         write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
      &             trim(FEM_Rayleigh%iphys_ftb%field_dir), '/',         &
-     &             i_step, '_', FEM_Rayleigh%iphys_ftb%id_rayleigh(nd)
+     &             i_step, '_', FEM_Rayleigh%iphys_ftb%id_Rayleigh(nd)
         call read_each_rayleigh_component(file_name, nd,                &
      &      rayleigh_pmesh(my_rank+1)%node%numnod,                      &
      &      rayleigh_fIO(my_rank+1)%ntot_comp_IO,                       &

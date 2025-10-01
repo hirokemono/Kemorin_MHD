@@ -17,16 +17,17 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_licv
-!
+      call initialize_sph_licv(MHD_ctl_name)
       call evolution_sph_licv
 !
       call  calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program kemorin_sph_licv

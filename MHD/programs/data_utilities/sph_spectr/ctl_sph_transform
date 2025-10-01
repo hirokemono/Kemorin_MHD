@@ -20,7 +20,7 @@ begin spherical_transform
 !
   begin model
     begin phys_values_ctl
-      array nod_value_ctl   8
+      array nod_value_ctl
         nod_value_ctl  velocity            Viz_On   Monitor_On
         nod_value_ctl  temperature         Viz_On   Monitor_On
         nod_value_ctl  pressure            Viz_On   Monitor_Off
@@ -66,21 +66,21 @@ begin spherical_transform
     begin pickup_spectr_ctl
       picked_sph_prefix            'sph_spectr/picked_mode'
 !
-      array pick_layer_ctl  1
+      array pick_layer_ctl
         pick_layer_ctl  62
       end array pick_layer_ctl
 !
-      array pick_sph_spectr_ctl  2
+      array pick_sph_spectr_ctl
         pick_sph_spectr_ctl   2  -2
         pick_sph_spectr_ctl   2   2
       end array pick_sph_spectr_ctl
 !
-      array pick_sph_degree_ctl  2
+      array pick_sph_degree_ctl
         pick_sph_degree_ctl   2
         pick_sph_degree_ctl   2
       end array pick_sph_degree_ctl
 !
-      array pick_sph_order_ctl  2
+      array pick_sph_order_ctl
         pick_sph_order_ctl  -2
         pick_sph_order_ctl   2
       end array pick_sph_order_ctl
@@ -91,17 +91,17 @@ begin spherical_transform
       gauss_coefs_prefix           'sph_spectr/gauss_coefs'
       gauss_coefs_radius_ctl    2.82
 !
-      array pick_gauss_coefs_ctl  2
+      array pick_gauss_coefs_ctl
         pick_gauss_coefs_ctl   2  -2
         pick_gauss_coefs_ctl   2   2
       end array pick_gauss_coefs_ctl
 !
-      array pick_gauss_coef_degree_ctl  2
+      array pick_gauss_coef_degree_ctl
         pick_gauss_coef_degree_ctl   2
         pick_gauss_coef_degree_ctl   2
       end array pick_gauss_coef_degree_ctl
 !
-      array pick_gauss_coef_order_ctl  2
+      array pick_gauss_coef_order_ctl
         pick_gauss_coef_order_ctl   -2
         pick_gauss_coef_order_ctl    2
       end array pick_gauss_coef_order_ctl

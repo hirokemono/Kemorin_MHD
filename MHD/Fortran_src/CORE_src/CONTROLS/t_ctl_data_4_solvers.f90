@@ -9,16 +9,12 @@
 !!@verbatim
 !!      subroutine dealloc_CG_solver_param_ctl(CG_ctl)
 !!
+!!      subroutine init_CG_solver_param_ctl_label(hd_block, CG_ctl)
 !!      subroutine read_CG_solver_param_ctl                             &
 !!     &         (id_control, hd_block, CG_ctl, c_buf)
-!!        type(solver_control), intent(inout) :: CG_ctl
-!!      subroutine read_control_DJDS_solver(hd_block, iflag, DJDS_ctl)
-!!        type(DJDS_control), intent(inout) :: DJDS_ctl
-!!
 !!      subroutine write_CG_solver_param_ctl                            &
 !!     &         (id_file, hd_block, CG_ctl, level)
-!!      subroutine write_control_DJDS_solver                            &
-!!     &         (id_file, hd_block, DJDS_ctl, level)
+!!        type(solver_control), intent(inout) :: CG_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!  parameter for solver 
@@ -85,7 +81,7 @@
 !!      begin MGCG_parameter_ctl
 !!        ...
 !!      end MGCG_parameter_ctl
-!!    end
+!!    end solver_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
@@ -96,24 +92,16 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
+      use t_ctl_data_DJDS_ordering
       use t_ctl_data_4_Multigrid
 !
       implicit  none
 !
-!>      Structure for DJDS solver control
-      type DJDS_control
-!>        Structure for number of MC/RCM colorling
-        type(read_integer_item) :: min_color_ctl
-!>        Structure for number of multi colorling
-        type(read_integer_item) :: mc_color_ctl
-!>        Structure for ordering method
-        type(read_character_item) :: order_method_ctl
-!
-        integer (kind=kint) :: i_DJDS_params = 0
-      end type DJDS_control
-!
 !>      Structure for CG solver control
       type solver_control
+!>        Block name
+        character(len=kchara) :: block_name = 'solver_ctl'
+!
 !>        Structure for maximum iteration counts
         type(read_integer_item) :: itr_ctl
 !
@@ -140,10 +128,10 @@
 !
 !  labels for entry groups
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_DJDS_params =      'DJDS_solver_ctl'
 !
-      character(len=kchara)                                             &
+      character(len=kchara), parameter, private                         &
      &       :: hd_Multigrid_params = 'MGCG_parameter_ctl'
 !
 !   4th level for ICCG
@@ -156,17 +144,6 @@
       character(len=kchara), parameter :: hd_method =     'method_ctl'
       character(len=kchara), parameter :: hd_precond =    'precond_ctl'
 !
-!   4th level for SMP solver control
-!
-      character(len=kchara), parameter                                  &
-     &         :: hd_order_method = 'order_method'
-      character(len=kchara), parameter                                  &
-     &         :: hd_min_color =    'min_color_ctl'
-      character(len=kchara), parameter                                  &
-     &         :: hd_mc_color =     'mc_color_ctl'
-!
-      private :: hd_DJDS_params
-      private :: hd_Multigrid_params
       private :: hd_itr, hd_eps, hd_sigma, hd_sigma_diag
       private :: hd_method, hd_precond
 !
@@ -181,6 +158,7 @@
       type(solver_control), intent(inout) :: CG_ctl
 !
 !
+      call reset_control_DJDS_solver(CG_ctl%DJDS_ctl)
       call dealloc_control_Multigrid(CG_ctl%MG_ctl)
 !
       end subroutine dealloc_CG_solver_param_ctl
@@ -191,6 +169,7 @@
      &         (id_control, hd_block, CG_ctl, c_buf)
 !
       use t_read_control_elements
+      use ctl_data_Multigrid_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -203,7 +182,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(CG_ctl%i_solver_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -229,46 +209,13 @@
       end subroutine read_CG_solver_param_ctl
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine read_control_DJDS_solver                               &
-     &         (id_control, hd_block, DJDS_ctl, c_buf)
-!
-      use t_read_control_elements
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(DJDS_control), intent(inout) :: DJDS_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(DJDS_ctl%i_DJDS_params .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_min_color, DJDS_ctl%min_color_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_mc_color, DJDS_ctl%mc_color_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_order_method, DJDS_ctl%order_method_ctl)
-      end do
-      DJDS_ctl%i_DJDS_params = 1
-!
-      end subroutine read_control_DJDS_solver
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine write_CG_solver_param_ctl                              &
      &         (id_control, hd_block, CG_ctl, level)
 !
       use t_read_control_elements
+      use ctl_data_Multigrid_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -280,7 +227,9 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      maxlen = max(maxlen, len_trim(hd_DJDS_params))
+      if(CG_ctl%i_solver_ctl .le. 0) return
+!
+      maxlen = len_trim(hd_DJDS_params)
       maxlen = max(maxlen, len_trim(hd_Multigrid_params))
       maxlen = max(maxlen, len_trim(hd_eps))
       maxlen = max(maxlen, len_trim(hd_sigma))
@@ -289,28 +238,26 @@
       maxlen = max(maxlen, len_trim(hd_method))
       maxlen = max(maxlen, len_trim(hd_precond))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_DJDS_solver(id_control, hd_DJDS_params,        &
      &    CG_ctl%DJDS_ctl, level)
       call write_control_Multigrid(id_control, hd_Multigrid_params,     &
      &    CG_ctl%MG_ctl, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps, CG_ctl%eps_ctl)
+     &    CG_ctl%eps_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma, CG_ctl%sigma_ctl)
+     &    CG_ctl%sigma_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_diag, CG_ctl%sigma_diag_ctl)
+     &    CG_ctl%sigma_diag_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_itr, CG_ctl%itr_ctl)
+     &    CG_ctl%itr_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_method, CG_ctl%method_ctl)
+     &    CG_ctl%method_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_precond, CG_ctl%precond_ctl)
+     &    CG_ctl%precond_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
@@ -318,38 +265,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_control_DJDS_solver                              &
-     &         (id_control, hd_block, DJDS_ctl, level)
+      subroutine init_CG_solver_param_ctl_label(hd_block, CG_ctl)
 !
       use t_read_control_elements
-      use write_control_elements
+      use ctl_data_Multigrid_IO
 !
-      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(DJDS_control), intent(in) :: DJDS_ctl
+      type(solver_control), intent(inout) :: CG_ctl
 !
-      integer(kind = kint), intent(inout) :: level
 !
-      integer(kind = kint) :: maxlen = 0
+      CG_ctl%block_name = hd_block
+      call init_ctl_DJDS_solver_label(hd_DJDS_params, CG_ctl%DJDS_ctl)
+      call init_Multigrid_ctl_label(hd_Multigrid_params, CG_ctl%MG_ctl)
 !
-      maxlen = max(maxlen, len_trim(hd_min_color))
-      maxlen = max(maxlen, len_trim(hd_mc_color))
-      maxlen = max(maxlen, len_trim(hd_order_method))
+        call init_real_ctl_item_label(hd_eps, CG_ctl%eps_ctl)
+        call init_real_ctl_item_label(hd_sigma, CG_ctl%sigma_ctl)
+        call init_real_ctl_item_label                                   &
+     &    (hd_sigma_diag, CG_ctl%sigma_diag_ctl)
 !
-      write(id_control,'(a1)') '!'
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+        call init_int_ctl_item_label(hd_itr, CG_ctl%itr_ctl)
 !
-      call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_min_color, DJDS_ctl%min_color_ctl)
-      call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_mc_color, DJDS_ctl%mc_color_ctl)
+        call init_chara_ctl_item_label(hd_method, CG_ctl%method_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_precond, CG_ctl%precond_ctl)
 !
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_order_method, DJDS_ctl%order_method_ctl)
-!
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
-!
-      end subroutine write_control_DJDS_solver
+      end subroutine init_CG_solver_param_ctl_label
 !
 ! -----------------------------------------------------------------------
 !

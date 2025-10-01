@@ -39,8 +39,5 @@ mod_list:
 	@echo  $(MOD_CUTSHELL) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUTSHELL_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUTSHELL_DIR)' $(SOURCES)

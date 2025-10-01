@@ -7,16 +7,9 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_viz                             &
-!!     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
-!!        type(control_data_vizs), intent(in) :: vizs_ctl
-!!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_viz(init_d, ucd_step,                 &
-!!     &                              viz_step, FEM_viz, m_SR)
+!!      subroutine FEM_initialize_viz(init_d, ucd_step, FEM_viz, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_viz(istep, ucd_step,                     &
@@ -38,7 +31,6 @@
       use t_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_ucd_data
-      use t_VIZ_step_parameter
       use t_mesh_SR
 !
       implicit none
@@ -51,45 +43,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_params_4_viz                               &
-     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
-!
-      use t_control_data_all_vizs
-      use t_VIZ_only_step_parameter
-!
-      use m_file_format_switch
-      use m_default_file_prefix
-      use set_control_platform_item
-      use set_control_platform_data
-      use parallel_ucd_IO_select
-!
-      type(control_data_vizs), intent(in) :: vizs_ctl
-!
-      type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-      type(time_step_param_w_viz), intent(inout) :: t_viz_param
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      call turn_off_debug_flag_by_ctl(my_rank, vizs_ctl%viz_plt)
-      call set_control_smp_def(my_rank, vizs_ctl%viz_plt)
-      call set_control_parallel_mesh(vizs_ctl%viz_plt,                  &
-     &                               FEM_viz%mesh_file_IO)
-      call set_merged_ucd_file_define(vizs_ctl%viz_plt,                 &
-     &                                FEM_viz%ucd_file_IO)
-!
-      call init_viz_field_list_control(vizs_ctl%viz_field_ctl,          &
-     &                                 FEM_viz%viz_fld_list)
-!
-      call set_fixed_t_step_params_w_viz                                &
-     &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
-      call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
-!
-      end subroutine set_control_params_4_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine FEM_initialize_viz(init_d, ucd_step,                   &
-     &                              viz_step, FEM_viz, m_SR)
+      subroutine FEM_initialize_viz(init_d, ucd_step, FEM_viz, m_SR)
 !
       use calypso_mpi_logical
       use mpi_load_mesh_data
@@ -103,7 +57,6 @@
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
 !
-      type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(mesh_SR), intent(inout) :: m_SR
 !

@@ -13,10 +13,10 @@
 !!      subroutine set_bc_vector_id                                     &
 !!     &         (node, nod_grp, num_bc_field, bc_field_name,           &
 !!     &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod, &
-!!     &          ibc_id, bc_apt, iref, ii)
+!!     &          ibc_id, bc_apt, i_ref, ii)
 !!      subroutine set_bc_rotate_id(node, nod_grp, num_bc_field,        &
 !!     &          bc_field_name, ibc_field_type, bc_field_mag,          &
-!!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
+!!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, i_ref, ii)
 !!      subroutine set_sph_magne_id                                     &
 !!     &         (node, nod_grp, bc_list, nod_bc_b, l_f)
 !!        type(IO_boundary), intent(in) :: IO_bc
@@ -102,9 +102,9 @@
       subroutine set_bc_vector_id                                       &
      &         (node, nod_grp, num_bc_field, bc_field_name,             &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
-     &          ibc_id, bc_apt, iref, ii)
+     &          ibc_id, bc_apt, i_ref, ii)
 !
-      integer (kind=kint), intent(in) :: iref
+      integer (kind=kint), intent(in) :: i_ref
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -133,7 +133,7 @@
           if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
             do nd = 1, 3
 !
-              if (ibc_field_type(j) .eq. (iref+nd) ) then
+              if (ibc_field_type(j) .eq. (i_ref+nd) ) then
                 call set_nod_bc_from_ctl(nod_grp, node%numnod,          &
      &              nmax_bc_nod, ii(nd), i, ibc_id(1,nd),               &
      &              ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),                &
@@ -151,9 +151,9 @@
 !
       subroutine set_bc_rotate_id(node, nod_grp, num_bc_field,          &
      &          bc_field_name, ibc_field_type, bc_field_mag,            &
-     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
+     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, i_ref, ii)
 !
-      integer (kind=kint), intent(in) :: iref
+      integer (kind=kint), intent(in) :: i_ref
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -178,7 +178,7 @@
 !
           if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
             do nd = 1, 3
-              if ( ibc_field_type(j) == (nd+iref) ) then
+              if ( ibc_field_type(j) == (nd+i_ref) ) then
                 call set_nod_bc_from_ctl(nod_grp, node%numnod,          &
      &            num_bc_nod, ii(nd), i, ibc_id, ibc, ibc2,             &
      &            bc_apt(1,nd), bc_field_mag(j) )

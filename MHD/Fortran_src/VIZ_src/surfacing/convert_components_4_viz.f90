@@ -10,9 +10,8 @@
 !!      subroutine convert_comps_4_viz(nnod, istack_n_smp, xx,          &
 !!     &          sph_r, a_r, cyl_s, a_s, ncomp_viz, ncomp_org,         &
 !!     &          icomp_viz, dat_xyz, dat_viz)
-!!      subroutine convert_position_4_viz                               &
-!!     &         (nnod, istack_n_smp, xx, sph_r, a_r, cyl_s, a_s,       &
-!!     &          icomp_viz, dat_viz)
+!!      subroutine convert_position_4_viz(nnod, xx, sph_r,              &
+!!     &          a_r, cyl_s, a_s, icomp_viz, dat_viz)
 !!@endverbatim
 !
       module convert_components_4_viz
@@ -55,16 +54,14 @@
       real(kind = kreal), intent(inout) :: dat_viz(nnod,ncomp_viz)
 !
 !
-!$omp parallel
         if (icomp_viz .eq. icomp_NORM) then
           if( ncomp_org .eq. ncomp_SCALAR) then
             call copy_nod_scalar_smp(nnod, dat_xyz(1,1), dat_viz(1,1))
           else if ( ncomp_org .eq. ncomp_VECTOR) then
-            call cal_vector_magnitude(np_smp, nnod, istack_n_smp,       &
-     &          dat_xyz(1,1), dat_viz(1,1))
+            call cal_vector_magnitude(nnod, dat_xyz(1,1), dat_viz(1,1))
           else if ( ncomp_org .eq. ncomp_SYM_TENSOR) then
-            call cal_sym_tensor_magnitude(np_smp, nnod, istack_n_smp,   &
-     &          dat_xyz(1,1), dat_viz(1,1))
+            call cal_sym_tensor_magnitude(nnod, dat_xyz(1,1),           &
+     &                                    dat_viz(1,1))
           end if
 !
         else if ( icomp_viz.eq.icomp_VECTOR                             &
@@ -77,13 +74,12 @@
 !
 !
         else if (icomp_viz .eq. icomp_SPH_VECTOR) then
-          call cvt_vector_2_sph_smp(np_smp, nnod, istack_n_smp,         &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
-     &        sph_r, cyl_s, a_r, a_s)
+          call cvt_vector_2_sph_smp(nnod, dat_xyz(1,1), dat_viz(1,1),   &
+     &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
 !
         else if (icomp_viz .eq. icomp_CYL_VECTOR) then
-          call cvt_vector_2_cyl_smp(np_smp, nnod, istack_n_smp,         &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
+          call cvt_vector_2_cyl_smp(nnod, dat_xyz(1,1), dat_viz(1,1),   &
+     &                              xx(1,1), xx(1,2), cyl_s, a_s)
 !
         else if ( icomp_viz .eq. icomp_SPHL_SYM_TENSOR ) then
           call cal_sph_tensor_smp(np_smp, nnod, istack_n_smp,           &
@@ -94,29 +90,25 @@
           call cal_cyl_tensor_smp(np_smp, nnod, istack_n_smp,           &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
 !
-!
         else if (icomp_viz.ge.icomp_XX                                  &
      &           .and. icomp_viz.le.icomp_ZZ) then
           call copy_nod_scalar_smp                                      &
      &       (nnod, dat_xyz(1,icomp_viz), dat_viz(1,1))
 !
         else if (icomp_viz .eq. icomp_RADIAL) then
-          call cal_radial_comp_smp(np_smp, nnod, istack_n_smp,          &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
-     &        sph_r, a_r)
+          call cal_radial_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),    &
+     &        xx(1,1), xx(1,2), xx(1,3), sph_r, a_r)
         else if (icomp_viz .eq. icomp_THETA) then
-          call cal_theta_comp_smp(np_smp, nnod, istack_n_smp,           &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), xx(1,3),    &
-     &        sph_r, cyl_s, a_r, a_s)
+          call cal_theta_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),     &
+     &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
 !
         else if (icomp_viz .eq. icomp_PHI) then
-          call cal_phi_comp_smp(np_smp, nnod, istack_n_smp,             &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
+          call cal_phi_comp_smp(nnod, dat_xyz(1,1), dat_viz(1,1),       &
+     &                          xx(1,1), xx(1,2), cyl_s, a_s)
 !
         else if (icomp_viz .eq. icomp_CYLINDER_R) then
-          call cal_cylinder_r_comp_smp(np_smp, nnod, istack_n_smp,      &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!
+          call cal_cylinder_r_comp_smp(nnod, dat_xyz(1,1),              &
+     &        dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
 !
         else if ( icomp_viz .eq. icomp_RR ) then
           call cal_rr_tensor_smp(np_smp, nnod, istack_n_smp,            &
@@ -147,7 +139,6 @@
           call cal_pp_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
 !
-!
         else if ( icomp_viz .eq. icomp_SS ) then
           call cal_ss_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
@@ -155,32 +146,26 @@
         else if ( icomp_viz .eq. icomp_SP ) then
           call cal_sp_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!
         else if ( icomp_viz .eq. icomp_SZ ) then
           call cal_sz_tensor_smp(np_smp, nnod, istack_n_smp,            &
      &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
 !
         else if ( icomp_viz .eq. icomp_PP_cyl ) then
-          call cal_pp_cyl_tensor_smp(np_smp, nnod, istack_n_smp,        &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!
+          call cal_pp_cyl_tensor_smp(nnod, dat_xyz(1,1), dat_viz(1,1),  &
+     &                               xx(1,1), xx(1,2), cyl_s, a_s)
         else if ( icomp_viz .eq. icomp_PZ) then
-          call cal_pz_tensor_smp(np_smp, nnod, istack_n_smp,            &
-     &        dat_xyz(1,1), dat_viz(1,1), xx(1,1), xx(1,2), cyl_s, a_s)
-!
+          call cal_pz_tensor_smp(nnod, dat_xyz(1,1), dat_viz(1,1),      &
+     &                           xx(1,1), xx(1,2), cyl_s, a_s)
         else if ( icomp_viz .eq. icomp_ZZ_cyl ) then
-          call cal_zz_tensor_smp(np_smp, nnod, istack_n_smp,            &
-     &        dat_xyz(1,1), dat_viz(1,1) )
+          call cal_zz_tensor_smp(nnod, dat_xyz(1,1), dat_viz(1,1) )
         end if
-!$omp end parallel
 !
       end subroutine convert_comps_4_viz
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine convert_position_4_viz                                 &
-     &         (nnod, istack_n_smp, xx, sph_r, a_r, cyl_s, a_s,         &
-     &          icomp_viz, dat_viz)
+      subroutine convert_position_4_viz(nnod, xx, sph_r,                &
+     &          a_r, cyl_s, a_s, icomp_viz, dat_viz)
 !
       use set_components_flags
       use set_nodal_field_for_psf
@@ -192,7 +177,6 @@
       use cvt_xyz_tensor_2_cyl_smp
 !
       integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
       real(kind = kreal), intent(in) :: xx(nnod,3)
       real(kind = kreal), intent(in) :: sph_r(nnod), a_r(nnod)
       real(kind = kreal), intent(in) :: cyl_s(nnod), a_s(nnod)
@@ -201,33 +185,28 @@
       real(kind = kreal), intent(inout) :: dat_viz(nnod)
 !
 !
-!$omp parallel
 !        if (icomp_viz .eq. icomp_NORM) then
-!          call cal_vector_magnitude(np_smp, nnod, istack_n_smp,        &
-!     &        xx(1,1), dat_viz(1))
+!          call cal_vector_magnitude(nnod, xx(1,1), dat_viz(1))
 !
         if(icomp_viz.ge.icomp_X .and. icomp_viz.le.icomp_Z) then
           call copy_nod_scalar_smp                                      &
      &       (nnod, xx(1,icomp_viz), dat_viz(1))
 !
         else if(icomp_viz .eq. icomp_RADIAL) then
-          call cal_radial_comp_smp(np_smp, nnod, istack_n_smp,          &
-     &        xx(1,1), dat_viz(1), xx(1,1), xx(1,2), xx(1,3),           &
-     &        sph_r, a_r)
+          call cal_radial_comp_smp(nnod, xx(1,1), dat_viz(1),           &
+     &        xx(1,1), xx(1,2), xx(1,3), sph_r, a_r)
         else if(icomp_viz .eq. icomp_THETA) then
-          call cal_theta_comp_smp(np_smp, nnod, istack_n_smp,           &
-     &        xx(1,1), dat_viz(1), xx(1,1), xx(1,2), xx(1,3),           &
-     &        sph_r, cyl_s, a_r, a_s)
+          call cal_theta_comp_smp(nnod, xx(1,1), dat_viz(1),            &
+     &        xx(1,1), xx(1,2), xx(1,3), sph_r, cyl_s, a_r, a_s)
 !
         else if(icomp_viz .eq. icomp_PHI) then
-          call cal_phi_comp_smp(np_smp, nnod, istack_n_smp,             &
-     &        xx(1,1), dat_viz(1), xx(1,1), xx(1,2), cyl_s, a_s)
+          call cal_phi_comp_smp(nnod, xx(1,1), dat_viz(1),              &
+     &                          xx(1,1), xx(1,2), cyl_s, a_s)
 !
         else if(icomp_viz .eq. icomp_CYLINDER_R) then
-          call cal_cylinder_r_comp_smp(np_smp, nnod, istack_n_smp,      &
-     &        xx(1,1), dat_viz(1), xx(1,1), xx(1,2), cyl_s, a_s)
+          call cal_cylinder_r_comp_smp(nnod,  xx(1,1), dat_viz(1),      &
+     &                                 xx(1,1), xx(1,2), cyl_s, a_s)
         end if
-!$omp end parallel
 !
       end subroutine convert_position_4_viz
 !

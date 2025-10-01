@@ -105,10 +105,12 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      integer(kind = kint) :: ierr = 0
 !
 !   Input spectr data
       if (iflag_debug.gt.0) write(*,*) 'read_gauss_global_coefs'
-      call read_gauss_global_coefs(i_step, SPH_STR%d_gauss)
+      call read_gauss_global_coefs(i_step, SPH_STR%d_gauss, ierr)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, 'File read Error')
 !
 !    copy and extend magnetic field to outside
 !

@@ -39,12 +39,8 @@ mod_list:
 	@echo  $(MOD_CUBED_SPH)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUBED_SPH_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(CUBED_SPH_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod $(EXE) $(LIB) *~

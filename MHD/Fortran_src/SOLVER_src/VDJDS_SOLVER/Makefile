@@ -30,7 +30,9 @@ dir_list:
 	done
 	@echo  '#' >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_DJDS_SOLVER)' >> $(MAKENAME)
 
 
@@ -52,17 +54,6 @@ mod_list:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \
-		) \
-	done
-
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
 		) \
 	done
 

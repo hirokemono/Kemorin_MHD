@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_psf_menu.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -22,21 +22,19 @@
 #include "tree_view_4_colormap.h"
 #include "tree_view_kemoview_colormap.h"
 #include "tree_view_4_light_position.h"
-#include "kemoview_fileselector_gtk.h"
+#include "tree_view_viewer_colormap.h"
+#include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk_PSF_surface_menu.h"
 #include "kemoview_gtk_PSF_isoline_menu.h"
 #include "kemoview_gtk_PSF_vector_menu.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
+#include "view_modifier_glfw.h"
 
 struct psf_color_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
+	GtkWidget *colorcell_sfcolor;
 	
 	GtkWidget *spin_opacity1;	
 	GtkWidget *spin_range_min, *spin_digit_min; 
@@ -45,26 +43,51 @@ struct psf_color_gtk_menu{
 };
 
 struct psf_gtk_menu{
-	GtkWidget *psf_vbox;
-	
+    int iflag_psfBox;
+    GtkWidget *psfWin;
+
+    GtkWidget *psf_frame;
+
 	GtkWidget *closeButton;
-	GtkWidget *combobox_field;
+    
+    GtkWidget *combobox_psfs;
+    GtkWidget *psf_vbox;
+
+    GtkWidget *combobox_field;
+    GtkWidget *hbox_field;
+
 	GtkWidget *combobox_comp;
-	
-	struct psf_isoline_gtk_menu *psf_isoline_menu;
-	struct psf_surface_gtk_menu *psf_surface_menu;
-	struct psf_color_gtk_menu *psf_color_menu;
+    GtkWidget *hbox_comp;
+
+    int num_psfs;
+    GtkWidget *hbox_psfs;
+
+    struct psf_isoline_gtk_menu *psf_isoline_menu;
+    GtkWidget *expander_iso;
+    
+    struct psf_surface_gtk_menu *psf_surface_menu;
+    GtkWidget *expander_surf;
+
 	struct psf_vector_gtk_menu *psf_vector_menu;
-	
-	struct colormap_view *color_vws;
+    GtkWidget *expander_vect;
+    
+    struct colormap_view *color_vws;
+    GtkWidget *expander_color;
 };
 
 /*  prototypes */
 
-struct psf_gtk_menu * alloc_psf_gtk_menu();
+struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-GtkWidget * init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, 
-                               GtkWidget *window, GtkWidget *psf_vbox);
+GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *window,
+                                           struct colormap_view *color_vws);
+
+void set_vector_plot_availablity(int iflag_current_model,
+                                 struct kemoviewer_gl_type *kemo_gl,
+                                 struct psf_gtk_menu *psf_gmenu);
+void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
+                        struct psf_gtk_menu *psf_gmenu);
 
 #endif

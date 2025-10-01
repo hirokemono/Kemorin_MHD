@@ -6,15 +6,11 @@
 !>@brief control data for each isosurface
 !!
 !!@verbatim
-!!      subroutine init_iso_ctl_stract(iso_c)
 !!      subroutine dealloc_cont_dat_4_iso(iso_c)
 !!        type(iso_ctl), intent(inout) :: iso_c
 !!      subroutine dup_control_4_iso(org_iso_c, new_iso_c)
 !!        type(iso_ctl), intent(in) :: org_iso_c
 !!        type(iso_ctl), intent(inout) :: new_iso_c
-!!
-!!      subroutine bcast_iso_control_data(iso_c)
-!!        type(iso_ctl), intent(inout) :: iso_c
 !!
 !!      subroutine add_fields_4_iso_to_fld_ctl(iso_c, field_ctl)
 !!        type(iso_ctl), intent(in) :: iso_c
@@ -82,13 +78,17 @@
       use t_control_array_character
       use t_control_data_4_iso_def
       use t_control_data_4_fld_on_psf
-      use calypso_mpi
 !
       implicit  none
 !
       type iso_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'isosurface_ctl'
+!
 !>        Structure of isosurface define control
         type(iso_define_ctl) :: iso_def_c
+!>        file name for fields on isosurface control
+        character(len=kchara) :: fname_fld_on_iso = 'NO_FILE'
 !>        Structure of fields on isosurface control
         type(field_on_psf_ctl) :: fld_on_iso_c
 !
@@ -104,18 +104,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_iso_ctl_stract(iso_c)
-!
-      type(iso_ctl), intent(inout) :: iso_c
-!
-!
-      call init_iso_define_control(iso_c%iso_def_c)
-      call init_fld_on_psf_control(iso_c%fld_on_iso_c)
-!
-      end subroutine init_iso_ctl_stract
 !
 !  ---------------------------------------------------------------------
 !
@@ -147,7 +135,9 @@
       call copy_chara_ctl(org_iso_c%iso_output_type_ctl,                &
      &                    new_iso_c%iso_output_type_ctl)
 !
-      new_iso_c%i_iso_ctl =       org_iso_c%i_iso_ctl
+      new_iso_c%i_iso_ctl =        org_iso_c%i_iso_ctl
+      new_iso_c%block_name =       org_iso_c%block_name
+      new_iso_c%fname_fld_on_iso = org_iso_c%fname_fld_on_iso
 !
       call dup_iso_define_control                                       &
      &   (org_iso_c%iso_def_c, new_iso_c%iso_def_c)
@@ -157,28 +147,7 @@
       end subroutine dup_control_4_iso
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_iso_control_data(iso_c)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(iso_ctl), intent(inout) :: iso_c
-!
-!
-      call calypso_mpi_bcast_one_int(iso_c%i_iso_ctl, 0)
-!
-      call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)
-      call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)
-      call bcast_ctl_type_c1(iso_c%iso_output_type_ctl)
-!
-      call bcast_iso_define_control(iso_c%iso_def_c)
-      call bcast_fld_on_psf_control(iso_c%fld_on_iso_c)
-!
-      end subroutine bcast_iso_control_data
-!
-!   --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine add_fields_4_iso_to_fld_ctl(iso_c, field_ctl)
 !
@@ -190,12 +159,11 @@
 !
 !
       if(iso_c%iso_def_c%isosurf_data_ctl%iflag .gt. 0) then
-        call add_viz_name_ctl(my_rank,                                  &
-     &      iso_c%iso_def_c%isosurf_data_ctl%charavalue, field_ctl)
+        call add_viz_name_ctl                                           &
+     &     (iso_c%iso_def_c%isosurf_data_ctl%charavalue, field_ctl)
       end if
 !
-      call add_fields_on_psf_to_fld_ctl(my_rank, iso_c%fld_on_iso_c,    &
-     &                                  field_ctl)
+      call add_fields_on_psf_to_fld_ctl(iso_c%fld_on_iso_c, field_ctl)
 !
       end subroutine add_fields_4_iso_to_fld_ctl
 !

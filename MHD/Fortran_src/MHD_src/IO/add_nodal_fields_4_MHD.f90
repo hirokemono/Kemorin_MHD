@@ -47,11 +47,39 @@
       use check_energy_fluxes
       use check_base_forces
       use check_base_field
+      use check_field_w_symmetry
+      use check_forces_w_symmetry
+      use check_ene_flux_w_symmetry
       use check_workarea_4_explicit
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!
+!
+      call add_ene_flux_by_sym_asym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_ene_flux_by_sym_asym_ctl end'
+      call add_ene_flux_by_sym_sym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_ene_flux_by_sym_sym_ctl end'
+      call add_ene_flux_by_asym_asym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_ene_flux_by_asym_asym_ctl end'
+!
+      call add_force_by_sym_asym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_force_by_sym_asym_ctl end'
+      call add_force_by_asym_asym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_force_by_asym_asym_ctl end'
+      call add_force_by_sym_sym_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_force_by_sym_sym_ctl end'
+!
+      call add_field_w_symmetry_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_w_symmetry_ctl end'
 !
       call add_field_ctl_4_check_evo(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -153,17 +181,6 @@
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
-!
-      if (ref_param_T%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(reference_temperature, field_ctl)
-        call add_phys_name_ctl(grad_reference_temp, field_ctl)
-      end if
-!
-      if (ref_param_C%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(reference_composition, field_ctl)
-        call add_phys_name_ctl(grad_reference_composition, field_ctl)
-      end if
-!
       end subroutine add_ctl_4_ref_temp
 !
 ! -----------------------------------------------------------------------
@@ -191,13 +208,13 @@
         call add_phys_name_ctl(perturbation_composition, field_ctl)
       end if
 !
-      if(fl_prop%iflag_4_coriolis)                                      &
+      if(fl_prop%flag_coriolis)                                         &
      &  call add_phys_name_ctl(Coriolis_force, field_ctl)
 !
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then
-        if(fl_prop%iflag_4_gravity)                                     &
+        if(fl_prop%flag_thermal_buoyancy)                               &
      &    call add_phys_name_ctl(buoyancy, field_ctl)
-        if(fl_prop%iflag_4_composit_buo)                                &
+        if(fl_prop%flag_comp_buoyancy)                                  &
      &    call add_phys_name_ctl(composite_buoyancy, field_ctl)
       end if
 !
@@ -209,6 +226,7 @@
      &         (fl_prop, cd_prop, field_ctl)
 !
       use t_control_array_character3
+      use m_base_field_labels
       use m_explicit_term_labels
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -223,6 +241,9 @@
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(m_potential_work, field_ctl)
+      end if
+      if(cd_prop%iflag_magneto_cv .eq. id_turn_ON) then
+        call add_phys_name_ctl(background_B, field_ctl)
       end if
 !
       end subroutine add_work_area_4_potentials

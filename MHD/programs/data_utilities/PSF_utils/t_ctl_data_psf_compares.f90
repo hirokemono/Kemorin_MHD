@@ -24,11 +24,13 @@
 !!        surface_file_prefix    'reference/iso_w10n'
 !!        surface_file_format            VTK_GZ
 !!      end second_file_ctl
+!!
 !!      i_step_surface_ctl      10
+!!    difference_limit_ctl    1.0e-9
 !!    end compare_surface_file
-!
+!!
 !!    ...
-!
+!!
 !!    begin compare_surface_file
 !!      ...
 !!    end compare_surface_file
@@ -78,10 +80,13 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_psf_compare, status='old')
         do
-          call load_one_line_from_control(id_control, c_buf1)
+          call load_one_line_from_control                               &
+     &       (id_control, hd_compare_psf_file, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
 !
           call read_ctl_data_psf_compares                               &
      &       (id_control, hd_compare_psf_file, psf_compares, c_buf1)
@@ -90,6 +95,7 @@
         end do
         close(id_control)
       end if
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_psf_compares
 !
@@ -99,6 +105,7 @@
      &         (id_control, hd_block, psf_compares, c_buf)
 !
       use skip_comment_f
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -112,14 +119,16 @@
       call alloc_psf_compares_ctl(psf_compares)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then
           call append_ctl_data_psf_compare(psf_compares)
 !
-          write(*,*) 'Control for', trim(hd_block), ' No. ',            &
-     &              psf_compares%num_psf_cmp, ' is reading'
+          call write_multi_ctl_file_message                             &
+     &       (hd_block, psf_compares%num_psf_cmp, c_buf%level)
+          write(*,*)
           call read_ctl_data_psf_compare(id_control, hd_block,          &
      &        psf_compares%psf_cmp_ctls(psf_compares%num_psf_cmp),      &
      &        c_buf)

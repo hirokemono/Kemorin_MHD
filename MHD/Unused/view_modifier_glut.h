@@ -46,6 +46,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 								int ist_udt, int ied_udt, int inc_udt);
 
 void set_viewtype_mode_glut(int selected);
+void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
 #ifdef __cplusplus
 }

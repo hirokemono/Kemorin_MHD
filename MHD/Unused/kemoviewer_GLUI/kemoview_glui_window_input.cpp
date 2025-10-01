@@ -81,7 +81,7 @@ static void input_psf_max_from_panel(int val){
 static void select_colormap_point(int val){
 	double dvalue, dcolor;
 	int sel = radiogroup_colormap->get_int_val();
-	kemoview_get_PSF_color_items(sel, &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(kemo_sgl, sel, &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data->set_float_val((float)dvalue);
@@ -92,7 +92,7 @@ static void select_colormap_point(int val){
 static void select_opacitymap_point(int val){
 	double dvalue, dopacity;
 	int sel = radiogroup_opacitymap->get_int_val();
-	kemoview_get_PSF_opacity_items(sel, &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl, sel, &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	editText_data->set_float_val((float)dvalue);
@@ -118,7 +118,7 @@ static void update_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	kemoview_set_PSF_color_data(sel, (double) value, (double) color);
+	kemoview_set_PSF_color_data(sel, (double) value, (double) color, kemo_sgl);
 	close_panel(0);
 	return;
 }
@@ -126,14 +126,14 @@ static void update_colormap_glui(int val){
 static void add_colormap_glui(int val){
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	kemoview_add_PSF_color_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color, kemo_sgl);
 	close_panel(0);
 	return;
 }
 
 static void delete_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
-	kemoview_delete_PSF_color_list(sel);
+	kemoview_delete_PSF_color_list(sel, kemo_sgl);
 	close_panel(0);
 	return;
 }
@@ -142,7 +142,8 @@ static void update_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	kemoview_set_PSF_opacity_data(sel, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(sel, (double) value, (double) opacity,
+                                  kemo_sgl);
 	close_panel(0);
 	return;
 }
@@ -150,14 +151,15 @@ static void update_opacitymap_glui(int val){
 static void add_opacitymap_glui(int val){
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity,
+                                  kemo_sgl);
 	close_panel(0);
 	return;
 }
 
 static void delete_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
-	kemoview_delete_PSF_opacity_list(sel);
+	kemoview_delete_PSF_opacity_list(sel, kemo_sgl);
 	close_panel(0);
 	return;
 }
@@ -190,7 +192,7 @@ static void input_fline_thick_from_panel(int val){
 }
 
 static void input_psf_opacity_from_panel(int val){
-	kemoview_set_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity, kemo_sgl);
 	draw_mesh_keep_menu();
 	return;
 }
@@ -247,7 +249,7 @@ static void input_psf_vector_thickness_panel(int val){
 
 static void input_coast_radius_from_panel(int val){
 	coast_radius = editText->get_float_val();
-	kemoview_set_coastline_radius((double) coast_radius);
+	kemoview_set_coastline_radius((double) coast_radius, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -261,7 +263,8 @@ static void update_BGcolor_glui(int val){
     color[3] = (float) alpha;
 	
 	draw_mesh_keep_menu();
-    kemoview_set_background_color(color);
+    kemoview_set_background_color(color, kemo_sgl);
+    kemoview_gl_background_color();
     glClear(GL_COLOR_BUFFER_BIT); 
 	return;
 }
@@ -274,7 +277,7 @@ static void update_PSFcolor_glui(int val){
     rgba[2] = (double) blue;
 	rgba[3] = kemoview_get_PSF_max_opacity();
     
-    kemoview_set_PSF_single_color(rgba);
+    kemoview_set_PSF_single_color(rgba, kemo_sgl);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	draw_mesh_keep_menu();
 	return;
@@ -282,7 +285,7 @@ static void update_PSFcolor_glui(int val){
 
 static void input_domain_distance_from_panel(int val){
 	distance = editText->get_float_val();
-	kemoview_set_domain_distance((double) distance);
+	kemoview_set_domain_distance((double) distance, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -290,7 +293,7 @@ static void input_domain_distance_from_panel(int val){
 
 static void input_num_colorloop_from_panel(int val){
 	nloop = editText->get_int_val();
-	if(nloop > 0) kemoview_set_num_of_color_loop(nloop);
+	if(nloop > 0) kemoview_set_num_of_color_loop(nloop, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -455,7 +458,7 @@ void set_psf_vector_thick_by_glui(int winid){
 }
 
 void set_coastline_radius_glui(int winid){
-	coast_radius = (float) kemoview_get_coastline_radius();
+	coast_radius = (float) kemoview_get_coastline_radius(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Coastline radius: ", GLUI_EDITTEXT_FLOAT,
@@ -468,7 +471,7 @@ void set_background_color_glui(int winid){
     float color[4];
     char buf[1024];
 	
-    kemoview_get_background_color(color);
+    kemoview_get_background_color(kemo_sgl, color);
     red =   color[0];
     green = color[1];
 	blue =  color[2];
@@ -494,7 +497,7 @@ void set_background_color_glui(int winid){
 
 
 void set_domain_distance_by_glui(int winid){
-	distance = (float) kemoview_get_domain_distance();
+	distance = (float) kemoview_get_domain_distance(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Object distance: ", GLUI_EDITTEXT_FLOAT,
@@ -504,7 +507,7 @@ void set_domain_distance_by_glui(int winid){
 }
 
 void set_num_color_loop_by_glui(int winid){
-	nloop = kemoview_get_num_of_color_loop();
+	nloop = kemoview_get_num_of_color_loop(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Num of color: ", GLUI_EDITTEXT_INT,
@@ -554,12 +557,13 @@ void edit_psf_colormap_by_glui(int winid){
 	
 	radiogroup_colormap = new GLUI_RadioGroup(color_panel, &obj_type, -1, select_colormap_point);
 	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
-		kemoview_get_PSF_color_items(i, &dvalue, &dcolor);
+		kemoview_get_PSF_color_items(kemo_sgl, i, &dvalue, &dcolor);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dcolor);
 		new GLUI_RadioButton(radiogroup_colormap, tmp_menu);
 	};
 	
-	kemoview_get_PSF_color_items(radiogroup_colormap->get_int_val(), &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(kemo_sgl, radiogroup_colormap->get_int_val(),
+                                 &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data = new GLUI_EditText( glui_sub, "data: ", GLUI_EDITTEXT_FLOAT,
@@ -583,13 +587,13 @@ void edit_psf_opacitymap_by_glui(int winid){
 	
 	radiogroup_opacitymap = new GLUI_RadioGroup(opacity_panel, &obj_type, -1, select_opacitymap_point);
 	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
-		kemoview_get_PSF_opacity_items(i, &dvalue, &dopacity);
+		kemoview_get_PSF_opacity_items(kemo_sgl, i, &dvalue, &dopacity);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dopacity);
 		new GLUI_RadioButton(radiogroup_opacitymap, tmp_menu);
 	};
 	
 	
-	kemoview_get_PSF_opacity_items(radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl, radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	

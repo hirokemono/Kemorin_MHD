@@ -8,11 +8,16 @@
 !> @brief REad integration points for FEM
 !!
 !!@verbatim
+!!      subroutine init_fem_int_points_ctl_label(hd_block, fint_ctl)
 !!      subroutine read_control_fem_int_points                          &
 !!     &         (id_control, hd_block, fint_ctl, c_buf)
 !!        type(fem_intergration_control), intent(inout) :: fint_ctl
 !!      subroutine write_control_fem_int_points                         &
 !!     &         (id_control, hd_block, fint_ctl, level)
+!!        type(fem_intergration_control), intent(in) :: fint_ctl
+!!
+!!      subroutine reset_control_fem_int_points(fint_ctl)
+!!        type(fem_intergration_control), intent(inout) :: fint_ctl
 !! ----------------------------------------------------------------------
 !!
 !!    begin intg_point_num_ctl
@@ -35,6 +40,9 @@
 !
 !
       type fem_intergration_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MHD_control'
+!
 !>        Structure for read # of integration points
         type(read_integer_item)  :: integration_points_ctl
 !
@@ -81,7 +89,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(fint_ctl%i_int_points .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_integer_ctl_type(c_buf, hd_intgration_points,         &
@@ -116,19 +125,50 @@
       maxlen = max(maxlen, len_trim(hd_intg_point_poisson))
       maxlen = max(maxlen, len_trim(hd_intg_point_t_evo))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intgration_points, fint_ctl%integration_points_ctl)
+     &    fint_ctl%integration_points_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intg_point_poisson, fint_ctl%intg_point_poisson_ctl)
+     &    fint_ctl%intg_point_poisson_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intg_point_t_evo, fint_ctl%intg_point_t_evo_ctl)
+     &    fint_ctl%intg_point_t_evo_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_fem_int_points
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_fem_int_points_ctl_label(hd_block, fint_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(fem_intergration_control), intent(inout) :: fint_ctl
+!
+!
+      fint_ctl%block_name = hd_block
+        call init_int_ctl_item_label(hd_intgration_points,              &
+     &      fint_ctl%integration_points_ctl)
+        call init_int_ctl_item_label(hd_intg_point_poisson,             &
+     &      fint_ctl%intg_point_poisson_ctl)
+        call init_int_ctl_item_label(hd_intg_point_t_evo,               &
+     &      fint_ctl%intg_point_t_evo_ctl)
+!
+      end subroutine init_fem_int_points_ctl_label
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_control_fem_int_points(fint_ctl)
+!
+      type(fem_intergration_control), intent(inout) :: fint_ctl
+!
+!
+      fint_ctl%integration_points_ctl%iflag = 0
+      fint_ctl%intg_point_poisson_ctl%iflag = 0
+      fint_ctl%intg_point_t_evo_ctl%iflag = 0
+!
+      fint_ctl%i_int_points = 0
+!
+      end subroutine reset_control_fem_int_points
 !
 !   --------------------------------------------------------------------
 !

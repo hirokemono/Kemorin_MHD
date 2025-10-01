@@ -23,7 +23,15 @@
 !!     &         (my_rank, nprocs, part_grp, num_send_tmp,              &
 !!     &          nrank_export, ntot_export, istack_export, item_export)
 !!      subroutine set_import_item_for_repart                           &
-!!     &         (NP, ntot_import, item_import, irev_import)
+!!     &         (ntot_import, item_import, ntot_rev)
+!!        integer(kind = kint), intent(in) :: ntot_import
+!!        integer(kind = kint), intent(in) :: item_import(ntot_import)
+!!        integer(kind = kint), intent(inout) :: irev_import(ntot_rev)
+!!      subroutine set_import_rev_for_repart                            &
+!!     &         (ntot_import, ntot_rev, item_import, irev_import)
+!!        integer(kind = kint), intent(in) :: ntot_rev, ntot_import
+!!        integer(kind = kint), intent(in) :: item_import(ntot_import)
+!!        integer(kind = kint), intent(inout) :: irev_import(ntot_rev)
 !!@endverbatim
 !
       module set_comm_tbl_to_new_part
@@ -192,12 +200,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_import_item_for_repart                             &
-     &         (NP, ntot_import, item_import, irev_import)
+     &         (ntot_import, item_import, ntot_rev)
 !
-      integer(kind = kint), intent(in) :: NP, ntot_import
+      integer(kind = kint), intent(in) :: ntot_import
 !
       integer(kind = kint), intent(inout) :: item_import(ntot_import)
-      integer(kind = kint), intent(inout) :: irev_import(NP)
+      integer(kind = kint), intent(inout) :: ntot_rev
 !
       integer(kind = kint) :: inum
 !
@@ -205,11 +213,33 @@
 !$omp parallel do
       do inum = 1, ntot_import
         item_import(inum) = inum
-        irev_import(inum) = inum
+      end do
+!$omp end parallel do
+      ntot_rev = ntot_import
+!
+      end subroutine set_import_item_for_repart
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_import_rev_for_repart                              &
+     &         (ntot_import, ntot_rev, item_import, irev_import)
+!
+      integer(kind = kint), intent(in) :: ntot_rev, ntot_import
+      integer(kind = kint), intent(in) :: item_import(ntot_import)
+!
+      integer(kind = kint), intent(inout) :: irev_import(ntot_rev)
+!
+      integer(kind = kint) :: inum, inod
+!
+!
+!$omp parallel do private(inum,inod)
+      do inum = 1, ntot_import
+        inod = item_import(inum)
+        irev_import(inod) = inum
       end do
 !$omp end parallel do
 !
-      end subroutine set_import_item_for_repart
+      end subroutine set_import_rev_for_repart
 !
 ! ----------------------------------------------------------------------
 !

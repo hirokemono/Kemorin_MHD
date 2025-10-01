@@ -59,7 +59,7 @@ lib_tasks: libtarget lib_archve
 libtarget:
 	@echo  '$$(LIB_KEMO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
 
-lib_archve:
+lib_archve: 
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -78,27 +78,17 @@ mod_list:
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_C='$(FFTW3_C)'   \
-		GLFW_LIBS='$(GLFW_LIBS)'   \
+		GLFW_CFLAGS='$(GLFW_LIBS)'   \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \
-		) \
-	done
-
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		echo 'Copy sourse dependencies for ' $$dir ; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module \
 		) \
 	done
 
 depends:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
+		echo 'Copy compile list for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		F90_LOCAL='$(F90_LOCAL)'   \
@@ -110,6 +100,7 @@ depends:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)" \
 		depends \
 		) \
 	done

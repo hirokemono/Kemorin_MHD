@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/BASE/cal_matrix_vector_smp.f90

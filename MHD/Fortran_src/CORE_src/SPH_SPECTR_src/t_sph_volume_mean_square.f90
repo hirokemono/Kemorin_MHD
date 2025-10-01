@@ -35,6 +35,15 @@
 !>        File format flag
         logical :: gzip_flag_vol_spec = .FALSE.
 !
+!>        Output flag for spectrum with respect to degree
+        logical :: flag_skip_v_spec_l =  .FALSE.
+!>        Output flag for spectrum with respect to order
+        logical :: flag_skip_v_spec_m =  .FALSE.
+!>        Output flag for spectrum with respect to l-m
+        logical :: flag_skip_v_spec_lm = .FALSE.
+!>        Output flag for spectrum for axis-symmetric component
+        logical :: flag_skip_v_spec_m0 = .FALSE.
+!
 !>        MPI rank for l-spectr data output
         integer :: irank_l
 !>        MPI rank for m-spectr data output
@@ -60,13 +69,17 @@
         character (len=kchara), pointer :: pwr_name(:)
 !
 !>        Radius for inner boundary
-        real(kind=kreal) :: r_inside
+        real(kind = kreal) :: r_inside
 !>        Radius for outer boundary
-        real(kind=kreal) :: r_outside
+        real(kind = kreal) :: r_outside
 !>        Radial address for inner boundary
-        integer (kind=kint) :: kr_inside
+        integer(kind = kint) :: kr_inside(2)
 !>        Radial address for outer boundary
-        integer (kind=kint) :: kr_outside
+        integer(kind = kint) :: kr_outside(2)
+!>        Radius for inner boundary
+        real(kind = kreal) :: c_inter_in
+!>        Radius for outer boundary
+        real(kind = kreal) :: c_inter_out
 !
 !>        Volume mean square spectrum for degree
         real(kind = kreal), allocatable :: v_l(:,:)

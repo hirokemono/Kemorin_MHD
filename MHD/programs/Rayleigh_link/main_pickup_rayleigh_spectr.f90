@@ -33,15 +33,23 @@
       type(picked_rayleigh_spectr) :: ra_picked_s
       type(field_IO) :: fld_IO_s
 !
+      integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
+!
 !
       call calypso_MPI_init
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         call read_rayleigh_pick_mode_ctl                                &
-     &     (id_control, control_name, pick_ctl_s)
+     &     (id_control, control_name, pick_ctl_s, c_buf1)
       end if
       call bcast_pick_rayleigh_ctl(pick_ctl_s)
-!      call check_pick_rayleigh_ctl(my_rank, pick_ctl_s)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(pick_ctl_s%i_pick_rayleigh_spectr,       &
+     &                             'control file is broken')
+      end if
 !
       call init_picked_rayleigh_param(pick_ctl_s, pick_ra_param_s)
       ra_rst_s%i_version = pick_ctl_s%Rayleigh_version_ctl%intvalue(1)
@@ -70,12 +78,32 @@
 !
       call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_pick_rayleigh_ctl(pick_ctl)
+!
+      use t_ctl_pick_rayleigh_spectr
+      use calypso_mpi_int
+      use bcast_control_arrays
+!
+      type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
+!
+!
+      call bcast_ctl_type_c1(pick_ctl%picked_data_file_name)
+      call bcast_ctl_type_c1(pick_ctl%Rayleigh_rst_dir_ctl)
+      call bcast_ctl_type_i2(pick_ctl%Rayleigh_version_ctl)
+      call bcast_ctl_type_i1(pick_ctl%Rayleigh_step_ctl)
+      call bcast_ctl_array_i2(pick_ctl%idx_rayleigh_ctl)
+      call calypso_mpi_bcast_one_int                                    &
+     &    (pick_ctl%i_pick_rayleigh_spectr, 0)
+!
+      end subroutine bcast_pick_rayleigh_ctl
 !
 ! -----------------------------------------------------------------------
 !

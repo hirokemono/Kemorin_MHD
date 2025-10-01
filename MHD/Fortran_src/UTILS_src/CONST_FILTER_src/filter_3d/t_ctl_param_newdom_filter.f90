@@ -46,13 +46,13 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use calypso_mpi
       use m_file_format_switch
 !
       use m_default_file_prefix
       use t_ctl_data_3d_filter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
+      use t_ctl_data_org_filter_fname
       use set_control_platform_item
       use set_control_platform_data
 !

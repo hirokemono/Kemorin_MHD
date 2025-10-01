@@ -26,7 +26,7 @@ struct r3_clist_view{
 void init_r3_clist_views(struct real3_clist *r3_clist, struct r3_clist_view *cmap_vws);
 int append_r3_item_to_tree(int index, double r1_data, double r2_data, double r3_data, 
                            GtkTreeModel *child_model);
-int append_r3_list_from_ctl(int index, struct real3_ctl_list *head, 
+int append_r3_list_from_ctl(int index, struct real3_clist *r3_clist,
                             GtkTreeView *r3_tree_view);
 
 
@@ -45,21 +45,11 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
 void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
                             GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2,
                             GtkCellRenderer *renderer_spin3);
-void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
-                        GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox);
 
-void r3_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data);
-void r3_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data);
-void r3_tree_value3_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data);
-void add_r3_list_items_cb(GtkButton *button, gpointer user_data);
-void delete_r3_list_items_cb(GtkButton *button, gpointer user_data);
-
-
-void init_real3_tree_view(struct r3_clist_view *r3_vws);
-void add_real3_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox);
+GtkWidget * add_real3_list_frame(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                 GtkWidget *button_add, GtkWidget *button_delete);
+GtkWidget * real3_list_expander(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
+                                GtkWidget *button_add, GtkWidget *button_delete);
 
 
 #endif /* tree_view_real3_GTK_h_ */

@@ -21,7 +21,6 @@
 !
       call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program repartition_by_volume

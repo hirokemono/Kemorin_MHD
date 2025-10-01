@@ -158,6 +158,7 @@
      &                          ntot_import_ele
         close(id_log)
       end if
+      call calypso_mpi_barrier
 !
       call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,         &
      &    repart_nod_tbl, new_mesh%nod_comm, new_mesh%node,             &
@@ -510,7 +511,7 @@
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
      &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele,      &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &    m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
 !
 !

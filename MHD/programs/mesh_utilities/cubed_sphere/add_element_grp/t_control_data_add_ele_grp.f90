@@ -11,7 +11,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_control_array_character
@@ -21,8 +20,6 @@
       implicit    none
 !
       integer (kind = kint), parameter :: control_file_code = 13
-      character (len = kchara), parameter                               &
-     &         :: control_file_name = 'ctl_add_ele_grp'
 !
       type control_data_add_ele_grp
         type(platform_data_control) :: source_plt
@@ -94,9 +91,7 @@
       private :: hd_num_s_ele_grping, hd_num_z_ele_grping
 !
       private :: read_control_4_add_egrp_data
-      private :: bcast_control_add_elegrp
       private :: read_ctl_data_4_add_2d_egrp
-      private :: bcast_ctl_data_4_add_2d_egrp
       private :: dealloc_ctl_data_4_add_2d_egrp
 !
 ! -----------------------------------------------------------------------
@@ -105,25 +100,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_add_elegrp(addgrp_c)
+      subroutine read_control_add_elegrp(file_name, addgrp_c)
 !
+      character(len=kchara), intent(in) :: file_name
       type(control_data_add_ele_grp), intent(inout) :: addgrp_c
 !
       type(buffer_for_control) :: c_buf1
 !
+      c_buf1%level = 0
+      open(control_file_code, file = file_name)
+      do
+        call load_one_line_from_control                                 &
+     &     (control_file_code, hd_add_ele_grp_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
 !
-      if(my_rank .eq. 0) then
-        open(control_file_code, file = control_file_name)
-        do
-          call load_one_line_from_control(control_file_code, c_buf1)
-          call read_control_4_add_egrp_data                             &
-     &       (control_file_code, hd_add_ele_grp_ctl, addgrp_c, c_buf1)
-          if(addgrp_c%i_add_ele_grp_ctl .gt. 0) exit
-        end do
-        close(control_file_code)
-      end if
+        call read_control_4_add_egrp_data                               &
+     &     (control_file_code, hd_add_ele_grp_ctl, addgrp_c, c_buf1)
+        if(addgrp_c%i_add_ele_grp_ctl .gt. 0) exit
+      end do
+      close(control_file_code)
 !
-      call bcast_control_add_elegrp(addgrp_c)
+      if(c_buf1%iend .gt. 0)                                            &
+     &              addgrp_c%i_add_ele_grp_ctl = c_buf1%iend
 !
       end subroutine read_control_add_elegrp
 !
@@ -133,6 +131,8 @@
       subroutine read_control_4_add_egrp_data                           &
      &         (id_control, hd_block, addgrp_c, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -140,10 +140,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(addgrp_c%i_add_ele_grp_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, addgrp_c%source_plt)
+      call init_platforms_labels(hd_new_data, addgrp_c%added_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -157,25 +160,6 @@
       addgrp_c%i_add_ele_grp_ctl = 1
 !
       end subroutine read_control_4_add_egrp_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_control_add_elegrp(addgrp_c)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
-!
-!
-      call bcast_ctl_data_4_add_2d_egrp(addgrp_c)
-!
-      call bcast_ctl_data_4_platform(addgrp_c%source_plt)
-      call bcast_ctl_data_4_platform(addgrp_c%added_plt)
-!
-      call calypso_mpi_bcast_one_int(addgrp_c%i_add_ele_grp_ctl, 0)
-!
-      end subroutine bcast_control_add_elegrp
 !
 ! -----------------------------------------------------------------------
 !
@@ -209,7 +193,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(addgrp_c%i_add_ele_grp_para .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_r2(id_control,                        &
@@ -231,26 +216,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_ctl_data_4_add_2d_egrp(addgrp_c)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
-!
-!
-      call bcast_ctl_array_cr2(addgrp_c%r_ele_grouping_ctl)
-      call bcast_ctl_array_cr2(addgrp_c%s_ele_grouping_ctl)
-      call bcast_ctl_array_cr2(addgrp_c%t_ele_grouping_ctl)
-      call bcast_ctl_array_cr2(addgrp_c%z_ele_grouping_ctl)
-!
-      call bcast_ctl_type_c1(addgrp_c%sph_grp_direction_ctl)
-!
-      call calypso_mpi_bcast_one_int(addgrp_c%i_add_ele_grp_para, 0)
-!
-      end subroutine bcast_ctl_data_4_add_2d_egrp
-!
-! -----------------------------------------------------------------------!
       subroutine dealloc_ctl_data_4_add_2d_egrp(addgrp_c)
 !
       type(control_data_add_ele_grp), intent(inout) :: addgrp_c

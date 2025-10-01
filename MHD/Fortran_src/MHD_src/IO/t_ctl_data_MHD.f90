@@ -11,15 +11,23 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_ctl_w_psf                               &
-!!     &         (id_control, hd_block, DMHD_ctl, c_buf)
-!!      subroutine read_sph_mhd_ctl_noviz                               &
-!!     &         (id_control, hd_block, DMHD_ctl, c_buf)
+!!      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!!      subroutine write_sph_mhd_ctl_noviz                              &
+!!     &         (id_control, hd_block, MHD_ctl, level)
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(mhd_simulation_control), intent(in) :: MHD_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
-!!      subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
-!!      subroutine dealloc_sph_mhd_ctl_data(DMHD_ctl)
-!!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_MHD
@@ -34,13 +42,15 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
 !
       implicit none
 !
+      integer(kind=kint), parameter, private :: id_control_file = 11
 !
-      type DNS_mhd_simulation_control
+      type mhd_simulation_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -48,27 +58,27 @@
 !>        Control structure for new file informations
         type(platform_data_control) :: new_plt
 !
+!>        file name for parallel spherical shell control
+        character(len = kchara) :: fname_psph = 'NO_FILE'
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Control structure for MHD/model
-        type(mhd_DNS_model_control) :: model_ctl
+        type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(sph_mhd_control_control) :: smctl_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
-!>        Structure for monitoring plave list
+!>        Structure for monitoring node list
         type(node_monitor_control) :: nmtr_ctl
 !
-!>        Structures of visualization controls
-        type(surfacing_controls) :: surfacing_ctls
-!
-!>        Structures of zonal mean controls
-        type(sph_dynamo_viz_controls) :: zm_ctls
-!
         integer (kind=kint) :: i_mhd_ctl = 0
-      end type DNS_mhd_simulation_control
+      end type mhd_simulation_control
+!
+!
+      character(len=kchara), parameter, private                         &
+     &                                 :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -85,18 +95,11 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_control = 'control'
       character(len=kchara), parameter, private                         &
-     &                     :: hd_pick_sph = 'sph_monitor_ctl'
+     &                    :: hd_pick_sph = 'sph_monitor_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_monitor_data = 'monitor_data_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_ctl = 'visual_control'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
-!
-!>      Here is the old label
-      character(len=kchara), parameter                                  &
-     &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
+      private :: read_sph_mhd_ctl_noviz, init_sph_mhd_ctl_noviz_label
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,151 +107,194 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_ctl_w_psf                                 &
-     &         (id_control, hd_block, DMHD_ctl, c_buf)
+      subroutine read_control_4_sph_MHD_noviz                           &
+     &         (file_name, MHD_ctl, c_buf)
 !
-      use read_surfacing_controls
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(DMHD_ctl%i_mhd_ctl .gt. 0) return
+      c_buf%level = c_buf%level + 1
+      call init_sph_mhd_ctl_noviz_label(hd_mhd_ctl, MHD_ctl)
+      open(id_control_file, file = file_name, status='old' )
+!
       do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
+        call load_one_line_from_control(id_control_file,                &
+     &                                  hd_mhd_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
-!
-        call read_control_platforms                                     &
-     &     (id_control, hd_platform, DMHD_ctl%plt, c_buf)
-        call read_control_platforms                                     &
-     &     (id_control, hd_org_data, DMHD_ctl%org_plt, c_buf)
-!
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, DMHD_ctl%psph_ctl, c_buf)
-!
-        call read_sph_mhd_model                                         &
-     &     (id_control, hd_model, DMHD_ctl%model_ctl, c_buf)
-        call read_sph_mhd_control                                       &
-     &     (id_control, hd_control, DMHD_ctl%smctl_ctl, c_buf)
-!
-        call read_monitor_data_ctl                                      &
-     &     (id_control, hd_monitor_data, DMHD_ctl%nmtr_ctl, c_buf)
-        call read_sph_monitoring_ctl                                    &
-     &     (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, c_buf)
-!
-        call s_read_surfacing_controls                                  &
-     &     (id_control, hd_viz_ctl, DMHD_ctl%surfacing_ctls, c_buf)
-!
-        call read_dynamo_viz_control                                    &
-     &     (id_control, hd_dynamo_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
-        call read_dynamo_viz_control                                    &
-     &     (id_control, hd_zm_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
+        call read_sph_mhd_ctl_noviz                                     &
+     &     (id_control_file, hd_mhd_ctl, MHD_ctl, c_buf)
+        if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
-      DMHD_ctl%i_mhd_ctl = 1
+      close(id_control_file)
+      c_buf%level = c_buf%level - 1
 !
-      end subroutine read_sph_mhd_ctl_w_psf
+      end subroutine read_control_4_sph_MHD_noviz
 !
-!   --------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      open(id_control_file, file = file_name)
+      level1 = 0
+      call write_sph_mhd_ctl_noviz                                      &
+     &   (id_control_file, MHD_ctl%block_name, MHD_ctl, level1)
+      close(id_control_file)
+!
+      end subroutine write_control_4_sph_MHD_noviz
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_ctl_noviz                                 &
-     &         (id_control, hd_block, DMHD_ctl, c_buf)
+     &         (id_control, hd_block, MHD_ctl, c_buf)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
+      use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(MHD_ctl%i_mhd_ctl .gt. 0) return
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(DMHD_ctl%i_mhd_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         call read_control_platforms                                     &
-     &     (id_control, hd_platform, DMHD_ctl%plt, c_buf)
+     &     (id_control, hd_platform, MHD_ctl%plt, c_buf)
         call read_control_platforms                                     &
-     &     (id_control, hd_org_data, DMHD_ctl%org_plt, c_buf)
+     &     (id_control, hd_org_data, MHD_ctl%org_plt, c_buf)
 !
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, DMHD_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_mhd_model                                         &
-     &     (id_control, hd_model, DMHD_ctl%model_ctl, c_buf)
+     &     (id_control, hd_model, MHD_ctl%model_ctl, c_buf)
         call read_sph_mhd_control                                       &
-     &     (id_control, hd_control, DMHD_ctl%smctl_ctl, c_buf)
+     &     (id_control, hd_control, MHD_ctl%smctl_ctl, c_buf)
 !
         call read_monitor_data_ctl                                      &
-     &     (id_control, hd_monitor_data, DMHD_ctl%nmtr_ctl, c_buf)
+     &     (id_control, hd_monitor_data, MHD_ctl%nmtr_ctl, c_buf)
         call read_sph_monitoring_ctl                                    &
-     &     (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, c_buf)
+     &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
       end do
-      DMHD_ctl%i_mhd_ctl = 1
+      MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_sph_mhd_ctl_noviz
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
+      subroutine write_sph_mhd_ctl_noviz                                &
+     &         (id_control, hd_block, MHD_ctl, level)
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
+      use ctl_file_gen_sph_shell_IO
 !
+      use write_control_elements
 !
-      call bcast_sph_mhd_ctl_data(DMHD_ctl)
-      call bcast_surfacing_controls(DMHD_ctl%surfacing_ctls)
-      call bcast_dynamo_viz_control(DMHD_ctl%zm_ctls)
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
 !
-      end subroutine bcast_sph_mhd_ctl_w_psf
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_4_sphere_ctl
-!
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      integer(kind = kint), intent(inout) :: level
 !
 !
-      call bcast_ctl_data_4_platform(DMHD_ctl%plt)
-      call bcast_ctl_data_4_platform(DMHD_ctl%org_plt)
+      if(MHD_ctl%i_mhd_ctl .le. 0) return
 !
-      call bcast_sph_mhd_model(DMHD_ctl%model_ctl)
-      call bcast_sph_mhd_control(DMHD_ctl%smctl_ctl)
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, MHD_ctl%plt, level)
+      call write_control_platforms                                      &
+     &   (id_control, hd_org_data, MHD_ctl%org_plt, level)
 !
-      call bcast_parallel_shell_ctl(DMHD_ctl%psph_ctl)
+      call sel_write_ctl_gen_shell_grids(id_control,                    &
+     &    MHD_ctl%fname_psph, MHD_ctl%psph_ctl, level)
 !
-      call bcast_monitor_data_ctl(DMHD_ctl%nmtr_ctl)
-      call bcast_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
+      call write_sph_mhd_model(id_control, MHD_ctl%model_ctl, level)
+      call write_sph_mhd_control(id_control, MHD_ctl%smctl_ctl, level)
 !
-      call calypso_mpi_bcast_one_int(DMHD_ctl%i_mhd_ctl, 0)
+      call write_monitor_data_ctl(id_control, MHD_ctl%nmtr_ctl, level)
+      call write_sph_monitoring_ctl                                     &
+     &   (id_control, MHD_ctl%smonitor_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine bcast_sph_mhd_ctl_data
+      end subroutine write_sph_mhd_ctl_noviz
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_mhd_ctl_data(DMHD_ctl)
+      subroutine init_sph_mhd_ctl_noviz_label(hd_block, MHD_ctl)
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
+      use ctl_file_gen_sph_shell_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
-      call dealloc_monitor_data_ctl(DMHD_ctl%nmtr_ctl)
-      call dealloc_parallel_shell_ctl(DMHD_ctl%psph_ctl)
-      call dealloc_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
-      call dealloc_sph_mhd_model(DMHD_ctl%model_ctl)
+      MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
+      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
+      call init_sph_monitoring_labels(hd_pick_sph,                      &
+     &                                MHD_ctl%smonitor_ctl)
+      call init_monitor_data_ctl_label(hd_monitor_data,                 &
+     &                                 MHD_ctl%nmtr_ctl)
 !
-      DMHD_ctl%i_mhd_ctl = 0
+      end subroutine init_sph_mhd_ctl_noviz_label
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
+!
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!
+!
+      call reset_control_platforms(MHD_ctl%plt)
+      call reset_control_platforms(MHD_ctl%org_plt)
+!
+      call dealloc_sph_mhd_model(MHD_ctl%model_ctl)
+      call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
+!
+      call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)
+!
+      call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
+      call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
+!
+      MHD_ctl%i_mhd_ctl = 0
 !
       end subroutine dealloc_sph_mhd_ctl_data
 !

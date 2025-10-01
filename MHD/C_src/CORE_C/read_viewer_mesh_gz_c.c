@@ -6,15 +6,15 @@
 
 static void read_listed_item_gz_viewer(void *FP_gzip, int num, int *item_sf){
 	int i, j, iread, nread;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	int num_word, nchara, lbuf;
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];            /* character buffer for reading line */
+	int num_word, nchara;
 	
-	lbuf = LENGTHBUF;
 	
 	j = 0;
 	while (j < num) {
 		iread = 0;
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 		for (i = 0; i < num_word; i++) {
 			sscanf(&buf[iread], "%d%n", &item_sf[j],&nread);
 			j = j + 1;
@@ -35,14 +35,13 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 									  int *stack_sf, int *istack_pe,
 									  char **name, int *item){
 	int i, j, jst, jnum;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	int num_word, nchara, lbuf;
-	
-	lbuf = LENGTHBUF;
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];            /* character buffer for reading line */
+	int num_word, nchara;
 	
 	stack_sf[0] = 0;
 	for (j = 0; j < ngrp; j++) {
-		num_word = skip_comment_gz_c(FP_gzip, &lbuf, buf);
+		num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);
 		sscanf(buf, "%s", name[j]);
 		
 		read_group_stack_gz_viewer(FP_gzip, npe, &stack_sf[npe*j]);
@@ -55,7 +54,7 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 			if(jnum > 0){
 				read_listed_item_gz_viewer(FP_gzip, jnum, &item[jst]);
 			} else {
-                get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+                get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 			};
 		}
 	};
@@ -64,15 +63,14 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 
 
 int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
-	char buf[LENGTHBUF];    /* array for reading line */
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];    /* array for reading line */
 	char name_tmp[4096];
 	char **tmp_name_sf;
 	int *istack_pe, *istack_grp;
 	int itmp;
 	int i;
-	int num_word[1], lbuf[1];
-	
-	lbuf[0] = LENGTHBUF;
+	int num_word[1];
 
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
@@ -101,13 +99,14 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 		sscanf(buf, "%d %lf %lf %lf", &itmp, 
-				&mesh_s->xx_view[i][0], 
-				&mesh_s->xx_view[i][1], 
-				&mesh_s->xx_view[i][2]);
+				&mesh_s->xx_view[4*i  ],
+				&mesh_s->xx_view[4*i+1],
+				&mesh_s->xx_view[4*i+2]);
 	};
-/*	printf("mesh_s->xx_view %e %e %e\n", mesh_s->xx_view[mesh_s->nnod_viewer-1][0],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][1],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][2]);*/
+/*	printf("mesh_s->xx_view %e %e %e\n",
+            mesh_s->xx_view[4*mesh_s->nnod_viewer-3],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-2],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-1]);*/
 	
 	num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 	sscanf(buf, "%d", &mesh_s->nsurf_viewer);
@@ -130,47 +129,47 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d %d %d %d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3], 
-				&mesh_s->ie_sf_viewer[i][4], 
-				&mesh_s->ie_sf_viewer[i][5], 
-				&mesh_s->ie_sf_viewer[i][6], 
-				&mesh_s->ie_sf_viewer[i][7], 
-				&mesh_s->ie_sf_viewer[i][8]);
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i    ],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 4],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 5],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 6],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 7],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 8]);
 		}
 	}
 	else if( mesh_s->nnod_4_surf == 8 ){
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d %d %d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3], 
-				&mesh_s->ie_sf_viewer[i][4], 
-				&mesh_s->ie_sf_viewer[i][5], 
-				&mesh_s->ie_sf_viewer[i][6], 
-					&mesh_s->ie_sf_viewer[i][7]);
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 0],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 4],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 5],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 6],
+                   &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 7]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d %d %d", &itmp, 
-				&mesh_s->ie_sf_viewer[i][0], 
-				&mesh_s->ie_sf_viewer[i][1], 
-				&mesh_s->ie_sf_viewer[i][2], 
-				&mesh_s->ie_sf_viewer[i][3]);
+				&mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 0],
+				&mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 1],
+				&mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 2],
+				&mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * i + 3]);
 		}
 	}
 	
 /*	printf("mesh_s->ie_sf_viewer %d %d %d %d\n",
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][0],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][1],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][2],
-			mesh_s->ie_sf_viewer[mesh_s->nsurf_viewer-1][3]);*/
+			mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 0],
+			mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 1],
+			mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 2],
+			mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf * (mesh_s->nsurf_viewer-1) + 3]);*/
 	
 	num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 	sscanf(buf, "%d", &mesh_s->nedge_viewer);
@@ -185,24 +184,26 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1], 
-				&mesh_s->ie_edge_viewer[i][2]);
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 2]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1]);
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1]);
 		}
 	}
 	
-/*	printf("mesh_s->ie_edge_viewer %d %d\n", 
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][1]);*/
-	
+/*
+     printf("mesh_s->ie_edge_viewer %d %d\n",
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1)    ],
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1) + 1]);
+*/
+
 	num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
@@ -212,10 +213,10 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 		sscanf(buf, "%d %d %d %d %d", &itmp, 
-				&mesh_s->iedge_sf_viewer[i][0], 
-				&mesh_s->iedge_sf_viewer[i][1], 
-				&mesh_s->iedge_sf_viewer[i][2], 
-				&mesh_s->iedge_sf_viewer[i][3]);
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i    ],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 1],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 2],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 3]);
 	}
 	
 	/*  node ID for domain boundary */

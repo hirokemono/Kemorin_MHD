@@ -3,9 +3,9 @@
 !     example of control for Kemo's volume rendering
 !
 begin volume_rendering   (BMP or PNG)
-  pvr_file_head        pvr_temp
-  pvr_output_type      PNG
-  image_tranceparency  tranceparent
+  pvr_file_prefix        pvr_temp
+  pvr_output_format      PNG
+  anaglyph_switch      Off
 !
   output_field    temperature    end
   output component     scalar
@@ -23,11 +23,11 @@ begin volume_rendering   (BMP or PNG)
       y_pixel_ctl   1280
     end image_size_ctl
 !
-    array viewpoint_in_viewer_ctl  3
-      viewpoint_in_viewer_ctl   x   0.000000000000e+00 end
-      viewpoint_in_viewer_ctl   y   0.000000000000e+00 end
-      viewpoint_in_viewer_ctl   z   3.474078182490e+01 end
-    end array viewpoint_in_viewer_ctl
+    array eye_position_in_viewer_ctl  3
+          eye_position_in_viewer_ctl   x   0.000000000000e+00 end
+          eye_position_in_viewer_ctl   y   0.000000000000e+00 end
+          eye_position_in_viewer_ctl   z   3.474078182490e+01 end
+    end array eye_position_in_viewer_ctl
 !
     scale_factor_ctl      1.000000000000e+00
 !
@@ -83,7 +83,7 @@ begin volume_rendering   (BMP or PNG)
     end array position_of_lights
 !
     ambient_coef              0.5
-    diffuse_coef              5.6
+    diffuse_coef              0.6
     specular_coef             0.8
   end lighting_ctl
 !
@@ -107,16 +107,6 @@ begin volume_rendering   (BMP or PNG)
       linear_opacity_ctl   0.85    0.01
       linear_opacity_ctl   0.95    0.001
     end array linear_opacity_ctl
-!
-    array  step_opacity_ctl         7
-      step_opacity_ctl   0.0     0.01    0.01
-      step_opacity_ctl   0.01    0.2     0.015
-      step_opacity_ctl   0.2     0.35    0.02
-      step_opacity_ctl   0.6     0.7     0.04
-      step_opacity_ctl   0.7     0.85    0.03
-      step_opacity_ctl   0.85    0.95    0.01
-      step_opacity_ctl   0.95    1.0     0.001
-    end array step_opacity_ctl
     constant_opacity_ctl           0.003
 !
     range_min_ctl   0.0
@@ -126,7 +116,7 @@ begin volume_rendering   (BMP or PNG)
   begin colorbar_ctl
     colorbar_switch_ctl    ON
     colorbar_scale_ctl     ON
-    iflag_zeromarker       ON
+    zeromarker_switch      ON
     colorbar_range     0.0   1.0
 !    font_size_ctl         3
     num_grid_ctl     4
@@ -134,9 +124,9 @@ begin volume_rendering   (BMP or PNG)
     axis_label_switch      ON
   end colorbar_ctl
 !
-  begin image_rotation_ctl
+  begin snapshot_movie_ctl
     hd_movie_rot_axis       z
     num_of_frames           1
-  end image_rotation_ctl
+  end snapshot_movie_ctl
 !
 end volume_rendering

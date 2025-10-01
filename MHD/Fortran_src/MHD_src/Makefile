@@ -23,7 +23,8 @@ MG_for_MHD   \
 Fortran2003 \
 \
 sph_MHD \
-sph_SGS_MHD
+sph_SGS_MHD \
+radial_FDM
 
 #
 #  -------------------------------------------------------------------------
@@ -76,10 +77,10 @@ mod_list:
 	@echo '$$(MOD_SGS)'         \\  >> $(MAKENAME)
 	@echo '$$(MOD_SGS_DYNAMIC)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_SGS_BC)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_MHD_F2003)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
 	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
+	@echo '$$(MOD_SPH_MHD_FDM)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_SPH_MHD)'     \\  >> $(MAKENAME)
 	@echo '$$(MOD_SPH_SGS_MHD)'     >> $(MAKENAME)
 	@echo >> $(MAKENAME)
@@ -93,21 +94,10 @@ mod_list:
 		) \
 	done
 
-
-module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
-
 depends:
 	@for dir in $(SUBDIRS); do \
 		( \
-		echo 'Construct dependencies for ' $$dir ; \
+		echo 'Construct compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \

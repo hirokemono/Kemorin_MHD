@@ -1,0 +1,381 @@
+#! /bin/csh
+#
+#
+# -------  do not edit folloing lines
+#
+# MPI settings
+#
+MPICHDIR = /usr/local/mpich
+MPILIBDIR = $(MPICHDIR)/lib
+MPILIBS = -mpich -fmpich
+MPIBINDIR = $(MPICHDIR)/bin
+MPIINCDIR = $(MPICHDIR)/include
+#
+#
+MAKEDIR= 
+BUILDDIR= 
+MHDDIR =
+
+MAKENAME= $(MAKEDIR)/Makefile
+
+#
+#   zlib and libpng settings
+#
+ZLIB_CFLAGS =
+ZLIB_LIBS =
+#
+#  -------------------------------------------------------------------------
+#
+
+SUBDIRS =         \
+Fortran_libraries \
+C_libraries       \
+External_libs     \
+programs
+
+
+
+F_INCLUDE = -I.
+C_INCLUDE = -I.
+
+CPP_FLAGS =
+
+ifdef PNG_LIBS
+  CPP_FLAGS += -DPNG_OUTPUT
+  C_INCLUDE+= $$(PNG_CFLAGS) 
+  F90LIBS+= $$(PNG_LIBS)
+endif
+ifdef ZLIB_LIBS
+  CPP_FLAGS += -DZLIB_IO
+  C_INCLUDE+= $$(ZLIB_CFLAGS) 
+  F90LIBS+= $$(ZLIB_LIBS)
+endif
+
+ifdef FFTW3_OMP_LIBS
+  CPP_FLAGS+= -DOMP_FFTW3
+  F90LIBS+= $$(FFTW3_OMP_LIBS)
+endif
+
+ifdef FFTW3_LIBS
+  CPP_FLAGS+= -DFFTW3
+  C_INCLUDE+= $$(FFTW3_CFLAGS)
+  F90LIBS+= $$(FFTW3_LIBS)
+endif
+
+ifdef BLAS_LIBS
+  CPP_FLAGS+= -DBLAS
+  F90LIBS+= $$(BLAS_LIBS)
+endif
+
+ifdef HDF5_FLIBS
+  CPP_FLAGS+= -DHDF5_IO
+  F_INCLUDE+= $$(HDF5_FFLAGS)
+  F90LIBS+= $$(HDF5_LDFLAGS) $$(HDF5_FLIBS)
+endif
+
+ifdef MPILIBS
+  F90LIBS+= -L$(MPILIBDIR) $(MPILIBS)
+endif
+
+ifdef XL_FORTRAN
+  FORTRAN_C_CONNECT = -WF,"$(CPP_FLAGS)"
+else
+  FORTRAN_C_CONNECT = $(CPP_FLAGS)
+endif
+
+DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
+
+#
+#  -------------------------------------------------------------------------
+#
+
+.SUFFIXES: .o .f90
+
+.f90.o:
+	$(F90) -o $@ @<
+
+
+all: makemake
+
+depends:
+	rm -f $(MAKEDIR)/Makefile.depends
+	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'Construct compile list'; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		CC="$(CC)"   \
+		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS='$(OPTFLAGS)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		depends; \
+		) \
+	done
+
+
+makemake:
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/utilities
+	mkdir -p $(BUILDDIR)/tests
+	
+	echo "# create module list"
+	$(GMAKE) \
+	GMAKE='$(GMAKE)' \
+	MHDDIR='$(MHDDIR)' \
+	MAKEDIR='$(MAKEDIR)' \
+	MAKENAME='$(MAKENAME)' \
+	CC="$(CC)"   \
+	MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
+	DEPFLAGS='$(DEPFLAGS)' \
+	OPTFLAGS='$(OPTFLAGS)' \
+	C_INCLUDE='$(C_INCLUDE)' \
+	depends
+	
+	echo '#' > $(MAKENAME)
+	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
+	echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'SHELL = /bin/sh' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#  all:         compile programs for simulations' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Compiler commands' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo CC=$(CC)               >> $(MAKENAME)
+	@echo F90=$(MPIF90)          >> $(MAKENAME)
+	@echo AR=$(AR)               >> $(MAKENAME)
+	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Compiler options' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'F90OPTFLAGS = $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
+	@echo 'OPTFLAGS = $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Libralies and includes settting' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'F90LIBS =   $(F90LIBS)'   >> $(MAKENAME)
+	@echo 'F_INCLUDE = $(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'C_INCLUDE = $(C_INCLUDE)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# zlib settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)' >> $(MAKENAME)
+	@echo 'ZLIB_LIBS =   $(ZLIB_LIBS)'   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# libpng settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
+	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# BLAS settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'BLAS_LIBS =   $(BLAS_LIBS)'   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# FFTW3 settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'FFTW3_CFLAGS =   $(FFTW3_CFLAGS)'                  >> $(MAKENAME)
+	@echo 'FFTW3_LIBS =     $(FFTW3_LIBS)'                    >> $(MAKENAME)
+	@echo 'FFTW3_OMP_LIBS = $(FFTW3_OMP_LIBS)'                >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# HDF5 settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'HDF5_FFLAGS = $(HDF5_FFLAGS)'    >> $(MAKENAME)
+	@echo 'HDF5_LDFLAGS = $(HDF5_LDFLAGS)'  >> $(MAKENAME)
+	@echo 'HDF5_FLIBS = $(HDF5_FLIBS)'      >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Directory lists' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo MAKEDIR =  $(MAKEDIR)  >> $(MAKENAME)
+	@echo BUILDDIR = $(BUILDDIR) >> $(MAKENAME)
+	@echo MHDDIR =   $(MHDDIR)   >> $(MAKENAME)
+	@echo INSTDIR =  $(INSTDIR)  >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	>> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create directory list...'
+	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'generate diectory list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)'          \
+		MAKENAME='$(MAKENAME)'        \
+		dir_list; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# target lists ' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'PROGRAMS= parallels utilities tests' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create excecute file list...'
+	@for dir in programs ; do \
+		( \
+		echo 'generate target list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		BUILDDIR='$(BUILDDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		target_list; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# library lists' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create library file name list...'
+	@for dir in  $(SUBDIRS) ; do \
+		( \
+		echo 'generate library list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		lib_name; \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# objects list' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create object module list...'
+	@for dir in $(SUBDIRS) ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		FFTW3_LIBS='$(FFTW3_LIBS)'   \
+		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)'   \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)'\
+		mod_list; \
+		 ) \
+	done
+	@echo '' >> $(MAKENAME)
+	@echo 'create excecution construct list...'
+	@echo '#' >> $(MAKENAME)
+	@echo 'all: $$(PROGRAMS)' >> $(MAKENAME)
+	@for dir in programs ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		target_task; \
+		) \
+	done
+	@echo 'create library construct list...'
+	@echo '#' >> $(MAKENAME)
+	@echo '# Rules for libralies' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@for dir in $(SUBDIRS) ; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		lib_tasks; \
+		 ) \
+	done
+	@echo '' >> $(MAKENAME)
+	@echo 'Append compile list...'
+	@echo '#' >> $(MAKENAME)
+	@echo '# Rules for routines' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	cat $(MAKENAME).depends >> $(MAKENAME)
+	rm -f $(MAKEDIR)/Makefile.depends
+	@echo '#' >> $(MAKENAME)
+	@echo '# Rules for install' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'install:' >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)'              >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/lib '         >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/bin'          >> $(MAKENAME)
+	@echo '	mkdir -p $$(INSTDIR)/include'      >> $(MAKENAME)
+	@echo '	cp $(BUILDDIR)/*  $$(INSTDIR)/bin' >> $(MAKENAME)
+	@echo ''       >> $(MAKENAME)
+	@echo 'clean:' >> $(MAKENAME)
+	@echo '	@rm -f m_*.o ;'     >> $(MAKENAME)
+	@echo '	@rm -f m_*.mod ;'   >> $(MAKENAME)
+	@echo '	@rm -f m_*~ ;'      >> $(MAKENAME)
+	@echo '	@rm -f m_*.par ;'   >> $(MAKENAME)
+	@echo '	@rm -f m_*.diag ;'  >> $(MAKENAME)
+	@echo '	@rm -f s_*.o ;'     >> $(MAKENAME)
+	@echo '	@rm -f s_*.mod ;'   >> $(MAKENAME)
+	@echo '	@rm -f s_*~ ;'      >> $(MAKENAME)
+	@echo '	@rm -f s_*.par ;'   >> $(MAKENAME)
+	@echo '	@rm -f s_*.diag ;'  >> $(MAKENAME)
+	@echo '	@rm -f t_*.o ;'     >> $(MAKENAME)
+	@echo '	@rm -f t_*.mod ;'   >> $(MAKENAME)
+	@echo '	@rm -f t_*~ ;'      >> $(MAKENAME)
+	@echo '	@rm -f t_*.par ;'   >> $(MAKENAME)
+	@echo '	@rm -f t_*.diag ;'  >> $(MAKENAME)
+	@echo '	@rm -f cal*.o ;'    >> $(MAKENAME)
+	@echo '	@rm -f cal*.mod ;'  >> $(MAKENAME)
+	@echo '	@rm -f cal*~ ;'     >> $(MAKENAME)
+	@echo '	@rm -f cal*.par ;'  >> $(MAKENAME)
+	@echo '	@rm -f cal*.diag ;' >> $(MAKENAME)
+	@echo '	@rm -f set*.o ;'    >> $(MAKENAME)
+	@echo '	@rm -f set*.mod ;'  >> $(MAKENAME)
+	@echo '	@rm -f set*~ ;'     >> $(MAKENAME)
+	@echo '	@rm -f set*.par ;'  >> $(MAKENAME)
+	@echo '	@rm -f set*.diag ;' >> $(MAKENAME)
+	@echo '	@rm -f sph*.o ;'    >> $(MAKENAME)
+	@echo '	@rm -f sph*.mod ;'  >> $(MAKENAME)
+	@echo '	@rm -f sph*~ ;'     >> $(MAKENAME)
+	@echo '	@rm -f sph*.par ;'  >> $(MAKENAME)
+	@echo '	@rm -f sph*.diag ;' >> $(MAKENAME)
+	@echo '	@rm -f f*.o ;'      >> $(MAKENAME)
+	@echo '	@rm -f f*.mod ;'    >> $(MAKENAME)
+	@echo '	@rm -f f*~ ;'       >> $(MAKENAME)
+	@echo '	@rm -f f*.par ;'    >> $(MAKENAME)
+	@echo '	@rm -f f*.diag ;'   >> $(MAKENAME)
+	@echo '	@rm -f i*.o ;'      >> $(MAKENAME)
+	@echo '	@rm -f i*.mod ;'    >> $(MAKENAME)
+	@echo '	@rm -f i*~ ;'       >> $(MAKENAME)
+	@echo '	@rm -f i*.par ;'    >> $(MAKENAME)
+	@echo '	@rm -f c*.diag ;'   >> $(MAKENAME)
+	@echo '	@rm -f c*.o ;'      >> $(MAKENAME)
+	@echo '	@rm -f c*.mod ;'    >> $(MAKENAME)
+	@echo '	@rm -f c*~ ;'       >> $(MAKENAME)
+	@echo '	@rm -f c*.par ;'    >> $(MAKENAME)
+	@echo '	@rm -f c*.diag ;'   >> $(MAKENAME)
+	@echo '	rm -f *.o ;'       >> $(MAKENAME)
+	@echo '	rm -f *.mod ;'     >> $(MAKENAME)
+	@echo '	rm -f *~ ;'        >> $(MAKENAME)
+	@echo '	rm -f *.par ;'     >> $(MAKENAME)
+	@echo '	rm -f *.diag ;'    >> $(MAKENAME)
+	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
+	@echo '	rm -f *.h'         >> $(MAKENAME)
+	@echo '	rm -f GL'          >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+
+install:
+
+clean:
+	rm -f *~

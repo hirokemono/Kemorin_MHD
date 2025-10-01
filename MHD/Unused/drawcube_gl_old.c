@@ -251,20 +251,23 @@ void drawCube_Element(GLfloat fSize)
 }
 
 void drawCube_flat(GLfloat fSize, 
-				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO){
+				   struct gl_strided_buffer *strided_buf,
+                   struct gl_local_buffer_address *point_buf,
+                   struct VAO_ids *cube_VAO){
 	int icou;
 	
 	/* Set Stride for each vertex buffer */
 	set_buffer_address_4_patch(8, strided_buf);
+    alloc_strided_buffer(strided_buf);
 	strided_buf->istride = sizeof(GLfloat)*strided_buf->ncomp_buf;
 	
 	icou = 0;
 	icou = flatSurfCube_VBO(icou, fSize, strided_buf);
-	icou = flatEdgeCube_VBO(icou, fSize, strided_buf);
-	icou = flatNodeCube_VBO(icou, fSize, strided_buf);
+	icou = flatEdgeCube_VBO(icou, fSize, strided_buf, point_buf);
+	icou = flatNodeCube_VBO(icou, fSize, strided_buf, point_buf);
 	
 	/* Create VAO */
-	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glGenVertexArrays(1, &(cube_VAO->id_VAO));
 	glBindVertexArray(cube_VAO->id_VAO);
 	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
@@ -366,7 +369,7 @@ void drawCube_Element2(GLfloat fSize,
 	
 	
 	/* Create VAO */
-	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glGenVertexArrays(1, &(cube_VAO->id_VAO));
 	glBindVertexArray(cube_VAO->id_VAO);
 	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/

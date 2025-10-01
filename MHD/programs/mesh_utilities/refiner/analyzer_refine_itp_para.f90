@@ -45,7 +45,6 @@
       subroutine  init_refine_itp_para
 !
       use m_interpolate_table_IO
-      use itp_table_file_IO_select
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
 !
@@ -167,7 +166,6 @@
       use t_merged_geometry_data
       use m_interpolate_table_IO
       use const_parallel_itp_table
-      use itp_table_file_IO_select
 !
       type(merged_stacks), intent(inout) :: merge_tbl
       type(merged_stacks), intent(inout) :: merge_tbl_2

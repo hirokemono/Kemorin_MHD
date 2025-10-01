@@ -22,7 +22,7 @@ lib_name:
 	>> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB)' '$$@'  >> $(MAKENAME)
 
 libtarget:
@@ -38,12 +38,8 @@ mod_list:
 	@echo $(MOD_SR) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SR_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

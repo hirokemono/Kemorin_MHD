@@ -25,6 +25,8 @@
 !
       subroutine bcast_control_fem_int_points(fint_ctl)
 !
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -35,6 +37,8 @@
       call bcast_ctl_type_i1(fint_ctl%intg_point_poisson_ctl)
       call bcast_ctl_type_i1(fint_ctl%intg_point_t_evo_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (fint_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(fint_ctl%i_int_points, 0)
 !
       end subroutine bcast_control_fem_int_points

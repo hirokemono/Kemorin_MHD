@@ -39,9 +39,9 @@
 !
 !
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then
-        if(fl_prop%iflag_4_filter_gravity)                              &
+        if(fl_prop%flag_filter_gravity)                                 &
      &    call add_phys_name_ctl(filtered_buoyancy, field_ctl)
-        if(fl_prop%iflag_4_filter_comp_buo)                             &
+        if(fl_prop%flag_filter_comp_buo)                                &
      &    call add_phys_name_ctl(filtered_comp_buoyancy, field_ctl)
       end if
 !
@@ -72,10 +72,10 @@
 !
 !   work area for SGS model
 !
-      if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
+      if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(temp_4_SGS, field_ctl)
       end if
-      if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
+      if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(comp_4_SGS, field_ctl)
       end if
 !
@@ -84,11 +84,11 @@
         call add_phys_name_ctl(div_SGS_m_flux, field_ctl)
         call add_phys_name_ctl(Reynolds_work, field_ctl)
 !
-        if(fl_prop%iflag_4_gravity) then
+        if(fl_prop%flag_thermal_buoyancy) then
           call add_phys_name_ctl(SGS_heat_flux, field_ctl)
           call add_phys_name_ctl(SGS_buoyancy_flux, field_ctl)
         end if
-        if(fl_prop%iflag_4_composit_buo) then
+        if(fl_prop%flag_comp_buoyancy) then
           call add_phys_name_ctl(SGS_composit_flux, field_ctl)
           call add_phys_name_ctl(SGS_comp_buoyancy_flux, field_ctl)
         end if
@@ -124,13 +124,10 @@
           else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
             call add_phys_name_ctl(grad_temp, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
-     &             .eq. reference_temperature%name) then
+     &             .eq. perturbation_temp%name) then
             call add_phys_name_ctl(grad_pert_temp, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. composition%name) then
             call add_phys_name_ctl(grad_composition, field_ctl)
-          else if(field_ctl%c1_tbl(i)                                   &
-     &              .eq. reference_composition%name) then
-            call add_phys_name_ctl(grad_pert_composition, field_ctl)
           end if
         end do
       end if
@@ -204,15 +201,15 @@
         call add_phys_name_ctl(SGS_simi, field_ctl)
         call add_phys_name_ctl(SGS_grad_f, field_ctl)
 !
-        if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
+        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
           call add_phys_name_ctl(temp_4_SGS, field_ctl)
         end if
-        if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
+        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
           call add_phys_name_ctl(comp_4_SGS, field_ctl)
         end if
       end if
 !
-      if(     (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion)        &
+      if((SGS_param%SGS_momentum%iflag_SGS_flux .eq. id_SGS_diffusion)  &
      &   .or. (SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion)) then
         call add_phys_name_ctl(SGS_diffuse, field_ctl)
       end if

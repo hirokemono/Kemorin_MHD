@@ -72,6 +72,7 @@
       use cal_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
       use decomp_w_sym_rj_base_field
+      use adjust_scalar_rj_fields
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_mhd_monitor_data), intent(in) :: monitor
@@ -89,6 +90,8 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      integer(kind = kint) :: ibuo_temp,  ibuo_comp
+!
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
      &   (SPH_MHD%sph, trans_p%leg, SPH_MHD%ipol, ipol_LES,             &
@@ -104,14 +107,23 @@
       call s_decomp_w_sym_rj_base_field(SPH_MHD%sph%sph_rj,             &
      &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld,                      &
      &    SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
+      call s_adjust_scalar_rj_fields(SPH_MHD%sph,                       &
+     &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp,                      &
+     &    SPH_MHD%ipol%prod_fld, SPH_MHD%fld)
+!
+      call sel_field_address_for_buoyancies(SPH_MHD%ipol%sym_fld,       &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ibuo_temp, ibuo_comp)
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
-     &    SPH_MHD%ipol%sym_fld, SPH_MHD%ipol%forces_by_sym_asym,        &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &    SPH_MHD%ipol%forces_by_sym_asym, MHD_prop%fl_prop,            &
+     &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+!
+      call sel_field_address_for_buoyancies(SPH_MHD%ipol%asym_fld,      &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ibuo_temp, ibuo_comp)
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
-     &    SPH_MHD%ipol%asym_fld, SPH_MHD%ipol%forces_by_sym_sym,        &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &    SPH_MHD%ipol%forces_by_sym_sym, MHD_prop%fl_prop,             &
+     &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
 !
 !
 !
@@ -447,7 +459,7 @@
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      dynamic_SPH%iak_sgs_term, trns_Csim%f_trns_LES%Csim,        &
-     &      dynamic_SPH%wk_sgs, trns_SGS_snap%forward)
+     &      dynamic_SPH%wk_sph_sgs, trns_SGS_snap%forward)
       end if
 !
       end subroutine lead_SGS_terms_4_SPH

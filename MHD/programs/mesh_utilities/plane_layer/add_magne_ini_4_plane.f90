@@ -72,6 +72,7 @@
       type(plane_initial_setting), save :: pini_p1
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: num_added_merge
 !
 !
       pi = four*atan(one)
@@ -103,7 +104,8 @@
 !
       pini_p1%num_rst_org = plane_fst_IO%num_field_IO
 !
-      call add_initial_num_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1)
+      call add_initial_num_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1,    &
+     &                              num_added_merge)
 !
       mgd_mesh_pl%merged_fld%num_phys = pini_p1%num_rst_new
       call alloc_phys_name(mgd_mesh_pl%merged_fld)
@@ -116,7 +118,8 @@
       mgd_mesh_pl%merged_fld%istack_component(0:pini_p1%num_rst_org)    &
      &             = plane_fst_IO%istack_comp_IO(0:pini_p1%num_rst_org)
 !
-      call add_initial_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1)
+      call add_initial_comp_mhd(num_added_merge,                        &
+     &                          mgd_mesh_pl%merged_fld, pini_p1)
       mgd_mesh_pl%merged_fld%ntot_phys =  pini_p1%ntot_rst_org
 !
 !    construct new data

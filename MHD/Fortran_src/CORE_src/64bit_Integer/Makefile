@@ -13,7 +13,9 @@ MOD_INT64 = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'INT64DIR = $(INT64DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_INT64)' >> $(MAKENAME)
 
 
@@ -23,11 +25,8 @@ mod_list:
 	@echo  '#'  >> $(MAKENAME)
 
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT64DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(INT64DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

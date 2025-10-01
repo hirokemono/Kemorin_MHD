@@ -19,7 +19,6 @@
 !
 !    generate surface mesh
 !
-      integer(kind = kint), parameter :: iflag_draw_mesh = 1
       integer(kind = kint) :: icount
       character(len=kchara) :: file_head
       character(len = 1) :: chara_flag
@@ -49,7 +48,7 @@
         stop ' //// program normally finished //// '
       end if
 !
-      call draw_mesh_kemo(%VAL(0), %VAL(iflag_draw_mesh))
+      call draw_mesh_kemo()
 !
       stop ' //// program normally finished //// '
 !

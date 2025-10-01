@@ -76,12 +76,12 @@ static struct colormap_array * alloc_colormap_array(int num){
 	return cmap;
 }
 
-struct colormap_array * init_colormap_from_list(struct real2_clist *colortbl_list){
+struct colormap_array * init_colormap_from_list(struct real2_clist *f_colortbl_ctl){
 	int i;
-	struct colormap_array *cmap = alloc_colormap_array(count_real2_clist(colortbl_list));
+	struct colormap_array *cmap = alloc_colormap_array(count_real2_clist(f_colortbl_ctl));
 	
 	for(i=0;i<cmap->num;i++){
-		set_from_real2_clist_at_index(i, colortbl_list, &cmap->data[i], &cmap->value[i]);
+		set_from_real2_clist_at_index(i, f_colortbl_ctl, &cmap->data[i], &cmap->value[i]);
 	};
 	return cmap;
 };

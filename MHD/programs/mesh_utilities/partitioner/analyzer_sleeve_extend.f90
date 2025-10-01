@@ -37,6 +37,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &         :: control_file_name = 'ctl_part'
+!
       type(ctl_param_partitioner), save, private :: part_p1
       type(control_data_4_partitioner), save, private :: part_ctl1
       type(partitioner_comm_tables), save, private :: comm_part1
@@ -76,8 +79,14 @@
 !
 !     ----- read control data
 !
-      if(my_rank .eq. 0) call read_control_data_4_part(part_ctl1)
+      if(my_rank .eq. 0) call read_control_data_4_part                  &
+     &                      (control_file_name, part_ctl1)
       call bcast_part_control_data(part_ctl1)
+!
+      if(part_ctl1%i_part_ctl .ne. 1) then
+        call calypso_MPI_abort(part_ctl1%i_part_ctl,                    &
+     &                         trim(control_file_name))
+      end if
 !
       call s_set_control_4_extend_sleeve                                &
      &   (my_rank, part_ctl1, comm_part1, part_p1, sleeve_exp_p1)

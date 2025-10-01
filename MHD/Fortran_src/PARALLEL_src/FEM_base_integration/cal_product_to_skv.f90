@@ -61,12 +61,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_scalar_prod_w_coef_smp(np_smp, numele,               &
      &      iele_fsmp_stack, coef, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine coef_scalar_prod_to_skv_scalar
 !
@@ -87,12 +85,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_scalar_prod_no_coef_smp(np_smp, numele,              &
      &      iele_fsmp_stack, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine scalar_prod_to_skv_scalar
 !
@@ -114,12 +110,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_vec_scalar_prod_smp(np_smp, numele,                  &
      &      iele_fsmp_stack, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine scalar_prod_to_skv_vector
 !
@@ -141,12 +135,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_vec_scalar_coef_smp(np_smp, numele,                  &
      &      iele_fsmp_stack, coef, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine coef_scalar_prod_to_skv_vector
 !
@@ -168,12 +160,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_tensor_scalar_prod_smp(np_smp, numele,               &
      &      iele_fsmp_stack, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine scalar_prod_to_skv_tensor
 !
@@ -195,12 +185,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_tensor_scalar_coef_smp(np_smp, numele,               &
      &      iele_fsmp_stack, coef, ak_1(1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine coef_scalar_prod_to_skv_tensor
 !
@@ -222,12 +210,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_vector_vector_prod_smp(np_smp, numele,               &
      &      iele_fsmp_stack, ak_3(1,1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine vector_prod_to_skv_vector
 !
@@ -248,12 +234,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_tensor_tensor_prod_smp(np_smp, numele,               &
      &      iele_fsmp_stack, ak_6(1,1), sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine tensor_prod_to_skv_tensor
 !

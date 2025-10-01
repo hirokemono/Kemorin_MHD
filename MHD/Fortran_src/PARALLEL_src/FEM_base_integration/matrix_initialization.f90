@@ -71,9 +71,9 @@
       integer(kind = kint) :: mat_num
 !
 !
-!$omp workshare
+!$omp parallel workshare
       aiccg(diag_start:diag_end) = 1.0d0
-!$omp end workshare
+!$omp end parallel workshare
 !
 !$omp parallel do private(k2,inum,istart,iend,inn,in,mat_num)
       do iproc = 1, np_smp

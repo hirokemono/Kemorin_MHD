@@ -18,7 +18,7 @@
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!
-!!      subroutine set_internal_element_flag(internal_node, numele, ie, &
+!!      subroutine easy_internal_element_flag(internal_node, numele, ie,&
 !!     &          internal_ele, interior_ele)
 !!        integer(kind = kint), intent(in) :: internal_node
 !!        integer(kind = kint), intent(in) :: numele
@@ -61,7 +61,7 @@
         if (iflag_debug.eq.1) write(*,*) 'set_center_of_element'
         call set_center_of_element(node, ele)
       end if
-      call set_internal_element_flag                                    &
+      call easy_internal_element_flag                                   &
      &   (node%internal_node, ele%numele, ele%ie(1,1),                  &
      &    ele%internal_ele, ele%interior_ele)
 !
@@ -112,7 +112,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_element_flag(internal_node, numele, ie,   &
+      subroutine easy_internal_element_flag(internal_node, numele, ie,  &
      &          internal_ele, interior_ele)
 !
       integer(kind = kint), intent(in) :: internal_node
@@ -129,21 +129,21 @@
       interior_ele(1:numele) = 0
 !$omp end parallel workshare
 !
-!%omp parallel do private(iele)
+!$omp parallel do private(iele)
       do iele = 1, numele
         if(ie(iele,1) .le. internal_node) interior_ele(iele) = 1
       end do
-!%omp end parallel do
+!$omp end parallel do
 !
       icou = 0
-!%omp parallel do private(iele) reduction(+:icou)
+!$omp parallel do private(iele) reduction(+:icou)
       do iele = 1, numele
         icou = icou + interior_ele(iele)
       end do
-!%omp end parallel do
+!$omp end parallel do
       internal_ele = icou
 !
-      end subroutine set_internal_element_flag
+      end subroutine easy_internal_element_flag
 !
 ! ----------------------------------------------------------------------
 !

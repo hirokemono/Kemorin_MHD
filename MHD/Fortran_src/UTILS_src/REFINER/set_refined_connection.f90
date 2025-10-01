@@ -187,8 +187,7 @@
 !
       else if(iflag_refine .eq. iflag_8_to_20) then
         call s_copy_refined_nod_quad20(inod_refine_local,               &
-     &      inod_refine_nod_local, inod_refine_surf_local,              &
-     &      inod_refine_edge_local)
+     &      inod_refine_nod_local, inod_refine_edge_local)
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_quad20(ntot_ele_refined, ist,          &

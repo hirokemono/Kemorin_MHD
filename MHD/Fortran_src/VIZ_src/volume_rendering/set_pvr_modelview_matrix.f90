@@ -13,6 +13,13 @@
 !!      subroutine copy_stereo_perspective_matrix(streo, stereo_def)
 !!        type(streo_view_ctl), intent(in) :: streo
 !!        type(pvr_stereo_parameter), intent(inout) :: stereo_def
+!!
+!!     subroutine copy_pvr_perspective_matrix(proj, view_param)
+!!        type(projection_ctl), intent(in) :: proj
+!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!      subroutine copy_pvr_image_size(pixel, view_param)
+!!        type(screen_pixel_ctl), intent(in) :: pixel
+!!        type(pvr_view_parameter), intent(inout) :: view_param
 !!@endverbatim
 !
       module set_pvr_modelview_matrix
@@ -30,7 +37,6 @@
       implicit none
 !
       private :: copy_pvr_modelview_matrix, set_viewpoint_vector_ctl
-      private :: copy_pvr_perspective_matrix, copy_pvr_image_size
       private :: set_view_rotation_vect_ctl, set_view_scale_factor_ctl
       private :: set_viewpnt_in_viewer_ctl
 !
@@ -122,28 +128,27 @@
         view_param%perspective_xy_ratio                                 &
      &          = proj%perspective_xy_ratio_ctl%realvalue
       else
-        view_param%perspective_xy_ratio = one
+        view_param%perspective_xy_ratio                                 &
+     &          = dble(view_param%n_pvr_pixel(1))                       &
+     &           / dble(view_param%n_pvr_pixel(2))
       end if
 !
       if (proj%perspective_near_ctl%iflag .gt. 0) then
         view_param%perspective_near                                     &
      &          = proj%perspective_near_ctl%realvalue
       else
-        view_param%perspective_near = 0.1d0
+        view_param%perspective_near = 1.0d-3
       end if
 !
       if (proj%perspective_far_ctl%iflag .gt. 0) then
         view_param%perspective_far                                      &
      &          = proj%perspective_far_ctl%realvalue
       else
-        view_param%perspective_far = 1.0d2
+        view_param%perspective_far = 1.0d3
       end if
 !
       view_param%iflag_perspective                                      &
-     &      = proj%perspective_angle_ctl%iflag                          &
-     &       * proj%perspective_xy_ratio_ctl%iflag                      &
-     &       * proj%perspective_near_ctl%iflag                          &
-     &       * proj%perspective_far_ctl%iflag
+     &      = proj%perspective_angle_ctl%iflag
 !
       end subroutine copy_pvr_perspective_matrix
 !
@@ -159,13 +164,7 @@
 !
 !
       if(streo%i_stereo_view .eq. 0) then
-        if(stereo_def%flag_stereo_pvr) then
-          stereo_def%flag_stereo_pvr = .FALSE.
-          if(my_rank.eq.0) then
-            write(*,*) 'Stereo view paramters are missing.'
-            write(*,*) 'Turn off streo view.'
-          end if
-        else if(stereo_def%flag_quilt) then
+        if(stereo_def%flag_quilt) then
           stereo_def%flag_quilt = .FALSE.
           if(my_rank.eq.0) then
             write(*,*) 'Stereo view paramters are missing.'

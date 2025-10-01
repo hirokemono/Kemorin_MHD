@@ -49,12 +49,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_coef_prod_scalar_smp(np_smp, numele,                 &
      &          iele_fsmp_stack, coef, sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine prodct_w_const_skv_scalar
 !
@@ -75,12 +73,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_coef_prod_vect_smp(np_smp, numele,                   &
      &          iele_fsmp_stack, coef, sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine prodct_w_const_skv_vector
 !
@@ -101,12 +97,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_coef_prod_tensor_smp(np_smp, numele,                 &
      &          iele_fsmp_stack, coef, sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine prodct_w_const_skv_tensor
 !
@@ -129,12 +123,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_vect_prod_cvec_coef_smp(np_smp, numele,              &
      &          iele_fsmp_stack, coef, c_vec, sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine cross_product_cvec_coef_skv
 !
@@ -155,12 +147,10 @@
       integer (kind=kint) :: k1
 !
 !
-!$omp parallel private(k1)
       do k1 = 1, nnod_4_e1
         call ovwrt_vect_prod_cvec_smp(np_smp, numele,                   &
      &          iele_fsmp_stack, c_vec, sk_v(1,1,k1))
       end do
-!$omp end parallel
 !
       end subroutine cross_product_cvec_skv
 !

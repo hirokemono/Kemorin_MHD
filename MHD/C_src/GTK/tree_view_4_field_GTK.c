@@ -7,7 +7,7 @@
 
 #include "tree_view_4_field_GTK.h"
 
-struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
+struct field_views * init_field_views_GTK(struct f_MHD_fields_control *fld_ctl_ref){
     struct field_views *fields_vws;
 	if((fields_vws = (struct field_views *) malloc(sizeof(struct field_views))) == NULL){
 		printf("malloc error for field_views\n");
@@ -29,21 +29,38 @@ void dealloc_field_views_GTK(struct field_views *fields_vws){
 	return;
 }
 
+void update_field_ctl_f(struct chara_int2_clist *f_field_ctl){
+    struct chara3_ctl_item *tmp_fld_ctl = init_chara3_ctl_item_c();
+    struct chara_int2_ctl_item *ci2_item;
+    int idx;
+    for(idx=0;idx<count_chara_int2_clist(f_field_ctl);idx++){
+        ci2_item = find_chara_int2_ctl_item_by_index(idx, f_field_ctl);
+        set_viz_flags_to_text(ci2_item, tmp_fld_ctl);
+        c_store_chara3_array(f_field_ctl->f_self, idx, ci2_item->c_tbl,
+                             tmp_fld_ctl->c2_tbl, tmp_fld_ctl->c3_tbl);
+    };
+    dealloc_chara3_ctl_item_c(tmp_fld_ctl);
+    return;
+}
+
 
 /* Append new data at the end of list */
 void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list, 
 			GtkListStore *child_model)
 {
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+
     GtkTreeIter iter;
     
     gtk_list_store_append(child_model, &iter);
     gtk_list_store_set(child_model, &iter,
                        COLUMN_FIELD_INDEX, index_field,
-                       COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[index_field],
-                       COLUMN_FIELD_MATH, all_fld_list->fld_list->field_math[index_field],
+                       COLUMN_FIELD_NAME, tmp_item->c1_tbl,
+                       COLUMN_FIELD_MATH, tmp_item->c2_tbl,
                        COLUMN_FORTH, (gboolean) all_fld_list->iflag_viz[index_field],
                        COLUMN_FIFTH, (gboolean) all_fld_list->iflag_monitor[index_field],
-                       COLUMN_NUM_COMP, all_fld_list->fld_list->num_comp[index_field],
+                       COLUMN_NUM_COMP, tmp_item->i_data,
                        COLUMN_QUADRATURE, all_fld_list->iflag_quad[index_field],
                        -1);
 }
@@ -52,8 +69,8 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
 			gchar *path_str, gpointer user_data){
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
 	GtkWidget *used_tree_view = GTK_WIDGET(user_data);
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(GTK_TREE_VIEW(used_tree_view)));  
@@ -71,8 +88,9 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &index_for_toggle, -1);
     
    
-    printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
-            all_fld_list->fld_list->field_name[index_field]);
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+    printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string, tmp_item->c1_tbl);
     
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -82,13 +100,15 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     
     all_fld_list->iflag_viz[index_field] = index_for_toggle;
 	update_field_flag_wqflag_in_ctl(index_field, all_fld_list, fld_ctl_gtk);
+    
+    update_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 }
 
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
 	GtkWidget *used_tree_view = GTK_WIDGET(user_data);
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(used_tree_view));  
@@ -105,8 +125,9 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH, &index_for_toggle, -1);
     
-    printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
-           all_fld_list->fld_list->field_name[index_field]);
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+    printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string, tmp_item->c1_tbl);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -116,6 +137,8 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     
     all_fld_list->iflag_monitor[index_field] = index_for_toggle;
 	update_field_flag_wqflag_in_ctl(index_field, all_fld_list, fld_ctl_gtk);
+    
+    update_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 }
 
 
@@ -124,8 +147,8 @@ static void create_field_tree_columns(GtkWidget *used_tree_view)
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
     GtkCellRenderer *textRenderer3;
-    GtkCellRenderer *toggleRenderer1;
-    GtkCellRenderer *toggleRenderer2;
+    GtkCellRenderer *vizToggleRenderer;
+    GtkCellRenderer *mntrToggleRenderer;
 	
 	GtkTreeViewColumn *column_1st;
     GtkTreeViewColumn *column_2nd;
@@ -147,18 +170,19 @@ static void create_field_tree_columns(GtkWidget *used_tree_view)
     
     /* Forth row */
 	column_4th = create_each_field_column(used_tree_view, "Field output", COLUMN_FORTH);
-	toggleRenderer1 = create_each_toggle_renderer(column_4th, 60, COLUMN_FORTH);
-	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
+    vizToggleRenderer = create_each_toggle_renderer(column_4th, 60, COLUMN_FORTH);
+	g_signal_connect(G_OBJECT(vizToggleRenderer), "toggled",
 				G_CALLBACK(toggle_viz_switch), (gpointer) used_tree_view);
     
     /* Fifth row */
 	column_5th = create_each_field_column(used_tree_view, "Monitor output", COLUMN_FIFTH);
-	toggleRenderer2 = create_each_toggle_renderer(column_5th, 60, COLUMN_FIFTH);
-	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
+    mntrToggleRenderer = create_each_toggle_renderer(column_5th, 60, COLUMN_FIFTH);
+	g_signal_connect(G_OBJECT(mntrToggleRenderer), "toggled",
 				G_CALLBACK(toggle_monitor_switch), (gpointer) used_tree_view);
 };
 
-GtkWidget * create_field_tree_view(struct all_field_ctl_c *all_fld_list, struct field_ctl_c *fld_ctl_gtk)
+GtkWidget * create_field_tree_view(struct all_field_ctl_c *all_fld_list,
+                                   struct f_MHD_fields_control *fld_ctl_gtk)
 {
 	GtkWidget *used_tree_view = gtk_tree_view_new();
 	
@@ -344,9 +368,8 @@ GtkWidget * create_field_group_tree_view(struct all_field_ctl_c *all_fld_list)
 {
 	int index = 0;
 	GtkWidget *field_group_tree_view = create_fixed_label_w_index_tree();
-	index = append_c_list_from_array(index, all_fld_list->fld_list->ntot_field_groups, 
-									 all_fld_list->fld_list->field_group_name, 
-									 GTK_TREE_VIEW(field_group_tree_view));
+	index = append_c_list_from_ctl_w_index(index, all_fld_list->fld_list->fld_grp_list,
+                                           GTK_TREE_VIEW(field_group_tree_view));
 	return field_group_tree_view;
 };
 
@@ -376,8 +399,10 @@ void create_direction_tree_views(struct field_views *fields_vws)
 
 int find_field_address(const char *field_in, struct field_names_f *fld_list){
 	int i;
+    struct chara2_int_ctl_item *tmp_item;
 	for(i=0;i<fld_list->ntot_fields;i++){
-		if(cmp_no_case_c(field_in, fld_list->field_name[i]) > 0) {return i;};
+        tmp_item = chara2_int_clist_at_index(i, fld_list->field_label);
+		if(cmp_no_case_c(field_in, tmp_item->c1_tbl) > 0) {return i;};
 	};
 	return -1;
 }
@@ -391,20 +416,24 @@ int find_field_group(const int i_field, struct field_names_f *fld_list){
 	return -1;
 }
 
-static int find_each_comp_address(char *comp_in, struct flag_with_math_f *components_flag){
+static int find_each_comp_address(char *comp_in, struct chara2_int_clist *components_clist){
+    struct chara2_int_ctl_item *tmp_item;
 	int i;
-	for(i=0;i<components_flag->num_flags;i++){
-			if(cmp_no_case_c(comp_in, components_flag->component_name[i]) > 0) {return i;};
+	for(i=0;i<count_chara2_int_clist(components_clist);i++){
+        tmp_item = chara2_int_clist_at_index(i, components_clist);
+        if(cmp_no_case_c(comp_in, tmp_item->c1_tbl) > 0) {return i;};
 	};
 	return -1;
 }
 
 int find_comp_address(char *comp_in, int i_field, struct field_names_f *fld_list,
 					  struct component_flags_f *comp_flags){
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(i_field, fld_list->field_label);
 	int i_comp;
-	if(fld_list->num_comp[i_field] == 6){
+	if(tmp_item->i_data == 6){
 		i_comp = find_each_comp_address(comp_in, comp_flags->sym_tensor_components_flag);
-	}else if(fld_list->num_comp[i_field] == 3){
+	}else if(tmp_item->i_data == 3){
 		i_comp = find_each_comp_address(comp_in, comp_flags->vector_components_flag);
 	}else{
 		i_comp = find_each_comp_address(comp_in, comp_flags->scalar_components_flag);

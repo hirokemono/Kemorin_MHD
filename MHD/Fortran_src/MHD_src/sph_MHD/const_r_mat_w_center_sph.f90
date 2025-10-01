@@ -39,7 +39,7 @@
       use t_sph_center_matrix
       use t_physical_property
       use t_boundary_params_sph_MHD
-      use t_coef_fdm2_MHD_boundaries
+use t_coef_fdm2_centre
 !
       implicit none
 !
@@ -149,7 +149,7 @@
      &      poisson_mat%n_vect, poisson_mat%n_comp, poisson_mat%mat,    &
      &      band_s00_poisson)
       end if
-      call check_center_band_matrix(6, sph_rj, band_s00_poisson)
+      call check_center_band_matrix(50+my_rank, sph_rj, band_s00_poisson)
 !
       end subroutine const_rmat_poisson00_sph
 !
@@ -161,7 +161,7 @@
      &           n_vect, n_comp, p_poisson_mat, band_p00_poisson)
 !
       use m_ludcmp_3band
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -187,7 +187,8 @@
       &   band_p00_poisson%mat)
 !
 !      write(*,*) 'add_scalar_poisson_mat_fill_ctr'
-      if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (sph_bc_U%iflag_icb .eq. iflag_sph_fill_center)           &
+     &   .or. (sph_bc_U%iflag_icb .eq. iflag_sph_filter_center)) then
         call add_scalar_poisson_mat_fill_ctr                            &
      &     (sph_rj%nidx_rj(1), sph_bc_U%r_ICB,                          &
      &      fdm2_center%dmat_fix_dr, fdm2_center%dmat_fix_fld,          &
@@ -201,7 +202,7 @@
       call ludcmp_3band_ctr(band_p00_poisson)
 !
       if(i_debug .ne. iflag_full_msg) return
-      call check_center_band_matrix(my_rank, sph_rj, band_p00_poisson)
+      call check_center_band_matrix(50+my_rank, sph_rj, band_p00_poisson)
 !
       end subroutine const_rmat_press00_sph
 !
@@ -213,7 +214,7 @@
 !
       use m_ludcmp_3band
       use t_boundary_params_sph_MHD
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm2_center_mat), intent(in) :: fdm2_center
@@ -235,7 +236,8 @@
       call copy_to_band3_mat_w_center(sph_rj%nidx_rj(1), coef_advect,   &
      &   evo_mat(1,1,sph_rj%idx_rj_degree_zero), band_s00_evo%mat)
 !
-      if     (iflag_icb .eq. iflag_sph_fill_center) then
+      if(     (iflag_icb .eq. iflag_sph_fill_center)                    &
+     &   .or. (iflag_icb .eq. iflag_sph_filter_center)) then
         call add_scalar_poisson_mat_fill_ctr(sph_rj%nidx_rj(1), r_ICB,  &
      &      fdm2_center%dmat_fix_dr, fdm2_center%dmat_fix_fld,          &
      &      coef, band_s00_evo%mat)
@@ -250,7 +252,7 @@
       call ludcmp_3band_ctr(band_s00_evo)
 !
       if(i_debug .ne. iflag_full_msg) return
-      call check_center_band_matrix(my_rank, sph_rj, band_s00_evo)
+      call check_center_band_matrix(50+my_rank, sph_rj, band_s00_evo)
 !
       end subroutine const_rmat_scalar00_sph
 !
@@ -260,7 +262,7 @@
      &         (sph_rj, n_vect, n_comp, evo_mat, band_s00_poisson)
 !
       use m_ludcmp_3band
-      use center_sph_matrices
+      use sph_zero_degree_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
 !
@@ -277,7 +279,7 @@
       call ludcmp_3band_ctr(band_s00_poisson)
 !
       if(i_debug .ne. iflag_full_msg) return
-      call check_center_band_matrix(my_rank, sph_rj, band_s00_poisson)
+      call check_center_band_matrix(50+my_rank, sph_rj, band_s00_poisson)
 !
       end subroutine copy_radial_mat_scalar00_sph
 !

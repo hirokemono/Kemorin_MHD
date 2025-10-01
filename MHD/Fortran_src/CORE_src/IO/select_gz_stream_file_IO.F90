@@ -15,14 +15,16 @@
 !!
 !!      subroutine sel_open_read_gz_stream_file                         &
 !!     &         (FPz_f, id_file, base_name, flag_gzip, zbuf)
-!!      subroutine sel_open_check_gz_stream_file                        &
-!!     &         (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+!!      subroutine sel_open_check_gz_stream_file(FPz_f, id_file,        &
+!!     &          base_name, flag_gzip, flag_miss, file_name, zbuf)
 !!      subroutine sel_close_read_gz_stream_file                        &
 !!     &         (FPz_f, id_file, flag_gzip, zbuf)
+!!      subroutine sel_redwind_gz_stream_file(FPz_f, id_file, flag_gzip)
 !!        character, pointer, intent(inout) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len=kchara), intent(in) :: base_name
 !!        logical, intent(inout) :: flag_gzip, flag_miss
+!!        character(len=kchara), intent(inout) :: file_name
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine sel_read_line_gz_stream                              &
@@ -39,6 +41,13 @@
 !!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len = *), intent(in) :: textbuf
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine sel_gz_write_text_stream_w_len(flag_gzip, id_file,   &
+!!     &                                          len64, textbuf, zbuf)
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint_gl), intent(in) :: len64
+!!        character(len = len64), intent(in) :: textbuf
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
@@ -97,16 +106,18 @@
       character, pointer, intent(inout) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: base_name
+!
       logical, intent(inout) :: flag_gzip
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      character(len=kchara) :: file_name
       logical :: flag_miss
 !
 !
-      call sel_open_check_gz_stream_file                                &
-     &   (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+      call sel_open_check_gz_stream_file(FPz_f, id_file, base_name,     &
+     &    flag_gzip, flag_miss, file_name, zbuf)
       if(flag_miss) then
-        write(*,*) trim(base_name), ' is not found. Stop.'
+        write(*,*) trim(file_name), ' is not found. Stop.'
         stop
       end if
 !
@@ -114,8 +125,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_open_check_gz_stream_file                          &
-     &         (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+      subroutine sel_open_check_gz_stream_file(FPz_f, id_file,          &
+     &          base_name, flag_gzip, flag_miss, file_name, zbuf)
 !
       use set_parallel_file_name
       use skip_comment_f
@@ -124,28 +135,29 @@
       character, pointer, intent(inout) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: base_name
-      logical, intent(inout) :: flag_gzip, flag_miss
-      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      character(len = kchara) :: fname
+      logical, intent(inout) :: flag_gzip, flag_miss
+      character(len=kchara), intent(inout) :: file_name
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call check_gzip_or_ascii_file                                     &
-     &   (base_name, fname, flag_gzip, flag_miss)
+     &   (base_name, file_name, flag_gzip, flag_miss)
+!      write(*,*) 'check_gzip_or_ascii_file', flag_gzip
       if(flag_miss) return
 !
       call alloc_fixbuffer_for_zlib(zbuf)
 !
 !#ifdef ZLIB_IO
       if(flag_gzip) then
-        write(*,*) 'read gzipped monitor file: ', trim(fname)
-        call open_rd_gzfile_f(FPz_f, fname, zbuf)
+        write(*,*) 'read gzipped monitor file: ', trim(file_name)
+        call open_rd_gzfile_f(FPz_f, file_name, zbuf)
         return
       end if
 !#endif
 !
-      write(*,*) 'read ASCII file as stream: ', trim(fname)
-      open(id_file, file = fname,  status='old',                        &
+      write(*,*) 'read ASCII file as stream: ', trim(file_name)
+      open(id_file, file = file_name,  status='old',                    &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
 !
       end subroutine sel_open_check_gz_stream_file
@@ -176,6 +188,29 @@
       end subroutine sel_close_read_gz_stream_file
 !
 !   --------------------------------------------------------------------
+!
+      subroutine sel_redwind_gz_stream_file(FPz_f, id_file, flag_gzip)
+!
+      use gzip_file_access
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_file
+      logical, intent(in) :: flag_gzip
+!
+      integer(kind = kint) :: ierr
+!
+!#ifdef ZLIB_IO
+      if(flag_gzip) then
+        ierr = rewind_gzfile(FPz_f)
+        return
+      end if
+!#endif
+!
+      rewind(id_file)
+!
+      end subroutine sel_redwind_gz_stream_file
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine sel_read_line_gz_stream                                &
@@ -201,6 +236,7 @@
 !
       call read_one_line_from_stream(id_file, len(zbuf%fixbuf(1)),      &
      &    zbuf%num_word, zbuf%len_used, zbuf%fixbuf(1))
+      if(zbuf%len_used .le. 0) return
       zbuf%fixbuf(1)(zbuf%len_used:zbuf%len_used) = char(32)
 !
       end subroutine sel_read_line_gz_stream
@@ -212,6 +248,7 @@
 !
       use skip_comment_f
       use skip_gz_comment
+      use gzip_file_access
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
@@ -223,12 +260,14 @@
 !#ifdef ZLIB_IO
       if(flag_gzip) then
         call skip_gz_comment_get_nword(FPz_f, zbuf)
+        if(check_gzfile_eof(FPz_f) .ne. 0) zbuf%len_used = -1
         return
       end if
 !#endif
 !
       call skip_comment_from_stream(id_file, len(zbuf%fixbuf(1)),       &
      &    zbuf%num_word, zbuf%len_used, zbuf%fixbuf(1))
+      if(zbuf%len_used .le. 0) return
       zbuf%fixbuf(1)(zbuf%len_used:zbuf%len_used) = char(32)
 !
       end subroutine sel_skip_comment_gz_stream
@@ -262,6 +301,35 @@
       write(id_file) textbuf
 !
       end subroutine sel_gz_write_text_stream
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_gz_write_text_stream_w_len(flag_gzip, id_file,     &
+     &                                          len64, textbuf, zbuf)
+!
+      use data_convert_by_zlib
+      use transfer_to_long_integers
+!
+      logical, intent(in) :: flag_gzip
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint_gl), intent(in) :: len64
+      character(len = len64), intent(in) :: textbuf
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+!#ifdef ZLIB_IO
+      if(flag_gzip) then
+        call gzip_defleate_characters_b(len64, textbuf, zbuf)
+        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
+        call dealloc_zip_buffer(zbuf)
+        return
+      end if
+!#endif
+!
+      write(id_file) textbuf(1:len64)
+!
+      end subroutine sel_gz_write_text_stream_w_len
 !
 ! -----------------------------------------------------------------------
 !

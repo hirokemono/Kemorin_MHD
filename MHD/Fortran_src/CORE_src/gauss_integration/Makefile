@@ -14,7 +14,9 @@ MOD_GAUSS = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'GAUSSDIR = $(GAUSSDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_GAUSS)' >> $(MAKENAME)
 
 mod_list:
@@ -22,12 +24,8 @@ mod_list:
 	@echo  $(MOD_GAUSS) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(GAUSSDIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(GAUSSDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

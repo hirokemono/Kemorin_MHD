@@ -86,8 +86,8 @@
         ied = inod_smp_stack(ip)
         do inod = ist, ied
           d_nod(inod,i_flux) = coef_buo * d_nod(inod,i_scalar)          &
-     &                    * ( d_nod(inod,i_velo  ) * xx(inod,1)   &
-     &                      + d_nod(inod,i_velo+1) * xx(inod,2)   &
+     &                    * ( d_nod(inod,i_velo  ) * xx(inod,1)         &
+     &                      + d_nod(inod,i_velo+1) * xx(inod,2)         &
      &                      + d_nod(inod,i_velo+2) * xx(inod,3))
          end do
        end do

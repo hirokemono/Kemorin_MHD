@@ -38,7 +38,7 @@ begin fluid_control
     mesh_file_fmt_ctl           'ascii'
     rst_files_fmt_ctl           'ascii'
     udt_files_fmt_ctl           'ascii'
-  end
+  end data_files_def
 !
   begin model
 !!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -102,42 +102,42 @@ begin fluid_control
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
-      array nod_value_ctl   8
-        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
-        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
-        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
-        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
-        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-      end array
-    end
+      array nod_value_ctl
+        nod_value_ctl  velocity            Viz_On   Monitor_On
+        nod_value_ctl  temperature         Viz_On   Monitor_On
+        nod_value_ctl  pressure            Viz_On   Monitor_Off
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On
+        nod_value_ctl  current_density     Viz_On   Monitor_Off
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off
+      end array nod_value_ctl
+    end phys_values_ctl
 !
 !!!!!  physical values for time evolution !!!!!!!!!!!!!!!!!!
 ! aviable valuables: velocity, temperature, magnetic_field
 !                    vector_potential, composition
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin time_evolution_ctl
-      array time_evo_ctl   3
-        time_evo_ctl  temperature        end
-        time_evo_ctl  velocity           end
-        time_evo_ctl  vector_potential   end
-      end array
-    end
+      array time_evo_ctl
+        time_evo_ctl  temperature
+        time_evo_ctl  velocity
+        time_evo_ctl  vector_potential
+      end array time_evo_ctl
+    end time_evolution_ctl
 !
 !!!!!  setting for layers 
 !
     begin layers_ctl
-      array fluid_ele_grp    1
-        fluid_ele_grp    outer_core_ele   end
-      end array
+      array fluid_ele_grp
+        fluid_ele_grp    outer_core_ele
+      end array fluid_ele_grp
 !
-      array conduct_ele_grp    1
-!         conduct_ele_grp    inner_core_ele   end
-         conduct_ele_grp    outer_core_ele   end
-      end array
-	end  layers_ctl
+      array conduct_ele_grp
+!         conduct_ele_grp    inner_core_ele
+         conduct_ele_grp    outer_core_ele
+      end array conduct_ele_grp
+	end  layers_ctl layers_ctl
 !
 !!!!!  setting for boundary condition
 !
@@ -145,10 +145,10 @@ begin fluid_control
 !!!!!  boundary condition for temperature  !!!!!!!!!!!!!!!!!!!!!!!!
 !  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_temperature   2
-        bc_temperature  fixed ICB  1.000  end
-        bc_temperature  fixed CMB  0.000  end
-      end array
+      array bc_temperature
+        bc_temperature  fixed ICB  1.000
+        bc_temperature  fixed CMB  0.000
+      end array bc_temperature
 !!!!!  boundary condition for velocity  !!!!!!!!!!!!!!!!!!!!!!!!
 !  available type
 !     fix_x,  fix_y,  fix_z
@@ -158,26 +158,26 @@ begin fluid_control
 !     free_sph
 !     specitial (you have to define the B.C. in source file)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_velocity    7
-        bc_velocity  fix_x  ICB   0.000  end
-        bc_velocity  fix_y  ICB   0.000  end
-        bc_velocity  fix_z  ICB   0.000  end
-        bc_velocity  fix_x  CMB   0.000  end
-        bc_velocity  fix_y  CMB   0.000  end
-        bc_velocity  fix_z  CMB   0.000  end
-        bc_velocity  fix_z  equator 0.000  end
-      end array
+      array bc_velocity
+        bc_velocity  fix_x  ICB   0.000
+        bc_velocity  fix_y  ICB   0.000
+        bc_velocity  fix_z  ICB   0.000
+        bc_velocity  fix_x  CMB   0.000
+        bc_velocity  fix_y  CMB   0.000
+        bc_velocity  fix_z  CMB   0.000
+        bc_velocity  fix_z  equator 0.000
+      end array bc_velocity
 !!!!!  boundary condition for pressure  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_pressure  1
-        bc_pressure  fixed Press  0.000  end
-      end array
+      array bc_pressure
+        bc_pressure  fixed Press  0.000
+      end array bc_pressure
 !!!!!  boundary condition for dummy scalar  !!!!!!!!!!!!!!!!!!!!!!!
 !  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_composition  1
-        bc_composition fixed  Press  0.000  end
+      array bc_composition
+        bc_composition fixed  Press  0.000
       end array bc_composition
 !!!!!  boundary condition for magnetic field  !!!!!!!!!!!!!!!!!!!!!
 !  available type
@@ -186,35 +186,35 @@ begin fluid_control
 !     insulator (not recommend)
 !     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_magnetic_field   2
-        bc_magnetic_field  fix_x  equator     0.000  end
-        bc_magnetic_field  fix_y  equator     0.000  end
-!        bc_magnetic_field  fix_x  infinity     0.000  end
-!        bc_magnetic_field  fix_y  infinity     0.000  end
-!        bc_magnetic_field  fix_z  infinity     0.000  end
-      end array
+      array bc_magnetic_field
+        bc_magnetic_field  fix_x  equator     0.000
+        bc_magnetic_field  fix_y  equator     0.000
+!        bc_magnetic_field  fix_x  infinity     0.000
+!        bc_magnetic_field  fix_y  infinity     0.000
+!        bc_magnetic_field  fix_z  infinity     0.000
+      end array bc_magnetic_field
 !!!!!  boundary condition for magnetic potential  !!!!!!!!!!!!!!!!!
 !  available type:  fixed, file, sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      Magnetic_potential   3
-        bc_mag_potential fixed   Centre  0.000  end
-        bc_mag_potential fixed  infinity  0.000  end
-        bc_mag_potential fixed  equator   0.000  end
-      end array
+      Magnetic_potential
+        bc_mag_potential fixed   Centre  0.000
+        bc_mag_potential fixed  infinity  0.000
+        bc_mag_potential fixed  equator   0.000
+      end array bc_mag_potential
 !!!!!  boundary condition for vector potential  !!!!!!!!!!!!!!!!!!!
 !  available type
 !     fix_x,  fix_y,  fix_z
 !     file_x, file_y, file_z
 !     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_vector_potential    6
-        bc_vector_potential fix_x   infinity  0.000  end
-        bc_vector_potential fix_y   infinity  0.000  end
-        bc_vector_potential fix_z   infinity  0.000  end
-        bc_vector_potential insulate_shell   ICB  0.000  end
-        bc_vector_potential insulate_shell   CMB 0.000  end
-        bc_vector_potential fix_z   equator   0.000  end
-      end array
+      array bc_vector_potential
+        bc_vector_potential fix_x   infinity  0.000
+        bc_vector_potential fix_y   infinity  0.000
+        bc_vector_potential fix_z   infinity  0.000
+        bc_vector_potential insulate_shell   ICB  0.000
+        bc_vector_potential insulate_shell   CMB 0.000
+        bc_vector_potential fix_z   equator   0.000
+      end array bc_vector_potential
 !!!!!  boundary condition for current density !!!!!!!!!!!!!!!!!!!!!
 !  available type
 !     fix_x,  fix_y,  fix_z
@@ -222,21 +222,21 @@ begin fluid_control
 !     insulator (not recommend)
 !     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_current   0
-!        bc_current  fix_x  infinity     0.000  end
-!        bc_current  fix_y  infinity     0.000  end
-!        bc_current  fix_z  infinity     0.000  end
-      end array
-    end
+!      array bc_current
+!        bc_current  fix_x  infinity     0.000
+!        bc_current  fix_y  infinity     0.000
+!        bc_current  fix_z  infinity     0.000
+!      end array bc_current
+    end bc_4_node
 !
     begin bc_4_surface
 !!!!!  boundary condition for heat flux  !!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available type:  fixed, file, SGS_commute
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       array heat_flux_surf  0
-!        heat_flux_surf  fixed       outer  0.000  end
-!        heat_flux_surf  SGS_commute inner  0.000  end
-!      end array
+       array heat_flux_surf
+!        heat_flux_surf  fixed       outer  0.000
+!        heat_flux_surf  SGS_commute inner  0.000
+!      end array heat_flux_surf
 !!!!!  boundary condition for torque  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available type
 !     fix_x,  fix_y,  fix_z
@@ -245,81 +245,81 @@ begin fluid_control
 !     free_shell_in, free_shell_out
 !     free_4_plane
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       array velocity_surf     0 
-!        velocity_surf  free_shell_in inner_surf   0.000  end
-!        velocity_surf  free_shell_out  outer_surf   0.000  end
+!       array velocity_surf
+!        velocity_surf  free_shell_in inner_surf   0.000
+!        velocity_surf  free_shell_out  outer_surf   0.000
 !      end array velocity_surf
 !!!!!  boundary condition for pressure gradiend !!!!!!!!!!!!!!!!!!!
 !  available type:  inner_shell, outer_shell
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array pressure_surf  0 
-!         pressure_surf   inner_shell inner_surf 0.000  end
-!         pressure_surf   outer_shell outer_surf 0.000  end
+!        array pressure_surf
+!         pressure_surf   inner_shell inner_surf 0.000
+!         pressure_surf   outer_shell outer_surf 0.000
 !      end array pressure_surf
 !!!!!  boundary condition for gradientof magnetic field  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in, insulate_out (not recommended)
 !     far_away                  (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array magnetic_field_surf  0
-!          magnetic_field_surf  insulate_in  ICB_surf  0.000 end
-!          magnetic_field_surf  insulate_out CMB_surf  0.000 end
-!          magnetic_field_surf  far_away infinity_surf  0.000 end
+!      array magnetic_field_surf
+!          magnetic_field_surf  insulate_in  ICB_surf  0.000
+!          magnetic_field_surf  insulate_out CMB_surf  0.000
+!          magnetic_field_surf  far_away infinity_surf  0.000
 !      end array magnetic_field_surf
 !!!!!  boundary condition for gradientof magnetic field  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in, insulate_out (not recommended)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array vector_potential_surf  0
-!          vector_potential_surf  insulate_out CMB_surf  0.000 end
+!      array vector_potential_surf
+!          vector_potential_surf  insulate_out CMB_surf  0.000
 !      end array vector_potential_surf
 !!!!!  boundary condition for current density on surface  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in,insulate_out (not recommended)
 !     far_away                  (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array current_surf  0
-!          current_surf  insulate_in  ICB_surf  0.000 end
-!          current_surf  insulate_out CMB_surf  0.000 end
-!          current_surf  far_away infinity_surf  0.000 end
+!        array current_surf
+!          current_surf  insulate_in  ICB_surf  0.000
+!          current_surf  insulate_out CMB_surf  0.000
+!          current_surf  far_away infinity_surf  0.000
 !      end array current_surf
 !!!!!  boundary condition for magnetic potential !!!!!!!!!!!!!!!!!
 !  available type:  fixed (not used), file (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array electric_potential_surf  0
-!          electric_potential_surf  insulate_in  ICB_surf  0.000 end
-!          electric_potential_surf  insulate_out CMB_surf  0.000 end
-!          electric_potential_surf  far_away infinity_surf  0.000 end
+!        array electric_potential_surf
+!          electric_potential_surf  insulate_in  ICB_surf  0.000
+!          electric_potential_surf  insulate_out CMB_surf  0.000
+!          electric_potential_surf  far_away infinity_surf  0.000
 !      end array electric_potential_surf
 !!!!!  boundary condition for dummy scalar !!!!!!!!!!!!!!!!!
 !  available type:  fixed_grad (not used), file_grad (not used)
 !                   fixed_field
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array composition_flux_surf  0
-!          composition_flux_surf  insulate_in  ICB_surf  0.000 end
-!          composition_flux_surf  insulate_out CMB_surf  0.000 end
-!          composition_flux_surf  far_away infinity_surf  0.000 end
+!        array composition_flux_surf
+!          composition_flux_surf  insulate_in  ICB_surf  0.000
+!          composition_flux_surf  insulate_out CMB_surf  0.000
+!          composition_flux_surf  far_away infinity_surf  0.000
 !      end array composition_flux_surf
 !!!!!  boundary condition for infinity (obsolute) !!!!!!!!!!!!!!!!!
 !  available type:  fixed (not used), file (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array infinity_surf 0
-!        infinity_surf  fixed infinity_surf  0.000  end
+!      array infinity_surf
+!        infinity_surf  fixed infinity_surf  0.000
 !      end array infinity_surf
-    end
+    end bc_4_surface
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available forces
-!     gravity, Coriolis, Lorentz
+!     Thermal_buoyancy, Coriolis, Lorentz
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin forces_define
-      array force_ctl      4
-        force_ctl   gravity              end
-        force_ctl   Coriolis             end
-        force_ctl   Lorentz              end
-        force_ctl   Composite_gravity    end
-      end array
-    end
+      array force_ctl
+        force_ctl   Thermal_buoyancy
+        force_ctl   Coriolis
+        force_ctl   Lorentz
+        force_ctl   Compositional_buoyancy
+      end array force_ctl
+    end forces_define
 !
 !!!!!  dimensionless numbers !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  available numbers
@@ -330,28 +330,32 @@ begin fluid_control
 !     Elsasser_number
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin dimensionless_ctl
-      array dimless_ctl 6
-        dimless_ctl  Prandtl_number                   1.0e-0  end
-        dimless_ctl  modified_Rayleigh_number         1.0E+2  end
-        dimless_ctl  Ekman_number                     1.0e-3  end
-        dimless_ctl  magnetic_Prandtl_number          5.0e+0  end
-        dimless_ctl  Composite_Rayleigh_number        1.0E+2  end
-        dimless_ctl  Composite_Prandtl_number         1.0E+2  end
-      end array
-    end
+      array dimless_ctl
+        dimless_ctl  Prandtl_number                   1.0e-0
+        dimless_ctl  modified_Rayleigh_number         1.0E+2
+        dimless_ctl  Ekman_number                     1.0e-3
+        dimless_ctl  magnetic_Prandtl_number          5.0e+0
+        dimless_ctl  Composite_Rayleigh_number        1.0E+2
+        dimless_ctl  Composite_Prandtl_number         1.0E+2
+      end array dimless_ctl
+    end dimensionless_ctl
 !
 !!!!! Normalization settings  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !    define
-!     num_coef_4_termal_evo:      time integration and advection of temp
-!     num_coef_4_velocity_evo:    time integration and advection of temperature
-!     num_coef_4_magnetic_evo:    time integration and advection of magnetic f.
-!     num_coef_4_termal_diffusion:   coefficients for thermal diffusion
-!     num_coef_4_viscous_diffusion:  coefficients for viscous diffusion
-!     num_coef_4_magnetic_diffusion: coefficients for magnetic diffusion
-!     num_coef_4_buoyancy:   coefficients for buoyancy
-!     num_coef_4_Coriolis:   coefficients for Coriolis force
-!     num_coef_4_Lorentz:    coefficients for Lorantz force
+!     coef_4_termal_ctl:      time integration and advection of temp
+!     coef_4_velocity_ctl:    time integration and advection of temperature
+!     coef_4_magnetic_ctl:    time integration and advection of magnetic f.
+!     coef_4_t_diffuse_ctl:   coefficients for thermal diffusion
+!     coef_4_v_diffuse_ctl:   coefficients for viscous diffusion
+!     coef_4_m_diffuse_ctl:   coefficients for magnetic diffusion
+!     coef_4_thermal_buoyancy_ctl:
+!                             coefficients for thermal buoyancy
+!     coef_4_Coriolis_ctl:    coefficients for Coriolis force
+!     coef_4_Lorentz_ctl:     coefficients for Lorantz force
+!     coef_4_composit_buoyancy_ctl:
+!                             coefficients for compositional buoyancy
+!     coef_4_induction_ctl:   coefficients for magnetic induction
 !
 !     One:  1, Zero (Ignore), Two:  2,   Radial_parameter: (1-ri/ro)
 !     Radial_35: (1-0.35)
@@ -362,68 +366,67 @@ begin fluid_control
 !
     begin coefficients_ctl
       begin thermal
-        array coef_4_termal_ctl     1
-          coef_4_termal_ctl            One                        1.0  end
-        end array
-        array coef_4_t_diffuse_ctl  1
-          coef_4_t_diffuse_ctl         Prandtl_number            -1.0  end
-        end array
+        array coef_4_termal_ctl
+          coef_4_termal_ctl            One                        1.0
+        end array coef_4_termal_ctl
+        array coef_4_t_diffuse_ctl
+          coef_4_t_diffuse_ctl         Prandtl_number            -1.0
+        end array coef_4_t_diffuse_ctl
       end  thermal
 !
       begin momentum
-        array coef_4_velocity_ctl            1
-          coef_4_velocity_ctl          One                        1.0  end
-        end array
-        array coef_4_press_ctl               1
-          coef_4_press_ctl             Ekman_number              -1.0  end
-        end array
-        array coef_4_v_diffuse_ctl           1
-          coef_4_v_diffuse_ctl         One                        1.0  end
-        end array
-        array coef_4_buoyancy_ctl            3
-          coef_4_buoyancy_ctl          Radial_parameter           1.0  end
-          coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0  end
-          coef_4_buoyancy_ctl          Ekman_number              -1.0  end
-        end array
-        array coef_4_Coriolis_ctl            2
-          coef_4_Coriolis_ctl          Two                        1.0  end
-          coef_4_Coriolis_ctl          Ekman_number              -1.0  end
-        end array
-        array coef_4_Lorentz_ctl             2
-          coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0  end
-          coef_4_Lorentz_ctl           Ekman_number              -1.0  end
-        end array
-        array coef_4_composit_buoyancy_ctl   3
-          coef_4_composit_buoyancy_ctl  Radial_parameter           1.0  end
-          coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0  end
-          coef_4_composit_buoyancy_ctl  Ekman_number              -1.0  end
-        end array
+        array coef_4_velocity_ctl
+          coef_4_velocity_ctl          One                        1.0
+        end array coef_4_velocity_ctl
+        array coef_4_press_ctl
+          coef_4_press_ctl             Ekman_number              -1.0
+        end array coef_4_press_ctl
+        array coef_4_v_diffuse_ctl
+          coef_4_v_diffuse_ctl         One                        1.0
+        end array coef_4_v_diffuse_ctl
+        array coef_4_thermal_buoyancy_ctl
+          coef_4_thermal_buoyancy_ctl  Radial_parameter           1.0
+          coef_4_thermal_buoyancy_ctl  modified_Rayleigh_number   1.0
+          coef_4_thermal_buoyancy_ctl  Ekman_number              -1.0
+        end array coef_4_thermal_buoyancy_ctl   
+        array coef_4_Coriolis_ctl
+          coef_4_Coriolis_ctl          Two                        1.0
+          coef_4_Coriolis_ctl          Ekman_number              -1.0
+        end array coef_4_Coriolis_ctl
+        array coef_4_Lorentz_ctl
+          coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0
+          coef_4_Lorentz_ctl           Ekman_number              -1.0
+        end array coef_4_Lorentz_ctl
+        array coef_4_composit_buoyancy_ctl
+          coef_4_composit_buoyancy_ctl  Radial_parameter           1.0
+          coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0
+          coef_4_composit_buoyancy_ctl  Ekman_number              -1.0
+        end array coef_4_composit_buoyancy_ctl
       end  momentum
 !
       begin induction
-        array coef_4_magnetic_ctl   1
-          coef_4_magnetic_ctl          One                        1.0  end
-        end array
-        array coef_4_mag_p_ctl      1
-          coef_4_mag_p_ctl             One                        1.0  end
-        end array
-        array coef_4_m_diffuse_ctl  1
-          coef_4_m_diffuse_ctl         magnetic_Prandtl_number   -1.0  end
-        end array
-        array coef_4_induction_ctl  1
-          coef_4_induction_ctl         One                       -1.0  end
-        end array
+        array coef_4_magnetic_ctl
+          coef_4_magnetic_ctl          One                        1.0
+        end array coef_4_magnetic_ctl
+        array coef_4_mag_p_ctl
+          coef_4_mag_p_ctl             One                        1.0
+        end array coef_4_mag_p_ctl
+        array coef_4_m_diffuse_ctl
+          coef_4_m_diffuse_ctl         magnetic_Prandtl_number   -1.0
+        end array coef_4_m_diffuse_ctl
+        array coef_4_induction_ctl
+          coef_4_induction_ctl         One                       -1.0
+        end array coef_4_induction_ctl
       end  induction
 !
 	  begin composition
-        array coef_4_dscalar_ctl     1
-          coef_4_dscalar_ctl            One                        1.0  end
-        end array
-        array coef_4_dsc_diffuse_ctl  1
-          coef_4_dsc_diffuse_ctl        Composite_Prandtl_number  -1.0  end
-        end array
+        array coef_4_dscalar_ctl
+          coef_4_dscalar_ctl            One                        1.0
+        end array coef_4_dscalar_ctl
+        array coef_4_dsc_diffuse_ctl
+          coef_4_dsc_diffuse_ctl        Composite_Prandtl_number  -1.0
+        end array coef_4_dsc_diffuse_ctl
       end  composition
-!
     end  coefficients_ctl
 !
     begin gravity_define
@@ -435,20 +438,20 @@ begin fluid_control
       gravity_type_ctl     radial
 !
 !!!!! direction of gravity (opposite direction to that of buoyancy)
-      array gravity_vec  3
-        gravity_vec  x     0.000   end
-        gravity_vec  y     0.000   end
-        gravity_vec  z     -1.000   end
-      end array
+      array gravity_vec
+        gravity_vec  x     0.000
+        gravity_vec  y     0.000
+        gravity_vec  z     -1.000
+      end array gravity_vec
     end  gravity_define
 !
     begin Coriolis_define
 !!!!! direction of rotation vector for Coriolis force !!!!!!!!!!!!!
-      array rotation_vec   3
-        rotation_vec  x   0.000    end
-        rotation_vec  y   0.000    end
-        rotation_vec  z   1.000    end
-      end array
+      array rotation_vec
+        rotation_vec  x   0.000
+        rotation_vec  y   0.000
+        rotation_vec  z   1.000
+      end array rotation_vec
     end  Coriolis_define
 !
     begin Magneto_convection_def
@@ -457,19 +460,18 @@ begin fluid_control
 !    array ext_magne_vec:   0...off  more than 1...On
 !     ext_magne_vec: external field (constant)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array ext_magne_vec   3
-        ext_magne_vec  x     0.000   end
-        ext_magne_vec  y     1.000   end
-        ext_magne_vec  z     0.000   end
-      end array
-	  tri_sph_int_file     'rot_int.dat'
-    end
+      array ext_magne_vec
+        ext_magne_vec  x     0.000
+        ext_magne_vec  y     1.000
+        ext_magne_vec  z     0.000
+      end array ext_magne_vec
+    end Magneto_convection_def
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !    ref_temperature_ctl: none           (No reference of temperature)
 !                         spherical_shell ( for spherical shell model)
 !                         sph_constant_heat (for spherical shell model)
-!                         numrical_solution ( Get numerical solution)
+!                         numerical_solution ( Get numerical solution)
 !                         linear_x        ( propotional to x-direction )
 !                         linear_y        ( propotional to x-direction )
 !                         linear_z        ( propotional to x-direction )
@@ -485,19 +487,19 @@ begin fluid_control
       begin low_temp_ctl
         depth         1.5384615384615384
         temperature   0.0d0
-      end
+      end low_temp_ctl
       begin high_temp_ctl
         depth         0.5384615384615384
         temperature   1.0d0
-      end
+      end high_temp_ctl
 !
       stratified_ctl            0
 !      begin takepiro_model_ctl
-!        stratified_sigma_ctl         0.000   end
-!        stratified_width_ctl         0.000   end
-!        stratified_outer_r_ctl       0.000   end
+!        stratified_sigma_ctl         0.000
+!        stratified_width_ctl         0.000
+!        stratified_outer_r_ctl       0.000
 !      end takepiro_model_ctl
-    end
+    end temperature_define
 !!!!!!!!!  SGS Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     SGS_model_ctl: gradient.........nonlinear gradient model
 !                    similarity.......Similarity model
@@ -553,7 +555,7 @@ begin fluid_control
 !
         model_coef_rst_prefix       'model_coefs_ini'
         commutel_coef_rst_prefix    'commute_coefs_ini'
-      end
+      end SGS_files_control
 !
       istep_dynamic_ctl         1
       min_step_dynamic_ctl      1
@@ -561,29 +563,29 @@ begin fluid_control
       delta_to_shrink_ctl      1.0d-2
       delta_to_extend_ctl      1.0d-3
 !
-      array SGS_terms_ctl      5
-        SGS_terms_ctl    heat              end
-        SGS_terms_ctl    inertia           end
-        SGS_terms_ctl    gravity           end
-        SGS_terms_ctl    Lorentz           end
-        SGS_terms_ctl    induction         end
-      end array
+      array SGS_terms_ctl
+        SGS_terms_ctl    heat
+        SGS_terms_ctl    inertia
+        SGS_terms_ctl    Thermal_buoyancy
+        SGS_terms_ctl    Lorentz
+        SGS_terms_ctl    induction
+      end array SGS_terms_ctl
 !
       begin 3d_filtering_ctl
-        array whole_filtering_grp_ctl  2
-          whole_filtering_grp_ctl  Both   end
-          whole_filtering_grp_ctl  whole  end
-        end array
+        array whole_filtering_grp_ctl
+          whole_filtering_grp_ctl  Both
+          whole_filtering_grp_ctl  whole
+        end array whole_filtering_grp_ctl
 !
-        array fluid_filtering_grp_ctl  2
-            fluid_filtering_grp_ctl  Both   end
-            fluid_filtering_grp_ctl  fluid  end
-        end array
+        array fluid_filtering_grp_ctl
+            fluid_filtering_grp_ctl  Both
+            fluid_filtering_grp_ctl  fluid
+        end array fluid_filtering_grp_ctl
 !
         momentum_filter_ctl      fluid_filtering
         heat_filter_ctl          fluid_filtering
         induction_filter_ctl     whole_filtering
-      end
+      end 3d_filtering_ctl
 !
       begin dynamic_model_layer_ctl
 !
@@ -594,26 +596,26 @@ begin fluid_control
         start_fl_layer_grp_name_ctl  fluid_layer_1
 !
 !       layering_data_ctl     explicit
-!       array layer_grp_name_ctl    8
-!         layer_grp_name_ctl    fluid_layer_1   end
-!         layer_grp_name_ctl    fluid_layer_2   end
-!         layer_grp_name_ctl    fluid_layer_3   end
-!         layer_grp_name_ctl    fluid_layer_4   end
-!         layer_grp_name_ctl    fluid_layer_5   end
-!         layer_grp_name_ctl    fluid_layer_6   end
-!         layer_grp_name_ctl    fluid_layer_7   end
-!         layer_grp_name_ctl    fluid_layer_8   end
-!       end array
-!       array grp_stack_each_layer_ctl    4
+!       array layer_grp_name_ctl
+!         layer_grp_name_ctl    fluid_layer_1
+!         layer_grp_name_ctl    fluid_layer_2
+!         layer_grp_name_ctl    fluid_layer_3
+!         layer_grp_name_ctl    fluid_layer_4
+!         layer_grp_name_ctl    fluid_layer_5
+!         layer_grp_name_ctl    fluid_layer_6
+!         layer_grp_name_ctl    fluid_layer_7
+!         layer_grp_name_ctl    fluid_layer_8
+!       end array layer_grp_name_ctl
+!       array grp_stack_each_layer_ctl
 !         grp_stack_each_layer_ctl  2
 !         grp_stack_each_layer_ctl  4
 !         grp_stack_each_layer_ctl  6
 !         grp_stack_each_layer_ctl  8
-!       end array
+!       end array grp_stack_each_layer_ctl
 !
 !        layering_data_ctl     start_end
-    end
-  end
+    end SGS_control
+  end model
 !
 !
 !
@@ -635,12 +637,12 @@ begin fluid_control
 !
       dt_ctl              5.0e-5
       time_init_ctl       0.0e-8
-    end
+    end time_step_ctl
 !!!!!  number of points for time evolution
     begin intg_point_num_ctl
        intg_point_poisson_ctl   2
        intg_point_t_evo_ctl     2
-    end
+    end intg_point_t_evo_ctl
 !!!!!  control for initial and restart data  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !      0: No initial values
 !      1: Read restart data as initial values
@@ -664,8 +666,8 @@ begin fluid_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin restart_file_ctl
        rst_ctl                -2
-    end
-!!!!!  parameter for solver 
+    end restart_file_ctl
+!!!!!  parameter for solver
     begin solver_ctl
       itr_ctl              1000
       eps_ctl              1.0E-4
@@ -673,7 +675,7 @@ begin fluid_control
       sigma_diag_ctl          1.0
       method_ctl              CG
       precond_ctl             SSOR
-    end
+    end solver_ctl
 !!!!!!  setting for SMP parallel solver !!!!!!!!!!!!!!!!!!!!!
 !
 !    order_method:  method for ordering
@@ -687,7 +689,7 @@ begin fluid_control
       order_method     RCM_DJDS
       min_color_ctl    60
       mc_color_ctl     100
-    end
+    end DJDS_solver_ctl
 !
 !!!!!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -725,25 +727,25 @@ begin fluid_control
       precond_4_crank_ctl     SSOR   
       modify_coriolis_4_crank_ctl  0
       sph_transform_mode_ctl   'radius_in'
-    end
-  end
+    end time_loop_ctl
+  end control
 !
 !!!!!   control for monitor nodal data
   begin monitor_data_ctl
-    array monitor_grp_ctl   1
-      monitor_grp_ctl     mid_equator   end
-    end array
-  end
+    array monitor_grp_ctl
+      monitor_grp_ctl     mid_equator
+    end array monitor_grp_ctl
+  end monitor_data_ctl
 !
   begin visual_control
-    array cross_section_ctl  4
+    array cross_section_ctl
       file  cross_section_ctl   ctl_psf_cmb
       file  cross_section_ctl   ctl_psf_z0 
       file  cross_section_ctl   ctl_psf_z0.3
       file  cross_section_ctl   ctl_psf_z1.0
     end array cross_section_ctl
-    array isosurface_ctl     0
-    array  volume_rendering  0
-  end
+!    array isosurface_ctl
+!    array  volume_rendering
+  end visual_control
 !
-end
+end fluid_control

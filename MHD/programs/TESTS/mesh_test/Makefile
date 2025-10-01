@@ -21,6 +21,7 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_MESH_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 MOD_MESH_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
 
@@ -32,7 +33,7 @@ dir_list:
 	@echo 'MESH_TEST_DIR = $(MESH_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_MESH_TEST = $$(BUILDDIR)/$(TARGET_MESH_TEST)' \
+	@echo 'TARGET_MESH_TEST = $$(TEST_BUILD_DIR)/$(TARGET_MESH_TEST)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -64,12 +65,8 @@ mod_list:
 	@echo  $(MOD_MESH_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TEST_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MESH_TEST_DIR)' $(SOURCES)
 
 
 clean:

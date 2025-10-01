@@ -6,13 +6,16 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #ifndef DEPENDENCY_CHECK
   #include <GLFW/glfw3.h>
 #endif
 
-#include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
+#include "render_on_GLFW.h"
+
+#include "movie_from_GLFW_by_FFMPEG.h"
 
 #define ZOOM    1
 #define PAN     2
@@ -20,29 +23,31 @@
 #define SCALE   4
 #define WALKTO  5
 
-struct window_pointers{
-	GLFWwindow *glfw_window;
-	
-	GtkWidget *window_main;
-	
-	int iflag_menu_update;
-};
-
 /* prototypes */
+
+void set_GLFW_viewtype_mode(int selected);
 
 GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 
-void glfw_callbacks_init();
-void set_GLFWindowSize(int width, int height);
+void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
+                         struct kemoviewer_gl_type *kemo_gl);
+void set_GLFWindowSize(int width, int height,
+                       struct kemoviewer_type *kemo_sgl);
 
-int draw_fast(void);
-void draw_full(void);
-void draw_quilt(void);
+void draw_full_gl(struct kemoviewer_gl_type *kemo_gl);
+void draw_fast_gl(struct kemoviewer_gl_type *kemo_gl);
 
-void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix,
-                            int i_axis, int inc_deg);
-void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix,
-                               int ist_udt, int ied_udt, int inc_udt);
+void draw_quilt(int istep_qult, struct kemoviewer_gl_type *kemo_gl);
 
-void set_viewtype_mode(int selected);
+double draw_rotate_views(struct kemoviewer_gl_type *kemo_gl,
+                         int i_axis, int inc_deg, int num_rotation);
+void draw_evolution_views(struct kemoviewer_gl_type *kemo_gl,
+                          int ist_udt, int ied_udt, int inc_udt);
+
+void sel_write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
+                            int iflag_img, struct kv_string *image_prefix,
+                            int i_fps, int i_axis, int inc_deg);
+void sel_write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
+                               int iflag_img, struct kv_string *image_prefix,
+                               int i_fps, int ist_udt, int ied_udt, int inc_udt);
 #endif

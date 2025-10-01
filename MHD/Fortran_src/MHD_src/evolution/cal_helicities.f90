@@ -33,7 +33,6 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!$omp parallel
       if (iphys%prod_fld%i_k_heli .gt. izero) then
          call cal_phys_dot_product                                      &
      &      (iphys%base%i_velo, iphys%base%i_vort,                      &
@@ -57,7 +56,6 @@
      &      (iphys%base%i_velo, iphys%base%i_magne,                     &
      &       iphys%prod_fld%i_x_heli, nod_fld)
       end if
-!$omp end parallel
 !
       end subroutine cal_helicity
 !

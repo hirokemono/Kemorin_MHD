@@ -1,5 +1,7 @@
-#version 330
+// #version 330
+//
 // gouraud.frag
+//
 
 in vec4 ex_Position;
 in vec4 ex_Color;

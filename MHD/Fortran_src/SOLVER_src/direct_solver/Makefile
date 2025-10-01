@@ -13,7 +13,9 @@ MOD_SOLVER_LU = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'SOLVER_LU_DIR =  $(SOLVER_LU_DIR)'       >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_SOLVER_LU)' >> $(MAKENAME)
 
 
@@ -22,12 +24,8 @@ mod_list:
 	@echo $(MOD_SOLVER_LU) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_LU_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_LU_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

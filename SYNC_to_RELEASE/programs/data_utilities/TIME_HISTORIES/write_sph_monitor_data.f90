@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/write_sph_monitor_data.f90

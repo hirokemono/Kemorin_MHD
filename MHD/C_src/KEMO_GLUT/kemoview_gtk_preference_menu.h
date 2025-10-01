@@ -14,37 +14,29 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
-#include "tree_view_4_light_position.h"
 #include "kemoview_gtk_colorsel.h"
 #include "kemoview_gtk_routines.h"
+#include "kemoview_gtk_rotation_menu.h"
+#include "kemoview_gtk_shading_mode_menu.h"
+#include "kemoview_gtk_tube_pref_menu.h"
+#include "kemoview_gtk_axis_prefs_menu.h"
+#include "kemoview_gtk_performance_menu.h"
+#include "kemoview_gtk_lighting_menu.h"
 
-#ifdef GLFW3
-	#include "view_modifier_glfw.h"
-#else
-	#include "view_modifier_gtk.h"
-#endif
-
-struct preference_gtk_menu{
-	struct lightparams_view *lightparams_vws;
-	
-	GtkWidget *spin_ambient;
-	GtkWidget *spin_diffuse;
-	GtkWidget *spin_specular;
-	GtkWidget *spin_shineness;
-
-	GtkWidget *combobox_node_color;
-	GtkWidget *button_node_color;
-	GdkRGBA gcolor;
-};
-
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
-struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data);
-void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
-
-GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
+GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
+                                  struct lightparams_view *lightparams_vws,
+                                  GtkWidget *window);
+GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
+                                     struct lightparams_view *lightparams_vws,
+                                      GtkWidget *window);
+GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
+                                     struct lightparams_view *lightparams_vws,
+                                     GtkWidget *window);
 
 #endif

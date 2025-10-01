@@ -13,6 +13,7 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
+      use m_work_time
 !
       use t_ctl_params_4_gen_filter
       use t_ctl_param_newdom_filter
@@ -35,6 +36,9 @@
       use t_mesh_SR
 !
       implicit none
+!
+      character(len = kchara), parameter                                &
+     &                        :: fname_filter_ctl = "ctl_filter"
 !
 !
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
@@ -78,6 +82,7 @@
       use parallel_edge_information
       use cal_1d_moments_4_fliter
 !
+      use bcast_ctl_data_gen_3d_filter
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -91,6 +96,7 @@
       use const_jacobians_3d
       use set_ctl_gen_filter
       use mpi_load_mesh_data
+      use cal_sol_deltax_by_consist
 !
 !
       use calypso_mpi
@@ -100,10 +106,21 @@
         write(*,*) 'Input file: mesh data'
       end if
 !
-!     --------------------- 
+      call init_elapse_time_by_TOTAL
+      call init_elapsed_solver_4_filter
+!
+!     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
-      call read_control_4_gen_filter(filter3d_ctl1)
+      if(my_rank .eq. 0) then
+        call read_control_4_gen_filter(fname_filter_ctl, filter3d_ctl1)
+      end if
+      call bcast_const_filter_ctl_data(filter3d_ctl1)
+!
+      if(filter3d_ctl1%i_filter_control .ne. 1) then
+        call calypso_MPI_abort(filter3d_ctl1%i_filter_control,          &
+     &                             'control file is broken')
+      end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &

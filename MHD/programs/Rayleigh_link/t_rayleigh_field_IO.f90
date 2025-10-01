@@ -241,7 +241,6 @@
       integer :: i4_tmp(1)
 !
       integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint) :: i
 !
 !
       if(my_rank .eq. 0) then

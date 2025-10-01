@@ -156,7 +156,7 @@
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
       integer(kind = kint), parameter  ::  l_out = 10
-
+      integer(kind = kint) :: ierr = 0
 !
       character(len= 8 )   ::  date
       character(len=10 )   ::  time
@@ -196,7 +196,8 @@
          call alloc_filter_4_plane(c_size1%ndepth, c_size1%nz_all,      &
     &        FEM_elen_c%filter_conf%nf_type, cube_fil1)
          call read_z_filter_info(cube_p1, c_size1,                      &
-    &        FEM_elen_c%filter_conf%nf_type, cube_fil1)
+    &        FEM_elen_c%filter_conf%nf_type, cube_fil1, ierr)
+         if(ierr .gt. 0) stop 'Read file error'
 !      end if
 !
 ! **********   domain loop for each pe   **********

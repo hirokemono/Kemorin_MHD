@@ -53,36 +53,34 @@
 !
       logical :: flag
 !
-      flag =   fl_prop%iflag_4_filter_inertia                           &
-     &    .or. fl_prop%iflag_4_filter_lorentz                           &
-     &    .or. fl_prop%iflag_4_filter_gravity                           &
-     &    .or. fl_prop%iflag_4_filter_comp_buo
+      flag =   fl_prop%flag_filter_inertia                              &
+     &    .or. fl_prop%flag_filter_lorentz                              &
+     &    .or. fl_prop%flag_filter_gravity                              &
+     &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
-!$omp parallel
-      if(fl_prop%iflag_4_filter_inertia) then
-        call add_rot_advection_to_force                                 &
+      if(fl_prop%flag_filter_inertia) then
+        call subtract_advection_to_force                                &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_m_advect,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_lorentz) then
-        call add_each_force_to_rot_forces                               &
+      if(fl_prop%flag_filter_lorentz) then
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_lorentz,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_gravity) then
-        call add_buoyancy_to_vort_force                                 &
+      if(fl_prop%flag_filter_gravity) then
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_buoyancy,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_comp_buo) then
-        call add_buoyancy_to_vort_force                                 &
+      if(fl_prop%flag_filter_comp_buo) then
+        call add_each_force_to_forces                                   &
      &     (ipol_exp%i_forces, ipol_div_fil_frc%i_comp_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine sum_filter_forces_to_explicit
 !
@@ -100,35 +98,33 @@
 !
       logical :: flag
 !
-      flag =   fl_prop%iflag_4_filter_inertia                           &
-     &    .or. fl_prop%iflag_4_filter_lorentz                           &
-     &    .or. fl_prop%iflag_4_filter_gravity                           &
-     &    .or. fl_prop%iflag_4_filter_comp_buo
+      flag =   fl_prop%flag_filter_inertia                              &
+     &    .or. fl_prop%flag_filter_lorentz                              &
+     &    .or. fl_prop%flag_filter_gravity                              &
+     &    .or. fl_prop%flag_filter_comp_buo
       if(flag .eqv. .FALSE.) return
 !
-!$omp parallel
-!      if(fl_prop%iflag_4_filter_inertia) then
+!      if(fl_prop%flag_filter_inertia) then
 !        call add_div_advection_to_force                                &
 !     &     (ipol_base%i_press, ipol_div_fil_frc%i_m_advect,            &
 !     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      end if
 !
-      if(fl_prop%iflag_4_filter_lorentz) then
+      if(fl_prop%flag_filter_lorentz) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_lorentz,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_gravity) then
+      if(fl_prop%flag_filter_gravity) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_buoyancy,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(fl_prop%iflag_4_filter_comp_buo) then
+      if(fl_prop%flag_filter_comp_buo) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_comp_buo,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!$omp end parallel
 !
       end subroutine sum_div_of_filtered_forces
 !

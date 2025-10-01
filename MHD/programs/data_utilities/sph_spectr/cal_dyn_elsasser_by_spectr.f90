@@ -11,7 +11,7 @@
 !!      subroutine set_dynamic_elsasser_name(sph_IN, iels, els_dat,     &
 !!     &          num_labels, nfield_sph_spec, num_time_labels,         &
 !!     &          ncomp_sph_spec, ene_sph_spec_name)
-!!        type(read_sph_spectr_params), intent(in) :: sph_IN
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!        type(dyn_elsasser_address), intent(in) :: iels
 !!        type(sph_dyn_elsasser_data), intent(in) :: els_dat
 !!        integer(kind = kint), intent(in) :: num_labels, nfield_sph_spec
@@ -26,9 +26,9 @@
 !!        type(dyn_elsasser_address), intent(in) :: iels
 !!        type(sph_dyn_elsasser_data), intent(in) :: els_dat
 !!        integer(kind = kint), intent(in) :: ltr_l, ncomp_l
-!!        real(kind = kreal), intent(in) :: spectr_l(ncomp_l,0:ltr_l)
 !!        integer(kind = kint), intent(in) :: ltr_m, ncomp_m
-!!        real(kind = kreal), intent(in) :: spectr_m(ncomp_m,0:ltr_m)
+!!        real(kind = kreal), intent(in) :: spectr_l(ncomp_l, 0:ltr_l)
+!!        real(kind = kreal), intent(in) :: spectr_m(ncomp_m, 0:ltr_m)
 !!        integer(kind = kint), intent(in) :: ntot_sph_spec
 !!        real(kind = kreal), intent(inout) :: elsassers(ntot_sph_spec)
 !!@endverbatim
@@ -58,7 +58,7 @@
      &          num_labels, nfield_sph_spec, num_time_labels,           &
      &          ncomp_sph_spec, ene_sph_spec_name)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(in) :: sph_IN
       type(dyn_elsasser_address), intent(in) :: iels
       type(sph_dyn_elsasser_data), intent(in) :: els_dat
       integer(kind = kint), intent(in) :: num_labels, nfield_sph_spec
@@ -197,10 +197,9 @@
       type(dyn_elsasser_address), intent(in) :: iels
       type(sph_dyn_elsasser_data), intent(in) :: els_dat
       integer(kind = kint), intent(in) :: ltr_l, ncomp_l
-      real(kind = kreal), intent(in) :: spectr_l(ncomp_l,0:ltr_l)
       integer(kind = kint), intent(in) :: ltr_m, ncomp_m
-      real(kind = kreal), intent(in) :: spectr_m(ncomp_m,0:ltr_m)
-!
+      real(kind = kreal), intent(in) :: spectr_l(ncomp_l, 0:ltr_l)
+      real(kind = kreal), intent(in) :: spectr_m(ncomp_m, 0:ltr_m)
       integer(kind = kint), intent(in) :: ntot_sph_spec
       real(kind = kreal), intent(inout) :: elsassers(ntot_sph_spec)
 !
@@ -208,33 +207,27 @@
 !
 !
       if(els_dat%irms_KE .ge. 3) then
-        call sum_ene_spectr_3(els_dat%irms_KE,                          &
-     &                        ltr_l, ncomp_l, spectr_l,                 &
-     &                        elsassers(iels%ist_KEne))
-        call uli_sph_length_scale_3(els_dat%irms_KE,                    &
-     &                              ltr_l, ncomp_l, spectr_l,           &
-     &                              elsassers(iels%ist_ulength_l))
-        call uli_sph_length_scale_3(els_dat%irms_KE,                    &
-     &                             ltr_m, ncomp_m, spectr_m,            &
-     &      elsassers(iels%ist_ulength_m))
+        call sum_ene_spectr_3(els_dat%irms_KE, ltr_l, ncomp_l,          &
+     &                        spectr_l, elsassers(iels%ist_KEne))
+        call uli_sph_length_scale_3(els_dat%irms_KE, ltr_l, ncomp_l,    &
+     &      spectr_l, elsassers(iels%ist_ulength_l))
+        call uli_sph_length_scale_3(els_dat%irms_KE, ltr_m, ncomp_m,    &
+     &      spectr_m, elsassers(iels%ist_ulength_m))
 !
         elsassers(iels%ist_Re) = sqrt(two*elsassers(iels%ist_KEne+2))
       end if
 !
       if(els_dat%irms_ME .ge. 3) then
-        call sum_ene_spectr_3(els_dat%irms_ME,                          &
-     &                        ltr_l, ncomp_l, spectr_l,                 &
-     &                        elsassers(iels%ist_MEne))
+        call sum_ene_spectr_3(els_dat%irms_ME, ltr_l, ncomp_l,          &
+     &                        spectr_l, elsassers(iels%ist_MEne))
         elsassers(iels%ist_MEne:iels%ist_MEne+2)                        &
      &    = elsassers(iels%ist_MEne:iels%ist_MEne+2)                    &
      &       * els_dat%ME_scale
 !
-        call uli_sph_length_scale_3(els_dat%irms_ME,                    &
-     &                              ltr_l, ncomp_l, spectr_l,           &
-     &                              elsassers(iels%ist_Blength_l))
-        call uli_sph_length_scale_3(els_dat%irms_ME,                    &
-     &                              ltr_m, ncomp_m, spectr_m,           &
-     &                              elsassers(iels%ist_Blength_m))
+        call uli_sph_length_scale_3(els_dat%irms_ME, ltr_l, ncomp_l,    &
+     &      spectr_l, elsassers(iels%ist_Blength_l))
+        call uli_sph_length_scale_3(els_dat%irms_ME, ltr_m, ncomp_m,    &
+     &      spectr_m, elsassers(iels%ist_Blength_m))
 !
         elsassers(iels%ist_Elsasser)                                    &
      &      = two * elsassers(iels%ist_MEne+2) * els_dat%coef_elsasser
@@ -290,8 +283,9 @@
       subroutine sum_ene_spectr_3(irms_end, ltr_sph, ncomp,             &
      &                            spectr_l, ene_3)
 !
-      integer(kind = kint), intent(in) :: ltr_sph, ncomp, irms_end
-      real(kind = kreal), intent(in) :: spectr_l(ncomp,0:ltr_sph)
+      integer(kind = kint), intent(in) :: ltr_sph, ncomp
+      integer(kind = kint), intent(in) :: irms_end
+      real(kind = kreal), intent(in) :: spectr_l(ncomp, 0:ltr_sph)
       real(kind = kreal), intent(inout) :: ene_3(3)
 !
       ene_3(1) = sum_ene_spectr(irms_end-2, ltr_sph, ncomp, spectr_l)
@@ -305,17 +299,17 @@
       subroutine uli_sph_length_scale_3(irms_end, ltr_sph, ncomp,       &
      &                                  spectr_l, lscale_3)
 !
-      integer(kind = kint), intent(in) :: ltr_sph, ncomp, irms_end
-      real(kind = kreal), intent(in) :: spectr_l(ncomp,0:ltr_sph)
-!
+      integer(kind = kint), intent(in) :: ltr_sph, ncomp
+      integer(kind = kint), intent(in) :: irms_end
+      real(kind = kreal), intent(in) :: spectr_l(ncomp, 0:ltr_sph)
       real(kind = kreal), intent(inout) :: lscale_3(3)
 !
       lscale_3(1)                                                       &
-     &   = uli_sph_length_scale(irms_end-2, ltr_sph, ncomp, spectr_l)
+     &     = uli_sph_length_scale(irms_end-2, ltr_sph, ncomp, spectr_l)
       lscale_3(2)                                                       &
-     &   = uli_sph_length_scale(irms_end-1, ltr_sph, ncomp, spectr_l)
-      lscale_3(3)    &
-     &   = uli_sph_length_scale(irms_end,   ltr_sph, ncomp, spectr_l)
+     &     = uli_sph_length_scale(irms_end-1, ltr_sph, ncomp, spectr_l)
+      lscale_3(3)                                                       &
+     &     = uli_sph_length_scale(irms_end, ltr_sph, ncomp, spectr_l)
 !
       end subroutine uli_sph_length_scale_3
 !

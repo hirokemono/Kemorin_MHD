@@ -62,6 +62,7 @@
       subroutine s_time_average_gauss_coefs                             &
      &         (flag_log, input_file_name, start_time, end_time)
 !
+      use t_sph_volume_mean_series
       use count_monitor_time_series
       use gz_gauss_coefs_monitor_IO
       use write_gauss_coefs_4_monitor

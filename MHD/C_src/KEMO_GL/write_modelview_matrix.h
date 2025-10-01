@@ -22,10 +22,10 @@
 
 /* prototypes */
 
-void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c);
+void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *f_streo);
 void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modelview_ctl_c *mat_c);
 
-void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struct view_element *view);
+void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *f_streo, struct view_element *view);
 void copy_GL_modelview_params_from_ctl(struct modelview_ctl_c *mat_c, struct view_element *view);
 
 void write_GL_modelview_file(struct kv_string *filename, struct view_element *view);

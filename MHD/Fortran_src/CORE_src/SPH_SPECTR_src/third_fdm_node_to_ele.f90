@@ -7,7 +7,9 @@
 !>@brief  Third order FDM from node to element
 !!
 !!@verbatim
-!!      subroutine const_third_fdm_node_to_ele(sph_rj, fdm_3rd_ele)
+!!      subroutine const_third_fdm_node_to_ele(id_check, sph_rj,        &
+!!     &                                       fdm_3rd_ele)
+!!        integer(kind = kint), intent(in) :: id_check
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(inout) :: fdm_3rd_ele
 !!      subroutine cal_third_fdm_node_to_ele(i_th, kr_in, kr_out,       &
@@ -60,12 +62,13 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use t_spheric_parameter
       use t_fdm_coefs
 !
       implicit none
 !
-      private :: set_third_fdm_node_to_ele, copy_first_fdm_node_to_ele
+      private :: set_third_fdm_node_to_ele, copy_third_fdm_node_to_ele
       private :: cal_sph_vect_dxr_ele
 !
 !  -------------------------------------------------------------------
@@ -74,8 +77,10 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine const_third_fdm_node_to_ele(sph_rj, fdm_3rd_ele)
+      subroutine const_third_fdm_node_to_ele(id_check, sph_rj,          &
+     &                                       fdm_3rd_ele)
 !
+      integer(kind = kint), intent(in) :: id_check
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
       type(fdm_matrices), intent(inout) :: fdm_3rd_ele
@@ -84,7 +89,7 @@
 !
 !
       call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ithree, itwo, ione, fdm_3rd_ele)
+     &   (sph_rj%nidx_rj(1), izero, ithree, itwo, ione, fdm_3rd_ele)
 !
       allocate(mat_fdm(4,4,sph_rj%nidx_rj(1)))
       mat_fdm(1:4,1:4,1:sph_rj%nidx_rj(1)) = 0.0d0
@@ -92,9 +97,15 @@
       call set_third_fdm_node_to_ele                                    &
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
 !
-      call copy_first_fdm_node_to_ele                                   &
+      call copy_third_fdm_node_to_ele                                   &
      &   (sph_rj%nidx_rj(1), mat_fdm, fdm_3rd_ele%fdm)
       deallocate(mat_fdm)
+!
+      if(iflag_debug .gt. 0) then
+          write(id_check,*) 'check Third order FDM on element'
+        call check_fdm_coefs(id_check,sph_rj%nidx_rj(1),                &
+     &                       sph_rj%radius_1d_rj_r, fdm_3rd_ele)
+      end if
 !
       end subroutine const_third_fdm_node_to_ele
 !
@@ -181,17 +192,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_first_fdm_node_to_ele(nri, mat_fdm, fdm)
+      subroutine copy_third_fdm_node_to_ele(nri, mat_fdm, fdm)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: mat_fdm(4,4,nri)
-      type(fdm_matrix), intent(inout) :: fdm(3)
+      type(fdm_matrix), intent(inout) :: fdm(0:3)
 !
       integer(kind= kint) :: i, k
 !
 !
 !$omp parallel do private (i,k)
-      do i = 1, 3
+      do i = 0, 3
         do k = 1, nri-1
           fdm(i)%dmat(k,-2) = mat_fdm(i+1,1,k)
           fdm(i)%dmat(k,-1) = mat_fdm(i+1,2,k)
@@ -201,7 +212,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_first_fdm_node_to_ele
+      end subroutine copy_third_fdm_node_to_ele
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

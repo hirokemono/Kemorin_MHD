@@ -6,13 +6,17 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface SurfaceGroupTableController : NSObject {
 	
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
 	IBOutlet id _surfaceTableView;
 	
 	NSInteger  NumSurfaceGroup;
@@ -21,6 +25,8 @@
 	NSMutableArray *SurfaceGroupDisplayWireFlags;
 	NSMutableArray *SurfaceGroupDisplayNodeFlags;
 	
+    CGFloat surfGrpAlpha;
+    
 	NSString *selectedSurfaceGroupObjectType;
 
 	IBOutlet id _SurfGrpPatchColorItem;
@@ -34,6 +40,7 @@
     NSColor *nsSurfGrpGridColor;
     NSColor *nsSurfGrpNodeColor;
 }
+@property CGFloat surfGrpAlpha;
 
 - (id) init;
 - (id) dealloc;
@@ -42,7 +49,7 @@
 - (IBAction) ShowAllSurfaceGroupAction:(id)pId;
 - (IBAction) HideAllSurfaceGroupAction:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (id)tableView:(NSTableView *)aTableView
 objectValueForTableColumn:(NSTableColumn *)aTableColumn
@@ -55,7 +62,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void)UpdateSurfaceTable;
+- (void) UpdateSurfaceTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;

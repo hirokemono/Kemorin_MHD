@@ -19,14 +19,12 @@ struct kemoview_mesh * init_kemoview_mesh(void){
 	
     kemo_mesh->mesh_d =  alloc_viewer_mesh();
 	kemo_mesh->mesh_m =  alloc_mesh_menu_val();
-    kemo_mesh->msg_wk =  alloc_message_work();
 	return kemo_mesh;
 };
 
 void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh){
 	free(kemo_mesh->mesh_d);
 	free(kemo_mesh->mesh_m);
-    free(kemo_mesh->msg_wk);
 	free(kemo_mesh);
 	return;
 };
@@ -138,12 +136,21 @@ void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
 						 struct kemoview_mesh *kemo_mesh){
 	if(iflag_group == DOMAIN_FLAG){
 		set_domain_color_code(selected, color_code4, kemo_mesh->mesh_m);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	}else if(iflag_group == NODE_GRP_FLAG){
 		set_node_grp_color_code(color_code4, kemo_mesh->mesh_m);
 	}else if(iflag_group == ELEM_GRP_FLAG){
 		set_ele_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(ELEM_GRP_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	}else if(iflag_group == SURF_GRP_FLAG){
 		set_surf_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(SURF_GRP_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	};
 	return;
 };

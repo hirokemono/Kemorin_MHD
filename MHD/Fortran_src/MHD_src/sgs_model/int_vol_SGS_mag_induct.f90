@@ -8,16 +8,14 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_div_SGS_idct_mod_pg                          &
-!!     &         (node, ele, nod_fld, iphys_base, iphys_SGS,            &
-!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
-!!     &          iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,       &
-!!     &          coef_induct, fem_wk, mhd_fem_wk, f_nl)
-!!      subroutine int_vol_div_SGS_idct_mod_upm                         &
-!!     &         (node, ele, nod_fld, iphys_base, iphys_SGS,            &
-!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
-!!     &          iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,   &
-!!     &          coef_induct, ncomp_ele, i_magne, d_ele,               &
+!!      subroutine int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld,      &
+!!     &          iphys_base, iphys_SGS, g_FEM, jac_3d, rhs_tbl,        &
+!!     &          FEM_elens, Cdiff_SGS_uxb, iele_fsmp_stack, n_int,     &
+!!     &          i_filter, coef_induct, fem_wk, mhd_fem_wk, f_nl)
+!!      subroutine int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld,     &
+!!     &          iphys_base, iphys_SGS, g_FEM, jac_3d, rhs_tbl,        &
+!!     &          FEM_elens, iele_fsmp_stack, n_int, dt, i_filter,      &
+!!     &          ak_diff, coef_induct, ncomp_ele, i_magne, d_ele,      &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,7 +26,7 @@
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -50,7 +48,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -60,11 +58,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_div_SGS_idct_mod_pg                            &
-     &         (node, ele, nod_fld, iphys_base, iphys_SGS,              &
-     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
-     &          iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,         &
-     &          coef_induct, fem_wk, mhd_fem_wk, f_nl)
+      subroutine int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld,        &
+     &          iphys_base, iphys_SGS, g_FEM, jac_3d, rhs_tbl,          &
+     &          FEM_elens, Cdiff_SGS_uxb, iele_fsmp_stack, n_int,       &
+     &          i_filter, coef_induct, fem_wk, mhd_fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
@@ -79,10 +76,10 @@
       type(SGS_term_address), intent(in) :: iphys_SGS
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: n_int, i_filter, iak_diff_uxb
+      integer(kind = kint), intent(in) :: n_int, i_filter
       real(kind=kreal), intent(in) :: coef_induct
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -100,11 +97,9 @@
      &      iphys_base%i_magne, iphys_base%i_velo,                      &
      &      iphys_SGS%i_SGS_induct_t,                                   &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
-        call fem_skv_div_sgs_asym_tsr                                   &
-     &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
-     &      diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,          &
-     &      ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,           &
-     &      fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_div_sgs_asym_tsr(iele_fsmp_stack, n_int, k2,       &
+     &      i_filter, ele, g_FEM, jac_3d, FEM_elens, Cdiff_SGS_uxb,     &
+     &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -114,11 +109,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_div_SGS_idct_mod_upm                           &
-     &         (node, ele, nod_fld, iphys_base, iphys_SGS,              &
-     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
-     &          iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,     &
-     &          coef_induct, ncomp_ele, i_magne, d_ele,                 &
+      subroutine int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld,       &
+     &          iphys_base, iphys_SGS, g_FEM, jac_3d, rhs_tbl,          &
+     &          FEM_elens, iele_fsmp_stack, n_int, dt, i_filter,        &
+     &          ak_diff, coef_induct, ncomp_ele, i_magne, d_ele,        &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele
@@ -134,14 +128,14 @@
       type(SGS_term_address), intent(in) :: iphys_SGS
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: n_int, i_filter, iak_diff_uxb
+      integer(kind = kint), intent(in) :: n_int, i_filter
 !
       integer(kind = kint), intent(in) :: ncomp_ele, i_magne
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: coef_induct
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -160,8 +154,7 @@
      &      iphys_SGS%i_SGS_induct_t,                                   &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind                              &
-     &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
-     &      diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,          &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,          &
      &      ele, g_FEM, jac_3d, FEM_elens, d_ele(1,i_magne),            &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do

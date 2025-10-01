@@ -29,8 +29,8 @@
       implicit none
 !
       type mesh_test_files_param
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Logical flag to output surface data
+        logical :: flag_output_SURF = .FALSE.
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_name
       end type mesh_test_files_param
@@ -103,7 +103,7 @@
 !
       call set_minimum_fem_platform                                     &
      &   (mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                         &
-     &    T_meshes%mesh_file_name, T_meshes%iflag_output_SURF)
+     &    T_meshes%mesh_file_name, T_meshes%flag_output_SURF)
 !
 !  --  read geometry
 !

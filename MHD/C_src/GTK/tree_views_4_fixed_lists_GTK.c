@@ -98,17 +98,19 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void append_vector_componnet_label(struct flag_with_math_f *components_flag, GtkWidget *label_tree){
+void append_vector_componnet_label(struct chara2_int_clist *components_clist, GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    struct chara2_int_ctl_item *tmp_item;
     int i;
     GtkTreeIter iter;
-    for(i=0;i<components_flag->num_flags;i++){
+    for(i=0;i<count_chara2_int_clist(components_clist);i++){
+        tmp_item = chara2_int_clist_at_index(i, components_clist);
         gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
         gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                            COLUMN_FIELD_INDEX, i,
-                           COLUMN_FIELD_NAME, components_flag->component_name[i],
-                           COLUMN_FIELD_MATH, components_flag->component_math[i],
+                           COLUMN_FIELD_NAME, tmp_item->c1_tbl,
+                           COLUMN_FIELD_MATH, tmp_item->c2_tbl,
                            -1);
     }
     

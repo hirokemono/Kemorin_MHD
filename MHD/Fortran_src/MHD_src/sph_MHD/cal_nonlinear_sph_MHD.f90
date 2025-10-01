@@ -141,7 +141,7 @@
      &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
      &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
 !
-      if(MHD_prop%fl_prop%iflag_4_coriolis) then
+      if(MHD_prop%fl_prop%flag_coriolis) then
         call cal_wz_coriolis_pole                                       &
      &     (sph_rtp%nnod_pole, MHD_prop%fl_prop%coef_cor,               &
      &      trns_b_snap%fld_pole(1,b_trns_base%i_velo),                 &
@@ -158,6 +158,7 @@
      &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp)
 !
       use cal_products_smp
+      use cal_vector_products
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(base_field_address), intent(in) :: b_trns_base
@@ -168,9 +169,8 @@
 !
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_frc)
 !
-!$omp parallel
       if(f_trns_frc%i_m_advect .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%fl_prop%coef_velo,                           &
      &      fld_rtp(1,b_trns_base%i_vort),                              &
      &      fld_rtp(1,b_trns_base%i_velo),                              &
@@ -178,25 +178,41 @@
       end if
 !
       if(f_trns_frc%i_lorentz .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
      &      fld_rtp(1,b_trns_base%i_current),                           &
      &      fld_rtp(1,b_trns_base%i_magne),                             &
      &      frc_rtp(1,f_trns_frc%i_lorentz) )
+!
+        if(b_trns_base%i_back_B .gt. 0) then
+          call add_cross_product_w_coef                                 &
+     &       (nnod, MHD_prop%fl_prop%coef_lor,                          &
+     &        fld_rtp(1,b_trns_base%i_current),                         &
+     &        fld_rtp(1,b_trns_base%i_back_B),                          &
+     &        frc_rtp(1,f_trns_frc%i_lorentz) )
+        end if
       end if
 !
 !
       if(f_trns_frc%i_vp_induct .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%cd_prop%coef_induct,                         &
      &      fld_rtp(1,b_trns_base%i_velo),                              &
      &      fld_rtp(1,b_trns_base%i_magne),                             &
      &      frc_rtp(1,f_trns_frc%i_vp_induct) )
+!
+        if(b_trns_base%i_back_B .gt. 0) then
+          call add_cross_product_w_coef                                 &
+     &       (nnod, MHD_prop%cd_prop%coef_induct,                       &
+     &        fld_rtp(1,b_trns_base%i_velo),                            &
+     &        fld_rtp(1,b_trns_base%i_back_B),                          &
+     &        frc_rtp(1,f_trns_frc%i_vp_induct) )
+        end if
       end if
 !
 !
       if(f_trns_frc%i_h_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
+        call cal_vec_scalar_product_w_coef                              &
      &     (nnod, MHD_prop%ht_prop%coef_advect,                         &
      &      fld_rtp(1,b_trns_base%i_velo),                              &
      &      fld_rtp(1,b_trns_base%i_temp),                              &
@@ -204,13 +220,12 @@
       end if
 !
       if(f_trns_frc%i_c_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
+        call cal_vec_scalar_product_w_coef                              &
      &     (nnod, MHD_prop%cp_prop%coef_advect,                         &
      &      fld_rtp(1,b_trns_base%i_velo),                              &
      &      fld_rtp(1,b_trns_base%i_light),                             &
      &      frc_rtp(1,f_trns_frc%i_c_flux) )
       end if
-!$omp end parallel
 !
       end subroutine nonlinear_terms_on_node
 !
@@ -222,6 +237,7 @@
      &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp)
 !
       use cal_products_smp
+      use cal_vector_products
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(base_field_address), intent(in) :: b_trns_base_1
@@ -233,9 +249,9 @@
 !
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_frc)
 !
-!$omp parallel
+!
       if(f_trns_frc%i_m_advect .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%fl_prop%coef_velo,                           &
      &      fld_rtp(1,b_trns_base_1%i_vort),                            &
      &      fld_rtp(1,b_trns_base_2%i_velo),                            &
@@ -243,25 +259,41 @@
       end if
 !
       if(f_trns_frc%i_lorentz .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
      &      fld_rtp(1,b_trns_base_1%i_current),                         &
      &      fld_rtp(1,b_trns_base_2%i_magne),                           &
      &      frc_rtp(1,f_trns_frc%i_lorentz) )
+!
+        if(b_trns_base_2%i_back_B .gt. 0) then
+          call add_cross_product_w_coef                                 &
+     &       (nnod, MHD_prop%fl_prop%coef_lor,                          &
+     &        fld_rtp(1,b_trns_base_1%i_current),                       &
+     &        fld_rtp(1,b_trns_base_2%i_back_B),                        &
+     &        frc_rtp(1,f_trns_frc%i_lorentz) )
+        end if
       end if
 !
 !
       if(f_trns_frc%i_vp_induct .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
+        call cal_cross_product_w_coef                                   &
      &     (nnod, MHD_prop%cd_prop%coef_induct,                         &
      &      fld_rtp(1,b_trns_base_1%i_velo),                            &
      &      fld_rtp(1,b_trns_base_2%i_magne),                           &
      &      frc_rtp(1,f_trns_frc%i_vp_induct) )
+!
+        if(b_trns_base_2%i_back_B .gt. 0) then
+          call add_cross_product_w_coef                                 &
+     &       (nnod, MHD_prop%cd_prop%coef_induct,                       &
+     &        fld_rtp(1,b_trns_base_1%i_velo),                          &
+     &        fld_rtp(1,b_trns_base_2%i_back_B),                        &
+     &        frc_rtp(1,f_trns_frc%i_vp_induct) )
+        end if
       end if
 !
 !
       if(f_trns_frc%i_h_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
+        call cal_vec_scalar_product_w_coef                              &
      &     (nnod, MHD_prop%ht_prop%coef_advect,                         &
      &      fld_rtp(1,b_trns_base_1%i_velo),                            &
      &      fld_rtp(1,b_trns_base_2%i_temp),                            &
@@ -269,13 +301,12 @@
       end if
 !
       if(f_trns_frc%i_c_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
+        call cal_vec_scalar_product_w_coef                              &
      &     (nnod, MHD_prop%cp_prop%coef_advect,                         &
      &      fld_rtp(1,b_trns_base_1%i_velo),                            &
      &      fld_rtp(1,b_trns_base_2%i_light),                           &
      &      frc_rtp(1,f_trns_frc%i_c_flux) )
       end if
-!$omp end parallel
 !
       end subroutine nonlinear_terms_on_node_w_sym
 !
@@ -334,10 +365,7 @@
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-      if     (ref_param_S%iflag_reference .ne. id_sphere_ref_temp       &
-     &  .and. ref_param_S%iflag_reference .ne. id_takepiro_temp         &
-     &  .and. ref_param_S%iflag_reference .ne. id_numerical_solution    &
-     &   ) return
+      if(ref_param_S%flag_ref_field .eqv. .FALSE.) return
 !
       ist = (sph_bc_S%kr_in-1) * nidx_rj(2) + 1
       ied =  sph_bc_S%kr_out * nidx_rj(2)

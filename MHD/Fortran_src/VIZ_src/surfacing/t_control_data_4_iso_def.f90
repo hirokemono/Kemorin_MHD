@@ -6,7 +6,7 @@
 !>@brief control data for each isosurface
 !!
 !!@verbatim
-!!      subroutine init_iso_define_control(iso_def_c)
+!!      subroutine init_iso_define_control(hd_block, iso_def_c)
 !!      subroutine dealloc_iso_define_control(iso_def_c)
 !!        type(iso_define_ctl), intent(inout) :: iso_def_c
 !!      subroutine dup_iso_define_control(org_iso_def_c, new_iso_def_c)
@@ -15,8 +15,16 @@
 !!
 !!      subroutine read_iso_define_data                                 &
 !!     &         (id_control, hd_block, iso_def_c, c_buf)
-!!      subroutine bcast_iso_define_control(iso_def_c)
-!!        type(iso_define_ctl), intent(inout) :: iso_def_c
+!!         integer(kind = kint), intent(in) :: id_control
+!!         character(len=kchara), intent(in) :: hd_block
+!!         type(iso_define_ctl), intent(inout) :: iso_def_c
+!!         type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_iso_define_data                                &
+!!     &         (id_control, hd_block, iso_def_c, level)
+!!         integer(kind = kint), intent(in) :: id_control
+!!         character(len=kchara), intent(in) :: hd_block
+!!         type(iso_define_ctl), intent(in) :: iso_def_c
+!!         integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_iso_define_control()
 !!      subroutine set_label_iso_define_control(names)
@@ -74,6 +82,9 @@
 !
 !>      Structure of isosurface define control
       type iso_define_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'isosurf_define'
+!
 !>        Structure for field name for isosurface
         type(read_character_item) :: isosurf_data_ctl
 !>        Structure for component name for isosurface
@@ -100,10 +111,7 @@
       character(len=kchara), parameter                                  &
      &             :: hd_iso_area =   'isosurf_area_ctl'
 !
-      integer(kind = kint), parameter :: n_label_iso_define_ctl = 4
-!
       private :: hd_iso_area, hd_iso_value, hd_iso_comp, hd_iso_field
-      private :: n_label_iso_define_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -111,13 +119,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_iso_define_control(iso_def_c)
+      subroutine init_iso_define_control(hd_block, iso_def_c)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(iso_define_ctl), intent(inout) :: iso_def_c
 !
 !
       iso_def_c%isosurf_value_ctl%realvalue =    0.0d0
       iso_def_c%iso_area_ctl%num =      0
+!
+      iso_def_c%block_name = hd_block
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iso_field, iso_def_c%isosurf_data_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iso_comp, iso_def_c%isosurf_comp_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_iso_value, iso_def_c%isosurf_value_ctl)
+        call init_chara_ctl_array_label                                 &
+     &     (hd_iso_area, iso_def_c%iso_area_ctl)
 !
       end subroutine init_iso_define_control
 !
@@ -157,7 +176,8 @@
       call copy_chara_ctl(org_iso_def_c%isosurf_data_ctl,               &
      &                    new_iso_def_c%isosurf_data_ctl)
 !
-      new_iso_def_c%i_iso_define =    org_iso_def_c%i_iso_define
+      new_iso_def_c%block_name =   org_iso_def_c%block_name
+      new_iso_def_c%i_iso_define = org_iso_def_c%i_iso_define
 !
       end subroutine dup_iso_define_control
 !
@@ -176,7 +196,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(iso_def_c%i_iso_define .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -195,49 +216,41 @@
       end subroutine read_iso_define_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_iso_define_data                                  &
+     &         (id_control, hd_block, iso_def_c, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(iso_define_ctl), intent(in) :: iso_def_c
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(iso_def_c%i_iso_define .le. 0) return
+!
+      maxlen = len_trim(hd_iso_field)
+      maxlen = max(maxlen, len_trim(hd_iso_comp))
+      maxlen = max(maxlen, len_trim(hd_iso_value))
+!
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    iso_def_c%isosurf_data_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    iso_def_c%isosurf_comp_ctl)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    iso_def_c%isosurf_value_ctl)
+!
+      call write_control_array_c1(id_control, level,                    &
+     &    iso_def_c%iso_area_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_iso_define_data
+!
 !   --------------------------------------------------------------------
-!
-      subroutine bcast_iso_define_control(iso_def_c)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(iso_define_ctl), intent(inout) :: iso_def_c
-!
-!
-      call bcast_ctl_type_c1(iso_def_c%isosurf_comp_ctl)
-      call bcast_ctl_array_c1(iso_def_c%iso_area_ctl)
-      call bcast_ctl_type_r1(iso_def_c%isosurf_value_ctl)
-      call bcast_ctl_type_c1(iso_def_c%isosurf_data_ctl)
-!
-      call calypso_mpi_bcast_one_int(iso_def_c%i_iso_define, 0)
-!
-      end subroutine bcast_iso_define_control
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_iso_define_control()
-      num_label_iso_define_control = n_label_iso_define_ctl
-      return
-      end function num_label_iso_define_control
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_define_control(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_iso_define_ctl)
-!
-!
-      call set_control_labels(hd_iso_field, names( 1))
-      call set_control_labels(hd_iso_comp,  names( 2))
-      call set_control_labels(hd_iso_value, names( 3))
-      call set_control_labels(hd_iso_area,  names( 4))
-!
-      end subroutine set_label_iso_define_control
-!
-!  ---------------------------------------------------------------------
 !
       end module t_control_data_4_iso_def

@@ -16,9 +16,13 @@
 
 -(void)linkToIntRealclist
 {
-    load_MHD_control_c();
-    struct PVR_ctl_list *pvr1 = link_to_pvr_ctl_list();
-    intCtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->colortbl_list;
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+    if(f_MHD_ctl == NULL){
+        printf("malloc error for f_MHD_ctl\n");
+        exit(0);
+    };
+    f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD("control_MHD");
+    intCtlList = f_MHD_ctl->f_smonitor_ctl->f_g_pwr->f_idx_gauss_l_ctl;
 }
 -(void)createMutablearray
 {

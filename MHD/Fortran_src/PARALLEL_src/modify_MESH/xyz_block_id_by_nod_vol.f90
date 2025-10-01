@@ -50,6 +50,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       use t_mesh_data
@@ -133,7 +134,8 @@
       call calypso_mpi_allreduce_one_real                               &
      &   (vol_lc, volume_min_gl, MPI_MIN)
 !
-      if(my_rank .eq. 0) then
+      if(iflag_debug .gt. 0) then
+!      if(my_rank .eq. 0) then
         write(*,*) 'volume_nod_tot', volume_nod_tot
         write(*,*) 'volume_min_gl', volume_min_gl
       end if
@@ -236,7 +238,8 @@
       integer(kind = kint) :: inod, nd
 !
 !
-      if(my_rank .eq. 0) then
+      if(iflag_debug .eq. 0) then
+!      if(my_rank .eq. 0) then
         write(*,*) 'xyz_min_gl', node%xyz_min_gl(1:3)
         write(*,*) 'xyz_max_gl', node%xyz_max_gl(1:3)
       end if

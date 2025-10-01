@@ -21,9 +21,8 @@
       call init_check_sph_grids
       call analyze_check_sph_grids
 !
-      call  calypso_MPI_finalize
+      call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program check_sph_grids

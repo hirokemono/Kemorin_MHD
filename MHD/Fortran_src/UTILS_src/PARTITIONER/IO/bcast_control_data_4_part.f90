@@ -32,6 +32,7 @@
 !
       use calypso_mpi_int
       use bcast_4_platform_ctl
+      use bcast_ctl_data_vol_repart
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !

@@ -6,14 +6,19 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface ElementGroupTableController : NSObject {
 	
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet id _elementTableView;
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _elementTableView;
 	
 	NSInteger  NumElementGroup;
 	NSMutableArray *ElementGroupDisplayNames;
@@ -21,7 +26,9 @@
 	NSMutableArray *ElementGroupDisplayWireFlags;
 	NSMutableArray *ElementGroupDisplayNodeFlags;
 
-	NSString *selectedElementGroupObjectType;
+    CGFloat eleGrpAlpha;
+
+    NSString *selectedElementGroupObjectType;
 	
 	IBOutlet id _EleGrpPatchColorItem;
 	IBOutlet id _EleGrpLineColorItem;
@@ -34,13 +41,14 @@
     NSColor *nsEleGrpGridColor;
     NSColor *nsEleGrpNodeColor;
 }
+@property CGFloat eleGrpAlpha;
 
 - (id) init;
 - (id) dealloc;
 
 - (void) SetElementGroupLabels;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (IBAction) ShowAllElementGroupAction:(id)pId;
 - (IBAction) HideAllElementGroupAction:(id)pId;
@@ -56,12 +64,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void) UpdateElementTable;
+- (void) UpdateElementTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
 - (IBAction)ChooseEleGrpNodeColorAction:(id)sender;
 
+- (IBAction)SetEleGrpPatchAlphaAction:(id)sender;
 - (IBAction)SetEleGrpPatchColorAction:(id)sender;
 - (IBAction)SetEleGrpLineColorAction:(id)sender;
 - (IBAction)SetEleGrpNodeColorAction:(id)sender;

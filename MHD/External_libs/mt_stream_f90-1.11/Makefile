@@ -31,14 +31,14 @@ lib_name:
 	@echo  'LIB_MT_STREAM_FILE = $(LIB_MT_STREAM_FILE)' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_MT_STREAM_FILE): $$(MOD_MT_STREAM)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MT_STREAM)' >> $(MAKENAME)
 
 mod_list:
@@ -47,16 +47,14 @@ mod_list:
 	@echo  '#' >> $(MAKENAME)
 
 depends:
-
-module:
-	@echo 'mt_kind_defs.o: $$(MT_STREAM_DIR)/mt_kind_defs.F90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME)
-	@echo 'mt_stream.o: $$(MT_STREAM_DIR)/mt_stream.F90 mt_kind_defs.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME)
-	@echo 'gf2xe.o: $$(MT_STREAM_DIR)/f_jump_ahead_coeff/gf2xe.F90 mt_kind_defs.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME)
-	@echo 'f_get_coeff.o: $$(MT_STREAM_DIR)/f_jump_ahead_coeff/f_get_coeff.F90 gf2xe.o mt_kind_defs.o' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME)
+	@echo 'mt_kind_defs.o: $$(MT_STREAM_DIR)/mt_kind_defs.F90' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME).depends
+	@echo 'mt_stream.o: $$(MT_STREAM_DIR)/mt_stream.F90 mt_kind_defs.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME).depends
+	@echo 'gf2xe.o: $$(MT_STREAM_DIR)/f_jump_ahead_coeff/gf2xe.F90 mt_kind_defs.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME).depends
+	@echo 'f_get_coeff.o: $$(MT_STREAM_DIR)/f_jump_ahead_coeff/f_get_coeff.F90 gf2xe.o mt_kind_defs.o' >> $(MAKENAME).depends
+	@echo '	' '$$(F90) -c $$(MTSTREAMFLAG) $$<' >> $(MAKENAME).depends
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

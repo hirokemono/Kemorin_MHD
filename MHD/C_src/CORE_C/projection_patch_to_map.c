@@ -93,9 +93,8 @@ int latitude_longitude_on_map(double *xyz_patch, double *rtp_patch){
 
 void projection_patch_to_map(double *xyz_patch, double *xy_map_patch){
 	double rtp_patch[9];
-	int iflag;
 	
-	iflag = latitude_longitude_on_map(xyz_patch, rtp_patch);
+	latitude_longitude_on_map(xyz_patch, rtp_patch);
 	aitoff_c(ITHREE, rtp_patch, xy_map_patch);
 	/*
 	if(iflag >= 0){

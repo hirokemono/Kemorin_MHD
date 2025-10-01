@@ -7,7 +7,8 @@
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
-!!      subroutine read_control_4_solver_test
+!!      subroutine read_control_4_solver_test(file_name,                &
+!!     &                                      solvertest_c, c_buf)
 !!@endverbatim
 !
       module t_ctl_data_solver_test
@@ -24,8 +25,6 @@
 !
 !
       integer(kind = kint), parameter :: stest_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &                        :: fname_stest_ctl = "ctl_solver_test"
 !
       type ctl_data_solver_test
 !>        File prefix for matrix data
@@ -72,28 +71,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_solver_test(solvertest_c)
+      subroutine read_control_4_solver_test(file_name,                  &
+     &                                      solvertest_c, c_buf)
 !
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: file_name
       type(ctl_data_solver_test), intent(inout) :: solvertest_c
 !
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(my_rank .eq. 0) then
-        open(stest_ctl_file_code, file=fname_stest_ctl, status='old')
+      c_buf%level = c_buf%level + 1
+      open(stest_ctl_file_code, file=file_name, status='old')
 !
-        do
-          call load_one_line_from_control(stest_ctl_file_code, c_buf1)
-          call read_ctl_data_test(stest_ctl_file_code,       &
-     &        hd_solver_test_ctl, solvertest_c, c_buf1)
-          if(solvertest_c%i_solver_test_ctl .gt. 0) exit
-        end do
-        close(stest_ctl_file_code)
-      end if
+      do
+        call load_one_line_from_control                                 &
+     &     (stest_ctl_file_code, hd_solver_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
-      call bcast_ctl_data_test(solvertest_c)
+        call read_ctl_data_test(stest_ctl_file_code,                    &
+     &      hd_solver_test_ctl, solvertest_c, c_buf)
+        if(solvertest_c%i_solver_test_ctl .gt. 0) exit
+      end do
+      close(stest_ctl_file_code)
+!
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_4_solver_test
 !
@@ -112,10 +116,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(solvertest_c%i_solver_test_ctl .gt. 0) return
+      call init_CG_solver_param_ctl_label(hd_solver_ctl,                &
+     &                                    solvertest_c%CG_test_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_CG_solver_param_ctl                                   &
@@ -134,28 +141,6 @@
       solvertest_c%i_solver_test_ctl = 1
 !
       end subroutine read_ctl_data_test
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_ctl_data_test(solvertest_c)
-!
-      use calypso_mpi_int
-      use bcast_4_solver_ctl
-      use bcast_control_arrays
-!
-      type(ctl_data_solver_test), intent(inout) :: solvertest_c
-!
-!
-      call bcast_CG_solver_param_ctl(solvertest_c%CG_test_ctl)
-!
-      call bcast_ctl_type_c1(solvertest_c%matrix_head_ctl)
-      call bcast_ctl_type_c1(solvertest_c%solution_head_ctl)
-      call bcast_ctl_type_i1(solvertest_c%ip_smp_p_ctl)
-      call bcast_ctl_type_c1(solvertest_c%solver_type_ctl)
-!
-      call calypso_mpi_bcast_one_int(solvertest_c%i_solver_test_ctl, 0)
-!
-      end subroutine bcast_ctl_data_test
 !
 !  ---------------------------------------------------------------------
 !

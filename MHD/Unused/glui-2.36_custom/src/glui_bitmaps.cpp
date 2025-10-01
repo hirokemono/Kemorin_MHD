@@ -115,7 +115,8 @@ void GLUI_Bitmap::init_grey(unsigned char *array)
 	pixels = (unsigned char *) malloc(w*h*3);
 	assert(pixels);
 
-	for(int i = 0; i<w*h; i++ ) 
+    int i;
+	for(i = 0; i<w*h; i++ ) 
 		for (int j = 0; j<3; j++) /* copy grey to r,g,b channels */
 			pixels[i*3+j] = (unsigned char) array[i+2];
 }

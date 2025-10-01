@@ -8,6 +8,15 @@
 #include "control_panel_4_field_GTK.h"
 
 
+static void reflesh_field_ctl_f(struct chara_int2_clist *f_field_ctl){
+    c_dealloc_chara3_array(f_field_ctl->f_self);
+    c_alloc_chara3_array(count_chara_int2_clist(f_field_ctl),
+                         f_field_ctl->f_self);
+    update_field_ctl_f(f_field_ctl);
+    return;
+}
+
+
 static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
     gchar *field_name;
@@ -74,6 +83,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	};
 	/* Back the reference to path and delete */
 
+    struct chara2_int_ctl_item *tmp_item;
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -87,8 +97,9 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(child_model_for_used, &iter, COLUMN_NUM_COMP, &num_comp, -1);
         gtk_tree_model_get(child_model_for_used, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
-        printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               fields_vws->all_fld_list->fld_list->field_name[index_field]);
+        tmp_item = chara2_int_clist_at_index(index_field,
+                                             fields_vws->all_fld_list->fld_list->field_label);
+        printf("To be moved: %d, %s: %s\n", index_field, field_name, tmp_item->c1_tbl);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_for_used), &iter);
 		
@@ -104,7 +115,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
 		
 		/* Update control data */
-		printf("Delete field list \n");
+		printf("Delete field list %d \n", index_field);
 		delete_field_wqflag_in_ctl(index_field, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
 	}
 	g_list_free(reference_list);
@@ -120,6 +131,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
     /*
     check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
+    reflesh_field_ctl_f(fields_vws->fld_ctl_gtk->f_field_ctl);
 	return;
 }
 
@@ -131,8 +143,8 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 			= GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "used_tree"));
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
     gchar *field_name;
     gchar *field_math;
@@ -178,6 +190,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	block_changed_signal(G_OBJECT(child_model_for_used));
 
 	/* Back the reference to path and delete */
+    struct chara2_int_ctl_item *tmp_item;
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -191,8 +204,9 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(current_child_model, &iter, COLUMN_NUM_COMP, &num_comp, -1);
         gtk_tree_model_get(current_child_model, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
-        printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               all_fld_list->fld_list->field_name[index_field]);
+        tmp_item = chara2_int_clist_at_index(index_field,
+                                             all_fld_list->fld_list->field_label);
+        printf("To be moved: %d, %s: %s\n", index_field, field_name, tmp_item->c1_tbl);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(current_child_model), &iter);
 		
@@ -216,6 +230,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
     /*
     check_field_ctl_list(fld_ctl_gtk);
 	 */
+    reflesh_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 	return;
 }
 
@@ -356,8 +371,10 @@ static void add_unused_field_box(int igrp, struct field_views *fields_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
-	char *tmpchara = duplicate_underscore(fields_vws->all_fld_list->fld_list->field_group_name[igrp]);
-	GtkWidget *expander = wrap_into_expanded_frame_gtk(tmpchara, 250, 200, window, hbox_1);
+    struct chara_ctl_item *tmp_grp
+        = chara_clist_at_index(igrp, fields_vws->all_fld_list->fld_list->fld_grp_list);
+	char *tmpchara = duplicate_underscore(tmp_grp->c_tbl);
+	GtkWidget *expander = wrap_into_scroll_expansion_gtk(tmpchara, 250, 200, window, hbox_1);
     gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, FALSE, 0);
 };
 
@@ -372,7 +389,7 @@ void add_unused_field_boxes(struct field_views *fields_vws,
 		add_unused_field_box(igrp, fields_vws, window, vbox_1);
 	};
 	
-	GtkWidget *expander = wrap_into_expanded_frame_gtk("Field to add", 260, 200, window, vbox_1);
+	GtkWidget *expander = wrap_into_scroll_expansion_gtk("Field to add", 260, 200, window, vbox_1);
     gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, FALSE, 0);
 };
 
@@ -381,9 +398,6 @@ void add_field_selection_box(struct field_views *fields_vws,
 	GtkWidget *hbox;
 	GtkWidget *button;
 	GtkWidget *scrolled_window;
-
-    char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	get_label_MHD_control_head(c_label);
 
     /* Delete data bottun */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -429,7 +443,7 @@ void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox_out
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
-	g_signal_connect(G_OBJECT(combobox_comp), "changed", 
+	g_signal_connect(G_OBJECT(combobox_comp), "changed",
 				G_CALLBACK(cb_set_component_name), fields_vws);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), column_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), column_comp,

@@ -7,10 +7,20 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl)
+!!      subroutine read_ctl_file_rayleigh_viz                           &
+!!     &         (file_name, rayleigh_vizs_ctl, viz4_ctls, c_buf)
+!!        character(len = kchara), intent(in) :: file_name
+!!        type(control_data_rayleigh_vizs), intent(inout)               &
+!!     &                         :: rayleigh_vizs_ctl
+!!        type(vis4_controls), intent(inout) :: viz4_ctls
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!      subroutine write_ctl_file_rayleigh_viz                          &
+!!     &         (file_name, rayleigh_vizs_ctl, viz4_ctls)
 !!      subroutine dealloc_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
+!!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_rayleigh_vizs), intent(inout)               &
 !!     &                     :: vizs_ctlrayleigh_vizs_ctl
+!!        type(vis4_controls), intent(in) :: viz4_ctls
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -51,15 +61,14 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
       use t_ctl_data_4_divide_sphere
-      use t_control_data_vizs
+      use t_control_data_viz4
 !
       implicit  none
 !
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &               :: fname_viz_ctl = "control_viz_rayleigh"
 !
+!>        Structures of Rayleigh convert control data
       type control_data_rayleigh_vizs
 !>      Structure for file settings
         type(platform_data_control) :: viz_plt
@@ -67,9 +76,6 @@
         type(field_control) :: fld_ctl
 !>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
-!
-!>        Structures of visualization controls
-        type(visualization_controls) :: viz_ctl_v
 !
 !>        Structure of spherical shell domain decomposition
         type(sphere_domain_control) :: sdctl
@@ -91,15 +97,12 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_domains_sph = 'num_domain_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
-      private :: hd_viz_control
-!
-      private :: viz_ctl_file_code, fname_viz_ctl
-!
+      private :: viz_ctl_file_code
       private :: read_rayleigh_vizs_ctl_data
-      private :: bcast_rayleigh_vizs_ctl_data
+      private :: write_rayleigh_vizs_ctl_data
 !
 !   --------------------------------------------------------------------
 !
@@ -107,58 +110,104 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl)
+      subroutine read_ctl_file_rayleigh_viz                             &
+     &         (file_name, rayleigh_vizs_ctl, viz4_ctls, c_buf)
 !
       use skip_comment_f
-      use viz_step_ctls_to_time_ctl
+      use viz4_step_ctls_to_time_ctl
 !
+      character(len = kchara), intent(in) :: file_name
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
-      type(buffer_for_control) :: c_buf1
+      type(vis4_controls), intent(inout) :: viz4_ctls
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(my_rank .eq. 0) then
-        open (viz_ctl_file_code, file=fname_viz_ctl, status='old' )
-        do
-          call load_one_line_from_control(viz_ctl_file_code, c_buf1)
-          call read_rayleigh_vizs_ctl_data                              &
-     &       (viz_ctl_file_code, hd_rayleigh_viz,                       &
-     &        rayleigh_vizs_ctl, c_buf1)
-          if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
-        end do
-        close(viz_ctl_file_code)
+      c_buf%level = c_buf%level + 1
+      open (viz_ctl_file_code, file=file_name, status='old')
+      do
+        call load_one_line_from_control                                 &
+     &     (viz_ctl_file_code, hd_rayleigh_viz, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)
-        call add_fields_4_vizs_to_fld_ctl(rayleigh_vizs_ctl%viz_ctl_v,  &
-     &      rayleigh_vizs_ctl%fld_ctl%field_ctl)
-      end if
+        call read_rayleigh_vizs_ctl_data                                &
+     &     (viz_ctl_file_code, hd_rayleigh_viz,                         &
+     &      rayleigh_vizs_ctl, viz4_ctls, c_buf)
+        if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
+      end do
+      close(viz_ctl_file_code)
 !
-      call bcast_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
+!
+      call s_viz4_step_ctls_to_time_ctl                                 &
+     &   (viz4_ctls, rayleigh_vizs_ctl%t_viz_ctl)
+      call add_fields_viz4_to_fld_ctl                                   &
+     &   (viz4_ctls, rayleigh_vizs_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_ctl_file_rayleigh_viz
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_ctl_file_rayleigh_viz                            &
+     &         (file_name, rayleigh_vizs_ctl, viz4_ctls)
+!
+      use delete_data_files
+!
+      character(len = kchara), intent(in) :: file_name
+      type(control_data_rayleigh_vizs), intent(in)                      &
+     &                         :: rayleigh_vizs_ctl
+      type(vis4_controls), intent(in) :: viz4_ctls
+!
+      integer(kind = kint) :: level1
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      open (viz_ctl_file_code, file=file_name, status='old')
+      level1 = 0
+      call write_rayleigh_vizs_ctl_data(viz_ctl_file_code,              &
+     &    hd_rayleigh_viz, rayleigh_vizs_ctl, viz4_ctls, level1)
+      close(viz_ctl_file_code)
+!
+      end subroutine write_ctl_file_rayleigh_viz
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_rayleigh_vizs_ctl_data                            &
-     &         (id_control, hd_block, rayleigh_vizs_ctl, c_buf)
+      subroutine read_rayleigh_vizs_ctl_data(id_control, hd_block,      &
+     &          rayleigh_vizs_ctl, viz4_ctls, c_buf)
 !
       use skip_comment_f
-      use read_viz_controls
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_four_vizs_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
+      type(vis4_controls), intent(inout) :: viz4_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) return
+      call init_platforms_labels(hd_platform,                           &
+     &                           rayleigh_vizs_ctl%viz_plt)
+      call init_ctl_shell_domain_label(hd_domains_sph,                  &
+     &                                 rayleigh_vizs_ctl%sdctl)
+      call init_phys_data_ctl_label(hd_phys_values,                     &
+     &                              rayleigh_vizs_ctl%fld_ctl)
+      call init_ctl_time_step_label(hd_time_step,                       &
+     &                              rayleigh_vizs_ctl%t_viz_ctl)
+      call init_viz4_ctl_label(hd_viz_control, viz4_ctls)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -166,14 +215,14 @@
         call read_control_time_step_data(id_control, hd_time_step,      &
      &      rayleigh_vizs_ctl%t_viz_ctl, c_buf)
 !
-      call read_phys_data_control(id_control, hd_phys_values,           &
-     &    rayleigh_vizs_ctl%fld_ctl, c_buf)
+        call read_phys_data_control(id_control, hd_phys_values,         &
+     &      rayleigh_vizs_ctl%fld_ctl, c_buf)
 !
         call read_control_shell_domain                                  &
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
-        call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           rayleigh_vizs_ctl%viz_ctl_v, c_buf)
+        call s_read_viz4_controls(id_control, hd_viz_control,           &
+     &                            viz4_ctls, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !
@@ -181,29 +230,41 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
+      subroutine write_rayleigh_vizs_ctl_data(id_control, hd_block,     &
+     &          rayleigh_vizs_ctl, viz4_ctls, level)
 !
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_time_step_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sphere_ctl
+      use skip_comment_f
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_four_vizs_IO
+      use write_control_elements
 !
-      type(control_data_rayleigh_vizs), intent(inout)                   &
-     &                                 :: rayleigh_vizs_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vizs_ctl
+      type(vis4_controls), intent(in) :: viz4_ctls
+!
+      integer(kind = kint), intent(inout) :: level
 !
 !
-      call bcast_ctl_data_4_platform(rayleigh_vizs_ctl%viz_plt)
-      call bcast_ctl_data_4_time_step(rayleigh_vizs_ctl%t_viz_ctl)
-      call bcast_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
+      if(rayleigh_vizs_ctl%i_viz_only_file .le. 0) return
 !
-      call bcast_phys_data_ctl(rayleigh_vizs_ctl%fld_ctl)
-      call bcast_ctl_ndomain_4_shell(rayleigh_vizs_ctl%sdctl)
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, rayleigh_vizs_ctl%viz_plt, level)
+      call write_control_time_step_data(id_control,                     &
+     &    rayleigh_vizs_ctl%t_viz_ctl, level)
 !
-      call calypso_mpi_bcast_one_int                                    &
-     &   (rayleigh_vizs_ctl%i_viz_only_file, 0)
+      call write_phys_data_control(id_control,                          &
+     &    rayleigh_vizs_ctl%fld_ctl, level)
 !
-      end subroutine bcast_rayleigh_vizs_ctl_data
+      call write_control_shell_domain                                   &
+     &   (id_control, rayleigh_vizs_ctl%sdctl, level)
+!
+      call write_viz4_controls(id_control, viz4_ctls, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_rayleigh_vizs_ctl_data
 !
 !   --------------------------------------------------------------------
 !

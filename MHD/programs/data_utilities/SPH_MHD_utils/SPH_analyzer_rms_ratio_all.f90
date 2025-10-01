@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_rms_ratio_all(time_d, MHD_files, SPH_SGS,&
-!!     &          MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
+!!     &          MHD_step, SPH_MHD, SPH_WK, m_SR)
 !!        type(time_data), intent(in) :: time_d
 !!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module SPH_analyzer_rms_ratio_all
@@ -31,7 +30,7 @@
       use t_SPH_mesh_field_data
       use t_SPH_SGS_structure
       use t_work_SPH_MHD
-      use t_solver_SR
+      use t_mesh_SR
 !
       use SPH_analyzer_back_trans
 !
@@ -47,7 +46,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_rms_ratio_all(time_d, MHD_files, SPH_SGS,  &
-     &          MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
+     &          MHD_step, SPH_MHD, SPH_WK, m_SR)
 !
       use m_work_time
 !
@@ -70,8 +69,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !       read first data
 !
@@ -96,7 +94,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, ref_rj_fld, SPH_MHD%fld,          &
      &    SPH_WK%trans_p, SPH_WK%trns_WK%trns_MHD,                      &
      &    SPH_WK%trns_WK%WK_leg, SPH_WK%trns_WK%WK_FFTs,                &
-     &    SR_sig, SR_r)
+     &    m_SR%SR_sig, m_SR%SR_r)
       call cal_sph_rms_ratios                                           &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_SGS%ipol_LES,                  &
      &    ref_rj_fld, SPH_MHD%fld, SPH_WK%trans_p, SPH_WK%monitor%pwr,  &

@@ -206,9 +206,9 @@
     // NSLog(@"Image file header =    %@",imageFileHeadExStep);
     // NSLog(@"Image file extension =    %@",imageFileExt);
 
-    ist = self.evolutionStartStep;
-    ied = self.evolutionEndStep;
-    inc = self.evolutionIncrement;
+    ist = (int) self.evolutionStartStep;
+    ied = (int) self.evolutionEndStep;
+    inc = (int) self.evolutionIncrement;
     
     [progreessBar setIndeterminate:NO];
     [progreessBar startAnimation:self];
@@ -224,7 +224,7 @@
     for (i = ist;i<(ied+1);i++) {
         self.evolutionCurrentStep = i;
         if( ((i-ist)%inc) == 0) {
-            CMTime frameTime = CMTimeMake((int64_t)frameCount, self.evolutionFPS);
+            CMTime frameTime = CMTimeMake((int64_t)frameCount, (int) self.evolutionFPS);
             
             imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
                               [NSString stringWithFormat:@"%d",i]];

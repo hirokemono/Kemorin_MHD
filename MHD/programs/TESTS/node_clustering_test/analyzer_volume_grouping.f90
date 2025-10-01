@@ -30,6 +30,8 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &               :: fname_new_part_ctl = "ctl_repartition"
       type(mesh_data), save :: fem_T
 !
 ! ----------------------------------------------------------------------
@@ -77,7 +79,6 @@
 !
 !>     Stracture for Jacobians
 !
-      type(new_patition_test_control) :: part_tctl1
       type(vol_partion_prog_param) :: part_prog_p1
 !
       type(next_nod_ele_table) :: next_tbl_T
@@ -108,9 +109,8 @@
 !
 !     ----- read control data
 !
-      call read_control_new_partition(part_tctl1)
-!
-      call set_control_param_repartition(part_tctl1, part_prog_p1)
+      call input_control_new_partition(fname_new_part_ctl,              &
+     &                                 part_prog_p1)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'

@@ -38,11 +38,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!$omp parallel
       call cal_flux_tensor_smp(nod_fld%n_point,                         &
      &    nod_fld%d_fld(1,i_v1), nod_fld%d_fld(1,i_v2),                 &
      &    nod_fld%d_fld(1,i_flux))
-!$omp end parallel
 !
        end subroutine cal_flux_tensor
 !
@@ -56,10 +54,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!$omp parallel
       call cal_maxwell_tensor_smp(nod_fld%n_point,                      &
      &    nod_fld%d_fld(1,i_magne), ex_magne, nod_fld%d_fld(1,i_mxwl))
-!$omp end parallel
 !
        end subroutine cal_maxwell_tensor
 !
@@ -72,11 +68,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!$omp parallel
       call cal_induction_tensor_smp(nod_fld%n_point,                    &
      &    nod_fld%d_fld(1,i_magne), nod_fld%d_fld(1,i_velo),            &
      &    nod_fld%d_fld(1,i_idct))
-!$omp end parallel
 !
        end subroutine cal_induction_tensor
 !
@@ -92,14 +86,14 @@
       real(kind = kreal), intent(inout) :: flux(nnod,6)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       flux(1:nnod,1) = vec1(1:nnod,1) * vec2(1:nnod,1)
       flux(1:nnod,2) = vec1(1:nnod,1) * vec2(1:nnod,2)
       flux(1:nnod,3) = vec1(1:nnod,1) * vec2(1:nnod,3)
       flux(1:nnod,4) = vec1(1:nnod,2) * vec2(1:nnod,2)
       flux(1:nnod,5) = vec1(1:nnod,2) * vec2(1:nnod,3)
       flux(1:nnod,6) = vec1(1:nnod,3) * vec2(1:nnod,3)
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
        end subroutine cal_flux_tensor_smp
 !
@@ -114,7 +108,7 @@
       real(kind = kreal), intent(inout) :: mxwl(nnod,6)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       mxwl(1:nnod,1) = ( magne(1:nnod,1)+ex_magne(1) )                  &
      &               * ( magne(1:nnod,1)+ex_magne(1) )
       mxwl(1:nnod,2) = ( magne(1:nnod,1)+ex_magne(1) )                  &
@@ -127,7 +121,7 @@
      &               * ( magne(1:nnod,3)+ex_magne(3) )
       mxwl(1:nnod,6) = ( magne(1:nnod,3)+ex_magne(3) )                  &
      &               * ( magne(1:nnod,3)+ex_magne(3) )
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
        end subroutine cal_maxwell_tensor_smp
 !
@@ -142,14 +136,14 @@
       real(kind = kreal), intent(inout) :: idct(nnod,3)
 !
 !
-!$omp workshare
+!$omp parallel workshare
       idct(1:nnod,1) = magne(1:nnod,2) * velocity(1:nnod,1)             &
      &               - magne(1:nnod,1) * velocity(1:nnod,2)
       idct(1:nnod,2) = magne(1:nnod,3) * velocity(1:nnod,1)             &
      &               - magne(1:nnod,1) * velocity(1:nnod,3)
       idct(1:nnod,3) = magne(1:nnod,3) * velocity(1:nnod,2)             &
      &               - magne(1:nnod,2) * velocity(1:nnod,3) 
-!$omp end workshare nowait
+!$omp end parallel workshare
 !
        end subroutine cal_induction_tensor_smp
 !

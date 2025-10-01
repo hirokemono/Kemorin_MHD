@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine dealloc_pick_rayleigh_spectr(g_pwr)
 !!      subroutine read_rayleigh_pick_mode_ctl                          &
-!!     &         (id_control, control_name, pick_ctl)
+!!     &         (id_control, control_name, pick_ctl, c_buf)
 !!
 !! -----------------------------------------------------------------
 !!
@@ -111,21 +111,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_rayleigh_pick_mode_ctl                            &
-     &         (id_control, control_name, pick_ctl)
+     &         (id_control, control_name, pick_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: control_name
 !
       type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
+      c_buf%level = c_buf%level + 1
+      if(c_buf%iend .gt. 0) return
       open(id_control, file = control_name)
-      call load_one_line_from_control(id_control, c_buf1)
-      call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,          &
-     &                            pick_ctl, c_buf1)
+      do
+        call load_one_line_from_control                                 &
+     &     (id_control, hd_pick_sph_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
+!
+        call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,        &
+     &                            pick_ctl, c_buf)
+        if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) exit
+      end do
       close(id_control)
+!
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_rayleigh_pick_mode_ctl
 !
@@ -145,7 +155,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -166,26 +177,6 @@
       end subroutine read_pick_rayleigh_ctl
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_pick_rayleigh_ctl(pick_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
-!
-!
-      call bcast_ctl_type_c1(pick_ctl%picked_data_file_name)
-      call bcast_ctl_type_c1(pick_ctl%Rayleigh_rst_dir_ctl)
-      call bcast_ctl_type_i2(pick_ctl%Rayleigh_version_ctl)
-      call bcast_ctl_type_i1(pick_ctl%Rayleigh_step_ctl)
-      call bcast_ctl_array_i2(pick_ctl%idx_rayleigh_ctl)
-      call calypso_mpi_bcast_one_int                                    &
-     &    (pick_ctl%i_pick_rayleigh_spectr, 0)
-!
-      end subroutine bcast_pick_rayleigh_ctl
-!
 ! -----------------------------------------------------------------------
 !
       subroutine check_pick_rayleigh_ctl(my_rank, pick_ctl)

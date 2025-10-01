@@ -41,7 +41,8 @@
 !
       use m_error_IDs
       use t_SGS_control_parameter
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
+      use t_ctl_data_SGS_model
       use t_sph_filtering
       use skip_comment_f
 !

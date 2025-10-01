@@ -17,7 +17,9 @@
 
 
 struct chara_real_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	char *c_tbl;
 	double r_data;
@@ -33,9 +35,13 @@ struct chara_real_ctl_list{
 struct chara_real_clist{
 	struct chara_real_ctl_list cr_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *r1_name;
+    
+    int index_bc;
 };
 
 /* prototypes */
@@ -73,6 +79,7 @@ void update_chara_real_clist_by_index(int index, char *c_in, double r_in,
 			struct chara_real_clist *cr_clst);
 void set_from_chara_real_clist_at_index(int index, struct chara_real_clist *cr_clst,
 			char *c_out, double *r_out);
+struct chara_real_ctl_item *chara_real_clist_at_index(int index, struct chara_real_clist *cr_clst);
 
 void add_chara_real_clist_before_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *cr_clst);
 void add_chara_real_clist_after_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *cr_clst);

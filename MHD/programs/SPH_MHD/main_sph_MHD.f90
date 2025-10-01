@@ -6,8 +6,8 @@
 !!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!>@brief  Main program for MHD dynamo simulation
-!!        without cross sectioning routines
+!>@brief  Main program for MHD dynamo simulation with SGS model
+!!         input control file:  control_MHD
 !
      program sph_MHD
 !
@@ -18,14 +18,17 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_MHD
-!
+      call initialize_sph_MHD(MHD_ctl_name)
       call evolution_sph_MHD
 !
       call calypso_MPI_finalize
 !
-      stop 'Program finished'
+      stop '***** program finished *****'
+
       end program sph_MHD

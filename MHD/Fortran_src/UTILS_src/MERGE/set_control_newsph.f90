@@ -98,6 +98,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      call turn_off_debug_flag_by_ctl(my_rank, mgd_ctl%source_plt)
+!
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
         sph_asbl%np_sph_org                                             &
      &      = int(mgd_ctl%source_plt%ndomain_ctl%intvalue)
@@ -159,8 +161,7 @@
         org_sph_maker%mesh_output_flag = .FALSE.
 !
         if(iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids org'
-        call set_control_4_shell_grids                                  &
-     &     (sph_asbl%np_sph_org, mgd_ctl%src_psph_ctl%Fmesh_ctl,        &
+        call set_control_4_shell_grids(sph_asbl%np_sph_org,             &
      &      mgd_ctl%src_psph_ctl%spctl, mgd_ctl%src_psph_ctl%sdctl,     &
      &      org_sph_maker%sph_tmp, org_sph_maker%gen_sph, ierr)
         if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)

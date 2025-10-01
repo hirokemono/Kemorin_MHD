@@ -76,17 +76,13 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_scalar)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_scalar, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
-!$omp parallel
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans                                 &
      &   (m_folding, sph_rtp, node, v_pole(1,i_trns), i_field, nod_fld)
@@ -118,23 +114,16 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_vector)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_vector, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
-!$omp parallel
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
-!$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(np_smp, node%numnod,            &
-     &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
-     &    node%theta(1), node%phi(1))
-!$omp end parallel
+      call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
+     &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)
@@ -166,24 +155,18 @@
      &                   :: d_zm(sph_rtp%nnod_med,n_sym_tensor)
 !
 !
-!$omp parallel
       call cal_sph_zonal_mean_from_trns                                 &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_sym_tensor, d_rtp(1,i_trns), d_zm)
-!$omp end parallel
 !
-!$omp parallel
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_zm, nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
-!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, node%numnod,         &
      &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3),                     &
      &    node%rr(1), node%ss(1), node%a_r(1), node%a_s(1))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)
@@ -215,17 +198,13 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_scalar)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_scalar, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
-!$omp parallel
       call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans                                 &
      &   (m_folding, sph_rtp, node, v_pole(1,i_trns), i_field, nod_fld)
@@ -257,23 +236,16 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_vector)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_vector, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
-!$omp parallel
       call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms(1,1), nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
-!$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(np_smp, node%numnod,            &
-     &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
-     &    node%theta(1), node%phi(1))
-!$omp end parallel
+      call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
+     &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)
@@ -305,24 +277,18 @@
      &                   :: d_rms(sph_rtp%nnod_med,n_sym_tensor)
 !
 !
-!$omp parallel
       call cal_sph_zonal_rms_from_trns                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    n_sym_tensor, d_rtp(1,i_trns), d_rms)
-!$omp end parallel
 !
-!$omp parallel
       call copy_tensor_from_trans_smp                                   &
      &   (sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),                        &
      &    node%numnod, d_rms, nod_fld%d_fld(1,i_field))
-!$omp end parallel
 !
-!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, node%numnod,         &
      &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3),                     &
      &    node%rr(1), node%ss(1), node%a_r(1), node%a_s(1))
-!$omp end parallel
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    v_pole(1,i_trns), i_field, nod_fld)
@@ -344,10 +310,11 @@
       integer(kind = kint) :: kl, m, nd, inod
 !
 !
-!$omp workshare
+!$omp parallel workshare
       d_zm(1:nnod_med,1:numdir) = zero
-!$omp end workshare
+!$omp end parallel workshare
 !
+!$omp parallel
       do nd = 1, numdir
 !$omp do private(m,kl,inod)
         do m = 1, nphi
@@ -358,11 +325,12 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
 !
-!$omp workshare
+!$omp parallel workshare
         d_zm(1:nnod_med,1:numdir)                                       &
      &         = d_zm(1:nnod_med,1:numdir) / dble(nphi)
-!$omp end workshare
+!$omp end parallel workshare
 !
       end subroutine cal_sph_zonal_mean_from_trns
 !
@@ -380,10 +348,11 @@
       integer(kind = kint) :: kl, m, nd, inod
 !
 !
-!$omp workshare
+!$omp parallel workshare
         d_rms(1:nnod_med,1:numdir) = zero
-!$omp end workshare
+!$omp end parallel workshare
 !
+!$omp parallel
       do nd = 1, numdir
 !$omp do private(m,kl,inod)
         do m = 1, nphi
@@ -394,11 +363,12 @@
         end do
 !$omp end do
       end do
+!$omp end parallel
 !
-!$omp workshare
+!$omp parallel workshare
       d_rms(1:nnod_med,1:numdir)                                        &
      &       = sqrt(d_rms(1:nnod_med,1:numdir) / dble(nphi))
-!$omp end workshare
+!$omp end parallel workshare
 !
       end subroutine cal_sph_zonal_rms_from_trns
 !

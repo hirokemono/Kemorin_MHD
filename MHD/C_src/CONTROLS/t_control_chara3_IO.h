@@ -17,8 +17,10 @@
 
 
 struct chara3_ctl_item{
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
-	int iflag;
 	char *c1_tbl;
 	char *c2_tbl;
 	char *c3_tbl;
@@ -35,10 +37,14 @@ struct chara3_ctl_list{
 struct chara3_clist{
 	struct chara3_ctl_list c3_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *c2_name;
     char *c3_name;
+    
+    int index_bc;
 };
 
 
@@ -73,6 +79,11 @@ void update_chara3_clist_by_index(int index, char *c1_in, char *c2_in, char *c3_
 			struct chara3_clist *c3_clst);
 void set_from_chara3_clist_at_index(int index, struct chara3_clist *c3_clst,
 			char *c1_out, char *c2_out, char *c3_out);
+
+struct chara3_ctl_item *find_chara3_ctl_item_by_index(int index,
+                                                      struct chara3_clist *c3_clst);
+struct chara3_ctl_item *find_chara3_ctl_item_by_ref(char *ref1, char *ref2, char *ref3,
+                                                    struct chara3_clist *c3_clst);
 
 void add_chara3_clist_before_c_tbl(char *ref_1, char *ref_2, char *ref_3,
 			char *c1_in, char *c2_in, char *c3_in, struct chara3_clist *c3_clst);

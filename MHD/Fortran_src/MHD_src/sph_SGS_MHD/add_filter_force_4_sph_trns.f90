@@ -88,13 +88,13 @@
 !
 !   advection
 !      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-!        if(fl_prop%iflag_4_filter_inertia) then
+!        if(fl_prop%flag_filter_inertia) then
           call add_field_4_sph_trns_by_pol(d_rj,                        &
      &      ipol_fil_frc%i_m_advect, iphys_fil_frc%i_m_advect,          &
      &      f_trns_fil_frc%i_m_advect, trns)
 !        end if
 !   Lorentz force
-!        if(fl_prop%iflag_4_filter_lorentz) then
+!        if(fl_prop%flag_filter_lorentz) then
           call add_field_4_sph_trns_by_pol(d_rj,                        &
      &        ipol_fil_frc%i_lorentz, iphys_fil_frc%i_lorentz,          &
      &        f_trns_fil_frc%i_lorentz, trns)

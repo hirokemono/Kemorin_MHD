@@ -23,10 +23,12 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_COMM_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
+CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 
 MOD_COMM_TEST = \
 t_ctl_data_comm_test.o \
+bcast_ctl_data_comm_test.o \
 send_recv_loop_tests.o \
 mesh_send_recv_test.o \
 \
@@ -49,9 +51,9 @@ dir_list:
 	@echo 'COMM_TEST_DIR =      $$(TESTS_DIR)/comm_test'         >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_COMM_TEST =   $$(BUILDDIR)/$(TARGET_COMM_TEST)' \
+	@echo 'TARGET_COMM_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_COMM_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_F_COMM_TEST = $$(BUILDDIR)/$(TARGET_F_COMM_TEST)' \
+	@echo 'TARGET_F_COMM_TEST = $$(TEST_BUILD_DIR)/$(TARGET_F_COMM_TEST)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -92,12 +94,8 @@ mod_list:
 	@echo  MOD_FILTER_COMM_TEST= $(MOD_FILTER_COMM_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(COMM_TEST_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(COMM_TEST_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

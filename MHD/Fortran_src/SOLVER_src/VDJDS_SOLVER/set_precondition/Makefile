@@ -18,12 +18,8 @@ mod_list:
 	@echo $(MOD_SOLVE_SET_PRECONDS) >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
-
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SET_PRECOND_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SET_PRECOND_DIR)' $(SOURCES)
 
 
 clean:

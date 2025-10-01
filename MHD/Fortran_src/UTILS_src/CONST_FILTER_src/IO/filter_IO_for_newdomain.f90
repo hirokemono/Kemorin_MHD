@@ -12,7 +12,7 @@
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
 !!      subroutine read_filter_coef_4_newdomain(id_file, filter_node,   &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort, iend)
 !!      subroutine read_filter_coef_4_newdomain_b(bbuf, filter_node,    &
 !!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
@@ -20,6 +20,7 @@
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
+!!        integer(kind = kint), intent(inout) :: iend
 !
       module filter_IO_for_newdomain
 !
@@ -99,7 +100,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_coef_4_newdomain(id_file, filter_node,     &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+     &          fil_coef, whole_fil_sort, fluid_fil_sort, iend)
 !
       use skip_comment_f
 !
@@ -108,6 +109,7 @@
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: inod
 !
@@ -118,7 +120,8 @@
      &                             whole_fil_sort)
 !
       do inod = 1, filter_node%internal_node
-        call read_filter_coef_4_each(id_file, fil_coef)
+        call read_filter_coef_4_each(id_file, fil_coef, iend)
+        if(iend .gt. 0) return
         call set_w_filter_item_4_newdomain                              &
      &     (inod, fil_coef, whole_fil_sort)
       end do
@@ -129,7 +132,8 @@
       call alloc_filter_func_4_sort(fluid_fil_sort)
 !
       do inod = 1, filter_node%internal_node
-        call read_filter_coef_4_each(id_file, fil_coef)
+        call read_filter_coef_4_each(id_file, fil_coef, iend)
+        if(iend .gt. 0) return
         call set_f_filter_item_4_newdomain                              &
      &     (inod, fil_coef, fluid_fil_sort)
       end do

@@ -5,17 +5,24 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
+#import "KemoViewerObject.h"
+
+#include "kemoviewer.h"
 
 @interface KemoviewerController : NSObject {
 
-	IBOutlet ResetViewControll*  _resetview;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+	IBOutlet ResetViewControll*     _resetview;
+    IBOutlet KemoViewerMetalView*   _metalView;
+    IBOutlet KemoViewerObject *_kmv;
 
 	IBOutlet id _streoViewTypeMenu;
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	
+    NSInteger activeControlFlag;
+
 	CGFloat coastlineRadius;
 	NSInteger ShadingMode;
 	NSInteger PolygonMode;
@@ -29,6 +36,8 @@
 	CGFloat ColorLoopCount;
 	CGFloat NodeSizeFactor;
 	CGFloat NodeSizedigits;
+    
+    CGFloat ThreadsCount;
 
 	// Viewer type handling
 	IBOutlet id _viewtypeItem;
@@ -41,11 +50,10 @@
 	IBOutlet id _viewZXItem;
 
 	NSInteger StereoFlag;
-	NSInteger AnaglyphFlag;
+    NSInteger QuiltFlag;
 	NSInteger psfTexTureEnable;
 	
 	NSInteger fInfo;
-	NSInteger fAnimate;
 	NSInteger fDrawHelp;
 
     
@@ -56,40 +64,75 @@
 
     NSInteger coastLineDrawFlag;
     NSInteger globeGridDrawFlag;
+    NSInteger tangentCylinderDrawFlag;
     NSInteger axisDrawFlag;
     NSInteger axisDrawAccess;
+    NSInteger axisPositionFlag;
+    CGFloat axisWidthFactor;
+    CGFloat axisWidthDigits;
+
+    
+    CGFloat ICBRadius;
+    
+    NSInteger CoastLineTubeFlag;
+    NSInteger TubeNumCorners;
+    CGFloat   CoastlineWidth;
+    NSInteger CoastlineDigit;
 }
 
+@property NSInteger activeControlFlag;
 @property CGFloat ColorLoopCount;
 @property CGFloat NodeSizeFactor;
 @property CGFloat NodeSizedigits;
 @property NSInteger fInfo;
-@property NSInteger fAnimate;
 @property NSInteger fDrawHelp;
 @property NSInteger StereoFlag;
+@property NSInteger QuiltFlag;
 @property CGFloat coastlineRadius;
 @property NSInteger psfTexTureEnable;
+@property NSInteger ShadingMode;
 @property NSInteger timeDisplayAccess;
 @property NSInteger fileStepDisplayAccess;
 @property NSInteger timeDisplayFlag;
 @property NSInteger fileStepDisplayFlag;
 @property NSInteger coastLineDrawFlag;
 @property NSInteger globeGridDrawFlag;
+@property NSInteger tangentCylinderDrawFlag;
 @property NSInteger axisDrawFlag;
 @property NSInteger axisDrawAccess;
+@property NSInteger axisPositionFlag;
+@property CGFloat   axisWidthFactor;
+@property CGFloat   axisWidthDigits;
+@property NSInteger TubeNumCorners;
+@property CGFloat   ThreadsCount;
+@property CGFloat   CoastlineWidth;
+@property CGFloat   ICBRadius;
+@property NSInteger CoastlineDigit;
+@property NSInteger CoastLineTubeFlag;
 
 
 - (id)init;
 - (void)awakeFromNib;
 - (id)dealloc;
 
-- (void)SetViewTypeMenu:(NSInteger) selected;
-- (void)UpdateViewtype:(NSInteger) selected;
+- (int) CurrentControlModel;
+
+- (int) SetCurrentPSFFile:(int) id_model
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                 pathTree:(NSPathControl *) pathControl;
+
+- (void)SetViewTypeMenu:(NSInteger) selected
+               kemoview:(struct kemoviewer_type *) kemo_sgl;
+- (void)UpdateViewtype:(NSInteger) selected
+              kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)AxisSwitchAction:(id)sender;
+- (IBAction)AxisPositionAction:(id)sender;
 - (IBAction)CoastSwitchAction:(id)sender;
 - (IBAction)SphGridSwitchAction:(id)sender;
 - (IBAction)SphRadiusAction:(id)sender;
+- (IBAction)TangentCylinderSwitchAction:(id)sender;
+
 - (IBAction)ChoosePolygontypeAction:(id)sender;
 - (IBAction)ChooseSurfcetypeAction:(id)sender;
 - (IBAction)ChooseColorModeAction:(id)sender;
@@ -99,12 +142,9 @@
 - (IBAction) ToggleQuiltSwitch:(id)sender;
 - (IBAction) SetViewtypeAction:(id)pSender;
 
-- (IBAction) SetStereoViewType:(id)sender;
-
-- (void) Set3DView;
+- (void) Set3DView:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) ResetviewAction:(id)sender;
 
--(IBAction) ToggleAnimate: (id) sender;
 -(IBAction) Toggleinfo: (id) sender;
 -(IBAction) ToggleQuickhelp: (id) sender;
 
@@ -113,5 +153,13 @@
 
 - (IBAction)TimeLabelSwitchAction:(id)sender;
 - (IBAction)FileStepLabelSwitchAction:(id)sender;
+
+- (IBAction)SetNnumberOfThreads:(id)pSender;
+
+- (IBAction)SetCoastLinETubeAction:(id)sender;
+- (IBAction)SetTubeNumCornersAction:(id)sender;
+- (IBAction)SetCoastlineWidth:(id)pSender;
+
+- (IBAction) SetAxisBarWidth:(id)pSender;
 
 @end

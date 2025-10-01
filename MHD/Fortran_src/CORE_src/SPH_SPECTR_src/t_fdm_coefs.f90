@@ -25,13 +25,17 @@
 !! ----------------------------------------------------------------------
 !!
 !!      subroutine alloc_nod_fdm_matrices                               &
-!!     &         (nri, num_order, n_minus, n_plus, fdmn_nod)
+!!     &         (nri, ist_order, num_order, n_minus, n_plus, fdmn_nod)
 !!      subroutine dealloc_nod_fdm_matrices(fdmn_nod)
 !!        integer(kind = kint), intent(in) :: nri, num_order
 !!        integer(kind = kint), intent(in) :: n_minus, n_plus
 !!        type(fdm_matrices), intent(inout) :: fdmn_nod
 !!
-!!      subroutine check_fdm_coefs(nri, r, fdmn_nod)
+!!      subroutine check_fdm_coefs(id_file, nri, r, fdmn_nod)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(in) :: r(nri)
+!!        type(fdm_matrices), intent(in) :: fdmn_nod
 !!@endverbatim
 !!
 !!@n @param nri    number of radial grid points
@@ -59,7 +63,9 @@
 !
 !>        Structure of FDM matrices
       type fdm_matrices
-!>        Coefficients to evaluate first radial derivative
+!>        Minimum order for derivative
+        integer(kind = kint) :: ist_order
+!>        Maximum order for derivative
         integer(kind = kint) :: n_order
 !>        Structure of FDM matrix
         type(fdm_matrix), allocatable :: fdm(:)
@@ -75,19 +81,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_nod_fdm_matrices                                 &
-     &         (nri, num_order, n_minus, n_plus, fdmn_nod)
+     &         (nri, ist_order, num_order, n_minus, n_plus, fdmn_nod)
 !
-      integer(kind = kint), intent(in) :: nri, num_order
+      integer(kind = kint), intent(in) :: nri, ist_order, num_order
       integer(kind = kint), intent(in) :: n_minus, n_plus
       type(fdm_matrices), intent(inout) :: fdmn_nod
 !
       integer(kind = kint) :: i
 !
 !
-      fdmn_nod%n_order = num_order
-      allocate( fdmn_nod%fdm(fdmn_nod%n_order) )
+      fdmn_nod%ist_order = ist_order
+      fdmn_nod%n_order =   num_order
+      allocate( fdmn_nod%fdm(ist_order:num_order) )
 !
-      do i = 1, fdmn_nod%n_order
+      do i = fdmn_nod%ist_order, fdmn_nod%n_order
         call alloc_fdm_matrix(nri, n_minus, n_plus, fdmn_nod%fdm(i))
       end do
 !
@@ -102,7 +109,7 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, fdmn_nod%n_order
+      do i = fdmn_nod%ist_order, fdmn_nod%n_order
         call dealloc_fdm_matrix(fdmn_nod%fdm(i))
       end do
 !
@@ -113,8 +120,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_fdm_coefs(nri, r, fdmn_nod)
+      subroutine check_fdm_coefs(id_file, nri, r, fdmn_nod)
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
       type(fdm_matrices), intent(in) :: fdmn_nod
@@ -122,9 +130,9 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, fdmn_nod%n_order
-        write(50,*) 'Matrix for differences: ', i
-        call check_fdm_coef(nri, r, fdmn_nod%fdm(i))
+      do i = fdmn_nod%ist_order, fdmn_nod%n_order
+        write(id_file,*) 'Matrix for differences: ', i
+        call check_fdm_coef(id_file, nri, r, fdmn_nod%fdm(i))
       end do
 !
       end subroutine check_fdm_coefs
@@ -140,8 +148,8 @@
 !
       fdm%nri_mat = nri
       fdm%n_plus =  n_plus
-      fdm%n_minus = n_minus
-      allocate( fdm%dmat(fdm%nri_mat,-fdm%n_minus:fdm%n_plus) )
+      fdm%n_minus = -n_minus
+      allocate( fdm%dmat(fdm%nri_mat,fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
 !
@@ -160,18 +168,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_fdm_coef(nri, r, fdm)
+      subroutine check_fdm_coef(id_file, nri, r, fdm)
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
       type(fdm_matrix), intent(in) :: fdm
 !
       integer(kind = kint) :: kr
 !
-      write(50,*) 'kr, r, coefficients'
+      write(id_file,*) 'r, kr, coefficients'
       do kr = 1, nri
-        write(50,'(i5,1p40e20.12)')                                     &
-     &       kr, r(kr), fdm%dmat(kr,-fdm%n_minus:fdm%n_plus)
+        write(id_file,'(1pe20.12,i5,1p40e20.12)')                       &
+     &       r(kr), kr, fdm%dmat(kr,fdm%n_minus:fdm%n_plus)
       end do
 !
       end subroutine check_fdm_coef

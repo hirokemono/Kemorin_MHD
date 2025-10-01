@@ -71,7 +71,7 @@
           ied = group_IO%istack_grp(i)
           num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
           call mpi_read_num_of_data(IO_param, num_tmp)
-          call mpi_read_comm_table                                      &
+          call mpi_read_int_items                                       &
      &       (IO_param, ieight, num, group_IO%item_grp(ist:ied))
         end do
       end if
@@ -141,7 +141,7 @@
         ist = group_IO%istack_grp(i-1) + 1
         ied = group_IO%istack_grp(i)
         num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
-        call mpi_write_comm_table                                       &
+        call mpi_write_int_items                                        &
      &     (IO_param, ieight, num, group_IO%item_grp(ist:ied))
       end do
 !
@@ -185,21 +185,29 @@
       integer(kind=kint), intent(in) :: ntot, ist, num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(2,ntot)
 !
-      integer(kind = kint) :: int_tmp(num), num_tmp
+      integer(kind = kint) :: num_tmp
+      integer(kind = kint), allocatable :: int_tmp(:)
+      integer(kind = kint) :: i
 !
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
-      call mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
-!$omp parallel workshare
-      int_dat(1,ist+1:ist+num) = int_tmp(1:num)
-!$omp end parallel workshare
+      call mpi_read_int_items(IO_param, ncolumn, num, int_tmp)
+!
+!$omp parallel do private(i)
+      do i = 1, num
+        int_dat(1,ist+i) = int_tmp(i)
+      end do
+!$omp end parallel do
 !
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
-      call mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
-!$omp parallel workshare
-      int_dat(2,ist+1:ist+num) = int_tmp(1:num)
-!$omp end parallel workshare
+      call mpi_read_int_items(IO_param, ncolumn, num, int_tmp)
+!
+!$omp parallel do private(i)
+      do i = 1, num
+        int_dat(2,ist+i) = int_tmp(i)
+      end do
+!$omp end parallel do
 !
       end subroutine mpi_read_surf_grp_item
 !
@@ -212,19 +220,26 @@
       integer(kind=kint), intent(in) :: ntot, ist, num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(2,ntot)
 !
-      integer(kind = kint) :: int_tmp(num)
+      integer(kind = kint), allocatable :: int_tmp(:)
+      integer(kind = kint) :: i
 !
 !
-!$omp parallel workshare
-       int_tmp(1:num) = int_dat(1,ist+1:ist+num)
-!$omp end parallel workshare
-      call mpi_write_comm_table(IO_param, ncolumn, num, int_tmp)
+!$omp parallel do private(i)
+      do i = 1, num
+         int_tmp(i) = int_dat(1,ist+i)
+      end do
+!$omp end parallel do
+!
+      call mpi_write_int_items(IO_param, ncolumn, num, int_tmp)
 !
 !
-!$omp parallel workshare
-       int_tmp(1:num) = int_dat(2,ist+1:ist+num)
-!$omp end parallel workshare
-      call mpi_write_comm_table(IO_param, ncolumn, num, int_tmp)
+!$omp parallel do private(i)
+      do i = 1, num
+         int_tmp(i) = int_dat(2,ist+i)
+      end do
+!$omp end parallel do
+!
+      call mpi_write_int_items(IO_param, ncolumn, num, int_tmp)
 !
       end subroutine mpi_write_surf_grp_item
 !

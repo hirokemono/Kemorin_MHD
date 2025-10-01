@@ -169,11 +169,11 @@
         call add_phys_name_ctl(induction_tensor, field_ctl)
 !
       if(check_field_list_ctl(div_heat_flux, field_ctl))                &
-        call add_phys_name_ctl(div_pert_heat_flux, field_ctl)
-      if(check_field_list_ctl(pert_heat_flux, field_ctl))               &
-        call add_phys_name_ctl(div_composition_flux, field_ctl)
-      if(check_field_list_ctl(composite_flux, field_ctl))               &
-        call add_phys_name_ctl(induction_tensor, field_ctl)
+        call add_phys_name_ctl(heat_flux, field_ctl)
+      if(check_field_list_ctl(div_pert_heat_flux, field_ctl))           &
+        call add_phys_name_ctl(pert_heat_flux, field_ctl)
+      if(check_field_list_ctl(div_composition_flux, field_ctl))         &
+        call add_phys_name_ctl(composite_flux, field_ctl)
       if(check_field_list_ctl(div_pert_composition_flux, field_ctl))    &
         call add_phys_name_ctl(pert_comp_flux, field_ctl)
 !
@@ -215,6 +215,15 @@
         call add_phys_name_ctl(magnetic_field, field_ctl)
       end if
 !
+      if(check_field_list_ctl(Lorentz_work_dipole, field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+        call add_phys_name_ctl(Lorentz_force_dipole, field_ctl)
+      end if
+      if(check_field_list_ctl(Lorentz_force_dipole, field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+        call add_phys_name_ctl(current_for_dipole, field_ctl)
+      end if
+!
       if(check_field_list_ctl(kinetic_helicity, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(vorticity, field_ctl)
@@ -240,11 +249,13 @@
      &   call add_phys_name_ctl(vorticity, field_ctl)
       if(      check_field_list_ctl(square_magne, field_ctl)            &
      &    .or. check_field_list_ctl(magnetic_scale, field_ctl)          &
-     &    .or. check_field_list_ctl(stream_pol_magne, field_ctl))       &
+     &    .or. check_field_list_ctl(stream_pol_magne, field_ctl)        &
+     &    .or. check_field_list_ctl(magnetic_dipole, field_ctl))        &
      &   call add_phys_name_ctl(magnetic_field, field_ctl)
       if(check_field_list_ctl(square_vector_potential, field_ctl))      &
      &   call add_phys_name_ctl(vector_potential, field_ctl)
-      if(check_field_list_ctl(square_current, field_ctl))               &
+      if(      check_field_list_ctl(square_current, field_ctl)          &
+     &    .or. check_field_list_ctl(current_for_dipole, field_ctl))     &
      &   call add_phys_name_ctl(current_density, field_ctl)
       if(      check_field_list_ctl(square_temperature, field_ctl)      &
      &    .or. check_field_list_ctl(temperature_scale, field_ctl))      &

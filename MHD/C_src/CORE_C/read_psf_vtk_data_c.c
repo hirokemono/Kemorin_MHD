@@ -11,19 +11,27 @@
 FILE *fp_vtk;
 
 
-static void read_psf_vtk_node_data(struct psf_data *viz_s){
-	int i;
+static void read_psf_vtk_num_node(struct psf_data *viz_s){
+    int i;
     long offset;
-	char tmpchara[8];
-	char buf[LENGTHBUF];    /* array for reading line */
-	
+    char tmpchara[8];
+    char buf[LENGTHBUF];    /* array for reading line */
+    
     offset = skip_comment_c(fp_vtk);
     fgets(buf, LENGTHBUF, fp_vtk);     /* (blank line) */
     fgets(buf, LENGTHBUF, fp_vtk);     /* ASCII */
     fgets(buf, LENGTHBUF, fp_vtk);     /* DATASET UNSTRUCTURED_GRID */
 
-	fgets(buf, LENGTHBUF, fp_vtk);     /* POINTS    nnod_viz  float */
-	sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+    fgets(buf, LENGTHBUF, fp_vtk);     /* POINTS    nnod_viz  float */
+    sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+    return;
+};
+
+static void read_psf_vtk_node_data(struct psf_data *viz_s){
+	int i;
+    long offset;
+	char tmpchara[8];
+	char buf[LENGTHBUF];    /* array for reading line */
 	
 	alloc_viz_node_s(viz_s);
 	
@@ -31,16 +39,16 @@ static void read_psf_vtk_node_data(struct psf_data *viz_s){
         viz_s->inod_viz[i] = i + 1;
 		fgets(buf, LENGTHBUF, fp_vtk);
 		sscanf(buf, "%lf %lf %lf",
-               &viz_s->xx_viz[i][0],
-               &viz_s->xx_viz[i][1],
-               &viz_s->xx_viz[i][2]);
+               &viz_s->xyzw_viz[i*IFOUR + 0],
+               &viz_s->xyzw_viz[i*IFOUR + 1],
+               &viz_s->xyzw_viz[i*IFOUR + 2]);
 	};
 	return;
 };
 
 static int read_psf_vtk_connect_data(struct psf_data *viz_s){
 	char buf[LENGTHBUF];    /* array for reading line */
-	char tmpchara[8];
+	char tmpchara[11];
     int i, j, num_index, iflag_datatype, itmp;
 
 
@@ -50,7 +58,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
     viz_s->nnod_4_ele_viz = (num_index / viz_s->nele_viz) - 1;
 	alloc_viz_ele_s(viz_s);
     
-	iflag_datatype = 0;
+	iflag_datatype = -1;
     if(viz_s->nnod_4_ele_viz == 4){
 		printf("Quad patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
@@ -60,8 +68,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 3){
+    }else if(viz_s->nnod_4_ele_viz == 3){
 		printf("Triangle patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
@@ -70,14 +77,20 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2]);
         };
-    }
-    else if(viz_s->nnod_4_ele_viz == 2){
+    }else if(viz_s->nnod_4_ele_viz == 2){
 		printf("Line data \n");
 		iflag_datatype = IFLAG_LINES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             fgets(buf, LENGTHBUF, fp_vtk);
             sscanf(buf, "%d %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
+        };
+    }else if(viz_s->nnod_4_ele_viz == 1){
+		printf("Point data \n");
+		iflag_datatype = IFLAG_POINTS;
+        for (i = 0; i < viz_s->nele_viz; i++) {
+            fgets(buf, LENGTHBUF, fp_vtk);
+            sscanf(buf, "%d %ld %ld", &itmp, &viz_s->ie_viz[i][0]);
         };
     };
 
@@ -209,29 +222,43 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     copy_vtk_list_2_udt_data(viz_s, &vtk_tmp);
     
     dealloc_vtk_fields_list_c(&vtk_tmp);
-    alloc_psf_data_s(viz_s);
 	return;
 };
 
 
-int read_psf_vtg(const char *file_name, struct psf_data *viz_s){
-	int iflag_datatype;
-	printf("grid file name: %s \n",file_name);
-	
-	/* Error for failed file*/
-	if ((fp_vtk = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!: %s\n", file_name);
-		return 1;                    /* terminate with error message */
-	};
-	
-	read_psf_vtk_node_data(viz_s);
-	iflag_datatype = read_psf_vtk_connect_data(viz_s);
-	if(iflag_datatype == -1){
-		dealloc_psf_mesh_c(viz_s);
-	}
+void read_num_node_vtg(const char *file_name, struct psf_data *viz_s){
+    printf("grid file name: %s \n",file_name);
     
-	fclose(fp_vtk);
-	return iflag_datatype;
+    /* Error for failed file*/
+    if ((fp_vtk = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
+        return;                    /* terminate with error message */
+    };
+    
+    read_psf_vtk_num_node(viz_s);
+    fclose(fp_vtk);
+    return;
+}
+
+int read_psf_vtg(const char *file_name, struct psf_data *viz_s){
+    int iflag_datatype;
+    printf("grid file name: %s \n",file_name);
+    
+    /* Error for failed file*/
+    if ((fp_vtk = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
+        return 1;                    /* terminate with error message */
+    };
+    
+    read_psf_vtk_num_node(viz_s);
+    read_psf_vtk_node_data(viz_s);
+    iflag_datatype = read_psf_vtk_connect_data(viz_s);
+    if(iflag_datatype == -1){
+        dealloc_psf_mesh_c(viz_s);
+    }
+    
+    fclose(fp_vtk);
+    return iflag_datatype;
 }
 
 int read_psf_vtd(const char *file_name, struct psf_data *viz_s){
@@ -241,12 +268,11 @@ int read_psf_vtd(const char *file_name, struct psf_data *viz_s){
 	if ((fp_vtk = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
-	};
-	
-	read_psf_vtk_field_data(viz_s);
+    };
     
-	fclose(fp_vtk);
-	return 0;
+    read_psf_vtk_field_data(viz_s);
+    fclose(fp_vtk);
+    return 0;
 }
 
 int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
@@ -259,10 +285,11 @@ int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
 		return -1;                    /* terminate with error message */
 	};
 	
+    read_psf_vtk_num_node(viz_s);
 	read_psf_vtk_node_data(viz_s);
 	iflag_datatype = read_psf_vtk_connect_data(viz_s);
 	
-	read_psf_vtk_field_data(viz_s);
-	fclose(fp_vtk);
-	return iflag_datatype;
+    read_psf_vtk_field_data(viz_s);
+    fclose(fp_vtk);
+    return iflag_datatype;
 }

@@ -111,8 +111,8 @@
             nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
      &              - idx_trns%lstack_rlm(mp_rlm-1)
             do k_rlm = kst, ked
-              a1r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)
-              a2r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)**2
+              a1r_1d_rlm_r = sph_rlm%ar_1d_rlm(k_rlm)
+              a2r_1d_rlm_r = sph_rlm%ar_1d_rlm(k_rlm)**2
               do l_rtm = lst, led
 !
                 do nd = 1, nvector

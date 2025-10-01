@@ -1,7 +1,7 @@
 !
 !      module t_ctl_data_plane_fft
 !
-!       subroutine read_control_data_fft_plane(pfft_c)
+!       subroutine read_control_data_fft_plane(control_file_name, pfft_c)
 !
 !      Written by Kemorin
 !
@@ -21,7 +21,6 @@
       implicit    none
 !
       integer (kind = kint) :: control_file_code = 11
-      character (len = kchara) :: control_file_name='ctl_fft'
 !
       type ctl_data_plane_fft
         type(platform_data_control) :: new_p_plt
@@ -108,21 +107,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_fft_plane(pfft_c)
+      subroutine read_control_data_fft_plane(control_file_name, pfft_c)
 !
+      character (len = kchara), intent(in) :: control_file_name
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
 !
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = control_file_name)
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_fft_plane_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_fft_plane_control_data                                &
      &     (control_file_code, hd_fft_plane_ctl, pfft_c, c_buf1)
         if (pfft_c%i_fft_plane_ctl .gt. 0) exit
       end do
       close(control_file_code)
+!
+       if(c_buf1%iend .gt. 0) pfft_c%i_fft_plane_ctl = c_buf1%iend
 !
       end subroutine read_control_data_fft_plane
 !
@@ -131,6 +137,8 @@
       subroutine read_fft_plane_control_data                            &
      &         (id_control, hd_block, pfft_c, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -138,10 +146,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (pfft_c%i_fft_plane_ctl .gt. 0) return
+      call init_platforms_labels(hd_new_data, pfft_c%new_p_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -176,10 +186,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pfft_c%i_model .gt. 0) return
+      call init_phys_data_ctl_label(hd_phys_values,                     &
+     &                              pfft_c%fld_zfft_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_phys_data_control                                     &
@@ -194,6 +207,8 @@
        subroutine read_merge_step_data                                  &
      &         (id_control, hd_block, pfft_c, c_buf)
 !
+      use ctl_data_4_time_steps_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -201,10 +216,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pfft_c%i_control .gt. 0) return
+      call init_ctl_time_step_label(hd_time_step, pfft_c%t_zfft_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &
@@ -230,7 +247,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pfft_c%i_spec_file .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_plane_spec_mode_head,        &

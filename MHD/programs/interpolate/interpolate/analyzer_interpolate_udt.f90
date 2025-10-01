@@ -110,7 +110,7 @@
      &            itp_udt%t_ITP%ucd_step%increment
         if (my_rank .lt. itp_udt%gen_itp_p%ndomain_org) then
           call set_data_by_read_ucd_once                                &
-     &       (my_rank, i_step, itp_udt%gen_itp_p%org_ucd_IO,            &
+     &       (i_step, itp_udt%gen_itp_p%org_ucd_IO,                     &
      &        itp_udt%org_fld, itp_time_IO)
 !
           call nod_fields_send_recv(itp_udt%org_fem%mesh,               &

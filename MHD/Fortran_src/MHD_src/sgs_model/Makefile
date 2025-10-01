@@ -13,7 +13,9 @@ MOD_SGS = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_SGS_DIR = $(MHD_SGS_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SGS)' \
 	>> $(MAKENAME)
 
@@ -22,11 +24,8 @@ mod_list:
 	@echo $(MOD_SGS) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-module:
-	@cat Makefile.depends >> $(MAKENAME)
-
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DIR)' $(SOURCES)
+	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_SGS_DIR)' $(SOURCES)
 
 
 clean:

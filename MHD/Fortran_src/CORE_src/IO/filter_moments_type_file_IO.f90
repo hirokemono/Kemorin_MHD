@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine read_num_filter_mom_type_file(file_name, id_rank,    &
-!!     &          FEM_elens, FEM_moms)
+!!     &          FEM_elens, FEM_moms, ierr)
 !!
 !!      subroutine read_filter_elen_type_file(file_name, id_rank,       &
 !!     &          nnod, nele, FEM_elens, ierr)
@@ -47,7 +47,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_num_filter_mom_type_file(file_name, id_rank,      &
-     &          FEM_elens, FEM_moms)
+     &          FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
       use m_filter_file_names
@@ -56,6 +56,7 @@
       integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+      integer (kind=kint), intent(inout) :: ierr
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) then
@@ -66,7 +67,7 @@
       open(filter_file_code, file=file_name,                            &
      &        form='formatted', status= 'old')
       call read_filter_moment_num_type(filter_file_code,                &
-     &      FEM_elens, FEM_moms)
+     &      FEM_elens, FEM_moms, ierr)
       close(filter_file_code)
 !
       end subroutine read_num_filter_mom_type_file

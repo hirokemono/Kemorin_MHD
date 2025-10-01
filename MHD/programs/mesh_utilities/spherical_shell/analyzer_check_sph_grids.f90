@@ -59,6 +59,7 @@
       subroutine init_check_sph_grids
 !
       use m_error_IDs
+      use input_control_const_shell
 !
       integer(kind = kint) :: ierr = 0
 !
@@ -67,11 +68,9 @@
       call elpsed_label_gen_sph_grid
 !
       call start_elapsed_time(ied_total_elapsed)
-      call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
-      call set_control_4_gen_shell_grids                                &
-     &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_files1, sph_maker_G, ierr)
-      if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
+      call s_input_control_const_shell(control_file_name, SPH_MAKE_ctl, &
+     &                                 sph_files1, sph_maker_G)
+      call end_elapsed_time(ied_total_elapsed)
 !
       if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
         if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',   &
@@ -95,6 +94,7 @@
       use parallel_load_data_4_sph
 !
       integer(kind = kint) :: iflag, iflag_gl
+      character(len=kchara) :: charaint
 !
 !  ========= Generate spherical harmonics table ========================
 !
@@ -117,7 +117,12 @@
      &                       SPH_GEN%groups)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit evolution'
+      if(my_rank .eq. 0) then
+        open(999,file='flag.txt')
+        write(charaint,*) iflag_gl
+        write(999,'(a)') trim(ADJUSTL(charaint))
+        close(999)
+      end if
 !
       end subroutine analyze_check_sph_grids
 !

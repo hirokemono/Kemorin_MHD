@@ -22,6 +22,15 @@ begin visualizer
     i_step_LIC_ctl          400
   end time_step_ctl
 !
+!
+  begin tracers_control
+    array tracer_ctl
+      file tracer_ctl     'ctl_tracer_x'
+    end array tracer_ctl
+    i_step_tracer_output       20
+  end   tracers_control
+!
+!
   begin visual_control
     begin visual_domain_control
       begin viz_mesh_files_def
@@ -74,15 +83,6 @@ begin visualizer
     array  fieldline
       file  fieldline  'ctl_fline_magne'
     end array fieldline
-!
-!
-    array  anaglyph_volume_rendering
-      file  anaglyph_volume_rendering  'ctl_pvr_temp'
-    end array anaglyph_volume_rendering
-!
-    array  anaglyph_LIC_rendering
-      file  anaglyph_LIC_rendering  'ctl_LIC_magne'
-    end array anaglyph_LIC_rendering
   end  visual_control
 !
 end  visualizer

@@ -17,6 +17,8 @@
 
 /* prototypes */
 
+void center_of_mesh_triangles(struct viewer_mesh *mesh_s,
+                              double *surf_center_view);
 void take_normal_surf_mesh_c(struct viewer_mesh *mesh_s);
 
 #endif

@@ -133,7 +133,8 @@
 !!        call alloc_control_array_crii(ctl_array)
 !!  !
 !!        do
-!!          call load_one_line_from_control(id_file, c_buf)
+!!          call load_one_line_from_control(id_file, label, c_buf)
+!!          if(c_buf%iend .gt. 0) exit
 !!          if(check_end_array_flag(c_buf, label)) exit
 !!  !
 !!          if(c_buf%header_chara.eq.label) then
@@ -170,11 +171,10 @@
 !!        maxlen_1 = max_len_of_charaarray(ctl_array%num,    &
 !!       &                                ctl_array%c_tbl_1)
 !!  !
-!!        call write_array_flag_for_ctl    &
-!!       &   (id_file, level, label, ctl_array%num)
+!!        level = write_array_flag_for_ctl(id_file, level, label)
 !!        do i = 1, ctl_array%num
 !!          length = len_trim(label)
-!!          call write_space_4_parse(id_file, (level+1))
+!!          call write_space_4_parse(id_file, level)
 !!          call write_ctl_chara_cont(id_file, label)
 !!          call write_ctl_fixlen_chara(id_file, maxlen_1,     &
 !!       &      ctl_array%c_tbl_1(i))
@@ -183,7 +183,7 @@
 !!          call write_ctl_integer_cont(id_file, ctl_array%i_tbl_4(i))
 !!          write(id_file,'(a1)', ADVANCE='NO') char(10)
 !!        end do
-!!        call write_end_array_flag_for_ctl(id_file, level, label)
+!!        level = write_end_array_flag_for_ctl(id_file, level, label)
 !!  !
 !!        end subroutine write_control_array_crii
 !! ----------------------------------------------------------------------
@@ -563,9 +563,11 @@
       write(id_file,'(a)')                                              &
      &     '      do'
       write(id_file,'(2a)') '        call ',                            &
-     &                    'load_one_line_from_control(id_file, c_buf)'
+     &            'load_one_line_from_control(id_file, label, c_buf)'
       write(id_file,'(2a)') '        if',                               &
-     &                     '(check_end_array_flag(c_buf, label)) exit'
+     &            '(c_buf%iend .gt. 0) exit'
+      write(id_file,'(2a)') '        if',                               &
+     &            '(check_end_array_flag(c_buf, label)) exit'
       write(id_file,'(a)')  '!'
       write(id_file,'(2a)') '        if',                               &
      &                     '(c_buf%header_chara.eq.label) then'
@@ -634,17 +636,16 @@
       end do
 !
       write(id_file,'(a)') '!'
-      write(id_file,'(a)') '      call write_array_flag_for_ctl    &'
       write(id_file,'(a)')                                              &
-     &     '     &   (id_file, level, label, ctl_array%num)'
+     &  '      level = write_array_flag_for_ctl(id_file, level, label)'
       write(id_file,'(a)')                                              &
-     &     '      do i = 1, ctl_array%num'
+     &  '      do i = 1, ctl_array%num'
       write(id_file,'(a)')                                              &
-     &     '        length = len_trim(label)'
+     &  '        length = len_trim(label)'
       write(id_file,'(a)')                                              &
-     &     '        call write_space_4_parse(id_file, (level+1))'
+     &  '        call write_space_4_parse(id_file, level)'
       write(id_file,'(a)')                                              &
-     &     '        call write_ctl_chara_cont(id_file, label)'
+     &  '        call write_ctl_chara_cont(id_file, label)'
       do j = 1, a_WK%num_item
         if     (type_list(j:j).eq.'R' .or. type_list(j:j).eq.'r') then
           write(id_file,'(3a)')                                         &
@@ -666,7 +667,7 @@
      &        '        write(id_file,', char(39), '(a1)', char(39),     &
      &        ', ADVANCE=', char(39), 'NO', char(39), ') char(10)'
       write(id_file,'(a)')  '      end do'
-      write(id_file,'(2a)') '      call ',                              &
+      write(id_file,'(2a)') '      level = ',                           &
      &     'write_end_array_flag_for_ctl(id_file, level, label)'
       write(id_file,'(a)')  '!'
       write(id_file,'(2a)') end_routine,                                &

@@ -12,6 +12,7 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
+#include "m_vertex_buffer.h"
 
 /* prototypes */
 
@@ -19,7 +20,9 @@ void drawCube (GLfloat fSize);
 void drawCube_array (GLfloat fSize);
 void drawCube_Element(GLfloat fSize);
 void drawCube_flat(GLfloat fSize, 
-				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
+				   struct gl_strided_buffer *strided_buf,
+                   struct gl_local_buffer_address *point_buf,
+                   struct VAO_ids *cube_VAO);
 void drawCube_Element2(GLfloat fSize, 
 					   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
 

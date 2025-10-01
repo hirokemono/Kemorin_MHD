@@ -7,7 +7,7 @@
 static FILE *fp;
 
 
-unsigned char * alloc_img_buffer_to_bmp(int ihpixf, int jvpixf){
+unsigned char * alloc_RGB_buffer_to_bmp(int ihpixf, int jvpixf){
     unsigned char *image;
     if((image = (unsigned char*)calloc(3*ihpixf*jvpixf, sizeof(unsigned char))) == NULL){
         printf("malloc error for Bitmap image buffer \n");

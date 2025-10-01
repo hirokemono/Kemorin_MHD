@@ -71,7 +71,9 @@
       open(input_file_code, file = file_name, form = 'formatted')
 !
       call read_geometry_data(input_file_code, id_rank, mesh_IO, ierr)
-      call read_mesh_groups(input_file_code, group_IO)
+      if(ierr .gt. 0) return
+      call read_mesh_groups(input_file_code, group_IO, ierr)
+      if(ierr .gt. 0) return
       close(input_file_code)
 !
       end subroutine read_mesh_file
@@ -118,7 +120,15 @@
      &   'Read ascii mesh file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call read_num_node(input_file_code, id_rank, mesh_IO, ierr)
+!        write(*,*) 'read_domain_info'
+      call read_domain_info                                             &
+     &   (input_file_code, id_rank, mesh_IO%nod_comm, ierr)
+      if(ierr .ne. 0) go to 99
+!
+!        write(*,*) 'read_number_of_node'
+      call read_number_of_node(input_file_code, mesh_IO%node, ierr)
+
+ 99    continue
       close(input_file_code)
 !
 !
@@ -142,8 +152,17 @@
      &   'Read ascii mesh file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call read_num_node_ele                                            &
-     &   (input_file_code, id_rank, mesh_IO, ierr)
+      call read_domain_info                                             &
+     &   (input_file_code, id_rank, mesh_IO%nod_comm, ierr)
+      if(ierr .ne. 0) go to 99
+!
+      call read_geometry_info(input_file_code, mesh_IO%node, ierr)
+      if(ierr .ne. 0) go to 99
+!
+!        write(*,*) 'read_number_of_element'
+      call read_number_of_element(input_file_code, mesh_IO%ele, ierr)
+!
+  99  continue
       close(input_file_code)
 !
       end subroutine read_geometry_size

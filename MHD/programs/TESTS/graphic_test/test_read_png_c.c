@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 		exit(2);
 	}
 	printf("iflag_rgba %d\n", iflag_rgba);
-	copy_rgb_from_png_c(&width, &height, &iflag_rgba, cimage);
+	copy_rgb_from_png_c(width, height, iflag_rgba, cimage);
 	
 	pixout_BMP_c(argv[2], width, height, cimage);
 	write_png_rgb_c(argv[2], &width, &height, cimage);

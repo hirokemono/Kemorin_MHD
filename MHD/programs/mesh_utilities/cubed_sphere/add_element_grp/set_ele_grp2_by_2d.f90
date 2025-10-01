@@ -158,8 +158,6 @@
       subroutine count_added_egrp_item(numele, ref_ele1, ref_ele2,      &
      &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2)
 !
-      use m_add_ele_grp_parameter
-!
       use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
 !

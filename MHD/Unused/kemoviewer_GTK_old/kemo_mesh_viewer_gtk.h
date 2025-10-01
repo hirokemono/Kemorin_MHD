@@ -17,10 +17,10 @@
 #include "const_viewer_menu_glut.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_fileselector.h"
 
 /* prototypes */
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+void draw_mesh_kemo(void);
 
 #endif

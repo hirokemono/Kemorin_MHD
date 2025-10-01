@@ -11,7 +11,7 @@
 !!      subroutine dealloc_gauss_global_coefs(d_gauss)
 !!        type(global_gauss_points), intent(inout) :: d_gauss
 !!
-!!      subroutine read_gauss_global_coefs(d_gauss)
+!!      subroutine read_gauss_global_coefs(d_gauss, iend)
 !!      subroutine write_gauss_global_coefs(d_gauss)
 !!        type(global_gauss_points), intent(inout) :: d_gauss
 !!
@@ -92,13 +92,14 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine read_gauss_global_coefs(i_step, d_gauss)
+      subroutine read_gauss_global_coefs(i_step, d_gauss, iend)
 !
       use skip_comment_f
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: i_step
       type(global_gauss_points), intent(inout) :: d_gauss
+      integer(kind = kint), intent(inout) :: iend
 !
       character(len=kchara) :: fname_gauss, fname_tmp
       character(len=255) :: character_4_read
@@ -110,12 +111,14 @@
       fname_gauss = add_dat_extension(fname_tmp)
       open(id_gauss,file = fname_gauss)
 !
-      call skip_comment(character_4_read,id_gauss)
+      call skip_comment(id_gauss, character_4_read, iend)
+      if(iend .gt. 0) go to 99
       read(character_4_read,*) d_gauss%ltr_w, d_gauss%r_gauss
 !
       call alloc_gauss_global_coefs(d_gauss)
 !
-      call skip_comment(character_4_read, id_gauss)
+      call skip_comment(id_gauss, character_4_read, iend)
+      if(iend .gt. 0) go to 99
       read(character_4_read,*) l, m, rtmp
       j = l*(l+1) + m
       if(j .le. d_gauss%jmax_w) d_gauss%w_gauss(j) = rtmp
@@ -128,6 +131,8 @@
 !
   99  continue
       close(id_gauss)
+      if(iend .gt. 0) write(*,*)                                        &
+     &              'Read file error in read_gauss_global_coefs'
 !
       write(*,*) 'j, index_w(j,1:2), w_gauss(j)'
       do j = 1, d_gauss%jmax_w

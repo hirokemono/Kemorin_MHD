@@ -10,16 +10,17 @@
 !!      subroutine check_LIC_update                                     &
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
-!!      subroutine LIC_initialize(increment_lic, geofem, ele_comm,      &
+!!
+!!      subroutine LIC_initialize                                       &
+!!     &         (increment_lic, elps_PVR, elps_LIC, geofem, ele_comm,  &
 !!     &          next_tbl, nod_fld, repart_ctl, lic_ctls, lic, m_SR)
-!!      subroutine LIC_visualize(istep_lic, time, geofem, ele_comm,     &
-!!     &                         next_tbl,  nod_fld, lic, m_SR)
-!!      subroutine LIC_finalize(istep_lic, time, lic)
+!!      subroutine LIC_visualize(istep_lic, time, elps_PVR, elps_LIC,   &
+!!     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
+!!      subroutine LIC_finalize(istep_lic, time, elps_LIC, lic)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
+!!        type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
-!!
-!!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
@@ -27,6 +28,7 @@
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine dealloc_LIC_data(lic)
 !!@endverbatim
 !
       module t_lic_rendering
@@ -42,6 +44,8 @@
       use t_mesh_data
       use t_comm_table
       use t_phys_data
+      use t_particle_trace
+      use t_fieldline
       use t_next_node_ele_4_node
 !
       use t_rendering_vr_image
@@ -92,6 +96,9 @@
      &             :: hd_lic_ctl = 'LIC_rendering'
       private :: hd_lic_ctl
 !
+      type(tracer_module), save ::  dummy_tracer
+      type(fieldline_module), save:: dummy_fline
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -102,7 +109,8 @@
      &         (id_control, lic_ctls, lic, iflag_update)
 !
       use calypso_mpi_int
-      use set_pvr_control
+      use bcast_control_data_4_pvr
+      use ctl_file_each_pvr_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -132,6 +140,13 @@
         end if
         call reset_pvr_update_flags(lic_ctls%pvr_ctl_type(1))
       end if
+!
+      call bcast_pvr_update_flag(lic_ctls%pvr_ctl_type(1))
+      if(lic_ctls%pvr_ctl_type(1)%i_pvr_ctl .lt. 0) then
+        call calypso_MPI_abort(lic_ctls%pvr_ctl_type(1)%i_pvr_ctl,      &
+     &                           'control file is broken')
+      end if
+!
       call calypso_mpi_bcast_one_int(iflag_update, 0)
 !
       end subroutine check_LIC_update
@@ -141,19 +156,24 @@
       subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !
       use t_read_control_elements
+      use ctl_file_lic_pvr_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
       integer(kind = kint) :: i_lic
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       do i_lic = 1, lic_ctls%num_lic_ctl
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE') then
+        if(.not. no_file_flag(lic_ctls%fname_lic_ctl(i_lic))) then
           call read_control_lic_pvr_file                                &
      &     (id_control, lic_ctls%fname_lic_ctl(i_lic), hd_lic_ctl,      &
-     &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
+     &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic), &
+     &      c_buf1)
+          if(lic_ctls%pvr_ctl_type(i_lic)%i_pvr_ctl .ne. 1) exit
         end if
       end do
 !
@@ -161,16 +181,19 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine LIC_initialize(increment_lic, geofem, ele_comm,        &
+      subroutine LIC_initialize                                         &
+     &         (increment_lic, elps_PVR, elps_LIC, geofem, ele_comm,    &
      &          next_tbl, nod_fld, repart_ctl, lic_ctls, lic, m_SR)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
+      use ctl_data_lic_pvr_IO
       use select_LIC_rendering
 !
       integer(kind = kint), intent(in) :: increment_lic
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
@@ -184,6 +207,9 @@
       integer(kind = kint) :: i_lic, ist_img, num_img
 !
 !
+      dummy_tracer%num_trace = 0
+      dummy_fline%num_fline =  0
+!
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
       if(increment_lic .le. 0) lic%pvr%num_pvr = 0
 !
@@ -192,52 +218,30 @@
         return
       end if
 !
-      call bcast_lic_controls(lic%pvr%num_pvr,                          &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%pvr%cflag_update)
-!
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
       call set_lic_repart_reference_param                               &
      &   (repart_ctl%new_part_ctl, lic%repart_p, lic%rep_ref_m)
 !
-      call alloc_pvr_data(lic%pvr)
+      call bcast_lic_controls(lic%pvr%num_pvr,                          &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%pvr%cflag_update)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
-     &      lic%pvr%pvr_param(i_lic)%draw_param)
-      end do
+      call alloc_pvr_data(lic%pvr)
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
-      call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
-     &    lic%flag_each_repart)
-!
-      call count_num_rendering_and_images                               &
-     &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
-     &    lic%pvr%istack_pvr_images)
-      call alloc_pvr_images(lic%pvr)
-!
-      call set_rendering_and_image_pes(nprocs,                          &
-     &    lic%pvr%num_pvr, lic%pvr%pvr_param, lic_ctls%pvr_ctl_type,    &
-     &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
-     &    lic%pvr%pvr_rgb)
+      call s_set_lic_controls                                           &
+     &   (geofem%group, nod_fld, dummy_tracer, dummy_fline,             &
+     &    lic_ctls%fname_lic_ctl, lic_ctls%pvr_ctl_type,                &
+     &    lic_ctls%lic_ctl_type, lic%lic_param,                         &
+     &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+        if((no_file_flag(lic_ctls%fname_lic_ctl(i_lic)) .eqv. .FALSE.)  &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
-      end do
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
-        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
-        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
-     &                           lic%pvr%pvr_rgb(ist_img+1))
       end do
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
@@ -246,33 +250,43 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_INT_COUNT_BASED) then
-          call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
+          call init_lic_repart_ref                                      &
+     &       (elps_LIC, geofem%mesh, lic%pvr%pvr_rgb(i_lic),            &
      &        lic%lic_param(i_lic)%each_part_p, lic%rep_ref(i_lic))
         end if
       end do
 !
+      do i_lic = 1, lic%pvr%num_pvr
+        ist_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic-1)
+        num_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic  ) - ist_img
+        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
+     &                           lic%pvr%pvr_rgb(ist_img+1))
+      end do
+!
       if(lic%flag_each_repart) return
       if(lic%repart_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
-        call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
-     &                           lic%repart_p, lic%rep_ref_m)
+        call init_lic_repart_ref                                        &
+     &     (elps_LIC, geofem%mesh, lic%pvr%pvr_rgb(1),                  &
+     &      lic%repart_p, lic%rep_ref_m)
       end if
 !
-      call LIC_initialize_w_shared_mesh(geofem, ele_comm, next_tbl,     &
+      call LIC_initialize_w_shared_mesh                                 &
+     &   (elps_PVR, elps_LIC, geofem, ele_comm, next_tbl,               &
      &    lic%repart_p, lic%rep_ref_m, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine LIC_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize(istep_lic, time, geofem, ele_comm,       &
-     &                         next_tbl,  nod_fld, lic, m_SR)
+      subroutine LIC_visualize(istep_lic, time, elps_PVR, elps_LIC,     &
+     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use select_LIC_rendering
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_PVR, elps_LIC
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -285,27 +299,30 @@
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.lt.0) return
 !
       if(lic%flag_each_repart) then
-        call LIC_visualize_w_each_repart(istep_lic, time,               &
+        call LIC_visualize_w_each_repart                                &
+     &     (istep_lic, time, elps_PVR, elps_LIC,                        &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
      &      lic%rep_ref_m, lic%repart_data, lic%pvr, lic%lic_param,     &
      &      lic%rep_ref, m_SR)
       else
         call LIC_visualize_w_shared_mesh                                &
-     &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
-     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
+     &     (istep_lic, time, elps_PVR, elps_LIC, geofem, nod_fld,       &
+     &      lic%repart_p, lic%repart_data, lic%pvr, lic%lic_param,      &
+     &      m_SR)
       end if
 !
       end subroutine LIC_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_finalize(istep_lic, time, lic)
+      subroutine LIC_finalize(istep_lic, time, elps_LIC, lic)
 !
       use t_lic_repart_reference
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
+      type(elapsed_lables), intent(in) :: elps_LIC
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
       integer(kind = kint) :: i_lic
@@ -317,7 +334,8 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .ne. i_INT_COUNT_BASED) cycle
-        call output_LIC_line_integrate_count(time, lic%rep_ref(i_lic))
+        call output_LIC_line_integrate_count(time, elps_LIC,            &
+     &                                       lic%rep_ref(i_lic))
       end do
 !
       end subroutine LIC_finalize

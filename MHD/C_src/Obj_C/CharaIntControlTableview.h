@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 #include "calypso_param_c.h"
 #include "t_control_chara_int_IO.h"
-#include "load_MHD_control_c.h"
+#include "c_ctl_data_SGS_MHD.h"
 
 @interface CharaIntControlTableview : NSObject {
     NSMutableDictionary * charaIntControlDictionary;

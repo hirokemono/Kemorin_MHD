@@ -21,6 +21,6 @@
 
 /* prototypes */
 
-void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh);
+void draw_mesh_kemo_glui(void);
 
 #endif
