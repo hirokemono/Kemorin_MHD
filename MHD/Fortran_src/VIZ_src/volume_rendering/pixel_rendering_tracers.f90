@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine rendering_tracers(viewpoint_vec, color_param,        &
 !!     &          tracer_pvr_prm, num_tracer, particle_lc,              &
-!!     &          xx4_tgt, c_tgt, rgba_ray)
+!!     &          xx4_tgt, c_tgt, rgba_ray, rgba_now)
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !!        type(tracer_render_param), intent(in) :: tracer_pvr_prm
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
@@ -18,10 +18,10 @@
 !!     &                      :: particle_lc(np_smp,num_tracer)
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1)
-!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !!      subroutine rendering_fieldlines(viewpoint_vec, color_param,     &
 !!     &          fline_pvr_prm, num_fline, fline_lc,                   &
-!!     &          xx4_tgt, c_tgt, rgba_ray)
+!!     &          xx4_tgt, c_tgt, rgba_ray, rgba_now)
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(tracer_render_param), intent(in) :: fline_pvr_prm
@@ -29,7 +29,7 @@
 !!        type(local_fieldline), intent(in) :: fline_lc(np_smp,num_fline)
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1)
-!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !!@endverbatim
 !
       module pixel_rendering_tracers
@@ -54,7 +54,7 @@
 !
       subroutine rendering_tracers(viewpoint_vec, color_param,          &
      &          tracer_pvr_prm, num_tracer, particle_lc,                &
-     &          xx4_tgt, c_tgt, rgba_ray)
+     &          xx4_tgt, c_tgt, rgba_ray, rgba_now)
 !
       use set_rgba_4_each_pixel
 !
@@ -69,7 +69,7 @@
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
 !
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !
       integer(kind = kint) :: i_fln, inum, increment, ip
       integer(kind = kint_gl) :: i_global
@@ -103,11 +103,11 @@
      &                          .eq. iflag_single_color) then
               call surface_rendering_with_light                         &
      &           (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,          &
-     &            opacity, color_param, rgba_ray)
+     &            opacity, color_param, rgba_ray, rgba_now)
             else
               call color_plane_with_light                               &
      &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
-     &            opacity, color_param, rgba_ray)
+     &            opacity, color_param, rgba_ray, rgba_now)
             end if
 !
           end do
@@ -120,7 +120,7 @@
 !
       subroutine rendering_fieldlines(viewpoint_vec, color_param,       &
      &          fline_pvr_prm, num_fline, fline_lc,                     &
-     &          xx4_tgt, c_tgt, rgba_ray)
+     &          xx4_tgt, c_tgt, rgba_ray, rgba_now)
 !
       use set_rgba_4_each_pixel
 !
@@ -133,7 +133,7 @@
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1)
 !
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !
       integer(kind = kint) :: i_fln, iedge, inod, increment, ip
       integer(kind = kint) :: i1, i2
@@ -177,11 +177,11 @@
      &                          .eq. iflag_single_color) then
               call surface_rendering_with_light                         &
      &           (viewpoint_vec, xx4_tgt, grad_tgt, rgb_color,          &
-     &            opacity, color_param, rgba_ray)
+     &            opacity, color_param, rgba_ray, rgba_now)
             else
               call color_plane_with_light                               &
      &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
-     &            opacity, color_param, rgba_ray)
+     &            opacity, color_param, rgba_ray, rgba_now)
             end if
 !
           end do

@@ -40,6 +40,7 @@
       use t_pvr_colormap_parameter
       use set_color_4_pvr
       use set_rgba_4_each_pixel
+      use phong_reflection
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, o_data
@@ -76,7 +77,7 @@
 !
 !            color(1:3) = x4_ray(1:4) / ray_length
       allocate(rgb(4))
-      call phong_reflection(viewpoint_vec,                              &
+      call cal_phong_reflection(viewpoint_vec,                          &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
      &    grad, color_param%pvr_lighting_real,                          &
      &    x4in_model(1), x4out_model(1), color, rgb(1))
@@ -105,6 +106,7 @@
       use t_pvr_colormap_parameter
       use set_color_4_pvr
       use set_rgba_4_each_pixel
+      use phong_reflection
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, grad(3), b_data
@@ -124,7 +126,7 @@
 !
 !
       allocate(rgb(4))
-      call phong_reflection(viewpoint_vec,                              &
+      call cal_phong_reflection(viewpoint_vec,                          &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
      &    grad, color_param%pvr_lighting_real,                          &
      &    x4out_model(1), x4out_model(1), color, rgb(1))

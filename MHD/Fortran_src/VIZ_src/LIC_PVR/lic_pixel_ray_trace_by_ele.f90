@@ -16,10 +16,22 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+!!        integer(kind = kint), intent(in) :: iflag_check
+!!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
+!!        real(kind = kreal), intent(in) :: ray_vec4(4)
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        integer(kind = kint), intent(inout) :: isurf_org(3)
+!!        integer(kind = kint), intent(inout) :: iflag_comm
+!!        real(kind = kreal), intent(inout) :: screen4_st(4)
+!!        real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
 !!        type(lic_line_counter_smp), intent(inout) :: line_count_smp
 !!@endverbatim
 !
@@ -101,7 +113,8 @@
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
       real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
-
+      real(kind = kreal) :: rgba_now(4)
+!
       real(kind = kreal) :: rlic_grad(0:3), grad_tgt(3)
       real(kind = kreal) :: xx4_lic(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
@@ -159,8 +172,9 @@
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
         if(opacity_bc .gt. SMALL_RAY_TRACE) then
           rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-          call plane_rendering_with_light(viewpoint_vec,                &
-     &        xx4_st, rlic_grad(1), opacity_bc,  color_param, rgba_ray)
+          call plane_rendering_with_light                               &
+     &       (viewpoint_vec, xx4_st, rlic_grad(1),                      &
+     &        opacity_bc, color_param, rgba_ray, rgba_now)
         end if
       end if
 !
@@ -242,8 +256,9 @@
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
           if(opacity_bc .gt. SMALL_RAY_TRACE) then
             rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-            call plane_rendering_with_light(viewpoint_vec, xx4_tgt,     &
-     &          rlic_grad(1), opacity_bc, color_param, rgba_ray)
+            call plane_rendering_with_light                             &
+     &         (viewpoint_vec, xx4_tgt, rlic_grad(1),                   &
+     &          opacity_bc, color_param, rgba_ray, rgba_now)
           end if
 !
 !   3d lic calculation at current xx position
@@ -325,7 +340,7 @@
               call color_plane_with_light                               &
      &           (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,       &
      &            draw_param%sect_opacity(i_psf), color_param,          &
-     &            rgba_ray)
+     &            rgba_ray, rgba_now)
             end if
           end do
 !

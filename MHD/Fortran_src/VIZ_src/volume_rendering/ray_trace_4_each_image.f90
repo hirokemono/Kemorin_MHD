@@ -146,6 +146,7 @@
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4)
+      real(kind = kreal) :: rgba_now(4)
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -159,7 +160,7 @@
      &    surf%ie_surf, isurf_end, xi, node%xx, xx4_st)
       call cal_field_on_surf_scalar                                     &
      &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
-     &    surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
+     &    surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1))
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
@@ -170,7 +171,7 @@
         call rendering_surace_group                                     &
      &     (isurf_end, surf, surf_grp, sf_grp_4_sf,                     &
      &      viewpoint_vec, modelview_mat, draw_param, color_param,      &
-     &      xx4_st, rgba_ray)
+     &      xx4_st, rgba_ray, rgba_now)
       end if
 !
       do
@@ -225,29 +226,30 @@
           call rendering_surace_group                                   &
      &       (isurf_end, surf, surf_grp, sf_grp_4_sf,                   &
      &        viewpoint_vec, modelview_mat, draw_param, color_param,    &
-     &        xx4_tgt, rgba_ray)
+     &        xx4_tgt, rgba_ray, rgba_now)
 !
           call rendering_sections                                       &
      &       (viewpoint_vec, draw_param, color_param,                   &
-     &        xx4_st, xx4_tgt, c_org(1), c_tgt(1), rgba_ray, iflag_hit)
+     &        xx4_st, xx4_tgt, c_org(1), c_tgt(1),                      &
+     &        rgba_ray, rgba_now, iflag_hit)
           call rendering_isosurfaces(iele, viewpoint_vec, field_pvr,    &
-     &                               draw_param, color_param,           &
-     &                               xx4_tgt, c_org, c_tgt, rgba_ray)
+     &        draw_param, color_param, xx4_tgt, c_org, c_tgt,           &
+     &        rgba_ray, rgba_now)
 !
           call rendering_tracers                                        &
      &       (viewpoint_vec, color_param, draw_param%tracer_pvr_prm,    &
      &        tracer%num_trace, tracer%particle_lc,                     &
-     &        xx4_tgt, c_tgt, rgba_ray)
+     &        xx4_tgt, c_tgt, rgba_ray, rgba_now)
           call rendering_fieldlines                                     &
      &       (viewpoint_vec, color_param, draw_param%fline_pvr_prm,     &
      &        fline%num_fline, fline%fline_lc,                          &
-     &        xx4_tgt, c_tgt, rgba_ray)
+     &        xx4_tgt, c_tgt, rgba_ray, rgba_now)
 !
           grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
           call s_set_rgba_4_each_pixel                                  &
      &       (viewpoint_vec, xx4_st, xx4_tgt,                           &
-     &        c_tgt(1), grad_tgt, color_param, rgba_ray)
+     &        c_tgt(1), grad_tgt, color_param, rgba_ray, rgba_now)
         end if
 !
         if(isurf_org(1).eq.0) then
