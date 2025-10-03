@@ -113,16 +113,7 @@
 !
       flag = check_ene_fluxes_w_sym(field_name)
       if(flag) then
-        if      (field_name .eq. ua_d_ws_x_us%name) then
-          eflux_sym1_sym2%i_m_advect_work =   i_phys
-        else if (field_name .eq. ua_d_wa_x_ua%name) then
-          eflux_asym1_asym2%i_m_advect_work = i_phys
-        else if (field_name .eq. us_d_ws_x_ua%name) then
-          eflux_sym1_asym2%i_m_advect_work =  i_phys
-        else if (field_name .eq. us_d_wa_x_us%name) then
-          eflux_asym1_sym2%i_m_advect_work =  i_phys
-!
-        else if (field_name .eq. u_dot_Bsym_nabla_Bsym%name) then
+        if (field_name .eq. u_dot_Bsym_nabla_Bsym%name) then
           eflux_sym1_sym2%i_m_tension_wk =  i_phys
         else if (field_name .eq. u_dot_Basym_nabla_Basym%name) then
           eflux_asym1_asym2%i_m_tension_wk =  i_phys

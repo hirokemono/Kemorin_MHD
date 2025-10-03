@@ -71,6 +71,8 @@
 !!    Field name [Address]
 !!
 !!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect_work]
+!!   wk_against_inertia_by_filtered
+!!                              [eflux_by_filter%i_nega_m_advect_wk]
 !!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_nega_ujb]
 !!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
@@ -137,8 +139,8 @@
 !
         else if(field_name .eq. vecp_induction_by_filtered%name) then
           force_by_filter%i_vp_induct =    i_phys
-        else if(field_name .eq. magnetic_induction_by_filtered%name)    &
-     &   then
+        else if(field_name                                              &
+     &           .eq. magnetic_induction_by_filtered%name) then
           force_by_filter%i_induction =  i_phys
         else if(field_name .eq. magnetic_stretch_by_filtered%name) then
           force_by_filter%i_mag_stretch =  i_phys
@@ -280,37 +282,40 @@
 !
       flag = check_filter_enegy_fluxes(field_name)
       if(flag) then
-        if (field_name .eq. inertia_work_by_filtered%name) then
+        if     (field_name .eq. inertia_work_by_filtered%name) then
           eflux_by_filter%i_m_advect_work = i_phys
-        else if (field_name .eq. wk_against_Lorentz_by_filtered%name)   &
+        else if(field_name .eq. wk_against_inertia_by_filtered%name)    &
+     &   then
+          eflux_by_filter%i_nega_m_advect_wk =      i_phys
+        else if(field_name .eq. wk_against_Lorentz_by_filtered%name)    &
      &   then
           eflux_by_filter%i_nega_ujb =      i_phys
-        else if (field_name .eq. Lorentz_work_by_filtered%name) then
+        else if(field_name .eq. Lorentz_work_by_filtered%name) then
           eflux_by_filter%i_ujb =           i_phys
-        else if (field_name .eq. mag_tension_work_by_filtered%name)     &
+        else if(field_name .eq. mag_tension_work_by_filtered%name)      &
      &   then
           eflux_by_filter%i_m_tension_wk =  i_phys
 !
-        else if (field_name .eq. filtered_buoyancy_flux%name) then
+        else if(field_name .eq. filtered_buoyancy_flux%name) then
           eflux_by_filter%i_t_buo_gen =     i_phys
-        else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
+        else if(field_name .eq. filtered_comp_buoyancy_flux%name) then
           eflux_by_filter%i_c_buo_gen =     i_phys
 !
-        else if (field_name .eq. mag_ene_generation_by_filtered%name)   &
+        else if(field_name .eq. mag_ene_generation_by_filtered%name)    &
      &   then
           eflux_by_filter%i_me_gen =           i_phys
-        else if (field_name .eq. mag_stretch_flux_by_filtered%name)     &
+        else if(field_name .eq. mag_stretch_flux_by_filtered%name)      &
      &   then
           eflux_by_filter%i_mag_stretch_flux = i_phys
 !
-        else if (field_name .eq. temp_generation_by_filtered%name) then
+        else if(field_name .eq. temp_generation_by_filtered%name) then
           eflux_by_filter%i_temp_gen =  i_phys
-        else if (field_name .eq. part_temp_gen_by_filtered%name) then
+        else if(field_name .eq. part_temp_gen_by_filtered%name) then
           eflux_by_filter%i_par_t_gen = i_phys
 !
-        else if (field_name .eq. comp_generation_by_filtered%name) then
+        else if(field_name .eq. comp_generation_by_filtered%name) then
           eflux_by_filter%i_comp_gen =  i_phys
-        else if (field_name .eq. part_comp_gen_by_filtered%name) then
+        else if(field_name .eq. part_comp_gen_by_filtered%name) then
           eflux_by_filter%i_par_c_gen = i_phys
         end if
       end if

@@ -195,8 +195,9 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(check_field_list_ctl(inertia_work_by_filtered,                 &
-     &                        field_ctl)) then
+      if(     check_field_list_ctl(inertia_work_by_filtered, field_ctl) &
+     &   .or. check_field_list_ctl(wk_against_inertia_by_filtered,      &
+     &                             field_ctl)) then
          call add_phys_name_ctl(velocity, field_ctl)
          call add_phys_name_ctl(inertia_by_filtered, field_ctl)
       end if

@@ -183,7 +183,14 @@
         call cal_dot_product_no_coef(nnod,                              &
      &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_ujb) )
+     &      flx_rtp(1,fs_trns_eflux%i_ujb))
+      end if
+!
+      if(fs_trns_eflux%i_nega_ujb .gt. 0) then
+        call cal_dot_product_w_coef(nnod, dminus,                       &
+     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      flx_rtp(1,fs_trns_eflux%i_nega_ujb))
       end if
 !
       end subroutine cal_work_of_lorentz_on_node
@@ -209,11 +216,19 @@
 !
       real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
 !
+!
       if(fs_trns_eflux%i_m_advect_work .gt. 0) then
         call cal_dot_product_no_coef(nnod,                              &
      &      frc_rtp(1,f_trns_frc%i_m_advect),                           &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
-     &      flx_rtp(1,fs_trns_eflux%i_m_advect_work) )
+     &      flx_rtp(1,fs_trns_eflux%i_m_advect_work))
+      end if
+!
+      if(fs_trns_eflux%i_nega_m_advect_wk .gt. 0) then
+        call cal_dot_product_no_coef(nnod,                              &
+     &      frc_rtp(1,f_trns_frc%i_m_advect),                           &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      flx_rtp(1,fs_trns_eflux%i_nega_m_advect_wk))
       end if
 !
       end subroutine cal_work_of_inertia_on_node

@@ -17,21 +17,20 @@
 !!
 !!    Field name [Address]
 !!
-!!   mns_ua_d_ws_x_us, mns_ua_d_wa_x_ua:
-!!   mns_us_d_ws_x_ua, mns_us_d_wa_x_us,
+!!   mns_ua_d_ws_x_us, mns_ua_d_wa_x_ua,
+!!   mns_us_d_ws_x_ua, mns_us_d_wa_x_us: [eflux%i_m_advect_work]
 !!          Work of Reynolds stress   -u \cdot (\omega \times u)
-!!   ua_d_ws_x_us, ua_d_wa_x_ua, us_d_ws_x_ua, us_d_wa_x_us:
+!!   ua_d_ws_x_us, ua_d_wa_x_ua,
+!!   us_d_ws_x_ua, us_d_wa_x_us:         [eflux%i_nega_m_advect_wk]
 !!          Work against Reynolds stress   u \cdot (\omega \times u)
 !!
-!!   ua_d_js_x_bs, ua_d_ja_x_ba, us_d_js_x_ba, us_d_ja_x_bs:
+!!   ua_d_js_x_bs, ua_d_ja_x_ba,
+!!   us_d_js_x_ba, us_d_ja_x_bs:         [eflux%i_ujb]
 !!          Work of Lorentz force      u \cdot (J \times B)
-!!   mns_us_d_js_x_ba, mns_us_d_ja_x_bs:
-!!   mns_ua_d_js_x_bs, mns_ua_d_ja_x_ba,
+!!   mns_us_d_js_x_ba, mns_us_d_ja_x_bs,
+!!   mns_ua_d_js_x_bs, mns_ua_d_ja_x_ba: [eflux%i_nega_ujb]
 !!          Work against Lorentz force       -u \cdot (J \times B)
 !!
-!!   inertia_work_sym          [eflux_by_filter%i_m_advect_work]
-!!   wk_against_Lorentz_sym    [eflux_by_filter%i_nega_ujb]
-!!   Lorentz_work_sym          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_sym      [eflux_by_filter%i_m_tension_wk]
 !!
 !!   sym_buoyancy_flux            [eflux_by_filter%i_t_buo_gen]
