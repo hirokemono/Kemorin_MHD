@@ -196,6 +196,9 @@
       call add_field_4_sph_trns_by_pol(d_rj,                            &
      &    ipol_fil_frc%i_comp_buo, iphys_fil_frc%i_comp_buo,            &
      &    b_trns_fil_frc%i_comp_buo, trns)
+      call add_field_4_sph_trns_by_pol(d_rj,                            &
+     &    ipol_fil_frc%i_buoyancy, iphys_fil_frc%i_buoyancy,            &
+     &    b_trns_fil_frc%i_buoyancy, trns)
 !
       call add_field_4_sph_trns_by_pol(d_rj,                            &
      &    ipol_fil_frc%i_induction, iphys_fil_frc%i_induction,          &
@@ -249,6 +252,7 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_rot_fil_frc%i_lorentz, iphys_rot_fil_frc%i_lorentz,      &
      &    b_trns_rot_fil_frc%i_lorentz, trns)
+!
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_rot_fil_frc%i_thrm_buo, iphys_rot_fil_frc%i_thrm_buo,    &
      &    b_trns_rot_fil_frc%i_thrm_buo, trns)

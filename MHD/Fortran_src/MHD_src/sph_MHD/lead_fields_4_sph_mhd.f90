@@ -138,6 +138,7 @@
      &   (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol%forces,         &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &
      &    ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call cal_total_buoyancy(SPH_MHD%ipol%forces, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
@@ -158,6 +159,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_asym, MHD_prop%fl_prop,            &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call cal_total_buoyancy(SPH_MHD%ipol%forces_by_sym_asym,          &
+     &                        SPH_MHD%fld)
 !
       call sel_field_address_for_buoyancies(SPH_MHD%ipol%asym_fld,      &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
@@ -165,6 +168,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_sym, MHD_prop%fl_prop,             &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call cal_total_buoyancy(SPH_MHD%ipol%forces_by_sym_sym,           &
+     &                        SPH_MHD%fld)
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
