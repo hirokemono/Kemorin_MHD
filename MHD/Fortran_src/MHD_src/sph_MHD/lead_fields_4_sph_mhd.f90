@@ -422,6 +422,7 @@
       use cal_energy_flux_rtp
       use cal_ene_flux_by_sym_rtp
       use cal_helicities_rtp
+      use cal_self_buoyancies_sph
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -444,6 +445,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
+!      Evaluate total rotation of buoyancy
+      call cal_total_buoyancy(ipol%rot_forces, rj_fld)
 !      Evaluate magnetic induction with respect to equatorial symmetry
       call s_cal_mag_induct_by_sym_rj                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc, trans_p%leg, ipol, rj_fld)
