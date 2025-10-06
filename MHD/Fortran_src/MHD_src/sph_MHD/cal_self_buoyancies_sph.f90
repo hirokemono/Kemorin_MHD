@@ -26,6 +26,12 @@
 !!      subroutine cal_total_buoyancy(i_frc, fld)
 !!        type(base_force_address), intent(in) :: i_frc
 !!        type(phys_data), intent(inout) :: fld
+!!      subroutine cal_total_div_buoyancy(i_div_frc, fld)
+!!        type(base_force_address), intent(in) :: i_div_frc
+!!        type(phys_data), intent(inout) :: fld
+!!      subroutine cal_total_buoyancy_flux(i_eflux, fld)
+!!        type(energy_flux_address), intent(in) :: i_eflux
+!!        type(phys_data), intent(inout) :: fld
 !!@endverbatim
 !!
 !!@param sph_bc_U  Structure for basic velocity
@@ -48,7 +54,7 @@
 !
       implicit  none
 !
-      private :: sel_buoyancy_sph_rj
+      private :: sel_buoyancy_sph_rj, cal_total_buoyancy_scalar
 !
 !-----------------------------------------------------------------------
 !
@@ -177,31 +183,60 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine cal_total_div_buoyancy(i_div_frc, fld)
+!
+      type(base_force_address), intent(in) :: i_div_frc
+      type(phys_data), intent(inout) :: fld
+!
+!
+      if(i_div_frc%i_buoyancy .le. 0) return
+      call cal_total_buoyancy_scalar                                    &
+     &  (i_div_frc%i_thrm_buo, i_div_frc%i_comp_buo,                    &
+     &   i_div_frc%i_buoyancy, fld)
+!
+      end subroutine cal_total_div_buoyancy
+!
+! ----------------------------------------------------------------------
+!
       subroutine cal_total_buoyancy_flux(i_eflux, fld)
 !
       use t_energy_flux_labels
-      use cal_add_smp
-      use copy_nodal_fields
 !
       type(energy_flux_address), intent(in) :: i_eflux
       type(phys_data), intent(inout) :: fld
 !
 !
       if(i_eflux%i_buoyancy_flux .le. 0) return
-      if(i_eflux%i_t_buo_gen*i_eflux%i_c_buo_gen .gt. 0) then
-        call add_2_nod_scalars(fld, i_eflux%i_t_buo_gen,                &
-     &      i_eflux%i_c_buo_gen, i_eflux%i_buoyancy_flux)
-      else if(i_eflux%i_t_buo_gen .gt. 0) then
-        call copy_scalar_component(fld, i_eflux%i_t_buo_gen,            &
-     &                                  i_eflux%i_buoyancy_flux)
-      else if(i_eflux%i_c_buo_gen .gt. 0) then
-        call copy_scalar_component(fld, i_eflux%i_c_buo_gen,            &
-     &                                  i_eflux%i_buoyancy_flux)
-      else
-        call clear_field_data(fld, n_scalar, i_eflux%i_buoyancy_flux)
-      end if
+      call cal_total_buoyancy_scalar                                    &
+     &  (i_eflux%i_t_buo_gen, i_eflux%i_c_buo_gen,                      &
+     &   i_eflux%i_buoyancy_flux, fld)
 !
       end subroutine cal_total_buoyancy_flux
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine cal_total_buoyancy_scalar(i_thrm, i_comp, i_buo, fld)
+!
+      use cal_add_smp
+      use copy_nodal_fields
+!
+      integer(kind = kint), intent(in) :: i_thrm, i_comp
+      integer(kind = kint), intent(in) :: i_buo
+      type(phys_data), intent(inout) :: fld
+!
+!
+      if(i_thrm*i_comp .gt. 0) then
+        call add_2_nod_scalars(fld, i_thrm, i_comp, i_buo)
+      else if(i_thrm .gt. 0) then
+        call copy_scalar_component(fld, i_thrm, i_buo)
+      else if(i_comp .gt. 0) then
+        call copy_scalar_component(fld, i_comp, i_buo)
+      else
+        call clear_field_data(fld, n_scalar, i_buo)
+      end if
+!
+      end subroutine cal_total_buoyancy_scalar
 !
 ! ----------------------------------------------------------------------
 !

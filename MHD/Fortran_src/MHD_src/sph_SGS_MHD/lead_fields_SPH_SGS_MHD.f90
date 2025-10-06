@@ -178,6 +178,7 @@
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
       use sum_rot_of_filter_forces
+      use cal_self_buoyancies_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -214,6 +215,8 @@
      &    ipol_LES%filter_fld, ipol_LES%force_by_filter,                &
      &    ipol_LES%div_frc_by_filter, rj_fld)
 !
+      call cal_total_div_buoyancy(ipol%div_forces, rj_fld)
+      call cal_total_div_buoyancy(ipol_LES%div_frc_by_filter, rj_fld)
       call sum_div_of_forces                                            &
      &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
       call sum_div_of_filtered_forces(MHD_prop%fl_prop,                 &
