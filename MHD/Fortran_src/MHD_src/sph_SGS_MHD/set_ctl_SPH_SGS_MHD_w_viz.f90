@@ -96,7 +96,8 @@
       integer(kind = kint) :: ierr
 !
 !       set nodal field list
-      if(iflag_debug.gt.0) write(*,*) 'set_SGS_field_control'
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
       call set_SGS_field_control(.TRUE., model_ctl%fld_ctl%field_ctl,   &
      &                           nod_fld, ierr)
 !
@@ -179,7 +180,8 @@
 !
 !    set nodal data
 !
-        if (iflag_debug.gt.0) write(*,*) 'set_SGS_field_control'
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
+     &        'Spectr field data names:'
         call set_SGS_field_control(.TRUE., field_ctl, rj_fld, ierr)
       end if
 !

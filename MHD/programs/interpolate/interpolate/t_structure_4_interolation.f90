@@ -149,6 +149,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
       call set_SGS_field_control(.TRUE., fld_ctl%field_ctl,             &
      &                           nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)

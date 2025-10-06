@@ -118,7 +118,8 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_control'
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
       call set_SGS_field_control                                        &
      &   (.TRUE., diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl,             &
      &    nod_fld, ierr)
@@ -159,7 +160,8 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_control'
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
       call set_SGS_field_control                                        &
      &   (.TRUE., diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl,             &
      &    nod_fld, ierr)

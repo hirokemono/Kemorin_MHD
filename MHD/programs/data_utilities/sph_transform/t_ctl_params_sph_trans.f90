@@ -129,8 +129,12 @@
 !
 !   set physical values
 !
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Spectr field data names:'
       call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
      &                           SPH_TRNS%fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
       call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
      &                           FEM_STR%field, ierr)
 !
@@ -260,7 +264,7 @@
 !   set physical values
 !
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
-     &        'Sphectr field data names:'
+     &        'Spectr field data names:'
       call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
      &                           SPH_TRNS%fld, ierr)
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &

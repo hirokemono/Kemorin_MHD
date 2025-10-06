@@ -93,6 +93,8 @@
 !
 !    set nodal data
 !
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
+     &        'Grid field data names:'
         call set_SGS_field_control(.TRUE., field_ctl, nod_fld, ierr)
       end if
 !

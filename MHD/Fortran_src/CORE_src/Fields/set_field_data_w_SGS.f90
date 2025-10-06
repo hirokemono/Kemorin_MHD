@@ -73,7 +73,6 @@
       end if
 !
       if(iflag_debug .lt. iflag_routine_msg) return
-      write(*,*) 'check_nodal_field_name for fld'
       call check_nodal_field_name(id_std, fld)
 !
       end subroutine set_SGS_field_control
