@@ -340,7 +340,7 @@
      &    rj_fld)
 !
       call sum_div_of_forces                                            &
-     &    (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
+     &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v(sph%sph_rj, sph_MHD_bc%sph_bc_U,   &

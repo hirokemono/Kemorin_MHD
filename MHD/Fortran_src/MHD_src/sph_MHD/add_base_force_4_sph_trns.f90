@@ -371,6 +371,16 @@
      &    ipol_div_frc%i_Coriolis, iphys_div_frc%i_Coriolis,            &
      &    b_trns_div_frc%i_Coriolis, trns)
 !
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_div_frc%i_thrm_buo, iphys_div_frc%i_thrm_buo,            &
+     &    b_trns_div_frc%i_thrm_buo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_div_frc%i_comp_buo, iphys_div_frc%i_comp_buo,            &
+     &    b_trns_div_frc%i_comp_buo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_div_frc%i_buoyancy, iphys_div_frc%i_buoyancy,            &
+     &    b_trns_div_frc%i_buoyancy, trns)
+!
       end subroutine add_div_force_4_sph_trns_snap
 !
 !-----------------------------------------------------------------------
