@@ -129,10 +129,10 @@
 !
 !   set physical values
 !
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, SPH_TRNS%fld, ierr)
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
+      call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
+     &                           SPH_TRNS%fld, ierr)
+      call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
+     &                           FEM_STR%field, ierr)
 !
       SPH_STR%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then
@@ -259,10 +259,14 @@
 !
 !   set physical values
 !
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, SPH_TRNS%fld, ierr)
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Sphectr field data names:'
+      call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
+     &                           SPH_TRNS%fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
+      call set_SGS_field_control(.TRUE., spt_ctl%fld_ctl%field_ctl,     &
+     &                           FEM_STR%field, ierr)
 !
       SPH_STR%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then

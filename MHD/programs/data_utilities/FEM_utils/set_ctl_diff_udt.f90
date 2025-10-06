@@ -71,9 +71,9 @@
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering(diff_ctl%elayer_d_ctl)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_ctl_by_viz'
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
+      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_control'
+      call set_SGS_field_control(.TRUE., diff_ctl%fld_d_ctl%field_ctl,  &
+     &                           nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
