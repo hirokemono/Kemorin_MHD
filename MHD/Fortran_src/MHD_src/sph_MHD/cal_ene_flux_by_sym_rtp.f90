@@ -98,11 +98,22 @@
      &    bs_trns%sym_fld, bs_trns%sym_fld,                             &
      &    fe_trns%eflux_to_sym_by_sym_asym,                             &
      &    trns_b_snap, trns_b_snap, trns_f_eflux)
+      call pole_buoyancy_flux_rtp                                       &
+     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
+     &    bs_trns%sym_fld, bs_trns%sym_fld,                             &
+     &    fe_trns%eflux_to_sym_by_sym_asym,                             &
+     &    trns_b_snap, trns_b_snap, trns_f_eflux)
+!
       call cal_buoyancy_flux_rtp                                        &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
      &   bs_trns%asym_fld, bs_trns%asym_fld,                            &
      &   fe_trns%eflux_to_asym_by_sym_sym,                              &
      &   trns_b_snap, trns_b_snap, trns_f_eflux)
+      call pole_buoyancy_flux_rtp                                       &
+     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
+     &    bs_trns%asym_fld, bs_trns%asym_fld,                           &
+     &    fe_trns%eflux_to_asym_by_sym_sym,                             &
+     &    trns_b_snap, trns_b_snap, trns_f_eflux)
 !
 !
      call cal_work_of_inertia_on_node                                   &

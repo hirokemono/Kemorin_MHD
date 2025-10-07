@@ -58,6 +58,8 @@
      &          bs_trns_base, bs_trns_scalar, fs_trns_eflux,            &
      &          trns_b_snap, trns_b_scl, trns_f_eflux)
 !
+      use cal_self_buoyancies_sph
+!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
@@ -95,9 +97,14 @@
           call sel_buoyancy_flux_rtp(sph_rtp, fl_prop%coef_comp_buo,    &
      &        trns_b_scl%fld_rtp(1,bs_trns_scalar%i_light),             &
      &        trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),               &
-     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_gen) )
+     &        trns_f_eflux%fld_rtp(1,fs_trns_eflux%i_c_buo_gen))
         end if
       end if
+!
+      call cal_total_buoyancy_scalar                                    &
+     &   (fs_trns_eflux%i_t_buo_gen, fs_trns_eflux%i_c_buo_gen,         &
+     &    fs_trns_eflux%i_buoyancy_flux, sph_rtp%nnod_rtp,              &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
 !
       end subroutine cal_buoyancy_flux_rtp
 !
@@ -107,6 +114,8 @@
      &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,             &
      &          bs_trns_base, bs_trns_scalar, fs_trns_eflux,            &
      &          trns_b_snap, trns_b_scl, trns_f_eflux)
+!
+      use cal_self_buoyancies_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -156,6 +165,11 @@
      &        trns_f_eflux%fld_pole(1,fs_trns_eflux%i_c_buo_gen) )
         end if
       end if
+!
+      call cal_total_buoyancy_scalar                                    &
+     &   (fs_trns_eflux%i_t_buo_gen, fs_trns_eflux%i_c_buo_gen,         &
+     &    fs_trns_eflux%i_buoyancy_flux, sph_rtp%nnod_pole,             &
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
       end subroutine pole_buoyancy_flux_rtp
 !
