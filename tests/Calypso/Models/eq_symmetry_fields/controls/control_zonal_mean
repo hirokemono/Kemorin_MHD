@@ -23,8 +23,8 @@ begin surface_rendering
       output_field  sym_magnetic_field           spherical_vector
       output_field  asym_magnetic_field          spherical_vector
 !
-      output_field  sym_buoyancy_flux            scalar
-      output_field  asym_buoyancy_flux           scalar
+      output_field  sym_thermal_buoyancy_flux    scalar
+      output_field  asym_thermal_buoyancy_flux   scalar
       output_field  us_d_js_x_ba                 scalar
       output_field  us_d_ja_x_bs                 scalar
       output_field  ua_d_ja_x_ba                 scalar

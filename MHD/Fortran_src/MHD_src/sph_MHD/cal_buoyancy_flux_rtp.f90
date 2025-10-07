@@ -167,11 +167,11 @@
 !
 !
       if(i_grav .eq. iflag_radial_g) then
-        call pole_sph_self_buoyancy_flux(nnod_pole, nidx_rtp_r, radius, &
-     &                                   coef, t_pole, v_pole, d_pole)
-      else
         call pole_sph_const_buoyancy_flux(nnod_pole, nidx_rtp_r, coef,  &
      &                                    t_pole, v_pole, d_pole)
+      else
+        call pole_sph_self_buoyancy_flux(nnod_pole, nidx_rtp_r, radius, &
+     &                                   coef, t_pole, v_pole, d_pole)
       end if
 !
       end subroutine sel_pole_sph_buoyancy_flux
