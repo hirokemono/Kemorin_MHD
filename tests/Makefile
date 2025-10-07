@@ -36,6 +36,8 @@ TARGET_TEST_SPH_GRID =       $(BUILDDIR)/tests/check_sph_comms
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
 TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
 
+TARGET_CONTROL_MHD_CHECK =   $(BUILDDIR)/utilities/check_control_mhd
+
 #
 #  -------------------------------------------------------------------------
 #
