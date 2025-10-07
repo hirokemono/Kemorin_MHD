@@ -17,24 +17,6 @@
 !!
 !! field names 
 !!
-!!   ua_d_ws_x_us, ua_d_wa_x_ua, us_d_ws_x_ua, us_d_wa_x_us:
-!!          Work against Reynolds stress   u \cdot (\omega \times u)
-!!   mns_us_d_js_x_ba, mns_us_d_ja_x_bs:
-!!   mns_ua_d_js_x_bs, mns_ua_d_ja_x_ba,
-!!          Work against Lorentz force       -u \cdot (J \times B)
-!!   ua_d_js_x_bs, ua_d_ja_x_ba, us_d_js_x_ba, us_d_ja_x_bs:
-!!          Work of Lorentz force             u \cdot (J \times B)
-!!   u_dot_Bsym_nabla_Bsym, u_dot_Basym_nabla_Basym,
-!!   u_dot_Bsym_nabla_Basym, u_dot_Basym_nabla_Bsym:
-!!          Work of magnetic tension          u \cdot( (B \nabla) B)
-!!
-!!   sym_termal_buo_flux, asym_termal_buo_flux:
-!!          Thermal buoyancy flux            -\alpha_{T} T g \cdot u
-!!   sym_composite_buo_flux, asym_composite_buo_flux:
-!!          Compositional buoyancy flux      -\alpha_{C} C g \cdot u
-!!   sym_buoyancy_flux, asym_buoyancy_flux:  Total buoyancy flux
-!!                          -(\alpha_{T} T + \alpha_{C} C) g \cdot u
-!!
 !!   B_rot_Bsym_x_usym, B_rot_Basym_x_uasym,
 !!   B_rot_Bsym_x_uasym, B_rot_Basym_x_usym:
 !!         Energy flux by magneitic induction

@@ -32,12 +32,15 @@
 !!   u_dot_Bsym_nabla_Basym, u_dot_Basym_nabla_Bsym:
 !!          Work of magnetic tension          u \cdot( (B \nabla) B)
 !!
-!!   sym_termal_buo_flux, asym_termal_buo_flux:
-!!          Thermal buoyancy flux            -u \cdot (\alpha_{T} g T)
-!!   sym_composite_buo_flux, asym_composite_buo_flux:
-!!          Compositional buoyancy flux      -u \cdot (\alpha_{C} g C)
-!!   sym_buoyancy_flux, asym_buoyancy_flux:  Total buoyancy flux
-!!                            -u \cdot (\alpha_{T} T + \alpha_{C} C) g
+!!   sym_thermal_buoyancy_flux,
+!!   asym_thermal_buoyancy_flux:    [eflux_by_filter%i_t_buo_gen]
+!!          Thermal buoyancy flux         -u \cdot g \alpha_{T} T
+!!   sym_composite_buoyancy_flux,
+!!   asym_composite_buoyancy_flux:  [eflux_by_filter%i_c_buo_gen]
+!!      Compositional buoyancy flux  -u \cdot g \alpha_{C} C
+!!   sym_buoyancy_flux,
+!!   asym_buoyancy_flux:            [eflux_by_filter%i_t_buo_gen]
+!!      Thermal buoyancy flux  -u \cdot g (\alpha_{T} T + \alpha_{C} C)
 !!
 !!   B_rot_Bsym_x_usym, B_rot_Basym_x_uasym,
 !!   B_rot_Bsym_x_uasym, B_rot_Basym_x_usym:

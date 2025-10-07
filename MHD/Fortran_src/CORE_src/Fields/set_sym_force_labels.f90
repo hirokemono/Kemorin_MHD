@@ -401,18 +401,22 @@
 !
       flag = check_enegy_fluxes_w_sym(field_name)
       if(flag) then
-        if (field_name .eq. us_d_js_x_ba%name) then
+        if     (field_name .eq. us_d_js_x_ba%name) then
           eflux_s_sxa%i_ujb =              i_phys
-        else if (field_name .eq. mns_us_d_js_x_ba%name) then
+        else if(field_name .eq. mns_us_d_js_x_ba%name) then
           eflux_s_sxa%i_nega_ujb =         i_phys
 !
-        else if (field_name .eq. mns_us_d_ws_x_ua%name) then
+        else if(field_name .eq. mns_us_d_ws_x_ua%name) then
           eflux_s_sxa%i_m_advect_work =    i_phys
-        else if (field_name .eq. us_d_ws_x_ua%name) then
+        else if(field_name .eq. us_d_ws_x_ua%name) then
           eflux_s_sxa%i_nega_m_advect_wk = i_phys
 !
-        else if (field_name .eq. sym_buoyancy_flux%name) then
+        else if(field_name .eq. sym_thermal_buoyancy_flux%name) then
           eflux_s_sxa%i_t_buo_gen =     i_phys
+        else if(field_name .eq. sym_composite_buoyancy_flux%name) then
+          eflux_s_sxa%i_c_buo_gen =     i_phys
+        else if(field_name .eq. sym_buoyancy_flux%name) then
+          eflux_s_sxa%i_buoyancy_flux = i_phys
         end if
       end if
 !
@@ -464,18 +468,22 @@
 !
       flag = check_enegy_fluxes_w_sym(field_name)
       if(flag) then
-        if (field_name .eq. ua_d_js_x_bs%name) then
+        if     (field_name .eq. ua_d_js_x_bs%name) then
           eflux_a_sxs%i_ujb =              i_phys
-        else if (field_name .eq. mns_ua_d_js_x_bs%name) then
+        else if(field_name .eq. mns_ua_d_js_x_bs%name) then
           eflux_a_sxs%i_nega_ujb =         i_phys
 !
-        else if (field_name .eq. mns_ua_d_ws_x_us%name) then
+        else if(field_name .eq. mns_ua_d_ws_x_us%name) then
           eflux_a_sxs%i_m_advect_work =    i_phys
-        else if (field_name .eq. ua_d_ws_x_us%name) then
+        else if(field_name .eq. ua_d_ws_x_us%name) then
           eflux_a_sxs%i_nega_m_advect_wk = i_phys
 !
-        else if (field_name .eq. asym_buoyancy_flux%name) then
+        else if(field_name .eq. asym_thermal_buoyancy_flux%name) then
           eflux_a_sxs%i_t_buo_gen =        i_phys
+        else if(field_name .eq. asym_composite_buoyancy_flux%name) then
+          eflux_a_sxs%i_t_buo_gen =        i_phys
+        else if(field_name .eq. asym_buoyancy_flux%name) then
+          eflux_a_sxs%i_buoyancy_flux =    i_phys
         end if
       end if
 !

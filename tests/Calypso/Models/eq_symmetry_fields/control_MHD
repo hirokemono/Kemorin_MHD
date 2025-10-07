@@ -128,8 +128,8 @@ begin MHD_control
 !        nod_value_ctl  -ua_d_ws_x_us           Viz_On   Monitor_On
 !        nod_value_ctl  -ua_d_wa_x_ua           Viz_On   Monitor_On
 !
-        nod_value_ctl  sym_buoyancy_flux       Viz_On   Monitor_On
-        nod_value_ctl  asym_buoyancy_flux      Viz_On   Monitor_On
+        nod_value_ctl  sym_thermal_buoyancy_flux     Viz_On   Monitor_On
+        nod_value_ctl  asym_thermal_buoyancy_flux    Viz_On   Monitor_On
 !
         nod_value_ctl  rot_buoyancy            Viz_On   Monitor_On
         nod_value_ctl  rot_Lorentz_force       Viz_On   Monitor_On
