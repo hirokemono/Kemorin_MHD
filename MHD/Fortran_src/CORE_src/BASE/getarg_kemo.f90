@@ -28,6 +28,8 @@
       integer(kind = 4), intent(in) :: i
       character(len=*), intent(out) :: argc
 !
+!       call get_command_argument(i, argc)
+!
       call getarg(0, argc)
       if(argc == "") then
         call getarg(i+1, argc)
@@ -42,6 +44,9 @@
 !
       integer(kind = kint) :: iargc
       character(len=8) :: argc
+!
+!      oresult = command_argument_count()
+!
       oresult = iargc()
       call getarg(0, argc)
       if(argc == "") then

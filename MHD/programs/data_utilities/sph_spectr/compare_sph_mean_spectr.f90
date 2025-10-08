@@ -49,13 +49,13 @@
       integer(kind = kint) :: icomp, icomp2
 !
 !
-      if(iargc_kemo() .le. 1) then
+      if(command_argument_count() .le. 1) then
         write(*,*) 'sph_vol_spectr_check ',                             &
      &             'REFERENCE_FILE_PREFIX COMPARED_FILE_PREFIX'
         stop
       end if
-      call getarg_k(1, fhead_rms_ref)
-      call getarg_k(2, fhead_rms_vol)
+      call get_command_argument(1, fhead_rms_ref)
+      call get_command_argument(2, fhead_rms_vol)
       fname_rms_ref = add_dat_extension(fhead_rms_ref)
       fname_rms_vol = add_dat_extension(fhead_rms_vol)
 !
@@ -126,39 +126,5 @@
       end if
 !
       stop 0
-!
-!   --------------------------------------------------------------------
-!
-      contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine getarg_k(i, argc)
-!
-      integer, intent(in) :: i
-      character(len=*), intent(out) :: argc
-!
-      call getarg(0, argc)
-      if(argc == "") then
-        call getarg(i + 1, argc)
-      else
-        call getarg(i, argc)
-      end if
-      end subroutine getarg_k
-!
-!   --------------------------------------------------------------------
-!
-      integer function iargc_kemo() result(oresult)
-!
-      integer :: iargc
-      character(len=8) :: argc
-      oresult = iargc()
-      call getarg(0, argc)
-      if(argc == "") then
-        oresult = oresult - 1
-      end if
-      end function iargc_kemo
-!
-!   --------------------------------------------------------------------
 !
       end program compare_sph_mean_spectr
