@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+cd ~/git/Kemorin_MHD/
+#
+echo 'syncronize to Calypso'
+rsync -avz --copy-links --delete SYNC_to_RELEASE_w_PVR/* ~/git/Calypso/src/
