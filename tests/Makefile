@@ -89,8 +89,8 @@ test:
 		TARGET_NEWSPH="$(TARGET_NEWSPH)" \
 		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
-		
-	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+	
+	@echo "# --------- Kemorin_MHD tests finished! -------------------------"
 
 sym_test: 
 	for dir in sym_asym_field_test ; do \
