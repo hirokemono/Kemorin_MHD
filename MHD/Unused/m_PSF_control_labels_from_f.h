@@ -19,17 +19,18 @@ label[6]   group_name
 label[7]   section_area_ctl 
 
 Check psf_ctl_lbls->label_psf_ctl
-ctl_list->num_labels 5 
+ctl_list->num_labels 6
 label[0]   section_file_prefix 
-label[1]   psf_output_type 
-label[2]   surface_define 
+label[1]   section_file_format
+label[2]   surface_define
 label[3]   output_field_define 
 label[4]   psf_file_head 
+label[5]   psf_output_type
 
 Check map_ctl_lbls->label_map_ctl
 ctl_list->num_labels 8
 label[0]   map_image_prefix 
-label[1]   psf_output_type 
+label[1]   map_image_format
 label[2]   output_field 
 label[3]   output_component 
 label[4]   surface_define

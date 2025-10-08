@@ -122,8 +122,8 @@
       end if
 !
 !
-      if(pg_fld_ctl%psf_file_head_ctl%iflag .gt. 0) then
-        pg_psf_file_prefix = pg_fld_ctl%psf_file_head_ctl%charavalue
+      if(pg_fld_ctl%psf_file_prefix_ctl%iflag .gt. 0) then
+        pg_psf_file_prefix = pg_fld_ctl%psf_file_prefix_ctl%charavalue
       else
         write(*,*) 'set file header for psf data'
         stop

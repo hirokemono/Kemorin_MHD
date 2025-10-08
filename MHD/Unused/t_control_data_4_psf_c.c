@@ -186,8 +186,8 @@ struct psf_ctl_c * init_psf_ctl_c(){
     
 	psf_c->psf_fld_c = init_psf_field_ctl_c();
 	
-	psf_c->psf_file_head_ctl = init_chara_ctl_item_c();
-	psf_c->psf_output_type_ctl = init_chara_ctl_item_c();
+	psf_c->psf_file_prefix_ctl = init_chara_ctl_item_c();
+	psf_c->psf_file_format_ctl = init_chara_ctl_item_c();
 	return psf_c;
 };
 
@@ -197,8 +197,8 @@ void dealloc_psf_ctl_c(struct psf_ctl_c *psf_c){
     free(psf_c->psf_def_file_name);
 	dealloc_psf_field_ctl_c(psf_c->psf_fld_c);
 	
-	dealloc_chara_ctl_item_c(psf_c->psf_file_head_ctl);
-	dealloc_chara_ctl_item_c(psf_c->psf_output_type_ctl);
+	dealloc_chara_ctl_item_c(psf_c->psf_file_prefix_ctl);
+	dealloc_chara_ctl_item_c(psf_c->psf_file_format_ctl);
 	
 	psf_c->iflag_surface_define = 0;
 	psf_c->iflag_output_field = 0;
@@ -212,12 +212,12 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 0],
-							  psf_c->psf_file_head_ctl);
+							  psf_c->psf_file_prefix_ctl);
 		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 4],
-							  psf_c->psf_file_head_ctl);
+							  psf_c->psf_file_prefix_ctl);
         
 		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 1],
-							  psf_c->psf_output_type_ctl);
+							  psf_c->psf_file_format_ctl);
 		
 		if(right_begin_flag_c(buf, psf_c->label_psf_ctl->label[ 2]) > 0){
 			psf_c->iflag_surface_define
@@ -243,10 +243,10 @@ int write_psf_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, psf_c->label_psf_ctl->maxlen,
 						   psf_c->label_psf_ctl->label[ 0],
-						   psf_c->psf_file_head_ctl);
+						   psf_c->psf_file_prefix_ctl);
 	write_chara_ctl_item_c(fp, level, psf_c->label_psf_ctl->maxlen,
 						   psf_c->label_psf_ctl->label[ 1],
-						   psf_c->psf_output_type_ctl);
+						   psf_c->psf_file_format_ctl);
 	
     if(psf_c->iflag_surface_define == 1){
         fprintf(fp, "!\n");
