@@ -97,11 +97,12 @@ Check iso_ctl_lbls->num_label_iso_ctl_c 4
 Check iso_ctl_lbls->label_iso_ctl_w_dpl
 ctl_list->num_labels 6 
 label[0]   isosurface_file_prefix 
-label[1]   iso_output_type 
+label[1]   isosurface_file_format
 label[2]   isosurf_define 
 label[3]   field_on_isosurf 
 label[4]   iso_file_head 
-label[5]   isosurf_result_define 
+label[5]   iso_output_type
+label[6]   isosurf_result_define
 
 Check iso_ctl_lbls->label_iso_define_ctl
 ctl_list->num_labels 4 
