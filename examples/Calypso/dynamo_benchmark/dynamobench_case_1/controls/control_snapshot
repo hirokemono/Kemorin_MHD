@@ -19,18 +19,41 @@ begin MHD_control
   begin data_files_def
     debug_flag_ctl            'Off'
 !
-    num_subdomain_ctl            4
-    num_smp_ctl                  2
+    num_subdomain_ctl            6
+    num_smp_ctl                  4
 !
-    restart_file_prefix         'rst_4/rst'
+    restart_file_prefix         'rst_6/rst'
     field_file_prefix           'field/out'
 !
-    sph_file_fmt_ctl           'merged_gzip'
-    restart_file_fmt_ctl       'merged_gzip'
+    restart_file_fmt_ctl       'merged_bin_gz'
     field_file_fmt_ctl         'merged_VTK_gz'
   end data_files_def
 !
-  file spherical_shell_ctl  'control_resolution'
+!!!!! spatial resolution and parallelization !!!!!!!!!!!!!!!
+!
+!  To Define by external file...
+!    file spherical_shell_ctl  'file name'
+!
+!  num_domain_ctl:   Parallelization information
+!    num_radial_domain_ctl:        Number of radial decompositoin
+!    num_horizontal_domain_ctl:    Number of horizontal decompositoin
+!
+!   truncation_level_ctl: Truncation of spherical harmonics (Lmax)
+!   ngrid_meridonal_ctl:  Number of meridional grid points ( = 1.5 x (Lmax+1))
+!   num_horizontal_domain_ctl: Number of zonal grid points ( = 3 x (Lmax+1))
+!
+!   radial_grid_type_ctl:  Definition for radial grid   
+!         explicit:        Set each radial grid explicitly
+!         Chebyshev:       Set Chebyshev collocation points
+!         equi_distance:   Set equi-diatance grid
+!
+!   num_fluid_grid_ctl:    Number of radial grids
+!   fluid_core_size_ctl    Size of fluid shell
+!   ICB_to_CMB_ratio_ctl   Aspect ratio (r_o / r_i)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+  file spherical_shell_ctl  'sph_lm63r72c_6/control_resolution'
 !
   begin model
 !!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -50,24 +73,15 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
       array nod_value_ctl
-        nod_value_ctl  velocity                 Viz_On   Monitor_On
-        nod_value_ctl  temperature              Viz_On   Monitor_On
-        nod_value_ctl  pressure                 Viz_On   Monitor_On
-        nod_value_ctl  vorticity                Viz_On   Monitor_On
-        nod_value_ctl  magnetic_field           Viz_On   Monitor_On
-        nod_value_ctl  current_density          Viz_On   Monitor_On
+        nod_value_ctl  velocity                Viz_On   Monitor_On
+        nod_value_ctl  temperature             Viz_On   Monitor_On
+        nod_value_ctl  pressure                Viz_On   Monitor_On
+        nod_value_ctl  vorticity               Viz_On   Monitor_On
+        nod_value_ctl  magnetic_field          Viz_On   Monitor_On
+        nod_value_ctl  current_density         Viz_On   Monitor_On
 !
         nod_value_ctl  Lorentz_work             Viz_On   Monitor_On
         nod_value_ctl  thermal_buoyancy_flux    Viz_On   Monitor_On
-!
-        nod_value_ctl  Coriolis_force           Viz_On   Monitor_On
-        nod_value_ctl  Lorentz_force            Viz_On   Monitor_On
-        nod_value_ctl  inertia                  Viz_On   Monitor_On
-!
-        nod_value_ctl  rot_Coriolis_force       Viz_On   Monitor_On
-        nod_value_ctl  rot_Lorentz_force        Viz_On   Monitor_On
-        nod_value_ctl  rot_inertia              Viz_On   Monitor_On
-        nod_value_ctl  rot_thermal_buoyancy     Viz_On   Monitor_On
       end array nod_value_ctl
     end phys_values_ctl
 !
@@ -238,14 +252,14 @@ begin MHD_control
 !!!!!  information for sime integration
    begin time_step_ctl
       elapsed_time_ctl      80000.
-      i_step_init_ctl           2
-      i_step_finish_ctl     3
+      i_step_init_ctl           0
+      i_step_finish_ctl    300000
 !
-      i_step_check_ctl         1
-      i_step_rst_ctl         1
-      i_step_field_ctl          0
-      i_step_sectioning_ctl   1
-      i_step_isosurface_ctl   1
+      i_step_check_ctl        100
+      i_step_rst_ctl        50000
+      i_step_field_ctl      10000
+      i_step_sectioning_ctl  1000
+      i_step_isosurface_ctl  2000
 !
       dt_ctl              5.0e-5
       time_init_ctl       0.0e-8
@@ -265,20 +279,32 @@ begin MHD_control
       coef_imp_t_ctl          6.0e-1
       coef_imp_b_ctl          6.0e-1
       coef_imp_d_ctl          6.0e-1
-!      Legendre_trans_loop_ctl   'outer_field_loop'
     end time_loop_ctl
   end control
 !
-!   Long_loop, outer_field_loop...broken...
-!                   ('inner_radial_loop', 'outer_radial_loop', 'long_loop',
-!                    'original_loop', 'outer_field_loop'
 !
-  begin sph_monitor_ctl
+begin sph_monitor_ctl
     volume_average_prefix        'monitor/sph_ave_volume'
     volume_pwr_spectr_prefix     'monitor/sph_pwr_volume'
+    volume_pwr_spectr_format     'gzip'
+!
+    nusselt_number_prefix        'monitor/Nusselt'
+    nusselt_number_format        'gzip'
+!
+    begin layered_spectrum_ctl
+      layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
+      layered_pwr_spectr_format    'gzip'
+!
+       array spectr_layer_ctl
+         spectr_layer_ctl  1
+         spectr_layer_ctl  12
+         spectr_layer_ctl  24
+       end array spectr_layer_ctl    
+    end layered_spectrum_ctl
 !
     begin pickup_spectr_ctl
       picked_sph_prefix     'monitor/picked_mode'
+      picked_sph_format     'gzip'
 !
       array pick_layer_ctl
         pick_layer_ctl    8
@@ -293,24 +319,36 @@ begin MHD_control
 !
     begin gauss_coefficient_ctl
       gauss_coefs_prefix    'monitor/gauss_coefs'
+      gauss_coefs_format    'gzip'
       gauss_coefs_radius_ctl    2.91
 !
       array pick_gauss_coef_degree_ctl
         pick_gauss_coef_degree_ctl   1
       end array pick_gauss_coef_degree_ctl
     end gauss_coefficient_ctl
+!
+    begin dynamo_benchmark_data_ctl
+      dynamo_benchmark_file_prefix     'monitor/dynamobench'
+      dynamo_benchmark_file_format     'ASCII'
+      nphi_mid_eq_ctl                   512
+    end dynamo_benchmark_data_ctl
   end sph_monitor_ctl
 !
   begin visual_control
     array cross_section_ctl
-      file  cross_section_ctl   control_psf_CMB
-      file  cross_section_ctl   control_psf_eq 
-      file  cross_section_ctl   control_psf_z0.3
-      file  cross_section_ctl   control_psf_s0.55
+      file  cross_section_ctl   'controls/control_psf_CMB'
+      file  cross_section_ctl   'controls/control_psf_mid_depth'
+      file  cross_section_ctl   'controls/control_psf_eq'
+      file  cross_section_ctl   'controls/control_psf_z0.3'
+      file  cross_section_ctl   'controls/control_psf_s0.55'
     end array cross_section_ctl
 !
     array isosurface_ctl
-      file  isosurface_ctl      control_iso_temp
+      file  isosurface_ctl      'controls/control_iso_temp'
     end array isosurface_ctl
   end  visual_control
+!
+  begin dynamo_vizs_control
+    file zonal_mean_section_ctl  'controls/control_psf_zm'
+  end dynamo_vizs_control
 end MHD_control
