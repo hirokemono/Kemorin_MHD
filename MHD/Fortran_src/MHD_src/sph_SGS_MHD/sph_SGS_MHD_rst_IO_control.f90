@@ -176,7 +176,7 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. 0) return
-      if (iflag_restart .eq. i_rst_by_file) then
+      if(MHD_step%iflag_restart_mode .eq. i_rst_by_file) then
         call read_alloc_SPH_Csim_file(MHD_step%init_d%i_time_step,      &
      &      MHD_files%Csim_file_IO, MHD_step%init_d, MHD_step%rst_step, &
      &      SGS_par%i_step_sgs_coefs, SGS_par%model_p, dynamic_SPH)
