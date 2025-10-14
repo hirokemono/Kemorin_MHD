@@ -19,8 +19,8 @@ begin MHD_control
   begin data_files_def
     debug_flag_ctl            'Off'
 !
-    num_subdomain_ctl            6
-    num_smp_ctl                  4
+    num_subdomain_ctl            24
+    num_smp_ctl                   4
 !
     restart_file_prefix         'rst_6/rst'
     field_file_prefix           'field/out'
@@ -287,8 +287,8 @@ begin sph_monitor_ctl
     volume_pwr_spectr_prefix     'monitor/sph_pwr_volume'
     volume_pwr_spectr_format     'gzip'
 !
-    nusselt_number_prefix        'monitor/Nusselt'
-    nusselt_number_format        'gzip'
+    comp_Nusselt_number_prefix        'monitor/Nusselt'
+    comp_Nusselt_number_format        'gzip'
 !
     begin layered_spectrum_ctl
       layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
