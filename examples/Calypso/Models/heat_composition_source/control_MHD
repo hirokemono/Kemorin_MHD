@@ -20,12 +20,11 @@ begin MHD_control
     num_subdomain_ctl            1
     num_smp_ctl                  4
 !
-    sph_file_prefix             'sph_lm3r64c_1/in'
-!
     restart_file_prefix         'rst_1/rst'
     field_file_prefix           'field/out'
 !
-    field_file_fmt_ctl          'VTK'
+    restart_file_fmt_ctl        'ASCII'
+    field_file_fmt_ctl          'VTK_gz'
   end data_files_def
 !
 !!!!! spatial resolution and parallelization !!!!!!!!!!!!!!!
@@ -187,7 +186,7 @@ begin MHD_control
 !
 !
   begin control
-!!!!!  information for sime integration
+!!!!!  information for time integration
    begin time_step_ctl
       elapsed_time_ctl      80000.
       i_step_init_ctl           0
