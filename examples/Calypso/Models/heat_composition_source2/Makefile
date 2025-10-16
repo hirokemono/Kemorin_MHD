@@ -4,22 +4,9 @@
 #
 # Makefile for initial field construction
 #
-SHELL           = /bin/sh
-#
-SRCDIR = /Users/matsui/src_kemo
-BUILDDIR = $(SRCDIR)/bin
-WORKDIR =  $(SRCDIR)/work
-#
-#  Set MPI fortran compiler
-#
-F90 =             mpif90
-F_INCLUDES =     -I$(WORKDIR)
-OPENMP_FCFLAGS = -fopenmp
-F90OPTFLAGS = -O3 -Wall -g $(OPENMP_FCFLAGS) $(F_INCLUDES)
 
-FFTW3_LIBS= -L/opt/homebrew/Cellar/fftw/3.3.10_2/lib -lfftw3
-ZLIB_LIBS = -L/opt/homebrew/opt/zlib/lib -lz 
-HDF5_FLIBS= -L/opt/homebrew/lib -lhdf5_fortran -lhdf5
+current_dir := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+include ../../../Makefile
 
 KEMO_LIBS = -L/Users/matsui/src_kemo/work \
            -lkemo_MHD \
@@ -46,15 +33,19 @@ TARGET_COMPARE_PSF =         $(SRCDIR)/bin/tests/compare_psf
 all: test
 
 $(TARGET_SPH_INITIAL): $(SRC_SPH_INITIAL)
-	$(F90) $(F90OPTFLAGS) -o $@ $< $(KEMO_LIBS) $(ZLIB_LIBS) $(FFTW3_LIBS) $(HDF5_FLIBS)
+	$(F90) $(F90OPTFLAGS) -o $@ $< $(KEMO_LIBS) $(F90LIBS)
 
 test: $(TARGET_SPH_INITIAL)
+	echo $(current_dir)
 	$(MPIRUN) -np 1 $(TARGET_SPH_INITIAL)
 	$(MPIRUN) -np 1 $(TARGET_SPH_MHD)
 
 
 clean:
-	rm -f *.dat *.txt *~ rst_6/rst.* monitor/*.dat monitor/*.dat.gz sections/*.gz field/out.*
+	rm -f *.dat *.txt *~ 
+	rm -f rst_1/rst.*
+	rm -f monitor/*.dat monitor/*.dat.gz 
+	rm -f field/out.*
 	rm -fr $(TARGET_SPH_INITIAL) $(TARGET_SPH_INITIAL).dSYM
 
 distclean: clean
