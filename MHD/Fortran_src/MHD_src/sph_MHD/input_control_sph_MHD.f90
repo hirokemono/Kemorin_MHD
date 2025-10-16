@@ -22,18 +22,14 @@
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,          &
 !!     &          SPH_model, SPH_WK, SPH_MHD)
 !!
-!!      subroutine input_control_4_SPH_make_init                        &
-!!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
-!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+!!      subroutine input_control_4_SPH_make_init(ctl_file_name,         &
+!!     &          MHD_files, MHD_step, SPH_model, SPH_WK, SPH_MHD)
 !!        character(len=kchara), intent(in) :: ctl_file_name
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!@endverbatim
 !
 !
@@ -244,9 +240,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_SPH_make_init                          &
-     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,        &
-     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+      subroutine input_control_4_SPH_make_init(ctl_file_name,           &
+     &          MHD_files, MHD_step, SPH_model, SPH_WK, SPH_MHD)
 !
       use t_time_data
       use t_ctl_data_MHD
@@ -258,15 +253,19 @@
 !
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: MHD_ctl
+!>      Additional structures for spherical MHD dynamo with viz module
+      type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_data), save :: FEM_dat
 !
 !  Read control file
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'

@@ -24,17 +24,11 @@
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
       use t_spherical_MHD
-      use t_FEM_mesh_field_data
-      use t_field_data_IO
 !
       implicit none
 !
 !>      Control struture for MHD simulation
       type(spherical_MHD), save, private :: SMHDs
-!>      Structure of restart IO data
-      type(field_IO), save, private :: rst_IO1
-!>      Structure of FEM mesh and field structures
-      type(FEM_mesh_field_data), save, private :: FEM_DATs
 !
       private :: SPH_const_initial_field
 !
@@ -46,18 +40,11 @@
 !
       subroutine initialize_const_sph_initial(control_file_name)
 !
-      use t_ctl_data_MHD
-      use t_ctl_data_sph_MHD_w_psf
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
       character(len=kchara), intent(in) :: control_file_name
-!
-!>      Control struture for MHD simulation
-      type(mhd_simulation_control), save :: MHD_ctl1
-!>      Additional structures for spherical MHD dynamo with viz module
-      type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -71,9 +58,8 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug .eq. 1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init(control_file_name,             &
-     &    SMHDs%MHD_files, MHD_ctl1, add_SMHD_ctl1,                     &
-     &    SMHDs%MHD_step, SMHDs%SPH_model, SMHDs%SPH_WK,                &
-     &    SMHDs%SPH_MHD, FEM_DATs)
+     &    SMHDs%MHD_files, SMHDs%MHD_step, SMHDs%SPH_model,             &
+     &    SMHDs%SPH_WK, SMHDs%SPH_MHD)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize spherical transform dynamo
@@ -81,7 +67,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
       call SPH_const_initial_field(SMHDs%MHD_files, SMHDs%MHD_step,     &
-     &    SMHDs%SPH_model, SMHDs%SPH_MHD, SMHDs%SPH_WK, rst_IO1)
+     &    SMHDs%SPH_model, SMHDs%SPH_MHD, SMHDs%SPH_WK)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
@@ -92,7 +78,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_const_initial_field(MHD_files, MHD_step,           &
-     &          SPH_model, SPH_MHD, SPH_WK, rst_IO)
+     &          SPH_model, SPH_MHD, SPH_WK)
 !
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -114,7 +100,6 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
-      type(field_IO), intent(inout) :: rst_IO
 !
 !   Allocate spectr field data
 !
@@ -144,8 +129,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files%fst_file_IO,                  &
-     &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step,                      &
-     &    MHD_step%rst_step, rst_IO)
+     &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine SPH_const_initial_field
