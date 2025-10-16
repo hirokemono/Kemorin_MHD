@@ -36,19 +36,22 @@
 !
       subroutine initialize_const_sph_initial(control_file_name)
 !
+      use t_ctl_data_MHD
       use input_control_sph_MHD
 !
       character(len=kchara), intent(in) :: control_file_name
 !
 !>      Control struture for MHD simulation
       type(spherical_MHD), save :: SMHDs
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: MHD_ctl1
 !
 !
 !   Load parameter file
 !
-      if(iflag_debug .eq. 1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(control_file_name,             &
-     &    SMHDs%MHD_files, SMHDs%MHD_step, SMHDs%SPH_model,             &
+      if(iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_MHD_nosnap'
+      call input_control_4_SPH_MHD_nosnap(control_file_name,            &
+     &    SMHDs%MHD_files, MHD_ctl1, SMHDs%MHD_step, SMHDs%SPH_model,   &
      &    SMHDs%SPH_WK, SMHDs%SPH_MHD)
 !
 !        Initialize spherical transform dynamo
@@ -153,7 +156,7 @@
 !
       call output_sph_restart_control                                   &
      &   (MHD_step%time_d%i_time_step, fst_file_IO,                     &
-     &    MHD_step%time_d, SPH_MHD%fld, SPH_MHD%rst_step, sph_fst_IO)
+     &    MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)
 !
       end subroutine sph_initial_spectrum
 !

@@ -7,9 +7,8 @@
 !!@n      Initial field definision is in  const_sph_initial_spectr.f90
 !!
 !!@verbatim
-!!      subroutine initialize_add_sph_initial(control_file_name, sadi)
+!!      subroutine initialize_add_sph_initial(control_file_name)
 !!        character(len=kchara), intent(in) :: control_file_name
-!!        type(SPH_add_initial), intent(inout) :: sadi
 !!@endverbatim
 !
       module SPH_analyzer_add_initial
@@ -39,11 +38,15 @@
 !
       subroutine initialize_add_sph_initial(control_file_name)
 !
+      use t_ctl_data_MHD
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
       character(len=kchara), intent(in) :: control_file_name
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: MHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -55,9 +58,9 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if(iflag_debug .eq. 1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(control_file_name,             &
-     &    SMHDs%MHD_files, SMHDs%MHD_step, SMHDs%SPH_model,             &
+      if(iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_MHD_nosnap'
+      call input_control_4_SPH_MHD_nosnap(control_file_name,            &
+     &    SMHDs%MHD_files, MHD_ctl1, SMHDs%MHD_step, SMHDs%SPH_model,   &
      &    SMHDs%SPH_WK, SMHDs%SPH_MHD)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

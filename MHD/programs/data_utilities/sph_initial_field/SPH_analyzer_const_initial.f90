@@ -40,11 +40,15 @@
 !
       subroutine initialize_const_sph_initial(control_file_name)
 !
+      use t_ctl_data_MHD
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
       character(len=kchara), intent(in) :: control_file_name
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: MHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -56,9 +60,9 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if(iflag_debug .eq. 1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(control_file_name,             &
-     &    SMHDs%MHD_files, SMHDs%MHD_step, SMHDs%SPH_model,             &
+      if(iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_MHD_nosnap'
+      call input_control_4_SPH_MHD_nosnap(control_file_name,            &
+     &    SMHDs%MHD_files, MHD_ctl1, SMHDs%MHD_step, SMHDs%SPH_model,   &
      &    SMHDs%SPH_WK, SMHDs%SPH_MHD)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -93,6 +97,7 @@
       use set_initial_sph_dynamo
       use check_dependency_for_MHD
       use input_control_sph_MHD
+      use sph_radial_grad_4_magne
       use schmidt_poly_on_rtm_grid
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -130,6 +135,12 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files%fst_file_IO,                  &
      &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step)
+!
+      call extend_by_potential_with_j                                   &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
+     &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
+     &    SPH_MHD%fld)
+!
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine SPH_const_initial_field
