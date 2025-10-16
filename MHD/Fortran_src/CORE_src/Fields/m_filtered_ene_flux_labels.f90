@@ -18,6 +18,8 @@
 !!    Field name [Address]
 !!
 !!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect_work]
+!!   wk_against_inertia_by_filtered
+!!                              [eflux_by_filter%i_nega_m_advect_wk]
 !!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_nega_ujb]
 !!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
@@ -46,11 +48,19 @@
       implicit  none
 !
 !>        Field label of work of inertia
-!!         @f$ u_{i} (\tilde{u}_{j} \partial_{j} \tilde{u}_{i}) @f$,
-!!         @f$ u_{i} (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}) @f$
+!!         @f$ -u_{i} (\tilde{u}_{j} \partial_{j} \tilde{u}_{i}) @f$,
+!!         @f$ -u_{i} (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}) @f$
       type(field_def), parameter :: inertia_work_by_filtered            &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'inertia_work_by_filtered',                &
+     &                math = '$ -u_{i} (e_{ijk}'                        &
+     &                     //  ' \tilde{\omega}_{j} \tilde{u}_{k})$')
+!>        Field label of work of inertia
+!!         @f$ u_{i} (\tilde{u}_{j} \partial_{j} \tilde{u}_{i}) @f$,
+!!         @f$ u_{i} (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}) @f$
+      type(field_def), parameter :: wk_against_inertia_by_filtered      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'wk_against_inertia_by_filtered',          &
      &                math = '$ u_{i} (e_{ijk}'                         &
      &                     //  ' \tilde{\omega}_{j} \tilde{u}_{k})$')
 !
@@ -144,6 +154,7 @@
 !
       check_filter_enegy_fluxes                                         &
      &   =    (field_name .eq. inertia_work_by_filtered%name)           &
+     &   .or. (field_name .eq. wk_against_inertia_by_filtered%name)     &
      &   .or. (field_name .eq. wk_against_Lorentz_by_filtered%name)     &
      &   .or. (field_name .eq. Lorentz_work_by_filtered%name)           &
      &   .or. (field_name .eq. mag_tension_work_by_filtered%name)       &
@@ -170,6 +181,8 @@
       call alloc_control_array_c2_i(array_c2i)
 !
       call set_field_label_to_ctl(inertia_work_by_filtered, array_c2i)
+      call set_field_label_to_ctl(wk_against_inertia_by_filtered,       &
+     &                            array_c2i)
       call set_field_label_to_ctl(wk_against_Lorentz_by_filtered,       &
      &                            array_c2i)
       call set_field_label_to_ctl(Lorentz_work_by_filtered, array_c2i)

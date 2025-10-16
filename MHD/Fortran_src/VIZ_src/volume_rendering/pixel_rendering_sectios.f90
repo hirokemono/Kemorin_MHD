@@ -9,14 +9,15 @@
 !!@verbatim
 !!      subroutine rendering_sections                                   &
 !!     &         (viewpoint_vec, draw_param, color_param,               &
-!!     &          xx4_st, xx4_tgt, c_org, c_tgt, rgba_ray, iflag_hit)
+!!     &          xx4_st, xx4_tgt, c_org, c_tgt,                        &
+!!     &          rgba_ray, rgba_now, iflag_hit)
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        real(kind = kreal), intent(in) :: xx4_st(4)
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
-!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !!        integer(kind = kint), intent(inout) :: iflag_hit
 !!      subroutine rendering_isosurfaces(iele, viewpoint_vec, field_pvr,&
 !!     &                                draw_param, color_param,        &
@@ -28,11 +29,11 @@
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
 !!        real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
-!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !!      subroutine rendering_surace_group                               &
 !!     &         (isurf_end, surf, surf_grp, sf_grp_4_sf,               &
 !!     &          viewpoint_vec, modelview_mat, draw_param, color_param,&
-!!     &          xx4_tgt, rgba_ray)
+!!     &          xx4_tgt, rgba_ray, rgba_now)
 !!        integer(kind = kint), intent(in) :: isurf_end
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: surf_grp
@@ -42,7 +43,7 @@
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        real(kind = kreal), intent(in) :: xx4_tgt(4)
-!!        real(kind = kreal), intent(inout) :: rgba_ray(4)
+!!        real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !!@endverbatim
 !
       module pixel_rendering_sectios
@@ -63,7 +64,8 @@
 !
       subroutine rendering_sections                                     &
      &         (viewpoint_vec, draw_param, color_param,                 &
-     &          xx4_st, xx4_tgt, c_org, c_tgt, rgba_ray, iflag_hit)
+     &          xx4_st, xx4_tgt, c_org, c_tgt,                          &
+     &          rgba_ray, rgba_now, iflag_hit)
 !
       use set_coefs_of_sections
       use set_rgba_4_each_pixel
@@ -76,7 +78,7 @@
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
 !
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
       integer(kind = kint), intent(inout) :: iflag_hit
 !
       integer(kind = kint) :: i_psf
@@ -103,12 +105,13 @@
           call color_plane_with_light                                   &
      &           (viewpoint_vec, xx4_tgt, c_tgt(1), grad_tgt,           &
      &            draw_param%sect_opacity(i_psf), color_param,          &
-     &            rgba_ray)
+     &            rgba_ray, rgba_now)
           if(draw_param%iflag_psf_zeoline(i_psf) .gt. 0                 &
      &            .and. c_org(1)*c_tgt(1) .le. TINY9) then
             call black_plane_with_light                                 &
      &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
-     &          draw_param%sect_opacity(i_psf), color_param, rgba_ray)
+     &          draw_param%sect_opacity(i_psf), color_param,            &
+     &          rgba_ray, rgba_now)
           end if
         end if
       end do
@@ -118,8 +121,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_isosurfaces(iele, viewpoint_vec, field_pvr,  &
-     &                                draw_param, color_param,          &
-     &                                xx4_tgt, c_org, c_tgt, rgba_ray)
+     &          draw_param, color_param, xx4_tgt, c_org, c_tgt,         &
+     &          rgba_ray, rgba_now)
 !
       use set_rgba_4_each_pixel
 !
@@ -132,7 +135,7 @@
       real(kind = kreal), intent(in) :: xx4_tgt(4)
       real(kind = kreal), intent(in) :: c_tgt(1), c_org(1)
 !
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !
       integer(kind = kint) :: i_iso
       real(kind = kreal) :: grad_tgt(3), rflag
@@ -147,7 +150,8 @@
      &                   * dble(draw_param%itype_isosurf(i_iso))
           call color_plane_with_light(viewpoint_vec, xx4_tgt,           &
      &        draw_param%iso_value(i_iso), grad_tgt,                    &
-     &        draw_param%iso_opacity(i_iso), color_param, rgba_ray)
+     &        draw_param%iso_opacity(i_iso), color_param,               &
+     &        rgba_ray, rgba_now)
         end if
       end do
 !
@@ -158,7 +162,7 @@
       subroutine rendering_surace_group                                 &
      &         (isurf_end, surf, surf_grp, sf_grp_4_sf,                 &
      &          viewpoint_vec, modelview_mat, draw_param, color_param,  &
-     &          xx4_tgt, rgba_ray)
+     &          xx4_tgt, rgba_ray, rgba_now)
 !
       use t_surface_data
       use t_group_data
@@ -178,7 +182,7 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       real(kind = kreal), intent(in) :: xx4_tgt(4)
 !
-      real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: rgba_ray(4), rgba_now(4)
 !
       real(kind = kreal) :: grad_tgt(3), opacity_bc
 !
@@ -189,8 +193,9 @@
      &                                 draw_param%enhansed_opacity)
       if(opacity_bc .gt. SMALL_RAY_TRACE) then
         grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
-        call plane_rendering_with_light(viewpoint_vec,                  &
-     &      xx4_tgt, grad_tgt, opacity_bc, color_param, rgba_ray)
+        call plane_rendering_with_light                                 &
+     &     (viewpoint_vec, xx4_tgt, grad_tgt, opacity_bc, color_param,  &
+     &      rgba_ray, rgba_now)
       end if
 !
       end subroutine rendering_surace_group

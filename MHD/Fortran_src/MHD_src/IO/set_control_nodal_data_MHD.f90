@@ -93,7 +93,9 @@
 !
 !    set nodal data
 !
-        call set_SGS_field_ctl_by_viz(field_ctl, nod_fld, ierr)
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
+     &        'Grid field data names:'
+        call set_SGS_field_control(.TRUE., field_ctl, nod_fld, ierr)
       end if
 !
       call set_ele_field_names_MHD                                      &

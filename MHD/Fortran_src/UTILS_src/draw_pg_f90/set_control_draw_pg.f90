@@ -76,6 +76,7 @@
       use m_isoline_dat_pg
       use m_file_format_switch
       use m_field_file_format
+      use set_color_4_pvr
       use set_components_flags
       use skip_comment_f
       use stop_by_missing_zlib
@@ -109,20 +110,20 @@
       icolor_mode = 1
       if(pg_panel_ctl%color_mode_ctl%iflag .gt. 0) then
         tmpchara = pg_panel_ctl%color_mode_ctl%charavalue
-        if     (cmp_no_case(tmpchara, 'Rainbow')                        &
+        if     (cmp_no_case(tmpchara, hd_rainbow)                       &
      &     .or. cmp_no_case(tmpchara, 'Color')        ) then
           icolor_mode = 1
-        else if(cmp_no_case(tmpchara, 'Yellow_Green') ) then
+        else if(cmp_no_case(tmpchara, hd_orangecyan) ) then
           icolor_mode = -1
-        else if(cmp_no_case(tmpchara, 'Grayscale')                      &
+        else if(cmp_no_case(tmpchara, hd_grayscale)                     &
      &     .or. cmp_no_case(tmpchara, 'Gray')         ) then
           icolor_mode = 0
         end if
       end if
 !
 !
-      if(pg_fld_ctl%psf_file_head_ctl%iflag .gt. 0) then
-        pg_psf_file_prefix = pg_fld_ctl%psf_file_head_ctl%charavalue
+      if(pg_fld_ctl%psf_file_prefix_ctl%iflag .gt. 0) then
+        pg_psf_file_prefix = pg_fld_ctl%psf_file_prefix_ctl%charavalue
       else
         write(*,*) 'set file header for psf data'
         stop

@@ -53,7 +53,7 @@
 !>      Structure of field to view
       type pgplot_field_ctl
         type(read_character_item) :: psf_data_fmt_ctl
-        type(read_character_item) :: psf_file_head_ctl
+        type(read_character_item) :: psf_file_prefix_ctl
         type(read_character_item) :: map_grid_file_ctl
 !
 !>      Structure for list of field
@@ -405,7 +405,7 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_psf_data_ctl, pg_fld_ctl%psf_file_head_ctl)
+     &     (c_buf, hd_psf_data_ctl, pg_fld_ctl%psf_file_prefix_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_map_grid_file, pg_fld_ctl%map_grid_file_ctl)
       end do

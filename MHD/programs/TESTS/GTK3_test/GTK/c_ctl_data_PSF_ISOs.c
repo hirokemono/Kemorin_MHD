@@ -39,7 +39,7 @@ extern void * c_VIZ_ISO_iso_def_ctl(void *f_iso_ctl);
 extern void * c_VIZ_ISO_fname_fld_on_iso(void *f_iso_ctl);
 extern void * c_VIZ_ISO_fld_on_iso_c(void *f_iso_ctl);
 extern void * c_VIZ_ISO_file_head_ctl(void *f_iso_ctl);
-extern void * c_VIZ_ISO_output_type_ctl(void *f_iso_ctl);
+extern void * c_VIZ_ISO_file_format_ctl(void *f_iso_ctl);
 
 extern void * c_VIZ_iso_define_ctl_block_name(void *f_iso_def_ctl);
 extern void * c_VIZ_iso_define_ctl_iflag(void *f_iso_def_ctl);
@@ -291,7 +291,7 @@ struct f_VIZ_ISO_ctl * init_f_VIZ_ISO_ctl(int idx, void *f_parent)
     
     f_iso_ctl->f_iso_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_ISO_file_head_ctl,
                                                              f_iso_ctl->f_self);
-    f_iso_ctl->f_iso_output_type_ctl = init_f_ctl_chara_item(c_VIZ_ISO_output_type_ctl,
+    f_iso_ctl->f_iso_output_type_ctl = init_f_ctl_chara_item(c_VIZ_ISO_file_format_ctl,
                                                              f_iso_ctl->f_self);
     return f_iso_ctl;
 }

@@ -1,15 +1,20 @@
-!
-!      module set_dynamo_initial_field
-!
-!      programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
-!      modified by H. Matsui on July, 2006
-!      modified by H. Matsui on Dec., 2007
-!
+!>@file   set_dynamo_initial_field.f90
+!!@brief  module set_dynamo_initial_field
+!!
+!!@author H. Matsui
+!!@date programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
+!!      modified by H. Matsui on July, 2006
+!!      modified by H. Matsui on Dec., 2007
+!!
+!> @brief Set initial data for spectrum dynamos
+!!
+!!@verbatim
 !!      subroutine initial_data_control                                 &
-!!     &         (MHD_files, rst_step, ref_param_T,                     &
+!!     &         (iflag_restart_mode, MHD_files, rst_step, ref_param_T, &
 !!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
 !!     &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,           &
 !!     &          nod_fld, flex_p, init_d, time_d, fem_fst_IO)
+!!        integer(kind = kint), intent(in) :: iflag_restart_mode
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
@@ -27,8 +32,7 @@
 !!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(field_IO), intent(inout) :: fem_fst_IO
-!!
-!!      subroutine set_time_init
+!!@endverbatim
 !
       module set_dynamo_initial_field
 ! j
@@ -59,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine initial_data_control                                   &
-     &         (MHD_files, rst_step, ref_param_T,                       &
+     &         (iflag_restart_mode, MHD_files, rst_step, ref_param_T,   &
      &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
      &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,             &
      &          nod_fld, flex_p, init_d, time_d, fem_fst_IO)
@@ -77,6 +81,7 @@
       use fem_mhd_rst_IO_control
       use FEM_sgs_ini_model_coefs_IO
 !
+      integer(kind = kint), intent(in) :: iflag_restart_mode
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(IO_step_param), intent(in) :: rst_step
       type(reference_scalar_param), intent(in) :: ref_param_T
@@ -97,14 +102,14 @@
       type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
-      if(iflag_restart .eq. i_rst_by_file) then
+      if(iflag_restart_mode .eq. i_rst_by_file) then
         call input_MHD_restart_file_ctl(rst_step, MHD_files,            &
      &      layer_tbl, node, ele, fluid, SGS_par,                       &
      &      FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, sgs_coefs,           &
      &      diff_coefs, nod_fld, init_d, time_d, flex_p)
       else
-        call set_initial_data                                           &
-     &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
+        call set_initial_data(iflag_restart_mode, cd_prop, ref_param_T, &
+     &                        node, fluid, iphys, nod_fld)
       end if
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
@@ -129,8 +134,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_data                                       &
-     &         (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
+      subroutine set_initial_data(iflag_restart_mode, cd_prop,          &
+     &           ref_param_T, node, fluid, iphys, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
@@ -140,6 +145,7 @@
       use dynamobench_initial_temp
       use set_initial_for_MHD
 !
+      integer(kind = kint), intent(in) :: iflag_restart_mode
       type(conductive_property), intent(in) :: cd_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
@@ -152,7 +158,7 @@
 !
 !   for dynamo benchmark case 0
 !
-      if (iflag_restart .eq. i_rst_dbench0) then
+      if (iflag_restart_mode .eq. i_rst_dbench0) then
         isig = 400
         call set_initial_temp                                           &
      &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
@@ -162,8 +168,8 @@
 !
 !   for dynamo benchmark case 1
 !
-      else if (iflag_restart .eq. i_rst_dbench1                         &
-     &    .or. iflag_restart .eq. i_rst_dbench2) then
+      else if (iflag_restart_mode .eq. i_rst_dbench1                    &
+     &    .or. iflag_restart_mode .eq. i_rst_dbench2) then
         isig = 400
         call set_initial_temp                                           &
      &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
@@ -182,31 +188,31 @@
      &        iphys%base%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
         end if
 !
-      else if (iflag_restart .le. -100) then
-        call set_initial_temp(iflag_restart,                            &
+      else if (iflag_restart_mode .le. -100) then
+        call set_initial_temp(iflag_restart_mode,                       &
      &     ref_param_T%depth_top, ref_param_T%depth_bottom,             &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%base%i_velo, iphys%base%i_press,   &
      &      iphys%base%i_temp, nod_fld%d_fld)
 !
-      else if (iflag_restart .eq. i_rst_rotate_x) then
+      else if (iflag_restart_mode .eq. i_rst_rotate_x) then
         call set_initial_velo_1(node%numnod, node%xx,                   &
      &      nod_fld%ntot_phys, iphys%base%i_velo, iphys%base%i_press,   &
      &      nod_fld%d_fld)
 !
-      else if (iflag_restart .eq. i_rst_rotate_y) then
+      else if (iflag_restart_mode .eq. i_rst_rotate_y) then
         call set_initial_velo_2(node%numnod, node%xx,                   &
      &      nod_fld%ntot_phys, iphys%base%i_velo, iphys%base%i_press,   &
      &      nod_fld%d_fld)
 !
-      else if (iflag_restart .eq. i_rst_rotate_z) then
+      else if (iflag_restart_mode .eq. i_rst_rotate_z) then
         call set_initial_velo_3(node%numnod, node%xx,                   &
      &      nod_fld%ntot_phys, iphys%base%i_velo, iphys%base%i_press,   &
      &      nod_fld%d_fld)
 !
 !   for kinematic dynamo
 !
-      else if (iflag_restart .eq. i_rst_kinematic) then
+      else if (iflag_restart_mode .eq. i_rst_kinematic) then
         call set_initial_kinematic(node, fluid%numnod_fld,              &
      &      fluid%inod_fld, nod_fld%ntot_phys,                          &
      &      iphys%base%i_velo, iphys%base%i_press, iphys%base%i_magne,  &
@@ -223,27 +229,26 @@
      &        iphys%base%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
         end if
 !
-      else if ( iflag_restart .ge. 1000  ) then
-        call set_initial_temp(iflag_restart,                            &
+      else if(iflag_restart_mode .ge. 1000) then
+        call set_initial_temp(iflag_restart_mode,                       &
      &      ref_param_T%depth_top, ref_param_T%depth_bottom,            &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%base%i_velo, iphys%base%i_press,   &
      &      iphys%base%i_temp, nod_fld%d_fld)
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
-     &       (iflag_restart, ref_param_T, node,                         &
+     &       (iflag_restart_mode, ref_param_T, node,                    &
      &        nod_fld%ntot_phys, iphys%base%i_vecp, iphys%base%i_magne, &
      &        iphys%base%i_mag_p, nod_fld%d_fld)
         else
-          call set_initial_magne(iflag_restart, ref_param_T, node,      &
+          call set_initial_magne(iflag_restart_mode, ref_param_T, node, &
      &       nod_fld%ntot_phys, iphys%base%i_magne, iphys%base%i_mag_p, &
      &       nod_fld%d_fld)
         end if
 !
-      else if (iflag_restart .ne. i_rst_no_file                         &
-     &   .and. iflag_restart .ne. i_rst_by_file) then
-       call calypso_MPI_abort(ierr_fld,'cannot set initial data!!!')
-!
+      else if (iflag_restart_mode .ne. i_rst_no_file                    &
+     &   .and. iflag_restart_mode .ne. i_rst_by_file) then
+        call calypso_MPI_abort(ierr_fld,'cannot set initial data!!!')
       end if
 !
       end subroutine set_initial_data

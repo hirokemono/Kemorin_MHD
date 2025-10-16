@@ -36,6 +36,8 @@ TARGET_TEST_SPH_GRID =       $(BUILDDIR)/tests/check_sph_comms
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
 TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
 
+TARGET_CONTROL_MHD_CHECK =   $(BUILDDIR)/utilities/check_control_mhd
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -87,8 +89,8 @@ test:
 		TARGET_NEWSPH="$(TARGET_NEWSPH)" \
 		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
-		
-	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+	
+	@echo "# --------- Kemorin_MHD tests finished! -------------------------"
 
 sym_test: 
 	for dir in sym_asym_field_test ; do \

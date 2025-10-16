@@ -119,6 +119,10 @@
      &    ipol_fefx%i_c_buo_gen, iphys_fefx%i_c_buo_gen,                &
      &    f_trns_fefx%i_c_buo_gen, trns)
 !
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_fefx%i_buoyancy_flux, iphys_fefx%i_buoyancy_flux,        &
+     &    f_trns_fefx%i_buoyancy_flux, trns)
+!
       end subroutine add_fil_e_flux_4_sph_trns_snap
 !
 !-----------------------------------------------------------------------

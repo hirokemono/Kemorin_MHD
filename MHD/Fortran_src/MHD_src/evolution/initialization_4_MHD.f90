@@ -231,7 +231,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control(MHD_files, MHD_step%rst_step,           &
+      call initial_data_control                                         &
+     &   (MHD_step%iflag_restart_mode, MHD_files, MHD_step%rst_step,    &
      &    MHD_prop%ref_param_T, geofem%mesh%node, geofem%mesh%ele,      &
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &

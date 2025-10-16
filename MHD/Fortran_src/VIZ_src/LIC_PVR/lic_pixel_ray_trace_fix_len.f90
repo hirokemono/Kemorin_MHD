@@ -101,14 +101,15 @@
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
       real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
-
+      real(kind = kreal) :: rgba_now(4)
+!
       real(kind = kreal) :: rlic_grad(0:3), grad_tgt(3)
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
       integer(kind = kint) :: iele_4_surf_org(2,3)
       integer(kind = kint) :: i, iter_tmp, iflag_lic
-
+!
       integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
       real(kind = kreal) :: ray_len_left, ray_left, ray_len, ratio
       real(kind = kreal) :: start_trace, start_RGB
@@ -156,8 +157,9 @@
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
         if(opacity_bc .gt. SMALL_RAY_TRACE) then
           rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-          call plane_rendering_with_light(viewpoint_vec,                &
-     &        xx4_st, rlic_grad(1), opacity_bc, color_param, rgba_ray)
+          call plane_rendering_with_light                               &
+     &       (viewpoint_vec, xx4_st, rlic_grad(1),                      &
+     &        opacity_bc, color_param, rgba_ray, rgba_now)
         end if
       end if
 !
@@ -240,8 +242,9 @@
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
           if(opacity_bc .gt. SMALL_RAY_TRACE) then
             rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-            call plane_rendering_with_light(viewpoint_vec, xx4_tgt,     &
-     &          rlic_grad(1), opacity_bc,  color_param, rgba_ray)
+            call plane_rendering_with_light                             &
+     &         (viewpoint_vec, xx4_tgt, rlic_grad(1),                   &
+     &          opacity_bc, color_param, rgba_ray, rgba_now)
           end if
 !
 !   3d lic calculation at current xx position
@@ -327,7 +330,7 @@
                   call color_plane_with_light                           &
      &               (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,   &
      &                draw_param%sect_opacity(i_psf), color_param,      &
-     &                rgba_ray)
+     &                rgba_ray, rgba_now)
                 end if
               end do
 !

@@ -20,9 +20,9 @@ TARGET_SPH_BACK_TRANS =    sph_backward_transform
 TARGET_SPH_ALL_CORRELATE = sph_all_correlate
 TARGET_SPH_ALL_RMS_RATIO = sph_all_rms_ratio
 
-TARGET_CONTROL_MHD_CHECK = check_control_mhd
-TARGET_CTL_MHD_VIZ_CHECK = check_control_mhd_viz
-TARGET_CTL_MHD_PSF_CHECK = check_control_mhd_psf
+TARGET_CONTROL_MHD_CHECK = utilities/check_control_mhd
+TARGET_CTL_MHD_VIZ_CHECK = utilities/check_control_mhd_viz
+TARGET_CTL_MHD_PSF_CHECK = utilities/check_control_mhd_psf
 
 LIBS_SPH_UTILS =  \
 '$$(LIB_MHD)'     \

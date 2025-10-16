@@ -358,7 +358,7 @@
      &         (ntot_overlap, npixel_img_local, ip_closer,              &
      &          rgba_part, rgba_whole)
 !
-      use set_rgba_4_each_pixel
+      use phong_reflection
 !
       integer(kind = kint), intent(in) :: ntot_overlap
       integer(kind = kint), intent(in) :: npixel_img_local
@@ -394,7 +394,7 @@
      &           ntot_overlap, npixel_img_local, istack_pixel,          &
      &           num_pixel_xy, iflag_img_pe, ip_closer, rgba_part)
 !
-      use set_rgba_4_each_pixel
+      use phong_reflection
 !
       integer(kind = kint), intent(in) :: id_file, i_ref
       integer(kind = kint), intent(in) :: ntot_overlap

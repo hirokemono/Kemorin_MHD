@@ -283,6 +283,7 @@
      &       (SVIZ_m%SPH_SGS%trns_WK_LES)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+6)
         end if
+!
 !*  -----------  exit loop --------------
 !*
         if(iflag_finish .gt. 0) exit

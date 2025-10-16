@@ -67,19 +67,22 @@
       integer(kind = kint) :: ibuo_temp,  ibuo_comp
 !
 !
-!   ----  lead buoyancies
       call sel_field_address_for_buoyancies                             &
      &   (ipol%base, MHD_prop%ref_param_T, MHD_prop%ref_param_C,        &
      &    ibuo_temp, ibuo_comp)
-      call sel_buoyancies_sph_MHD                                       &
-     &   (sph%sph_rj, leg, ipol%forces, MHD_prop%fl_prop,               &
-     &    sph_bc_U, ibuo_temp, ibuo_comp, rj_fld)
+!
+!   ----  lead buoyancies
+      call sel_buoyancies_sph_MHD(sph%sph_rj, leg,                      &
+     &    ipol%forces, MHD_prop%fl_prop, sph_bc_U,                      &
+     &    ibuo_temp, ibuo_comp, rj_fld)
+      call cal_total_buoyancy(ipol%forces, rj_fld)
 !
 !   ----  lead filtered buoyancies
       call sel_buoyancies_sph_MHD(sph%sph_rj, leg,                      &
      &    ipol_LES%force_by_filter, MHD_prop%fl_prop, sph_bc_U,         &
      &    ipol_LES%filter_fld%i_temp, ipol_LES%filter_fld%i_light,      &
      &    rj_fld)
+      call cal_total_buoyancy(ipol_LES%force_by_filter, rj_fld)
 !
       end subroutine cal_self_buoyancy_sph_SGS_MHD
 !
@@ -89,7 +92,8 @@
      &         (sph, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !
       use rot_self_buoyancies_sph
-! 
+      use cal_self_buoyancies_sph
+!
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_grids), intent(in) ::  sph
       type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -100,6 +104,7 @@
       call sel_rot_buoyancy_sph_MHD                                     &
      &   (sph%sph_rj, ipol_LES%filter_fld, ipol_LES%rot_frc_by_filter,  &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
+      call cal_total_buoyancy(ipol_LES%rot_frc_by_filter, rj_fld)
 !
       end subroutine sel_rot_filter_buoyancy_sph
 !

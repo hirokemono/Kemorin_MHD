@@ -150,12 +150,12 @@
 !
       do igrp = 1, FUTIL1%geofem%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
-        psf_ctl_struct(igrp)%psf_file_head_ctl%iflag = 1
-        psf_ctl_struct(igrp)%psf_file_head_ctl%charavalue               &
+        psf_ctl_struct(igrp)%psf_file_prefix_ctl%iflag = 1
+        psf_ctl_struct(igrp)%psf_file_prefix_ctl%charavalue             &
      &              = add_int_suffix(igrp, grouping_mesh_head)
 !
-        psf_ctl_struct(igrp)%psf_output_type_ctl%iflag = 1
-        psf_ctl_struct(igrp)%psf_output_type_ctl%charavalue = 'VTD'
+        psf_ctl_struct(igrp)%psf_file_format_ctl%iflag = 1
+        psf_ctl_struct(igrp)%psf_file_format_ctl%charavalue = 'VTD'
 !
         call set_med_grp_patch_psf_def_ctl                              &
      &     (FUTIL1%geofem%group%ele_grp%grp_name(igrp),                 &

@@ -22,6 +22,7 @@
       implicit    none
 !
       character(len=kchara) :: file_head
+      character(len=kchara) :: cmd
       integer(kind = kint) :: icount
 !
       type(field_IO_params), save ::  pick_mesh_file
@@ -31,6 +32,18 @@
       call calypso_MPI_init
 !
       if(my_rank .eq. izero) then
+        icount = command_argument_count()
+        write(*,*) 'command_argument_count', icount
+        call get_command(cmd)
+        write (*,*) 'Whole command: ', cmd
+        call get_command_argument(0, cmd)
+        write (*,*) 'Command: ', trim(cmd)
+        call get_command_argument(1, cmd)
+        write (*,*) 'Option: ', trim(cmd)
+        call get_environment_variable("OMP_NUM_THREADS", cmd)
+        read(cmd,*) icount
+        write (*,*) 'OMP_NUM_THREADS: ', icount
+
         icount = iargc_kemo()
         if(icount .eq. 0) then
           write(*,*) ' Please input header of mesh  !!'

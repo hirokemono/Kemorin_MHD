@@ -2,9 +2,9 @@
 !
 !     example of control for Kemo's surface rendering
 !
-begin surface_rendering
-  psf_file_head    'sections/zm_y0'
-  psf_output_type  PSF_gzip
+begin cross_section_ctl
+  section_file_prefix    'sections/zm_y0'
+  section_file_format  PSF_gzip
 !
   file surface_define  'SURFACE_defs/ctl_section_zm'
 !
@@ -19,4 +19,4 @@ begin surface_rendering
       output_field  stream_pol_magne         phi
     end array output_field
   end output_field_define
-end surface_rendering
+end cross_section_ctl

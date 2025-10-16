@@ -204,10 +204,14 @@
 !
 !   set physical values
 !
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spu_ctl%fld_ctl%field_ctl, rj_fld, ierr)
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (spu_ctl%fld_ctl%field_ctl, nod_fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Spectr field data names:'
+      call set_SGS_field_control(.TRUE., spu_ctl%fld_ctl%field_ctl,     &
+     &                           rj_fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
+      call set_SGS_field_control(.TRUE., spu_ctl%fld_ctl%field_ctl,     &
+     &                           nod_fld, ierr)
 !
       if(spu_ctl%buoyancy_ratio_ctl%iflag .gt. 0) then
         buo_ratio = spu_ctl%buoyancy_ratio_ctl%realvalue

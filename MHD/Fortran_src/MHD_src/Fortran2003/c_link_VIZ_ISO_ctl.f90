@@ -20,8 +20,8 @@
 !!     &          bind(C, NAME = 'c_VIZ_ISO_fld_on_iso_c')
 !!      type(c_ptr) function c_VIZ_ISO_file_head_ctl(c_ctl)             &
 !!     &          bind(C, NAME = 'c_VIZ_ISO_file_head_ctl')
-!!      type(c_ptr) function c_VIZ_ISO_output_type_ctl(c_ctl)           &
-!!     &          bind(C, NAME = 'c_VIZ_ISO_output_type_ctl')
+!!      type(c_ptr) function c_VIZ_ISO_file_format_ctl(c_ctl)           &
+!!     &          bind(C, NAME = 'c_VIZ_ISO_file_format_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!!!
 !!      type(c_ptr) function c_VIZ_fld_on_psf_ctl_block_name(c_ctl)     &
@@ -130,13 +130,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_VIZ_ISO_output_type_ctl(c_ctl)             &
-     &          bind(C, NAME = 'c_VIZ_ISO_output_type_ctl')
+      type(c_ptr) function c_VIZ_ISO_file_format_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_VIZ_ISO_file_format_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(iso_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_ISO_output_type_ctl = C_loc(f_ctl%iso_output_type_ctl)
-      end function c_VIZ_ISO_output_type_ctl
+      c_VIZ_ISO_file_format_ctl = C_loc(f_ctl%iso_file_format_ctl)
+      end function c_VIZ_ISO_file_format_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -59,7 +59,7 @@
      &          trns_b_fil_eflux, trns_f_fil_eflux)
 !
       use cal_energy_flux_rtp
-      use cal_buoyancy_flux_sph
+      use cal_buoyancy_flux_rtp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -95,12 +95,7 @@
      &    trns_b_fil_eflux%ncomp, trns_b_fil_eflux%fld_pole,            &
      &    trns_f_fil_eflux%ncomp, trns_f_fil_eflux%fld_pole)
 !
-      call cal_buoyancy_flux_rtp                                        &
-     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    bs_trns%base, bs_trns_LES%filter_fld,                         &
-     &    fe_trns_LES%eflux_by_filter,                                  &
-     &    trns_b_snap, trns_b_fil_snap, trns_f_fil_eflux)
-      call pole_buoyancy_flux_rtp                                       &
+      call s_cal_buoyancy_flux_rtp                                      &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
      &    bs_trns%base, bs_trns_LES%filter_fld,                         &
      &    fe_trns_LES%eflux_by_filter,                                  &

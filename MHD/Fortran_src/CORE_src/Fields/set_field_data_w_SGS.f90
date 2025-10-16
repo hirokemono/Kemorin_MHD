@@ -9,10 +9,12 @@
 !>@brief  Ordering field data by visualization flag
 !!
 !!@verbatim
-!!      subroutine set_SGS_field_ctl_by_viz(field_ctl, fld, ierr)
-!!      subroutine set_SGS_field_ctl_by_comp_viz(field_ctl, fld, ierr)
+!!      subroutine set_SGS_field_control(flag_viz_order, field_ctl,     &
+!!     &                                 fld, ierr)
+!!        logical, intent(in) :: flag_viz_order
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
+!!        integer (kind = kint), intent(inout) :: ierr
 !!
 !!      subroutine init_field_data_w_SGS(n_point, fld, iphys, iphys_LES)
 !!        type(phys_data), intent(inout) :: fld
@@ -45,10 +47,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_SGS_field_ctl_by_viz(field_ctl, fld, ierr)
+      subroutine set_SGS_field_control(flag_viz_order, field_ctl,       &
+     &                                 fld, ierr)
 !
       use set_field_name_w_SGS
 !
+      logical, intent(in) :: flag_viz_order
       type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
       integer (kind = kint), intent(inout) :: ierr
@@ -62,46 +66,16 @@
       end if
 !
 !    set nodal data
-      call ordering_fld_w_SGS_by_viz(field_ctl, fld)
-!
-      if(fld%num_phys .gt. 0) then
-        if(iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'check_nodal_field_name for fld'
-          call check_nodal_field_name(id_std, fld)
-        end if
+      if(flag_viz_order) then
+        call ordering_fld_w_SGS_by_viz(field_ctl, fld)
+      else
+        call ordering_fld_w_SGS_by_comp_viz(field_ctl, fld)
       end if
 !
-      end subroutine set_SGS_field_ctl_by_viz
+      if(iflag_debug .lt. iflag_routine_msg) return
+      call check_nodal_field_name(id_std, fld)
 !
-! -----------------------------------------------------------------------
-!
-      subroutine set_SGS_field_ctl_by_comp_viz(field_ctl, fld, ierr)
-!
-      use set_field_name_w_SGS
-!
-      type(ctl_array_c3), intent(in) :: field_ctl
-      type(phys_data), intent(inout) :: fld
-      integer (kind = kint), intent(inout) :: ierr
-!
-!
-      ierr = 0
-      if(field_ctl%icou .le. 0) then
-        e_message = 'Set field for simulation'
-        ierr = ierr_file
-        return
-      end if
-!
-!    set nodal data
-      call ordering_fld_w_SGS_by_comp_viz(field_ctl, fld)
-!
-      if(fld%num_phys .gt. 0) then
-        if(iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'check_nodal_field_name for fld'
-          call check_nodal_field_name(id_std, fld)
-        end if
-      end if
-!
-      end subroutine set_SGS_field_ctl_by_comp_viz
+      end subroutine set_SGS_field_control
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

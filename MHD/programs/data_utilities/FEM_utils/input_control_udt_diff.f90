@@ -118,9 +118,11 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_ctl_by_viz'
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
+      call set_SGS_field_control                                        &
+     &   (.TRUE., diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl,             &
+     &    nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
@@ -158,9 +160,11 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_ctl_by_viz'
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
+      if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
+     &        'Grid field data names:'
+      call set_SGS_field_control                                        &
+     &   (.TRUE., diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl,             &
+     &    nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'

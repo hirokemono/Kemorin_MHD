@@ -174,8 +174,8 @@ struct iso_ctl_c * init_iso_ctl_c(){
 	iso_c->iso_fld_c = init_iso_field_ctl_c();
     iso_c->iso_fld_c->iflag_use = 0;
 	
-	iso_c->iso_file_head_ctl = init_chara_ctl_item_c();
-	iso_c->iso_output_type_ctl = init_chara_ctl_item_c();
+	iso_c->iso_file_head_ctl =   init_chara_ctl_item_c();
+	iso_c->iso_file_format_ctl = init_chara_ctl_item_c();
 	return iso_c;
 };
 
@@ -187,7 +187,7 @@ void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	dealloc_iso_field_ctl_c(iso_c->iso_fld_c);
 	
 	dealloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
-	dealloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
+	dealloc_chara_ctl_item_c(iso_c->iso_file_format_ctl);
     free(iso_c);
 	return;
 };
@@ -202,7 +202,7 @@ int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 4],
 							  iso_c->iso_file_head_ctl);
 		read_chara_ctl_item_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 1],
-							  iso_c->iso_output_type_ctl);
+							  iso_c->iso_file_format_ctl);
 		
 		if(right_begin_flag_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 2]) > 0){
             read_iso_define_ctl_c(fp, buf, iso_c->label_iso_ctl_w_dpl->label[ 2],
@@ -229,7 +229,7 @@ int write_iso_ctl_c(FILE *fp, int level, const char *label,
 						   iso_c->iso_file_head_ctl);
 	write_chara_ctl_item_c(fp, level, iso_c->label_iso_ctl_w_dpl->maxlen,
 						   iso_c->label_iso_ctl_w_dpl->label[ 1],
-						   iso_c->iso_output_type_ctl);
+						   iso_c->iso_file_format_ctl);
 	
     if(iso_c->iso_def_c->iflag_use > 0){
         fprintf(fp, "!\n");

@@ -130,7 +130,7 @@
       type(c_ptr), value, intent(in) :: c_ctl
       type(psf_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_PSF_file_head_ctl = C_loc(f_ctl%psf_file_head_ctl)
+      c_VIZ_PSF_file_head_ctl = C_loc(f_ctl%psf_file_prefix_ctl)
       end function c_VIZ_PSF_file_head_ctl
 !
 !  ---------------------------------------------------------------------
@@ -140,7 +140,7 @@
       type(c_ptr), value, intent(in) :: c_ctl
       type(psf_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_PSF_output_type_ctl = C_loc(f_ctl%psf_output_type_ctl)
+      c_VIZ_PSF_output_type_ctl = C_loc(f_ctl%psf_file_format_ctl)
       end function c_VIZ_PSF_output_type_ctl
 !
 !  ---------------------------------------------------------------------

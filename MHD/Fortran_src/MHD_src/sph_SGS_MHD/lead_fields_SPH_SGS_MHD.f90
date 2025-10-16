@@ -117,6 +117,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_asym, MHD_prop%fl_prop,            &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
+      call cal_total_buoyancy(SPH_MHD%ipol%forces_by_sym_asym,          &
+     &                        SPH_MHD%fld)
 !
       call sel_field_address_for_buoyancies(SPH_MHD%ipol%asym_fld,      &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
@@ -124,7 +126,8 @@
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%forces_by_sym_sym, MHD_prop%fl_prop,             &
      &    sph_MHD_bc%sph_bc_U, ibuo_temp, ibuo_comp, SPH_MHD%fld)
-!
+      call cal_total_buoyancy(SPH_MHD%ipol%forces_by_sym_sym,           &
+     &                        SPH_MHD%fld)
 !
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
@@ -175,6 +178,7 @@
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
       use sum_rot_of_filter_forces
+      use cal_self_buoyancies_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -211,6 +215,8 @@
      &    ipol_LES%filter_fld, ipol_LES%force_by_filter,                &
      &    ipol_LES%div_frc_by_filter, rj_fld)
 !
+      call cal_total_div_buoyancy(ipol%div_forces, rj_fld)
+      call cal_total_div_buoyancy(ipol_LES%div_frc_by_filter, rj_fld)
       call sum_div_of_forces                                            &
      &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
       call sum_div_of_filtered_forces(MHD_prop%fl_prop,                 &

@@ -1,9 +1,9 @@
 !
 !     example of control for surface rendering on equator
 !
-begin surface_rendering
-  psf_file_head       'sections/equator'
-  psf_output_type        'binary_gzip'
+begin cross_section_ctl
+  section_file_prefix       'sections/equator'
+  section_file_format        'PSF_gz'
 !
   begin surface_define
     section_method    equation
@@ -34,4 +34,4 @@ begin surface_rendering
       output_field  vorticity             cylindrical_vector
     end array output_field
   end output_field_define
-end surface_rendering
+end cross_section_ctl

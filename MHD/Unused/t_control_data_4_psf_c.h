@@ -44,8 +44,8 @@ struct psf_field_ctl_c{
 struct psf_ctl_c{
 	struct control_labels_f *label_psf_ctl;
 	
-	struct chara_ctl_item *psf_file_head_ctl;
-	struct chara_ctl_item *psf_output_type_ctl;
+	struct chara_ctl_item *psf_file_prefix_ctl;
+	struct chara_ctl_item *psf_file_format_ctl;
 	
 	int iflag_surface_define;
     char *psf_def_file_name;

@@ -20,25 +20,27 @@
 !!
 !! field names 
 !!
-!!   u_dot_wsym_x_usym, u_dot_wasym_x_uasym,
-!!   u_dot_wsym_x_uasym, u_dot_wasym_x_usym:
+!!   us_d_ws_x_ua, us_d_wa_x_us:
+!!   ua_d_ws_x_us, ua_d_wa_x_ua,
 !!          Work of Reynolds stress   u \cdot (\omega \times u)
-!!   rev_u_dot_Jsym_x_Bsym, rev_u_dot_Jasym_x_Basym,
-!!   rev_u_dot_Jsym_x_Basym, rev_u_dot_Jasym_x_Bsym:
+!!   mns_ua_d_js_x_bs, mns_ua_d_ja_x_ba,
+!!   mns_us_d_js_x_ba, mns_us_d_ja_x_bs:
 !!          Work against Lorentz force       -u \cdot (J \times B)
-!!   u_dot_Jsym_x_Bsym, u_dot_Jasym_x_Basym,
-!!   u_dot_Jsym_x_Basym, u_dot_Jasym_x_Bsym:
+!!   ua_d_js_x_bs, ua_d_ja_x_ba, us_d_js_x_ba, us_d_ja_x_bs:
 !!          Work of Lorentz force             u \cdot (J \times B)
 !!   u_dot_Bsym_nabla_Bsym, u_dot_Basym_nabla_Basym,
 !!   u_dot_Bsym_nabla_Basym, u_dot_Basym_nabla_Bsym:
 !!          Work of magnetic tension          u \cdot( (B \nabla) B)
 !!
-!!   sym_termal_buo_flux, asym_termal_buo_flux:
-!!          Thermal buoyancy flux            -u \cdot (\alpha_{T} g T)
-!!   sym_composite_buo_flux, asym_composite_buo_flux:
-!!          Compositional buoyancy flux      -u \cdot (\alpha_{C} g C)
-!!   sym_buoyancy_flux, asym_buoyancy_flux:  Total buoyancy flux
-!!                            -u \cdot (\alpha_{T} T + \alpha_{C} C) g
+!!   sym_thermal_buoyancy_flux,
+!!   asym_thermal_buoyancy_flux:    [eflux_by_filter%i_t_buo_gen]
+!!          Thermal buoyancy flux         -u \cdot g \alpha_{T} T
+!!   sym_composite_buoyancy_flux,
+!!   asym_composite_buoyancy_flux:  [eflux_by_filter%i_c_buo_gen]
+!!      Compositional buoyancy flux  -u \cdot g \alpha_{C} C
+!!   sym_buoyancy_flux,
+!!   asym_buoyancy_flux:            [eflux_by_filter%i_t_buo_gen]
+!!      Thermal buoyancy flux  -u \cdot g (\alpha_{T} T + \alpha_{C} C)
 !!
 !!   B_rot_Bsym_x_usym, B_rot_Basym_x_uasym,
 !!   B_rot_Bsym_x_uasym, B_rot_Basym_x_usym:
@@ -73,7 +75,23 @@
       use t_energy_flux_labels
 !
       implicit  none
-! 
+!
+!>        Field label of total buoyancy flux
+!!        @f$ -u \cdot (\alpha_{T} T_{sym}+\alpha_{C} C_{sym})g_{i} @f$
+      type(field_def), parameter :: sym_buoyancy_flux                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'sym_buoyancy_flux',                           &
+     &            math = '$ -u \cdot (\alpha_{T} T_{sym} '              &
+     &                // ' + \alpha_{C} C_{sym})g_{i} $')
+!>        Field label of total buoyancy flux
+!!      @f$ -u \cdot (\alpha_{T} T_{asym}+\alpha_{C} C_{asym})g_{i} @f$
+      type(field_def), parameter :: asym_buoyancy_flux                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &            name = 'asym_buoyancy_flux',                          &
+     &            math = '$ -u \cdot (\alpha_{T} T_{asym} '             &
+     &                // ' + \alpha_{C} C_{asym})g_{i} $')
+!
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -98,34 +116,7 @@
 !
       flag = check_ene_fluxes_w_sym(field_name)
       if(flag) then
-        if      (field_name .eq. u_dot_wsym_x_usym%name) then
-          eflux_sym1_sym2%i_m_advect_work =   i_phys
-        else if (field_name .eq. u_dot_wasym_x_uasym%name) then
-          eflux_asym1_asym2%i_m_advect_work = i_phys
-        else if (field_name .eq. u_dot_wsym_x_uasym%name) then
-          eflux_sym1_asym2%i_m_advect_work =  i_phys
-        else if (field_name .eq. u_dot_wasym_x_usym%name) then
-          eflux_asym1_sym2%i_m_advect_work =  i_phys
-!
-        else if (field_name .eq. rev_u_dot_Jsym_x_Bsym%name) then
-          eflux_sym1_sym2%i_nega_ujb =     i_phys
-        else if (field_name .eq. rev_u_dot_Jasym_x_Basym%name) then
-          eflux_asym1_asym2%i_nega_ujb =   i_phys
-        else if (field_name .eq. rev_u_dot_Jsym_x_Basym%name) then
-          eflux_sym1_asym2%i_nega_ujb =    i_phys
-        else if (field_name .eq. rev_u_dot_Jasym_x_Bsym%name) then
-          eflux_asym1_sym2%i_nega_ujb =    i_phys
-!
-        else if (field_name .eq. u_dot_Jsym_x_Bsym%name) then
-          eflux_sym1_sym2%i_ujb =     i_phys
-        else if (field_name .eq. u_dot_Jasym_x_Basym%name) then
-          eflux_asym1_asym2%i_ujb =   i_phys
-        else if (field_name .eq. u_dot_Jsym_x_Basym%name) then
-          eflux_sym1_asym2%i_ujb =    i_phys
-        else if (field_name .eq. u_dot_Jasym_x_Bsym%name) then
-          eflux_asym1_sym2%i_ujb =    i_phys
-!
-        else if (field_name .eq. u_dot_Bsym_nabla_Bsym%name) then
+        if (field_name .eq. u_dot_Bsym_nabla_Bsym%name) then
           eflux_sym1_sym2%i_m_tension_wk =  i_phys
         else if (field_name .eq. u_dot_Basym_nabla_Basym%name) then
           eflux_asym1_asym2%i_m_tension_wk =  i_phys

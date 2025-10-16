@@ -37,11 +37,11 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(iargc_kemo() .le. 0) then
+      if(command_argument_count() .le. 0) then
         write(*,*) 'check_control_mhd CONTROL_FILE_NAME'
         stop
       end if
-      call getarg_k(1, MHD_ctl_name)
+      call get_command_argument(1, MHD_ctl_name)
 !
       c_buf1%level = 0
       call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl3, sgs_ctl3, &
@@ -56,39 +56,5 @@
      &    tracer_ctls3, viz_ctls3,  zm_ctls3, c_buf1%level)
 !
       stop '***** program finished *****'
-!
-!   --------------------------------------------------------------------
-!
-      contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine getarg_k(i, argc)
-!
-      integer, intent(in) :: i
-      character(len=*), intent(out) :: argc
-!
-      call getarg(0, argc)
-      if(argc == "") then
-        call getarg(i + 1, argc)
-      else
-        call getarg(i, argc)
-      end if
-      end subroutine getarg_k
-!
-!   --------------------------------------------------------------------
-!
-      integer function iargc_kemo() result(oresult)
-!
-      integer :: iargc
-      character(len=8) :: argc
-      oresult = iargc()
-      call getarg(0, argc)
-      if(argc == "") then
-        oresult = oresult - 1
-      end if
-      end function iargc_kemo
-!
-!   --------------------------------------------------------------------
 !
       end program kemorin_control_SGS_MHD_check
