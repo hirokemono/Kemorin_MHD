@@ -24,8 +24,8 @@ begin MHD_control
 !
     radial_field_file_name      'radial_field.dat'
 !
-    restart_file_prefix         'rst_6/rst'
-    restart_file_fmt_ctl       'merged_bin'
+    restart_file_prefix         'rst_2/rst'
+    restart_file_fmt_ctl        'merged'
   end data_files_def
 !
 !!!!! spatial resolution and parallelization !!!!!!!!!!!!!!!
@@ -72,8 +72,8 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
       array nod_value_ctl
-        nod_value_ctl  velocity                Viz_On   Monitor_On
-        nod_value_ctl  pressure                Viz_On   Monitor_On
+        nod_value_ctl  velocity                Viz_On   Monitor_Off
+        nod_value_ctl  pressure                Viz_On   Monitor_Off
         nod_value_ctl  temperature             Viz_On   Monitor_On
         nod_value_ctl  heat_source             Viz_On   Monitor_On
         nod_value_ctl  composition             Viz_On   Monitor_On
@@ -121,7 +121,7 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin dimensionless_ctl
       array dimless_ctl
-        dimless_ctl  Prandtl_number                   1.0e-0
+        dimless_ctl  Pr                   1.0e-0
       end array dimless_ctl
     end dimensionless_ctl
 !
@@ -173,21 +173,6 @@ begin MHD_control
           coef_4_light_source_ctl      One     1.0
         end array coef_4_light_source_ctl
       end composition
-!
-!
-      begin momentum
-        array coef_4_velocity_ctl
-          coef_4_velocity_ctl          One                        1.0
-        end array coef_4_velocity_ctl
-!
-        array coef_4_press_ctl
-          coef_4_press_ctl             One                       -1.0
-        end array coef_4_press_ctl
-!
-        array coef_4_v_diffuse_ctl
-          coef_4_v_diffuse_ctl         One                        1.0
-        end array coef_4_v_diffuse_ctl
-      end momentum
     end coefficients_ctl
 !
 !!!!!!!!! model for hydrostatic !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -197,11 +182,14 @@ begin MHD_control
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin temperature_define
-!      ref_temp_ctl     none
+!      ref_temp_ctl     file
       ref_temp_ctl      numerical_solution
+      ref_field_file_name      'radial_field.dat'
     end temperature_define
     begin composition_define
+!      ref_temp_ctl     file
       ref_comp_ctl      numerical_solution
+      ref_field_file_name      'radial_field.dat'
     end composition_define
   end model
 !
@@ -211,11 +199,10 @@ begin MHD_control
 !!!!!  information for time integration
    begin time_step_ctl
        i_step_init_ctl          0
-!      i_step_init_ctl          1
       i_step_finish_ctl         1
 !
-      i_step_check_ctl             100
-      i_step_rst_ctl             20000
+      i_step_check_ctl          1
+      i_step_rst_ctl            1
 !
       dt_ctl              5.0e-5
       time_init_ctl       0.0e-8
@@ -230,7 +217,22 @@ begin MHD_control
 !
     begin time_loop_ctl
       scheme_ctl              Crank_Nicolson
+      coef_imp_t_ctl          5.0e-1
+      coef_imp_c_ctl          5.0e-1
     end time_loop_ctl
   end control
 !
+  begin sph_monitor_ctl
+    begin pickup_spectr_ctl
+      picked_sph_prefix     'monitor/picked_mode'
+!
+      array pick_sph_spectr_ctl  1
+        pick_sph_spectr_ctl   0   0
+      end array pick_sph_spectr_ctl
+!
+      array pick_layer_ctl  1
+        pick_layer_ctl    -1
+      end array pick_layer_ctl
+    end pickup_spectr_ctl
+  end sph_monitor_ctl
 end MHD_control
