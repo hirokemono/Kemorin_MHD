@@ -202,8 +202,8 @@
           if(iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(filter_param,                  &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        i_filter_s, i_scalar,                      &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
+     &        i_filter_s, i_scalar, FEM_SGS_wk%wk_filter, nod_fld,      &
+     &        v_sol, SR_sig, SR_r)
           nod_fld%iflag_update(i_filter_s) = 1
         end if
       end if

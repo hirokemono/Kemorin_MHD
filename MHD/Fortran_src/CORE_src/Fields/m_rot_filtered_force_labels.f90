@@ -18,8 +18,9 @@
 !!
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
-!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_thermal_buoyancy     [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -48,20 +49,28 @@
      &                math = '$ e_{ijk} \partial_{j}'                   &
      &                    // '(e_{kkm} \tilde{J}_{l} \tilde{B}_{m}) $')
 !
-!>        Field label for curl of filtered buoyancy
+!>        Field label for curl of filtered thermal buoyancy
 !!        @f$ -e_{ijk} \partial_{j} \alpha_{T} \tilde{T} g_{k}$') @f$
-      type(field_def), parameter :: rot_filtered_buoyancy               &
+      type(field_def), parameter :: rot_filtered_thermal_buoyancy       &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'rot_filtered_buoyancy',                   &
+     &                name = 'rot_filtered_thermal_buoyancy',           &
      &                math = '$-e_{ijk} \partial_{j} \alpha_{T}'        &
      &                    // ' \tilde{T} g_{k}$')
-!>        Field label for curl of compositional buoyancy
+!>        Field label for curl of filtered compositional buoyancy
 !!        @f$ -e_{ijk} \partial_{j} \alpha_{C} \tilde{C} g_{k}$') @f$
       type(field_def), parameter :: rot_filtered_comp_buoyancy          &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_filtered_comp_buoyancy',              &
      &                math = '$-e_{ijk} \partial_{j} \alpha_{C}'        &
      &                    // ' \tilde{C} g_{k}$')
+!>        Field label for curl of filtered total buoyancy
+!!        @f$ -e_{ijk} \partial_{j} (\alpha_{T} \tilde{T}
+!!                    + \alpha_{C} \tilde{C}) g_{k}$') @f$
+      type(field_def), parameter :: rot_filtered_buoyancy               &
+     &    = field_def(n_comp = n_vector,                                &
+     &     name = 'rot_filtered_buoyancy',                              &
+     &     math = '$-e_{ijk} \partial_{j} (\alpha_{T} \tilde{T} '       &
+     &         // ' + \alpha_{C} \tilde{C}) g_{k}$')
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,8 +86,9 @@
       check_rot_fil_force                                               &
      &   =    (field_name .eq. rot_inertia_by_filtered%name)            &
      &   .or. (field_name .eq. rot_Lorentz_force_by_filtered%name)      &
-     &   .or. (field_name .eq. rot_filtered_buoyancy%name)              &
-     &   .or. (field_name .eq. rot_filtered_comp_buoyancy%name)
+     &   .or. (field_name .eq. rot_filtered_thermal_buoyancy%name)      &
+     &   .or. (field_name .eq. rot_filtered_comp_buoyancy%name)         &
+     &   .or. (field_name .eq. rot_filtered_buoyancy%name)
 !
       end function check_rot_fil_force
 !
@@ -96,9 +106,11 @@
       call set_field_label_to_ctl(rot_inertia_by_filtered, array_c2i)
       call set_field_label_to_ctl(rot_Lorentz_force_by_filtered,        &
      &                            array_c2i)
-      call set_field_label_to_ctl(rot_filtered_buoyancy,   array_c2i)
+      call set_field_label_to_ctl(rot_filtered_thermal_buoyancy,        &
+     &                            array_c2i)
       call set_field_label_to_ctl(rot_filtered_comp_buoyancy,           &
      &                            array_c2i)
+      call set_field_label_to_ctl(rot_filtered_buoyancy,   array_c2i)
 !
       end subroutine set_rot_filtered_force_names
 !

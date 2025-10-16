@@ -54,7 +54,7 @@ begin MHD_control
 !   kinetic_helicity, magnetic_helicity
 !   current_helicity, cross_helicity
 !
-!   buoyancy_flux, Lorentz_work, mag_tension_work
+!   thermal_buoyancy_flux, Lorentz_work, mag_tension_work
 !   magnetic_ene_generation, work_against_Lorentz
 !   temp_generation, pert_temp_generation
 !   viscous_ene_diffusion, magnetic_ene_diffusion
@@ -63,7 +63,7 @@ begin MHD_control
 !   thermal_diffusion, viscous_diffusion
 !   vector_potential_diffusion, magnetic_diffusion
 !   magnetic_tension, Lorentz_force
-!   Coriolis_force, buoyancy
+!   Coriolis_force, thermal_buoyancy
 !
 !
 !   heat_flux,      pert_heat_flux

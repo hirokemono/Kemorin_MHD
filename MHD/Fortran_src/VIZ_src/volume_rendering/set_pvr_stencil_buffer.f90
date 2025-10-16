@@ -88,7 +88,6 @@
       img_stack%npixel_4_composit                                       &
      &           = num_parallel_stencil_buffer(stencil_wk)
 !
-!
 !      write(*,*) 's_const_comm_tbl_img_output'
       if(elps_PVR%flag_elapsed)                                         &
      &       call start_elapsed_time(elps_PVR%ist_elapsed+8)
@@ -98,13 +97,11 @@
       if(elps_PVR%flag_elapsed)                                         &
      &       call end_elapsed_time(elps_PVR%ist_elapsed+8)
 !
-!
 !      write(*,*) 'set_global_pixel_4_composit'
       call alloc_pvr_ipixel_4_composit(num_pixel_xy, img_stack)
       call set_global_pixel_4_composit                                  &
      &   (stencil_wk, img_stack%npixel_4_composit, num_pixel_xy,        &
      &    img_stack%ipixel_4_composit, img_stack%item_4_composit)
-!
 !
 !
 !      write(*,*) 's_const_comm_tbl_img_composit'

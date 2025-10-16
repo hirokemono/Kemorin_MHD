@@ -31,7 +31,7 @@
 !!
 !!    field_line_field_ctl      magnetic_field
 !!    coloring_field_ctl        magnetic_field
-!!    coloring_comp_ctl          radial
+!!    coloring_component_ctl    radial
 !!    array output_field
 !!      output_field    velocity         vector
 !!      output_field    magnetic_field   radial
@@ -112,7 +112,7 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_coloring_field =     'coloring_field_ctl'
       character(len=kchara), parameter, private                         &
-     &      :: hd_coloring_comp =      'coloring_comp_ctl'
+     &      :: hd_coloring_comp =      'coloring_component_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_fline_result_field = 'output_field'
 !

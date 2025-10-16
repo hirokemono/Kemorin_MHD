@@ -50,6 +50,6 @@ begin fieldline
 !
   field_line_field_ctl      magnetic_field
   coloring_field_ctl        magnetic_field
-  coloring_comp_ctl        radial   end
+  coloring_component_ctl        radial
 !
 end fieldline

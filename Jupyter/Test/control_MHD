@@ -61,13 +61,13 @@ begin MHD_control
 !   vector_potential, magnetic_field, current_density, magnetic_potential
 !   composition, perturbation_temp
 !
-!   buoyancy_flux, Lorentz_work, mag_tension_work
+!   thermal_buoyancy_flux, Lorentz_work, mag_tension_work
 !   magnetic_ene_generation
 !   temp_generation, part_temp_gen
 !   vis_ene_diffuse, mag_ene_diffuse
 !
 !   thermal_diffusion, viscous_diffusion, magnetic_diffusion
-!   Coriolis_force, buoyancy
+!   Coriolis_force, thermal_buoyancy
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
@@ -80,7 +80,7 @@ begin MHD_control
         nod_value_ctl  current_density         Viz_On   Monitor_On
 !
         nod_value_ctl  Lorentz_work             Viz_On   Monitor_On
-        nod_value_ctl  buoyancy_flux            Viz_On   Monitor_On
+        nod_value_ctl  thermal_buoyancy_flux    Viz_On   Monitor_On
 !
         nod_value_ctl  Coriolis_force           Viz_On   Monitor_On
         nod_value_ctl  Lorentz_force            Viz_On   Monitor_On
@@ -89,7 +89,7 @@ begin MHD_control
         nod_value_ctl  rot_Coriolis_force       Viz_On   Monitor_Off
         nod_value_ctl  rot_Lorentz_force        Viz_On   Monitor_Off
         nod_value_ctl  rot_inertia              Viz_On   Monitor_Off
-        nod_value_ctl  rot_buoyancy             Viz_On   Monitor_Off
+        nod_value_ctl  rot_thermal_buoyancy     Viz_On   Monitor_Off
       end array nod_value_ctl
     end phys_values_ctl
 !

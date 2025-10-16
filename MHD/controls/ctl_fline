@@ -50,8 +50,8 @@ begin fieldline
 !     cylindrical_vector, cylindrical_sym_tensor
 !     norm, 
 !
-  field_line_field_ctl      magnetic_field   end
-  coloring_field_ctl        magnetic_field   end
-  coloring_comp_ctl        radial   end
+  field_line_field_ctl      magnetic_field
+  coloring_field_ctl        magnetic_field
+  coloring_component_ctl            radial
 !
 end fieldline

@@ -294,13 +294,13 @@
       end if
 !
 !
-      if (iphys%ene_flux%i_buo_gen .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(buoyancy_flux%name)
+      if (iphys%ene_flux%i_t_buo_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
+     &                trim(thermal_buoyancy_flux%name)
         call sel_buoyancy_flux(mesh%node,                               &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      iphys%ene_flux%i_buo_gen, nod_fld)
+     &      iphys%ene_flux%i_t_buo_gen, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_c_buo_gen .gt. izero) then
@@ -312,13 +312,13 @@
      &      iphys%ene_flux%i_c_buo_gen, nod_fld)
       end if
 !
-      if (iphys_LES%eflux_by_filter%i_buo_gen .gt. izero) then
+      if (iphys_LES%eflux_by_filter%i_t_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_buoyancy_flux%name)
         call sel_buoyancy_flux(mesh%node,                               &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      iphys%base%i_velo, iphys_LES%filter_fld%i_temp,             &
-     &      iphys_LES%eflux_by_filter%i_buo_gen, nod_fld)
+     &      iphys_LES%eflux_by_filter%i_t_buo_gen, nod_fld)
       end if
 !
 !

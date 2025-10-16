@@ -37,13 +37,13 @@ begin MHD_control
 !   vector_potential, magnetic_field, current_density, magnetic_potential
 !   composition, perturbation_temp
 !
-!   buoyancy_flux, Lorentz_work
+!   thermal_buoyancy_flux, Lorentz_work
 !   magnetic_ene_generation
 !   temp_generation, part_temp_gen
 !   vis_ene_diffuse, mag_ene_diffuse
 !
 !   thermal_diffusion, viscous_diffusion, magnetic_diffusion
-!   Coriolis_force, buoyancy
+!   Coriolis_force, thermal_buoyancy
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl

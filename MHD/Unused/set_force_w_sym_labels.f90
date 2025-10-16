@@ -38,7 +38,7 @@
 !!   sym_thermal_buoyancy, asym_thermal_buoyancy
 !!                 :   Thermal buoyancy       - \alpha_{T} g T
 !!   sym_composite_buoyancy, asym_composite_buoyancy
-!!                 :   compositional buoyancy  - \alpha_{C} g C
+!!                 :   Compositional buoyancy  - \alpha_{C} g C
 !!
 !!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
 !!                 :     induction                           u \times B
@@ -140,14 +140,14 @@
           force_asym1_sym2%i_m_tension =  i_phys
 !
         else if (field_name .eq. sym_thermal_buoyancy%name) then
-          force_sym1_sym2%i_buoyancy =   i_phys
+          force_sym1_sym2%i_thrm_buo =   i_phys
         else if (field_name .eq. asym_thermal_buoyancy%name) then
-          force_asym1_asym2%i_buoyancy =   i_phys
+          force_asym1_asym2%i_thrm_buo = i_phys
 !
         else if (field_name .eq. sym_composite_buoyancy%name) then
           force_sym1_sym2%i_comp_buo =   i_phys
         else if (field_name .eq. asym_composite_buoyancy%name) then
-          force_asym1_asym2%i_comp_buo =   i_phys
+          force_asym1_asym2%i_comp_buo = i_phys
 !
         else if (field_name .eq. usym_x_Bsym%name) then
           force_sym1_sym2%i_vp_induct =    i_phys

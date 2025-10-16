@@ -95,7 +95,7 @@
 !!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_Lorentz =     izero
 !
-!>        start address for SGS buoyancy
+!>        start address for SGS thermal buoyancy
 !!         @f$ -C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
         integer (kind=kint) :: i_SGS_buoyancy =   izero
 !>        start address for SGS compositional buoyancy

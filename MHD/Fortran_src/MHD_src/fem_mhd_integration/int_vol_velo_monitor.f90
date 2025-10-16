@@ -165,7 +165,7 @@
      &      FEM_prm%npoint_t_evo_int, iphys_base%i_velo, fem_wk, f_nl)
       end if
 !
-      if(i_field .eq. iphys_frc%i_buoyancy) then
+      if(i_field .eq. iphys_frc%i_thrm_buo) then
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -175,7 +175,7 @@
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys_base%i_light, ak_MHD%ak_comp_buo, fem_wk, f_nl)
-      else if(i_field .eq. iphys_fil_frc%i_buoyancy) then
+      else if(i_field .eq. iphys_fil_frc%i_thrm_buo) then
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -337,7 +337,7 @@
      &      ele_fld%ntot_phys, iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       end if
 !
-      if(i_field .eq. iphys_frc%i_buoyancy) then
+      if(i_field .eq. iphys_frc%i_thrm_buo) then
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
@@ -349,7 +349,7 @@
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys_base%i_light, ak_MHD%ak_comp_buo, ele_fld%ntot_phys,  &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
-      else if(i_field .eq. iphys_fil_frc%i_buoyancy) then
+      else if(i_field .eq. iphys_fil_frc%i_thrm_buo) then
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &

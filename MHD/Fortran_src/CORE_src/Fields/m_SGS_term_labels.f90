@@ -102,7 +102,7 @@
      &                math = '$ e_{ijk} (\widetilde{J_{j}B_{k}}'        &
      &                     // ' - \tilde{J}_{j}\tilde{B}_{k}) $')
 !
-!>        Field label for SGS buoyancy
+!>        Field label for SGS thermal buoyancy
 !!         @f$ -C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
       type(field_def), parameter :: SGS_buoyancy                        &
      &    = field_def(n_comp = n_vector,                                &

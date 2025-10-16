@@ -22,7 +22,7 @@
 !!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
 !!
-!!   filtered_buoyancy_flux            [eflux_by_filter%i_buo_gen]
+!!   filtered_buoyancy_flux            [eflux_by_filter%i_t_buo_gen]
 !!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_gen]
 !!
 !!   mag_ene_generation_by_filtered    [eflux_by_filter%i_me_gen]
@@ -74,13 +74,13 @@
      &                math = '$ u_{i} (\tilde{B}_{j} \partial_{j}) '    &
      &                    // ' \tilde{B}_{i} $')
 !
-!>        Field label for filtered buoyancy flux
+!>        Field label for filtered thermal buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} \tilde{T} @f$
       type(field_def), parameter :: filtered_buoyancy_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filtered_buoyancy_flux',                  &
      &                math = '$ -u_{i} \alpha_{T} g_{i} \tilde{T} $')
-!>        Field label of compositional buoyancy flux
+!>        Field label of filtered compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{C} g_{i} \tilde{C} @f$
       type(field_def), parameter :: filtered_comp_buoyancy_flux         &
      &    = field_def(n_comp = n_scalar,                                &

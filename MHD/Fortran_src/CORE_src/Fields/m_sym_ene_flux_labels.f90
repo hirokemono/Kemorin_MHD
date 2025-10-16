@@ -22,7 +22,7 @@
 !!   Lorentz_work_sym          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_sym      [eflux_by_filter%i_m_tension_wk]
 !!
-!!   sym_buoyancy_flux            [eflux_by_filter%i_buo_gen]
+!!   sym_buoyancy_flux            [eflux_by_filter%i_t_buo_gen]
 !!   sym_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_gen]
 !!
 !!   mag_ene_generation_sym    [eflux_by_filter%i_me_gen]
@@ -107,14 +107,14 @@
      &                math = '$ u_{asymi} (e_{ijk}'                     &
      &                  // ' \tilde{J}_{asymj} \tilde{B}_{asymk})$')
 !
-!>        Field label for sym buoyancy flux
+!>        Field label for sym thermal buoyancy flux
 !!         @f$ -u_{symi} \alpha_{T} g_{i} \tilde{T}_{sym} @f$
       type(field_def), parameter :: sym_buoyancy_flux                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'sym_buoyancy_flux',                       &
      &                math = '$ u_{asymi} (e_{ijk}'                     &
      &                  // ' \tilde{J}_{asymj} \tilde{B}_{symk})$')
-!>        Field label for asym buoyancy flux
+!>        Field label for asym thermal buoyancy flux
 !!         @f$ -u_{asymi} \alpha_{T} g_{i} \tilde{T}_{asym} @f$
       type(field_def), parameter :: asym_buoyancy_flux                  &
      &    = field_def(n_comp = n_scalar,                                &

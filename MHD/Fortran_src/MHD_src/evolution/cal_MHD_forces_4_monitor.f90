@@ -307,9 +307,9 @@
      &     .or. i_fld .eq. iphys%div_forces%i_maxwell                   &
      &     .or. i_fld .eq. iphys%forces%i_m_tension                     &
      &     .or. i_fld .eq. iphys%forces%i_lorentz                       &
-     &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
+     &     .or. i_fld .eq. iphys%forces%i_thrm_buo                      &
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
-     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_buoyancy         &
+     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_thrm_buo         &
      &     .or. i_fld .eq. iphys_LES%force_by_filter%i_comp_buo         &
      &     .or. i_fld .eq. iphys%forces%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &

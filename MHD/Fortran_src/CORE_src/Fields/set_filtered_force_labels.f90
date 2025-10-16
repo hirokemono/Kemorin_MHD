@@ -30,8 +30,9 @@
 !!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_thermal_buoyancy       [force_by_filter%i_thrm_buo]
 !!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
+!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
 !!
 !!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
 !!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
@@ -48,7 +49,7 @@
 !!
 !!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
 !!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
-!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
+!!   composition_flux_by_filtered    [force_by_filter%i_c_flux]
 !!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -58,41 +59,14 @@
 !!
 !!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
-!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_thermal_buoyancy     [rot_frc_by_filter%i_thrm_buo]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
-!!
-!!      Field label  [Address]
-!!
-!!   inertia_by_filtered             [force_by_filter%i_m_advect]
-!!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
-!!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
-!!
-!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
-!!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
-!!
-!!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
-!!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
-!!   magnetic_stretch_by_filtered    [force_by_filter%i_mag_stretch]
-!!
-!!   heat_advect_by_filtered         [force_by_filter%i_h_advect]
-!!   pert_h_advect_by_filtered       [force_by_filter%i_ph_advect]
-!!   comp_advect_by_filtered         [force_by_filter%i_c_advect]
-!!   pert_c_advect_by_filtered       [force_by_filter%i_pc_advect]
-!!
-!!   momentum_flux_by_filtered       [force_by_filter%i_m_flux]
-!!   maxwell_tensor_by_filtered      [force_by_filter%i_maxwell]
-!!   induction_tensor_by_filtered    [force_by_filter%i_induct_t]
-!!
-!!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
-!!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
-!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
-!!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
 !!
@@ -101,7 +75,7 @@
 !!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
 !!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
 !!
-!!   filtered_buoyancy_flux            [eflux_by_filter%i_buo_gen]
+!!   filtered_buoyancy_flux            [eflux_by_filter%i_t_buo_gen]
 !!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_gen]
 !!
 !!   mag_ene_generation_by_filtered    [eflux_by_filter%i_me_gen]
@@ -154,10 +128,12 @@
         else if(field_name .eq. magnetic_tension_by_filtered%name) then
           force_by_filter%i_m_tension =  i_phys
 !
-        else if(field_name .eq. filtered_buoyancy%name) then
-          force_by_filter%i_buoyancy =   i_phys
+        else if(field_name .eq. filtered_thermal_buoyancy%name) then
+          force_by_filter%i_thrm_buo =   i_phys
         else if(field_name .eq. filtered_comp_buoyancy%name) then
           force_by_filter%i_comp_buo =   i_phys
+        else if(field_name .eq. filtered_buoyancy%name) then
+          force_by_filter%i_buoyancy =   i_phys
 !
         else if(field_name .eq. vecp_induction_by_filtered%name) then
           force_by_filter%i_vp_induct =    i_phys
@@ -167,22 +143,22 @@
         else if(field_name .eq. magnetic_stretch_by_filtered%name) then
           force_by_filter%i_mag_stretch =  i_phys
 !
-        else if (field_name .eq. heat_advect_by_filtered%name) then
+        else if(field_name .eq. heat_advect_by_filtered%name) then
           force_by_filter%i_h_advect =    i_phys
-        else if (field_name .eq. pert_h_advect_by_filtered%name) then
+        else if(field_name .eq. pert_h_advect_by_filtered%name) then
           force_by_filter%i_ph_advect =   i_phys
-        else if (field_name .eq. comp_advect_by_filtered%name) then
+        else if(field_name .eq. comp_advect_by_filtered%name) then
           force_by_filter%i_c_advect =    i_phys
-        else if (field_name .eq. pert_c_advect_by_filtered%name) then
+        else if(field_name .eq. pert_c_advect_by_filtered%name) then
           force_by_filter%i_pc_advect =   i_phys
 !
-        else if (field_name .eq. heat_flux_by_filtered%name) then
+        else if(field_name .eq. heat_flux_by_filtered%name) then
           force_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. pert_h_flux_by_filtered%name) then
+        else if(field_name .eq. pert_h_flux_by_filtered%name) then
           force_by_filter%i_ph_flux =   i_phys
-        else if (field_name .eq. composite_flux_by_filtered%name) then
+        else if(field_name .eq. composition_flux_by_filtered%name) then
           force_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. pert_c_flux_by_filtered%name) then
+        else if(field_name .eq. pert_c_flux_by_filtered%name) then
           force_by_filter%i_pc_flux =   i_phys
 !
         else if(field_name .eq. momentum_flux_by_filtered%name) then
@@ -214,14 +190,17 @@
       if(flag) then
         if (field_name .eq. rot_inertia_by_filtered%name) then
           rot_frc_by_filter%i_m_advect =   i_phys
-        else if (field_name .eq. rot_Lorentz_force_by_filtered%name)    &
-     &   then
+        else if(field_name .eq. rot_Lorentz_force_by_filtered%name)     &
+     &       then
           rot_frc_by_filter%i_lorentz =    i_phys
 !
+        else if(field_name .eq. rot_filtered_thermal_buoyancy%name)     &
+     &      then
+          rot_frc_by_filter%i_thrm_buo =   i_phys
+        else if(field_name .eq. rot_filtered_comp_buoyancy%name) then
+          rot_frc_by_filter%i_comp_buo =   i_phys
         else if (field_name .eq. rot_filtered_buoyancy%name) then
           rot_frc_by_filter%i_buoyancy =   i_phys
-        else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
-          rot_frc_by_filter%i_comp_buo =   i_phys
         end if
       end if
 !
@@ -251,30 +230,33 @@
      &   then
           div_frc_by_filter%i_lorentz =    i_phys
 !
-        else if (field_name .eq. div_filtered_buoyancy%name) then
-          div_frc_by_filter%i_buoyancy =   i_phys
-        else if (field_name .eq. div_filtered_comp_buoyancy%name) then
+        else if(field_name                                              &
+     &     .eq. div_filtered_thermal_buoyancy%name)     then
+          div_frc_by_filter%i_thrm_buo =   i_phys
+        else if(field_name .eq. div_filtered_comp_buoyancy%name) then
           div_frc_by_filter%i_comp_buo =   i_phys
+        else if(field_name .eq. div_filtered_buoyancy%name) then
+          div_frc_by_filter%i_buoyancy =   i_phys
 !
-        else if (field_name .eq. div_vecp_induction_by_filtered%name)   &
-     &   then
+        else if(field_name                                              &
+     &     .eq. div_vecp_induction_by_filtered%name) then
           div_frc_by_filter%i_vp_induct =  i_phys
 !
-        else if (field_name .eq. div_h_flux_by_filtered%name) then
+        else if(field_name .eq. div_h_flux_by_filtered%name) then
           div_frc_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. div_pert_h_flux_by_filtered%name) then
+        else if(field_name .eq. div_pert_h_flux_by_filtered%name) then
           div_frc_by_filter%i_ph_flux =   i_phys
 !
-        else if (field_name .eq. div_c_flux_by_filtered%name) then
+        else if(field_name .eq. div_c_flux_by_filtered%name) then
           div_frc_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. div_pert_c_flux_by_filtered%name) then
+        else if(field_name .eq. div_pert_c_flux_by_filtered%name) then
           div_frc_by_filter%i_pc_flux =   i_phys
 !
-        else if (field_name .eq. div_m_flux_by_filtered%name) then
+        else if(field_name .eq. div_m_flux_by_filtered%name) then
           div_frc_by_filter%i_m_flux =   i_phys
-        else if (field_name .eq. div_maxwell_t_by_filtered%name) then
+        else if(field_name .eq. div_maxwell_t_by_filtered%name) then
           div_frc_by_filter%i_maxwell =  i_phys
-        else if (field_name .eq. div_induct_t_by_filtered%name) then
+        else if(field_name .eq. div_induct_t_by_filtered%name) then
           div_frc_by_filter%i_induct_t = i_phys
         end if
       end if
@@ -310,7 +292,7 @@
           eflux_by_filter%i_m_tension_wk =  i_phys
 !
         else if (field_name .eq. filtered_buoyancy_flux%name) then
-          eflux_by_filter%i_buo_gen =       i_phys
+          eflux_by_filter%i_t_buo_gen =     i_phys
         else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
           eflux_by_filter%i_c_buo_gen =     i_phys
 !

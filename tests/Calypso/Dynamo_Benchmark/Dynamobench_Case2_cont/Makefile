@@ -66,12 +66,17 @@ test:
 	fi
 	
 	$(TARGET_COMPARE_PSF)
+	@if [ `tail -n 1 flag.txt` != 0 ]; then\
+		echo 'Failed sectioning data check'; \
+		exit 1;\
+	fi
+	
 	@echo 'Dynamo Benchmark Case 2 continue check finished'
 
 clean:
 	rm -f *.dat *.txt
-	rm -f monitor/*.dat monitor/*.dat.gz
-	rm -f sections/*.0.* sections/*.150?.*
-	rm -f isosurfaces/*.0.* isosurfaces/*.150?.*
+	rm -f monitor/[A-Q,a-q,s-z]*
+	rm -f sections/[A-Q,a-q,s-z]*
+	rm -f isosurfaces/[A-Q,a-q,s-z]*
 
 distclean: clean

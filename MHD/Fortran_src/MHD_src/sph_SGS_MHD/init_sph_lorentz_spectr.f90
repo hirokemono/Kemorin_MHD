@@ -121,7 +121,7 @@
 !
       check_Lorentz_gravity_intertia = .TRUE.
       if(     ipol_start .eq. ipol_force%i_lorentz                      &
-     &   .or. ipol_start .eq. ipol_force%i_buoyancy                     &
+     &   .or. ipol_start .eq. ipol_force%i_thrm_buo                     &
      &   .or. ipol_start .eq. ipol_force%i_comp_buo                     &
      &   .or. ipol_start .eq. ipol_force%i_m_advect                     &
      &   .or. ipol_start .eq. ipol_force%i_induction                    &
