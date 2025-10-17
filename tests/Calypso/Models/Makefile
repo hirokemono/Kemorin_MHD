@@ -38,6 +38,12 @@ test:
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
+	@echo "# Test in static_heat_source_by_ref directory..."
+	cd static_heat_source_by_ref; \
+		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
+		test
 	
 	@echo "# Test in heterogineous_temp_static directory..."
 	cd heterogineous_temp_static; \
@@ -57,6 +63,7 @@ test:
 clean:
 	cd eq_symmetry_fields; make clean
 	cd static_heat_source_by_rst; make clean
+	cd static_heat_source_by_ref; make clean
 	cd heterogineous_temp_static; make clean
 	cd heterogineous_temp_evolve; make clean
 	
