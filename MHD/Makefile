@@ -23,8 +23,8 @@ EXPDIR=         $(SRCDIR)/examples
 TESTDIR=        $(SRCDIR)/tests
 
 MAKENAME=       $(MAKEDIR)/Makefile
-EXP_MAKEHEAD=   $(EXPDIR)/Makefile
-TESTS_MAKEHEAD= $(TESTDIR)/Makefile
+EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
+TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
 
 #
 #   zlib and libpng settings
@@ -195,11 +195,21 @@ makemake:
 	echo '#' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makeheaders \
 		MAKENAME="$(TESTS_MAKEHEAD)"
+	@echo '#' >> $(TESTS_MAKEHEAD)
+	@echo '# ----  library lists ----------------------------------------' >> $(TESTS_MAKEHEAD)
+	@echo '#' >> $(TESTS_MAKEHEAD)
+	$(GMAKE) makelib_list \
+		MAKENAME="$(TESTS_MAKEHEAD)"
 	
 	echo '#' > $(EXP_MAKEHEAD)
 	echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
 	echo '#' >> $(EXP_MAKEHEAD)
 	$(GMAKE) makeheaders \
+		MAKENAME="$(EXP_MAKEHEAD)"
+	@echo '#' >> $(EXP_MAKEHEAD)
+	@echo '# ----  library lists ----------------------------------------' >> $(EXP_MAKEHEAD)
+	@echo '#' >> $(EXP_MAKEHEAD)
+	$(GMAKE) makelib_list \
 		MAKENAME="$(EXP_MAKEHEAD)"
 	
 	echo "# create Makefile"
@@ -209,7 +219,7 @@ makemake:
 	$(GMAKE) makeheaders 
 		MAKENAME="$(MAKENAME)"
 	
-	@echo 'create directory list...'
+	@echo 'create sub directory list...'
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'generate diectory list for ' $$dir ; \
@@ -218,68 +228,22 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'          \
 		MAKENAME='$(MAKENAME)'        \
-		64BIT_INT='$(64BIT_INT)'   \
-		F90_LOCAL='$(F90_LOCAL)'   \
+		64BIT_INT='$(64BIT_INT)'      \
+		F90_LOCAL='$(F90_LOCAL)'      \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		dir_list; \
 		 ) \
 	done
 	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# ----  target lists  ----------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo '# target lists ' >> $(MAKENAME)
+	$(GMAKE) maketarget_list 
+		MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
+	@echo '# ----  library lists ----------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'PROGRAMS= parallels utilities' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo 'ifdef OPENGL_LIBS' >> $(MAKENAME)
-	@echo '  ifdef GTK3_LIBS' >> $(MAKENAME)
-	@echo '    ifdef GLFW_LIBS' >> $(MAKENAME)
-	@echo '      PROGRAMS+= viewer_glfw' >> $(MAKENAME)
-	@echo '    else' >> $(MAKENAME)
-	@echo '      PROGRAMS+= viewer_gtk' >> $(MAKENAME)
-	@echo '    endif' >> $(MAKENAME)
-	@echo '  endif' >> $(MAKENAME)
-	@echo 'endif' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo 'ifdef PGPLOT_LIBS' >> $(MAKENAME)
-	@echo '  PROGRAMS+= utils_pg' >> $(MAKENAME)
-	@echo 'endif' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'create excecute file list...'
-	@for dir in programs ; do \
-		( \
-		echo 'generate target list for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		BUILDDIR='$(BUILDDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		OPENGL_LIBS='$(OPENGL_LIBS)'  \
-		target_list; \
-		 ) \
-	done
-	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# library lists' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'create library file name list...'
-	@for dir in  $(SUBDIRS) ; do \
-		( \
-		echo 'generate library list for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
-		64BIT_INT='$(64BIT_INT)'   \
-		OPENGL_LIBS='$(OPENGL_LIBS)'  \
-		lib_name; \
-		 ) \
-	done
+	$(GMAKE) makelib_list \
+		MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -465,6 +429,53 @@ makeheaders:
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
+maketarget_list:
+	@echo 'PROGRAMS= parallels utilities' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'ifdef OPENGL_LIBS' >> $(MAKENAME)
+	@echo '  ifdef GTK3_LIBS' >> $(MAKENAME)
+	@echo '    ifdef GLFW_LIBS' >> $(MAKENAME)
+	@echo '      PROGRAMS+= viewer_glfw' >> $(MAKENAME)
+	@echo '    else' >> $(MAKENAME)
+	@echo '      PROGRAMS+= viewer_gtk' >> $(MAKENAME)
+	@echo '    endif' >> $(MAKENAME)
+	@echo '  endif' >> $(MAKENAME)
+	@echo 'endif' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'ifdef PGPLOT_LIBS' >> $(MAKENAME)
+	@echo '  PROGRAMS+= utils_pg' >> $(MAKENAME)
+	@echo 'endif' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'create excecute file list...'
+	@for dir in programs ; do \
+		( \
+		echo 'generate target list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		BUILDDIR='$(BUILDDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		target_list; \
+		 ) \
+	done
+
+makelib_list:
+	@for dir in  $(SUBDIRS) ; do \
+		( \
+		echo 'generate library list for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		lib_name; \
+		 ) \
+	done
 
 makeinstall:
 	@echo '#' >> $(MAKENAME)

@@ -20,8 +20,8 @@ EXPDIR=         $(SRCDIR)/examples
 TESTDIR=        $(SRCDIR)/tests
 
 MAKENAME=       $(MAKEDIR)/Makefile
-EXP_MAKEHEAD=   $(EXPDIR)/Makefile
-TESTS_MAKEHEAD= $(TESTDIR)/Makefile
+EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
+TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
 
 #
 #   zlib and libpng settings
