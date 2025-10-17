@@ -38,5 +38,7 @@ begin spherical_shell_ctl
     num_fluid_grid_ctl     511
     fluid_core_size_ctl   1.0
     ICB_to_CMB_ratio_ctl  0.35
+!
+    Min_radius_ctl        0.0
   end num_grid_sph
 end spherical_shell_ctl

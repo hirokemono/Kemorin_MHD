@@ -19,11 +19,12 @@ MAKEDIR=
 BUILDDIR=
 MHDDIR =
 PYTHONDIR = 
+EXPDIR=         $(SRCDIR)/examples
+TESTDIR=        $(SRCDIR)/tests
 
-MAKENAME=         $(MAKEDIR)/Makefile
-
-EXAMPLE_DIR=      $(SRCDIR)/examples
-EXAMPLE_MAKENAME= $(EXAMPLE_DIR)/Makefile
+MAKENAME=       $(MAKEDIR)/Makefile
+EXP_MAKEHEAD=   $(EXPDIR)/Makefile
+TESTS_MAKEHEAD= $(TESTDIR)/Makefile
 
 #
 #   zlib and libpng settings
@@ -189,11 +190,17 @@ makemake:
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends
 	
-	echo '#' > $(EXAMPLE_MAKENAME)
-	echo '# Makefile header for Kemorin Dynamo example' >> $(EXAMPLE_MAKENAME)
-	echo '#' >> $(EXAMPLE_MAKENAME)
+	echo '#' > $(TESTS_MAKEHEAD)
+	echo '# Makefile header for Kemorin Dynamo tests' >> $(TESTS_MAKEHEAD)
+	echo '#' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makeheaders \
-		MAKENAME="$(EXAMPLE_MAKENAME)"
+		MAKENAME="$(TESTS_MAKEHEAD)"
+	
+	echo '#' > $(EXP_MAKEHEAD)
+	echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
+	echo '#' >> $(EXP_MAKEHEAD)
+	$(GMAKE) makeheaders \
+		MAKENAME="$(EXP_MAKEHEAD)"
 	
 	echo "# create Makefile"
 	echo '#' > $(MAKENAME)
@@ -452,7 +459,8 @@ makeheaders:
 	@echo MHDDIR =     $(MHDDIR)    >> $(MAKENAME)
 	@echo INSTDIR =    $(INSTDIR)   >> $(MAKENAME)
 	@echo PYTHONDIR=   $(PYTHONDIR) >> $(MAKENAME)
-	@echo EXAMPLE_DIR= $(EXAMPLE_DIR) >> $(MAKENAME)
+	@echo EXPDIR=      $(EXPDIR)    >> $(MAKENAME)
+	@echo TESTDIR=     $(TESTDIR)   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

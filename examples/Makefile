@@ -98,5 +98,7 @@ BUILDDIR = /Users/matsui/src_kemo/bin
 MHDDIR = /Users/matsui/src_kemo/MHD
 INSTDIR = /Users/matsui/local
 PYTHONDIR= /Users/matsui/src_kemo/MHD/pythons
+EXPDIR= /Users/matsui/src_kemo/examples
+TESTDIR= /Users/matsui/src_kemo/tests
 #
 #

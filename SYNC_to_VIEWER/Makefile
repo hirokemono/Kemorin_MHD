@@ -4,10 +4,15 @@
 # -------  do not edit folloing lines
 #
 
+SRCDIR=
 BUILDDIR= 
 MHDDIR =
+EXPDIR=         $(SRCDIR)/examples
+TESTDIR=        $(SRCDIR)/tests
 
-MAKENAME= $(MAKEDIR)/Makefile
+MAKENAME=       $(MAKEDIR)/Makefile
+EXP_MAKEHEAD=   $(EXPDIR)/Makefile
+TESTS_MAKEHEAD= $(TESTDIR)/Makefile
 
 #
 #   zlib and libpng settings
@@ -23,7 +28,7 @@ OPENGL_INC =
 OPENGL_LIBS= 
 #
 
-SUBDIRS =         \
+SUBDIRS =     \
 C_src         \
 programs
 
@@ -131,77 +136,11 @@ makemake:
 	depends;
 	
 	echo '#' > $(MAKENAME)
-	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
+	echo '# Makefile for Calypso Dynamo simulation package' >> $(MAKENAME)
 	echo '#' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'SHELL = /bin/sh' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '#  all:         compile programs for simulations' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# Compiler commands' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo CC=$(CC)               >> $(MAKENAME)
-	@echo CXX=$(CXX)             >> $(MAKENAME)
-	@echo AR=$(AR)               >> $(MAKENAME)
-	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
-	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# Compiler options' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(OPTFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
-	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# Libralies and includes settting' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo 'C_INCLUDE = $(C_INCLUDE)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# zlib settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)' >> $(MAKENAME)
-	@echo 'ZLIB_LIBS =   $(ZLIB_LIBS)'   >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# libpng settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
-	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# OpenGL settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'OPENGL_INC =  $(OPENGL_INC)'  >> $(MAKENAME)
-	@echo 'OPENGL_LIBS = $(OPENGL_LIBRARIES)' >> $(MAKENAME)
-	@echo 'OPTFLAGS_GL = $(OPTFLAGS_GL)' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# GTK settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'GTK3_CFLAGS =  $(GTK3_CFLAGS) $(X_CFLAGS)' >> $(MAKENAME)
-	@echo 'GTK3_LIBS =    $(GTK3_LIBS) $(X_LIBS)'     >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# GLFW settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'GLFW_CFLAGS =  $(GLFW_CFLAGS)'         >> $(MAKENAME)
-	@echo 'GLFW_LIBS =    $(GLFW_LIBS)'           >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# FFMPEG settings' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo 'FFMPEG_CFLAGS =  $(FFMPEG_CFLAGS)'         >> $(MAKENAME)
-	@echo 'FFMPEG_LIBS =    $(FFMPEG_LIBS)'           >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '# Directory lists' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo MAKEDIR =  $(MAKEDIR)  >> $(MAKENAME)
-	@echo BUILDDIR = $(BUILDDIR) >> $(MAKENAME)
-	@echo MHDDIR =   $(MHDDIR)   >> $(MAKENAME)
-	@echo INSTDIR =  $(INSTDIR)  >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	>> $(MAKENAME)
+	$(GMAKE) makeheaders \
+		MAKENAME="$(MAKENAME)"
+	
 	@echo '#' >> $(MAKENAME)
 	@echo 'create directory list...'
 	@for dir in $(SUBDIRS) ; do \
@@ -318,11 +257,87 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	cat $(MAKENAME).depends >> $(MAKENAME)
 	rm -f $(MAKEDIR)/Makefile.depends
+	
+	$(GMAKE) makeinstall \
+		MAKENAME="$(MAKENAME)"
+	$(GMAKE) makeclean \
+		MAKENAME="$(MAKENAME)"
+
+makeheaders:
+	@echo '#' >> $(MAKENAME)
+	@echo 'SHELL = /bin/sh' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#  all:         compile programs for simulations' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Compiler commands' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo CC=$(CC)               >> $(MAKENAME)
+	@echo CXX=$(CXX)             >> $(MAKENAME)
+	@echo AR=$(AR)               >> $(MAKENAME)
+	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
+	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Compiler options' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'OPTFLAGS = $(OPTFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# Libralies and includes settting' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'C_INCLUDE = $(C_INCLUDE)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# zlib settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)' >> $(MAKENAME)
+	@echo 'ZLIB_LIBS =   $(ZLIB_LIBS)'   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# libpng settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
+	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# OpenGL settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'OPENGL_INC =  $(OPENGL_INC)'  >> $(MAKENAME)
+	@echo 'OPENGL_LIBS = $(OPENGL_LIBRARIES)' >> $(MAKENAME)
+	@echo 'OPTFLAGS_GL = $(OPTFLAGS_GL)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# GTK settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'GTK3_CFLAGS =  $(GTK3_CFLAGS) $(X_CFLAGS)' >> $(MAKENAME)
+	@echo 'GTK3_LIBS =    $(GTK3_LIBS) $(X_LIBS)'     >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# GLFW settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'GLFW_CFLAGS =  $(GLFW_CFLAGS)'         >> $(MAKENAME)
+	@echo 'GLFW_LIBS =    $(GLFW_LIBS)'           >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# FFMPEG settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'FFMPEG_CFLAGS =  $(FFMPEG_CFLAGS)'         >> $(MAKENAME)
+	@echo 'FFMPEG_LIBS =    $(FFMPEG_LIBS)'           >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo '# Rules for install' >> $(MAKENAME)
+	@echo '# Directory lists' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo MAKEDIR =  $(MAKEDIR)  >> $(MAKENAME)
+	@echo BUILDDIR = $(BUILDDIR) >> $(MAKENAME)
+	@echo MHDDIR =   $(MHDDIR)   >> $(MAKENAME)
+	@echo INSTDIR =  $(INSTDIR)  >> $(MAKENAME)
+	@echo EXPDIR =   $(EXPDIR)  >> $(MAKENAME)
+	@echo TESTDIR =  $(TESTDIR)  >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+
+makeinstall:
+	@echo '#' >> $(MAKENAME)
+	@echo '# ---  Rules for install  -------------------------------------' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'install:' >> $(MAKENAME)
 	@echo '	if [ ! -d $$(INSTDIR) ]; then \'       >> $(MAKENAME)
@@ -341,9 +356,11 @@ makemake:
 #	@echo '	cp *.a  $$(INSTDIR)/lib'           >> $(MAKENAME)
 #	@echo '	cp kemoviewer.h   $$(INSTDIR)/include' >> $(MAKENAME)
 #	@echo '	cp *.mod  $$(INSTDIR)/include'     >> $(MAKENAME)
+
+makeclean:
 	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
+	@echo '# --  Cleans  ----------------------------------' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)
 	@echo '	rm -f *.o ;'       >> $(MAKENAME)
 	@echo '	rm -f *~ ;'        >> $(MAKENAME)

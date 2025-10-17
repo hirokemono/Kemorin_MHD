@@ -182,14 +182,16 @@ begin MHD_control
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin temperature_define
+      ref_temp_ctl     none
 !      ref_temp_ctl     file
-      ref_temp_ctl      numerical_solution
-      ref_field_file_name      'radial_field.dat'
+!      ref_temp_ctl      numerical_solution
+!      ref_field_file_name      'radial_field.dat'
     end temperature_define
     begin composition_define
+      ref_temp_ctl     none
 !      ref_temp_ctl     file
-      ref_comp_ctl      numerical_solution
-      ref_field_file_name      'radial_field.dat'
+!      ref_comp_ctl      numerical_solution
+!      ref_field_file_name      'radial_field.dat'
     end composition_define
   end model
 !
@@ -224,7 +226,7 @@ begin MHD_control
 !
   begin sph_monitor_ctl
     begin pickup_spectr_ctl
-      picked_sph_prefix     'monitor/picked_mode'
+      picked_sph_prefix     'picked_mode'
 !
       array pick_sph_spectr_ctl  1
         pick_sph_spectr_ctl   0   0
