@@ -1,5 +1,5 @@
 !-----------------------------------------------------------------------
-!     Example using spectr data assemble program
+!     Example of static solution with heat and compositional source terms
 !-----------------------------------------------------------------------
 !
  Here is the files for the spectr data assemble between different resolution and time step.

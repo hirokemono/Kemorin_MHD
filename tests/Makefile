@@ -46,7 +46,8 @@ all: test
 
 test: 
 	@echo "# Test in Calypso directory..."
-	@cd Calypso; $(GMAKE) GMAKE="$(GMAKE)" BUILDDIR="$(BUILDDIR)" \
+	@cd Calypso; $(GMAKE) GMAKE="$(GMAKE)" \
+		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
 		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
@@ -68,7 +69,8 @@ test:
 		test
 	
 	@echo "# Test in Kemorin directory..."
-	@cd Kemorin; $(GMAKE) GMAKE="$(GMAKE)" BUILDDIR="$(BUILDDIR)" \
+	@cd Kemorin; $(GMAKE) GMAKE="$(GMAKE)" \
+		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
 		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
@@ -91,25 +93,6 @@ test:
 		test
 	
 	@echo "# --------- Kemorin_MHD tests finished! -------------------------"
-
-sym_test: 
-	for dir in sym_asym_field_test ; do \
-	echo "# Test in $${dir} directory..."; \
-		( cd $${dir}; \
-		$(GMAKE) \
-		GMAKE="$(GMAKE)" \
-		BUILDDIR="$(BUILDDIR)" \
-		TESTDIR="$(TESTDIR)" \
-		MHDDIR="$(MHDDIR)" \
-		MPIRUN="$(MPIRUN)" \
-		TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
-		TARGET_CHECK_SPH_GRID="$(TARGET_CHECK_SPH_GRID)" \
-		TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
-		TARGET_NEWSPH="$(TARGET_NEWSPH)" \
-		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
-		test)\
-	done; \
-	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
 clean:
 	cd Calypso; make clean

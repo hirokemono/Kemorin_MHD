@@ -32,6 +32,13 @@ test:
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
 		test
 	
+	@echo "# Test in static_heat_source_by_rst directory..."
+	cd static_heat_source_by_rst; \
+		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
+		test
+	
 	@echo "# Test in heterogineous_temp_static directory..."
 	cd heterogineous_temp_static; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
@@ -49,6 +56,7 @@ test:
 
 clean:
 	cd eq_symmetry_fields; make clean
+	cd static_heat_source_by_rst; make clean
 	cd heterogineous_temp_static; make clean
 	cd heterogineous_temp_evolve; make clean
 	
