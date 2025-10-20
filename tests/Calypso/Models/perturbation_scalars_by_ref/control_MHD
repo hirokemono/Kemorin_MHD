@@ -73,12 +73,14 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl
       array nod_value_ctl
-        nod_value_ctl  velocity                Viz_Off  Monitor_Off
-        nod_value_ctl  pressure                Viz_Off  Monitor_Off
-        nod_value_ctl  temperature             Viz_On   Monitor_On
-        nod_value_ctl  composition             Viz_On   Monitor_On
-        nod_value_ctl  heat_source             Viz_Off  Monitor_On
-        nod_value_ctl  composition_source      Viz_Off  Monitor_On
+        nod_value_ctl  velocity                  Viz_Off  Monitor_Off
+        nod_value_ctl  pressure                  Viz_Off  Monitor_Off
+        nod_value_ctl  temperature               Viz_On   Monitor_On
+        nod_value_ctl  perturbation_temp         Viz_Off  Monitor_On
+        nod_value_ctl  heat_source               Viz_Off  Monitor_On
+        nod_value_ctl  composition               Viz_On   Monitor_On
+        nod_value_ctl  perturbation_composition  Viz_Off  Monitor_On
+        nod_value_ctl  composition_source        Viz_Off  Monitor_On
       end array nod_value_ctl
     end phys_values_ctl
 !
@@ -183,6 +185,36 @@ begin MHD_control
         end array coef_4_light_source_ctl
       end  composition
     end coefficients_ctl
+!
+!!!!!!!!! model for hydrostatic !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!    ref_temperature_ctl: none           (No reference of temperature)
+!                         spherical_shell ( for spherical shell model)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    begin temperature_define
+      ref_temp_ctl              numerical_solution
+!      begin low_temp_ctl
+!        depth         1.5384615384615384
+!        temperature   0.0d0
+!      end low_temp_ctl
+!      begin high_temp_ctl
+!        depth         0.5384615384615384
+!        temperature   1.0d0
+!      end high_temp_ctl
+    end temperature_define
+!
+    begin composition_define
+      ref_comp_ctl              numerical_solution
+!      begin low_comp_ctl
+!        depth         1.5384615384615384
+!        composition   0.0d0
+!      end low_comp_ctl
+!      begin high_comp_ctl
+!        depth         0.5384615384615384
+!        composition   1.0d0
+!      end high_comp_ctl
+    end composition_define
   end model
 !
 !
