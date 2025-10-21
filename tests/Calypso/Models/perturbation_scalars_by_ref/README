@@ -25,10 +25,9 @@ time_total.dat:           Elapsed time data
 This example only run with 1 MPI process. The Makefile performs the following procedures by
 'make test' command:
 
-1. Construct initial field field by 
-	% mpirun -np 1 sph_initial_field
-2. Evaluate static solution
+1. Evaluate static solution
 	% mpirun -np 1 [CALYPSO_DIR]/bin/sph_mhd
-3. Compare with the reference data
+2. Compare with the reference data
 	% [CALYPSO_DIR]/bin/tests/sph_picked_mode_check referenceds/picked_mode_l0_m0c.dat picked_mode_l0_m0c.dat
+	% [CALYPSO_DIR]/bin/tests/sph_ref_field_check   referenceds/reference_fields.dat   reference_fields.dat
 
