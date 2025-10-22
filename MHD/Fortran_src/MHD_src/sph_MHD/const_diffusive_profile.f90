@@ -24,9 +24,10 @@
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
-!!      subroutine cal_reference_source(sph_rj, band_s00_poisson,       &
-!!     &                                ref_source, ref_local)
+!!      subroutine cal_reference_source(sph_rj, sc_prop,                &
+!!     &          band_s00_poisson, ref_source, ref_local)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(scalar_property), intent(in) :: sc_prop
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
 !!        real(kind = kreal), intent(in)                                &
 !!     &                :: ref_source(0:sph_rj%nidx_rj(1))
@@ -260,10 +261,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_reference_source(sph_rj, band_s00_poisson,         &
-     &                                ref_source, ref_local)
+      subroutine cal_reference_source(sph_rj, sc_prop,                  &
+     &          band_s00_poisson, ref_source, ref_local)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(scalar_property), intent(in) :: sc_prop
       type(band_matrix_type), intent(in) :: band_s00_poisson
 !
       real(kind = kreal), intent(in)                                    &
@@ -288,6 +290,11 @@
       k = sph_rj%nidx_rj(1)
       ref_local(k) =  band_s00_poisson%mat(3,k-1) * ref_source(k-1)     &
      &              + band_s00_poisson%mat(2,k  ) * ref_source(k)
+!
+!$omp parallel workshare
+      ref_local(0:sph_rj%nidx_rj(1)) = ref_local(0:sph_rj%nidx_rj(1))   &
+     &                   * (sc_prop%coef_diffuse / sc_prop%coef_source)
+!$omp end parallel workshare
 !
       end subroutine cal_reference_source
 !
