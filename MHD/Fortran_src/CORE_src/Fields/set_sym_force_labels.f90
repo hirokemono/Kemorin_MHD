@@ -73,6 +73,9 @@
 !!   sym_buoyancy, asym_buoyancy
 !!                 :   Total buoyancy  - (\alpha_{T} T + \alpha_{C} C) g
 !!
+!!   sym_Coriolis_force, asym_Coriolis_force
+!!                 :   Coriolis force     2 \Omega \times u
+!!
 !!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
 !!                 :     induction                 u \times B
 !!   Bsym_nabla_usym, Basym_nabla_uasym,
@@ -158,6 +161,9 @@
               force_by_sym_sym%i_comp_buo =    i_phys
             else if(field_name .eq. asym_buoyancy%name) then
               force_by_sym_sym%i_buoyancy =    i_phys
+!
+            else if(field_name .eq. asym_Coriolis_force%name) then
+              force_by_sym_sym%i_coriolis =    i_phys
 !
             else if(field_name .eq. usym_x_Bsym%name) then
               force_by_sym_sym%i_vp_induct =   i_phys
@@ -289,6 +295,9 @@
               force_by_sym_asym%i_comp_buo =   i_phys
             else if(field_name .eq. sym_buoyancy%name) then
               force_by_sym_asym%i_buoyancy =   i_phys
+!
+            else if(field_name .eq. sym_Coriolis_force%name) then
+              force_by_sym_asym%i_coriolis =   i_phys
 !
             else if(field_name .eq. usym_x_Basym%name) then
               force_by_sym_asym%i_vp_induct =   i_phys

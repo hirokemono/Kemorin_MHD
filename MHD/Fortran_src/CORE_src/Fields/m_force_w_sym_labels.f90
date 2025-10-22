@@ -40,6 +40,9 @@
 !!   sym_buoyancy, asym_buoyancy
 !!                 :   Total buoyancy  - (\alpha_{T} T + \alpha_{C} C) g
 !!
+!!   sym_Coriolis_force, asym_Coriolis_force
+!!                 :   Coriolis force     2 \Omega \times u
+!!
 !!   usym_x_Bsym, uasym_x_Basym, usym_x_Basym, uasym_x_Bsym
 !!                 :     induction                 u \times B
 !!   Bsym_nabla_usym, Basym_nabla_uasym,
@@ -249,6 +252,19 @@
      &                  name = 'asym_buoyancy',                         &
      &                  math = '$ - (\alpha_{T} T_{asym} '              &
      &                      // ' + \alpha_{C} C_{asym}) g_{i} $')
+!
+!>        Field label of Coriolis force (symmetric)
+!!         @f$ -2 e_{ijk} \Omega_{j} u_{sym, k} @f$
+      type(field_def), parameter :: sym_Coriolis_force                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_Coriolis_force',                         &
+     &                  math = '$ -2 e_{ijk} \Omega_{j} u_{sym, k} $')
+!>        Field label of Coriolis force (anti-symmetric)
+!!         @f$ -2 e_{ijk} \Omega_{j} u_{asym, k} @f$
+      type(field_def), parameter :: asym_Coriolis_force                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'asym_Coriolis_force',                          &
+     &                math = '$ -2 e_{ijk} \Omega_{j} u_{asym, k} $')
 !!
 !>        Field label of induction of vector potential
 !!         @f$ u_{sym} \times B_{sym} @f$
@@ -628,6 +644,9 @@
      &   .or. (field_name .eq. rot_usym_x_Basym%name)                   &
      &   .or. (field_name .eq. rot_uasym_x_Bsym%name)                   &
 !
+     &   .or. (field_name .eq. sym_Coriolis_force%name)             &
+     &   .or. (field_name .eq. asym_Coriolis_force%name)            &
+!
      &   .or. (field_name .eq. Bsym_nabla_usym%name)                    &
      &   .or. (field_name .eq. Basym_nabla_uasym%name)                  &
      &   .or. (field_name .eq. Bsym_nabla_uasym%name)                   &
@@ -723,6 +742,9 @@
       call set_field_label_to_ctl(asym_composite_buoyancy,  array_c2i)
       call set_field_label_to_ctl(sym_buoyancy,             array_c2i)
       call set_field_label_to_ctl(asym_buoyancy,            array_c2i)
+!
+      call set_field_label_to_ctl(sym_Coriolis_force,       array_c2i)
+      call set_field_label_to_ctl(asym_Coriolis_force,      array_c2i)
 !
       call set_field_label_to_ctl(usym_x_Bsym,              array_c2i)
       call set_field_label_to_ctl(uasym_x_Basym,            array_c2i)

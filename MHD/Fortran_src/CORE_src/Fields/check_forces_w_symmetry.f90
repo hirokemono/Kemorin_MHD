@@ -68,6 +68,10 @@
         call add_phys_name_ctl(sym_composition, field_ctl)
       end if
 !
+      if( check_field_list_ctl(sym_Coriolis_force, field_ctl)) then
+        call add_phys_name_ctl(sym_velocity, field_ctl)
+      end if
+!
       if( check_field_list_ctl(usym_x_Bsym, field_ctl)                  &
      &    .or. check_field_list_ctl(rot_usym_x_Bsym, field_ctl)         &
      &    .or. check_field_list_ctl(Bsym_nabla_usym, field_ctl)         &
@@ -138,6 +142,10 @@
       end if
       if(check_field_list_ctl(asym_composite_buoyancy, field_ctl)) then
         call add_phys_name_ctl(asym_composition, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(asym_Coriolis_force, field_ctl)) then
+        call add_phys_name_ctl(asym_velocity, field_ctl)
       end if
 !
       if( check_field_list_ctl(uasym_x_Basym, field_ctl)                &
