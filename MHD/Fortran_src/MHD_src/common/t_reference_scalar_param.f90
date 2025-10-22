@@ -38,11 +38,11 @@
 !>      flag for solving full temperature
       integer (kind=kint), parameter :: id_no_ref_temp = 0
 !>      flag to use referece temperature as a function of @f$ x @f$
-      integer (kind=kint), parameter :: id_x_ref_temp = 0
+      integer (kind=kint), parameter :: id_x_ref_temp = 1
 !>      flag to use referece temperature as a function of @f$ y @f$
-      integer (kind=kint), parameter :: id_y_ref_temp = 0
+      integer (kind=kint), parameter :: id_y_ref_temp = 2
 !>      flag to use referece temperature as a function of @f$ z @f$
-      integer (kind=kint), parameter :: id_z_ref_temp = 0
+      integer (kind=kint), parameter :: id_z_ref_temp = 3
 !>      flag to use referece temperature as a function of @f$ r @f$
       integer (kind=kint), parameter :: id_sphere_ref_temp = 100
 !>      flag to obtain diffusive profile numerically
