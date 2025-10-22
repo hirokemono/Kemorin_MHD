@@ -10,19 +10,10 @@
 !> @brief set reference fields for MHD simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_reference_scalar_ctl                             &
-!!     &        (charaflag, ref_ctl, ref_param, takepiro)
-!!      subroutine set_linear_ref_scalar_ctl                            &
-!!     &         (ref_temp_ctl, low_temp_ctl, high_temp_ctl, ref_param)
-!!      subroutine set_takepiro_scalar_ctl                              &
-!!     &         (stratified_ctl, takepiro_ctl, takepiro)
-!!        type(read_character_item), intent(in) :: ref_temp_ctl
-!!        type(read_character_item), intent(in) :: stratified_ctl
-!!        type(reference_point_control), intent(in) :: low_temp_ctl
-!!        type(reference_point_control), intent(in) :: high_temp_ctl
-!!        type(reference_point_control), intent(in) :: takepiro_ctl
-!!        type(reference_scalar_param), intent(inout) :: ref_param
-!!        type(takepiro_model_param), intent(inout) :: takepiro
+!!      subroutine set_reftemp_list_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
+!!      subroutine set_sph_reftemp_list_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !!@endverbatim
 !
       module t_reference_scalar_param
