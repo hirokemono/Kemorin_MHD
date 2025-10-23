@@ -139,10 +139,12 @@
      &          iref_scalar, iref_grad, iref_source, ref_field)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use calypso_mpi_real
       use fill_scalar_field
       use const_diffusive_profile
       use const_r_mat_4_scalar_sph
+      use transfer_to_long_integers
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -163,8 +165,16 @@
       integer(kind = kint_gl) :: num64
 !
 !
+      if(iref_scalar .le. 0) return
       call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
      &    sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
+!
+      call calypso_mpi_bcast_int(ref_field%iflag_update(iref_scalar),   &
+     &                           cast_long(n_scalar), 0)
+      num64 = cast_long(ref_field%n_point * n_scalar)
+      call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
+     &                            num64, 0)
+!
       call gradient_of_radial_reference                                 &
      &   (sph_rj, sph_bc, bcs_S, r_2nd, fdm2_center,                    &
      &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))

@@ -130,7 +130,7 @@
       use fill_scalar_field
       use select_exp_scalar_ICB
       use select_exp_scalar_CMB
-      use cal_sol_reftemp_BiCGSTAB
+!      use cal_sol_reftemp_BiCGSTAB
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd

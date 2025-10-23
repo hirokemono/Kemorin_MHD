@@ -14,7 +14,7 @@
 !!     &         (takepiro, sph_params, sph_rj, r_2nd, sc_prop,         &
 !!     &          sph_bc_S, fdm2_center, mat_name, ref_param,           &
 !!     &          iref_radius, phys_name, iref_scalar, iref_grad,       &
-!!     &          iref_source, ref_field, bcs_S, flag_write_ref)
+!!     &          iref_source, r_itp, ref_field, bcs_S, flag_write_ref)
 !!        character(len=kchara), intent(in) :: mat_name, phys_name
 !!        integer(kind = kint), intent(in) :: iref_scalar, iref_grad
 !!        integer(kind = kint), intent(in) :: iref_source, iref_radius
@@ -59,8 +59,7 @@
      &         (takepiro, sph_params, sph_rj, r_2nd, sc_prop,           &
      &          sph_bc_S, fdm2_center, mat_name, ref_param,             &
      &          iref_radius, phys_name, iref_scalar, iref_grad,         &
-     &          iref_source, r_itp, ref_fld_IO, ref_field,              &
-     &          bcs_S, flag_write_ref)
+     &          iref_source, r_itp, ref_field, bcs_S, flag_write_ref)
 !
       use set_reference_sph_mhd
       use set_reference_temp_sph
@@ -83,9 +82,7 @@
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(sph_radial_interpolate), intent(inout) :: r_itp
-      type(field_IO), intent(inout) :: ref_fld_IO
       type(phys_data), intent(inout) :: ref_field
-!      type(phys_data), intent(inout) :: rj_fld
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
       logical, intent(inout) :: flag_write_ref
 !
@@ -120,7 +117,7 @@
       else if(ref_param%iflag_reference .eq. id_ref_field_file) then
         call load_sph_reference_one_field                               &
      &     (iref_radius, phys_name, iref_scalar, n_scalar,              &
-     &      ref_param%ref_file_IO, ref_fld_IO, r_itp, ref_field)
+     &      ref_param%ref_file_IO, r_itp, ref_field)
         call const_grad_diffusive_prof(sph_params, sph_rj, sc_prop,     &
      &      sph_bc_S, bcs_S, r_2nd, fdm2_center, mat_name,              &
      &      iref_scalar, iref_grad, iref_source, ref_field)
@@ -138,13 +135,6 @@
      &    ref_field%d_fld(1,iref_grad),                                 &
      &    sph_bc_S, bcs_S%ICB_Sspec, bcs_S%CMB_Sspec,                   &
      &    bcs_S%ICB_Sevo, bcs_S%CMB_Sevo)
-!
-!      if (i_ref*i_gref .gt. izero) then
-!        call set_reftemp_4_sph(sph_rj%idx_rj_degree_zero,              &
-!     &    sph_rj%inod_rj_center, sph_rj%nnod_rj, sph_rj%nidx_rj,       &
-!     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad),&
-!     &    rj_fld%d_fld(1,i_ref), rj_fld%d_fld(1,i_gref))
-!      end if
 !
       end subroutine s_init_reference_scalar
 !
