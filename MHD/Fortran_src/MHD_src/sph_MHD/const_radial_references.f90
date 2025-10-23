@@ -25,12 +25,19 @@
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
-!!      subroutine const_reference_source(sph_rj, sc_prop,              &
-!!     &          band_s00_poisson, iref_scalar, iref_source, ref_field)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!      subroutine const_grad_diffusive_prof                            &
+!!     &         (sph_rj, sc_prop, sph_bc, bcs_S, r_2nd, fdm2_center,   &
+!!     &          band_s00_poisson, iref_scalar, iref_grad, iref_source,&
+!!     &          ref_field)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(scalar_property), intent(in) :: sc_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
 !!        integer(kind = kint), intent(in) :: iref_scalar
+!!        integer(kind = kint), intent(in) :: iref_grad
 !!        integer(kind = kint), intent(in) :: iref_source
 !!        type(phys_data), intent(inout) :: ref_field
 !!@endverbatim
@@ -111,22 +118,32 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_diffusive_prof(sph_rj, sph_bc, bcs_S,       &
-     &          r_2nd, fdm2_center, iref_scalar, iref_grad, ref_field)
+      subroutine const_grad_diffusive_prof                              &
+     &         (sph_rj, sc_prop, sph_bc, bcs_S, r_2nd, fdm2_center,     &
+     &          band_s00_poisson, iref_scalar, iref_grad, iref_source,  &
+     &          ref_field)
 !
+      use calypso_mpi
+      use calypso_mpi_real
       use fill_scalar_field
       use const_diffusive_profile
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fdm_matrices), intent(in) :: r_2nd
+      type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_scalar_boundary_data), intent(in) :: bcs_S
+      type(fdm_matrices), intent(in) :: r_2nd
       type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(band_matrix_type), intent(in) :: band_s00_poisson
 !
       integer(kind = kint), intent(in) :: iref_scalar
       integer(kind = kint), intent(in) :: iref_grad
+      integer(kind = kint), intent(in) :: iref_source
 !
       type(phys_data), intent(inout) :: ref_field
+!
+      real(kind = kreal), allocatable :: ref_local(:)
+      integer(kind = kint_gl) :: num64
 !
 !
       call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
@@ -134,6 +151,23 @@
       call gradient_of_radial_reference                                 &
      &   (sph_rj, sph_bc, bcs_S, r_2nd, fdm2_center,                    &
      &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
+!
+!
+      allocate(ref_local(0:sph_rj%nidx_rj(1)))
+!$omp parallel workshare
+      ref_local(0:sph_rj%nidx_rj(1)) = 0.0d0
+!$omp end parallel workshare
+!
+      if(iref_source*iref_scalar .le. 0) return
+      if(sph_rj%idx_rj_degree_zero .gt. 0) then
+        call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,    &
+     &      ref_field%d_fld(1,iref_scalar), ref_local)
+      end if
+!
+      num64 = sph_rj%nidx_rj(1) + 1
+      call calypso_mpi_allreduce_real                                   &
+     &   (ref_local(0), ref_field%d_fld(1,iref_source), num64, MPI_SUM)
+      deallocate(ref_local)
 !
       end subroutine const_grad_diffusive_prof
 !
@@ -175,47 +209,6 @@
 !
       end subroutine const_diffusive_profile_fix_bc
 !
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine const_reference_source(sph_rj, sc_prop,                &
-     &          band_s00_poisson, iref_scalar, iref_source, ref_field)
-!
-      use calypso_mpi
-      use calypso_mpi_real
-      use const_diffusive_profile
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(scalar_property), intent(in) :: sc_prop
-      type(band_matrix_type), intent(in) :: band_s00_poisson
-!
-      integer(kind = kint), intent(in) :: iref_scalar
-      integer(kind = kint), intent(in) :: iref_source
-!
-      type(phys_data), intent(inout) :: ref_field
-!
-      real(kind = kreal), allocatable :: ref_local(:)
-      integer(kind = kint_gl) :: num64
-!
-!
-      allocate(ref_local(0:sph_rj%nidx_rj(1)))
-!$omp parallel workshare
-      ref_local(0:sph_rj%nidx_rj(1)) = 0.0d0
-!$omp end parallel workshare
-!
-      if(iref_source*iref_scalar .le. 0) return
-      if(sph_rj%idx_rj_degree_zero .gt. 0) then
-        call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,    &
-     &      ref_field%d_fld(1,iref_scalar), ref_local)
-      end if
-!
-      num64 = sph_rj%nidx_rj(1) + 1
-      call calypso_mpi_allreduce_real                                   &
-     &   (ref_local(0), ref_field%d_fld(1,iref_source), num64, MPI_SUM)
-      deallocate(ref_local)
-!
-      end subroutine const_reference_source
-
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !

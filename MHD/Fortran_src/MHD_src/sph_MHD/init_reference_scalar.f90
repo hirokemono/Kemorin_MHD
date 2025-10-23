@@ -134,10 +134,9 @@
      &     (iref_radius, phys_name, iref_scalar, n_scalar,              &
      &      ref_param%ref_file_IO, ref_fld_IO, r_itp, ref_field)
         call const_grad_diffusive_prof                                  &
-     &     (sph_rj, sph_bc_S, bcs_S, r_2nd, fdm2_center,                &
-     &      iref_scalar, iref_grad, ref_field)
-        call const_reference_source(sph_rj, sc_prop, band_s00_poisson,  &
-     &      iref_scalar, iref_source, ref_field)
+     &     (sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center,       &
+     &      band_s00_poisson, iref_scalar, iref_grad, iref_source,      &
+     &      ref_field)
         call dealloc_band_matrix(band_s00_poisson)
       else
         call no_ref_temp_sph_mhd(sph_rj%nidx_rj(1),                     &
