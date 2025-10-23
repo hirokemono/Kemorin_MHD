@@ -133,11 +133,9 @@
         call load_sph_reference_one_field                               &
      &     (iref_radius, phys_name, iref_scalar, n_scalar,              &
      &      ref_param%ref_file_IO, ref_fld_IO, r_itp, ref_field)
-        call const_grad_diffusive_prof                                  &
-     &     (sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center,       &
-     &      band_s00_poisson, iref_scalar, iref_grad, iref_source,      &
-     &      ref_field)
-        call dealloc_band_matrix(band_s00_poisson)
+        call const_grad_diffusive_prof(sph_params, sph_rj, sc_prop,     &
+     &      sph_bc_S, bcs_S, r_2nd, fdm2_center, mat_name,              &
+     &      iref_scalar, iref_grad, iref_source, ref_field)
       else
         call no_ref_temp_sph_mhd(sph_rj%nidx_rj(1),                     &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
