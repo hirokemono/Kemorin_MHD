@@ -64,7 +64,6 @@
 !
       use set_reference_sph_mhd
       use set_reference_temp_sph
-      use const_r_mat_4_scalar_sph
       use const_radial_references
       use const_diffusive_profile
       use set_parallel_file_name
@@ -89,8 +88,6 @@
 !      type(phys_data), intent(inout) :: rj_fld
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
       logical, intent(inout) :: flag_write_ref
-!
-      type(band_matrix_type) :: band_s00_poisson
 !
 !
       if (ref_param%iflag_reference .ne. id_sphere_ref_temp             &
@@ -117,19 +114,10 @@
      &    ref_field%d_fld(1,iref_grad))
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
-        call const_r_mat00_scalar_sph                                   &
-     &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
-     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
-     &      band_s00_poisson)
-        call const_diffusive_profiles(sph_rj, sc_prop, sph_bc_S, bcs_S, &
-     &      fdm2_center, r_2nd, band_s00_poisson,                       &
-     &      iref_scalar, iref_grad, iref_source, ref_field)
-        call dealloc_band_matrix(band_s00_poisson)
+        call const_diffusive_profiles(sph_params, sph_rj, sc_prop,      &
+     &      sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,              &
+     &      iref_source, iref_scalar, iref_grad, ref_field)
       else if(ref_param%iflag_reference .eq. id_ref_field_file) then
-        call const_r_mat00_scalar_sph                                   &
-     &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
-     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
-     &      band_s00_poisson)
         call load_sph_reference_one_field                               &
      &     (iref_radius, phys_name, iref_scalar, n_scalar,              &
      &      ref_param%ref_file_IO, ref_fld_IO, r_itp, ref_field)

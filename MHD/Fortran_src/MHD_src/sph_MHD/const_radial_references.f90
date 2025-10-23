@@ -7,11 +7,19 @@
 !>@brief  Refelence scalar by diffusive profile
 !!
 !!@verbatim
-!!      subroutine const_diffusive_profiles(sph_rj, sc_prop,            &
-!!     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, band_s00_poisson,&
-!!     &          iref_scalar, iref_grad, iref_source, ref_field)
-!!        integer(kind = kint), intent(in) :: iref_scalar, iref_grad
+!!      subroutine const_diffusive_profiles(sph_params, sph_rj, sc_prop,&
+!!     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,        &
+!!     &          iref_source, iref_scalar, iref_grad, ref_field)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(scalar_property), intent(in) :: sc_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_S
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!        character(len=kchara), intent(in) :: mat_name
 !!        integer(kind = kint), intent(in) :: iref_source
+!!        integer(kind = kint), intent(in) :: iref_scalar, iref_grad
 !!        type(phys_data), intent(inout) :: ref_field
 !!      subroutine const_diffusive_profile_fix_bc                       &
 !!     &        (sph_rj, sc_prop, sph_bc_S, fdm2_center, bcs_S, r_2nd,  &
@@ -74,25 +82,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profiles(sph_rj, sc_prop,              &
-     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, band_s00_poisson,  &
-     &          iref_scalar, iref_grad, iref_source, ref_field)
+      subroutine const_diffusive_profiles(sph_params, sph_rj, sc_prop,  &
+     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,          &
+     &          iref_source, iref_scalar, iref_grad, ref_field)
 !
+      use const_r_mat_4_scalar_sph
       use const_diffusive_profile
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S
       type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
-      type(band_matrix_type), intent(in) :: band_s00_poisson
 !
-      integer(kind = kint), intent(in) :: iref_scalar, iref_grad
+      character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: iref_source
+      integer(kind = kint), intent(in) :: iref_scalar, iref_grad
 !
       type(phys_data), intent(inout) :: ref_field
 !
+      type(band_matrix_type) :: band_s00_poisson
       real(kind = kreal), allocatable :: ref_local(:,:)
 !
 !
@@ -108,10 +119,15 @@
 !$omp end parallel workshare
       end if
 !
+        call const_r_mat00_scalar_sph                                   &
+     &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
+     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
+     &      band_s00_poisson)
       call s_const_diffusive_profile(sph_rj, r_2nd, sc_prop,            &
      &    sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,               &
      &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad), &
      &    ref_local(0,0), ref_local(0,1))
+        call dealloc_band_matrix(band_s00_poisson)
       deallocate(ref_local)
 !
       end subroutine const_diffusive_profiles
@@ -138,8 +154,7 @@
 !
       character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: iref_scalar
-      integer(kind = kint), intent(in) :: iref_grad
-      integer(kind = kint), intent(in) :: iref_source
+      integer(kind = kint), intent(in) :: iref_grad, iref_source
 !
       type(phys_data), intent(inout) :: ref_field
 !
