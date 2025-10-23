@@ -47,12 +47,14 @@
       real(kind = kreal) :: vec_mat(band_s00%n_vect+1)
       real(kind = kreal) :: x_sol(band_s00%n_vect+1)
 !
+      integer(kind = kint) :: IERROR
       integer(kind = kint) :: i
 !
 !
+      IERROR = 1
       mat3_crs%PRESET_crs = 1
       mat3_crs%METHOD_crs = 'BiCGSTAB'
-      mat3_crs%PRECOND_crs = 'SSOR'
+      mat3_crs%PRECOND_crs = 'DIAG'
       mat3_crs%INTARRAY_crs(1) =  itr
       mat3_crs%REALARRAY_crs(1) = eps
       mat3_crs%REALARRAY_crs(2) = sigma_diag
@@ -92,8 +94,6 @@
       end do
       do i = 1, band_s00%n_vect
         mat3_crs%AU_crs(i) = band_s00%mat(1,i  )
-      end do
-      do i = 1, band_s00%n_vect
         mat3_crs%AL_crs(i) = band_s00%mat(3,i-1)
       end do
 !
@@ -102,7 +102,7 @@
      &    tbl3_crs%ntot_l, tbl3_crs%ntot_u, mat3_crs%D_crs,             &
      &    mat3_crs%AL_crs, tbl3_crs%istack_l, tbl3_crs%item_l,          &
      &    mat3_crs%AU_crs, tbl3_crs%istack_u, tbl3_crs%item_u,          &
-     &    vec_mat, x_sol, mat3_crs%PRESET_crs, izero,                   &
+     &    vec_mat, x_sol, mat3_crs%PRESET_crs, IERROR,                  &
      &    mat3_crs%ITERactual, imonitor_solve,                          &
      &    mat3_crs%METHOD_crs, mat3_crs%PRECOND_crs,                    &
      &    mat3_crs%INTARRAY_crs, mat3_crs%REALARRAY_crs)

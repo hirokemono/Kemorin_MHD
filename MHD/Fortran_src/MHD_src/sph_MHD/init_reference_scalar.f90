@@ -133,7 +133,7 @@
         call load_sph_reference_one_field                               &
      &     (iref_radius, phys_name, iref_scalar, n_scalar,              &
      &      ref_param%ref_file_IO, ref_fld_IO, r_itp, ref_field)
-        call gradient_of_radial_reference                               &
+        call const_grad_diffusive_prof                                  &
      &     (sph_rj, r_2nd, sph_bc_S, bcs_S, fdm2_center,                &
      &      ref_field%d_fld(1,iref_scalar),                             &
      &      ref_field%d_fld(1,iref_grad))

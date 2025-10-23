@@ -111,6 +111,31 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine const_grad_diffusive_prof(sph_rj, r_2nd,            &
+     &          sph_bc, bcs_S, fdm2_center, reftemp_r, refgrad_r)
+!
+      use fill_scalar_field
+      use const_diffusive_profile
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind=kreal), intent(inout) :: reftemp_r(0:sph_rj%nidx_rj(1))
+      real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
+!
+!
+      call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
+     &                             sph_rj%nidx_rj(1), reftemp_r(0))
+      call gradient_of_radial_reference(sph_rj, r_2nd, sph_bc, bcs_S,   &
+     &    fdm2_center, reftemp_r, refgrad_r)
+!
+      end subroutine const_grad_diffusive_prof
+!
+! -----------------------------------------------------------------------
+!
       subroutine const_diffusive_profile_fix_bc                         &
      &        (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,    &
      &         band_s00_poisson, i_temp, i_source, rj_fld, file_name,   &
