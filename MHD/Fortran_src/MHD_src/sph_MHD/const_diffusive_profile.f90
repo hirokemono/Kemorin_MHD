@@ -67,7 +67,7 @@
 !
       subroutine s_const_diffusive_profile(sph_rj, r_2nd,               &
      &          sc_prop, sph_bc, bcs_S, fdm2_center, band_s00_poisson,  &
-     &          reftemp_r, refgrad_r, ref_local)
+     &          reftemp_r, refgrad_r, ref_local, grad_local)
 !
       use calypso_mpi
       use calypso_mpi_real
@@ -88,48 +88,48 @@
       real(kind=kreal), intent(inout) :: reftemp_r(0:sph_rj%nidx_rj(1))
       real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
       real(kind = kreal), intent(inout)                                 &
-     &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
+     &                :: ref_local(0:sph_rj%nidx_rj(1))
+      real(kind = kreal), intent(inout)                                 &
+     &                :: grad_local(0:sph_rj%nidx_rj(1))
 !
       integer(kind = kint_gl) :: num64
 !      integer :: k
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
 !$omp parallel workshare
-        ref_local(0:sph_rj%nidx_rj(1),0)                                &
-     &             = ref_local(0:sph_rj%nidx_rj(1),0)                   &
-     &              * (sc_prop%coef_source / sc_prop%coef_diffuse)
+        ref_local(0:sph_rj%nidx_rj(1)) = ref_local(0:sph_rj%nidx_rj(1)) &
+     &                   * (sc_prop%coef_source / sc_prop%coef_diffuse)
 !$omp end parallel workshare
 !
         call set_ICB_scalar_boundary_1d                                 &
-     &     (sph_rj, sph_bc, bcs_S%ICB_Sspec, ref_local(0,0))
+     &     (sph_rj, sph_bc, bcs_S%ICB_Sspec, ref_local(0))
         call set_CMB_scalar_boundary_1d                                 &
-     &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, ref_local(0,0))
+     &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, ref_local(0))
 !
 !        do k = 0, sph_rj%nidx_rj(1)
-!          write(*,*) k, 'RHS', ref_local(k,0)
+!          write(*,*) k, 'RHS', ref_local(k)
 !        end do
 !
-        call lubksb_3band_ctr(band_s00_poisson, ref_local(0,0))
+        call lubksb_3band_ctr(band_s00_poisson, ref_local(0))
 !        call s_cal_sol_reftemp_BiCGSTAB                                &
-!     &     (band_s00_poisson, ref_local(0,0))
+!     &     (band_s00_poisson, ref_local(0))
 !
 !        do k = 0, sph_rj%nidx_rj(1)
-!          write(*,*) k, 'Solution', ref_local(k,0)
+!          write(*,*) k, 'Solution', ref_local(k)
 !        end do
 !
         call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
-     &                               sph_rj%nidx_rj(1), ref_local(0,0))
+     &                               sph_rj%nidx_rj(1), ref_local(0))
 !
         call cal_sph_nod_gradient_1d(sph_bc%kr_in, sph_bc%kr_out,       &
      &                            sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat, &
-     &                            ref_local(0,0), ref_local(0,1))
+     &                            ref_local(0), grad_local(0))
 !
         call sel_ICB_radial_grad_1d_scalar                              &
      &     (sph_rj, sph_bc, bcs_S%ICB_Sspec, fdm2_center,               &
-     &      ref_local(0,0), ref_local(0,1))
+     &      ref_local, grad_local)
         call sel_CMB_radial_grad_1d_scalar                              &
-     &     (sph_rj, sph_bc, bcs_S%CMB_Sspec,                            &
-     &      ref_local(0,0), ref_local(0,1))
+     &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, ref_local, grad_local)
       end if
 !
 !$omp parallel workshare
@@ -138,9 +138,9 @@
 !$omp end parallel workshare
 !
       num64 = sph_rj%nidx_rj(1) + 1
-      call calypso_mpi_allreduce_real(ref_local(0,0), reftemp_r,        &
+      call calypso_mpi_allreduce_real(ref_local(0), reftemp_r,          &
      &                                num64, MPI_SUM)
-      call calypso_mpi_allreduce_real(ref_local(0,1), refgrad_r,        &
+      call calypso_mpi_allreduce_real(grad_local(0), refgrad_r,         &
      &                                num64, MPI_SUM)
 !
       end subroutine s_const_diffusive_profile
@@ -244,7 +244,7 @@
       real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
 !
 !
-      call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
+      call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
      &                             sph_rj%nidx_rj(1), reftemp_r(0))
 !
       call cal_sph_nod_gradient_1d(sph_bc%kr_in, sph_bc%kr_out,         &

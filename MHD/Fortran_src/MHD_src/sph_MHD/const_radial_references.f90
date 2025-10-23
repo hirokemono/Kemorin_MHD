@@ -104,7 +104,7 @@
       call s_const_diffusive_profile(sph_rj, r_2nd, sc_prop,            &
      &    sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,               &
      &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad), &
-     &    ref_local)
+     &    ref_local(0,0), ref_local(0,1))
       deallocate(ref_local)
 !
       end subroutine const_diffusive_profiles
