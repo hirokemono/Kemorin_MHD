@@ -111,8 +111,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_diffusive_prof(sph_rj, r_2nd,            &
-     &          sph_bc, bcs_S, fdm2_center, reftemp_r, refgrad_r)
+      subroutine const_grad_diffusive_prof(sph_rj, sph_bc, bcs_S,       &
+     &          r_2nd, fdm2_center, iref_scalar, iref_grad, ref_field)
 !
       use fill_scalar_field
       use const_diffusive_profile
@@ -123,14 +123,17 @@
       type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
-      real(kind=kreal), intent(inout) :: reftemp_r(0:sph_rj%nidx_rj(1))
-      real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
+      integer(kind = kint), intent(in) :: iref_scalar
+      integer(kind = kint), intent(in) :: iref_grad
+!
+      type(phys_data), intent(inout) :: ref_field
 !
 !
       call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
-     &                             sph_rj%nidx_rj(1), reftemp_r(0))
-      call gradient_of_radial_reference(sph_rj, r_2nd, sph_bc, bcs_S,   &
-     &    fdm2_center, reftemp_r, refgrad_r)
+     &    sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
+      call gradient_of_radial_reference                                 &
+     &   (sph_rj, sph_bc, bcs_S, r_2nd, fdm2_center,                    &
+     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
 !
       end subroutine const_grad_diffusive_prof
 !

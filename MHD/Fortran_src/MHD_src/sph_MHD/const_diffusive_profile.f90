@@ -13,8 +13,8 @@
 !!      subroutine const_diffusive_profile_fixS(is_scalar, is_source,   &
 !!     &          sph_rj, r_2nd, sc_prop, sph_bc, bcs_S, fdm2_center,   &
 !!     &          band_s00_poisson, rj_fld, reftemp_rj, reftemp_local)
-!!      subroutine gradient_of_radial_reference(sph_rj, r_2nd,          &
-!!     &          sph_bc, bcs_S, fdm2_center, reftemp_r, refgrad_r)
+!!      subroutine gradient_of_radial_reference(sph_rj, sph_bc, bcs_S,  &
+!!     &          r_2nd, fdm2_center, reftemp_r, refgrad_r)
 !!        integer(kind = kint), intent(in) :: is_scalar, is_source
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -97,8 +97,8 @@
         call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
      &                               sph_rj%nidx_rj(1), ref_local)
 !
-        call gradient_of_radial_reference(sph_rj, r_2nd,                &
-     &      sph_bc, bcs_S, fdm2_center, ref_local, grad_local)
+        call gradient_of_radial_reference(sph_rj, sph_bc, bcs_S,        &
+     &      r_2nd, fdm2_center, ref_local, grad_local)
       end if
 !
 !$omp parallel workshare
@@ -179,8 +179,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gradient_of_radial_reference(sph_rj, r_2nd,            &
-     &          sph_bc, bcs_S, fdm2_center, reftemp_r, refgrad_r)
+      subroutine gradient_of_radial_reference(sph_rj, sph_bc, bcs_S,    &
+     &          r_2nd, fdm2_center, reftemp_r, refgrad_r)
 !
       use const_sph_radial_grad
       use select_exp_scalar_ICB
