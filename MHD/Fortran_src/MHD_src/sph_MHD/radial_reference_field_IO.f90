@@ -13,11 +13,9 @@
 !!      subroutine load_sph_reference_fields(refs)
 !!        type(radial_reference_field), intent(inout) :: refs
 !!
-!!      subroutine load_sph_reference_one_field                         &
-!!     &         (irank_reference, iref_radius, phys_name, iref_in,     &
-!!     &          ncomp, ref_file_IO, r_itp, ref_field)
+!!      subroutine load_sph_reference_one_field(iref_radius, phys_name, &
+!!     &          iref_in, ncomp, ref_file_IO, r_itp, ref_field)
 !!        character(len = kchara), intent(in) :: phys_name
-!!        integer, intent(in) :: irank_reference
 !!        integer(kind = kint), intent(in) :: iref_radius, iref_in, ncomp
 !!        type(field_IO_params), intent(in) :: ref_file_IO
 !!        type(sph_radial_interpolate), intent(inout) :: r_itp
@@ -157,9 +155,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_sph_reference_one_field                           &
-     &         (irank_reference, iref_radius, phys_name, iref_in,       &
-     &          ncomp, ref_file_IO, r_itp, ref_field)
+      subroutine load_sph_reference_one_field(iref_radius, phys_name,   &
+     &          iref_in, ncomp, ref_file_IO, r_itp, ref_field)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -167,7 +164,6 @@
       use interpolate_reference_data
 !
       character(len = kchara), intent(in) :: phys_name
-      integer, intent(in) :: irank_reference
       integer(kind = kint), intent(in) :: iref_radius, iref_in, ncomp
       type(field_IO_params), intent(in) :: ref_file_IO
       type(sph_radial_interpolate), intent(inout) :: r_itp
@@ -178,7 +174,6 @@
       integer(kind = kint) :: iend
 !
 !
-      if(my_rank .ne. irank_reference) return
       if(ref_file_IO%iflag_IO .eq. 0) return
 !
       call read_and_alloc_step_field(ref_file_IO%file_prefix,           &

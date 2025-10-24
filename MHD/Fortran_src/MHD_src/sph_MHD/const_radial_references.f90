@@ -55,6 +55,8 @@
       use m_constants
       use m_machine_parameter
 !
+      use calypso_mpi
+!
       use t_spheric_rj_data
       use t_phys_data
       use t_phys_address
@@ -142,7 +144,6 @@
 !
       use t_file_IO_parameter
       use t_sph_radial_interpolate
-      use calypso_mpi
       use calypso_mpi_int
       use calypso_mpi_real
       use fill_scalar_field
@@ -169,50 +170,48 @@
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       type(band_matrix_type) :: band_s00_poisson
-      real(kind = kreal), allocatable :: ref_local(:)
       integer(kind = kint_gl) :: num64
 !
 !
       if(iref_scalar .le. 0) return
-      call load_sph_reference_one_field(irank_reference, iref_radius,   &
-     &    phys_name, iref_scalar, n_scalar, ref_file_IO, r_itp,         &
-     &    ref_field)
-      call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,     &
-     &    sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
+      if(my_rank .eq. irank_reference) then
+        call load_sph_reference_one_field(iref_radius, phys_name,       &
+     &      iref_scalar, n_scalar, ref_file_IO, r_itp, ref_field)
+        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
 !
+        if(iref_grad .gt. 0) then
+          call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,    &
+     &        r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),       &
+     &        ref_field%d_fld(1,iref_grad))
+        end if
+!
+        if(iref_source .gt. 0) then
+          call const_r_mat00_scalar_sph                                 &
+     &       ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,   &
+     &        sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,         &
+     &        band_s00_poisson)
+          call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,  &
+     &        ref_field%d_fld(1,iref_scalar),                           &
+     &        ref_field%d_fld(1,iref_source))
+          call dealloc_band_matrix(band_s00_poisson)
+        end if
+      end if
+!
+      num64 = cast_long(ref_field%n_point * n_scalar)
       call calypso_mpi_bcast_int(ref_field%iflag_update(iref_scalar),   &
      &                           cast_long(n_scalar), irank_reference)
-      num64 = cast_long(ref_field%n_point * n_scalar)
       call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
-     &                            num64, 0)
+     &                            num64, irank_reference)
 !
-      call gradient_of_radial_reference                                 &
-     &   (sph_rj, sph_bc_S, bcs_S, r_2nd, fdm2_center,                  &
-     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
-!
-!
-      allocate(ref_local(0:sph_rj%nidx_rj(1)))
-!$omp parallel workshare
-      ref_local(0:sph_rj%nidx_rj(1)) = 0.0d0
-!$omp end parallel workshare
-!
-      if(iref_source*iref_scalar .le. 0) return
-      if(sph_rj%idx_rj_degree_zero .gt. 0) then
-        call const_r_mat00_scalar_sph                                   &
-     &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
-     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
-     &      band_s00_poisson)
-        call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,    &
-     &      ref_field%d_fld(1,iref_scalar), ref_local)
-        call dealloc_band_matrix(band_s00_poisson)
+      if(iref_grad .gt. 0) then
+        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_grad),       &
+     &                              num64, irank_reference)
       end if
-!
-      num64 = sph_rj%nidx_rj(1) + 1
-      if(iref_source .gt. 0) then
-        call calypso_mpi_allreduce_real                                 &
-     &    (ref_local, ref_field%d_fld(1,iref_source), num64, MPI_SUM)
+      if(iref_grad .gt. 0) then
+        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_source),     &
+     &                              num64, irank_reference)
       end if
-      deallocate(ref_local)
 !
       end subroutine const_grad_diffusive_prof
 !
