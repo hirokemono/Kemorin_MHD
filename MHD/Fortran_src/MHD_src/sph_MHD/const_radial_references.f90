@@ -134,31 +134,39 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_diffusive_prof(sph_params, sph_rj,          &
-     &          sc_prop, sph_bc, bcs_S, r_2nd, fdm2_center, mat_name,   &
-     &          iref_scalar, iref_grad, iref_source, ref_field)
+      subroutine const_grad_diffusive_prof                              &
+     &         (irank_reference, ref_file_IO, phys_name,                &
+     &          sph_params, sph_rj, sc_prop, sph_bc_S, bcs_S,           &
+     &          r_2nd, fdm2_center, mat_name, iref_radius,              &
+     &          iref_scalar, iref_grad, iref_source, ref_field, r_itp)
 !
+      use t_file_IO_parameter
+      use t_sph_radial_interpolate
       use calypso_mpi
       use calypso_mpi_int
       use calypso_mpi_real
       use fill_scalar_field
       use const_diffusive_profile
       use const_r_mat_4_scalar_sph
+      use radial_reference_field_IO
       use transfer_to_long_integers
 !
+      integer, intent(in) :: irank_reference
+      type(field_IO_params), intent(in) :: ref_file_IO
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(scalar_property), intent(in) :: sc_prop
-      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_boundary_type), intent(in) :: sph_bc_S
       type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm_matrices), intent(in) :: r_2nd
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
-      character(len=kchara), intent(in) :: mat_name
-      integer(kind = kint), intent(in) :: iref_scalar
+      character(len=kchara), intent(in) :: phys_name, mat_name
+      integer(kind = kint), intent(in) :: iref_radius, iref_scalar
       integer(kind = kint), intent(in) :: iref_grad, iref_source
 !
       type(phys_data), intent(inout) :: ref_field
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       type(band_matrix_type) :: band_s00_poisson
       real(kind = kreal), allocatable :: ref_local(:)
@@ -166,17 +174,20 @@
 !
 !
       if(iref_scalar .le. 0) return
-      call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,       &
+      call load_sph_reference_one_field(irank_reference, iref_radius,   &
+     &    phys_name, iref_scalar, n_scalar, ref_file_IO, r_itp,         &
+     &    ref_field)
+      call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,     &
      &    sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
 !
       call calypso_mpi_bcast_int(ref_field%iflag_update(iref_scalar),   &
-     &                           cast_long(n_scalar), 0)
+     &                           cast_long(n_scalar), irank_reference)
       num64 = cast_long(ref_field%n_point * n_scalar)
       call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
      &                            num64, 0)
 !
       call gradient_of_radial_reference                                 &
-     &   (sph_rj, sph_bc, bcs_S, r_2nd, fdm2_center,                    &
+     &   (sph_rj, sph_bc_S, bcs_S, r_2nd, fdm2_center,                  &
      &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
 !
 !
@@ -189,7 +200,7 @@
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         call const_r_mat00_scalar_sph                                   &
      &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
-     &      sph_params, sph_rj, r_2nd, sph_bc, fdm2_center,             &
+     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
      &      band_s00_poisson)
         call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,    &
      &      ref_field%d_fld(1,iref_scalar), ref_local)

@@ -41,13 +41,6 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use t_spheric_parameter
-      use t_fdm_coefs
-      use t_boundary_params_sph_MHD
-      use t_boundary_sph_spectr
-      use t_reference_scalar_param
-      use t_sph_matrix
-!
       implicit none
 !
 !  -------------------------------------------------------------------
@@ -62,12 +55,19 @@
      &          iref_radius, phys_name, iref_scalar, iref_grad,         &
      &          iref_source, r_itp, ref_field, bcs_S, flag_write_ref)
 !
+      use t_spheric_parameter
+      use t_fdm_coefs
+      use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
+      use t_reference_scalar_param
+      use t_sph_matrix
+      use t_sph_radial_interpolate
+!
       use set_reference_sph_mhd
       use set_reference_temp_sph
       use const_radial_references
       use const_diffusive_profile
       use set_parallel_file_name
-      use radial_reference_field_IO
 !
       integer, intent(in) :: irank_reference
       integer(kind = kint), intent(in) :: iref_scalar, iref_grad
@@ -117,12 +117,11 @@
      &      sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,              &
      &      iref_source, iref_scalar, iref_grad, ref_field)
       else if(ref_param%iflag_reference .eq. id_ref_field_file) then
-        call load_sph_reference_one_field(irank_reference,              &
-     &      iref_radius, phys_name, iref_scalar, n_scalar,              &
-     &      ref_param%ref_file_IO, r_itp, ref_field)
-        call const_grad_diffusive_prof(sph_params, sph_rj, sc_prop,     &
-     &      sph_bc_S, bcs_S, r_2nd, fdm2_center, mat_name,              &
-     &      iref_scalar, iref_grad, iref_source, ref_field)
+        call const_grad_diffusive_prof                                  &
+     &     (irank_reference, ref_param%ref_file_IO, phys_name,          &
+     &      sph_params, sph_rj, sc_prop, sph_bc_S, bcs_S,               &
+     &      r_2nd, fdm2_center, mat_name, iref_radius, iref_scalar,     &
+     &      iref_grad, iref_source, ref_field, r_itp)
       else
         call no_ref_temp_sph_mhd(sph_rj%nidx_rj(1),                     &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
