@@ -113,7 +113,8 @@
      &    ref_field%d_fld(1,iref_grad))
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
-        call const_diffusive_profiles(sph_params, sph_rj, sc_prop,      &
+        call const_diffusive_profiles                                   &
+     &     (irank_reference, sph_params, sph_rj, sc_prop,               &
      &      sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,              &
      &      iref_source, iref_scalar, iref_grad, ref_field)
       else if(ref_param%iflag_reference .eq. id_ref_field_file) then

@@ -7,9 +7,11 @@
 !>@brief  Refelence scalar by diffusive profile
 !!
 !!@verbatim
-!!      subroutine const_diffusive_profiles(sph_params, sph_rj, sc_prop,&
+!!      subroutine const_diffusive_profiles                             &
+!!     &         (irank_reference, sph_params, sph_rj, sc_prop,         &
 !!     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,        &
 !!     &          iref_source, iref_scalar, iref_grad, ref_field)
+!!        integer, intent(in) :: irank_reference
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -84,13 +86,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profiles(sph_params, sph_rj, sc_prop,  &
+      subroutine const_diffusive_profiles                               &
+     &         (irank_reference, sph_params, sph_rj, sc_prop,           &
      &          sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,          &
      &          iref_source, iref_scalar, iref_grad, ref_field)
 !
+      use calypso_mpi_real
       use const_r_mat_4_scalar_sph
       use const_diffusive_profile
+      use fill_scalar_field
+      use transfer_to_long_integers
 !
+      integer, intent(in) :: irank_reference
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -106,31 +113,43 @@
       type(phys_data), intent(inout) :: ref_field
 !
       type(band_matrix_type) :: band_s00_poisson
-      real(kind = kreal), allocatable :: ref_local(:,:)
+      integer(kind = kint_gl) :: num64
 !
 !
-      allocate(ref_local(0:sph_rj%nidx_rj(1),0:1))
+      if(iref_scalar .le. 0) return
+      if(my_rank .eq. irank_reference) then
+        if(iref_source .gt. 0) then
 !$omp parallel workshare
-      ref_local(0:sph_rj%nidx_rj(1),0:1) = 0.0d0
+          ref_field%d_fld(1:ref_field%n_point,iref_scalar)              &
+     &       = ref_field%d_fld(1:ref_field%n_point,iref_source)
 !$omp end parallel workshare
-!
-      if(sph_rj%idx_rj_degree_zero.gt.0 .and. iref_source.gt.0) then
-!$omp parallel workshare
-        ref_local(0:sph_rj%nidx_rj(1),0)                                &
-     &             = ref_field%d_fld(1:sph_rj%nidx_rj(1)+1,iref_source)
-!$omp end parallel workshare
-      end if
+        end if
 !
         call const_r_mat00_scalar_sph                                   &
      &     ((my_rank+50), mat_name, sc_prop%diffusie_reduction_ICB,     &
      &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
      &      band_s00_poisson)
-      call s_const_diffusive_profile(sph_rj, r_2nd, sc_prop,            &
-     &    sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,               &
-     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad), &
-     &    ref_local(0,0), ref_local(0,1))
+        call cal_diffusive_profile                                      &
+     &     (sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center,       &
+     &      band_s00_poisson, ref_field%d_fld(1,iref_scalar))
+        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
         call dealloc_band_matrix(band_s00_poisson)
-      deallocate(ref_local)
+!
+        if(iref_grad .gt. 0) then
+          call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,    &
+     &        r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),       &
+     &        ref_field%d_fld(1,iref_grad))
+        end if
+      end if
+!
+      num64 = cast_long(ref_field%n_point * n_scalar)
+      call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
+     &                            num64, irank_reference)
+      if(iref_grad .gt. 0) then
+        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_grad),       &
+     &                              num64, irank_reference)
+      end if
 !
       end subroutine const_diffusive_profiles
 !
