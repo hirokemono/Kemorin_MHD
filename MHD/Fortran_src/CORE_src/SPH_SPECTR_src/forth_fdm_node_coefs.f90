@@ -130,6 +130,7 @@
       subroutine set_forth_fdm_node(nri, r, fdm_4th)
 !
       use cal_inverse_small_matrix
+!      use m_ludcmp
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
@@ -140,6 +141,10 @@
       real(kind = kreal), allocatable :: mat_fdm(:,:,:)
       real(kind = kreal) :: mat_taylor_5(5,5)
       real(kind = kreal) :: delta(-2:1)
+!
+!      real(kind = kreal) :: a(5,5)
+!      real(kind = kreal) :: a_inv(5,5), d, det
+!      integer (kind = kint) :: indx(5)
 !
 !
       allocate(mat_fdm(5,5,nri))
@@ -180,6 +185,35 @@
         call set_forth_taylor_expand(delta, mat_taylor_5)
         call cal_inverse_nn_matrix                                      &
      &     (ifive, mat_taylor_5, mat_fdm(1,1,kr), ierr)
+        if(ierr .eq. 1) then
+          write(*,*) 'singular matrix in set_forth_fdm_node at ',       &
+     &              kr, r(kr)
+        end if
+!
+!          write(*,*) 'Source Matrix'
+!          write(*,*) mat_taylor_5(1,1:5)
+!          write(*,*) mat_taylor_5(2,1:5)
+!          write(*,*) mat_taylor_5(3,1:5)
+!          write(*,*) mat_taylor_5(4,1:5)
+!          write(*,*) mat_taylor_5(5,1:5)
+!
+!          write(*,*) 'Inverse Matrix'
+!          write(*,*) mat_fdm(1,1:5,kr)
+!          write(*,*) mat_fdm(2,1:5,kr)
+!          write(*,*) mat_fdm(3,1:5,kr)
+!          write(*,*) mat_fdm(4,1:5,kr)
+!          write(*,*) mat_fdm(5,1:5,kr)
+!
+!          a(1:5,1:5) = mat_taylor_5(1:5,1:5)
+!          call ludcmp(a, 5, 5, indx, d)
+!          call luinv(a, 5, 5, indx, d, det, a_inv)
+!
+!          write(*,*) 'Inverse by luinv', det
+!          write(*,*) a_inv(1,1:5)
+!          write(*,*) a_inv(2,1:5)
+!          write(*,*) a_inv(3,1:5)
+!          write(*,*) a_inv(4,1:5)
+!          write(*,*) a_inv(5,1:5)
       end do
 !$omp end parallel do
 !

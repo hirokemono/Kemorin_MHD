@@ -37,7 +37,13 @@
 !! the possibility that b will begin with many zero elements,
 !! so it is efficient for use in matrix inversion.
 !!
-!!      subroutine luinv(a,n,np,indx,d,a_inv)
+!!      subroutine luinv(a, n, np, indx, d, det, a_inv)
+!!        integer (kind = kint), intent(in) :: n,np
+!!        integer (kind = kint), intent(in) :: indx(n)
+!!        real(kind = kreal), intent(in) :: d
+!!        real(kind = kreal), intent(in) :: a(np,np)
+!!        real(kind = kreal), intent(inout) :: det
+!!        real(kind = kreal), intent(inout) :: a_inv(np,np)
 !!
 !! Evaluate invese matrix of a. Solution is stored in a_inv.
 !!@endverbatim
@@ -170,15 +176,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine luinv(a,n,np,indx,d,a_inv)
+      subroutine luinv(a, n, np, indx, d, det, a_inv)
 !
       integer (kind = kint), intent(in) :: n,np
       integer (kind = kint), intent(in) :: indx(n)
       real(kind = kreal), intent(in) :: d
       real(kind = kreal), intent(in) :: a(np,np)
+!
+      real(kind = kreal), intent(inout) :: det
       real(kind = kreal), intent(inout) :: a_inv(np,np)
 !
-      real(kind = kreal) :: det
       integer(kind = kint) :: i, j
 !
 !

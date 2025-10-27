@@ -173,7 +173,7 @@
       call cal_inverse_nn_matrix(ifive, mat_taylor_5,                   &
      &                           mat_fdm_ctr1_fix_5, ierr)
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix cal_4th_to_center_fixed_fdm ',      &
+        write(*,*) 'singular matrix in cal_4th_to_center_fixed_fdm ',   &
      &            radius(1:2)
       end if
 !
@@ -261,7 +261,7 @@
       call cal_inverse_nn_matrix(ifive, mat_taylor_5,                   &
      &                           mat_fdm_ctr2_fix_5, ierr)
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix cal_4th_to_center_fixed_fdm ',      &
+        write(*,*) 'singular matrix in cal_4th_to_center_fixed_fdm ',   &
      &            radius(1:2)
       end if
 !
