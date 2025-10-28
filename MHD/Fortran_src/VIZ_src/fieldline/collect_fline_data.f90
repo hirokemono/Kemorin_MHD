@@ -171,7 +171,7 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint_gl) :: i, ip, ist, num
+      integer(kind = kint_gl) :: i, ip, num, icou
 !
 !
       ucd%nnod = fln_tce%num_current_fline
@@ -220,16 +220,19 @@
       ucd%ntot_comp = viz_fields%ntot_color_comp
       call allocate_ucd_phys_data(ucd)
 !
-!$omp parallel do private(ip,ist,num,i)
+!$omp parallel do private(ip,num,i,icou)
       do ip = 1, np_smp
-        ist = fln_tce%istack_smp_cur_fline(ip-1)
-        num = fln_tce%istack_smp_cur_fline(ip) - ist
+        num = fln_tce%istack_smp_cur_fline(ip)                          &
+     &       - fln_tce%istack_smp_cur_fline(ip-1)
         do i = 1, num
-          call cal_fields_in_element(fln_tce%isf_dbl_start(2,i),        &
-     &        fln_tce%xi_fline_start(1,i), fln_tce%xx_fline_start(1,i), &
-     &        ele, nod_fld, viz_fields, fln_tce%c_fline_start(1,ip))
-          ucd%d_ucd(i+ist,1:ucd%ntot_comp)                              &
-     &       = fln_tce%c_fline_start(1:ucd%ntot_comp,ip)
+          icou = i + fln_tce%istack_smp_cur_fline(ip-1)
+          call cal_fields_in_element(fln_tce%isf_dbl_start(2,icou),     &
+     &                               fln_tce%xi_fline_start(1,icou),    &
+     &                               fln_tce%xx_fline_start(1,icou),    &
+     &                               ele, nod_fld, viz_fields,          &
+     &                               fln_tce%c_fline_start(1,ip))
+          ucd%d_ucd(icou,1:ucd%ntot_comp)                               &
+     &        = fln_tce%c_fline_start(1:ucd%ntot_comp,ip)
         end do
       end do
 !$omp end parallel do
