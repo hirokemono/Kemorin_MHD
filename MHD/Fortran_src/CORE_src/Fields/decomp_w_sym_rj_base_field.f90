@@ -84,6 +84,24 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine s_decomp_w_sym_rj_Coriolis_force(sph_rj,                   &
+     &          i_base_force, i_sym_force, i_asym_force, rj_fld)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(base_force_address), intent(in) :: i_base_force
+      type(base_force_address), intent(in) :: i_sym_force
+      type(base_force_address), intent(in) :: i_asym_force
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call decomp_rj_vector(sph_rj, rj_fld,                             &
+     &    i_base_force%i_coriolis, i_sym_force%i_coriolis, i_asym_force%i_coriolis)
+!
+      end subroutine s_decomp_w_sym_rj_Coriolis_force
+!
+!-----------------------------------------------------------------------
+!
       subroutine decomp_rj_vector(sph_rj,                 &
      &          rj_fld, ipol_fld, ipol_sym, ipol_asym)
 !

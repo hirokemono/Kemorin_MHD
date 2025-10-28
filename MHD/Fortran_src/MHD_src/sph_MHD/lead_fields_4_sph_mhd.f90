@@ -152,6 +152,10 @@
       call s_decomp_w_sym_rj_base_field(SPH_MHD%sph%sph_rj,             &
      &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld,                      &
      &    SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
+! 
+      call s_decomp_w_sym_rj_Coriolis_force(SPH_MHD%sph%sph_rj,             &
+     &    SPH_MHD%ipol%forces, SPH_MHD%ipol%forces_by_sym_asym,                      &
+     &    SPH_MHD%ipol%forces_by_sym_sym, SPH_MHD%fld)
 !
       call sel_field_address_for_buoyancies(SPH_MHD%ipol%sym_fld,       &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
