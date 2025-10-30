@@ -128,7 +128,7 @@
      &      ele, surf, x4_ele, v4_start, isf_tgt, xx4_start, progress)
         if(progress .ge. 1.0d0) then
             iflag_comm = 0
-!            write(*,*) 'Finish tracing', my_rank, inum
+            write(*,*) 'Finish tracing', my_rank, inum
             exit
         end if
         if(isf_tgt .lt. 0) then

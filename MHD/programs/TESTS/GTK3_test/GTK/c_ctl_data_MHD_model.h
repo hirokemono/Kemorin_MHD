@@ -97,8 +97,9 @@ struct f_MHD_temp_model_control{
 	struct chara_ctl_item *f_reference_ctl;
 	struct chara_ctl_item *f_stratified_ctl;
 	struct chara_ctl_item *f_ref_file_ctl;
-	struct real_ctl_item  *f_ICB_diffuse_reduction_ctl;
-	
+	struct real_ctl_item  *f_ICB_diffuse_reduction_ratio;
+    struct real_ctl_item  *f_ICB_diffuse_reduction_width;
+
 	struct f_MHD_reftemp_point_control  *f_low_ctl;
 	struct f_MHD_reftemp_point_control  *f_high_ctl;
 	struct f_MHD_takepiro_model_control *f_takepiro_ctl;

@@ -52,14 +52,16 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
     GtkWidget *hbox_t2 = draw_chara_item_combobox_hbox(label_reftemp_list, f_reft_ctl->f_reference_ctl, window);
     GtkWidget *hbox_t3 = draw_chara_switch_entry_hbox(f_reft_ctl->f_stratified_ctl);
     GtkWidget *hbox_t4 = draw_chara_item_entry_hbox(f_reft_ctl->f_ref_file_ctl);
-    GtkWidget *hbox_t5 = draw_real_item_entry_hbox(f_reft_ctl->f_ICB_diffuse_reduction_ctl);
-    
+    GtkWidget *hbox_t5 = draw_real_item_entry_hbox(f_reft_ctl->f_ICB_diffuse_reduction_ratio);
+    GtkWidget *hbox_t6 = draw_real_item_entry_hbox(f_reft_ctl->f_ICB_diffuse_reduction_width);
+
 	GtkWidget *vbox_tt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t2, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t4, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tl, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_th, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t5, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t6, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t3, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tp, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t1, FALSE, FALSE, 0);

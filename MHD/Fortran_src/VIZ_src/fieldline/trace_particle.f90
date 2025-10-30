@@ -114,8 +114,18 @@
      &                             fln_tce%isf_dbl_start(1,inum),       &
      &                             fln_tce%xx_fline_start(1,inum),      &
      &                             fline_lc(ip))
+!
+              if(fln_tce%iline_original(inum) .eq. 13) then
+               write(*,*) my_rank, inum, 'fln_tce%isf_dbl_start(1,inum)', &
+     &              fln_tce%isf_dbl_start(:,inum),   &
+     &              fln_tce%xi_fline_start(:,inum),  &
+     &           sqrt(fln_tce%xx_fline_start(1,inum)**2  &
+     &              + fln_tce%xx_fline_start(2,inum)**2  &
+     &              + fln_tce%xx_fline_start(3,inum)**2)
+              end if
             end if
           end do
+!
         end do
         if(elps_tracer%flag_elapsed)                                    &
      &          call end_elapsed_time(elps_tracer%ist_elapsed+1)

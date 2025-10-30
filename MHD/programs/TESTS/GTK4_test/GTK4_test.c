@@ -213,7 +213,8 @@ extern void * c_temp_model_filter_advect_ctl(void *f_reft_ctl);
 extern void * c_temp_model_reference_ctl(void *f_reft_ctl);
 extern void * c_temp_model_stratified_ctl(void *f_reft_ctl);
 extern void * c_temp_model_ref_file_ctl(void *f_reft_ctl);
-extern void * c_temp_model_ICB_diffuse_ctl(void *f_reft_ctl);
+extern void * c_temp_model_ICB_diffuse_ratio(void *f_reft_ctl);
+extern void * c_temp_model_ICB_diffuse_width(void *f_reft_ctl);
 extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
@@ -345,8 +346,9 @@ struct f_MHD_temp_model_control{
 	struct chara_ctl_item *f_reference_ctl;
 	struct chara_ctl_item *f_stratified_ctl;
 	struct chara_ctl_item *f_ref_file_ctl;
-	struct real_ctl_item  *f_ICB_diffuse_reduction_ctl;
-	
+	struct real_ctl_item  *f_ICB_diffuse_reduction_ratio;
+    struct real_ctl_item  *f_ICB_diffuse_reduction_width;
+
 	struct f_MHD_reftemp_point_control  *f_low_ctl;
 	struct f_MHD_reftemp_point_control  *f_high_ctl;
 	struct f_MHD_takepiro_model_control *f_takepiro_ctl;
@@ -769,9 +771,11 @@ struct f_MHD_temp_model_control * init_f_MHD_temp_model_control(void *(*c_load_s
 															  f_reft_ctl->f_self);
 	f_reft_ctl->f_ref_file_ctl = init_f_ctl_chara_item(c_temp_model_ref_file_ctl,
 															  f_reft_ctl->f_self);
-	f_reft_ctl->f_ICB_diffuse_reduction_ctl = init_f_ctl_real_item(c_temp_model_ICB_diffuse_ctl,
-																   f_reft_ctl->f_self);
-	
+	f_reft_ctl->f_ICB_diffuse_reduction_ratio = init_f_ctl_real_item(c_temp_model_ICB_diffuse_ratio,
+																     f_reft_ctl->f_self);
+    f_reft_ctl->f_ICB_diffuse_reduction_width = init_f_ctl_real_item(c_temp_model_ICB_diffuse_width,
+                                                                     f_reft_ctl->f_self);
+
 	f_reft_ctl->f_low_ctl = init_f_MHD_reftemp_point_control(c_temp_model_low_ctl,
 															 f_reft_ctl->f_self);
 	f_reft_ctl->f_high_ctl = init_f_MHD_reftemp_point_control(c_temp_model_high_ctl,
