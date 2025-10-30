@@ -57,8 +57,7 @@
       call alloc_phys_name(refs%ref_field)
 
       call append_reference_field_names                                 &
-     &  (radius_name, ipol%base, refs%iref_radius,                      &
-     &   refs%iref_base, refs%iref_grad, refs%iref_cmp, refs%ref_field)
+     &   (radius_name, ipol%base, ipol%diffusion, refs)
       call alloc_phys_data((sph_rj%nidx_rj(1)+1), refs%ref_field)
 !
       refs%ref_field%d_fld(1,refs%iref_radius) = 0.0d0
