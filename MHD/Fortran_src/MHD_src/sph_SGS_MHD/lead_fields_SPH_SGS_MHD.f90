@@ -137,6 +137,10 @@
      &    MHD_prop, trans_p, WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap, &
      &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
 !
+      call s_decomp_w_sym_rj_Coriolis_force(SPH_MHD%sph%sph_rj,         &
+     &    SPH_MHD%ipol%forces, SPH_MHD%ipol%forces_by_sym_asym,         &
+     &    SPH_MHD%ipol%forces_by_sym_sym, SPH_MHD%fld)
+!
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
