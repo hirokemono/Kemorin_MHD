@@ -124,6 +124,7 @@
      &   .or. ipol_start .eq. ipol_force%i_thrm_buo                     &
      &   .or. ipol_start .eq. ipol_force%i_comp_buo                     &
      &   .or. ipol_start .eq. ipol_force%i_m_advect                     &
+     &   .or. ipol_start .eq. ipol_force%i_coriolis                     &
      &   .or. ipol_start .eq. ipol_force%i_induction                    &
      &  ) return
       
