@@ -265,6 +265,9 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_frc%i_buoyancy, iphys_frc%i_buoyancy,                    &
      &    b_trns_frc%i_buoyancy, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_frc%i_coriolis, iphys_frc%i_coriolis,                    &
+     &    b_trns_frc%i_coriolis, trns)
 !
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_frc%i_press_grad, iphys_frc%i_press_grad,                &
