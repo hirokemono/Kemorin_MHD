@@ -21,10 +21,10 @@
 !!     &          nod_fld, Csims_FEM_MHD, m_SR)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par, &
-!!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,              &
-!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
-!!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
-!!     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+!!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs, FEM_ref,     &
+!!     &          iphys, iphys_LES, ak_MHD, FEM_filters, s_package,     &
+!!     &          MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,          &
+!!     &          fem_sq, m_SR)
 !!        type(FEM_MHD_model_data), intent(in) :: FEM_model
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -35,9 +35,7 @@
 !!        type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
-!!        type(base_field_address), intent(in) :: iref_base
-!!        type(gradient_field_address), intent(in) :: iref_grad
-!!        type(phys_data), intent(in) :: ref_fld
+!!        type(reference_field_data), intent(in) :: FEM_ref
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -76,6 +74,7 @@
       use t_MHD_mass_matrices
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_mean_square
+      use t_reference_field_data
       use t_work_FEM_SGS_MHD
       use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
@@ -109,10 +108,10 @@
      &  (time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,    &
      &   FEM_model%MHD_mesh, FEM_model%MHD_prop,                        &
      &   FEM_model%FEM_MHD_BCs%nod_bcs, FEM_model%FEM_MHD_BCs%surf_bcs, &
-     &   FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,         &
-     &   FEM_MHD%iphys, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,               &
-     &   FEM_SGS%FEM_filters, MHD_CG%solver_pack, MHD_CG%MGCG_WK,       &
-     &   SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, fem_sq, m_SR)
+     &   FEM_MHD%FEM_ref, FEM_MHD%iphys, FEM_SGS%iphys_LES,             &
+     &   MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,        &
+     &   MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,      &
+     &   fem_sq, m_SR)
 !
       end subroutine FEM_fields_evolution
 !
@@ -189,10 +188,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par,   &
-     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,                &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs, FEM_ref,       &
+     &          iphys, iphys_LES, ak_MHD, FEM_filters, s_package,       &
+     &          MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,            &
+     &          fem_sq, m_SR)
 !
       use FEM_MHD_evolution
 !
@@ -203,9 +202,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
-      type(base_field_address), intent(in) :: iref_base
-      type(gradient_field_address), intent(in) :: iref_grad
-      type(phys_data), intent(in) :: ref_fld
+      type(reference_field_data), intent(in) :: FEM_ref
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -222,10 +219,9 @@
 !
       call fields_evo_for_FEM_SPH                                       &
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
-     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,          &
-     &    nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, FEM_ref,           &
+     &    iphys, iphys_LES, ak_MHD, FEM_filters, s_package, MGCG_WK,    &
+     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
 !
       end subroutine fields_evolution_4_FEM_SPH
 !

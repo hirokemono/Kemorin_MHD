@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine fields_evolution(time_d, FEM_prm, SGS_par,           &
 !!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
-!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
-!!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
-!!     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+!!     &          FEM_ref, iphys, iphys_LES, ak_MHD, FEM_filters,       &
+!!     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,              &
+!!     &          Csims_FEM_MHD, fem_sq, m_SR)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
 !!     &         geofem, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_LES, &
 !!     &         FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
@@ -19,9 +19,9 @@
 !!
 !!      subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,     &
 !!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
-!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
-!!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
-!!     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+!!     &          FEM_ref, iphys, iphys_LES, ak_MHD, FEM_filters,       &
+!!     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,              &
+!!     &          Csims_FEM_MHD, fem_sq, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -30,9 +30,7 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
-!!        type(base_field_address), intent(in) :: iref_base
-!!        type(gradient_field_address), intent(in) :: iref_grad
-!!        type(phys_data), intent(in) :: ref_fld
+!!        type(reference_field_data), intent(in) :: FEM_ref
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -94,6 +92,7 @@
       use t_FEM_MHD_mean_square
       use t_work_FEM_SGS_MHD
       use t_FEM_SGS_model_coefs
+      use t_reference_field_data
       use t_mesh_SR
 !
       implicit none
@@ -106,9 +105,9 @@
 !
       subroutine fields_evolution(time_d, FEM_prm, SGS_par,             &
      &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+     &          FEM_ref, iphys, iphys_LES, ak_MHD, FEM_filters,         &
+     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
+     &          Csims_FEM_MHD, fem_sq, m_SR)
 !
       use calypso_mpi
       use cal_temperature
@@ -131,9 +130,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
-      type(base_field_address), intent(in) :: iref_base
-      type(gradient_field_address), intent(in) :: iref_grad
-      type(phys_data), intent(in) :: ref_fld
+      type(reference_field_data), intent(in) :: FEM_ref
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -215,9 +212,9 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
      &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
      &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
-     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
-     &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,                          &
+     &    FEM_ref%iref_base, FEM_ref%iref_grad, FEM_ref%ref_fld,        &
+     &    iphys, iphys_LES, ak_MHD%ak_d_temp, FEM_filters,              &
+     &    s_package%Tmatrix, Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,       &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ----- composition update
@@ -225,9 +222,9 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
      &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
      &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
-     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
-     &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,                          &
+     &    FEM_ref%iref_base, FEM_ref%iref_grad, FEM_ref%ref_fld,        &
+     &    iphys, iphys_LES, ak_MHD%ak_d_composit, FEM_filters,          &
+     &    s_package%Cmatrix, Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,       &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ---- velocity update
@@ -397,9 +394,9 @@
 !
       subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,       &
      &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+     &          FEM_ref, iphys, iphys_LES, ak_MHD, FEM_filters,         &
+     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
+     &          Csims_FEM_MHD, fem_sq, m_SR)
 !
       use cal_temperature
       use cal_velocity
@@ -418,9 +415,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
-      type(base_field_address), intent(in) :: iref_base
-      type(gradient_field_address), intent(in) :: iref_grad
-      type(phys_data), intent(in) :: ref_fld
+      type(reference_field_data), intent(in) :: FEM_ref
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -445,9 +440,9 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
      &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
      &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
-     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
-     &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,                          &
+     &    FEM_ref%iref_base, FEM_ref%iref_grad, FEM_ref%ref_fld,        &
+     &    iphys, iphys_LES, ak_MHD%ak_d_temp, FEM_filters,              &
+     &    s_package%Tmatrix, Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,       &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ----- composition update
@@ -455,9 +450,9 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
      &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
      &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
-     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
-     &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,                          &
+     &    FEM_ref%iref_base, FEM_ref%iref_grad, FEM_ref%ref_fld,        &
+     &    iphys, iphys_LES, ak_MHD%ak_d_composit, FEM_filters,          &
+     &    s_package%Cmatrix, Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,       &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ---- velocity update

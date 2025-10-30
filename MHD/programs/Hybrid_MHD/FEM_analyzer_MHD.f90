@@ -1,8 +1,15 @@
-!
-!      module FEM_analyzer_MHD
-!
-!      modified by H. Matsui on June, 2005 
-!
+!>@file   FEM_analyzer_MHD.f90
+!!        module FEM_analyzer_MHD
+!!
+!!@author H. Matsui amd H.Okuda
+!!        programmed by H.Matsui and H. Okuda
+!!                                    in July 2000 (ver 1.1)
+!!        Modified by H. Matsui in July, 2006
+!!        Modified by H. Matsui in May, 2007
+!!
+!>@brief Top module for FEM_MHD
+!!
+!!@verbatim
 !!      subroutine FEM_initialize_MHD(MHD_files, flex_MHD, MHD_step,    &
 !!     &          FEM_model, FEM_MHD, MHD_CG, FEM_SGS, SGS_MHD_wk,      &
 !!     &          MHD_IO, fem_sq, m_SR)
@@ -18,6 +25,7 @@
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module FEM_analyzer_MHD
 !
@@ -89,12 +97,11 @@
 !
       call init_analyzer_fl(MHD_files, FEM_model%bc_FEM_IO,             &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
-     &    FEM_MHD%geofem, FEM_model%MHD_mesh,                           &
-     &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
-     &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
-     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
-     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
-     &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, label_sim)
+     &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_SGS%FEM_filters,      &
+     &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
+     &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
+     &    FEM_MHD%field, FEM_MHD%FEM_ref, MHD_CG, SGS_MHD_wk, fem_sq,   &
+     &    MHD_IO%rst_IO, m_SR, label_sim)
 !
       call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
      &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
@@ -224,11 +231,10 @@
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
-     &    FEM_model%FEM_MHD_BCs, FEM_MHD%iref_base, FEM_MHD%iref_grad,  &
-     &    FEM_MHD%ref_fld, FEM_MHD%iphys, FEM_SGS%iphys_LES,            &
-     &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,       &
-     &    MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,     &
-     &    fem_sq, m_SR)
+     &    FEM_model%FEM_MHD_BCs, FEM_MHD%FEM_ref,                       &
+     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,              &
+     &    FEM_SGS%FEM_filters, MHD_CG%solver_pack, MHD_CG%MGCG_WK,      &
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, fem_sq, m_SR)
 !
 !     ----- Evaluate model coefficients
 !

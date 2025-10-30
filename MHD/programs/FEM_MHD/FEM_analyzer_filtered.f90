@@ -1,8 +1,15 @@
-!FEM_analyzer_filtered.f90
-!      module FEM_analyzer_filtered
-!
-!      modified by H. Matsui on June, 2005 
-!
+!>@file   FEM_analyzer_filtered.f90
+!!        module FEM_analyzer_filtered
+!!
+!!@author H. Matsui amd H.Okuda
+!!        programmed by H.Matsui and H. Okuda
+!!                                    in July 2000 (ver 1.1)
+!!        Modified by H. Matsui in July, 2006
+!!        Modified by H. Matsui in May, 2007
+!!
+!>@brief Initialization for snapshot
+!!
+!!@verbatim
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files, FEM_model,   &
 !!     &          ak_MHD, MHD_step, FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd,  &
 !!     &          MHD_IO, fem_sq, m_SR)
@@ -16,6 +23,7 @@
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module FEM_analyzer_filtered
 !
@@ -115,7 +123,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
-     &    FEM_MHD%iref_base, FEM_MHD%ref_fld,                           &
+     &    FEM_MHD%FEM_ref%iref_base, FEM_MHD%FEM_ref%ref_fld,           &
      &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------

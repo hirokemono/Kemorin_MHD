@@ -20,6 +20,7 @@
       use t_base_field_labels
       use t_grad_field_labels
       use t_node_monitor_IO
+      use t_reference_field_data
 !
       implicit none
 !
@@ -37,11 +38,7 @@
         type(phys_address) :: iphys
 !
 !>        Structure for reference field data
-        type(phys_data) :: ref_fld
-!>        Address for reference field
-        type(base_field_address) :: iref_base
-!>        Address for gradient of reference field
-        type(gradient_field_address) :: iref_grad
+        type(reference_field_data) :: FEM_ref
 
 !>        Addresss for node monitor data
         type(node_monitor_IO) :: nod_mntr

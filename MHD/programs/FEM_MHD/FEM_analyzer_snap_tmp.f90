@@ -1,8 +1,15 @@
-!FEM_analyzer_snap_tmp.f90
-!      module FEM_analyzer_snap_tmp
-!
-!      modified by H. Matsui on June, 2005 
-!
+!>@file   FEM_analyzer_snap_tmp.f90
+!!        module FEM_analyzer_snap_tmp
+!!
+!!@author H. Matsui amd H.Okuda
+!!        programmed by H.Matsui and H. Okuda
+!!                                    in July 2000 (ver 1.1)
+!!        Modified by H. Matsui in July, 2006
+!!        Modified by H. Matsui in May, 2007
+!!
+!>@brief Initialization for snapshot
+!!
+!!@verbatim
 !!      subroutine FEM_initialize_snap_tmp                              &
 !!     &         (MHD_files, MHD_step, FEM_model, ak_MHD, FEM_MHD,      &
 !!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
@@ -24,6 +31,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step, MHD_IO)
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!@endverbatim
 !
       module FEM_analyzer_snap_tmp
 !
@@ -94,10 +102,9 @@
      &    MHD_step, FEM_MHD%geofem, FEM_model%MHD_mesh,                 &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,              &
      &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
-     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
-     &    SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,          &
-     &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
+     &    FEM_MHD%FEM_ref, SNAP_time_IO, MHD_step%rst_step,             &
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
@@ -173,7 +180,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
-     &    FEM_MHD%iref_base, FEM_MHD%ref_fld,                           &
+     &    FEM_MHD%FEM_ref%iref_base, FEM_MHD%FEM_ref%ref_fld,           &
      &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------

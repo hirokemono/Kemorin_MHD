@@ -1,8 +1,12 @@
-!FEM_check_MHD_matrices.f90
-!      module FEM_check_MHD_matrices
-!
-!      modified by H. Matsui on June, 2005 
-!
+!>@file   FEM_check_MHD_matrices.f90
+!!        module FEM_check_MHD_matrices
+!!
+!! @author H. Matsui
+!! @date ...when???
+!!
+!> @brief Check matrices for time integration for FEM dynamo model
+!!
+!!@verbatim
 !!      subroutine FEM_check_MHD_mat                                    &
 !!     &         (MHD_files, flex_MHD, MHD_step, FEM_model, MHD_CG,     &
 !!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
@@ -15,6 +19,7 @@
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module FEM_check_MHD_matrices
 !
@@ -77,9 +82,9 @@
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step, FEM_MHD%geofem,          &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,  &
      &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
-     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
-     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field, MHD_CG,      &
-     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
+     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
+     &    FEM_MHD%FEM_ref, MHD_CG, SGS_MHD_wk, fem_sq,                  &
+     &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !
