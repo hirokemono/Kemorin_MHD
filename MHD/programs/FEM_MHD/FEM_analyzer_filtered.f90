@@ -123,7 +123,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
-     &    FEM_MHD%FEM_ref%iref_base, FEM_MHD%FEM_ref%ref_fld,           &
+     &    FEM_model%FEM_ref%iref_base, FEM_model%FEM_ref%ref_fld,       &
      &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------

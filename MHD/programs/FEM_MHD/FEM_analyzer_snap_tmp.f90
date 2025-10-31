@@ -103,7 +103,7 @@
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,              &
      &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
-     &    FEM_MHD%FEM_ref, SNAP_time_IO, MHD_step%rst_step,             &
+     &    FEM_model%FEM_ref, SNAP_time_IO, MHD_step%rst_step,           &
      &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
       call output_grd_file_w_org_connect                                &
@@ -180,7 +180,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar(FEM_model%MHD_prop,               &
-     &    FEM_MHD%FEM_ref%iref_base, FEM_MHD%FEM_ref%ref_fld,           &
+     &    FEM_model%FEM_ref%iref_base, FEM_model%FEM_ref%ref_fld,       &
      &    FEM_MHD%iphys, FEM_MHD%field)
 !
 !     ---------------------

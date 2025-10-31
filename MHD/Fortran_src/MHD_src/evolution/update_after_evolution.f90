@@ -108,7 +108,7 @@
      &  (time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,    &
      &   FEM_model%MHD_mesh, FEM_model%MHD_prop,                        &
      &   FEM_model%FEM_MHD_BCs%nod_bcs, FEM_model%FEM_MHD_BCs%surf_bcs, &
-     &   FEM_MHD%FEM_ref, FEM_MHD%iphys, FEM_SGS%iphys_LES,             &
+     &   FEM_model%FEM_ref, FEM_MHD%iphys, FEM_SGS%iphys_LES,           &
      &   MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,        &
      &   MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,      &
      &   fem_sq, m_SR)
