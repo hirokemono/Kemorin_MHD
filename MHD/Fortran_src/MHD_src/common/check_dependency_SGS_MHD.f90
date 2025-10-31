@@ -34,6 +34,7 @@
       use t_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
+      use t_scalar_property
       use t_phys_address
       use t_phys_data
       use t_SGS_model_addresses

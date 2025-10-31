@@ -30,6 +30,7 @@
       use m_geometry_constants
 !
       use t_physical_property
+      use t_scalar_property
       use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
@@ -52,6 +53,7 @@
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          MG_mat_linear, MG_mat_fl_l)
 !
+      use m_property_flags
       use set_idx_4_mat_type
 !
       type(mesh_geometry), intent(in) :: mesh

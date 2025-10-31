@@ -74,6 +74,7 @@
 !
       use t_FEM_control_parameter
       use t_physical_property
+      use t_scalar_property
       use t_solver_djds_MHD
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm

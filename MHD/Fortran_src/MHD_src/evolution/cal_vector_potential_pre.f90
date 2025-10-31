@@ -59,6 +59,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_property_flags
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter

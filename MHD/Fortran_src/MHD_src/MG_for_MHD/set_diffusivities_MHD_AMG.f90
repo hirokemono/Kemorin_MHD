@@ -17,6 +17,7 @@
 !
       use t_geometry_data
       use t_physical_property
+      use t_scalar_property
       use t_material_property
 !
       implicit none

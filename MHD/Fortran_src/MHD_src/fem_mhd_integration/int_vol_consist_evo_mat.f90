@@ -35,6 +35,7 @@
       use m_phys_constants
 !
       use t_physical_property
+      use t_scalar_property
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
@@ -55,6 +56,8 @@
      &         (num_int, ele, fl_prop, cd_prop, ht_prop, cp_prop,       &
      &          g_FEM, jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,  &
      &          fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
+!
+      use m_property_flags
 !
       use fem_skv_mass_mat
       use cal_skv_to_ff_smp

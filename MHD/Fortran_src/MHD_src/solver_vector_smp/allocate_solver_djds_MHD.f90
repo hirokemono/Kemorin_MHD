@@ -57,6 +57,7 @@
 !
       use t_control_parameter
       use t_physical_property
+      use t_scalar_property
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver

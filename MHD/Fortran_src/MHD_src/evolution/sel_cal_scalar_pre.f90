@@ -52,7 +52,7 @@
       use t_reference_scalar_param
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_physical_property
+      use t_scalar_property
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_data
@@ -95,6 +95,7 @@
      &          ak_diff, mlump_fl, Smatrix, ak_diffuse, MGCG_WK,        &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, m_SR)
 !
+      use m_property_flags
       use evolve_by_1st_euler
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank

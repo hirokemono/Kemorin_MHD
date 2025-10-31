@@ -40,6 +40,7 @@
       use calypso_mpi
 !
       use t_physical_property
+      use t_scalar_property
       use t_solver_djds_MHD
 !
       implicit none

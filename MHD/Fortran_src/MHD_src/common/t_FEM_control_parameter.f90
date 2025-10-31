@@ -30,6 +30,7 @@
       use m_precision
       use m_constants
       use t_physical_property
+      use t_scalar_property
       use t_iccg_parameter
       use t_MGCG_parameter
 !

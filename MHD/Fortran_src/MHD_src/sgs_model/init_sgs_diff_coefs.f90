@@ -194,6 +194,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
+      use t_scalar_property
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
@@ -313,6 +314,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
+      use t_scalar_property
       use t_SGS_term_labels
 !
       use m_base_field_labels

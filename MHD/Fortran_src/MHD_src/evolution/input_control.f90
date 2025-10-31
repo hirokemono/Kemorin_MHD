@@ -14,16 +14,13 @@
 !!     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,    &
 !!     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
-!!     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-!!     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
+!!     &        (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,       &
+!!     &         MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,    &
 !!     &         FEM_filters, FEM_SGS_wk, MHD_CG, tracer_ctls, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(fluid_property), intent(inout) :: fl_prop
-!!        type(conductive_property), intent(inout)  :: cd_prop
-!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !!        type(reference_scalar_param), intent(inout) :: ref_param_T
 !!        type(reference_scalar_param), intent(inout) :: ref_param_C
 !!        type(takepiro_model_param), intent(inout) :: takepito_T

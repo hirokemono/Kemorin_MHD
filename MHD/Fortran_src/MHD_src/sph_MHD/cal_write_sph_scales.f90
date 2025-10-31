@@ -45,7 +45,7 @@
 !
       use t_SPH_mesh_field_data
       use t_sph_mhd_monitor_data_IO
-      use t_spheric_parameter
+      use t_scalar_property
       use t_phys_data
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr

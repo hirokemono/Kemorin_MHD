@@ -18,19 +18,9 @@
       use m_precision
       use m_constants
 !
+      use m_property_flags
+!
       implicit  none
-!
-!
-!>      Scheme ID for no evolution
-      integer (kind=kint), parameter :: id_no_evolution =     0
-!>      Scheme ID for explicit Euler scheme
-      integer (kind=kint), parameter :: id_explicit_euler =   1
-!>      Scheme ID for 2nd order Adams-Bashforth Scheme
-      integer (kind=kint), parameter :: id_explicit_adams2 =  2
-!>      Scheme ID for Crank-Nicolson Scheme
-      integer (kind=kint), parameter :: id_Crank_nicolson =   3
-!>      Scheme ID for Crank-Nicolson Scheme with consistent mass matrix
-      integer (kind=kint), parameter :: id_Crank_nicolson_cmass = 4
 !
 !
 !>     flag for no gravity

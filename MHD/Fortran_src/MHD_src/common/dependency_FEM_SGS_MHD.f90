@@ -38,6 +38,7 @@
       use t_base_field_labels
       use t_SGS_term_labels
       use t_physical_property
+      use t_scalar_property
 !
       use check_dependency_for_MHD
 !

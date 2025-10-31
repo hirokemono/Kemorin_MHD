@@ -36,6 +36,7 @@
       use m_constants
 !
       use t_physical_property
+      use t_scalar_property
       use t_reference_scalar_param
       use t_mesh_data
       use t_geometry_data_MHD

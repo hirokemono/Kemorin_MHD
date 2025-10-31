@@ -17,6 +17,7 @@
       use t_control_parameter
       use t_material_property
       use t_physical_property
+      use t_scalar_property
 !
       implicit  none
 !

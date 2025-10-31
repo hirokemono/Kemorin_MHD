@@ -35,6 +35,7 @@
       use m_geometry_constants
 !
       use t_physical_property
+      use t_scalar_property
       use t_geometry_data
       use t_geometry_data_MHD
       use t_solver_djds

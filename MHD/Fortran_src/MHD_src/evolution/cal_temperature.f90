@@ -55,7 +55,7 @@
       use t_phys_address
       use t_FEM_MHD_filter_data
       use t_SGS_model_addresses
-      use t_material_property
+      use t_scalar_property
       use t_MHD_matrices_pack
       use t_MGCG_data
       use t_work_FEM_SGS_MHD

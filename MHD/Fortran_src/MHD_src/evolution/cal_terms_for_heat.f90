@@ -66,7 +66,7 @@
       use t_filter_elength
       use t_bc_data_temp
       use t_surface_bc_scalar
-      use t_material_property
+      use t_scalar_property
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver

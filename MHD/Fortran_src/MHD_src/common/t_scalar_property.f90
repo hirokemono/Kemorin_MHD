@@ -19,6 +19,8 @@
       use m_precision
       use m_constants
 !
+      use m_property_flags
+!
       implicit  none
 !
 !>      Structure for scalar property

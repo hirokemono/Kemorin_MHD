@@ -44,11 +44,13 @@
      &                                 mevo_ctl, evo_ctl, MHD_prop)
 !
       use calypso_mpi
+!
       use m_base_field_labels
+      use m_property_flags
+!
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use t_reference_scalar_param
-      use t_scalar_property
       use set_reference_scalar_param
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
@@ -175,6 +177,9 @@
 !
       subroutine s_set_control_4_crank                                  &
      &         (mevo_ctl, fl_prop, cd_prop, ht_prop, cp_prop)
+!
+      use t_physical_property
+      use t_scalar_property
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(fluid_property), intent(inout) :: fl_prop

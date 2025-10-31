@@ -71,6 +71,7 @@
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
       use t_physical_property
+      use t_scalar_property
       use t_vector_for_solver
       use t_solver_SR
 !

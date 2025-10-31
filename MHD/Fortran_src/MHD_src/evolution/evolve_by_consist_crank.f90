@@ -76,6 +76,7 @@
 !
       use t_FEM_control_parameter
       use t_physical_property
+      use t_scalar_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
