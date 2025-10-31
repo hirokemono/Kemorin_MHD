@@ -134,27 +134,8 @@
 !
 !   set control for diffusion reduction by latent heating
 !
-      MHD_prop%ht_prop%diffuse_reduction_ratio_ICB = 1.0d0
-      MHD_prop%ht_prop%diffuse_reduction_width_ICB = 0.0d0
-      if(reft_ctl%ICB_diffuse_reduction_ratio%iflag .gt. 0) then
-        MHD_prop%ht_prop%diffuse_reduction_ratio_ICB                    &
-     &        = reft_ctl%ICB_diffuse_reduction_ratio%realvalue
-      end if
-      if(reft_ctl%ICB_diffuse_reduction_width%iflag .gt. 0) then
-        MHD_prop%ht_prop%diffuse_reduction_width_ICB                    &
-     &        = reft_ctl%ICB_diffuse_reduction_width%realvalue
-      end if
-!
-      MHD_prop%cp_prop%diffuse_reduction_ratio_ICB = 1.0d0
-      MHD_prop%cp_prop%diffuse_reduction_width_ICB = 0.0d0
-      if(refc_ctl%ICB_diffuse_reduction_ratio%iflag .gt. 0) then
-        MHD_prop%cp_prop%diffuse_reduction_ratio_ICB                    &
-     &        = refc_ctl%ICB_diffuse_reduction_ratio%realvalue
-      end if
-      if(refc_ctl%ICB_diffuse_reduction_width%iflag .gt. 0) then
-        MHD_prop%cp_prop%diffuse_reduction_width_ICB                    &
-     &        = refc_ctl%ICB_diffuse_reduction_width%realvalue
-      end if
+      call set_diffusion_reduction_ctl(reft_ctl, MHD_prop%ht_prop)
+      call set_diffusion_reduction_ctl(refc_ctl, MHD_prop%cp_prop)
 !
 !   set control for reference temperature 
 !

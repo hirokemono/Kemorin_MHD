@@ -87,4 +87,27 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine set_diffusion_reduction_ctl(ref_scl_ctl, scl_prop)
+!
+      use t_ctl_data_temp_model
+!
+      type(reference_temperature_ctl), intent(in) :: ref_scl_ctl
+      type(scalar_property), intent(inout) :: scl_prop
+!
+!
+      scl_prop%diffuse_reduction_ratio_ICB = 1.0d0
+      scl_prop%diffuse_reduction_width_ICB = 0.0d0
+      if(ref_scl_ctl%ICB_diffuse_reduction_ratio%iflag .gt. 0) then
+        scl_prop%diffuse_reduction_ratio_ICB                            &
+     &        = ref_scl_ctl%ICB_diffuse_reduction_ratio%realvalue
+      end if
+      if(ref_scl_ctl%ICB_diffuse_reduction_width%iflag .gt. 0) then
+        scl_prop%diffuse_reduction_width_ICB                            &
+     &        = ref_scl_ctl%ICB_diffuse_reduction_width%realvalue
+      end if
+!
+      end subroutine set_diffusion_reduction_ctl
+!
+! -----------------------------------------------------------------------
+!
       end module t_scalar_property
