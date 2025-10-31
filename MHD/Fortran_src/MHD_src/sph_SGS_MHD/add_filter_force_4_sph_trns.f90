@@ -60,6 +60,7 @@
       use t_base_force_labels
       use t_addresses_sph_transform
       use t_physical_property
+!      use t_scalar_property
 !
       implicit none
 !

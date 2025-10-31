@@ -12,8 +12,6 @@
 !!     &         (SGS_param, fl_prop, field_ctl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !

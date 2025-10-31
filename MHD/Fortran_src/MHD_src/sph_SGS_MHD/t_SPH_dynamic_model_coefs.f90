@@ -110,6 +110,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
+      use t_scalar_property
 !
       use m_SGS_term_labels
 !

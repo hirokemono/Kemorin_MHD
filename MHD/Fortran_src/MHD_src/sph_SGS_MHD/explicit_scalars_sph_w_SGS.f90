@@ -38,7 +38,7 @@
       use t_SGS_control_parameter
       use t_spheric_rj_data
       use t_boundary_data_sph_MHD
-      use t_physical_property
+      use t_scalar_property
       use t_base_field_labels
       use t_base_force_labels
       use t_diffusion_term_labels

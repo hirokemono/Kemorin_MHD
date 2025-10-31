@@ -48,6 +48,7 @@
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use t_reference_scalar_param
+      use t_scalar_property
       use set_reference_scalar_param
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
