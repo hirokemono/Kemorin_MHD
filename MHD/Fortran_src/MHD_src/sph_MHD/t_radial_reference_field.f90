@@ -80,6 +80,10 @@
         type(sph_radial_interpolate) :: r_itp
       end type radial_reference_field
 !
+      private :: append_reference_scalar_list
+      private :: append_const_magnetic_fld_list
+      private :: append_r_diffusivities_list
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -164,16 +168,16 @@
       end if
 !
       if(ipol_base%i_temp .gt. 0) then
-        iref_base%i_temp = ref_field%ntot_phys + 1
+        iref_base%i_temp =         ref_field%ntot_phys + 1
         call append_field_name_list(temperature%name,                   &
      &      ione, .TRUE., .FALSE., izero, ref_field)
 !
-        iref_grad%i_grad_temp = ref_field%ntot_phys + 1
+        iref_grad%i_grad_temp =     ref_field%ntot_phys + 1
         call append_field_name_list(grad_temp%name,                     &
      &      ione, .TRUE., .FALSE., izero, ref_field)
       end if
       if(ipol_base%i_light .gt. 0) then
-        iref_base%i_light = ref_field%ntot_phys + 1
+        iref_base%i_light =         ref_field%ntot_phys + 1
         call append_field_name_list(composition%name,                   &
      &      ione, .TRUE., .FALSE., izero, ref_field)
 !
@@ -234,7 +238,7 @@
         call append_field_name_list(kinetic_viscosity%name,             &
      &      ione, .TRUE., .FALSE., izero, ref_field)
 !
-        iref_grad_diffusivity%i_C_diffusivity = ref_field%ntot_phys + 1
+        iref_grad_diffusivity%i_K_viscosity = ref_field%ntot_phys + 1
         call append_field_name_list(grad_kinetic_viscosity%name,        &
      &      ione, .TRUE., .FALSE., izero, ref_field)
       end if
@@ -244,7 +248,7 @@
         call append_field_name_list(magnetic_diffusivity%name,          &
      &      ione, .TRUE., .FALSE., izero, ref_field)
 !
-        iref_grad_diffusivity%i_C_diffusivity = ref_field%ntot_phys + 1
+        iref_grad_diffusivity%i_B_diffusivity = ref_field%ntot_phys + 1
         call append_field_name_list(grad_magnetic_diffusivity%name,     &
      &      ione, .TRUE., .FALSE., izero, ref_field)
       end if
@@ -253,7 +257,7 @@
         call append_field_name_list(thermal_diffusivity%name,           &
      &      ione, .TRUE., .FALSE., izero, ref_field)
 !
-        iref_grad_diffusivity%i_C_diffusivity = ref_field%ntot_phys + 1
+        iref_grad_diffusivity%i_T_diffusivity = ref_field%ntot_phys + 1
         call append_field_name_list(grad_thermal_diffusivity%name,      &
      &      ione, .TRUE., .FALSE., izero, ref_field)
       end if
