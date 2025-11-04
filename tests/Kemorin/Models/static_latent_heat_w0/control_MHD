@@ -191,7 +191,9 @@ begin MHD_control
 !
     begin temperature_define
       filtered_advection_ctl              Off
-      ICB_diffusivity_reduction_ratio     0.01
+!      ICB_diffusivity_reduction_radius    0.53846154
+      ICB_diffusivity_reduction_ratio     0.1
+      ICB_diffusivity_reduction_width     0.01
     end  temperature_define
   end model
 !

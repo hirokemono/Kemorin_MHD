@@ -48,9 +48,13 @@
         integer(kind = kint) :: ir_dkappa_norm =  izero
 !
 !>       coefficient for diffusion reduction for ICB
-        real(kind = kreal) :: diffuse_reduction_ratio_ICB = one
+        real(kind = kreal) :: diffuse_reduction_radius_ICB = -one
 !>       coefficient for diffusion reduction for ICB
-        real(kind = kreal) :: diffuse_reduction_width_ICB = zero
+        real(kind = kreal) :: diffuse_reduction_ratio_ICB =   one
+!>       coefficient for diffusion reduction for ICB
+        real(kind = kreal) :: diffuse_reduction_width_ICB =  zero
+!>       coefficient for diffusion reduction for ICB
+        real(kind = kreal) :: grad_diffusibity_ICB = zero
 !
 !>        Force flag for advection
         logical :: iflag_4_advection = .FALSE.
@@ -95,8 +99,14 @@
       type(scalar_property), intent(inout) :: scl_prop
 !
 !
-      scl_prop%diffuse_reduction_ratio_ICB = 1.0d0
-      scl_prop%diffuse_reduction_width_ICB = 0.0d0
+      scl_prop%diffuse_reduction_radius_ICB = -1.0d0
+      scl_prop%diffuse_reduction_ratio_ICB =   1.0d0
+      scl_prop%diffuse_reduction_width_ICB =   0.0d0
+      scl_prop%grad_diffusibity_ICB =          0.0d0
+      if(ref_scl_ctl%ICB_diffuse_reduction_radius%iflag .gt. 0) then
+        scl_prop%diffuse_reduction_radius_ICB                           &
+     &        = ref_scl_ctl%ICB_diffuse_reduction_radius%realvalue
+      end if
       if(ref_scl_ctl%ICB_diffuse_reduction_ratio%iflag .gt. 0) then
         scl_prop%diffuse_reduction_ratio_ICB                            &
      &        = ref_scl_ctl%ICB_diffuse_reduction_ratio%realvalue
@@ -105,6 +115,23 @@
         scl_prop%diffuse_reduction_width_ICB                            &
      &        = ref_scl_ctl%ICB_diffuse_reduction_width%realvalue
       end if
+!
+      if(scl_prop%diffuse_reduction_width_ICB .gt. 0.0d0) then
+        scl_prop%grad_diffusibity_ICB                                   &
+     &      = (one - scl_prop%diffuse_reduction_ratio_ICB)              &
+     &       / scl_prop%diffuse_reduction_width_ICB
+      end if
+!
+      if(iflag_debug .le. 0) return
+!
+      write(*,*) 'diffuse_reduction_radius_ICB',                        &
+     &          scl_prop%diffuse_reduction_radius_ICB
+      write(*,*) 'diffuse_reduction_ratio_ICB',                         &
+     &          scl_prop%diffuse_reduction_ratio_ICB
+      write(*,*) 'diffuse_reduction_width_ICB',                         &
+     &          scl_prop%diffuse_reduction_width_ICB
+      write(*,*) 'grad_diffusibity_ICB',                                &
+     &          scl_prop%grad_diffusibity_ICB
 !
       end subroutine set_diffusion_reduction_ctl
 !
