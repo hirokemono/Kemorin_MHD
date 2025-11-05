@@ -174,7 +174,7 @@
      &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj, coef_diffuse,      &
      &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !
-      use sph_exp_fix_scalar_CMB
+      use sph_exp_fix_scl_diffuse_CMB
       use sph_exp_fixed_flux_CMB
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -199,11 +199,11 @@
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
-        call cal_sph_out_fix_scalar_diffuse2                            &
-     &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
+        call sph_out_fix_scalar_diffuse2                                &
+     &     (sph_rj%nnod_rj, sph_rj%nidx_rj(2), g_sph_rj,                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      CMB_Sspec%S_BC, coef_diffuse, is_fld, is_diffuse,           &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      CMB_Sspec%S_BC, coef_diffuse, d_rj(1,is_fld),               &
+     &      d_rj(1,is_diffuse))
       end if
 !
       end subroutine sel_CMB_sph_scalar_diffusion
