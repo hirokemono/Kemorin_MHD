@@ -206,11 +206,6 @@
 !
       call init_reft_rj_data(sph%sph_rj, ipol, refs)
 !
-      write(*,*) 'fl_prop%coef_diffuse', MHD_prop%fl_prop%coef_diffuse
-      write(*,*) 'cd_prop%coef_diffuse', MHD_prop%cd_prop%coef_diffuse
-      write(*,*) 'ht_prop%coef_diffuse', MHD_prop%ht_prop%coef_diffuse
-      write(*,*) 'cp_prop%coef_diffuse', MHD_prop%cp_prop%coef_diffuse
-!
       if((refs%iref_diffusivity%i_K_viscosity                           &
      &    * refs%iref_grad_diffusivity%i_K_viscosity) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
