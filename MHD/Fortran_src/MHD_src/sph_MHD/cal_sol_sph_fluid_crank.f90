@@ -243,10 +243,12 @@
      &    k_ratio(sph_bc%kr_out), dk_dr(sph_bc%kr_out),                 &
      &    dt, scl_prop%coef_imp, is_scalar,                             &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_ICB_scalar_sph_crank(sph_rj, sph_bc, bcs_S%ICB_Sspec,    &
+      call set_ICB_scalar_sph_crank                                     &
+     &   (scl_prop%flag_val_diffuse, sph_rj, sph_bc, bcs_S%ICB_Sspec,   &
      &    scl_prop%coef_advect, scl_prop%coef_diffuse,                  &
-     &    scl_prop%diffuse_reduction_ratio_ICB, dt, scl_prop%coef_imp,  &
-     &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    k_ratio(sph_bc%kr_in), dk_dr(sph_bc%kr_in),                   &
+     &    dt, scl_prop%coef_imp, is_scalar,                             &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call solve_scalar_sph_crank(sph_rj, band_s_evo, band_s00_evo,     &
      &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,    &
