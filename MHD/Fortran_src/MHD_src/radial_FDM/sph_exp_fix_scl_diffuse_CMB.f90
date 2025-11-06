@@ -13,14 +13,14 @@
 !!      subroutine sph_out_fix_scl_val_diffuse2(nnod_rj, jmax, g_sph_rj,&
 !!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,             &
 !!     &          coef_d, k_ratio, dk_dr, scl_rj, dfs_rj)
-!!        integer (kind = kint), intent(in) :: nnod_rj
+!!        integer(kind = kint), intent(in) :: nnod_rj
 !!        integer(kind = kint), intent(in) :: jmax, kr_out
 !!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
-!!        real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
-!!        real(kind = kreal), intent(in) :: r_CMB(0:2)
-!!        real(kind = kreal), intent(in) :: flux_OUT(jmax)
 !!        real(kind = kreal), intent(in) :: coef_d
 !!        real(kind = kreal), intent(in) :: k_ratio, dk_dr
+!!        real(kind = kreal), intent(in) :: fix_CMB(jmax)
+!!        real(kind = kreal), intent(in) :: r_CMB(0:2)
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(-2:0,3)
 !!        real(kind = kreal), intent(inout) :: scl_rj(nnod_rj)
 !!        real(kind = kreal), intent(inout) :: dfs_rj(nnod_rj)
 !!@endverbatim
@@ -135,7 +135,6 @@
      &                * (d2s_dr2 + two*r_CMB(1) * d1s_dr1               &
      &                   - g_sph_rj(j,3)*r_CMB(2) * scl_rj(inod))       &
      &                + coef_d * dk_dr * d1s_dr1
-!
       end do
 !$omp end parallel do
 !
