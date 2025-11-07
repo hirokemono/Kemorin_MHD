@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/MHD_src/radial_FDM/sph_fixed_center_diffuse2.f90
