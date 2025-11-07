@@ -229,8 +229,7 @@
      &          flag_val_diffuse, coef_diffuse, k_ratio, dk_dr,         &
      &          is_fld, is_diffuse, rj_fld)
 !
-      use select_exp_scalar_ICB
-      use select_exp_scalar_CMB
+      use sel_sph_exp_scl_boundaries
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -260,6 +259,11 @@
      &      coef_diffuse, k_ratio(sph_bc%kr_out), dk_dr(sph_bc%kr_out), &
      &      is_fld, is_diffuse, rj_fld%n_point, rj_fld%ntot_phys,       &
      &      rj_fld%d_fld)
+!
+        call sel_ICB_sph_scalar_val_diffuse                             &
+     &     (sph_rj, sph_bc, bcs_S%ICB_Sspec, fdm2_center, leg%g_sph_rj, &
+     &      coef_diffuse, k_ratio, dk_dr, is_fld, is_diffuse,           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call cal_sph_nod_scalar_diffuse2(sph_bc%kr_in, sph_bc%kr_out,   &
      &      coef_diffuse, is_fld, is_diffuse,                           &
@@ -271,12 +275,11 @@
      &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, leg%g_sph_rj,              &
      &      coef_diffuse, is_fld, is_diffuse,                           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call sel_ICB_sph_scalar_diffusion                               &
+     &     (sph_rj, sph_bc, bcs_S%ICB_Sspec, fdm2_center, leg%g_sph_rj, &
+     &      coef_diffuse, is_fld, is_diffuse,                           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-!
-      call sel_ICB_sph_scalar_diffusion                                 &
-     &   (sph_rj, sph_bc, bcs_S%ICB_Sspec, fdm2_center, leg%g_sph_rj,   &
-     &    coef_diffuse, is_fld, is_diffuse,                             &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_scalar_diffusion
 !
