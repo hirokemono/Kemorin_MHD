@@ -150,10 +150,11 @@
      &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
 !*
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_SGS_mhd_control'
-      call init_rms_sph_SGS_mhd_control(SPH_model%MHD_prop,             &
-     &    SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,           &
-     &    FEM_dat%field, SPH_SGS, SPH_MHD, SPH_WK%MHD_mats,             &
-     &    SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
+      call init_rms_sph_SGS_mhd_control                                 &
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_model%refs,     &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, FEM_dat%field,                  &
+     &    SPH_SGS, SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor,            &
+     &    m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine SPH_init_SGS_snap
 !
