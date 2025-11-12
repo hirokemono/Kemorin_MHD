@@ -55,6 +55,7 @@
      &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, bcs_B,            &
      &          fdm2_center, g_sph_rj, band_bp_evo, band_bt_evo)
 !
+      use set_sph_unit_radial_mat
       use select_sph_r_mat_magne_BC
       use set_sph_scalar_matrix_CMB
       use center_sph_matrices

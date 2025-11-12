@@ -61,6 +61,7 @@
      &          g_sph_rj, band_p_poisson)
 !
       use m_ludcmp_3band
+      use set_sph_unit_radial_mat
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
@@ -109,6 +110,7 @@
      &          k_ratio, dk_dr, band_s_evo)
 !
       use m_ludcmp_3band
+      use set_sph_unit_radial_mat
       use center_sph_matrices
       use set_radial_mat_sph
       use sel_sph_r_mat_scalar_bc
