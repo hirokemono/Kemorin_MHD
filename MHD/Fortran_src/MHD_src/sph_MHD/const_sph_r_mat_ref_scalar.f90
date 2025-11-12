@@ -56,7 +56,7 @@
 !
       use m_ludcmp_3band
       use set_radial_mat_sph
-      use select_r_mat_scalar_bc_sph
+      use sel_sph_r_mat_ref_scalar_bc
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: id_file
@@ -99,7 +99,7 @@
      &    sph_bc%kr_in, sph_bc%kr_out, r_coef(1),                       &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s00_poisson%mat)
 !
-      call sel_radial_mat00_scalar_bc_sph                               &
+      call sel_sph_r_mat_ref_scl_bc                                     &
      &   (sph_rj, sph_bc, fdm2_center, r_coef, band_s00_poisson)
       deallocate(r_coef)
 !
@@ -133,7 +133,7 @@
 !
       use m_ludcmp_3band
       use set_radial_mat_sph
-      use select_r_mat_scalar_bc_sph
+      use sel_sph_r_mat_ref_scalar_bc
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: id_file
@@ -175,8 +175,8 @@
      &    sph_bc%kr_in, sph_bc%kr_out, r_coef(1),                       &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s00_poisson%mat)
 !
-      call sel_r_mat_poisson_fixBC_sph                                  &
-     &   (sph_rj, sph_bc, fdm2_center, band_s00_poisson)
+      call sel_sph_r_mat_poisson_fixBC(flag_val_diffuse, sph_rj,        &
+     &    sph_bc, fdm2_center, k_ratio, dk_dr, band_s00_poisson)
       deallocate(r_coef)
 !
       if(i_debug .gt. 0) write(*,*) 'const_radial_mat_scalar00_sph'
