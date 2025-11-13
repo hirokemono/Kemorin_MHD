@@ -1,5 +1,5 @@
-!>@file   set_radial_mat_sph.f90
-!!@brief  module set_radial_mat_sph
+!>@file   add_sph_scalar_radial_mat.f90
+!!@brief  module add_sph_scalar_radial_mat
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr, 2009
@@ -10,13 +10,18 @@
 !!      subroutine add_scalar_poisson_mat_sph(nri, jmax, ar_1d_rj,      &
 !!     &         g_sph_rj, kr_in, kr_out, coef_p,                       &
 !!     &         d1nod_mat_fdm_2, d2nod_mat_fdm_2, mat3)
-!!      subroutine add_vector_poisson_mat_sph(nri, jmax, ar_1d_rj,      &
-!!     &         g_sph_rj, kr_in, kr_out, coef_p, d2nod_mat_fdm_2, mat3)
 !!      subroutine add_scalar_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,    &
 !!     &         g_sph_rj, kr_in, kr_out, coef_p, val_r, dval_r,        &
 !!     &         d1nod_mat_fdm_2, d2nod_mat_fdm_2, mat3)
-!!      subroutine add_vector_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,    &
-!!     &         g_sph_rj, kr_in, kr_out, coef_p, d2nod_mat_fdm_2, mat3)
+!!        integer(kind = kint), intent(in) :: jmax, nri
+!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+!!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
+!!        real(kind = kreal), intent(in) :: coef_p
+!!        real(kind = kreal), intent(in) :: val_r(nri), dval_r(nri)
+!!        real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
+!!        real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
+!!        real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
 !!
 !!      subroutine add_sph_ref_poisson_mat                              &
 !!     &         (nri, ar_1d_rj, kr_in, kr_out, coef_p,                 &
@@ -69,7 +74,7 @@
 !!@n @param mat5(5,nri,jmax)  Band matrix
 !!@n @param mat3(3,nri,jmax)  Band matrix
 !
-      module set_radial_mat_sph
+      module add_sph_scalar_radial_mat
 !
       use m_precision
 !
@@ -122,40 +127,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_vector_poisson_mat_sph(nri, jmax, ar_1d_rj,        &
-     &         g_sph_rj, kr_in, kr_out, coef_p, d2nod_mat_fdm_2, mat3)
-!
-      integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
-      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-!
-      real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
-!
-      integer(kind = kint) :: k, j
-!
-!
-!$omp parallel do private (k,j)
-      do k = kr_in+1, kr_out-1
-        do j = 1, jmax
-          mat3(3,k-1,j) = mat3(3,k-1,j)                                 &
-     &                   - coef_p *  d2nod_mat_fdm_2(k,-1)
-          mat3(2,k,  j) = mat3(2,k,  j)                                 &
-     &                   - coef_p * (d2nod_mat_fdm_2(k, 0)              &
-     &                    - g_sph_rj(j,3)*ar_1d_rj(k,2) )
-          mat3(1,k+1,j) = mat3(1,k+1,j)                                 &
-     &                   - coef_p *  d2nod_mat_fdm_2(k, 1)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine add_vector_poisson_mat_sph
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine add_scalar_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,      &
      &          g_sph_rj, kr_in, kr_out, coef_p, val_r, dval_r,         &
      &          d1nod_mat_fdm_2, d2nod_mat_fdm_2, mat3)
@@ -195,39 +166,6 @@
 !$omp end parallel do
 !
       end subroutine add_scalar_r_diffuse_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_vector_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,      &
-     &         g_sph_rj, kr_in, kr_out, coef_p, d2nod_mat_fdm_2, mat3)
-!
-      integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
-      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
-      real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-!
-      real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
-!
-      integer(kind = kint) :: k, j
-!
-!
-!$omp parallel do private (k,j)
-      do k = kr_in+1, kr_out-1
-        do j = 1, jmax
-          mat3(3,k-1,j) = mat3(3,k-1,j)                                 &
-     &                   - coef_p *  d2nod_mat_fdm_2(k,-1)
-          mat3(2,k,  j) = mat3(2,k,  j)                                 &
-     &                   - coef_p * (d2nod_mat_fdm_2(k, 0)              &
-     &                    - g_sph_rj(j,3)*ar_1d_rj(k,2) )
-          mat3(1,k+1,j) = mat3(1,k+1,j)                                 &
-     &                   - coef_p *  d2nod_mat_fdm_2(k, 1)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine add_vector_r_diffuse_mat_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -300,4 +238,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_radial_mat_sph
+      end module add_sph_scalar_radial_mat

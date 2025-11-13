@@ -56,7 +56,7 @@
 !
       use m_ludcmp_3band
       use set_sph_unit_radial_mat
-      use set_radial_mat_sph
+      use add_sph_scalar_radial_mat
       use sel_sph_r_mat_ref_scalar_bc
       use check_sph_radial_mat
 !
@@ -128,7 +128,7 @@
 !
       use m_ludcmp_3band
       use set_sph_unit_radial_mat
-      use set_radial_mat_sph
+      use add_sph_scalar_radial_mat
       use sel_sph_r_mat_ref_scalar_bc
       use check_sph_radial_mat
 !

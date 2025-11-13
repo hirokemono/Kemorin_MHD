@@ -65,7 +65,7 @@
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
-      use set_radial_mat_sph
+      use add_sph_scalar_radial_mat
       use sel_sph_r_mat_scalar_bc
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -112,7 +112,7 @@
       use m_ludcmp_3band
       use set_sph_unit_radial_mat
       use center_sph_matrices
-      use set_radial_mat_sph
+      use add_sph_scalar_radial_mat
       use sel_sph_r_mat_scalar_bc
 !
       type(sph_rj_grid), intent(in) :: sph_rj

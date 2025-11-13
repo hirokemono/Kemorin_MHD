@@ -57,7 +57,6 @@
 !
       use cal_inner_core_rotation
       use center_sph_matrices
-      use set_radial_mat_sph
       use set_sph_scalar_matrix_ICB
       use set_sph_scalar_matrix_CMB
 !
