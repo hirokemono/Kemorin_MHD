@@ -81,11 +81,8 @@
 !
       call dealloc_radius_1d_gl(gen_sph%s3d_radius)
 !
-      write(*,*) 'gen_sph%med_layer_grp'
       call dealloc_layering_group(gen_sph%med_layer_grp)
-      write(*,*) 'gen_sph%r_layer_grp'
       call dealloc_layering_group(gen_sph%r_layer_grp)
-      write(*,*) 'gen_sph%added_radial_grp'
       call dealloc_layering_group(gen_sph%added_radial_grp)
 !
       end subroutine dealloc_gen_mesh_params

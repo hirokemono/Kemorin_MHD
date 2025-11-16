@@ -106,13 +106,6 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
-      call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
-     &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
-     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
-!
-! ---------------------------------
-!
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD(SPH_model, SPH_SGS%SGS_par,       &
      &    SPH_SGS%ipol_LES, SPH_SGS%iphys_LES, FEM_dat%iphys,           &
@@ -136,6 +129,13 @@
       call init_reference_fields                                        &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+!
+! ---------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
+      call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
+     &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
+     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap                                    &
