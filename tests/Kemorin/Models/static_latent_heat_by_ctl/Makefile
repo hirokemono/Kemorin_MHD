@@ -14,7 +14,7 @@ all: test
 
 test:
 	make clean
-	$(MPIRUN) -np 1 $(TARGET_SPH_MHD)
+	$(MPIRUN) -np 2 $(TARGET_SPH_MHD)
 	
 	@sync
 	$(TARGET_SPH_PICK_MODE_CHECK)  reference/picked_mode_l0_m0c  picked_mode_l0_m0c >> log.txt

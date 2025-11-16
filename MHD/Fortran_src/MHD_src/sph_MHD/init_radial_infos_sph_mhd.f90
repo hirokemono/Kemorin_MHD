@@ -206,6 +206,7 @@
 !
       call init_reft_rj_data(sph%sph_rj, ipol, refs)
 !
+      flag_write_ref = .FALSE.
       if((refs%iref_diffusivity%i_K_viscosity                           &
      &    * refs%iref_grad_diffusivity%i_K_viscosity) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
@@ -213,6 +214,7 @@
      &     refs%ref_field%d_fld(1,refs%iref_diffusivity%i_K_viscosity), &
      &     refs%ref_field%d_fld(1,                                      &
      &                       refs%iref_grad_diffusivity%i_K_viscosity))
+        flag_write_ref = .TRUE.
       end if
 !
       if((refs%iref_diffusivity%i_B_diffusivity                         &
@@ -222,6 +224,7 @@
      &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_B_diffusivity), &
      &   refs%ref_field%d_fld(1,                                        &
      &                     refs%iref_grad_diffusivity%i_B_diffusivity))
+        flag_write_ref = .TRUE.
       end if
 !
       if((refs%iref_diffusivity%i_T_diffusivity                         &
@@ -236,6 +239,7 @@
      &     (sph%sph_params, MHD_prop%ht_prop, refs%iref_radius,         &
      &      refs%iref_diffusivity%i_T_diffusivity,                      &
      &      refs%iref_grad_diffusivity%i_T_diffusivity, refs%ref_field)
+        flag_write_ref = .TRUE.
       end if
 !
       if((refs%iref_diffusivity%i_C_diffusivity                         &
@@ -250,6 +254,7 @@
      &     (sph%sph_params, MHD_prop%cp_prop, refs%iref_radius,         &
      &      refs%iref_diffusivity%i_C_diffusivity,                      &
      &      refs%iref_grad_diffusivity%i_C_diffusivity, refs%ref_field)
+        flag_write_ref = .TRUE.
       end if
 !
 !
@@ -263,7 +268,6 @@
       call calypso_mpi_allreduce_one_int                                &
      &   (irank_local, refs%irank_reference, MPI_SUM)
 
-      flag_write_ref = .FALSE.
       refs%ref_field%iflag_update(1:refs%ref_field%ntot_phys) = 0
       call s_init_reference_scalar(refs%irank_reference,                &
      &    MHD_prop%takepito_T, sph%sph_params, sph%sph_rj,              &

@@ -17,10 +17,10 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
   begin data_files_def
-    num_subdomain_ctl            1
+    num_subdomain_ctl            2
     num_smp_ctl                  4
 !
-    restart_file_prefix         'rst_1/rst'
+    restart_file_prefix         'rst_2/rst'
     field_file_prefix           'field/out'
 !
     radial_field_file_name      'radial_field.dat'
@@ -191,9 +191,10 @@ begin MHD_control
 !
     begin temperature_define
       filtered_advection_ctl              Off
-!      ICB_diffusivity_reduction_radius    0.53846154
-      ICB_diffusivity_reduction_ratio     0.1
-      ICB_diffusivity_reduction_width     0.01
+!
+!     ICB_diffusivity_reduction_radius    0.53846154
+      ICB_diffusivity_reduction_ratio     1.0e-1
+      ICB_diffusivity_reduction_width     5.0e-3
     end  temperature_define
   end model
 !
