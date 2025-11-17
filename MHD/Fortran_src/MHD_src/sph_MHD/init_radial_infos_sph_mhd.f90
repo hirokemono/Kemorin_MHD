@@ -78,8 +78,6 @@
       use third_fdm_node_to_ele
       use first_fdm_ele_to_node
       use material_property
-      use init_sph_radius_variations
-      use set_bc_sph_mhd
 !
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
@@ -125,8 +123,36 @@
       call const_first_fdm_ele_to_node(id_check, sph%sph_rj, r_e2n_1st)
       if (iflag_debug.gt.0) write(*,*) 'const_third_fdm_node_to_ele'
       call const_third_fdm_node_to_ele(id_check, sph%sph_rj, r_n2e_3rd)
+      if(iflag_debug .ge. iflag_full_msg) close(id_check)
 !
-!*  ---------- Radial variations of density and diffusivities  -------
+      call init_bc_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,           &
+     &    ipol, sph, r_2nd, MHD_prop, radial_variation, sph_MHD_bc)
+!
+      end subroutine init_r_infos_sph_mhd_evo
+!
+!  -------------------------------------------------------------------
+!
+      subroutine init_bc_infos_sph_mhd_evo                              &
+     &         (bc_IO, sph_grps, MHD_BC, ipol, sph, r_2nd,              &
+     &          MHD_prop, radial_variation, sph_MHD_bc)
+!
+      use init_sph_radius_variations
+      use set_bc_sph_mhd
+!
+      type(boundary_spectra), intent(in) :: bc_IO
+      type(sph_group_data), intent(in) :: sph_grps
+      type(MHD_BC_lists), intent(in) :: MHD_BC
+      type(phys_address), intent(in) :: ipol
+      type(sph_grids), intent(in) :: sph
+      type(fdm_matrices), intent(in) :: r_2nd
+!
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(phys_data), intent(inout) :: radial_variation
+      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
+!
+      integer(kind = kint), parameter :: id_check = 50
+!
+!
       call init_radius_variations_sph_mhd(sph%sph_rj, r_2nd, MHD_prop,  &
      &                                    radial_variation)
 !
@@ -137,12 +163,13 @@
      &    MHD_prop, radial_variation, MHD_BC, sph_MHD_bc)
 !
       if(iflag_debug .ge. iflag_full_msg) then
-        call check_bc_sph_mhd(id_check, sph%sph_rj, MHD_prop,           &
-     &                        sph_MHD_bc)
+        open(id_check, file='FDM.dat', position='APPEND')
+        call check_bc_sph_mhd                                           &
+     &     (id_check, sph%sph_rj, MHD_prop, sph_MHD_bc)
+        close(id_check)
       end if
-      if(iflag_debug .ge. iflag_full_msg) close(id_check)
 !
-      end subroutine init_r_infos_sph_mhd_evo
+      end subroutine init_bc_infos_sph_mhd_evo
 !
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
