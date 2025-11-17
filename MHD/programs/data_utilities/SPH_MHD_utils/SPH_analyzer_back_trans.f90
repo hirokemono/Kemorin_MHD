@@ -102,6 +102,11 @@
      &    SPH_model%omega_sph, SPH_model%MHD_prop,                      &
      &    SPH_model%radial_variation, SPH_model%sph_MHD_bc)
 !
+      if (iflag_debug.gt.0) write(*,*) 'init_bc_infos_sph_mhd_evo'
+      call init_bc_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,   &
+     &    SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,    &
+     &    SPH_model%MHD_prop, SPH_model%radial_variation, SPH_model%sph_MHD_bc)
+!
       if (iflag_debug.gt.0) write(*,*) 'const_forth_fdm_coefs'
       call const_forth_fdm_coefs(50, SPH_MHD%sph%sph_rj, SPH_WK%r_4th)
 !

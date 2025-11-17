@@ -125,9 +125,6 @@
       call const_third_fdm_node_to_ele(id_check, sph%sph_rj, r_n2e_3rd)
       if(iflag_debug .ge. iflag_full_msg) close(id_check)
 !
-      call init_bc_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,           &
-     &    ipol, sph, r_2nd, MHD_prop, radial_variation, sph_MHD_bc)
-!
       end subroutine init_r_infos_sph_mhd_evo
 !
 !  -------------------------------------------------------------------
