@@ -70,6 +70,7 @@
       use cal_SGS_nonlinear
       use init_sph_trans_SGS_MHD
       use init_radial_infos_sph_mhd
+      use radial_reference_field_IO
       use const_radial_mat_4_sph
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
@@ -107,6 +108,11 @@
      &    SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,    &
      &    SPH_model%MHD_prop, SPH_model%radial_variation, SPH_model%sph_MHD_bc)
 !
+      if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
+      call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
+     &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
+     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
+!
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
@@ -128,17 +134,15 @@
 !
 ! ---------------------------------
 !
+      call init_radial_reference_data(SPH_MHD%sph%sph_rj, SPH_MHD%ipol, &
+     &                                SPH_model%refs)
+!
       if (iflag_debug.gt.0) write(*,*) 'init_reference_fields '
       call init_reference_fields                                        &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 ! ---------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'init_4th_fdms_for_sph_MHD'
-      call init_4th_fdms_for_sph_MHD(50, SPH_MHD%sph,                   &
-     &    SPH_model%MHD_prop, SPH_model%radial_variation,               &
-     &    SPH_WK%r_4th, SPH_model%sph_MHD_bc)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap                                    &
