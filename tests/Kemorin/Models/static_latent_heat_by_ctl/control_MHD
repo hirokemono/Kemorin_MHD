@@ -195,6 +195,10 @@ begin MHD_control
 !     ICB_diffusivity_reduction_radius    0.53846154
       ICB_diffusivity_reduction_ratio     1.0e-1
       ICB_diffusivity_reduction_width     5.0e-3
+!
+      begin thermal_diffusivity_ctl
+        radial_variation_ctl     file
+      end   thermal_diffusivity_ctl
     end  temperature_define
   end model
 !

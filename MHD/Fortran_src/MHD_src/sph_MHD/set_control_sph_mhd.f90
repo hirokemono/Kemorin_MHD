@@ -65,6 +65,8 @@
 !
       implicit none
 !
+      private :: set_ctl_SPH_val_diffusions
+!
 ! ----------------------------------------------------------------------
 !
       contains
