@@ -128,6 +128,8 @@
      &    SPH_WK%r_2nd, SPH_WK%r_n2e_3rd, SPH_WK%r_e2n_1st,             &
      &    SPH_model%omega_sph, SPH_model%MHD_prop)
 !
+      call init_radial_reference_data(SPH_MHD%sph%sph_rj, SPH_MHD%ipol, &
+     &                                SPH_model%refs)
       call init_radius_variations_sph_mhd                               &
      &   (SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,                             &
      &    SPH_model%MHD_prop,  SPH_model%radial_variation)
@@ -145,9 +147,6 @@
      &    MHD_step%rst_step)
 !
 ! ---------------------------------
-!
-      call init_radial_reference_data(SPH_MHD%sph%sph_rj, SPH_MHD%ipol, &
-     &                                SPH_model%refs)
 !
       call init_reference_fields                                        &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
