@@ -74,6 +74,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_ctl_data_temp_model
+      use t_ctl_data_valuable_diffuse
       use skip_comment_f
 !
       implicit  none
@@ -102,6 +103,9 @@
      &       :: hd_start_ctl =   'stratified_ctl'
       character(len=kchara), parameter, private                         &
      &       :: hd_takepiro_ctl = 'takepiro_model_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &       :: hd_thermal_diffusion_ctl = 'thermal_diffusivity_ctl'
 !
 !    5th level for higher temp position
 !
@@ -146,6 +150,10 @@
 !
         call read_takepiro_ctl(id_control, hd_takepiro_ctl,             &
      &      reft_ctl%takepiro_ctl, c_buf)
+!
+        call read_val_diffuse_ctl_data                                  &
+     &     (id_control, hd_thermal_diffusion_ctl,                       &
+     &      reft_ctl%valuable_diffusion_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_filterd_advection, reft_ctl%filterd_advect_ctl)
@@ -205,6 +213,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    reft_ctl%ICB_diffuse_reduction_width)
 !
+      call write_val_diffuse_ctl_data                                   &
+     &   (id_control, reft_ctl%valuable_diffusion_ctl, level)
+!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    reft_ctl%reference_ctl)
       call write_ref_temp_ctl                                           &
@@ -236,6 +247,8 @@
       call init_ref_temp_ctl_label(hd_high_temp, reft_ctl%high_ctl)
       call init_takepiro_ctl_label(hd_takepiro_ctl,                     &
      &                             reft_ctl%takepiro_ctl)
+      call init_val_diffuse_ctl_label(hd_thermal_diffusion_ctl,         &
+     &                                reft_ctl%valuable_diffusion_ctl)
 !
         call init_chara_ctl_item_label                                  &
      &     (hd_filterd_advection, reft_ctl%filterd_advect_ctl)

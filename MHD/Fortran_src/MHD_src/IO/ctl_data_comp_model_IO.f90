@@ -101,6 +101,9 @@
       character(len=kchara), parameter, private                         &
      &       :: hd_takepiro_ctl = 'takepiro_model_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &       :: hd_comp_diffusion_ctl = 'composite_diffusivity_ctl'
+!
 !    5th level for higher temp position
 !
       character(len=kchara), parameter                                  &
@@ -144,6 +147,10 @@
      &     (id_control, hd_high_comp, refc_ctl%high_ctl, c_buf)
         call read_takepiro_ctl                                          &
      &     (id_control, hd_takepiro_ctl, refc_ctl%takepiro_ctl, c_buf)
+!
+        call read_val_diffuse_ctl_data                                  &
+     &     (id_control, hd_comp_diffusion_ctl,                          &
+     &      refc_ctl%valuable_diffusion_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_filterd_advection, refc_ctl%filterd_advect_ctl)
@@ -209,6 +216,9 @@
       call write_ref_comp_ctl                                           &
      &   (id_control, hd_high_comp, refc_ctl%high_ctl, level)
 !
+      call write_val_diffuse_ctl_data                                   &
+     &   (id_control, refc_ctl%valuable_diffusion_ctl, level)
+!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    refc_ctl%stratified_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -233,6 +243,8 @@
       call init_ref_comp_ctl_label(hd_high_comp, refc_ctl%high_ctl)
       call init_takepiro_ctl_label(hd_takepiro_ctl,                     &
      &                             refc_ctl%takepiro_ctl)
+      call init_val_diffuse_ctl_label(hd_comp_diffusion_ctl,            &
+     &                                refc_ctl%valuable_diffusion_ctl)
 !
         call init_chara_ctl_item_label                                  &
      &     (hd_filterd_advection, refc_ctl%filterd_advect_ctl)

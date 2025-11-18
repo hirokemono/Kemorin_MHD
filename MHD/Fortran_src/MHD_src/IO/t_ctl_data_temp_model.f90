@@ -8,7 +8,7 @@
 !!@n        Modified by H. Matsui on Oct., 2007
 !!
 !!@verbatim
-!!      subroutine reset_ref_scalar_ctl(refs_ctl)
+!!      subroutine dealloc_ref_scalar_ctl(refs_ctl)
 !!        type(reference_temperature_ctl), intent(inout) :: refs_ctl
 !!
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -87,6 +87,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_ctl_data_stratified_model
+      use t_ctl_data_valuable_diffuse
       use skip_comment_f
 !
       implicit  none
@@ -120,6 +121,9 @@
         type(reference_point_control) :: high_ctl
         type(takepiro_model_control) :: takepiro_ctl
 !
+!>        Block for valuable diffusivity definision
+        type(val_diffuse_ctl) :: valuable_diffusion_ctl
+!
         integer (kind=kint) :: i_temp_def = 0
       end type reference_temperature_ctl
 !
@@ -131,9 +135,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine reset_ref_scalar_ctl(refs_ctl)
+      subroutine dealloc_ref_scalar_ctl(refs_ctl)
 !
       type(reference_temperature_ctl), intent(inout) :: refs_ctl
+!
+      call dealloc_val_diffuse_ctl_data                                 &
+     &   (refs_ctl%valuable_diffusion_ctl)
 !
       call reset_ref_value_ctl(refs_ctl%low_ctl)
       call reset_ref_value_ctl(refs_ctl%high_ctl)
@@ -149,7 +156,7 @@
 !
       refs_ctl%i_temp_def = 0
 !
-      end subroutine reset_ref_scalar_ctl
+      end subroutine dealloc_ref_scalar_ctl
 !
 !   --------------------------------------------------------------------
 !
