@@ -8,6 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine init_radial_reference_data(sph_rj, ipol, refs)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(radial_reference_field), intent(inout) :: refs
 !!      subroutine output_reference_field(refs)
 !!        type(radial_reference_field), intent(in) :: refs
 !!      subroutine load_sph_reference_fields(refs)
@@ -32,6 +36,7 @@
       use t_radial_reference_field
       use t_field_data_IO
       use t_time_data
+      use t_control_parameter
 !
       implicit  none
 !
@@ -44,11 +49,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_radial_reference_data(sph_rj, ipol, refs)
+      subroutine init_radial_reference_data(sph_rj, ipol,               &
+     &                                      MHD_prop, refs)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
 !
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(radial_reference_field), intent(inout) :: refs
 !
 !
@@ -56,8 +63,8 @@
       refs%ref_field%ntot_phys =  0
       call alloc_phys_name(refs%ref_field)
 
-      call append_reference_field_names                                 &
-     &   (radius_name, ipol%base, ipol%diffusion, refs)
+      call append_reference_field_names(radius_name, ipol%base,         &
+     &                                  MHD_prop, refs)
       call alloc_phys_data((sph_rj%nidx_rj(1)+1), refs%ref_field)
 !
       call copy_reference_radius_data                                   &
