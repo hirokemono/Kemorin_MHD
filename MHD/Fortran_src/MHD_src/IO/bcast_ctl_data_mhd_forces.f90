@@ -171,9 +171,6 @@
       call bcast_ctl_type_c1(refs_ctl%reference_ctl)
       call bcast_ctl_type_c1(refs_ctl%ref_file_ctl)
       call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
-      call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_radius)
-      call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_ratio)
-      call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_width)
 !
       call calypso_mpi_bcast_character                                  &
      &   (refs_ctl%block_name, cast_long(kchara), 0)
@@ -241,6 +238,10 @@
       call bcast_ctl_type_c1(vdiffuse_ctl%variation_file_name)
 !
       call bcast_ctl_array_r2(vdiffuse_ctl%diffusivity_list_ctl)
+!
+      call bcast_ctl_type_r1(vdiffuse_ctl%ICB_reduction_radius)
+      call bcast_ctl_type_r1(vdiffuse_ctl%ICB_reduction_ratio)
+      call bcast_ctl_type_r1(vdiffuse_ctl%ICB_reduction_width)
 !
       call calypso_mpi_bcast_character                                  &
      &   (vdiffuse_ctl%block_name, cast_long(kchara), 0)

@@ -18,12 +18,6 @@
 !!     &          bind(C, NAME = 'c_temp_model_stratified_ctl')
 !!      type(c_ptr) function c_temp_model_ref_file_ctl(c_ctl)           &
 !!     &          bind(C, NAME = 'c_temp_model_ref_file_ctl')
-!!      type(c_ptr) function c_temp_model_ICB_diffuse_radius(c_ctl)     &
-!!     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_radius')
-!!      type(c_ptr) function c_temp_model_ICB_diffuse_ratio(c_ctl)      &
-!!     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_ratio')
-!!      type(c_ptr) function c_temp_model_ICB_diffuse_width(c_ctl)      &
-!!     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_width')
 !!      type(c_ptr) function c_temp_model_low_ctl(c_ctl)                &
 !!     &          bind(C, NAME = 'c_temp_model_low_ctl')
 !!      type(c_ptr) function c_temp_model_high_ctl(c_ctl)               &
@@ -220,39 +214,6 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_temp_model_ref_file_ctl = C_loc(f_ctl%ref_file_ctl)
       end function c_temp_model_ref_file_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_temp_model_ICB_diffuse_radius(c_ctl)       &
-     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_radius')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_temperature_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_temp_model_ICB_diffuse_radius                                   &
-     &             = C_loc(f_ctl%ICB_diffuse_reduction_radius)
-      end function c_temp_model_ICB_diffuse_radius
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_temp_model_ICB_diffuse_ratio(c_ctl)        &
-     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_ratio')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_temperature_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_temp_model_ICB_diffuse_ratio                                    &
-     &             = C_loc(f_ctl%ICB_diffuse_reduction_ratio)
-      end function c_temp_model_ICB_diffuse_ratio
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_temp_model_ICB_diffuse_width(c_ctl)        &
-     &          bind(C, NAME = 'c_temp_model_ICB_diffuse_width')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_temperature_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_temp_model_ICB_diffuse_width                                    &
-     &             = C_loc(f_ctl%ICB_diffuse_reduction_width)
-      end function c_temp_model_ICB_diffuse_width
 !
 !  ---------------------------------------------------------------------
 !

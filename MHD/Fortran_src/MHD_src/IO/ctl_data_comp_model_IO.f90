@@ -80,12 +80,6 @@
 !
       character(len=kchara), parameter, private                         &
      &    :: hd_filterd_advection = 'filtered_advection_ctl'
-      character(len=kchara), parameter, private                         &
-     &    :: hd_diff_reduce_radius = 'ICB_diffusivity_reduction_radius'
-      character(len=kchara), parameter, private                         &
-     &    :: hd_diff_reduce_ratio =  'ICB_diffusivity_reduction_ratio'
-      character(len=kchara), parameter, private                         &
-     &    :: hd_diff_reduce_width =  'ICB_diffusivity_reduction_width'
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_ref_comp =       'ref_comp_ctl'
@@ -110,10 +104,6 @@
      &       :: hd_position =  'depth'
       character(len=kchara), parameter                                  &
      &       :: hd_comp_value = 'composition'
-!
-!    Deprecated label
-      character(len=kchara), parameter, private                         &
-     &    :: hd_diffusivity_reduction = 'ICB_diffusivity_reduction_ctl'
 !
       private :: read_ref_comp_ctl, write_ref_comp_ctl
       private :: init_ref_comp_ctl_label
@@ -160,16 +150,6 @@
      &     (c_buf, hd_start_ctl, refc_ctl%stratified_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_ref_field_file, refc_ctl%ref_file_ctl)
-!
-        call read_real_ctl_type(c_buf, hd_diff_reduce_ratio,            &
-     &                          refc_ctl%ICB_diffuse_reduction_ratio)
-        call read_real_ctl_type(c_buf, hd_diffusivity_reduction,        &
-     &                          refc_ctl%ICB_diffuse_reduction_ratio)
-!
-        call read_real_ctl_type(c_buf, hd_diff_reduce_width,            &
-     &                          refc_ctl%ICB_diffuse_reduction_width)
-        call read_real_ctl_type(c_buf, hd_diff_reduce_radius,           &
-     &                          refc_ctl%ICB_diffuse_reduction_radius)
       end do
       refc_ctl%i_temp_def = 1
 !
@@ -194,9 +174,6 @@
       if(refc_ctl%i_temp_def .le. 0) return
 !
       maxlen = len_trim(hd_filterd_advection)
-      maxlen = max(maxlen, len_trim(hd_diff_reduce_ratio))
-      maxlen = max(maxlen, len_trim(hd_diff_reduce_width))
-      maxlen = max(maxlen, len_trim(hd_diff_reduce_radius))
       maxlen = max(maxlen, len_trim(hd_ref_comp))
       maxlen = max(maxlen, len_trim(hd_start_ctl))
       maxlen = max(maxlen, len_trim(hd_ref_field_file))
@@ -204,10 +181,6 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    refc_ctl%filterd_advect_ctl)
-      call write_real_ctl_type(id_control, level, maxlen,               &
-     &    refc_ctl%ICB_diffuse_reduction_ratio)
-      call write_real_ctl_type(id_control, level, maxlen,               &
-     &    refc_ctl%ICB_diffuse_reduction_width)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    refc_ctl%reference_ctl)
@@ -254,13 +227,6 @@
      &     (hd_start_ctl, refc_ctl%stratified_ctl)
         call init_chara_ctl_item_label                                  &
      &     (hd_ref_field_file, refc_ctl%ref_file_ctl)
-!
-        call init_real_ctl_item_label(hd_diff_reduce_radius,            &
-     &                          refc_ctl%ICB_diffuse_reduction_radius)
-        call init_real_ctl_item_label(hd_diff_reduce_ratio,             &
-     &                          refc_ctl%ICB_diffuse_reduction_ratio)
-        call init_real_ctl_item_label(hd_diff_reduce_width,             &
-     &                          refc_ctl%ICB_diffuse_reduction_width)
 !
       end subroutine init_comp_model_ctl_label
 !
