@@ -29,5 +29,6 @@ clean:
 	rm -f *~ *.txt sph_ave_volume_s.dat picked_mode_l0_m0c.dat
 	rm -f radial_point.dat time_total.dat
 	rm -f rst_2/rst.*
+	rm -f fort.*
 
 distclean: clean

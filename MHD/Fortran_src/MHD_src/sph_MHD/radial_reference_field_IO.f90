@@ -12,6 +12,11 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(radial_reference_field), intent(inout) :: refs
+!!      subroutine copy_const_diffusivity_to_ref(i_kappa, i_dkdr,       &
+!!     &                                         ref_field)
+!!        integer(kind = kint), intent(in) :: i_kappa, i_dkdr
+!!        type(phys_data), intent(inout) :: ref_field
+!!
 !!      subroutine output_reference_field(refs)
 !!        type(radial_reference_field), intent(in) :: refs
 !!      subroutine load_sph_reference_fields(refs)
@@ -92,20 +97,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_const_diffusivity_to_ref(nri, coef_diffuse,       &
-     &          ref_diffuse, grad_diffuse)
+      subroutine copy_const_diffusivity_to_ref(i_kappa, i_dkdr,         &
+     &                                         ref_field)
 !
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: coef_diffuse
-!
-      real(kind = kreal), intent(inout) :: ref_diffuse(0:nri)
-      real(kind = kreal), intent(inout) :: grad_diffuse(0:nri)
+      integer(kind = kint), intent(in) :: i_kappa, i_dkdr
+      type(phys_data), intent(inout) :: ref_field
 !
 !
+      if(i_kappa .gt. 0) then
 !$omp parallel workshare
-      ref_diffuse(0:nri) = coef_diffuse
-      grad_diffuse(0:nri) = zero
+        ref_field%d_fld(1:ref_field%n_point,i_kappa) = one
 !$omp end parallel workshare
+      end if
+      if(i_dkdr .gt. 0) then
+!$omp parallel workshare
+        ref_field%d_fld(1:ref_field%n_point,i_dkdr) = zero
+!$omp end parallel workshare
+      end if
 !
       end subroutine copy_const_diffusivity_to_ref
 !

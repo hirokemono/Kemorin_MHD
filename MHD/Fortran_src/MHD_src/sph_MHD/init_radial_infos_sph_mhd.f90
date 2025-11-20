@@ -220,53 +220,45 @@
 !
 !
       flag_write_ref = .FALSE.
-      if((refs%iref_diffusivity%i_K_viscosity                           &
-     &    * refs%iref_grad_diffusivity%i_K_viscosity) .gt. 0) then
+      if((MHD_prop%fl_prop%ir_nu                                        &
+     &    * MHD_prop%fl_prop%ir_dnu_norm) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
-     &    (sph%sph_rj%nidx_rj(1), MHD_prop%fl_prop%coef_diffuse,        &
-     &     refs%ref_field%d_fld(1,refs%iref_diffusivity%i_K_viscosity), &
-     &     refs%ref_field%d_fld(1,                                      &
-     &                       refs%iref_grad_diffusivity%i_K_viscosity))
+     &     (MHD_prop%fl_prop%ir_nu, MHD_prop%fl_prop%ir_dnu_norm,       &
+     &      refs%ref_field)
         flag_write_ref = .TRUE.
       end if
 !
-      if((refs%iref_diffusivity%i_B_diffusivity                         &
-     &    * refs%iref_grad_diffusivity%i_B_diffusivity) .gt. 0) then
+      if((MHD_prop%cd_prop%ir_eta                                       &
+     &    * MHD_prop%cd_prop%ir_deta_norm) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
-     &    (sph%sph_rj%nidx_rj(1), MHD_prop%cd_prop%coef_diffuse,        &
-     &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_B_diffusivity), &
-     &   refs%ref_field%d_fld(1,                                        &
-     &                     refs%iref_grad_diffusivity%i_B_diffusivity))
+     &     (MHD_prop%cd_prop%ir_eta, MHD_prop%cd_prop%ir_deta_norm,     &
+     &      refs%ref_field)
         flag_write_ref = .TRUE.
       end if
 !
-      if((refs%iref_diffusivity%i_T_diffusivity                         &
-     &    * refs%iref_grad_diffusivity%i_T_diffusivity) .gt. 0) then
+      if((MHD_prop%ht_prop%ir_kappa                                     &
+     &    * MHD_prop%ht_prop%ir_dkappa_norm) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
-     &    (sph%sph_rj%nidx_rj(1), MHD_prop%ht_prop%coef_diffuse,        &
-     &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_T_diffusivity), &
-     &   refs%ref_field%d_fld(1,                                        &
-     &                     refs%iref_grad_diffusivity%i_T_diffusivity))
+     &     (MHD_prop%ht_prop%ir_kappa, MHD_prop%ht_prop%ir_dkappa_norm, &
+     &      refs%ref_field)
 !
         call r_diffusivity_w_ICB_reduction                              &
      &     (sph%sph_params, MHD_prop%ht_prop, refs%iref_radius,         &
-     &      refs%iref_diffusivity%i_T_diffusivity,                      &
-     &      refs%iref_grad_diffusivity%i_T_diffusivity, refs%ref_field)
+     &      MHD_prop%ht_prop%ir_kappa, MHD_prop%ht_prop%ir_dkappa_norm, &
+     &      refs%ref_field)
         flag_write_ref = .TRUE.
       end if
 !
-      if((refs%iref_diffusivity%i_C_diffusivity                         &
-     &    * refs%iref_grad_diffusivity%i_C_diffusivity) .gt. 0) then
+      if((MHD_prop%cp_prop%ir_kappa                                     &
+     &    * MHD_prop%cp_prop%ir_dkappa_norm) .gt. 0) then
         call copy_const_diffusivity_to_ref                              &
-     &    (sph%sph_rj%nidx_rj(1), MHD_prop%cp_prop%coef_diffuse,        &
-     &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_C_diffusivity), &
-     &   refs%ref_field%d_fld(1,                                        &
-     &                     refs%iref_grad_diffusivity%i_C_diffusivity))
+     &     (MHD_prop%cp_prop%ir_kappa, MHD_prop%cp_prop%ir_dkappa_norm, &
+     &      refs%ref_field)
 !
         call r_diffusivity_w_ICB_reduction                              &
      &     (sph%sph_params, MHD_prop%cp_prop, refs%iref_radius,         &
-     &      refs%iref_diffusivity%i_C_diffusivity,                      &
-     &      refs%iref_grad_diffusivity%i_C_diffusivity, refs%ref_field)
+     &      MHD_prop%cp_prop%ir_kappa, MHD_prop%cp_prop%ir_dkappa_norm, &
+     &      refs%ref_field)
         flag_write_ref = .TRUE.
       end if
 !
@@ -285,9 +277,8 @@
       call s_init_reference_scalar(refs%irank_reference,                &
      &    MHD_prop%takepito_T, sph%sph_params, sph%sph_rj,              &
      &    r_2nd, MHD_prop%ht_prop,                                      &
-     &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_T_diffusivity), &
-     &   refs%ref_field%d_fld(1,                                        &
-     &                     refs%iref_grad_diffusivity%i_T_diffusivity), &
+     &    refs%ref_field%d_fld(1,MHD_prop%ht_prop%ir_kappa),            &
+     &    refs%ref_field%d_fld(1,MHD_prop%ht_prop%ir_dkappa_norm),      &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
      &    tmat_name, MHD_prop%ref_param_T,                              &
      &    refs%iref_radius, temperature%name,                           &
@@ -298,9 +289,8 @@
       call s_init_reference_scalar(refs%irank_reference,                &
      &    MHD_prop%takepito_C, sph%sph_params, sph%sph_rj,              &
      &    r_2nd, MHD_prop%cp_prop,                                      &
-     &   refs%ref_field%d_fld(1,refs%iref_diffusivity%i_C_diffusivity), &
-     &   refs%ref_field%d_fld(1,                                        &
-     &                     refs%iref_grad_diffusivity%i_C_diffusivity), &
+     &    refs%ref_field%d_fld(1,MHD_prop%cp_prop%ir_kappa),            &
+     &    refs%ref_field%d_fld(1,MHD_prop%cp_prop%ir_dkappa_norm),      &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
      &    cmat_name, MHD_prop%ref_param_C,                              &
      &    refs%iref_radius, composition%name,                           &
@@ -363,6 +353,8 @@
      &    ithree, range_ICB, kr_reduce_inner, kr_reduce_outer,          &
      &    k_reduce_old2new_in, k_reduce_old2new_out,                    &
      &    coef_reduce_old2new_in)
+!
+      if((iref_diffusivity * iref_grad_diffuse) .eq. 0) return
 !
 !        write(*,*) 'range_ICB',  range_ICB(1:3)
 !        write(*,*) 'kr_reduce_inner',  kr_reduce_inner
