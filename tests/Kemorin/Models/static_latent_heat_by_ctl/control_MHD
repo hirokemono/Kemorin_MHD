@@ -17,7 +17,7 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
   begin data_files_def
-    debug_flag_ctl            'On'
+    debug_flag_ctl            'Off'
 !
     num_subdomain_ctl            2
     num_smp_ctl                  4
@@ -195,7 +195,7 @@ begin MHD_control
       filtered_advection_ctl              Off
 !
       begin thermal_diffusivity_ctl
-        radial_variation_ctl     file
+        radial_variation_ctl     reduction_at_ICB
 !
         ICB_reduction_radius    0.53846154
         ICB_reduction_ratio     1.0e-1
