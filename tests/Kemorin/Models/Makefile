@@ -17,6 +17,7 @@ TARGET_SPH_LICV =             $(BUILDDIR)/sph_licv
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
 TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 TARGET_COMPARE_PSF =         $(SRCDIR)/bin/tests/compare_psf
+TARGET_SPH_REF_CHECK =       $(BUILDDIR)/tests/sph_ref_field_check
 #
 #  -------------------------------------------------------------------------
 #
@@ -44,11 +45,20 @@ test:
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	
+	@echo "# Test in static_latent_heat_by_ctl directory..."
+	@cd static_latent_heat_by_ctl; \
+		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
+		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
+		test
+	
 	@rm -f *.dat *.txt
 
 clean:
 	cd full_sphere_licv_z; make clean
 	cd full_sphere_rot_z; make clean
+	cd static_latent_heat_by_ctl; make clean
 	
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
