@@ -16,6 +16,7 @@
 #include "t_control_c_lists.h"
 #include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
+#include "t_control_real2_IO.h"
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_chara_real_items_c.h"
 #include "t_ctl_data_4_fields_c.h"
@@ -87,6 +88,22 @@ struct f_MHD_takepiro_model_control{
 	struct real_ctl_item *f_stratified_outer_r_ctl;
 };
 
+struct f_MHD_val_scalar_diffuse_control{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    struct chara_ctl_item  *f_radial_variation_ctl;
+    struct chara_ctl_item  *f_variation_fname_ctl;
+
+    struct real2_clist  *f_diffusivity_list_ctl;
+
+    struct real_ctl_item  *f_ICB_reduction_radius;
+    struct real_ctl_item  *f_ICB_reduction_ratio;
+    struct real_ctl_item  *f_ICB_reduction_width;
+};
+
 struct f_MHD_temp_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -97,12 +114,11 @@ struct f_MHD_temp_model_control{
 	struct chara_ctl_item *f_reference_ctl;
 	struct chara_ctl_item *f_stratified_ctl;
 	struct chara_ctl_item *f_ref_file_ctl;
-	struct real_ctl_item  *f_ICB_diffuse_reduction_ratio;
-    struct real_ctl_item  *f_ICB_diffuse_reduction_width;
 
-	struct f_MHD_reftemp_point_control  *f_low_ctl;
-	struct f_MHD_reftemp_point_control  *f_high_ctl;
-	struct f_MHD_takepiro_model_control *f_takepiro_ctl;
+	struct f_MHD_reftemp_point_control      *f_low_ctl;
+	struct f_MHD_reftemp_point_control      *f_high_ctl;
+	struct f_MHD_takepiro_model_control     *f_takepiro_ctl;
+    struct f_MHD_val_scalar_diffuse_control *f_val_diffuse_ctl;
 };
 
 

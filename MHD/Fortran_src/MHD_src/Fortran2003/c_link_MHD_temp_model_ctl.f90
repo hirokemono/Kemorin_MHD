@@ -24,35 +24,14 @@
 !!     &          bind(C, NAME = 'c_temp_model_high_ctl')
 !!      type(c_ptr) function c_temp_model_takepiro_ctl(c_ctl)           &
 !!     &          bind(C, NAME = 'c_temp_model_takepiro_ctl')
-!!
-!!        type(c_ptr), value, intent(in) :: c_ctl
-!!      type(c_ptr) function c_reftemp_point_ctl_block_name(c_ctl)      &
-!!     &          bind(C, NAME = 'c_reftemp_point_ctl_block_name')
-!!      type(c_ptr) function c_reftemp_point_ctl_iflag(c_ctl)           &
-!!     &          bind(C, NAME = 'c_reftemp_point_ctl_iflag')
-!!      type(c_ptr) function c_reftemp_point_value_ctl(c_ctl)           &
-!!     &          bind(C, NAME = 'c_reftemp_point_value_ctl')
-!!      type(c_ptr) function c_reftemp_point_depth_ctl(c_ctl)           &
-!!     &          bind(C, NAME = 'c_reftemp_point_depth_ctl')
-!!        type(c_ptr), value, intent(in) :: c_ctl
-!!
-!!      type(c_ptr) function c_takepiro_model_ctl_block_name(c_ctl)     &
-!!     &          bind(C, NAME = 'c_takepiro_model_ctl_block_name')
-!!      type(c_ptr) function c_takepiro_model_ctl_iflag(c_ctl)          &
-!!     &          bind(C, NAME = 'c_takepiro_model_ctl_iflag')
-!!      type(c_ptr) function c_takepiro_stratified_sigma_ctl(c_ctl)     &
-!!     &          bind(C, NAME = 'c_takepiro_stratified_sigma_ctl')
-!!      type(c_ptr) function c_takepiro_stratified_width_ctl(c_ctl)     &
-!!     &          bind(C, NAME = 'c_takepiro_stratified_width_ctl')
-!!      type(c_ptr) function c_takepiro_stratified_rout_ctl(c_ctl)      &
-!!     &          bind(C, NAME = 'c_takepiro_stratified_rout_ctl')
+!!      type(c_ptr) function c_temp_valuable_diffusion_ctl(c_ctl)       &
+!!     &          bind(C, NAME = 'c_temp_valuable_diffusion_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_MHD_temp_model_ctl
 !
       use iso_c_binding
       use t_ctl_data_temp_model
-      use t_ctl_data_stratified_model
 !
       implicit none
 !
@@ -60,101 +39,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_takepiro_model_ctl_block_name(c_ctl)       &
-     &          bind(C, NAME = 'c_takepiro_model_ctl_block_name')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(takepiro_model_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_takepiro_model_ctl_block_name = C_loc(f_ctl%block_name)
-      end function c_takepiro_model_ctl_block_name
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_takepiro_model_ctl_iflag(c_ctl)            &
-     &          bind(C, NAME = 'c_takepiro_model_ctl_iflag')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(takepiro_model_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_takepiro_model_ctl_iflag = C_loc(f_ctl%i_takepiro_t_ctl)
-      end function c_takepiro_model_ctl_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_takepiro_stratified_sigma_ctl(c_ctl)       &
-     &          bind(C, NAME = 'c_takepiro_stratified_sigma_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(takepiro_model_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_takepiro_stratified_sigma_ctl                                   &
-     &                       = C_loc(f_ctl%stratified_sigma_ctl)
-      end function c_takepiro_stratified_sigma_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_takepiro_stratified_width_ctl(c_ctl)       &
-     &          bind(C, NAME = 'c_takepiro_stratified_width_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(takepiro_model_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_takepiro_stratified_width_ctl                                   &
-     &                       = C_loc(f_ctl%stratified_width_ctl)
-      end function c_takepiro_stratified_width_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_takepiro_stratified_rout_ctl(c_ctl)        &
-     &          bind(C, NAME = 'c_takepiro_stratified_rout_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(takepiro_model_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_takepiro_stratified_rout_ctl                                   &
-     &                       = C_loc(f_ctl%stratified_outer_r_ctl)
-      end function c_takepiro_stratified_rout_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_reftemp_point_ctl_block_name(c_ctl)        &
-     &          bind(C, NAME = 'c_reftemp_point_ctl_block_name')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_point_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_reftemp_point_ctl_block_name = C_loc(f_ctl%block_name)
-      end function c_reftemp_point_ctl_block_name
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_reftemp_point_ctl_iflag(c_ctl)             &
-     &          bind(C, NAME = 'c_reftemp_point_ctl_iflag')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_point_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_reftemp_point_ctl_iflag = C_loc(f_ctl%i_referenced)
-      end function c_reftemp_point_ctl_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_reftemp_point_value_ctl(c_ctl)            &
-     &          bind(C, NAME = 'c_reftemp_point_value_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_point_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_reftemp_point_value_ctl = C_loc(f_ctl%value)
-      end function c_reftemp_point_value_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_reftemp_point_depth_ctl(c_ctl)            &
-     &          bind(C, NAME = 'c_reftemp_point_depth_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(reference_point_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_reftemp_point_depth_ctl = C_loc(f_ctl%depth)
-      end function c_reftemp_point_depth_ctl
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_temp_model_ctl_block_name(c_ctl)           &
@@ -244,6 +128,17 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_temp_model_takepiro_ctl = C_loc(f_ctl%takepiro_ctl)
       end function c_temp_model_takepiro_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_temp_valuable_diffusion_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_temp_valuable_diffusion_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(reference_temperature_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_temp_valuable_diffusion_ctl                                     &
+     &                         = C_loc(f_ctl%valuable_diffusion_ctl)
+      end function c_temp_valuable_diffusion_ctl
 !
 !  ---------------------------------------------------------------------
 !

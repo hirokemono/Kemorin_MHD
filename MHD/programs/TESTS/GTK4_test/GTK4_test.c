@@ -207,17 +207,23 @@ extern void * c_reftemp_point_ctl_iflag(void *f_refs_ctl);
 extern void * c_reftemp_point_value_ctl(void *f_refs_ctl);
 extern void * c_reftemp_point_depth_ctl(void *f_refs_ctl);
 
+extern void * c_val_r_variation_ctl(void *f_reft_ctl);
+extern void * c_val_variation_file_name(void *f_reft_ctl);
+extern void * c_val_diffusivity_list_ctl(void *f_reft_ctl);
+extern void * c_val_diffuse_ICB_radius(void *f_reft_ctl);
+extern void * c_val_diffuse_ICB_ratio(void *f_reft_ctl);
+extern void * c_val_diffuse_ICB_width(void *f_reft_ctl);
+
 extern void * c_temp_model_ctl_block_name(void *f_reft_ctl);
 extern void * c_temp_model_ctl_iflag(void *f_reft_ctl);
 extern void * c_temp_model_filter_advect_ctl(void *f_reft_ctl);
 extern void * c_temp_model_reference_ctl(void *f_reft_ctl);
 extern void * c_temp_model_stratified_ctl(void *f_reft_ctl);
 extern void * c_temp_model_ref_file_ctl(void *f_reft_ctl);
-extern void * c_temp_model_ICB_diffuse_ratio(void *f_reft_ctl);
-extern void * c_temp_model_ICB_diffuse_width(void *f_reft_ctl);
 extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
+extern void * c_temp_valuable_diffusion_ctl(void *f_reft_ctl);
 
 
 
@@ -336,6 +342,22 @@ struct f_MHD_takepiro_model_control{
 	struct real_ctl_item *f_stratified_outer_r_ctl;
 };
 
+struct f_MHD_val_scalar_diffuse_control{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    struct chara_ctl_item  *f_radial_variation_ctl;
+    struct chara_ctl_item  *f_variation_fname_ctl;
+
+    struct real2_clist  *f_diffusivity_list_ctl;
+
+    struct real_ctl_item  *f_ICB_reduction_radius;
+    struct real_ctl_item  *f_ICB_reduction_ratio;
+    struct real_ctl_item  *f_ICB_reduction_width;
+};
+
 struct f_MHD_temp_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -346,8 +368,6 @@ struct f_MHD_temp_model_control{
 	struct chara_ctl_item *f_reference_ctl;
 	struct chara_ctl_item *f_stratified_ctl;
 	struct chara_ctl_item *f_ref_file_ctl;
-	struct real_ctl_item  *f_ICB_diffuse_reduction_ratio;
-    struct real_ctl_item  *f_ICB_diffuse_reduction_width;
 
 	struct f_MHD_reftemp_point_control  *f_low_ctl;
 	struct f_MHD_reftemp_point_control  *f_high_ctl;
@@ -554,9 +574,9 @@ struct f_MHD_surf_bc_control * init_f_MHD_surf_bc_control(void *(*c_load_self)(v
 	f_sbc_ctl->f_surf_bc_BN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_BN_ctl, f_sbc_ctl->f_self);
 	f_sbc_ctl->f_surf_bc_JN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_JN_ctl, f_sbc_ctl->f_self);
 	f_sbc_ctl->f_surf_bc_AN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_AN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_MPN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_MPN_ctl, f_sbc_ctl->f_self);
+	f_sbc_ctl->f_surf_bc_MPN_ctl = init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_MPN_ctl, f_sbc_ctl->f_self);
 	f_sbc_ctl->f_surf_bc_CF_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_CF_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_INF_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_INF_ctl, f_sbc_ctl->f_self);
+	f_sbc_ctl->f_surf_bc_INF_ctl = init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_INF_ctl, f_sbc_ctl->f_self);
 	return f_sbc_ctl;
 }
 
@@ -747,7 +767,38 @@ struct f_MHD_takepiro_model_control * init_f_MHD_takepiro_model_control(void *(*
 	return f_bscale_ctl;
 };
 
-struct f_MHD_temp_model_control * init_f_MHD_temp_model_control(void *(*c_load_self)(void *f_parent), 
+static struct f_MHD_val_scalar_diffuse_control * init_f_MHD_r_scalar_diffusivity_control(void *(*c_load_self)(void *f_parent),
+                                                                                         void *f_parent)
+{
+    struct f_MHD_val_scalar_diffuse_control *f_val_diffuse_ctl
+            = (struct f_MHD_val_scalar_diffuse_control *) malloc(sizeof(struct f_MHD_val_scalar_diffuse_control));
+    if(f_val_diffuse_ctl == NULL){
+        printf("malloc error for f_val_diffuse_ctl\n");
+        exit(0);
+    };
+    
+    f_val_diffuse_ctl->f_self =  c_load_self(f_parent);
+    
+    f_val_diffuse_ctl->f_iflag =        (int *) c_temp_model_ctl_iflag(f_val_diffuse_ctl->f_self);
+    char *f_block_name =   (char *) c_temp_model_ctl_block_name(f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_val_diffuse_ctl->f_radial_variation_ctl = init_f_ctl_chara_item(c_val_r_variation_ctl,
+                                                                      f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->f_variation_fname_ctl =  init_f_ctl_chara_item(c_val_variation_file_name,
+                                                                      f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->f_diffusivity_list_ctl = init_f_ctl_r2_array(c_val_diffusivity_list_ctl,
+                                                                    f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->f_ICB_reduction_radius = init_f_ctl_real_item(c_val_diffuse_ICB_radius,
+                                                                     f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->f_ICB_reduction_ratio =  init_f_ctl_real_item(c_val_diffuse_ICB_ratio,
+                                                                     f_val_diffuse_ctl->f_self);
+    f_val_diffuse_ctl->f_ICB_reduction_width =  init_f_ctl_real_item(c_val_diffuse_ICB_width,
+                                                                     f_val_diffuse_ctl->f_self);
+    return f_val_diffuse_ctl;
+};
+
+struct f_MHD_temp_model_control * init_f_MHD_temp_model_control(void *(*c_load_self)(void *f_parent),
 																void *f_parent)
 {
 	struct f_MHD_temp_model_control *f_reft_ctl 
@@ -765,16 +816,14 @@ struct f_MHD_temp_model_control * init_f_MHD_temp_model_control(void *(*c_load_s
 	
 	f_reft_ctl->f_filterd_advect_ctl = init_f_ctl_chara_item(c_temp_model_filter_advect_ctl,
 															  f_reft_ctl->f_self);
-	f_reft_ctl->f_reference_ctl = init_f_ctl_chara_item(c_temp_model_reference_ctl,
+	f_reft_ctl->f_reference_ctl =   init_f_ctl_chara_item(c_temp_model_reference_ctl,
 															  f_reft_ctl->f_self);
-	f_reft_ctl->f_stratified_ctl = init_f_ctl_chara_item(c_temp_model_stratified_ctl,
+	f_reft_ctl->f_stratified_ctl =  init_f_ctl_chara_item(c_temp_model_stratified_ctl,
 															  f_reft_ctl->f_self);
-	f_reft_ctl->f_ref_file_ctl = init_f_ctl_chara_item(c_temp_model_ref_file_ctl,
+    f_reft_ctl->f_val_diffuse_ctl = init_f_MHD_r_scalar_diffusivity_control(c_temp_valuable_diffusion_ctl,
+                                                                            f_reft_ctl->f_self);
+	f_reft_ctl->f_ref_file_ctl =     init_f_ctl_chara_item(c_temp_model_ref_file_ctl,
 															  f_reft_ctl->f_self);
-	f_reft_ctl->f_ICB_diffuse_reduction_ratio = init_f_ctl_real_item(c_temp_model_ICB_diffuse_ratio,
-																     f_reft_ctl->f_self);
-    f_reft_ctl->f_ICB_diffuse_reduction_width = init_f_ctl_real_item(c_temp_model_ICB_diffuse_width,
-                                                                     f_reft_ctl->f_self);
 
 	f_reft_ctl->f_low_ctl = init_f_MHD_reftemp_point_control(c_temp_model_low_ctl,
 															 f_reft_ctl->f_self);
