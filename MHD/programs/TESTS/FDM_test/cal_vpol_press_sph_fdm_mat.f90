@@ -84,7 +84,7 @@
 !
       call set_unit_on_diag(band_vsp_evo)
 !
-      if(fl_prop%coef_diffuse .eq. zero) then
+      if(fl_prop%coef_velo .eq. zero) then
         coef_dvt = one
       else
         coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
@@ -221,7 +221,7 @@
       real(kind = kreal) :: coef_dvt
 !
 !
-      if(fl_prop%coef_diffuse .eq. zero) then
+      if(fl_prop%coef_velo .eq. zero) then
         coef_dvt = one
       else
         coef_dvt = (one - fl_prop%coef_imp) * fl_prop%coef_diffuse * dt
