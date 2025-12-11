@@ -7,8 +7,8 @@
 !> @brief Boundary condition data from external file
 !!
 !!@verbatim
+!!      subroutine alloc_sph_bc_item_ctl(bc_IO)
 !!      subroutine dealloc_sph_bc_item_ctl(bc_IO)
-!!      subroutine bcast_boundary_spectr_file(bc_IO)
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!
 !!      subroutine read_boundary_spectr_file(bc_IO, iend)
@@ -60,7 +60,6 @@
 !
 !
       private :: id_boundary_file
-      private :: alloc_sph_bc_item_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -94,32 +93,6 @@
       deallocate(bc_IO%ctls)
 !
       end subroutine dealloc_sph_bc_item_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_boundary_spectr_file(bc_IO)
-!
-      use calypso_mpi_int
-      use calypso_mpi
-!
-      type(boundary_spectra), intent(inout) :: bc_IO
-!
-      integer(kind = kint) :: igrp
-!
-!
-      call calypso_mpi_bcast_one_int(bc_IO%num_bc_fld,  0)
-      if(my_rank .ne. 0) call alloc_sph_bc_item_ctl(bc_IO)
-      call calypso_mpi_barrier
-!
-      do igrp = 1, bc_IO%num_bc_fld
-        call bcast_each_bc_item_num(bc_IO%ctls(igrp))
-        if(my_rank .ne. 0) then
-          call alloc_each_bc_item_ctl(bc_IO%ctls(igrp))
-        end if
-        call bcast_each_bc_item_ctl(bc_IO%ctls(igrp))
-      end do
-!
-      end subroutine bcast_boundary_spectr_file
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
