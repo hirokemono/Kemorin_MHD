@@ -128,6 +128,7 @@
 !
       use m_machine_parameter
       use skip_comment_f
+      use delete_data_files
 !
       type(boundary_spectra), intent(inout) :: bc_IO
       integer(kind = kint), intent(inout) :: iend
@@ -136,12 +137,19 @@
       character(len=255) :: tmpchara
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'read boundary condition: ',    &
-     &                      trim(bc_IO%file_name)
+      if(check_file_exist(bc_IO%file_name) .eqv. .FALSE.) then
+        write(e_message,'(3a)') 'Read boundary condition file ',        &
+     &                    trim(bc_IO%file_name), ' cannot be found'
+        iend = 1
+        return
+      end if
+!
+      write(*,*) 'Read boundary condition file: ',                      &
+     &          trim(bc_IO%file_name)
       open(id_boundary_file, file=bc_IO%file_name)
 !
       call skip_comment(id_boundary_file, tmpchara, iend)
-      if(iend .gt. 0) return
+      if(iend .gt. 0) go to 99
       read(tmpchara,*) bc_IO%num_bc_fld
 !
       call alloc_sph_bc_item_ctl(bc_IO)
@@ -149,9 +157,14 @@
       do igrp = 1, bc_IO%num_bc_fld
         call read_each_boundary_spectr                                  &
      &     (id_boundary_file, bc_IO%ctls(igrp), iend)
-        if(iend .gt. 0) return
+        if(iend .gt. 0) go to 99
       end do
       close(id_boundary_file)
+      return
+!
+  99  continue
+      write(e_message,'(a)') 'Boundary condition file is broken'
+      return
 !
       end subroutine read_boundary_spectr_file
 !

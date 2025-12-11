@@ -37,6 +37,7 @@
 !
       subroutine sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
+      use m_machine_parameter
       use calypso_mpi_int
       use check_read_bc_file
 !
@@ -53,8 +54,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'read_boundary_spectr_file'
       if(my_rank .eq. 0) call read_boundary_spectr_file(bc_IO, iend)
       call calypso_mpi_bcast_one_int(iend, 0)
-      if(iend .gt. 0) call calypso_MPI_abort(iend,                      &
-     &               'Boundary condition file is broken')
+      if(iend .gt. 0) call calypso_MPI_abort(iend, e_message)
 !
       call bcast_boundary_spectr_file(bc_IO)
 !
