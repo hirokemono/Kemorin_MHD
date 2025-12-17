@@ -61,15 +61,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_explicit_sph_momentum(i_step, dt, MHD_prop%fl_prop,      &
-     &    sph_MHD_bc%sph_bc_U, sph, ipol, rj_fld)
-      call sel_explicit_sph_induction(i_step, dt, MHD_prop,             &
+      call sel_explicit_sph_momentum(i_step, dt,                        &
+     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, sph, ipol, rj_fld)
+      call sel_explicit_sph_induction(i_step, dt, MHD_prop%cd_prop,     &
      &                                ipol, rj_fld)
 !!
-      call sel_explicit_sph_temp(i_step, dt, MHD_prop, sph_MHD_bc,      &
-     &                           sph, ipol, rj_fld)
-      call sel_explicit_sph_comp(i_step, dt, MHD_prop, sph_MHD_bc,      &
-     &                           sph, ipol, rj_fld)
+      call sel_explicit_sph_temp(i_step, dt,                            &
+     &    MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T, sph, ipol, rj_fld)
+      call sel_explicit_sph_comp(i_step, dt,                            &
+     &    MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C, sph, ipol, rj_fld)
 !
       end subroutine sel_explicit_sph
 !
@@ -112,7 +112,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_explicit_sph_induction(i_step, dt, MHD_prop,       &
+      subroutine sel_explicit_sph_induction(i_step, dt, cd_prop,        &
      &                                      ipol, rj_fld)
 !
       use cal_explicit_terms
@@ -120,24 +120,24 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: dt
 !
-      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%cd_prop%iflag_Bevo_scheme .eq. id_no_evolution) return
-      if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
+      if(cd_prop%iflag_Bevo_scheme .eq. id_no_evolution) return
+      if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                  'cal_diff_induction_MHD_euler'
-          call cal_diff_induction_MHD_euler(MHD_prop%cd_prop,           &
-     &        ipol%base, ipol%forces, ipol%diffusion,                   &
+          call cal_diff_induction_MHD_euler                             &
+     &       (cd_prop, ipol%base, ipol%forces, ipol%diffusion,          &
      &        dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(i_step .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                  'cal_diff_induction_MHD_euler'
-          call cal_diff_induction_MHD_euler(MHD_prop%cd_prop,           &
-     &        ipol%base, ipol%forces, ipol%diffusion,                   &
+          call cal_diff_induction_MHD_euler                             &
+     &       (cd_prop, ipol%base, ipol%forces, ipol%diffusion,          &
      &        dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -147,7 +147,7 @@
       else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'cal_diff_induction_MHD_adams'
-          call cal_diff_induction_MHD_adams(MHD_prop%cd_prop,           &
+          call cal_diff_induction_MHD_adams(cd_prop,                    &
      &        ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,    &
      &        dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -158,7 +158,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_temp(i_step, dt,                      &
-     &          MHD_prop, sph_MHD_bc, sph, ipol, rj_fld)
+     &          ht_prop, sph_bc_T, sph, ipol, rj_fld)
 !
       use explicit_scalars_sph
 !
@@ -166,27 +166,28 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(sph_grids), intent(in) ::  sph
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
+      if(ht_prop%iflag_scheme .eq. id_no_evolution) return
+      if(ht_prop%iflag_scheme .eq. id_explicit_euler) then
         call explicit_temp_sph_euler                                    &
-     &     (dt, sph%sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,      &
+     &     (dt, sph%sph_rj, ht_prop, sph_bc_T,                          &
      &      ipol%base, ipol%forces, ipol%diffusion, rj_fld)
       else if(i_step .eq. 1) then
         call explicit_temp_sph_euler                                    &
-     &     (dt, sph%sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,      &
+     &     (dt, sph%sph_rj, ht_prop, sph_bc_T,                          &
      &      ipol%base, ipol%forces, ipol%diffusion, rj_fld)
         call first_temp_prev_step_adams                                 &
-     &     (sph%sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,          &
+     &     (sph%sph_rj, ht_prop, sph_bc_T,                              &
      &      ipol%base, ipol%exp_work, ipol%forces, rj_fld)
       else
-        call explicit_temp_sph_adams(dt, sph%sph_params, sph%sph_rj,    &
-     &      MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,                      &
+        call explicit_temp_sph_adams                                    &
+     &     (dt, sph%sph_params, sph%sph_rj, ht_prop, sph_bc_T,          &
      &      ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
      &      rj_fld)
       end if
@@ -196,7 +197,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_comp(i_step, dt,                      &
-     &          MHD_prop, sph_MHD_bc, sph, ipol, rj_fld)
+     &          cp_prop, sph_bc_C, sph, ipol, rj_fld)
 !
       use explicit_scalars_sph
 !
@@ -204,28 +205,29 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(sph_grids), intent(in) ::  sph
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
+      if(cp_prop%iflag_scheme .eq. id_no_evolution) return
+      if(cp_prop%iflag_scheme .eq. id_explicit_euler) then
         call explicit_comp_sph_euler                                    &
-     &     (dt, sph%sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,      &
+     &     (dt, sph%sph_rj, cp_prop, sph_bc_C,                          &
      &      ipol%base, ipol%forces, ipol%diffusion, rj_fld)
 !
       else if(i_step .eq. 1) then
         call explicit_comp_sph_euler                                    &
-     &     (dt, sph%sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,      &
+     &     (dt, sph%sph_rj, cp_prop, sph_bc_C,                          &
      &      ipol%base, ipol%forces, ipol%diffusion, rj_fld)
         call first_comp_prev_step_adams                                 &
-     &     (sph%sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,          &
+     &     (sph%sph_rj, cp_prop, sph_bc_C,                              &
      &      ipol%base, ipol%exp_work, ipol%forces, rj_fld)
       else
-        call explicit_comp_sph_adams(dt, sph%sph_params, sph%sph_rj,    &
-     &      MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,                      &
+        call explicit_comp_sph_adams                                    &
+     &     (dt, sph%sph_params, sph%sph_rj, cp_prop, sph_bc_C,          &
      &      ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
      &      rj_fld)
       end if
