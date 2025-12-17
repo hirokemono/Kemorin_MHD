@@ -7,15 +7,27 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine explicit_scalars_sph_SGS_adams(dt, SGS_param,        &
-!!     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
+!!      subroutine explicit_temp_sph_SGS_adams                          &
+!!     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,              &
 !!     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,&
 !!     &          rj_fld)
-!!      subroutine explicit_scalars_sph_SGS_euler(dt, SGS_param,        &
-!!     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
+!!      subroutine explicit_comp_sph_SGS_adams                          &
+!!     &         (dt, SGS_light, sph_rj, cp_prop, sph_bc_C,             &
+!!     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,&
+!!     &          rj_fld)
+!!
+!!      subroutine explicit_temp_sph_SGS_euler                          &
+!!     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,              &
 !!     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
-!!      subroutine first_scalars_SGS_prev_adams(SGS_param,              &
-!!     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
+!!      subroutine explicit_comp_sph_SGS_euler                          &
+!!     &         (dt, SGS_light, sph_rj, cp_prop, sph_bc_C,             &
+!!     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
+!!
+!!      subroutine first_temp_SGS_prev_adams                            &
+!!     &         (SGS_heat, sph_rj, ht_prop, sph_bc_T,                  &
+!!     &          ipol_base, ipol_exp, ipol_frc, ipol_div_SGS, rj_fld)
+!!      subroutine first_comp_SGS_prev_adams                            &
+!!     &         (SGS_light, sph_rj, cp_prop, sph_bc_C,                 &
 !!     &          ipol_base, ipol_exp, ipol_frc, ipol_div_SGS, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -54,8 +66,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine explicit_scalars_sph_SGS_adams(dt, SGS_param,          &
-     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,           &
+      subroutine explicit_temp_sph_SGS_adams                            &
+     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,                &
      &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,  &
      &          rj_fld)
 !
@@ -63,10 +75,10 @@
 !
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_model_control_parameter), intent(in) :: SGS_heat
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(base_field_address), intent(in) :: ipol_base
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
@@ -75,69 +87,126 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'sel_scl_diff_adv_SGS_src_adams temperature'
-        call sel_scl_diff_adv_SGS_src_adams                             &
-     &    (SGS_param%SGS_heat%iflag_SGS_flux,                           &
-     &     sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,       &
-     &     ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,              &
-     &     ipol_base%i_heat_source, ipol_base%i_temp,                   &
-     &     ipol_exp%i_pre_heat, dt,                                     &
-     &     ht_prop%coef_exp, ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_scl_diff_adv_SGS_src_adams composition'
-        call sel_scl_diff_adv_SGS_src_adams(SGS_param%SGS_light%iflag_SGS_flux, &
-     &     sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,       &
-     &     ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,              &
-     &     ipol_base%i_light_source, ipol_base%i_light,                 &
-     &     ipol_exp%i_pre_composit, dt,                                 &
-     &     cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
-      end if
+      call sel_scl_diff_adv_SGS_src_adams(SGS_heat%iflag_SGS_flux,      &
+     &    sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,        &
+     &    ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,               &
+     &    ipol_base%i_heat_source, ipol_base%i_temp,                    &
+     &    ipol_exp%i_pre_heat, dt,                                      &
+     &    ht_prop%coef_exp, ht_prop%coef_source, sph_rj, rj_fld)
 !
 !  Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'sel_ctr_scl_SGS_dadv_src_adms temperature'
-        call sel_ctr_scl_SGS_dadv_src_adms                              &
-     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,    &
-     &      ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,             &
-     &      ipol_base%i_heat_source, ipol_base%i_temp,                  &
-     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
+      call sel_ctr_scl_SGS_dadv_src_adms                                &
+     &   (SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,                &
+     &    ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,               &
+     &    ipol_base%i_heat_source, ipol_base%i_temp,                    &
+     &    ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                    &
+     &    ht_prop%coef_source, sph_rj, rj_fld)
 !
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_ctr_scl_SGS_dadv_src_adms composition'
-        call sel_ctr_scl_SGS_dadv_src_adms(SGS_param%SGS_light%iflag_SGS_flux,  &
-     &      ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
-     &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
-     &      ipol_base%i_light, ipol_exp%i_pre_composit,                 &
-     &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      end subroutine explicit_scalars_sph_SGS_adams
+      end subroutine explicit_temp_sph_SGS_adams
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine explicit_scalars_sph_SGS_euler(dt, SGS_param,          &
-     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,           &
+      subroutine explicit_comp_sph_SGS_adams                            &
+     &         (dt, SGS_light, sph_rj, cp_prop, sph_bc_C,               &
+     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,  &
+     &          rj_fld)
+!
+      use select_SGS_diff_adv_source
+!
+      real(kind = kreal), intent(in) :: dt
+!
+      type(SGS_model_control_parameter), intent(in) :: SGS_light
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
+      type(base_field_address), intent(in) :: ipol_base
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(base_force_address), intent(in) :: ipol_frc
+      type(diffusion_address), intent(in) :: ipol_dif
+      type(SGS_term_address), intent(in) :: ipol_div_SGS
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                'sel_scl_diff_adv_SGS_src_adams composition'
+      call sel_scl_diff_adv_SGS_src_adams(SGS_light%iflag_SGS_flux,     &
+     &    sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,        &
+     &    ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,               &
+     &    ipol_base%i_light_source, ipol_base%i_light,                  &
+     &    ipol_exp%i_pre_composit, dt,                                  &
+     &    cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
+!
+!  Center evolution
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                'sel_ctr_scl_SGS_dadv_src_adms composition'
+      call sel_ctr_scl_SGS_dadv_src_adms(SGS_light%iflag_SGS_flux,      &
+     &    ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                    &
+     &    ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,          &
+     &    ipol_base%i_light, ipol_exp%i_pre_composit,                   &
+     &    dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
+!
+      end subroutine explicit_comp_sph_SGS_adams
+!
+! ----------------------------------------------------------------------
+!
+!
+      use select_SGS_diff_adv_source
+!
+      real(kind = kreal), intent(in) :: dt
+!
+      type(SGS_mode      subroutine explicit_temp_sph_SGS_euler                            &
+     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,                &
+     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
+l_control_parameter), intent(in) :: SGS_heat
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_frc
+      type(diffusion_address), intent(in) :: ipol_dif
+      type(SGS_term_address), intent(in) :: ipol_div_SGS
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &              'sel_scl_diff_adv_SGS_src_elr temperature'
+      call sel_scl_diff_adv_SGS_src_elr(SGS_heat%iflag_SGS_flux,        &
+     &    sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,        &
+     &    ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,               &
+     &    ipol_base%i_heat_source, ipol_base%i_temp, dt,                &
+     &    ht_prop%coef_exp, ht_prop%coef_advect, ht_prop%coef_source,   &
+     &    sph_rj, rj_fld)
+!
+!   Center evolution
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                'sel_ctr_scl_SGS_dadv_src_elr temperature'
+      call sel_ctr_scl_SGS_dadv_src_elr                                 &
+     &   (SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,                &
+     &    ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,               &
+     &    ipol_base%i_heat_source, ipol_base%i_temp, dt,                &
+     &    ht_prop%coef_exp, ht_prop%coef_advect, ht_prop%coef_source,   &
+     &    sph_rj, rj_fld)
+!
+      end subroutine explicit_temp_sph_SGS_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine explicit_comp_sph_SGS_euler                            &
+     &         (dt, SGS_light, sph_rj, cp_prop, sph_bc_C,               &
      &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
 !
       use select_SGS_diff_adv_source
 !
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_model_control_parameter), intent(in) :: SGS_light
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
       type(base_field_address), intent(in) :: ipol_base
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
@@ -145,68 +214,40 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_scl_diff_adv_SGS_src_elr temperature'
-        call sel_scl_diff_adv_SGS_src_elr                               &
-     &    (SGS_param%SGS_heat%iflag_SGS_flux,                           &
-     &     sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_dif%i_t_diffuse,       &
-     &     ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,              &
-     &     ipol_base%i_heat_source, ipol_base%i_temp, dt,               &
-     &     ht_prop%coef_exp, ht_prop%coef_advect, ht_prop%coef_source,  &
-     &     sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'sel_scl_diff_adv_SGS_src_elr composition'
-        call sel_scl_diff_adv_SGS_src_elr(SGS_param%SGS_light%iflag_SGS_flux,   &
-     &     sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,       &
-     &     ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,              &
-     &     ipol_base%i_light_source, ipol_base%i_light, dt,             &
-     &     cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source,  &
-     &     sph_rj, rj_fld)
-      end if
+      call sel_scl_diff_adv_SGS_src_elr(SGS_light%iflag_SGS_flux,       &
+     &   sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_dif%i_c_diffuse,         &
+     &   ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,                &
+     &   ipol_base%i_light_source, ipol_base%i_light, dt,               &
+     &   cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source,    &
+     &   sph_rj, rj_fld)
 !
 !   Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_SGS_dadv_src_elr temperature'
-        call sel_ctr_scl_SGS_dadv_src_elr                               &
-     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_dif%i_t_diffuse,    &
-     &      ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,             &
-     &      ipol_base%i_heat_source, ipol_base%i_temp, dt,              &
-     &      ht_prop%coef_exp, ht_prop%coef_advect, ht_prop%coef_source, &
-     &      sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'sel_ctr_scl_SGS_dadv_src_elr composition'
-        call sel_ctr_scl_SGS_dadv_src_elr                               &
-     &     (SGS_param%SGS_light%iflag_SGS_flux, ipol_dif%i_c_diffuse,           &
-     &      ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,             &
-     &      ipol_base%i_light_source, ipol_base%i_light, dt,            &
-     &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
-     &      sph_rj, rj_fld)
-      end if
+      call sel_ctr_scl_SGS_dadv_src_elr                                 &
+     &   (SGS_light%iflag_SGS_flux, ipol_dif%i_c_diffuse,               &
+     &    ipol_frc%i_c_advect, ipol_div_SGS%i_SGS_c_flux,               &
+     &    ipol_base%i_light_source, ipol_base%i_light, dt,              &
+     &    cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source,   &
+     &    sph_rj, rj_fld)
 !
-      end subroutine explicit_scalars_sph_SGS_euler
+      end subroutine explicit_comp_sph_SGS_euler
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine first_scalars_SGS_prev_adams(SGS_param,                &
-     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,           &
+      subroutine first_temp_SGS_prev_adams                              &
+     &         (SGS_heat, sph_rj, ht_prop, sph_bc_T,                    &
      &          ipol_base, ipol_exp, ipol_frc, ipol_div_SGS, rj_fld)
 !
       use select_SGS_diff_adv_source
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_model_control_parameter), intent(in) :: SGS_heat
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(base_field_address), intent(in) :: ipol_base
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
@@ -214,40 +255,52 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        call sel_ini_adams_sscl_w_src_SGS                               &
-     &     (SGS_param%SGS_heat%iflag_SGS_flux,                          &
-     &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_frc%i_h_advect,       &
-     &      ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,         &
-     &      ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ini_adams_sscl_w_src_SGS(SGS_param%SGS_light%iflag_SGS_flux,   &
-     &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,       &
-     &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
-     &      ipol_exp%i_pre_composit, cp_prop%coef_source,               &
-     &      sph_rj, rj_fld)
-      end if
+      call sel_ini_adams_sscl_w_src_SGS(SGS_heat%iflag_SGS_flux,        &
+     &    sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_frc%i_h_advect,         &
+     &    ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,           &
+     &    ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
 !
 !   Center evolution
+      call sel_ctr_ini_adams_scl_w_src                                  &
+     &   (SGS_heat%iflag_SGS_flux, ipol_frc%i_h_advect,                 &
+     &    ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,           &
+     &    ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%SGS_heat%iflag_SGS_flux, ipol_frc%i_h_advect,     &
-     &      ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,         &
-     &      ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
-      end if
+      end subroutine first_temp_SGS_prev_adams
 !
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%SGS_light%iflag_SGS_flux, ipol_frc%i_c_advect,            &
-     &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
-     &      ipol_exp%i_pre_composit, cp_prop%coef_source,               &
-     &      sph_rj, rj_fld)
-      end if
+! ----------------------------------------------------------------------
 !
-      end subroutine first_scalars_SGS_prev_adams
+      subroutine first_comp_SGS_prev_adams                              &
+     &         (SGS_light, sph_rj, cp_prop, sph_bc_C,                   &
+     &          ipol_base, ipol_exp, ipol_frc, ipol_div_SGS, rj_fld)
+!
+      use select_SGS_diff_adv_source
+!
+      type(SGS_model_control_parameter), intent(in) :: SGS_light
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
+      type(base_field_address), intent(in) :: ipol_base
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(base_force_address), intent(in) :: ipol_frc
+      type(SGS_term_address), intent(in) :: ipol_div_SGS
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call sel_ini_adams_sscl_w_src_SGS(SGS_light%iflag_SGS_flux,       &
+     &    sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,         &
+     &    ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,          &
+     &    ipol_exp%i_pre_composit, cp_prop%coef_source,                 &
+     &    sph_rj, rj_fld)
+!
+!   Center evolution
+      call sel_ctr_ini_adams_scl_w_src                                  &
+     &   (SGS_light%iflag_SGS_flux, ipol_frc%i_c_advect,                &
+     &    ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,          &
+     &    ipol_exp%i_pre_composit, cp_prop%coef_source,                 &
+     &    sph_rj, rj_fld)
+!
+      end subroutine first_comp_SGS_prev_adams
 !
 ! ----------------------------------------------------------------------
 !

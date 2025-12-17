@@ -217,6 +217,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
+      if(sph_rj%inod_rj_center .eq. 0) return
       if(ipol_source .eq. izero) return
 !
       if(iflag_SGS .gt. id_SGS_none) then
@@ -251,6 +252,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
+      if(sph_rj%inod_rj_center .eq. 0) return
       if(iflag_SGS .gt. id_SGS_none .and. coef_adv .gt. zero            &
      &   .and. ipol_source .gt. izero) then
         call SGS_ctr_scl_diff_adv_src_euler(sph_rj%inod_rj_center,      &
