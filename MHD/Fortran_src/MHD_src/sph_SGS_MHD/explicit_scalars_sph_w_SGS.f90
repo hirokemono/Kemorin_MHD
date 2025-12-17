@@ -153,15 +153,15 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine explicit_temp_sph_SGS_euler                            &
+     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,                &
+     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
 !
       use select_SGS_diff_adv_source
 !
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_mode      subroutine explicit_temp_sph_SGS_euler                            &
-     &         (dt, SGS_heat, sph_rj, ht_prop, sph_bc_T,                &
-     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
-l_control_parameter), intent(in) :: SGS_heat
+      type(SGS_model_control_parameter), intent(in) :: SGS_heat
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(scalar_property), intent(in) :: ht_prop
       type(sph_boundary_type), intent(in) :: sph_bc_T

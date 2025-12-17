@@ -7,14 +7,23 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine explicit_scalars_sph_adams(dt, sph_params, sph_rj,   &
-!!     &          ht_prop, cp_prop, sph_bc_T, sph_bc_C,                 &
+!!      subroutine explicit_temp_sph_adams                              &
+!!     &         (dt, sph_params, sph_rj, ht_prop, sph_bc_T,            &
 !!     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, rj_fld)
-!!      subroutine explicit_scalars_sph_euler                           &
-!!     &         (dt, sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,     &
+!!      subroutine explicit_comp_sph_adams                              &
+!!     &         (dt, sph_params, sph_rj, cp_prop, sph_bc_C,            &
+!!     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+!!
+!!      subroutine explicit_temp_sph_euler                              &
+!!     &         (dt, sph_rj, ht_prop, sph_bc_T,                        &
 !!     &          ipol_base, ipol_frc, ipol_dif, rj_fld)
-!!      subroutine first_scalars_prev_step_adams                        &
-!!     &         (sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
+!!      subroutine explicit_comp_sph_euler                              &
+!!     &         (dt, sph_rj, cp_prop, sph_bc_C,                        &
+!!     &          ipol_base, ipol_frc, ipol_dif, rj_fld)
+!!
+!!      subroutine first_temp_prev_step_adams(sph_rj, ht_prop, sph_bc_T,&
+!!     &          ipol_base, ipol_exp, ipol_frc, rj_fld)
+!!      subroutine first_comp_prev_step_adams(sph_rj, cp_prop, sph_bc_C,&
 !!     &          ipol_base, ipol_exp, ipol_frc, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -51,8 +60,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine explicit_scalars_sph_adams(dt, sph_params, sph_rj,     &
-     &          ht_prop, cp_prop, sph_bc_T, sph_bc_C,                   &
+      subroutine explicit_temp_sph_adams                                &
+     &         (dt, sph_params, sph_rj, ht_prop, sph_bc_T,              &
      &          ipol_base, ipol_exp, ipol_frc, ipol_dif, rj_fld)
 !
       use select_diff_adv_source
@@ -62,8 +71,8 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(base_field_address), intent(in) :: ipol_base
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
@@ -90,6 +99,43 @@
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
+!  Center evolution
+!
+      if(sph_rj%inod_rj_center .eq. 0) return
+      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'sel_ctr_scl_diff_adv_src_adams temperature'
+        call sel_ctr_scl_diff_adv_src_adams                             &
+     &     (ipol_dif%i_t_diffuse, ipol_frc%i_h_advect,                  &
+     &      ipol_base%i_heat_source, ipol_base%i_temp,                  &
+     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
+     &      ht_prop%coef_source, sph_rj, rj_fld)
+      end if
+!
+      end subroutine explicit_temp_sph_adams
+!
+! ----------------------------------------------------------------------
+!
+      subroutine explicit_comp_sph_adams                                &
+     &         (dt, sph_params, sph_rj, cp_prop, sph_bc_C,              &
+     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+!
+      use select_diff_adv_source
+      use cal_inner_core_rotation
+!
+      real(kind = kreal), intent(in) :: dt
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
+      type(base_field_address), intent(in) :: ipol_base
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(base_force_address), intent(in) :: ipol_frc
+      type(diffusion_address), intent(in) :: ipol_dif
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(cp_prop%diffuse_reduction_ratio_ICB .lt. one) then
           call reduction_scalar_diffusion_ICB                           &
@@ -111,15 +157,6 @@
 !  Center evolution
 !
       if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_diff_adv_src_adams temperature'
-        call sel_ctr_scl_diff_adv_src_adams                             &
-     &     (ipol_dif%i_t_diffuse, ipol_frc%i_h_advect,                  &
-     &      ipol_base%i_heat_source, ipol_base%i_temp,                  &
-     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -130,12 +167,13 @@
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
-      end subroutine explicit_scalars_sph_adams
+      end subroutine explicit_comp_sph_adams
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine explicit_scalars_sph_euler                             &
-     &         (dt, sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,       &
+      subroutine explicit_temp_sph_euler                                &
+     &         (dt, sph_rj, ht_prop, sph_bc_T,                          &
      &          ipol_base, ipol_frc, ipol_dif, rj_fld)
 !
       use select_diff_adv_source
@@ -143,8 +181,8 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(base_field_address), intent(in) :: ipol_base
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
@@ -162,6 +200,38 @@
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
+!   Center evolution
+      if(sph_rj%inod_rj_center .eq. 0) return
+      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'sel_ctr_scl_diff_adv_src_euler temperature'
+        call sel_ctr_scl_diff_adv_src_euler(ipol_dif%i_t_diffuse,       &
+     &     ipol_frc%i_h_advect, ipol_base%i_heat_source,                &
+     &     ipol_base%i_temp, dt, ht_prop%coef_exp, ht_prop%coef_advect, &
+     &     ht_prop%coef_source, sph_rj, rj_fld)
+      end if
+!
+      end subroutine explicit_temp_sph_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine explicit_comp_sph_euler                                &
+     &         (dt, sph_rj, cp_prop, sph_bc_C,                          &
+     &          ipol_base, ipol_frc, ipol_dif, rj_fld)
+!
+      use select_diff_adv_source
+!
+      real(kind = kreal), intent(in) :: dt
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_frc
+      type(diffusion_address), intent(in) :: ipol_dif
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scalar_diff_adv_src_euler composition'
@@ -174,17 +244,7 @@
       end if
 !
 !   Center evolution
-!
       if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_diff_adv_src_euler temperature'
-        call sel_ctr_scl_diff_adv_src_euler(ipol_dif%i_t_diffuse,       &
-     &     ipol_frc%i_h_advect, ipol_base%i_heat_source,                &
-     &     ipol_base%i_temp, dt, ht_prop%coef_exp, ht_prop%coef_advect, &
-     &     ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_diff_adv_src_euler composition'
@@ -195,19 +255,19 @@
      &      sph_rj, rj_fld)
       end if
 !
-      end subroutine explicit_scalars_sph_euler
+      end subroutine explicit_comp_sph_euler
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine first_scalars_prev_step_adams                          &
-     &         (sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,           &
+      subroutine first_temp_prev_step_adams(sph_rj, ht_prop, sph_bc_T,  &
      &          ipol_base, ipol_exp, ipol_frc, rj_fld)
 !
       use select_diff_adv_source
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(scalar_property), intent(in) :: ht_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T
       type(base_field_address), intent(in) :: ipol_base
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
@@ -221,15 +281,7 @@
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ini_adams_scalar_w_src                                 &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,       &
-     &      ipol_base%i_light_source, ipol_exp%i_pre_composit,          &
-     &      cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
 !   Center evolution
-!
       if(sph_rj%inod_rj_center .eq. 0) return
       if(ht_prop%iflag_scheme .gt.     id_no_evolution                  &
       &  .and. ipol_base%i_heat_source .gt. izero) then
@@ -240,6 +292,34 @@
      &      rj_fld%d_fld)
       end if
 !
+      end subroutine first_temp_prev_step_adams
+!
+! ----------------------------------------------------------------------
+!
+      subroutine first_comp_prev_step_adams(sph_rj, cp_prop, sph_bc_C,  &
+     &          ipol_base, ipol_exp, ipol_frc, rj_fld)
+!
+      use select_diff_adv_source
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_C
+      type(base_field_address), intent(in) :: ipol_base
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(base_force_address), intent(in) :: ipol_frc
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
+        call sel_ini_adams_scalar_w_src                                 &
+     &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,       &
+     &      ipol_base%i_light_source, ipol_exp%i_pre_composit,          &
+     &      cp_prop%coef_source, sph_rj, rj_fld)
+      end if
+!
+!   Center evolution
+!
+      if(sph_rj%inod_rj_center .eq. 0) return
       if(cp_prop%iflag_scheme .gt. id_no_evolution                      &
      &  .and. ipol_base%i_light_source .gt. izero) then
         call center_ini_adams_scalar_w_src                              &
@@ -249,7 +329,7 @@
      &      rj_fld%d_fld)
       end if
 !
-      end subroutine first_scalars_prev_step_adams
+      end subroutine first_comp_prev_step_adams
 !
 ! ----------------------------------------------------------------------
 !
