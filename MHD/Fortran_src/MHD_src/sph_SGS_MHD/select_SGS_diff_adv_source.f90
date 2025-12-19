@@ -10,20 +10,23 @@
 !!      subroutine sel_scl_diff_adv_SGS_src_adams                       &
 !!     &         (iflag_SGS, kr_st, kr_ed, ipol_diffuse, ipol_advect,   &
 !!     &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,  &
-!!     &          dt, coef_exp, coef_src, sph_rj, rj_fld)
+!!     &          dt, coef_exp, coef_src, rj_fld)
 !!      subroutine sel_scl_diff_adv_SGS_src_elr                         &
-!!     &         (iflag_SGS, kr_st, kr_ed, ipol_diffuse, ipol_advect,   &
-!!     &          ipol_SGS_advect, ipol_source, ipol_scalar,            &
-!!     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
-!!      subroutine sel_ini_adams_sscl_w_src_SGS(iflag_SGS, kr_st, kr_ed,&
+!!     &        (iflag_SGS, ist, ied, inod_center, ipol_diffuse,        &
+!!     &         ipol_advect, ipol_SGS_advect, ipol_source, ipol_scalar,&
+!!     &         dt, coef_exp, coef_adv, coef_src, rj_fld)
+!!      subroutine sel_ini_adams_scl_w_src_SGS                          &
+!!     &         (iflag_SGS, ist, ied, inod_center,                     &
 !!     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,  &
-!!     &          coef_src, sph_rj, rj_fld)
-!!
-!!      subroutine sel_ctr_scl_SGS_dadv_src_adms                        &
-!!     &         (iflag_SGS, ipol_diffuse, ipol_advect,                 &
-!!     &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,  &
-!!     &          dt, coef_exp, coef_src, sph_rj, rj_fld)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!     &          coef_src, rj_fld)
+!!        integer(kind = kint), intent(in) :: iflag_SGS
+!!        integer(kind = kint), intent(in) :: ist, ied, inod_center
+!!        integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
+!!        integer(kind = kint), intent(in) :: ipol_SGS_advect
+!!        integer(kind = kint), intent(in) :: ipol_source
+!!        integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
+!!        real(kind = kreal), intent(in) :: coef_exp, coef_src
+!!        real(kind = kreal), intent(in) :: dt
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -43,12 +46,7 @@
       use m_constants
 !
       use t_SGS_control_parameter
-      use t_spheric_rj_data
       use t_phys_data
-!
-      use cal_diff_adv_src_explicit
-      use SGS_diff_adv_src_explicit
-      use select_diff_adv_source
 !
       implicit  none
 !
@@ -59,13 +57,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_scl_diff_adv_SGS_src_adams                         &
-     &         (iflag_SGS, kr_st, kr_ed, ipol_diffuse, ipol_advect,     &
-     &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,    &
-     &          dt, coef_exp, coef_src, sph_rj, rj_fld)
+     &         (iflag_SGS, ist, ied, inod_center,                       &
+     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,             &
+     &          ipol_source, ipol_scalar, ipol_pre,                     &
+     &          dt, coef_exp, coef_src, rj_fld)
 !
-      type(sph_rj_grid), intent(in) :: sph_rj
+      use SGS_diff_adv_src_explicit
+      use select_diff_adv_source
+!
       integer(kind = kint), intent(in) :: iflag_SGS
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_source
@@ -75,29 +76,25 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ist, ied
-!
 !
       if(iflag_SGS .gt. id_SGS_none) then
-        ist = (kr_st-1) * sph_rj%nidx_rj(2) + 1
-        ied = kr_ed * sph_rj%nidx_rj(2)
-!
         if(ipol_source .eq. izero) then
           call SGS_scalar_diff_advect_adams                             &
      &       (ist, ied, ipol_diffuse, ipol_advect, ipol_SGS_advect,     &
      &        ipol_scalar, ipol_pre, dt, coef_exp,                      &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
-          call SGS_scalar_diff_adv_src_adams(ist, ied, ipol_diffuse,    &
+          call SGS_scalar_diff_adv_src_adams                            &
+     &       (ist, ied, inod_center, ipol_diffuse,                      &
      &        ipol_advect, ipol_SGS_advect, ipol_source,                &
      &        ipol_scalar, ipol_pre, dt, coef_exp, coef_src,            &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else
-        call sel_scalar_diff_adv_src_adams(kr_st, kr_ed,                &
+        call sel_scalar_diff_adv_src_adams(ist, ied, inod_center,       &
      &      ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
-     &      ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
+     &      ipol_pre, dt, coef_exp, coef_src, rj_fld)
       end if
 !
       end subroutine sel_scl_diff_adv_SGS_src_adams
@@ -105,13 +102,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_scl_diff_adv_SGS_src_elr                           &
-     &         (iflag_SGS, kr_st, kr_ed, ipol_diffuse, ipol_advect,     &
-     &          ipol_SGS_advect, ipol_source, ipol_scalar,              &
-     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
+     &        (iflag_SGS, ist, ied, inod_center, ipol_diffuse,          &
+     &         ipol_advect, ipol_SGS_advect, ipol_source, ipol_scalar,  &
+     &         dt, coef_exp, coef_adv, coef_src, rj_fld)
 !
-      type(sph_rj_grid), intent(in) :: sph_rj
+      use SGS_diff_adv_src_explicit
+      use select_diff_adv_source
+!
       integer(kind = kint), intent(in) :: iflag_SGS
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_source
@@ -121,48 +120,41 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ist, ied
 !
-!
-      if(iflag_SGS.gt.id_SGS_none .and. coef_adv .gt. zero) then
-        ist = (kr_st-1) * sph_rj%nidx_rj(2) + 1
-        ied = kr_ed * sph_rj%nidx_rj(2)
+      if(coef_adv .eq. zero) then
+        call sel_exp_static_src_euler(ist, ied, inod_center,           &
+     &      ipol_source, ipol_scalar, coef_src, rj_fld)
+      else if(iflag_SGS .gt. id_SGS_none) then
         if(ipol_source .eq. izero) then
           call SGS_scalar_diff_advect_euler(ist, ied, ipol_diffuse,     &
      &        ipol_advect, ipol_SGS_advect, ipol_scalar, dt, coef_exp,  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
-          call SGS_scalar_diff_adv_src_euler(ist, ied,                  &
+          call SGS_scalar_diff_adv_src_euler(ist, ied, inod_center,     &
      &        ipol_diffuse, ipol_advect, ipol_SGS_advect, ipol_source,  &
      &        ipol_scalar, dt, coef_exp, coef_src,                      &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-!
-          if(sph_rj%inod_rj_center .gt. 0) then
-            call SGS_scalar_diff_adv_src_euler                          &
-     &         (sph_rj%inod_rj_center, sph_rj%inod_rj_center,           &
-     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,             &
-     &          ipol_source, ipol_scalar, dt, coef_exp, coef_src,       &
-     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-          end if
         end if
-!
       else
-        call sel_scalar_diff_adv_src_euler(kr_st, kr_ed,                &
+        call sel_exp_scl_diff_adv_src_euler(ist, ied, inod_center,      &
      &      ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
-     &      dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
+     &      dt, coef_exp, coef_src, rj_fld)
       end if
 !
       end subroutine sel_scl_diff_adv_SGS_src_elr
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_ini_adams_sscl_w_src_SGS(iflag_SGS, kr_st, kr_ed,  &
+      subroutine sel_ini_adams_scl_w_src_SGS                            &
+     &         (iflag_SGS, ist, ied, inod_center,                       &
      &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
-     &          coef_src, sph_rj, rj_fld)
+     &          coef_src, rj_fld)
 !
-      type(sph_rj_grid), intent(in) :: sph_rj
+      use SGS_diff_adv_src_explicit
+      use select_diff_adv_source
+!
       integer(kind = kint), intent(in) :: iflag_SGS
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_advect, ipol_source
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_pre
@@ -170,75 +162,24 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ist, ied
-!
 !
       if(iflag_SGS .gt. id_SGS_none) then
-        ist = (kr_st-1) * sph_rj%nidx_rj(2) + 1
-        ied = kr_ed * sph_rj%nidx_rj(2)
-!
         if(ipol_source .eq. izero) then
           call SGS_ini_adams_scalar                                     &
      &       (ist, ied, ipol_advect, ipol_SGS_advect, ipol_pre,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
-          call SGS_ini_adams_scalar_w_src(ist, ied, ipol_advect,        &
+          call SGS_ini_adams_scalar_w_src                               &
+     &       (ist, ied, inod_center, ipol_advect,                       &
      &        ipol_SGS_advect, ipol_source, ipol_pre, coef_src,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-!
-          if(sph_rj%inod_rj_center .gt. 0) then
-            call SGS_ini_adams_scalar_w_src                             &
-     &         (sph_rj%inod_rj_center, sph_rj%inod_rj_center,           &
-     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
-     &          coef_src, rj_fld%n_point, rj_fld%ntot_phys,             &
-     &          rj_fld%d_fld)
-          end if
         end if
       else
-!
-        call sel_ini_adams_scalar_w_src                                 &
-     &      (kr_st, kr_ed, ipol_advect, ipol_source, ipol_pre,          &
-     &          coef_src, sph_rj, rj_fld)
+        call sel_ini_adams_scalar_w_src(ist, ied, inod_center,          &
+     &      ipol_advect, ipol_source, ipol_pre, coef_src, rj_fld)
       end if
 !
-      end subroutine sel_ini_adams_sscl_w_src_SGS
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine sel_ctr_scl_SGS_dadv_src_adms                          &
-     &         (iflag_SGS, ipol_diffuse, ipol_advect,                   &
-     &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,    &
-     &          dt, coef_exp, coef_src, sph_rj, rj_fld)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: iflag_SGS
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_SGS_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
-      real(kind = kreal), intent(in) :: coef_exp, coef_src
-      real(kind = kreal), intent(in) :: dt
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ipol_source .eq. izero) return
-!
-      if(iflag_SGS .gt. id_SGS_none) then
-        call SGS_scalar_diff_adv_src_adams                              &
-     &     (sph_rj%inod_rj_center, sph_rj%inod_rj_center,               &
-     &      ipol_diffuse, ipol_advect, ipol_SGS_advect, ipol_source,    &
-     &      ipol_scalar, ipol_pre, dt, coef_exp, coef_src,              &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else
-        call sel_ctr_scl_diff_adv_src_adams                             &
-     &     (ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
-     &      ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
-      end if
-!
-      end subroutine sel_ctr_scl_SGS_dadv_src_adms
+      end subroutine sel_ini_adams_scl_w_src_SGS
 !
 ! ----------------------------------------------------------------------
 !

@@ -20,17 +20,17 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine SGS_scalar_diff_adv_src_adams                        &
-!!     &         (ist, ied, ipol_diffuse, ipol_advect,                  &
+!!     &         (ist, ied, inod_center, ipol_diffuse, ipol_advect,     &
 !!     &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,  &
 !!     &          dt, coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
-!!      subroutine SGS_scalar_diff_adv_src_euler                        &
-!!     &         (ist, ied, ipol_diffuse, ipol_advect, ipol_SGS_advect, &
+!!      subroutine SGS_scalar_diff_adv_src_euler(ist, ied, inod_center, &
+!!     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,           &
 !!     &          ipol_source, ipol_scalar, dt, coef_exp, coef_src,     &
 !!     &          n_point, ntot_phys_rj, d_rj)
-!!      subroutine SGS_ini_adams_scalar_w_src                           &
-!!     &         (ist, ied, ipol_advect, ipol_SGS_advect, ipol_source,  &
-!!     &          ipol_pre, coef_src, n_point, ntot_phys_rj, d_rj)
-!!        integer(kind = kint), intent(in) :: ist, ied
+!!      subroutine SGS_ini_adams_scalar_w_src(ist, ied, inod_center,    &
+!!     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,  &
+!!     &          coef_src, n_point, ntot_phys_rj, d_rj)
+!!        integer(kind = kint), intent(in) :: ist, ied, inod_center
 !!        integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
 !!        integer(kind = kint), intent(in) :: ipol_SGS_advect
 !!        integer(kind = kint), intent(in) :: ipol_source
@@ -146,11 +146,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SGS_scalar_diff_adv_src_adams                          &
-     &         (ist, ied, ipol_diffuse, ipol_advect,                    &
+     &         (ist, ied, inod_center, ipol_diffuse, ipol_advect,       &
      &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,    &
      &          dt, coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_source
@@ -175,16 +175,28 @@
      &             + coef_src * d_rj(ist:ied,ipol_source)
 !$omp end parallel workshare
 !
+      if(inod_center .le. 0) return
+      d_rj(inod_center,ipol_scalar) = d_rj(inod_center,ipol_scalar)     &
+     &             + dt * (coef_exp * d_rj(inod_center,ipol_diffuse)    &
+     &                  + adam_0 * ( -d_rj(inod_center,ipol_advect)     &
+     &                              - d_rj(inod_center,ipol_SGS_advect) &
+     &                   + coef_src * d_rj(inod_center,ipol_source) )   &
+     &                     + adam_1 * d_rj(inod_center,ipol_pre) )
+!
+      d_rj(inod_center,ipol_pre) = - d_rj(inod_center,ipol_advect)      &
+     &                             - d_rj(inod_center,ipol_SGS_advect)  &
+     &                  + coef_src * d_rj(inod_center,ipol_source)
+!
       end subroutine SGS_scalar_diff_adv_src_adams
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_scalar_diff_adv_src_euler                          &
-     &         (ist, ied, ipol_diffuse, ipol_advect, ipol_SGS_advect,   &
+      subroutine SGS_scalar_diff_adv_src_euler(ist, ied, inod_center,   &
+     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,             &
      &          ipol_source, ipol_scalar, dt, coef_exp, coef_src,       &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_source
@@ -204,15 +216,22 @@
      &               + coef_src * d_rj(ist:ied,ipol_source) )
 !$omp end parallel workshare
 !
+      if(inod_center .le. 0) return
+      d_rj(inod_center,ipol_scalar) = d_rj(inod_center,ipol_scalar)     &
+     &               + dt * (coef_exp*d_rj(inod_center,ipol_diffuse)    &
+     &                              - d_rj(inod_center,ipol_advect)     &
+     &                              - d_rj(inod_center,ipol_SGS_advect) &
+     &                   + coef_src * d_rj(inod_center,ipol_source) )
+!
       end subroutine SGS_scalar_diff_adv_src_euler
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_ini_adams_scalar_w_src                             &
-     &         (ist, ied, ipol_advect, ipol_SGS_advect, ipol_source,    &
-     &          ipol_pre, coef_src, n_point, ntot_phys_rj, d_rj)
+      subroutine SGS_ini_adams_scalar_w_src(ist, ied, inod_center,      &
+     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
+     &          coef_src, n_point, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: ist, ied, inod_center
       integer(kind = kint), intent(in) :: ipol_advect, ipol_source
       integer(kind = kint), intent(in) :: ipol_SGS_advect
       integer(kind = kint), intent(in) :: ipol_pre
@@ -227,6 +246,11 @@
      &                        - d_rj(ist:ied,ipol_SGS_advect)           &
      &             + coef_src * d_rj(ist:ied,ipol_source)
 !$omp end parallel workshare
+!
+      if(inod_center .le. 0) return
+      d_rj(inod_center,ipol_pre) = -d_rj(inod_center,ipol_advect)       &
+     &                            - d_rj(inod_center,ipol_SGS_advect)   &
+     &                 + coef_src * d_rj(inod_center,ipol_source)
 !
       end subroutine SGS_ini_adams_scalar_w_src
 !
