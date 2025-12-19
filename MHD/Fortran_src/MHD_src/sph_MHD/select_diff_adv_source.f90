@@ -111,14 +111,27 @@
       ied = kr_ed * sph_rj%nidx_rj(2)
 !
       if(coef_adv .eq. zero) then
-        write(*,*) 'coef_adv', coef_adv
         if(ipol_source .eq. izero) then
           call stable_scalar_diffusion(ist, ied, ipol_scalar,           &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+          if(sph_rj%inod_rj_center .gt. 0) then
+            call stable_scalar_diffusion                                &
+     &         (sph_rj%inod_rj_center, sph_rj%inod_rj_center,           &
+     &          ipol_scalar, rj_fld%n_point, rj_fld%ntot_phys,          &
+     &          rj_fld%d_fld)
+          end if
         else
           call stable_scalar_diff_src                                   &
      &       (ist, ied, ipol_source, ipol_scalar, coef_src,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+          if(sph_rj%inod_rj_center .gt. 0) then
+            call stable_scalar_diff_src                                 &
+     &         (sph_rj%inod_rj_center, sph_rj%inod_rj_center,           &
+     &          ipol_source, ipol_scalar, coef_src,                     &
+     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          end if
         end if
 !
       else
@@ -131,6 +144,14 @@
      &        ipol_diffuse, ipol_advect, ipol_source,                   &
      &        ipol_scalar, dt, coef_exp, coef_src,                      &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+          if(sph_rj%inod_rj_center .gt. 0) then
+            call scalar_diff_adv_src_euler                              &
+     &         (sph_rj%inod_rj_center, sph_rj%inod_rj_center,           &
+     &          ipol_diffuse, ipol_advect, ipol_source,                 &
+     &          ipol_scalar, dt, coef_exp, coef_src,                    &
+     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          end if
         end if
       end if
 !
@@ -163,9 +184,13 @@
         call set_ini_adams_scalar_w_src                                 &
      &     (ist, ied, ipol_advect, ipol_source, ipol_pre,               &
      &      coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call center_ini_adams_scalar_w_src(sph_rj%inod_rj_center,       &
-     &      ipol_advect, ipol_source, ipol_pre,                         &
-     &      coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+        if(sph_rj%inod_rj_center .gt. 0) then
+          call set_ini_adams_scalar_w_src                               &
+     &       (sph_rj%inod_rj_center, sph_rj%inod_rj_center,             &
+     &        ipol_advect, ipol_source, ipol_pre, coef_src,             &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
       end if
 !
       end subroutine sel_ini_adams_scalar_w_src
@@ -188,46 +213,14 @@
 !
 !
       if(ipol_source .eq. izero) return
-      call center_scl_diff_adv_src_adams(sph_rj%inod_rj_center,         &
+      if(sph_rj%inod_rj_center .eq. izero) return
+      call scalar_diff_adv_src_adams                                    &
+     &   (sph_rj%inod_rj_center, sph_rj%inod_rj_center,                 &
      &    ipol_diffuse, ipol_advect, ipol_source,                       &
      &    ipol_scalar, ipol_pre, dt, coef_exp, coef_src,                &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine sel_ctr_scl_diff_adv_src_adams
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_ctr_scl_diff_adv_src_euler                         &
-     &         (ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar
-      real(kind = kreal), intent(in) :: coef_exp, coef_adv, coef_src
-      real(kind = kreal), intent(in) :: dt
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(coef_adv .eq. zero) then
-        write(*,*) 'coef_adv', coef_adv
-        if(ipol_source .eq. izero) then
-          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_scalar) = zero
-        else
-          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_scalar)               &
-     &     = coef_src * rj_fld%d_fld(sph_rj%inod_rj_center,ipol_source)
-        end if
-!
-      else if(ipol_source .gt. izero) then
-        call center_scl_diff_adv_src_euler(sph_rj%inod_rj_center,       &
-     &      ipol_diffuse, ipol_advect, ipol_source,                     &
-     &      ipol_scalar, dt, coef_exp, coef_src,                        &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      end subroutine sel_ctr_scl_diff_adv_src_euler
 !
 ! ----------------------------------------------------------------------
 !
