@@ -7,38 +7,41 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine sel_explicit_sph_SGS_MHD                             &
-!!     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS, SPH_MHD)
-!!        type(fdm_matrices), intent(in) :: r_2nd
+!!      subroutine sel_explicit_sph_SGS_MHD(time_d, SGS_par, sph,       &
+!!     &          MHD_prop, sph_MHD_bc, ipol, ipol_LES, rj_fld)
+!!        type(time_data), intent(in) :: time_d
+!!        type(sph_grids), intent(in) ::  sph
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
-!!
-!!@param i_step  time step
 !
       module momentum_w_SGS_explicit
 !
       use m_precision
 !
-      use t_SGS_control_parameter
       use t_control_parameter
       use t_physical_property
-      use t_SPH_SGS_structure
-      use t_SPH_mesh_field_data
+      use t_spheric_parameter
+      use t_time_data
+!
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_phys_data
       use t_phys_address
+      use t_SGS_control_parameter
       use t_SGS_model_addresses
 !
       implicit  none
 !
       private :: sel_explicit_sph_SGS_momentum
       private :: sel_explicit_sph_SGS_induction
-      private :: sel_explicit_sph_SGS_temp, sel_explicit_sph_SGS_comp
+      private :: sel_explicit_sph_SGS_scalar
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,32 +49,37 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine sel_explicit_sph_SGS_MHD(time_d, SGS_par, sph,         &
+     &          MHD_prop, sph_MHD_bc, ipol, ipol_LES, rj_fld)
 !
-      subroutine sel_explicit_sph_SGS_MHD                               &
-     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS, SPH_MHD)
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: dt
-!
+      type(time_data), intent(in) :: time_d
+      type(sph_grids), intent(in) ::  sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(SPH_SGS_structure), intent(in) :: SPH_SGS
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_explicit_sph_SGS_momentum                                &
-     &   (i_step, dt, SPH_MHD%sph, MHD_prop%fl_prop,                    &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld)
-      call sel_explicit_sph_SGS_induction                               &
-     &   (i_step, dt, SPH_SGS%SGS_par, MHD_prop%cd_prop,                &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
+      call sel_explicit_sph_SGS_momentum(time_d, sph%sph_rj,            &
+     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, ipol, rj_fld)
+      call sel_explicit_sph_SGS_induction(time_d, SGS_par,              &
+     &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
-      call sel_explicit_sph_SGS_temp(i_step, dt, SPH_SGS%SGS_par,       &
-     &    SPH_MHD%sph, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,           &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
-      call sel_explicit_sph_SGS_comp(i_step, dt, SPH_SGS%SGS_par,       &
-     &    SPH_MHD%sph, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,           &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
+      call sel_explicit_sph_SGS_scalar                                  &
+     &   (time_d, sph%sph_rj, SGS_par%model_p%SGS_heat,                 &
+     &     MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,                       &
+     &    ipol%diffusion%i_t_diffuse, ipol%forces%i_h_advect,           &
+     &    ipol_LES%div_SGS%i_SGS_h_flux, ipol%base%i_heat_source,       &
+     &    ipol%base%i_temp, ipol%exp_work%i_pre_heat, rj_fld)
+      call sel_explicit_sph_SGS_scalar                                  &
+     &   (time_d, sph%sph_rj, SGS_par%model_p%SGS_light,                &
+     &    MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,                        &
+     &    ipol%diffusion%i_c_diffuse, ipol%forces%i_c_advect,           &
+     &    ipol_LES%div_SGS%i_SGS_c_flux, ipol%base%i_light_source,      &
+     &    ipol%base%i_light, ipol%exp_work%i_pre_composit, rj_fld)
 !
       end subroutine sel_explicit_sph_SGS_MHD
 !
@@ -79,14 +87,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_SGS_momentum                          &
-     &         (i_step, dt, sph, fl_prop, sph_bc_U, ipol, rj_fld)
+     &         (time_d, sph_rj, fl_prop, sph_bc_U, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
 !
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: dt
-!
-      type(sph_grids), intent(in) :: sph
+      type(time_data), intent(in) :: time_d
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol
@@ -95,33 +101,31 @@
 !
 !
       if(fl_prop%iflag_scheme .eq. id_explicit_euler) then
-        call cal_vorticity_eq_euler(sph%sph_rj, fl_prop, sph_bc_U,      &
+        call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,          &
      &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if(i_step .eq. 1) then
-        call cal_vorticity_eq_euler(sph%sph_rj, fl_prop, sph_bc_U,      &
+     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else if(time_d%i_time_step .eq. 1) then
+        call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,          &
      &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call set_ini_adams_inertia(fl_prop, ipol%exp_work,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_vorticity_eq_adams(sph%sph_rj, fl_prop, sph_bc_U,      &
+        call cal_vorticity_eq_adams(sph_rj, fl_prop, sph_bc_U,          &
      &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine sel_explicit_sph_SGS_momentum
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_explicit_sph_SGS_induction(i_step, dt, SGS_par,    &
+      subroutine sel_explicit_sph_SGS_induction(time_d, SGS_par,        &
      &          cd_prop, ipol, ipol_LES, rj_fld)
 !
       use sel_diff_induction_MHD
 !
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: dt
-!
+      type(time_data), intent(in) :: time_d
       type(SGS_paremeters), intent(in) :: SGS_par
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: ipol
@@ -132,16 +136,16 @@
 !
       if(   cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler            &
      & .or. cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
-        call sel_diff_induction_MHD_euler(SGS_par%model_p, dt,          &
+        call sel_diff_induction_MHD_euler(SGS_par%model_p, time_d%dt,   &
      &      cd_prop, ipol, ipol_LES, rj_fld)
-      else if(i_step .eq. 1) then
-        call sel_diff_induction_MHD_euler(SGS_par%model_p, dt,          &
+      else if(time_d%i_time_step .eq. 1) then
+        call sel_diff_induction_MHD_euler(SGS_par%model_p, time_d%dt,   &
      &      cd_prop, ipol, ipol_LES, rj_fld)
-        call sel_ini_adams_mag_induct                                   &
-     &     (SGS_par%model_p, cd_prop, ipol, ipol_LES, rj_fld)
+        call sel_ini_adams_mag_induct(SGS_par%model_p, cd_prop,         &
+     &                                ipol, ipol_LES, rj_fld)
       else
-        call sel_diff_induction_MHD_adams                               &
-     &    (SGS_par%model_p, dt, cd_prop, ipol, ipol_LES, rj_fld)
+        call sel_diff_induction_MHD_adams(SGS_par%model_p, time_d%dt,   &
+     &      cd_prop, ipol, ipol_LES, rj_fld)
       end if
 !
       end subroutine sel_explicit_sph_SGS_induction
@@ -149,91 +153,62 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_explicit_sph_SGS_temp(i_step, dt, SGS_par,         &
-     &          sph, ht_prop, sph_bc_T, ipol, ipol_LES, rj_fld)
+      subroutine sel_explicit_sph_SGS_scalar                            &
+     &         (time_d, sph_rj, SGS_scalar, scl_prop, sph_bc_S,         &
+     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,             &
+     &          ipol_source, ipol_scalar, ipol_pre, rj_fld)
 !
-      use explicit_scalars_sph_w_SGS
+      use select_SGS_diff_adv_source
+      use select_diff_adv_source
 !
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: dt
-!
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_grids), intent(in) :: sph
-      type(scalar_property), intent(in) :: ht_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T
-      type(phys_address), intent(in) :: ipol
-      type(SGS_model_addresses), intent(in) :: ipol_LES
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(ht_prop%iflag_scheme .eq. id_no_evolution) return
-      if(ht_prop%iflag_scheme .eq. id_explicit_euler) then
-        call explicit_temp_sph_SGS_euler(dt, SGS_par%model_p%SGS_heat,  &
-     &      sph%sph_rj, ht_prop, sph_bc_T,                              &
-     &      ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,   &
-     &      rj_fld)
-      else if(i_step .eq. 1) then
-        call explicit_temp_sph_SGS_euler(dt, SGS_par%model_p%SGS_heat,  &
-     &      sph%sph_rj, ht_prop, sph_bc_T,                              &
-     &      ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,   &
-     &      rj_fld)
-        call first_temp_SGS_prev_adams(SGS_par%model_p%SGS_heat,        &
-     &      sph%sph_rj, ht_prop, sph_bc_T,                              &
-     &      ipol%base, ipol%exp_work, ipol%forces, ipol_LES%div_SGS,    &
-     &      rj_fld)
-      else
-        call explicit_temp_sph_SGS_adams(dt, SGS_par%model_p%SGS_heat,  &
-     &      sph%sph_rj, ht_prop, sph_bc_T,                              &
-     &      ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
-     &      ipol_LES%div_SGS, rj_fld)
-      end if
-!
-      end subroutine sel_explicit_sph_SGS_temp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_explicit_sph_SGS_comp(i_step, dt, SGS_par,         &
-     &          sph, cp_prop, sph_bc_C, ipol, ipol_LES, rj_fld)
-!
-      use explicit_scalars_sph_w_SGS
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: dt
-!
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_grids), intent(in) :: sph
-      type(scalar_property), intent(in) :: cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_C
-      type(phys_address), intent(in) :: ipol
-      type(SGS_model_addresses), intent(in) :: ipol_LES
+      type(time_data), intent(in) :: time_d
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(SGS_model_control_parameter), intent(in) :: SGS_scalar
+      type(scalar_property), intent(in) :: scl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_S
+      integer(kind = kint), intent(in) :: ipol_diffuse
+      integer(kind = kint), intent(in) :: ipol_advect, ipol_SGS_advect
+      integer(kind = kint), intent(in) :: ipol_source
+      integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
 !
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ist, ied
 !
-      if(cp_prop%iflag_scheme .eq. id_no_evolution) return
-      if(cp_prop%iflag_scheme .eq. id_explicit_euler) then
-        call explicit_comp_sph_SGS_euler(dt, SGS_par%model_p%SGS_light, &
-     &      sph%sph_rj, cp_prop, sph_bc_C,                              &
-     &      ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,   &
-     &      rj_fld)
-      else if(i_step .eq. 1) then
-        call explicit_comp_sph_SGS_euler(dt, SGS_par%model_p%SGS_light, &
-     &      sph%sph_rj, cp_prop, sph_bc_C,                              &
-     &      ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,   &
-     &      rj_fld)
-        call first_comp_SGS_prev_adams(SGS_par%model_p%SGS_light,       &
-     &      sph%sph_rj, cp_prop, sph_bc_C,                              &
-     &      ipol%base, ipol%exp_work, ipol%forces, ipol_LES%div_SGS,    &
-     &      rj_fld)
+!
+      ist = (sph_bc_S%kr_in-1) * sph_rj%nidx_rj(2) + 1
+      ied =  sph_bc_S%kr_out *   sph_rj%nidx_rj(2)
+!
+      if(scl_prop%iflag_scheme .eq. id_no_evolution) return
+!
+      if(scl_prop%coef_advect .eq. zero) then
+        call sel_exp_static_src_euler(ist, ied, sph_rj%inod_rj_center,  &
+     &      ipol_source, ipol_scalar, scl_prop%coef_source, rj_fld)
+      else if(scl_prop%iflag_scheme .eq. id_explicit_euler) then
+        call sel_scl_diff_adv_SGS_src_elr(SGS_scalar%iflag_SGS_flux,    &
+     &      ist, ied, sph_rj%inod_rj_center, ipol_diffuse,              &
+     &      ipol_advect, ipol_SGS_advect, ipol_source, ipol_scalar,     &
+     &      time_d%dt, scl_prop%coef_exp, scl_prop%coef_advect,         &
+     &      scl_prop%coef_source, rj_fld)
+      else if(time_d%i_time_step .eq. 1) then
+        call sel_scl_diff_adv_SGS_src_elr(SGS_scalar%iflag_SGS_flux,    &
+     &      ist, ied, sph_rj%inod_rj_center, ipol_diffuse,              &
+     &      ipol_advect, ipol_SGS_advect, ipol_source, ipol_scalar,     &
+     &      time_d%dt, scl_prop%coef_exp, scl_prop%coef_advect,         &
+     &      scl_prop%coef_source, rj_fld)
+        call sel_ini_adams_scl_w_src_SGS                                &
+     &     (SGS_scalar%iflag_SGS_flux, ist, ied, sph_rj%inod_rj_center, &
+     &      ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,        &
+     &      scl_prop%coef_source, rj_fld)
       else
-        call explicit_comp_sph_SGS_adams(dt, SGS_par%model_p%SGS_light, &
-     &      sph%sph_rj, cp_prop, sph_bc_C,                              &
-     &      ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
-     &      ipol_LES%div_SGS, rj_fld)
+        call sel_scl_diff_adv_SGS_src_adams                             &
+     &     (SGS_scalar%iflag_SGS_flux, ist, ied, sph_rj%inod_rj_center, &
+     &      ipol_diffuse, ipol_advect, ipol_SGS_advect,                 &
+     &      ipol_source, ipol_scalar, ipol_pre, time_d%dt,              &
+     &      scl_prop%coef_exp, scl_prop%coef_source, rj_fld)
       end if
 !
-      end subroutine sel_explicit_sph_SGS_comp
+      end subroutine sel_explicit_sph_SGS_scalar
 !
 ! ----------------------------------------------------------------------
 !

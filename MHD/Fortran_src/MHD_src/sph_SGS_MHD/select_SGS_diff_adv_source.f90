@@ -136,7 +136,7 @@
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
       else
-        call sel_exp_scl_diff_adv_src_euler(ist, ied, inod_center,      &
+        call sel_scalar_diff_adv_src_euler(ist, ied, inod_center,       &
      &      ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
      &      dt, coef_exp, coef_src, rj_fld)
       end if

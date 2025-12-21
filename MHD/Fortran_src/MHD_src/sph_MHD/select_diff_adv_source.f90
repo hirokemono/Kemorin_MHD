@@ -12,9 +12,6 @@
 !!     &          ipol_pre, dt, coef_exp, coef_src, rj_fld)
 !!      subroutine sel_scalar_diff_adv_src_euler(ist, ied, inod_center, &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          dt, coef_exp, coef_adv, coef_src, rj_fld)
-!!      subroutine sel_exp_scl_diff_adv_src_euler(ist, ied, inod_center,&
-!!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
 !!     &          dt, coef_exp, coef_src, rj_fld)
 !!      subroutine sel_exp_static_src_euler(ist, ied, inod_center,      &
 !!     &          ipol_source, ipol_scalar, coef_src, rj_fld)
@@ -85,35 +82,6 @@
 !
       subroutine sel_scalar_diff_adv_src_euler(ist, ied, inod_center,   &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          dt, coef_exp, coef_adv, coef_src, rj_fld)
-!
-      use cal_diff_adv_src_explicit
-!
-      integer(kind = kint), intent(in) :: ist, ied, inod_center
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar
-      real(kind = kreal), intent(in) :: coef_exp, coef_adv, coef_src
-      real(kind = kreal), intent(in) :: dt
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(coef_adv .eq. zero) then
-        call sel_exp_static_src_euler(ist, ied, inod_center,            &
-     &      ipol_source, ipol_scalar, coef_src, rj_fld)
-      else
-        call sel_exp_scl_diff_adv_src_euler(ist, ied, inod_center,      &
-     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          dt, coef_exp, coef_src, rj_fld)
-      end if
-!
-      end subroutine sel_scalar_diff_adv_src_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_exp_scl_diff_adv_src_euler(ist, ied, inod_center,  &
-     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
      &          dt, coef_exp, coef_src, rj_fld)
 !
       use cal_diff_adv_src_explicit
@@ -139,7 +107,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      end subroutine sel_exp_scl_diff_adv_src_euler
+      end subroutine sel_scalar_diff_adv_src_euler
 !
 ! ----------------------------------------------------------------------
 !
