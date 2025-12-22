@@ -100,7 +100,13 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(fl_prop%iflag_scheme .eq. id_explicit_euler) then
+      if(fl_prop%iflag_scheme .eq. id_no_evolution) return
+!
+      if(fl_prop%coef_velo .eq. zero) then
+        call sel_exp_static_vorticity_euler                             &
+     &     (sph_rj, fl_prop, sph_bc_U, ipol%base, ipol%exp_work,        &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else if(fl_prop%iflag_scheme .eq. id_explicit_euler) then
         call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,          &
      &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
      &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -124,6 +130,7 @@
      &          cd_prop, ipol, ipol_LES, rj_fld)
 !
       use sel_diff_induction_MHD
+      use cal_explicit_terms
 !
       type(time_data), intent(in) :: time_d
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -134,8 +141,14 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(   cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler            &
-     & .or. cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
+      if(cd_prop%iflag_Bevo_scheme .eq. id_no_evolution) return
+!
+      if(cd_prop%coef_magne .eq. zero) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                  'sel_exp_static_induction_euler'
+        call sel_exp_static_induction_euler(ipol%base, ipol%forces,     &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
         call sel_diff_induction_MHD_euler(SGS_par%model_p, time_d%dt,   &
      &      cd_prop, ipol, ipol_LES, rj_fld)
       else if(time_d%i_time_step .eq. 1) then
