@@ -39,7 +39,6 @@
 !
       implicit  none
 !
-      private :: sel_explicit_sph_SGS_momentum
       private :: sel_explicit_sph_SGS_induction
       private :: sel_explicit_sph_SGS_scalar
 !
@@ -52,6 +51,8 @@
       subroutine sel_explicit_sph_SGS_MHD(time_d, SGS_par, sph,         &
      &          MHD_prop, sph_MHD_bc, ipol, ipol_LES, rj_fld)
 !
+      use cal_momentum_eq_explicit
+!
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) ::  sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -63,7 +64,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_explicit_sph_SGS_momentum(time_d, sph%sph_rj,            &
+      call sel_explicit_sph_momentum(time_d, sph%sph_rj,                &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, ipol, rj_fld)
       call sel_explicit_sph_SGS_induction(time_d, SGS_par,              &
      &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
@@ -84,46 +85,6 @@
       end subroutine sel_explicit_sph_SGS_MHD
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine sel_explicit_sph_SGS_momentum                          &
-     &         (time_d, sph_rj, fl_prop, sph_bc_U, ipol, rj_fld)
-!
-      use cal_vorticity_terms_adams
-!
-      type(time_data), intent(in) :: time_d
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(phys_address), intent(in) :: ipol
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(fl_prop%iflag_scheme .eq. id_no_evolution) return
-!
-      if(fl_prop%coef_velo .eq. zero) then
-        call sel_exp_static_vorticity_euler                             &
-     &     (sph_rj, fl_prop, sph_bc_U, ipol%base, ipol%exp_work,        &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if(fl_prop%iflag_scheme .eq. id_explicit_euler) then
-        call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,          &
-     &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if(time_d%i_time_step .eq. 1) then
-        call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,          &
-     &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call set_ini_adams_inertia(fl_prop, ipol%exp_work,              &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else
-        call cal_vorticity_eq_adams(sph_rj, fl_prop, sph_bc_U,          &
-     &      ipol%base, ipol%exp_work, ipol%diffusion,                   &
-     &      time_d%dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      end subroutine sel_explicit_sph_SGS_momentum
-!
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_SGS_induction(time_d, SGS_par,        &
