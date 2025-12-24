@@ -71,6 +71,7 @@
       use sph_radial_grad_4_velocity
       use sph_radial_grad_4_magne
       use sph_update_after_evolution
+      use set_evoluved_boundaries
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) ::  sph
@@ -86,10 +87,6 @@
 !
 !      integer(kind = kint) :: i, j, k, inod
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_MHD_evolved_boundaries'
-      call set_MHD_evolved_boundaries(time_d, sph%sph_rj,               &
-     &                                MHD_prop, sph_MHD_bc)
-!
 !*-----  time evolution   -------------
 !*
 !      call check_ws_spectr(sph%sph_rj, ipol, rj_fld)
@@ -97,6 +94,10 @@
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%base%i_vort to ipol%base%i_vort+2
 !         Solution: ipol%base%i_velo to ipol%base%i_velo+2
+        if (iflag_debug .gt. 0)                                         &
+     &       write(*,*) 'set_evo_vector_boundaries Velocity'
+        call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank(sph%sph_rj, r_2nd,          &
@@ -111,6 +112,8 @@
 !  Input: ipol%base%i_temp,  Solution: ipol%base%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+        call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T)
         call cal_sol_scalar_sph_crank                                   &
      &     (time_d%dt, sph%sph_rj, MHD_prop%ht_prop,                    &
      &      refs%ref_field, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,      &
@@ -121,6 +124,10 @@
 !  Input: ipol%base%i_light,  Solution: ipol%base%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &                'set_evo_scalar_boundaries Composition'
+        call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C)
         call cal_sol_scalar_sph_crank                                   &
      &     (time_d%dt, sph%sph_rj, MHD_prop%cp_prop,                    &
      &      refs%ref_field, sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,      &
@@ -132,6 +139,8 @@
 !  Solution: ipol%base%i_magne, to ipol%base%i_magne+2
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+        call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B)
         call cal_sol_magne_sph_crank                                    &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,   &
      &      sph_MHD_mat%band_bp_evo, sph_MHD_mat%band_bt_evo,           &
@@ -181,6 +190,7 @@
       use sph_radial_grad_4_velocity
       use sph_radial_grad_4_magne
       use sph_update_after_evolution
+      use set_evoluved_boundaries
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) ::  sph
@@ -194,11 +204,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_MHD_evolved_boundaries'
-      call set_MHD_evolved_boundaries                                   &
-     &   (time_d, sph%sph_rj, MHD_prop, sph_MHD_bc)
-!
       if(ipol%base%i_vort .gt. 0) then
+        if (iflag_debug .gt. 0)                                         &
+     &       write(*,*) 'set_evo_vector_boundaries Velocity'
+        call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
         call const_grad_vp_and_vorticity(sph%sph_rj, r_2nd,             &
      &     sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_fdms_U, sph_MHD_bc%bcs_U, &
      &     leg%g_sph_rj, ipol%base%i_velo, ipol%base%i_vort, rj_fld)
@@ -211,11 +221,24 @@
      &      sph_MHD_bc%bc_fdms_U, leg, ipol, rj_fld)
       end if
 !
+      if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &                'set_evo_scalar_boundaries Temp'
+        call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T)
+      end if
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
       call update_after_heat_sph(sph%sph_rj, r_2nd, MHD_prop%ht_prop,   &
      &    refs%iref_diffusivity, refs%iref_grad_diffusivity,            &
      &    refs%ref_field, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,        &
      &    sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
+!
+      if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &                'set_evo_scalar_boundaries Composition'
+        call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C)
+      end if
       if(iflag_debug.gt.0) write(*,*) 'update_after_composit_sph'
       call update_after_composit_sph                                    &
      &   (sph%sph_rj, r_2nd, MHD_prop%cp_prop,                          &
@@ -224,6 +247,8 @@
      &    sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
 !
       if(ipol%base%i_current .gt. 0) then
+        call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
+     &      sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B)
         call const_grad_bp_and_current                                  &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,   &
      &      leg%g_sph_rj, ipol%base%i_magne, ipol%base%i_current,       &
