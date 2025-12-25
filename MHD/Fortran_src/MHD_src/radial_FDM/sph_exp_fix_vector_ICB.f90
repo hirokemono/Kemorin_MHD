@@ -13,6 +13,17 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine set_sph_filter_vect_to_center(nidx_rj, Vp_ICB,       &
 !!     &          is_fld, n_point, ntot_phys_rj, d_rj)
+!!        integer(kind = kint), intent(in) :: nidx_rj(2)
+!!        integer(kind = kint), intent(in) :: idx_rj(nidx_rj(2),3)
+!!        integer(kind = kint), intent(in) :: kr_in
+!!        integer(kind = kint), intent(in) :: is_fld
+!!        real(kind = kreal), intent(in) :: r_ICB(0:2)
+!!        real(kind = kreal), intent(in) :: radius_rj(nidx_rj(1))
+!!        real(kind = kreal), intent(in) :: Vp_ICB(nidx_rj(2))
+!!        real(kind = kreal), intent(in) :: Vd_ICB(nidx_rj(2))
+!!        real(kind = kreal), intent(in) :: Vt_ICB(nidx_rj(2))
+!!        integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+!!        real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !!
 !!      subroutine cal_sph_nod_icb_fixed_rot2(jmax, g_sph_rj,           &
 !!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,      &
@@ -21,6 +32,20 @@
 !!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,      &
 !!     &          coef_d, is_fld, is_diffuse, n_point, ntot_phys_rj,    &
 !!     &          d_rj)
+!!      subroutine cal_sph_icb_fix_dr_w_diffuse(jmax, g_sph_rj, kr_in,  &
+!!     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,     &
+!!     &          is_velo, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
+!!        integer(kind = kint), intent(in) :: jmax, kr_in
+!!        integer(kind = kint), intent(in) :: is_fld, is_rot
+!!        integer(kind = kint), intent(in) :: is_fld, is_diffuse
+!!        integer(kind = kint), intent(in) :: is_velo, is_w_diffuse
+!!        real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
+!!        real(kind = kreal), intent(in) :: r_ICB(0:2)
+!!        real(kind = kreal), intent(in) :: coef_d
+!!        real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!!        real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!!        integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+!!        real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !!@endverbatim
 !!
 !!@n @param n_point  Number of points for spectrum data
@@ -211,6 +236,40 @@
 !$omp end parallel do
 !
       end subroutine cal_sph_nod_icb_fixed_diffuse2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sph_icb_fix_dr_w_diffuse(jmax, g_sph_rj, kr_in,    &
+     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,       &
+     &          is_velo, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: is_velo, is_w_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
+      real(kind = kreal), intent(in) :: coef_d
+      real(kind = kreal), intent(in) :: r_ICB(0:2)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod, j
+      real(kind = kreal) :: d2t_dr2
+!
+!
+!$omp parallel do private(inod,j,d2t_dr2)
+      do j = 1, jmax
+        inod = j + (kr_in-1) * jmax
+!
+        d2t_dr2 = - fdm2_fix_dr_ICB(-1,3) * d_rj(inod,is_velo+1)
+        d_rj(inod,is_w_diffuse+2)                                       &
+     &          = coef_d * (fdm2_fix_fld_ICB( 0,3) * d2t_dr2            &
+     &                    - g_sph_rj(j,3)*r_ICB(2) * d2t_dr2)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_sph_icb_fix_dr_w_diffuse
 !
 ! -----------------------------------------------------------------------
 !
