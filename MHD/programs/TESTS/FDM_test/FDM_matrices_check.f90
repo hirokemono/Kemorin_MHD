@@ -127,10 +127,10 @@
       sph_MHD_bc1%sph_bc_U%kr_in = 1
       sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_sph_fill_center
 !      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_free_slip
-!      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_fixed_velo
+!      sph_MHD_bc1%sph_bc_U%iflag_icb = iflag_non_slip
 !
 !      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_free_slip
-      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_fixed_velo
+      sph_MHD_bc1%sph_bc_U%iflag_cmb = iflag_non_slip
 !
       call const_radial_mat7_vpol_press(dt, sph1%sph_rj, SPH_WK1%r_2nd, &
      &    SPH_WK1%r_n2e_3rd, SPH_WK1%r_e2n_1st, fl_prop1,               &

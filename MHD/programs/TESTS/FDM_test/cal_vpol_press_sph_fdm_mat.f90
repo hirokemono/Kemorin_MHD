@@ -122,7 +122,7 @@
 !
 !      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_non_slip) then
       else
         call cal_sph_vpol_press_sph_mat_ICB                             &
      &     (fl_prop%flag_viscous_variation,                             &
@@ -142,7 +142,7 @@
      &      band_vsp_evo)
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_non_slip) then
       else
         call cal_sph_vpol_press_sph_mat_CMB                             &
      &     (fl_prop%flag_viscous_variation,                             &
@@ -254,7 +254,7 @@
 !
 !      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
+!      else if(sph_bc_U%iflag_icb .eq. iflag_non_slip) then
       else
         call cal_exp_sph_vp_val_diffuse_ICB                             &
      &     (fl_prop%flag_viscous_variation,                             &
@@ -274,7 +274,7 @@
      &      ipol_base, rj_fld, e_hdiv_viscous)
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
-!      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
+!      else if(sph_bc_U%iflag_cmb .eq. iflag_non_slip) then
       else
         call cal_exp_sph_vp_val_diffuse_CMB                             &
      &     (fl_prop%flag_viscous_variation,                             &
