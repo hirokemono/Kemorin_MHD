@@ -87,7 +87,7 @@
         call cal_sph_nod_cmb_free_v_and_w                               &
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
      &      fdm2_free_CMB%dmat_vp, fdm2_free_CMB%dmat_vt,               &
-     &      is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_velo), d_rj(1,is_vort))
       else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
@@ -132,7 +132,7 @@
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_vpol2                                 &
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_CMB%dmat_vp,  &
-     &      is_fld, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_fld))
       else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
@@ -173,7 +173,7 @@
         call cal_sph_nod_cmb_free_rot2(sph_rj%nidx_rj(2), g_sph_rj,     &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
      &      fdm2_free_CMB%dmat_vp, fdm2_free_CMB%dmat_vt,               &
-     &      is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_fld), d_rj(1,is_rot))
       else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field                &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
         call cal_sph_nod_cmb_fixed_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
@@ -222,9 +222,8 @@
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_diffuse2(sph_rj%nidx_rj(2), g_sph_rj, &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
-     &      fdm2_free_CMB%dmat_vp, fdm2_free_CMB%dmat_vt,               &
-     &      coef_diffuse, is_velo, is_viscous,                          &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      fdm2_free_CMB%dmat_vp, fdm2_free_CMB%dmat_vt, coef_diffuse, &
+     &      n_point, d_rj(1,is_velo), d_rj(1,is_viscous))
       else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field                &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
         call cal_sph_nod_cmb_fixed_diffuse2                             &
@@ -276,8 +275,8 @@
         call cal_sph_nod_cmb_free_w_diffuse2                            &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_fld_CMB, &
-     &      fdm2_free_CMB%dmat_vt, coef_diffuse, is_vort, is_w_diffuse, &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      fdm2_free_CMB%dmat_vt, coef_diffuse,                        &
+     &      n_point, d_rj(1,is_vort), d_rj(1,is_w_diffuse))
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field) then
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_non_slip) then
