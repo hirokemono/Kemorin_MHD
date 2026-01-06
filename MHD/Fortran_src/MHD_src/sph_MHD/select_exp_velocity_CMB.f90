@@ -213,10 +213,6 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: ids_viscous
-!
-!
-      ids_viscous = is_viscous + 1
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_diffuse2(sph_rj%nidx_rj(2), g_sph_rj, &
@@ -238,8 +234,8 @@
      &      coef_diffuse, n_point, d_rj(1,is_velo), d_rj(1,is_viscous))
       end if
       call cal_dsdr_sph_no_bc_out_2(sph_rj%nidx_rj(2), sph_bc_U%kr_out, &
-     &    sph_bc_U%fdm2_fix_fld_CMB, is_viscous, ids_viscous,           &
-     &    n_point, ntot_phys_rj, d_rj)
+     &    sph_bc_U%fdm2_fix_fld_CMB, n_point, d_rj(1,is_viscous),       &
+     &    d_rj(1,is_viscous+1))
 !
       end subroutine sel_CMB_sph_viscous_diffusion
 !
@@ -266,8 +262,6 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: ids_w_diffuse
-!
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_w_diffuse2                            &
@@ -286,10 +280,9 @@
      &      d_rj(1,is_w_diffuse))
       end if
 !
-      ids_w_diffuse = is_w_diffuse + 1
       call cal_dsdr_sph_no_bc_out_2(sph_rj%nidx_rj(2), sph_bc_U%kr_out, &
-     &    sph_bc_U%fdm2_fix_fld_CMB, is_w_diffuse, ids_w_diffuse,       &
-     &    n_point, ntot_phys_rj, d_rj)
+     &    sph_bc_U%fdm2_fix_fld_CMB, n_point, d_rj(1,is_w_diffuse),     &
+     &    d_rj(1,is_w_diffuse+1))
 !
       end subroutine sel_CMB_sph_vort_diffusion
 !

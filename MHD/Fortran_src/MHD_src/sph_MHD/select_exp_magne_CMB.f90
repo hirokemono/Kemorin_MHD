@@ -249,8 +249,6 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: ids_ohmic
-!
 !
       if(sph_bc_B%iflag_cmb .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_diffuse2                               &
@@ -274,10 +272,9 @@
      &      n_point, ntot_phys_rj, d_rj)
       end if
 !
-      ids_ohmic = is_ohmic + 1
       call cal_dsdr_sph_no_bc_out_2(sph_rj%nidx_rj(2), sph_bc_B%kr_out, &
-     &    sph_bc_B%fdm2_fix_fld_CMB, is_ohmic, ids_ohmic,               &
-     &    n_point, ntot_phys_rj, d_rj)
+     &    sph_bc_B%fdm2_fix_fld_CMB, n_point, d_rj(1,is_ohmic),         &
+     &    d_rj(1,is_ohmic+1))
 !
       end subroutine sel_CMB_sph_magnetic_diffusion
 !

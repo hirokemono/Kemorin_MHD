@@ -171,13 +171,11 @@
         call dsdr_sph_fix_scalar_out_2                                  &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      CMB_Sspec%S_BC, is_fld, is_grad,                            &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      CMB_Sspec%S_BC, n_point, d_rj(1,is_fld), d_rj(1,is_grad))
         call dsdr_sph_lm0_fix_scalar_out_2                              &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),               &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      CMB_Sspec%S_BC, is_fld, is_grad,                            &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      CMB_Sspec%S_BC, n_point, d_rj(1,is_fld), d_rj(1,is_grad))
       end if
 !
       end subroutine sel_CMB_radial_grad_scalar
@@ -212,11 +210,9 @@
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
-        call cal_sph_div_flux_4_fix_out                                 &
-     &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
-     &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      CMB_Sspec%S_BC, is_flux, is_advect,                         &
-     &      n_point, ntot_phys_rj, d_rj)
+        call cal_sph_div_flux_4_fix_out(sph_rj%nidx_rj(2), g_sph_rj,    &
+     &     sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,        &
+     &     CMB_Sspec%S_BC, n_point, d_rj(1,is_flux), d_rj(1,is_advect))
       end if
 !
       end subroutine sel_CMB_sph_scalar_advect
