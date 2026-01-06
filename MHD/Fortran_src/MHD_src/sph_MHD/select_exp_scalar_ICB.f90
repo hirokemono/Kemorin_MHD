@@ -106,8 +106,7 @@
 !
       if(sph_bc%iflag_icb .eq. iflag_sph_filter_center) then
         call set_sph_filter_vect_to_center                              &
-     &     (sph_rj%nidx_rj, ICB_Sspec%S_BC, is_field,                   &
-     &      n_point, ntot_phys_rj, d_rj)
+     &     (sph_rj%nidx_rj, ICB_Sspec%S_BC, n_point, d_rj(1,is_field))
       end if
 !
 !   Set RHS vector for ICB
