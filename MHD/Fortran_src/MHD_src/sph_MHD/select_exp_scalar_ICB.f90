@@ -115,13 +115,11 @@
      &  .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
         call s_set_fixed_scalar_sph(sph_rj%nidx_rj(2),                  &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
-     &      ione, sph_bc%kr_in, is_field,                               &
-     &      ICB_Sspec%S_BC, ICB_Sspec%S_CTR,                            &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      ione, sph_bc%kr_in, ICB_Sspec%S_BC, ICB_Sspec%S_CTR,        &
+     &      n_point, d_rj(1,is_field))
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        call cal_sph_fixed_center                                       &
-     &     (sph_rj%inod_rj_center, sph_bc%CTR_fld, is_field,            &
-     &      n_point, ntot_phys_rj, d_rj(1,is_field))
+        call cal_sph_fixed_center(sph_rj%inod_rj_center,                &
+     &      sph_bc%CTR_fld, n_point, d_rj(1,is_field))
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                    &
      &     .and. coef_f .ne. 0.0d0) then
         if(flag_val_diffuse) then
