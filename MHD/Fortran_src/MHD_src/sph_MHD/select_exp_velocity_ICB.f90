@@ -115,12 +115,11 @@
         call cal_sph_nod_icb_rotate_velo2                               &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%idx_rj_degree_one,        &
      &      sph_rj%nidx_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,             &
-     &      sph_rj%radius_1d_rj_r, is_velo,                             &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      sph_rj%radius_1d_rj_r, n_point, d_rj(1,is_velo))
         call cal_sph_nod_icb_rigid_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_velo), d_rj(1,is_vort))
       else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_rigid_vect(sph_rj%nidx_rj,                 &
@@ -134,13 +133,12 @@
      &      is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
 !      else if(sph_bc_U%iflag_icb .eq. iflag_non_slip) then
       else
-        call cal_sph_nod_icb_rigid_velo2                                &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_in, is_velo,                 &
-     &      n_point, ntot_phys_rj, d_rj)
+        call cal_sph_nod_icb_rigid_velo2(sph_rj%nidx_rj(2),             &
+     &      sph_bc_U%kr_in, n_point, d_rj(1,is_velo))
         call cal_sph_nod_icb_rigid_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_velo), d_rj(1,is_vort))
       end if
 !
       end subroutine sel_ICB_grad_vp_and_vorticity
@@ -187,7 +185,7 @@
         call cal_sph_nod_icb_rotate_velo2                               &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%idx_rj_degree_one,        &
      &      sph_rj%nidx_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,             &
-     &      sph_rj%radius_1d_rj_r, is_fld, n_point, ntot_phys_rj, d_rj)
+     &      sph_rj%radius_1d_rj_r, n_point, d_rj(1,is_fld))
       else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_rigid_vect(sph_rj%nidx_rj,                 &
@@ -198,8 +196,7 @@
 !      else if(sph_bc_U%iflag_icb .eq. iflag_non_slip) then
       else
         call cal_sph_nod_icb_rigid_velo2                                &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_in, is_fld,                  &
-     &      n_point, ntot_phys_rj, d_rj)
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_in, n_point, d_rj(1,is_fld))
       end if
 !
       end subroutine sel_ICB_grad_poloidal_moment
@@ -248,7 +245,7 @@
         call cal_sph_nod_icb_rigid_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_fld), d_rj(1,is_rot))
       end if
 !
       end subroutine sel_ICB_sph_vorticity
@@ -303,16 +300,13 @@
         call cal_sph_nod_icb_fixed_diffuse2(sph_rj%nidx_rj(2),          &
      &      g_sph_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,                   &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      coef_diffuse, is_velo, is_viscous,                          &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      coef_diffuse, is_velo, n_point, ntot_phys_rj, d_rj, d_rj(1,is_viscous))
 !      else if(sph_bc_U%iflag_icb .eq. iflag_non_slip) then
       else
-        call cal_sph_nod_icb_rigid_diffuse2                             &
-     &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
+        call cal_sph_nod_icb_rigid_diffuse2(sph_rj%nidx_rj(2),          &
+     &      g_sph_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,                   &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      coef_diffuse, is_velo, is_viscous,                          &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      coef_diffuse, n_point, d_rj(1,is_velo), d_rj(1,is_viscous))
       end if
 
       ids_viscous = is_viscous + 1
@@ -383,8 +377,7 @@
         call cal_sph_nod_icb_fixed_diffuse2(sph_rj%nidx_rj(2),          &
      &      g_sph_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,                   &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      coef_diffuse, is_vort, is_w_diffuse,                        &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      coef_diffuse, is_vort, n_point, ntot_phys_rj, d_rj, d_rj(1,is_w_diffuse))
       end if
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
