@@ -103,7 +103,7 @@
         call cal_sph_nod_cmb_rigid_v_and_w                              &
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      is_velo, is_vort, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_velo), d_rj(1,is_vort))
       end if
 !
       end subroutine sel_CMB_grad_vp_and_vorticity
@@ -141,9 +141,8 @@
      &      n_point, d_rj(1,is_fld))
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_non_slip) then
       else
-        call cal_sph_nod_cmb_rigid_velo                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, is_fld,                 &
-     &      n_point, ntot_phys_rj, d_rj)
+        call cal_sph_nod_cmb_rigid_velo(sph_rj%nidx_rj(2),              &
+     &      sph_bc_U%kr_out, n_point, d_rj(1,is_fld))
       end if
 !
       end subroutine sel_CMB_grad_poloidal_moment
@@ -185,7 +184,7 @@
         call cal_sph_nod_cmb_rigid_rot2                                 &
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_fld), d_rj(1,is_rot))
       end if
 !
       end subroutine sel_CMB_sph_vorticity
@@ -236,8 +235,7 @@
         call cal_sph_nod_cmb_rigid_diffuse2                             &
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      coef_diffuse, is_velo, is_viscous,                          &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      coef_diffuse, n_point, d_rj(1,is_velo), d_rj(1,is_viscous))
       end if
       call cal_dsdr_sph_no_bc_out_2(sph_rj%nidx_rj(2), sph_bc_U%kr_out, &
      &    sph_bc_U%fdm2_fix_fld_CMB, is_viscous, ids_viscous,           &
