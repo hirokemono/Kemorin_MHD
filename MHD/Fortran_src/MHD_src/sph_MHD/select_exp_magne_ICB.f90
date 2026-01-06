@@ -50,8 +50,6 @@
 !!                     for current density
 !!@param is_ohmic    Spherical hermonics data address
 !!                   for poloidal ohmic dissipation
-!!@param ids_ohmic    Spherical hermonics data address
-!!                   for radial derivative of poloidal ohmic dissipation
 !!@param is_fld      Spherical hermonics data address for input vector
 !!@param is_rot      Spherical hermonics data address for curl of field
 !
@@ -290,8 +288,6 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: ids_ohmic
-!
 !
       if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
      &   .or. (sph_bc_B%iflag_icb .eq. iflag_sph_filter_center)) then
@@ -326,10 +322,9 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), r_2nd%fdm(1)%dmat,    &
      &      n_point, d_rj(1,is_ohmic), d_rj(1,is_ohmic+1))
       else
-        ids_ohmic = is_ohmic + 1
-        call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2), sph_bc_B%kr_in, &
-     &      sph_bc_B%fdm2_fix_fld_ICB, is_ohmic, ids_ohmic,             &
-     &      n_point, ntot_phys_rj, d_rj)
+        call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2),                 &
+     &      sph_bc_B%kr_in, sph_bc_B%fdm2_fix_fld_ICB,                  &
+     &      n_point, d_rj(1,is_ohmic), d_rj(1,is_ohmic+1))
       end if
 !
       end subroutine sel_ICB_sph_magnetic_diffusion

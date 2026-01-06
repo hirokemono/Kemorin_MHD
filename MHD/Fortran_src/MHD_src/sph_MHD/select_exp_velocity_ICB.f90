@@ -276,7 +276,7 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: it_velo, it_viscous, ids_viscous
+      integer(kind = kint) :: it_velo, it_viscous
 !
 !
       if(     (sph_bc_U%iflag_icb .eq. iflag_sph_fill_center)           &
@@ -307,10 +307,9 @@
      &      coef_diffuse, n_point, d_rj(1,is_velo), d_rj(1,is_viscous))
       end if
 
-      ids_viscous = is_viscous + 1
-      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2), sph_bc_U%kr_in,   &
-     &    sph_bc_U%fdm2_fix_fld_ICB, is_viscous, ids_viscous,           &
-     &    n_point, ntot_phys_rj, d_rj)
+      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2),                   &
+     &    sph_bc_U%kr_in, sph_bc_U%fdm2_fix_fld_ICB,                    &
+     &    n_point, d_rj(1,is_viscous), d_rj(1,is_viscous+1))
 !
 !   Ovewrite rotatable inner core 
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -350,8 +349,6 @@
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: ids_w_diffuse
-!
 !
       if(     (sph_bc_U%iflag_icb .eq. iflag_sph_fill_center)           &
      &   .or. (sph_bc_U%iflag_icb .eq. iflag_sph_filter_center)) then
@@ -385,10 +382,9 @@
      &      is_vort, is_w_diffuse, n_point, ntot_phys_rj, d_rj)
       end if
 !
-      ids_w_diffuse = is_w_diffuse + 1
-      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2), sph_bc_U%kr_in,   &
-     &    sph_bc_U%fdm2_fix_fld_ICB, is_w_diffuse, ids_w_diffuse,       &
-     &    n_point, ntot_phys_rj, d_rj)
+      call cal_dsdr_sph_no_bc_in_2(sph_rj%nidx_rj(2),                   &
+     &    sph_bc_U%kr_in, sph_bc_U%fdm2_fix_fld_ICB,                    &
+     &    n_point, d_rj(1,is_w_diffuse), d_rj(1,is_w_diffuse+1))
 !
       end subroutine sel_ICB_sph_vort_diffusion
 !
