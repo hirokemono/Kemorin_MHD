@@ -119,7 +119,7 @@
         call cal_sph_nod_icb_ins_b_and_j(sph_rj%nidx_rj(2), g_sph_rj,   &
      &      sph_bc_B%kr_in, sph_bc_B%r_ICB,                             &
      &      sph_bc_B%fdm2_fix_fld_ICB, sph_bc_B%fdm2_fix_dr_ICB,        &
-     &      is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_magne), d_rj(1,is_current))
       end if
 !
       end subroutine sel_ICB_grad_bp_and_current
@@ -169,8 +169,7 @@
 !      else if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
       else
         call cal_sph_nod_icb_ins_mag2(sph_rj%nidx_rj(2), g_sph_rj,      &
-     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, is_magne,                   &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, n_point, d_rj(1,is_magne))
       end if
 !
       end subroutine sel_ICB_grad_poloidal_magne
@@ -218,7 +217,7 @@
         call cal_sph_nod_icb_ins_rot2(sph_rj%nidx_rj(2), g_sph_rj,      &
      &      sph_bc_B%kr_in, sph_bc_B%r_ICB,                             &
      &      sph_bc_B%fdm2_fix_fld_ICB, sph_bc_B%fdm2_fix_dr_ICB,        &
-     &      is_magne, is_current, n_point, ntot_phys_rj, d_rj)
+     &      n_point, d_rj(1,is_magne), d_rj(1,is_current))
       end if
 !
       end subroutine sel_ICB_sph_current
@@ -258,8 +257,7 @@
       else
         call cal_sph_nod_icb_ins_vp_rot2                                &
      &     (sph_rj%nidx_rj(2), g_sph_rj, sph_bc_B%kr_in,                &
-     &      sph_bc_B%r_ICB, is_fld, is_rot,                             &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      sph_bc_B%r_ICB, n_point, d_rj(1,is_fld), d_rj(1,is_rot))
       end if
 !
       end subroutine sel_ICB_sph_rotation_uxb
@@ -312,8 +310,7 @@
         call cal_sph_nod_icb_ins_diffuse2(sph_rj%nidx_rj(2), g_sph_rj,  &
      &      sph_bc_B%kr_in, sph_bc_B%r_ICB,                             &
      &      sph_bc_B%fdm2_fix_fld_ICB, sph_bc_B%fdm2_fix_dr_ICB,        &
-     &      coef_diffuse, is_magne, is_ohmic,                           &
-     &      n_point, ntot_phys_rj, d_rj)
+     &      coef_diffuse, n_point, d_rj(1,is_magne), d_rj(1,is_ohmic))
       end if
 !
       if(     (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center)           &
