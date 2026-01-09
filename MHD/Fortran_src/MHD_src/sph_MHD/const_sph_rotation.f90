@@ -276,8 +276,8 @@
      &          coef_diffuse, is_velo, is_vort, is_viscous, rj_fld)
 !
       use cal_sph_exp_rotation
-      use select_exp_velocity_ICB
-      use select_exp_velocity_CMB
+      use select_exp_viscosity_ICB
+      use select_exp_viscosity_CMB
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
