@@ -97,8 +97,8 @@ begin MHD_control
 !
     begin boundary_condition
       array bc_velocity
-        bc_velocity   sph_to_center  to_Center   0.2
-!        bc_velocity  filter_to_center  to_Center   0.5
+!        bc_velocity   sph_to_center  to_Center   0.2
+        bc_velocity  filter_to_center  to_Center   0.5
         bc_velocity   file             CMB         1.000
       end array bc_velocity
     end boundary_condition
@@ -228,13 +228,13 @@ begin MHD_control
       end array pick_layer_ctl
 !
       array pick_sph_degree_ctl
-        pick_sph_degree_ctl   0
         pick_sph_degree_ctl   1
       end array pick_sph_degree_ctl
 !
       array pick_sph_spectr_ctl
         pick_sph_spectr_ctl     6    4
-        pick_sph_spectr_ctl    24   12
+        pick_sph_spectr_ctl    12   12
+        pick_sph_spectr_ctl    16   12
         pick_sph_spectr_ctl    24  -14
       end array pick_sph_spectr_ctl
     end pickup_spectr_ctl

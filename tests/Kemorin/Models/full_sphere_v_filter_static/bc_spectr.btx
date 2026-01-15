@@ -1,0 +1,15 @@
+#
+#  number of boundary conditions
+      1
+#
+#   boundary condition data list
+#    Fixed velocity at CMB
+velocity
+CMB
+   6
+  1   0    5.000E+00    5.000E+00   1.000E+01
+  6   4    1.000E+00    3.000E+00   5.000E+00
+ 12  12    3.000E+00    7.000E+00   3.000E+00
+ 16  12    5.000E+00    5.000E-01   4.000E+00
+ 24  12    2.000E+00    6.000E+00   2.000E+01
+ 24 -14    2.000E+00    6.000E+00   2.000E+01
