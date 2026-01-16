@@ -209,7 +209,7 @@ begin MHD_control
 !
     begin time_loop_ctl
       scheme_ctl              Crank_Nicolson
-      coef_imp_v_ctl          6.0e-1
+      coef_imp_v_ctl          1.0e+0
       FFT_library_ctl           'FFTW_SINGLE'
 !      Legendre_trans_loop_ctl   'On_the_fly_Plm_matmul'
     end time_loop_ctl
