@@ -27,6 +27,8 @@ extern void * c_sph_mntr_h_Nusselt_file_pfx(void *f_smonitor_ctl);
 extern void * c_sph_mntr_c_Nusselt_file_pfx(void *f_smonitor_ctl);
 extern void * c_sph_mntr_h_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
+extern void * c_sph_mntr_CMBave_file_pfix_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_CMBave_file_fmt_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
 
@@ -302,7 +304,11 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 			=  init_f_ctl_chara_item(c_sph_mntr_h_Nusselt_file_fmt, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_comp_Nusselt_file_format 
 			=  init_f_ctl_chara_item(c_sph_mntr_c_Nusselt_file_fmt, f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_typ_scale_file_prefix_ctl 
+    f_smonitor_ctl->f_CMB_ave_file_prefix_ctl
+            = init_f_ctl_chara_item(c_sph_mntr_CMBave_file_pfix_ctl, f_smonitor_ctl->f_self);
+    f_smonitor_ctl->f_CMB_ave_file_format_ctl
+            = init_f_ctl_chara_item(c_sph_mntr_CMBave_file_fmt_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_typ_scale_file_prefix_ctl
 			= init_f_ctl_chara_item(c_sph_mntr_lscale_file_pfix_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_typ_scale_file_format_ctl 
 			= init_f_ctl_chara_item(c_sph_mntr_lscale_file_fmt_ctl, f_smonitor_ctl->f_self);

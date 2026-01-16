@@ -43,6 +43,10 @@
 !!     &          bind(C, NAME = 'c_sph_mntr_h_Nusselt_file_fmt')
 !!      type(c_ptr) function c_sph_mntr_c_Nusselt_file_fmt(c_ctl)       &
 !!     &          bind(C, NAME = 'c_sph_mntr_c_Nusselt_file_fmt')
+!!      type(c_ptr) function c_sph_mntr_CMBave_file_pfix_ctl(c_ctl)     &
+!!     &          bind(C, NAME = 'c_sph_mntr_CMBave_file_pfix_ctl')
+!!      type(c_ptr) function c_sph_mntr_CMBave_file_fmt_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_sph_mntr_CMBave_file_fmt_ctl')
 !!      type(c_ptr) function c_sph_mntr_lscale_file_pfix_ctl(c_ctl)     &
 !!     &          bind(C, NAME = 'c_sph_mntr_lscale_file_pfix_ctl')
 !!      type(c_ptr) function c_sph_mntr_lscale_file_fmt_ctl(c_ctl)      &
@@ -250,6 +254,28 @@
       c_sph_mntr_c_Nusselt_file_fmt                                     &
      &             = C_loc(f_ctl%comp_Nusselt_file_format)
       end function c_sph_mntr_c_Nusselt_file_fmt
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_CMBave_file_pfix_ctl(c_ctl)       &
+     &          bind(C, NAME = 'c_sph_mntr_CMBave_file_pfix_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_CMBave_file_pfix_ctl                                   &
+     &             = C_loc(f_ctl%CMB_ave_file_prefix_ctl)
+      end function c_sph_mntr_CMBave_file_pfix_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_CMBave_file_fmt_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_mntr_CMBave_file_fmt_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_CMBave_file_fmt_ctl                                    &
+     &             = C_loc(f_ctl%CMB_ave_file_format_ctl)
+      end function c_sph_mntr_CMBave_file_fmt_ctl
 !
 !  ---------------------------------------------------------------------
 !

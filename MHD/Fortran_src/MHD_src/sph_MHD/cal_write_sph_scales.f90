@@ -26,6 +26,14 @@
 !!     &          ipol, rj_fld, pwr, dip)
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(dipolarity_data), intent(inout) :: dip
+!!      subroutine pick_write_CMB_avetage(time_d, sph_params, sph_rj,   &
+!!     &                                  ipol, rj_fld, ave_CMB)
+!!        type(time_data), intent(in) :: time_d
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(CMB_average_data), intent(inout) :: ave_CMB
 !!      subroutine cal_write_typical_scale(time_d, sph_params, sph_rj,  &
 !!     &                                   sph_bc_U, pwr, tsl)
 !!        type(time_data), intent(in) :: time_d
@@ -133,6 +141,29 @@
       end if
 !
       end subroutine cal_write_dipolarity
+!
+!  --------------------------------------------------------------------
+!
+      subroutine pick_write_CMB_avetage(time_d, sph_params, sph_rj,     &
+     &                                  ipol, rj_fld, ave_CMB)
+!
+      use cal_CMB_dipolarity
+!
+      type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(CMB_average_data), intent(inout) :: ave_CMB
+!
+!
+      call s_pick_CMB_average(my_rank, sph_rj, ipol, rj_fld, ave_CMB)
+      call write_CMB_average(my_rank, time_d%i_time_step, time_d%time,  &
+     &    sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
+     &    sph_params%nlayer_CMB, ave_CMB)
+!
+      end subroutine pick_write_CMB_avetage
 !
 !  --------------------------------------------------------------------
 !

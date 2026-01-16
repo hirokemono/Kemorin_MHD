@@ -99,8 +99,8 @@
       sph_IN1%nri_dat = 1
       call alloc_sph_spectr_data(izero, sph_IN1)
 !
-      dip_t%krms_CMB = sph_IN1%kr_outer
-      dip_t%rdip_CMB = sph_IN1%r_outer
+      dip_t%kr_dip_CMB = sph_IN1%kr_outer
+      dip_t%rdip_CMB =   sph_IN1%r_outer
       call alloc_dipolarity_data(sph_IN1%ntot_sph_spec, dip_t)
 !
       dip_t%dip_name(1:dip_t%num_dip)                                   &

@@ -122,6 +122,8 @@ struct f_MHD_sph_monitor_ctls{
 	struct chara_ctl_item * f_comp_Nusselt_file_prefix;
 	struct chara_ctl_item * f_heat_Nusselt_file_format;
 	struct chara_ctl_item * f_comp_Nusselt_file_format;
+    struct chara_ctl_item * f_CMB_ave_file_prefix_ctl;
+    struct chara_ctl_item * f_CMB_ave_file_format_ctl;
 	struct chara_ctl_item * f_typ_scale_file_prefix_ctl;
 	struct chara_ctl_item * f_typ_scale_file_format_ctl;
 };

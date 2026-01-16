@@ -256,8 +256,11 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
     GtkWidget *hbox_11 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_comp_Nusselt_file_prefix);
 	GtkWidget *hbox_12 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_comp_Nusselt_file_format);
 	
-    GtkWidget *hbox_13 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_prefix_ctl);
-    GtkWidget *hbox_14 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_format_ctl);
+    GtkWidget *hbox_13 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_CMB_ave_file_prefix_ctl);
+    GtkWidget *hbox_14 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_CMB_ave_file_format_ctl);
+    
+    GtkWidget *hbox_15 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_prefix_ctl);
+    GtkWidget *hbox_16 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_format_ctl);
 	
 	
     gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_1,  FALSE, FALSE, 0);
@@ -283,6 +286,9 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
     gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_13, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_14, FALSE, FALSE, 0);
 	
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_15, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_16, FALSE, FALSE, 0);
+    
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_dbench_c,  FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox_smontr), expand_dcircs);
 	
