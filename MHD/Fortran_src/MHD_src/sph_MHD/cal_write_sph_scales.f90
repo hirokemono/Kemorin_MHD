@@ -158,10 +158,9 @@
       type(CMB_average_data), intent(inout) :: ave_CMB
 !
 !
-      call s_pick_CMB_average(my_rank, sph_rj, ipol, rj_fld, ave_CMB)
-      call write_CMB_average(my_rank, time_d%i_time_step, time_d%time,  &
-     &    sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
-     &    sph_params%nlayer_CMB, ave_CMB)
+      call s_pick_CMB_average(sph_rj, ipol, rj_fld, ave_CMB)
+      call write_CMB_average(time_d%i_time_step, time_d%time,           &
+     &                       sph_params, sph_rj, ave_CMB)
 !
       end subroutine pick_write_CMB_avetage
 !

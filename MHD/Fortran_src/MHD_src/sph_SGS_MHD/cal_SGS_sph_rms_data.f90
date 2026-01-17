@@ -138,7 +138,7 @@
       end if
 !!
       if(iflag_debug.gt.0)  write(*,*) 's_pick_CMB_average'
-      call s_pick_CMB_average(my_rank, sph%sph_rj, ipol, rj_fld,         &
+      call s_pick_CMB_average(sph%sph_rj, ipol, rj_fld,                 &
      &                        monitor%ave_CMB)
 !!
       if(iflag_debug.gt.0)  write(*,*) 's_cal_CMB_dipolarity'

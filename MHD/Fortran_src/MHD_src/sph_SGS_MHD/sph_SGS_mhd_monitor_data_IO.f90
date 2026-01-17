@@ -200,6 +200,7 @@
       use write_sph_gauss_coefs
       use write_picked_sph_spectr
       use cal_CMB_dipolarity
+      use pick_CMB_average
       use init_rms_4_sph_spectr
 !
       use t_solver_SR
@@ -228,6 +229,8 @@
       call init_sph_Lorentz_spectr_data(sph, ipol, ipol_LES, rj_fld,    &
      &   monitor%ene_labels, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
+      call init_CMB_average_field_list(sph%sph_params, sph%sph_rj,      &
+     &    ipol, monitor%pwr, monitor%ave_CMB)
       call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
      &                                  monitor%dip)
 !
