@@ -53,14 +53,18 @@
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
       type(volume_partioning_param), intent(inout) :: repart_p
 !
+      logical :: error_file = .FALSE.
       integer(kind = kint) :: ierr = 0
       type(buffer_for_control) :: c_buf1
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_gen_sph_w_repart(file_name,                  &
-     &                                      gen_SPH_wP_c, c_buf1)
+        call read_ctl_file_gen_sph_w_repart                             &
+     &     (file_name, gen_SPH_wP_c, c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+     &                                        "Missing control file")
       end if
       call bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
 !

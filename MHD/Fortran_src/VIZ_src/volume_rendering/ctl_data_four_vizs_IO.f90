@@ -65,7 +65,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use t_control_data_viz4
       use t_control_data_sections
       use t_control_data_isosurfaces
@@ -145,6 +144,9 @@
       type(vis4_controls), intent(inout) :: viz4_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(viz4_ctls%i_viz_control .gt. 0) return
       call init_psf_ctls_labels(hd_section_ctl, viz4_ctls%psf_ctls)
@@ -159,17 +161,24 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_files_4_psf_ctl(id_control, hd_section_ctl,           &
-     &                            viz4_ctls%psf_ctls, c_buf)
+     &      viz4_ctls%psf_ctls, c_buf, error_file)
+        if(error_file) return
+!
         call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,           &
-     &                            viz4_ctls%iso_ctls, c_buf)
+     &      viz4_ctls%iso_ctls, c_buf, error_file)
+        if(error_file) return
+!
         call read_files_4_map_ctl(id_control, hd_map_rendering,         &
-     &                            viz4_ctls%map_ctls, c_buf)
+     &      viz4_ctls%map_ctls, c_buf, error_file)
+        if(error_file) return
 !
         call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,               &
-     &                            viz4_ctls%pvr_ctls, c_buf)
+     &      viz4_ctls%pvr_ctls, c_buf, error_file)
+        if(error_file) return
 !
         call read_files_4_fline_ctl(id_control, hd_fline_ctl,           &
-     &                              viz4_ctls%fline_ctls, c_buf)
+     &      viz4_ctls%fline_ctls, c_buf, error_file)
+        if(error_file) return
 !
 !
         call read_integer_ctl_type(c_buf, hd_i_step_section,            &

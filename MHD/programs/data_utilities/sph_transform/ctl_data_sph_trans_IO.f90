@@ -152,6 +152,9 @@
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(spt_ctl%i_sph_trans_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, spt_ctl%plt)
@@ -174,7 +177,8 @@
      &     (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      spt_ctl%fname_psph, spt_ctl%psph_ctl, c_buf)
+     &      spt_ctl%fname_psph, spt_ctl%psph_ctl, c_buf, error_file)
+        if(error_file) return
 !
         call read_sph_trans_model_ctl                                   &
      &     (id_control, hd_sph_trans_model, spt_ctl, c_buf)

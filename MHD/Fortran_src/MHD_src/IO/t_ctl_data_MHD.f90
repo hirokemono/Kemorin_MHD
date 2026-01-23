@@ -177,6 +177,9 @@
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
@@ -192,7 +195,8 @@
      &     (id_control, hd_org_data, MHD_ctl%org_plt, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf)
+     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf, error_file)
+        if(error_file) return
 !
         call read_sph_mhd_model                                         &
      &     (id_control, hd_model, MHD_ctl%model_ctl, c_buf)

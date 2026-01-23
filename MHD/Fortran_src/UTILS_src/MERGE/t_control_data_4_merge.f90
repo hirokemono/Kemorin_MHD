@@ -189,6 +189,9 @@
       type(control_data_4_merge), intent(inout) :: mgd_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(mgd_ctl%i_assemble .gt. 0) return
       call init_platforms_labels(hd_platform, mgd_ctl%source_plt)
@@ -216,9 +219,13 @@
      &     (id_control, hd_newrst_magne, mgd_ctl, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_orgsph_shell,  &
-     &      mgd_ctl%fname_src_psph_ctl,  mgd_ctl%src_psph_ctl, c_buf)
+     &      mgd_ctl%fname_src_psph_ctl,  mgd_ctl%src_psph_ctl,          &
+     &      c_buf, error_file)
+        if(error_file) return
         call sel_read_ctl_gen_shell_grids(id_control, hd_newsph_shell,  &
-     &      mgd_ctl%fname_asbl_psph_ctl, mgd_ctl%asbl_psph_ctl, c_buf)
+     &      mgd_ctl%fname_asbl_psph_ctl, mgd_ctl%asbl_psph_ctl,         &
+     &      c_buf, error_file)
+        if(error_file) return
 !
         call read_real_ctl_type(c_buf, hd_delta_to_compare,             &
      &      mgd_ctl%delta_to_compare_ctl)

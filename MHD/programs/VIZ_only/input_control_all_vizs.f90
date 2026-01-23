@@ -46,6 +46,7 @@
       subroutine s_input_control_all_vizs                               &
      &         (ctl_file_name, vizs_ctl, FEM_viz, t_viz_param)
 !
+      use m_error_IDs
       use skip_comment_f
       use viz_step_ctls_to_time_ctl
 !
@@ -54,13 +55,18 @@
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
+      logical :: error_file = .FALSE.
       integer(kind = kint) :: ierr = 0
       type(buffer_for_control) :: c_buf1
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_file_vizs(ctl_file_name, vizs_ctl, c_buf1)
+        call read_control_file_vizs(ctl_file_name, vizs_ctl,            &
+     &                              c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+     &                                        "Missing control file")
       end if
       call bcast_vizs_control_data(vizs_ctl)
 !

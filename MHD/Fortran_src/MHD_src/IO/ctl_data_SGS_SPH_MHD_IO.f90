@@ -197,6 +197,9 @@
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
@@ -214,7 +217,8 @@
      &     (id_control, hd_new_data, MHD_ctl%new_plt, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf)
+     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf, error_file)
+        if(error_file) return
 !
         call read_sph_sgs_mhd_model(id_control, hd_model,               &
      &                              MHD_ctl%model_ctl, sgs_ctl, c_buf)
@@ -229,14 +233,17 @@
         call s_read_viz_controls(id_control, hd_viz_ctl,                &
      &                           viz_ctls, c_buf)
         call read_tracer_controls(id_control, hd_tracer_ctl,            &
-     &                           tracer_ctls, c_buf)
+     &                           tracer_ctls, c_buf, error_file)
+        if(error_file) return
 !
         call read_dynamo_viz_control(id_control, hd_dynamo_viz_ctl,     &
-     &                               zm_ctls, c_buf)
-
+     &                               zm_ctls, c_buf, error_file)
+        if(error_file) return
+!
 ! -----   Deprecated  ---------
         call read_dynamo_viz_control(id_control, hd_zm_viz_ctl,         &
-     &                               zm_ctls, c_buf)
+     &                               zm_ctls, c_buf, error_file)
+        if(error_file) return
       end do
       MHD_ctl%i_mhd_ctl = 1
 !

@@ -88,6 +88,7 @@
       subroutine load_control_4_fem_MHD(file_name, FEM_MHD_ctl,         &
      &                                 sgs_ctl, tracer_ctls, viz_ctls)
 !
+      use m_error_IDs
       use t_ctl_data_FEM_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
@@ -103,13 +104,17 @@
       type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
 !
+      logical :: error_file = .FALSE.
       type(buffer_for_control) :: c_buf1
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_4_FEM_MHD(file_name,                          &
-     &      FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf1)
+        call read_control_4_FEM_MHD(file_name, FEM_MHD_ctl, sgs_ctl,    &
+     &      tracer_ctls, viz_ctls, c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+     &                                        "Missing control file")
       end if
 !
       if(c_buf1%iend .gt. 0) then

@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_pvr_cmap_cbar_label(hd_block, cmap_cbar_c)
-!!      subroutine sel_read_ctl_pvr_colormap_file                       &
-!!     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
+!!      subroutine sel_read_ctl_pvr_colormap_file(id_control, hd_block, &
+!!     &          file_name, cmap_cbar_c, c_buf, error_file)
 !!      subroutine read_pvr_cmap_cbar                                   &
 !!     &         (id_control, hd_block, cmap_cbar_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -18,6 +18,7 @@
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
+!!        logical, intent(inout) :: error_file
 !!
 !!      subroutine sel_write_ctl_pvr_colormap_file                      &
 !!     &         (id_control, hd_block, file_name, cmap_cbar_c, level)
@@ -138,8 +139,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_read_ctl_pvr_colormap_file                         &
-     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
+      subroutine sel_read_ctl_pvr_colormap_file(id_control, hd_block,   &
+     &          file_name, cmap_cbar_c, c_buf, error_file)
 !
       use write_control_elements
       use ctl_data_pvr_colorbar_IO
@@ -150,14 +151,15 @@
       character(len = kchara), intent(inout) :: file_name
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
       type(buffer_for_control), intent(inout)  :: c_buf
-!
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_one_ctl_file_message                                 &
-     &     (hd_block, c_buf%level, file_name)
+        call write_one_ctl_file_message(hd_block, c_buf%level,          &
+     &                                  file_name, error_file)
+        if(error_file) return
         call read_control_pvr_colormap_file                             &
      &     (id_control+2, file_name, hd_block, cmap_cbar_c, c_buf)
 !

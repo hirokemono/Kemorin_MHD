@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine sel_read_control_lic_pvr(id_control, hd_lic_ctl,     &
-!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
+!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,            &
+!!     &          c_buf, error_file)
 !!      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl, &
 !!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -81,7 +82,6 @@
       module ctl_file_lic_pvr_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -98,29 +98,37 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_read_control_lic_pvr(id_control, hd_lic_ctl,       &
-     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
+     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,              &
+     &          c_buf, error_file)
 !
       use ctl_data_lic_pvr_IO
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
+!
       character(len = kchara), intent(inout) :: fname_lic_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
       type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_lic_ctl)) then
         fname_lic_ctl = third_word(c_buf)
-        write(*,'(a)', ADVANCE='NO') ' is read from ... '
+        call check_write_ctl_file_message(fname_lic_ctl, error_file)
+        if(error_file) return
+!
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
-     &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
+     &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf, error_file)
+        if(error_file) return
       else if(check_begin_flag(c_buf, hd_lic_ctl)) then
           fname_lic_ctl = 'NO_FILE'
 !
         write(*,'(a)') ' is included'
         call read_lic_pvr_ctl(id_control, hd_lic_ctl,                   &
-     &                        pvr_ctl_type, lic_ctl_type, c_buf)
+     &      pvr_ctl_type, lic_ctl_type, c_buf, error_file)
+        if(error_file) return
       end if
 !
       end subroutine sel_read_control_lic_pvr
@@ -128,7 +136,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl,   &
-     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
+     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type,                 &
+     &          c_buf, error_file)
 !
       use ctl_data_lic_pvr_IO
       use skip_comment_f
@@ -136,22 +145,25 @@
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
       character(len = kchara), intent(in) :: fname_lic_ctl
+!
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
       type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
+      error_file = .FALSE.
       if(no_file_flag(fname_lic_ctl)) return
 !
       c_buf%level = c_buf%level + 1
-      write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
       open(id_control, file=fname_lic_ctl, status='old')
       do
         call load_one_line_from_control(id_control, hd_lic_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_lic_pvr_ctl                                           &
-     &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
+        call read_lic_pvr_ctl(id_control, hd_lic_ctl,                   &
+     &      pvr_ctl_type, lic_ctl_type, c_buf, error_file)
+        if(error_file) return
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
