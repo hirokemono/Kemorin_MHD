@@ -136,6 +136,9 @@
       type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
+!
 !
       if(gen_SPH_ctl%i_sph_mesh_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, gen_SPH_ctl%plt)
@@ -149,8 +152,11 @@
 !
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_ctl%plt, c_buf)
+!
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      gen_SPH_ctl%fname_psph, gen_SPH_ctl%psph_ctl, c_buf)
+     &      gen_SPH_ctl%fname_psph, gen_SPH_ctl%psph_ctl,               &
+     &      c_buf, error_file)
+        if(error_file) return
       end do
       gen_SPH_ctl%i_sph_mesh_ctl = 1
 !

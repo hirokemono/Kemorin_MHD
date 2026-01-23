@@ -9,12 +9,13 @@
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine init_lic_control_label(hd_block, lic_ctl)
-!!      subroutine s_read_lic_control_data                              &
-!!     &         (id_control, hd_block, lic_ctl, c_buf)
+!!      subroutine s_read_lic_control_data(id_control, hd_block,        &
+!!     &                                   lic_ctl, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_lic_control_data(id_control, lic_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
@@ -74,7 +75,6 @@
       module ctl_data_LIC_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_control_data_LIC
@@ -133,8 +133,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_lic_control_data                                &
-     &         (id_control, hd_block, lic_ctl, c_buf)
+      subroutine s_read_lic_control_data(id_control, hd_block,          &
+     &                                   lic_ctl, c_buf, error_file)
 !
       use ctl_file_LIC_kernel_IO
       use ctl_file_LIC_noise_IO
@@ -145,7 +145,8 @@
       character(len = kchara), intent(in) :: hd_block
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
+      type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(lic_ctl%i_lic_control .gt. 0) return
@@ -180,14 +181,21 @@
         call read_real_ctl_type(c_buf, hd_normalization_value,          &
      &      lic_ctl%normalization_value_ctl)
 !
-        call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
-     &      lic_ctl%fname_vol_repart_ctl, lic_ctl%repart_ctl, c_buf)
+        call sel_read_ctl_file_vol_repart                               &
+     &     (id_control, hd_lic_partition, lic_ctl%fname_vol_repart_ctl, &
+     &      lic_ctl%repart_ctl, c_buf, error_file)
+        if(error_file) return
 !
-        call sel_read_cube_noise_ctl_file(id_control, hd_cube_noise,    &
-     &      lic_ctl%fname_LIC_noise_ctl, lic_ctl%noise_ctl, c_buf)
-        call sel_read_LIC_kernel_ctl_file(id_control, hd_kernel,        &
-     &      lic_ctl%fname_LIC_kernel_ctl, lic_ctl%kernel_ctl, c_buf)
+        call sel_read_cube_noise_ctl_file                               &
+     &     (id_control, hd_cube_noise, lic_ctl%fname_LIC_noise_ctl,     &
+     &      lic_ctl%noise_ctl, c_buf, error_file)
+        if(error_file) return
 !
+        call sel_read_LIC_kernel_ctl_file                               &
+     &     (id_control, hd_kernel, lic_ctl%fname_LIC_kernel_ctl,        &
+     &      lic_ctl%kernel_ctl, c_buf, error_file)
+        if(error_file) return
+
         call read_multi_masking_ctl                                     &
      &     (id_control, hd_masking_ctl, lic_ctl%mul_mask_c, c_buf)
       end do

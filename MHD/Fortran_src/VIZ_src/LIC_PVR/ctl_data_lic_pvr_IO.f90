@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine init_lic_pvr_ctl_label(hd_block, pvr, lic_ctl)
-!!      subroutine read_lic_pvr_ctl                                     &
-!!     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
+!!      subroutine read_lic_pvr_ctl(id_control, hd_block,               &
+!!     &                            pvr, lic_ctl, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_lic_pvr_ctl(id_control, hd_block,              &
 !!     &                             pvr, lic_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -78,7 +79,6 @@
       module ctl_data_lic_pvr_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -155,8 +155,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_lic_pvr_ctl                                       &
-     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
+      subroutine read_lic_pvr_ctl(id_control, hd_block,                 &
+     &                            pvr, lic_ctl, c_buf, error_file)
 !
       use ctl_data_LIC_IO
       use ctl_file_pvr_modelview_IO
@@ -172,6 +172,7 @@
       type(pvr_parameter_ctl), intent(inout) :: pvr
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(pvr%i_pvr_ctl .gt. 0) return
@@ -195,13 +196,18 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
-     &      izero, pvr%fname_mat_ctl, pvr%mat, c_buf)
+     &      izero, pvr%fname_mat_ctl, pvr%mat, c_buf, error_file)
+        if(error_file) return
 !
         call sel_read_ctl_pvr_colormap_file                             &
      &     (id_control, hd_lic_colordef, pvr%fname_cmap_cbar_c,         &
-     &      pvr%cmap_cbar_c, c_buf)
-        call sel_read_ctl_pvr_light_file(id_control, hd_pvr_lighting,   &
-     &      pvr%fname_pvr_light_c, pvr%light, c_buf)
+     &      pvr%cmap_cbar_c, c_buf, error_file)
+        if(error_file) return
+!
+        call sel_read_ctl_pvr_light_file                                &
+     &     (id_control, hd_pvr_lighting, pvr%fname_pvr_light_c,         &
+     &      pvr%light, c_buf, error_file)
+        if(error_file) return
 !
         if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
           call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &
@@ -214,7 +220,9 @@
         end if
 !
         call read_pvr_sections_ctl(id_control, hd_pvr_sections,         &
-     &                             pvr%pvr_scts_c, c_buf)
+     &      pvr%pvr_scts_c, c_buf, error_file)
+        if(error_file) return
+!
         call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,          &
      &                             pvr%pvr_isos_c, c_buf)
 !
@@ -226,12 +234,17 @@
         call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
      &                                pvr%render_area_c, c_buf)
         call read_quilt_image_ctl(id_control, hd_quilt_image,           &
-     &                            pvr%quilt_c, c_buf)
-        call read_pvr_rotation_ctl(id_control, hd_snapshot_movie,       &
-     &                             pvr%movie, c_buf)
+     &                            pvr%quilt_c, c_buf, error_file)
+        if(error_file) return
 !
-        call s_read_lic_control_data                                    &
-     &     (id_control, hd_lic_control, lic_ctl, c_buf)
+        call read_pvr_rotation_ctl(id_control, hd_snapshot_movie,       &
+     &                             pvr%movie, c_buf, error_file)
+        if(error_file) return
+!
+        call s_read_lic_control_data(id_control, hd_lic_control,        &
+     &                               lic_ctl, c_buf, error_file)
+        if(error_file) return
+!
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_updated, pvr%updated_ctl)

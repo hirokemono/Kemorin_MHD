@@ -99,7 +99,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_file_vizs(file_name, vizs_ctl, c_buf)
+      subroutine read_control_file_vizs(file_name, vizs_ctl,            &
+     &                                  c_buf, error_file)
 !
       use skip_comment_f
       use viz_step_ctls_to_time_ctl
@@ -107,6 +108,7 @@
       character(len = kchara), intent(in) :: file_name
       type(control_data_vizs), intent(inout) :: vizs_ctl
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -117,7 +119,9 @@
         if(c_buf%iend .gt. 0) exit
 !
         call read_vizs_control_data                                     &
-     &     (viz_ctl_file_code, hd_viz_only_file, vizs_ctl, c_buf)
+     &     (viz_ctl_file_code, hd_viz_only_file, vizs_ctl,              &
+     &      c_buf, error_file)
+        if(error_file) return
         if(vizs_ctl%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
@@ -162,8 +166,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_vizs_control_data                                 &
-     &         (id_control, hd_block, vizs_ctl, c_buf)
+      subroutine read_vizs_control_data(id_control, hd_block,           &
+     &                                  vizs_ctl, c_buf, error_file)
 !
       use skip_comment_f
       use ctl_data_platforms_IO
@@ -175,6 +179,7 @@
 !
       type(control_data_vizs), intent(inout) :: vizs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(vizs_ctl%i_viz_only_file .gt. 0) return
@@ -192,8 +197,10 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           vizs_ctl%viz_ctl_v, c_buf)
+!
         call read_tracer_controls(id_control, hd_tracer_ctl,            &
-     &                           vizs_ctl%tracer_ctls, c_buf)
+     &      vizs_ctl%tracer_ctls, c_buf, error_file)
+        if(error_file) return
       end do
       vizs_ctl%i_viz_only_file = 1
 !

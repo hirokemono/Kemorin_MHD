@@ -11,13 +11,14 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_FEM_MHD                               &
-!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
+!!      subroutine read_control_4_FEM_MHD(file_name, FEM_MHD_ctl,       &
+!!     &          sgs_ctl, tracer_ctls, viz_ctls, c_buf, error_file)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(buffer_for_control), intent(inout) :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_control_4_fem_MHD                              &
 !!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !!        character(len=kchara), intent(in) :: file_name
@@ -108,7 +109,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_FEM_MHD(file_name, FEM_MHD_ctl,         &
-     &          sgs_ctl, tracer_ctls, viz_ctls, c_buf)
+     &          sgs_ctl, tracer_ctls, viz_ctls, c_buf, error_file)
 !
       use t_ctl_data_SGS_model
       use viz_step_ctls_to_time_ctl
@@ -119,6 +120,7 @@
       type(tracers_control), intent(inout) :: tracer_ctls
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -132,7 +134,8 @@
         if(c_buf%iend .gt. 0) exit
 !
         call read_fem_mhd_control_data(ctl_file_code, hd_Fmhd_ctl,      &
-     &      FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf)
+     &      FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls,                &
+     &      c_buf, error_file)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(ctl_file_code)
@@ -185,7 +188,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_fem_mhd_control_data(id_control, hd_block,        &
-     &          FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, c_buf)
+     &          FEM_MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls,            &
+     &          c_buf, error_file)
 !
       use t_ctl_data_SGS_model
 !
@@ -198,9 +202,10 @@
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
       type(tracers_control), intent(inout) :: tracer_ctls
+      type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) return
@@ -225,8 +230,10 @@
      &                             FEM_MHD_ctl%nmtr_ctl, c_buf)
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           viz_ctls, c_buf)
+!
         call read_tracer_controls(id_control, hd_viz_control,            &
-     &                            tracer_ctls, c_buf)
+     &      tracer_ctls, c_buf, error_file)
+        if(error_file) return
       end do
       FEM_MHD_ctl%i_mhd_ctl = 1
 !

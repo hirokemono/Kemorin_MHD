@@ -84,7 +84,6 @@
       use t_control_array_character
       use t_control_data_4_iso_def
       use t_control_data_4_fld_on_psf
-      use calypso_mpi
 !
       implicit  none
 !
@@ -123,8 +122,10 @@
       character(len=kchara), intent(in) :: hd_block
       type(iso_ctl), intent(inout) :: iso_c
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical :: error_file
 !
 !
+      error_file = .FALSE.
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(iso_c%i_iso_ctl.gt.0) return
       do
@@ -134,10 +135,13 @@
 !
         call sel_read_ctl_field_on_psf_file                             &
      &     (id_control, hd_field_on_iso, iso_c%fname_fld_on_iso,        &
-     &      iso_c%fld_on_iso_c, c_buf)
+     &      iso_c%fld_on_iso_c, c_buf, error_file)
+        if(error_file) return
+!
         call sel_read_ctl_field_on_psf_file                             &
      &     (id_control, hd_iso_result, iso_c%fname_fld_on_iso,          &
-     &      iso_c%fld_on_iso_c, c_buf)
+     &      iso_c%fld_on_iso_c, c_buf, error_file)
+        if(error_file) return
 !
         call read_iso_define_data                                       &
      &     (id_control, hd_iso_define, iso_c%iso_def_c, c_buf)

@@ -10,12 +10,13 @@
 !!      subroutine alloc_lic_ctl_struct(lic_ctls)
 !!      subroutine dealloc_lic_ctl_struct(lic_ctls)
 !!      subroutine init_lic_ctls_labels(hd_block, lic_ctls)
-!!      subroutine read_files_4_lic_ctl                                 &
-!!     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
+!!      subroutine read_files_4_lic_ctl(id_control, hd_lic_ctl,         &
+!!     &                                lic_ctls, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: hd_lic_ctl
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_files_4_lic_ctl(id_control, hd_lic_ctl,        &
 !!     &          lic_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -116,8 +117,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_files_4_lic_ctl                                   &
-     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
+      subroutine read_files_4_lic_ctl(id_control, hd_lic_ctl,           &
+     &                                lic_ctls, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_file_lic_pvr_IO
@@ -129,8 +130,10 @@
 !
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
       integer(kind = kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
       if(allocated(lic_ctls%fname_lic_ctl)) return
@@ -151,7 +154,9 @@
           call sel_read_control_lic_pvr(id_control, hd_lic_ctl,         &
      &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
-     &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl), c_buf)
+     &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl),              &
+     &        c_buf, error_file)
+          if(error_file) return
         end if
       end do
 !

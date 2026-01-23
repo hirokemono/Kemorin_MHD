@@ -7,8 +7,8 @@
 !> @brief control data for noise configration for LIC
 !!
 !!@verbatim
-!!      subroutine sel_read_cube_noise_ctl_file                         &
-!!     &         (id_control, hd_block, file_name, noise_ctl, c_buf)
+!!      subroutine sel_read_cube_noise_ctl_file(id_control, hd_block,   &
+!!     &          file_name, noise_ctl, c_buf, error_file)
 !!      subroutine read_cube_noise_control_file(id_control, file_name,  &
 !!     &          hd_block, noise_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -16,6 +16,7 @@
 !!        character(len = kchara), intent(inout) :: file_name
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine sel_write_cube_noise_ctl_file                        &
 !!     &         (id_control, hd_block, file_name, noise_ctl, level)
 !!      subroutine write_cube_noise_control_file(id_control, file_name, &
@@ -66,8 +67,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_read_cube_noise_ctl_file                           &
-     &         (id_control, hd_block, file_name, noise_ctl, c_buf)
+      subroutine sel_read_cube_noise_ctl_file(id_control, hd_block,     &
+     &          file_name, noise_ctl, c_buf, error_file)
 !
       use t_read_control_elements
 !
@@ -80,13 +81,15 @@
       character(len = kchara), intent(inout) :: file_name
       type(cube_noise_ctl), intent(inout) :: noise_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_one_ctl_file_message                                 &
-     &     (hd_block, c_buf%level, file_name)
+        call write_one_ctl_file_message(hd_block, c_buf%level,          &
+     &                                  file_name, error_file)
+        if(error_file) return
         call read_cube_noise_control_file((id_control+2), file_name,    &
      &                                    hd_block, noise_ctl, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then

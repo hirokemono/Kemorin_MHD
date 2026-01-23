@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine sel_read_LIC_kernel_ctl_file                         &
-!!     &         (id_control, file_name, hd_block, kernel_ctl, c_buf)
+!!      subroutine sel_read_LIC_kernel_ctl_file(id_control, hd_block,   &
+!!     &          file_name, kernel_ctl, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
 !!        type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine sel_write_LIC_kernel_ctl_file                        &
 !!     &         (id_control, hd_block, file_name, kernel_ctl, level)
 !!      subroutine write_LIC_kernel_control_file(id_control, file_name, &
@@ -70,8 +71,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_read_LIC_kernel_ctl_file                           &
-     &         (id_control, hd_block, file_name, kernel_ctl, c_buf)
+      subroutine sel_read_LIC_kernel_ctl_file(id_control, hd_block,     &
+     &          file_name, kernel_ctl, c_buf, error_file)
 !
       use write_control_elements
       use t_read_control_elements
@@ -82,13 +83,15 @@
       character(len = kchara), intent(inout) :: file_name
       type(lic_kernel_ctl), intent(inout) :: kernel_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_one_ctl_file_message                                 &
-     &     (hd_block, c_buf%level, file_name)
+        call write_one_ctl_file_message(hd_block, c_buf%level,          &
+     &                                  file_name, error_file)
+        if(error_file) return
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
      &                                    hd_block, kernel_ctl, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then

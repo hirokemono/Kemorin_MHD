@@ -6,16 +6,17 @@
 !>@brief control data for cross sections
 !!
 !!@verbatim
-!!      subroutine read_files_4_psf_ctl                                 &
-!!     &         (id_control, hd_block, psf_ctls, c_buf)
+!!      subroutine read_files_4_psf_ctl(id_control, hd_block,           &
+!!     &                                psf_ctls, c_buf, error_file)
 !!      subroutine sel_read_control_4_psf_file(id_control, hd_block,    &
-!!     &          file_name, psf_ctl_struct, c_buf)
+!!     &          file_name, psf_ctl_struct, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
 !!        type(section_controls), intent(inout) :: psf_ctls
 !!        type(psf_ctl), intent(inout) :: psf_ctl_struct
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!
 !!      subroutine write_files_4_psf_ctl                                &
 !!     &         (id_control, hd_block, psf_ctls, level)
@@ -63,8 +64,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_files_4_psf_ctl                                   &
-     &         (id_control, hd_block, psf_ctls, c_buf)
+      subroutine read_files_4_psf_ctl(id_control, hd_block,             &
+     &                                psf_ctls, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_data_section_IO
@@ -75,8 +76,10 @@
       character(len=kchara), intent(in) :: hd_block
       type(section_controls), intent(inout) :: psf_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
       integer(kind = kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(psf_ctls%psf_ctl_struct)) return
@@ -97,7 +100,9 @@
      &       (hd_block, psf_ctls%num_psf_ctl, c_buf%level)
           call sel_read_control_4_psf_file(id_control, hd_block,        &
      &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &
-     &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
+     &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl),            &
+     &        c_buf, error_file)
+           if(error_file) return
         end if
       end do
 !
@@ -106,10 +111,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine sel_read_control_4_psf_file(id_control, hd_block,      &
-     &          file_name, psf_ctl_struct, c_buf)
+     &          file_name, psf_ctl_struct, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_data_section_IO
+      use write_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -117,12 +123,14 @@
       character(len = kchara), intent(inout) :: file_name
       type(psf_ctl), intent(inout) :: psf_ctl_struct
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') ' is read from file ... '
+        call check_write_ctl_file_message(file_name, error_file)
+        if(error_file) return
         call read_control_4_psf_file((id_control+2), file_name,         &
      &                               hd_block, psf_ctl_struct, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
@@ -153,7 +161,6 @@
 !
 !
       c_buf%level = c_buf%level + 1
-      write(*,'(a)') trim(file_name)
       open(id_control, file=file_name, status='old')
 !
       do

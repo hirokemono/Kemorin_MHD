@@ -11,12 +11,14 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_gen_sph_w_repart(file_name,            &
-!!     &                                          gen_SPH_wP_c, c_buf)
+!!      subroutine read_ctl_file_gen_sph_w_repart                       &
+!!     &         (file_name, gen_SPH_wP_c, c_buf, error_file)
 !!      subroutine write_ctl_file_gen_sph_w_repart(file_name,           &
 !!     &                                           gen_SPH_wP_c)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!        logical, intent(inout) :: error_file
 !!@endverbatim
 !
       module t_ctl_data_gen_sph_w_repart
@@ -83,12 +85,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_ctl_file_gen_sph_w_repart(file_name,              &
-     &                                          gen_SPH_wP_c, c_buf)
+      subroutine read_ctl_file_gen_sph_w_repart                         &
+     &         (file_name, gen_SPH_wP_c, c_buf, error_file)
 !
       character(len=kchara), intent(in) :: file_name
+!
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -101,7 +105,8 @@
 !
         call read_ctl_data_gen_sph_w_repart                             &
      &     (control_file_code, gen_SPH_wP_c%hd_gen_sph_w_repart,        &
-     &      gen_SPH_wP_c, c_buf)
+     &      gen_SPH_wP_c, c_buf, error_file)
+        if(error_file) return
         if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
       end do
       close(control_file_code)
@@ -143,7 +148,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_ctl_data_gen_sph_w_repart                         &
-     &         (id_control, hd_block, gen_SPH_wP_c, c_buf)
+     &         (id_control, hd_block, gen_SPH_wP_c, c_buf, error_file)
 !
       use ctl_data_platforms_IO
       use ctl_file_gen_sph_shell_IO
@@ -153,6 +158,7 @@
 !
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) return
@@ -167,10 +173,15 @@
 !
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_wP_c%plt, c_buf)
+!
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl, c_buf)
+     &      gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl,             &
+     &      c_buf, error_file)
+        if(error_file) return
+!
         call read_viz_repart_ctl_only(id_control, hd_viz_control,       &
-     &                                gen_SPH_wP_c, c_buf)
+     &                                gen_SPH_wP_c, c_buf, error_file)
+        if(error_file) return
       end do
       gen_SPH_wP_c%i_sph_mesh_ctl = 1
 !
@@ -207,8 +218,8 @@
 !  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_viz_repart_ctl_only                               &
-     &         (id_control, hd_block, gen_SPH_wP_c, c_buf)
+      subroutine read_viz_repart_ctl_only(id_control, hd_block,         &
+     &          gen_SPH_wP_c, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_file_volume_repart_IO
@@ -216,8 +227,10 @@
 !
       integer(kind = kint), intent(in) :: id_control 
       character(len=kchara), intent(in) :: hd_block
+!
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(gen_SPH_wP_c%i_viz_control .gt. 0) return
@@ -231,10 +244,13 @@
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
      &      gen_SPH_wP_c%fname_vol_repart_ctl,                          &
-     &      gen_SPH_wP_c%repart_ctl, c_buf)
+     &      gen_SPH_wP_c%repart_ctl, c_buf, error_file)
+        if(error_file) return
+!
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
      &      gen_SPH_wP_c%fname_vol_repart_ctl,                          &
-     &      gen_SPH_wP_c%repart_ctl, c_buf)
+     &      gen_SPH_wP_c%repart_ctl, c_buf, error_file)
+        if(error_file) return
       end do
       gen_SPH_wP_c%i_viz_control = 1
 !

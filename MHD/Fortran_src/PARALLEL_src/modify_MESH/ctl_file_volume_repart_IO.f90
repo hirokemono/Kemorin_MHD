@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,   &
-!!     &          file_name, viz_repart_c, c_buf)
+!!     &          file_name, viz_repart_c, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len=kchara), intent(inout) :: file_name
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine sel_write_ctl_file_vol_repart(id_control, hd_block,  &
 !!     &          file_name, viz_repart_c, level)
 !!      subroutine write_ctl_file_vol_repart(id_control, file_name,     &
@@ -70,7 +71,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,     &
-     &          file_name, viz_repart_c, c_buf)
+     &          file_name, viz_repart_c, c_buf, error_file)
 !
       use write_control_elements
 !
@@ -79,13 +80,15 @@
       character(len=kchara), intent(inout) :: file_name
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_one_ctl_file_message                                 &
-     &     (hd_block, c_buf%level, file_name)
+        call write_one_ctl_file_message(hd_block, c_buf%level,          &
+     &                                  file_name, error_file)
+        if(error_file) return
         call read_ctl_file_vol_repart((id_control+2), file_name,        &
      &                                hd_block, viz_repart_c, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then

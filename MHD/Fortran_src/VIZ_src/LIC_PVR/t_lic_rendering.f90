@@ -162,20 +162,26 @@
       integer(kind = kint), intent(in) :: id_control
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
+      logical :: error_file
       integer(kind = kint) :: i_lic
       type(buffer_for_control) :: c_buf1
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       do i_lic = 1, lic_ctls%num_lic_ctl
         if(.not. no_file_flag(lic_ctls%fname_lic_ctl(i_lic))) then
           call read_control_lic_pvr_file                                &
      &     (id_control, lic_ctls%fname_lic_ctl(i_lic), hd_lic_ctl,      &
      &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic), &
-     &      c_buf1)
+     &      c_buf1, error_file)
+          if(error_file) exit
           if(lic_ctls%pvr_ctl_type(i_lic)%i_pvr_ctl .ne. 1) exit
         end if
       end do
+!
+      if(error_file) call calypso_mpi_abort(ierr_file,                  &
+                                            "Missing control file")
 !
       end subroutine read_ctl_lic_pvr_files_4_update
 !

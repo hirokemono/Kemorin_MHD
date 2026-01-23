@@ -162,6 +162,8 @@
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      logical :: error_file
+      error_file = .FALSE.
 !
       if(part_tctl%i_mesh_test_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, part_tctl%plt)
@@ -181,7 +183,8 @@
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
      &      part_tctl%fname_vol_repart_ctl, part_tctl%viz_repart_c,     &
-     &      c_buf)
+     &      c_buf, error_file)
+        if(error_file) return
       end do
       part_tctl%i_mesh_test_ctl = 1
 !
