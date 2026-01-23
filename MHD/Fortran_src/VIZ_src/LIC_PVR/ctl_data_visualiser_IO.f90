@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine init_viz_ctl_label(hd_block, viz_ctls)
-!!      subroutine s_read_viz_controls(id_control, viz_ctls, c_buf)
-!!        integer(kind = kint), intent(in) :: id_control 
+!!      subroutine s_read_viz_controls(id_control, hd_block,            &
+!!     &                               viz_ctls, c_buf, error_file)
+!!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_viz_controls(id_control, viz_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control 
 !!        character(len=kchara), intent(in) :: hd_block
@@ -152,8 +154,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_viz_controls                                    &
-     &         (id_control, hd_block, viz_ctls, c_buf)
+      subroutine s_read_viz_controls(id_control, hd_block,              &
+     &                               viz_ctls, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_file_sections_IO
@@ -168,9 +170,7 @@
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(viz_ctls%i_viz_control .gt. 0) return

@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine init_map_control_label(hd_block, map_c)
-!!      subroutine s_read_map_control_data                              &
-!!     &         (id_control, hd_block, map_c, c_buf)
+!
+!!      subroutine s_read_map_control_data(id_control, hd_block,        &
+!!     &                                   map_c, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(map_ctl), intent(inout) :: map_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_map_control_data                               &
 !!     &         (id_control, hd_block, map_c, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -196,8 +198,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_map_control_data                                &
-     &         (id_control, hd_block, map_c, c_buf)
+      subroutine s_read_map_control_data(id_control, hd_block,          &
+     &                                   map_c, c_buf, error_file)
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
@@ -209,9 +211,7 @@
 !
       type(map_ctl), intent(inout) :: map_c
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(map_c%i_map_ctl .gt. 0) return

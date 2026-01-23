@@ -7,12 +7,13 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine read_control_data_sph_trans(file_name,               &
-!!     &                                       spt_ctl, c_buf)
+!!      subroutine read_control_data_sph_trans(file_name, spt_ctl,      &
+!!     &                                       c_buf, error_file)
 !!      subroutine write_control_data_sph_trans(file_name, spt_ctl)
 !!      subroutine dealloc_sph_trans_control_data(spt_ctl)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+!!        logical, intent(inout)  :: error_file
 !!@endverbatim
 !
       module ctl_data_sph_trans_IO
@@ -77,14 +78,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_sph_trans(file_name,                 &
-     &                                       spt_ctl, c_buf)
+      subroutine read_control_data_sph_trans(file_name, spt_ctl,        &
+     &                                       c_buf, error_file)
 !
       use viz4_step_ctls_to_time_ctl
 !
       character(len = kchara), intent(in) :: file_name
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout)  :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -94,8 +96,9 @@
      &     (control_file_code, hd_sph_trans_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_sph_trans_control_data                                &
-     &     (control_file_code, hd_sph_trans_ctl, spt_ctl, c_buf)
+        call read_sph_trans_control_data(control_file_code,             &
+     &      hd_sph_trans_ctl, spt_ctl, c_buf, error_file)
+        if(error_file) return
         if(spt_ctl%i_sph_trans_ctl .gt. 0) exit
       end do
       close(control_file_code)
@@ -140,7 +143,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_sph_trans_control_data                            &
-     &         (id_control, hd_block, spt_ctl, c_buf)
+     &         (id_control, hd_block, spt_ctl, c_buf, error_file)
 !
       use ctl_data_platforms_IO
       use ctl_data_four_vizs_IO
@@ -151,9 +154,7 @@
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(spt_ctl%i_sph_trans_ctl .gt. 0) return
@@ -186,7 +187,8 @@
      &     (id_control, hd_sph_trans_params, spt_ctl, c_buf)
 !
         call s_read_viz4_controls(id_control, hd_viz_control,           &
-     &                           spt_ctl%viz4_ctls, c_buf)
+     &                           spt_ctl%viz4_ctls, c_buf, error_file)
+        if(error_file) return
       end do
       spt_ctl%i_sph_trans_ctl = 1
 !

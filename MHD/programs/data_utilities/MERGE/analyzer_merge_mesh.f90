@@ -58,6 +58,9 @@
       use set_control_platform_data
       use bcast_4_assemble_sph_ctl
 !
+      logical :: error_file = .FALSE.
+!
+!
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
         write(*,*) ' Do you prepare folloing data???'
@@ -67,9 +70,14 @@
 !
 !   read control data
 !
-      if(my_rank .eq. 0) call read_control_4_merge(ctl_file_name,       &
-     &                                             mgd_ctl_m)
+      error_file = .FALSE.
+      if(my_rank .eq. 0) then
+        call read_control_4_merge(ctl_file_name, mgd_ctl_m, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
+      end if
       call bcast_merge_control_data(mgd_ctl_m)
+!
       if(mgd_ctl_m%i_assemble .ne. 1) then
         call calypso_MPI_abort(mgd_ctl_m%i_assemble,                    &
      &                         trim(ctl_file_name))

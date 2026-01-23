@@ -72,13 +72,17 @@
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       integer(kind = kint) :: ierr = 0
+      logical :: error_file = .FALSE.
       type(buffer_for_control) :: c_buf1
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
         call read_ctl_file_rayleigh_viz(ctl_file_name, rayleigh_vctl,   &
-     &                                  viz4_ctls, c_buf1)
+     &                                  viz4_ctls, c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
       end if
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vctl)
       call bcast_viz4_controls(viz4_ctls)

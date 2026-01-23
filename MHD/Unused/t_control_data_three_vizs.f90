@@ -7,12 +7,13 @@
 !>@brief Control data for visualization without repartitioning
 !!
 !!@verbatim
-!!      subroutine read_control_file_three_vizs(file_name,              &
-!!     &                                        viz3_c, c_buf)
+!!      subroutine read_control_file_three_vizs(file_name, viz3_c,      &
+!!     &                                        c_buf, error_file)
 !!      subroutine write_control_file_three_vizs(file_name, viz3_c)
 !!      subroutine dealloc_three_vizs_control_data(viz3_c)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_three_vizs), intent(inout) :: viz3_c
+!!        logical, intent(inout) :: error_file
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -89,14 +90,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_file_three_vizs(file_name,                &
-     &                                        viz3_c, c_buf)
+      subroutine read_control_file_three_vizs(file_name, viz3_c,        &
+     &                                        c_buf, error_file)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: file_name
       type(control_data_three_vizs), intent(inout) :: viz3_c
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -107,8 +109,9 @@
      &                                  hd_viz_only_file, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_three_vizs_control_data                               &
-     &     (viz_ctl_file_code, hd_viz_only_file, viz3_c, c_buf)
+        call read_three_vizs_control_data(viz_ctl_file_code,            &
+     &      hd_viz_only_file, viz3_c, c_buf, error_file)
+        if(error_file) return
         if(viz3_c%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
@@ -154,7 +157,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_three_vizs_control_data                           &
-     &         (id_control, hd_block, viz3_c, c_buf)
+     &         (id_control, hd_block, viz3_c, c_buf, error_file)
 !
       use skip_comment_f
       use ctl_data_platforms_IO
@@ -166,6 +169,7 @@
 !
       type(control_data_three_vizs), intent(inout) :: viz3_c
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(viz3_c%i_viz_only_file .gt. 0) return
@@ -181,7 +185,8 @@
      &     (id_control, hd_time_step, viz3_c%t_viz_ctl, c_buf)
 !
         call s_read_viz3_controls(id_control, hd_viz_control,           &
-     &                            viz3_c%viz3_ctl, c_buf)
+     &                            viz3_c%viz3_ctl, c_buf, error_file)
+        if(error_file) return
       end do
       viz3_c%i_viz_only_file = 1
 !

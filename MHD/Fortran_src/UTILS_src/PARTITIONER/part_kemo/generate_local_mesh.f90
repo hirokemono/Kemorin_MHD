@@ -128,8 +128,8 @@
      &    domain_grp%nod_d_grp, domain_grp%ele_d_grp, comm_part)
 !
       if(comm_part%iflag_memory_conserve .ne. 0) then
-        call delete_parallel_files                                      &
-     &     (ione, part_p%num_domain, comm_part%work_f_head)
+        call delete_parallel_files(part_p%num_domain,                   &
+     &                             comm_part%work_f_head)
       end if
 !
       call dealloc_nod_ele_4_subdomain(internals_part)

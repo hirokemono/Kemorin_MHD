@@ -228,7 +228,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       integer(kind = kint), intent(inout) :: iflag_failed
 !
-      logical :: error_file
+      logical :: error_file = .FALSE.
       integer(kind = kint) :: i_pvr
       type(buffer_for_control) :: c_buf1
 !

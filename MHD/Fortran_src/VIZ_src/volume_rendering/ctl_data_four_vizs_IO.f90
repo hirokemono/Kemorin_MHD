@@ -7,15 +7,17 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine s_read_viz4_controls(id_control, viz4_ctls, c_buf)
-!!       integer(kind = kint), intent(in) :: id_control
-!!       character(len=kchara), intent(in) :: hd_block
-!!       type(vis4_controls), intent(inout) :: viz4_ctls
-!!       type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine s_read_viz4_controls(id_control, hd_block,           &
+!!     &                                viz4_ctls, c_buf, error_file)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(vis4_controls), intent(inout) :: viz4_ctls
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!     subroutine write_viz4_controls(id_control, viz4_ctls, level)
-!!       integer(kind = kint), intent(in) :: id_control
-!!       type(vis4_controls), intent(in) :: viz4_ctls
-!!       integer(kind = kint), intent(inout) :: level
+!!        integer(kind = kint), intent(in) :: id_control
+!!        type(vis4_controls), intent(in) :: viz4_ctls
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine init_viz4_ctl_label(hd_block, viz4_ctls)
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(vis4_controls), intent(inout) :: viz4_ctls
@@ -128,8 +130,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_viz4_controls                                   &
-     &         (id_control, hd_block, viz4_ctls, c_buf)
+      subroutine s_read_viz4_controls(id_control, hd_block,             &
+     &                                viz4_ctls, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_file_sections_IO
@@ -143,9 +145,7 @@
 !
       type(vis4_controls), intent(inout) :: viz4_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(viz4_ctls%i_viz_control .gt. 0) return

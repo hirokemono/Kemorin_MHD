@@ -184,7 +184,7 @@
 !
       if (my_rank .eq. 0) then
         num_pe = int(nprocs, KIND(num_pe))
-        call delete_parallel_files(ione, num_pe, work_header)
+        call delete_parallel_files(num_pe, work_header)
       end if
 !
       if (iflag_debug.eq.1)                                             &

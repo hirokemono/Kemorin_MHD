@@ -45,17 +45,23 @@
       subroutine input_control_new_partition(ctl_file_name,             &
      &                                       part_prog_p)
 !
+      use m_error_IDs
+!
       character(len = kchara), intent(in) :: ctl_file_name
       type(vol_partion_prog_param), intent(inout) :: part_prog_p
 !
       type(new_patition_test_control) :: part_tctl
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
 !
       c_buf1%level = 0
+      error_file = .FALSE.
       if(my_rank .eq. 0) then
-        call read_ctl_file_new_partition(ctl_file_name,                 &
-     &                                   part_tctl, c_buf1)
+        call read_ctl_file_new_partition(ctl_file_name, part_tctl,      &
+     &                                   c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
       end if
       call bcast_control_new_partition(part_tctl)
 !
@@ -74,6 +80,7 @@
       subroutine input_control_field_to_repart(ctl_file_name,           &
      &                                       part_prog_p, t_viz_param)
 !
+      use m_error_IDs
       use t_VIZ_only_step_parameter
 !
       character(len = kchara), intent(in) :: ctl_file_name
@@ -82,13 +89,17 @@
 !
       type(new_patition_test_control) :: part_tctl
       integer(kind = kint) :: ierr
+      logical :: error_file = .FALSE.
       type(buffer_for_control) :: c_buf1
 !
 !
       c_buf1%level = 0
+      error_file = .FALSE.
       if(my_rank .eq. 0) then
-        call read_ctl_file_new_partition(ctl_file_name,                 &
-     &                                    part_tctl, c_buf1)
+        call read_ctl_file_new_partition(ctl_file_name, part_tctl,      &
+     &                                   c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
       end if
       call bcast_control_new_partition(part_tctl)
 !

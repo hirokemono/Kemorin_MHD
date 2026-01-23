@@ -128,14 +128,17 @@
 !
         call check_write_ctl_file_message(file_name, error_file)
         if(error_file) return
+!
         call read_control_4_map_file((id_control+2), file_name,         &
-     &                               hd_block, map_ctl_struct, c_buf)
+     &      hd_block, map_ctl_struct, c_buf, error_file)
+        if(error_file) return
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
         write(*,'(a)') ' is included.'
         call s_read_map_control_data(id_control, hd_block,              &
-     &                               map_ctl_struct, c_buf)
+     &      map_ctl_struct, c_buf, error_file)
+        if(error_file) return
       end if
 !
       end subroutine sel_read_control_4_map_file
@@ -143,7 +146,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_4_map_file(id_control, file_name,         &
-     &          hd_block, map_ctl_struct, c_buf)
+     &          hd_block, map_ctl_struct, c_buf, error_file)
 !
       use t_read_control_elements
       use t_control_data_4_map
@@ -155,6 +158,7 @@
       character(len=kchara), intent(in) :: hd_block
       type(map_ctl), intent(inout) :: map_ctl_struct
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -165,9 +169,11 @@
         if(c_buf%iend .gt. 0) exit
 !
         call s_read_map_control_data(id_control, hd_block,              &
-     &      map_ctl_struct, c_buf)
+     &      map_ctl_struct, c_buf, error_file)
+        if(error_file) return
         call s_read_map_control_data(id_control, hd_map_rendering,      &
-     &      map_ctl_struct, c_buf)
+     &      map_ctl_struct, c_buf, error_file)
+        if(error_file) return
         if(map_ctl_struct%i_map_ctl .gt. 0) exit
       end do
       close(id_control)

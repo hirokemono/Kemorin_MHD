@@ -69,6 +69,7 @@
       use bcast_4_assemble_sph_ctl
 !
       integer(kind = kint) :: ierr, istep_in
+      logical :: error_file = .FALSE.
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -84,9 +85,14 @@
 !
 !   read control data
 !
-      if(my_rank .eq. 0) call read_control_4_merge(ctl_file_name,       &
-     &                                             mgd_ctl_u)
+      error_file = .FALSE.
+      if(my_rank .eq. 0) then
+        call read_control_4_merge(ctl_file_name, mgd_ctl_u, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
+      end if
       call bcast_merge_control_data(mgd_ctl_u)
+!
       if(mgd_ctl_u%i_assemble .ne. 1) then
         call calypso_MPI_abort(mgd_ctl_u%i_assemble,                    &
      &                         trim(ctl_file_name))

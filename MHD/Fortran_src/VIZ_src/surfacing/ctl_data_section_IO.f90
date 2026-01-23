@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine init_psf_ctl_stract(psf_c)
-!!      subroutine s_read_psf_control_data                              &
-!!     &         (id_control, hd_block, psf_c, c_buf)
+!!      subroutine s_read_psf_control_data(id_control, hd_block,        &
+!!     &                                   psf_c, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(psf_ctl), intent(inout) :: psf_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout)  :: error_file
 !!      subroutine write_psf_control_data                               &
 !!     &         (id_control, hd_block, psf_c, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -158,8 +159,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_psf_control_data                                &
-     &         (id_control, hd_block, psf_c, c_buf)
+      subroutine s_read_psf_control_data(id_control, hd_block,          &
+     &                                   psf_c, c_buf, error_file)
 !
       use ctl_file_section_def_IO
       use ctl_file_field_on_psf_IO
@@ -170,7 +171,7 @@
 !
       type(psf_ctl), intent(inout) :: psf_c
       type(buffer_for_control), intent(inout)  :: c_buf
-      logical :: error_file
+      logical, intent(inout)  :: error_file
 !
 !
       if(psf_c%i_psf_ctl .gt. 0) return

@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine read_ctl_file_rayleigh_viz                           &
-!!     &         (file_name, rayleigh_vizs_ctl, viz4_ctls, c_buf)
+!!     &         (file_name, rayleigh_vizs_ctl, viz4_ctls,              &
+!!     &          c_buf, error_file)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_rayleigh_vizs), intent(inout)               &
 !!     &                         :: rayleigh_vizs_ctl
 !!        type(vis4_controls), intent(inout) :: viz4_ctls
 !!        type(buffer_for_control), intent(inout) :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_ctl_file_rayleigh_viz                          &
 !!     &         (file_name, rayleigh_vizs_ctl, viz4_ctls)
 !!      subroutine dealloc_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
@@ -111,7 +113,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_ctl_file_rayleigh_viz                             &
-     &         (file_name, rayleigh_vizs_ctl, viz4_ctls, c_buf)
+     &         (file_name, rayleigh_vizs_ctl, viz4_ctls,                &
+     &          c_buf, error_file)
 !
       use skip_comment_f
       use viz4_step_ctls_to_time_ctl
@@ -121,6 +124,7 @@
      &                         :: rayleigh_vizs_ctl
       type(vis4_controls), intent(inout) :: viz4_ctls
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -133,6 +137,7 @@
         call read_rayleigh_vizs_ctl_data                                &
      &     (viz_ctl_file_code, hd_rayleigh_viz,                         &
      &      rayleigh_vizs_ctl, viz4_ctls, c_buf)
+        if(error_file) return
         if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
@@ -178,7 +183,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_rayleigh_vizs_ctl_data(id_control, hd_block,      &
-     &          rayleigh_vizs_ctl, viz4_ctls, c_buf)
+     &          rayleigh_vizs_ctl, viz4_ctls, c_buf, error_file)
 !
       use skip_comment_f
       use ctl_data_platforms_IO
@@ -192,6 +197,7 @@
      &                         :: rayleigh_vizs_ctl
       type(vis4_controls), intent(inout) :: viz4_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) return
@@ -222,7 +228,8 @@
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
         call s_read_viz4_controls(id_control, hd_viz_control,           &
-     &                            viz4_ctls, c_buf)
+     &                            viz4_ctls, c_buf, error_file)
+        if(error_file) return
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !

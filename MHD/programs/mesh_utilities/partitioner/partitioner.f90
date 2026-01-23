@@ -96,6 +96,7 @@
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug, iflag_part_detail
       real(kind = kreal), pointer :: node_volume(:)
+      logical :: error_file = .FALSE.
 !
 !
       call calypso_MPI_init
@@ -134,8 +135,10 @@
      &    org_fem%mesh%ele, org_fem%mesh%surf, org_fem%mesh%edge)
 !
 !  ========= Read global field data for load balance partition =======
-      write(*,*) 'read control_merge'
-      call read_control_4_merge(merge_ctl_file_name, mgd_ctl_p)
+      error_file = .FALSE.
+      call read_control_4_merge(merge_ctl_file_name,                    &
+     &                          mgd_ctl_p, error_file)
+      if(error_file) stop 'Missing control file'
       if(mgd_ctl_p%i_assemble .ne. 1) stop 'Wrong control file reading'
 !
       call set_control_4_merge(mgd_ctl_p, asbl_param_p, num_pe)

@@ -8,17 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine init_viz3_ctl_label(hd_block, viz3_ctls)
-!!      subroutine s_read_viz3_controls(id_control, viz3_ctls, c_buf)
-!!       integer(kind = kint), intent(in) :: id_control
-!!       character(len=kchara), intent(in) :: hd_block
-!!       type(vis3_controls), intent(inout) :: viz3_ctls
-!!       type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine s_read_viz3_controls(id_control, hd_block,           &
+!!     &                                viz3_ctls, c_buf, error_file)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(vis3_controls), intent(inout) :: viz3_ctls
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_viz3_controls                                  &
 !!     &         (id_control, hd_block, viz3_ctls, level)
-!!       integer(kind = kint), intent(in) :: id_control
-!!       character(len=kchara), intent(in) :: hd_block
-!!       type(vis3_controls), intent(in) :: viz3_ctls
-!!       integer(kind = kint), intent(inout) :: level
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(vis3_controls), intent(in) :: viz3_ctls
+!!        integer(kind = kint), intent(inout) :: level
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
 !!    array  cross_section_ctl
@@ -113,8 +115,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_viz3_controls                                   &
-     &         (id_control, hd_block, viz3_ctls, c_buf)
+      subroutine s_read_viz3_controls(id_control, hd_block,             &
+     &                                viz3_ctls, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_file_sections_IO
@@ -128,9 +130,7 @@
 !
       type(vis3_controls), intent(inout) :: viz3_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(viz3_ctls%i_viz_control .gt. 0) return

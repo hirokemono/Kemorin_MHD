@@ -43,6 +43,7 @@
 !
       subroutine load_control_data_sph_trans(ctl_file_name, spt_ctl)
 !
+      use m_error_IDs
       use ctl_data_sph_trans_IO
       use bcast_ctl_data_4_sph_trans
 !
@@ -50,12 +51,16 @@
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_data_sph_trans(ctl_file_name,                 &
-     &                                   spt_ctl, c_buf1)
+        call read_control_data_sph_trans(ctl_file_name, spt_ctl,        &
+     &                                    c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
       end if
       if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(spt_ctl%i_sph_trans_ctl,                 &

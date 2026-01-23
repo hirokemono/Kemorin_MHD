@@ -627,6 +627,8 @@
       character(len=kchara) :: MHD_ctl_name
 !
       character(C_char), pointer ::  name_f(:)
+      logical :: error_file = .FALSE.
+!
 !
       call c_f_pointer(names_c, name_f, [kchara+1])
       MHD_ctl_name = load_chara_from_cc(name_f)
@@ -634,7 +636,9 @@
       c_buf1%level = 0
       call read_control_file_sph_SGS_MHD(MHD_ctl_name, MHD_ctl_C,       &
      &    add_SSMHD_ctl_C%sgs_ctl, add_SSMHD_ctl_C%tracer_ctls,         &
-     &    add_SSMHD_ctl_C%viz_ctls,  add_SSMHD_ctl_C%zm_ctls, c_buf1)
+     &    add_SSMHD_ctl_C%viz_ctls,  add_SSMHD_ctl_C%zm_ctls,           &
+     &    c_buf1, error_file)
+      if(error_file) stop 'Missing control file'
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
       write(*,*) 'smonitor_ctl%pspec_ctl%pick_radius_ctl',              &
@@ -698,13 +702,13 @@
       subroutine c_read_control_sph_MHD()                               &
      &          bind(C, NAME = 'c_read_control_sph_MHD')
 !
-      use bcast_control_sph_MHD
-!
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
       call read_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl_C,        &
-     &                                  add_SMHD_ctl_C, c_buf1)
+     &    add_SMHD_ctl_C, c_buf1, error_file)
+      if(error_file) stop 'Missing control file'
 !
       end subroutine c_read_control_sph_MHD
 !

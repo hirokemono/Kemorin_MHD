@@ -24,6 +24,7 @@
       type(mhd_simulation_control) :: MHD_ctl1
       type(add_vizs_sph_mhd_ctl) :: add_VMHD_ctl1
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
 !
       if(command_argument_count() .le. 0) then
@@ -32,9 +33,11 @@
       end if
       call get_command_argument(1, MHD_ctl_name)
 !
+      error_file = .FALSE.
       c_buf1%level = 0
-      call read_control_4_sph_MHD_w_vizs(MHD_ctl_name,                  &
-     &                                MHD_ctl1, add_VMHD_ctl1, c_buf1)
+      call read_control_4_sph_MHD_w_vizs(MHD_ctl_name, MHD_ctl1,        &
+     &    add_VMHD_ctl1, c_buf1, error_file)
+      if(error_file) stop 'No control file'
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
 !

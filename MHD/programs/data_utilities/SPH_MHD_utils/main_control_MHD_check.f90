@@ -35,6 +35,7 @@
       type(sph_dynamo_viz_controls) :: zm_ctls3
 !
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
 !
       if(command_argument_count() .le. 0) then
@@ -45,7 +46,8 @@
 !
       c_buf1%level = 0
       call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl3, sgs_ctl3, &
-     &    tracer_ctls3, viz_ctls3, zm_ctls3, c_buf1)
+     &    tracer_ctls3, viz_ctls3, zm_ctls3, c_buf1, error_file)
+      if(error_file) stop 'Missing control file'
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
 !

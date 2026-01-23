@@ -7,11 +7,14 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_new_partition(file_name,               &
-!!     &                                       part_tctl, c_buf)
+!!      subroutine read_ctl_file_new_partition(file_name, part_tctl,    &
+!!     &                                       c_buf, error_file)
 !!      subroutine write_ctl_file_new_partition(file_name, part_tctl)
 !!      subroutine dealloc_control_new_partition(part_tctl)
+!!        character(len=kchara), intent(in) :: file_name
 !!        type(new_patition_test_control), intent(inout) :: part_tctl
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!        logical, intent(inout) :: error_file
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -86,16 +89,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_file_new_partition(file_name,                 &
-     &                                       part_tctl, c_buf)
+      subroutine read_ctl_file_new_partition(file_name, part_tctl,      &
+     &                                       c_buf, error_file)
 !
       use skip_comment_f
       use bcast_4_platform_ctl
       use t_read_control_elements
 !
       character(len=kchara), intent(in) :: file_name
+!
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(buffer_for_control), intent(inout) :: c_buf
+      logical, intent(inout) :: error_file
 !
 !
       c_buf%level = c_buf%level + 1
@@ -108,7 +113,8 @@
 !
         call read_control_new_partition                                 &
      &     (part_ctl_file_code, hd_repartition_test_ctl,                &
-     &      part_tctl, c_buf)
+     &      part_tctl, c_buf, error_file)
+        if(error_file) return
         if(part_tctl%i_mesh_test_ctl .gt. 0) exit
       end do
       close(part_ctl_file_code)
@@ -147,8 +153,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_new_partition                             &
-     &         (id_control, hd_block, part_tctl, c_buf)
+      subroutine read_control_new_partition(id_control, hd_block,       &
+     &          part_tctl, c_buf, error_file)
 !
       use t_read_control_elements
       use ctl_data_platforms_IO
@@ -161,9 +167,8 @@
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(buffer_for_control), intent(inout)  :: c_buf
+      logical, intent(inout) :: error_file
 !
-      logical :: error_file
-      error_file = .FALSE.
 !
       if(part_tctl%i_mesh_test_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, part_tctl%plt)

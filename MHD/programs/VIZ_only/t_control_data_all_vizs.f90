@@ -196,7 +196,8 @@
      &     (id_control, hd_time_step, vizs_ctl%t_viz_ctl, c_buf)
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           vizs_ctl%viz_ctl_v, c_buf)
+     &                           vizs_ctl%viz_ctl_v, c_buf, error_file)
+        if(error_file) return
 !
         call read_tracer_controls(id_control, hd_tracer_ctl,            &
      &      vizs_ctl%tracer_ctls, c_buf, error_file)

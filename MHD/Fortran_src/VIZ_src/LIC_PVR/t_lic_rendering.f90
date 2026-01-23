@@ -155,6 +155,7 @@
 !
       subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !
+      use m_error_IDs
       use t_read_control_elements
       use ctl_file_lic_pvr_IO
       use skip_comment_f
@@ -162,7 +163,7 @@
       integer(kind = kint), intent(in) :: id_control
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
-      logical :: error_file
+      logical :: error_file = .FALSE.
       integer(kind = kint) :: i_lic
       type(buffer_for_control) :: c_buf1
 !

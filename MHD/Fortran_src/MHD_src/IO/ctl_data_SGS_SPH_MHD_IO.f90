@@ -22,7 +22,7 @@
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!      subroutine read_sph_mhd_control_data                            &
 !!     &         (id_control, hd_block, MHD_ctl, sgs_ctl,               &
-!!     &          tracer_ctls, viz_ctls, zm_ctls, c_buf)
+!!     &          tracer_ctls, viz_ctls, zm_ctls, c_buf, error_file)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) ::  MHD_ctl
@@ -31,6 +31,7 @@
 !!        type(visualization_controls), intent(inout) ::  viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        logical, intent(inout) :: error_file
 !!      subroutine write_sph_mhd_control_data(id_control, MHD_ctl,      &
 !!     &          sgs_ctl, tracer_ctls, viz_ctls, zm_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -178,7 +179,7 @@
 !
       subroutine read_sph_mhd_control_data                              &
      &         (id_control, hd_block, MHD_ctl, sgs_ctl,                 &
-     &          tracer_ctls, viz_ctls, zm_ctls, c_buf)
+     &          tracer_ctls, viz_ctls, zm_ctls, c_buf, error_file)
 !
       use t_ctl_data_SPH_MHD_control
       use ctl_file_gen_sph_shell_IO
@@ -196,9 +197,7 @@
       type(visualization_controls), intent(inout) ::  viz_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      logical :: error_file
-      error_file = .FALSE.
+      logical, intent(inout) :: error_file
 !
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
@@ -231,7 +230,9 @@
      &                               MHD_ctl%smonitor_ctl, c_buf)
 !
         call s_read_viz_controls(id_control, hd_viz_ctl,                &
-     &                           viz_ctls, c_buf)
+     &                           viz_ctls, c_buf, error_file)
+        if(error_file) return
+!
         call read_tracer_controls(id_control, hd_tracer_ctl,            &
      &                           tracer_ctls, c_buf, error_file)
         if(error_file) return

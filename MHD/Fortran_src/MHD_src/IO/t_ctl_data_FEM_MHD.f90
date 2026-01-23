@@ -229,7 +229,8 @@
         call read_monitor_data_ctl(id_control, hd_monitor_data,         &
      &                             FEM_MHD_ctl%nmtr_ctl, c_buf)
         call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           viz_ctls, c_buf)
+     &                           viz_ctls, c_buf, error_file)
+        if(error_file) return
 !
         call read_tracer_controls(id_control, hd_viz_control,            &
      &      tracer_ctls, c_buf, error_file)

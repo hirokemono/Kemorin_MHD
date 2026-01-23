@@ -69,6 +69,7 @@
       subroutine load_control_sph_SGS_MHD(file_name, MHD_ctl,           &
      &          sgs_ctl, tracer_ctls, viz_ctls, zm_ctls)
 !
+      use m_error_IDs
       use bcast_ctl_SGS_MHD_model
       use bcast_control_sph_MHD
       use bcast_control_data_vizs
@@ -83,12 +84,16 @@
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
       type(buffer_for_control) :: c_buf1
+      logical :: error_file = .FALSE.
 !
 !
+      error_file = .FALSE.
       c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_4_sph_SGS_MHD(file_name,                      &
-     &      MHD_ctl, sgs_ctl, tracer_ctls, viz_ctls, zm_ctls, c_buf1)
+        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, sgs_ctl,    &
+     &      tracer_ctls, viz_ctls, zm_ctls, c_buf1, error_file)
+        if(error_file) call calypso_mpi_abort(ierr_file,                &
+                                              "Missing control file")
       end if
 !
       if(c_buf1%iend .gt. 0) then
