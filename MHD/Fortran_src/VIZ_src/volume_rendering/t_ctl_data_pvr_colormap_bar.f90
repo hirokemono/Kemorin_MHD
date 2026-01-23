@@ -89,6 +89,7 @@
 !!      num_grid_ctl     4
 !!!
 !!      axis_label_switch      ON
+!!      time_label_switch      ON
 !!    end colorbar_ctl
 !!  end pvr_color_ctl
 !!!
