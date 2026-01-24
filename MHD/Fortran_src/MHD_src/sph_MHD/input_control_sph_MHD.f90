@@ -78,7 +78,7 @@
         call read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,          &
      &      add_SMHD_ctl, c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
 !
       if(c_buf1%iend .gt. 0) then
@@ -112,7 +112,7 @@
         call read_control_4_sph_MHD_noviz(file_name, MHD_ctl,           &
      &                                    c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)

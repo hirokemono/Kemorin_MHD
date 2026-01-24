@@ -182,7 +182,7 @@
       end do
 !
       if(error_file) call calypso_mpi_abort(ierr_file,                  &
-                                            "Missing control file")
+     &                                      "Missing control file")
 !
       end subroutine read_ctl_lic_pvr_files_4_update
 !

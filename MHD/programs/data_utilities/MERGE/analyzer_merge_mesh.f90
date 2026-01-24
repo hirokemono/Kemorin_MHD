@@ -74,7 +74,7 @@
       if(my_rank .eq. 0) then
         call read_control_4_merge(ctl_file_name, mgd_ctl_m, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_merge_control_data(mgd_ctl_m)
 !

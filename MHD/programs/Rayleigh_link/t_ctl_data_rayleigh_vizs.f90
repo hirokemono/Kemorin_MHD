@@ -136,7 +136,7 @@
 !
         call read_rayleigh_vizs_ctl_data                                &
      &     (viz_ctl_file_code, hd_rayleigh_viz,                         &
-     &      rayleigh_vizs_ctl, viz4_ctls, c_buf)
+     &      rayleigh_vizs_ctl, viz4_ctls, c_buf, error_file)
         if(error_file) return
         if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
       end do

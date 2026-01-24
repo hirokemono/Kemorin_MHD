@@ -63,7 +63,7 @@
         call read_control_4_const_shell(file_name, gen_SPH_ctl,         &
      &                                  c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_sph_shell_construct_ctl(gen_SPH_ctl)
 !

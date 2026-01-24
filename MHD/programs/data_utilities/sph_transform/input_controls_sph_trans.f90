@@ -60,7 +60,7 @@
         call read_control_data_sph_trans(ctl_file_name, spt_ctl,        &
      &                                    c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(spt_ctl%i_sph_trans_ctl,                 &

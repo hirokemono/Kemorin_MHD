@@ -63,7 +63,6 @@
       use bcast_control_sph_MHD
       use bcast_ctl_data_viz4
       use bcast_dynamo_viz_control
-
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -79,7 +78,7 @@
         call read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,          &
      &      add_VMHD_ctl, c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
 !
       if(c_buf1%iend .gt. 0) then

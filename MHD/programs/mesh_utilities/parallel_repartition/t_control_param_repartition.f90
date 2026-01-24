@@ -61,7 +61,7 @@
         call read_ctl_file_new_partition(ctl_file_name, part_tctl,      &
      &                                   c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_control_new_partition(part_tctl)
 !
@@ -99,7 +99,7 @@
         call read_ctl_file_new_partition(ctl_file_name, part_tctl,      &
      &                                   c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_control_new_partition(part_tctl)
 !

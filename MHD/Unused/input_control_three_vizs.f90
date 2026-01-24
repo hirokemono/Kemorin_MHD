@@ -73,7 +73,7 @@
         call read_control_file_four_vizs(file_name, viz3_c,             &
      &                                   c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_three_vizs_control_data(viz3_c)
 !

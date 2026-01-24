@@ -83,7 +83,7 @@
         call read_control_assemble_sph(ctl_file_name,                   &
      &                                 mgd_ctl_s, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_merge_control_data(mgd_ctl_s)
 !

@@ -93,7 +93,7 @@
         call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, sgs_ctl,    &
      &      tracer_ctls, viz_ctls, zm_ctls, c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
 !
       if(c_buf1%iend .gt. 0) then

@@ -60,6 +60,7 @@
       subroutine input_conrol_rayleigh_viz(ctl_file_name,               &
      &          rayleigh_vctl, FEM_Rayleigh, viz4_ctls, t_viz_param)
 !
+      use m_error_IDs
       use t_read_control_elements
       use bcast_ctl_data_viz4
 !
@@ -82,7 +83,7 @@
         call read_ctl_file_rayleigh_viz(ctl_file_name, rayleigh_vctl,   &
      &                                  viz4_ctls, c_buf1, error_file)
         if(error_file) call calypso_mpi_abort(ierr_file,                &
-                                              "Missing control file")
+     &                                        "Missing control file")
       end if
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vctl)
       call bcast_viz4_controls(viz4_ctls)
