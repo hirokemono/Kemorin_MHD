@@ -231,6 +231,14 @@
      &   (d_rj, ipol%diffusion, iphys%diffusion, b_trns%diffusion,      &
      &    trns_back)
 !
+      call add_vector_diffusion_sph_trns                                         &
+     &   (d_rj, ipol%sym_diffusion, iphys%sym_diffusion, b_trns%sym_diffusion,   &
+     &    trns_back)
+!
+      call add_vector_diffusion_sph_trns                                         &
+     &   (d_rj, ipol%asym_diffusion, iphys%asym_diffusion, b_trns%asym_diffusion,   &
+     &    trns_back)
+!
       call add_rot_force_4_sph_trns_snap                                &
      &   (d_rj, ipol%rot_forces, iphys%rot_forces, b_trns%rot_forces,   &
      &    trns_back)
@@ -270,6 +278,14 @@
 !
       call add_scalar_diffusion_sph_trns                                &
      &   (d_rj, ipol%diffusion, iphys%diffusion, b_trns%diffusion,      &
+     &    trns_back)
+!
+      call add_scalar_diffusion_sph_trns                                         &
+     &   (d_rj, ipol%sym_diffusion, iphys%sym_diffusion, b_trns%sym_diffusion,   &
+     &    trns_back)
+!
+      call add_scalar_diffusion_sph_trns                                           &
+     &   (d_rj, ipol%asym_diffusion, iphys%asym_diffusion, b_trns%asym_diffusion,  &
      &    trns_back)
 !
       call add_scalar_flux_bwd_trns_snap                                &
