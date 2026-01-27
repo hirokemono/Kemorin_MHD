@@ -57,9 +57,7 @@
 !
       flag = check_vector_diffusion_w_symmetry(field_name)                         &
      &      .or. check_scalar_diffusion_w_symmetry(field_name)
-      write(*,*)  'set_sym_diffusion_addresses start'
       if(flag) then
-            write(*,*)  'set_sym_diffusion_addresses start'
 !
             if (field_name .eq. sym_viscous_diffusion%name) then
             sym_diffusion%i_v_diffuse = i_phys
@@ -78,7 +76,6 @@
             sym_diffusion%i_div_viscous = i_phys
             end if
       !
-            write(*,*)  'set_sym_diffusion_addresses end'
 !
 !
       end if  
