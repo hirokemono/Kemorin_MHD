@@ -68,6 +68,12 @@
         type(base_field_address) :: asym_fld
 !
 !
+!>        Structure of symmetric diffusion terms
+        type(diffusion_address) :: sym_diffusion
+!>        Structure of asymmetric diffusion terms
+        type(diffusion_address) :: asym_diffusion
+!
+!
 !>        Structure of forces by sym and sym fields (contain linear asym force)
         type(base_force_address) :: forces_by_sym_sym
 !>        Structure of forces by asym and asym fields
