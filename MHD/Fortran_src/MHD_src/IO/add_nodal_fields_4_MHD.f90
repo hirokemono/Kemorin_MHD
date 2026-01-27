@@ -50,6 +50,7 @@
       use check_field_w_symmetry
       use check_forces_w_symmetry
       use check_ene_flux_w_symmetry
+      use check_diffusion_w_symmetry      
       use check_workarea_4_explicit
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -80,6 +81,10 @@
       call add_field_w_symmetry_ctl(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_w_symmetry_ctl end'
+!
+      call add_diffusion_w_symmetry_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_diffusion_w_symmetry_ctl end'
 !
       call add_field_ctl_4_check_evo(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &

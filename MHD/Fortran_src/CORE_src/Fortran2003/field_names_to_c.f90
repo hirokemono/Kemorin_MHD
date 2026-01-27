@@ -87,6 +87,9 @@
 !
       type(ctl_array_c2i), save, private, target :: sym_fld_list
       type(ctl_array_c2i), save, private, target :: sym_frc_list
+!
+      type(ctl_array_c2i), save, private, target :: sym_diffusion_list
+!
       type(ctl_array_c2i), save, private, target :: sym_flux_list
       type(ctl_array_c2i), save, private, target :: sym_flux_org_list
 !
@@ -267,6 +270,17 @@
      &           call set_force_w_symmetry_names(sym_frc_list)
       c_link_force_w_symmetry_names = C_loc(sym_frc_list)
       end function c_link_force_w_symmetry_names
+!
+! ----------------------------------------------------------------------
+!
+      type(C_ptr) function c_link_diffusion_w_symmetry_names()              &
+     &          bind(C, NAME = 'c_link_diffusion_w_symmetry_names')
+      use m_diffusion_term_w_sym_labels
+!
+      if(.not. allocated(sym_diffusion_list%c1_tbl))                          &
+     &           call set_diffusion_w_symmetry_names(sym_diffusion_list)
+      c_link_diffusion_w_symmetry_names = C_loc(sym_diffusion_list)
+      end function c_link_diffusion_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
 !

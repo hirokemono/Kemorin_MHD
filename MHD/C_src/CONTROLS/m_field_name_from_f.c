@@ -34,6 +34,7 @@ extern void * c_link_differnce_vector_names(void);
 
 extern void * c_link_field_w_symmetry_names(void);
 extern void * c_link_force_w_symmetry_names(void);
+extern void * c_link_diffusion_w_symmetry_names(void);
 extern void * c_link_sym_ene_flux_names(void);
 
 extern void * c_link_SGS_term_names(void);

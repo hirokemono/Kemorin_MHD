@@ -45,12 +45,14 @@
 !
       use m_field_w_symmetry_labels
       use m_force_w_sym_labels
+      use m_diffusion_term_w_sym_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical :: flag
 !
       flag =  check_base_vector_symmetry(phys_name_ctl)                        &
-      &   .or. check_forces_w_sym(phys_name_ctl)
+      &   .or. check_forces_w_sym(phys_name_ctl)                               &
+      &   .or. check_vector_diffusion_w_symmetry(phys_name_ctl)
 !
       check_sym_vector_fields = flag
 !
@@ -64,13 +66,15 @@
       use m_field_w_symmetry_labels
       use m_force_w_sym_labels
       use m_sym_ene_flux_labels
+      use m_diffusion_term_w_sym_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical :: flag
 !
       flag =  check_base_scalar_w_symmetry(phys_name_ctl)                        &
       &   .or. check_scalar_advection_w_sym(phys_name_ctl)                       &
-      &   .or. check_enegy_fluxes_w_sym(phys_name_ctl)
+      &   .or. check_enegy_fluxes_w_sym(phys_name_ctl)                           &
+      &   .or. check_scalar_diffusion_w_symmetry(phys_name_ctl)
 !
       check_sym_scalar_fields = flag
 !
@@ -114,6 +118,7 @@
 !
       use set_sym_field_labels
       use set_sym_force_labels
+      use set_sym_diffusion_labels
       use m_force_w_sym_labels
 !
       integer(kind = kint), intent(in) :: i_fld
@@ -122,6 +127,13 @@
       type(phys_address), intent(inout) :: iphys
 !
       logical, intent(inout) :: flag
+!
+!
+      call set_sym_diffusion_addresses                                   &
+      &   (i_fld, field_name, iphys%sym_diffusion, flag)
+      call set_asym_diffusion_addresses                                  &
+      &   (i_fld, field_name, iphys%asym_diffusion, flag)
+      if(flag) return
 !
 !
       call set_sym_field_addresses                                       &
