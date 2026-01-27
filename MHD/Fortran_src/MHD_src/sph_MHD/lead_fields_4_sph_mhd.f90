@@ -179,6 +179,10 @@
      &    SPH_MHD%ipol%forces, SPH_MHD%ipol%forces_by_sym_asym,         &
      &    SPH_MHD%ipol%forces_by_sym_sym, SPH_MHD%fld)
 !
+      call s_decomp_w_sym_rj_viscous_diffusion(SPH_MHD%sph%sph_rj,         &
+     &    SPH_MHD%ipol%diffusion, SPH_MHD%ipol%sym_diffusion,         &
+     &    SPH_MHD%ipol%asym_diffusion, SPH_MHD%fld)
+!
      call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &

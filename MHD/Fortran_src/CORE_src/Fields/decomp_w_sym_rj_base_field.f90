@@ -102,6 +102,24 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine s_decomp_w_sym_rj_viscous_diffusion(sph_rj,                   &
+     &          i_base_diffusion, i_sym_diffusion, i_asym_diffusion, rj_fld)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(diffusion_address), intent(in) :: i_base_diffusion
+      type(diffusion_address), intent(in) :: i_sym_diffusion
+      type(diffusion_address), intent(in) :: i_asym_diffusion
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call decomp_rj_vector(sph_rj, rj_fld,                             &
+     &    i_base_diffusion%i_v_diffuse, i_sym_diffusion%i_v_diffuse, i_asym_diffusion%i_v_diffuse)
+!
+      end subroutine s_decomp_w_sym_rj_viscous_diffusion
+!
+!-----------------------------------------------------------------------
+!
       subroutine decomp_rj_vector(sph_rj,                 &
      &          rj_fld, ipol_fld, ipol_sym, ipol_asym)
 !
