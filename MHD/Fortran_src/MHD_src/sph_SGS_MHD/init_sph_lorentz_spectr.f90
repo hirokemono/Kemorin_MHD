@@ -134,6 +134,23 @@
 !
 ! ----------------------------------------------------------------------
 !
+      logical function check_diffusion(ipol_start,       &
+     &                                 ipol_diffusion)
+      use t_base_force_labels
+!
+      integer(kind = kint), intent(in) :: ipol_start
+      type(diffusion_address), intent(in) :: ipol_diffusion
+!
+      check_diffusion = .TRUE.
+      if(     ipol_start .eq. ipol_diffusion%i_v_diffuse                &
+     &  ) return
+      
+      check_diffusion = .FALSE.
+!
+      end function check_diffusion
+!
+! ----------------------------------------------------------------------
+!
       logical function check_SGS_forces(ipol_start, ipol_SGS_term)
       use t_SGS_term_labels
 !
@@ -175,6 +192,10 @@
      &                                       ipol%forces_by_sym_asym)   &
      &   .or. check_Lorentz_gravity_intertia(ipol_start,                &
      &                                       ipol%forces_by_asym_sym)   &
+!
+!     &   .or. check_diffusion(ipol_start,  ipol%diffusion)              &
+     &   .or. check_diffusion(ipol_start,  ipol%sym_diffusion)          &
+     &   .or. check_diffusion(ipol_start,  ipol%asym_diffusion)         &
 !
      &   .or. check_Lorentz_gravity_intertia(ipol_start,                &
      &                                       ipol_LES%force_by_filter)  &
