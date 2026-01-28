@@ -101,6 +101,7 @@
       use cal_self_buoyancies_sph
       use rot_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
+      use add_sph_ref_scalar_advect
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
