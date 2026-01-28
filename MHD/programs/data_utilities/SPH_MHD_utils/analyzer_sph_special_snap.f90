@@ -236,8 +236,9 @@
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS(MHD_step%time_d%i_time_step,              &
-     &    SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p, SPH_WK%trns_WK,      &
-     &    SPH_SGS, SPH_MHD, m_SR%SR_sig, m_SR%SR_r)
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd, SPH_model,          &
+     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_SGS,        &
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
 !
 !* ----  Update fields after time evolution ------------------------=

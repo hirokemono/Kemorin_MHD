@@ -168,8 +168,9 @@
 !* obtain nonlinear terms for starting
 !
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
-     &               SPH_WK%trns_WK, SPH_MHD, m_SR%SR_sig, m_SR%SR_r)
+      call nonlinear(SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,          &
+     &    SPH_model, SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,      &
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -235,8 +236,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
-      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
-     &               SPH_WK%trns_WK, SPH_MHD, m_SR%SR_sig, m_SR%SR_r)
+      call nonlinear(SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,          &
+     &    SPH_model, SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,      &
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+1)
 !

@@ -69,7 +69,7 @@
       use radial_reference_field_IO
       use const_radial_mat_4_sph
       use cal_sol_sph_MHD_crank
-      use cal_nonlinear
+      use cal_exp_linear_convection
       use init_sphrical_transform_MHD
       use check_dependency_for_MHD
       use output_viz_file_control
@@ -196,7 +196,7 @@
       use sph_mhd_rst_IO_control
       use output_viz_file_control
       use cal_write_sph_monitor_data
-      use cal_nonlinear
+      use cal_exp_linear_convection
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
