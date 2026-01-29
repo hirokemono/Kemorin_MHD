@@ -91,6 +91,7 @@
       use parallel_ucd_IO_select
 !
       use m_fem_mhd_restart
+      use m_initial_field_control
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
@@ -187,8 +188,11 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps                                   &
-     &   (fmctl_ctl%mrst_ctl, fmctl_ctl%tctl, MHD_step)
+      call set_initial_field_id(fmctl_ctl%mrst_ctl%restart_flag_ctl,    &
+     &                          MHD_step%iflag_restart_mode)
+      call check_set_initial_time(MHD_step%iflag_restart_mode,          &
+     &                            fmctl_ctl%tctl, MHD_step%init_d%time)
+      call s_set_control_4_time_steps(fmctl_ctl%tctl, MHD_step)
 !
       call s_set_control_4_crank(fmctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

@@ -101,6 +101,8 @@
 !
       use set_control_4_pickup_sph
       use parallel_ucd_IO_select
+      use m_initial_field_control
+      use set_reference_scalar_param
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
@@ -178,9 +180,17 @@
 !
 !   set control parameters
 !
+      if (iflag_debug.gt.0) write(*,*) 'set_initial_field_id'
+      call set_initial_field_id(smctl_ctl%mrst_ctl%restart_flag_ctl,    &
+     &                          MHD_step%iflag_restart_mode)
+      call check_set_initial_time(MHD_step%iflag_restart_mode,          &
+     &                            smctl_ctl%tctl, MHD_step%init_d%time)
+!
+      call set_ref_scalar_for_licv(MHD_step, MHD_prop%ref_param_T)
+      call set_ref_scalar_for_licv(MHD_step, MHD_prop%ref_param_C)
+!
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps                                   &
-     &   (smctl_ctl%mrst_ctl, smctl_ctl%tctl, MHD_step)
+      call s_set_control_4_time_steps(smctl_ctl%tctl, MHD_step)
 !
       call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
