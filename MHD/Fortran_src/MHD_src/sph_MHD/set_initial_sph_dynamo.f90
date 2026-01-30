@@ -270,9 +270,8 @@
 !
 !
         if(ipol%base%i_temp .gt. 0)  then
-          call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_T, &
+          call set_ini_reference_temp_sph(sph_rj,                       &
      &        refs%ref_field%d_fld(1,refs%iref_base%i_temp),            &
-     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%d_fld(1,ipol%base%i_temp))
           call set_noize_scalar_sph(sph_rj,                             &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
@@ -280,9 +279,8 @@
      &        rj_fld%d_fld(1,ipol%base%i_temp))
         end if
         if(ipol%base%i_light .gt. 0) then
-          call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_C, &
+          call set_ini_reference_temp_sph(sph_rj,                       &
      &        refs%ref_field%d_fld(1,refs%iref_base%i_light),           &
-     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%d_fld(1,ipol%base%i_light))
           call set_noize_scalar_sph(sph_rj,                             &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
@@ -322,9 +320,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_T,     &
+      call set_ini_reference_temp_sph(sph_rj,                           &
      &    refs%ref_field%d_fld(1,refs%iref_base%i_temp),                &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    rj_fld%d_fld(1,ipol%base%i_temp))
       call set_noize_scalar_sph(sph_rj,                                 &
      &    sph_params%radius_ICB, sph_params%radius_CMB,                 &
