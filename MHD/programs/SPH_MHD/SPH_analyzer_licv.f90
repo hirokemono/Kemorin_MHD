@@ -1,6 +1,12 @@
+!>@file   SPH_analyzer_licv
+!!@brief  module SPH_analyzer_licv
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!     module SPH_analyzer_licv
-!
+!>@brief Evolution loop for spherical linear convection evolution
+!!
+!!@verbatim
 !!      subroutine SPH_initialize_linear_conv(MHD_files, FEM_dat,       &
 !!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK,     &
 !!     &          m_SR)
@@ -21,8 +27,7 @@
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(mesh_SR), intent(inout) :: m_SR
-!
-!      Written by H. Matsui
+!!@endverbatim
 !
       module SPH_analyzer_licv
 !
@@ -60,7 +65,7 @@
       use t_sph_boundary_input_data
 !
       use set_control_sph_mhd
-      use set_initial_sph_dynamo
+      use sph_initial_licv_control
       use adjust_reference_fields
       use set_bc_sph_mhd
       use material_property
@@ -119,10 +124,10 @@
 !
 ! ---------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*)' read_sph_initial_data_control'
-      call read_sph_initial_data_control                                &
-     &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,    &
-     &    SPH_MHD%fld, sph_fst_IO)
+!      if(iflag_debug.gt.0) write(*,*)' read_sph_initial_data_control'
+!      call read_sph_initial_data_control                               &
+!     &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,   &
+!     &    SPH_MHD%fld, sph_fst_IO)
 !
 !  -------------------------------
 !
@@ -133,9 +138,10 @@
 !
 ! ---------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
-      call sph_initial_data_control                                     &
-     &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,    &
+      if(iflag_debug.gt.0) write(*,*)' s_sph_initial_licv_control'
+      call s_sph_initial_licv_control                                   &
+     &   (MHD_files, MHD_step, SPH_MHD%sph, SPH_MHD%ipol,               &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_model%refs,     &
      &    SPH_MHD%fld, sph_fst_IO)
       MHD_step%iflag_initial_step = 0
 !

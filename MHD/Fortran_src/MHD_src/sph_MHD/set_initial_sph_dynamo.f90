@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine read_sph_initial_data_control(MHD_files, SPH_model,  &
 !!     &          sph, ipol, MHD_step, rj_fld, sph_fst_IO)
-!!      subroutine sph_initial_data_control                             &
+!!      subroutine sph_initial_MHD_data_control                         &
 !!     &         (MHD_files, SPH_model, SPH_MHD, MHD_step, sph_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(sph_grids), intent(in) :: sph
@@ -94,7 +94,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control(MHD_files, SPH_model,         &
+      subroutine sph_initial_MHD_data_control(MHD_files, SPH_model,     &
      &          sph, ipol, MHD_step, rj_fld, sph_fst_IO)
 !
       use m_machine_parameter
@@ -159,7 +159,7 @@
       end if
       call calypso_mpi_barrier
 !
-      end subroutine sph_initial_data_control
+      end subroutine sph_initial_MHD_data_control
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

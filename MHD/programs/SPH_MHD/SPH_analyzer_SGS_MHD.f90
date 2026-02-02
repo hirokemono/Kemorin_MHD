@@ -158,8 +158,8 @@
 !
 ! ---------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
-      call sph_initial_data_control                                     &
+      if(iflag_debug.gt.0) write(*,*)' sph_initial_MHD_data_control'
+      call sph_initial_MHD_data_control                                 &
      &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,    &
      &    SPH_MHD%fld, sph_fst_IO)
       call set_initial_Csim_control(MHD_files, MHD_step,                &
