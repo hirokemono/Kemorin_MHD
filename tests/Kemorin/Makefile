@@ -47,7 +47,9 @@ TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
 all: test
 
 test:
-	@echo "# Test in Mesh directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo "# Tests in Mesh directory..."
+	@echo '# -----------------------------------------------------------'
 	@cd Mesh; \
 		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
 		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
@@ -56,7 +58,9 @@ test:
 		TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
 		test
 		
-	@echo "# Test in Models directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo "# Tests in Models directory..."
+	@echo '# -----------------------------------------------------------'
 	@cd Models; \
 		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
 		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \

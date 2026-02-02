@@ -27,7 +27,11 @@ all: test
 test: 
 	make clean
 	
-	@echo "# Test in full_sphere_licv_z directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Test in full_sphere_licv_z directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd full_sphere_licv_z; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_LICV="$(TARGET_SPH_LICV)" \
@@ -36,7 +40,11 @@ test:
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	
-	@echo "# Test in full_sphere_rot_z directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Test in full_sphere_rot_z directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd full_sphere_rot_z; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
@@ -45,7 +53,11 @@ test:
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	
-	@echo "# Test in static_latent_heat_by_ctl directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Test in static_latent_heat_by_ctl directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd static_latent_heat_by_ctl; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
@@ -53,7 +65,11 @@ test:
 		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		test
 	
-	@echo "# Test in full_sphere_v_filter_static directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Test in full_sphere_v_filter_static directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd full_sphere_v_filter_static; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \

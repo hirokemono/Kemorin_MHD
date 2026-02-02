@@ -46,7 +46,11 @@ TARGET_CONTROL_MHD_CHECK =   $(BUILDDIR)/utilities/check_control_mhd
 all: test
 
 test: 
-	@echo "# Test in Calypso directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Tests in Calypso directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
 	@cd Calypso; $(GMAKE) GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
 		MPIRUN="$(MPIRUN)" \
@@ -70,7 +74,11 @@ test:
 		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
 	
-	@echo "# Test in Kemorin directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Tests in Kemorin directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
 	@cd Kemorin; $(GMAKE) GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
 		MPIRUN="$(MPIRUN)" \
@@ -95,7 +103,11 @@ test:
 		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
 	
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
 	@echo "# --------- Kemorin_MHD tests finished! -------------------------"
+	@echo '# -----------------------------------------------------------'
+	@echo '# -----------------------------------------------------------'
 
 clean:
 	cd Calypso; make clean

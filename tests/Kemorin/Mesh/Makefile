@@ -28,12 +28,22 @@ MPI_TEST =  $(MPIRUN) -np $(NP) $(TARGET_TEST_SPH_GRID)
 all: test
 
 test: 
-	@echo "# Test spherical harmonics indexining in full_sphere directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo '#   Test spherical harmonics indexining'
+	@echo '#       in full_sphere directory...'
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd full_sphere; \
 		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
 		test
 	
-	@echo "# Test spherical harmonics indexining in full_sphere_w_external directory..."
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo '#   Test spherical harmonics indexining '
+	@echo '#       in full_sphere_w_external directory...'
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
 	@cd full_sphere_w_external; \
 		$(GMAKE) MPI_GEN="$(MPI_GEN)" MPI_CHECK="$(MPI_CHECK)" MPI_TEST="$(MPI_TEST)" \
 		test
