@@ -133,7 +133,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
-      integer ( kind = kint), intent(in) :: isig
+      integer(kind = kint), intent(in) :: isig
       real(kind=kreal), intent(inout) :: temp_rj(sph_rj%nnod_rj)
 !
       integer :: m, k, jj
@@ -144,7 +144,7 @@
       pi = four * atan(one)
       shell = r_CMB - r_ICB
 !
-      m = int( mod(isig,ikilo) / icent )
+      m = int(mod(isig,ikilo) / icent)
       jj = find_local_sph_address(sph_rj, m, m)
 !
       if (jj .gt. 0) then

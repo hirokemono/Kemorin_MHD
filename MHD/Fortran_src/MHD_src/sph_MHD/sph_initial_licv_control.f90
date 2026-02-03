@@ -130,8 +130,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!      call set_ini_reference_temp_sph(sph_rj,                           &
-!     &    ref_field%d_fld(1,iref_scalar), rj_fld%d_fld(1,ipol_scalar))
+      call set_ini_reference_temp_sph(sph_rj,                           &
+     &    ref_field%d_fld(1,iref_scalar), rj_fld%d_fld(1,ipol_scalar))
       call set_noize_scalar_sph                                         &
      &   (sph_rj, sph_bc_S%r_ICB(0), sph_bc_S%r_CMB(0),                 &
      &    sph_bc_S%kr_in, sph_bc_S%kr_out, rj_fld%d_fld(1,ipol_scalar))
