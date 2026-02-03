@@ -87,9 +87,6 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      real(kind = kreal), allocatable :: ref_grad_local(:)
-      real(kind = kreal), allocatable :: ref_grad_S(:)
-!
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
 !   ----  lead rotation of buoyancies
@@ -126,15 +123,9 @@
         call clear_field_data(rj_fld, n_vector, ipol%exp_work%i_forces)
       end if
 !
-!
-      allocate(ref_grad_local(0:sph%sph_rj%nidx_rj(1)))
-      allocate(ref_grad_S(0:sph%sph_rj%nidx_rj(1)))
-      call add_ref_advect_sph_licv(sph%sph_rj, trans_p%leg,             &
+      call add_ref_advect_sph_MHD(sph%sph_rj, trans_p%leg,              &
      &    sph_MHD_bc, MHD_prop, refs%iref_grad, refs%ref_field,         &
-     &    ipol%base, ipol%forces, ipol%grad_fld, rj_fld,                &
-     &    ref_grad_local, ref_grad_S)
-      deallocate(ref_grad_local, ref_grad_S)
-!
+     &    ipol%base, ipol%forces, rj_fld)
 !
 !      call licv_forces_to_explicit(MHD_prop%fl_prop,                   &
 !     &    ipol%exp_work, ipol%forces, rj_fld)

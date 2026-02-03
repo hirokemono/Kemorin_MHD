@@ -19,8 +19,9 @@
 !!        type(gradient_field_address), intent(in) :: iref_grad
 !!        type(phys_data), intent(in) :: ref_field
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine add_ref_advect_sph_licv(sph_rj, sph_MHD_bc, MHD_prop,&
-!!     &          leg, refs, ipol, rj_fld, ref_grad_local, ref_grad_S)
+!!      subroutine add_ref_advect_sph_licv                              &
+!!     &         (sph_rj, leg, sph_MHD_bc, MHD_prop,                    &
+!!     &          iref_grad, ref_field, ipol_base, ipol_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -28,13 +29,8 @@
 !!        type(base_field_address), intent(in) :: ipol_base
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(gradient_field_address), intent(in) :: ipol_grad
-!!        type(gradient_field_address), intent(in) :: iref_grad
 !!        type(phys_data), intent(in) :: ref_field
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                :: ref_grad_local(0:sph_rj%nidx_rj(1))
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                :: ref_grad_S(0:sph_rj%nidx_rj(1))
 !!@endverbatim
 !
       module add_sph_ref_scalar_advect
@@ -104,10 +100,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_ref_advect_sph_licv(sph_rj, leg,                   &
-     &          sph_MHD_bc, MHD_prop, iref_grad, ref_field,             &
-     &          ipol_base, ipol_frc, ipol_grad, rj_fld,                 &
-     &          ref_grad_local, ref_grad_S)
+      subroutine add_ref_advect_sph_licv                                &
+     &         (sph_rj, leg, sph_MHD_bc, MHD_prop,                      &
+     &          iref_grad, ref_field, ipol_base, ipol_frc, rj_fld)
 !
       use t_grad_field_labels
 !
@@ -117,44 +112,31 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(base_field_address), intent(in) :: ipol_base
       type(base_force_address), intent(in) :: ipol_frc
-      type(gradient_field_address), intent(in) :: ipol_grad
 !
       type(gradient_field_address), intent(in) :: iref_grad
       type(phys_data), intent(in) :: ref_field
 !
       type(phys_data), intent(inout) :: rj_fld
-      real(kind = kreal), intent(inout)                                 &
-     &                :: ref_grad_local(0:sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(inout)                                 &
-     &                :: ref_grad_S(0:sph_rj%nidx_rj(1))
 !
       integer(kind = kint) :: iflag
 !
 !   ----  Lead advection of reference field
 !
-      iflag = ipol_frc%i_h_advect * ipol_grad%i_grad_temp               &
-     &       * iref_grad%i_grad_temp
+      iflag = ipol_frc%i_h_advect * iref_grad%i_grad_temp
       if(iflag .gt. 0) then
-        call set_sphere_average_scalar(sph_rj, MHD_prop%ref_param_T,    &
-     &      rj_fld%d_fld(1,ipol_grad%i_grad_temp),                      &
-     &      ref_field%d_fld(1,iref_grad%i_grad_temp),                   &
-     &      ref_grad_local, ref_grad_S)
         call add_reference_scalar_advect(sph_rj, leg,                   &
-     &      sph_MHD_bc%sph_bc_T, MHD_prop%ht_prop, ref_grad_S,          &
+     &      sph_MHD_bc%sph_bc_T, MHD_prop%ht_prop,                      &
+     &      ref_field%d_fld(1,iref_grad%i_grad_temp),                   &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol_base%i_velo),           &
      &      rj_fld%d_fld(1,ipol_frc%i_h_advect))
       end if
 !
 !
-      iflag = ipol_frc%i_c_advect * ipol_grad%i_grad_composit           &
-     &       * iref_grad%i_grad_composit
+      iflag = ipol_frc%i_c_advect * iref_grad%i_grad_composit
       if(iflag .gt. 0) then
-        call set_sphere_average_scalar(sph_rj, MHD_prop%ref_param_C,    &
-     &      rj_fld%d_fld(1,ipol_grad%i_grad_composit),                  &
-     &      ref_field%d_fld(1,iref_grad%i_grad_composit),               &
-     &      ref_grad_local, ref_grad_S)
         call add_reference_scalar_advect(sph_rj, leg,                   &
-     &      sph_MHD_bc%sph_bc_C, MHD_prop%cp_prop, ref_grad_S,          &
+     &      sph_MHD_bc%sph_bc_C, MHD_prop%cp_prop,                      &
+     &      ref_field%d_fld(1,iref_grad%i_grad_composit),               &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol_base%i_velo),           &
      &      rj_fld%d_fld(1,ipol_frc%i_c_advect))
       end if
