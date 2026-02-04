@@ -141,8 +141,7 @@
       if(iflag_debug.gt.0) write(*,*)' s_sph_initial_licv_control'
       call s_sph_initial_licv_control                                   &
      &   (MHD_files, MHD_step, SPH_MHD%sph, SPH_MHD%ipol,               &
-     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_model%refs,     &
-     &    SPH_MHD%fld, sph_fst_IO)
+     &    SPH_model%refs, SPH_MHD%fld, sph_fst_IO)
       MHD_step%iflag_initial_step = 0
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'

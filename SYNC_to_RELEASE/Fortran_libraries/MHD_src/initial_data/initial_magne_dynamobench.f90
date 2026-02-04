@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/MHD_src/initial_data/initial_magne_dynamobench.f90

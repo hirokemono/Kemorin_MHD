@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/MHD_src/initial_data/initialize_sph_dynamo.f90
