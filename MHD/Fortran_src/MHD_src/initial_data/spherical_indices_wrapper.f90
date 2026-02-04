@@ -1,5 +1,5 @@
-!>@file   spheric_indices_wrapper.f90
-!!@brief  module spheric_indices_wrapper
+!>@file   spherical_indices_wrapper.f90
+!!@brief  module spherical_indices_wrapper
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2013
@@ -29,6 +29,8 @@
 !!      integer(kind= kint) function nlayer_CMB(sph)
 !!      integer(kind = kint) function inod_rj_center(sph)
 !!      integer(kind = kint) function nnod_rj(sph)
+!!      integer(kind = kint) function num_rj_radial_point(sph)
+!!      integer(kind = kint) function num_rj_horiz_point(sph)
 !!        type(sph_grids), intent(in) :: sph
 !!      integer(kind = kint) function nidx_rj(sph, nd)
 !!        type(sph_grids), intent(in) :: sph
@@ -57,7 +59,7 @@
 !!@endverbatim
 !
 !
-      module spheric_indices_wrapper
+      module spherical_indices_wrapper
 !
       use m_precision
       use m_constants
@@ -130,21 +132,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind= kint) function nlayer_ICB(sph)
+      integer(kind = kint) function nlayer_ICB(sph)
 !
       type(sph_grids), intent(in) :: sph
 !
-      nlayer_ICB = int(sph%sph_params%nlayer_ICB)
+      nlayer_ICB = sph%sph_params%nlayer_ICB
 !
       end function nlayer_ICB
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind= kint) function nlayer_CMB(sph)
+      integer(kind = kint) function nlayer_CMB(sph)
 !
       type(sph_grids), intent(in) :: sph
 !
-      nlayer_CMB = int(sph%sph_params%nlayer_CMB)
+      nlayer_CMB = sph%sph_params%nlayer_CMB
 !
       end function nlayer_CMB
 !
@@ -181,4 +183,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module spheric_indices_wrapper
+      integer(kind = kint) function num_rj_radial_point(sph)
+!
+      type(sph_grids), intent(in) :: sph
+!
+      num_rj_radial_point = sph%sph_rj%nidx_rj(1)
+!
+      end function num_rj_radial_point
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_rj_horiz_point(sph)
+!
+      type(sph_grids), intent(in) :: sph
+!
+      num_rj_horiz_point = sph%sph_rj%nidx_rj(2)
+!
+      end function num_rj_horiz_point
+!
+!-----------------------------------------------------------------------
+!
+      end module spherical_indices_wrapper

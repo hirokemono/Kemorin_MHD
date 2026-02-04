@@ -3,8 +3,8 @@
 #
 
 MHD_INI_DIR = $$(MHD_SRCDIR)/initial_data
-SOURCES = $(shell ls *.f90)
-MOD_KEMO = $(addsuffix .o,$(basename $(SOURCES)) )
+SOURCES =     $(shell ls *.f90)
+MOD_INITIAL = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -16,12 +16,12 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_KEMO)' \
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_INITIAL)' \
 	>> $(MAKENAME)
 
 mod_list:
-	@echo MOD_KEMO=  \\ >> $(MAKENAME)
-	@echo $(MOD_KEMO) >> $(MAKENAME)
+	@echo MOD_INITIAL=  \\ >> $(MAKENAME)
+	@echo $(MOD_INITIAL)   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 depends:
