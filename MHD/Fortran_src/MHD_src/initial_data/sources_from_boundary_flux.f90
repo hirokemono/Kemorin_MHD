@@ -90,7 +90,7 @@
       real(kind = kreal) :: q
 !
 !
-      r_in =    sph_inner_boundary_radius(sph_bc_T)
+      r_in =     sph_inner_boundary_radius(sph_bc_T)
       r_out =    sph_outer_boundary_radius(sph_bc_T)
       flux_CMB = sph_outer_boundary_scalar_coef(bcs_T, idx_degree_zero)
 !

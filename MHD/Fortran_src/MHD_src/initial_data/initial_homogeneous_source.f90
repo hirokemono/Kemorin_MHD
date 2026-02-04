@@ -73,7 +73,7 @@
 !
 !    Find address for l = m = 0
       kr_in =  sph_inner_boundary_r_grid(sph_bc_T)
-      kr_out = sph_inner_boundary_r_grid(sph_bc_T)
+      kr_out = sph_outer_boundary_r_grid(sph_bc_T)
       jj =  idx_rj_degree_zero(sph)
       if(jj .le. 0) return
 !

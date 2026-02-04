@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_sph_initial_licv_control(MHD_files, MHD_step, sph, &
-!!     &          ipol, refs, rj_fld, sph_fst_IO)
+!!     &          sph_MHD_bc, refs, ipol, rj_fld, sph_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(sph_grids), intent(in) :: sph
 !!        type(phys_address), intent(in) :: ipol
 !!        type(MHD_step_param), intent(in) :: MHD_step
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(radial_reference_field), intent(in) :: refs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO), intent(inout) :: sph_fst_IO
@@ -26,6 +27,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_phys_address
+      use t_boundary_data_sph_MHD
       use t_radial_reference_field
 !
       implicit none
@@ -39,7 +41,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_sph_initial_licv_control(MHD_files, MHD_step, sph,   &
-     &          ipol, refs, rj_fld, sph_fst_IO)
+     &          sph_MHD_bc, refs, ipol, rj_fld, sph_fst_IO)
 !
       use calypso_mpi
       use m_initial_field_control
@@ -53,6 +55,7 @@
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(sph_grids), intent(in) :: sph
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: ipol
       type(MHD_step_param), intent(in) :: MHD_step
       type(radial_reference_field), intent(in) :: refs
@@ -61,7 +64,8 @@
       type(field_IO), intent(inout) :: sph_fst_IO
 !
 !
-      call sph_initial_field_4_licv(sph, refs, ipol, rj_fld)
+      call sph_initial_field_4_licv(sph, sph_MHD_bc,                    &
+     &                              refs, ipol, rj_fld)
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
@@ -76,12 +80,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_field_4_licv(sph, refs, ipol, rj_fld)
+      subroutine sph_initial_field_4_licv(sph, sph_MHD_bc, refs,        &
+     &                                    ipol, rj_fld)
 !
       use t_base_field_labels
       use initialize_sph_dynamo
 !
       type(sph_grids), intent(in) :: sph
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(radial_reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
@@ -89,13 +95,15 @@
 !
 !
       if((ipol%base%i_temp*refs%iref_base%i_temp) .gt. 0)  then
-        call init_sph_scalar_with_noise(sph, refs%iref_base%i_temp,     &
-     &      refs%ref_field, ipol%base%i_temp, rj_fld)
+        call init_sph_scalar_with_noise(sph, sph_MHD_bc%sph_bc_T,       &
+     &      refs%iref_base%i_temp, refs%ref_field,                      &
+     &      ipol%base%i_temp, rj_fld)
       end if
 !
       if((ipol%base%i_light*refs%iref_base%i_light) .gt. 0) then
-        call init_sph_scalar_with_noise(sph, refs%iref_base%i_light,    &
-     &      refs%ref_field, ipol%base%i_light, rj_fld)
+        call init_sph_scalar_with_noise(sph, sph_MHD_bc%sph_bc_C,       &
+     &      refs%iref_base%i_light, refs%ref_field,                     &
+     &      ipol%base%i_light, rj_fld)
       end if
 !
       end subroutine sph_initial_field_4_licv
