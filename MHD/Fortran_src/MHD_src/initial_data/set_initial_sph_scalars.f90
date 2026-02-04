@@ -16,7 +16,7 @@
 !!        integer(kind = kint), intent(in) :: nri_ref
 !!        real(kind=kreal), intent(in) :: reftemp_j(0:nri_ref-1)
 !!        integer(kind = kint), intent(in) :: n_point
-!!        real (kind=kreal), intent(inout) :: temp_rj(n_point)
+!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !!@endverbatim
 !
 !
@@ -41,14 +41,14 @@
       subroutine initial_sph_reference_scalar                           &
      &         (sph, nri_ref, reftemp_j, n_point, temp_rj)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: nri_ref
       real(kind=kreal), intent(in) :: reftemp_j(0:nri_ref-1)
       integer(kind = kint), intent(in) :: n_point
 !
-      real (kind=kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: inod
       integer :: k, jj
@@ -77,12 +77,12 @@
 !
       subroutine initial_sph_ref_temp_dbench(sph, n_point, temp_rj)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: n_point
 !
-      real (kind=kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: inod
       integer(kind = kint) :: k, jj
@@ -127,13 +127,13 @@
 !
       subroutine init_sph_sectorial_temp(isig, sph, n_point, temp_rj)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: isig
       integer(kind = kint), intent(in) :: n_point
 !
-      real(kind=kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: m, k, jj
       integer(kind = kint) :: inod
@@ -171,12 +171,12 @@
 !
       subroutine initital_sph_noize_temp(sph, n_point, temp_rj) 
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: n_point
 !
-      real(kind=kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: k, kst, ked
       integer(kind = kint) :: inod, j

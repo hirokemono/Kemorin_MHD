@@ -45,7 +45,7 @@
       subroutine initial_magne_sph_dbench_case1                         &
      &         (sph, n_point, d_rj_magne, d_rj_current)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: n_point
@@ -108,7 +108,7 @@
       subroutine initial_magne_sph_dbench_case2                         &
      &         (sph, n_point, d_rj_magne, d_rj_current)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: n_point
@@ -171,7 +171,7 @@
       subroutine initial_magne_sph_dbench_qcv                           &
      &         (sph, n_point, d_rj_magne, d_rj_current)
 !
-      use spherical_indices_wrapper
+      use spherical_indices_picker
 !
       type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: n_point
