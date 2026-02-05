@@ -7,8 +7,8 @@
 !> @brief Obtain homogeneous sources from boundary flux
 !!
 !!@verbatim
-!!      subroutine outer_core_heat_source(sph, sph_bc_T, bcs_T,         &
-!!     &                                  n_point, souce_rj)
+!!      subroutine set_outer_core_heat_source(sph, sph_bc_T, source,    &
+!!     &                                      n_point, souce_rj)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
@@ -51,8 +51,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_outer_core_heat_source(sph, sph_bc_T,              &
-     &          source, n_point, souce_rj)
+      subroutine set_outer_core_heat_source(sph, sph_bc_T, source,      &
+     &                                      n_point, souce_rj)
 !
       use spherical_indices_picker
       use sph_boundary_data_picker
@@ -83,7 +83,7 @@
         souce_rj(inod)  = source
       end do
 !
-      end subroutine add_outer_core_heat_source
+      end subroutine set_outer_core_heat_source
 !
 !-----------------------------------------------------------------------
 !
