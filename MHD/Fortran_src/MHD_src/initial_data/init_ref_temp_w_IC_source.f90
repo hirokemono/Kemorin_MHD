@@ -85,38 +85,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reftemp_full_sphere_fix_out(idx_degree_zero,           &
-     &          sph_bc_T, bcs_T, source_OC, source_IC, kappa_IC,        &
-     &          const_OC, coef_OC, const_IC)
+      subroutine reftemp_full_sphere_fix_out(sph, sph_bc_T, bcs_T,      &
+     &          source_OC, n_point, temp_rj)
 !
       use sph_boundary_data_picker
       use sources_from_boundary_flux
       use ref_temp_coefs_w_IC_source
 !
 !
-      integer(kind = kint), intent(in) :: idx_degree_zero
+      type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
-      real(kind = kreal), intent(in) :: source_IC
-      real(kind = kreal), intent(in) :: kappa_IC
 !
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+!
+      integer(kind = kint) :: jj
       real(kind = kreal) :: r_ICB, r_CMB
-      real(kind = kreal) :: flux_ICB, temp_CMB
-      real(kind = kreal) :: const_OC, coef_OC
-      real(kind = kreal) :: const_IC
-!
-      real(kind = kreal) :: r_in, r_out, temp_CMB
+      real(kind = kreal) :: temp_CMB
+      real(kind = kreal) :: const_OC
 !
 !
-      r_ICB =    sph_inner_boundary_radius(sph_bc_T)
+      jj = idx_rj_degree_zero(sph)
+      if(jj .le. 0) return
       r_CMB =    sph_outer_boundary_radius(sph_bc_T)
-      flux_ICB = sph_inner_boundary_scalar_coef(bcs_T, idx_degree_zero)
-      temp_CMB = sph_outer_boundary_scalar_coef(bcs_T, idx_degree_zero)
+      temp_CMB = sph_outer_boundary_scalar_coef(bcs_T, jj)
 !
-      call reftemp_coefs_w_IC_source(r_ICB, r_CMB,                      &
-     &    source_OC, source_IC, kappa_IC, temp_CMB,                     &
-     &    const_OC, coef_OC, const_IC)
+      const_OC = reftemp_const_whole_core(r_CMB, source_OC, temp_CMB)
 !
       call init_sph_ref_temp_full_sphere(sph, r_CMB,                    &
      &    source_OC, const_OC, n_point, temp_rj)
@@ -125,26 +121,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reftemp_full_sphere_flux_out(r_ICB, r_CMB, flux_CMB,   &
-     &          source_OC, kappa_IC, temp_CMB, const_OC,                &
-     &          coef_OC, const_IC, source_IC)
+      subroutine reftemp_full_sphere_flux_out(sph, sph_bc_T, bcs_T,     &
+     &          source_OC, n_point, temp_rj, source_IC)
 !
       use sources_from_boundary_flux
       use ref_temp_coefs_w_IC_source
 !
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
-      real(kind = kreal), intent(in) :: kappa_IC
 !
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
       real(kind = kreal), intent(inout) :: source_IC
 !
+      integer(kind = kint) :: jj
       real(kind = kreal) :: r_CMB
       real(kind = kreal) :: flux_CMB
       real(kind = kreal) :: const_OC
 !
       real(kind = kreal), parameter :: temp_CMB = zero
 !
+      jj = idx_rj_degree_zero(sph)
+      if(jj .le. 0) return
       r_CMB =    sph_outer_boundary_radius(sph_bc_T)
-      flux_CMB = sph_outer_boundary_scalar_coef(bcs_T, idx_degree_zero)
+      flux_CMB = sph_outer_boundary_scalar_coef(bcs_T, jj)
 !
       const_OC = reftemp_const_whole_core(r_CMB, source_OC, temp_CMB)
 !
@@ -156,34 +158,36 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reftemp_w_IC_src_fix_out(idx_degree_zero,              &
-     &          sph_bc_T, bcs_T, source_OC, source_IC, kappa_IC,        &
-     &          const_OC, coef_OC, const_IC)
+      subroutine reftemp_w_IC_src_fix_out(sph, sph_bc_T, bcs_T,         &
+     &          source_OC, source_IC, kappa_IC, n_point, temp_rj)
 !
       use sph_boundary_data_picker
       use sources_from_boundary_flux
       use ref_temp_coefs_w_IC_source
 !
-!
-      integer(kind = kint), intent(in) :: idx_degree_zero
+      type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
       real(kind = kreal), intent(in) :: source_IC
       real(kind = kreal), intent(in) :: kappa_IC
 !
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+!
+      integer(kind = kint) :: jj
       real(kind = kreal) :: r_ICB, r_CMB
       real(kind = kreal) :: flux_ICB, temp_CMB
       real(kind = kreal) :: const_OC, coef_OC
       real(kind = kreal) :: const_IC
 !
-      real(kind = kreal) :: r_in, r_out, temp_CMB
 !
-!
+      jj = idx_rj_degree_zero(sph)
+      if(jj .le. 0) return
       r_ICB =    sph_inner_boundary_radius(sph_bc_T)
       r_CMB =    sph_outer_boundary_radius(sph_bc_T)
-      flux_ICB = sph_inner_boundary_scalar_coef(bcs_T, idx_degree_zero)
-      temp_CMB = sph_outer_boundary_scalar_coef(bcs_T, idx_degree_zero)
+      flux_ICB = sph_inner_boundary_scalar_coef(bcs_T, jj)
+      temp_CMB = sph_outer_boundary_scalar_coef(bcs_T, jj)
 !
       call reftemp_coefs_w_IC_source(r_ICB, r_CMB,                      &
      &    source_OC, source_IC, kappa_IC, temp_CMB,                     &
@@ -197,18 +201,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reftemp_w_IC_src_flux_out(r_ICB, r_CMB, flux_CMB,      &
-     &          source_OC, kappa_IC, temp_CMB, const_OC,                &
-     &          coef_OC, const_IC, source_IC)
+      subroutine reftemp_w_IC_src_flux_out(sph, sph_bc_T, bcs_T,        &
+     &          source_OC, kappa_IC, n_point, temp_rj, source_IC)
 !
       use sources_from_boundary_flux
       use ref_temp_coefs_w_IC_source
 !
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
       real(kind = kreal), intent(in) :: kappa_IC
 !
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(inout) :: temp_rj(n_point)
       real(kind = kreal), intent(inout) :: source_IC
 !
+      integer(kind = kint) :: jj
       real(kind = kreal) :: r_ICB, r_CMB
       real(kind = kreal) :: flux_ICB, flux_CMB
       real(kind = kreal) :: const_OC, coef_OC
@@ -216,10 +225,12 @@
 !
       real(kind = kreal), parameter :: temp_CMB = zero
 !
+      jj = idx_rj_degree_zero(sph)
+      if(jj .le. 0) return
       r_ICB =    sph_inner_boundary_radius(sph_bc_T)
       r_CMB =    sph_outer_boundary_radius(sph_bc_T)
-      flux_ICB = sph_inner_boundary_scalar_coef(bcs_T, idx_degree_zero)
-      flux_CMB = sph_outer_boundary_scalar_coef(bcs_T, idx_degree_zero)
+      flux_ICB = sph_inner_boundary_scalar_coef(bcs_T, jj)
+      flux_CMB = sph_outer_boundary_scalar_coef(bcs_T, jj)
 !
       source_IC = inner_core_source_w_OC_sorce(r_ICB, r_CMB,            &
      &                                         flux_CMB, source_OC)
