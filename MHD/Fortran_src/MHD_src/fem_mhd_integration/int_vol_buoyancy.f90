@@ -10,6 +10,18 @@
 !>@brief  Integration for buoyancy term
 !!
 !!@verbatim
+!!      subroutine sel_gravity_vec_each_ele(k2, node, ele, fl_prop,     &
+!!     &          iphys_base, iphys_fil, nod_fld, ak_MHD, vect_e)
+!!        integer(kind = kint), intent(in) :: k2
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
+!!        real(kind = kreal), intent(inout) :: vect_e(ele%numele,3)
+!!
 !!      subroutine int_vol_buoyancy_pg                                  &
 !!     &         (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,  &
 !!     &          iele_fsmp_stack, num_int, i_source, ak_buo,           &
@@ -42,6 +54,8 @@
       use t_physical_property
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_base_field_labels
+      use t_material_property
 !
       implicit none
 !
@@ -49,6 +63,77 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine sel_gravity_vec_each_ele(k2, node, ele, fl_prop,       &
+     &          iphys_base, iphys_fil, nod_fld, ak_MHD, vect_e)
+!
+      use gravity_vec_each_ele
+!
+      integer(kind = kint), intent(in) :: k2
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+!
+      type(phys_data), intent(in) :: nod_fld
+      type(fluid_property), intent(in) :: fl_prop
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
+!
+      real(kind = kreal), intent(inout) :: vect_e(ele%numele,3)
+!
+!
+! ---------  thermal and compositional buoyancy
+      if(       fl_prop%flag_thermal_buoyancy                           &
+     &       .and. fl_prop%flag_comp_buoyancy) then
+        call set_double_gvec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_base%i_temp, iphys_base%i_light, fl_prop%i_grav,      &
+     &      fl_prop%grav, ak_MHD%ak_buo, ak_MHD%ak_comp_buo, vect_e)
+! ---------  filtered thermal and filtered compositional buoyancy
+      else if(fl_prop%flag_filter_gravity                               &
+     &         .and. fl_prop%flag_filter_comp_buo) then
+        call set_double_gvec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_fil%i_temp, iphys_fil%i_light, fl_prop%i_grav,        &
+     &      fl_prop%grav, ak_MHD%ak_buo, ak_MHD%ak_comp_buo, vect_e)
+! ---------  thermal and filtered compositional buoyancy
+      else if(fl_prop%flag_thermal_buoyancy                             &
+     &         .and. fl_prop%flag_filter_comp_buo) then
+        call set_double_gvec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_base%i_temp, iphys_fil%i_light, fl_prop%i_grav,       &
+     &      fl_prop%grav, ak_MHD%ak_buo, ak_MHD%ak_comp_buo, vect_e)
+! ---------  filtered thermal and compositional buoyancy
+      else if(fl_prop%flag_filter_gravity                               &
+     &        .and. fl_prop%flag_comp_buoyancy) then
+        call set_double_gvec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_fil%i_temp, iphys_base%i_light, fl_prop%i_grav,       &
+     &      fl_prop%grav, ak_MHD%ak_buo, ak_MHD%ak_comp_buo, vect_e)
+!
+! ---------  thermal buoyancy
+      else if(fl_prop%flag_thermal_buoyancy) then
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_base%i_temp, fl_prop%i_grav, fl_prop%grav,            &
+     &      ak_MHD%ak_buo, vect_e)
+! ---------  compositional buoyancy
+      else if(fl_prop%flag_comp_buoyancy) then
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_base%i_light, fl_prop%i_grav, fl_prop%grav,           &
+     &      ak_MHD%ak_comp_buo, vect_e)
+! ---------  filtered thermal buoyancy
+      else if(fl_prop%flag_filter_gravity) then
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_fil%i_temp, fl_prop%i_grav, fl_prop%grav,             &
+     &      ak_MHD%ak_buo, vect_e)
+! ---------  filtered compositional buoyancy
+      else if(fl_prop%flag_filter_comp_buo) then
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2,           &
+     &      iphys_fil%i_light, fl_prop%i_grav, fl_prop%grav,            &
+     &      ak_MHD%ak_comp_buo, vect_e)
+      end if
+!
+      end subroutine sel_gravity_vec_each_ele
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_pg                                    &

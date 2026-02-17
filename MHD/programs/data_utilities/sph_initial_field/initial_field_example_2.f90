@@ -13,7 +13,7 @@
 !!     &         (sph_bc_B, sph, ipol, rj_fld)
 !!      subroutine set_initial_homogeneous_magne                        &
 !!     &         (sph_bc_B, sph, ipol, rj_fld)
-!!      subroutine add_inner_core_heat_sce_flatT                          &
+!!      subroutine add_inner_core_heat_sce_flatT                        &
 !!     &         (sph_bc_T, bcs_T, sph, ipol, rj_fld)
 !!       Poloidal magnetic field :: d_rj(:,ipol%base%i_magne  )
 !!       Toroidal magnetic field :: d_rj(:,ipol%base%i_magne+2)

@@ -259,7 +259,7 @@
       end do
 !
 !    Center
-      if(kr_in .gt. 0) return
+      if(kr_in .gt. 1) return
       inod = inod_rj_center(sph)
       if(inod .gt. 0) source_rj(inod) = source
 !

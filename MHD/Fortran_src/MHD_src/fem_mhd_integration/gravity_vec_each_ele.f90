@@ -1,20 +1,47 @@
-!gravity_vec_each_ele.f90
-!      module gravity_vec_each_ele
+!>@file   gravity_vec_each_ele.f90
+!!@brief  module gravity_vec_each_ele
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2005
+!@n     Modified by H. Matsui on May, 2009
 !
-!      Written by H. Matsui on July, 2005
-!      Modified by H. Matsui on May, 2009
-!
+!>@brief Evaluate buoyancy at each element
+!!
+!!@verbatim
 !!      subroutine set_gravity_vec_each_ele                             &
 !!     &         (node, ele, nod_fld, k2, i_field, i_grav, grav,        &
 !!     &          ak_buo, vect_e)
 !!      subroutine set_double_gvec_each_ele                             &
 !!     &         (node, ele, nod_fld, k2, i_src1, i_src2, i_grav, grav, &
 !!     &          ak_buo1, ak_buo2, vect_e)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        integer(kind = kint), intent(in) :: k2, i_field
+!!        integer(kind = kint), intent(in) :: i_src1, i_src2
+!!        integer(kind = kint), intent(in) :: i_grav
+!!        real(kind = kreal), intent(in) :: grav(3)
+!!        real(kind = kreal), intent(in) :: ak_buo(ele%numele)
+!!        real(kind = kreal), intent(in) :: ak_buo1(ele%numele)
+!!        real(kind = kreal), intent(in) :: ak_buo2(ele%numele)
+!!        real(kind = kreal), intent(inout) :: vect_e(ele%numele,3)
 !!
 !!      subroutine set_gravity_on_each_ele(node, ele, nod_fld, k2, nd,  &
 !!     &          i_field, i_grav, grav, ak_buo, buo_e)
 !!      subroutine set_double_g_each_ele(node, ele, nod_fld, k2, nd,    &
 !!     &          i_src1, i_src2, i_grav, grav, ak_buo1, ak_buo2, buo_e)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        integer(kind = kint), intent(in) :: nd, k2, i_field
+!!        integer(kind = kint), intent(in) :: i_src1, i_src2
+!!        integer(kind = kint), intent(in) :: i_grav
+!!        real(kind = kreal), intent(in) :: grav(3)
+!!        real(kind = kreal), intent(in) :: ak_buo(ele%numele)
+!!        real(kind = kreal), intent(in) :: ak_buo1(ele%numele)
+!!        real(kind = kreal), intent(in) :: ak_buo2(ele%numele)
+!!        real(kind = kreal), intent(inout) :: buo_e(ele%numele)
+!!@endverbatim
 !
       module gravity_vec_each_ele
 !
@@ -87,7 +114,7 @@
       real(kind = kreal), intent(in) :: ak_buo1(ele%numele)
       real(kind = kreal), intent(in) ::  ak_buo2(ele%numele)
 !
-      real(kind  =kreal), intent(inout) :: vect_e(ele%numele,3)
+      real(kind = kreal), intent(inout) :: vect_e(ele%numele,3)
 !
 !
       if (i_grav .eq. iflag_const_g) then

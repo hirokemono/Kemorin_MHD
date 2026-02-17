@@ -1,9 +1,15 @@
-!fem_skv_div_flux_upw.f90
-!      module fem_skv_div_flux_upw
-!
-!     programmed by H.Matsui on July 2005
-!     Modified by H. Matsui on Oct., 2006
-!
+!>@file   fem_skv_div_flux_upw.f90
+!!@brief  module fem_skv_div_flux_upw
+!!
+!!@author H. Matsui and H.Okuda
+!!@date Programmed in July 2000 (ver 1.1)
+!!        modified by H. Matsui in July 2005
+!!        modified by H. Matsui in Oct., 2006
+!!
+!>@brief  Finite elememt integration for divegence of flux
+!!@n      with upwind scheme
+!!
+!!@verbatim
 !!      subroutine fem_skv_all_div_flux_upw                             &
 !!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
@@ -15,6 +21,7 @@
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,     &
 !!     &          vxe, flux_1, sk_v)
+!!@endverbatim
 !
       module fem_skv_div_flux_upw
 !

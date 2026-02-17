@@ -23,7 +23,7 @@
 !!    begin SGS_control
 !!      SGS_model_ctl           gradient
 !!      filtering_scheme_ctl    line
-!!   ??   difference_scheme_ctl   original
+!!      difference_scheme_ctl   original
 !!      diff_coef_mode_ctl      layerd
 !!      negative_clip_ctl       save
 !!      clipping_limit_ctl      0.2
