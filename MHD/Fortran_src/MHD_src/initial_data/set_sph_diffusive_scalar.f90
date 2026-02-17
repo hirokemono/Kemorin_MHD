@@ -41,6 +41,14 @@
 !!        real(kind = kreal), intent(in) :: const_IC
 !!        integer(kind = kint), intent(in) :: n_point
 !!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
+!!
+!!      subroutine init_constant_source(sph, kr_in, kr_out, source,     &
+!!     &                                n_point, source_rj)
+!!        type(sph_grids), intent(in) :: sph
+!!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        real(kind = kreal), intent(in) :: source
+!!        integer(kind = kint), intent(in) :: n_point
+!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
 !!@endverbatim
 !
       module set_sph_diffusive_scalar
@@ -211,7 +219,6 @@
       real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: k, jj, inod, i_cmb
-      real(kind = kreal) :: r
 !
 !   set reference temperature (l = m = 0)
       jj = idx_rj_degree_zero(sph)
@@ -220,11 +227,43 @@
       do k = kr_out+1, num_rj_radial_point(sph)
         inod =  local_sph_data_address(sph, k,      jj)
         i_cmb = local_sph_data_address(sph, kr_out, jj)
-        r = radius_1d_rj_r(sph,kr_out)
         temp_rj(inod) = temp_rj(i_cmb)
       end do
 !
       end subroutine init_external_ref_temp
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine init_constant_source(sph, kr_in, kr_out, source,       &
+     &                                n_point, source_rj)
+!
+      use spherical_indices_picker
+!
+      type(sph_grids), intent(in) :: sph
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: source
+      integer(kind = kint), intent(in) :: n_point
+!
+      real(kind = kreal), intent(inout) :: source_rj(n_point)
+!
+      integer(kind = kint) :: k, jj, inod
+!
+!   set reference temperature (l = m = 0)
+      jj = idx_rj_degree_zero(sph)
+      if(jj .le. 0) return
+      do k = kr_in, kr_out
+        inod =  local_sph_data_address(sph, k, jj)
+        source_rj(inod) = source
+      end do
+!
+!    Center
+      if(kr_in .gt. 0) return
+      inod = inod_rj_center(sph)
+      if(inod .gt. 0) source_rj(inod) = source
+!
+      end subroutine init_constant_source
 !
 !-----------------------------------------------------------------------
 !
