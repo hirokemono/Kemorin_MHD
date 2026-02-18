@@ -21,7 +21,15 @@ MHDDIR =
 PYTHONDIR = 
 EXPDIR=         $(SRCDIR)/examples
 TESTDIR=        $(SRCDIR)/tests
-
+#
+#    Subdirectories for binaries
+#
+SPH_UTIL_BINDIR= $(BUILDDIR)/utilities
+SPH_TEST_BINDIR= $(BUILDDIR)/tests
+FEM_UTIL_BINDIR= $(BUILDDIR)/FEM_utils
+#
+#    Name of Makefiles
+#
 MAKENAME=       $(MAKEDIR)/Makefile
 EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
 TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
@@ -138,9 +146,12 @@ all: makemake
 depends:
 	mkdir -p $(MAKEDIR)
 	mkdir -p $(BUILDDIR)
-	mkdir -p $(BUILDDIR)/tests
-	mkdir -p $(BUILDDIR)/utilities
 	mkdir -p $(PYTHONDIR)
+	@echo ""
+	mkdir -p $(SPH_UTIL_BINDIR)
+	mkdir -p $(SPH_TEST_BINDIR)
+	mkdir -p $(FEM_UTIL_BINDIR)
+	@echo ""
 	rm -f $(MAKEDIR)/Makefile.depends
 	@for dir in $(SUBDIRS) ; do \
 		( \
@@ -166,12 +177,6 @@ depends:
 
 
 makemake:
-	mkdir -p $(MAKEDIR)
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(BUILDDIR)/tests
-	mkdir -p $(BUILDDIR)/utilities
-	mkdir -p $(PYTHONDIR)
-	
 	echo "Create module list"
 	$(GMAKE) \
 		GMAKE='$(GMAKE)' \
@@ -426,6 +431,9 @@ makeheaders:
 	@echo EXPDIR=      $(EXPDIR)    >> $(MAKENAME)
 	@echo TESTDIR=     $(TESTDIR)   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@echo SPH_UTIL_BINDIR =   $(SPH_UTIL_BINDIR)  >> $(MAKENAME)
+	@echo SPH_TEST_BINDIR =   $(SPH_TEST_BINDIR)  >> $(MAKENAME)
+	@echo FEM_UTIL_BINDIR =   $(FEM_UTIL_BINDIR)  >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 

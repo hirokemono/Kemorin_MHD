@@ -26,10 +26,8 @@ dir_list:
 	@echo 'GEN_TABLE_DIR = $(GEN_TABLE_DIR)'   >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_GEN_TABLE =     $$(BUILDDIR)/$(TARGET_GEN_TABLE)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_GEN_ELE_TABLE = $$(BUILDDIR)/$(TARGET_GEN_ELE_TABLE)' \
-	>> $(MAKENAME)
+	@echo 'TARGET_GEN_TABLE =     $$(FEM_UTIL_BINDIR)/$(TARGET_GEN_TABLE)'     >> $(MAKENAME)
+	@echo 'TARGET_GEN_ELE_TABLE = $$(FEM_UTIL_BINDIR)/$(TARGET_GEN_ELE_TABLE)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:

@@ -25,8 +25,8 @@ dir_list:
 	@echo 'REFINE_MAINDIR = $(REFINE_MAINDIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_REFINE =       $$(BUILDDIR)/$(TARGET_REFINE)' >> $(MAKENAME)
-	@echo 'TARGET_REF_PARA_TBL = $$(BUILDDIR)/$(TARGET_REF_PARA_TBL)' >> $(MAKENAME)
+	@echo 'TARGET_REFINE =       $$(FEM_UTIL_BINDIR)/$(TARGET_REFINE)'       >> $(MAKENAME)
+	@echo 'TARGET_REF_PARA_TBL = $$(FEM_UTIL_BINDIR)/$(TARGET_REF_PARA_TBL)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:

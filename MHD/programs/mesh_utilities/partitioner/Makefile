@@ -4,8 +4,8 @@
 
 PART_MAINDIR =     $$(MESHER_DIR)/partitioner
 
-TARGET_PART_KEMO =   part_kemo
-TARGET_ITP_PART =    part_interpolate_table
+TARGET_PART_KEMO =      part_kemo
+TARGET_ITP_PART =       part_interpolate_table
 TARGET_SLEEVE_EXTEND =  extend_sleeves
 TARGET_MAKE_SURF_MESH = make_surface_mesh
 
@@ -38,10 +38,10 @@ dir_list:
 	@echo 'PART_MAINDIR =     $$(MESHER_DIR)/partitioner'     >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_PART_KEMO =      $$(BUILDDIR)/$(TARGET_PART_KEMO)'     >> $(MAKENAME)
-	@echo 'TARGET_ITP_PART =       $$(BUILDDIR)/$(TARGET_ITP_PART)'      >> $(MAKENAME)
-	@echo 'TARGET_SLEEVE_EXTEND =  $$(BUILDDIR)/$(TARGET_SLEEVE_EXTEND)' >> $(MAKENAME)
-	@echo 'TARGET_MAKE_SURF_MESH = $$(BUILDDIR)/$(TARGET_MAKE_SURF_MESH)' >> $(MAKENAME)
+	@echo 'TARGET_PART_KEMO =      $$(FEM_UTIL_BINDIR)/$(TARGET_PART_KEMO)'      >> $(MAKENAME)
+	@echo 'TARGET_ITP_PART =       $$(FEM_UTIL_BINDIR)/$(TARGET_ITP_PART)'       >> $(MAKENAME)
+	@echo 'TARGET_SLEEVE_EXTEND =  $$(FEM_UTIL_BINDIR)/$(TARGET_SLEEVE_EXTEND)'  >> $(MAKENAME)
+	@echo 'TARGET_MAKE_SURF_MESH = $$(FEM_UTIL_BINDIR)/$(TARGET_MAKE_SURF_MESH)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:

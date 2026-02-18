@@ -96,30 +96,30 @@ dir_list:
 	@echo 'PLANE_SPECTR_DIR = $(PLANE_SPECTR_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_SPEC_INI =     $$(BUILDDIR)/$(TARGET_SPEC_INI)'    \
+	@echo 'TARGET_SPEC_INI =        $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_INI)'    \
 	>> $(MAKENAME)
-	@echo 'TARGET_SPEC_UDT =     $$(BUILDDIR)/$(TARGET_SPEC_UDT)'     \
+	@echo 'TARGET_SPEC_UDT =        $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_UDT)'     \
 	>> $(MAKENAME)
-	@echo 'TARGET_FFT_PLANE =    $$(BUILDDIR)/$(TARGET_FFT_PLANE)'    \
-	>> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	@echo 'TARGET_SPEC_ENE =        $$(BUILDDIR)/$(TARGET_SPEC_ENE)'        \
-	>> $(MAKENAME)
-	@echo 'TARGET_SPEC_E_PLANE =    $$(BUILDDIR)/$(TARGET_SPEC_E_PLANE)'    \
+	@echo 'TARGET_FFT_PLANE =       $$(FEM_UTIL_BINDIR)/$(TARGET_FFT_PLANE)'    \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
-	@echo 'TARGET_SPEC_MODE =       $$(BUILDDIR)/$(TARGET_SPEC_MODE)'       \
+	@echo 'TARGET_SPEC_ENE =        $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_ENE)'        \
 	>> $(MAKENAME)
-	@echo 'TARGET_SPEC_TAVE_PLANE = $$(BUILDDIR)/$(TARGET_SPEC_TAVE_PLANE)' \
-	>> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	@echo 'TARGET_PICK_MODE_PLANE = $$(BUILDDIR)/$(TARGET_PICK_MODE_PLANE)' \
+	@echo 'TARGET_SPEC_E_PLANE =    $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_E_PLANE)'    \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	@echo 'TARGET_COR_SNAP =  $$(BUILDDIR)/$(TARGET_COR_SNAP)'    \
+	@echo 'TARGET_SPEC_MODE =       $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_MODE)'       \
 	>> $(MAKENAME)
-	@echo 'TARGET_COR_PLANE = $$(BUILDDIR)/$(TARGET_COR_PLANE)'   \
+	@echo 'TARGET_SPEC_TAVE_PLANE = $$(FEM_UTIL_BINDIR)/$(TARGET_SPEC_TAVE_PLANE)' \
+	>> $(MAKENAME)
+	@echo >> $(MAKENAME)
+	@echo 'TARGET_PICK_MODE_PLANE = $$(FEM_UTIL_BINDIR)/$(TARGET_PICK_MODE_PLANE)' \
+	>> $(MAKENAME)
+	@echo >> $(MAKENAME)
+	@echo >> $(MAKENAME)
+	@echo 'TARGET_COR_SNAP =        $$(FEM_UTIL_BINDIR)/$(TARGET_COR_SNAP)'    \
+	>> $(MAKENAME)
+	@echo 'TARGET_COR_PLANE =       $$(FEM_UTIL_BINDIR)/$(TARGET_COR_PLANE)'   \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 

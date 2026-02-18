@@ -85,10 +85,8 @@ dir_list:
 	@echo 'CONST_FILTER_Z_DIR =  $$(G_FILTER_PLUG_DIR)/const_z_filter'    >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_Z_FILTER = $$(BUILDDIR)/$(TARGET_Z_FILTER)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_TEST_DZ =  $$(BUILDDIR)/$(TARGET_TEST_DZ)'  \
-	>> $(MAKENAME)
+	@echo 'TARGET_Z_FILTER = $$(FEM_UTIL_BINDIR)/$(TARGET_Z_FILTER)' >> $(MAKENAME)
+	@echo 'TARGET_TEST_DZ =  $$(FEM_UTIL_BINDIR)/$(TARGET_TEST_DZ)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:

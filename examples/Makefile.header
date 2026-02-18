@@ -101,6 +101,9 @@ PYTHONDIR= /Users/matsui/src_kemo/MHD/pythons
 EXPDIR= /Users/matsui/src_kemo/examples
 TESTDIR= /Users/matsui/src_kemo/tests
 #
+SPH_UTIL_BINDIR = /Users/matsui/src_kemo/bin/utilities
+SPH_TEST_BINDIR = /Users/matsui/src_kemo/bin/tests
+FEM_UTIL_BINDIR = /Users/matsui/src_kemo/bin/FEM_utils
 #
 #
 # ----  library lists ----------------------------------------

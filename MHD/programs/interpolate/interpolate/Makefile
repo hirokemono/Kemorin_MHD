@@ -49,13 +49,13 @@ dir_list:
 	@echo 'ITP_FIELD_DIR = $(ITP_FIELD_DIR)'      >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_ITP_UDT =      $$(BUILDDIR)/$(TARGET_ITP_UDT)' \
+	@echo 'TARGET_ITP_UDT =      $$(FEM_UTIL_BINDIR)/$(TARGET_ITP_UDT)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_ITP_RST =      $$(BUILDDIR)/$(TARGET_ITP_RST)' \
+	@echo 'TARGET_ITP_RST =      $$(FEM_UTIL_BINDIR)/$(TARGET_ITP_RST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_ITP_TEST =     $$(BUILDDIR)/$(TARGET_ITP_TEST)' \
+	@echo 'TARGET_ITP_TEST =     $$(FEM_UTIL_BINDIR)/$(TARGET_ITP_TEST)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_ITP_ELE_TEST = $$(BUILDDIR)/$(TARGET_ITP_ELE_TEST)' \
+	@echo 'TARGET_ITP_ELE_TEST = $$(FEM_UTIL_BINDIR)/$(TARGET_ITP_ELE_TEST)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 

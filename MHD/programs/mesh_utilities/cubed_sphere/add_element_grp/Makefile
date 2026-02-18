@@ -29,8 +29,7 @@ dir_list:
 	@echo 'ELE_GRP_SPH_DIR = $(ELE_GRP_SPH_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_ADDGRP_SPH =      $$(BUILDDIR)/$(TARGET_ADDGRP_SPH)'    \
-	>> $(MAKENAME)
+	@echo 'TARGET_ADDGRP_SPH = $$(FEM_UTIL_BINDIR)/$(TARGET_ADDGRP_SPH)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
