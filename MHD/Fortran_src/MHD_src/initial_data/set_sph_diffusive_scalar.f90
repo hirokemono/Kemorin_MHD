@@ -12,43 +12,33 @@
 !!     Tempareture at inner core
 !!       T = const_IC - (1/6) source_IC r^2
 !!
-!!      subroutine init_sph_ref_temp_outer_core(sph, kr_in, kr_out,     &
-!!     &          source_OC, const_OC, coef_OC, n_point, temp_rj)
-!!      subroutine init_sph_ref_temp_full_sphere(sph, kr_out,           &
-!!     &          source_OC, const_OC, n_point, temp_rj)
-!!      subroutine init_sph_ref_temp_whole_core(sph, kr_in, kr_out,     &
-!!     &          source_IC, source_OC, const_OC, coef_OC, const_IC,    &
-!!     &          n_point, temp_rj)
-!!        type(sph_grids), intent(in) :: sph
+!!      subroutine init_sph_ref_temp_outer_core(kr_in, kr_out, nri_1d,  &
+!!     &          r_1d, source_OC, const_OC, coef_OC, reftemp)
+!!      subroutine init_sph_ref_temp_full_sphere(kr_out, nri_1d, r_1d,  &
+!!     &          source_OC, const_OC, reftemp)
+!!      subroutine init_sph_ref_temp_whole_core                         &
+!!     &         (kr_in, kr_out, nri_1d, r_1d, source_IC, source_OC,    &
+!!     &          const_OC, coef_OC, const_IC, reftemp)
 !!        integer(kind = kint), intent(in) :: kr_in, kr_out
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
 !!        real(kind = kreal), intent(in) :: source_IC, source_OC
 !!        real(kind = kreal), intent(in) :: const_OC, coef_OC
 !!        real(kind = kreal), intent(in) :: const_IC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
+!!        real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
 !!
-!!      subroutine init_outer_core_ref_temp(sph, kr_in, kr_out,         &
-!!     &          source_OC, const_OC, coef_OC, n_point, temp_rj)
-!!      subroutine init_inner_core_ref_temp(sph, kr_in,                 &
-!!     &          source_IC, const_IC, n_point, temp_rj)
-!!      subroutine init_external_ref_temp(sph, kr_out, n_point, temp_rj)
-!!        type(sph_grids), intent(in) :: sph
-!!        integer(kind = kint), intent(in) :: kr_in
-!!        integer(kind = kint), intent(in) :: kr_out
-!!        real(kind = kreal), intent(in) :: source_OC
-!!        real(kind = kreal), intent(in) :: const_OC, coef_OC
-!!        real(kind = kreal), intent(in) :: source_IC
-!!        real(kind = kreal), intent(in) :: const_IC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!!
-!!      subroutine init_constant_source(sph, kr_in, kr_out, source,     &
-!!     &                                n_point, source_rj)
-!!        type(sph_grids), intent(in) :: sph
+!!      subroutine init_sph_ref_source_whole_core(kr_in, kr_out, nri_1d,&
+!!     &          source_IC, source_OC, ref_src)
 !!        integer(kind = kint), intent(in) :: kr_in, kr_out
-!!        real(kind = kreal), intent(in) :: source
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: source_IC, source_OC
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
+!!      subroutine init_sph_ref_source_full_sphere(kr_out, nri_1d,      &
+!!     &                                           source_OC, ref_src)
+!!        integer(kind = kint), intent(in) :: kr_out
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: source_OC
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !!@endverbatim
 !
       module set_sph_diffusive_scalar
@@ -62,208 +52,132 @@
 !
       implicit none
 !
-      private :: init_outer_core_ref_temp, init_inner_core_ref_temp
-      private :: init_external_ref_temp
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_ref_temp_outer_core(sph, kr_in, kr_out,       &
-     &          source_OC, const_OC, coef_OC, n_point, temp_rj)
+      subroutine init_sph_ref_temp_outer_core(kr_in, kr_out, nri_1d,    &
+     &          r_1d, source_OC, const_OC, coef_OC, reftemp)
 !
-      type(sph_grids), intent(in) :: sph
+      use init_radial_reference_temp
+!
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: nri_1d
 !
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
       real(kind = kreal), intent(in) :: source_OC
       real(kind = kreal), intent(in) :: const_OC, coef_OC
 !
-      integer(kind = kint), intent(in) :: n_point
-!
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
 !
 !
-      call init_outer_core_ref_temp(sph, kr_in, kr_out,                 &
-     &    source_OC, const_OC, coef_OC, n_point, temp_rj)
-      call init_external_ref_temp(sph, kr_out, n_point, temp_rj)
+      call init_outer_core_ref_temp(kr_in, kr_out, nri_1d, r_1d,        &
+     &    source_OC, const_OC, coef_OC, reftemp)
+      call init_constant_reference(izero, (kr_in-1), reftemp(kr_in),    &
+     &                             nri_1d, reftemp)
+      call init_constant_reference((kr_out+1), nri_1d, reftemp(kr_out), &
+     &                             nri_1d, reftemp)
 !
       end subroutine init_sph_ref_temp_outer_core
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_ref_temp_full_sphere(sph, kr_out,             &
-     &          source_OC, const_OC, n_point, temp_rj)
+      subroutine init_sph_ref_temp_full_sphere(kr_out, nri_1d, r_1d,    &
+     &          source_OC, const_OC, reftemp)
 !
-      type(sph_grids), intent(in) :: sph
+      use init_radial_reference_temp
+!
       integer(kind = kint), intent(in) :: kr_out
+      integer(kind = kint), intent(in) :: nri_1d
 !
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
       real(kind = kreal), intent(in) :: source_OC, const_OC
 !
-      integer(kind = kint), intent(in) :: n_point
-!
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
 !
 !
-      call init_inner_core_ref_temp(sph, kr_out, source_OC, const_OC,   &
-     &                              n_point, temp_rj)
-      call init_external_ref_temp(sph, kr_out, n_point, temp_rj)
+      call init_inner_core_ref_temp(kr_out, nri_1d, r_1d,               &
+     &                              source_OC, const_OC, reftemp)
+      call init_constant_reference((kr_out+1), nri_1d, reftemp(kr_out), &
+     &                           nri_1d, reftemp)
 !
       end subroutine init_sph_ref_temp_full_sphere
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_ref_temp_whole_core(sph, kr_in, kr_out,       &
-     &          source_IC, source_OC, const_OC, coef_OC, const_IC,      &
-     &          n_point, temp_rj)
+      subroutine init_sph_ref_temp_whole_core                           &
+     &         (kr_in, kr_out, nri_1d, r_1d, source_IC, source_OC,      &
+     &          const_OC, coef_OC, const_IC, reftemp)
 !
-      type(sph_grids), intent(in) :: sph
+      use init_radial_reference_temp
+!
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: nri_1d
 !
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
       real(kind = kreal), intent(in) :: source_IC, source_OC
       real(kind = kreal), intent(in) :: const_OC, coef_OC
       real(kind = kreal), intent(in) :: const_IC
 !
-      integer(kind = kint), intent(in) :: n_point
-!
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
 !
 !
-      call init_inner_core_ref_temp(sph, kr_in, source_IC, const_IC,    &
-     &                              n_point, temp_rj)
-      call init_outer_core_ref_temp(sph, kr_in, kr_out,                 &
-     &    source_OC, const_OC, coef_OC, n_point, temp_rj)
-      call init_external_ref_temp(sph, kr_out, n_point, temp_rj)
+      call init_inner_core_ref_temp(kr_in, nri_1d, r_1d,                &
+     &                              source_IC, const_IC, reftemp)
+      call init_outer_core_ref_temp(kr_in, kr_out, nri_1d, r_1d,        &
+     &    source_OC, const_OC, coef_OC, reftemp)
+      call init_constant_reference((kr_out+1), nri_1d, reftemp(kr_out), &
+     &                             nri_1d, reftemp)
 !
       end subroutine init_sph_ref_temp_whole_core
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine init_outer_core_ref_temp(sph, kr_in, kr_out,           &
-     &          source_OC, const_OC, coef_OC, n_point, temp_rj)
+      subroutine init_sph_ref_source_whole_core(kr_in, kr_out, nri_1d,  &
+     &          source_IC, source_OC, ref_src)
 !
-      use spherical_indices_picker
+      use init_radial_reference_temp
 !
-      type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: nri_1d
 !
-      real(kind = kreal), intent(in) :: source_OC
-      real(kind = kreal), intent(in) :: const_OC, coef_OC
+      real(kind = kreal), intent(in) :: source_IC, source_OC
 !
-      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
-      integer(kind = kint) :: k, jj, inod
-      real(kind = kreal) :: r
+      call init_constant_reference(izero, (kr_in-1), source_IC,         &
+     &                             nri_1d, ref_src)
+      call init_constant_reference(kr_in, kr_out, source_OC,            &
+     &                             nri_1d, ref_src)
+      call init_constant_reference((kr_out+1), nri_1d, zero,            &
+     &                             nri_1d, ref_src)
 !
-!   set reference temperature (l = m = 0)
-      jj = idx_rj_degree_zero(sph)
-      if(jj .le. 0) return
-      do k = kr_in, kr_out
-        inod = local_sph_data_address(sph, k, jj)
-        r = radius_1d_rj_r(sph,k)
-        temp_rj(inod) = const_OC + coef_OC / r - source_OC * r**2 / six
-      end do
-!
-      end subroutine init_outer_core_ref_temp
+      end subroutine init_sph_ref_source_whole_core
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_inner_core_ref_temp(sph, kr_in,                   &
-     &          source_IC, const_IC, n_point, temp_rj)
+      subroutine init_sph_ref_source_full_sphere(kr_out, nri_1d,        &
+     &                                           source_OC, ref_src)
 !
-      use spherical_indices_picker
+      use init_radial_reference_temp
 !
-      type(sph_grids), intent(in) :: sph
-      integer(kind = kint), intent(in) :: kr_in
-!
-      real(kind = kreal), intent(in) :: source_IC
-      real(kind = kreal), intent(in) :: const_IC
-!
-      integer(kind = kint), intent(in) :: n_point
-!
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!
-      integer(kind = kint) :: k, jj, inod
-      real(kind = kreal) :: r
-!
-!   set reference temperature (l = m = 0)
-      jj = idx_rj_degree_zero(sph)
-      if(jj .le. 0) return
-      if(kr_in .le. 0) return
-      do k = 1, kr_in
-        inod = local_sph_data_address(sph, k, jj)
-        r = radius_1d_rj_r(sph,k)
-        temp_rj(inod) = const_IC - source_IC * r*r / six
-      end do
-!
-!    Center
-      inod = inod_rj_center(sph)
-      if(inod .gt. 0) temp_rj(inod) = const_IC
-!
-      end subroutine init_inner_core_ref_temp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine init_external_ref_temp(sph, kr_out, n_point, temp_rj)
-!
-      use spherical_indices_picker
-!
-      type(sph_grids), intent(in) :: sph
       integer(kind = kint), intent(in) :: kr_out
-      integer(kind = kint), intent(in) :: n_point
+      integer(kind = kint), intent(in) :: nri_1d
+      real(kind = kreal), intent(in) :: source_OC
 !
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !
-      integer(kind = kint) :: k, jj, inod, i_cmb
 !
-!   set reference temperature (l = m = 0)
-      jj = idx_rj_degree_zero(sph)
-      if(jj .le. 0) return
-      if(kr_out .ge. num_rj_radial_point(sph)) return
-      do k = kr_out+1, num_rj_radial_point(sph)
-        inod =  local_sph_data_address(sph, k,      jj)
-        i_cmb = local_sph_data_address(sph, kr_out, jj)
-        temp_rj(inod) = temp_rj(i_cmb)
-      end do
+      call init_constant_reference(izero, kr_out, source_OC,            &
+     &                             nri_1d, ref_src)
+      call init_constant_reference((kr_out+1), nri_1d, zero,            &
+     &                             nri_1d, ref_src)
 !
-      end subroutine init_external_ref_temp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine init_constant_source(sph, kr_in, kr_out, source,       &
-     &                                n_point, source_rj)
-!
-      use spherical_indices_picker
-!
-      type(sph_grids), intent(in) :: sph
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: source
-      integer(kind = kint), intent(in) :: n_point
-!
-      real(kind = kreal), intent(inout) :: source_rj(n_point)
-!
-      integer(kind = kint) :: k, jj, inod
-!
-!   set reference temperature (l = m = 0)
-      jj = idx_rj_degree_zero(sph)
-      if(jj .le. 0) return
-      do k = kr_in, kr_out
-        inod =  local_sph_data_address(sph, k, jj)
-        source_rj(inod) = source
-      end do
-!
-!    Center
-      if(kr_in .gt. 1) return
-      inod = inod_rj_center(sph)
-      if(inod .gt. 0) source_rj(inod) = source
-!
-      end subroutine init_constant_source
+      end subroutine init_sph_ref_source_full_sphere
 !
 !-----------------------------------------------------------------------
 !
