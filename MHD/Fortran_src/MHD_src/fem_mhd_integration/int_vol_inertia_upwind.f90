@@ -1,5 +1,5 @@
-!>@file   int_vol_inertia.f90
-!!@brief  module int_vol_inertia
+!>@file   int_vol_inertia_upwind.f90
+!!@brief  module int_vol_inertia_upwind
 !!
 !!@author H. Matsui and H.Okuda 
 !!@date Programmed in July 2000 (ver 1.1)
@@ -9,19 +9,19 @@
 !>@brief  Finite elememt integration for inertia term
 !!
 !!@verbatim
-!!      subroutine int_vol_scalar_inertia                               &
+!!      subroutine int_vol_scalar_inertia_upw                           &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
-!!     &          iele_fsmp_stack, num_int, i_scalar, ncomp_ele,        &
-!!     &          iele_velo, d_ele, coef, fem_wk, f_nl)
-!!      subroutine int_vol_vector_inertia                               &
+!!     &          iele_fsmp_stack, num_int, dt, i_scalar, ncomp_ele,    &
+!!     &          iele_velo, ie_upw, d_ele, coef, fem_wk, f_nl)
+!!      subroutine int_vol_vector_inertia_upw                           &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
-!!     &          iele_fsmp_stack, num_int, i_vector, ncomp_ele,        &
-!!     &          iele_velo, d_ele, coef, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_vector, ncomp_ele,    &
+!!     &          iele_velo, ie_upw, d_ele, coef, fem_wk, f_nl)
 !!
-!!      subroutine int_vol_rot_inertia                                  &
+!!      subroutine int_vol_rot_inertia_upw                              &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
-!!     &          iele_fsmp_stack, num_int, i_vector, ncomp_ele,        &
-!!     &          iele_vort, d_ele, coef, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_vector, ncomp_ele,    &
+!!     &          iele_vort, ie_upw, d_ele, coef, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -32,7 +32,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!@endverbatim
 !
-      module int_vol_inertia
+      module int_vol_inertia_upwind
 !
       use m_precision
       use m_machine_parameter
@@ -53,14 +53,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_scalar_inertia                                 &
+      subroutine int_vol_scalar_inertia_upw                             &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
-     &          iele_fsmp_stack, num_int, i_scalar, ncomp_ele,          &
-     &          iele_velo, d_ele, coef, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_scalar, ncomp_ele,      &
+     &          iele_velo, ie_upw, d_ele, coef, fem_wk, f_nl)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_cst_to_element
-      use fem_skv_inertia
+      use fem_skv_nonlinear_upwind
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -72,9 +72,10 @@
       integer(kind=kint), intent(in) :: num_int, i_scalar
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind=kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -88,30 +89,27 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_scalar, coef, fem_wk%scalar_1)
-        call fem_skv_scalar_inertia                                     &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
-     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
-     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &      jac_3d%an, jac_3d%dnx, fem_wk%scalar_1, d_ele(1,iele_velo), &
-     &      fem_wk%sk6)
+        call fem_skv_scalar_inertia_upwind                              &
+     &     (iele_fsmp_stack, num_int, k2, dt,                           &
+     &      fem_wk%scalar_1, d_ele(1,iele_velo), d_ele(1,ie_upw),       &
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_vol_scalar_inertia
+      end subroutine int_vol_scalar_inertia_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_vector_inertia                                 &
+      subroutine int_vol_vector_inertia_upw                             &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
-     &          iele_fsmp_stack, num_int, i_vector, ncomp_ele,          &
-     &          iele_velo, d_ele, coef, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_vector, ncomp_ele,      &
+     &          iele_velo, ie_upw, d_ele, coef, fem_wk, f_nl)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_cst_to_element
-      use fem_skv_inertia
+      use fem_skv_nonlinear_upwind
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -123,9 +121,10 @@
       integer(kind = kint), intent(in) :: num_int, i_vector
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind=kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -139,30 +138,27 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_vector_inertia                                     &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
-     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
-     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &      jac_3d%an, jac_3d%dnx, fem_wk%vector_1, d_ele(1,iele_velo), &
-     &      fem_wk%sk6)
+        call fem_skv_vector_inertia_upwind                              &
+     &     (iele_fsmp_stack, num_int, k2, dt,                           &
+     &      fem_wk%vector_1, d_ele(1,iele_velo), d_ele(1,ie_upw),       &
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_vol_vector_inertia
+      end subroutine int_vol_vector_inertia_upw
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_rot_inertia                                    &
+      subroutine int_vol_rot_inertia_upw                                &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
-     &          iele_fsmp_stack, num_int, i_vector, ncomp_ele,          &
-     &          iele_vort, d_ele, coef, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_vector, ncomp_ele,      &
+     &          iele_vort, ie_upw, d_ele, coef, fem_wk, f_nl)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_cst_to_element
-      use fem_skv_inertia
+      use fem_skv_nonlinear_upwind
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -174,9 +170,10 @@
       integer(kind = kint), intent(in) :: num_int, i_vector
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: ncomp_ele, iele_vort
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_vort, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind=kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -190,20 +187,16 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_rot_inertia                                        &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
-     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
-     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &      jac_3d%an, jac_3d%an, fem_wk%vector_1, d_ele(1,iele_vort),  &
-     &      fem_wk%sk6)
+        call fem_skv_rot_inertia_upwind(iele_fsmp_stack, num_int, k2,   &
+     &      dt, fem_wk%vector_1, d_ele(1,iele_vort), d_ele(1,ie_upw),   &
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_vol_rot_inertia
+      end subroutine int_vol_rot_inertia_upw
 !
 ! ----------------------------------------------------------------------
 !
-      end module int_vol_inertia
+      end module int_vol_inertia_upwind

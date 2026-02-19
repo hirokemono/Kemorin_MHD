@@ -93,6 +93,7 @@
      &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_inertia
+      use int_vol_inertia_upwind
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: iflag_supg, num_int

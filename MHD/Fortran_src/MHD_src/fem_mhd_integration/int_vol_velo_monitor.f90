@@ -263,7 +263,7 @@
      &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
      &          f_nl, ele_fld)
 !
-      use int_vol_inertia
+      use int_vol_inertia_upwind
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
       use int_vol_buoyancy

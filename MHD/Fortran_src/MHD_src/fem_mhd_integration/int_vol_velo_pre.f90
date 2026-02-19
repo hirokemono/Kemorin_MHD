@@ -197,6 +197,7 @@
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
+!
               call fem_skv_vec_inertia_modsgs_pg                        &
      &          (fluid%istack_ele_fld_smp, num_int, k2,                 &
      &           SGS_param%ifilter_final, ele, g_FEM, jac_3d,           &
@@ -435,6 +436,7 @@
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
+!
               call fem_skv_vec_inertia_msgs_upw                         &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            SGS_param%ifilter_final, dt,                          &
@@ -471,6 +473,7 @@
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
+!
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d,      &
