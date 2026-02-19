@@ -13,28 +13,30 @@
 !!       T = const_IC - (1/6) source_IC r^2
 !!
 !!      subroutine reftemp_full_sphere_fix_out(sph, sph_bc_T, bcs_T,    &
-!!     &          source_OC, n_point, temp_rj, source_rj)
+!!     &          source_OC, nri_1d, r_1d, reftemp, ref_src)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
 !!        real(kind = kreal), intent(in) :: source_OC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !!      Constant for temperature in whole sphere
 !!         Input::  Q_OC, T_CMB
 !!         Output:: const_OC
 !!           const_OC = T_CMB + 3 * Q_OC * r_CMB^2 / 6
 !!
 !!      subroutine reftemp_full_sphere_flux_out(sph, sph_bc_T, bcs_T,   &
-!!     &          source_OC, n_point, temp_rj, source_rj)
+!!     &          nri_1d, r_1d, reftemp, ref_src, source_OC)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
-!!        real(kind = kreal), intent(in) :: source_OC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: source_OC
 !!      Constant for temperature in whole sphere
 !!         Input::  Q_OC, T_CMB = 0.0
 !!         Output:: const_OC
@@ -42,16 +44,17 @@
 !!
 !!      subroutine reftemp_w_IC_src_fix_out                             &
 !!     &         (sph, sph_bc_T, bcs_T, source_OC, source_IC, kappa_IC, &
-!!     &          n_point, temp_rj, source_rj)
+!!     &          nri_1d, r_1d, reftemp, ref_src)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
 !!        real(kind = kreal), intent(in) :: source_OC
 !!        real(kind = kreal), intent(in) :: source_IC
 !!        real(kind = kreal), intent(in) :: kappa_IC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !!     Coefficients for fixed temperature at CMB 
 !!                 with sources in inner and outer cores
 !!       Input::  Q_IC, Q_OC, kappa_IC, T_CMB
@@ -63,15 +66,16 @@
 !!
 !!      subroutine reftemp_w_IC_src_flux_out                            &
 !!     &         (sph, sph_bc_T, bcs_T, source_OC, kappa_IC,            &
-!!     &          n_point, temp_rj, source_rj, source_IC)
+!!     &          nri_1d, r_1d, reftemp, ref_src, source_IC)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_T
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_T
 !!        real(kind = kreal), intent(in) :: source_OC
 !!        real(kind = kreal), intent(in) :: kappa_IC
-!!        integer(kind = kint), intent(in) :: n_point
-!!        real(kind = kreal), intent(inout) :: temp_rj(n_point)
-!!        real(kind = kreal), intent(inout) :: source_rj(n_point)
+!!        integer(kind = kint), intent(in) :: nri_1d
+!!        real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+!!        real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !!        real(kind = kreal), intent(inout) :: source_IC
 !!     Coefficients for fixed flux at CMB
 !!                 with sources in inner and outer cores
@@ -102,7 +106,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine reftemp_full_sphere_fix_out(sph, sph_bc_T, bcs_T,      &
-     &          source_OC, n_point, temp_rj, source_rj)
+     &          source_OC, nri_1d, r_1d, reftemp, ref_src)
 !
       use spherical_indices_picker
       use initial_reference_setup
@@ -115,49 +119,34 @@
       type(sph_boundary_type), intent(in) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
+      integer(kind = kint), intent(in) :: nri_1d
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
 !
-      integer(kind = kint), intent(in) :: n_point
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
-      real(kind = kreal), intent(inout) :: source_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !
       integer(kind = kint) :: kr_in, kr_out
       real(kind = kreal) :: r_in, r_out
       real(kind = kreal) :: flux_ICB, temp_CMB
       real(kind = kreal) :: const_OC
 !
-      integer(kind = kint) :: nri_1d
-      real(kind = kreal), allocatable :: r_1d(:)
-      real(kind = kreal), allocatable :: reftemp(:)
-      real(kind = kreal), allocatable :: ref_src(:)
 !
-!
-      if(idx_rj_degree_zero(sph) .le. 0) return
       call boundary_data_for_reference(sph, sph_bc_T, bcs_T,            &
-     &          kr_in, kr_out, r_in, r_out, flux_ICB, temp_CMB)
+     &    kr_in, kr_out, r_in, r_out, flux_ICB, temp_CMB)
 !
       const_OC = reftemp_const_whole_core(r_out, source_OC, temp_CMB)
 !
-      nri_1d = num_rj_radial_point(sph)
-      allocate(r_1d(0:nri_1d))
-      allocate(reftemp(0:nri_1d))
-      allocate(ref_src(0:nri_1d))
-      call copy_radius_rj(sph, nri_1d, r_1d)
       call init_sph_ref_temp_full_sphere(kr_out, nri_1d, r_1d,          &
      &                                   source_OC, const_OC, reftemp)
       call init_sph_ref_source_full_sphere(kr_out, nri_1d, source_OC,   &
      &                                     ref_src)
-!
-      call copy_from_reference(sph, nri_1d, reftemp, n_point, temp_rj)
-      call copy_from_reference(sph, nri_1d, ref_src,                    &
-     &                         n_point, source_rj)
-      deallocate(ref_src, reftemp, r_1d)
 !
       end subroutine reftemp_full_sphere_fix_out
 !
 !-----------------------------------------------------------------------
 !
       subroutine reftemp_full_sphere_flux_out(sph, sph_bc_T, bcs_T,     &
-     &          source_OC, n_point, temp_rj, source_rj)
+     &          nri_1d, r_1d, reftemp, ref_src, source_OC)
 !
       use spherical_indices_picker
       use initial_reference_setup
@@ -168,44 +157,31 @@
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
-      real(kind = kreal), intent(in) :: source_OC
+      integer(kind = kint), intent(in) :: nri_1d
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
 !
-      integer(kind = kint), intent(in) :: n_point
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
-      real(kind = kreal), intent(inout) :: source_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
+      real(kind = kreal), intent(inout) :: source_OC
 !
       integer(kind = kint) :: kr_in, kr_out
       real(kind = kreal) :: r_in, r_out
       real(kind = kreal) :: flux_ICB, flux_CMB
       real(kind = kreal) :: const_OC
 !
-      integer(kind = kint) :: nri_1d
-      real(kind = kreal), allocatable :: r_1d(:)
-      real(kind = kreal), allocatable :: reftemp(:)
-      real(kind = kreal), allocatable :: ref_src(:)
-!
       real(kind = kreal), parameter :: temp_CMB = zero
 !
-      if(idx_rj_degree_zero(sph) .le. 0) return
-      call boundary_data_for_reference(sph, sph_bc_T, bcs_T,            &
-     &          kr_in, kr_out, r_in, r_out, flux_ICB, flux_CMB)
 !
+      call boundary_data_for_reference(sph, sph_bc_T, bcs_T,            &
+     &    kr_in, kr_out, r_in, r_out, flux_ICB, flux_CMB)
+!
+      source_OC = source_from_inner_core(r_out, r_out, flux_CMB)
       const_OC = reftemp_const_whole_core(r_out, source_OC, temp_CMB)
 !
-      nri_1d = num_rj_radial_point(sph)
-      allocate(r_1d(0:nri_1d))
-      allocate(reftemp(0:nri_1d))
-      allocate(ref_src(0:nri_1d))
-      call copy_radius_rj(sph, nri_1d, r_1d)
       call init_sph_ref_temp_full_sphere(kr_out, nri_1d, r_1d,          &
      &                                   source_OC, const_OC, reftemp)
       call init_sph_ref_source_full_sphere(kr_out, nri_1d, source_OC,   &
      &                                     ref_src)
-!
-      call copy_from_reference(sph, nri_1d, reftemp, n_point, temp_rj)
-      call copy_from_reference(sph, nri_1d, ref_src,                    &
-     &                         n_point, source_rj)
-      deallocate(ref_src, reftemp, r_1d)
 !
       end subroutine reftemp_full_sphere_flux_out
 !
@@ -214,7 +190,7 @@
 !
       subroutine reftemp_w_IC_src_fix_out                               &
      &         (sph, sph_bc_T, bcs_T, source_OC, source_IC, kappa_IC,   &
-     &          n_point, temp_rj, source_rj)
+     &          nri_1d, r_1d, reftemp, ref_src)
 !
       use spherical_indices_picker
       use initial_reference_setup
@@ -225,48 +201,35 @@
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
-      real(kind = kreal), intent(in) :: source_OC
-      real(kind = kreal), intent(in) :: source_IC
+      real(kind = kreal), intent(in) :: source_OC, source_IC
       real(kind = kreal), intent(in) :: kappa_IC
+      integer(kind = kint), intent(in) :: nri_1d
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
 !
-      integer(kind = kint), intent(in) :: n_point
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
-      real(kind = kreal), intent(inout) :: source_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
 !
-      integer(kind = kint) :: nri_1d
-      real(kind = kreal), allocatable :: r_1d(:)
-      real(kind = kreal), allocatable :: reftemp(:)
-      real(kind = kreal), allocatable :: ref_src(:)
-!
-      integer(kind = kint) :: kr_in, kr_out
-      real(kind = kreal) :: r_in, r_out
+      integer(kind = kint) :: kr_in, kr_out, kr_ICB
+      real(kind = kreal) :: r_in, r_out, rr_ICB
       real(kind = kreal) :: flux_ICB, temp_CMB
       real(kind = kreal) :: const_OC, coef_OC
       real(kind = kreal) :: const_IC
 !
 !
-      if(idx_rj_degree_zero(sph) .le. 0) return
       call boundary_data_for_reference(sph, sph_bc_T, bcs_T,            &
-     &          kr_in, kr_out, r_in, r_out, flux_ICB, temp_CMB)
+     &    kr_in, kr_out, r_in, r_out, flux_ICB, temp_CMB)
+      kr_ICB = nlayer_ICB(sph)
+      rr_ICB = r_ICB(sph)
 !
-      call reftemp_coefs_w_IC_source(r_in, r_out,                       &
+      call reftemp_coefs_w_IC_source(rr_ICB, r_out,                     &
      &    source_OC, source_IC, kappa_IC, temp_CMB,                     &
      &    const_OC, coef_OC, const_IC)
 !
-      nri_1d = num_rj_radial_point(sph)
-      allocate(r_1d(0:nri_1d))
-      allocate(reftemp(0:nri_1d))
-      allocate(ref_src(0:nri_1d))
-      call copy_radius_rj(sph, nri_1d, r_1d)
-      call init_sph_ref_temp_whole_core(kr_in, kr_out, nri_1d, r_1d,    &
+      call init_sph_ref_temp_whole_core(kr_ICB, kr_out, nri_1d, r_1d,   &
      &    source_IC, source_OC, const_OC, coef_OC, const_IC, reftemp)
-      call init_sph_ref_source_whole_core(kr_in, kr_out, nri_1d,        &
+      call init_sph_ref_source_whole_core(kr_ICB, kr_out, nri_1d,       &
      &    source_IC, source_OC, ref_src)
 !
-      call copy_from_reference(sph, nri_1d, reftemp, n_point, temp_rj)
-      call copy_from_reference(sph, nri_1d, ref_src,                    &
-     &                         n_point, source_rj)
-      deallocate(ref_src, reftemp, r_1d)
 !
       end subroutine reftemp_w_IC_src_fix_out
 !
@@ -274,7 +237,7 @@
 !
       subroutine reftemp_w_IC_src_flux_out                              &
      &         (sph, sph_bc_T, bcs_T, source_OC, kappa_IC,              &
-     &          n_point, temp_rj, source_rj, source_IC)
+     &          nri_1d, r_1d, reftemp, ref_src, source_IC)
 !
       use spherical_indices_picker
       use initial_reference_setup
@@ -287,49 +250,36 @@
       type(sph_scalar_boundary_data), intent(in) :: bcs_T
       real(kind = kreal), intent(in) :: source_OC
       real(kind = kreal), intent(in) :: kappa_IC
-      integer(kind = kint), intent(in) :: n_point
+      integer(kind = kint), intent(in) :: nri_1d
+      real(kind = kreal), intent(in) :: r_1d(0:nri_1d)
 !
-      real(kind = kreal), intent(inout) :: temp_rj(n_point)
-      real(kind = kreal), intent(inout) :: source_rj(n_point)
+      real(kind = kreal), intent(inout) :: reftemp(0:nri_1d)
+      real(kind = kreal), intent(inout) :: ref_src(0:nri_1d)
       real(kind = kreal), intent(inout) :: source_IC
 !
-      integer(kind = kint) :: kr_in, kr_out
-      real(kind = kreal) :: r_in, r_out
+      integer(kind = kint) :: kr_in, kr_out, kr_ICB
+      real(kind = kreal) :: r_in, r_out, rr_ICB
       real(kind = kreal) :: flux_ICB, flux_CMB
       real(kind = kreal) :: const_OC, coef_OC
       real(kind = kreal) :: const_IC
 !
-      integer(kind = kint) :: nri_1d
-      real(kind = kreal), allocatable :: r_1d(:)
-      real(kind = kreal), allocatable :: reftemp(:)
-      real(kind = kreal), allocatable :: ref_src(:)
-!
       real(kind = kreal), parameter :: temp_CMB = zero
 !
-      if(idx_rj_degree_zero(sph) .le. 0) return
       call boundary_data_for_reference(sph, sph_bc_T, bcs_T,            &
-     &          kr_in, kr_out, r_in, r_out, flux_ICB, flux_CMB)
+     &    kr_in, kr_out, r_in, r_out, flux_ICB, flux_CMB)
+      kr_ICB = nlayer_ICB(sph)
+      rr_ICB = r_ICB(sph)
 !
-      source_IC = inner_core_source_w_OC_sorce(r_in, r_out,             &
+      source_IC = inner_core_source_w_OC_sorce(rr_ICB, r_out,           &
      &                                         flux_CMB, source_OC)
-      call reftemp_coefs_w_IC_source(r_in, r_out,                       &
+      call reftemp_coefs_w_IC_source(rr_ICB, r_out,                     &
      &    source_OC, source_IC, kappa_IC, temp_CMB,                     &
      &    const_OC, coef_OC, const_IC)
 !
-      nri_1d = num_rj_radial_point(sph)
-      allocate(r_1d(0:nri_1d))
-      allocate(reftemp(0:nri_1d))
-      allocate(ref_src(0:nri_1d))
-      call copy_radius_rj(sph, nri_1d, r_1d)
-      call init_sph_ref_temp_whole_core(kr_in, kr_out, nri_1d, r_1d,    &
+      call init_sph_ref_temp_whole_core(kr_ICB, kr_out, nri_1d, r_1d,   &
      &    source_IC, source_OC, const_OC, coef_OC, const_IC, reftemp)
-      call init_sph_ref_source_whole_core(kr_in, kr_out, nri_1d,        &
+      call init_sph_ref_source_whole_core(kr_ICB, kr_out, nri_1d,       &
      &    source_IC, source_OC, ref_src)
-!
-      call copy_from_reference(sph, nri_1d, reftemp, n_point, temp_rj)
-      call copy_from_reference(sph, nri_1d, ref_src,                    &
-     &                         n_point, source_rj)
-      deallocate(ref_src, reftemp, r_1d)
 !
       end subroutine reftemp_w_IC_src_flux_out
 !
