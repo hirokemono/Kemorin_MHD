@@ -77,6 +77,8 @@
       real(kind = kreal), allocatable :: ref_src(:)
 !
 !
+      if(idx_rj_degree_zero(sph) .eq. 0) return
+!
       nri_1d = num_rj_radial_point(sph)
       allocate(r_1d(0:nri_1d))
       allocate(reftemp(0:nri_1d))

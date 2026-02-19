@@ -185,8 +185,8 @@
       rj_fld%d_fld(1:rj_fld%n_point,ipol_scalar) = 0.0d0
 !$omp end parallel workshare
 !
-      call initial_sph_reference_scalar(sph,                            &
-     &    ref_field%n_point, ref_field%d_fld(1,iref_scalar),            &
+      call initial_sph_reference_scalar                                 &
+     &   (sph, ref_field%n_point, ref_field%d_fld(1,iref_scalar),       &
      &    rj_fld%n_point, rj_fld%d_fld(1,ipol_scalar))
       call initital_sph_noise_temp(sph, sph_bc_S, rj_fld%n_point,       &
      &                             rj_fld%d_fld(1,ipol_scalar))
