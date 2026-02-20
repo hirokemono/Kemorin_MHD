@@ -96,6 +96,7 @@
       use fem_skv_div_flux
       use fem_skv_div_sgs_flux_type
       use fem_skv_lorentz_full
+      use sel_fem_skv_rot_inertia
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -143,52 +144,14 @@
      &       iphys_base%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
-!
-          if (iflag_4_rotate .eq. id_turn_ON) then
-!
-            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
-     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
-     &            .eq. id_SGS_commute_ON) then
-              call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
-     &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
-     &            fem_wk%tensor_1)
-!
-              call fem_skv_rot_inertia                                  &
-     &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,           &
-     &            np_smp, fluid%istack_ele_fld_smp,                     &
-     &            g_FEM%max_int_point, g_FEM%maxtot_int_3d,             &
-     &            g_FEM%int_start3, g_FEM%owe3d, num_int, k2,           &
-     &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%an,   &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele_base%i_vort),    &
-     &            fem_wk%sk6)
-              call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
-     &            num_int, k2, SGS_param%ifilter_final, ele, g_FEM,     &
-     &            jac_3d, FEM_elens, diff_coefs%Cdiff_SGS_mf,           &
-     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
-            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
-     &          .ne. id_SGS_none) then
-              call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
-     &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
-     &            mhd_fem_wk%sgs_t1)
-              call fem_skv_inertia_rot_sgs_pg                           &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
-     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele_base%i_vort),    &
-     &            fem_wk%sk6)
-            else
-              call fem_skv_rot_inertia                                  &
-     &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,           &
-     &            np_smp, fluid%istack_ele_fld_smp,                     &
-     &            g_FEM%max_int_point, g_FEM%maxtot_int_3d,             &
-     &            g_FEM%int_start3, g_FEM%owe3d, num_int, k2,           &
-     &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%an,   &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele_base%i_vort),    &
-     &            fem_wk%sk6)
-            end if
+          if(iflag_4_rotate .eq. id_turn_ON) then
+            call sel_fem_skv_rot_inertia_pg                             &
+     &         (k2, num_int, SGS_param, node, ele, fluid, fl_prop,      &
+     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele,              &
+     &          d_ele, iphys_ele_base, g_FEM, jac_3d, FEM_elens,        &
+     &          diff_coefs, mhd_fem_wk, fem_wk)
 !
 !  -----  Inertia including Reynolds stress --------
-!
           else
             if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
      &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
@@ -341,6 +304,7 @@
       use fem_skv_div_sgs_flux_upw
       use fem_skv_lorentz_full
       use fem_skv_div_flux_upw
+      use sel_fem_skv_rot_inertia
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -390,41 +354,12 @@
      &       iphys_base%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
-!
           if (iflag_4_rotate .eq. id_turn_ON) then
-            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
-     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
-     &             .eq. id_SGS_commute_ON) then
-              call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
-     &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
-     &            fem_wk%tensor_1)
-!
-              call fem_skv_rot_inertia_upwind                           &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele_base%i_vort),    &
-     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
-              call fem_skv_div_sgs_tensor_upwind                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d,      &
-     &            FEM_elens, diff_coefs%Cdiff_SGS_mf, d_ele(1,ie_upw),  &
-     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
-            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
-     &          .ne. id_SGS_none) then
-              call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
-     &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
-     &            mhd_fem_wk%sgs_t1)
-              call fem_skv_inertia_rot_sgs_upwind                       &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
-     &            mhd_fem_wk%sgs_t1, d_ele(1,ie_upw), d_ele(1,ie_upw),  &
-     &            fem_wk%sk6)
-            else
-              call fem_skv_rot_inertia_upwind                           &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele_base%i_vort),    &
-     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
-            end if
+            call sel_fem_skv_rot_inertia_upwind                         &
+     &         (k2, num_int, dt, SGS_param, node, ele, fluid, fl_prop,  &
+     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele, ie_upw,      &
+     &          d_ele, iphys_ele_base, g_FEM, jac_3d, FEM_elens,        &
+     &          diff_coefs, mhd_fem_wk, fem_wk)
 !
 !  -----  Inertia including Reynolds stress --------
 !
