@@ -10,12 +10,12 @@
 !!@n       for rotation form of inertia
 !!
 !!@verbatim
-!!      subroutine sel_fem_skv_rot_inertia_pg                           &
+!!      subroutine sel_fem_skv_inertia_pg                               &
 !!     &         (k2, num_int, SGS_param, node, ele, fluid, fl_prop,    &
-!!     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele,            &
-!!     &          d_ele, iphys_ele_base, g_FEM, jac_3d, FEM_elens,      &
-!!     &          diff_coefs, mhd_fem_wk, fem_wk)
-!!      subroutine sel_fem_skv_rot_inertia_upwind                       &
+!!     &         iphys_base, iphys_SGS, nod_fld, ncomp_ele,             &
+!!     &         d_ele, iphys_ele_base, g_FEM, jac_3d, FEM_elens,       &
+!!     &         diff_coefs, mhd_fem_wk, fem_wk)
+!!      subroutine sel_fem_skv_inertia_upwind                           &
 !!     &         (k2, num_int, dt, SGS_param, node, ele, fluid, fl_prop,&
 !!     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele, ie_upw,    &
 !!     &          d_ele, iphys_ele_base, g_FEM, jac_3d, FEM_elens,      &
